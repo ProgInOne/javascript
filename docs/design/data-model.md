@@ -411,7 +411,7 @@ PK `(learner_id, lesson_id)`. 인덱스 `(learner_id, status)`.
 | 테이블 | 컬럼 | 타입 | Null | 기본값 | 설명 |
 |---|---|---|---|---|---|
 | `practice_sets` | `id` | TEXT | N | | PK, ULID |
-| | `kind` | TEXT | N | | `lesson` / `review` / `weakness` / `assessment` / `remedial` / `extra` / `diagnostic` |
+| | `kind` | TEXT | N | | `lesson` / `review` / `weakness` / `assessment` / `remedial` / `extra` / `custom`(자유 연습, P1) / `diagnostic`(P1). 학습 맥락(`W_ctx`)과 힌트 잠금 여부를 정함 |
 | | `scope_json` | TEXT | N | | 대상(단원 ID, 개념 ID 목록, 평가 ID 등) |
 | | `status` | TEXT | N | `'active'` | `active` / `completed` / `abandoned` |
 | | `pass_rule_json` | TEXT | Y | | 통과 기준(학습 엔진이 생성) |
@@ -440,6 +440,7 @@ PK `(learner_id, lesson_id)`. 인덱스 `(learner_id, status)`.
 | `id` | TEXT | N | | PK, ULID |
 | `exercise_id` | TEXT | N | | |
 | `exercise_origin` | TEXT | N | | `authored` / `template` / `generated` |
+| `variant_group_key` | TEXT | N | | 시도 당시의 변형 그룹 키(`variant_group`, 없으면 템플릿 ID 또는 문제 ID). 반복 감쇠 `W_rep`와 단계 게이트의 변형 그룹 다양성 계산에 사용([학습 엔진 설계](/docs/design/learning-engine.md#증거-가중치)). 인덱스 `(learner_id, variant_group_key, created_at)` |
 | `exercise_version_hash` | TEXT | N | | 시도 당시 문제의 내용 해시. `exercise_snapshots.content_hash`를 가리킴. 콘텐츠가 바뀐 뒤 해석과 풀이 비교에 사용 |
 | `practice_set_item_id` | TEXT | Y | | FK. 자유 실행 등 세트 밖 시도는 NULL |
 | `study_session_id` | TEXT | Y | | FK |
@@ -793,6 +794,20 @@ AI 호출 한 건의 기록입니다. 필드의 의미는 [AI 시스템 설계](
 | `content_pack_version` | TEXT | N | 감지 당시 팩 버전 |
 
 PK `(ref_kind, ref_id)`.
+
+#### notes (P1)
+
+개인 노트(PRD FR-UI-05, FR-AI-14). P1 구현 시 마이그레이션으로 추가하며, 아래는 예정 구조입니다.
+
+| 컬럼 | 타입 | Null | 설명 |
+|---|---|---|---|
+| `id` | TEXT | N | PK, ULID |
+| `body_md` | TEXT | N | 노트 본문(Markdown, 원시 HTML 렌더링 안 함) |
+| `source_kind` | TEXT | N | `manual` / `tutor_message` / `code_snippet` |
+| `source_ref` | TEXT | Y | 원본 참조(튜터 메시지 ID, 시도 ID 등). 원본이 지워져도 노트 본문은 남음 |
+| `created_at`, `updated_at` | INTEGER | N | |
+
+연결 테이블 `note_links(note_id, ref_kind, ref_id)`로 하나의 노트를 여러 개념·단원·문제에 연결합니다. `ref_kind`: `concept` / `lesson` / `exercise`. 노트 본문은 `content_search`와 별도의 FTS5 테이블로 검색합니다.
 
 ### 전문 검색 (FTS5)
 

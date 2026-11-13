@@ -206,7 +206,7 @@ export interface ProviderAdapter {
 }
 ```
 
-- 어댑터는 오류를 `AIError`(코드: `AI_NOT_CONNECTED`, `AI_UNAUTHORIZED`, `AI_RATE_LIMITED`, `AI_CONTEXT_TOO_LARGE`, `AI_TIMEOUT`, `AI_CANCELLED`, `AI_BAD_OUTPUT`, `AI_PROVIDER_ERROR`, `AI_OVERLOADED`)로 정규화합니다. 서버 API의 오류 코드와 같은 체계입니다([시스템 아키텍처 설계](/docs/design/system-architecture.md#api-규약)).
+- 어댑터는 오류를 `AIError`(코드: `AI_NOT_CONNECTED`, `AI_UNAUTHORIZED`, `AI_RATE_LIMITED`, `AI_CONTEXT_TOO_LARGE`, `AI_TIMEOUT`, `AI_CANCELLED`, `AI_BAD_OUTPUT`, `AI_PROVIDER_ERROR`, `AI_OVERLOADED`)로 정규화합니다. 서비스 계층은 정책 거부 코드 `AI_LOCKED_IN_ASSESSMENT`(평가 맥락 잠금)를 추가로 씁니다. 서버 API의 오류 코드와 같은 체계입니다([시스템 아키텍처 설계](/docs/design/system-architecture.md#api-규약)).
 - 기능 플래그(`capabilities`)가 없는 기능은 `TaskRunner`가 대체 경로를 씁니다. 예: `structuredOutput`이 없으면 JSON 지시 + 파싱 + 1회 재시도.
 
 ### AITask 정의 형식
@@ -562,6 +562,8 @@ sequenceDiagram
 | `content.draft` | author | background (CLI) | ephemeral | 아니오 | 예 | P0 (도구) |
 
 #### tutor.reply
+
+> **평가 맥락 잠금**: 진행 중인 연습 세트의 종류가 `assessment`이면 서버는 `tutor.reply`, `tutor.hint`, `evaluator.explainMistake` 요청을 `AI_LOCKED_IN_ASSESSMENT` 오류로 거부합니다. 잠금은 UI가 아니라 서비스 계층이 판정합니다([학습 엔진 설계](/docs/design/learning-engine.md#단원-평가-세트), [D-023](/docs/decisions.md)).
 
 학습자의 자유 질문에 답합니다. "선택해서 질문하기", "왜 실패했나요?", 튜터 드로어의 일반 질문이 모두 이 작업입니다.
 
