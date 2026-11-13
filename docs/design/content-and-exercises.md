@@ -3,7 +3,7 @@
 ProgInOne의 커리큘럼 구조, 레슨 본문 형식, 문제 유형과 채점 방식, 파라메트릭 템플릿, 콘텐츠 제작·검증 파이프라인을 정의합니다.
 "무엇을 어떤 순서로 가르치고, 어떤 문제로 확인하며, 그 콘텐츠를 어떻게 만들고 검증하는가"에 답하는 문서입니다.
 
-- 상태: 초안
+- 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
 - 최종 수정: 2026-11-13
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [학습 엔진 설계](/docs/design/learning-engine.md), [코드 실행 샌드박스 설계](/docs/design/code-execution-sandbox.md), [AI 시스템 설계](/docs/design/ai-system.md), [UI/UX 설계](/docs/design/ui-ux.md)

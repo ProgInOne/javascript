@@ -3,7 +3,7 @@
 ProgInOne이 AI를 어떻게 통합하고, 어떤 작업에 쓰고, 학습 기록을 어떻게 AI 맥락으로 바꾸는지 설계합니다.
 MVP의 유일한 AI 제공자는 ChatGPT 구독으로 인증하는 Codex App Server입니다([D-002](/docs/decisions.md)).
 
-- 상태: 초안
+- 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
 - 최종 수정: 2026-11-13
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [학습 엔진 설계](/docs/design/learning-engine.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [UI/UX 설계](/docs/design/ui-ux.md)

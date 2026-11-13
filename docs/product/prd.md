@@ -3,7 +3,7 @@
 ProgInOne이 무엇을, 누구를 위해, 왜 만드는지 정의합니다.
 어떻게 만드는지는 [시스템 아키텍처 설계](/docs/design/system-architecture.md)와 각 설계 문서가 다룹니다.
 
-- 상태: 초안
+- 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
 - 최종 수정: 2026-11-14 (외부 검토 반영: 단계별 출시, 문제 수량 기준, 숙련도 게이트 강화)
 - 관련 문서: [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md)

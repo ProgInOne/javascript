@@ -3,7 +3,7 @@
 학습자가 작성한 HTML/CSS/JavaScript를 브라우저 안에서 안전하게 실행하고, 콘솔 출력·오류·체크 관측값을 돌려주는 러너(`Runner`)를 설계합니다.
 위협 모델, 격리 구조, 메시지 프로토콜, 무한 루프·메모리·비동기 처리, 테스트 하네스, 콘텐츠 빌드 시 검증 방법, 보안 테스트 스위트를 다룹니다.
 
-- 상태: 초안
+- 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
 - 최종 수정: 2026-11-13
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [학습 엔진 설계](/docs/design/learning-engine.md), [UI/UX 설계](/docs/design/ui-ux.md)

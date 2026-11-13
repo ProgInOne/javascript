@@ -3,7 +3,7 @@
 ProgInOne의 시각 언어, 디자인 토큰, 컴포넌트, 화면 구조, 핵심 인터랙션, 접근성 기준, UI 품질 검증 절차를 정의합니다.
 UI는 인프런 같은 밝고 친근한 한국형 교육 플랫폼의 톤을 자체 아이덴티티로 재해석하고, UX는 학습과학 연구 근거를 화면 결정에 직접 연결합니다.
 
-- 상태: 초안
+- 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
 - 최종 수정: 2026-11-13
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [학습 엔진 설계](/docs/design/learning-engine.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [코드 실행 샌드박스 설계](/docs/design/code-execution-sandbox.md), [AI 시스템 설계](/docs/design/ai-system.md)

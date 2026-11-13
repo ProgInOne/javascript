@@ -3,7 +3,7 @@
 ProgInOne의 두 SQLite 데이터베이스(`content.db`, `user.db`)의 테이블, 식별자, 제약, 인덱스, 마이그레이션, 백업 설계를 정의합니다.
 구현자는 이 문서만으로 Drizzle 스키마와 마이그레이션 초안을 작성할 수 있어야 합니다.
 
-- 상태: 초안
+- 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
 - 최종 수정: 2026-11-13
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [학습 엔진 설계](/docs/design/learning-engine.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [AI 시스템 설계](/docs/design/ai-system.md)
