@@ -3,3 +3,8 @@
   title: 출력을 반환으로 착각함
   statement: console.log로 출력하면 그 값이 어딘가에 저장된다고 생각한다.
   reality: console.log는 화면에 보여 주기만 하고, 값을 저장하거나 돌려주지 않는다.
+- id: js.mc.const-reassign
+  concept: js.basics.const
+  title: const도 다시 대입할 수 있다고 생각함
+  statement: const로 선언한 변수에도 나중에 다른 값을 대입할 수 있다고 생각한다.
+  reality: const 변수에 다시 대입하면 TypeError가 난다.

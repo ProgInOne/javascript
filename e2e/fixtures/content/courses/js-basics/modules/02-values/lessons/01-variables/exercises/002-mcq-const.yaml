@@ -1,0 +1,31 @@
+id: js-basics.values.variables.mcq-const
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.basics.const, weight: 1 }
+estimatedSeconds: 50
+prompt: |
+  `const price = 100;` 다음 줄에 `price = 200;`을 쓰면 어떻게 되나요?
+spec:
+  options:
+    - id: a
+      text: 오류가 난다
+    - id: b
+      text: '`price`가 `200`이 된다'
+      misconception: js.mc.const-reassign
+      rationale: const로 선언한 변수에는 다시 대입할 수 없어요.
+    - id: c
+      text: '`price`가 `300`이 된다'
+      rationale: 대입은 더하기가 아니에요.
+  correct: a
+misconceptions: [js.mc.const-reassign]
+hints:
+  - const는 상수(constant)의 줄임말이에요.
+  - 상수는 바뀌지 않는 값이에요.
+  - const 변수에 다시 대입하면 TypeError가 나요.
+explanation: |
+  정답은 **오류가 난다**예요. `const` 변수에 다시 대입하면 `TypeError`가 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -6,6 +6,9 @@ import type {
   GoalStatus,
   GoalView,
   LearnerProfile,
+  MasteryOverview,
+  ReviewQueue,
+  WeakConcepts,
 } from '@proginone/shared';
 
 // Fake API data for onboarding, goals and the dashboard (packages/shared/src/learning.ts).
@@ -148,3 +151,74 @@ export function firstDayPlan(goal: GoalView = defaultGoal): DailyPlanView {
     pace: null,
   };
 }
+
+// ── Dashboard ──
+
+type Tile = MasteryOverview['courses'][number]['modules'][number]['concepts'][number];
+
+export function tile(id: string, title: string, over: Partial<Tile> = {}): Tile {
+  return {
+    id,
+    title,
+    importance: 'core',
+    stage: 'not_started',
+    effective: 0,
+    reviewDue: false,
+    nextReviewDate: null,
+    misconceptions: [],
+    ...over,
+  };
+}
+
+/** `GET /mastery` with two modules; `tiles` replace the default not-started concepts. */
+export function masteryOverview(
+  tiles?: { start: Tile[]; values: Tile[] },
+  completed = 0,
+): MasteryOverview {
+  const start = tiles?.start ?? [
+    tile('js.basics.statement', '문장과 실행 순서'),
+    tile('js.basics.console-log', 'console.log로 출력하기'),
+  ];
+  const values = tiles?.values ?? [
+    tile('js.basics.let', 'let 선언'),
+    tile('js.basics.const', 'const 선언'),
+  ];
+  const counts = { not_started: 0, introduced: 0, practicing: 0, proficient: 0, mastered: 0 };
+  for (const t of [...start, ...values]) counts[t.stage] += 1;
+  return {
+    date: TODAY,
+    courses: [
+      {
+        id: 'js-basics',
+        title: 'JavaScript 기초',
+        language: 'javascript',
+        lessons: { total: 2, completed },
+        stageCounts: counts,
+        modules: [
+          {
+            id: 'js-basics.start',
+            title: '시작하기',
+            lessons: { total: 1, completed: Math.min(1, completed) },
+            concepts: start,
+          },
+          {
+            id: 'js-basics.values',
+            title: '값과 변수',
+            lessons: { total: 1, completed: Math.max(0, completed - 1) },
+            concepts: values,
+          },
+        ],
+      },
+    ],
+  };
+}
+
+export const emptyQueue: ReviewQueue = {
+  date: TODAY,
+  budgetMinutes: 15,
+  due: [],
+  deferred: [],
+  estimatedMinutes: 0,
+};
+
+export const noWeakConcepts: WeakConcepts = { concepts: [], suggested: [] };

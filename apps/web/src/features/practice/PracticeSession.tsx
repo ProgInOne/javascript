@@ -1,7 +1,7 @@
 import type { AttemptResponse, MasteryChange, PracticeSetView } from '@proginone/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
-import { practiceSetQuery } from '../../api/queries.ts';
+import { LEARNING_STATE_KEYS, practiceSetQuery } from '../../api/queries.ts';
 import { applyAttemptToSet, mergeMasteryChanges, nextPendingIndex } from './model.ts';
 import { PracticeItem } from './PracticeItem.tsx';
 import { SetProgress } from './SetProgress.tsx';
@@ -52,8 +52,7 @@ export function PracticeSession({
     );
     if (res.attempt.engineApplied) setChanges((c) => [...c, ...res.masteryChanges]);
     if (res.set.status === 'completed') {
-      void client.invalidateQueries({ queryKey: ['dashboard'] });
-      void client.invalidateQueries({ queryKey: ['review-queue'] });
+      for (const queryKey of LEARNING_STATE_KEYS) void client.invalidateQueries({ queryKey });
     }
   };
 

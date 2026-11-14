@@ -1,0 +1,10 @@
+id: js-basics.values.variables
+title: 변수 선언
+summary: let과 const로 값에 이름을 붙입니다.
+importance: core
+estimatedMinutes: { read: 10, practice: 12 }
+concepts:
+  primary: [js.basics.let, js.basics.const, js.basics.reassign]
+objectives:
+  - let과 const로 변수를 선언할 수 있다.
+  - const로 선언한 변수에 다시 대입할 수 없음을 설명할 수 있다.

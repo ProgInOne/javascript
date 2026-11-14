@@ -1,0 +1,58 @@
+<Section kind="objectives">
+- `let`과 `const`로 변수를 선언할 수 있어요.
+- `const` 변수에 다시 대입할 수 없다는 것을 설명할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+값을 여러 번 쓰려면 이름을 붙여 두어야 합니다. 이름 붙은 값을 **변수**라고 합니다.
+</Section>
+
+<Section kind="principle">
+<ConceptLink to="js.basics.let">let</ConceptLink>으로 선언한 변수는 나중에 다른 값을 대입할 수 있고,
+<ConceptLink to="js.basics.const">const</ConceptLink>로 선언한 변수는 처음 값을 바꿀 수 없습니다.
+</Section>
+
+<Section kind="examples">
+<RunnableExample id="let-const" lang="js" predict predictKind="console" concepts={["js.basics.let"]}>
+{`let count = 1;
+count = 2;
+console.log(count);`}
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+`count`에 처음 `1`을 담고, 다음 줄에서 `2`를 다시 대입했으므로 `2`가 출력됩니다.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.const-reassign">
+<Wrong>const 변수에도 나중에 다른 값을 대입할 수 있다.</Wrong>
+<Actual>const 변수에 다시 대입하면 TypeError가 난다.</Actual>
+<Right>값을 바꿀 변수는 let으로 선언한다.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+<Callout kind="tip" title="기본은 const">
+바꿀 일이 없는 값은 `const`로 선언하면 실수로 바꾸는 일을 막을 수 있어요.
+</Callout>
+</Section>
+
+<Section kind="check">
+읽은 내용을 바로 확인해 봅시다.
+
+<InlineExercise ref="js-basics.values.variables.mcq-let" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `let`은 다시 대입할 수 있는 변수를 선언합니다.
+- `const`는 다시 대입할 수 없는 변수를 선언합니다.
+</Section>
+
+<Section kind="next">
+다음 단원에서는 값의 종류를 배웁니다.
+</Section>

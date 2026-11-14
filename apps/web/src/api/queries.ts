@@ -28,6 +28,9 @@ import {
   dailyPlanSchema,
   goalStatusSchema,
   learnerProfileSchema,
+  conceptDetailSchema,
+  masteryOverviewSchema,
+  weakConceptsSchema,
   type GoalRequest,
   type LearnerPatch,
 } from '@proginone/shared';
@@ -243,3 +246,39 @@ export const dailyPlanQuery = queryOptions({
   queryFn: ({ signal }) => api('/daily-plan', { schema: dailyPlanSchema, signal }),
   staleTime: 30_000,
 });
+
+export const masteryQuery = queryOptions({
+  queryKey: ['mastery'],
+  queryFn: ({ signal }) => api('/mastery', { schema: masteryOverviewSchema, signal }),
+  staleTime: 30_000,
+});
+
+export const weakConceptsQuery = queryOptions({
+  queryKey: ['weak-concepts'],
+  queryFn: ({ signal }) => api('/weak-concepts', { schema: weakConceptsSchema, signal }),
+  staleTime: 30_000,
+});
+
+export const conceptQuery = (id: string, evidenceLimit?: number) =>
+  queryOptions({
+    queryKey: ['concepts', id, evidenceLimit ?? null],
+    queryFn: ({ signal }) =>
+      api(
+        `/concepts/${encodeURIComponent(id)}${
+          evidenceLimit === undefined ? '' : `?evidenceLimit=${String(evidenceLimit)}`
+        }`,
+        { schema: conceptDetailSchema, signal },
+      ),
+    staleTime: 30_000,
+  });
+
+/** Learning state shown on the dashboard, refreshed after attempts and finished sets. */
+export const LEARNING_STATE_KEYS = [
+  ['dashboard'],
+  ['review-queue'],
+  ['daily-plan'],
+  ['goals'],
+  ['mastery'],
+  ['weak-concepts'],
+  ['concepts'],
+] as const;

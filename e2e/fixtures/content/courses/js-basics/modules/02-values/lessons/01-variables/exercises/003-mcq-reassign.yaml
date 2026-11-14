@@ -1,0 +1,29 @@
+id: js-basics.values.variables.mcq-reassign
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.basics.reassign, weight: 1 }
+estimatedSeconds: 50
+prompt: |
+  `let n = 1;` 다음 줄에 `n = n + 1;`을 실행하면 `n`은 얼마인가요?
+spec:
+  options:
+    - id: a
+      text: '`2`'
+    - id: b
+      text: '`1`'
+      rationale: 오른쪽을 계산한 값이 다시 n에 들어가요.
+    - id: c
+      text: 오류가 난다
+      rationale: let 변수에는 다시 대입할 수 있어요.
+  correct: a
+hints:
+  - 오른쪽 `n + 1`을 먼저 계산해요.
+  - 계산한 값을 왼쪽 n에 담아요.
+  - 1 + 1은 2예요.
+explanation: |
+  정답은 **`2`**예요. 오른쪽을 먼저 계산한 뒤 그 값을 다시 `n`에 대입해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

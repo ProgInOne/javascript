@@ -9,3 +9,19 @@
   prerequisites: [js.basics.statement]
   misconceptions: [js.mc.log-is-return]
   mdn: Web/API/console/log_static
+- id: js.basics.let
+  title: let 선언
+  importance: core
+  summary: 다시 대입할 수 있는 변수를 선언합니다.
+  prerequisites: [js.basics.statement]
+- id: js.basics.const
+  title: const 선언
+  importance: core
+  summary: 다시 대입할 수 없는 변수를 선언합니다.
+  prerequisites: [js.basics.let]
+  misconceptions: [js.mc.const-reassign]
+- id: js.basics.reassign
+  title: 재할당
+  importance: standard
+  summary: 변수에 새 값을 다시 대입합니다.
+  prerequisites: [js.basics.let]

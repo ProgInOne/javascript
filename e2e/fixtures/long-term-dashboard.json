@@ -1,0 +1,428 @@
+{
+  "/dashboard": {
+    "date": "2026-12-16",
+    "activeMinutesToday": 18,
+    "reviewDueCount": 1,
+    "continueLesson": {
+      "id": "js-basics.values.variables",
+      "title": "변수 선언",
+      "status": "practicing",
+      "readProgress": 1,
+      "practiceSetId": null
+    }
+  },
+  "/daily-plan": {
+    "date": "2026-12-16",
+    "goal": {
+      "dailyMinutes": 30,
+      "weeklyDays": 5,
+      "targetCourse": {
+        "id": "js-basics",
+        "title": "JavaScript 기초"
+      },
+      "targetDate": "2027-03-31",
+      "effectiveFrom": 1794808801018,
+      "isDefault": false
+    },
+    "activeMinutesToday": 18,
+    "budgetMinutes": 12,
+    "goalMet": false,
+    "mode": "plan",
+    "blocks": [
+      {
+        "kind": "review",
+        "minutes": 2,
+        "reason": {
+          "code": "reviews_due",
+          "count": 1,
+          "overdueCount": 1
+        },
+        "concepts": [
+          {
+            "id": "js.basics.console-log",
+            "title": "console.log로 출력하기"
+          }
+        ],
+        "lesson": null,
+        "partial": false
+      },
+      {
+        "kind": "weakness",
+        "minutes": 11,
+        "reason": {
+          "code": "weak_concepts",
+          "topEffective": 15.19875
+        },
+        "concepts": [
+          {
+            "id": "js.basics.let",
+            "title": "let 선언"
+          },
+          {
+            "id": "js.basics.const",
+            "title": "const 선언"
+          },
+          {
+            "id": "js.basics.reassign",
+            "title": "재할당"
+          }
+        ],
+        "lesson": null,
+        "partial": false
+      }
+    ],
+    "later": [],
+    "totalMinutes": 13,
+    "pace": {
+      "status": "on_track",
+      "targetDate": "2027-03-31",
+      "remainingMinutes": 12,
+      "studyDaysLeft": 75,
+      "requiredPerDay": 0.16,
+      "newLearningBudget": 18,
+      "suggestedDailyMinutes": 5,
+      "suggestedTargetDate": "2026-12-17",
+      "calibration": 1
+    }
+  },
+  "/goals": {
+    "date": "2026-12-16",
+    "goal": {
+      "dailyMinutes": 30,
+      "weeklyDays": 5,
+      "targetCourse": {
+        "id": "js-basics",
+        "title": "JavaScript 기초"
+      },
+      "targetDate": "2027-03-31",
+      "effectiveFrom": 1794808801018,
+      "isDefault": false
+    },
+    "pace": {
+      "status": "on_track",
+      "targetDate": "2027-03-31",
+      "remainingMinutes": 12,
+      "studyDaysLeft": 75,
+      "requiredPerDay": 0.16,
+      "newLearningBudget": 18,
+      "suggestedDailyMinutes": 5,
+      "suggestedTargetDate": "2026-12-17",
+      "calibration": 1
+    },
+    "week": {
+      "weekStart": "2026-12-14",
+      "studiedDays": 3,
+      "goalDays": 0,
+      "weeklyDays": 5,
+      "achieved": false,
+      "activeMinutes": 64,
+      "days": [
+        {
+          "date": "2026-12-14",
+          "activeMinutes": 23,
+          "studied": true,
+          "goalMet": false
+        },
+        {
+          "date": "2026-12-15",
+          "activeMinutes": 23,
+          "studied": true,
+          "goalMet": false
+        },
+        {
+          "date": "2026-12-16",
+          "activeMinutes": 18,
+          "studied": true,
+          "goalMet": false
+        },
+        {
+          "date": "2026-12-17",
+          "activeMinutes": 0,
+          "studied": false,
+          "goalMet": false
+        },
+        {
+          "date": "2026-12-18",
+          "activeMinutes": 0,
+          "studied": false,
+          "goalMet": false
+        },
+        {
+          "date": "2026-12-19",
+          "activeMinutes": 0,
+          "studied": false,
+          "goalMet": false
+        },
+        {
+          "date": "2026-12-20",
+          "activeMinutes": 0,
+          "studied": false,
+          "goalMet": false
+        }
+      ]
+    },
+    "streakWeeks": 4
+  },
+  "/mastery": {
+    "date": "2026-12-16",
+    "courses": [
+      {
+        "id": "js-basics",
+        "title": "JavaScript 기초",
+        "language": "javascript",
+        "lessons": {
+          "total": 2,
+          "completed": 1
+        },
+        "stageCounts": {
+          "not_started": 0,
+          "introduced": 2,
+          "practicing": 3,
+          "proficient": 0,
+          "mastered": 0
+        },
+        "modules": [
+          {
+            "id": "js-basics.start",
+            "title": "시작하기",
+            "lessons": {
+              "total": 1,
+              "completed": 1
+            },
+            "concepts": [
+              {
+                "id": "js.basics.statement",
+                "title": "문장과 실행 순서",
+                "importance": "standard",
+                "stage": "practicing",
+                "effective": 71.17633411839999,
+                "reviewDue": false,
+                "nextReviewDate": "2026-12-20",
+                "misconceptions": []
+              },
+              {
+                "id": "js.basics.console-log",
+                "title": "console.log로 출력하기",
+                "importance": "core",
+                "stage": "practicing",
+                "effective": 61.51101531209763,
+                "reviewDue": true,
+                "nextReviewDate": "2026-11-17",
+                "misconceptions": []
+              }
+            ]
+          },
+          {
+            "id": "js-basics.values",
+            "title": "값과 변수",
+            "lessons": {
+              "total": 1,
+              "completed": 0
+            },
+            "concepts": [
+              {
+                "id": "js.basics.let",
+                "title": "let 선언",
+                "importance": "core",
+                "stage": "introduced",
+                "effective": 15.19875,
+                "reviewDue": false,
+                "nextReviewDate": "2026-12-25",
+                "misconceptions": []
+              },
+              {
+                "id": "js.basics.const",
+                "title": "const 선언",
+                "importance": "core",
+                "stage": "practicing",
+                "effective": 25.520624499999993,
+                "reviewDue": false,
+                "nextReviewDate": "2026-12-17",
+                "misconceptions": [
+                  {
+                    "id": "js.mc.const-reassign",
+                    "title": "const도 다시 대입할 수 있다고 생각함",
+                    "status": "confirmed"
+                  }
+                ]
+              },
+              {
+                "id": "js.basics.reassign",
+                "title": "재할당",
+                "importance": "standard",
+                "stage": "introduced",
+                "effective": 20.019999999999996,
+                "reviewDue": false,
+                "nextReviewDate": "2026-12-25",
+                "misconceptions": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "/review-queue": {
+    "date": "2026-12-16",
+    "budgetMinutes": 15,
+    "due": [
+      {
+        "conceptId": "js.basics.console-log",
+        "title": "console.log로 출력하기",
+        "dueAt": 1794912403275,
+        "overdue": true,
+        "overdueDays": 29,
+        "itemCount": 1,
+        "estimatedSeconds": 90,
+        "priority": 37.71625127893519
+      }
+    ],
+    "deferred": [],
+    "estimatedMinutes": 2
+  },
+  "/weak-concepts": {
+    "concepts": [
+      {
+        "concept": {
+          "id": "js.basics.let",
+          "title": "let 선언"
+        },
+        "weakness": 110.241625,
+        "effective": 15.19875,
+        "stage": "introduced",
+        "consecutiveFailures": 0,
+        "factors": {
+          "gap": 84.80125,
+          "importanceFactor": 1.3,
+          "misconceptionFactor": 1,
+          "failureFactor": 1
+        },
+        "misconceptions": [],
+        "prerequisites": [
+          {
+            "concept": {
+              "id": "js.basics.statement",
+              "title": "문장과 실행 순서"
+            },
+            "stage": "practicing",
+            "effective": 71.17633411839999,
+            "weak": false
+          }
+        ]
+      },
+      {
+        "concept": {
+          "id": "js.basics.const",
+          "title": "const 선언"
+        },
+        "weakness": 96.82318815000001,
+        "effective": 25.520624499999993,
+        "stage": "practicing",
+        "consecutiveFailures": 0,
+        "factors": {
+          "gap": 74.4793755,
+          "importanceFactor": 1.3,
+          "misconceptionFactor": 1,
+          "failureFactor": 1
+        },
+        "misconceptions": [
+          {
+            "id": "js.mc.const-reassign",
+            "title": "const도 다시 대입할 수 있다고 생각함",
+            "status": "confirmed"
+          }
+        ],
+        "prerequisites": [
+          {
+            "concept": {
+              "id": "js.basics.let",
+              "title": "let 선언"
+            },
+            "stage": "introduced",
+            "effective": 15.19875,
+            "weak": true
+          }
+        ]
+      },
+      {
+        "concept": {
+          "id": "js.basics.reassign",
+          "title": "재할당"
+        },
+        "weakness": 79.98,
+        "effective": 20.019999999999996,
+        "stage": "introduced",
+        "consecutiveFailures": 0,
+        "factors": {
+          "gap": 79.98,
+          "importanceFactor": 1,
+          "misconceptionFactor": 1,
+          "failureFactor": 1
+        },
+        "misconceptions": [],
+        "prerequisites": [
+          {
+            "concept": {
+              "id": "js.basics.let",
+              "title": "let 선언"
+            },
+            "stage": "introduced",
+            "effective": 15.19875,
+            "weak": true
+          }
+        ]
+      },
+      {
+        "concept": {
+          "id": "js.basics.console-log",
+          "title": "console.log로 출력하기"
+        },
+        "weakness": 50.03568010213727,
+        "effective": 61.51101530604826,
+        "stage": "practicing",
+        "consecutiveFailures": 0,
+        "factors": {
+          "gap": 38.48898469395174,
+          "importanceFactor": 1.3,
+          "misconceptionFactor": 1,
+          "failureFactor": 1
+        },
+        "misconceptions": [],
+        "prerequisites": [
+          {
+            "concept": {
+              "id": "js.basics.statement",
+              "title": "문장과 실행 순서"
+            },
+            "stage": "practicing",
+            "effective": 71.17633411839999,
+            "weak": false
+          }
+        ]
+      },
+      {
+        "concept": {
+          "id": "js.basics.statement",
+          "title": "문장과 실행 순서"
+        },
+        "weakness": 28.823665881600007,
+        "effective": 71.17633411839999,
+        "stage": "practicing",
+        "consecutiveFailures": 0,
+        "factors": {
+          "gap": 28.823665881600007,
+          "importanceFactor": 1,
+          "misconceptionFactor": 1,
+          "failureFactor": 1
+        },
+        "misconceptions": [],
+        "prerequisites": []
+      }
+    ],
+    "suggested": [
+      "js.basics.let",
+      "js.basics.const",
+      "js.basics.reassign"
+    ]
+  }
+}

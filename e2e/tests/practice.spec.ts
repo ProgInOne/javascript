@@ -41,7 +41,7 @@ test.describe('practice mode', () => {
     await expect(summary).toContainText('연습 12문제 · 정답 12');
     await expect(summary.getByText(/→ 연습 중/).first()).toBeVisible();
     await expect(summary.getByText('이 단원의 개념을 모두 기준만큼 연습했어요')).toBeVisible();
-    await expect(summary.getByRole('link', { name: '대시보드로' })).toBeVisible();
+    await expect(summary.getByRole('link', { name: '다음 단원: 변수 선언' })).toBeVisible();
     await expectNoA11yViolations(page);
 
     // The URL holds the state: a reload shows the finished set again.

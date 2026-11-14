@@ -1,0 +1,403 @@
+/*
+ * Dashboard and concept map (ui-ux.md 대시보드, 숙련 단계 스케일). Approved direction: prototype C
+ * "차분한 교실" (D-024, design/prototypes/dashboard.html).
+ */
+@layer components {
+  /* ── MasteryIcon: one hue, five lightness steps + shape ── */
+  .mastery-icon {
+    flex: none;
+    overflow: visible;
+    vertical-align: -3px;
+  }
+  .mastery-icon__ring {
+    fill: none;
+    stroke: var(--mastery-outline);
+    stroke-width: 1.5;
+  }
+  .mastery-icon[data-stage='not_started'] .mastery-icon__ring {
+    stroke: var(--mastery-empty);
+    stroke-dasharray: 2.2 2;
+  }
+  .mastery-icon__bg {
+    fill: var(--mastery-intro);
+  }
+  .mastery-icon[data-stage='mastered'] .mastery-icon__bg {
+    fill: var(--mastery-mastered);
+  }
+  .mastery-icon__wedge {
+    fill: var(--mastery-proficient);
+  }
+  .mastery-icon__check {
+    fill: none;
+    stroke: var(--mastery-check);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .mastery-icon__due {
+    fill: none;
+    stroke: var(--color-warning-accent);
+    stroke-width: 1.6;
+  }
+  .mastery-icon__weak {
+    fill: var(--color-error-accent);
+    stroke: var(--color-bg-surface);
+    stroke-width: 1.2;
+  }
+
+  /* ── Page ── */
+  .dashboard {
+    display: grid;
+    gap: var(--section-gap);
+  }
+  .dashboard__greeting {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+  .dashboard__title {
+    font: var(--text-h1);
+    letter-spacing: var(--tracking-h1);
+    color: var(--color-text-heading);
+  }
+  .dashboard__title:focus {
+    outline: none;
+  }
+  .dashboard__line {
+    margin-top: var(--space-2);
+    font: var(--text-body);
+    color: var(--color-text-secondary);
+  }
+  .dashboard__goal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-6);
+  }
+  .dashboard__goal-ring {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .dashboard__goal-ring p {
+    display: grid;
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .dashboard__goal-ring b {
+    color: var(--color-text-heading);
+    font: var(--text-ui);
+    font-weight: 700;
+  }
+  .dashboard__streak {
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .dashboard__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--grid-gap, var(--space-6));
+  }
+  .dashboard__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+  .dashboard__plan {
+    grid-column: span 8;
+  }
+  .dashboard__review {
+    grid-column: span 4;
+  }
+  .dashboard__map {
+    grid-column: span 12;
+  }
+  .dashboard__progress {
+    grid-column: span 5;
+  }
+  .dashboard__weak {
+    grid-column: span 7;
+  }
+  @media (max-width: 1023px) {
+    .dashboard__grid > * {
+      grid-column: span 12;
+    }
+  }
+  .dashboard__card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .dashboard__card-title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font: var(--text-h3);
+    letter-spacing: var(--tracking-h3);
+    color: var(--color-text-heading);
+  }
+
+  /* ── 오늘의 학습 ── */
+  .plan-list {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .plan-item {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+  }
+  .plan-item[data-current] {
+    border-color: color-mix(in oklch, var(--color-action-primary) 30%, transparent);
+    background: var(--color-bg-selected);
+  }
+  .plan-item__num {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-bg-muted);
+    color: var(--color-text-secondary);
+    font: var(--text-small);
+    font-weight: 700;
+  }
+  .plan-item[data-current] .plan-item__num {
+    background: var(--color-bg-surface);
+    color: var(--color-text-brand);
+    box-shadow: inset 0 0 0 2px var(--color-action-primary);
+  }
+  .plan-item__title {
+    font: var(--text-ui);
+    font-weight: 700;
+    color: var(--color-text-heading);
+  }
+  .plan-item__sub {
+    margin-top: 2px;
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .plan-later {
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .plan-later summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .plan-later ul {
+    margin: var(--space-2) 0 0;
+    padding-left: var(--space-5);
+  }
+  .plan-pace {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-muted);
+    color: var(--color-text-secondary);
+    font: var(--text-small);
+  }
+  .plan-pace svg {
+    flex: none;
+    margin-top: 2px;
+  }
+  .plan-pace[data-attention] {
+    background: var(--color-warning-bg);
+    color: var(--color-warning-fg);
+  }
+
+  /* ── 오늘의 복습 ── */
+  .review-card__big {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font: var(--text-h2);
+    color: var(--color-text-heading);
+  }
+  .review-card__big small {
+    font: var(--text-ui);
+    color: var(--color-text-secondary);
+  }
+  .review-card__list {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .review-card__list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 6px 0;
+  }
+
+  /* ── 개념 지도 ── */
+  .dashboard__card-head {
+    flex-wrap: wrap;
+  }
+  .dashboard__card-subtitle {
+    font: var(--text-ui);
+    font-weight: 500;
+    color: var(--color-text-tertiary);
+  }
+  .concept-map__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin-left: auto;
+  }
+  /* Compact selects: the label sits to the left of the control. */
+  .concept-map__controls .pi-field {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .concept-map__controls .pi-field__label {
+    margin: 0;
+    white-space: nowrap;
+  }
+  .concept-map__controls .pi-select {
+    min-width: 148px;
+    height: 32px;
+  }
+  .concept-map__hint {
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-subtle);
+    color: var(--color-text-secondary);
+    font: var(--text-small);
+  }
+  .concept-map__row {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: start;
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--color-border-default);
+  }
+  .concept-map__row:first-child {
+    border-top: 0;
+  }
+  @media (max-width: 1023px) {
+    .concept-map__row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .concept-map__label {
+    padding-top: 9px;
+    font: var(--text-small);
+    font-weight: 700;
+    color: var(--color-text-secondary);
+  }
+  .concept-map__label small {
+    display: block;
+    font: var(--text-caption);
+    font-weight: 500;
+    color: var(--color-text-tertiary);
+  }
+  .concept-map__tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .concept-tile {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 36px;
+    max-width: 280px;
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-surface);
+    color: var(--color-text-primary);
+    font: var(--text-small);
+    text-align: left;
+  }
+  .concept-tile[data-dim] {
+    background: var(--color-bg-subtle);
+    color: var(--color-text-secondary);
+  }
+  button.concept-tile {
+    cursor: pointer;
+  }
+  button.concept-tile:hover {
+    border-color: var(--color-border-strong);
+    background: var(--color-bg-hover);
+  }
+  button.concept-tile:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+  button.concept-tile[aria-pressed='true'] {
+    border-color: var(--color-action-primary);
+    background: var(--color-bg-selected);
+  }
+  .concept-tile__title {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .concept-tile__flag {
+    display: inline-flex;
+    color: var(--color-warning-fg);
+  }
+  .concept-tile__next {
+    font: var(--text-caption);
+    color: var(--color-text-tertiary);
+  }
+  .concept-map__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin: 0;
+    padding: var(--space-4) 0 0;
+    border-top: 1px solid var(--color-border-default);
+    list-style: none;
+    font: var(--text-caption);
+    color: var(--color-text-secondary);
+  }
+  .concept-map__legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ── 과정 진도, 약점 개념 ── */
+  .course-progress,
+  .weak-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .course-progress li {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .course-progress__name {
+    font-weight: 700;
+    color: var(--color-text-heading);
+  }
+}

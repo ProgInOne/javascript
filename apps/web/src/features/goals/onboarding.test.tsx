@@ -149,7 +149,7 @@ describe('온보딩', () => {
     });
     expect(calls).toContainEqual({ method: 'PATCH', path: '/learner', body: { onboarded: true } });
     expect(calls.some((c) => c.method === 'PUT' && c.path === '/goals')).toBe(false);
-    expect(await screen.findByRole('heading', { level: 1, name: '대시보드' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: /대시보드/ })).toBeInTheDocument();
   });
 
   it('skips a step without saving it', async () => {
@@ -164,7 +164,7 @@ describe('온보딩', () => {
 
   it('opens the dashboard directly for learners who are done', async () => {
     const { router } = renderApp('/', fakeServer(onboarded));
-    expect(await screen.findByRole('heading', { level: 1, name: '대시보드' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: /대시보드/ })).toBeInTheDocument();
     expect(router.state.location.pathname).toBe('/');
   });
 

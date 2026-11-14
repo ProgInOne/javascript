@@ -19,7 +19,10 @@ export const Route = createFileRoute('/review/session/$setId')({
   component: ReviewSession,
 });
 
-/** 복습 세트 진행: the practice layout with the "오늘의 복습" title (ui-ux.md 복습 화면). */
+/** Title of a set opened here: review sets and weakness sets (from the dashboard). */
+const HEADINGS: Partial<Record<string, string>> = { review: '오늘의 복습', weakness: '약점 집중' };
+
+/** 복습·약점 집중 세트 진행: the practice layout (ui-ux.md 복습 화면, 약점 집중). */
 function ReviewSession() {
   const { setId } = Route.useParams();
   const { i } = Route.useSearch();
@@ -29,7 +32,7 @@ function ReviewSession() {
     <TutorProvider>
       <TutorLayout top={56}>
         <div className="practice-page">
-          <QueryState query={query} notFoundTitle="복습 세트를 찾을 수 없어요">
+          <QueryState query={query} notFoundTitle="연습 세트를 찾을 수 없어요">
             {(set) => (
               <PracticeSession
                 set={set}
@@ -41,7 +44,7 @@ function ReviewSession() {
                     search: next === null ? {} : { i: next + 1 },
                   });
                 }}
-                heading="오늘의 복습"
+                heading={HEADINGS[set.kind] ?? '연습'}
                 barActions={<TutorButton />}
                 lessonTitle={null}
                 summaryActions={() => (

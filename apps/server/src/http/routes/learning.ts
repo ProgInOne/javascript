@@ -46,6 +46,7 @@ export function learningRoutes(services: PracticeServices) {
       const query = conceptDetailQuerySchema.parse(c.req.query());
       return c.json(services.concepts.get(id, query.evidenceLimit));
     })
+    .get('/mastery', (c) => c.json(services.mastery.get()))
     .get('/learner', (c) => c.json(services.learner.get()))
     .patch('/learner', small, async (c) => {
       const patch = learnerPatchSchema.parse(await jsonBody(c));

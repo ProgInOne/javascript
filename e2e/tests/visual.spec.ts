@@ -124,9 +124,9 @@ const VIEWPORTS = [
 
 for (const viewport of VIEWPORTS) {
   for (const scheme of ['light', 'dark'] as const) {
-    for (const { path, heading } of SCREENS) {
-      const slug =
-        path === '/' ? 'dashboard' : path.slice(1).replaceAll('/', '-').replaceAll('.', '_');
+    // The dashboard's states are covered with real learning data in journey.spec.ts.
+    for (const { path, heading } of SCREENS.filter((s) => s.path !== '/')) {
+      const slug = path.slice(1).replaceAll('/', '-').replaceAll('.', '_');
       const name = `${slug}-${scheme}-${viewport.width}`;
       test(`${name} @visual`, async ({ page }) => {
         await page.setViewportSize(viewport);

@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderApp } from '../../test/render-app.tsx';
@@ -53,50 +53,6 @@ const reviewSet = practiceSet({
   lessonId: null,
   passRule: null,
   items: [item(0, MCQ, 'mcq_single', { reason: 'review_due' })],
-});
-
-describe('dashboard', () => {
-  it('shows today’s minutes, reviews first and the lesson to continue', async () => {
-    renderApp('/', (_m, path) => {
-      if (path === '/settings') return { body: { theme: 'system' } };
-      if (path === '/dashboard') return { body: dashboard() };
-      return {
-        status: 404,
-        body: { error: { code: 'NOT_FOUND', message: 'x', retryable: false } },
-      };
-    });
-    expect(await screen.findByText('오늘 18분 공부했어요.')).toBeVisible();
-    expect(screen.getByRole('link', { name: '복습 시작' })).toHaveClass('pi-button--primary');
-    const cont = screen.getByRole('link', { name: '이어서 학습' });
-    expect(cont).toHaveClass('pi-button--secondary');
-    expect(cont).toHaveAttribute('href', `/learn/${LESSON_ID}?mode=practice&set=${SET_ID}`);
-    const nav = screen.getByRole('navigation', { name: '주 메뉴' });
-    expect(within(nav).getByRole('link', { name: /^복습.*3.*개념/ })).toBeVisible();
-  });
-
-  it('hides the badge and leads with the first lesson when nothing is due', async () => {
-    renderApp('/', (_m, path) => {
-      if (path === '/settings') return { body: { theme: 'system' } };
-      if (path === '/dashboard') {
-        return {
-          body: dashboard({ reviewDueCount: 0, activeMinutesToday: 0, continueLesson: null }),
-        };
-      }
-      return {
-        status: 404,
-        body: { error: { code: 'NOT_FOUND', message: 'x', retryable: false } },
-      };
-    });
-    expect(await screen.findByText('오늘 복습할 개념이 없어요.')).toBeVisible();
-    expect(screen.getByRole('link', { name: '첫 단원 시작하기' })).toHaveClass(
-      'pi-button--primary',
-    );
-    expect(
-      within(screen.getByRole('navigation', { name: '주 메뉴' })).getByRole('link', {
-        name: '복습',
-      }),
-    ).toBeVisible();
-  });
 });
 
 describe('review', () => {

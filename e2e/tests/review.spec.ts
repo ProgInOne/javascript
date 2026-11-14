@@ -28,17 +28,18 @@ test.describe('dashboard and review', () => {
     for (; days <= 7; days++) {
       shiftServerClock(days * DAY_MS);
       await page.goto('/');
-      await expect(page.getByRole('heading', { level: 1, name: '대시보드' })).toBeVisible();
-      await expect(page.getByText(/오늘 복습할 개념이/)).toBeVisible();
+      await expect(page.getByRole('heading', { level: 1, name: /대시보드/ })).toBeVisible();
+      await expect(page.locator('.pi-skeleton')).toHaveCount(0);
       if (/\d/.test(await reviewLink.innerText())) break;
     }
     test.info().annotations.push({ type: 'review due after days', description: String(days) });
     expect(days).toBeLessThanOrEqual(7);
     await expect(reviewLink).toContainText(/\d/);
-    await expect(page.getByText(/오늘 복습할 개념이 \d+개 있어요/)).toBeVisible();
+    const reviewCard = page.getByRole('region', { name: '오늘의 복습' });
+    await expect(reviewCard.getByText(/^\d+개/)).toBeVisible();
     await expectNoA11yViolations(page);
 
-    await page.getByRole('link', { name: '복습 시작' }).click();
+    await reviewLink.click();
     await expect(page.getByRole('heading', { level: 1, name: '복습' })).toBeVisible();
     await expect(page.getByRole('heading', { name: /오늘 복습할 개념 \d+개/ })).toBeVisible();
     await expectNoA11yViolations(page);

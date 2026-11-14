@@ -314,3 +314,65 @@ export const learnerPatchSchema = z
   })
   .strict();
 export type LearnerPatch = z.infer<typeof learnerPatchSchema>;
+
+// ── Mastery overview (concept map and course progress) ──────────────────────
+
+/** One concept tile of the concept map (ui-ux.md ConceptTile, FR-DASH-02). */
+export const conceptTileSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  importance: z.enum(['core', 'standard', 'minor']),
+  stage: masteryStageSchema,
+  /** Effective mastery now (score with forgetting), 0–100. */
+  effective: z.number(),
+  /**
+   * "복습 예정" marker: the FSRS review is due by the end of today, or retrievability fell below
+   * 0.8. The stage itself never drops with time (learning-engine.md).
+   */
+  reviewDue: z.boolean(),
+  /** Learner-local date of the next review; null before the first review or when suspended. */
+  nextReviewDate: localDate.nullable(),
+  /** Active misconceptions; a confirmed one shows the "약점" marker. */
+  misconceptions: z.array(
+    z.object({ id: z.string(), title: z.string(), status: misconceptionStatusSchema }),
+  ),
+});
+export type ConceptTileView = z.infer<typeof conceptTileSchema>;
+
+const lessonCountSchema = z.object({ total: z.int().min(0), completed: z.int().min(0) });
+
+/** Number of concepts per stage. */
+export const stageCountsSchema = z.object({
+  not_started: z.int().min(0),
+  introduced: z.int().min(0),
+  practicing: z.int().min(0),
+  proficient: z.int().min(0),
+  mastered: z.int().min(0),
+});
+export type StageCounts = z.infer<typeof stageCountsSchema>;
+
+/**
+ * `GET /mastery`: every course with its progress (completed lessons, kept apart from the mastery
+ * distribution, ui-ux.md 과정 진도) and its concepts by module (concept map).
+ */
+export const masteryOverviewSchema = z.object({
+  date: localDate,
+  courses: z.array(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      language: z.enum(['html', 'css', 'javascript']),
+      lessons: lessonCountSchema,
+      stageCounts: stageCountsSchema,
+      modules: z.array(
+        z.object({
+          id: z.string(),
+          title: z.string(),
+          lessons: lessonCountSchema,
+          concepts: z.array(conceptTileSchema),
+        }),
+      ),
+    }),
+  ),
+});
+export type MasteryOverview = z.infer<typeof masteryOverviewSchema>;

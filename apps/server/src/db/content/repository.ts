@@ -459,6 +459,41 @@ export class ContentRepository {
       .map((r) => r.id);
   }
 
+  /**
+   * Concepts of a course in learning order (concept map, ui-ux.md 개념 지도): grouped by the module
+   * of the lesson that introduces them, in module, lesson and `lesson.yaml` concept order.
+   */
+  listCourseConcepts(courseId: string): (ContentConcept & { summary: string })[] {
+    return this.#db
+      .select({
+        id: t.concepts.id,
+        title: t.concepts.title,
+        summary: t.concepts.summary,
+        importance: t.concepts.importance,
+        moduleId: t.lessons.moduleId,
+        introducedInLessonId: t.concepts.introducedInLessonId,
+      })
+      .from(t.concepts)
+      .innerJoin(t.lessons, eq(t.concepts.introducedInLessonId, t.lessons.id))
+      .innerJoin(t.modules, eq(t.lessons.moduleId, t.modules.id))
+      .leftJoin(
+        t.lessonConcepts,
+        and(
+          eq(t.lessonConcepts.lessonId, t.concepts.introducedInLessonId),
+          eq(t.lessonConcepts.conceptId, t.concepts.id),
+        ),
+      )
+      .where(eq(t.modules.courseId, courseId))
+      .orderBy(
+        asc(t.modules.orderIndex),
+        asc(t.lessons.orderIndex),
+        sql`${t.lessonConcepts}.rowid`,
+        asc(t.concepts.id),
+      )
+      .all()
+      .map((row) => ({ ...row, courseId }));
+  }
+
   /** A concept with its course and the lessons that use it (concept detail). */
   getConceptDetail(id: string): ConceptDetailRow | null {
     const row = this.#db

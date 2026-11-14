@@ -24,9 +24,10 @@ const backup = (id: string, createdAt: string, kind = 'daily') => ({
 });
 
 describe('app shell', () => {
-  it('shows the header and the dashboard placeholder', async () => {
+  it('shows the header and the dashboard', async () => {
     renderApp('/', () => ({ body: { theme: 'system' } }));
-    expect(await screen.findByRole('heading', { level: 1, name: '대시보드' })).toBeInTheDocument();
+    // The fake server has no learning data: the dashboard shows its page error.
+    expect(await screen.findByRole('heading', { level: 1, name: /대시보드/ })).toBeInTheDocument();
     const nav = screen.getByRole('navigation', { name: '주 메뉴' });
     expect(within(nav).getByRole('link', { name: '대시보드' })).toHaveAttribute(
       'aria-current',

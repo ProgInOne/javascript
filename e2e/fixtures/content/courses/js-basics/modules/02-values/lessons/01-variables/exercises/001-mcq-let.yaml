@@ -1,0 +1,29 @@
+id: js-basics.values.variables.mcq-let
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.basics.let, weight: 1 }
+estimatedSeconds: 40
+prompt: |
+  나중에 값을 바꿀 변수는 무엇으로 선언하나요?
+spec:
+  options:
+    - id: a
+      text: '`let`'
+    - id: b
+      text: '`const`'
+      rationale: const 변수에는 다시 대입할 수 없어요.
+    - id: c
+      text: '`console.log`'
+      rationale: console.log는 값을 출력할 뿐이에요.
+  correct: a
+hints:
+  - 바꿀 수 있는 쪽을 골라 보세요.
+  - const는 상수(constant)의 줄임말이에요.
+  - let으로 선언한 변수는 다시 대입할 수 있어요.
+explanation: |
+  정답은 **`let`**이에요. `let` 변수는 다시 대입할 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -308,7 +308,7 @@ sequenceDiagram
 | 커리큘럼 | `GET /courses`, `GET /lessons/:lessonId` |
 | 연습 | `POST /practice-sets` (단원·복습·약점 집중), `POST /practice-sets/:id/items/:itemId/skip` (건너뛰기), `GET /weak-concepts` (약점 개념과 이유), `GET /exercises/:id` (공개 스펙), `POST /exercises/:id/run-plan` (샌드박스 실행 계획), `POST /attempts` (채점 결과와 해설), `POST /exercises/:id/inline-attempts` (레슨 본문 확인 문제: 연습 세트 밖 시도. 실행 없이 채점하는 유형만, 숙련도는 반영하고 FSRS 일정은 바꾸지 않음) |
 | 힌트·정답 | `POST /exercises/:id/hints` (다음 단계 요청), `POST /exercises/:id/solution` |
-| 학습 상태 | `GET /mastery`, `GET /concepts/:id`, `GET /review-queue`, `GET /daily-plan` |
+| 학습 상태 | `GET /mastery` (과정 진도와 개념 지도), `GET /concepts/:id`, `GET /review-queue`, `GET /daily-plan` |
 | 활동 | `POST /activity/heartbeat` (30초 간격, 학습 시간 측정) |
 | 목표 | `GET/PUT /goals` |
 | 학습자 | `GET/PATCH /learner` (온보딩: 경험 수준, 완료 시각, 온보딩 필요 여부) |

@@ -6,4 +6,4 @@ level: basic
 objectives:
   - 간단한 프로그램을 작성하고 실행할 수 있다.
   - 오류 메시지를 읽고 원인을 찾을 수 있다.
-modules: [start]
+modules: [start, values]

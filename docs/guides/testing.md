@@ -54,6 +54,8 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 | `tests/review.spec.ts` | 대시보드와 다음 날 복습: 테스트 시계를 하루 넘겨 복습 세트를 풀고 끝냄 |
 | `tests/ai-unavailable.spec.ts` | AI 비가용 상태: 실패한 답변의 오류 표시(모의 제공자의 `[mock:error:AI_*]`), 연결 해제 시 AI 진입점 비활성·서버 거부·오답 설명 대체, 다시 연결 |
 | `tests/journey.spec.ts` | 첫 실행 전용 서버에서 새 학습자의 흐름: 온보딩 → 대시보드, 온보딩 목표 단계 시각 회귀 |
+| `tests/journey.spec.ts` | 첫 실행 전용 서버에서 새 학습자의 흐름: 온보딩 → 빈 대시보드 → 첫날(단원 연습) → 한 달(복습·약점, 테스트 시계) → 약점 집중 세트. 온보딩 목표 단계와 대시보드 빈·신규·장기 상태 시각 회귀 |
+| `tests/seed.ts` | API로 학습 기록 만들기: 실행이 필요 없는 문제는 답하고 나머지는 건너뛰어 세트를 끝냄, 하트비트로 학습 시간 |
 | `tests/onboarded.setup.ts` | 준비 단계(`setup` 프로젝트): 주 서버의 학습자를 온보딩 완료 상태로 둠 |
 
 - 처음 한 번 `pnpm --filter @proginone/e2e exec playwright install chromium`으로 브라우저를 설치합니다.
