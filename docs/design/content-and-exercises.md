@@ -1437,6 +1437,17 @@ variantPolicy:
 1.  `render`의 `{{ }}` 식은 **템플릿 전용 표현식 언어** 로 평가합니다(산술, 비교, 삼항, 문자열 연결, 매개변수 참조만 허용하는 작은 파서). JavaScript `eval`을 쓰지 않습니다.
 1.  서버는 학습자에게 출제할 때 시드를 고르고, 시도 기록에 변형 ID를 저장합니다. 따라서 과거 풀이를 정확히 재현할 수 있습니다.
 
+구현 세부 (`packages/exercise-kit`의 `instantiateTemplate`, `instantiateVariant`):
+
+- **PRNG 시딩**: 64비트 시드로 SplitMix64를 두 번 돌려 `xoshiro128**`의 128비트 상태를 채웁니다(xoshiro 저자 권장 방식). 32비트 정수 연산만 쓰므로 모든 엔진·기기에서 비트 단위로 같습니다. 범위 정수는 거부 샘플링으로 치우침 없이 뽑습니다.
+- **재시도 시드**: 시도 k의 시드는 시도 k−1 시드의 SplitMix64 출력입니다. 변형 ID의 시드는 바뀌지 않고, 결과에 몇 번째 시도에서 정해졌는지(`attempt`)를 남깁니다.
+- **뽑는 순서**: 무작위 매개변수는 이름의 코드 단위 순서(로캘 무관)로 뽑고, `derived`는 그 뒤 참조 관계의 위상 순서(같으면 이름 순)로 계산합니다. 알 수 없는 참조와 순환은 템플릿 오류입니다.
+- **렌더링 범위**: `render`의 모든 값, `spec`의 모든 문자열과 **객체 키**, `hints`, `explanation`. 키도 렌더링하므로 `misconceptionByAnswer: { "{{a + b}}": … }`처럼 "산술 계산 결과" 오답을 식으로 씁니다(문서 예시의 특수 키 `computed` 대신). 렌더링한 키가 겹치면 오류입니다.
+- **표현식 언어**: 숫자·문자열(`'`/`"`)·`true`/`false`/`null`·배열 리터럴, 매개변수 참조, `.`/`[]` 접근(`length`, 정수 인덱스, 음수 인덱스, 자기 속성. `__proto__`·`prototype`·`constructor` 금지), `+ - * / %`, `=== !== < <= > >=`, `&& || !`, 삼항, 내장 함수 `len join lit str abs floor ceil round min max sum upper lower includes reverse sorted`. 식 하나는 500자, 중첩 40단계까지입니다. `{{ }}`에 넣은 값은 문자열이면 그대로, 배열·객체는 JavaScript 리터럴(`[1, 2]`, `{ a: 1 }`)로 들어갑니다.
+- **`{{blank:id}}` 보존**: `fill_blank` 빈칸 자리 표시는 식으로 평가하지 않고 그대로 둡니다. 글자 그대로의 `{{`가 필요하면 `{{ "{{" }}`로 씁니다.
+- **매개변수 세부 형식**: `string`은 `pool` 또는 `pattern`(글자, `\x` 이스케이프, `[a-z0-9]` 문자 집합, `{n}`/`{m,n}` 반복) 중 하나, `intArray.length`와 `objectShape.fields.count`는 정수 또는 `{ min, max }`, `objectShape.fields`는 `{ names: 이름 후보, count, value: int/float/choice/string 정의 }`입니다.
+- **검증**: 렌더링한 스펙은 유형의 스펙 스키마로 검증합니다(`INVALID_SPEC`). 빌드 표본 시드는 `sampleSeeds(templateId, n)`(시드 i = `"<템플릿 ID>#<i>"`의 해시)로 정해 재현 가능하고, `paramSpaceSize`는 제약 적용 전 공간 크기의 상한입니다.
+
 ### 정답의 실행 계산
 
 - 템플릿 변형의 정답은 미리 저장하지 않습니다. 변형이 처음 출제될 때 서버가 실행 계획을 만들고, 웹 앱이 **숨김 검증 실행** 으로 기대값을 계산해 서버에 보고하며, 서버가 변형별 기대값으로 캐시합니다.

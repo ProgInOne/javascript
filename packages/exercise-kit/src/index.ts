@@ -57,6 +57,34 @@ export {
 export { evaluateChecks } from './checks/evaluate.ts';
 export { gradeChecks, runFeedback, type CheckGrade, type Milestone } from './checks/aggregate.ts';
 
+// Parametric template engine.
+export {
+  instantiateTemplate,
+  instantiateVariant,
+  parseTemplate,
+  renderString,
+  renderValue,
+  resolveParams,
+  sampleSeeds,
+  templateSchema,
+  MAX_CONSTRAINT_ATTEMPTS,
+  type ExerciseTemplate,
+  type TemplateInstance,
+} from './template/engine.ts';
+export {
+  evaluate as evaluateTemplateExpression,
+  toLiteral,
+  TEMPLATE_FUNCTIONS,
+  type TemplateValue,
+} from './template/expr.ts';
+export {
+  paramSchema,
+  paramsSchema,
+  paramSpaceSize,
+  RESERVED_IDENTIFIERS,
+  type ParamDef,
+} from './template/params.ts';
+
 // Reusable comparison helpers (e.g. client-side quick feedback).
 export { parseLiteral } from './common/literal.ts';
 export {

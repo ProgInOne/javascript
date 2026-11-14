@@ -46,6 +46,18 @@ I/O가 없는 순수 패키지이며 `@proginone/shared`에만 의존합니다.
 
 공개 체크의 빠른 피드백(채점 없이 실행)은 웹이 `gradeChecks({ checks: 공개 체크, run })`를 직접 불러 계산할 수 있습니다.
 
+## 파라메트릭 템플릿
+
+| 함수 | 용도 |
+|---|---|
+| `instantiateTemplate(rawTemplate, seed)` | 시드 하나로 변형 생성. 같은 템플릿·시드 → 항상 같은 결과(매개변수, 렌더링된 `render`·`spec`·`hints`·`explanation`, `variantId`) |
+| `instantiateVariant(rawTemplate, variantId)` | `<템플릿 ID>@<seed>`로 변형 재현(과거 풀이 재현) |
+| `sampleSeeds(templateId, n)` | 빌드 검증용 결정론적 표본 시드 |
+| `paramSpaceSize(params)` | 매개변수 공간 크기 상한(`variantPolicy.maxVariants`와 비교) |
+| `parseTemplate(raw)` | 템플릿 검증(`INVALID_TEMPLATE`) |
+
+렌더링한 스펙은 유형의 스펙 스키마로 검증되므로, 결과의 `spec`은 바로 `redactSpec`·`gradeSubmission`에 넣을 수 있습니다.
+
 ## 샌드박스 계약
 
 `SerializedValue`, 관측 단계(`ObservationStep`, `CheckBundle`), 관측값(`Observation`), `RunResult`, `RunPlan`, ProgInOne 콘솔 형식(`formatConsoleArgs`)은 `@proginone/shared`에 있습니다.
