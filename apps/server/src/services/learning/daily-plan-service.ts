@@ -9,7 +9,6 @@ import type { UserDb } from '../../db/user/connection.ts';
 import { listMasteryConceptIds } from '../../db/user/learning-state.ts';
 import {
   getDailyActivity,
-  latestActiveLesson,
   listLessonProgress,
   type LessonProgressRow,
 } from '../../db/user/progress.ts';
@@ -59,8 +58,15 @@ export class DailyPlanService {
     const progress = listLessonProgress(orm, learnerId);
     const progressById = new Map(progress.map((p) => [p.lessonId, p]));
 
-    // Continue: the most recently active lesson being read or practised.
-    const active = latestActiveLesson(orm, learnerId);
+    // Continue: the most recently active lesson being read, or practised with a set still open.
+    // A lesson whose last set ended without passing is not in progress: the plan moves on to the
+    // next lesson and weakness practice instead of repeating it every day (D-033).
+    const active =
+      [...progress]
+        .filter(
+          (p) => p.status === 'reading' || (p.status === 'practicing' && p.practiceSetId !== null),
+        )
+        .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0] ?? null;
     const activeCourse = active ? repo.courseOfLesson(active.lessonId) : null;
     const activeLesson =
       active && activeCourse

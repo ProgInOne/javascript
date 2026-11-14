@@ -151,7 +151,9 @@ export class ReviewService {
     const ids = queue.due.map((e) => e.conceptId);
     const excluded = excludedExerciseIds(orm, learnerId);
     const candidates = repo
-      .listPracticeExercisesForConcepts(ids)
+      // Remedial exercises too: a concept first practised through relearning items (e.g. a
+      // prerequisite check) may have no practice exercises, and its card must still be reviewable.
+      .listExercisesForConcepts(ids, ['practice', 'remedial'])
       .filter((e) => !excluded.has(e.id))
       .map(candidateOf)
       .filter((c) => c !== null);

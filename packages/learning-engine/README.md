@@ -165,7 +165,9 @@ conceptReport(deps, state, now, dayBoundary)   // 유효 숙련도 + 다음 단�
 
 ## 테스트
 
-설계 문서의 테스트 시나리오를 `scenario N` 이름의 테스트로 둡니다. FSRS는 결정론적 가짜 포트(`src/test/fixtures.ts`)와 실제 ts-fsrs 어댑터 둘 다로 테스트합니다.
+설계 문서의 테스트 시나리오 1~23을 모두 `scenario N` 이름의 테스트로 둡니다. FSRS는 결정론적 가짜 포트(`src/test/fixtures.ts`)와 실제 ts-fsrs 어댑터 둘 다로 테스트합니다.
+
+`src/simulation.test.ts`는 30일 가짜 시계 시뮬레이션입니다. `src/test/simulator.ts`의 학습자가 평일마다 오늘의 학습을 따라 복습·단원·약점 세트를 풀고, 복습 일정·숙련도·오늘의 학습이 설계대로 움직이는지 확인합니다(로드맵 M5 완료 조건).
 
 ```bash
 pnpm vitest run packages/learning-engine
