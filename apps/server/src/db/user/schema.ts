@@ -8,6 +8,10 @@ import {
   HINT_EVENT_KINDS,
   LESSON_PROGRESS_STATUSES,
   MASTERY_STAGES,
+  MISCONCEPTION_SOURCES,
+  MISCONCEPTION_STATUSES,
+  REMEDIATION_KINDS,
+  REMEDIATION_TRIGGERS,
   PENDING_RATING_OUTCOMES,
   PRACTICE_ITEM_STATUSES,
   PRACTICE_SET_KINDS,
@@ -573,5 +577,97 @@ export const tutorMessages = sqliteTable(
     check('tutor_messages_status', inList(t.status, TUTOR_MESSAGE_STATUSES)),
     check('tutor_messages_attachments_json', jsonValid(t.attachmentsJson)),
     check('tutor_messages_meta_json', sql`${t.metaJson} IS NULL OR json_valid(${t.metaJson})`),
+  ],
+);
+
+// ── Learning engine v0.2 (M5, migration 0003) ────────────────────────────────
+// docs/design/data-model.md#misconception_observations and #remediation_suggestions.
+
+/**
+ * The learner's view of one misconception (learning-engine.md#오개념-상태-전이). One row per
+ * misconception and learner in practice: a resolved/dismissed row is reopened in place.
+ * `resolution_attempt_ids_json` (added to the table sketch) holds the targeted first-try correct
+ * answers since the last evidence — the progress towards `resolved`.
+ */
+export const misconceptionObservations = sqliteTable(
+  'misconception_observations',
+  {
+    id: text('id').primaryKey(),
+    learnerId: learnerId(),
+    misconceptionId: text('misconception_id').notNull(),
+    conceptId: text('concept_id').notNull(),
+    status: text('status', { enum: MISCONCEPTION_STATUSES }).notNull().default('suspected'),
+    source: text('source', { enum: MISCONCEPTION_SOURCES }).notNull(),
+    aiDescription: text('ai_description'),
+    evidenceAttemptIdsJson: text('evidence_attempt_ids_json', { mode: 'json' }).notNull(),
+    resolutionAttemptIdsJson: text('resolution_attempt_ids_json', { mode: 'json' })
+      .notNull()
+      .default([]),
+    confirmCount: integer('confirm_count').notNull().default(0),
+    firstSeenAt: at('first_seen_at').notNull(),
+    lastSeenAt: at('last_seen_at').notNull(),
+    resolvedAt: at('resolved_at'),
+  },
+  (t) => [
+    uniqueIndex('misconception_observations_active')
+      .on(t.learnerId, t.misconceptionId)
+      .where(sql`${t.status} IN ('suspected', 'confirmed')`),
+    index('misconception_observations_learner_concept_status').on(
+      t.learnerId,
+      t.conceptId,
+      t.status,
+    ),
+    check('misconception_observations_status', inList(t.status, MISCONCEPTION_STATUSES)),
+    check('misconception_observations_source', inList(t.source, MISCONCEPTION_SOURCES)),
+    // FR-AI-09: never without evidence attempts.
+    check(
+      'misconception_observations_evidence',
+      sql`json_valid(${t.evidenceAttemptIdsJson}) AND json_array_length(${t.evidenceAttemptIdsJson}) > 0`,
+    ),
+    check('misconception_observations_resolution', jsonValid(t.resolutionAttemptIdsJson)),
+    check(
+      'misconception_observations_ai',
+      sql`${t.misconceptionId} NOT LIKE 'ai.%' OR (${t.source} = 'ai' AND ${t.aiDescription} IS NOT NULL)`,
+    ),
+  ],
+);
+
+/**
+ * Relearning suggestions (learning-engine.md#재학습-규칙), added to the data model in M5. The
+ * engine reads recent rows to escalate (no repeated prerequisite checks, next worked example
+ * stage); `item_ids_json` lists the items appended to the set for the suggestion.
+ */
+export const remediationSuggestions = sqliteTable(
+  'remediation_suggestions',
+  {
+    id: text('id').primaryKey(),
+    learnerId: learnerId(),
+    conceptId: text('concept_id').notNull(),
+    practiceSetId: text('practice_set_id').references(() => practiceSets.id, {
+      onDelete: 'cascade',
+    }),
+    attemptId: text('attempt_id')
+      .notNull()
+      .references(() => attempts.id),
+    trigger: text('trigger', { enum: REMEDIATION_TRIGGERS }).notNull(),
+    kind: text('kind', { enum: REMEDIATION_KINDS }).notNull(),
+    prerequisiteId: text('prerequisite_id'),
+    workedExampleStage: integer('worked_example_stage'),
+    /** The engine's `RemediationSuggestion` (explanation for the UI). */
+    detailJson: text('detail_json', { mode: 'json' }).notNull(),
+    itemIdsJson: text('item_ids_json', { mode: 'json' }).notNull().default([]),
+    createdAt: at('created_at').notNull(),
+  },
+  (t) => [
+    index('remediation_suggestions_learner_concept_created').on(
+      t.learnerId,
+      t.conceptId,
+      t.createdAt,
+    ),
+    index('remediation_suggestions_set').on(t.practiceSetId),
+    check('remediation_suggestions_trigger', inList(t.trigger, REMEDIATION_TRIGGERS)),
+    check('remediation_suggestions_kind', inList(t.kind, REMEDIATION_KINDS)),
+    check('remediation_suggestions_detail_json', jsonValid(t.detailJson)),
+    check('remediation_suggestions_item_ids_json', jsonValid(t.itemIdsJson)),
   ],
 );

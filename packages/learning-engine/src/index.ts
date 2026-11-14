@@ -65,3 +65,41 @@ export type { ReviewSet, ReviewSetConcept, ReviewSetRequest } from './practice/r
 export { buildReviewSet } from './practice/review-set.ts';
 export type { Rng } from './util/rng.ts';
 export { createRng } from './util/rng.ts';
+
+export type {
+  MisconceptionAttempt,
+  MisconceptionEvidence,
+  MisconceptionSource,
+  MisconceptionState,
+  MisconceptionStatus,
+  MisconceptionTransition,
+  MisconceptionUpdate,
+  ResolutionStep,
+} from './misconception/transitions.ts';
+export {
+  AI_MISCONCEPTION_PREFIX,
+  isActiveMisconception,
+  isAiMisconception,
+  MISCONCEPTION_SOURCES,
+  MISCONCEPTION_STATUSES,
+  misconceptionStatusAt,
+  resolutionTarget,
+  updateMisconceptions,
+} from './misconception/transitions.ts';
+export type {
+  ConceptGraph,
+  ConceptPrerequisite,
+  PrerequisiteCheck,
+  RemediationContext,
+  RemediationHistoryEntry,
+  RemediationKind,
+  RemediationSuggestion,
+  RemediationTrigger,
+  SetItemOutcome,
+  WorkedExample,
+} from './remediation/detect.ts';
+export {
+  detectRemediation,
+  inspectPrerequisites,
+  remediationTrigger,
+} from './remediation/detect.ts';

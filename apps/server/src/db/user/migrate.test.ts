@@ -45,10 +45,11 @@ describe('migrateUserDb', () => {
       '0000_init',
       '0001_learning_records',
       '0002_ai_tutor',
+      '0003_engine_v02',
     ]);
     expect(backup).not.toHaveBeenCalled();
     expect(schemaState(userDb.sqlite)).toMatchObject({
-      current: '0002_ai_tutor',
+      current: '0003_engine_v02',
       pending: [],
     });
   });
@@ -89,7 +90,7 @@ describe('migrateUserDb', () => {
     const marker = reopened.sqlite.prepare("SELECT value FROM app_meta WHERE key = 'marker'").get();
     expect(marker).toEqual({ value: 'before' });
     expect(schemaState(reopened.sqlite)).toMatchObject({
-      current: '0002_ai_tutor',
+      current: '0003_engine_v02',
       pending: [],
     });
     const oops = reopened.sqlite
@@ -105,7 +106,11 @@ describe('migrateUserDb', () => {
       backup: () => Promise.resolve(''),
       migrationsDir: migrationsUpTo('0000_init'),
     });
-    expect(schemaState(userDb.sqlite).pending).toEqual(['0001_learning_records', '0002_ai_tutor']);
+    expect(schemaState(userDb.sqlite).pending).toEqual([
+      '0001_learning_records',
+      '0002_ai_tutor',
+      '0003_engine_v02',
+    ]);
     userDb.sqlite
       .prepare(
         "INSERT INTO learners (id, timezone, day_start_hour, created_at) VALUES ('L1', 'Asia/Seoul', 4, 1)",
@@ -129,6 +134,7 @@ describe('migrateUserDb', () => {
     expect(await migrateUserDb(userDb, { backup })).toEqual([
       '0001_learning_records',
       '0002_ai_tutor',
+      '0003_engine_v02',
     ]);
 
     expect(backup).toHaveBeenCalledOnce();
@@ -194,7 +200,7 @@ describe('migrateUserDb', () => {
       )
       .run();
     const backup = vi.fn(() => Promise.resolve(join(dataDir, 'unused')));
-    expect(await migrateUserDb(userDb, { backup })).toEqual(['0002_ai_tutor']);
+    expect(await migrateUserDb(userDb, { backup })).toEqual(['0002_ai_tutor', '0003_engine_v02']);
     expect(backup).toHaveBeenCalledOnce();
     expect(userDb.sqlite.prepare('SELECT id FROM hint_events').all()).toEqual([{ id: 'H1' }]);
     userDb.sqlite
@@ -213,6 +219,52 @@ describe('migrateUserDb', () => {
       userDb.sqlite
         .prepare(
           "INSERT INTO ai_calls (id, learner_id, task_name, task_version, base_version, provider, status, context_manifest_json, created_at) VALUES ('A1', 'L1', 't', 1, 1, 'mock', 'weird', '[]', 1)",
+        )
+        .run(),
+    ).toThrow(/CHECK/);
+  });
+
+  it('upgrades a 0002 database to 0003 (misconception observations, relearning)', async () => {
+    const dataDir = tmpDir();
+    const userDb = new UserDb(join(dataDir, 'user.db')).open();
+    await migrateUserDb(userDb, {
+      backup: () => Promise.resolve(''),
+      migrationsDir: migrationsUpTo('0002_ai_tutor'),
+    });
+    userDb.sqlite
+      .prepare(
+        "INSERT INTO learners (id, timezone, day_start_hour, created_at) VALUES ('L1', 'Asia/Seoul', 4, 1)",
+      )
+      .run();
+    const backup = vi.fn(() => Promise.resolve(join(dataDir, 'unused')));
+    expect(await migrateUserDb(userDb, { backup })).toEqual(['0003_engine_v02']);
+    expect(backup).toHaveBeenCalledOnce();
+    const insert = (id: string, mc: string, status: string, evidence: string, extra = '') =>
+      userDb.sqlite
+        .prepare(
+          `INSERT INTO misconception_observations (id, learner_id, misconception_id, concept_id, status, source, evidence_attempt_ids_json, first_seen_at, last_seen_at${extra ? ', ai_description' : ''}) VALUES (?, 'L1', ?, 'c', ?, ?, ?, 1, 1${extra ? ', ?' : ''})`,
+        )
+        .run(
+          id,
+          mc,
+          status,
+          mc.startsWith('ai.') ? 'ai' : 'distractor',
+          evidence,
+          ...(extra ? [extra] : []),
+        );
+    insert('O1', 'mc.a', 'confirmed', '["A1"]');
+    // FR-AI-09: no evidence, no row.
+    expect(() => insert('O2', 'mc.b', 'suspected', '[]')).toThrow(/CHECK/);
+    // One active observation per misconception; closed rows may coexist.
+    expect(() => insert('O3', 'mc.a', 'suspected', '["A2"]')).toThrow(/UNIQUE/);
+    insert('O4', 'mc.a', 'resolved', '["A3"]');
+    // AI-proposed misconceptions need a description.
+    expect(() => insert('O5', 'ai.X', 'suspected', '["A4"]')).toThrow(/CHECK/);
+    insert('O6', 'ai.X', 'suspected', '["A4"]', '설명');
+    expect(() =>
+      userDb.sqlite
+        .prepare(
+          "INSERT INTO remediation_suggestions (id, learner_id, concept_id, attempt_id, trigger, kind, detail_json, created_at) VALUES ('R1', 'L1', 'c', 'A1', 'set_consecutive_failures', 'nap', '{}', 1)",
         )
         .run(),
     ).toThrow(/CHECK/);

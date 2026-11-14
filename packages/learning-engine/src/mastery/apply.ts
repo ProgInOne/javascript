@@ -13,13 +13,24 @@ import type {
   MasteryStage,
   Outcome,
 } from '../types.ts';
+import type {
+  MisconceptionAttempt,
+  MisconceptionState,
+  MisconceptionUpdate,
+} from '../misconception/transitions.ts';
+import { updateMisconceptions } from '../misconception/transitions.ts';
+import type { RemediationContext, RemediationSuggestion } from '../remediation/detect.ts';
+import { detectRemediation, remediationTrigger } from '../remediation/detect.ts';
 import type { DayBoundary } from '../util/time.ts';
 import { effectiveMastery } from './effective.ts';
 import type { Factor, FactorKey } from './evidence.ts';
-import { computeEvidence } from './evidence.ts';
+import { computeEvidence, isUnassisted, observationOf } from './evidence.ts';
 import type { GateReport, GateResult, StageChangeReason } from './stage.ts';
 import { decideStage, evaluateGates, nextGateStage, qualifyingFacts } from './stage.ts';
+import { initialConceptState } from './initial.ts';
 import { updateScore } from './update.ts';
+
+export { initialConceptState, initialMasteryState } from './initial.ts';
 
 /** `breakdown_json` of an `attempt` evidence row (see learning-engine.md#설명-가능성). */
 export interface AttemptBreakdown {
@@ -74,6 +85,10 @@ export interface AttemptEffects {
   readonly evidence: readonly MasteryEvidenceRecord[];
   /** Primary concept only. Merge and apply with `flushPendingRatings`. */
   readonly pendingRatings: readonly PendingRating[];
+  /** `misconception_observations` rows to insert or update (empty without `misconceptions`). */
+  readonly misconceptions: readonly MisconceptionUpdate[];
+  /** Relearning suggestion for the primary concept (null without `remediation`). */
+  readonly remediation: RemediationSuggestion | null;
 }
 
 export interface ApplyAttemptInput {
@@ -83,24 +98,17 @@ export interface ApplyAttemptInput {
   readonly concepts: readonly ConceptState[];
   readonly now: number;
   readonly dayBoundary: DayBoundary;
-}
-
-export function initialMasteryState(conceptId: ConceptId): ConceptMasteryState {
-  return {
-    conceptId,
-    score: 0,
-    stage: 'not_started',
-    evidenceWeightSum: 0,
-    distinctTypesCorrect: [],
-    maxDifficultyCorrect: 0,
-    consecutiveFailures: 0,
-    lastAttemptAt: null,
-    stageChangedAt: null,
+  /**
+   * Misconception input: what the wrong answer points to, what the exercise targets, and the
+   * learner's current rows for those misconceptions. Omit to skip misconception tracking.
+   */
+  readonly misconceptions?: {
+    readonly observed: MisconceptionAttempt['observed'];
+    readonly targets: MisconceptionAttempt['targets'];
+    readonly states: readonly MisconceptionState[];
   };
-}
-
-export function initialConceptState(conceptId: ConceptId): ConceptState {
-  return { mastery: initialMasteryState(conceptId), history: [], reviews: [], memory: null };
+  /** Relearning input for the primary concept. Omit outside practice (e.g. inline checks). */
+  readonly remediation?: RemediationContext;
 }
 
 /** Gate report for the stage after `stage`, in breakdown form. */
@@ -216,6 +224,7 @@ export function applyAttempt(deps: EngineDeps, input: ApplyAttemptInput): Attemp
   const mastery: MasteryUpdate[] = [];
   const evidence: MasteryEvidenceRecord[] = [];
   const pendingRatings: PendingRating[] = [];
+  let remediation: RemediationSuggestion | null = null;
 
   for (const tag of exercise.concepts) {
     const state = byId.get(tag.conceptId) ?? initialConceptState(tag.conceptId);
@@ -292,6 +301,25 @@ export function applyAttempt(deps: EngineDeps, input: ApplyAttemptInput): Attemp
         ),
       );
     }
+    if (tag.isPrimary && input.remediation !== undefined) {
+      const trigger = remediationTrigger(deps, {
+        conceptId: tag.conceptId,
+        fact,
+        history: [...state.history, fact],
+        setKind: attempt.setKind,
+        context: input.remediation,
+        now,
+      });
+      if (trigger !== null) {
+        remediation = detectRemediation(deps, {
+          conceptId: tag.conceptId,
+          trigger,
+          failedDifficulty: exercise.difficulty,
+          context: input.remediation,
+          now,
+        });
+      }
+    }
     if (tag.isPrimary) {
       pendingRatings.push({
         conceptId: tag.conceptId,
@@ -302,7 +330,25 @@ export function applyAttempt(deps: EngineDeps, input: ApplyAttemptInput): Attemp
       });
     }
   }
-  return { mastery, evidence, pendingRatings };
+  const misconceptions =
+    input.misconceptions === undefined
+      ? []
+      : updateMisconceptions(config, {
+          attempt: {
+            attemptId: attempt.attemptId,
+            exerciseId: exercise.id,
+            at: attempt.submittedAt,
+            correct: observationOf(attempt) >= 0.5,
+            unassisted: isUnassisted(attempt),
+            confidence: attempt.confidence,
+            observed: input.misconceptions.observed,
+            targets: input.misconceptions.targets,
+          },
+          states: input.misconceptions.states,
+          now,
+          dayBoundary,
+        });
+  return { mastery, evidence, pendingRatings, misconceptions, remediation };
 }
 
 /**

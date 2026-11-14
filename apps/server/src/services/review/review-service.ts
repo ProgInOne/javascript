@@ -15,6 +15,7 @@ import { lastSeenAtByGroup } from '../../db/user/practice-sets.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
 import { candidateOf, learnerContext } from '../practice/engine.ts';
+import { activeMisconceptionsByConcept, misconceptionTargetIds } from '../practice/signals.ts';
 
 /**
  * Minutes of review per day. Goals ("오늘의 학습" time split) are not in v0.1, so the queue uses
@@ -57,6 +58,7 @@ export class ReviewService {
     const concepts = repo.getConcepts(ids);
     const states = loadConceptStates(orm, learnerId, ids, this.#engine.fsrs);
     const ratings = lastRatings(orm, learnerId, ids);
+    const active = activeMisconceptionsByConcept(this.#engine, orm, learnerId, now);
     const input: ReviewQueueConcept[] = ids.flatMap((id) => {
       const concept = concepts.get(id);
       const state = states.get(id);
@@ -71,6 +73,8 @@ export class ReviewService {
           mastery: state.mastery,
           importance: concept.importance,
           lastRating: ratings.get(id) ?? null,
+          activeMisconceptions:
+            (active.get(id)?.confirmed.length ?? 0) + (active.get(id)?.suspected.length ?? 0),
         },
       ];
     });
@@ -80,7 +84,7 @@ export class ReviewService {
       now,
       dayBoundary,
     });
-    return { queue, now, learnerId, dayBoundary, concepts, states, repo };
+    return { queue, now, learnerId, dayBoundary, concepts, states, repo, active };
   }
 
   queue(budgetMinutes = DEFAULT_REVIEW_BUDGET_MINUTES): ReviewQueue {
@@ -114,7 +118,7 @@ export class ReviewService {
    * due. The caller stores the set.
    */
   planSet(seed: string) {
-    const { queue, now, learnerId, concepts, states, repo } = this.#engineQueue(
+    const { queue, now, learnerId, concepts, states, repo, active } = this.#engineQueue(
       DEFAULT_REVIEW_BUDGET_MINUTES,
     );
     if (queue.due.length === 0) return null;
@@ -135,6 +139,7 @@ export class ReviewService {
       }),
       candidates,
       lastSeenAtByGroup: lastSeenAtByGroup(orm, learnerId),
+      misconceptionTargetIds: misconceptionTargetIds(repo, active),
       seed,
       now,
     });

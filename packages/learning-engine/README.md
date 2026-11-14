@@ -1,8 +1,8 @@
 # @proginone/learning-engine
 
-숙련도, 단계 게이트, 개념 단위 FSRS, 복습 큐, 연습 세트 구성을 계산하는 학습 엔진입니다.
+숙련도, 단계 게이트, 개념 단위 FSRS, 복습 큐, 연습 세트 구성, 오개념 상태 전이, 재학습 판정을 계산하는 학습 엔진입니다.
 모든 함수는 I/O가 없는 순수 함수이며, 같은 입력에는 같은 출력을 냅니다.
-규격의 원천은 [학습 엔진 설계](/docs/design/learning-engine.md)와 결정 [D-009, D-023](/docs/decisions.md)이고, v0.1에서 구체화한 점은 설계 문서의 [구현 메모](/docs/design/learning-engine.md#구현-메모-v01)에 있습니다.
+규격의 원천은 [학습 엔진 설계](/docs/design/learning-engine.md)와 결정 [D-009, D-023, D-033](/docs/decisions.md)이고, 구현하면서 구체화한 점은 설계 문서의 구현 메모([v0.1](/docs/design/learning-engine.md#구현-메모-v01), [v0.2](/docs/design/learning-engine.md#구현-메모-v02))에 있습니다.
 
 ## 사용 규칙
 
@@ -37,6 +37,34 @@ effectiveMastery(deps, score, memory, now)  // { effective, decay, retrievabilit
 | `PendingRating` | 연습 세트와 함께 보관했다가 FSRS에 합쳐 적용 |
 
 `ConceptState`는 `concept_mastery` 행(`mastery`), 저장된 증거 사실(`history`: `mastery_evidence.breakdown_json.fact`), FSRS 평가 이력(`reviews`: `review_logs` + 근거 시도의 `variant_group_key`), `concept_memory` 행(`memory`)으로 만듭니다.
+
+`applyAttempt`에 선택 입력 두 가지를 주면 결과에 오개념과 재학습이 함께 나옵니다.
+
+```ts
+applyAttempt(deps, {
+  ...,
+  misconceptions?: {
+    observed: { misconceptionId; conceptId; source: 'distractor' | 'pattern' }[];  // 오답이 가리키는 오개념
+    targets: string[];                  // 이 문제가 겨냥하는 오개념
+    states: MisconceptionState[];       // 위 오개념들의 현재 관측(misconception_observations)
+  };
+  remediation?: RemediationContext;     // 선수 그래프, 선수 개념 상태, 세트의 이전 항목 결과, 풀이 예제, 최근 제안
+}): AttemptEffects & {
+  misconceptions: MisconceptionUpdate[];         // before === null이면 새 행
+  remediation: RemediationSuggestion | null;     // 주 개념의 재학습 제안
+}
+
+updateMisconceptions(config, { attempt, states, now, dayBoundary })  // 단독 사용
+misconceptionStatusAt(config, state, now)   // 30일 경과 의심을 저장 없이 dismissed로 읽기
+remediationTrigger(deps, …) / detectRemediation(deps, …) / inspectPrerequisites(deps, …)
+```
+
+| 출력 | 저장 위치 |
+|---|---|
+| `MisconceptionUpdate.after` | `misconception_observations` 행. `evidence[].attemptId` → `evidence_attempt_ids_json`, `resolution[].attemptId` → `resolution_attempt_ids_json` |
+| `RemediationSuggestion` | `remediation_suggestions` 행. 전체는 `detail_json` |
+
+`MisconceptionState.evidence`의 문제 ID와 시각은 근거 시도(`attempts`)에서 읽습니다.
 
 ### FSRS와 복습 큐
 
@@ -101,7 +129,7 @@ evaluatePassRule(config, rule, { items: PassRuleItem[]; introducedScores: Record
 
 ## 테스트
 
-설계 문서의 테스트 시나리오 중 v0.1 범위를 `scenario N` 이름의 테스트로 둡니다. FSRS는 결정론적 가짜 포트(`src/test/fixtures.ts`)와 실제 ts-fsrs 어댑터 둘 다로 테스트합니다.
+설계 문서의 테스트 시나리오를 `scenario N` 이름의 테스트로 둡니다. FSRS는 결정론적 가짜 포트(`src/test/fixtures.ts`)와 실제 ts-fsrs 어댑터 둘 다로 테스트합니다.
 
 ```bash
 pnpm vitest run packages/learning-engine

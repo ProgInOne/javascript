@@ -156,6 +156,7 @@ export function appliedItemAttempts(orm: Orm, itemIds: readonly string[]) {
       solutionViewed: attempts.solutionViewed,
       tutorAssisted: attempts.tutorAssisted,
       attemptInItem: attempts.attemptInItem,
+      submittedAt: attempts.submittedAt,
     })
     .from(attempts)
     .where(and(inArray(attempts.practiceSetItemId, [...itemIds]), eq(attempts.engineApplied, true)))

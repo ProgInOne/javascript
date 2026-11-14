@@ -65,6 +65,7 @@ function api(method: string, path: string, body: unknown) {
         },
         grade: { feedback: [], misconceptions: [], explanation: '해설이에요.' },
         masteryChanges: [],
+        misconceptionChanges: [],
       },
     };
   }

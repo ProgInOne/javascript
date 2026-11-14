@@ -23,6 +23,7 @@ import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
 import type { ReviewService } from '../review/review-service.ts';
 import { candidateOf, learnerContext, passRuleOverrides } from './engine.ts';
+import { activeMisconceptionsByConcept, misconceptionTargetIds } from './signals.ts';
 import { buildSetView } from './views.ts';
 
 export interface PracticeSetServiceDeps {
@@ -164,6 +165,10 @@ export class PracticeSetService {
       concepts: setConcepts,
       candidates,
       lastSeenAtByGroup: lastSeenAtByGroup(orm, learnerId),
+      misconceptionTargetIds: misconceptionTargetIds(
+        repo,
+        activeMisconceptionsByConcept(this.#engine, orm, learnerId, now),
+      ),
       seed: setId,
       now,
     });

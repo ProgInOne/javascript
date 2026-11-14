@@ -14,7 +14,7 @@ export interface ReviewQueueConcept {
   readonly memory: ConceptMemoryState;
   readonly mastery: ConceptMasteryState;
   readonly importance: Importance;
-  /** Active (`suspected`/`confirmed`) misconceptions. v0.1 has none yet; defaults to 0. */
+  /** Active (`suspected`/`confirmed`) content misconceptions of the concept. Defaults to 0. */
   readonly activeMisconceptions?: number;
   /** Rating of the latest review (`review_logs`), or `null`. */
   readonly lastRating: FsrsRating | null;

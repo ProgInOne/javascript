@@ -319,7 +319,7 @@ M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons
 스키마는 `apps/server/src/db/user/schema.ts`, 마이그레이션은 `apps/server/src/db/user/migrations/`에 있습니다.
 모든 학습 기록 테이블은 `learner_id TEXT NOT NULL REFERENCES learners(id)`를 가집니다. 아래 표에서는 반복을 줄이기 위해 생략합니다. 예외: `app_meta`, `variant_cache`, `exercise_snapshots`는 학습자와 무관한 캐시·메타이므로 `learner_id`가 없습니다.
 
-구현 현황: 0000(M3)은 `app_meta`, `learners`, `settings`, 0001(M4)은 `lesson_progress`, `practice_sets`, `practice_set_items`, `attempts`, `submissions`, `hint_events`, `exercise_snapshots`, `concept_mastery`, `mastery_evidence`, `concept_memory`, `review_logs`, `pending_ratings`(M4에서 추가), `exercise_reports`, `daily_activity`를 만듭니다. 나머지 테이블은 해당 기능과 함께 추가합니다. 0001에서 표와 달라진 점: `lesson_progress.updated_at` 추가, `pending_ratings` 추가. 열거형·0/1·`json_valid` 외에 범위 `CHECK`(점수 0~1·0~100, 힌트 단계 0~3, `daily_activity.date` 형식)를 더했습니다.
+구현 현황: 0000(M3)은 `app_meta`, `learners`, `settings`, 0001(M4)은 `lesson_progress`, `practice_sets`, `practice_set_items`, `attempts`, `submissions`, `hint_events`, `exercise_snapshots`, `concept_mastery`, `mastery_evidence`, `concept_memory`, `review_logs`, `pending_ratings`(M4에서 추가), `exercise_reports`, `daily_activity`를 만듭니다. 0002(M4)는 튜터 테이블, 0003(M5)은 `misconception_observations`, `remediation_suggestions`(M5에서 추가)를 만듭니다. 나머지 테이블은 해당 기능과 함께 추가합니다. 0001에서 표와 달라진 점: `lesson_progress.updated_at` 추가, `pending_ratings` 추가. 열거형·0/1·`json_valid` 외에 범위 `CHECK`(점수 0~1·0~100, 힌트 단계 0~3, `daily_activity.date` 형식)를 더했습니다.
 
 #### 연결 설정 (PRAGMA)
 
@@ -653,6 +653,32 @@ PK `(learner_id, concept_id)`. 인덱스 `(learner_id, stage)`, `(learner_id, sc
 - 활성 관측은 오개념당 1개입니다: 부분 고유 인덱스 `(learner_id, misconception_id) WHERE status IN ('suspected','confirmed')`.
 - 인덱스 `(learner_id, concept_id, status)`.
 - 상태 전이 규칙은 [학습 엔진 설계](/docs/design/learning-engine.md#오개념-상태-전이)에 있습니다.
+- M5(마이그레이션 `0003_engine_v02`)에서 표와 달라진 점:
+    - `resolution_attempt_ids_json` (TEXT, 기본값 `'[]'`) 추가: 마지막 근거 이후 겨냥 문제를 첫 시도·도움 없이 맞힌 시도 ID 목록입니다. `resolved`(확정에서)나 `dismissed`(의심에서)까지의 진행도이며, 새 근거가 생기면 비웁니다. 별도의 "해소 중" 상태는 저장하지 않습니다([D-033](/docs/decisions.md)).
+    - 근거 시도의 문제 ID와 시각은 `attempts`에서 조인해 읽습니다("다른 문제에서 30일 안에" 판정). 근거별 출처는 저장하지 않고, 첫 근거의 출처를 `source`에 둡니다.
+    - 오개념마다 행은 사실상 하나입니다. `resolved`·`dismissed` 행에 새 근거가 생기면 새 행을 만들지 않고 그 행을 다시 엽니다(재발 이력은 `confirm_count`와 근거 목록에 남음). 부분 고유 인덱스는 표대로 둡니다.
+    - `CHECK`: 근거 목록이 비어 있으면 거부(FR-AI-09), `ai.` 접두사 행은 `source = 'ai'`이고 `ai_description`이 있어야 함.
+
+#### remediation_suggestions
+
+재학습 제안 기록입니다(M5에서 추가). 학습 엔진은 최근 7일의 제안을 읽어 다음 단계를 정합니다: 최근 점검한 선수 개념은 다시 점검하지 않고, 풀이 예제는 다음 단계부터 냅니다([학습 엔진 설계](/docs/design/learning-engine.md#재학습-규칙)).
+
+| 컬럼 | 타입 | Null | 기본값 | 설명 |
+|---|---|---|---|---|
+| `id` | TEXT | N | | PK, ULID |
+| `concept_id` | TEXT | N | | 반복 실패한 개념(주 개념) |
+| `practice_set_id` | TEXT | Y | | FK → `practice_sets.id` ON DELETE CASCADE. 제안이 나온 세트 |
+| `attempt_id` | TEXT | N | | FK → `attempts.id`. 제안을 일으킨 시도 |
+| `trigger` | TEXT | N | | `set_consecutive_failures`(같은 세트 오답 2연속) / `recent_consecutive_failures`(최근 7일 연속 실패 3회) |
+| `kind` | TEXT | N | | `prerequisite_check` / `worked_example` / `easier_with_hint` / `reread_lesson` |
+| `prerequisite_id` | TEXT | Y | | 점검할 선수 개념 |
+| `worked_example_stage` | INTEGER | Y | | 제안에 포함된 풀이 예제의 마지막 단계(0~2) |
+| `detail_json` | TEXT | N | | 학습 엔진의 `RemediationSuggestion`(검사한 선수 개념 목록 등 설명 근거) |
+| `item_ids_json` | TEXT | N | `'[]'` | 이 제안으로 세트 끝에 붙인 항목 ID |
+| `created_at` | INTEGER | N | | |
+
+- 인덱스 `(learner_id, concept_id, created_at)`, `(practice_set_id)`.
+- 같은 세트에서 같은 개념의 제안은, 앞선 제안의 항목을 다 풀기 전에는 다시 만들지 않습니다.
 
 #### generated_exercises, generation_jobs
 
@@ -925,7 +951,7 @@ erDiagram
 
 | 유스케이스 | 한 트랜잭션에서 쓰는 테이블 |
 |---|---|
-| 시도 제출 | `attempts`, `submissions`, `exercise_snapshots`, `practice_set_items`, `concept_mastery`, `mastery_evidence`, `pending_ratings`, `concept_memory`, `review_logs`, `misconception_observations`, `exercise_stats`, `daily_activity`, (세트 완료 시) `practice_sets`, `lesson_progress` |
+| 시도 제출 | `attempts`, `submissions`, `exercise_snapshots`, `practice_set_items`, `concept_mastery`, `mastery_evidence`, `pending_ratings`, `concept_memory`, `review_logs`, `misconception_observations`, `remediation_suggestions`, `exercise_stats`, `daily_activity`, (세트 완료 시) `practice_sets`, `lesson_progress` |
 | 힌트 열기 | `hint_events`, `exercise_stats` |
 | 튜터 메시지 완료 | `tutor_messages`, `tutor_threads`, `ai_calls` |
 | 백그라운드 AI 작업 연기·완료 | `ai_jobs`, `ai_calls`, (결과에 따라) `session_summaries`, `misconception_observations`, `generated_exercises` |

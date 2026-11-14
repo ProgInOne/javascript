@@ -126,6 +126,8 @@ const wrongAttempt = {
       stageAfter: 'introduced',
     },
   ],
+  misconceptionChanges: [],
+  remediation: null,
   item: { id: items[0]?.id, status: 'answered', attempts: 1 },
   set: {
     id: set.id,

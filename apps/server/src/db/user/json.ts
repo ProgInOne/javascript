@@ -164,6 +164,18 @@ export const breakdownJson = z
   })
   .loose();
 
+/**
+ * `remediation_suggestions.detail_json`: the engine's `RemediationSuggestion`. The envelope is
+ * checked; the rest is explanation data for the UI.
+ */
+export const remediationDetailJson = z
+  .object({
+    conceptId: id,
+    trigger: z.string(),
+    kind: z.string(),
+  })
+  .loose();
+
 /** `concept_memory.card_json` (ts-fsrs card, dates as epoch ms). `fsrs.fromRaw` checks the rest. */
 export const cardJson = jsonRecord;
 /** `review_logs.revlog_json`. */

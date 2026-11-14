@@ -169,6 +169,8 @@ export function attemptResponse(
         stageAfter: 'introduced',
       },
     ],
+    misconceptionChanges: [],
+    remediation: null,
     item: { id: itemId, status: 'answered', attempts: over.attempts ?? 1 },
     set: {
       id: set.id,

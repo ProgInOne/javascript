@@ -4,7 +4,7 @@ import type { ExerciseCategory, ExerciseOrigin, FsrsPort, Importance } from './t
  * Version of the formulas and coefficients. Bump it (and record it in CHANGELOG.md) whenever a
  * coefficient or rule changes; every stored result carries the version that computed it.
  */
-export const ENGINE_VERSION = '1.0.0';
+export const ENGINE_VERSION = '1.1.0';
 
 /** Weights for the correct (`o ≥ 0.5`) and incorrect branch of a factor. */
 export interface BranchWeights {
@@ -117,6 +117,38 @@ export interface EngineConfig {
     readonly typeNoveltyWindow: number;
     readonly passRule: PassRule;
   };
+  /** Misconception observations (learning-engine.md#오개념-상태-전이). */
+  readonly misconception: {
+    /** A second piece of evidence from another exercise within this window confirms. */
+    readonly confirmWindowMs: number;
+    /** A suspicion without new evidence for this long is dismissed. */
+    readonly dismissAfterMs: number;
+    /** First-try correct targeted answers that resolve a confirmed misconception. */
+    readonly resolveCorrect: number;
+    /** Local days between those answers. */
+    readonly resolveMinDays: number;
+    /** First-try correct targeted answers that dismiss a suspicion. */
+    readonly dismissCorrect: number;
+  };
+  /** Relearning (learning-engine.md#재학습-규칙). */
+  readonly remediation: {
+    /** `consecutive_failures` within `recentWindowMs` that triggers outside a single set. */
+    readonly recentFailures: number;
+    readonly recentWindowMs: number;
+    /** Wrong answers in a row on items of the same concept inside one set. */
+    readonly setFailures: number;
+    /** A prerequisite is weak below this effective mastery (or below `practicing`). */
+    readonly weakPrerequisiteBelow: number;
+    /** Breadth-first search depth over `required` prerequisite edges. */
+    readonly prerequisiteDepth: number;
+    /** Prerequisite check set: items, difficulty range and pass threshold. */
+    readonly checkItems: number;
+    readonly checkMinDifficulty: number;
+    readonly checkMaxDifficulty: number;
+    readonly checkPassCorrect: number;
+    /** Earlier suggestions inside this window shape the next step (no repeated checks). */
+    readonly historyWindowMs: number;
+  };
 }
 
 export type BandName = 'warmup' | 'core' | 'challenge';
@@ -228,6 +260,25 @@ export const defaultEngineConfig: EngineConfig = {
     freshness: { blockDays: 7, oldDays: 30, mid: 0.4, old: 0.7 },
     typeNoveltyWindow: 3,
     passRule: { minCorrect: 0.7, minConceptScore: 50, minDistinctTypes: 2, minLevel3Correct: 0 },
+  },
+  misconception: {
+    confirmWindowMs: 30 * DAY_MS,
+    dismissAfterMs: 30 * DAY_MS,
+    resolveCorrect: 2,
+    resolveMinDays: 1,
+    dismissCorrect: 2,
+  },
+  remediation: {
+    recentFailures: 3,
+    recentWindowMs: 7 * DAY_MS,
+    setFailures: 2,
+    weakPrerequisiteBelow: 60,
+    prerequisiteDepth: 2,
+    checkItems: 3,
+    checkMinDifficulty: 1,
+    checkMaxDifficulty: 2,
+    checkPassCorrect: 2,
+    historyWindowMs: 7 * DAY_MS,
   },
 };
 

@@ -5,7 +5,7 @@
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-13
+- 최종 수정: 2026-11-15
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -853,6 +853,37 @@ v0.1(M4)에서 구현하면서 위 스케치를 구체화하거나 바꾼 점입
 - 카드 필드는 `stability`, `stabilityFast`, `difficulty`, `state`(숫자), `scheduleStatus`, `dueAt`, `lastReviewAt`(Date), `cardId`, `reps`, `lapses`, `scheduledDays`, `learningStep`입니다. `card_json`에는 이 필드를 그대로 두고 날짜만 epoch ms로 바꿔 저장합니다.
 - `forgettingCurve`에는 카드 전체(FSRS-7은 `stabilityFast` 포함)를 넘깁니다.
 - `enableShortTerm: false`여도 새 카드의 `again`·`hard`와 복습 카드의 `again`은 하루 미만 간격(`learning`·`relearning`)이 됩니다. 그날 안에 다시 예정되므로 복습 큐에 오늘 항목으로 나타납니다. `good`·`easy`는 날짜 단위 간격입니다.
+
+### 구현 메모 (v0.2)
+
+v0.2(M5)에서 [구현 메모 (v0.1)](#구현-메모-v01)의 "v0.2 이후" 항목을 구현하면서 구체화한 점입니다. 계수는 바꾸지 않았고, 새 규칙이 생겨 `ENGINE_VERSION`을 `1.1.0`으로 올렸습니다. 해석이 필요했던 결정은 [D-033](/docs/decisions.md)에 모았습니다.
+
+**오개념 상태 전이** (`misconception/transitions.ts`, `updateMisconceptions`):
+
+| 항목 | 구현 |
+|---|---|
+| 상태 | 표의 네 가지(`suspected`, `confirmed`, `resolved`, `dismissed`)만 씁니다. "해소 중"은 상태가 아니라 진행도(`resolution`: 마지막 근거 이후 겨냥 문제를 첫 시도·도움 없이 맞힌 시도)로 표현합니다 |
+| 근거 | 오답(`o < 0.5`)이면서 채점기가 돌려준 `misconceptionIds`에 든 오개념. 재인 유형은 `distractor`, 그 밖의 유형은 `pattern`으로 기록합니다 |
+| 겨냥 문제 | `misconceptions.remedial_exercise_ids_json`에 있거나, 오답 선택지·패턴이 그 오개념을 가리키는 문제(`exercises.misconception_ids_json`) |
+| `suspected → confirmed` | `sure`로 오답, 또는 이전 근거와 **다른 문제**에서 이전 근거로부터 30일 안에 근거 추가. 첫 관측이 `sure`면 바로 `confirmed`(시나리오 6) |
+| `suspected → dismissed` | 마지막 근거로부터 30일(경과 밀리초). 조회는 저장 없이 `misconceptionStatusAt`으로 판정하고, 그 오개념을 건드리는 다음 시도가 전이를 저장합니다. 또는 겨냥 문제 첫 시도 정답 2회(간격 조건 없음) |
+| `confirmed → resolved` | 겨냥 문제 첫 시도 정답 2회. 두 번째는 첫 번째와 **로컬 날짜가 1일 이상** 달라야 하고, 같은 날의 반복은 세지 않습니다. 사이에 새 근거가 생기면 진행도를 비웁니다 |
+| 재발·재개 | `resolved`에 새 근거 → `confirmed`(`relapsed`, `confirm_count` 증가). `dismissed`에 새 근거 → `suspected`(`reopened`, `sure`면 바로 `confirmed`) |
+| 우선순위 | 같은 시도가 어떤 오개념의 근거이면서 겨냥 문제이기도 하면 근거로만 셉니다 |
+| AI 제안 | `ai.` 접두사 오개념은 어떤 근거로도 `confirmed`가 되지 않습니다. 콘텐츠 오개념이 AI 제안으로 처음 관측됐다면, 선택지·패턴 근거가 붙어야 확정 조건을 봅니다 |
+| 반영 | 활성 콘텐츠 오개념은 문제 선택 점수(`misconceptionTarget`)와 복습 우선순위(`activeMisconceptions`)에 들어갑니다. 튜터 컨텍스트 연결은 AI 작업에서 합니다 |
+
+**재학습 규칙** (`remediation/detect.ts`, `remediationTrigger`, `detectRemediation`):
+
+| 항목 | 구현 |
+|---|---|
+| 세트 안 발동 | 이번 시도가 오답이고, 같은 세트에서 같은 개념(`target_concept_id`)을 겨냥한 직전 항목의 마지막 시도도 오답. 항목 단위로 세므로 같은 항목을 다시 틀린 것은 "2연속"이 아닙니다 |
+| 최근 7일 발동 | 주 개념 증거를 최근순으로 보며 도움 없는 정답이 나올 때까지의 오답 중 최근 7일(경과 밀리초) 안의 것이 3개 이상 |
+| 발동하지 않는 곳 | 단원 평가 세트(종료 화면에서 약점 집중을 제안), 본문 확인 문제(세트 밖) |
+| 중복 방지 | 같은 세트에서 같은 개념의 제안은, 앞선 제안으로 붙인 항목을 다 풀기 전(항목이 없는 제안은 그 세트가 끝날 때까지) 다시 만들지 않습니다 |
+| 선수 개념 탐색 | `required` 간선을 깊이 2까지 넓이 우선으로 봅니다. 약함 = `effective < 60` 또는 `practicing` 미만. **가장 얕은 깊이**의 약한 개념 중 `effective`가 가장 낮은 것을 고릅니다. 최근 7일 안에 점검을 제안한 선수 개념은 건너뜁니다 |
+| 다음 단계 | 최근 7일 제안 기록(`remediation_suggestions`)으로 정합니다. 풀이 예제는 아직 제안하지 않은 단계부터 남은 단계를 한꺼번에(0 → 1 → 2) 제안합니다. 풀이 예제가 없으면 한 단계 쉬운 문제 + 힌트 1단계 자동 열기를 한 번 제안합니다. 예제 2단계나 쉬운 문제 뒤에도 발동하면 레슨 다시 읽기 + 튜터 배지입니다 |
+| 출력 | `RemediationSuggestion`: 판정 경로(검사한 선수 개념 전부와 각 `effective`·단계·약함 여부), 점검 세트 크기(3문항, L1~L2, 2개 이상 정답이면 통과) |
 
 ## 검토한 대안
 

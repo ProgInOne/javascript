@@ -26,6 +26,8 @@ export interface ContentExerciseConcept {
   isPrimary: boolean;
 }
 
+export type ConceptPrerequisiteRow = typeof t.conceptPrerequisites.$inferSelect;
+
 export interface LessonPlan {
   id: string;
   title: string;
@@ -43,6 +45,8 @@ export interface ContentConcept {
   importance: 'core' | 'standard' | 'minor';
   /** Module of the lesson that introduces the concept (review set interleaving). */
   moduleId: string;
+  courseId: string;
+  introducedInLessonId: string;
 }
 
 /** An `exercises` row with its concept tags. `spec` holds answer keys (server only). */
@@ -62,6 +66,10 @@ export interface ContentExercise {
   origin: 'authored' | 'template';
   contentHash: string;
   concepts: ContentExerciseConcept[];
+  /** Misconceptions the exercise's wrong options/patterns point to. */
+  misconceptionIds: string[];
+  /** `usage: worked_example`: 0 full solution · 1 partial blanks · 2 solve. */
+  workedExampleStage: number | null;
   /** Normalized answer-leak fingerprints (AI output post-check, server only). */
   leakFingerprints: string[];
 }
@@ -71,6 +79,8 @@ export class ContentRepository {
   readonly #db: Db;
   readonly packVersion: string;
   readonly #close: () => void;
+  #prerequisites: ConceptPrerequisiteRow[] | undefined;
+  #targets: Map<string, Set<string>> | undefined;
 
   constructor(path: string) {
     const sqlite = openSqlite(path, { readonly: true });
@@ -232,6 +242,8 @@ export class ContentRepository {
       origin: row.origin,
       contentHash: row.contentHash,
       concepts,
+      misconceptionIds: row.misconceptionIds,
+      workedExampleStage: row.workedExampleStage,
       leakFingerprints: row.leakFingerprints,
     };
     return exercise;
@@ -296,7 +308,18 @@ export class ContentRepository {
 
   /** Practice exercises whose primary concept is one of `conceptIds` (review sets). */
   listPracticeExercisesForConcepts(conceptIds: readonly string[]): ContentExercise[] {
-    if (conceptIds.length === 0) return [];
+    return this.listExercisesForConcepts(conceptIds, ['practice']);
+  }
+
+  /**
+   * Exercises of the given usages whose primary concept is one of `conceptIds` (remedial items,
+   * worked examples, weakness sets).
+   */
+  listExercisesForConcepts(
+    conceptIds: readonly string[],
+    usages: readonly ContentExercise['usage'][],
+  ): ContentExercise[] {
+    if (conceptIds.length === 0 || usages.length === 0) return [];
     const ids = this.#db
       .select({ id: t.exerciseConcepts.exerciseId })
       .from(t.exerciseConcepts)
@@ -312,7 +335,7 @@ export class ContentRepository {
     const rows = this.#db
       .select()
       .from(t.exercises)
-      .where(and(eq(t.exercises.usage, 'practice'), inArray(t.exercises.id, ids)))
+      .where(and(inArray(t.exercises.usage, [...usages]), inArray(t.exercises.id, ids)))
       .orderBy(asc(t.exercises.id))
       .all();
     const concepts = this.#exerciseConcepts(rows.map((r) => r.id));
@@ -356,9 +379,58 @@ export class ContentRepository {
         title: row.concept.title,
         importance: row.concept.importance,
         moduleId: row.moduleId ?? row.concept.courseId,
+        courseId: row.concept.courseId,
+        introducedInLessonId: row.concept.introducedInLessonId,
       });
     }
     return out;
+  }
+
+  /** Every `concept_prerequisites` edge (small; cached for the life of the pack). */
+  listPrerequisites(): ConceptPrerequisiteRow[] {
+    this.#prerequisites ??= this.#db
+      .select()
+      .from(t.conceptPrerequisites)
+      .orderBy(asc(t.conceptPrerequisites.conceptId), asc(t.conceptPrerequisites.prerequisiteId))
+      .all();
+    return this.#prerequisites;
+  }
+
+  /**
+   * Exercises that target each misconception (learning-engine.md#오개념-상태-전이): listed in
+   * `remedial_exercise_ids_json`, or one of their wrong options/patterns points to it.
+   */
+  misconceptionTargets(): ReadonlyMap<string, ReadonlySet<string>> {
+    if (this.#targets) return this.#targets;
+    const targets = new Map<string, Set<string>>();
+    const add = (mc: string, ex: string) => {
+      const set = targets.get(mc) ?? new Set<string>();
+      set.add(ex);
+      targets.set(mc, set);
+    };
+    for (const row of this.#db
+      .select({ id: t.misconceptions.id, remedial: t.misconceptions.remedialExerciseIds })
+      .from(t.misconceptions)
+      .all()) {
+      for (const ex of row.remedial) add(row.id, ex);
+    }
+    for (const row of this.#db
+      .select({ id: t.exercises.id, mcs: t.exercises.misconceptionIds })
+      .from(t.exercises)
+      .all()) {
+      for (const mc of row.mcs) add(mc, row.id);
+    }
+    this.#targets = targets;
+    return targets;
+  }
+
+  /** Misconceptions an exercise targets (inverse of {@link misconceptionTargets}). */
+  misconceptionsTargetedBy(exerciseId: string): string[] {
+    const out: string[] = [];
+    for (const [mc, exercises] of this.misconceptionTargets()) {
+      if (exercises.has(exerciseId)) out.push(mc);
+    }
+    return out.sort();
   }
 
   /** Misconceptions by id (titles for feedback, concepts for the engine). */

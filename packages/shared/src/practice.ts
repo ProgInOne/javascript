@@ -45,6 +45,21 @@ export const REPORT_REASONS = [
   'other',
 ] as const;
 export const REPORT_STATUSES = ['open', 'resolved', 'dismissed'] as const;
+/** `misconception_observations.status` (learning-engine.md#오개념-상태-전이). */
+export const MISCONCEPTION_STATUSES = ['suspected', 'confirmed', 'resolved', 'dismissed'] as const;
+/** `distractor`: chosen wrong option · `pattern`: rule-based wrong answer · `ai`: AI proposal. */
+export const MISCONCEPTION_SOURCES = ['distractor', 'pattern', 'ai'] as const;
+/** Relearning steps (learning-engine.md#재학습-규칙). */
+export const REMEDIATION_KINDS = [
+  'prerequisite_check',
+  'worked_example',
+  'easier_with_hint',
+  'reread_lesson',
+] as const;
+export const REMEDIATION_TRIGGERS = [
+  'set_consecutive_failures',
+  'recent_consecutive_failures',
+] as const;
 
 export const confidenceSchema = z.enum(CONFIDENCES);
 export type Confidence = z.infer<typeof confidenceSchema>;
@@ -310,6 +325,71 @@ const checkResultSchema = z.object({
     .optional(),
 });
 
+export const misconceptionStatusSchema = z.enum(MISCONCEPTION_STATUSES);
+export type MisconceptionStatus = z.infer<typeof misconceptionStatusSchema>;
+
+/**
+ * A misconception observation changed by an attempt (learning-engine.md#오개념-상태-전이).
+ * `transitions` are engine codes in order: `observed`, `evidence_added`, `confirmed`,
+ * `reopened`, `relapsed`, `resolution_progress`, `resolved`, `dismissed_by_targets`,
+ * `dismissed_expired`.
+ */
+export const misconceptionChangeSchema = z.object({
+  misconceptionId: z.string(),
+  title: z.string(),
+  conceptId: z.string(),
+  statusBefore: misconceptionStatusSchema.nullable(),
+  statusAfter: misconceptionStatusSchema,
+  transitions: z.array(z.string()),
+  /** Progress towards `resolved` (confirmed) or `dismissed` (suspected); 0/0 otherwise. */
+  resolution: z.object({ done: z.int().min(0), required: z.int().min(0) }),
+});
+export type MisconceptionChange = z.infer<typeof misconceptionChangeSchema>;
+
+const masteryStageRef = z.object({
+  conceptId: z.string(),
+  title: z.string(),
+  stage: masteryStageSchema,
+  /** Effective mastery (score with forgetting) 0–100. */
+  effective: z.number(),
+});
+
+/**
+ * A relearning suggestion (learning-engine.md#재학습-규칙, ui-ux.md#재학습-유도). The learner may
+ * decline it ("계속 풀기"); nothing is locked.
+ * - `prerequisite_check`: check the weakest prerequisite with a short set (`check`).
+ * - `worked_example`: worked example stages (0 full solution → 1 blanks → 2 solve).
+ * - `easier_with_hint`: one easier item (`targetDifficulty`) with hint `autoHintLevel` opened.
+ * - `reread_lesson`: reread the lesson that introduces the concept; `tutorBadge` shows the tutor
+ *   badge (never opens the tutor by itself, D-010).
+ */
+export const remediationSchema = z.object({
+  id: z.string(),
+  concept: conceptRefSchema,
+  trigger: z.enum(REMEDIATION_TRIGGERS),
+  kind: z.enum(REMEDIATION_KINDS),
+  prerequisite: masteryStageRef.nullable(),
+  check: z
+    .object({
+      items: z.int(),
+      minDifficulty: z.int(),
+      maxDifficulty: z.int(),
+      passCorrect: z.int(),
+    })
+    .nullable(),
+  workedExampleStages: z.array(z.int().min(0).max(2)),
+  targetDifficulty: z.int().nullable(),
+  autoHintLevel: z.int().min(0).max(3),
+  tutorBadge: z.boolean(),
+  /** Lesson introducing the concept (for `reread_lesson` and "관련 레슨"). */
+  lesson: conceptRefSchema.nullable(),
+  /** Prerequisites inspected, shallowest first (the "왜" of the suggestion). */
+  prerequisitesChecked: z.array(masteryStageRef.extend({ depth: z.int(), weak: z.boolean() })),
+  /** Items appended to the current set for this suggestion (empty for `reread_lesson`). */
+  itemIds: z.array(z.string()),
+});
+export type Remediation = z.infer<typeof remediationSchema>;
+
 export const attemptResponseSchema = z.object({
   attempt: z.object({
     id: z.string(),
@@ -335,6 +415,10 @@ export const attemptResponseSchema = z.object({
   }),
   /** One entry per tagged concept: state before this attempt → after it (and any FSRS review). */
   masteryChanges: z.array(masteryChangeSchema),
+  /** Misconception observations this attempt created or moved. */
+  misconceptionChanges: z.array(misconceptionChangeSchema),
+  /** Relearning suggestion after repeated failure, or null. */
+  remediation: remediationSchema.nullable(),
   item: z.object({ id: z.string(), status: z.enum(PRACTICE_ITEM_STATUSES), attempts: z.int() }),
   set: z.object({
     id: z.string(),
@@ -361,6 +445,7 @@ export const inlineAttemptResponseSchema = attemptResponseSchema.pick({
   attempt: true,
   grade: true,
   masteryChanges: true,
+  misconceptionChanges: true,
 });
 export type InlineAttemptResponse = z.infer<typeof inlineAttemptResponseSchema>;
 

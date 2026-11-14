@@ -21,11 +21,13 @@ import {
   type ExerciseCandidate,
   type FlushResult,
   type HintLevel,
+  type MisconceptionUpdate,
   type MasteryEvidenceRecord,
   type MasteryUpdate,
   type PassResult,
   type PassRuleItem,
   type PendingRating,
+  type RemediationSuggestion,
 } from '@proginone/learning-engine';
 import {
   parseRunResult,
@@ -55,6 +57,11 @@ import {
 } from '../../db/user/json.ts';
 import { newId } from '../../db/user/learners.ts';
 import {
+  insertRemediation,
+  writeObservation,
+  type StoredObservation,
+} from '../../db/user/misconceptions.ts';
+import {
   insertEvidence,
   insertReviewLog,
   loadConceptStates,
@@ -83,6 +90,12 @@ import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
 import { candidateOf, learnerContext } from './engine.ts';
 import { kit, loadSpec } from './kit.ts';
+import {
+  misconceptionChanges,
+  misconceptionInput,
+  remediationContext,
+  remediationView,
+} from './signals.ts';
 import { nextItemIdOf, progressOf, resultView } from './views.ts';
 
 export interface AttemptServiceDeps {
@@ -111,6 +124,14 @@ interface EnginePlan {
   conceptsFlushed: number;
   result: PracticeResultJson | null;
   lessonCompletedNow: boolean;
+  misconceptions: Signals;
+  remediation: { id: string; suggestion: RemediationSuggestion; itemIds: string[] } | null;
+}
+
+/** Misconception updates with the stored rows they apply to. */
+interface Signals {
+  updates: readonly MisconceptionUpdate[];
+  stored: Map<string, StoredObservation>;
 }
 
 const EMPTY_FLUSH: FlushResult = {
@@ -226,7 +247,16 @@ export class AttemptService {
 
     // 4. Engine (pure; before the transaction).
     const plan = engineApplied
-      ? this.#plan({ learnerId, set, item, candidate, facts, dayBoundary, now })
+      ? this.#plan({
+          learnerId,
+          set,
+          item,
+          candidate,
+          facts,
+          misconceptionIds: grade.misconceptionIds,
+          dayBoundary,
+          now,
+        })
       : null;
 
     // 5. One transaction.
@@ -343,6 +373,9 @@ export class AttemptService {
       submittedAt: now,
     };
     const engineApplied = grade.engineApplicable;
+    const mc = engineApplied
+      ? misconceptionInput(repo, orm, learnerId, candidate, grade.misconceptionIds)
+      : null;
     const effects = engineApplied
       ? applyAttempt(this.#engine, {
           attempt: facts,
@@ -357,6 +390,7 @@ export class AttemptService {
           ],
           now,
           dayBoundary,
+          ...(mc ? { misconceptions: mc.input } : {}),
         })
       : null;
 
@@ -402,6 +436,8 @@ export class AttemptService {
       if (effects) {
         for (const update of effects.mastery) upsertMastery(orm, learnerId, update, now);
         for (const record of effects.evidence) insertEvidence(orm, learnerId, record);
+        if (mc)
+          writeSignals(orm, learnerId, { updates: effects.misconceptions, stored: mc.stored });
       }
       addDailyActivity(orm, learnerId, localDateOf(now, dayBoundary), {
         attempts: 1,
@@ -439,6 +475,7 @@ export class AttemptService {
         stageBefore: m.before.stage,
         stageAfter: m.after.stage,
       })),
+      misconceptionChanges: misconceptionChanges(this.#engine, repo, effects?.misconceptions ?? []),
     };
   }
 
@@ -448,10 +485,12 @@ export class AttemptService {
     item: PracticeItemRow;
     candidate: ExerciseCandidate;
     facts: AttemptFacts;
+    misconceptionIds: readonly string[];
     dayBoundary: DayBoundary;
     now: number;
   }): EnginePlan {
     const { learnerId, set, item, candidate, facts, dayBoundary, now } = input;
+    const repo = this.#content.repo;
     const engine = this.#engine;
     const orm = this.#userDb.orm;
     const items = listItems(orm, set.row.id).map((i) =>
@@ -475,12 +514,27 @@ export class AttemptService {
     ];
     const states = loadConceptStates(orm, learnerId, conceptIds, engine.fsrs);
 
+    const mc = misconceptionInput(repo, orm, learnerId, candidate, input.misconceptionIds);
+    const primary = candidate.concepts.find((c) => c.isPrimary)?.conceptId;
     const effects = applyAttempt(engine, {
       attempt: facts,
       exercise: candidate,
       concepts: [...states.values()],
       now,
       dayBoundary,
+      misconceptions: mc.input,
+      ...(primary === undefined
+        ? {}
+        : {
+            remediation: remediationContext(repo, orm, engine, {
+              learnerId,
+              conceptId: primary,
+              setId: set.row.id,
+              items,
+              currentItemId: item.id,
+              now,
+            }),
+          }),
     });
     const after = new Map<string, ConceptState>(states);
     for (const update of effects.mastery) {
@@ -627,6 +681,11 @@ export class AttemptService {
       conceptsFlushed: new Set([...appliedConcepts, ...skippedConcepts]).size,
       result,
       lessonCompletedNow,
+      misconceptions: { updates: effects.misconceptions, stored: mc.stored },
+      remediation:
+        effects.remediation === null
+          ? null
+          : { id: newId(), suggestion: effects.remediation, itemIds: [] },
     };
   }
 
@@ -647,6 +706,18 @@ export class AttemptService {
     const { learnerId, set, item, attemptId, grade, date, now } = ctx;
     for (const update of plan.mastery) upsertMastery(orm, learnerId, update, now);
     for (const record of plan.evidence) insertEvidence(orm, learnerId, record);
+    writeSignals(orm, learnerId, plan.misconceptions);
+    if (plan.remediation) {
+      insertRemediation(orm, {
+        id: plan.remediation.id,
+        learnerId,
+        practiceSetId: set.row.id,
+        attemptId,
+        suggestion: plan.remediation.suggestion,
+        itemIds: plan.remediation.itemIds,
+        createdAt: now,
+      });
+    }
     for (const p of plan.pending.filter((x) => x.isNew)) {
       insertPendingRating(orm, {
         id: p.id,
@@ -738,6 +809,12 @@ export class AttemptService {
         stageBefore: m.before.stage,
         stageAfter: m.after.stage,
       })),
+      misconceptionChanges: misconceptionChanges(
+        this.#engine,
+        repo,
+        plan?.misconceptions.updates ?? [],
+      ),
+      remediation: plan?.remediation ? remediationView(repo, plan.remediation) : null,
       item: {
         id: item.id,
         status: applied ? 'answered' : item.status,
@@ -751,6 +828,15 @@ export class AttemptService {
         result: plan?.result ? resultView(plan.result, repo) : null,
       },
     };
+  }
+}
+
+/** Writes misconception observations (insert for new rows, update in place otherwise). */
+function writeSignals(orm: UserDb['orm'], learnerId: string, signals: Signals): void {
+  for (const update of signals.updates) {
+    const rowId =
+      update.before === null ? null : (signals.stored.get(update.misconceptionId)?.rowId ?? null);
+    writeObservation(orm, learnerId, rowId, update);
   }
 }
 

@@ -108,6 +108,12 @@ export function writeContentDb(meta: Record<string, string> = {}): string {
     concept_id: 'js.basics.statement',
     role: 'introduces',
   });
+  // Relearning looks at required prerequisites (learning-engine.md#재학습-규칙).
+  ins('concept_prerequisites', {
+    concept_id: 'js.basics.statement',
+    prerequisite_id: 'js.basics.comment',
+    strength: 'required',
+  });
   ins('misconceptions', {
     id: 'js.mc.log-is-return',
     concept_id: 'js.basics.statement',
@@ -130,6 +136,10 @@ export function writeContentDb(meta: Record<string, string> = {}): string {
       hints_json: JSON.stringify({ v: 1, levels: ['힌트 1', '힌트 2', '힌트 3'] }),
       explanation: `${ex.id} 해설`,
       estimated_seconds: 60,
+      // Wrong options/patterns pointing to misconceptions (content-cli derives this from specs).
+      misconception_ids_json: JSON.stringify(
+        JSON.stringify(ex.spec).includes('js.mc.log-is-return') ? ['js.mc.log-is-return'] : [],
+      ),
       review_status: 'trusted',
       content_hash: `hash-${ex.id}`,
       dedupe_signature: `sig-${ex.id}`,
