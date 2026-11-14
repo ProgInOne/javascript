@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 
-const UI_TESTS = 'packages/ui/src/**/*.test.{ts,tsx}';
+const UI_TESTS = 'packages/{ui,exercise-ui}/src/**/*.test.{ts,tsx}';
 const WEB_TESTS = 'apps/web/src/**/*.test.{ts,tsx}';
 
 export default defineConfig({

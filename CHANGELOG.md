@@ -7,6 +7,8 @@
 
 ### Added
 
+- `@proginone/exercise-ui`(M4): `mcq_single`·`fill_blank`·`predict_output` 렌더러, 확신도 선택, 힌트 사다리(3단계 + 확인 후 정답 보기), 피드백 배너(확신도별 문구·실패한 테스트·오개념 설명), 체크 목록(숨김 체크는 설명만), 콘솔 보기(`RunResult` 상태·오류 설명), 문제 단축키 훅
+- `@proginone/exercise-kit` 파라메트릭 템플릿 엔진(M4): `<템플릿 ID>@<seed>` → 항상 같은 변형(SplitMix64 시딩 + `xoshiro128**`), 매개변수 8종, 제약 재시도(최대 100회), eval 없는 템플릿 표현식 언어, 렌더링 후 유형 스펙 검증, 빌드용 표본 시드
 - 레슨 예제 실행(M4): `RunnableExample`이 러너로 실제 실행됩니다. 예측 후 실행(예측 입력 또는 건너뛰기 → 실행 → 예측과 콘솔 출력 비교), 오류의 줄 번호, 시간 초과·반복 제한 안내, HTML 예제 미리보기
 - 코드 실행 샌드박스 `@proginone/runner`(M4): 러너 셸(`/sandbox/runner.html`, 셸 CSP, 셸마다 다른 `*.localhost` 사이트와 같은 사이트 대체), `@proginone/shared` 샌드박스 계약(`RunPlan`·관측 단계·`Observation`·`RunResult`)을 따르는 관측 전용 하네스(콘솔 직렬화, 타이머 추적, `alert`·`confirm`·`prompt`·`localStorage` 대체 구현, 관측 단계, `argsExpr`), 반복문 가드(acorn 계측), DOM 모드 HTML 재작성(blob 전달), 호스트 API(`createRunnerHost`)와 `parseRunResult` 경계 검증, Watchdog, 오류 위치의 학습자 파일·줄 역매핑, Playwright 보안 스위트와 채점기 계약 테스트
 - `@proginone/exercise-kit` 코드 채점기(M4): 체크 명세 언어 스키마(call·console·program·dom·event·css·layout·a11y·html-valid·static), 체크 → 관측 단계 컴파일(`buildRunPlan`), 관측값과 기대값 비교, 체크 가중 부분 점수·요구사항별 피드백·마일스톤, `implement_function`·`fix_bug`(토큰 편집 거리 규칙)·`web_task` 기본형·`fill_blank` 코드 모드
