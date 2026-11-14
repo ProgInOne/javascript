@@ -1,0 +1,9 @@
+id: e2e-fixture
+version: 2026.11.14.1
+schemaVersion: 1
+title: E2E 픽스처
+tracks:
+  - id: web
+    title: 웹 기초
+    summary: 웹 페이지를 만들고 움직이는 기본기를 배웁니다.
+    courses: [js-basics]

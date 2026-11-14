@@ -1,5 +1,8 @@
 import {
   backupListSchema,
+  courseDetailSchema,
+  courseListSchema,
+  lessonDetailSchema,
   backupSummarySchema,
   settingsSchema,
   type SettingsPatch,
@@ -58,3 +61,25 @@ export function useRestoreBackup() {
     onSuccess: () => client.invalidateQueries(),
   });
 }
+
+export const coursesQuery = queryOptions({
+  queryKey: ['courses'],
+  queryFn: ({ signal }) => api('/courses', { schema: courseListSchema, signal }),
+  staleTime: Infinity, // content.db only changes with an app restart
+});
+
+export const courseQuery = (id: string) =>
+  queryOptions({
+    queryKey: ['courses', id],
+    queryFn: ({ signal }) =>
+      api(`/courses/${encodeURIComponent(id)}`, { schema: courseDetailSchema, signal }),
+    staleTime: Infinity,
+  });
+
+export const lessonQuery = (id: string) =>
+  queryOptions({
+    queryKey: ['lessons', id],
+    queryFn: ({ signal }) =>
+      api(`/lessons/${encodeURIComponent(id)}`, { schema: lessonDetailSchema, signal }),
+    staleTime: Infinity,
+  });

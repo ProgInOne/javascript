@@ -40,7 +40,9 @@ const VIEWPORTS = [
 for (const viewport of VIEWPORTS) {
   for (const scheme of ['light', 'dark'] as const) {
     for (const { path, heading } of SCREENS) {
-      const name = `${path === '/' ? 'dashboard' : path.slice(1).replaceAll('/', '-')}-${scheme}-${viewport.width}`;
+      const slug =
+        path === '/' ? 'dashboard' : path.slice(1).replaceAll('/', '-').replaceAll('.', '_');
+      const name = `${slug}-${scheme}-${viewport.width}`;
       test(`${name} @visual`, async ({ page }) => {
         await page.setViewportSize(viewport);
         await page.route('**/api/v1/backups', (route) => route.fulfill({ json: BACKUPS }));

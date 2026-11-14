@@ -1,6 +1,6 @@
 import { EmptyState, UiProvider } from '@proginone/ui';
 import type { QueryClient } from '@tanstack/react-query';
-import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router';
+import { createRootRouteWithContext, Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { Compass } from 'lucide-react';
 import { AppError } from '../app/AppError.tsx';
 import { AppHeader } from '../app/AppHeader.tsx';
@@ -30,6 +30,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 });
 
 function Shell({ children }: { children: React.ReactNode }) {
+  // The learning screen has its own focused header (docs/design/ui-ux.md#학습-화면-공통-구조).
+  const focused = useRouterState({ select: (s) => s.location.pathname.startsWith('/learn/') });
   return (
     <UiProvider>
       <a
@@ -38,7 +40,7 @@ function Shell({ children }: { children: React.ReactNode }) {
       >
         본문으로 건너뛰기
       </a>
-      <AppHeader />
+      {!focused && <AppHeader />}
       <main id="main">{children}</main>
       <RouteAnnouncer />
     </UiProvider>

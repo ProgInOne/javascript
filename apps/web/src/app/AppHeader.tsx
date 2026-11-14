@@ -37,6 +37,9 @@ export function AppHeader() {
           >
             대시보드
           </Link>
+          <Link to="/courses" className={navLink} activeProps={{ 'aria-current': 'page' }}>
+            과정
+          </Link>
         </nav>
         <div className="ml-auto flex items-center gap-3">
           <IconButton

@@ -5,6 +5,9 @@ export const SCREENS = [
   { path: '/', heading: '대시보드' },
   { path: '/settings/appearance', heading: '화면' },
   { path: '/settings/data', heading: '데이터' },
+  { path: '/courses', heading: '과정' },
+  { path: '/courses/js-basics', heading: 'JavaScript 기초' },
+  { path: '/learn/js-basics.start.first-program', heading: '첫 프로그램' },
 ] as const;
 
 export type ColorScheme = 'light' | 'dark';

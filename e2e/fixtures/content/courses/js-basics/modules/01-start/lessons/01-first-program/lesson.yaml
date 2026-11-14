@@ -1,0 +1,10 @@
+id: js-basics.start.first-program
+title: 첫 프로그램
+summary: console.log로 값을 출력하고 실행 순서를 확인합니다.
+importance: core
+estimatedMinutes: { read: 12, practice: 15 }
+concepts:
+  primary: [js.basics.statement, js.basics.console-log]
+objectives:
+  - console.log로 원하는 값을 출력할 수 있다.
+  - 여러 문장이 어떤 순서로 실행되는지 예측할 수 있다.

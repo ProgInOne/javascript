@@ -10,3 +10,7 @@ test-results/
 .data/
 .claude/
 routeTree.gen.ts
+# Content sources (MDX/YAML) follow the content authoring rules, not Prettier.
+*.mdx
+content/
+e2e/fixtures/

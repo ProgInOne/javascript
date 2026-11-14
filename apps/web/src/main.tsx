@@ -2,6 +2,7 @@ import '@proginone/ui/fonts.css';
 import '@proginone/ui/tokens.css';
 import './app/tailwind.css';
 import './app/shell.css';
+import './app/lesson.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRouter, RouterProvider } from '@tanstack/react-router';

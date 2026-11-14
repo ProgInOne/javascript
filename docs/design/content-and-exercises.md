@@ -414,7 +414,7 @@ MVP JavaScript 기초 118개 개념의 중요도 분포 목표는 `core` 약 30�
 | `<RunnableExample>` | 실행 가능한 코드 예제 | `id` (필수, 단원 내 고유), `lang`: `js` / `html` / `css` / `web` (html+css+js 묶음), `predict`: 실행 전 결과 예측 입력을 요구할지 (`boolean`), `predictKind`: `console` / `value` / `choice`, `editable`: 학습자가 수정해 다시 실행할 수 있는지 (기본 `true`), `concepts`: 관련 개념 slug 목록, `highlight`: 강조할 줄 범위 (예: `"2-3"`) |
 | `<InlineExercise>` | 본문 중간의 확인 문제 | `ref`: 문제 ID (필수). 문제 본체는 `exercises/*.yaml`에 있고 MDX에는 참조만 둡니다 |
 | `<Callout>` | 알림 상자 | `kind`: `note` / `tip` / `warning` / `danger` / `deep-dive`, `title` (선택) |
-| `<CompareTable>` | 두세 대상의 비교 표 | `columns`: 열 제목 목록, 행은 자식 `<Row label="...">`로 작성 |
+| `<CompareTable>` | 두세 대상의 비교 표 | `columns`: 열 제목 목록, 행은 자식 `<Row label="...">`로 작성. 행 안의 칸은 `|`로 나눕니다(`<Row label="재할당">가능 | 불가</Row>`) |
 | `<ConceptLink>` | 다른 개념으로의 링크 | `to`: 개념 slug (필수), 자식: 링크 텍스트. 빌드 시 존재 여부 검증. 화면에는 숙련 단계 배지 표시 |
 | `<Pitfall>` | 흔한 실수 블록 | `misconception`: 오개념 ID (필수). 자식으로 `<Wrong>`, `<Actual>`, `<Right>` 세 부분 |
 | `<ValueTrace>` | 줄 단위 변수 값 추적 표 | `code`: 예제 `id` 참조, `vars`: 추적할 변수 이름 목록. 값은 빌드 시 실행 계측으로 자동 생성 (손으로 쓰지 않음) |

@@ -60,3 +60,27 @@ test.describe('local server security', () => {
     expect(res.status()).toBe(403);
   });
 });
+
+test.describe('curriculum', () => {
+  test('reads a lesson from the course list', async ({ page }) => {
+    await page.goto('/');
+    await page
+      .getByRole('navigation', { name: '주 메뉴' })
+      .getByRole('link', { name: '과정' })
+      .click();
+    await page.getByRole('link', { name: /JavaScript 기초/ }).click();
+    await expect(page.getByRole('heading', { level: 1, name: 'JavaScript 기초' })).toBeVisible();
+    await page.getByRole('link', { name: '학습 시작' }).click();
+    await expect(page.getByRole('heading', { level: 1, name: '첫 프로그램' })).toBeFocused();
+    await expect(page.getByRole('region', { name: '흔한 실수' })).toContainText(
+      '출력한 값은 어딘가에 저장된다.',
+    );
+    await page
+      .getByRole('navigation', { name: '목차' })
+      .getByRole('link', { name: '핵심 요약' })
+      .click();
+    await expect(page).toHaveURL(/#summary$/);
+    await page.getByRole('link', { name: 'JavaScript 기초 과정으로 돌아가기' }).click();
+    await expect(page.getByRole('heading', { level: 1, name: 'JavaScript 기초' })).toBeVisible();
+  });
+});

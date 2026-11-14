@@ -1,0 +1,11 @@
+- id: js.basics.statement
+  title: 문장과 실행 순서
+  importance: standard
+  summary: 프로그램은 위에서 아래로 한 문장씩 실행됩니다.
+- id: js.basics.console-log
+  title: console.log로 출력하기
+  importance: core
+  summary: 값을 콘솔에 보여 주는 가장 기본적인 방법입니다.
+  prerequisites: [js.basics.statement]
+  misconceptions: [js.mc.log-is-return]
+  mdn: Web/API/console/log_static

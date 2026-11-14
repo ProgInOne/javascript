@@ -1,0 +1,221 @@
+/* Lesson prose (reading mode). Long-form typography is clearer as CSS than as utilities. */
+@layer components {
+  .lesson-prose {
+    font: var(--text-lesson);
+    font-size: var(--lesson-font-size, 17px);
+    letter-spacing: var(--tracking-lesson);
+    color: var(--color-text-primary);
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  .lesson-prose p,
+  .lesson-prose ul,
+  .lesson-prose ol,
+  .lesson-prose blockquote,
+  .lesson-prose pre,
+  .lesson-prose figure,
+  .lesson-prose .lesson-table-wrap {
+    margin: 0 0 var(--space-4);
+  }
+  .lesson-prose ul,
+  .lesson-prose ol {
+    padding-left: 1.4em;
+  }
+  .lesson-prose ul {
+    list-style: disc;
+  }
+  .lesson-prose ol {
+    list-style: decimal;
+  }
+  .lesson-prose li + li {
+    margin-top: var(--space-1);
+  }
+  .lesson-prose h3 {
+    font: var(--text-h3);
+    color: var(--color-text-heading);
+    margin: var(--space-6) 0 var(--space-3);
+  }
+  .lesson-prose blockquote {
+    border-left: 3px solid var(--color-border-strong);
+    padding-left: var(--space-4);
+    color: var(--color-text-secondary);
+  }
+  .lesson-section {
+    scroll-margin-top: calc(48px + var(--space-4));
+    margin-bottom: var(--space-10);
+  }
+  .lesson-section > h2 {
+    font: var(--text-h2);
+    letter-spacing: var(--tracking-h2);
+    color: var(--color-text-heading);
+    margin-bottom: var(--space-4);
+  }
+  .lesson-inline-code {
+    font-family: var(--font-mono);
+    font-size: var(--text-code-inline-size, 0.9em);
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-xs);
+    padding: 0.05em 0.35em;
+  }
+  .lesson-code {
+    font: var(--text-code);
+    background: var(--code-bg, var(--color-bg-subtle));
+    color: var(--code-fg, var(--color-text-primary));
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    overflow-x: auto;
+    white-space: pre;
+    tab-size: 2;
+  }
+  .lesson-link {
+    color: var(--color-text-link);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .lesson-concept-link {
+    text-decoration: underline dotted var(--color-text-brand);
+    text-underline-offset: 3px;
+  }
+  .lesson-callout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-info-border);
+    background: var(--color-info-bg);
+  }
+  .lesson-callout[data-kind='tip'] {
+    border-color: var(--color-feedback-correct-border);
+    background: var(--color-feedback-correct-bg);
+  }
+  .lesson-callout[data-kind='warning'] {
+    border-color: var(--color-warning-border);
+    background: var(--color-warning-bg);
+  }
+  .lesson-callout[data-kind='danger'] {
+    border-color: var(--color-feedback-incorrect-border);
+    background: var(--color-feedback-incorrect-bg);
+  }
+  .lesson-callout > :last-child > :last-child {
+    margin-bottom: 0;
+  }
+  .lesson-callout__icon {
+    margin-top: 0.2em;
+  }
+  .lesson-callout__title {
+    font-weight: 700;
+    margin-bottom: var(--space-1) !important;
+  }
+  .lesson-pitfall {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-4);
+  }
+  .lesson-pitfall__part {
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border-default);
+    background: var(--color-bg-surface);
+  }
+  .lesson-pitfall__part[data-part='wrong'] {
+    border-color: var(--color-feedback-incorrect-border);
+    background: var(--color-feedback-incorrect-bg);
+  }
+  .lesson-pitfall__part[data-part='right'] {
+    border-color: var(--color-feedback-correct-border);
+    background: var(--color-feedback-correct-bg);
+  }
+  .lesson-pitfall__part > :last-child {
+    margin-bottom: 0;
+  }
+  .lesson-pitfall__label {
+    font: var(--text-small);
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-1) !important;
+  }
+  .lesson-table-wrap {
+    overflow-x: auto;
+  }
+  .lesson-table-wrap table {
+    border-collapse: collapse;
+    width: 100%;
+    font: var(--text-body);
+  }
+  .lesson-table-wrap th,
+  .lesson-table-wrap td {
+    border: 1px solid var(--color-border-default);
+    padding: var(--space-2) var(--space-3);
+    text-align: left;
+    vertical-align: top;
+  }
+  .lesson-table-wrap thead th,
+  .lesson-table-wrap tbody th {
+    background: var(--color-bg-subtle);
+    font-weight: 600;
+  }
+  .lesson-reveal {
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    margin: 0 0 var(--space-4);
+  }
+  .lesson-reveal summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .lesson-reveal[open] summary {
+    margin-bottom: var(--space-2);
+  }
+  .lesson-kbd {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    border: 1px solid var(--color-border-strong);
+    border-bottom-width: 2px;
+    border-radius: var(--radius-xs);
+    padding: 0 0.35em;
+  }
+  .lesson-example {
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--color-bg-surface);
+  }
+  .lesson-example__header,
+  .lesson-example__footer {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    font: var(--text-small);
+    background: var(--color-bg-subtle);
+  }
+  .lesson-example__header {
+    border-bottom: 1px solid var(--color-border-default);
+    font-weight: 600;
+  }
+  .lesson-example__footer {
+    border-top: 1px solid var(--color-border-default);
+    justify-content: flex-end;
+  }
+  .lesson-inline-exercise {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-secondary);
+    font: var(--text-ui);
+  }
+  .lesson-figure figcaption {
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-2);
+  }
+}
