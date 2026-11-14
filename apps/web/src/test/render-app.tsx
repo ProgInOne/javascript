@@ -4,11 +4,15 @@ import { render } from '@testing-library/react';
 import { vi } from 'vitest';
 import { routeTree } from '../routeTree.gen.ts';
 
-type Handler = (method: string, path: string, body: unknown) => { status?: number; body: unknown };
+type Handler = (
+  method: string,
+  path: string,
+  body: unknown,
+) => { status?: number; body: unknown } | Response;
 
 /**
  * Renders the real route tree at `path` against a fake API. `handler` receives every
- * /api/v1 request; return `{ status, body }`.
+ * /api/v1 request; return `{ status, body }`, or a `Response` (fake SSE streams, see sse.ts).
  */
 export function renderApp(path: string, handler: Handler) {
   const calls: { method: string; path: string; body: unknown }[] = [];
@@ -20,6 +24,7 @@ export function renderApp(path: string, handler: Handler) {
       const body: unknown = typeof init.body === 'string' ? JSON.parse(init.body) : undefined;
       calls.push({ method, path: apiPath, body });
       const res = handler(method, apiPath, body);
+      if (res instanceof Response) return Promise.resolve(res); // e.g. a fake SSE stream
       return Promise.resolve(
         new Response(JSON.stringify(res.body), {
           status: res.status ?? 200,

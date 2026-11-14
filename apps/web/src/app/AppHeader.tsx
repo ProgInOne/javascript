@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { dashboardQuery } from '../api/queries.ts';
 import { Settings } from 'lucide-react';
+import { AIStatusIndicator } from '../features/ai/AIStatusIndicator.tsx';
 import { LogoMark } from './Logo.tsx';
 
 const navLink =
@@ -13,7 +14,7 @@ const navLink =
 
 /**
  * Global top navigation (docs/design/ui-ux.md#전역-내비게이션). Only destinations that exist in
- * this milestone are shown; 통계, goal ring and AI status arrive with their features.
+ * this milestone are shown; 통계 and the goal ring arrive with their features.
  */
 export function AppHeader() {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ export function AppHeader() {
           </Link>
         </nav>
         <div className="ml-auto flex items-center gap-3">
+          <AIStatusIndicator />
           <IconButton
             label="설정"
             icon={<Settings size={20} />}

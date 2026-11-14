@@ -3,6 +3,7 @@ import { expect, type Page } from '@playwright/test';
 
 export const SCREENS = [
   { path: '/', heading: '대시보드' },
+  { path: '/settings/ai', heading: 'AI' },
   { path: '/settings/appearance', heading: '화면' },
   { path: '/settings/data', heading: '데이터' },
   { path: '/courses', heading: '과정' },
@@ -18,6 +19,11 @@ export async function openScreen(page: Page, path: string, heading: string, sche
   await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
   await page.goto(path);
   await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
+  // The header AI status arrives over /ai/events; wait for it so screenshots are stable.
+  await expect(page.locator('[data-ai-state]').first()).not.toHaveAttribute(
+    'data-ai-state',
+    'loading',
+  );
   await page.evaluate(() => document.fonts.ready);
 }
 

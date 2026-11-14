@@ -1,0 +1,159 @@
+/* AI connection UI (ui-ux.md AIStatusIndicator, 설정 AI 섹션). AI-made content uses --color-ai-*. */
+@layer components {
+  .ai-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-md);
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .ai-indicator:hover {
+    background: var(--color-bg-hover);
+    color: var(--color-text-primary);
+  }
+  .ai-indicator__label {
+    font-weight: 500;
+  }
+  .ai-dot,
+  .ai-indicator__dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-text-tertiary);
+  }
+  [data-tone='ok'] > .ai-dot,
+  [data-tone='ok'] > .ai-indicator__dot {
+    background: var(--color-action-primary);
+  }
+  [data-tone='warn'] > .ai-dot,
+  [data-tone='warn'] > .ai-indicator__dot {
+    background: var(--color-warning-accent);
+  }
+  [data-tone='error'] > .ai-dot,
+  [data-tone='error'] > .ai-indicator__dot {
+    background: var(--color-error-accent);
+  }
+  /* Neutral (not connected, waiting) is a hollow ring: shape differs, not only color. */
+  [data-tone='neutral'] > .ai-dot,
+  [data-tone='neutral'] > .ai-indicator__dot {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--color-text-tertiary);
+  }
+
+  /* Settings > AI */
+  .ai-settings {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .ai-settings__status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+  .ai-settings__state {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font: var(--text-h3);
+    color: var(--color-text-heading);
+  }
+  .ai-settings__section-title {
+    margin-bottom: var(--space-3);
+    font: var(--text-ui);
+    font-weight: 700;
+    color: var(--color-text-heading);
+  }
+  .ai-settings__note {
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .ai-settings__command {
+    display: inline-block;
+    margin-top: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+  .ai-settings__problems {
+    margin: var(--space-2) 0 0;
+    padding-left: var(--space-5);
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .ai-usage {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ai-usage__row {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+  }
+  .ai-usage__label {
+    font: var(--text-small);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  .ai-usage__value {
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .ai-usage__row[data-level='warn'] .pi-progress__fill {
+    background: var(--color-warning-accent);
+  }
+  .ai-usage__row[data-level='full'] .pi-progress__fill {
+    background: var(--color-error-accent);
+  }
+  .ai-usage__row[data-level='warn'] .ai-usage__value {
+    color: var(--color-warning-fg);
+    font-weight: 600;
+  }
+  .ai-usage__row[data-level='full'] .ai-usage__value {
+    color: var(--color-feedback-incorrect-fg);
+    font-weight: 700;
+  }
+  .ai-usage__notes {
+    grid-column: 2 / -1;
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .ai-models {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ai-models__name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  .ai-login {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+  .ai-login__progress {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-secondary);
+  }
+}

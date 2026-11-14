@@ -99,6 +99,7 @@ for (const viewport of VIEWPORTS) {
           route.fulfill({ json: FIRST_VISIT }),
         );
         await openScreen(page, path, heading, scheme);
+        if (path === '/settings/ai') await expect(page.getByText('모의 튜터')).toBeVisible();
         await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
       });
     }

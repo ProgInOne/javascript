@@ -8,6 +8,7 @@ import { RouteAnnouncer } from '../app/RouteAnnouncer.tsx';
 import { ThemeSync } from '../app/ThemeSync.tsx';
 import { sendHeartbeat } from '../api/queries.ts';
 import { useActivityHeartbeat } from '../features/activity/useActivityHeartbeat.ts';
+import { AiEventsSync } from '../features/ai/api.ts';
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -59,6 +60,7 @@ function RootLayout() {
     <Shell>
       <ThemeSync />
       <ActivityHeartbeat />
+      <AiEventsSync />
       <Outlet />
     </Shell>
   );

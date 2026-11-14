@@ -4,6 +4,7 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, ArrowRight, ChevronLeft } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 import { lessonQuery, recordLessonProgress } from '../../api/queries.ts';
+import { AIStatusIndicator } from '../../features/ai/AIStatusIndicator.tsx';
 import { QueryState } from '../../app/QueryState.tsx';
 import { ConceptImportanceBadge, LessonBody } from '../../features/lesson-reader/LessonBody.tsx';
 import { LessonPractice } from '../../features/practice/LessonPractice.tsx';
@@ -147,6 +148,7 @@ function LearnHeader({ lesson, mode }: { lesson: LessonDetail; mode: 'read' | 'p
           실습
         </Link>
       </nav>
+      <AIStatusIndicator />
     </header>
   );
 }
