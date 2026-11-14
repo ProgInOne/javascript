@@ -9,6 +9,11 @@ import {
 import {
   applyAttempt,
   conceptsReadyToFlush,
+  isUnassisted,
+  nextAdaptiveStep,
+  REMEDIAL_REASONS,
+  type AttemptEffects,
+  type ItemOutcome,
   evaluatePassRule,
   flushPendingRatings,
   initialConceptState,
@@ -36,8 +41,10 @@ import {
   type InlineAttemptRequest,
   type InlineAttemptResponse,
   type RunResult,
+  type SetAdaptation,
+  type SkipItemResponse,
 } from '@proginone/shared';
-import type { ContentExercise } from '../../db/content/repository.ts';
+import type { ContentExercise, ContentRepository } from '../../db/content/repository.ts';
 import {
   countAppliedItemAttempts,
   countAppliedStandaloneAttempts,
@@ -47,7 +54,12 @@ import {
   insertSubmission,
 } from '../../db/user/attempts.ts';
 import type { UserDb } from '../../db/user/connection.ts';
-import { findItem, hintState, listHintEvents } from '../../db/user/exercise-records.ts';
+import {
+  excludedExerciseIds,
+  findItem,
+  hintState,
+  listHintEvents,
+} from '../../db/user/exercise-records.ts';
 import {
   RUN_CONSOLE_KEEP,
   RUN_RESULT_MAX_BYTES,
@@ -72,8 +84,12 @@ import {
   appliedItemAttempts,
   completeSet,
   getSet,
+  insertItems,
   insertPendingRating,
+  lastSeenAtByGroup,
   listItems,
+  replaceItemExercise,
+  touchedItemIds,
   listUnflushedRatings,
   markRatingsFlushed,
   updateItem,
@@ -89,6 +105,7 @@ import { AppError } from '../../http/errors.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
 import { candidateOf, learnerContext } from './engine.ts';
+import { itemRows } from './practice-set-service.ts';
 import { kit, loadSpec } from './kit.ts';
 import {
   misconceptionChanges,
@@ -126,6 +143,10 @@ interface EnginePlan {
   lessonCompletedNow: boolean;
   misconceptions: Signals;
   remediation: { id: string; suggestion: RemediationSuggestion; itemIds: string[] } | null;
+  /** Pending items whose exercise was replaced (`difficulty_step_up`). */
+  replaced: PracticeItemRow[];
+  /** Items appended to the set (relearning, follow-ups). */
+  appended: PracticeItemRow[];
 }
 
 /** Misconception updates with the stored rows they apply to. */
@@ -133,6 +154,16 @@ interface Signals {
   updates: readonly MisconceptionUpdate[];
   stored: Map<string, StoredObservation>;
 }
+
+const EMPTY_EFFECTS: AttemptEffects = {
+  mastery: [],
+  evidence: [],
+  pendingRatings: [],
+  misconceptions: [],
+  remediation: null,
+};
+
+const isRemedial = (reason: string) => (REMEDIAL_REASONS as readonly string[]).includes(reason);
 
 const EMPTY_FLUSH: FlushResult = {
   memory: [],
@@ -251,9 +282,7 @@ export class AttemptService {
           learnerId,
           set,
           item,
-          candidate,
-          facts,
-          misconceptionIds: grade.misconceptionIds,
+          attempt: { candidate, facts, misconceptionIds: grade.misconceptionIds },
           dayBoundary,
           now,
         })
@@ -300,7 +329,9 @@ export class AttemptService {
         runResult: run === null ? null : storedRun(run),
         answerHash: createHash('sha256').update(JSON.stringify(answer)).digest('hex'),
       });
-      if (plan) this.#write(plan, { learnerId, set, item, attemptId, grade, date, now });
+      if (plan) {
+        this.#write(plan, { learnerId, set, item, attemptId, correct: grade.correct, date, now });
+      }
     });
 
     return this.#response({
@@ -479,25 +510,90 @@ export class AttemptService {
     };
   }
 
+  /**
+   * `POST /practice-sets/:id/items/:itemId/skip`: marks a pending item skipped, appends a
+   * follow-up (learning-engine.md#진행-중-적응-nextadaptivestep) and, when it was the last pending
+   * item, completes the set like a final attempt would (FSRS flush, pass rule, lesson progress).
+   */
+  skip(setId: string, itemId: string): SkipItemResponse {
+    const now = this.#now();
+    const orm = this.#userDb.orm;
+    const { learnerId, dayBoundary } = learnerContext(this.#userDb);
+    const set = getSet(orm, learnerId, setId);
+    const item = set ? listItems(orm, set.row.id).find((i) => i.id === itemId) : undefined;
+    if (!set || !item) {
+      throw new AppError('NOT_FOUND', 404, '연습 항목을 찾을 수 없습니다.', {
+        details: { practiceSetId: setId, itemId },
+      });
+    }
+    if (set.row.status !== 'active') {
+      throw new AppError('PRACTICE_SET_CLOSED', 409, '이미 끝난 연습 세트입니다.', {
+        details: { practiceSetId: set.row.id },
+      });
+    }
+    if (item.status !== 'pending') {
+      throw new AppError('PRACTICE_ITEM_DONE', 409, '이미 답했거나 건너뛴 문항입니다.', {
+        details: { itemId, status: item.status },
+      });
+    }
+    const plan = this.#plan({ learnerId, set, item, attempt: null, dayBoundary, now });
+    const date = localDateOf(now, dayBoundary);
+    orm.transaction(() => {
+      this.#write(plan, { learnerId, set, item, attemptId: null, correct: false, date, now });
+    });
+    const repo = this.#content.repo;
+    const titles = repo.getConcepts(plan.mastery.map((m) => m.conceptId));
+    return {
+      item: { id: item.id, status: 'skipped', attempts: 0 },
+      adaptations: adaptationsOf(repo, plan),
+      masteryChanges: plan.mastery.map((m) => ({
+        conceptId: m.conceptId,
+        title: titles.get(m.conceptId)?.title ?? m.conceptId,
+        scoreBefore: m.before.score,
+        scoreAfter: m.after.score,
+        stageBefore: m.before.stage,
+        stageAfter: m.after.stage,
+      })),
+      set: {
+        id: set.row.id,
+        status: plan.setFinished ? 'completed' : set.row.status,
+        progress: progressOf(plan.items),
+        nextItemId: plan.setFinished ? null : nextItemIdOf(plan.items),
+        result: plan.result ? resultView(plan.result, repo) : null,
+      },
+    };
+  }
+
+  /**
+   * Everything the engine decides for an answered (`attempt` given) or skipped item: mastery,
+   * misconceptions, relearning, adaptive items, FSRS flushes and the set result. Reads and pure
+   * engine calls only; the caller writes the plan in one transaction.
+   */
   #plan(input: {
     learnerId: string;
     set: PracticeSet;
     item: PracticeItemRow;
-    candidate: ExerciseCandidate;
-    facts: AttemptFacts;
-    misconceptionIds: readonly string[];
+    attempt: {
+      candidate: ExerciseCandidate;
+      facts: AttemptFacts;
+      misconceptionIds: readonly string[];
+    } | null;
     dayBoundary: DayBoundary;
     now: number;
   }): EnginePlan {
-    const { learnerId, set, item, candidate, facts, dayBoundary, now } = input;
+    const { learnerId, set, item, dayBoundary, now } = input;
+    const candidate = input.attempt?.candidate ?? null;
+    const facts = input.attempt?.facts ?? null;
     const repo = this.#content.repo;
     const engine = this.#engine;
     const orm = this.#userDb.orm;
-    const items = listItems(orm, set.row.id).map((i) =>
-      i.id === item.id ? { ...i, status: 'answered' as const, finalAttemptId: facts.attemptId } : i,
+    let items = listItems(orm, set.row.id).map((i) =>
+      i.id !== item.id
+        ? i
+        : facts
+          ? { ...i, status: 'answered' as const, finalAttemptId: facts.attemptId }
+          : { ...i, status: 'skipped' as const },
     );
-    const remaining = items.filter((i) => i.status === 'pending');
-    const setFinished = remaining.length === 0;
     const stored: Pending[] = listUnflushedRatings(orm, set.row.id).map((r) => ({
       id: r.id,
       conceptId: r.conceptId,
@@ -508,34 +604,56 @@ export class AttemptService {
       isNew: false,
     }));
     const conceptIds = [
-      ...candidate.concepts.map((c) => c.conceptId),
+      ...(candidate?.concepts.map((c) => c.conceptId) ?? []),
+      ...(item.targetConceptId === null ? [] : [item.targetConceptId]),
       ...stored.map((p) => p.conceptId),
       ...set.scope.conceptIds,
     ];
     const states = loadConceptStates(orm, learnerId, conceptIds, engine.fsrs);
 
-    const mc = misconceptionInput(repo, orm, learnerId, candidate, input.misconceptionIds);
-    const primary = candidate.concepts.find((c) => c.isPrimary)?.conceptId;
-    const effects = applyAttempt(engine, {
-      attempt: facts,
-      exercise: candidate,
-      concepts: [...states.values()],
+    const mc =
+      candidate && input.attempt
+        ? misconceptionInput(repo, orm, learnerId, candidate, input.attempt.misconceptionIds)
+        : { input: undefined, stored: new Map<string, StoredObservation>() };
+    const primary = candidate?.concepts.find((c) => c.isPrimary)?.conceptId;
+    const effects: AttemptEffects =
+      candidate && facts
+        ? applyAttempt(engine, {
+            attempt: facts,
+            exercise: candidate,
+            concepts: [...states.values()],
+            now,
+            dayBoundary,
+            ...(mc.input ? { misconceptions: mc.input } : {}),
+            ...(primary === undefined
+              ? {}
+              : {
+                  remediation: remediationContext(repo, orm, engine, {
+                    learnerId,
+                    conceptId: primary,
+                    setId: set.row.id,
+                    items,
+                    currentItemId: item.id,
+                    now,
+                  }),
+                }),
+          })
+        : EMPTY_EFFECTS;
+
+    // Adaptive changes (pure), applied to the in-memory item list before the set is judged.
+    const adaptation = this.#adapt({
+      learnerId,
+      set,
+      item,
+      items,
+      facts,
+      remediation: effects.remediation,
+      states,
       now,
-      dayBoundary,
-      misconceptions: mc.input,
-      ...(primary === undefined
-        ? {}
-        : {
-            remediation: remediationContext(repo, orm, engine, {
-              learnerId,
-              conceptId: primary,
-              setId: set.row.id,
-              items,
-              currentItemId: item.id,
-              now,
-            }),
-          }),
     });
+    items = adaptation.items;
+    const remaining = items.filter((i) => i.status === 'pending');
+    const setFinished = remaining.length === 0;
     const after = new Map<string, ConceptState>(states);
     for (const update of effects.mastery) {
       const prev = after.get(update.conceptId) ?? initialConceptState(update.conceptId);
@@ -597,42 +715,49 @@ export class AttemptService {
           orm,
           items.map((i) => i.id),
         ),
-        {
-          id: facts.attemptId,
-          itemId: item.id,
-          outcome: facts.outcome,
-          score: facts.score,
-          hintLevelMax: facts.hintLevelMax,
-          solutionViewed: facts.solutionViewed,
-          tutorAssisted: facts.tutorAssisted,
-          attemptInItem: facts.attemptInItem,
-        },
+        ...(facts
+          ? [
+              {
+                id: facts.attemptId,
+                itemId: item.id,
+                outcome: facts.outcome,
+                score: facts.score,
+                hintLevelMax: facts.hintLevelMax,
+                solutionViewed: facts.solutionViewed,
+                tutorAssisted: facts.tutorAssisted,
+                attemptInItem: facts.attemptInItem,
+              },
+            ]
+          : []),
       ];
       const exercises = new Map(
         this.#content.repo.getExercises(items.map((i) => i.exerciseId)).map((e) => [e.id, e]),
       );
-      const passItems: PassRuleItem[] = items.map((i) => {
-        const mine = attempts.filter((a) => a.itemId === i.id);
-        const last = mine.at(-1);
-        const first = mine[0];
-        const exercise = exercises.get(i.exerciseId);
-        return {
-          status: i.status,
-          type: exercise?.type ?? 'unknown',
-          difficulty: exercise?.difficulty ?? 1,
-          finalAttempt:
-            i.status === 'answered' && last
-              ? {
-                  o: observationOf(last),
-                  hintLevelMax: Math.min(3, last.hintLevelMax) as HintLevel,
-                  solutionViewed: last.solutionViewed,
-                  tutorAssisted: last.tutorAssisted,
-                  attemptInItem: last.attemptInItem,
-                }
-              : null,
-          firstAttemptCorrect: first ? observationOf(first) >= 0.5 : false,
-        };
-      });
+      // Relearning items practise scaffolds or other concepts: not part of the lesson's bar.
+      const passItems: PassRuleItem[] = items
+        .filter((i) => !isRemedial(i.reason))
+        .map((i) => {
+          const mine = attempts.filter((a) => a.itemId === i.id);
+          const last = mine.at(-1);
+          const first = mine[0];
+          const exercise = exercises.get(i.exerciseId);
+          return {
+            status: i.status,
+            type: exercise?.type ?? 'unknown',
+            difficulty: exercise?.difficulty ?? 1,
+            finalAttempt:
+              i.status === 'answered' && last
+                ? {
+                    o: observationOf(last),
+                    hintLevelMax: Math.min(3, last.hintLevelMax) as HintLevel,
+                    solutionViewed: last.solutionViewed,
+                    tutorAssisted: last.tutorAssisted,
+                    attemptInItem: last.attemptInItem,
+                  }
+                : null,
+            firstAttemptCorrect: first ? observationOf(first) >= 0.5 : false,
+          };
+        });
       const pass =
         set.row.kind === 'lesson' && set.passRule
           ? evaluatePassRule(
@@ -685,8 +810,145 @@ export class AttemptService {
       remediation:
         effects.remediation === null
           ? null
-          : { id: newId(), suggestion: effects.remediation, itemIds: [] },
+          : {
+              id: newId(),
+              suggestion: effects.remediation,
+              itemIds: adaptation.appended.filter((a) => isRemedial(a.reason)).map((a) => a.id),
+            },
+      replaced: adaptation.replaced,
+      appended: adaptation.appended,
     };
+  }
+
+  /**
+   * `nextAdaptiveStep` for the item just answered or skipped. Candidates are the practice and
+   * remedial exercises of the concepts involved (plus worked examples), minus reported ones.
+   */
+  #adapt(input: {
+    learnerId: string;
+    set: PracticeSet;
+    item: PracticeItemRow;
+    items: PracticeItemRow[];
+    facts: AttemptFacts | null;
+    remediation: RemediationSuggestion | null;
+    states: Map<string, ConceptState>;
+    now: number;
+  }): { items: PracticeItemRow[]; replaced: PracticeItemRow[]; appended: PracticeItemRow[] } {
+    const { learnerId, set, item, facts, remediation, now } = input;
+    if (set.row.kind === 'assessment') return { items: input.items, replaced: [], appended: [] };
+    const orm = this.#userDb.orm;
+    const repo = this.#content.repo;
+    const conceptIds = [
+      ...(item.targetConceptId === null ? [] : [item.targetConceptId]),
+      ...(remediation?.prerequisite ? [remediation.prerequisite.conceptId] : []),
+    ];
+    const excluded = excludedExerciseIds(orm, learnerId);
+    const usable = (list: ContentExercise[]) =>
+      list
+        .filter((e) => !excluded.has(e.id))
+        .map(candidateOf)
+        .filter((c) => c !== null);
+    const candidates = usable(repo.listExercisesForConcepts(conceptIds, ['practice']));
+    const remedialCandidates =
+      remediation === null
+        ? []
+        : usable([
+            ...repo.listExercisesForConcepts(conceptIds, ['remedial']),
+            ...repo.getExercises(remediation.workedExamples.map((w) => w.exerciseId)),
+          ]);
+    const itemFacts = new Map(
+      repo
+        .getExercises(input.items.map((i) => i.exerciseId))
+        .map(candidateOf)
+        .filter((c) => c !== null)
+        .map((c) => [c.id, c]),
+    );
+    const ids = input.items.map((i) => i.id);
+    const touched = touchedItemIds(orm, ids);
+    const attempts = appliedItemAttempts(orm, ids);
+    const latest = new Map<string, (typeof attempts)[number]>();
+    for (const a of attempts) if (a.itemId !== null) latest.set(a.itemId, a);
+    const target = new Map(input.items.map((i) => [i.id, i.targetConceptId]));
+    const outcomes: ItemOutcome[] = [...latest.entries()]
+      .filter(([itemId]) => itemId !== item.id)
+      .map(([itemId, a]) => ({
+        itemId,
+        conceptId: target.get(itemId) ?? null,
+        correct: observationOf(a) >= 0.5,
+        unassisted: isUnassisted({ ...a, hintLevelMax: Math.min(3, a.hintLevelMax) as HintLevel }),
+        at: a.submittedAt.getTime(),
+      }))
+      .sort((a, b) => a.at - b.at);
+    if (facts) {
+      outcomes.push({
+        itemId: item.id,
+        conceptId: item.targetConceptId,
+        correct: observationOf(facts) >= 0.5,
+        unassisted: isUnassisted(facts),
+        at: facts.submittedAt,
+      });
+    }
+    const solutionJustViewed =
+      facts !== null &&
+      facts.solutionViewed &&
+      !attempts.some((a) => a.itemId === item.id && a.solutionViewed);
+
+    const actions = nextAdaptiveStep(this.#engine, {
+      set: {
+        kind: set.row.kind,
+        items: input.items.map((i) => {
+          const f = itemFacts.get(i.exerciseId);
+          return {
+            id: i.id,
+            position: i.position,
+            exerciseId: i.exerciseId,
+            targetConceptId: i.targetConceptId,
+            status: i.status,
+            reason: i.reason,
+            type: f?.type ?? 'unknown',
+            difficulty: f?.difficulty ?? 1,
+            variantGroupKey: f?.variantGroupKey ?? i.exerciseId,
+            touched: touched.has(i.id) || i.id === item.id,
+          };
+        }),
+      },
+      itemId: item.id,
+      event: facts ? 'answered' : 'skipped',
+      outcomes,
+      solutionJustViewed,
+      remediation,
+      candidates,
+      remedialCandidates,
+      concepts: [...input.states.values()],
+      lastSeenAtByGroup: lastSeenAtByGroup(orm, learnerId),
+      seed: `${set.row.id}:${item.id}`,
+      now,
+    });
+
+    let items = input.items;
+    const replaced: PracticeItemRow[] = [];
+    const appended: PracticeItemRow[] = [];
+    for (const action of actions) {
+      if (action.kind === 'replace') {
+        items = items.map((i) => {
+          if (i.id !== action.itemId) return i;
+          const next: PracticeItemRow = {
+            ...i,
+            exerciseId: action.item.exerciseId,
+            exerciseOrigin: action.item.exerciseOrigin,
+            reason: action.reason,
+          };
+          replaced.push(next);
+          return next;
+        });
+      } else {
+        for (const row of itemRows(set.row.id, learnerId, [action.item])) {
+          appended.push(row);
+          items = [...items, row];
+        }
+      }
+    }
+    return { items, replaced, appended };
   }
 
   /** Engine writes; runs inside the attempt transaction. */
@@ -696,18 +958,21 @@ export class AttemptService {
       learnerId: string;
       set: PracticeSet;
       item: PracticeItemRow;
-      attemptId: string;
-      grade: GradeResult;
+      /** `null` when the item was skipped. */
+      attemptId: string | null;
+      correct: boolean;
       date: string;
       now: number;
     },
   ): void {
     const orm = this.#userDb.orm;
-    const { learnerId, set, item, attemptId, grade, date, now } = ctx;
+    const { learnerId, set, item, attemptId, correct, date, now } = ctx;
     for (const update of plan.mastery) upsertMastery(orm, learnerId, update, now);
     for (const record of plan.evidence) insertEvidence(orm, learnerId, record);
     writeSignals(orm, learnerId, plan.misconceptions);
-    if (plan.remediation) {
+    for (const row of plan.replaced) replaceItemExercise(orm, row);
+    insertItems(orm, plan.appended);
+    if (plan.remediation && attemptId !== null) {
       insertRemediation(orm, {
         id: plan.remediation.id,
         learnerId,
@@ -736,7 +1001,13 @@ export class AttemptService {
     markRatingsFlushed(orm, plan.skippedIds, 'skipped', now);
     for (const memory of plan.flush.memory) upsertMemory(orm, learnerId, memory, now);
     for (const log of plan.flush.reviewLogs) insertReviewLog(orm, learnerId, log);
-    updateItem(orm, item.id, { status: 'answered', finalAttemptId: attemptId });
+    updateItem(
+      orm,
+      item.id,
+      attemptId === null
+        ? { status: 'skipped', finalAttemptId: item.finalAttemptId }
+        : { status: 'answered', finalAttemptId: attemptId },
+    );
     if (plan.result) completeSet(orm, set.row.id, plan.result, now);
 
     const lessonId = set.scope.lessonId;
@@ -757,8 +1028,8 @@ export class AttemptService {
       });
     }
     addDailyActivity(orm, learnerId, date, {
-      attempts: 1,
-      correct: grade.correct ? 1 : 0,
+      attempts: attemptId === null ? 0 : 1,
+      correct: correct ? 1 : 0,
       lessonsCompleted: plan.lessonCompletedNow ? 1 : 0,
       reviewsDone: set.row.kind === 'review' ? plan.conceptsFlushed : 0,
     });
@@ -815,6 +1086,7 @@ export class AttemptService {
         plan?.misconceptions.updates ?? [],
       ),
       remediation: plan?.remediation ? remediationView(repo, plan.remediation) : null,
+      adaptations: adaptationsOf(repo, plan),
       item: {
         id: item.id,
         status: applied ? 'answered' : item.status,
@@ -829,6 +1101,32 @@ export class AttemptService {
       },
     };
   }
+}
+
+/** API view of the items an attempt or skip replaced or appended. */
+function adaptationsOf(repo: ContentRepository, plan: EnginePlan | null): SetAdaptation[] {
+  if (!plan) return [];
+  const rows = [
+    ...plan.replaced.map((row) => ({ kind: 'replace' as const, row })),
+    ...plan.appended.map((row) => ({ kind: 'append' as const, row })),
+  ];
+  const concepts = repo.getConcepts(
+    rows.flatMap(({ row }) => (row.targetConceptId === null ? [] : [row.targetConceptId])),
+  );
+  return rows.map(({ kind, row }) => ({
+    kind,
+    itemId: row.id,
+    position: row.position,
+    exerciseId: row.exerciseId,
+    reason: row.reason,
+    targetConcept:
+      row.targetConceptId === null
+        ? null
+        : {
+            id: row.targetConceptId,
+            title: concepts.get(row.targetConceptId)?.title ?? row.targetConceptId,
+          },
+  }));
 }
 
 /** Writes misconception observations (insert for new rows, update in place otherwise). */

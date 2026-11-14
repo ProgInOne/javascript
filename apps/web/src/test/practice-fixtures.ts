@@ -171,6 +171,7 @@ export function attemptResponse(
     ],
     misconceptionChanges: [],
     remediation: null,
+    adaptations: [],
     item: { id: itemId, status: 'answered', attempts: over.attempts ?? 1 },
     set: {
       id: set.id,

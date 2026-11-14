@@ -122,12 +122,13 @@ export function writeContentDb(meta: Record<string, string> = {}): string {
     correction: 'console.log는 값을 화면에 보여 줄 뿐 돌려주지 않습니다.',
     remedial_exercise_ids_json: '[]',
   });
-  for (const ex of FIXTURE_EXERCISES) {
+  for (const ex of [...FIXTURE_EXERCISES, ...REMEDIAL_EXERCISES]) {
     ins('exercises', {
       id: ex.id,
       type: ex.type,
       difficulty: ex.difficulty,
       lesson_id: ex.lessonId ?? 'js-basics.start.first-program',
+      usage: ex.usage ?? 'practice',
       prompt: `${ex.type} 문제`,
       code: ex.code ?? null,
       spec_json: JSON.stringify(ex.spec),
@@ -219,6 +220,7 @@ interface FixtureExercise {
   id: string;
   type: string;
   difficulty: number;
+  usage?: 'practice' | 'remedial';
   spec: unknown;
   code?: string;
   lessonId?: string;
@@ -412,4 +414,45 @@ export const FIXTURE_EXERCISES: FixtureExercise[] = [
       ],
     },
   },
+];
+
+// ── Remedial exercises: outside lesson and review sets, used by adaptive items and weakness sets ──
+
+const choice = {
+  options: [
+    { id: 'a', text: '`2`를 돌려준다', misconception: 'js.mc.log-is-return' },
+    { id: 'b', text: '`2`를 출력한다' },
+    { id: 'c', text: '아무 일도 없다' },
+  ],
+  correct: 'b',
+};
+
+/** `usage: remedial` choice exercises (answer `b` is correct, `a` points to the misconception). */
+export const REMEDIAL = {
+  statementL1: `${P}.remedial-statement-l1`,
+  statementL2: `${P}.remedial-statement-l2`,
+  statementL3: `${P}.remedial-statement-l3`,
+  statementL4: `${P}.remedial-statement-l4`,
+  commentL1a: `${P}.remedial-comment-l1a`,
+  commentL1b: `${P}.remedial-comment-l1b`,
+  commentL2: `${P}.remedial-comment-l2`,
+} as const;
+
+const remedial = (id: string, difficulty: number, concept: string): FixtureExercise => ({
+  id,
+  type: 'mcq_single',
+  difficulty,
+  usage: 'remedial',
+  spec: choice,
+  concepts: [{ id: concept, weight: 1 }],
+});
+
+export const REMEDIAL_EXERCISES: FixtureExercise[] = [
+  remedial(REMEDIAL.statementL1, 1, 'js.basics.statement'),
+  remedial(REMEDIAL.statementL2, 2, 'js.basics.statement'),
+  remedial(REMEDIAL.statementL3, 3, 'js.basics.statement'),
+  remedial(REMEDIAL.statementL4, 4, 'js.basics.statement'),
+  remedial(REMEDIAL.commentL1a, 1, 'js.basics.comment'),
+  remedial(REMEDIAL.commentL1b, 1, 'js.basics.comment'),
+  remedial(REMEDIAL.commentL2, 2, 'js.basics.comment'),
 ];

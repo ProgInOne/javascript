@@ -434,6 +434,7 @@ PK `(learner_id, lesson_id)`. 인덱스 `(learner_id, status)`.
 | | `final_attempt_id` | TEXT | Y | | 마지막 시도 |
 
 - 연습 세트는 진행 중에 **적응적으로 항목을 추가** 할 수 있습니다(재학습 경로 등). 추가 항목은 `position`을 이어 붙입니다.
+- M5 구현: 항목 `reason`은 `lesson_practice`, `production_required`, `interleave_review`, `review_due`, `review_reinforce`, `weak_concept`, `misconception_target`, `difficulty_step_up`, `remedial_prereq`, `remedial_worked_example`, `remedial_easier`, `solution_followup`, `skip_followup`입니다. 난이도 상승은 대기 중이고 손대지 않은 항목의 `exercise_id`·`exercise_origin`·`reason`만 바꿉니다.
 - 인덱스: `practice_sets(learner_id, kind, status)`, UNIQUE `practice_set_items(practice_set_id, position)`, `practice_set_items(exercise_id)`.
 
 #### attempts, submissions, hint_events

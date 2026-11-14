@@ -128,6 +128,7 @@ const wrongAttempt = {
   ],
   misconceptionChanges: [],
   remediation: null,
+  adaptations: [],
   item: { id: items[0]?.id, status: 'answered', attempts: 1 },
   set: {
     id: set.id,

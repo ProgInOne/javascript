@@ -9,7 +9,7 @@ import {
   type PracticeScopeJson,
 } from './json.ts';
 import { forWrite, fromRow } from './json-io.ts';
-import { attempts, pendingRatings, practiceSetItems, practiceSets } from './schema.ts';
+import { attempts, hintEvents, pendingRatings, practiceSetItems, practiceSets } from './schema.ts';
 
 // practice_sets, practice_set_items and pending_ratings.
 
@@ -101,6 +101,51 @@ export function updateItem(
   values: Pick<PracticeItemRow, 'status' | 'finalAttemptId'>,
 ): void {
   orm.update(practiceSetItems).set(values).where(eq(practiceSetItems.id, id)).run();
+}
+
+/** Items appended to a set while it is in progress (positions continue the set). */
+export function insertItems(
+  orm: Orm,
+  rows: readonly (typeof practiceSetItems.$inferInsert)[],
+): void {
+  if (rows.length > 0)
+    orm
+      .insert(practiceSetItems)
+      .values([...rows])
+      .run();
+}
+
+/** Swaps the exercise of a pending, untouched item (adaptive step-up). */
+export function replaceItemExercise(
+  orm: Orm,
+  row: Pick<PracticeItemRow, 'id' | 'exerciseId' | 'exerciseOrigin' | 'reason'>,
+): void {
+  orm
+    .update(practiceSetItems)
+    .set({ exerciseId: row.exerciseId, exerciseOrigin: row.exerciseOrigin, reason: row.reason })
+    .where(and(eq(practiceSetItems.id, row.id), eq(practiceSetItems.status, 'pending')))
+    .run();
+}
+
+/** Items the learner has seen: any attempt (sandbox failures included) or hint/solution view. */
+export function touchedItemIds(orm: Orm, itemIds: readonly string[]): Set<string> {
+  const out = new Set<string>();
+  if (itemIds.length === 0) return out;
+  for (const row of orm
+    .selectDistinct({ id: attempts.practiceSetItemId })
+    .from(attempts)
+    .where(inArray(attempts.practiceSetItemId, [...itemIds]))
+    .all()) {
+    if (row.id !== null) out.add(row.id);
+  }
+  for (const row of orm
+    .selectDistinct({ id: hintEvents.practiceSetItemId })
+    .from(hintEvents)
+    .where(inArray(hintEvents.practiceSetItemId, [...itemIds]))
+    .all()) {
+    if (row.id !== null) out.add(row.id);
+  }
+  return out;
 }
 
 export function completeSet(orm: Orm, id: string, result: PracticeResultJson, now: number): void {

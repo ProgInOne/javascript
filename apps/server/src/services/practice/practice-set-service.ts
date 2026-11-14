@@ -22,6 +22,7 @@ import { AppError } from '../../http/errors.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
 import type { ReviewService } from '../review/review-service.ts';
+import type { WeaknessService } from './weakness.ts';
 import { candidateOf, learnerContext, passRuleOverrides } from './engine.ts';
 import { activeMisconceptionsByConcept, misconceptionTargetIds } from './signals.ts';
 import { buildSetView } from './views.ts';
@@ -32,6 +33,7 @@ export interface PracticeSetServiceDeps {
   engine: EngineDeps;
   now: Clock;
   review: ReviewService;
+  weakness: WeaknessService;
 }
 
 /** Builds and reads practice sets (learning-engine.md#연습-세트-구성). */
@@ -41,6 +43,7 @@ export class PracticeSetService {
   readonly #engine: EngineDeps;
   readonly #now: Clock;
   readonly #review: ReviewService;
+  readonly #weakness: WeaknessService;
 
   constructor(deps: PracticeSetServiceDeps) {
     this.#userDb = deps.userDb;
@@ -48,6 +51,7 @@ export class PracticeSetService {
     this.#engine = deps.engine;
     this.#now = deps.now;
     this.#review = deps.review;
+    this.#weakness = deps.weakness;
   }
 
   get(id: string): PracticeSetView {
@@ -59,9 +63,64 @@ export class PracticeSetService {
   }
 
   create(request: CreatePracticeSetRequest): PracticeSetView {
-    return request.kind === 'lesson'
-      ? this.#createLessonSet(request.lessonId)
-      : this.#createReviewSet();
+    switch (request.kind) {
+      case 'lesson':
+        return this.#createLessonSet(request.lessonId);
+      case 'review':
+        return this.#createReviewSet();
+      case 'weakness':
+        return this.#createWeaknessSet(request.conceptIds);
+    }
+  }
+
+  /**
+   * Weakness practice (`buildWeaknessSet`). Without `conceptIds` the latest active weakness set
+   * is resumed, or one is built for the automatic targets; with `conceptIds` a new set is built
+   * for those concepts (an older active set stays resumable). No pass rule.
+   */
+  #createWeaknessSet(conceptIds: readonly string[] | undefined): PracticeSetView {
+    const orm = this.#userDb.orm;
+    const { learnerId } = learnerContext(this.#userDb);
+    if (conceptIds === undefined) {
+      const activeId = findActiveSet(orm, learnerId, 'weakness');
+      const active = activeId === null ? null : getSet(orm, learnerId, activeId);
+      if (active) return this.#view(active);
+    }
+    const setId = newId();
+    const plan = this.#weakness.planSet(setId, conceptIds);
+    if (!plan) {
+      throw new AppError('PRACTICE_NOTHING_WEAK', 409, '지금 약점으로 볼 개념이 없습니다.', {
+        details: { conceptIds: conceptIds ?? [] },
+      });
+    }
+    if (plan.items.length === 0) {
+      throw new AppError('PRACTICE_NO_EXERCISES', 409, '약점 연습에 쓸 문제가 없습니다.', {
+        details: { conceptIds: plan.conceptIds },
+      });
+    }
+    orm.transaction(() => {
+      insertSet(
+        orm,
+        {
+          id: setId,
+          learnerId,
+          kind: 'weakness',
+          status: 'active',
+          scope: {
+            v: 1,
+            lessonId: null,
+            conceptIds: plan.conceptIds,
+            rationale: JSON.parse(JSON.stringify(plan.rationale)) as Record<string, unknown>,
+          },
+          passRule: null,
+          engineVersion: ENGINE_VERSION,
+          createdAt: new Date(plan.now),
+          completedAt: null,
+        },
+        itemRows(setId, learnerId, plan.items),
+      );
+    });
+    return this.get(setId);
   }
 
   /**

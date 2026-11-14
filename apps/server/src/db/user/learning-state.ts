@@ -244,6 +244,17 @@ export function insertReviewLog(orm: Orm, learnerId: string, record: ReviewLogRe
     .run();
 }
 
+/** Every concept the learner has a `concept_mastery` row for. */
+export function listMasteryConceptIds(orm: Orm, learnerId: string): string[] {
+  return orm
+    .select({ conceptId: conceptMastery.conceptId })
+    .from(conceptMastery)
+    .where(eq(conceptMastery.learnerId, learnerId))
+    .orderBy(asc(conceptMastery.conceptId))
+    .all()
+    .map((r) => r.conceptId);
+}
+
 /** Concepts with an FSRS card due before `before` (end of the learner's day), not suspended. */
 export function dueConceptIds(orm: Orm, learnerId: string, before: number): string[] {
   return orm

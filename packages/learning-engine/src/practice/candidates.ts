@@ -42,7 +42,24 @@ export type PracticeItemReason =
   | 'production_required'
   | 'interleave_review'
   | 'review_due'
-  | 'review_reinforce';
+  | 'review_reinforce'
+  // Weakness sets (practice/weakness-set.ts).
+  | 'weak_concept'
+  | 'misconception_target'
+  // Adaptive changes during a set (practice/adaptive.ts).
+  | 'difficulty_step_up'
+  | 'remedial_prereq'
+  | 'remedial_worked_example'
+  | 'remedial_easier'
+  | 'solution_followup'
+  | 'skip_followup';
+
+/** Reasons of items added by relearning; they do not count towards a lesson pass rule. */
+export const REMEDIAL_REASONS: readonly PracticeItemReason[] = [
+  'remedial_prereq',
+  'remedial_worked_example',
+  'remedial_easier',
+];
 
 /** One planned `practice_set_items` row (the server adds `id`, `practice_set_id`, `status`). */
 export interface PlannedItem {

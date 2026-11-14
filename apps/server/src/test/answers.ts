@@ -1,6 +1,6 @@
 import { fromJson, parsonsPublicId } from '@proginone/exercise-kit';
 import { runPlanSchema, type RunPlan, type RunResult } from '@proginone/shared';
-import { EX } from './content-fixture.ts';
+import { EX, REMEDIAL } from './content-fixture.ts';
 
 // Learner answers and sandbox results for the fixture exercises (content-fixture.ts).
 
@@ -26,6 +26,7 @@ export const CORRECT: Record<string, unknown> = {
   [EX.implement]: shoutFile("s.toUpperCase() + '!'"),
   [EX.fixBug]: shoutFile("s.toUpperCase() + '!'"),
   [EX.web]: { files: [{ path: 'index.html', content: '<main><ul class="cards"></ul></main>' }] },
+  ...Object.fromEntries(Object.values(REMEDIAL).map((id) => [id, { optionId: 'b' }])),
 };
 
 /** Wrong answers by exercise id. */
@@ -46,6 +47,7 @@ export const WRONG: Record<string, unknown> = {
   [EX.implement]: shoutFile('s'),
   [EX.fixBug]: shoutFile("s + '!'"),
   [EX.web]: { files: [{ path: 'index.html', content: '<main></main>' }] },
+  ...Object.fromEntries(Object.values(REMEDIAL).map((id) => [id, { optionId: 'a' }])),
 };
 
 /** What a correct (or wrong) program observes for each fixture check step. */

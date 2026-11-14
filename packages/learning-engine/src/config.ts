@@ -117,6 +117,17 @@ export interface EngineConfig {
     readonly typeNoveltyWindow: number;
     readonly passRule: PassRule;
   };
+  /** Weakness sets (learning-engine.md#약점-집중-세트). */
+  readonly weakness: {
+    /** Automatic target count: at least `minConcepts`, up to `maxConcepts` while ≥ keepRatio × top. */
+    readonly minConcepts: number;
+    readonly maxConcepts: number;
+    readonly keepRatio: number;
+    /** Items per concept: `itemsMax` with a confirmed misconception or below the effective bar. */
+    readonly itemsMin: number;
+    readonly itemsMax: number;
+    readonly extraItemBelowEffective: number;
+  };
   /** Misconception observations (learning-engine.md#오개념-상태-전이). */
   readonly misconception: {
     /** A second piece of evidence from another exercise within this window confirms. */
@@ -260,6 +271,14 @@ export const defaultEngineConfig: EngineConfig = {
     freshness: { blockDays: 7, oldDays: 30, mid: 0.4, old: 0.7 },
     typeNoveltyWindow: 3,
     passRule: { minCorrect: 0.7, minConceptScore: 50, minDistinctTypes: 2, minLevel3Correct: 0 },
+  },
+  weakness: {
+    minConcepts: 3,
+    maxConcepts: 5,
+    keepRatio: 0.5,
+    itemsMin: 3,
+    itemsMax: 4,
+    extraItemBelowEffective: 40,
   },
   misconception: {
     confirmWindowMs: 30 * DAY_MS,

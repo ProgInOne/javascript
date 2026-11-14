@@ -29,5 +29,6 @@ export function learningRoutes(services: PracticeServices) {
       const request = heartbeatRequestSchema.parse(await jsonBody(c));
       return c.json(services.activity.heartbeat(request));
     })
-    .get('/dashboard', (c) => c.json(services.dashboard.get()));
+    .get('/dashboard', (c) => c.json(services.dashboard.get()))
+    .get('/weak-concepts', (c) => c.json(services.weakness.list()));
 }

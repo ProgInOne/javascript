@@ -186,6 +186,17 @@ export const createPracticeSetRequestSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('lesson'), lessonId: contentId }).strict(),
   /** Today's review set from the review queue (one active review set at a time). */
   z.object({ kind: z.literal('review') }).strict(),
+  /**
+   * Weakness practice (learning-engine.md#약점-집중-세트). Without `conceptIds` the active weakness
+   * set is returned, or a new one is built for the weakest 3–5 concepts. With `conceptIds` (the
+   * learner's pick from `GET /weak-concepts`) a new set is built for exactly those concepts.
+   */
+  z
+    .object({
+      kind: z.literal('weakness'),
+      conceptIds: z.array(contentId).min(1).max(5).optional(),
+    })
+    .strict(),
 ]);
 export type CreatePracticeSetRequest = z.infer<typeof createPracticeSetRequestSchema>;
 
@@ -390,6 +401,23 @@ export const remediationSchema = z.object({
 });
 export type Remediation = z.infer<typeof remediationSchema>;
 
+/**
+ * A change the engine made to the set while it is in progress
+ * (learning-engine.md#진행-중-적응-nextadaptivestep). `replace` swaps the exercise of a pending,
+ * unseen item; `append` adds an item at the end. Reasons: `difficulty_step_up`,
+ * `remedial_prereq`, `remedial_worked_example`, `remedial_easier` (open hint 1 automatically),
+ * `solution_followup` ("비슷한 문제로 다시 나와요"), `skip_followup`.
+ */
+export const setAdaptationSchema = z.object({
+  kind: z.enum(['replace', 'append']),
+  itemId: z.string(),
+  position: z.int().min(0),
+  exerciseId: z.string(),
+  reason: z.string(),
+  targetConcept: conceptRefSchema.nullable(),
+});
+export type SetAdaptation = z.infer<typeof setAdaptationSchema>;
+
 export const attemptResponseSchema = z.object({
   attempt: z.object({
     id: z.string(),
@@ -419,6 +447,8 @@ export const attemptResponseSchema = z.object({
   misconceptionChanges: z.array(misconceptionChangeSchema),
   /** Relearning suggestion after repeated failure, or null. */
   remediation: remediationSchema.nullable(),
+  /** Items replaced or appended by this attempt (re-fetch the set to show them). */
+  adaptations: z.array(setAdaptationSchema),
   item: z.object({ id: z.string(), status: z.enum(PRACTICE_ITEM_STATUSES), attempts: z.int() }),
   set: z.object({
     id: z.string(),
@@ -430,6 +460,19 @@ export const attemptResponseSchema = z.object({
   }),
 });
 export type AttemptResponse = z.infer<typeof attemptResponseSchema>;
+
+/**
+ * `POST /practice-sets/:id/items/:itemId/skip`: the learner skips a pending item. A follow-up of
+ * the same concept and difficulty (another type) is appended, except for follow-up and
+ * relearning items. Skipping the last pending item completes the set.
+ */
+export const skipItemResponseSchema = attemptResponseSchema.pick({
+  item: true,
+  set: true,
+  adaptations: true,
+  masteryChanges: true,
+});
+export type SkipItemResponse = z.infer<typeof skipItemResponseSchema>;
 
 /**
  * `POST /exercises/:id/inline-attempts`: a lesson's inline check (`<InlineExercise>`), answered
@@ -546,3 +589,42 @@ export const dashboardSchema = z.object({
     .nullable(),
 });
 export type Dashboard = z.infer<typeof dashboardSchema>;
+
+// ── Weakness practice ────────────────────────────────────────────────────────
+
+/** One weak concept with the reasons behind it ("왜 약점인가요?"). */
+export const weakConceptSchema = z.object({
+  concept: conceptRefSchema,
+  /** Engine weakness score (higher = weaker). */
+  weakness: z.number(),
+  effective: z.number(),
+  stage: masteryStageSchema,
+  consecutiveFailures: z.int().min(0),
+  factors: z.object({
+    gap: z.number(),
+    importanceFactor: z.number(),
+    misconceptionFactor: z.number(),
+    failureFactor: z.number(),
+  }),
+  /** Active misconceptions of the concept. */
+  misconceptions: z.array(
+    z.object({ id: z.string(), title: z.string(), status: misconceptionStatusSchema }),
+  ),
+  /** Required prerequisites with their state (weak = effective < 60 or below practicing). */
+  prerequisites: z.array(
+    z.object({
+      concept: conceptRefSchema,
+      stage: masteryStageSchema,
+      effective: z.number(),
+      weak: z.boolean(),
+    }),
+  ),
+});
+export type WeakConcept = z.infer<typeof weakConceptSchema>;
+
+/** `GET /weak-concepts`: up to 10 weakest concepts; `suggested` are the automatic set's targets. */
+export const weakConceptsSchema = z.object({
+  concepts: z.array(weakConceptSchema),
+  suggested: z.array(z.string()),
+});
+export type WeakConcepts = z.infer<typeof weakConceptsSchema>;

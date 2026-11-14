@@ -88,7 +88,7 @@ export function createApp({
     .route('/settings', settingsRoutes(settings))
     .route('/', curriculumRoutes(content))
     .route('/exercises', exerciseRoutes(practice.exercises, practice.attempts))
-    .route('/practice-sets', practiceSetRoutes(practice.sets))
+    .route('/practice-sets', practiceSetRoutes(practice.sets, practice.attempts))
     .route('/attempts', attemptRoutes(practice.attempts))
     .route('/', learningRoutes(practice));
   if (ai) {

@@ -5,7 +5,7 @@ export type { DayBoundary } from './util/time.ts';
 export { localDateOf, startOfLocalDay, endOfLocalDay, addDays, daysBetween } from './util/time.ts';
 
 export type { Evidence, Factor, FactorKey } from './mastery/evidence.ts';
-export { computeEvidence, observationOf } from './mastery/evidence.ts';
+export { computeEvidence, isUnassisted, observationOf } from './mastery/evidence.ts';
 export { updateScore } from './mastery/update.ts';
 export type { EffectiveMastery } from './mastery/effective.ts';
 export { effectiveMastery } from './mastery/effective.ts';
@@ -50,7 +50,25 @@ export type {
   SelectFactors,
   SelectionContext,
 } from './practice/candidates.ts';
-export { freshnessOf, scoreCandidate } from './practice/candidates.ts';
+export { freshnessOf, REMEDIAL_REASONS, scoreCandidate } from './practice/candidates.ts';
+export type {
+  AdaptiveAction,
+  AdaptiveRequest,
+  ItemOutcome,
+  SetItemSnapshot,
+} from './practice/adaptive.ts';
+export { nextAdaptiveStep } from './practice/adaptive.ts';
+export type {
+  WeakConceptEntry,
+  WeakConceptInput,
+  WeaknessSet,
+  WeaknessSetRequest,
+} from './practice/weakness-set.ts';
+export {
+  buildWeaknessSet,
+  rankWeakConcepts,
+  selectWeaknessTargets,
+} from './practice/weakness-set.ts';
 export type {
   InsufficientCandidates,
   LessonSet,

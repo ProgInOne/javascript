@@ -9,6 +9,7 @@ import { ReviewService } from '../review/review-service.ts';
 import { AttemptService } from './attempt-service.ts';
 import { ExerciseService } from './exercise-service.ts';
 import { PracticeSetService } from './practice-set-service.ts';
+import { WeaknessService } from './weakness.ts';
 
 export interface PracticeDeps {
   userDb: UserDb;
@@ -27,17 +28,20 @@ export interface PracticeServices {
   review: ReviewService;
   activity: ActivityService;
   dashboard: DashboardService;
+  weakness: WeaknessService;
 }
 
 export function createPracticeServices(deps: PracticeDeps): PracticeServices {
   const review = new ReviewService(deps);
+  const weakness = new WeaknessService(deps);
   return {
     exercises: new ExerciseService(deps),
-    sets: new PracticeSetService({ ...deps, review }),
+    sets: new PracticeSetService({ ...deps, review, weakness }),
     attempts: new AttemptService(deps),
     lessons: new LessonProgressService(deps),
     review,
     activity: new ActivityService(deps),
     dashboard: new DashboardService({ ...deps, review }),
+    weakness,
   };
 }

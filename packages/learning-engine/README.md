@@ -120,6 +120,28 @@ evaluatePassRule(config, rule, { items: PassRuleItem[]; introducedScores: Record
 | `passRule` | `practice_sets.pass_rule_json` |
 | `rationale` | 로그 또는 `practice_sets.scope_json`의 보조 정보(근거 표시용) |
 
+### 진행 중 적응과 약점 집중
+
+```ts
+nextAdaptiveStep(deps, {
+  set: { kind, items: SetItemSnapshot[] };   // 현재 항목의 새 상태를 반영한 항목들(touched: 시도·힌트 여부)
+  itemId; event: 'answered' | 'skipped';
+  outcomes: ItemOutcome[];                   // 답한 항목의 마지막 결과, 현재 항목이 마지막
+  solutionJustViewed: boolean;               // 정답을 본 뒤 첫 제출
+  remediation: RemediationSuggestion | null; // applyAttempt의 제안
+  candidates; remedialCandidates?; concepts; lastSeenAtByGroup; seed; now;
+}): AdaptiveAction[]   // { kind: 'replace', itemId, item } | { kind: 'append', reason, item }
+
+rankWeakConcepts(deps, { concepts: WeakConceptInput[]; now }): WeakConceptEntry[]
+selectWeaknessTargets(deps, entries): WeakConceptEntry[]       // 상위 3~5개
+buildWeaknessSet(deps, { targets, concepts, candidates, confirmedTargetIds, … }): { items, rationale }
+```
+
+| 출력 | 저장 위치 |
+|---|---|
+| `replace` | 대기 중 항목의 `exercise_id`, `exercise_origin`, `reason` |
+| `append` | 새 `practice_set_items` 행(`position`은 이어 붙임) |
+
 ### 보조 함수
 
 - `resolveVariantGroupKey({ id, variantGroup, templateId })`: `variant_group` → 템플릿 ID → 문제 ID
