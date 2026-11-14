@@ -47,6 +47,14 @@ module.exports = {
       to: { path: '^(packages/(?!(runner|shared)/)|apps/|tools/)' },
     },
     {
+      name: 'ai-only-to-shared',
+      severity: 'error',
+      comment:
+        'packages/ai는 내부 패키지 중 shared에만 의존합니다. DB 조회는 서버가 구현하는 ContextSource로 주입받습니다.',
+      from: { path: '^packages/ai/' },
+      to: { path: '^(packages/(?!(ai|shared)/)|apps/|tools/)' },
+    },
+    {
       name: 'pure-packages-no-io',
       severity: 'error',
       comment: 'learning-engine과 exercise-kit 채점기는 I/O 없는 순수 함수입니다.',

@@ -7,6 +7,7 @@
 
 ### Added
 
+- `@proginone/ai` 기반(M4): 제공자 어댑터 계약(`ProviderAdapter`), AI 작업 정의 `tutor.reply`(스트리밍, 숨김 `<meta>` 메타데이터)·`tutor.hint`(단계 고정 구조화 출력, 단계별 코드 줄 수 상한), 토큰 예산 컨텍스트 빌더와 `ContextSource` 인터페이스, 한국어 튜터 페르소나·교수법·데이터 경계 지침(버전 관리), 정답 누설 검사를 화면 표시 전에 하는 스트림 게이트, 재시도·도구 시도·취소·스레드 재구성을 다루는 `TaskRunner`, 결정론적 `MockProvider`. `@proginone/shared`에 `AI_*` 오류 코드와 AI 상태·사용량·로그인 계약
 - `implement_function` 프로그램 작성 문제(D-028): `entry`(함수 이름)가 선택이 되어, 없으면 학습자가 최상위 코드를 쓰고 `console`·`program` 체크로만 채점합니다(`call` 체크는 `CHECK_NEEDS_ENTRY` 스펙 오류). 체크 목록은 `program` 체크의 공개 기대값(`nickname → "코코"`)을 보여줍니다
 - 콘텐츠 검토자 `reviewedBy: ai:reviewer`(D-027): 사람 검토 대신 초안 작성자와 분리된 컨텍스트의 독립 AI 검토자가 승인할 수 있습니다. `reviewedBy`는 `draftedBy`와 달라야 하며, 승인된 문제는 검토자와 관계없이 `review_status = 'trusted'`
 - `content-cli check`가 CSS 과정(`language: css`)에서 `mcq_single`·`fill_blank`·`web_task` 외 유형을 오류로 처리(D-028)
