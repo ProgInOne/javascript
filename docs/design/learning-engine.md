@@ -814,6 +814,28 @@ packages/learning-engine/src/
 └── util/ (rng.ts, dates.ts)
 ```
 
+### 구현 메모 (v0.1)
+
+v0.1(M4)에서 구현하면서 위 스케치를 구체화하거나 바꾼 점입니다. 계수는 바꾸지 않았습니다. 공개 API 목록은 [패키지 README](/packages/learning-engine/README.md)에 있습니다.
+
+**범위**: 증거 가중치, 숙련도 갱신, 단계 게이트, FSRS 연동, 단원 연습 세트, 복습 큐·복습 세트만 구현했습니다. 오개념 전이, 재학습 판정, 약점·평가 세트, 진행 중 적응, 오늘의 학습, 페이스, 활동 시간, `replay`는 v0.2 이후입니다. 그래서 `AttemptEffects`에는 `misconceptions`, `remediation`이 아직 없습니다.
+
+**게이트 입력**: 게이트와 `W_rep`는 과거 증거가 필요합니다. 엔진은 시도마다 `EvidenceFact`(변형 그룹 키, 유형, 난이도, 정답 여부, 신용도, 독립 여부, 세트 종류, 가중치)를 만들어 `breakdown_json.fact`에 담아 돌려줍니다. 서버는 저장된 `fact`를 `ConceptState.history`로, `review_logs`와 근거 시도의 변형 그룹 키를 `ConceptState.reviews`로 다시 넘깁니다. 시도 원본을 다시 읽지 않아도 게이트를 판정할 수 있습니다.
+
+**명확히 한 규칙**:
+
+| 항목 | 구현 |
+|---|---|
+| `W_rep`의 14일 | 경과 밀리초 기준. `now − at < 14일`인 정답(`o ≥ 0.5`)만 셉니다. 정확히 14일 전 정답은 세지 않습니다. 이 개념의 부 개념 증거도 셉니다 |
+| `mastered`의 "7일 이상" | 학습자 **로컬 날짜** 차이(하루 시작 04:00 반영)로 셉니다. FSRS 예정일이 날짜 단위라 오전에 복습하면 24시간 × 7에 몇 시간 모자라는 문제를 피합니다 |
+| "두 평가의 근거 시도는 서로 다른 변형 그룹" | 조건을 만족하는 평가가 2건 이상이고, 그 평가들의 근거 변형 그룹 합집합이 2개 이상이면 충족입니다(서로 다른 그룹으로 두 평가를 고를 수 있는 조건과 같음) |
+| 독립 응용 증거 | 주 개념, 정답, 첫 시도, 힌트·정답 열람·튜터 없음, 그리고 평가 맥락 또는 L4 이상 |
+| 강등 | `effective` 기준 강등은 **그 시도가 `score`를 낮췄을 때만** 합니다. 오래 쉬어 `effective`가 낮아진 상태에서 정답을 내도 강등되지 않습니다. 시도 없이 다시 판정할 때(FSRS 평가 뒤)는 승급만 합니다 |
+| `missing` 형식 | 문자열 대신 `{ gate, required, actual }` 객체입니다. `gate`는 `GateCode` 열거형입니다 |
+| 가중치 요소 | `breakdown_json.factors`에 `repetition`(`W_rep`), `context`(`W_ctx`), `secondary`(부 개념 오답 0.5배)를 추가했습니다 |
+| `FsrsPort` | `newCard(cardId, now)`로 개념 ID를 받습니다. ts-fsrs v6은 `cardId`로 퍼즈를 시드하며, 주지 않으면 무작위 UUID를 만들어 결정론이 깨집니다. `fromRaw(raw)`로 `card_json`에서 카드를 복원합니다. 필드 이름은 `due` 대신 `dueAt`입니다 |
+| 카드 생성 시점 | 이 문서(첫 단원 연습 세트에서 그 개념의 보류 등급을 처음 적용할 때)를 따릅니다. [데이터 모델 설계](/docs/design/data-model.md#concept_memory-review_logs)의 "`introduced` 도달 시 행 생성"과 다르며, 레슨만 읽은 개념에는 카드가 없습니다 |
+
 ## 검토한 대안
 
 ### 숙련도 모델

@@ -1,0 +1,16 @@
+{
+  "name": "@proginone/learning-engine",
+  "version": "0.0.0",
+  "private": true,
+  "description": "숙련도·FSRS·연습 세트 구성을 계산하는 순수 함수 학습 엔진",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "fast-check": "^4.10.2"
+  }
+}
