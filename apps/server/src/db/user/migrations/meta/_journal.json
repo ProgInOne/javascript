@@ -15,6 +15,13 @@
       "when": 1794668374047,
       "tag": "0001_learning_records",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794673515715,
+      "tag": "0002_ai_tutor",
+      "breakpoints": true
     }
   ]
 }

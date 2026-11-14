@@ -62,6 +62,8 @@ export interface ContentExercise {
   origin: 'authored' | 'template';
   contentHash: string;
   concepts: ContentExerciseConcept[];
+  /** Normalized answer-leak fingerprints (AI output post-check, server only). */
+  leakFingerprints: string[];
 }
 
 /** Read-only access to content.db (docs/design/data-model.md#contentdb-설계). */
@@ -230,6 +232,7 @@ export class ContentRepository {
       origin: row.origin,
       contentHash: row.contentHash,
       concepts,
+      leakFingerprints: row.leakFingerprints,
     };
     return exercise;
   }

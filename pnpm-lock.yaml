@@ -205,6 +205,9 @@ importers:
       '@hono/node-server':
         specifier: ^2.1.8
         version: 2.1.8(hono@4.13.18)
+      '@proginone/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
       '@proginone/content-schema':
         specifier: workspace:*
         version: link:../../packages/content-schema

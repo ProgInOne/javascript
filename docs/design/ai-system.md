@@ -5,7 +5,7 @@ MVP의 유일한 AI 제공자는 ChatGPT 구독으로 인증하는 Codex App Ser
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-14 (M1-A PoC 결과 반영)
+- 최종 수정: 2026-11-15 (v0.1 구현 메모 추가)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [학습 엔진 설계](/docs/design/learning-engine.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -206,7 +206,7 @@ export interface ProviderAdapter {
 }
 ```
 
-- 어댑터는 오류를 `AIError`(코드: `AI_NOT_CONNECTED`, `AI_UNAUTHORIZED`, `AI_RATE_LIMITED`, `AI_CONTEXT_TOO_LARGE`, `AI_TIMEOUT`, `AI_CANCELLED`, `AI_BAD_OUTPUT`, `AI_PROVIDER_ERROR`, `AI_OVERLOADED`)로 정규화합니다. 서비스 계층은 정책 거부 코드 `AI_LOCKED_IN_ASSESSMENT`(평가 맥락 잠금)를 추가로 씁니다. 서버 API의 오류 코드와 같은 체계입니다([시스템 아키텍처 설계](/docs/design/system-architecture.md#api-규약)).
+- 어댑터는 오류를 `AIError`(코드: `AI_NOT_CONNECTED`, `AI_UNAUTHORIZED`, `AI_RATE_LIMITED`, `AI_CONTEXT_TOO_LARGE`, `AI_TIMEOUT`, `AI_CANCELLED`, `AI_BAD_OUTPUT`, `AI_PROVIDER_ERROR`, `AI_OVERLOADED`, `AI_UNAVAILABLE`)로 정규화합니다. `AI_UNAVAILABLE`은 v0.1에서 추가했습니다([구현 메모](#구현-메모-v01)). 서비스 계층은 정책 거부 코드 `AI_LOCKED_IN_ASSESSMENT`(평가 맥락 잠금)를 추가로 씁니다. 서버 API의 오류 코드와 같은 체계입니다([시스템 아키텍처 설계](/docs/design/system-architecture.md#api-규약)).
 - 기능 플래그(`capabilities`)가 없는 기능은 `TaskRunner`가 대체 경로를 씁니다. 예: `structuredOutput`이 없으면 JSON 지시 + 파싱 + 1회 재시도.
 
 ### AITask 정의 형식
@@ -1073,6 +1073,58 @@ data: {"messageId":"msg_01","code":"AI_RATE_LIMITED","message":"...","retryable"
 - 기준: 결정론적 판정 통과율이 이전 버전보다 낮아지면 프롬프트 변경을 병합하지 않습니다. 초기 사례 수는 작업당 20~30개입니다.
 - 정답 누설 시도 사례(학습자가 "정답 알려줘", 코드 주석에 지시문 삽입 등)를 반드시 포함합니다.
 
+### 구현 메모 (v0.1)
+
+v0.1(M4)에서 `packages/ai`와 서버 튜터 백엔드를 구현하면서 위 스케치를 구체화하거나 바꾼 점입니다. 패키지 구성과 사용법은 [패키지 README](/packages/ai/README.md)에 있습니다.
+
+**범위**: `tutor.reply`, `tutor.hint`, Codex 어댑터, `MockProvider`, AI 상태·로그인·사용량·모델 API, 튜터 스레드·메시지 API, `ai_calls` 기록을 구현했습니다. 웹 UI(튜터 드로어, 선택해서 질문하기, AI 연결 화면)는 별도 작업입니다. `session_summaries`, `session.summarize`, `misconception.propose`, `evaluator.*`, `ai_jobs`, 컨텍스트의 오개념·과거 요약·학습자 선호 섹션, 모델 선택 설정(`settings.ai.model`), 디버그 프롬프트 기록, 기기 코드 로그인, 사전 재구성(토큰 70%)은 v0.2 이후입니다.
+
+**격리 (D-002)**
+
+| 항목 | 구현 |
+|---|---|
+| 기능 플래그 검증 | `codex features list`를 두 목록과 비교합니다. `REQUIRED_OFF`(묶음이 끄는 도구 기능 + 기본값이 꺼진 도구 계열)가 하나라도 켜져 있거나, `ALLOWED_ON`(0.155.1에서 묶음 적용 후 켜져 있던 비도구 기능)에 없는 기능이 켜져 있으면 `isolation_failed`로 튜터를 끕니다. Codex 업데이트로 새 기능이 기본으로 켜지면 튜터가 멈추고 허용 목록 검토를 요구합니다([남은 항목](#남은-항목) 2 해소) |
+| `unified_exec` | 0.155.1에서 `false`로 설정해도 꺼지지 않아(M1-A F2) `ALLOWED_ON`에 둡니다. 나머지 층(승인 자동 거부, 읽기 전용, 빈 cwd, 도구 항목 즉시 중단)으로 막습니다 |
+| 홈 확인 | `config.toml`은 매 시작마다 기대값과 비교해 다르면 다시 씁니다. `initialize` 응답의 `codexHome`이 전용 홈과 다르면 `isolation_failed`입니다 |
+| 스레드 확인 | `thread/start`·`thread/resume` 응답의 실효 `approvalPolicy`(`untrusted`), `sandbox`(`readOnly`, 네트워크 없음), `cwd`(전용 작업 폴더)가 다르면 `isolation_failed`입니다. `thread/resume`에도 격리 재정의를 모두 다시 보냅니다 |
+| 작업 폴더 | `<dataDir>/codex-workspace`. 시작할 때 비어 있지 않으면 비웁니다 |
+| 도구 항목 판정 | 허용 목록 방식입니다. `userMessage`, `agentMessage`, `reasoning`, `contextCompaction` 외의 항목(앞으로 생길 유형 포함)은 모두 도구로 보고 즉시 `turn/interrupt`합니다. 서버 요청(승인 등)을 받아도 같은 턴을 중단합니다 |
+| v1 승인 거부 형식 | 0.155.1 타입은 `ReviewDecision`이 `{ denied: { rejection } }`이라 문자열 `denied` 대신 이 형식으로 보냅니다. `mcpServer/elicitation/request` 응답에는 `_meta: null`을 붙입니다 |
+| 버전 | `MIN_CODEX_VERSION = 0.155.1`, `codex --version`의 `x.y.z`를 비교합니다([남은 항목](#남은-항목) 1) |
+| 생성 타입 | `generate-ts` 산출물(721개 파일)을 커밋하지 않고, 쓰는 부분만 0.155.1 생성 타입과 대조해 `provider/codex/protocol.ts`에 옮겼습니다. 갱신 절차는 파일 머리에 있습니다. 계약 테스트는 녹화한 `features list` 출력과 가짜 `codex` 실행 파일로 합니다 |
+
+**정답 비노출 (D-010)**
+
+- 서비스가 힌트 기록(`hint_events`)에서 `{ hintLevel, solutionViewed }`를 계산해 작업 입력에 넣고, `ContextSource` 구현(`apps/server/src/ai/context-source.ts`)은 요청된 값을 다시 기록과 비교해 **둘 중 낮은 쪽**만 씁니다. 요청이 정답 열람을 주장해도 기록이 없으면 참조 정답·해설·힌트를 넣지 않습니다. 공개 스펙은 exercise-kit `redactSpec` 결과이고, 숨김 체크는 정답 열람 뒤에도 보내지 않습니다.
+- `tutor.reply`도 `tutor.hint`와 같은 단계 규칙으로 문제 맥락을 받습니다(열린 힌트까지, 정답 열람 뒤에만 참조 정답과 해설).
+- 참조 정답의 "구조 요약"(3단계)은 콘텐츠에 저작 필드가 없어 아직 넣지 않습니다. 3단계는 저작된 힌트 3까지입니다.
+- **누설 검사**: 콘텐츠 빌드가 만든 `leak_fingerprints_json`을 같은 `normalizeLeakText`로 정규화한 출력과 비교합니다. 3자 미만 지문은 무시하고(`2`, `;` 같은 값이 일반 설명과 겹침), 5자 이하 지문은 낱말 경계로, 더 긴 지문은 부분 문자열로 맞춥니다. 정답을 열람한 뒤에는 검사하지 않습니다.
+- **스트리밍 누설 검사**: 설계는 "먼저 보여 주고 사후 검사 → 숨김 처리 후 재생성"이지만, 구현은 스트림 게이트가 가장 긴 지문 길이의 두 배만큼 꼬리를 붙잡아 두고 매 델타마다 검사합니다. 누설이 보이면 그 문자열이 화면에 나가기 전에 턴을 멈추고, 지침을 보강해 1회 재생성합니다. 다시 누설하면 메시지를 `withheld`로 저장하고 안내 문구로 바꿉니다. 대가로 문제 맥락의 첫 델타가 그만큼 늦게 보입니다.
+
+**`tutor.hint`와 AI 힌트 API**
+
+- `POST /api/v1/exercises/:id/ai-hint`는 **이미 연 저작 힌트 단계**를 학습자 상황에 맞게 다시 써 줍니다. 단계를 올리지 않습니다(단계 상승은 `POST /exercises/:id/hints`만). 연 힌트가 없으면 `409 EXERCISE_HINT_REQUIRED`입니다.
+- AI가 준비되지 않았거나, 출력이 스키마·단계·코드 줄 수·누설 검사를 재시도 후에도 통과하지 못하면 저작 힌트를 `source: 'authored'`와 `fallbackCode`로 돌려줍니다. AI 힌트가 나간 경우에만 `hint_events(kind = 'ai_hint')`를 기록합니다(숙련도 계산의 `hintLevel`은 바뀌지 않음).
+- 구조화 출력 스키마의 `level`을 요청 단계 하나로 고정합니다(`enum: [level]`). `focusLine`, `checkQuestion`은 OpenAI 구조화 출력 규칙에 맞춰 필수 + `null` 허용입니다.
+
+**`tutor.reply` 흐름**
+
+- 질문 전 확인(스레드, 문제·단원·연습 항목, 평가 맥락 잠금, AI 상태)은 SSE 전에 하고, 실패하면 일반 JSON 오류를 돌려주며 아무것도 저장하지 않습니다. 통과하면 학습자 메시지와 `streaming` 답변 행을 먼저 저장합니다.
+- 같은 스레드의 질문은 직렬화합니다(`status: queued`). 전역 동시 턴은 `TurnGate`(기본 2, 대화형 우선)로 제한합니다.
+- 지속 스레드 재사용 조건은 `provider_thread_id`가 있고 제공자, 지침 버전(`{BASE}:{task}@{version}`), 모델이 같을 때입니다. `thread/resume`이 실패하면 DB의 최근 메시지 12개(완료·중단된 것)로 재구성합니다.
+- 도구 시도·누설은 1회 재시도합니다. 이미 화면에 보낸 텍스트가 있으면 `reset` 이벤트로 지우게 합니다.
+- 메타데이터의 `referencedConcepts`는 콘텐츠 팩에 있는 개념만 남깁니다. `tutor_messages.meta_json`에 저장합니다(데이터 모델에 추가한 열).
+
+**SSE와 오류**
+
+- `POST /tutor/threads/:id/messages` 이벤트: `message.created` → `status`(`queued`/`running`) → `delta`… (`reset`) → `done`(`complete`/`withheld`/`cancelled`, 저장한 본문 포함) 또는 `error`(`failed`로 저장). 페이로드 스키마는 `packages/shared/src/tutor.ts`의 `tutorStreamEventSchemas`가 원천입니다.
+- `GET /ai/events`: 연결 즉시 `status` 스냅샷(상태·사용량·진행 중 로그인), 이후 변경마다 `status`, 로그인 완료 시 `login`. 15초마다 `: keep-alive`.
+- 모든 `/api` 요청이 세션 토큰 헤더를 요구하므로 웹은 SSE를 `EventSource`가 아니라 `fetch` 스트림으로 읽어야 합니다.
+- 오류 코드: 설계 목록에 `AI_UNAVAILABLE`(미설치, 미지원 버전, 격리 검증 실패, 재시작 소진. `details.reason`)을 추가했습니다. 상태에는 `isolation_failed`를 추가했습니다. HTTP 상태는 `AI_NOT_CONNECTED`·`AI_UNAUTHORIZED`·`AI_CANCELLED` 409, `AI_RATE_LIMITED` 429, `AI_CONTEXT_TOO_LARGE` 413, `AI_TIMEOUT` 504, `AI_BAD_OUTPUT`·`AI_PROVIDER_ERROR` 502, `AI_OVERLOADED`·`AI_UNAVAILABLE` 503, `AI_LOCKED_IN_ASSESSMENT` 403입니다. 401은 세션 토큰 만료(`UNAUTHORIZED`) 전용이라 쓰지 않습니다.
+- AI 상태에는 계정 이메일을 넣지 않습니다(`planType`만).
+
+**수동 확인 (2026-11-15, Codex CLI 0.155.1, 로컬)**: PoC 로그인 홈의 사본으로 서버를 띄워 `tutor.reply` 4회(새 스레드, 같은 스레드 재개 2회, 취소 1회)와 `tutor.hint` 1회를 실행했습니다. 기능 플래그 검증 통과, 도구 항목·승인 요청 0건, 정답 요구·지침 무시 유도·도구 요청(터미널 실행, 웹 검색)을 모두 정답 코드 없이 거절하고 학습으로 되돌림, 한국어 해요체, 첫 델타(제공자 기준) 새 스레드 4.8초·재개 1.8~2.2초, 취소는 요청 직후 `cancelled`로 종료, 종료 시 Codex 자식 프로세스가 남지 않음을 확인했습니다.
+
 ## 검토한 대안
 
 ### 역할 구성: 다중 에이전트 vs 단일 모델 역할 함수
@@ -1200,8 +1252,8 @@ Learning Analyst와 Curriculum Planner의 "결정"은 학습 엔진(코드)이 �
 
 ### 남은 항목
 
-1.  최소 지원 Codex 버전과 버전 확인 방법(`codex --version` 형식, `userAgent` 파싱). 0.155.1에서 검증했으므로 우선 이 버전 이상을 요구합니다.
-1.  Codex 업데이트로 기능 플래그 이름이 바뀌거나 새 도구 기능이 기본으로 켜질 때의 대응. 시작 시 `codex features list`를 허용 목록과 비교해, 모르는 기능이 켜져 있으면 경고하고 튜터를 막습니다(M3에서 구현·테스트).
+1.  ~~최소 지원 Codex 버전과 버전 확인 방법~~: v0.1에서 `codex --version`(`codex-cli x.y.z`)으로 확인하고 0.155.1 이상을 요구합니다([구현 메모](#구현-메모-v01)).
+1.  ~~Codex 업데이트로 새 도구 기능이 기본으로 켜질 때의 대응~~: v0.1에서 `REQUIRED_OFF`·`ALLOWED_ON` 두 목록으로 구현했습니다. 모르는 기능이 켜지면 튜터를 막습니다([구현 메모](#구현-메모-v01)).
 1.  `optOutNotificationMethods`로 끌 알림 목록. PoC에서는 reasoning 델타, diff, plan 알림을 껐습니다.
 1.  일반 학습 세션(튜터 질문 30회, 힌트 20회)의 사용량. v0.1 시범판 사용 중에 측정합니다.
 1.  MVP UI에서 Codex `apiKey` 로그인을 고급 설정으로 노출할지.

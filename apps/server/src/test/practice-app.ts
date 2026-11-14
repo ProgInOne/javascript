@@ -1,9 +1,12 @@
+import { MockProvider, TaskRunner } from '@proginone/ai';
 import { createApp } from '../http/app.ts';
 import { TOKEN_HEADER } from '../http/security.ts';
 import { ContentAccess } from '../services/curriculum/content-access.ts';
 import { createEngine } from '../services/practice/engine.ts';
 import { createPracticeServices } from '../services/practice/index.ts';
+import { AiService } from '../services/ai/ai-service.ts';
 import { SettingsService } from '../services/settings/service.ts';
+import { TutorService } from '../services/tutor/tutor-service.ts';
 import { writeContentDb } from './content-fixture.ts';
 import { setupDb, silentLog } from './helpers.ts';
 
@@ -16,7 +19,7 @@ let engine: ReturnType<typeof createEngine> | undefined;
 
 /**
  * The real app over a migrated temp user.db and the fixture content.db, with a controllable
- * clock (`clock.now`) and a learner in Asia/Seoul.
+ * clock (`clock.now`) and a learner in Asia/Seoul. AI routes use a `MockProvider` (`ai.provider`).
  */
 export async function practiceApp() {
   const ctx = await setupDb();
@@ -29,6 +32,17 @@ export async function practiceApp() {
     engine: await (engine ??= createEngine()),
     now,
   });
+  const provider = new MockProvider({ deltaDelayMs: 0 });
+  const aiService = new AiService({ provider, log: silentLog });
+  const runner = new TaskRunner({ provider, now, sleep: () => Promise.resolve() });
+  const tutor = new TutorService({
+    userDb: ctx.userDb,
+    content,
+    runner,
+    ai: aiService,
+    now,
+    log: silentLog,
+  });
   const app = createApp({
     config: { port: 4310, mode: 'production' },
     log: silentLog,
@@ -37,6 +51,7 @@ export async function practiceApp() {
     settings: new SettingsService({ userDb: ctx.userDb, log: silentLog }),
     content,
     practice,
+    ai: { ai: aiService, tutor, keepAliveMs: 50 },
     maintenance: ctx.maintenance,
   });
   ctx.userDb.sqlite
@@ -57,9 +72,33 @@ export async function practiceApp() {
         : { body: typeof body === 'string' ? body : JSON.stringify(body) }),
     });
     const text = await res.text();
-    return { status: res.status, text, json: text ? (JSON.parse(text) as unknown) : null };
+    const sse = (res.headers.get('content-type') ?? '').startsWith('text/event-stream');
+    return {
+      status: res.status,
+      text,
+      json: text && !sse ? (JSON.parse(text) as unknown) : null,
+    };
   };
-  return { ...ctx, content, clock, call, practice };
+  /** Raw response for streaming endpoints. */
+  const open = (method: string, path: string, body?: unknown) =>
+    app.request(`http://127.0.0.1:4310/api/v1${path}`, {
+      method,
+      headers: {
+        host: '127.0.0.1:4310',
+        [TOKEN_HEADER]: 't',
+        ...(body === undefined ? {} : { 'content-type': 'application/json' }),
+      },
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    });
+  return {
+    ...ctx,
+    content,
+    clock,
+    call,
+    open,
+    practice,
+    ai: { provider, service: aiService, tutor },
+  };
 }
 
 /** Row count of a user.db table. */

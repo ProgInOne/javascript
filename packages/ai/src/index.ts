@@ -3,6 +3,7 @@ export * from './record.ts';
 export * from './runner.ts';
 export * from './provider/types.ts';
 export { TurnGate, type TaskPriority } from './provider/gate.ts';
+export { errorForStatus } from './provider/status.ts';
 export {
   MockProvider,
   chunk,

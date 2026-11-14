@@ -5,7 +5,7 @@ ProgInOne의 전체 구조를 정의합니다. 실행 형태, 프로세스, 모�
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-13
+- 최종 수정: 2026-11-15 (튜터·AI API v0.1 반영)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md)
 
 ## 배경과 범위
@@ -311,8 +311,8 @@ sequenceDiagram
 | 학습 상태 | `GET /mastery`, `GET /concepts/:id`, `GET /review-queue`, `GET /daily-plan` |
 | 활동 | `POST /activity/heartbeat` (30초 간격, 학습 시간 측정) |
 | 목표 | `GET/PUT /goals` |
-| 튜터 | `POST /tutor/threads`, `POST /tutor/threads/:id/messages` (SSE), `POST /tutor/threads/:id/messages/:messageId/cancel`, `GET /tutor/threads` |
-| AI | `GET /ai/status`, `POST /ai/login`, `GET /ai/models`, `GET /ai/events` (SSE: 연결 상태·사용량 변경) |
+| 튜터 | `POST /tutor/threads`, `GET /tutor/threads`, `GET /tutor/threads/:id/messages`, `POST /tutor/threads/:id/messages` (SSE), `POST /tutor/threads/:id/messages/:messageId/cancel`, `POST /exercises/:id/ai-hint` (`tutor.hint`) |
+| AI | `GET /ai/status`, `POST /ai/login`, `POST /ai/login/cancel`, `POST /ai/logout`, `POST /ai/reconnect`, `GET /ai/models`, `GET /ai/events` (SSE: 연결 상태·사용량·로그인 완료) |
 | 코드 초안 | `PUT /code-drafts/:exerciseId` (자동 저장 동기화) |
 | 문제 신고 | `POST /exercises/:id/reports` |
 | 문제 생성 | `POST /generation-jobs`, `GET /generation-jobs/:id` |

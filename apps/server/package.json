@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.1.8",
+    "@proginone/ai": "workspace:*",
     "@proginone/content-schema": "workspace:*",
     "@proginone/exercise-kit": "workspace:*",
     "@proginone/learning-engine": "workspace:*",

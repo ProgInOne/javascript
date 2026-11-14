@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { CONTENT_DDL } from '@proginone/content-schema/db';
-import { redactSpec } from '@proginone/exercise-kit';
+import { leakFingerprints, redactSpec } from '@proginone/exercise-kit';
 import Database from 'better-sqlite3';
 import { tmpDir } from './helpers.ts';
 
@@ -126,6 +126,7 @@ export function writeContentDb(meta: Record<string, string> = {}): string {
       code: ex.code ?? null,
       spec_json: JSON.stringify(ex.spec),
       public_spec_json: JSON.stringify(redactSpec(ex.type, ex.spec)),
+      leak_fingerprints_json: JSON.stringify(leakFingerprints(ex.type, ex.spec)),
       hints_json: JSON.stringify({ v: 1, levels: ['힌트 1', '힌트 2', '힌트 3'] }),
       explanation: `${ex.id} 해설`,
       estimated_seconds: 60,

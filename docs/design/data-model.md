@@ -5,7 +5,7 @@ ProgInOne의 두 SQLite 데이터베이스(`content.db`, `user.db`)의 테이블
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-13
+- 최종 수정: 2026-11-15 (튜터 테이블 v0.1 구현 반영)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [학습 엔진 설계](/docs/design/learning-engine.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [AI 시스템 설계](/docs/design/ai-system.md)
 
 ## 배경과 범위
@@ -753,6 +753,8 @@ AI가 생성한 문제는 학습자 고유 데이터이므로 `user.db`에 둡�
 | `session_summary_concepts` | `summary_id`, `concept_id` | TEXT | N | | 개념 ID로 과거 요약을 찾는 조인 테이블. PK `(summary_id, concept_id)`, 인덱스 `(concept_id)` |
 
 - 메시지가 스트리밍 중일 때도 행을 먼저 만들고(`status = 'streaming'`), 완료 시 `content`를 확정합니다. 비정상 종료 후 남은 `streaming` 행은 시작 시 `interrupted`로 바꿉니다.
+- v0.1(마이그레이션 `0002_ai_tutor`)은 `tutor_threads`, `tutor_messages`, `ai_calls`만 만듭니다. `session_summaries`·`session_summary_concepts`는 `session.summarize`와 함께 v0.2에서 추가하며, 그때까지 `tutor_threads.summary_id`는 비어 있습니다.
+- `tutor_messages.meta_json`(TEXT, NULL 허용)을 추가했습니다. 튜터 답변의 `<meta>` 블록(`referencedConcepts`, `suggestedFollowUp`, `possibleMisconception` 등, 스키마는 `packages/shared`의 `tutorReplyMetaSchema`)을 담고, 이후 `misconception.propose`의 입력 신호로 씁니다. `attachments_json`에는 선택 영역(`{ type: 'selection', kind, text, sectionId? }`)을 담습니다.
 - 인덱스: `tutor_threads(learner_id, scope_type, scope_id, status)`, `tutor_threads(learner_id, last_message_at)`, `tutor_messages(thread_id, created_at)`.
 - 컨텍스트 빌더는 "현재 개념과 선수 개념에 연결된 최근 요약"을 `session_summary_concepts`로 조회합니다([AI 시스템 설계](/docs/design/ai-system.md)).
 
@@ -787,6 +789,7 @@ AI 호출 한 건의 기록입니다. 필드의 의미는 [AI 시스템 설계](
 
 인덱스 `ai_calls(learner_id, created_at)`, `ai_calls(task_name, status)`, `ai_calls(subject_type, subject_id)`.
 
+- v0.1 구현: 모든 행에 `learner_id`(FK)를 둡니다(인덱스 `(learner_id, created_at)`와 맞춤). `subject_type`에 `hint_event`를 추가했습니다(AI 힌트, `tutor.hint`). AI 힌트가 저작 힌트로 대체되면 `status = 'fallback'`, `subject_type = NULL`, `subject_id = 문제 ID`로 남깁니다.
 - `context_manifest_json`은 개인정보 미리보기(설정 화면, P1)와 디버깅에 씁니다.
 - 프롬프트·응답 원문은 DB에 저장하지 않습니다. 디버그 설정일 때만 파일로 7일간 보관하며, 만료된 파일을 지우면 `prompt_snapshot_path`를 NULL로 바꿉니다. 대화 원문은 `tutor_messages`에 이미 있습니다.
 

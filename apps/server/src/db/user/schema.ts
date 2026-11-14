@@ -14,7 +14,12 @@ import {
   PRACTICE_SET_STATUSES,
   REPORT_REASONS,
   REPORT_STATUSES,
+  TUTOR_MESSAGE_ROLES,
+  TUTOR_MESSAGE_STATUSES,
+  TUTOR_SCOPE_TYPES,
+  TUTOR_THREAD_STATUSES,
 } from '@proginone/shared';
+import { AI_CALL_STATUSES } from '@proginone/ai';
 import { sql } from 'drizzle-orm';
 import {
   check,
@@ -445,5 +450,128 @@ export const dailyActivity = sqliteTable(
     check('daily_activity_date', sql`${t.date} GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'`),
     check('daily_activity_active_ms', sql`${t.activeMs} >= 0`),
     check('daily_activity_goal_met', bool(t.goalMet)),
+  ],
+);
+
+// ── AI tutor (M4, migration 0002) ────────────────────────────────────────────
+// docs/design/data-model.md#tutor_threads-tutor_messages-session_summaries and #ai_calls.
+// `session_summaries` comes with `session.summarize` (v0.2).
+
+export const AI_CALL_SUBJECT_TYPES = [
+  'tutor_message',
+  'attempt',
+  'generation_job',
+  'tutor_thread',
+  'content_draft',
+  'hint_event',
+] as const;
+
+/** One AI call (prompts and responses are not stored; tutor_messages holds the conversation). */
+export const aiCalls = sqliteTable(
+  'ai_calls',
+  {
+    id: text('id').primaryKey(),
+    learnerId: learnerId(),
+    taskName: text('task_name').notNull(),
+    taskVersion: integer('task_version').notNull(),
+    baseVersion: integer('base_version').notNull(),
+    provider: text('provider').notNull(),
+    model: text('model'),
+    effort: text('effort'),
+    providerThreadId: text('provider_thread_id'),
+    providerTurnId: text('provider_turn_id'),
+    subjectType: text('subject_type', { enum: AI_CALL_SUBJECT_TYPES }),
+    subjectId: text('subject_id'),
+    status: text('status', { enum: AI_CALL_STATUSES }).notNull(),
+    errorCode: text('error_code'),
+    errorMessage: text('error_message'),
+    retries: integer('retries').notNull().default(0),
+    latencyFirstTokenMs: integer('latency_first_token_ms'),
+    latencyTotalMs: integer('latency_total_ms'),
+    inputTokens: integer('input_tokens'),
+    cachedInputTokens: integer('cached_input_tokens'),
+    outputTokens: integer('output_tokens'),
+    reasoningTokens: integer('reasoning_tokens'),
+    contextTokensEstimated: integer('context_tokens_estimated'),
+    contextManifestJson: text('context_manifest_json', { mode: 'json' }).notNull(),
+    toolAttempts: integer('tool_attempts').notNull().default(0),
+    validationIssuesJson: text('validation_issues_json', { mode: 'json' }).notNull().default([]),
+    promptSnapshotPath: text('prompt_snapshot_path'),
+    createdAt: at('created_at').notNull(),
+  },
+  (t) => [
+    index('ai_calls_learner_created').on(t.learnerId, t.createdAt),
+    index('ai_calls_task_status').on(t.taskName, t.status),
+    index('ai_calls_subject').on(t.subjectType, t.subjectId),
+    check('ai_calls_status', inList(t.status, AI_CALL_STATUSES)),
+    check(
+      'ai_calls_subject_type',
+      sql`${t.subjectType} IS NULL OR ${inList(t.subjectType, AI_CALL_SUBJECT_TYPES)}`,
+    ),
+    check('ai_calls_tool_attempts', sql`${t.toolAttempts} >= 0`),
+    check('ai_calls_context_manifest_json', jsonValid(t.contextManifestJson)),
+    check('ai_calls_validation_issues_json', jsonValid(t.validationIssuesJson)),
+  ],
+);
+
+/** A tutor conversation per lesson or exercise. The provider thread is only a cache (D-014). */
+export const tutorThreads = sqliteTable(
+  'tutor_threads',
+  {
+    id: text('id').primaryKey(),
+    learnerId: learnerId(),
+    scopeType: text('scope_type', { enum: TUTOR_SCOPE_TYPES }).notNull(),
+    scopeId: text('scope_id'),
+    title: text('title').notNull().default(''),
+    provider: text('provider').notNull(),
+    providerThreadId: text('provider_thread_id'),
+    providerModel: text('provider_model'),
+    providerInstructionsVersion: text('provider_instructions_version'),
+    status: text('status', { enum: TUTOR_THREAD_STATUSES }).notNull().default('open'),
+    /** `session_summaries.id` once summaries exist (v0.2). */
+    summaryId: text('summary_id'),
+    messageCount: integer('message_count').notNull().default(0),
+    createdAt: at('created_at').notNull(),
+    lastMessageAt: at('last_message_at').notNull(),
+    closedAt: at('closed_at'),
+    archivedAt: at('archived_at'),
+  },
+  (t) => [
+    index('tutor_threads_learner_scope_status').on(t.learnerId, t.scopeType, t.scopeId, t.status),
+    index('tutor_threads_learner_last_message').on(t.learnerId, t.lastMessageAt),
+    check('tutor_threads_scope_type', inList(t.scopeType, TUTOR_SCOPE_TYPES)),
+    check('tutor_threads_status', inList(t.status, TUTOR_THREAD_STATUSES)),
+    check('tutor_threads_message_count', sql`${t.messageCount} >= 0`),
+  ],
+);
+
+/** Every question and answer, verbatim (D-014). */
+export const tutorMessages = sqliteTable(
+  'tutor_messages',
+  {
+    id: text('id').primaryKey(),
+    threadId: text('thread_id')
+      .notNull()
+      .references(() => tutorThreads.id, { onDelete: 'cascade' }),
+    role: text('role', { enum: TUTOR_MESSAGE_ROLES }).notNull(),
+    content: text('content').notNull(),
+    attachmentsJson: text('attachments_json', { mode: 'json' }).notNull().default([]),
+    /** Parsed `<meta>` block of a tutor reply (added to the table sketch; see data-model.md). */
+    metaJson: text('meta_json', { mode: 'json' }),
+    status: text('status', { enum: TUTOR_MESSAGE_STATUSES }).notNull().default('complete'),
+    aiCallId: text('ai_call_id').references(() => aiCalls.id),
+    taskName: text('task_name'),
+    taskVersion: integer('task_version'),
+    baseVersion: integer('base_version'),
+    model: text('model'),
+    createdAt: at('created_at').notNull(),
+  },
+  (t) => [
+    index('tutor_messages_thread_created').on(t.threadId, t.createdAt),
+    index('tutor_messages_status').on(t.status),
+    check('tutor_messages_role', inList(t.role, TUTOR_MESSAGE_ROLES)),
+    check('tutor_messages_status', inList(t.status, TUTOR_MESSAGE_STATUSES)),
+    check('tutor_messages_attachments_json', jsonValid(t.attachmentsJson)),
+    check('tutor_messages_meta_json', sql`${t.metaJson} IS NULL OR json_valid(${t.metaJson})`),
   ],
 );

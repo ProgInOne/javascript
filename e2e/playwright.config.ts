@@ -48,6 +48,8 @@ export default defineConfig({
       PROGINONE_CONTENT_DB: contentDb,
       PROGINONE_OPEN_BROWSER: 'false',
       PROGINONE_LOG_LEVEL: 'warn',
+      // Deterministic AI; E2E never starts Codex (docs/design/ai-system.md#mockprovider).
+      PROGINONE_AI_PROVIDER: 'mock',
     },
   },
 });

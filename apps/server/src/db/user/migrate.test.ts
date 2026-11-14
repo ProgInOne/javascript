@@ -41,10 +41,14 @@ describe('migrateUserDb', () => {
   it('initializes an empty database without a backup', async () => {
     const userDb = new UserDb(join(tmpDir(), 'user.db')).open();
     const backup = vi.fn(() => Promise.resolve('unused'));
-    expect(await migrateUserDb(userDb, { backup })).toEqual(['0000_init', '0001_learning_records']);
+    expect(await migrateUserDb(userDb, { backup })).toEqual([
+      '0000_init',
+      '0001_learning_records',
+      '0002_ai_tutor',
+    ]);
     expect(backup).not.toHaveBeenCalled();
     expect(schemaState(userDb.sqlite)).toMatchObject({
-      current: '0001_learning_records',
+      current: '0002_ai_tutor',
       pending: [],
     });
   });
@@ -85,7 +89,7 @@ describe('migrateUserDb', () => {
     const marker = reopened.sqlite.prepare("SELECT value FROM app_meta WHERE key = 'marker'").get();
     expect(marker).toEqual({ value: 'before' });
     expect(schemaState(reopened.sqlite)).toMatchObject({
-      current: '0001_learning_records',
+      current: '0002_ai_tutor',
       pending: [],
     });
     const oops = reopened.sqlite
@@ -101,7 +105,7 @@ describe('migrateUserDb', () => {
       backup: () => Promise.resolve(''),
       migrationsDir: migrationsUpTo('0000_init'),
     });
-    expect(schemaState(userDb.sqlite).pending).toEqual(['0001_learning_records']);
+    expect(schemaState(userDb.sqlite).pending).toEqual(['0001_learning_records', '0002_ai_tutor']);
     userDb.sqlite
       .prepare(
         "INSERT INTO learners (id, timezone, day_start_hour, created_at) VALUES ('L1', 'Asia/Seoul', 4, 1)",
@@ -122,7 +126,10 @@ describe('migrateUserDb', () => {
     });
     const backup = vi.fn(() => backups.create('pre-migration').then((b) => b.path));
 
-    expect(await migrateUserDb(userDb, { backup })).toEqual(['0001_learning_records']);
+    expect(await migrateUserDb(userDb, { backup })).toEqual([
+      '0001_learning_records',
+      '0002_ai_tutor',
+    ]);
 
     expect(backup).toHaveBeenCalledOnce();
     const [saved0] = backups.list(['pre-migration']);
@@ -164,6 +171,48 @@ describe('migrateUserDb', () => {
       userDb.sqlite
         .prepare(
           "INSERT INTO daily_activity (learner_id, date, active_ms) VALUES ('L1', 'today', 0)",
+        )
+        .run(),
+    ).toThrow(/CHECK/);
+  });
+
+  it('upgrades a 0001 database with learning records to 0002 (tutor tables)', async () => {
+    const dataDir = tmpDir();
+    const userDb = new UserDb(join(dataDir, 'user.db')).open();
+    await migrateUserDb(userDb, {
+      backup: () => Promise.resolve(''),
+      migrationsDir: migrationsUpTo('0001_learning_records'),
+    });
+    userDb.sqlite
+      .prepare(
+        "INSERT INTO learners (id, timezone, day_start_hour, created_at) VALUES ('L1', 'Asia/Seoul', 4, 1)",
+      )
+      .run();
+    userDb.sqlite
+      .prepare(
+        "INSERT INTO hint_events (id, learner_id, exercise_id, kind, level, created_at) VALUES ('H1', 'L1', 'ex', 'hint', 1, 2)",
+      )
+      .run();
+    const backup = vi.fn(() => Promise.resolve(join(dataDir, 'unused')));
+    expect(await migrateUserDb(userDb, { backup })).toEqual(['0002_ai_tutor']);
+    expect(backup).toHaveBeenCalledOnce();
+    expect(userDb.sqlite.prepare('SELECT id FROM hint_events').all()).toEqual([{ id: 'H1' }]);
+    userDb.sqlite
+      .prepare(
+        "INSERT INTO tutor_threads (id, learner_id, scope_type, provider, created_at, last_message_at) VALUES ('T1', 'L1', 'general', 'mock', 1, 1)",
+      )
+      .run();
+    expect(() =>
+      userDb.sqlite
+        .prepare(
+          "INSERT INTO tutor_messages (id, thread_id, role, content, status, created_at) VALUES ('M1', 'T1', 'tutor', '', 'typing', 1)",
+        )
+        .run(),
+    ).toThrow(/CHECK/);
+    expect(() =>
+      userDb.sqlite
+        .prepare(
+          "INSERT INTO ai_calls (id, learner_id, task_name, task_version, base_version, provider, status, context_manifest_json, created_at) VALUES ('A1', 'L1', 't', 1, 1, 'mock', 'weird', '[]', 1)",
         )
         .run(),
     ).toThrow(/CHECK/);

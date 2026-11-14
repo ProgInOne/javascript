@@ -3,10 +3,13 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serve } from '@hono/node-server';
+import { TaskRunner } from '@proginone/ai';
+import { createProvider } from './ai/provider.ts';
 import { ConfigError, loadConfig } from './config/load.ts';
 import { UserDb } from './db/user/connection.ts';
 import { ensureLearner } from './db/user/learners.ts';
 import { appMeta } from './db/user/schema.ts';
+import { markInterruptedMessages } from './db/user/tutor.ts';
 import { MigrationError, migrateUserDb } from './db/user/migrate.ts';
 import { createApp } from './http/app.ts';
 import { MaintenanceState } from './http/security.ts';
@@ -16,11 +19,13 @@ import { openBrowser } from './lifecycle/open-browser.ts';
 import { createLogger } from './observability/logger.ts';
 import { BackupScheduler } from './services/backup/scheduler.ts';
 import { BackupService } from './services/backup/service.ts';
+import { AiService } from './services/ai/ai-service.ts';
 import { systemClock } from './services/clock.ts';
 import { ContentAccess } from './services/curriculum/content-access.ts';
 import { createEngine } from './services/practice/engine.ts';
 import { createPracticeServices } from './services/practice/index.ts';
 import { SettingsService } from './services/settings/service.ts';
+import { TutorService } from './services/tutor/tutor-service.ts';
 import { APP_VERSION } from './version.ts';
 
 // Startup order: docs/design/system-architecture.md#앱-시작-절차.
@@ -104,6 +109,10 @@ if (content.available) {
     '학습 콘텐츠(content.db)가 없습니다. `pnpm content:build`를 실행하세요.',
   );
 }
+// Replies left `streaming` by an abnormal exit (docs/design/system-architecture.md#앱-시작-절차).
+const interrupted = markInterruptedMessages(userDb.orm);
+if (interrupted > 0) log.info({ interrupted }, 'tutor messages marked interrupted');
+
 const scheduler = new BackupScheduler({
   userDb,
   backups,
@@ -116,6 +125,17 @@ const scheduler = new BackupScheduler({
 scheduler.start();
 
 const engine = await createEngine();
+// Codex starts lazily on the first AI request (docs/design/ai-system.md#프로세스-수명주기).
+const provider = createProvider(config, log, APP_VERSION);
+const ai = new AiService({ provider, log });
+const tutor = new TutorService({
+  userDb,
+  content,
+  runner: new TaskRunner({ provider, now: systemClock }),
+  ai,
+  now: systemClock,
+  log,
+});
 const token = randomBytes(32).toString('base64url');
 const webDistDir = fileURLToPath(new URL('../../web/dist', import.meta.url));
 const app = createApp({
@@ -126,6 +146,7 @@ const app = createApp({
   settings: new SettingsService({ userDb, log }),
   content,
   practice: createPracticeServices({ userDb, content, engine, now: systemClock }),
+  ai: { ai, tutor },
   maintenance,
   version: APP_VERSION,
   ...(config.mode === 'production' ? { webDistDir } : {}),
@@ -163,12 +184,19 @@ function shutdown(signal: string) {
   shuttingDown = true;
   log.info({ signal }, '종료합니다.');
   scheduler.stop();
+  // Stop running AI turns and the Codex child process (turn/interrupt → stdin close → signals).
+  tutor.cancelAll();
+  const providerClosed = provider.dispose().catch((err: unknown) => {
+    log.warn({ err }, 'AI provider did not close cleanly');
+  });
   server.close(() => {
-    userDb.close();
-    content.close();
-    removeDevSession();
-    release();
-    process.exit(0);
+    void providerClosed.finally(() => {
+      userDb.close();
+      content.close();
+      removeDevSession();
+      release();
+      process.exit(0);
+    });
   });
   setTimeout(() => {
     removeDevSession();
