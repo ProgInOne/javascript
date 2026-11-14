@@ -121,6 +121,17 @@ describe('review queue and review sets', () => {
         .get(today),
     ).toEqual({ reviews_done: 1 });
     expect((await queue(ctx)).due).toEqual([]);
+
+    // A card due again later today (e.g. after `again`) stays out of today's queue: a second
+    // rating today would be skipped anyway (D-029).
+    ctx.userDb.sqlite
+      .prepare(
+        "UPDATE concept_memory SET due_at = ?, card_json = json_set(card_json, '$.dueAt', ?)",
+      )
+      .run(ctx.clock.now, ctx.clock.now);
+    expect((await queue(ctx)).due).toEqual([]);
+    ctx.clock.now += DAY;
+    expect((await queue(ctx)).due.map((e) => e.conceptId)).toEqual(['js.basics.statement']);
   });
 
   it('validates the budget', async () => {

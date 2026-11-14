@@ -44,8 +44,8 @@ export class ReviewService {
   }
 
   /**
-   * `buildReviewQueue` over cards due before the end of the learner's day. Concepts missing from
-   * the content pack (orphans) are left out.
+   * `buildReviewQueue` over cards due before the end of the learner's day, except concepts already
+   * reviewed today (D-029). Concepts missing from the content pack (orphans) are left out.
    */
   #engineQueue(budgetMinutes: number) {
     const orm = this.#userDb.orm;
@@ -53,6 +53,7 @@ export class ReviewService {
     const now = this.#now();
     const { learnerId, dayBoundary } = learnerContext(this.#userDb);
     const ids = dueConceptIds(orm, learnerId, endOfLocalDay(now, dayBoundary));
+    const today = localDateOf(now, dayBoundary);
     const concepts = repo.getConcepts(ids);
     const states = loadConceptStates(orm, learnerId, ids, this.#engine.fsrs);
     const ratings = lastRatings(orm, learnerId, ids);
@@ -60,6 +61,10 @@ export class ReviewService {
       const concept = concepts.get(id);
       const state = states.get(id);
       if (!concept || !state?.memory) return [];
+      // Already rated today: another rating today would be skipped by flushPendingRatings, so
+      // showing it again only repeats work (D-029).
+      const last = state.memory.card.lastReviewAt;
+      if (last !== null && localDateOf(last, dayBoundary) === today) return [];
       return [
         {
           memory: state.memory,
