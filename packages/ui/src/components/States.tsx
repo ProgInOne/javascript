@@ -2,7 +2,8 @@ import { CircleAlert, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { cx } from './cx.ts';
 
-type HeadingLevel = 2 | 3 | 4;
+/** 1 only when the state replaces the whole page (it is the page heading). */
+type HeadingLevel = 1 | 2 | 3 | 4;
 
 export interface EmptyStateProps {
   /** Large line icon (no illustrations). */

@@ -9,7 +9,8 @@
     "node": ">=24"
   },
   "scripts": {
-    "dev:server": "pnpm --filter @proginone/server dev",
+    "dev": "pnpm --parallel --filter @proginone/server --filter @proginone/web dev",
+    "start": "pnpm --filter @proginone/server start",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -27,6 +28,7 @@
     "@types/node": "^24.19.2",
     "dependency-cruiser": "^18.7.2",
     "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.14.0",
     "prettier": "^3.10.1",
     "typescript": "~6.0.3",

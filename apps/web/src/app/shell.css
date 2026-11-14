@@ -1,0 +1,216 @@
+/* App shell layout. Uses semantic tokens only (packages/ui/src/tokens/tokens.css). */
+
+:root {
+  --header-h: 56px;
+  --page-max: 1200px;
+  --page-pad-x: var(--space-8);
+  scroll-padding-top: calc(var(--header-h) + var(--space-4)); /* WCAG 2.4.11 */
+}
+
+body {
+  background: var(--color-bg-canvas);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -100px;
+  z-index: calc(var(--z-header) + 1);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  box-shadow: var(--elevation-2);
+}
+.skip-link:focus {
+  top: var(--space-2);
+}
+
+/* ── Header ── */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  height: var(--header-h);
+  background: color-mix(in oklch, var(--color-bg-surface) 92%, transparent);
+  backdrop-filter: saturate(1.4) blur(8px);
+  border-bottom: 1px solid var(--color-border-default);
+}
+.app-header__inner {
+  max-width: calc(var(--page-max) + 2 * var(--page-pad-x));
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+.app-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-heading);
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+.app-brand__in {
+  color: var(--color-text-brand);
+}
+.app-nav {
+  display: flex;
+  gap: var(--space-1);
+  height: 100%;
+}
+.app-nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  text-decoration: none;
+}
+.app-nav a:hover {
+  color: var(--color-text-primary);
+}
+.app-nav a[aria-current='page'] {
+  color: var(--color-text-heading);
+  font-weight: 700;
+}
+.app-nav a[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-action-primary);
+}
+.app-header__tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* ── Page ── */
+.page {
+  max-width: calc(var(--page-max) + 2 * var(--page-pad-x));
+  margin: 0 auto;
+  padding: var(--space-8) var(--page-pad-x) var(--space-16);
+}
+.page-title {
+  font: var(--text-h1);
+  letter-spacing: var(--tracking-h1, -0.02em);
+  color: var(--color-text-heading);
+  margin-bottom: var(--section-gap);
+}
+.page-title:focus {
+  outline: none;
+}
+.section-title {
+  font: var(--text-h3);
+  color: var(--color-text-heading);
+}
+.list-title {
+  font: var(--text-ui);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin: var(--space-6) 0 var(--space-2);
+}
+.muted {
+  color: var(--color-text-secondary);
+}
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+.card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--card-pad);
+  box-shadow: var(--elevation-1);
+}
+.card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+/* ── Settings ── */
+.settings {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+.settings__nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-1);
+}
+.settings__nav a {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.settings__nav a:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+.settings__nav a[aria-current='page'] {
+  background: var(--color-bg-selected);
+  color: var(--color-text-heading);
+  font-weight: 700;
+}
+.settings-section {
+  max-width: 760px;
+}
+
+.backup-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.backup-list__item {
+  display: grid;
+  grid-template-columns: 120px auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--color-border-default);
+}
+.backup-list__size {
+  justify-self: end;
+}
+
+@media (max-width: 1100px) {
+  :root {
+    --page-pad-x: var(--space-5);
+  }
+  .settings {
+    grid-template-columns: 1fr;
+  }
+  .settings__nav ul {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}

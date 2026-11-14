@@ -28,10 +28,12 @@ ProgInOne은 체계적인 커리큘럼, 충분한 문제은행, 브라우저 내
 
 ```shell
 pnpm install
-pnpm check    # lint, 포맷, 타입, 의존 규칙, 테스트, 문서 링크 검사
+pnpm dev                   # 개발 모드: 서버(:4310) + Vite(:5173). http://127.0.0.1:5173
+pnpm build && pnpm start   # 프로덕션 모드: http://127.0.0.1:4310 (브라우저 자동 열림)
+pnpm check                 # lint, 포맷, 타입, 의존 규칙, 대비, 테스트, 문서 링크 검사
 ```
 
-앱 실행 명령(`pnpm dev`, `pnpm build && pnpm start`)은 M3 진행에 따라 추가됩니다([시스템 아키텍처 설계](docs/design/system-architecture.md#빌드와-개발-환경)).
+개발 모드의 학습 데이터는 저장소의 `.data/`(git 무시), 프로덕션은 OS 표준 위치에 저장됩니다([시스템 아키텍처 설계](docs/design/system-architecture.md#데이터-디렉터리)).
 
 ## 기술 방향 (요약)
 

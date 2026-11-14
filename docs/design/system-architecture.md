@@ -215,7 +215,7 @@ apps/web/src/
 │   ├── concept-map/
 │   └── goals/
 ├── runner-host/            # 샌드박스 생성·통신·워치독
-├── api/                    # 타입 안전 API 클라이언트 (Hono RPC), TanStack Query 훅
+├── api/                    # zod 검증 API 클라이언트, TanStack Query 훅
 └── lib/
 ```
 
@@ -277,7 +277,7 @@ sequenceDiagram
 
 - 기본 경로: `/api/v1`. 모든 응답은 JSON이며, 스트리밍만 SSE(`text/event-stream`)를 씁니다.
 - 리소스 지향 경로를 쓰고, 상태를 바꾸는 동작은 `POST`/`PUT`/`PATCH`/`DELETE`를 씁니다.
-- 요청·응답 스키마는 `packages/shared`의 zod 스키마가 원천입니다. 웹은 Hono RPC 클라이언트로 타입을 공유합니다.
+- 요청·응답 스키마는 `packages/shared`의 zod 스키마가 원천입니다. 웹은 같은 스키마로 **응답을 런타임 검증하는** 작은 fetch 클라이언트(`apps/web/src/api/client.ts`)를 씁니다. Hono RPC 클라이언트는 웹이 서버 소스의 타입(Node 타입 포함)을 끌어와야 하고 응답을 검증하지 않아서 쓰지 않습니다(M3 결정).
 - 페이지네이션은 커서 기반(`?cursor=&limit=`)입니다.
 
 오류 응답 형식:

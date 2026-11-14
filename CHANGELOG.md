@@ -7,6 +7,7 @@
 
 ### Added
 
+- 웹 앱 셸(M3): 상단 내비게이션, 라우팅(TanStack Router), 테마 동기화(라이트·다크·시스템, 첫 화면 깜빡임 방지), 페이지 전환 시 포커스·알림, 페이지 오류·유지보수·없는 화면 처리, 설정 > 화면(테마), 설정 > 데이터(백업 목록·지금 백업·복원 확인), `pnpm dev`·`pnpm start`
 - 서버의 웹 앱 제공(M3): 설정 API(`GET/PATCH /api/v1/settings`, 테마), 빌드된 웹 앱 정적 제공과 SPA 대체, 앱 문서 CSP, 세션 토큰 전달(프로덕션 메타 태그, 개발 모드 세션 파일), 시작 시 브라우저 열기
 - user.db와 자동 백업(M3): Drizzle 스키마·첫 마이그레이션(`app_meta`, `learners`, `settings`), 마이그레이션 전 백업과 실패 시 자동 복구, 일간·주간 백업과 보존 정책, 백업 검증(무결성·체크섬·스키마 호환), 복원(유지보수 모드, 복원 전 백업), `GET/POST /api/v1/backups`, `POST /api/v1/backups/:id/restore`
 - 서버 골격(M3): Hono 앱, 설정 로더(환경 변수 > `config.json` > 기본값), 구조화 로그, 오류 응답 모델, 보안 미들웨어(Host·Origin·세션 토큰), 유지보수 모드, 단일 인스턴스 잠금, `GET /api/v1/health`

@@ -1,5 +1,6 @@
 // @ts-check
 import js from '@eslint/js';
+import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -13,6 +14,7 @@ export default tseslint.config(
       'design/prototypes/**',
       '.data/**',
       '.claude/**',
+      '**/routeTree.gen.ts',
       'playwright-report/**',
       'test-results/**',
     ],
@@ -25,7 +27,7 @@ export default tseslint.config(
       globals: { ...globals.node },
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['*.js', '*.cjs', '*.mjs', 'tools/*.mjs'],
+          allowDefaultProject: ['*.js', '*.cjs', '*.mjs', 'tools/*.mjs', 'apps/web/vite.config.ts'],
         },
         tsconfigRootDir: import.meta.dirname,
       },
@@ -40,8 +42,17 @@ export default tseslint.config(
     },
   },
   {
+    files: ['apps/web/src/**/*.{ts,tsx}', 'packages/ui/src/**/*.tsx'],
+    ...reactHooks.configs.flat['recommended-latest'],
+    languageOptions: { globals: { ...globals.browser } },
+  },
+  {
     files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
     ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    files: ['apps/web/public/**/*.js'],
+    languageOptions: { globals: { ...globals.browser } },
   },
   {
     // 개발 도구 스크립트는 콘솔 출력이 곧 인터페이스입니다.
