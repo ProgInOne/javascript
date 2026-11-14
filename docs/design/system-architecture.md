@@ -150,7 +150,8 @@ flowchart BT
     web[apps/web] --> ui
     web --> exerciseui
     web --> runner
-    server[apps/server] --> engine
+    server[apps/server] --> runner
+    server --> engine
     server --> ai
     server --> exercisekit
     cli[tools/content-cli] --> contentschema
@@ -160,6 +161,7 @@ flowchart BT
 
 - 화살표는 "의존한다"입니다. 순환 의존은 금지하며 CI에서 검사합니다.
 - `learning-engine`과 `exercise-kit`의 채점기는 **I/O 없는 순수 함수** 입니다. DB와 네트워크 접근은 `apps/server`의 서비스 계층이 담당합니다.
+- `apps/server`는 러너 셸 문서(`/sandbox/runner.html`)를 만들어 제공하려고 `runner`의 셸 빌드(`@proginone/runner/shell-build`)를 씁니다. 샌드박스 결과 검증은 `packages/shared`의 계약(`parseRunResult`)으로 합니다.
 - `apps/web`은 `learning-engine`에 의존하지 않습니다. 학습 판단은 서버가 합니다.
 - `packages/ai`는 제공자 프로토콜과 작업 정의만 갖고, DB 조회는 `apps/server`가 구현하는 `ContextSource` 인터페이스로 주입받습니다.
 

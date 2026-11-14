@@ -982,6 +982,10 @@ PoC 코드와 실행 방법, 테스트별 근거는 [`poc/sandbox/`](/poc/sandbo
 | `src/prepare/` | acorn 반복문 계측, parse5 기반 HTML 재작성(원문 오프셋 편집), 노출 스크립트, 오류 위치 역매핑 |
 | `src/harness/` | 하네스(내장 함수 확보, 직렬화, 콘솔, 타이머 추적, 대체 구현, 반복문 가드, 관측 단계) |
 | `src/shell/` | 셸 컨트롤러와 `runner.html` 빌드(`@proginone/runner/shell-build`, Node 전용) |
+| `src/host/` | `createRunnerHost()`: 셸 생성·연결, Watchdog, 위치 역매핑 |
+| `apps/server/src/http/runner.ts` | `GET /sandbox/runner.html`(셸 CSP 헤더). 개발 모드에서도 서버가 제공합니다 |
+| `e2e/tests/sandbox.spec.ts` | 보안 스위트(Playwright, Chromium) |
+| `e2e/tests/sandbox-grading.spec.ts` | 계약 테스트: `exercise-kit`의 `buildRunPlan` → 실제 러너 → `gradeSubmission` |
 
 단위 테스트는 설계의 `test/unit/` 대신 저장소 규칙대로 각 모듈 옆(`*.test.ts`)에 둡니다. `format/`(표시 형식)은 콘솔 패널·예측 문제 채점과 함께 만듭니다.
 
@@ -1015,11 +1019,20 @@ PoC 코드와 실행 방법, 테스트별 근거는 [`poc/sandbox/`](/poc/sandbo
 - `interactive` 실행도 `maxDurationMs`에서 끝냅니다(남은 타이머 수는 `pendingAtEnd`). "계속 실행" 미리보기는 미리보기 화면과 함께 만듭니다. `preview` 모드는 실행이 끝난 뒤 중첩 문서를 다음 실행까지 화면에 남깁니다.
 - `setViewport`는 `resize` 이벤트를 최대 300ms만 기다립니다. 보이지 않는 채점 셸에서는 Chromium이 이 이벤트를 보내지 않는 경우가 있었고, 크기와 미디어 쿼리 결과는 이벤트 없이도 정확했습니다.
 - `confirm()`은 `stdin`이 없으면 `true`, 있으면 `false`·`no`·`n`·`0`·`아니오`·`취소`·빈 문자열을 `false`로 읽습니다.
+- 셸은 정상인 동안 실행마다 재사용합니다(학습자 코드는 셸이 아니라 Worker·중첩 문서에서 실행되고 매번 폐기됨). Watchdog이 셸을 버린 뒤에만 새 사이트로 새 셸을 만듭니다. 예열 셸 풀은 학습 화면과 함께 만듭니다.
 - Prepare 단계는 앱 메인 스레드에서 실행합니다. Prepare Worker는 에디터·Prettier와 함께 만듭니다.
 
 ### 아직 없는 것 (v0.1 범위 밖)
 
 가상 타이머와 `advance` 단계, `a11y` 단계(axe-core; 두 단계는 `skipped`로 보고), 쿠키 대체 구현, 여러 파일 연결(`<script src>`·`<link href>`를 프로젝트 파일로 인라인), 미리보기 이중 버퍼링·스크롤 유지, 박스 모델 인스펙터, 성능 예산 테스트, Prepare Worker. 각각 필요한 화면·단원과 함께 추가합니다.
+
+### 보안 스위트 실행 방식과 결과
+
+- 앱 화면이 아직 러너를 쓰지 않으므로, 테스트가 호스트 모듈을 번들해 프로덕션 앱 페이지에 `page.evaluate`로 넣습니다. 프로덕션에 숨은 테스트 경로를 두지 않기 위해서입니다. 앱 문서와 CSP, 서버의 셸 응답, 셸·하네스는 실제 빌드입니다.
+- DevTools로 평가한 코드는 페이지 CSP를 받지 않아 zod의 `new Function` 시험이 통과하고, 그 뒤 컴파일된 검증기가 앱 CSP에서 실패합니다. 테스트 번들만 zod `jitless`를 먼저 설정합니다. 정상적으로 로드한 앱에서는 zod가 CSP를 올바르게 감지합니다.
+- 누출 판정은 테스트가 띄운 탐지용 HTTP 서버(다른 로컬 서비스 대역)의 요청 기록과, 페이지 전체(셸·Worker 포함)에서 **응답까지 받은** 요청 기록으로 합니다. Chromium은 Worker의 XHR처럼 CSP로 막힌 요청도 시작 이벤트를 보내므로 시작 이벤트만으로는 판정하지 않습니다. 마찬가지로 Worker 안 `new WebSocket()`, `navigator.sendBeacon()`(`true` 반환), 학습자 문서의 `new Worker()`는 예외 없이 만들어진 뒤 막히므로, 이들은 반환값이 아니라 위반 보고와 서버 기록으로 판정합니다.
+- CI는 Chromium만 필수로 실행합니다. 네트워크·격리 항목은 시나리오마다 따로가 아니라 모드별 묶음 실행 하나에 모아 확인합니다. 메모리 폭주(S32·S33)는 브라우저 메모리를 수 GB 쓰므로 CI에 넣지 않았고(PoC 결과 참고), S42는 학습자 Worker 생성 자체를 막는 S46으로 대신합니다. 계측 없는 무한 실행(S26 후반, S48)은 끝나지 않는 마이크로태스크 체인으로 재현합니다. S35는 CI 메모리를 고려해 `1e7`자 문자열로 확인합니다.
+- 로컬 참고 실행(2026-11-14, Playwright 1.65.1 Firefox + Fission, WebKit): 48개 중 39개 통과. 네트워크·격리·누출 검사는 모두 통과했습니다. 실패는 엔진 차이로, 테스트 기대값이 Chromium 기준인 항목입니다: 오류 열 번호 기준(Firefox·WebKit), 재귀 오류 이름(Firefox `InternalError`), `window.open`이 `null` 대신 예외(Firefox), 인라인 스크립트 최상위 오류의 열(WebKit). 또 두 엔진은 막힌 `location` 이동에서 `pagehide`가 없어 `timeout`으로 끝났고(서버 요청은 0건), 계측 없는 무한 마이크로태스크 뒤 다음 실행(S48)이 테스트 제한 안에 복구되지 않았습니다. WebKit은 PoC에서 확인한 잔여 위험이고, Firefox의 S48은 미결 사항 4로 남깁니다.
 
 ## 샌드박스 미결 사항
 
@@ -1028,7 +1041,7 @@ M1-B PoC 이후 남은 항목입니다.
 1.  실제 Safari에서 셸별 사이트(`*.localhost`) 해석, 프로세스 배치, 인라인 스크립트 오류 가림이 Playwright WebKit과 같은지. Safari 자동화(`safaridriver`)를 설정해 확인합니다.
 1.  셸 CSP 헤더를 Vite 개발 서버에서 경로별·`Host`별로 붙이는 방법(미들웨어 플러그인)의 동작. M3에서 확인합니다.
 1.  WebKit에서 인라인 이벤트 핸들러 속성(`onclick="..."`)의 오류 위치를 얻는 방법. 필요하면 Prepare 단계에서 속성을 `addEventListener` 호출로 바꾸는 변환을 검토합니다.
-1.  끝나지 않는 마이크로태스크 체인과 계측 밖의 긴 내장 함수 호출을 Chromium·Firefox에서 Watchdog이 같은 방식으로 복구하는지 측정합니다(Q4와 같은 경로로 예상).
+1.  끝나지 않는 마이크로태스크 체인과 계측 밖의 긴 내장 함수 호출을 Chromium·Firefox에서 Watchdog이 같은 방식으로 복구하는지 측정합니다(Q4와 같은 경로로 예상). M4 구현의 로컬 실행에서 Chromium은 복구했고, Firefox(Fission)는 테스트 제한 안에 복구되지 않았습니다.
 
 ## 다른 설계 문서와의 연결
 

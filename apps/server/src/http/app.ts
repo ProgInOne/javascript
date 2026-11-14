@@ -10,6 +10,7 @@ import { AppError, errorResponse, handleError } from './errors.ts';
 import { backupRoutes } from './routes/backups.ts';
 import { curriculumRoutes } from './routes/curriculum.ts';
 import { settingsRoutes } from './routes/settings.ts';
+import { runnerRoutes } from './runner.ts';
 import { maintenance, MaintenanceState, security } from './security.ts';
 import { webRoutes } from './web.ts';
 
@@ -74,6 +75,7 @@ export function createApp({
     .route('/settings', settingsRoutes(settings))
     .route('/', curriculumRoutes(content));
   const routes = app.route('/api/v1', api);
+  app.route('/sandbox', runnerRoutes());
   if (webDistDir) app.route('/', webRoutes({ distDir: webDistDir, token, port: config.port }));
 
   app.notFound((c) =>

@@ -65,9 +65,11 @@ describe('security middleware', () => {
     const api = await req('/api/v1/health', { host: 's1.localhost:4310' });
     expect(api.status).toBe(403);
     expect(await errorCode(api)).toBe('FORBIDDEN_HOST');
-    // Not served yet (runner arrives in M4), but the host check passes: 404, not 403.
     const runner = await req('/sandbox/runner.html', { host: 's1.localhost:4310' });
-    expect(runner.status).toBe(404);
+    expect(runner.status).toBe(200);
+    // Other /sandbox paths pass the host check but do not exist.
+    const other = await req('/sandbox/other.js', { host: 's1.localhost:4310' });
+    expect(other.status).toBe(404);
   });
 
   it.each([

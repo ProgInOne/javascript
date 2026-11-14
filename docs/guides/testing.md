@@ -45,9 +45,12 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 | `tests/flows.spec.ts` | 핵심 흐름: 내비게이션·포커스, 테마 유지, 백업 생성·복원, 로컬 서버 보안(토큰·Host) |
 | `tests/a11y.spec.ts` | 화면 × 라이트/다크에서 axe-core WCAG 2.2 AA 위반 0건(실제 브라우저라 색 대비 포함) |
 | `tests/visual.spec.ts` | 화면 × 테마 × 1280/1440 전체 페이지 스크린샷 비교(`@visual`) |
+| `tests/sandbox.spec.ts` | 코드 실행 샌드박스: 실행·관측값, 보안 스위트(S1~S48 중 브라우저 항목), 셸 교체·대체 경로 |
+| `tests/sandbox-grading.spec.ts` | 러너 ↔ 채점기 계약: `exercise-kit`이 만든 실행 계획을 실제 러너로 돌려 채점 |
 
 - 처음 한 번 `pnpm --filter @proginone/e2e exec playwright install chromium`으로 브라우저를 설치합니다.
 - 테스트는 서버 하나를 공유하며 순서대로 실행됩니다(`workers: 1`). 앞 테스트가 만든 상태(예: 백업)를 뒤 테스트가 가정하지 않도록, 각 테스트는 필요한 상태를 직접 만들거나 확인합니다.
+- 샌드박스 테스트는 앱 화면이 아직 러너를 쓰지 않으므로, `packages/runner`의 호스트 모듈을 테스트에서 번들해 앱 페이지에 `page.evaluate`로 넣고 실행합니다(DevTools 평가는 페이지 CSP를 받지 않음). 앱 문서와 CSP, 서버의 `/sandbox/runner.html`, 셸·하네스는 모두 실제 프로덕션 빌드입니다. 공격 코드가 노린 요청이 서버에 닿았는지는 테스트가 띄운 탐지용 서버와 페이지의 응답 기록으로 확인합니다.
 - 실패하면 `e2e/test-results/`의 트레이스를 `pnpm --filter @proginone/e2e exec playwright show-trace <trace.zip>`으로 엽니다.
 
 ## 시각 회귀
