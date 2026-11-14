@@ -90,6 +90,9 @@ export function PracticeItem(props: PracticeItemProps) {
   return <ItemWorkspace {...props} view={query.data} exercise={exercise} />;
 }
 
+/** Types whose renderer already shows the exercise code (from the spec). */
+const CODE_IN_SPEC = new Set(['predict_output', 'find_bug_line']);
+
 function errorText(e: unknown): string {
   if (e instanceof ApiRequestError) return e.message;
   return '실행 환경을 준비하지 못했어요. 잠시 후 다시 시도해 주세요.';
@@ -304,7 +307,7 @@ function ItemWorkspace({
       <div className="practice-problem__prompt">
         <Markdown text={view.prompt} />
       </div>
-      {view.code !== null && exercise.typeId !== 'predict_output' && (
+      {view.code !== null && !CODE_IN_SPEC.has(exercise.typeId) && (
         <Markdown text={'```\n' + view.code.replace(/\n$/, '') + '\n```'} />
       )}
     </div>

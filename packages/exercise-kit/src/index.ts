@@ -24,6 +24,7 @@ export * from './types/true-false.ts';
 export * from './types/fill-blank.ts';
 export * from './types/predict-output.ts';
 export * from './types/parsons.ts';
+export * from './types/find-bug-line.ts';
 export * from './types/implement-function.ts';
 export * from './types/fix-bug.ts';
 export * from './types/web-task.ts';

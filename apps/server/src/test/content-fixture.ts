@@ -160,6 +160,7 @@ export const EX = {
   fillCode: `${P}.fill-add`,
   predict: `${P}.predict-log`,
   parsons: `${P}.parsons-greet`,
+  findBug: `${P}.find-bug-x`,
   implement: `${P}.impl-shout`,
   fixBug: `${P}.fix-shout`,
   web: `${P}.web-list`,
@@ -186,6 +187,10 @@ export const ANSWER_KEY_FIELDS = [
   'distractors',
   'alternatives',
   'replaces',
+  'bugLines',
+  'acceptLines',
+  'symptomCheck',
+  'fixedCode',
 ];
 
 const shoutChecks = [
@@ -290,6 +295,22 @@ export const FIXTURE_EXERCISES: FixtureExercise[] = [
       ],
       distractors: [
         { id: 'd1', code: 'console.log("name");', misconception: 'js.mc.log-is-return' },
+      ],
+    },
+  },
+  {
+    id: EX.findBug,
+    type: 'find_bug_line',
+    difficulty: 2,
+    spec: {
+      code: 'let total;\ntotal += 1;\nconsole.log(total);',
+      bugLines: [1],
+      symptom: '출력이 `NaN`입니다.',
+      symptomCheck: { console: ['NaN'] },
+      fixedCode: 'let total = 0; // SOLUTION-MARK\ntotal += 1;\nconsole.log(total);',
+      causeOptions: [
+        { id: 'c1', text: 'total에 처음 값이 없다', correct: true },
+        { id: 'c2', text: '`+=`는 문자열에만 쓴다', misconception: 'js.mc.log-is-return' },
       ],
     },
   },

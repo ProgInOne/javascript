@@ -2,6 +2,7 @@ import {
   assembleParsons,
   parsonsReferenceAnswer,
   type FillBlankSpec,
+  type FindBugLineSpec,
   type FixBugSpec,
   type ImplementFunctionSpec,
   type McqMultiSpec,
@@ -66,6 +67,12 @@ export function solutionView(typeId: string, spec: unknown): SolutionView {
         default:
           return { kind: 'none' };
       }
+    }
+    case 'find_bug_line': {
+      const s = spec as FindBugLineSpec;
+      const cause = s.causeOptions?.find((c) => c.correct)?.text;
+      const lines = `${s.bugLines.join(', ')}번 줄이에요.`;
+      return { kind: 'text', text: cause ? `${lines} 이유: ${cause}` : lines };
     }
     case 'parsons': {
       const s = spec as ParsonsSpec;

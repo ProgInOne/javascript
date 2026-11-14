@@ -962,6 +962,11 @@ spec:
 - 채점: `line`이 `bugLines` 또는 `acceptLines`에 있고, `causeOptions`가 있으면 원인도 정답이어야 `correct`. 줄만 맞으면 `score = 0.5`.
 - 검증: 빌드는 코드를 실행해 `symptom`과 실제 증상(출력, 오류)이 일치하는지 확인하고, 제공된 수정 예시(`fixedCode`, 정답 키)가 증상을 없애는지 확인합니다.
 - UI: 줄 번호 클릭으로 선택, 원인 선택지.
+- 구현에서 정한 것(v0.2, [D-032](/docs/decisions.md)):
+  - **`symptomCheck`(필수, 서버 전용)**: `symptom`은 학습자에게 보이는 문장이라 기계로 비교할 수 없으므로, 같은 증상을 `{ console: [줄, ...] }`(버그 코드의 콘솔 출력 전체, 출력 비교 규칙) 또는 `{ error: TypeError }`(오류 이름)로 함께 씁니다. `check --run`은 버그 코드가 이 증상을 그대로 내는지, `fixedCode`(필수)가 **오류 없이** 실행되면서 증상을 내지 않는지 확인합니다. 코드는 JavaScript(`js-console`)만 씁니다.
+  - **점수**: 줄과 원인이 모두 맞으면 1, 줄만 맞으면 0.5, 줄이 틀리면 원인과 관계없이 0입니다. 틀린 줄은 피드백 `target`(줄 번호)으로 표시합니다. 고른 원인의 `misconception`을 보고합니다.
+  - **정적 검증**: `bugLines`·`acceptLines`는 코드 줄 수 안, 원인 줄은 빈 줄이 아님, `fixedCode`는 버그 코드와 달라야 함, 줄 수가 같으면 `fixedCode`가 고친 줄이 `bugLines`·`acceptLines` 밖에 있을 때 경고.
+  - **UI**: 코드의 각 줄이 하나의 라디오 그룹 선택지입니다(화살표로 줄 이동, 접근 가능한 이름 "N번 줄: 코드"). 증상은 `fix_bug`와 같은 증상 상자로 보입니다.
 
 #### implement_function: 함수 구현
 

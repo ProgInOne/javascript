@@ -1,11 +1,13 @@
 import type { ExerciseSource } from '@proginone/content-schema';
 import {
   assembleParsons,
+  buildFindBugRunPlan,
   buildPredictExpectationPlan,
   buildRunPlan,
   derivePredictExpected,
   ExerciseKitError,
   gradeSubmission,
+  observeSymptom,
   parseSpec,
   parsonsPublicId,
   parsonsReferenceAnswer,
@@ -13,6 +15,7 @@ import {
   type CheckResult,
   type CodeFile,
   type FillBlankSpec,
+  type FindBugLineSpec,
   type ParsonsAnswer,
   type ParsonsSpec,
   type PredictExpected,
@@ -363,6 +366,38 @@ async function verifyParsons(ex: ExerciseSource, runner: PlanRunner): Promise<Ve
   ]);
 }
 
+// ── find_bug_line ───────────────────────────────────────────────────────────
+
+const describeSymptom = (spec: FindBugLineSpec) =>
+  'console' in spec.symptomCheck
+    ? `출력 ${spec.symptomCheck.console.join(' ⏎ ') || '없음'}`
+    : `오류 ${spec.symptomCheck.error}`;
+
+/** The buggy code must show the symptom; the fixed code must run cleanly without it. */
+async function verifyFindBug(ex: ExerciseSource, runner: PlanRunner): Promise<VerifyOutcome> {
+  const spec = parseSpec('find_bug_line', ex.spec) as FindBugLineSpec;
+  const buggy = observeSymptom(spec.symptomCheck, await runner.run(buildFindBugRunPlan(spec.code)));
+  if (!buggy.shown) {
+    return fail([
+      `버그 코드가 symptomCheck의 증상(${describeSymptom(spec)})을 내지 않습니다`,
+      `버그 코드 실행: ${buggy.summary}`,
+    ]);
+  }
+  const fixed = observeSymptom(
+    spec.symptomCheck,
+    await runner.run(buildFindBugRunPlan(spec.fixedCode)),
+  );
+  if (fixed.shown || !fixed.clean) {
+    return fail([
+      fixed.shown
+        ? 'fixedCode에도 같은 증상이 남아 있습니다'
+        : 'fixedCode가 오류 없이 실행되어야 합니다',
+      `fixedCode 실행: ${fixed.summary}`,
+    ]);
+  }
+  return pass([`버그 코드는 증상(${buggy.summary})을 내고, fixedCode는 ${fixed.summary}`]);
+}
+
 /** Verifies one exercise. Types without code to run are skipped. */
 export async function verifyExercise(
   ex: ExerciseSource,
@@ -371,6 +406,7 @@ export async function verifyExercise(
   try {
     if (ex.type === 'predict_output') return await verifyPredict(ex, runner);
     if (ex.type === 'parsons') return await verifyParsons(ex, runner);
+    if (ex.type === 'find_bug_line') return await verifyFindBug(ex, runner);
     const built = codeCase(ex.type, parseSpec(ex.type, ex.spec));
     if (typeof built === 'string') return fail([built]);
     if (built === null) return skip('실행할 코드가 없는 유형입니다');

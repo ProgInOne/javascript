@@ -97,6 +97,21 @@ async function answer(page: Page, exerciseId: string, firstSet: boolean) {
       await submitSure();
       break;
     }
+    case 'find-bug-quoted':
+      if (firstSet) {
+        // Right line, wrong cause first: partial credit, the line is marked, then retry.
+        await main.locator('label', { hasText: 'console.log("price");' }).click();
+        await main.locator('label', { hasText: '변수를 출력할 수 없다' }).click();
+        await submitSure();
+        await expect(main.getByRole('heading', { name: '부분 정답이에요.' })).toBeVisible();
+        await expect(main.getByText('줄은 맞았지만 원인 설명이 맞지 않습니다.')).toBeVisible();
+        await main.getByRole('button', { name: '다시 풀기' }).click();
+      } else {
+        await main.locator('label', { hasText: 'console.log("price");' }).click();
+      }
+      await main.locator('label', { hasText: '따옴표로 감싸서' }).click();
+      await submitSure();
+      break;
     case 'fill-semicolon':
       await main.getByRole('textbox', { name: /빈칸/ }).fill(';');
       await submitSure();

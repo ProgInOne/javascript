@@ -266,6 +266,70 @@ describe('verifyExercise: parsons', () => {
   });
 });
 
+describe('verifyExercise: find_bug_line', () => {
+  const buggy = 'let total;\ntotal += 1;\nconsole.log(total);';
+  const fixed = 'let total = 0;\ntotal += 1;\nconsole.log(total);';
+  const findBug = (extra: Record<string, unknown> = {}) =>
+    exercise('find_bug_line', {
+      code: buggy,
+      bugLines: [1],
+      symptom: '출력이 `NaN`입니다.',
+      symptomCheck: { console: ['NaN'] },
+      fixedCode: fixed,
+      ...extra,
+    });
+
+  it('passes when the buggy code shows the symptom and the fix removes it', async () => {
+    const runner = fakeRunner({ [buggy]: { lines: ['NaN'] }, [fixed]: { lines: ['1'] } });
+    const outcome = await verifyExercise(findBug(), runner);
+    expect(outcome).toEqual({
+      status: 'pass',
+      messages: ['버그 코드는 증상(출력 NaN)을 내고, fixedCode는 출력 1'],
+    });
+    expect(runner.plans.map((p) => p.files[0]?.content)).toEqual([buggy, fixed]);
+  });
+
+  it('fails when the buggy code does something else', async () => {
+    const outcome = await verifyExercise(
+      findBug(),
+      fakeRunner({ [buggy]: { lines: ['undefined'] }, [fixed]: { lines: ['1'] } }),
+    );
+    expect(outcome.status).toBe('fail');
+    expect(outcome.messages).toEqual([
+      '버그 코드가 symptomCheck의 증상(출력 NaN)을 내지 않습니다',
+      '버그 코드 실행: 출력 undefined',
+    ]);
+  });
+
+  it('fails when the fix keeps the symptom or throws', async () => {
+    const same = await verifyExercise(
+      findBug(),
+      fakeRunner({ [buggy]: { lines: ['NaN'] }, [fixed]: { lines: ['NaN'] } }),
+    );
+    expect(same.messages[0]).toBe('fixedCode에도 같은 증상이 남아 있습니다');
+    const throws = await verifyExercise(
+      findBug(),
+      fakeRunner({
+        [buggy]: { lines: ['NaN'] },
+        [fixed]: { errors: [runtimeError('ReferenceError', 'x is not defined')] },
+      }),
+    );
+    expect(throws.messages[0]).toBe('fixedCode가 오류 없이 실행되어야 합니다');
+  });
+
+  it('matches error symptoms by name', async () => {
+    const ex = findBug({ symptomCheck: { error: 'TypeError' } });
+    const outcome = await verifyExercise(
+      ex,
+      fakeRunner({
+        [buggy]: { errors: [runtimeError('TypeError', 'x is not a function')] },
+        [fixed]: { lines: ['1'] },
+      }),
+    );
+    expect(outcome.status).toBe('pass');
+  });
+});
+
 describe('lesson examples', () => {
   it('collects RunnableExample nodes with their code', () => {
     const { tree } = compileLessonMdx(

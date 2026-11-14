@@ -1,5 +1,6 @@
 import {
   fillBlankPublicSpecSchema,
+  findBugLinePublicSpecSchema,
   fixBugPublicSpecSchema,
   implementFunctionPublicSpecSchema,
   mcqMultiPublicSpecSchema,
@@ -11,6 +12,7 @@ import {
   type CodeAnswer,
   type FillBlankAnswer,
   type FillBlankPublicSpec,
+  type FindBugLinePublicSpec,
   type FixBugPublicSpec,
   type ImplementFunctionPublicSpec,
   type McqMultiAnswer,
@@ -25,6 +27,7 @@ import {
   type WebTaskPublicSpec,
 } from '@proginone/exercise-kit';
 import type { z } from 'zod';
+import type { FindBugLineDraft } from './renderers/FindBugLine.tsx';
 import type { TrueFalseDraft } from './renderers/TrueFalse.tsx';
 
 /** Exercise types with a renderer (roadmap M4, M5). */
@@ -35,6 +38,7 @@ export const RENDERABLE_TYPE_IDS = [
   'fill_blank',
   'predict_output',
   'parsons',
+  'find_bug_line',
   'implement_function',
   'fix_bug',
   'web_task',
@@ -48,6 +52,7 @@ export interface PublicSpecByType {
   fill_blank: FillBlankPublicSpec;
   predict_output: PredictOutputPublicSpec;
   parsons: ParsonsPublicSpec;
+  find_bug_line: FindBugLinePublicSpec;
   implement_function: ImplementFunctionPublicSpec;
   fix_bug: FixBugPublicSpec;
   web_task: WebTaskPublicSpec;
@@ -65,6 +70,8 @@ export interface AnswerByType {
   fill_blank: FillBlankAnswer;
   predict_output: PredictOutputAnswer | null;
   parsons: ParsonsAnswer;
+  /** Submittable once `line` is set (and `causeId` when causes are asked for). */
+  find_bug_line: FindBugLineDraft;
   implement_function: CodeAnswer;
   fix_bug: CodeAnswer;
   web_task: CodeAnswer;
@@ -82,6 +89,7 @@ const PUBLIC_SPEC_SCHEMAS: { [T in RenderableTypeId]: z.ZodType<PublicSpecByType
   fill_blank: fillBlankPublicSpecSchema,
   predict_output: predictOutputPublicSpecSchema,
   parsons: parsonsPublicSpecSchema,
+  find_bug_line: findBugLinePublicSpecSchema,
   implement_function: implementFunctionPublicSpecSchema,
   fix_bug: fixBugPublicSpecSchema,
   web_task: webTaskPublicSpecSchema,
@@ -122,6 +130,8 @@ function initialAnswerOf(exercise: RenderableExercise): AnswerByType[RenderableT
       return { blanks: {} };
     case 'parsons':
       return { order: [] };
+    case 'find_bug_line':
+      return {};
     case 'implement_function':
     case 'web_task':
       return { files: exercise.spec.starter.files.map((f) => ({ ...f })) };
@@ -163,6 +173,13 @@ export function isAnswerReady(
       return 'error' in answer;
     case 'parsons':
       return 'order' in answer && answer.order.length > 0;
+    case 'find_bug_line':
+      return (
+        'line' in answer &&
+        typeof answer.line === 'number' &&
+        (exercise.spec.causeOptions === undefined ||
+          ('causeId' in answer && typeof answer.causeId === 'string'))
+      );
     case 'implement_function':
     case 'fix_bug':
     case 'web_task':
@@ -189,6 +206,10 @@ export function notReadyReason(exercise: RenderableExercise): string {
         : '예측한 결과를 먼저 적어 주세요.';
     case 'parsons':
       return '코드 조각을 답안에 놓아 주세요.';
+    case 'find_bug_line':
+      return exercise.spec.causeOptions
+        ? '줄과 이유를 골라 주세요.'
+        : '원인이 되는 줄을 골라 주세요.';
     default:
       return '코드를 작성해 주세요.';
   }

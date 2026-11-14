@@ -30,6 +30,20 @@ describe('solutionView', () => {
     });
   });
 
+  it('names the bug line and its cause for find_bug_line', () => {
+    expect(viewOf(EX.findBug)).toEqual({
+      kind: 'text',
+      text: '1번 줄이에요. 이유: total에 처음 값이 없다',
+    });
+  });
+
+  it('assembles the parsons reference program', () => {
+    expect(viewOf(EX.parsons)).toEqual({
+      kind: 'files',
+      files: [{ path: 'main.js', content: 'const name = "코코";\nconsole.log(name);\n' }],
+    });
+  });
+
   it('states the true_false verdict, with the reason when one is asked for', () => {
     expect(viewOf(EX.trueFalse)).toEqual({ kind: 'text', text: '거짓이에요.' });
     const spec = parseSpec('true_false', {

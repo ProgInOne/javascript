@@ -50,7 +50,11 @@ describe('registry', () => {
       expect(getExerciseType(id)?.category).toBe('production');
       expect(getExerciseType(id)?.supportsRunPlan).toBe(true);
     }
-    expect(implementedExerciseTypes()).toHaveLength(9);
+    expect(implementedExerciseTypes()).toHaveLength(10);
+    expect(getExerciseType('find_bug_line')).toMatchObject({
+      category: 'recall',
+      supportsRunPlan: false,
+    });
     expect(getExerciseType('parsons')).toMatchObject({ category: 'recall', supportsRunPlan: true });
     expect(getExerciseType('nope')).toBeUndefined();
   });

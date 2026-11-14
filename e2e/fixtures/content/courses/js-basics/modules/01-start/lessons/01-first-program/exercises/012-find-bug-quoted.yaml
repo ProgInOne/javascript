@@ -1,0 +1,37 @@
+id: js-basics.start.first-program.find-bug-quoted
+type: find_bug_line
+difficulty: 2
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+estimatedSeconds: 60
+prompt: |
+  김밥 가격을 출력하려고 했는데 결과가 이상해요. 원인이 되는 줄을 찾으세요.
+spec:
+  code: |-
+    const price = 3500;
+    console.log("김밥 가격");
+    console.log("price");
+  bugLines: [3]
+  symptom: 가격 `3500` 대신 `price`라는 글자가 출력돼요.
+  symptomCheck:
+    console: ['김밥 가격', 'price']
+  fixedCode: |-
+    const price = 3500;
+    console.log("김밥 가격");
+    console.log(price);
+  causeOptions:
+    - id: c1
+      text: 변수 이름을 따옴표로 감싸서 글자가 되었다
+      correct: true
+    - id: c2
+      text: console.log는 변수를 출력할 수 없다
+hints:
+  - 출력된 `price`는 어느 줄에서 나왔을까요?
+  - 따옴표로 감싼 것은 무엇이 되나요?
+  - 따옴표 안의 `price`는 변수가 아니라 글자예요.
+explanation: |
+  3번 줄의 `"price"`는 따옴표 때문에 글자예요. 변수 값을 출력하려면 `console.log(price);`처럼 따옴표 없이 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

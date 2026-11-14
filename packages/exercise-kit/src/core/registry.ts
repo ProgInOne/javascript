@@ -2,6 +2,7 @@ import { hasProtoKey, parseRunResult, withinDepth, type RunPlan } from '@progino
 import type { z } from 'zod';
 
 import { fillBlank } from '../types/fill-blank.ts';
+import { findBugLine } from '../types/find-bug-line.ts';
 import { fixBug } from '../types/fix-bug.ts';
 import { implementFunction } from '../types/implement-function.ts';
 import { mcqMulti } from '../types/mcq-multi.ts';
@@ -86,6 +87,7 @@ const REGISTRY = new Map<ExerciseTypeId, RegisteredExerciseType>(
     register(fillBlank),
     register(predictOutput),
     register(parsons),
+    register(findBugLine),
     register(implementFunction),
     register(fixBug),
     register(webTask),

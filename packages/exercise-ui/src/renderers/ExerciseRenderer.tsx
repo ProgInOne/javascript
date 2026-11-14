@@ -11,6 +11,7 @@ import type { PreviewFrameProps } from '../preview/PreviewFrame.tsx';
 import { FixBug, ImplementFunction, WebTask } from './CodeRenderers.tsx';
 import type { CodeRunProps } from './CodeWorkspace.tsx';
 import { FillBlank } from './FillBlank.tsx';
+import { FindBugLine, type FindBugLineDraft } from './FindBugLine.tsx';
 import { McqMulti } from './McqMulti.tsx';
 import { McqSingle } from './McqSingle.tsx';
 import { Parsons } from './Parsons.tsx';
@@ -24,7 +25,7 @@ export interface ExerciseRendererProps extends CodeRunProps {
   onChange: (answer: NonNullable<AnswerByType[RenderableTypeId]>) => void;
   disabled?: boolean;
   labelledBy?: string;
-  /** Grader feedback (fill_blank marks blanks, parsons marks lines from it). */
+  /** Grader feedback (fill_blank marks blanks, parsons and find_bug_line mark lines from it). */
   feedback?: readonly FeedbackItem[];
   /** mcq_single: correct option revealed after grading. */
   correctOptionId?: string | null;
@@ -118,6 +119,16 @@ export function ExerciseRenderer(props: ExerciseRendererProps) {
           onChange={onChange}
           {...(feedback === undefined ? {} : { feedback })}
           checkResults={props.checkResults ?? null}
+        />
+      );
+    case 'find_bug_line':
+      return (
+        <FindBugLine
+          {...base}
+          spec={exercise.spec}
+          value={value as FindBugLineDraft}
+          onChange={onChange}
+          {...(feedback === undefined ? {} : { feedback })}
         />
       );
     case 'implement_function':

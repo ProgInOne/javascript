@@ -239,7 +239,7 @@ review:
 
 ### 유형별 스펙
 
-쓸 수 있는 유형은 `mcq_single`, `mcq_multi`, `true_false`, `fill_blank`, `predict_output`, `parsons`, `implement_function`, `fix_bug`, `web_task`입니다(`mcq_multi`·`true_false`·`parsons`는 v0.2부터).
+쓸 수 있는 유형은 `mcq_single`, `mcq_multi`, `true_false`, `fill_blank`, `predict_output`, `parsons`, `find_bug_line`, `implement_function`, `fix_bug`, `web_task`입니다(`mcq_multi`·`true_false`·`parsons`·`find_bug_line`은 v0.2부터).
 아래 예는 `content/`의 실제 문제를 줄인 것입니다. v0.2 유형의 예는 E2E 고정 콘텐츠(`e2e/fixtures/content`)를 줄인 것입니다.
 
 **CSS 과정**(`language: css`)에서는 `mcq_single`, `fill_blank`, `web_task`만 씁니다([D-028](/docs/decisions.md)). 다른 유형은 `content:check` 오류입니다. HTML/CSS 핵심(`depth: core`) 과정에는 "단원 풀의 유형 4종 이상" 규칙을 적용하지 않습니다.
@@ -424,6 +424,40 @@ spec:
 - `checks`가 있으면 `content:check:run`이 정답 순서(와 `alternatives`)로 조립한 코드가 필수 체크를 모두 통과하는지, 방해 줄을 넣으면 실패하는지 확인합니다. 방해 줄은 `replaces`에 적은 줄 자리에, 없으면 **모든 위치**에 넣어 봅니다. 맨 끝에 넣어도 출력이 같은 방해 줄처럼 어딘가에서 통과하면 실패이니, `replaces`를 적거나 체크를 보강하세요.
 - 함수를 부르는 `call` 체크에는 `entry`가 필요합니다.
 
+#### find_bug_line
+
+증상을 보고 원인이 되는 줄을 고릅니다. 원인 선택지(`causeOptions`)를 두면 이유까지 골라야 정답입니다(줄만 맞으면 부분 점수 0.5).
+
+```yaml
+spec:
+  code: |-                       # JavaScript. 학습자에게 줄 번호와 함께 보임
+    const price = 3500;
+    console.log("김밥 가격");
+    console.log("price");
+  bugLines: [3]                  # 원인 줄(1부터), 여러 개 가능
+  acceptLines: []                # 선택. 원인으로 함께 인정할 줄
+  symptom: 가격 `3500` 대신 `price`라는 글자가 출력돼요.     # 학습자에게 보이는 증상(어디인지는 쓰지 않음)
+  symptomCheck:                  # 같은 증상을 기계로 비교하는 형태. 둘 중 하나
+    console: ['김밥 가격', 'price']   # 버그 코드의 콘솔 출력 전체
+    # error: TypeError               # 또는 버그 코드가 던지는 오류 이름
+  fixedCode: |-                  # 고친 코드. 오류 없이 실행되고 증상이 없어야 함
+    const price = 3500;
+    console.log("김밥 가격");
+    console.log(price);
+  causeOptions:                  # 선택. 2~5개, 정답은 정확히 하나
+    - id: c1
+      text: 변수 이름을 따옴표로 감싸서 글자가 되었다
+      correct: true
+    - id: c2
+      text: console.log는 변수를 출력할 수 없다
+      misconception: js.mc.log-cannot-print-variables   # 선택
+```
+
+- `code`는 YAML `|-`로 써서 끝 빈 줄이 줄 번호에 들어가지 않게 합니다. 원인 줄은 빈 줄일 수 없습니다.
+- `symptomCheck`·`fixedCode`는 학습자에게 보이지 않습니다. `content:check:run`이 버그 코드와 `fixedCode`를 실제로 실행해 확인합니다.
+- `fixedCode`와 `code`의 줄 수가 같으면, 고친 줄이 `bugLines`·`acceptLines`에 들어 있는지 정적 검사가 확인합니다(밖이면 경고).
+- 지문(`prompt`)에 코드를 다시 쓰지 않습니다. `code`가 화면에 보입니다.
+
 #### fix_bug
 
 ```yaml
@@ -579,6 +613,7 @@ spec:
 | `implement_function`, `fix_bug`, `fill_blank`(code), `web_task` | 참조 정답이 실행으로 확인하는 필수 체크를 모두 통과하고, 시작 코드(버그 코드, 빈칸을 비운 코드)는 하나 이상 실패 |
 | `<RunnableExample>` | 오류 없이 실행. `expectError`가 있으면 오류가 나야 함. `css`, `src` 예제는 건너뜀 |
 | `parsons` | `checks`가 있으면 정답 순서(와 `alternatives`)로 조립한 코드가 필수 체크를 모두 통과하고, 방해 줄을 넣으면(`replaces` 자리, 없으면 모든 위치) 하나 이상 실패. 없으면 조립한 코드에 문법 오류가 없는지만 확인 |
+| `find_bug_line` | 버그 코드가 `symptomCheck`의 증상(콘솔 출력 전체 또는 오류 이름)을 그대로 내고, `fixedCode`는 오류 없이 실행되며 증상이 없음 |
 | `mcq_single`, `mcq_multi`, `true_false`, `fill_blank`(text) | 실행할 코드가 없어 건너뜀. 스펙의 오개념 ID가 있는지는 정적 검사에서 확인 |
 
 - `static`, `html-valid` 체크는 서버가 실행 없이 채점하므로 실행 검증에서 뺍니다.
@@ -665,6 +700,7 @@ spec:
 | `참조 정답이 필수 체크 N개를 통과하지 못합니다` | `solution`(또는 첫 `accept`)이나 체크의 기대값이 틀렸습니다. 아래 줄의 기대·실제 값을 비교합니다. |
 | `시작 코드가 이미 모든 필수 체크를 통과합니다` | 아무것도 고치지 않아도 정답이 됩니다. 체크를 보강하거나 시작 코드를 바꿉니다. |
 | `방해 줄 ...을 ...에 넣어도 모든 필수 체크를 통과합니다` | 파슨스의 방해 줄이 동작을 바꾸지 않는 자리가 있습니다. `replaces`로 대신할 줄을 적거나 체크를 보강합니다. |
+| `버그 코드가 symptomCheck의 증상(...)을 내지 않습니다` / `fixedCode에도 같은 증상이 남아 있습니다` | 아래 줄의 실제 실행 결과와 `symptomCheck`·`fixedCode`를 비교해 고칩니다. |
 | `오류 없이 실행되어야 합니다` / `expectError로 표시했지만` | 예제의 `expectError` 표시를 실제 동작과 맞춥니다. |
 | `Chromium을 찾을 수 없습니다` | `pnpm --filter @proginone/e2e exec playwright install chromium`을 실행합니다. |
 

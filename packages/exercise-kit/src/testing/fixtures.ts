@@ -23,6 +23,10 @@ export const ANSWER_KEY_FIELDS = [
   'distractors',
   'alternatives',
   'replaces',
+  'bugLines',
+  'acceptLines',
+  'symptomCheck',
+  'fixedCode',
 ] as const;
 
 const JS_STARTER = { files: [{ path: 'main.js', content: 'function sum(a) {\n  // 여기에\n}\n' }] };
@@ -107,6 +111,19 @@ export const RAW_SPECS: Record<string, unknown> = {
       { id: 'secret6', code: 'total = n;', misconception: 'js.mc.secret-d', replaces: 'secret3' },
     ],
     alternatives: [],
+  },
+  find_bug_line: {
+    code: 'const prices = [100, 200];\nlet total;\nfor (const p of prices) total += p;\nconsole.log(total);',
+    bugLines: [2],
+    acceptLines: [3],
+    symptom: '출력이 `NaN`입니다.',
+    symptomCheck: { console: ['secret'] },
+    fixedCode:
+      'const prices = [100, 200];\nlet total = 0; // secret\nfor (const p of prices) total += p;\nconsole.log(total);',
+    causeOptions: [
+      { id: 'c1', text: 'total이 undefined에서 시작한다', correct: true },
+      { id: 'c2', text: 'for...of는 배열에 쓸 수 없다', misconception: 'js.mc.secret-c2' },
+    ],
   },
   fill_blank: {
     mode: 'text',

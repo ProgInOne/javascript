@@ -22,6 +22,7 @@ export const TYPE_LABELS: Readonly<Record<string, string>> = {
   fill_blank: '빈칸 채우기',
   predict_output: '실행 결과 예측',
   parsons: '코드 순서 배열',
+  find_bug_line: '오류 줄 찾기',
   implement_function: '함수 구현',
   fix_bug: '버그 수정',
   web_task: '웹 실습',

@@ -371,6 +371,86 @@
   gap: var(--space-1);
 }
 
+/* ── find_bug_line ── */
+.pi-ex-find-bug {
+  display: grid;
+  gap: var(--space-4);
+}
+.pi-ex-find-bug__code {
+  display: grid;
+  padding: var(--space-2) 0;
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  overflow-x: auto;
+}
+.pi-ex-find-bug__line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 28px;
+  padding: 0 var(--space-4);
+  border-inline-start: 3px solid transparent;
+  color: var(--code-fg);
+  font: var(--text-code);
+  cursor: pointer;
+}
+.pi-ex-find-bug__line:hover {
+  background: var(--color-bg-hover);
+}
+.pi-ex-find-bug__line:has(:focus-visible) {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+.pi-ex-find-bug__line[data-checked] {
+  border-inline-start-color: var(--color-action-primary);
+  background: var(--color-bg-selected);
+}
+.pi-ex-find-bug__line[data-disabled] {
+  cursor: default;
+}
+.pi-ex-find-bug__line[data-disabled]:hover:not([data-checked]) {
+  background: transparent;
+}
+.pi-ex-find-bug__line[data-state='success'] {
+  border-inline-start-color: var(--color-feedback-correct-border);
+  background: var(--color-feedback-correct-bg);
+}
+.pi-ex-find-bug__line[data-state='error'] {
+  border-inline-start-color: var(--color-error-accent);
+  background: var(--code-line-error);
+}
+.pi-ex-find-bug__number {
+  flex: none;
+  width: 2.5ch;
+  color: var(--code-gutter-fg);
+  text-align: end;
+  user-select: none;
+}
+.pi-ex-find-bug__line[data-checked] .pi-ex-find-bug__number {
+  color: var(--color-action-primary);
+  font-weight: 600;
+}
+.pi-ex-find-bug__text {
+  flex: 1;
+  white-space: pre;
+}
+.pi-ex-find-bug__mark {
+  display: inline-flex;
+  flex: none;
+}
+.pi-ex-find-bug__line[data-state='success'] .pi-ex-find-bug__mark {
+  color: var(--color-feedback-correct-fg);
+}
+.pi-ex-find-bug__line[data-state='error'] .pi-ex-find-bug__mark {
+  color: var(--color-feedback-incorrect-fg);
+}
+.pi-ex-find-bug__causes {
+  display: grid;
+  gap: var(--space-3);
+}
+
 /* ── fill_blank ── */
 .pi-ex-fill-blank {
   display: grid;
