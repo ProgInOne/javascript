@@ -8,7 +8,7 @@ ProgInOne은 체계적인 커리큘럼, 충분한 문제은행, 브라우저 내
 
 ## 현재 상태
 
-🟡 **기획 완료 (M0)** — 설계 문서가 승인되었습니다. 다음 단계는 기술 검증 PoC(M1)와 디자인 프로토타입(M2)입니다.
+🟢 **기반 구축 중 (M3)**: 기술 검증(M1)과 디자인 방향(M2)이 확정되었고, 모노레포·서버·DB·디자인 시스템 골격을 만들고 있습니다.
 
 ## 문서
 
@@ -24,14 +24,14 @@ ProgInOne은 체계적인 커리큘럼, 충분한 문제은행, 브라우저 내
 
 ## 빠른 시작
 
-구현 전이라 아직 실행할 수 있는 코드가 없습니다.
-구현 후 실행 방법은 다음과 같을 예정입니다([시스템 아키텍처 설계](docs/design/system-architecture.md#빌드와-개발-환경) 참고).
+필요한 도구: Node.js 24 LTS 이상(`.nvmrc`), pnpm(`package.json`의 `packageManager` 버전).
 
 ```shell
 pnpm install
-pnpm dev      # 개발 모드
-pnpm build && pnpm start   # 프로덕션 모드
+pnpm check    # lint, 포맷, 타입, 의존 규칙, 테스트, 문서 링크 검사
 ```
+
+앱 실행 명령(`pnpm dev`, `pnpm build && pnpm start`)은 M3 진행에 따라 추가됩니다([시스템 아키텍처 설계](docs/design/system-architecture.md#빌드와-개발-환경)).
 
 ## 기술 방향 (요약)
 

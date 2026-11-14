@@ -1,0 +1,10 @@
+# 문서는 Google Markdown 스타일(1. 번호 목록 등)을 직접 관리하므로 Prettier 대상에서 뺍니다.
+*.md
+pnpm-lock.yaml
+poc/
+design/prototypes/
+dist/
+coverage/
+playwright-report/
+test-results/
+.data/
