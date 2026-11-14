@@ -1,12 +1,12 @@
 # @proginone/learning-engine
 
-숙련도, 단계 게이트, 개념 단위 FSRS, 복습 큐를 계산하는 학습 엔진입니다.
+숙련도, 단계 게이트, 개념 단위 FSRS, 복습 큐, 연습 세트 구성을 계산하는 학습 엔진입니다.
 모든 함수는 I/O가 없는 순수 함수이며, 같은 입력에는 같은 출력을 냅니다.
 규격의 원천은 [학습 엔진 설계](/docs/design/learning-engine.md)와 결정 [D-009, D-023](/docs/decisions.md)이고, v0.1에서 구체화한 점은 설계 문서의 [구현 메모](/docs/design/learning-engine.md#구현-메모-v01)에 있습니다.
 
 ## 사용 규칙
 
-- 시간은 `now`(epoch ms, UTC) 인자로만 받습니다. 하루 경계는 `DayBoundary`(`timeZone`, `dayStartHour`)로 받습니다.
+- 시간은 `now`(epoch ms, UTC) 인자로만 받습니다. 무작위는 `seed` 문자열로 만든 RNG만 씁니다(`createRng`). 하루 경계는 `DayBoundary`(`timeZone`, `dayStartHour`)로 받습니다.
 - 서버는 DB에서 입력을 읽고, 엔진을 호출하고, 결과를 한 트랜잭션으로 씁니다. 엔진 계산은 트랜잭션 **전에** 끝냅니다([데이터 모델 설계](/docs/design/data-model.md#트랜잭션-경계)).
 - 입력은 서버 경계에서 검증된 값이라고 가정합니다. 엔진은 다시 검증하지 않습니다.
 - 샌드박스 `crashed`/`aborted` 시도(`engine_applied = 0`)는 엔진에 넘기지 않습니다.
@@ -63,6 +63,34 @@ buildReviewQueue(deps, {
 | `skipped` | 저장하지 않고 버림(그날 이미 평가한 개념) |
 
 `concept_memory.card_json`은 `deps.fsrs.fromRaw(JSON.parse(card_json))`로 카드를 복원해 `ConceptMemoryState.card`에 넣습니다.
+
+### 연습 세트
+
+```ts
+buildLessonPracticeSet(deps, {
+  lesson: { id; importance; introduces: ConceptId[]; reviews: ConceptId[]; passRule?: Partial<PassRule> };
+  concepts: LessonSetConcept[];          // { conceptId, importance, state? }
+  candidates: ExerciseCandidate[];       // ExerciseFacts + origin
+  lastSeenAtByGroup: Record<string, number>;
+  misconceptionTargetIds?: ExerciseId[];
+  seed: string;                          // 연습 세트 ID
+  now: number;
+}): { items: PlannedItem[]; passRule: PassRule; rationale: SetRationale }
+
+buildReviewSet(deps, {
+  entries: ReviewQueueEntry[];           // buildReviewQueue의 due
+  concepts: ReviewSetConcept[];          // { conceptId, moduleId, state }
+  candidates; lastSeenAtByGroup; misconceptionTargetIds?; seed; now;
+}): { items: PlannedItem[]; rationale }
+
+evaluatePassRule(config, rule, { items: PassRuleItem[]; introducedScores: Record<ConceptId, number> }): PassResult
+```
+
+| 출력 | 저장 위치 |
+|---|---|
+| `PlannedItem` | `practice_set_items` 행: `position`, `exercise_id`, `exercise_origin`, `reason`, `target_concept_id` |
+| `passRule` | `practice_sets.pass_rule_json` |
+| `rationale` | 로그 또는 `practice_sets.scope_json`의 보조 정보(근거 표시용) |
 
 ### 보조 함수
 

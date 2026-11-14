@@ -41,3 +41,27 @@ export { conceptsReadyToFlush, flushPendingRatings } from './memory/flush.ts';
 export { createTsFsrsPort } from './memory/fsrs-adapter.ts';
 export type { ReviewQueue, ReviewQueueConcept, ReviewQueueEntry } from './memory/review-queue.ts';
 export { buildReviewQueue } from './memory/review-queue.ts';
+
+export type { BandName, PassRule, PracticeBand } from './config.ts';
+export type {
+  ExerciseCandidate,
+  PlannedItem,
+  PracticeItemReason,
+  SelectFactors,
+  SelectionContext,
+} from './practice/candidates.ts';
+export { freshnessOf, scoreCandidate } from './practice/candidates.ts';
+export type {
+  InsufficientCandidates,
+  LessonSet,
+  LessonSetConcept,
+  LessonSetRequest,
+  SetRationale,
+} from './practice/lesson-set.ts';
+export { buildLessonPracticeSet } from './practice/lesson-set.ts';
+export type { PassCheck, PassResult, PassRuleItem } from './practice/pass-rule.ts';
+export { evaluatePassRule, lessonPassRule } from './practice/pass-rule.ts';
+export type { ReviewSet, ReviewSetConcept, ReviewSetRequest } from './practice/review-set.ts';
+export { buildReviewSet } from './practice/review-set.ts';
+export type { Rng } from './util/rng.ts';
+export { createRng } from './util/rng.ts';

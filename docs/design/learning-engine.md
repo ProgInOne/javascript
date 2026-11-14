@@ -818,7 +818,7 @@ packages/learning-engine/src/
 
 v0.1(M4)에서 구현하면서 위 스케치를 구체화하거나 바꾼 점입니다. 계수는 바꾸지 않았습니다. 공개 API 목록은 [패키지 README](/packages/learning-engine/README.md)에 있습니다.
 
-**범위**: 증거 가중치, 숙련도 갱신, 단계 게이트, FSRS 연동, 단원 연습 세트, 복습 큐·복습 세트만 구현했습니다. 오개념 전이, 재학습 판정, 약점·평가 세트, 진행 중 적응, 오늘의 학습, 페이스, 활동 시간, `replay`는 v0.2 이후입니다. 그래서 `AttemptEffects`에는 `misconceptions`, `remediation`이 아직 없습니다.
+**범위**: 증거 가중치, 숙련도 갱신, 단계 게이트, FSRS 연동, 단원 연습 세트(통과 기준 포함), 복습 큐·복습 세트만 구현했습니다. 오개념 전이, 재학습 판정, 약점·평가·자유 연습 세트, 진행 중 적응(`nextAdaptiveStep`), 오늘의 학습, 페이스, 활동 시간, `replay`는 v0.2 이후입니다. 그래서 `AttemptEffects`에는 `misconceptions`, `remediation`이 아직 없습니다.
 
 **게이트 입력**: 게이트와 `W_rep`는 과거 증거가 필요합니다. 엔진은 시도마다 `EvidenceFact`(변형 그룹 키, 유형, 난이도, 정답 여부, 신용도, 독립 여부, 세트 종류, 가중치)를 만들어 `breakdown_json.fact`에 담아 돌려줍니다. 서버는 저장된 `fact`를 `ConceptState.history`로, `review_logs`와 근거 시도의 변형 그룹 키를 `ConceptState.reviews`로 다시 넘깁니다. 시도 원본을 다시 읽지 않아도 게이트를 판정할 수 있습니다.
 
@@ -836,6 +836,15 @@ v0.1(M4)에서 구현하면서 위 스케치를 구체화하거나 바꾼 점입
 | `FsrsPort` | `newCard(cardId, now)`로 개념 ID를 받습니다. ts-fsrs v6은 `cardId`로 퍼즈를 시드하며, 주지 않으면 무작위 UUID를 만들어 결정론이 깨집니다. `fromRaw(raw)`로 `card_json`에서 카드를 복원합니다. 필드 이름은 `due` 대신 `dueAt`입니다 |
 | 보류 등급 적용 `flushPendingRatings` | "같은 날 이미 평가함"은 `concept_memory.last_review_at`의 로컬 날짜로 판정하므로 `lastAppliedDates` 입력이 없습니다. 단계 재판정을 위해 `ConceptState`를 받고, 적용하지 않은 등급(`skipped`)과 단계 변화(`mastery`, `evidence`)도 돌려줍니다 |
 | 복습 큐 예산 | 문항 예상 시간은 서버가 개념별로 줄 수 있고(`estimatedSecondsPerItem`), 없으면 `EngineConfig.review.defaultItemSeconds`(90초)입니다. 우선순위 순서를 지키기 위해 예산을 처음 넘는 개념부터 모두 `deferred`로 보내고, 예산이 0보다 크면 첫 개념은 항상 포함합니다 |
+| 단원 연습 세트 크기 | 개념별 최소 3문항이 세트 크기보다 우선합니다(예: `minor` 단원에 개념이 4개면 12문항). 남은 자리는 개념 `importance` 가중치로 최대 평균(D'Hondt) 방식으로 나누고, 후보 변형 그룹 수를 넘지 않게 합니다. 동점은 단원의 개념 순서입니다 |
+| 교차 연습 항목 | 복습 개념(유효 숙련도 70 미만) 항목은 세트 크기 안에서 차지하되, 소개 개념의 최소 문항은 줄이지 않습니다 |
+| 난이도 구간 | 개념별 몫을 30/50/20%로 최대 나머지 방식으로 나누고, 각 구간의 `difficultyFit` 목표는 구간 중앙값(1.5, 2.5, 3.5)입니다. 후보 우선순위는 신선한 구간 안 → 신선한 구간 밖 → 7일 안에 낸 구간 안 → 7일 안에 낸 구간 밖입니다. [목표 난이도](#목표-난이도) 공식은 v0.1의 세트(단원·복습)에서는 쓰지 않습니다 |
+| 생성 문제 최소 1개 | 구간 채우기 뒤 생성 범주가 없으면, 같은 개념의 선택 점수가 가장 낮은 항목을 가장 좋은 생성 범주 후보로 바꾸고 `reason = 'production_required'`로 표시합니다 |
+| `typeNovelty` | 그 개념의 최근 주 개념 증거 3건의 유형과, 이 세트에서 이미 고른 유형을 함께 봅니다 |
+| 신선도 입력 | 서버가 변형 그룹별 마지막 출제 시각(`lastSeenAtByGroup`, 그룹에 속한 문제의 `exercise_stats.last_seen_at` 최댓값)을 넘깁니다 |
+| 복습 세트 교차 | 남은 항목이 많은 개념(다음으로 모듈)부터 고르는 탐욕 배치입니다. 제약을 모두 지킬 수 없는 입력에서만 그 자리의 제약을 풉니다. 개념의 모듈은 서버가 넘깁니다 |
+| 항목 `reason` 코드 | `lesson_practice`, `production_required`, `interleave_review`, `review_due`, `review_reinforce`(복습 2번째 문항) |
+| 통과 기준 신용 정답률 | 항목의 마지막 시도로 `o × W_hint × W_try`(정답 쪽 값, 튜터 0.8배 포함)를 계산하고, 건너뛴 항목은 0으로 평균에 넣습니다. 서로 다른 유형은 `o ≥ 0.5`로 답한 항목의 유형을 셉니다 |
 | 카드 생성 시점 | 이 문서(첫 단원 연습 세트에서 그 개념의 보류 등급을 처음 적용할 때)를 따릅니다. [데이터 모델 설계](/docs/design/data-model.md#concept_memory-review_logs)의 "`introduced` 도달 시 행 생성"과 다르며, 레슨만 읽은 개념에는 카드가 없습니다 |
 
 **ts-fsrs v6 확인 결과** ([미결 사항](#미결-사항)의 첫 항목 해소):

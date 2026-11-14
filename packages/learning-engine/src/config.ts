@@ -1,4 +1,4 @@
-import type { ExerciseCategory, FsrsPort, Importance } from './types.ts';
+import type { ExerciseCategory, ExerciseOrigin, FsrsPort, Importance } from './types.ts';
 
 /**
  * Version of the formulas and coefficients. Bump it (and record it in CHANGELOG.md) whenever a
@@ -88,6 +88,56 @@ export interface EngineConfig {
     readonly minDifficulty: number;
     readonly maxDifficulty: number;
   };
+  readonly practice: {
+    /** First lesson set size by lesson importance. */
+    readonly lessonSetSize: Readonly<Record<Importance, number>>;
+    readonly minPerConcept: number;
+    /** Share of the remaining slots by concept importance. */
+    readonly importanceWeight: Readonly<Record<Importance, number>>;
+    /** Difficulty bands of a lesson set, in order. */
+    readonly bands: readonly PracticeBand[];
+    /** Reviewed concepts below this effective mastery get one interleaved item. */
+    readonly interleaveBelowEffective: number;
+    readonly selectWeights: {
+      readonly freshness: number;
+      readonly difficultyFit: number;
+      readonly typeNovelty: number;
+      readonly misconceptionTarget: number;
+      readonly originPreference: number;
+    };
+    readonly originPreference: Readonly<Record<ExerciseOrigin, number>>;
+    /** Freshness by days since the variant group was last served. */
+    readonly freshness: {
+      readonly blockDays: number;
+      readonly oldDays: number;
+      readonly mid: number;
+      readonly old: number;
+    };
+    /** Number of recent types per concept that `typeNovelty` avoids. */
+    readonly typeNoveltyWindow: number;
+    readonly passRule: PassRule;
+  };
+}
+
+export type BandName = 'warmup' | 'core' | 'challenge';
+
+export interface PracticeBand {
+  readonly name: BandName;
+  readonly minDifficulty: number;
+  readonly maxDifficulty: number;
+  readonly share: number;
+}
+
+/** `practice_sets.pass_rule_json` (lesson sets). */
+export interface PassRule {
+  /** Mean credited correctness (`o × W_hint × W_try` per item). */
+  readonly minCorrect: number;
+  /** Every introduced concept's `score` must reach this. */
+  readonly minConceptScore: number;
+  /** Distinct exercise types answered correctly. */
+  readonly minDistinctTypes: number;
+  /** L3+ items answered correctly on the first attempt. */
+  readonly minLevel3Correct: number;
 }
 
 const DAY_MS = 86_400_000;
@@ -156,6 +206,28 @@ export const defaultEngineConfig: EngineConfig = {
     extraItemBelowEffective: 60,
     minDifficulty: 2,
     maxDifficulty: 4,
+  },
+  practice: {
+    lessonSetSize: { minor: 8, standard: 14, core: 22 },
+    minPerConcept: 3,
+    importanceWeight: { minor: 1, standard: 2, core: 3 },
+    bands: [
+      { name: 'warmup', minDifficulty: 1, maxDifficulty: 2, share: 0.3 },
+      { name: 'core', minDifficulty: 2, maxDifficulty: 3, share: 0.5 },
+      { name: 'challenge', minDifficulty: 3, maxDifficulty: 4, share: 0.2 },
+    ],
+    interleaveBelowEffective: 70,
+    selectWeights: {
+      freshness: 3,
+      difficultyFit: 2,
+      typeNovelty: 1,
+      misconceptionTarget: 2,
+      originPreference: 0.5,
+    },
+    originPreference: { authored: 1, template: 0.8, generated: 0.5 },
+    freshness: { blockDays: 7, oldDays: 30, mid: 0.4, old: 0.7 },
+    typeNoveltyWindow: 3,
+    passRule: { minCorrect: 0.7, minConceptScore: 50, minDistinctTypes: 2, minLevel3Correct: 0 },
   },
 };
 
