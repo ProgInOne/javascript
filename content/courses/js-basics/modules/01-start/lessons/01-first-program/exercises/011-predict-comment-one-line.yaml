@@ -1,0 +1,40 @@
+id: js-basics.start.first-program.predict-comment-one-line
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.basics.comments, weight: 1 }
+tags: [comments]
+estimatedSeconds: 60
+prompt: |
+  아래 프로그램을 쓴 사람은 맨 위 주석 한 줄로 아래 두 줄을 끌 생각이었어요. 실제로 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    // 아래 두 줄은 잠시 꺼 둘게요
+    console.log("준비 운동");
+    console.log("스트레칭");
+    console.log("달리기");
+  answerKind: console
+  misconceptionByAnswer:
+    "달리기": js.mc.line-comment-multiline
+misconceptions: [js.mc.line-comment-multiline]
+hints:
+  - "// 는 몇 줄까지 영향을 줄까요?"
+  - 첫 줄의 주석은 그 줄이 끝나면 끝나요. 둘째 줄부터는 어떻게 될까요?
+  - 둘째 줄부터는 평범한 문장이에요. 출력하는 문장이 몇 개인지 세어 보세요.
+explanation: |
+  정답은 다음 세 줄이에요.
+
+  ```text
+  준비 운동
+  스트레칭
+  달리기
+  ```
+
+  `//`는 **그 줄의 끝까지만** 주석이에요. 첫 줄의 주석은 메모일 뿐, 아래 줄들을 끄지 못해요. 그래서 세 문장이 모두 실행돼요.
+
+  `달리기`만 나온다고 답했다면 `//` 한 번이 여러 줄을 주석으로 만든다고 생각한 거예요. 두 줄을 정말 끄려면 각 줄 앞에 `//`를 붙이거나, 두 줄을 `/*`와 `*/`로 감싸야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

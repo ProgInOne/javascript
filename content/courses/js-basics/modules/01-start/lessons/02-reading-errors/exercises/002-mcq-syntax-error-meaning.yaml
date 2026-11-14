@@ -1,0 +1,39 @@
+id: js-basics.start.reading-errors.mcq-syntax-error-meaning
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.errors.error-types, weight: 1 }
+tags: [syntax-error, error-types]
+estimatedSeconds: 45
+prompt: |
+  오류 메시지가 `Uncaught SyntaxError: missing ) after argument list`예요. 이 오류는 어떤 종류의 문제를 알려 주나요?
+spec:
+  options:
+    - id: a
+      text: 괄호처럼 코드를 쓰는 규칙(문법)을 어겼다
+    - id: b
+      text: 코드에 쓴 이름을 찾을 수 없다
+      rationale: 이름을 찾지 못하는 것은 ReferenceError예요.
+    - id: c
+      text: 값을 할 수 없는 방식으로 썼다
+      rationale: 그건 TypeError의 뜻이에요.
+    - id: d
+      text: 코드에는 문제가 없고 컴퓨터가 잠깐 고장 났다
+      rationale: 오류 메시지는 코드의 문제를 알려 주는 쪽지예요. 같은 코드는 다시 실행해도 같은 오류가 나요.
+  correct: a
+hints:
+  - Syntax는 우리말로 "문법" 또는 "구문"이라는 뜻이에요.
+  - 설명의 `missing )`는 무엇이 빠졌다는 뜻일까요?
+  - 닫는 괄호가 빠진 것은 이름이나 값의 문제가 아니라, 문장의 모양 문제예요.
+explanation: |
+  정답은 **괄호처럼 코드를 쓰는 규칙(문법)을 어겼다**예요.
+
+  `SyntaxError`는 문장의 모양이 JavaScript의 규칙에 맞지 않을 때 나요. 설명의 `missing ) after argument list`는 "인수 목록 뒤에 닫는 괄호 `)`가 없어요"라는 뜻이에요. 메시지가 가리키는 줄에서 괄호 짝을 확인하면 돼요.
+
+  - 이름을 찾을 수 없을 때는 `ReferenceError`가 나요.
+  - 값을 할 수 없는 방식으로 쓰면 `TypeError`가 나요.
+  - 컴퓨터 고장이 아니에요. 코드를 고치지 않으면 몇 번을 실행해도 같은 오류가 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

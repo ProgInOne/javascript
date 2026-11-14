@@ -1,0 +1,59 @@
+id: js-basics.start.reading-errors.fix-name-typo
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.errors.error-messages, weight: 1 }
+tags: [reference-error, debugging]
+estimatedSeconds: 120
+prompt: |
+  자기소개를 출력하는 프로그램을 실행했더니 아래 오류가 났어요. 오류 메시지를 단서로 버그를 찾아 고쳐서 다섯 줄이 모두 출력되게 하세요.
+
+  ```text
+  Uncaught ReferenceError: conosle is not defined
+      at main.js:4:1
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          console.log("안녕하세요.");
+          console.log("저는 민서예요.");
+          console.log("JavaScript를 배우고 있어요.");
+          conosle.log("좋아하는 것은 산책이에요.");
+          console.log("잘 부탁해요!");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          console.log("안녕하세요.");
+          console.log("저는 민서예요.");
+          console.log("JavaScript를 배우고 있어요.");
+          console.log("좋아하는 것은 산책이에요.");
+          console.log("잘 부탁해요!");
+  bugDescription: 세 줄만 출력되고 ReferenceError가 나요.
+  maxEditDistance: 2
+  checks:
+    - kind: console
+      id: output
+      description: 자기소개 다섯 줄이 모두 출력되어야 합니다.
+      requirement: 다섯 줄 출력
+      expect:
+        lines:
+          - 안녕하세요.
+          - 저는 민서예요.
+          - JavaScript를 배우고 있어요.
+          - 좋아하는 것은 산책이에요.
+          - 잘 부탁해요!
+hints:
+  - 오류 메시지의 줄 번호가 몇 번 줄을 가리키나요?
+  - 설명 `conosle is not defined`는 어떤 이름을 찾지 못했다는 뜻인가요? 그 줄에서 그 이름을 찾아보세요.
+  - 다른 줄의 `console`과 4번 줄을 한 글자씩 비교해 보세요.
+explanation: |
+  오류 메시지가 4번 줄을 가리키고, `conosle is not defined`는 `conosle`이라는 이름을 찾을 수 없다는 뜻이에요. 4번 줄을 보면 `console`의 `s`와 `o` 순서가 바뀌어 `conosle`이 되어 있어요. `console`로 고치면 다섯 줄이 모두 출력돼요.
+
+  오류 전의 세 줄이 출력된 것도 단서예요. 실행 중 오류는 앞 줄까지 실행된 뒤 오류 난 줄에서 멈추니, 출력된 마지막 줄 바로 다음 줄이 의심할 곳이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,45 @@
+# JavaScript 개념
+# 선수 관계는 직접 필요한 것만 적습니다(추이적 관계는 적지 않음).
+
+# ── 모듈 1. 시작하기: first-program ──
+
+- id: js.basics.statements
+  title: 문장과 실행 순서
+  importance: standard
+  summary: 프로그램은 문장의 목록이고, 위에서 아래로 한 문장씩 차례대로 실행됩니다. 문장 끝은 세미콜론(;)으로 표시합니다.
+  misconceptions: [js.mc.expression-prints-itself]
+  mdn: Web/JavaScript/Reference/Statements
+
+- id: js.basics.console-log
+  title: console.log로 출력하기
+  importance: standard
+  summary: console.log(값)은 괄호 안의 값을 콘솔에 보여 줍니다. 결과를 눈으로 확인하는 가장 기본적인 방법입니다.
+  prerequisites: [js.basics.statements]
+  misconceptions: [js.mc.log-prints-quotes, js.mc.quoted-expression-evaluates, js.mc.log-is-return]
+  mdn: Web/API/console/log_static
+
+- id: js.basics.comments
+  title: 주석
+  importance: minor
+  summary: "// 뒤의 내용이나 /* */ 사이의 내용은 실행되지 않는 메모(주석)입니다."
+  prerequisites: [js.basics.statements]
+  misconceptions: [js.mc.line-comment-multiline]
+  mdn: Web/JavaScript/Guide/Grammar_and_types
+
+# ── 모듈 1. 시작하기: reading-errors ──
+
+- id: js.errors.error-messages
+  title: 오류 메시지 읽기
+  importance: standard
+  summary: 오류 메시지는 종류, 설명, 위치(파일과 줄 번호)로 이루어져 있고, 실행 중 오류가 나면 프로그램은 그 자리에서 멈춥니다.
+  prerequisites: [js.basics.console-log]
+  misconceptions: [js.mc.code-after-error-runs, js.mc.error-line-is-cause]
+  mdn: Web/JavaScript/Reference/Errors
+
+- id: js.errors.error-types
+  title: 오류의 종류
+  importance: standard
+  summary: SyntaxError는 문법을 어겨 프로그램이 아예 시작되지 않는 오류, ReferenceError는 없는 이름을 쓴 오류, TypeError는 값을 할 수 없는 방식으로 쓴 오류입니다.
+  prerequisites: [js.errors.error-messages]
+  misconceptions: [js.mc.syntax-error-partial-run, js.mc.typo-is-syntax-error]
+  mdn: Web/JavaScript/Reference/Global_Objects/Error

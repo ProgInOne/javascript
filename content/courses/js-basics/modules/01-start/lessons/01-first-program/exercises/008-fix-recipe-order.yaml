@@ -1,0 +1,55 @@
+id: js-basics.start.first-program.fix-recipe-order
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.basics.statements, weight: 1 }
+tags: [statements, order, debugging]
+estimatedSeconds: 120
+prompt: |
+  라면 끓이는 순서를 출력하는 프로그램인데, 순서가 뒤죽박죽이에요. 문장을 고쳐서 아래 순서대로 출력되게 하세요.
+
+  ```text
+  1. 물 끓이기
+  2. 면과 수프 넣기
+  3. 4분 기다리기
+  4. 그릇에 담기
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          console.log("1. 물 끓이기");
+          console.log("3. 4분 기다리기");
+          console.log("2. 면과 수프 넣기");
+          console.log("4. 그릇에 담기");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          console.log("1. 물 끓이기");
+          console.log("2. 면과 수프 넣기");
+          console.log("3. 4분 기다리기");
+          console.log("4. 그릇에 담기");
+  bugDescription: 2번 단계보다 3번 단계가 먼저 출력돼요.
+  checks:
+    - kind: console
+      id: output
+      description: 네 단계가 1번부터 4번까지 순서대로 출력되어야 합니다.
+      requirement: 단계 순서
+      expect:
+        lines: ["1. 물 끓이기", "2. 면과 수프 넣기", "3. 4분 기다리기", "4. 그릇에 담기"]
+hints:
+  - 출력 순서는 무엇이 정할까요? 글자 앞의 번호일까요, 문장의 위치일까요?
+  - 프로그램은 문장을 위에서 아래로 실행해요. 어느 두 줄의 위치가 서로 바뀌어 있나요?
+  - 둘째 줄과 셋째 줄의 순서를 살펴보세요.
+explanation: |
+  출력 순서는 글자에 적힌 번호가 아니라 **문장의 위치**가 정해요. 프로그램은 문장을 위에서 아래로 하나씩 실행하기 때문이에요.
+
+  지금은 "3. 4분 기다리기"를 출력하는 문장이 "2. 면과 수프 넣기"보다 위에 있어서 순서가 바뀌어 나와요. 두 문장의 위치를 서로 바꾸면 1 → 2 → 3 → 4 순서로 출력돼요.
+
+  글자 안의 숫자를 고쳐서 맞추면 출력 모양은 비슷해 보여도 단계의 내용이 틀려지니 주의하세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

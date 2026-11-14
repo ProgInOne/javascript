@@ -1,0 +1,61 @@
+id: js-basics.start.reading-errors.fix-missing-quotes
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.errors.error-types, weight: 1 }
+  - { id: js.basics.console-log, weight: 0.5 }
+tags: [reference-error, quotes, debugging]
+estimatedSeconds: 150
+prompt: |
+  날씨 안내를 출력하는 프로그램에서 오류가 나요. 콘솔에 아래 세 줄이 나오도록 고치세요.
+
+  ```text
+  오늘의 날씨
+  맑음
+  최고 기온: 25
+  ```
+
+  실행했을 때의 오류 메시지는 다음과 같아요.
+
+  ```text
+  Uncaught ReferenceError: 맑음 is not defined
+      at main.js:2:13
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          console.log("오늘의 날씨");
+          console.log(맑음);
+          console.log("최고 기온:", 25);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          console.log("오늘의 날씨");
+          console.log("맑음");
+          console.log("최고 기온:", 25);
+  bugDescription: 첫 줄만 출력되고 ReferenceError가 나요.
+  maxEditDistance: 2
+  checks:
+    - kind: console
+      id: output
+      description: 날씨 안내 세 줄이 출력되어야 합니다.
+      requirement: 세 줄 출력
+      expect:
+        lines: ["오늘의 날씨", "맑음", "최고 기온: 25"]
+hints:
+  - "`ReferenceError`는 어떤 문제를 뜻했나요? 메시지는 어떤 이름을 찾지 못했다고 하나요?"
+  - "`맑음`은 이름으로 쓰려던 걸까요, 글자로 출력하려던 걸까요?"
+  - 글자를 출력하려면 무엇으로 감싸야 하는지 첫 줄과 비교해 보세요. 숫자 25는 그대로 두어도 돼요.
+explanation: |
+  2번 줄 `console.log(맑음);`의 `맑음`에는 따옴표가 없어요. 그래서 JavaScript는 이것을 글자가 아니라 `맑음`이라는 **이름**으로 읽었고, 그런 이름이 없어서 `ReferenceError: 맑음 is not defined`가 났어요.
+
+  `console.log("맑음");`처럼 따옴표로 감싸면 글자로 출력돼요. 3번 줄의 `25`는 숫자라서 따옴표가 없어도 괜찮아요.
+
+  이 오류는 문장 모양은 맞기 때문에 `SyntaxError`가 아니라 `ReferenceError`예요. "이름을 찾을 수 없다"는 메시지가 보이면 철자 오타와 함께 **빠진 따옴표**도 의심해 보세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

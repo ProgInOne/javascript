@@ -1,0 +1,16 @@
+id: js-basics.start.reading-errors
+title: 오류 메시지 읽기
+summary: 오류 메시지의 종류·설명·줄 번호를 읽고, SyntaxError·ReferenceError·TypeError를 구분해 스스로 고칩니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 12, practice: 15 }
+concepts:
+  primary: [js.errors.error-messages, js.errors.error-types]
+  reviewed: [js.basics.console-log, js.basics.statements]
+objectives:
+  - 오류 메시지에서 오류 종류, 설명, 줄 번호를 찾아 읽을 수 있다.
+  - 실행 중 오류가 나면 어느 줄까지 실행되는지 예측할 수 있다.
+  - SyntaxError, ReferenceError, TypeError를 메시지로 구분하고 흔한 원인을 말할 수 있다.
+  - 오류 메시지를 단서로 버그가 있는 줄을 찾아 고칠 수 있다.
+practice:
+  targetCount: 12

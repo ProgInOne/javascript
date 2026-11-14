@@ -1,0 +1,39 @@
+id: js-basics.start.first-program.predict-quoted-expression
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+tags: [console-log, string, quotes]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    console.log("10 + 5");
+    console.log(10 + 5);
+  answerKind: console
+  misconceptionByAnswer:
+    "15\n15": js.mc.quoted-expression-evaluates
+    "\"10 + 5\"\n15": js.mc.log-prints-quotes
+misconceptions: [js.mc.quoted-expression-evaluates, js.mc.log-prints-quotes]
+hints:
+  - 두 줄의 차이는 따옴표 하나뿐이에요. 따옴표는 무엇을 표시할까요?
+  - 따옴표로 감싼 것은 글자(문자열)라서 계산하지 않아요. 따옴표가 없는 식은 어떻게 될까요?
+  - 첫 줄은 따옴표 안의 글자가 그대로, 둘째 줄은 계산 결과가 나와요. 출력에 따옴표가 붙는지도 생각해 보세요.
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  10 + 5
+  15
+  ```
+
+  - 첫 줄은 `"10 + 5"`처럼 따옴표로 감쌌으니 글자예요. 계산하지 않고 글자 그대로 `10 + 5`가 나와요. 따옴표는 출력되지 않아요.
+  - 둘째 줄은 따옴표가 없으니 계산할 값이에요. `10 + 5`를 계산한 `15`가 나와요.
+
+  두 줄 모두 `15`라고 답했다면 따옴표 안의 식도 계산된다고 생각한 거예요. 첫 줄을 `"10 + 5"`처럼 따옴표까지 적었다면, 따옴표는 글자의 범위를 표시할 뿐 출력되지 않는다는 점을 기억하세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

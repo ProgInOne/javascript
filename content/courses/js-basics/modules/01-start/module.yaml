@@ -1,0 +1,4 @@
+id: js-basics.start
+title: 시작하기
+summary: 첫 프로그램을 실행해 결과를 확인하고, 오류 메시지를 읽는 법을 배웁니다.
+lessons: [first-program, reading-errors]

@@ -1,0 +1,40 @@
+id: js-basics.start.first-program.predict-log-of-log
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+  - { id: js.basics.statements, weight: 0.3 }
+tags: [console-log, undefined]
+estimatedSeconds: 90
+prompt: |
+  `console.log`의 괄호 안에 또 `console.log`를 넣었어요. 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    console.log(console.log("안녕"));
+  answerKind: console
+  misconceptionByAnswer:
+    "안녕\n안녕": js.mc.log-is-return
+    "안녕": js.mc.log-is-return
+misconceptions: [js.mc.log-is-return]
+hints:
+  - 바깥 console.log는 괄호 안의 값을 보여 주려면 먼저 그 값을 알아야 해요. 그럼 어느 쪽이 먼저 실행될까요?
+  - 안쪽 `console.log("안녕")`이 먼저 실행돼서 한 줄을 출력해요. 그다음 바깥 console.log는 안쪽 명령의 "결과"를 출력해요.
+  - console.log는 보여 주기만 하고, 끝난 뒤 돌려주는 결과는 "값 없음"을 뜻하는 특별한 값이에요. 레슨의 "흔한 실수"를 떠올려 보세요.
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  안녕
+  undefined
+  ```
+
+  1. 바깥 `console.log`는 괄호 안의 값을 먼저 알아야 하므로, 안쪽 `console.log("안녕")`이 먼저 실행돼요. 이때 `안녕`이 출력돼요.
+  1. 안쪽 console.log가 끝나고 돌려주는 결과는 `undefined`("값 없음")예요. console.log는 보여 주기만 하고 값을 돌려주지 않기 때문이에요.
+  1. 바깥 console.log가 그 결과인 `undefined`를 출력해요.
+
+  `안녕`이 두 번 나온다고 생각했다면, 출력한 값이 결과로 돌아온다고 본 거예요. 출력(사람에게 보여 주기)과 결과값(프로그램이 이어서 쓰는 값)은 다른 것이에요. 이 차이는 함수의 `return`을 배울 때 다시 중요해져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

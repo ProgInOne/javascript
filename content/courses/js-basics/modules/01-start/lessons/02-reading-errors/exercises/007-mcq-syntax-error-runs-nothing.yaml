@@ -1,0 +1,50 @@
+id: js-basics.start.reading-errors.mcq-syntax-error-runs-nothing
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: js.errors.error-types, weight: 1 }
+  - { id: js.errors.error-messages, weight: 0.5 }
+tags: [syntax-error, execution-order]
+estimatedSeconds: 75
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  console.log("하나");
+  console.log("둘");
+  console.log("셋";
+  console.log("넷");
+spec:
+  options:
+    - id: a
+      text: "`SyntaxError` 오류 메시지만 나온다"
+    - id: b
+      text: "`하나`, `둘`이 출력된 다음 `SyntaxError` 오류 메시지가 나온다"
+      misconception: js.mc.syntax-error-partial-run
+      rationale: 문법은 실행 전에 먼저 검사해요. 문법 오류가 있으면 첫 줄도 실행되지 않아요.
+    - id: c
+      text: "`하나`, `둘`, `넷`이 출력되고 `SyntaxError` 오류 메시지가 나온다"
+      misconception: js.mc.code-after-error-runs
+      rationale: 오류 난 줄만 건너뛰지 않아요. 게다가 문법 오류라 아무 줄도 실행되지 않아요.
+    - id: d
+      text: "`ReferenceError` 오류 메시지만 나온다"
+      misconception: js.mc.typo-is-syntax-error
+      rationale: 닫는 괄호가 빠진 것은 이름 문제가 아니라 문장 모양(문법) 문제예요.
+  correct: a
+misconceptions: [js.mc.syntax-error-partial-run]
+hints:
+  - 3번 줄에 빠진 것이 있어요. 이것은 이름의 문제일까요, 문장 모양의 문제일까요?
+  - 문장 모양이 틀린 오류는 JavaScript가 실행을 시작하기 전과 후 중 언제 발견할까요?
+  - 문법 검사는 실행 전에 코드 전체를 대상으로 해요. 검사에서 걸리면 몇 줄이 실행될까요?
+explanation: |
+  정답은 **`SyntaxError` 오류 메시지만 나온다**예요.
+
+  3번 줄 `console.log("셋";`에는 닫는 괄호 `)`가 빠졌어요. 이것은 문장 모양의 문제라 `SyntaxError: missing ) after argument list`가 나요.
+
+  JavaScript는 실행하기 전에 코드 **전체**의 문법을 먼저 검사해요. 검사에서 걸리면 실행을 시작하지 않으므로, 문제없는 1·2번 줄도 출력되지 않아요.
+
+  - `하나`, `둘`이 먼저 나온다고 생각했다면: 그건 실행 중 오류(`ReferenceError`, `TypeError`)일 때의 동작이에요.
+  - `넷`까지 나온다고 생각했다면: 오류는 그 줄만 건너뛰지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

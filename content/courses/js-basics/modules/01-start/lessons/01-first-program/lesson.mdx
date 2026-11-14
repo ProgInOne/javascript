@@ -1,0 +1,211 @@
+<Section kind="objectives">
+- `console.log`로 글자(문자열)와 계산 결과를 콘솔에 출력할 수 있어요.
+- 따옴표가 있을 때와 없을 때 출력이 어떻게 다른지 예측할 수 있어요.
+- 여러 문장이 어떤 순서로 실행되는지 예측하고, 순서가 틀린 프로그램을 고칠 수 있어요.
+- 주석으로 메모를 남기거나 코드 한 줄을 잠시 실행되지 않게 할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+**프로그램**은 컴퓨터에게 시킬 일을 순서대로 적어 둔 목록이에요. 그런데 컴퓨터는 일을 해도 아무 말이 없어요. 계산을 맞게 했는지, 어디까지 진행했는지 알 수가 없지요.
+
+그래서 처음 배울 명령은 "이 값을 나한테 보여 줘"예요. JavaScript에서는 <ConceptLink to="js.basics.console-log">`console.log`</ConceptLink>가 그 일을 해요. 값을 **콘솔**(프로그램의 결과가 글자로 나오는 창)에 보여 주는 명령이에요. 앞으로 모든 단원에서 결과를 확인할 때 이 명령을 써요.
+</Section>
+
+<Section kind="principle">
+### console.log의 모양
+
+```js
+console.log("안녕하세요");
+```
+
+- `console.log`는 "콘솔에 기록(log)해 줘"라는 명령이에요. 대소문자와 점(`.`)까지 정확히 이렇게 써야 해요.
+- 괄호 `( )` 안에 보여 줄 값을 넣어요. 괄호 안에 넣는 값을 **인수**라고 불러요.
+- 맨 끝의 세미콜론(`;`)은 "문장이 여기서 끝나요"라는 표시예요.
+
+### 글자는 따옴표로, 숫자와 계산은 그대로
+
+괄호 안에는 여러 종류의 값을 넣을 수 있어요.
+
+<CompareTable columns={["코드", "콘솔에 보이는 것", "설명"]}>
+<Row label="글자">`console.log("안녕")` | 안녕 | 따옴표로 감싼 글자(문자열)는 따옴표 안의 글자만 나와요</Row>
+<Row label="숫자">`console.log(42)` | 42 | 숫자는 따옴표 없이 써요</Row>
+<Row label="계산">`console.log(3 + 4)` | 7 | 따옴표 없는 식은 계산한 결과가 나와요</Row>
+<Row label="따옴표 안의 식">`console.log("3 + 4")` | 3 + 4 | 따옴표 안은 글자라서 계산하지 않아요</Row>
+<Row label="여러 값">`console.log("합계:", 7)` | 합계: 7 | 쉼표로 나눈 값은 한 칸씩 띄어서 나와요</Row>
+</CompareTable>
+
+핵심은 **따옴표가 있으면 글자, 없으면 계산할 값**이라는 거예요. 따옴표는 `"`(큰따옴표)와 `'`(작은따옴표) 둘 다 쓸 수 있지만, 시작과 끝을 같은 종류로 맞춰야 해요. 이 과정에서는 큰따옴표를 써요. 글자와 숫자의 차이는 "자료형" 단원에서 더 자세히 배워요.
+
+<Callout kind="note" title="ProgInOne 콘솔의 표시 방식">
+ProgInOne의 콘솔은 글자를 출력할 때 따옴표를 붙이지 않고 글자만 보여 줘요. 실행 결과를 예측하는 문제에서도 이 방식으로 답을 써요. 브라우저의 개발자 도구 콘솔은 상황에 따라 표시 모양이 조금 다를 수 있어요.
+</Callout>
+
+### 문장은 위에서 아래로, 하나씩
+
+<ConceptLink to="js.basics.statements">문장</ConceptLink>은 컴퓨터에게 시키는 일 하나예요. 프로그램은 문장들을 **맨 위부터 아래로, 한 번에 하나씩** 실행해요. 앞 문장이 끝나야 다음 문장으로 넘어가요.
+
+```js
+console.log("1번 문장");
+console.log("2번 문장");
+console.log("3번 문장");
+```
+
+이 프로그램은 항상 1번, 2번, 3번 순서로 출력해요. 출력 순서를 바꾸고 싶다면 문장의 순서를 바꿔야 해요.
+
+- 문장 끝에는 세미콜론을 붙여요. 세미콜론이 있으면 한 줄에 문장 두 개를 쓸 수도 있지만, 읽기 쉽게 **한 줄에 문장 하나**를 쓰는 습관을 들여요.
+- `3 + 4;`처럼 계산만 하는 문장도 있어요. 하지만 이 문장은 계산만 하고 결과를 보여 주지 않아요. 보이게 하려면 `console.log`로 출력하라고 시켜야 해요.
+
+### 주석: 실행되지 않는 메모
+
+<ConceptLink to="js.basics.comments">주석</ConceptLink>은 사람이 읽으라고 남기는 메모예요. JavaScript는 주석을 실행하지 않고 건너뛰어요.
+
+```js
+// 한 줄 주석: // 뒤부터 그 줄 끝까지가 주석이에요.
+console.log("실행돼요"); // 문장 뒤에 붙여도 돼요.
+
+/* 여러 줄 주석:
+   이 사이의 모든 줄이 주석이에요. */
+```
+
+`//`는 **그 줄의 끝까지만** 주석으로 만들어요. 여러 줄을 주석으로 만들려면 줄마다 `//`를 붙이거나 `/*`와 `*/`로 감싸요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 실행하기 전에 콘솔에 무엇이 몇 줄 나올지 먼저 적어 보세요.
+
+<RunnableExample id="hello" lang="js" predict predictKind="console" concepts={["js.basics.console-log", "js.basics.statements"]}>
+```js
+console.log("안녕하세요");
+console.log("저는 JavaScript예요");
+console.log(2026);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+문장 세 개가 위에서부터 차례로 실행돼서, 콘솔에 세 줄이 나와요.
+
+| 줄 | 실행되는 문장 | 콘솔에 추가되는 줄 |
+|---|---|---|
+| 1 | `console.log("안녕하세요");` | 안녕하세요 |
+| 2 | `console.log("저는 JavaScript예요");` | 저는 JavaScript예요 |
+| 3 | `console.log(2026);` | 2026 |
+
+글자 줄은 따옴표 없이 글자만 나오고, `2026`은 숫자라서 그대로 나와요. `console.log` 한 번이 콘솔의 한 줄이 된다는 것도 기억해 두세요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 따옴표의 효과를 보여 줘요. 두 줄의 출력이 같을지 다를지 예측해 보세요.
+
+<RunnableExample id="quotes-vs-calc" lang="js" predict predictKind="console" concepts={["js.basics.console-log"]}>
+```js
+console.log("3 + 4");
+console.log(3 + 4);
+console.log("3 + 4 =", 3 + 4);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- 1번 줄: 따옴표로 감쌌으니 글자 그대로 `3 + 4`가 나와요. 계산하지 않아요.
+- 2번 줄: 따옴표가 없으니 계산한 결과 `7`이 나와요.
+- 3번 줄: 쉼표로 나눈 두 값이 한 칸 띄어서 나와요. 앞은 글자 `3 + 4 =`, 뒤는 계산 결과 `7`이라서 `3 + 4 = 7`이 돼요.
+
+같은 `3 + 4`라도 따옴표가 있느냐 없느냐에 따라 결과가 완전히 달라져요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제에는 주석이 섞여 있어요. 어떤 줄이 출력될까요?
+
+<RunnableExample id="comments" lang="js" concepts={["js.basics.comments"]}>
+```js
+// 오늘의 메뉴를 출력하는 프로그램
+console.log("김밥"); // 대표 메뉴
+// console.log("라면");
+console.log("떡볶이");
+/* 아래 메뉴는 준비 중이라 잠시 숨겨요
+console.log("우동");
+*/
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+콘솔에는 `김밥`과 `떡볶이` 두 줄만 나와요.
+
+- 1번 줄은 전체가 주석이라 실행되지 않아요.
+- 2번 줄은 `console.log("김밥");`까지 실행되고, `//` 뒤의 "대표 메뉴"는 메모예요.
+- 3번 줄은 `//`로 시작하니 라면은 출력되지 않아요. 이렇게 코드 앞에 `//`를 붙여 잠시 끄는 것을 "주석 처리한다"고 해요.
+- 5~7번 줄은 `/*`와 `*/` 사이라서 우동도 출력되지 않아요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.log-prints-quotes">
+<Wrong>`console.log("안녕")`을 실행하면 따옴표까지 붙은 `"안녕"`이 나온다.</Wrong>
+<Actual>콘솔에는 따옴표 없이 `안녕`만 나와요.</Actual>
+<Right>따옴표는 "여기부터 여기까지가 글자"라고 표시하는 기호예요. 출력되는 건 따옴표 안의 글자뿐이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.quoted-expression-evaluates">
+<Wrong>`console.log("3 + 4")`는 7을 출력한다.</Wrong>
+<Actual>글자 그대로 `3 + 4`가 출력돼요.</Actual>
+<Right>계산하고 싶으면 따옴표 없이 `console.log(3 + 4)`라고 써요. 따옴표가 있으면 글자, 없으면 계산할 값이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.expression-prints-itself">
+<Wrong>`3 + 4;`라고 써 두면 콘솔에 7이 나온다.</Wrong>
+<Actual>계산은 하지만 콘솔에는 아무것도 나오지 않아요.</Actual>
+<Right>프로그램은 시킨 일만 해요. 결과를 보려면 `console.log(3 + 4);`처럼 출력하라고 시켜야 해요. (개발자 도구 콘솔에 한 줄씩 입력할 때는 결과가 바로 보여서 헷갈리기 쉬워요.)</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.log-is-return">
+<Wrong>`console.log`로 출력한 값은 어딘가에 저장되거나 결과로 돌아온다.</Wrong>
+<Actual>`console.log`는 콘솔에 보여 주기만 해요. 명령이 끝나고 돌려주는 결과는 "값 없음"을 뜻하는 `undefined`예요. 그래서 `console.log(console.log("안녕"))`은 `안녕` 다음 줄에 `undefined`를 출력해요.</Actual>
+<Right>출력은 사람에게 보여 주는 것이고, 값을 나중에 다시 쓰려면 따로 저장해야 해요. 값을 저장하는 방법은 "변수와 상수" 단원에서 배워요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.line-comment-multiline">
+<Wrong>맨 위에 `//`를 한 번 쓰면 그 아래 여러 줄이 모두 주석이 된다.</Wrong>
+<Actual>`//`는 그 줄의 끝까지만 주석이에요. 다음 줄부터는 다시 실행돼요.</Actual>
+<Right>여러 줄을 끄려면 줄마다 `//`를 붙이거나, `/*`와 `*/`로 감싸요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+현업 개발자도 `console.log`를 가장 많이 쓰는 순간은 **프로그램이 생각대로 움직이는지 확인할 때**예요. 계산 결과가 이상하면 중간중간 `console.log`를 넣어 값을 찍어 보고, 어디서부터 틀렸는지 좁혀 가요.
+
+```js
+console.log("주문 계산 시작");
+console.log("김밥 2줄:", 3500 * 2);
+console.log("라면 1개:", 4000);
+console.log("합계:", 3500 * 2 + 4000);
+```
+
+확인이 끝나면 확인용 출력은 지우거나 `//`로 주석 처리해서 꺼 둬요. 주석은 "이 코드가 왜 이렇게 생겼는지"를 미래의 나와 동료에게 알려 주는 메모로도 써요.
+</Section>
+
+<Section kind="check">
+`console.log`가 하는 일을 정확히 알고 있는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.start.first-program.mcq-console-log-role" />
+
+문장의 실행 순서도 예측해 보세요.
+
+<InlineExercise ref="js-basics.start.first-program.predict-statement-order" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `console.log(값)`은 괄호 안의 값을 콘솔에 한 줄로 보여 줘요. 괄호 안의 값을 인수라고 해요.
+- 따옴표로 감싸면 글자(문자열)라서 그대로 나오고, 따옴표 없는 식은 계산한 결과가 나와요.
+- 프로그램은 문장을 위에서 아래로, 한 번에 하나씩 실행해요. 문장 끝에는 세미콜론을 붙여요.
+- 값만 적은 문장은 계산만 하고 아무것도 보여 주지 않아요.
+- `//`는 그 줄 끝까지, `/* */`는 그 사이 전체를 실행되지 않는 주석으로 만들어요.
+</Section>
+
+<Section kind="next">
+코드를 쓰다 보면 철자 하나만 틀려도 콘솔에 빨간 오류 메시지가 나와요. 다음 단원 "오류 메시지 읽기"에서는 그 메시지가 무엇을 알려 주는지 읽고, 스스로 고치는 법을 배워요. <MdnLink path="Web/API/console/log_static" />
+</Section>

@@ -1,0 +1,43 @@
+id: js-basics.start.first-program.mcq-comment-which-runs
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.basics.comments, weight: 1 }
+tags: [comments]
+estimatedSeconds: 45
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  // console.log("사과");
+  console.log("바나나"); // console.log("포도");
+spec:
+  options:
+    - id: a
+      text: "`바나나`만 나온다"
+    - id: b
+      text: "`사과`, `바나나`, `포도`가 모두 나온다"
+      rationale: "// 뒤는 실행되지 않는 주석이에요."
+    - id: c
+      text: "`바나나`, `포도`가 나온다"
+      rationale: 문장 뒤에 붙은 // 도 그 줄 끝까지를 주석으로 만들어요.
+    - id: d
+      text: 둘째 줄도 //가 있으니 아무것도 나오지 않는다
+      rationale: "//는 그 위치부터 주석이에요. 앞에 있는 console.log(\"바나나\");는 실행돼요."
+  correct: a
+hints:
+  - "// 는 어디부터 어디까지를 주석으로 만들까요?"
+  - 둘째 줄에서 // 의 앞부분과 뒷부분을 나눠서 보세요.
+  - "// 앞에 있는 코드는 실행되고, // 뒤는 그 줄 끝까지 실행되지 않아요."
+explanation: |
+  정답은 **`바나나`만 나온다**예요.
+
+  `//`는 **그 위치부터 그 줄 끝까지**를 주석으로 만들어요.
+
+  - 첫 줄은 맨 앞이 `//`라서 줄 전체가 주석이에요. 사과는 출력되지 않아요.
+  - 둘째 줄은 `console.log("바나나");`까지 실행되고, 그 뒤의 `// console.log("포도");`는 주석이에요.
+
+  둘째 줄 전체가 꺼진다고 생각했다면, `//`의 앞에 있는 코드는 영향을 받지 않는다는 점을 기억하세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

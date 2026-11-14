@@ -1,0 +1,34 @@
+id: js-basics.start.reading-errors.predict-error-method-typo
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.errors.error-types, weight: 1 }
+tags: [type-error, typo]
+estimatedSeconds: 75
+prompt: |
+  `log`의 첫 글자를 대문자로 잘못 썼어요. 실행하면 오류가 날까요? 오류가 난다면 어떤 종류의 오류인가요?
+spec:
+  lang: js
+  code: |
+    console.Log("안녕하세요");
+  answerKind: error
+  misconceptionByAnswer:
+    SyntaxError: js.mc.typo-is-syntax-error
+    none: js.mc.typo-is-syntax-error
+misconceptions: [js.mc.typo-is-syntax-error]
+hints:
+  - JavaScript는 대문자와 소문자를 같은 글자로 볼까요?
+  - "`console`이라는 이름은 제대로 썼어요. 문제는 점(`.`) 뒤의 `Log`예요. `console` 안에 `Log`라는 기능이 있을까요?"
+  - 이름은 찾았지만, 거기서 꺼낸 것이 "부를 수 있는 기능(함수)"이 아니에요. 값을 할 수 없는 방식으로 쓴 경우의 오류 종류를 떠올려 보세요.
+explanation: |
+  정답은 **오류가 난다, `TypeError`**예요.
+
+  JavaScript는 대문자와 소문자를 다른 글자로 봐요. `console`은 제대로 찾았지만, 그 안에는 `log`만 있고 `Log`는 없어요. 없는 것을 함수처럼 부르려 했으니 `TypeError: console.Log is not a function`("함수가 아니에요")가 나요.
+
+  - `SyntaxError`라고 생각했다면: 괄호·따옴표·세미콜론이 모두 맞아서 문법은 문제없어요.
+  - 오류가 나지 않는다고 생각했다면: 대소문자가 다르면 완전히 다른 이름이에요.
+  - `ReferenceError`와 헷갈렸다면: `consol.log()`처럼 맨 앞 이름 자체가 없으면 `ReferenceError`예요. 여기서는 `console`은 있고, 점 뒤의 기능이 없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

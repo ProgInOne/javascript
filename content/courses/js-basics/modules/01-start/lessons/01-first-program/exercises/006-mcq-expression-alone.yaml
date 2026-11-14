@@ -1,0 +1,45 @@
+id: js-basics.start.first-program.mcq-expression-alone
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.basics.statements, weight: 1 }
+  - { id: js.basics.console-log, weight: 0.3 }
+tags: [statements, console-log]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  100 + 200;
+  console.log("계산 끝");
+spec:
+  options:
+    - id: a
+      text: "`계산 끝` 한 줄만 나온다"
+    - id: b
+      text: "`300`, `계산 끝` 두 줄이 나온다"
+      misconception: js.mc.expression-prints-itself
+      rationale: 첫 문장은 계산만 하고 결과를 보여 주지 않아요. 보여 주려면 console.log가 필요해요.
+    - id: c
+      text: "`100 + 200`, `계산 끝` 두 줄이 나온다"
+      misconception: js.mc.expression-prints-itself
+      rationale: 식만 쓴 문장은 출력되지 않아요. 그리고 따옴표가 없으니 출력하더라도 글자가 아니라 계산 결과가 나왔을 거예요.
+    - id: d
+      text: 첫 줄에 console.log가 없어서 오류가 난다
+      rationale: "`100 + 200;`도 올바른 문장이에요. 계산만 하고 아무 일도 보여 주지 않을 뿐이에요."
+  correct: a
+misconceptions: [js.mc.expression-prints-itself]
+hints:
+  - 콘솔에 무언가를 보여 주는 명령은 무엇이었나요? 첫 줄에 그 명령이 있나요?
+  - 첫 줄은 계산은 하지만, 결과를 어디에 보여 달라는 말은 없어요.
+  - 콘솔에 나오는 줄 수는 실행된 console.log의 개수와 같아요.
+explanation: |
+  정답은 **`계산 끝` 한 줄만 나온다**예요.
+
+  `100 + 200;`도 올바른 문장이라 실행은 돼요. 하지만 계산만 하고 결과를 보여 달라는 명령이 없으니 콘솔에는 아무것도 나오지 않아요. 콘솔에 보이는 건 `console.log("계산 끝");`의 출력뿐이에요.
+
+  - `300`이 나온다고 생각했다면: 개발자 도구 콘솔에 식을 한 줄씩 입력하면 결과가 바로 보여서 생기는 착각이에요. 프로그램을 실행할 때는 `console.log(100 + 200);`처럼 출력을 시켜야 해요.
+  - 오류가 난다고 생각했다면: 식만 있는 문장도 문법에 맞아요. 다만 아무 쓸모가 없을 뿐이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

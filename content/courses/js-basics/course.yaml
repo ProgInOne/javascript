@@ -1,0 +1,14 @@
+id: js-basics
+title: JavaScript 기초
+summary: 값, 연산, 제어 흐름, 함수, 배열, 객체로 문제를 해결하는 프로그램을 작성합니다.
+language: javascript
+level: basic
+depth: full
+status: published
+objectives:
+  - console.log로 프로그램의 결과를 확인하고, 문장이 실행되는 순서를 예측할 수 있다.
+  - 오류 메시지의 종류·설명·줄 번호를 읽고 원인을 찾아 고칠 수 있다.
+  - 변수와 상수로 값에 이름을 붙이고, 대입으로 값을 바꿀 수 있다.
+# v0.1 시범판에 있는 모듈만 나열합니다. 전체 목록: start, values, operators, control, loops,
+# functions, strings, arrays, objects, browser-intro
+modules: [start]

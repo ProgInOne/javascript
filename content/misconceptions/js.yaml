@@ -1,0 +1,97 @@
+# JavaScript 오개념
+
+# ── first-program ──
+
+- id: js.mc.expression-prints-itself
+  concept: js.basics.statements
+  title: 값만 써도 출력된다고 생각함
+  statement: "`1 + 2;`처럼 계산식만 문장으로 써 두면 결과가 콘솔에 나온다고 생각한다."
+  reality: 프로그램은 계산만 하고 결과를 보여 주지 않는다. 콘솔에 보이게 하려면 console.log(1 + 2)처럼 출력하라고 시켜야 한다.
+  diagnosticHint: 개발자 도구 콘솔에 한 줄씩 입력할 때는 결과가 바로 보이지만, 프로그램 파일을 실행할 때는 그렇지 않다.
+  remediation:
+    lessonSection: js-basics.start.first-program#pitfalls
+    exercises: [js-basics.start.first-program.mcq-expression-alone]
+
+- id: js.mc.log-prints-quotes
+  concept: js.basics.console-log
+  title: 따옴표까지 출력된다고 생각함
+  statement: 'console.log("안녕")을 실행하면 콘솔에 따옴표까지 포함한 "안녕"이 나온다고 생각한다.'
+  reality: 따옴표는 "여기부터 여기까지가 글자(문자열)"라고 표시하는 기호일 뿐이다. 콘솔에는 따옴표 안의 글자만 나온다.
+  remediation:
+    lessonSection: js-basics.start.first-program#pitfalls
+    exercises: [js-basics.start.first-program.predict-quoted-expression]
+
+- id: js.mc.quoted-expression-evaluates
+  concept: js.basics.console-log
+  title: 따옴표 안의 식도 계산된다고 생각함
+  statement: 'console.log("3 + 4")가 7을 출력한다고 생각한다.'
+  reality: 따옴표로 감싸면 글자(문자열)가 되어 계산되지 않고 글자 그대로 3 + 4가 출력된다. 계산하려면 따옴표 없이 console.log(3 + 4)라고 쓴다.
+  diagnosticHint: 따옴표가 있으면 "글자", 없으면 "계산할 값"으로 읽는다.
+  remediation:
+    lessonSection: js-basics.start.first-program#pitfalls
+    exercises:
+      - js-basics.start.first-program.predict-quoted-expression
+      - js-basics.start.first-program.fix-quoted-total
+
+- id: js.mc.log-is-return
+  concept: js.basics.console-log
+  title: 출력과 결과값을 같은 것으로 봄
+  statement: console.log로 출력한 값이 console.log의 결과로 돌아온다고(어딘가에 저장된다고) 생각한다.
+  reality: console.log는 콘솔에 보여 주기만 하고, 결과로 돌려주는 값은 "값 없음"을 뜻하는 undefined다. 출력과 결과값은 다르다.
+  diagnosticHint: console.log(console.log(1))을 실행하면 1 다음에 undefined가 출력된다.
+  remediation:
+    lessonSection: js-basics.start.first-program#pitfalls
+    exercises: [js-basics.start.first-program.predict-log-of-log]
+
+- id: js.mc.line-comment-multiline
+  concept: js.basics.comments
+  title: "//가 여러 줄을 주석 처리한다고 생각함"
+  statement: "// 한 번이면 그 아래 여러 줄까지 주석이 된다고 생각한다."
+  reality: "//는 그 줄의 끝까지만 주석으로 만든다. 여러 줄을 주석으로 만들려면 줄마다 //를 붙이거나 /* */로 감싼다."
+  remediation:
+    lessonSection: js-basics.start.first-program#pitfalls
+    exercises: [js-basics.start.first-program.predict-comment-one-line]
+
+# ── reading-errors ──
+
+- id: js.mc.code-after-error-runs
+  concept: js.errors.error-messages
+  title: 오류 뒤의 줄도 실행된다고 생각함
+  statement: 실행 중에 한 줄에서 오류가 나도, 그 줄만 건너뛰고 나머지 줄은 계속 실행된다고 생각한다.
+  reality: 실행 중 오류(ReferenceError, TypeError 등)가 나면 프로그램은 그 자리에서 멈춘다. 오류 앞의 줄은 이미 실행됐지만, 뒤의 줄은 실행되지 않는다.
+  diagnosticHint: 오류가 난 줄 다음에 있는 console.log의 출력이 콘솔에 있는지 확인해 본다.
+  remediation:
+    lessonSection: js-basics.start.reading-errors#pitfalls
+    exercises: [js-basics.start.reading-errors.mcq-what-runs-before-error]
+
+- id: js.mc.error-line-is-cause
+  concept: js.errors.error-messages
+  title: 오류가 표시된 줄만 문제라고 생각함
+  statement: 오류 메시지의 줄 번호가 가리키는 줄에만 원인이 있다고 생각하고, 그 줄만 고치려 한다.
+  reality: 줄 번호는 JavaScript가 문제를 "알아챈" 곳이다. 원인은 그 앞줄(예를 들어 앞줄 끝의 빠진 세미콜론이나, 앞에서 잘못 만든 이름)에 있을 수 있다.
+  diagnosticHint: 표시된 줄이 멀쩡해 보이면 바로 앞줄부터 거슬러 올라가며 읽는다.
+  remediation:
+    lessonSection: js-basics.start.reading-errors#pitfalls
+    exercises: [js-basics.start.reading-errors.mcq-cause-on-previous-line]
+
+- id: js.mc.syntax-error-partial-run
+  concept: js.errors.error-types
+  title: 문법 오류가 있어도 앞줄은 실행된다고 생각함
+  statement: SyntaxError가 셋째 줄에 있으면 첫째·둘째 줄은 실행된 다음 멈춘다고 생각한다.
+  reality: JavaScript는 실행하기 전에 코드 전체의 문법을 먼저 검사한다. 어디든 SyntaxError가 있으면 첫 줄부터 아무것도 실행되지 않는다.
+  diagnosticHint: SyntaxError일 때 콘솔에 오류 말고 다른 출력이 있는지 확인해 본다.
+  remediation:
+    lessonSection: js-basics.start.reading-errors#pitfalls
+    exercises: [js-basics.start.reading-errors.mcq-syntax-error-runs-nothing]
+
+- id: js.mc.typo-is-syntax-error
+  concept: js.errors.error-types
+  title: 오타는 모두 SyntaxError라고 생각함
+  statement: 무엇이든 잘못 쓰면 SyntaxError(문법 오류)가 난다고 생각한다.
+  reality: 괄호·따옴표처럼 문장의 모양이 틀리면 SyntaxError지만, consol처럼 이름을 잘못 쓰면 ReferenceError, console.lg처럼 없는 기능을 부르면 TypeError가 난다.
+  diagnosticHint: 오류 메시지 맨 앞의 종류 이름을 먼저 읽는다.
+  remediation:
+    lessonSection: js-basics.start.reading-errors#pitfalls
+    exercises:
+      - js-basics.start.reading-errors.predict-error-missing-quotes
+      - js-basics.start.reading-errors.predict-error-method-typo

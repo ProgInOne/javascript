@@ -1,0 +1,42 @@
+id: js-basics.start.reading-errors.mcq-error-parts
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.errors.error-messages, weight: 1 }
+tags: [error-message, line-number]
+estimatedSeconds: 45
+prompt: |
+  프로그램을 실행했더니 아래 오류 메시지가 나왔어요. 문제가 발견된 곳은 **몇 번 줄**인가요?
+
+  ```text
+  Uncaught TypeError: console.lg is not a function
+      at main.js:5:9
+  ```
+spec:
+  options:
+    - id: a
+      text: 5번 줄
+    - id: b
+      text: 9번 줄
+      rationale: "`5:9`에서 앞 숫자가 줄 번호, 뒤 숫자는 그 줄의 몇째 글자인지예요."
+    - id: c
+      text: 1번 줄 (메시지의 첫 줄에 오류가 적혀 있으니까)
+      rationale: 메시지의 첫 줄은 오류 종류와 설명이에요. 코드의 위치는 `at` 뒤에 있어요.
+    - id: d
+      text: 메시지만으로는 알 수 없다
+      rationale: "`at main.js:5:9`가 파일 이름과 위치를 알려 줘요."
+  correct: a
+hints:
+  - 오류 메시지에서 위치를 알려 주는 부분은 어디일까요? `at` 뒤를 보세요.
+  - "`main.js:5:9`는 파일 이름, 그리고 숫자 두 개예요."
+  - 숫자 두 개 중 하나는 줄 번호, 다른 하나는 그 줄 안에서 몇째 글자인지예요. 순서를 떠올려 보세요.
+explanation: |
+  정답은 **5번 줄**이에요.
+
+  위치 `main.js:5:9`는 "main.js 파일의 5번 줄, 9번째 글자"라는 뜻이에요. 앞 숫자가 줄 번호, 뒤 숫자가 그 줄 안의 글자 위치예요.
+
+  메시지의 첫 줄 `TypeError: console.lg is not a function`은 오류 종류와 설명이고, 위치는 `at` 뒤에 나와요. 오류를 고칠 때는 종류 → 설명 → 줄 번호 순서로 읽으면 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

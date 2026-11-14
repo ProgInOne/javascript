@@ -1,0 +1,48 @@
+id: js-basics.start.first-program.fill-print-goal
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+tags: [console-log, write-code]
+estimatedSeconds: 90
+prompt: |
+  빈칸에 **문장 한 줄**을 직접 써서, 프로그램을 실행하면 콘솔에 아래 두 줄이 나오게 하세요.
+
+  ```text
+  오늘의 목표
+  첫 프로그램 완성하기
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    console.log("오늘의 목표");
+    {{blank:line}}
+  blanks:
+    - id: line
+      accept: ['console.log("첫 프로그램 완성하기");']
+      width: 40
+      misconceptionMap:
+        "console.log(첫 프로그램 완성하기);": js.mc.log-prints-quotes
+  checks:
+    - kind: console
+      id: output
+      description: 콘솔에 "오늘의 목표"와 "첫 프로그램 완성하기"가 차례로 출력되어야 합니다.
+      requirement: 두 줄 출력
+      expect:
+        lines: ["오늘의 목표", "첫 프로그램 완성하기"]
+hints:
+  - 첫 줄을 출력하는 문장이 이미 있어요. 그 문장을 본보기로 삼아 보세요.
+  - 출력할 내용이 글자라면 무엇으로 감싸야 할까요? 문장 끝에는 무엇을 붙이나요?
+  - "`console.log(` + 큰따옴표로 감싼 둘째 줄의 글자 + `);` 모양으로 써요."
+explanation: |
+  예시 정답은 `console.log("첫 프로그램 완성하기");`예요.
+
+  - 글자를 출력하려면 큰따옴표(또는 작은따옴표)로 감싸야 해요. 따옴표는 출력되지 않으니, 콘솔에는 글자만 나와요.
+  - 문장은 위에서 아래로 실행되므로, 둘째 줄에 쓴 이 문장이 "오늘의 목표" 다음에 출력돼요.
+
+  따옴표 없이 `console.log(첫 프로그램 완성하기);`라고 쓰면 JavaScript는 이것을 글자가 아니라 이름이나 코드로 읽으려다 오류를 내요. 이런 오류 메시지를 읽는 법은 다음 단원에서 배워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
