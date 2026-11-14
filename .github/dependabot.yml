@@ -7,6 +7,13 @@ updates:
       day: monday
       timezone: Asia/Seoul
     open-pull-requests-limit: 5
+    ignore:
+      # Node.js 24 LTS is the runtime (D-019); type majors follow the runtime, not npm latest.
+      - dependency-name: '@types/node'
+        update-types: [version-update:semver-major]
+      # typescript-eslint supports TypeScript < 6.1 (see PR #2).
+      - dependency-name: typescript
+        update-types: [version-update:semver-major, version-update:semver-minor]
     commit-message:
       prefix: chore
       include: scope
