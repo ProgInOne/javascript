@@ -60,4 +60,49 @@ test.describe('tutor API (mock AI)', () => {
       ((await got.json()) as { summary: { messageCount: number } }).summary.messageCount,
     ).toBeGreaterThanOrEqual(2);
   });
+
+  test('explains a wrong attempt (evaluator.explainMistake) and refuses a correct one', async ({
+    page,
+    request,
+  }) => {
+    await page.goto('/');
+    const token = await page.locator('meta[name="proginone-token"]').getAttribute('content');
+    const headers = { 'x-proginone-token': token ?? '' };
+    const exercise = 'js-basics.start.first-program.mcq-log-role';
+    const submit = async (optionId: string) => {
+      const res = await request.post(`/api/v1/exercises/${exercise}/inline-attempts`, {
+        headers,
+        data: {
+          answer: { optionId },
+          confidence: 'sure',
+          startedAt: Date.now() - 20_000,
+          activeMs: 15_000,
+        },
+      });
+      expect(res.status()).toBe(201);
+      return ((await res.json()) as { attempt: { id: string; correct: boolean } }).attempt;
+    };
+    const wrong = await submit('b');
+    expect(wrong.correct).toBe(false);
+    const res = await request.post(`/api/v1/attempts/${wrong.id}/explanation`, {
+      headers,
+      data: {},
+    });
+    expect(res.status()).toBe(200);
+    expect((await res.json()) as unknown).toMatchObject({
+      attemptId: wrong.id,
+      source: 'ai',
+      fallbackCode: null,
+    });
+
+    const right = await submit('a');
+    const refused = await request.post(`/api/v1/attempts/${right.id}/explanation`, {
+      headers,
+      data: {},
+    });
+    expect(refused.status()).toBe(409);
+    expect(((await refused.json()) as { error: { code: string } }).error.code).toBe(
+      'ATTEMPT_CORRECT',
+    );
+  });
 });

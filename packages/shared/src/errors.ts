@@ -50,6 +50,8 @@ export const ERROR_CODES = [
   'PRACTICE_ITEM_MISMATCH',
   'PRACTICE_ITEM_DONE',
   'PRACTICE_NOTHING_WEAK',
+  /** `POST /attempts/:id/explanation` on a correct attempt (nothing to explain). */
+  'ATTEMPT_CORRECT',
   'BACKUP_FAILED',
   'BACKUP_NOT_FOUND',
   'RESTORE_FAILED',

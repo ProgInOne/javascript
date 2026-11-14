@@ -90,6 +90,35 @@ export interface AttemptContext {
   submittedAt: number;
 }
 
+/** One graded attempt in detail (evaluator and analyst tasks). Learner input is untrusted. */
+export interface AttemptDetailContext extends AttemptContext {
+  exerciseId: string;
+  exerciseType: string;
+  /** The exercise prompt, clipped (what the attempt answered). */
+  exercisePrompt: string;
+  conceptIds: string[];
+  correct: boolean;
+  /** Misconceptions the grader matched (chosen wrong option, wrong-answer pattern). */
+  misconceptionIds: string[];
+  /** Visible checks that failed, with the expected/actual summary the learner already saw. */
+  failedChecks: {
+    id: string;
+    description: string;
+    expected: string | null;
+    actual: string | null;
+  }[];
+  practiceSetItemId: string | null;
+}
+
+/** A content-pack misconception (the catalog a proposal should pick from). */
+export interface CatalogMisconceptionContext {
+  id: string;
+  conceptId: string;
+  title: string;
+  description: string;
+  correction: string;
+}
+
 export interface LessonContext {
   id: string;
   title: string;
@@ -120,6 +149,13 @@ export interface ContextSource {
   exercise(exerciseId: string, access: ExerciseAccess): Promise<ExerciseContext | null>;
   /** Most recent first. */
   attempts(exerciseId: string, opts: { limit: number }): Promise<AttemptContext[]>;
+  /** The learner's attempts with these IDs (others are skipped), in the given order. */
+  attemptDetails(attemptIds: readonly string[]): Promise<AttemptDetailContext[]>;
+  /** Catalog misconceptions by id and/or concept. */
+  misconceptionCatalog(query: {
+    ids?: readonly string[];
+    conceptIds?: readonly string[];
+  }): Promise<CatalogMisconceptionContext[]>;
   lesson(lessonId: string, opts: { sectionId: string | null }): Promise<LessonContext | null>;
   /**
    * The last `limit` messages, oldest first, excluding `excludeMessageIds` (the turn being

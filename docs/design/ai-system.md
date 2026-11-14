@@ -1153,6 +1153,15 @@ v0.2(M5)에서 바꾸거나 구체화한 점입니다.
 - 앱 재시작 후 맥락 복원: Codex 스레드는 튜터 전용 홈에 남아 있어 보통 `thread/resume`으로 이어집니다. 재개가 실패하거나(`threadLost`) 컨텍스트 창을 넘으면(`AI_CONTEXT_TOO_LARGE`) 러너가 같은 턴에서 DB의 요약 + 최근 메시지로 새 스레드를 만듭니다.
 - `preferenceSignals`는 요약에만 저장하고 학습자 선호로 반영하지 않습니다(확인 화면은 후속). 학습자 선호 컨텍스트 섹션도 아직 없습니다.
 
+**`evaluator.explainMistake`와 `misconception.propose`** ([D-036](/docs/decisions.md))
+
+- `ContextSource`에 `attemptDetails`(시도 상세: 학습자 답, 채점 피드백, **보이는** 실패 체크의 기대값·실제값, 채점기가 찾은 오개념 ID)와 `misconceptionCatalog`를 추가했습니다. 숨김 체크는 어떤 경우에도 넣지 않습니다. 학습자가 고른 오답 선택지의 `rationale`은 채점 후 피드백으로 이미 본 내용이라 그대로 넣습니다(다른 선택지의 설명과 정답 키는 넣지 않음).
+- `evaluator.explainMistake` v1(interactive, `medium`, 구조화 출력, 스트리밍 없음): 채점 결과(우선순위 10) → 문제(9, 힌트 기록만큼만) → 오개념 카탈로그(8, 채점기가 찾은 것 먼저와 바로잡기) → 학습 상태(7) → 이전 시도 2개(6). 출력은 누설 지문 검사와 코드 8줄 상한(정답 열람 전)을 거치고, 1회 재시도 후에도 어기면 저작된 오개념 설명으로 대체합니다.
+- `POST /attempts/:id/explanation`(빈 본문) → `mistakeExplanationSchema`. 맞힌 시도는 `409 ATTEMPT_CORRECT`, 평가 세트의 시도는 `AI_LOCKED_IN_ASSESSMENT`. AI가 준비되지 않았거나 출력이 검증을 통과하지 못하면 `source: 'authored'`와 `fallbackCode`로 답합니다(UI 흐름을 막지 않음). 같은 시도는 서버가 메모리에 기억해 다시 호출하지 않습니다.
+- `misconceptionCandidate`와 `misconception.propose`의 제안은 같은 규칙으로 반영합니다: 근거 시도가 입력에 있던 학습자의 **오답**일 것, 카탈로그 ID는 존재하고 대상 개념의 것일 것, 미분류 후보는 설명이 있을 것, `confidence: low`는 기록하지 않음. 통과한 제안은 학습 엔진의 `proposeMisconception`으로만 반영합니다: 관측이 없으면 `suspected`(source `ai`), 기각(또는 기한이 지난 의심)이면 다시 `suspected`, 이미 의심·확정·해소인 관측은 바꾸지 않습니다. 미분류 후보는 `ai.<ULID>` 행(`ai_description`)입니다.
+- `misconception.propose` v1(background, `low`): 대상 개념의 최근 7일 오답(최대 10개), 개념 카탈로그, 현재 활성 오개념, 대화 신호(세션 요약의 어려워한 점·오개념 신호)를 받습니다. 트리거는 "최근 7일 같은 개념(주 개념)에서 오답 2회 이상 또는 `sure` 오답 1회, 그리고 가장 최근 오답이 아직 분석되지 않음"이며, 장기 기억 백그라운드 점검이 한 번에 한 개념씩 실행합니다(같은 조건: Codex 연결됨, 사용량 80% 미만, 대화형 턴 없음). 분석 여부는 `ai_calls`(`task_name = 'misconception.propose'`, `subject_type = 'attempt'`, `subject_id` = 가장 최근 오답)로 판정합니다.
+- 웹: 실습의 오답 피드백 아래에 "AI에게 왜 틀렸는지 묻기"(결정론적 피드백이 먼저, AI 설명이 그 아래). AI를 쓸 수 없으면 이유와 함께 비활성, 대체 응답은 "작성된 오개념 설명"으로 표시합니다.
+
 ## 검토한 대안
 
 ### 역할 구성: 다중 에이전트 vs 단일 모델 역할 함수

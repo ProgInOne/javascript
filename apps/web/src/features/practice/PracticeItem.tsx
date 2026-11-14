@@ -40,6 +40,7 @@ import { Markdown } from './Markdown.tsx';
 import { CODE_TYPES, TYPE_LABELS } from './model.ts';
 import { feedbackResultOf, MasteryChangeList, ReportButton, SolutionContent } from './parts.tsx';
 import { AiHint } from '../tutor/AiHint.tsx';
+import { AiMistakeExplanation } from '../tutor/AiMistakeExplanation.tsx';
 import { codeFilesOf, runSummaryOf } from '../tutor/context.ts';
 import { SELECTABLE_ATTR } from '../tutor/selection.ts';
 import { useTutorScope } from '../tutor/TutorContext.tsx';
@@ -412,6 +413,9 @@ function ItemWorkspace({
         {...(result ? { explanation: <Markdown text={result.grade.explanation} /> } : {})}
         actions={actions}
       />
+      {result && !result.attempt.correct && result.attempt.engineApplied && (
+        <AiMistakeExplanation key={result.attempt.id} attemptId={result.attempt.id} />
+      )}
       {result && <MasteryChangeList changes={result.masteryChanges} />}
       {result && !result.attempt.engineApplied && (
         <p className="text-fg-secondary type-small">

@@ -26,6 +26,7 @@ import { ContentAccess } from './services/curriculum/content-access.ts';
 import { createEngine } from './services/practice/engine.ts';
 import { createPracticeServices } from './services/practice/index.ts';
 import { SettingsService } from './services/settings/service.ts';
+import { EvaluatorService } from './services/tutor/evaluator-service.ts';
 import { MemoryService } from './services/tutor/memory-service.ts';
 import { TutorService } from './services/tutor/tutor-service.ts';
 import { APP_VERSION } from './version.ts';
@@ -138,6 +139,7 @@ const ai = new AiService({ provider, log });
 // One runner, so every AI task shares the turn limit (interactive before background).
 const runner = new TaskRunner({ provider, now: systemClock });
 let tutorRef: TutorService | null = null;
+const evaluator = new EvaluatorService({ userDb, content, runner, ai, now: systemClock, log });
 const memory = new MemoryService({
   userDb,
   content,
@@ -146,6 +148,7 @@ const memory = new MemoryService({
   now: systemClock,
   log,
   interactiveBusy: () => (tutorRef?.activeCount ?? 0) > 0,
+  proposals: evaluator,
 });
 const tutor = new TutorService({ userDb, content, runner, ai, now: systemClock, log, memory });
 tutorRef = tutor;
@@ -161,7 +164,7 @@ const app = createApp({
   settings: new SettingsService({ userDb, log }),
   content,
   practice: createPracticeServices({ userDb, content, engine, now: learningClock }),
-  ai: { ai, tutor, memory },
+  ai: { ai, tutor, memory, evaluator },
   maintenance,
   version: APP_VERSION,
   ...(config.mode === 'production' ? { webDistDir } : {}),

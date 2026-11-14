@@ -1,5 +1,7 @@
 import type {
   AttemptContext,
+  AttemptDetailContext,
+  CatalogMisconceptionContext,
   ConceptStateContext,
   ContextSource,
   ExerciseAccess,
@@ -19,7 +21,7 @@ import { HINT_LEVELS, sessionSummaryContentSchema, type SolutionView } from '@pr
 import { and, desc, eq, inArray } from 'drizzle-orm';
 import type { UserDb } from '../db/user/connection.ts';
 import { hintState, listHintEvents } from '../db/user/exercise-records.ts';
-import { gradingJson } from '../db/user/json.ts';
+import { gradingJson, stringListJson } from '../db/user/json.ts';
 import { attempts, conceptMastery, conceptMemory, submissions } from '../db/user/schema.ts';
 import { listObservationsForConcepts } from '../db/user/misconceptions.ts';
 import { pastSummaries, threadSummary, type SummaryRow } from '../db/user/summaries.ts';
@@ -279,6 +281,79 @@ export class TutorContextSource implements ContextSource {
         };
       }),
     );
+  }
+
+  /**
+   * The learner's attempts in detail. Failed checks are the visible ones only, with the
+   * expected/actual summary the learner already saw after grading; hidden checks never appear.
+   */
+  attemptDetails(attemptIds: readonly string[]): Promise<AttemptDetailContext[]> {
+    const ids = [...new Set(attemptIds)];
+    if (ids.length === 0) return Promise.resolve([]);
+    const rows = this.#userDb.orm
+      .select({ attempt: attempts, answer: submissions.answerJson })
+      .from(attempts)
+      .leftJoin(submissions, eq(submissions.attemptId, attempts.id))
+      .where(and(eq(attempts.learnerId, this.#scope.learnerId), inArray(attempts.id, ids)))
+      .all();
+    const byId = new Map(rows.map((r) => [r.attempt.id, r]));
+    const exercises = this.#content.available
+      ? new Map(
+          this.#content.repo
+            .getExercises([...new Set(rows.map((r) => r.attempt.exerciseId))])
+            .map((e) => [e.id, e]),
+        )
+      : new Map<string, never>();
+    return Promise.resolve(
+      ids.flatMap((id): AttemptDetailContext[] => {
+        const row = byId.get(id);
+        if (!row) return [];
+        const { attempt, answer } = row;
+        const grading = gradingJson.safeParse(attempt.gradingJson);
+        const mcs = stringListJson.safeParse(attempt.misconceptionIdsJson);
+        const exercise = exercises.get(attempt.exerciseId);
+        return [
+          {
+            id: attempt.id,
+            outcome: attempt.outcome,
+            score: attempt.score,
+            confidence: attempt.confidence,
+            hintLevelMax: attempt.hintLevelMax,
+            answerSummary: clip(answer === null ? '' : JSON.stringify(answer), 2_000),
+            feedback: grading.success
+              ? grading.data.feedback.slice(0, 5).map((f) => clip(f.message, 300))
+              : [],
+            submittedAt: attempt.submittedAt.getTime(),
+            exerciseId: attempt.exerciseId,
+            exerciseType: exercise?.type ?? 'unknown',
+            exercisePrompt: clip(exercise?.prompt ?? '', 600),
+            conceptIds: exercise?.concepts.map((c) => c.conceptId) ?? [],
+            correct: grading.success ? grading.data.correct : attempt.outcome === 'correct',
+            misconceptionIds: mcs.success ? mcs.data : [],
+            failedChecks: grading.success
+              ? (grading.data.checkResults ?? [])
+                  .filter((c) => c.visible && !c.passed)
+                  .slice(0, 5)
+                  .map((c) => ({
+                    id: c.id,
+                    description: clip(c.description ?? c.requirement ?? c.reason ?? '', 300),
+                    expected: c.detail?.expected ?? null,
+                    actual: c.detail?.actual ?? null,
+                  }))
+              : [],
+            practiceSetItemId: attempt.practiceSetItemId,
+          },
+        ];
+      }),
+    );
+  }
+
+  misconceptionCatalog(query: {
+    ids?: readonly string[];
+    conceptIds?: readonly string[];
+  }): Promise<CatalogMisconceptionContext[]> {
+    if (!this.#content.available) return Promise.resolve([]);
+    return Promise.resolve(this.#content.repo.listMisconceptionDetails(query));
   }
 
   lesson(lessonId: string, opts: { sectionId: string | null }): Promise<LessonContext | null> {

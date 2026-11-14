@@ -64,6 +64,13 @@ export function memoizeSource(src: ContextSource): ContextSource {
     exercise: (id, access) =>
       memo(`exercise:${id}:${JSON.stringify(access)}`, () => src.exercise(id, access)),
     attempts: (id, opts) => memo(`attempts:${id}:${opts.limit}`, () => src.attempts(id, opts)),
+    attemptDetails: (ids) =>
+      memo(`attempt-details:${ids.join(',')}`, () => src.attemptDetails(ids)),
+    misconceptionCatalog: (query) =>
+      memo(
+        `catalog:${JSON.stringify([...(query.ids ?? [])].sort())}:${JSON.stringify([...(query.conceptIds ?? [])].sort())}`,
+        () => src.misconceptionCatalog(query),
+      ),
     lesson: (id, opts) => memo(`lesson:${id}:${opts.sectionId ?? ''}`, () => src.lesson(id, opts)),
     threadMessages: (id, opts) =>
       memo(

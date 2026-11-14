@@ -7,6 +7,7 @@ import {
   tutorSelectionSchema,
 } from './ai.ts';
 import { errorCodeSchema } from './errors.ts';
+import { misconceptionStatusSchema } from './practice.ts';
 
 // Tutor API contract (docs/design/system-architecture.md#api-규약 "튜터", docs/design/ai-system.md
 // #스트리밍과-취소) and the enums of the user.db tutor tables (docs/design/data-model.md
@@ -286,3 +287,49 @@ export const summarizeTutorThreadResponseSchema = z.object({
   created: z.boolean(),
 });
 export type SummarizeTutorThreadResponse = z.infer<typeof summarizeTutorThreadResponseSchema>;
+
+// ── Mistake explanation (evaluator.explainMistake) ──────────────────────────────
+// docs/design/ai-system.md#evaluatorexplainmistake.
+
+export const MISTAKE_KINDS = [
+  'concept',
+  'syntax',
+  'logic',
+  'edge_case',
+  'reading',
+  'unknown',
+] as const;
+export const MISTAKE_NEXT_STEPS = ['retry', 'open_hint', 'review_concept', 'read_section'] as const;
+export const mistakeKindSchema = z.enum(MISTAKE_KINDS);
+export const mistakeNextStepSchema = z.enum(MISTAKE_NEXT_STEPS);
+
+/**
+ * `POST /attempts/:id/explanation` (empty body): why a graded wrong attempt went wrong. Grading
+ * already happened and is never changed. The AI sees the exercise only as far as the hint records
+ * allow (D-010), and the explanation is checked for answer leaks. When AI cannot help, `source` is
+ * `authored` with the misconception descriptions of the chosen wrong option (if any) and the
+ * reason in `fallbackCode`. A misconception the AI recognized is recorded only as `suspected`
+ * (never confirmed by AI) and returned in `misconception`. Repeated requests for the same attempt
+ * return the same explanation while the app runs.
+ */
+export const mistakeExplanationSchema = z.object({
+  attemptId: z.string(),
+  source: z.enum(['ai', 'authored']),
+  fallbackCode: errorCodeSchema.nullable(),
+  /** One-sentence diagnosis (empty for `authored` without a misconception). */
+  summary: z.string(),
+  /** Markdown (render with raw HTML disabled; AI output is untrusted). */
+  explanationMarkdown: z.string(),
+  mistakeKind: mistakeKindSchema.nullable(),
+  nextStep: mistakeNextStepSchema.nullable(),
+  relatedConcepts: z.array(z.object({ id: z.string(), title: z.string() })),
+  misconception: z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      status: misconceptionStatusSchema,
+      origin: z.enum(['catalog', 'ai']),
+    })
+    .nullable(),
+});
+export type MistakeExplanation = z.infer<typeof mistakeExplanationSchema>;

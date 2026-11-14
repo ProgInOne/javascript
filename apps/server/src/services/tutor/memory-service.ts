@@ -55,6 +55,14 @@ export interface MemoryDeps {
   log: Logger;
   /** True while an interactive AI turn runs; background work waits (docs: 동시성 제어). */
   interactiveBusy?: () => boolean;
+  /** misconception.propose in the same background pass (EvaluatorService). */
+  proposals?: {
+    dueProposalConcepts(): string[];
+    proposeMisconceptions(
+      conceptId: string,
+      opts: { signals?: string[]; background?: boolean },
+    ): Promise<{ recorded: unknown[] } | null>;
+  };
 }
 
 export type SummaryReason = 'manual' | 'idle' | 'rehydrate';
@@ -62,6 +70,8 @@ export type SummaryReason = 'manual' | 'idle' | 'rehydrate';
 export interface SweepResult {
   summarized: number;
   fallbacks: number;
+  /** Concepts analyzed by misconception.propose. */
+  proposed: number;
   /** AI work was skipped (not connected, usage ≥ 80%, or an interactive turn was running). */
   deferred: boolean;
 }
@@ -69,6 +79,8 @@ export interface SweepResult {
 export class MemoryService {
   readonly #deps: MemoryDeps;
   readonly #inFlight = new Map<string, Promise<SummarizeTutorThreadResponse>>();
+  /** Conversation signals per concept from summaries, for the next proposal (docs: 트리거). */
+  readonly #signals = new Map<string, string[]>();
   #timers: NodeJS.Timeout[] = [];
   #sweeping = false;
 
@@ -220,6 +232,7 @@ export class MemoryService {
         ),
       };
       const { summary, issues } = sanitizeSummary(result.output, known);
+      this.#rememberSignals(summary);
       const record = {
         ...result.record,
         validationIssues: [...result.record.validationIssues, ...issues].slice(0, 20),
@@ -246,6 +259,17 @@ export class MemoryService {
         ? { summary: fallback(null), created: true }
         : { summary: view, created: false };
     }
+  }
+
+  /** Struggles and misconception signals of a summary become proposal signals for its concepts. */
+  #rememberSignals(summary: SessionSummaryContent): void {
+    const add = (conceptId: string, text: string) => {
+      const list = this.#signals.get(conceptId) ?? [];
+      if (!list.includes(text)) this.#signals.set(conceptId, [...list, text].slice(-5));
+    };
+    for (const s of summary.struggles) add(s.conceptId, s.note);
+    const main = summary.conceptIds[0];
+    if (main) for (const m of summary.misconceptionSignals) add(main, m.description);
   }
 
   /** The thread's scope concepts, concepts its replies referenced, and the previous summary's. */
@@ -278,7 +302,7 @@ export class MemoryService {
    * get the deterministic summary.
    */
   async sweep(): Promise<SweepResult> {
-    const result: SweepResult = { summarized: 0, fallbacks: 0, deferred: false };
+    const result: SweepResult = { summarized: 0, fallbacks: 0, proposed: 0, deferred: false };
     if (this.#sweeping) return { ...result, deferred: true };
     this.#sweeping = true;
     try {
@@ -288,7 +312,9 @@ export class MemoryService {
         idleBefore: now - SUMMARY_IDLE_MS,
         limit: 20,
       });
-      if (due.length === 0) return result;
+      const proposals = this.#deps.proposals;
+      const dueConcepts = proposals?.dueProposalConcepts() ?? [];
+      if (due.length === 0 && dueConcepts.length === 0) return result;
       const snapshot = this.#deps.ai.snapshot();
       const aiReady =
         snapshot.status.state === 'ready' &&
@@ -312,6 +338,26 @@ export class MemoryService {
         if (overdue) {
           const out = await this.summarizeThread(thread.id, 'idle');
           if (out.created) result.fallbacks++;
+        }
+      }
+      // One misconception proposal per pass, after the summaries that may add signals.
+      const concept = dueConcepts[0];
+      if (proposals && concept) {
+        if (!aiReady) {
+          result.deferred = true;
+        } else {
+          try {
+            const out = await proposals.proposeMisconceptions(concept, {
+              signals: this.#signals.get(concept) ?? [],
+              background: true,
+            });
+            if (out) {
+              result.proposed++;
+              this.#signals.delete(concept);
+            }
+          } catch (err) {
+            this.#deps.log.warn({ err, conceptId: concept }, 'background proposal failed');
+          }
         }
       }
       return result;

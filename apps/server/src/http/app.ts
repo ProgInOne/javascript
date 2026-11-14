@@ -7,6 +7,7 @@ import type { ContentAccess } from '../services/curriculum/content-access.ts';
 import type { AiService } from '../services/ai/ai-service.ts';
 import type { PracticeServices } from '../services/practice/index.ts';
 import type { SettingsService } from '../services/settings/service.ts';
+import type { EvaluatorService } from '../services/tutor/evaluator-service.ts';
 import type { MemoryService } from '../services/tutor/memory-service.ts';
 import type { TutorService } from '../services/tutor/tutor-service.ts';
 import type { AppEnv } from './env.ts';
@@ -18,7 +19,7 @@ import { exerciseRoutes } from './routes/exercises.ts';
 import { learningRoutes } from './routes/learning.ts';
 import { attemptRoutes, practiceSetRoutes } from './routes/practice.ts';
 import { settingsRoutes } from './routes/settings.ts';
-import { aiHintRoutes, tutorRoutes } from './routes/tutor.ts';
+import { aiHintRoutes, attemptAiRoutes, tutorRoutes } from './routes/tutor.ts';
 import { runnerRoutes } from './runner.ts';
 import { maintenance, MaintenanceState, security } from './security.ts';
 import { webRoutes } from './web.ts';
@@ -32,7 +33,13 @@ export interface AppDeps {
   content: ContentAccess;
   practice: PracticeServices;
   /** AI status/login and the tutor. Omitted in tests that do not exercise AI. */
-  ai?: { ai: AiService; tutor: TutorService; memory?: MemoryService; keepAliveMs?: number };
+  ai?: {
+    ai: AiService;
+    tutor: TutorService;
+    memory?: MemoryService;
+    evaluator?: EvaluatorService;
+    keepAliveMs?: number;
+  };
   /** Built web app to serve (production). Omitted in development, where Vite serves it. */
   webDistDir?: string;
   maintenance?: MaintenanceState;
@@ -101,6 +108,7 @@ export function createApp({
         tutorRoutes(ai.tutor, { ...opts, ...(ai.memory ? { memory: ai.memory } : {}) }),
       )
       .route('/exercises', aiHintRoutes(ai.tutor));
+    if (ai.evaluator) api.route('/attempts', attemptAiRoutes(ai.evaluator));
   }
   const routes = app.route('/api/v1', api);
   app.route('/sandbox', runnerRoutes());

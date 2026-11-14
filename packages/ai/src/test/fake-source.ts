@@ -1,4 +1,6 @@
 import type {
+  AttemptDetailContext,
+  CatalogMisconceptionContext,
   ContextSource,
   ExerciseAccess,
   ExerciseContext,
@@ -16,6 +18,8 @@ export function fakeSource(
     summary?: SessionSummaryContext | null;
     pastSummaries?: SessionSummaryContext[];
     prerequisites?: Record<string, string[]>;
+    attemptDetails?: AttemptDetailContext[];
+    catalog?: CatalogMisconceptionContext[];
   } = {},
 ): ContextSource & { exerciseCalls: ExerciseAccess[] } {
   const exerciseCalls: ExerciseAccess[] = [];
@@ -92,6 +96,17 @@ export function fakeSource(
           (m) =>
             !opts.excludeMessageIds.includes(m.id) &&
             (opts.after === undefined || m.createdAt > opts.after),
+        ),
+      ),
+    attemptDetails: (ids) =>
+      Promise.resolve(
+        ids.flatMap((id) => (overrides.attemptDetails ?? []).filter((a) => a.id === id)),
+      ),
+    misconceptionCatalog: (query) =>
+      Promise.resolve(
+        (overrides.catalog ?? []).filter(
+          (m) =>
+            query.ids?.includes(m.id) === true || query.conceptIds?.includes(m.conceptId) === true,
         ),
       ),
     threadSummary: () => Promise.resolve(overrides.summary ?? null),

@@ -349,3 +349,76 @@ export function resolutionTarget(config: EngineConfig, status: MisconceptionStat
       ? config.misconception.dismissCorrect
       : 0;
 }
+
+/**
+ * An AI misconception proposal the app has validated (docs/design/ai-system.md#misconceptionpropose,
+ * FR-AI-09): `evidence` are the learner's wrong attempts the proposal cited. AI never decides the
+ * learner's state, so a proposal only ever records a suspicion:
+ *
+ * - no observation yet → new `suspected` row (source `ai`);
+ * - `dismissed` (or `suspected` past its expiry) → reopened as `suspected` with the evidence;
+ * - `suspected`, `confirmed` or `resolved` → unchanged (`null`): an active row is already known,
+ *   and only deterministic evidence (a wrong option or pattern) may confirm or relapse.
+ */
+export function proposeMisconception(
+  config: EngineConfig,
+  input: {
+    readonly misconceptionId: string;
+    readonly conceptId: ConceptId;
+    /** Wrong attempts cited by the proposal (`source` should be `ai`). Must not be empty. */
+    readonly evidence: readonly MisconceptionEvidence[];
+    readonly state: MisconceptionState | null;
+    readonly now: number;
+  },
+): MisconceptionUpdate | null {
+  const { misconceptionId, conceptId, state, now } = input;
+  const evidence = [...input.evidence].sort((a, b) => a.at - b.at);
+  const first = evidence[0];
+  const latest = evidence.at(-1);
+  if (first === undefined || latest === undefined) return null;
+  if (state === null) {
+    return {
+      misconceptionId,
+      conceptId,
+      before: null,
+      after: {
+        misconceptionId,
+        conceptId,
+        status: 'suspected',
+        source: 'ai',
+        evidence,
+        resolution: [],
+        confirmCount: 0,
+        firstSeenAt: first.at,
+        lastSeenAt: latest.at,
+        resolvedAt: null,
+      },
+      transitions: ['observed'],
+    };
+  }
+  const transitions: MisconceptionTransition[] = [];
+  let status = state.status;
+  if (expired(config, state, now)) {
+    status = 'dismissed';
+    transitions.push('dismissed_expired');
+  }
+  if (status !== 'dismissed') return null;
+  const known = new Set(state.evidence.map((e) => e.attemptId));
+  const added = evidence.filter((e) => !known.has(e.attemptId));
+  if (added.length === 0) return null;
+  transitions.push('reopened');
+  return {
+    misconceptionId,
+    conceptId,
+    before: state,
+    after: {
+      ...state,
+      status: 'suspected',
+      evidence: [...state.evidence, ...added],
+      resolution: [],
+      lastSeenAt: Math.max(state.lastSeenAt, latest.at),
+      resolvedAt: null,
+    },
+    transitions,
+  };
+}

@@ -1,5 +1,6 @@
 import {
   aiHintResponseSchema,
+  mistakeExplanationSchema,
   cancelTutorMessageResponseSchema,
   tutorThreadDetailSchema,
   tutorThreadSchema,
@@ -65,4 +66,12 @@ export const requestAiHint = (exerciseId: string, body: AIHintRequest) =>
     method: 'POST',
     body,
     schema: aiHintResponseSchema,
+  });
+
+/** `POST /attempts/:id/explanation`: why a graded wrong attempt went wrong (evaluator.explainMistake). */
+export const requestMistakeExplanation = (attemptId: string) =>
+  api(`/attempts/${encodeURIComponent(attemptId)}/explanation`, {
+    method: 'POST',
+    body: {},
+    schema: mistakeExplanationSchema,
   });

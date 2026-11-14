@@ -7,6 +7,7 @@
 
 ### Added
 
+- AI 오답 분석과 오개념 제안(M5, D-036): 실습에서 틀린 뒤 "AI에게 왜 틀렸는지 묻기"(`POST /attempts/:id/explanation`, `evaluator.explainMistake`). 채점 결과와 학습자가 이미 본 피드백만으로 어긋난 지점을 설명하고, 힌트 기록만큼만 문제를 보여 주며 정답 누설 검사를 거칩니다. AI를 쓸 수 없으면 저작된 오개념 설명을 이유와 함께 보여 줍니다. 같은 개념에서 최근 오답이 쌓이면 백그라운드에서 `misconception.propose`가 근거 시도와 함께 오개념 후보를 제안하고, 앱이 근거를 확인한 것만 "의심"으로 기록합니다(AI만으로는 확정되지 않음). 오류 코드 `ATTEMPT_CORRECT`
 - AI 튜터의 장기 학습 기억(M5, D-035): user.db 마이그레이션 0005(`session_summaries`, `session_summary_concepts`). `session.summarize`가 튜터 대화를 구조화 요약(다룬 개념·질문·잘 이해한 점·어려워한 점과 근거 메시지·오개념 신호·남은 질문)으로 남기고, 마지막 메시지 30분 뒤(Codex가 연결되어 있고 사용량 80% 미만일 때) 이전 요약에 더해 갱신합니다. `GET`·`POST /tutor/threads/:id/summary`. 튜터 답변이 직계 선수 개념의 숙련도와 활성 오개념을 매 턴 참고하고, 앱 재시작 등으로 대화를 다시 시작할 때 스레드 요약·최근 메시지·관련된 지난 대화 요약으로 맥락을 복원합니다
 ### Fixed
 

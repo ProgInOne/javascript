@@ -823,6 +823,7 @@ AI 호출 한 건의 기록입니다. 필드의 의미는 [AI 시스템 설계](
 인덱스 `ai_calls(learner_id, created_at)`, `ai_calls(task_name, status)`, `ai_calls(subject_type, subject_id)`.
 
 - v0.1 구현: 모든 행에 `learner_id`(FK)를 둡니다(인덱스 `(learner_id, created_at)`와 맞춤). `subject_type`에 `hint_event`를 추가했습니다(AI 힌트, `tutor.hint`). AI 힌트가 저작 힌트로 대체되면 `status = 'fallback'`, `subject_type = NULL`, `subject_id = 문제 ID`로 남깁니다.
+- v0.2 작업의 기록 대상: `session.summarize`는 `subject_type = 'tutor_thread'`, `evaluator.explainMistake`는 `'attempt'`(설명한 시도), `misconception.propose`는 `'attempt'`(그 개념의 가장 최근 오답. 다음 제안 시점 판정에 씀)입니다. 출력에서 서버가 지운 항목(근거 없는 요약 항목, 검증을 통과하지 못한 제안)은 `validation_issues_json`에 남습니다.
 - `context_manifest_json`은 개인정보 미리보기(설정 화면, P1)와 디버깅에 씁니다.
 - 프롬프트·응답 원문은 DB에 저장하지 않습니다. 디버그 설정일 때만 파일로 7일간 보관하며, 만료된 파일을 지우면 `prompt_snapshot_path`를 NULL로 바꿉니다. 대화 원문은 `tutor_messages`에 이미 있습니다.
 

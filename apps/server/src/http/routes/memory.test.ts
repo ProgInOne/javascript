@@ -187,7 +187,7 @@ describe('background summaries (sweep)', () => {
     const memory = ctx.ai.memory;
 
     ctx.clock.now += 10 * MINUTE;
-    expect(await memory.sweep()).toEqual({ summarized: 0, fallbacks: 0, deferred: false });
+    expect(await memory.sweep()).toMatchObject({ summarized: 0, fallbacks: 0, deferred: false });
 
     ctx.clock.now += 25 * MINUTE;
     ctx.ai.provider.setUsage({
@@ -195,7 +195,7 @@ describe('background summaries (sweep)', () => {
       highestUsedPercent: 85,
       updatedAt: ctx.clock.now,
     });
-    expect(await memory.sweep()).toEqual({ summarized: 0, fallbacks: 0, deferred: true });
+    expect(await memory.sweep()).toMatchObject({ summarized: 0, fallbacks: 0, deferred: true });
     expect(count(ctx, 'session_summaries')).toBe(0);
 
     ctx.ai.provider.setUsage({
@@ -204,8 +204,8 @@ describe('background summaries (sweep)', () => {
       updatedAt: ctx.clock.now,
     });
     ctx.ai.provider.enqueue({ text: summaryJson() });
-    expect(await memory.sweep()).toEqual({ summarized: 1, fallbacks: 0, deferred: false });
-    expect(await memory.sweep()).toEqual({ summarized: 0, fallbacks: 0, deferred: false });
+    expect(await memory.sweep()).toMatchObject({ summarized: 1, fallbacks: 0, deferred: false });
+    expect(await memory.sweep()).toMatchObject({ summarized: 0, fallbacks: 0, deferred: false });
 
     // A new exchange while AI is unavailable waits, then falls back after seven days.
     await ask(ctx, t.id, '두 번째 질문');

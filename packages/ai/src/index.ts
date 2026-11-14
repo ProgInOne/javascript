@@ -54,6 +54,24 @@ export {
   SESSION_SUMMARY_JSON_SCHEMA,
   type SessionSummarizeInput,
 } from './tasks/session-summarize.ts';
+export {
+  explainMistake,
+  explainMistakeInputSchema,
+  explainMistakeOutputSchema,
+  EXPLAIN_MISTAKE_JSON_SCHEMA,
+  EXPLAIN_CODE_LINE_LIMIT,
+  type ExplainMistakeInput,
+  type ExplainMistakeOutput,
+} from './tasks/evaluator-explain-mistake.ts';
+export {
+  misconceptionPropose,
+  misconceptionProposeInputSchema,
+  verifyProposals,
+  MISCONCEPTION_PROPOSE_JSON_SCHEMA,
+  type MisconceptionProposeInput,
+  type MisconceptionProposeOutput,
+  type VerifiedProposal,
+} from './tasks/misconception-propose.ts';
 export { parseJsonOutput } from './tasks/json-output.ts';
 export { TASKS, type TaskName } from './tasks/catalog.ts';
 export {

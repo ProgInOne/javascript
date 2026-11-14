@@ -103,6 +103,7 @@ export {
   MISCONCEPTION_SOURCES,
   MISCONCEPTION_STATUSES,
   misconceptionStatusAt,
+  proposeMisconception,
   resolutionTarget,
   updateMisconceptions,
 } from './misconception/transitions.ts';

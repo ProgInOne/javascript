@@ -149,6 +149,8 @@ export function writeObservation(
   learnerId: string,
   rowId: string | null,
   update: MisconceptionUpdate,
+  /** Required for a new unclassified AI candidate (`ai.<ULID>`). */
+  aiDescription?: string,
 ): void {
   const a = update.after;
   const values = {
@@ -173,7 +175,13 @@ export function writeObservation(
   if (rowId === null) {
     orm
       .insert(misconceptionObservations)
-      .values({ id: newId(), learnerId, misconceptionId: a.misconceptionId, ...values })
+      .values({
+        id: newId(),
+        learnerId,
+        misconceptionId: a.misconceptionId,
+        ...values,
+        ...(aiDescription === undefined ? {} : { aiDescription }),
+      })
       .run();
   } else {
     orm

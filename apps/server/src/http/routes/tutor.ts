@@ -6,6 +6,7 @@ import {
 } from '@proginone/shared';
 import { Hono } from 'hono';
 import { streamSSE } from 'hono/streaming';
+import type { EvaluatorService } from '../../services/tutor/evaluator-service.ts';
 import type { MemoryService } from '../../services/tutor/memory-service.ts';
 import type { TutorService } from '../../services/tutor/tutor-service.ts';
 import type { AppEnv } from '../env.ts';
@@ -86,4 +87,14 @@ export function aiHintRoutes(tutor: TutorService) {
     const request = aiHintRequestSchema.parse(await jsonBody(c, {}));
     return c.json(await tutor.aiHint(id, request));
   });
+}
+
+/**
+ * `POST /attempts/:id/explanation`: evaluator.explainMistake for a graded wrong attempt
+ * (`mistakeExplanationSchema`). Falls back to authored misconception text when AI cannot help.
+ */
+export function attemptAiRoutes(evaluator: EvaluatorService) {
+  return new Hono<AppEnv>().post('/:id/explanation', limitBody(1024), async (c) =>
+    c.json(await evaluator.explainMistake(rowIdParam(c.req.param('id')))),
+  );
 }
