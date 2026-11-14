@@ -1,21 +1,23 @@
 import { Hono } from 'hono';
-import { requestId, type RequestIdVariables } from 'hono/request-id';
+import { requestId } from 'hono/request-id';
 import type { Config } from '../config/schema.ts';
 import type { Logger } from '../observability/logger.ts';
+import type { BackupService } from '../services/backup/service.ts';
+import type { AppEnv } from './env.ts';
 import { AppError, errorResponse, handleError } from './errors.ts';
+import { backupRoutes } from './routes/backups.ts';
 import { maintenance, MaintenanceState, security } from './security.ts';
 
 export interface AppDeps {
   config: Pick<Config, 'port' | 'mode'>;
   log: Logger;
   token: string;
+  backups: BackupService;
   maintenance?: MaintenanceState;
   version?: string;
 }
 
-export interface AppEnv {
-  Variables: RequestIdVariables;
-}
+export type { AppEnv } from './env.ts';
 
 /** Vite dev server origins allowed to call the API in development (it proxies /api). */
 const DEV_ORIGINS = ['http://127.0.0.1:5173', 'http://localhost:5173'];
@@ -24,6 +26,7 @@ export function createApp({
   config,
   log,
   token,
+  backups,
   maintenance: state = new MaintenanceState(),
   version = '0.0.0',
 }: AppDeps) {
@@ -53,7 +56,9 @@ export function createApp({
   );
   app.use(maintenance(state));
 
-  const api = new Hono<AppEnv>().get('/health', (c) => c.json({ status: 'ok' as const, version }));
+  const api = new Hono<AppEnv>()
+    .get('/health', (c) => c.json({ status: 'ok' as const, version }))
+    .route('/backups', backupRoutes(backups));
   const routes = app.route('/api/v1', api);
 
   app.notFound((c) =>

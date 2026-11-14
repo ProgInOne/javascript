@@ -941,6 +941,8 @@ better-sqlite3는 동기 API이므로 `db.transaction(fn)`으로 감쌉니다. �
 - 파일 복사(`cp user.db`)는 쓰지 않습니다. WAL 파일과 불일치할 수 있습니다.
 - 백업은 임시 이름(`*.partial`)으로 쓴 뒤, 백업 파일을 열어 `PRAGMA integrity_check`가 `ok`인지 확인하고, 원자적 이름 변경(`rename`)으로 확정합니다.
 - 각 백업 옆에 메타 파일을 둡니다.
+- 확정된 백업 파일은 `journal_mode = DELETE`로 바꿔 WAL 부속 파일 없이 파일 하나로 완결되게 합니다(M3 구현).
+- 파일 이름의 시각은 밀리초까지 씁니다(`2026-11-13T041200123Z`). API의 백업 ID는 `<kind>:<파일 이름에서 _user.db를 뺀 부분>`입니다(예: `daily:2026-11-13T041200123Z`, `weekly:2026-W46`).
 
 ```text
 backups/

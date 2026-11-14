@@ -1,14 +1,21 @@
 import { randomBytes } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { serve } from '@hono/node-server';
 import { ConfigError, loadConfig } from './config/load.ts';
+import { UserDb } from './db/user/connection.ts';
+import { ensureLearner } from './db/user/learners.ts';
+import { MigrationError, migrateUserDb } from './db/user/migrate.ts';
 import { createApp } from './http/app.ts';
 import { MaintenanceState } from './http/security.ts';
 import { acquireInstanceLock } from './lifecycle/instance-lock.ts';
 import { createLogger } from './observability/logger.ts';
+import { BackupScheduler } from './services/backup/scheduler.ts';
+import { BackupService } from './services/backup/service.ts';
+import { APP_VERSION } from './version.ts';
 
 // Startup order: docs/design/system-architecture.md#앱-시작-절차.
-// DB migration, backups, content.db and browser opening are added by later M3 PRs.
+// content.db (M4) and browser opening (web app shell PR) are added later.
 
 let config;
 try {
@@ -32,9 +39,46 @@ if (!lock.acquired) {
 }
 const { release } = lock;
 
-const token = randomBytes(32).toString('base64url');
 const maintenance = new MaintenanceState();
-const app = createApp({ config, log, token, maintenance });
+const userDb = new UserDb(join(config.dataDir, 'user.db')).open();
+const backups = new BackupService({
+  userDb,
+  backupDir: config.backupDir,
+  appVersion: APP_VERSION,
+  log,
+  maintenance,
+  migrate: (backup) => migrateUserDb(userDb, { backup }),
+});
+
+try {
+  const applied = await migrateUserDb(userDb, {
+    backup: () => backups.create('pre-migration').then((b) => b.path),
+  });
+  if (applied.length > 0) log.info({ applied }, 'user.db migrated');
+} catch (e) {
+  log.error(
+    { err: e, backup: e instanceof MigrationError ? e.backupPath : null },
+    (e as Error).message,
+  );
+  if (userDb.isOpen) userDb.close();
+  release();
+  process.exit(1);
+}
+
+ensureLearner(userDb);
+const scheduler = new BackupScheduler({
+  userDb,
+  backups,
+  log,
+  boundary: () => {
+    const { timezone, dayStartHour } = ensureLearner(userDb);
+    return { timezone, dayStartHour };
+  },
+});
+scheduler.start();
+
+const token = randomBytes(32).toString('base64url');
+const app = createApp({ config, log, token, backups, maintenance, version: APP_VERSION });
 
 const server = serve({ fetch: app.fetch, hostname: '127.0.0.1', port: config.port }, () => {
   log.info({ url, dataDir: config.dataDir, mode: config.mode }, 'ProgInOne 서버가 시작되었습니다.');
@@ -58,7 +102,9 @@ function shutdown(signal: string) {
   if (shuttingDown) return;
   shuttingDown = true;
   log.info({ signal }, '종료합니다.');
+  scheduler.stop();
   server.close(() => {
+    userDb.close();
     release();
     process.exit(0);
   });

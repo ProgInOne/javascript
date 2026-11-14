@@ -2,16 +2,25 @@ import { apiErrorSchema } from '@proginone/shared';
 import { pino } from 'pino';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
+import type { BackupService } from '../services/backup/service.ts';
 import { createApp } from './app.ts';
 import { AppError } from './errors.ts';
 import { MaintenanceState, TOKEN_HEADER } from './security.ts';
 
 const TOKEN = 'test-token-0123456789';
 const log = pino({ level: 'silent' });
+// Routes that need the backup service are covered in services/backup tests.
+const backups = {} as BackupService;
 
 function setup(mode: 'production' | 'development' = 'production') {
   const state = new MaintenanceState();
-  const app = createApp({ config: { port: 4310, mode }, log, token: TOKEN, maintenance: state });
+  const app = createApp({
+    config: { port: 4310, mode },
+    log,
+    token: TOKEN,
+    backups,
+    maintenance: state,
+  });
   const req = (path: string, headers: Record<string, string> = {}, init: RequestInit = {}) =>
     app.request(`http://127.0.0.1:4310${path}`, {
       ...init,
@@ -106,7 +115,12 @@ describe('maintenance mode', () => {
 
 describe('error model', () => {
   function appWithRoutes() {
-    const app = createApp({ config: { port: 4310, mode: 'production' }, log, token: TOKEN });
+    const app = createApp({
+      config: { port: 4310, mode: 'production' },
+      log,
+      token: TOKEN,
+      backups,
+    });
     app.get('/api/v1/_test/app-error', () => {
       throw new AppError('BACKUP_NOT_FOUND', 404, '백업이 없습니다.', { details: { id: 'b1' } });
     });

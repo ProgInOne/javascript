@@ -2,3 +2,8 @@ packages:
   - apps/*
   - packages/*
   - tools/*
+
+# Dependency build scripts are opt-in. esbuild's postinstall only re-validates the binary that
+# its platform package already ships, so it stays off. better-sqlite3 ships prebuilds (no script).
+allowBuilds:
+  esbuild: false

@@ -7,6 +7,7 @@
 
 ### Added
 
+- user.db와 자동 백업(M3): Drizzle 스키마·첫 마이그레이션(`app_meta`, `learners`, `settings`), 마이그레이션 전 백업과 실패 시 자동 복구, 일간·주간 백업과 보존 정책, 백업 검증(무결성·체크섬·스키마 호환), 복원(유지보수 모드, 복원 전 백업), `GET/POST /api/v1/backups`, `POST /api/v1/backups/:id/restore`
 - 서버 골격(M3): Hono 앱, 설정 로더(환경 변수 > `config.json` > 기본값), 구조화 로그, 오류 응답 모델, 보안 미들웨어(Host·Origin·세션 토큰), 유지보수 모드, 단일 인스턴스 잠금, `GET /api/v1/health`
 - 모노레포 기반(M3): pnpm 워크스페이스, TypeScript strict, ESLint, Prettier, Vitest, 의존 방향 검사, 문서 링크 검사, GitHub Actions CI, Dependabot, PR 템플릿, `@proginone/shared` 오류 계약
 - M1 기술 검증(2026-11-14): Codex 튜터 PoC(`poc/codex-tutor`)와 샌드박스 PoC(`poc/sandbox`) 결과, D-002·D-018 확정. 튜터 전용 `CODEX_HOME`과 도구 기능 비활성화, 셸 서브도메인 방식 추가
