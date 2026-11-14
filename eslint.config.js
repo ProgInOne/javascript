@@ -45,7 +45,7 @@ export default tseslint.config(
   },
   {
     // 개발 도구 스크립트는 콘솔 출력이 곧 인터페이스입니다.
-    files: ['tools/**', 'scripts/**'],
+    files: ['tools/**', 'scripts/**', 'packages/*/scripts/**'],
     rules: { 'no-console': 'off' },
   },
 );

@@ -176,6 +176,12 @@ ProgInOne의 디자인 콘셉트는 **"밝은 교실, 정돈된 작업대"** 입
 
 라이트·다크 전환은 의미 토큰의 매핑만 바꿉니다. 모든 색 값은 OKLCH로 정의하고, 대비는 토큰 확정 시 검증 스크립트로 측정해 문서의 목표를 만족하는지 CI에서 확인합니다.
 
+구현(`packages/ui`, M3) 메모:
+
+- 의미 색은 CSS `light-dark()`로 정의하고, 테마는 `<html data-theme="light|dark">`(없으면 `prefers-color-scheme`)가 `color-scheme`만 바꿉니다. 다크 작업대는 `<html data-workbench="dark">`일 때 `.workbench` 범위에 `color-scheme: dark`를 걸어 같은 매핑을 재사용합니다. 라이트·다크 값을 한 곳에 두어 중복과 누락을 막기 위해서입니다.
+- 시각 방향 전환(A/B/C)은 프로토타입 전용이었으므로 구현에는 C만 기본값으로 둡니다.
+- 대비 검사: `pnpm check:contrast`([`packages/ui/scripts/check-contrast.ts`](/packages/ui/scripts/check-contrast.ts))가 라이트·다크·다크 작업대에서 의미 토큰 쌍을 검사합니다. 이 과정에서 라이트 코드 줄 번호(`--code-gutter-fg`)를 `neutral-500`(4.5:1 미만)에서 `neutral-550`(4.83:1)으로 올렸습니다.
+
 #### 색: 브랜드 제이드 그린
 
 인프런 그린(`#00C471`, 순수한 녹색 쪽)과 구별되도록, 청록 쪽 색상각(hue 168)과 낮은 채도의 **제이드(Jade)** 를 씁니다.

@@ -1,0 +1,7 @@
+/*
+ * Bundled fonts (offline requirement NFR-09; no CDN).
+ * Pretendard Variable: dynamic subset split by Hangul usage frequency, font-display: swap.
+ * JetBrains Mono Variable: weight axis only. Both are SIL OFL 1.1.
+ */
+@import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+@import '@fontsource-variable/jetbrains-mono/wght.css';

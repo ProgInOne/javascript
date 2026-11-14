@@ -41,6 +41,9 @@ jobs:
       - name: Dependency rules
         run: pnpm check:deps
 
+      - name: Token contrast
+        run: pnpm check:contrast
+
       - name: Test
         run: pnpm test
 

@@ -1,0 +1,287 @@
+/*
+ * ProgInOne design tokens v1.
+ * Source of truth: docs/design/ui-ux.md "디자인 토큰", decisions D-011 and D-024.
+ *
+ * Layers
+ *   1. Primitive  (--jade-600, --space-4 ...)   raw scale values, never used by components
+ *   2. Semantic   (--color-text-primary ...)    what components use
+ *   3. Component  (--code-*, --mastery-*)       only where a domain needs its own names
+ *
+ * Theme
+ *   <html data-theme="light" | "dark">  explicit choice
+ *   no data-theme                       follows prefers-color-scheme
+ *   <html data-workbench="dark">        opt-in dark workbench: remaps `.workbench` subtrees
+ *
+ * Semantic colors use light-dark(), so a theme switch only changes `color-scheme`.
+ * Keep each semantic color a single `light-dark(var(--a), var(--b))` or `var(--a)`:
+ * scripts/check-contrast.ts resolves them that way.
+ */
+
+:root {
+  /* ── Primitive: jade (hue 168) ── */
+  --jade-50: oklch(0.975 0.015 168);
+  --jade-100: oklch(0.95 0.035 168);
+  --jade-200: oklch(0.9 0.06 168);
+  --jade-300: oklch(0.83 0.09 168);
+  --jade-400: oklch(0.74 0.12 168);
+  --jade-500: oklch(0.65 0.13 168);
+  --jade-600: oklch(0.545 0.12 168);
+  --jade-700: oklch(0.48 0.105 168);
+  --jade-800: oklch(0.4 0.085 168);
+  --jade-900: oklch(0.32 0.065 168);
+  --jade-950: oklch(0.24 0.045 168);
+
+  /* ── Primitive: neutral (a trace of hue 168) ── */
+  --neutral-0: oklch(1 0 0);
+  --neutral-25: oklch(0.985 0.002 168);
+  --neutral-50: oklch(0.97 0.003 168);
+  --neutral-100: oklch(0.94 0.004 168);
+  --neutral-200: oklch(0.9 0.005 168);
+  --neutral-300: oklch(0.83 0.006 168);
+  --neutral-400: oklch(0.7 0.007 168);
+  --neutral-500: oklch(0.58 0.008 168);
+  --neutral-550: oklch(0.54 0.008 168);
+  --neutral-600: oklch(0.48 0.008 168);
+  --neutral-700: oklch(0.38 0.008 168);
+  --neutral-800: oklch(0.29 0.007 168);
+  --neutral-850: oklch(0.24 0.006 168);
+  --neutral-900: oklch(0.21 0.006 168);
+  --neutral-950: oklch(0.17 0.005 168);
+
+  /* ── Primitive: status and accent scales (same lightness steps as jade) ── */
+  --red-50: oklch(0.975 0.012 25);
+  --red-100: oklch(0.945 0.03 25);
+  --red-200: oklch(0.9 0.06 25);
+  --red-300: oklch(0.83 0.1 25);
+  --red-400: oklch(0.74 0.15 25);
+  --red-500: oklch(0.65 0.19 25);
+  --red-600: oklch(0.56 0.19 25);
+  --red-700: oklch(0.48 0.17 25);
+  --red-800: oklch(0.4 0.14 25);
+  --red-900: oklch(0.32 0.1 25);
+  --red-950: oklch(0.24 0.065 25);
+
+  --amber-50: oklch(0.98 0.02 80);
+  --amber-100: oklch(0.955 0.05 80);
+  --amber-200: oklch(0.91 0.09 80);
+  --amber-300: oklch(0.85 0.13 78);
+  --amber-400: oklch(0.79 0.15 75);
+  --amber-500: oklch(0.72 0.15 70);
+  --amber-600: oklch(0.62 0.135 65);
+  --amber-700: oklch(0.52 0.115 60);
+  --amber-800: oklch(0.43 0.09 60);
+  --amber-900: oklch(0.34 0.07 60);
+  --amber-950: oklch(0.25 0.05 60);
+
+  --blue-50: oklch(0.975 0.012 250);
+  --blue-100: oklch(0.945 0.03 250);
+  --blue-200: oklch(0.9 0.055 250);
+  --blue-300: oklch(0.83 0.09 250);
+  --blue-400: oklch(0.74 0.12 250);
+  --blue-500: oklch(0.65 0.15 250);
+  --blue-600: oklch(0.56 0.16 250);
+  --blue-700: oklch(0.48 0.15 250);
+  --blue-800: oklch(0.4 0.12 250);
+  --blue-900: oklch(0.32 0.09 250);
+  --blue-950: oklch(0.24 0.06 250);
+
+  --violet-50: oklch(0.975 0.015 295);
+  --violet-100: oklch(0.945 0.035 295);
+  --violet-200: oklch(0.9 0.065 295);
+  --violet-300: oklch(0.83 0.1 295);
+  --violet-400: oklch(0.74 0.14 295);
+  --violet-500: oklch(0.65 0.17 295);
+  --violet-600: oklch(0.56 0.19 295);
+  --violet-700: oklch(0.48 0.18 295);
+  --violet-800: oklch(0.4 0.15 295);
+  --violet-900: oklch(0.32 0.11 295);
+  --violet-950: oklch(0.24 0.07 295);
+
+  /* ── Typography ── */
+  --font-sans:
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+    system-ui, sans-serif;
+  --font-mono:
+    'JetBrains Mono Variable', 'JetBrains Mono', 'Pretendard Variable', ui-monospace,
+    SFMono-Regular, Menlo, monospace;
+
+  /* `font` shorthands; pair with the matching --tracking-* where one exists. */
+  --text-display: 800 2.25rem/1.25 var(--font-sans);
+  --text-h1: 700 1.75rem/1.3 var(--font-sans);
+  --text-h2: 700 1.375rem/1.35 var(--font-sans);
+  --text-h3: 600 1.125rem/1.4 var(--font-sans);
+  --text-lesson: 400 var(--lesson-font-size)/1.75 var(--font-sans);
+  --text-body: 400 0.9375rem/1.6 var(--font-sans);
+  --text-ui: 500 0.875rem/1.5 var(--font-sans);
+  --text-small: 500 0.8125rem/1.45 var(--font-sans);
+  --text-caption: 500 0.75rem/1.4 var(--font-sans);
+  --text-code: 400 0.875rem/1.6 var(--font-mono);
+  --text-code-inline-size: 0.92em;
+  --lesson-font-size: 1.0625rem; /* user setting: 1rem / 1.0625rem / 1.1875rem */
+
+  --tracking-display: -0.025em;
+  --tracking-h1: -0.02em;
+  --tracking-h2: -0.015em;
+  --tracking-h3: -0.01em;
+  --tracking-lesson: -0.005em;
+  --tracking-caption: 0.01em;
+
+  /* ── Spacing (4px grid) ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Density of direction C (D-024): ~15% tighter than the base spec. */
+  --card-pad: var(--space-5);
+  --section-gap: var(--space-6);
+  --grid-gap: var(--space-4);
+  --page-pad-top: var(--space-8);
+
+  /* ── Radius ── */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+
+  /* ── Motion ── */
+  --duration-instant: 80ms;
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0, 1.15);
+
+  /* ── Layout constants ── */
+  --header-h: 56px;
+  --learn-header-h: 48px;
+  --rail-w: 56px;
+  --rail-w-open: 280px;
+  --drawer-w: 400px;
+  --page-max: 1200px;
+  --lesson-max: 680px;
+
+  /* ── Layers ── */
+  --z-header: 20;
+  --z-drawer: 40;
+  --z-overlay: 50;
+  --z-toast: 60;
+  --z-tooltip: 70;
+
+  /* ── Semantic: surfaces (light: direction C canvas, white cards) ── */
+  --color-bg-canvas: light-dark(var(--neutral-50), var(--neutral-950));
+  --color-bg-surface: light-dark(var(--neutral-0), var(--neutral-900));
+  --color-bg-surface-raised: light-dark(var(--neutral-0), var(--neutral-850));
+  --color-bg-subtle: light-dark(var(--neutral-50), var(--neutral-850));
+  --color-bg-muted: light-dark(var(--neutral-100), var(--neutral-800));
+  --color-bg-selected: light-dark(var(--jade-50), var(--jade-950));
+  --color-bg-hover: light-dark(var(--neutral-50), var(--neutral-850));
+  --color-bg-overlay: light-dark(oklch(0.2 0.01 168 / 0.32), oklch(0 0 0 / 0.56));
+
+  /* ── Semantic: borders ── */
+  --color-border-default: light-dark(var(--neutral-200), var(--neutral-700));
+  --color-border-strong: light-dark(var(--neutral-300), var(--neutral-600));
+  --color-border-input: var(--neutral-500);
+
+  /* ── Semantic: text ── */
+  --color-text-primary: light-dark(var(--neutral-900), var(--neutral-50));
+  --color-text-heading: light-dark(var(--neutral-900), var(--neutral-0));
+  --color-text-secondary: light-dark(var(--neutral-600), var(--neutral-300));
+  --color-text-tertiary: light-dark(var(--neutral-550), var(--neutral-400));
+  --color-text-disabled: light-dark(var(--neutral-400), var(--neutral-500));
+  --color-text-link: light-dark(var(--jade-700), var(--jade-400));
+  --color-text-brand: light-dark(var(--jade-700), var(--jade-400));
+  --color-text-on-action: light-dark(var(--neutral-0), var(--neutral-950));
+
+  /* ── Semantic: actions and focus ── */
+  --color-action-primary: light-dark(var(--jade-600), var(--jade-500));
+  --color-action-primary-hover: light-dark(var(--jade-700), var(--jade-400));
+  --color-action-primary-active: light-dark(var(--jade-800), var(--jade-300));
+  --color-action-danger: light-dark(var(--red-600), var(--red-400));
+  --color-action-danger-hover: light-dark(var(--red-700), var(--red-300));
+  --color-focus-ring: light-dark(var(--jade-600), var(--jade-400));
+
+  /* ── Semantic: feedback and status ── */
+  --color-feedback-correct-bg: light-dark(var(--jade-50), var(--jade-950));
+  --color-feedback-correct-border: light-dark(var(--jade-200), var(--jade-900));
+  --color-feedback-correct-fg: light-dark(var(--jade-800), var(--jade-300));
+  --color-feedback-incorrect-bg: light-dark(var(--red-50), var(--red-950));
+  --color-feedback-incorrect-border: light-dark(var(--red-200), var(--red-900));
+  --color-feedback-incorrect-fg: light-dark(var(--red-700), var(--red-300));
+  --color-warning-bg: light-dark(var(--amber-50), var(--amber-950));
+  --color-warning-border: light-dark(var(--amber-200), var(--amber-900));
+  --color-warning-fg: light-dark(var(--amber-800), var(--amber-300));
+  --color-warning-accent: light-dark(var(--amber-500), var(--amber-400));
+  --color-info-bg: light-dark(var(--blue-50), var(--blue-950));
+  --color-info-border: light-dark(var(--blue-200), var(--blue-900));
+  --color-info-fg: light-dark(var(--blue-700), var(--blue-300));
+  --color-ai-accent: light-dark(var(--violet-600), var(--violet-400));
+  --color-ai-bg: light-dark(var(--violet-50), var(--violet-950));
+  --color-ai-border: light-dark(var(--violet-200), var(--violet-900));
+  --color-ai-fg: light-dark(var(--violet-700), var(--violet-300));
+  --color-error-accent: light-dark(var(--red-600), var(--red-400));
+
+  /* ── Semantic: progress and mastery ── */
+  --color-progress-track: light-dark(var(--jade-100), var(--neutral-800));
+  --color-progress-fill: light-dark(var(--jade-600), var(--jade-500));
+  --mastery-intro: light-dark(var(--jade-100), var(--jade-950));
+  --mastery-practicing: light-dark(var(--jade-300), var(--jade-800));
+  --mastery-proficient: var(--jade-500);
+  --mastery-mastered: light-dark(var(--jade-700), var(--jade-300));
+  --mastery-outline: light-dark(var(--jade-600), var(--jade-500));
+  --mastery-empty: light-dark(var(--neutral-400), var(--neutral-600));
+  --mastery-check: light-dark(var(--neutral-0), var(--neutral-950));
+
+  /* ── Elevation: border + faint shadow in light, lighter surfaces in dark ── */
+  --elevation-1: 0 1px 2px light-dark(oklch(0.2 0.01 168 / 0.06), oklch(0 0 0 / 0.3));
+  --elevation-2: 0 4px 12px light-dark(oklch(0.2 0.01 168 / 0.08), oklch(0 0 0 / 0.35));
+  --elevation-3: 0 12px 32px light-dark(oklch(0.2 0.01 168 / 0.12), oklch(0 0 0 / 0.45));
+
+  /* ── Component: code and editor (light editor is the default, D-024) ── */
+  --code-bg: light-dark(var(--neutral-25), var(--neutral-900));
+  --code-surface: light-dark(var(--neutral-0), var(--neutral-900));
+  --code-gutter-bg: light-dark(var(--neutral-25), var(--neutral-900));
+  --code-gutter-fg: light-dark(var(--neutral-550), var(--neutral-400));
+  --code-fg: light-dark(var(--neutral-900), var(--neutral-50));
+  --code-line-active: light-dark(var(--jade-50), oklch(0.26 0.02 168));
+  --code-line-error: light-dark(var(--red-50), oklch(0.27 0.05 25));
+  --code-border: light-dark(var(--neutral-200), var(--neutral-800));
+  --syn-keyword: light-dark(var(--jade-700), var(--jade-400));
+  --syn-fn: light-dark(var(--blue-700), var(--blue-300));
+  --syn-number: light-dark(var(--amber-700), var(--amber-300));
+  --syn-string: light-dark(var(--violet-700), var(--violet-300));
+  --syn-comment: light-dark(var(--neutral-600), var(--neutral-400));
+  --syn-punct: light-dark(var(--neutral-600), var(--neutral-300));
+  --syn-prop: light-dark(var(--neutral-800), var(--neutral-100));
+
+  color-scheme: light dark;
+}
+
+/* Explicit theme wins over the OS preference. */
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+/*
+ * Opt-in dark workbench (setting "작업대 테마: 어둡게", D-024).
+ * light-dark() resolves per element, so `color-scheme: dark` remaps every semantic
+ * color inside `.workbench`; panels step one surface down so the editor is darkest.
+ */
+:root[data-workbench='dark'] .workbench {
+  color-scheme: dark;
+  --color-bg-surface: var(--neutral-900);
+  --code-bg: var(--neutral-950);
+  --code-surface: var(--neutral-950);
+  --code-gutter-bg: var(--neutral-950);
+}
