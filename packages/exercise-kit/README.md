@@ -32,6 +32,19 @@ I/O가 없는 순수 패키지이며 `@proginone/shared`에만 의존합니다.
 | `mcq_single` | recognition | 답안만 |
 | `fill_blank` (`text` 모드) | recall | 답안만 |
 | `predict_output` | recall | 답안 + 빌드가 실행으로 채운 `expected` |
+| `fill_blank` (`code` 모드) | recall | 답안 + `RunResult` |
+| `implement_function` | production | 답안 + `RunResult` (+ `serverFindings`) |
+| `fix_bug` | production | 답안 + `RunResult` (+ `serverFindings`) |
+| `web_task` (기본형: `index.html` 하나) | production | 답안 + `RunResult` (+ `serverFindings`) |
+
+## 코드 유형의 채점 흐름 (관측 모델)
+
+1. 서버: `buildRunPlan({ typeId, spec, answer, purpose })` → `RunPlan`(학습자 파일 + 관측 단계 `CheckBundle`, 기대값 없음). `purpose: 'interactive'`는 공개 체크만 담습니다.
+1. 웹: `RunPlan`을 러너 `RunRequest`로 바꿔 실행하고 `RunResult`를 서버에 보냅니다.
+1. 서버: `static`·`html-valid` 체크가 있으면 acorn·html-validate 결과를 `serverFindings`로 만들고 `gradeSubmission({ ..., run, serverFindings })`을 부릅니다.
+1. 채점기는 관측값을 체크의 기대값과 비교해 체크별 결과, 가중 부분 점수, 실패한 요구사항, 마일스톤을 돌려줍니다.
+
+공개 체크의 빠른 피드백(채점 없이 실행)은 웹이 `gradeChecks({ checks: 공개 체크, run })`를 직접 불러 계산할 수 있습니다.
 
 ## 샌드박스 계약
 

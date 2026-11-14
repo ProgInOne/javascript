@@ -7,6 +7,7 @@
 
 ### Added
 
+- `@proginone/exercise-kit` 코드 채점기(M4): 체크 명세 언어 스키마(call·console·program·dom·event·css·layout·a11y·html-valid·static), 체크 → 관측 단계 컴파일(`buildRunPlan`), 관측값과 기대값 비교, 체크 가중 부분 점수·요구사항별 피드백·마일스톤, `implement_function`·`fix_bug`(토큰 편집 거리 규칙)·`web_task` 기본형·`fill_blank` 코드 모드
 - `@proginone/exercise-kit`(M4): 문제 유형 레지스트리와 경계 함수(`parseSpec`·`redactSpec`·`gradeSubmission`·`verifySpec`), `mcq_single`·`fill_blank`(텍스트)·`predict_output` 스펙·답안 스키마와 순수 채점기, 정답 키 제거, 학습자 리터럴 안전 파서, 결정론적 PRNG(`xoshiro128**`). `@proginone/shared`에 샌드박스 계약(`SerializedValue`, 관측 단계·관측값, `RunResult`, `RunPlan`)과 ProgInOne 콘솔 형식
 - 학습 엔진 핵심(M4): `@proginone/learning-engine` 증거 가중치(`W_rep` 변형 그룹 반복 감쇠, `W_ctx` 학습 맥락 포함), 숙련도 갱신, 단계 게이트(`proficient` 변형 그룹 3개, `mastered` 간격 복습 2회·독립 응용), 유효 숙련도, 시도 → FSRS 등급, ts-fsrs v6(FSRS-7) 어댑터, 보류 등급의 "개념당 하루 한 번" 적용과 복습 후 단계 재판정, 복습 큐(우선순위·일일 예산)
 - 학습 엔진 핵심(M4): `@proginone/learning-engine` 증거 가중치(`W_rep` 변형 그룹 반복 감쇠, `W_ctx` 학습 맥락 포함), 숙련도 갱신, 단계 게이트(`proficient` 변형 그룹 3개, `mastered` 간격 복습 2회·독립 응용), 유효 숙련도, 시도 → FSRS 등급, ts-fsrs v6(FSRS-7) 어댑터, 보류 등급의 "개념당 하루 한 번" 적용과 복습 후 단계 재판정, 복습 큐(우선순위·일일 예산), 단원 연습 세트 구성(개념별 몫·난이도 구간·생성 문제 포함·변형 그룹 중복 금지·같은 유형 3연속 방지)과 통과 기준, 복습 세트 구성(교차 배치), 시드 RNG

@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { ANSWER_KEY_FIELDS, RAW_SPECS, SENTINEL, collectKeys } from '../testing/fixtures.ts';
+import {
+  ANSWER_KEY_FIELDS,
+  EXTRA_RAW_SPECS,
+  RAW_SPECS,
+  SENTINEL,
+  collectKeys,
+} from '../testing/fixtures.ts';
 import { ExerciseKitError } from './errors.ts';
 import {
   checkSpec,
@@ -34,6 +40,11 @@ describe('registry', () => {
     expect(getExerciseType('mcq_single')?.category).toBe('recognition');
     expect(getExerciseType('fill_blank')?.category).toBe('recall');
     expect(getExerciseType('predict_output')?.category).toBe('recall');
+    for (const id of ['implement_function', 'fix_bug', 'web_task']) {
+      expect(getExerciseType(id)?.category).toBe('production');
+      expect(getExerciseType(id)?.supportsRunPlan).toBe(true);
+    }
+    expect(implementedExerciseTypes()).toHaveLength(6);
     expect(getExerciseType('nope')).toBeUndefined();
   });
 
@@ -155,17 +166,24 @@ describe('registry', () => {
 
 describe('answer-key stripping', () => {
   const cases = implementedExerciseTypes().map((id) => [id] as const);
+  const allSpecs: [string, unknown][] = [
+    ...implementedExerciseTypes().map((id): [string, unknown] => [id, RAW_SPECS[id]]),
+    ...EXTRA_RAW_SPECS,
+  ];
 
-  it.each(cases)('%s: no answer key, misconception or sentinel survives redaction', (typeId) => {
-    const options = typeId === 'mcq_single' ? [undefined, { shuffleSeed: 'a1' }] : [undefined];
-    for (const option of options) {
-      const publicSpec = redactSpec(typeId, RAW_SPECS[typeId], option);
-      const keys = collectKeys(publicSpec);
-      for (const field of ANSWER_KEY_FIELDS)
-        expect(keys.has(field), `${typeId}.${field}`).toBe(false);
-      expect(JSON.stringify(publicSpec).toLowerCase()).not.toContain(SENTINEL);
-    }
-  });
+  it.each(allSpecs)(
+    '%s: no answer key, misconception or sentinel survives redaction',
+    (typeId, raw) => {
+      const options = typeId === 'mcq_single' ? [undefined, { shuffleSeed: 'a1' }] : [undefined];
+      for (const option of options) {
+        const publicSpec = redactSpec(typeId, raw, option);
+        const keys = collectKeys(publicSpec);
+        for (const field of ANSWER_KEY_FIELDS)
+          expect(keys.has(field), `${typeId}.${field}`).toBe(false);
+        expect(JSON.stringify(publicSpec).toLowerCase()).not.toContain(SENTINEL);
+      }
+    },
+  );
 
   it.each(cases)('%s: public spec conforms to its published schema', (typeId) => {
     const def = getExerciseType(typeId);

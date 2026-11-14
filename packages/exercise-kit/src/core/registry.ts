@@ -2,8 +2,11 @@ import { hasProtoKey, parseRunResult, withinDepth, type RunPlan } from '@progino
 import type { z } from 'zod';
 
 import { fillBlank } from '../types/fill-blank.ts';
+import { fixBug } from '../types/fix-bug.ts';
+import { implementFunction } from '../types/implement-function.ts';
 import { mcqSingle } from '../types/mcq-single.ts';
 import { predictOutput } from '../types/predict-output.ts';
+import { webTask } from '../types/web-task.ts';
 import { ExerciseKitError } from './errors.ts';
 import type {
   ExerciseCategory,
@@ -73,7 +76,14 @@ function register<S, P, A>(def: ExerciseTypeDef<S, P, A>): RegisteredExerciseTyp
 }
 
 const REGISTRY = new Map<ExerciseTypeId, RegisteredExerciseType>(
-  [register(mcqSingle), register(fillBlank), register(predictOutput)].map((def) => [def.id, def]),
+  [
+    register(mcqSingle),
+    register(fillBlank),
+    register(predictOutput),
+    register(implementFunction),
+    register(fixBug),
+    register(webTask),
+  ].map((def) => [def.id, def]),
 );
 
 /** Type IDs with an implementation in this version. */

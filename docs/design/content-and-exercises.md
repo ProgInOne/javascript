@@ -1333,6 +1333,23 @@ spec:
 - 서버에서 acorn으로 파싱해 검사합니다. 실행하지 않으므로 샌드박스가 필요 없습니다.
 - `require-call: map`처럼 "특정 방법으로 풀었는지"를 강제할 수 있지만, 동작 체크 없이 정적 규칙만으로 판정하지 않습니다.
 
+### 체크 구현 규칙 (v0.1)
+
+`packages/exercise-kit`의 체크 구현이 위 명세를 구체화하거나 달리 정한 부분입니다.
+
+- **관측 단계 순서**: 한 문서·한 번의 실행에서 `waitSettled`(정착) → 프로그램 상태(`console`의 `consoleOutput`, `program`의 `readGlobal`) → DOM 상태(`dom`·`css`·`layout`·`a11y`, 기본 뷰포트 먼저, 그다음 체크별 `viewport`마다 `setViewport`) → `call` → `event`(작성 순서) 순으로 컴파일합니다. `event` 체크는 같은 문서에서 차례로 실행되므로 뒤의 `event` 체크는 앞 체크의 결과 위에서 동작합니다. 단계 ID는 `<체크 ID>#<접미사>`이고 관측값은 같은 ID로 돌아옵니다.
+- **`consoleOutput`은 명시 단계**: 암묵 관측 대신 그 시점까지의 콘솔 항목 스냅샷으로 둡니다. 뒤따르는 `call` 체크의 출력이 프로그램 출력에 섞이지 않게 하기 위함입니다.
+- **`call`**: 기대값 키는 `equals`, `equalsLiteral`(JSON으로 못 쓰는 값: `undefined`, `NaN`, `Map(1) { … }` 등을 리터럴 문자열로), `strictEquals`, `strictEqualsLiteral`, `closeTo`, `matches`, `throws`, `argsUnchanged`, `returnsNewReference` 중 정확히 하나입니다. `returnsPromise`는 v1.x입니다. `argsUnchanged`·`returnsNewReference`는 비교 기준이 필요하므로 `argsExpr`가 아닌 JSON `args`를 써야 하고, 하네스는 `observeArgsAfter`일 때 `argsAfter`와 `returnIsArg`(반환값과 같은 참조인 인수 인덱스)를 돌려줍니다.
+- **`program`**: `expect: { globals?: { 이름: 값 기대 }, noError?: true }`.
+- **`dom`**: `text`는 `{ equals | includes, trim(기본 true, 공백 정규화 포함), caseSensitive, all }`, 나머지 항목에 대한 `all`은 `expect.all`입니다. `parentSelector`는 `:is(부모) > :is(선택자)`의 개수가 선택자 개수와 같은지로, `order`는 `:is(선택자) > *`의 태그 이름에서 지정 순서가 부분 수열로 나타나는지로 판정합니다.
+- **`css`**: 비교자는 `equals`, `oneOf`(키워드 대소문자 무시), `px`(`value`/`min`/`max`, 기본 허용 오차 0.5px), `numeric`, `{ color, deltaE }`(기본 3, 알파 차이 0.05 이하)입니다. `layout`의 `same-row`/`same-column`은 세로/가로 범위가 겹치는지로 판정합니다.
+- **`static`·`html-valid`**: 서버가 acorn·html-validate로 계산해 `serverFindings[체크 ID] = { passed, messages? }`로 넘깁니다. 없으면 `NOT_OBSERVED`로 실패합니다. `implement_function`의 별도 `staticRules` 필드 대신 `kind: static` 체크를 쓰며, `static`의 `required` 기본값은 `false`입니다.
+- **부분 점수**: 필수가 아닌 체크도 `weight`에 포함합니다. `correct`는 필수 체크 전부 통과(마일스톤이 있으면 모든 마일스톤 통과도)입니다. 마일스톤은 포함된 필수 체크가 모두 통과하면 통과입니다.
+- **피드백**: 실패한 `requirement`마다 한 항목, 그다음 실패한 체크별 항목(숨김 체크는 설명만)을 줍니다. 숨김 체크의 `CheckResult`에는 기대값·실제값 `detail`이 없습니다. 실행이 문법 오류·시간 초과·루프 한도로 끝나면 `outcome: error`와 해당 피드백(`RUN_SYNTAX_ERROR` 등)을 앞에 둡니다.
+- **`fix_bug`**: 제출이 아직 틀렸으면 `bugMisconception`을 `misconceptionIds`에 넣습니다. 토큰 편집 거리는 주석·공백을 뺀 토큰 단위 Levenshtein입니다.
+- **`web_task` 기본형**: 시작·정답·답안 모두 `index.html` 하나이고 `call` 체크는 쓸 수 없습니다(entry 함수 없음). 가상 타이머가 필요하면 스펙의 `timers: virtual`을 씁니다.
+- **코드 답안 경계 검증**: 파일 1~20개, 경로는 `RunFile` 형식이면서 빈 조각·`.`·`..` 금지, 파일당 200KB·합계 1MB, 경로 중복 금지, 유형별 허용 확장자(`implement_function`·`fix_bug`는 `.js`).
+
 ### 채점 위치와 정답 키 비노출
 
 [시스템 아키텍처 설계](/docs/design/system-architecture.md#채점-위치)의 결정(서버 판정 + 브라우저 실행)에 따라 다음 흐름을 씁니다.

@@ -20,6 +20,42 @@ export * from './core/ids.ts';
 export * from './types/mcq-single.ts';
 export * from './types/fill-blank.ts';
 export * from './types/predict-output.ts';
+export * from './types/implement-function.ts';
+export * from './types/fix-bug.ts';
+export * from './types/web-task.ts';
+export {
+  codeAnswerSchema,
+  codeFileSchema,
+  type CodeAnswer,
+  type CodeFile,
+} from './types/code-common.ts';
+
+// Check specification language, compilation to observation steps, and check grading.
+export {
+  checkSchema,
+  checkListSchema,
+  isRequired,
+  isVisible,
+  publicCheckSchema,
+  redactCheck,
+  LAYOUT_RELATIONS,
+  type Check,
+  type CheckKind,
+  type CheckOf,
+  type CssComparator,
+  type DomExpect,
+  type PublicCheck,
+  type ValueExpect,
+} from './checks/schema.ts';
+export {
+  compileChecks,
+  stepId,
+  SETTLE_STEP_ID,
+  type CompiledChecks,
+  type CompileOptions,
+} from './checks/compile.ts';
+export { evaluateChecks } from './checks/evaluate.ts';
+export { gradeChecks, runFeedback, type CheckGrade, type Milestone } from './checks/aggregate.ts';
 
 // Reusable comparison helpers (e.g. client-side quick feedback).
 export { parseLiteral } from './common/literal.ts';

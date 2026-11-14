@@ -3,8 +3,15 @@ import { z } from 'zod';
 import { leakSet, normalizeBlankText, unquoteLiteral } from '../common/normalize.ts';
 import { codeTextSchema, localIdSchema, uniqueIds } from '../common/schemas.ts';
 import { misconceptionIdSchema } from '../core/ids.ts';
+import {
+  checkListSchema,
+  identifierSchema,
+  publicCheckSchema,
+  redactCheck,
+} from '../checks/schema.ts';
 import { buildResult } from '../core/result.ts';
 import type { ExerciseTypeDef, FeedbackItem, VerifyIssue } from '../core/types.ts';
+import { buildCheckRunPlan, gradeWithChecks, verifyChecks } from './code-common.ts';
 
 /** docs/design/content-and-exercises.md#fill_blank-빈칸-채우기 */
 const VERSION = 1;
@@ -39,9 +46,16 @@ export type FillBlankBlank = z.infer<typeof blankSchema>;
 
 export const fillBlankSpecSchema = z
   .object({
-    mode: z.literal('text').default('text'),
+    /** `text`: compare each blank; `code`: run the filled-in code against `checks`. */
+    mode: z.enum(['text', 'code']).default('text'),
     template: codeTextSchema.min(1),
     blanks: z.array(blankSchema).min(1).max(50),
+    /** code mode: language of the filled template (`js` → js-console, `html` → dom). */
+    lang: z.enum(['js', 'html']).default('js'),
+    /** code mode: function `call` checks invoke. */
+    entry: identifierSchema.optional(),
+    /** code mode: checks run on the filled-in code (answer key for hidden ones). */
+    checks: checkListSchema.optional(),
   })
   .superRefine((spec, ctx) => {
     uniqueIds(
@@ -70,8 +84,18 @@ export const fillBlankSpecSchema = z
         });
       }
     }
+    if (spec.mode === 'code' && !spec.checks) {
+      ctx.addIssue({ code: 'custom', message: 'code mode needs checks', path: ['checks'] });
+    }
+    if (spec.mode === 'text' && spec.checks) {
+      ctx.addIssue({ code: 'custom', message: 'text mode has no checks', path: ['checks'] });
+    }
     spec.blanks.forEach((blank, index) => {
-      if (blank.accept.length === 0 && (blank.acceptRegex ?? null) === null) {
+      if (
+        spec.mode === 'text' &&
+        blank.accept.length === 0 &&
+        (blank.acceptRegex ?? null) === null
+      ) {
         ctx.addIssue({
           code: 'custom',
           message: 'text blank needs accept or acceptRegex',
@@ -83,9 +107,12 @@ export const fillBlankSpecSchema = z
 export type FillBlankSpec = z.infer<typeof fillBlankSpecSchema>;
 
 export const fillBlankPublicSpecSchema = z.object({
-  mode: z.literal('text'),
+  mode: z.enum(['text', 'code']),
   template: z.string(),
   blanks: z.array(z.object({ id: localIdSchema, width: z.int().optional() })),
+  lang: z.enum(['js', 'html']).optional(),
+  entry: z.string().optional(),
+  checks: z.array(publicCheckSchema).optional(),
 });
 export type FillBlankPublicSpec = z.infer<typeof fillBlankPublicSpecSchema>;
 
@@ -130,6 +157,14 @@ export function blankMatches(blank: FillBlankBlank, raw: string): boolean {
   return false;
 }
 
+/**
+ * Code mode: the template with every placeholder replaced by the learner's text. One pass, so
+ * an answer containing `{{blank:x}}` is inserted literally and never expanded.
+ */
+export function fillTemplate(template: string, answer: FillBlankAnswer): string {
+  return template.replace(PLACEHOLDER, (_, id: string) => blankAnswer(answer, id));
+}
+
 /** Misconception for a specific wrong answer, compared after the same normalization. */
 export function blankMisconception(blank: FillBlankBlank, raw: string): string | undefined {
   if (!blank.misconceptionMap) return undefined;
@@ -147,19 +182,55 @@ export const fillBlank: ExerciseTypeDef<FillBlankSpec, FillBlankPublicSpec, Fill
   specSchema: fillBlankSpecSchema,
   publicSpecSchema: fillBlankPublicSpecSchema,
   answerSchema: fillBlankAnswerSchema,
-  requiresRun: () => false,
+  requiresRun: (spec) => spec.mode === 'code',
 
   redact(spec) {
-    return {
+    const out: FillBlankPublicSpec = {
       mode: spec.mode,
       template: spec.template,
       blanks: spec.blanks.map((b) =>
         b.width === undefined ? { id: b.id } : { id: b.id, width: b.width },
       ),
     };
+    if (spec.mode === 'code') {
+      out.lang = spec.lang;
+      if (spec.entry !== undefined) out.entry = spec.entry;
+      out.checks = (spec.checks ?? []).map(redactCheck);
+    }
+    return out;
   },
 
-  grade({ spec, answer }) {
+  buildRunPlan(spec, answer, options) {
+    const isHtml = spec.lang === 'html';
+    const path = isHtml ? 'index.html' : 'main.js';
+    return buildCheckRunPlan({
+      mode: isHtml ? 'dom' : 'js-console',
+      files: [
+        { path, language: isHtml ? 'html' : 'js', content: fillTemplate(spec.template, answer) },
+      ],
+      entry: path,
+      checks: spec.checks ?? [],
+      options,
+      ...(isHtml ? { viewports: [1_280] } : {}),
+      ...(spec.entry === undefined ? {} : { functionName: spec.entry }),
+    });
+  },
+
+  grade({ spec, answer, run, serverFindings }) {
+    if (spec.mode === 'code') {
+      // Equivalent answers (b + a for a + b) pass because the checks run the filled-in code.
+      return gradeWithChecks({
+        typeId: 'fill_blank',
+        version: VERSION,
+        checks: spec.checks ?? [],
+        run,
+        serverFindings,
+        functionName: spec.entry,
+        extraMisconceptions: spec.blanks.map((b) =>
+          blankMisconception(b, blankAnswer(answer, b.id)),
+        ),
+      });
+    }
     const feedback: FeedbackItem[] = [];
     const misconceptions: (string | undefined)[] = [];
     let matched = 0;
@@ -199,7 +270,13 @@ export const fillBlank: ExerciseTypeDef<FillBlankSpec, FillBlankPublicSpec, Fill
   },
 
   verify(spec) {
-    const issues: VerifyIssue[] = [];
+    const issues: VerifyIssue[] =
+      spec.mode === 'code'
+        ? verifyChecks(spec.checks ?? [], {
+            allowDom: spec.lang === 'html',
+            hasEntry: spec.entry !== undefined,
+          })
+        : [];
     for (const blank of spec.blanks) {
       for (const key of Object.keys(blank.misconceptionMap ?? {})) {
         if (blankMatches(blank, key)) {
