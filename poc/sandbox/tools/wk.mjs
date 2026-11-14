@@ -1,0 +1,10 @@
+import { startServers } from '../server.mjs';
+import { webkit, firefox, chromium } from '@playwright/test';
+const s = await startServers({ port: 4351, externalPort: 4352 });
+const b = await ({ webkit, firefox, chromium })[process.argv[2] || 'webkit'].launch();
+const page = await b.newPage();
+await page.goto('http://127.0.0.1:4351/' + (process.argv[3] || ''));
+await page.waitForSelector('html[data-ready="1"]');
+const r = await page.evaluate((NS) => window.pg.run({ mode: 'dom', instrument: false, nestedSandbox: NS, files: [{ path: 'index.html', language: 'html', content: '<!doctype html>\n<html><body>\n<script>\nwindow.addEventListener("error", e => console.log("raw", e.message, e.lineno, e.filename, String(e.error)), true);\n</script>\n<script>\nnull.x;\n</script>\n<script>function f(){f()} try { f() } catch (e) { console.log("caught", e.name, e.message) }</script></body></html>' }] }), process.argv[4] !== 'nosandbox');
+console.log(JSON.stringify({ console: r.console.map(e => e.args.map(a => a.v ?? a)), errors: r.errors }, null, 1));
+await b.close(); await s.close();

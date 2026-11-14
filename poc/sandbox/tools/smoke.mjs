@@ -1,0 +1,15 @@
+import { startServers } from '../server.mjs';
+import { chromium, firefox, webkit } from '@playwright/test';
+const s = await startServers({ port: 4321, externalPort: 4322 });
+const which = process.argv[2] || 'chromium';
+const browser = await ({ chromium, firefox, webkit })[which].launch();
+const page = await browser.newPage();
+page.on('console', (m) => console.log('[page]', m.type(), m.text()));
+page.on('pageerror', (e) => console.log('[pageerror]', e.message));
+await page.goto('http://127.0.0.1:4321/');
+await page.waitForSelector('html[data-ready="1"]', { timeout: 5000 });
+const r1 = await page.evaluate(() => pg.run({ code: 'console.log("hi", [1,"a"], {a:1}); let x = 5; function add(a,b){return a+b}', expose: ['add','x'], checks: [{kind:'callFunction', name:'add', args:[2,3]},{kind:'readGlobal', name:'x'}] }));
+console.log(JSON.stringify(r1, null, 1).slice(0, 2500));
+const r2 = await page.evaluate(() => pg.run({ mode: 'dom', files: [{ path: 'index.html', language: 'html', content: '<!doctype html>\n<html><body>\n<p id="p">hello</p>\n<script>\nconsole.log(document.getElementById("p").textContent);\n</script></body></html>' }], checks: [{kind:'domQuery', selector:'#p', read:['text']}] }));
+console.log(JSON.stringify(r2, null, 1).slice(0, 2500));
+await browser.close(); await s.close();

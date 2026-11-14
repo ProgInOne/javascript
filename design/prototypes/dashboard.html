@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>대시보드 · ProgInOne</title>
+  <script src="assets/proto.js"></script>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/base.css">
+</head>
+<body>
+<a class="skip-link" href="#main">본문으로 건너뛰기</a>
+
+<header class="app-header">
+  <div class="inner">
+    <a class="brand" href="dashboard.html" aria-label="ProgInOne 대시보드">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--color-action-primary)"/><path d="M13.2 9.5 7.6 16l5.6 6.5" fill="none" stroke="var(--color-text-on-action)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.8 9.5 24.4 16l-5.6 6.5" fill="none" stroke="var(--color-text-on-action)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="16" r="2.4" fill="var(--color-text-on-action)"/></svg>
+      <span>Prog<span class="in">In</span>One</span>
+    </a>
+    <nav class="main-nav" aria-label="주 메뉴">
+      <a href="dashboard.html" aria-current="page">대시보드</a>
+      <a href="course.html">과정</a>
+      <a href="#">복습</a>
+      <a href="#">통계</a>
+    </nav>
+    <div class="header-tools">
+      <button class="search-trigger" type="button" aria-label="검색 (⌘K)"><i data-icon="search"></i><span class="label">개념·단원 검색</span><span class="kbd">⌘K</span></button>
+      <button class="goal-chip" type="button" aria-label="오늘 목표 30분 중 18분 학습"><i data-ring="60" data-size="20" data-label="오늘 목표 60%"></i><span class="tnum">18 / 30분</span></button>
+      <button class="ai-chip" type="button" aria-label="AI 연결됨"><span class="ai-dot"></span>AI</button>
+      <button class="icon-btn" type="button" aria-label="설정"><i data-icon="settings" class="icon-20"></i></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="page">
+  <section class="greeting" aria-labelledby="greet">
+    <div>
+      <h1 id="greet" tabindex="-1">좋은 저녁이에요, 오늘 18분 공부했어요</h1>
+      <p>복습은 끝냈어요. 이제 <strong>‘변수와 상수’ 연습</strong>을 이어서 하면 오늘 목표 30분을 채울 수 있어요.</p>
+    </div>
+    <div class="week-strip" aria-label="이번 주 학습 현황: 목표 5일 중 4일">
+      <ol class="days" style="list-style:none">
+        <li class="day done"><span class="dot"><i data-icon="check" class="icon-14"></i></span>월</li>
+        <li class="day done"><span class="dot"><i data-icon="check" class="icon-14"></i></span>화</li>
+        <li class="day"><span class="dot"></span>수</li>
+        <li class="day done"><span class="dot"><i data-icon="check" class="icon-14"></i></span>목</li>
+        <li class="day done"><span class="dot"><i data-icon="check" class="icon-14"></i></span>금</li>
+        <li class="day today"><span class="dot"></span>토</li>
+        <li class="day"><span class="dot"></span>일</li>
+      </ol>
+      <div class="summary">이번 주<br><b class="tnum">4 / 5일</b></div>
+    </div>
+  </section>
+
+  <div class="grid-12">
+    <section class="card span-8" style="grid-column: span 8" aria-labelledby="today">
+      <div class="card-head">
+        <h2 id="today" class="card-title"><i data-icon="target" class="icon-20"></i>오늘의 학습</h2>
+        <span class="badge">약 31분 · 1 / 3 완료</span>
+      </div>
+      <ol class="plan-list" style="list-style:none">
+        <li class="plan-item is-done">
+          <span class="num" aria-hidden="true"><i data-icon="check" class="icon-14"></i></span>
+          <div>
+            <div class="title">복습 4개 개념</div>
+            <div class="sub">정답 3 / 4 · 숙련 상승 1 · 6분</div>
+          </div>
+          <span class="badge badge-brand"><i data-icon="check" class="icon-14"></i>완료</span>
+        </li>
+        <li class="plan-item is-current" aria-current="step">
+          <span class="num" aria-hidden="true">2</span>
+          <div>
+            <div class="title">이어서 학습 · 변수와 상수</div>
+            <div class="sub crumbs">JavaScript 기초 <i data-icon="chevron-right" class="icon-14"></i> 값과 변수 <i data-icon="chevron-right" class="icon-14"></i> 단원 1</div>
+            <div class="meta-line">
+              <div class="progress" role="progressbar" aria-label="연습 진행" aria-valuenow="7" aria-valuemin="0" aria-valuemax="22"><span style="width:32%"></span></div>
+              <span class="sub tnum" style="margin:0">읽기 완료 · 연습 7 / 22 · 약 18분 남음</span>
+            </div>
+          </div>
+          <a class="btn btn-primary" href="learn-practice.html">이어서 학습 <i data-icon="arrow-right"></i></a>
+        </li>
+        <li class="plan-item">
+          <span class="num" aria-hidden="true">3</span>
+          <div>
+            <div class="title">약점 집중 · <code style="font-size:14px">const</code>와 재할당</div>
+            <div class="sub">5문제 · 약 7분 · 최근 확신했는데 틀린 문제가 있었어요</div>
+          </div>
+          <a class="btn btn-secondary btn-sm" href="#">시작</a>
+        </li>
+      </ol>
+      <div class="pace"><i data-icon="clock"></i>목표일 2027년 3월 31일 · JavaScript 기초 · 이 페이스면 목표일 전에 끝나요</div>
+    </section>
+
+    <section class="card review-card span-4" style="grid-column: span 4" aria-labelledby="review">
+      <div class="card-head" style="margin-bottom:var(--space-3)">
+        <h2 id="review" class="card-title"><i data-icon="repeat" class="icon-20"></i>오늘의 복습</h2>
+        <span class="badge badge-brand"><i data-icon="check" class="icon-14"></i>완료</span>
+      </div>
+      <div class="big tnum">4개 <small>개념을 복습했어요</small></div>
+      <p class="note" style="margin-top:var(--space-2)">다음 복습은 <b>내일 3개 개념 · 약 5분</b>이에요.</p>
+      <ul class="concept-list" style="list-style:none; margin-top:0">
+        <li class="concept-row"><i data-stage="practicing" data-due></i>오류 메시지 읽기<span class="when">내일</span></li>
+        <li class="concept-row"><i data-stage="proficient"></i>CSS 명시도<span class="when">내일</span></li>
+        <li class="concept-row"><i data-stage="practicing"></i>Flexbox 정렬<span class="when">내일</span></li>
+        <li class="concept-row"><i data-stage="proficient"></i>박스 모델<span class="when">11/18</span></li>
+      </ul>
+      <p class="forecast-title">앞으로 7일 복습 예정</p>
+      <div class="forecast" role="img" aria-label="앞으로 7일 복습 예정 개념 수: 오늘 4(완료), 일 3, 월 2, 화 5, 수 1, 목 3, 금 2">
+        <div class="b today"><span style="height:38px"></span>토</div>
+        <div class="b"><span style="height:28px"></span>일</div>
+        <div class="b"><span style="height:19px"></span>월</div>
+        <div class="b"><span style="height:46px"></span>화</div>
+        <div class="b"><span style="height:10px"></span>수</div>
+        <div class="b"><span style="height:28px"></span>목</div>
+        <div class="b"><span style="height:19px"></span>금</div>
+      </div>
+      <a class="btn btn-ghost" href="#" style="justify-content:flex-start;padding-left:0">복습 일정 보기 <i data-icon="arrow-right"></i></a>
+    </section>
+
+    <section class="card concept-map" style="grid-column: span 12" aria-labelledby="cmap">
+      <div class="card-head">
+        <h2 id="cmap" class="card-title"><i data-icon="layers" class="icon-20"></i>개념 지도 <span class="tertiary" style="font-weight:500">· JavaScript 기초</span></h2>
+        <div style="display:flex;gap:var(--space-2)">
+          <button class="btn btn-secondary btn-sm" type="button">JavaScript 기초 <i data-icon="chevron-down"></i></button>
+          <button class="btn btn-secondary btn-sm" type="button">모듈별 <i data-icon="chevron-down"></i></button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">1. 시작하기<small>2 / 2단원 완료</small></div>
+        <div class="tiles">
+          <button class="tile" type="button"><i data-stage="proficient"></i><code>console.log</code> 출력</button>
+          <button class="tile" type="button"><i data-stage="proficient"></i>문장과 실행 순서</button>
+          <button class="tile" type="button"><i data-stage="proficient"></i>주석</button>
+          <button class="tile" type="button"><i data-stage="practicing" data-due></i>오류 메시지 읽기<span class="flag" aria-hidden="true"><i data-icon="clock" class="icon-14"></i></span></button>
+          <button class="tile" type="button"><i data-stage="practicing"></i>오류 종류</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">2. 값과 변수<small>학습 중 · 단원 1 / 4</small></div>
+        <div class="tiles">
+          <button class="tile" type="button"><i data-stage="practicing"></i><code>let</code> 선언</button>
+          <button class="tile" type="button"><i data-stage="practicing" data-weak></i><code>const</code> 선언<span class="flag weak" aria-hidden="true">약점</span></button>
+          <button class="tile" type="button"><i data-stage="introduced"></i>대입 연산자 <code>=</code></button>
+          <button class="tile" type="button"><i data-stage="introduced"></i>이름 짓기 규칙</button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i>원시 타입</button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i>숫자</button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i>문자열</button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i>불리언</button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i><code>typeof</code></button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i><code>undefined</code></button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i><code>null</code></button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i><code>var</code></button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i>선언 전 사용(TDZ)</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="row-label">3. 연산자와 형 변환<small>시작 전 · 6단원</small></div>
+        <div class="tiles">
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i>산술 연산</button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i>연산자 우선순위</button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i>나머지 <code>%</code></button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i>엄격한 같음 <code>===</code></button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i>truthy와 falsy</button>
+          <button class="tile is-dim" type="button"><i data-stage="not_started"></i><code>+</code>와 문자열 연결</button>
+          <button class="tile is-dim" type="button">+ 12개</button>
+        </div>
+      </div>
+      <div class="legend" aria-label="범례">
+        <span><i data-stage="not_started" data-decorative></i>미학습</span>
+        <span><i data-stage="introduced" data-decorative></i>입문</span>
+        <span><i data-stage="practicing" data-decorative></i>연습 중</span>
+        <span><i data-stage="proficient" data-decorative></i>숙련</span>
+        <span><i data-stage="mastered" data-decorative></i>숙달</span>
+        <span><i data-stage="practicing" data-due data-decorative></i>복습 예정</span>
+        <span><i data-stage="practicing" data-weak data-decorative></i>약점</span>
+        <a href="#" style="margin-left:auto">나머지 7개 모듈 보기</a>
+      </div>
+    </section>
+
+    <section class="card" style="grid-column: span 5" aria-labelledby="courses">
+      <div class="card-head"><h2 id="courses" class="card-title"><i data-icon="book" class="icon-20"></i>과정 진도</h2></div>
+      <div class="course-progress-row">
+        <i data-ring="100" data-size="40" data-label="HTML 핵심 진도 100%"></i>
+        <div><div class="name">HTML 핵심</div><div class="dist">숙달 6 · 숙련 14 · 연습 중 4</div></div>
+        <span class="pct tnum">100%</span>
+      </div>
+      <div class="course-progress-row">
+        <i data-ring="60" data-size="40" data-label="CSS 핵심 진도 60%"></i>
+        <div><div class="name">CSS 핵심</div><div class="dist">숙련 9 · 연습 중 8 · 입문 3</div></div>
+        <span class="pct tnum">60%</span>
+      </div>
+      <div class="course-progress-row">
+        <i data-ring="4" data-size="40" data-label="JavaScript 기초 진도 4%"></i>
+        <div><div class="name">JavaScript 기초</div><div class="dist">숙련 3 · 연습 중 4 · 입문 2</div></div>
+        <span class="pct tnum">4%</span>
+      </div>
+    </section>
+
+    <section class="card" style="grid-column: span 7" aria-labelledby="recent">
+      <div class="card-head"><h2 id="recent" class="card-title"><i data-icon="clock" class="icon-20"></i>최근 활동</h2><a href="#" class="muted" style="font:var(--text-small)">전체 보기</a></div>
+      <ul class="activity">
+        <li><time>오늘 19:40</time><div class="what">복습 4개 개념 <span>· 정답 3 / 4 · 숙련 상승 1</span></div></li>
+        <li><time>오늘 19:05</time><div class="what">변수와 상수 연습 7문제 <span>· 1차 정답 5 · 힌트 2회</span></div></li>
+        <li><time>어제</time><div class="what">오류 메시지 읽기 단원 완료 <span>· 12문제 · 26분</span></div></li>
+        <li><time>11/12</time><div class="what">CSS Flexbox 연습 14문제 <span>· 숙련 상승 2</span></div></li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>

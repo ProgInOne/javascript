@@ -1,0 +1,7406 @@
+{
+ "basics › B1 js-console: console capture and serialization": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 594,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     [
+      {
+       "t": "number",
+       "v": "NaN"
+      },
+      {
+       "t": "number",
+       "v": "-0"
+      },
+      {
+       "t": "bigint",
+       "v": "10"
+      },
+      {
+       "t": "symbol",
+       "description": "s"
+      },
+      {
+       "t": "undefined"
+      },
+      {
+       "t": "null"
+      }
+     ],
+     [
+      {
+       "t": "map",
+       "entries": [
+        [
+         {
+          "t": "string",
+          "v": "k"
+         },
+         {
+          "t": "number",
+          "v": 1
+         }
+        ]
+       ],
+       "size": 1
+      },
+      {
+       "t": "set",
+       "items": [
+        {
+         "t": "number",
+         "v": 1
+        }
+       ],
+       "size": 1
+      },
+      {
+       "t": "object",
+       "className": "Object",
+       "entries": [
+        [
+         "a",
+         {
+          "t": "number",
+          "v": 1
+         }
+        ],
+        [
+         "self",
+         {
+          "t": "circular",
+          "refId": 1
+         }
+        ]
+       ]
+      }
+     ],
+     [
+      {
+       "t": "function",
+       "name": "",
+       "kind": "arrow",
+       "preview": "() => 1"
+      },
+      {
+       "t": "function",
+       "name": "K",
+       "kind": "class",
+       "preview": "class K {}"
+      },
+      {
+       "t": "function",
+       "name": "af",
+       "kind": "async",
+       "preview": "async function af() {}"
+      },
+      {
+       "t": "function",
+       "name": "max",
+       "kind": "native",
+       "preview": "function max() { [native code] }"
+      }
+     ],
+     [
+      {
+       "t": "date",
+       "iso": "1970-01-01T00:00:00.000Z"
+      },
+      {
+       "t": "regexp",
+       "source": "a+",
+       "flags": "g"
+      },
+      {
+       "t": "error",
+       "name": "Error",
+       "message": "boom"
+      },
+      {
+       "t": "array",
+       "items": [
+        {
+         "t": "number",
+         "v": 1
+        },
+        {
+         "t": "hole"
+        },
+        {
+         "t": "number",
+         "v": 3
+        }
+       ],
+       "length": 3,
+       "holes": 1
+      }
+     ],
+     [
+      {
+       "t": "object",
+       "className": "Object",
+       "entries": [
+        [
+         "g",
+         {
+          "t": "getter"
+         }
+        ]
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 490,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     [
+      {
+       "t": "number",
+       "v": "NaN"
+      },
+      {
+       "t": "number",
+       "v": "-0"
+      },
+      {
+       "t": "bigint",
+       "v": "10"
+      },
+      {
+       "t": "symbol",
+       "description": "s"
+      },
+      {
+       "t": "undefined"
+      },
+      {
+       "t": "null"
+      }
+     ],
+     [
+      {
+       "t": "map",
+       "entries": [
+        [
+         {
+          "t": "string",
+          "v": "k"
+         },
+         {
+          "t": "number",
+          "v": 1
+         }
+        ]
+       ],
+       "size": 1
+      },
+      {
+       "t": "set",
+       "items": [
+        {
+         "t": "number",
+         "v": 1
+        }
+       ],
+       "size": 1
+      },
+      {
+       "t": "object",
+       "className": "Object",
+       "entries": [
+        [
+         "a",
+         {
+          "t": "number",
+          "v": 1
+         }
+        ],
+        [
+         "self",
+         {
+          "t": "circular",
+          "refId": 1
+         }
+        ]
+       ]
+      }
+     ],
+     [
+      {
+       "t": "function",
+       "name": "",
+       "kind": "arrow",
+       "preview": "() => 1"
+      },
+      {
+       "t": "function",
+       "name": "K",
+       "kind": "class",
+       "preview": "class K {}"
+      },
+      {
+       "t": "function",
+       "name": "af",
+       "kind": "async",
+       "preview": "async function af() {}"
+      },
+      {
+       "t": "function",
+       "name": "max",
+       "kind": "native",
+       "preview": "function max() { [native code] }"
+      }
+     ],
+     [
+      {
+       "t": "date",
+       "iso": "1970-01-01T00:00:00.000Z"
+      },
+      {
+       "t": "regexp",
+       "source": "a+",
+       "flags": "g"
+      },
+      {
+       "t": "error",
+       "name": "Error",
+       "message": "boom"
+      },
+      {
+       "t": "array",
+       "items": [
+        {
+         "t": "number",
+         "v": 1
+        },
+        {
+         "t": "hole"
+        },
+        {
+         "t": "number",
+         "v": 3
+        }
+       ],
+       "length": 3,
+       "holes": 1
+      }
+     ],
+     [
+      {
+       "t": "object",
+       "className": "Object",
+       "entries": [
+        [
+         "g",
+         {
+          "t": "getter"
+         }
+        ]
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1218,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     [
+      {
+       "t": "number",
+       "v": "NaN"
+      },
+      {
+       "t": "number",
+       "v": "-0"
+      },
+      {
+       "t": "bigint",
+       "v": "10"
+      },
+      {
+       "t": "symbol",
+       "description": "s"
+      },
+      {
+       "t": "undefined"
+      },
+      {
+       "t": "null"
+      }
+     ],
+     [
+      {
+       "t": "map",
+       "entries": [
+        [
+         {
+          "t": "string",
+          "v": "k"
+         },
+         {
+          "t": "number",
+          "v": 1
+         }
+        ]
+       ],
+       "size": 1
+      },
+      {
+       "t": "set",
+       "items": [
+        {
+         "t": "number",
+         "v": 1
+        }
+       ],
+       "size": 1
+      },
+      {
+       "t": "object",
+       "className": "Object",
+       "entries": [
+        [
+         "a",
+         {
+          "t": "number",
+          "v": 1
+         }
+        ],
+        [
+         "self",
+         {
+          "t": "circular",
+          "refId": 1
+         }
+        ]
+       ]
+      }
+     ],
+     [
+      {
+       "t": "function",
+       "name": "",
+       "kind": "arrow",
+       "preview": "() => 1"
+      },
+      {
+       "t": "function",
+       "name": "K",
+       "kind": "class",
+       "preview": "class K {}"
+      },
+      {
+       "t": "function",
+       "name": "af",
+       "kind": "async",
+       "preview": "async function af() {}"
+      },
+      {
+       "t": "function",
+       "name": "max",
+       "kind": "native",
+       "preview": "function max() {\n    [native code]\n}"
+      }
+     ],
+     [
+      {
+       "t": "date",
+       "iso": "1970-01-01T00:00:00.000Z"
+      },
+      {
+       "t": "regexp",
+       "source": "a+",
+       "flags": "g"
+      },
+      {
+       "t": "error",
+       "name": "Error",
+       "message": "boom"
+      },
+      {
+       "t": "array",
+       "items": [
+        {
+         "t": "number",
+         "v": 1
+        },
+        {
+         "t": "hole"
+        },
+        {
+         "t": "number",
+         "v": 3
+        }
+       ],
+       "length": 3,
+       "holes": 1
+      }
+     ],
+     [
+      {
+       "t": "object",
+       "className": "Object",
+       "entries": [
+        [
+         "g",
+         {
+          "t": "getter"
+         }
+        ]
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 784,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     [
+      {
+       "t": "number",
+       "v": "NaN"
+      },
+      {
+       "t": "number",
+       "v": "-0"
+      },
+      {
+       "t": "bigint",
+       "v": "10"
+      },
+      {
+       "t": "symbol",
+       "description": "s"
+      },
+      {
+       "t": "undefined"
+      },
+      {
+       "t": "null"
+      }
+     ],
+     [
+      {
+       "t": "map",
+       "entries": [
+        [
+         {
+          "t": "string",
+          "v": "k"
+         },
+         {
+          "t": "number",
+          "v": 1
+         }
+        ]
+       ],
+       "size": 1
+      },
+      {
+       "t": "set",
+       "items": [
+        {
+         "t": "number",
+         "v": 1
+        }
+       ],
+       "size": 1
+      },
+      {
+       "t": "object",
+       "className": "Object",
+       "entries": [
+        [
+         "a",
+         {
+          "t": "number",
+          "v": 1
+         }
+        ],
+        [
+         "self",
+         {
+          "t": "circular",
+          "refId": 1
+         }
+        ]
+       ]
+      }
+     ],
+     [
+      {
+       "t": "function",
+       "name": "",
+       "kind": "arrow",
+       "preview": "() => 1"
+      },
+      {
+       "t": "function",
+       "name": "K",
+       "kind": "class",
+       "preview": "class K {}"
+      },
+      {
+       "t": "function",
+       "name": "af",
+       "kind": "async",
+       "preview": "async function af() {}"
+      },
+      {
+       "t": "function",
+       "name": "max",
+       "kind": "native",
+       "preview": "function max() {\n    [native code]\n}"
+      }
+     ],
+     [
+      {
+       "t": "date",
+       "iso": "1970-01-01T00:00:00.000Z"
+      },
+      {
+       "t": "regexp",
+       "source": "a+",
+       "flags": "g"
+      },
+      {
+       "t": "error",
+       "name": "Error",
+       "message": "boom"
+      },
+      {
+       "t": "array",
+       "items": [
+        {
+         "t": "number",
+         "v": 1
+        },
+        {
+         "t": "hole"
+        },
+        {
+         "t": "number",
+         "v": 3
+        }
+       ],
+       "length": 3,
+       "holes": 1
+      }
+     ],
+     [
+      {
+       "t": "object",
+       "className": "Object",
+       "entries": [
+        [
+         "g",
+         {
+          "t": "getter"
+         }
+        ]
+       ]
+      }
+     ]
+    ]
+   }
+  }
+ },
+ "basics › B2 callFunction / readGlobal via expose (let/const, TDZ, missing)": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 334,
+   "evidence": {
+    "observations": [
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": 5
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     },
+     {
+      "kind": "readGlobal",
+      "value": {
+       "value": {
+        "t": "number",
+        "v": 3
+       }
+      }
+     },
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": 2
+       },
+       "argsAfter": {
+        "t": "array",
+        "items": [
+         {
+          "t": "array",
+          "items": [
+           {
+            "t": "number",
+            "v": 1
+           },
+           {
+            "t": "number",
+            "v": 9
+           }
+          ],
+          "length": 2
+         }
+        ],
+        "length": 1
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     },
+     {
+      "kind": "callFunction",
+      "value": {
+       "missing": true,
+       "tdz": false,
+       "notFunction": false
+      }
+     }
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 372,
+   "evidence": {
+    "observations": [
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": 5
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     },
+     {
+      "kind": "readGlobal",
+      "value": {
+       "value": {
+        "t": "number",
+        "v": 3
+       }
+      }
+     },
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": 2
+       },
+       "argsAfter": {
+        "t": "array",
+        "items": [
+         {
+          "t": "array",
+          "items": [
+           {
+            "t": "number",
+            "v": 1
+           },
+           {
+            "t": "number",
+            "v": 9
+           }
+          ],
+          "length": 2
+         }
+        ],
+        "length": 1
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     },
+     {
+      "kind": "callFunction",
+      "value": {
+       "missing": true,
+       "tdz": false,
+       "notFunction": false
+      }
+     }
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 580,
+   "evidence": {
+    "observations": [
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": 5
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     },
+     {
+      "kind": "readGlobal",
+      "value": {
+       "value": {
+        "t": "number",
+        "v": 3
+       }
+      }
+     },
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": 2
+       },
+       "argsAfter": {
+        "t": "array",
+        "items": [
+         {
+          "t": "array",
+          "items": [
+           {
+            "t": "number",
+            "v": 1
+           },
+           {
+            "t": "number",
+            "v": 9
+           }
+          ],
+          "length": 2
+         }
+        ],
+        "length": 1
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     },
+     {
+      "kind": "callFunction",
+      "value": {
+       "missing": true,
+       "tdz": false,
+       "notFunction": false
+      }
+     }
+    ]
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 286,
+   "evidence": {
+    "observations": [
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": 5
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     },
+     {
+      "kind": "readGlobal",
+      "value": {
+       "value": {
+        "t": "number",
+        "v": 3
+       }
+      }
+     },
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": 2
+       },
+       "argsAfter": {
+        "t": "array",
+        "items": [
+         {
+          "t": "array",
+          "items": [
+           {
+            "t": "number",
+            "v": 1
+           },
+           {
+            "t": "number",
+            "v": 9
+           }
+          ],
+          "length": 2
+         }
+        ],
+        "length": 1
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     },
+     {
+      "kind": "callFunction",
+      "value": {
+       "missing": true,
+       "tdz": false,
+       "notFunction": false
+      }
+     }
+    ]
+   }
+  }
+ },
+ "basics › B3 dom: computedStyle, boxRect and media query across viewports": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 325,
+   "evidence": {
+    "status": "completed",
+    "observations": [
+     {
+      "kind": "computedStyle",
+      "value": [
+       {
+        "width": "100px",
+        "padding-left": "10px",
+        "border-top-width": "2px",
+        "color": "rgb(0, 170, 0)"
+       }
+      ]
+     },
+     {
+      "kind": "boxRect",
+      "value": {
+       "#b": [
+        {
+         "x": 13,
+         "y": 8,
+         "width": 124,
+         "height": 42
+        }
+       ],
+       "#a": [
+        {
+         "x": 8,
+         "y": 55,
+         "width": 11.5625,
+         "height": 18
+        }
+       ],
+       "#c": [
+        {
+         "x": 27.5625,
+         "y": 55,
+         "width": 10.671875,
+         "height": 18
+        }
+       ],
+       "viewport": {
+        "width": 1280,
+        "height": 800
+       }
+      }
+     },
+     {
+      "kind": "setViewport",
+      "value": {
+       "resizeEvent": true,
+       "width": 375,
+       "height": 700
+      }
+     },
+     {
+      "kind": "boxRect",
+      "value": {
+       "#a": [
+        {
+         "x": 8,
+         "y": 55,
+         "width": 359,
+         "height": 18
+        }
+       ],
+       "#c": [
+        {
+         "x": 8,
+         "y": 81,
+         "width": 359,
+         "height": 18
+        }
+       ],
+       "viewport": {
+        "width": 375,
+        "height": 700
+       }
+      }
+     },
+     {
+      "kind": "computedStyle",
+      "value": [
+       {
+        "flex-direction": "column"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 251,
+   "evidence": {
+    "status": "completed",
+    "observations": [
+     {
+      "kind": "computedStyle",
+      "value": [
+       {
+        "width": "100px",
+        "padding-left": "10px",
+        "border-top-width": "2px",
+        "color": "rgb(0, 170, 0)"
+       }
+      ]
+     },
+     {
+      "kind": "boxRect",
+      "value": {
+       "#b": [
+        {
+         "x": 13,
+         "y": 8,
+         "width": 124,
+         "height": 42
+        }
+       ],
+       "#a": [
+        {
+         "x": 8,
+         "y": 55,
+         "width": 11.5625,
+         "height": 18
+        }
+       ],
+       "#c": [
+        {
+         "x": 27.5625,
+         "y": 55,
+         "width": 10.671875,
+         "height": 18
+        }
+       ],
+       "viewport": {
+        "width": 1280,
+        "height": 800
+       }
+      }
+     },
+     {
+      "kind": "setViewport",
+      "value": {
+       "resizeEvent": true,
+       "width": 375,
+       "height": 700
+      }
+     },
+     {
+      "kind": "boxRect",
+      "value": {
+       "#a": [
+        {
+         "x": 8,
+         "y": 55,
+         "width": 359,
+         "height": 18
+        }
+       ],
+       "#c": [
+        {
+         "x": 8,
+         "y": 81,
+         "width": 359,
+         "height": 18
+        }
+       ],
+       "viewport": {
+        "width": 375,
+        "height": 700
+       }
+      }
+     },
+     {
+      "kind": "computedStyle",
+      "value": [
+       {
+        "flex-direction": "column"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 525,
+   "evidence": {
+    "status": "completed",
+    "observations": [
+     {
+      "kind": "computedStyle",
+      "value": [
+       {
+        "width": "100px",
+        "padding-left": "10px",
+        "border-top-width": "2px",
+        "color": "rgb(0, 170, 0)"
+       }
+      ]
+     },
+     {
+      "kind": "boxRect",
+      "value": {
+       "#b": [
+        {
+         "x": 13,
+         "y": 8,
+         "width": 124,
+         "height": 44
+        }
+       ],
+       "#a": [
+        {
+         "x": 8,
+         "y": 57,
+         "width": 9.683334350585938,
+         "height": 20
+        }
+       ],
+       "#c": [
+        {
+         "x": 25.683334350585938,
+         "y": 57,
+         "width": 9.116668701171875,
+         "height": 20
+        }
+       ],
+       "viewport": {
+        "width": 1280,
+        "height": 800
+       }
+      }
+     },
+     {
+      "kind": "setViewport",
+      "value": {
+       "resizeEvent": true,
+       "width": 375,
+       "height": 700
+      }
+     },
+     {
+      "kind": "boxRect",
+      "value": {
+       "#a": [
+        {
+         "x": 8,
+         "y": 57,
+         "width": 359,
+         "height": 20
+        }
+       ],
+       "#c": [
+        {
+         "x": 8,
+         "y": 85,
+         "width": 359,
+         "height": 20
+        }
+       ],
+       "viewport": {
+        "width": 375,
+        "height": 700
+       }
+      }
+     },
+     {
+      "kind": "computedStyle",
+      "value": [
+       {
+        "flex-direction": "column"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 258,
+   "evidence": {
+    "status": "completed",
+    "observations": [
+     {
+      "kind": "computedStyle",
+      "value": [
+       {
+        "width": "100px",
+        "padding-left": "10px",
+        "border-top-width": "2px",
+        "color": "rgb(0, 170, 0)"
+       }
+      ]
+     },
+     {
+      "kind": "boxRect",
+      "value": {
+       "#b": [
+        {
+         "x": 13,
+         "y": 8,
+         "width": 124,
+         "height": 42
+        }
+       ],
+       "#a": [
+        {
+         "x": 8,
+         "y": 55,
+         "width": 11.5625,
+         "height": 18
+        }
+       ],
+       "#c": [
+        {
+         "x": 27.5625,
+         "y": 55,
+         "width": 10.671875,
+         "height": 18
+        }
+       ],
+       "viewport": {
+        "width": 1280,
+        "height": 800
+       }
+      }
+     },
+     {
+      "kind": "setViewport",
+      "value": {
+       "resizeEvent": true,
+       "width": 375,
+       "height": 700
+      }
+     },
+     {
+      "kind": "boxRect",
+      "value": {
+       "#a": [
+        {
+         "x": 8,
+         "y": 55,
+         "width": 359,
+         "height": 18
+        }
+       ],
+       "#c": [
+        {
+         "x": 8,
+         "y": 81,
+         "width": 359,
+         "height": 18
+        }
+       ],
+       "viewport": {
+        "width": 375,
+        "height": 700
+       }
+      }
+     },
+     {
+      "kind": "computedStyle",
+      "value": [
+       {
+        "flex-direction": "column"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "basics › B4 dom: click handler and submit event (Q3: allow-forms + form-action none)": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 826,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "submit-fired false"
+    ],
+    "csp": [],
+    "leaks": [],
+    "observations": [
+     {
+      "kind": "dispatch",
+      "value": {
+       "found": true,
+       "notCanceled": true,
+       "newErrors": 0
+      }
+     },
+     {
+      "kind": "domQuery",
+      "value": {
+       "count": 1,
+       "items": [
+        {
+         "text": "1"
+        }
+       ]
+      }
+     },
+     {
+      "kind": "dispatch",
+      "value": {
+       "found": true,
+       "notCanceled": "requestSubmit",
+       "newErrors": 0
+      }
+     },
+     {
+      "kind": "waitSettled",
+      "value": {
+       "settled": true
+      }
+     }
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 755,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "submit-fired false"
+    ],
+    "csp": [],
+    "leaks": [],
+    "observations": [
+     {
+      "kind": "dispatch",
+      "value": {
+       "found": true,
+       "notCanceled": true,
+       "newErrors": 0
+      }
+     },
+     {
+      "kind": "domQuery",
+      "value": {
+       "count": 1,
+       "items": [
+        {
+         "text": "1"
+        }
+       ]
+      }
+     },
+     {
+      "kind": "dispatch",
+      "value": {
+       "found": true,
+       "notCanceled": "requestSubmit",
+       "newErrors": 0
+      }
+     },
+     {
+      "kind": "waitSettled",
+      "value": {
+       "settled": true
+      }
+     }
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1071,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "submit-fired false"
+    ],
+    "csp": [],
+    "leaks": [],
+    "observations": [
+     {
+      "kind": "dispatch",
+      "value": {
+       "found": true,
+       "notCanceled": true,
+       "newErrors": 0
+      }
+     },
+     {
+      "kind": "domQuery",
+      "value": {
+       "count": 1,
+       "items": [
+        {
+         "text": "1"
+        }
+       ]
+      }
+     },
+     {
+      "kind": "dispatch",
+      "value": {
+       "found": true,
+       "notCanceled": "requestSubmit",
+       "newErrors": 0
+      }
+     },
+     {
+      "kind": "waitSettled",
+      "value": {
+       "settled": true
+      }
+     }
+    ]
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 774,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "submit-fired false"
+    ],
+    "csp": [],
+    "leaks": [],
+    "observations": [
+     {
+      "kind": "dispatch",
+      "value": {
+       "found": true,
+       "notCanceled": true,
+       "newErrors": 0
+      }
+     },
+     {
+      "kind": "domQuery",
+      "value": {
+       "count": 1,
+       "items": [
+        {
+         "text": "1"
+        }
+       ]
+      }
+     },
+     {
+      "kind": "dispatch",
+      "value": {
+       "found": true,
+       "notCanceled": "requestSubmit",
+       "newErrors": 0
+      }
+     },
+     {
+      "kind": "waitSettled",
+      "value": {
+       "settled": true
+      }
+     }
+    ]
+   }
+  }
+ },
+ "basics › B5/Q7 error positions: worker stack mapping, DOM ErrorEvent.lineno with/without sourceURL": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 506,
+   "evidence": {
+    "worker": [
+     {
+      "phase": "runtime",
+      "name": "TypeError",
+      "message": "Cannot read properties of null (reading 'x')",
+      "stackPositions": [
+       {
+        "file": "main.js",
+        "line": 3,
+        "column": 8
+       },
+       {
+        "file": "main.js",
+        "line": 5,
+        "column": 1
+       },
+       {
+        "file": "blob:null/7b2a502b-fcb2-407a-a41e-51bfd3d6b720",
+        "line": 1,
+        "column": 22590
+       }
+      ],
+      "rawStackHead": "TypeError: Cannot read properties of null (reading 'x')\n    at f (blob:null/112b3e7b-9c11-4602-9b96-02161e593f7b:3:8)\n    at blob:null/112b3e7b-9c11-4602-9b96-02161e593f7b:5:1\n    at onStart (blob:null/7b2a502b-fcb2-407a-a41e-51bfd3d6b720:1:22590)"
+     }
+    ],
+    "domNoSourceURL": [
+     {
+      "position": {
+       "line": 6,
+       "column": 6,
+       "file": "about:srcdoc"
+      },
+      "stack": [
+       {
+        "file": "about:srcdoc",
+        "line": 6,
+        "column": 6
+       }
+      ]
+     }
+    ],
+    "domWithSourceURL": [
+     {
+      "position": {
+       "line": 3,
+       "column": 6,
+       "file": "learner:///app.js"
+      },
+      "stack": [
+       {
+        "file": "learner:///app.js",
+        "line": 3,
+        "column": 6
+       }
+      ]
+     }
+    ],
+    "domBlobDelivery": [
+     {
+      "name": "TypeError",
+      "position": {
+       "line": 3,
+       "column": 6,
+       "file": "blob:null/e8801003-ec02-45f5-834a-ceed49d1b136"
+      },
+      "stack": [
+       {
+        "file": "index.html#script1",
+        "line": 3,
+        "column": 6
+       }
+      ]
+     }
+    ],
+    "syntax": [
+     {
+      "phase": "syntax",
+      "file": "main.js",
+      "name": "SyntaxError",
+      "message": "Unexpected token (1:8)",
+      "line": 1,
+      "column": 8
+     }
+    ],
+    "note": "DOM doc lines: <!doctype>=1, <html>=2, <p>=3, <script>=4, let=5, null.x=6 (script-relative line 3)"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 427,
+   "evidence": {
+    "worker": [
+     {
+      "phase": "runtime",
+      "name": "TypeError",
+      "message": "Cannot read properties of null (reading 'x')",
+      "stackPositions": [
+       {
+        "file": "main.js",
+        "line": 3,
+        "column": 8
+       },
+       {
+        "file": "main.js",
+        "line": 5,
+        "column": 1
+       },
+       {
+        "file": "blob:null/f16414e1-0563-4abd-ae80-ee3cba48a839",
+        "line": 1,
+        "column": 22590
+       }
+      ],
+      "rawStackHead": "TypeError: Cannot read properties of null (reading 'x')\n    at f (blob:null/99ee24bf-6737-4cda-a0aa-9174856e6ee1:3:8)\n    at blob:null/99ee24bf-6737-4cda-a0aa-9174856e6ee1:5:1\n    at onStart (blob:null/f16414e1-0563-4abd-ae80-ee3cba48a839:1:22590)"
+     }
+    ],
+    "domNoSourceURL": [
+     {
+      "position": {
+       "line": 6,
+       "column": 6,
+       "file": "about:srcdoc"
+      },
+      "stack": [
+       {
+        "file": "about:srcdoc",
+        "line": 6,
+        "column": 6
+       }
+      ]
+     }
+    ],
+    "domWithSourceURL": [
+     {
+      "position": {
+       "line": 3,
+       "column": 6,
+       "file": "learner:///app.js"
+      },
+      "stack": [
+       {
+        "file": "learner:///app.js",
+        "line": 3,
+        "column": 6
+       }
+      ]
+     }
+    ],
+    "domBlobDelivery": [
+     {
+      "name": "TypeError",
+      "position": {
+       "line": 3,
+       "column": 6,
+       "file": "blob:null/1317496b-d23c-4740-af14-05b9c4b26833"
+      },
+      "stack": [
+       {
+        "file": "index.html#script1",
+        "line": 3,
+        "column": 6
+       }
+      ]
+     }
+    ],
+    "syntax": [
+     {
+      "phase": "syntax",
+      "file": "main.js",
+      "name": "SyntaxError",
+      "message": "Unexpected token (1:8)",
+      "line": 1,
+      "column": 8
+     }
+    ],
+    "note": "DOM doc lines: <!doctype>=1, <html>=2, <p>=3, <script>=4, let=5, null.x=6 (script-relative line 3)"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 699,
+   "evidence": {
+    "worker": [
+     {
+      "phase": "runtime",
+      "name": "TypeError",
+      "message": "can't access property \"x\" of null",
+      "stackPositions": [
+       {
+        "file": "main.js",
+        "line": 3,
+        "column": 3
+       },
+       {
+        "file": "main.js",
+        "line": 5,
+        "column": 1
+       },
+       {
+        "file": "blob:null/4779fa36-0d6a-4b6f-99e0-df4128829ae1",
+        "line": 1,
+        "column": 22590
+       },
+       {
+        "file": "blob:null/4779fa36-0d6a-4b6f-99e0-df4128829ae1",
+        "line": 1,
+        "column": 22869
+       },
+       {
+        "file": "blob:null/4779fa36-0d6a-4b6f-99e0-df4128829ae1",
+        "line": 1,
+        "column": 23431
+       }
+      ],
+      "rawStackHead": "f@blob:null/fe99a39e-1a4a-4fb0-a393-310690244560:3:3\n@blob:null/fe99a39e-1a4a-4fb0-a393-310690244560:5:1\nonStart@blob:null/4779fa36-0d6a-4b6f-99e0-df4128829ae1:1:22590\nEventListener.handleEvent*@blob:null/4779fa36-0d6a-4b6f-99e0-df4128829ae1:1:22869\n@blob:null/4779fa36-0d6a-4b6f-99e0-df4128829ae1:1:"
+     }
+    ],
+    "domNoSourceURL": [
+     {
+      "position": {
+       "line": 6,
+       "column": 1,
+       "file": "about:srcdoc"
+      },
+      "stack": [
+       {
+        "file": "about:srcdoc",
+        "line": 6,
+        "column": 1
+       }
+      ]
+     }
+    ],
+    "domWithSourceURL": [
+     {
+      "position": {
+       "line": 6,
+       "column": 1,
+       "file": "about:srcdoc"
+      },
+      "stack": [
+       {
+        "file": "learner:///app.js",
+        "line": 6,
+        "column": 1
+       }
+      ]
+     }
+    ],
+    "domBlobDelivery": [
+     {
+      "name": "TypeError",
+      "position": {
+       "line": 3,
+       "column": 1,
+       "file": "blob:null/7c15d028-1a8b-45ae-ba45-51fe6eee6943"
+      },
+      "stack": [
+       {
+        "file": "index.html#script1",
+        "line": 3,
+        "column": 1
+       }
+      ]
+     }
+    ],
+    "syntax": [
+     {
+      "phase": "syntax",
+      "file": "main.js",
+      "name": "SyntaxError",
+      "message": "Unexpected token (1:8)",
+      "line": 1,
+      "column": 8
+     }
+    ],
+    "note": "DOM doc lines: <!doctype>=1, <html>=2, <p>=3, <script>=4, let=5, null.x=6 (script-relative line 3)"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 428,
+   "evidence": {
+    "worker": [
+     {
+      "phase": "runtime",
+      "name": "TypeError",
+      "message": "null is not an object (evaluating 'null.x')",
+      "stackPositions": [
+       {
+        "file": "main.js",
+        "line": 3,
+        "column": 7
+       },
+       {
+        "file": "main.js",
+        "line": 5,
+        "column": 2
+       },
+       {
+        "file": "blob:null/cb16c502-cf36-45a3-8e68-3cc9b1ce2547",
+        "line": 1,
+        "column": 22603
+       }
+      ],
+      "rawStackHead": "f@blob:null/83c99970-0347-472f-aff8-4ce8f28542a5:3:7\nglobal code@blob:null/83c99970-0347-472f-aff8-4ce8f28542a5:5:2\nimportScripts@[native code]\nonStart@blob:null/cb16c502-cf36-45a3-8e68-3cc9b1ce2547:1:22603"
+     }
+    ],
+    "domNoSourceURL": [
+     {
+      "position": {
+       "line": 0,
+       "column": 0,
+       "file": ""
+      }
+     }
+    ],
+    "domWithSourceURL": [
+     {
+      "position": {
+       "line": 0,
+       "column": 0,
+       "file": ""
+      }
+     }
+    ],
+    "domBlobDelivery": [
+     {
+      "name": "TypeError",
+      "position": {
+       "line": 3,
+       "column": 5,
+       "file": "blob:null/96971b28-1ab9-41cb-89b3-b3221c6f9d09"
+      },
+      "stack": [
+       {
+        "file": "index.html#script1",
+        "line": 3,
+        "column": 5
+       }
+      ]
+     }
+    ],
+    "syntax": [
+     {
+      "phase": "syntax",
+      "file": "main.js",
+      "name": "SyntaxError",
+      "message": "Unexpected token (1:8)",
+      "line": 1,
+      "column": 8
+     }
+    ],
+    "note": "DOM doc lines: <!doctype>=1, <html>=2, <p>=3, <script>=4, let=5, null.x=6 (script-relative line 3)"
+   }
+  }
+ },
+ "basics › B6 dom scriptDelivery=blob: errors not muted, script-relative lines, globals shared, order kept": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1268,
+   "evidence": {
+    "status": "loop_limit",
+    "console": [
+     "first blob:",
+     "second sees q true 2",
+     "dcl 2"
+    ],
+    "errors": [
+     {
+      "phase": "runtime",
+      "name": "TypeError",
+      "position": {
+       "line": 4,
+       "column": 6,
+       "file": "blob:null/46f702d8-9ace-40ae-a417-82b0410ccc37"
+      },
+      "stack": [
+       {
+        "file": "index.html#script2",
+        "line": 4,
+        "column": 6
+       }
+      ]
+     },
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "position": {
+       "line": 3,
+       "column": 0,
+       "loopId": 1
+      }
+     }
+    ],
+    "obs": [
+     {
+      "kind": "readGlobal",
+      "value": {
+       "value": {
+        "t": "number",
+        "v": 2
+       }
+      }
+     }
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 1213,
+   "evidence": {
+    "status": "loop_limit",
+    "console": [
+     "first blob:",
+     "second sees q true 2",
+     "dcl 2"
+    ],
+    "errors": [
+     {
+      "phase": "runtime",
+      "name": "TypeError",
+      "position": {
+       "line": 4,
+       "column": 6,
+       "file": "blob:null/20be356b-cf27-4b9f-b615-2b6b6705f9cb"
+      },
+      "stack": [
+       {
+        "file": "index.html#script2",
+        "line": 4,
+        "column": 6
+       }
+      ]
+     },
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "position": {
+       "line": 3,
+       "column": 0,
+       "loopId": 1
+      }
+     }
+    ],
+    "obs": [
+     {
+      "kind": "readGlobal",
+      "value": {
+       "value": {
+        "t": "number",
+        "v": 2
+       }
+      }
+     }
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1460,
+   "evidence": {
+    "status": "loop_limit",
+    "console": [
+     "first blob:",
+     "second sees q true 2",
+     "dcl 2"
+    ],
+    "errors": [
+     {
+      "phase": "runtime",
+      "name": "TypeError",
+      "position": {
+       "line": 4,
+       "column": 1,
+       "file": "blob:null/12b331a9-4c88-4a97-ac79-199236fe1cb2"
+      },
+      "stack": [
+       {
+        "file": "index.html#script2",
+        "line": 4,
+        "column": 1
+       }
+      ]
+     },
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "position": {
+       "line": 3,
+       "column": 0,
+       "loopId": 1
+      }
+     }
+    ],
+    "obs": [
+     {
+      "kind": "readGlobal",
+      "value": {
+       "value": {
+        "t": "number",
+        "v": 2
+       }
+      }
+     }
+    ]
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 1195,
+   "evidence": {
+    "status": "loop_limit",
+    "console": [
+     "first blob:",
+     "second sees q true 2",
+     "dcl 2"
+    ],
+    "errors": [
+     {
+      "phase": "runtime",
+      "name": "TypeError",
+      "position": {
+       "line": 4,
+       "column": 5,
+       "file": "blob:null/cb01c667-9178-43b8-b51a-40f2f07d6b87"
+      },
+      "stack": [
+       {
+        "file": "index.html#script2",
+        "line": 4,
+        "column": 5
+       }
+      ]
+     },
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "position": {
+       "line": 3,
+       "column": 0,
+       "loopId": 1
+      }
+     }
+    ],
+    "obs": [
+     {
+      "kind": "readGlobal",
+      "value": {
+       "value": {
+        "t": "number",
+        "v": 2
+       }
+      }
+     }
+    ]
+   }
+  }
+ },
+ "basics › Q6 timers/layout in an off-screen shell vs visible shell": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1640,
+   "evidence": {
+    "visibleDom": [
+     {
+      "timeout0AvgMs": 4.619047619047619,
+      "timeout0MaxMs": 5.1000001430511475,
+      "timeout100ActualMs": 101,
+      "visibility": "visible"
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "offDom": [
+     {
+      "timeout0AvgMs": 4.571428571428571,
+      "timeout0MaxMs": 5.200000047683716,
+      "timeout100ActualMs": 101,
+      "visibility": "visible"
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "hiddenInViewportDom": [
+     {
+      "timeout0AvgMs": 4.714285714285714,
+      "timeout0MaxMs": 6.199999809265137,
+      "timeout100ActualMs": 101.39999985694885,
+      "visibility": "visible"
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "visibleWorker": [
+     {
+      "timeout0AvgMs": 5.209523814065116,
+      "timeout0MaxMs": 6.200000047683716,
+      "timeout100ActualMs": 109,
+      "visibility": "worker"
+     }
+    ],
+    "offWorker": [
+     {
+      "timeout0AvgMs": 5.01904761223566,
+      "timeout0MaxMs": 6.299999952316284,
+      "timeout100ActualMs": 110.20000004768372,
+      "visibility": "worker"
+     }
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 1547,
+   "evidence": {
+    "visibleDom": [
+     {
+      "timeout0AvgMs": 4.2285714376540415,
+      "timeout0MaxMs": 4.700000047683716,
+      "timeout100ActualMs": 101.90000009536743,
+      "visibility": "visible"
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "offDom": [
+     {
+      "timeout0AvgMs": 4.542857136045184,
+      "timeout0MaxMs": 8.400000095367432,
+      "timeout100ActualMs": 100.69999980926514,
+      "visibility": "visible"
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "hiddenInViewportDom": [
+     {
+      "timeout0AvgMs": 4.3428571337745305,
+      "timeout0MaxMs": 4.900000095367432,
+      "timeout100ActualMs": 101.10000014305115,
+      "visibility": "visible"
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "visibleWorker": [
+     {
+      "timeout0AvgMs": 4.795238097508748,
+      "timeout0MaxMs": 6.6000001430511475,
+      "timeout100ActualMs": 100.89999985694885,
+      "visibility": "worker"
+     }
+    ],
+    "offWorker": [
+     {
+      "timeout0AvgMs": 4.576190483002436,
+      "timeout0MaxMs": 5.700000047683716,
+      "timeout100ActualMs": 106.90000009536743,
+      "visibility": "worker"
+     }
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 2060,
+   "evidence": {
+    "visibleDom": [
+     {
+      "timeout0AvgMs": 4.666666666666667,
+      "timeout0MaxMs": 6,
+      "timeout100ActualMs": 108,
+      "visibility": "visible"
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "offDom": [
+     {
+      "timeout0AvgMs": 5.333333333333333,
+      "timeout0MaxMs": 7,
+      "timeout100ActualMs": 101,
+      "visibility": "visible"
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "hiddenInViewportDom": [
+     {
+      "timeout0AvgMs": 5.428571428571429,
+      "timeout0MaxMs": 9,
+      "timeout100ActualMs": 101,
+      "visibility": "visible"
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "visibleWorker": [
+     {
+      "timeout0AvgMs": 4.904761904761905,
+      "timeout0MaxMs": 10,
+      "timeout100ActualMs": 100,
+      "visibility": "worker"
+     }
+    ],
+    "offWorker": [
+     {
+      "timeout0AvgMs": 5.476190476190476,
+      "timeout0MaxMs": 15,
+      "timeout100ActualMs": 104,
+      "visibility": "worker"
+     }
+    ]
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 5124,
+   "evidence": {
+    "visibleDom": [
+     {
+      "timeout0AvgMs": 21.952380952380953,
+      "timeout0MaxMs": 31,
+      "timeout100ActualMs": 121,
+      "visibility": "visible"
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "offDom": [
+     {
+      "stepTimeout": true
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "hiddenInViewportDom": [
+     {
+      "timeout0AvgMs": 21.857142857142858,
+      "timeout0MaxMs": 31,
+      "timeout100ActualMs": 120,
+      "visibility": "visible"
+     },
+     {
+      "#b": [
+       {
+        "x": 8,
+        "y": 8,
+        "width": 50,
+        "height": 20
+       }
+      ],
+      "viewport": {
+       "width": 800,
+       "height": 600
+      }
+     }
+    ],
+    "visibleWorker": [
+     {
+      "timeout0AvgMs": 3.380952380952381,
+      "timeout0MaxMs": 6,
+      "timeout100ActualMs": 105,
+      "visibility": "worker"
+     }
+    ],
+    "offWorker": [
+     {
+      "timeout0AvgMs": 3.6666666666666665,
+      "timeout0MaxMs": 6,
+      "timeout100ActualMs": 105,
+      "visibility": "worker"
+     }
+    ]
+   }
+  }
+ },
+ "network is blocked › S1 dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1021,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "S1 blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S1",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 969,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "S1 blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S1",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1369,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "S1 blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S1",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 1009,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "S1 blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S1",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S1-ext dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1022,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4332/probe/S1-ext",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 934,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4332/probe/S1-ext",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1254,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4332/probe/S1-ext",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 958,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4332/probe/S1-ext",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S1-token dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1024,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/api/secret",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 960,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/api/secret",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1227,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/api/secret",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 979,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/api/secret",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S2 dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1017,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S2",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 941,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S2",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1213,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S2",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 961,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S2",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S3 dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1015,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "xhr error"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S3",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 954,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "xhr error"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S3",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1207,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "xhr error"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S3",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 976,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "xhr error"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S3",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S4 dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1018,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "ws error"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "ws://127.0.0.1:4331/probe/S4",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 989,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "ws error"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "ws://127.0.0.1:4331/probe/S4",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1212,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked NS_ERROR_CONTENT_BLOCKED"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "ws://127.0.0.1:4331/probe/S4",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 980,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked SecurityError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "ws://127.0.0.1:4331/probe/S4",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S5 dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1025,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "es error"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S5",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 947,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "es error"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S5",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1239,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "es error"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S5",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 980,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked SecurityError"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S5",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S6 dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1044,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "beacon true"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S6",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 945,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "beacon true"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S6",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1207,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "beacon false"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S6",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 1035,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "beacon true"
+    ],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S6",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S7 dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1030,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "img error"
+    ],
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/probe/S7",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 1061,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "img error"
+    ],
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/probe/S7",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1238,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "img error"
+    ],
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/probe/S7",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 977,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "img error"
+    ],
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/probe/S7",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S25 dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1021,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S25.js",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 964,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S25.js",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1213,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S25.js",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 989,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S25.js",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S5-dom-worker dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1020,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "worker created"
+    ],
+    "csp": [
+     {
+      "directive": "worker-src",
+      "blocked": "blob",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 967,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "worker created"
+    ],
+    "csp": [
+     {
+      "directive": "worker-src",
+      "blocked": "blob",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1225,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "worker created"
+    ],
+    "csp": [
+     {
+      "directive": "worker-src",
+      "blocked": "blob",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 943,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "worker created"
+    ],
+    "csp": [
+     {
+      "directive": "worker-src",
+      "blocked": "blob",
+      "sample": ""
+     }
+    ],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S11 dom": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 2760,
+   "evidence": {
+    "status": "timeout",
+    "console": [],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 2694,
+   "evidence": {
+    "status": "timeout",
+    "console": [],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 3072,
+   "evidence": {
+    "status": "timeout",
+    "console": [],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 2768,
+   "evidence": {
+    "status": "timeout",
+    "console": [],
+    "leaks": [],
+    "appUrl": "http://127.0.0.1:4331/"
+   }
+  }
+ },
+ "network is blocked › S8 dom-html": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1021,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "style-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S8.css",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 933,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "style-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S8.css",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1240,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "style-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S8.css",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 1028,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "style-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S8.css",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S9 dom-html": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1016,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/probe/S9.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 957,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/probe/S9.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1232,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/probe/S9.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 982,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/probe/S9.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S9-ext dom-html": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1034,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4332/probe/S9.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 963,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4332/probe/S9.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1224,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4332/probe/S9.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 981,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4332/probe/S9.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S10 dom-html": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1005,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "frame-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 968,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "frame-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1215,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "frame-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 957,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "frame-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S12 dom-html": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 2760,
+   "evidence": {
+    "status": "timeout",
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 2658,
+   "evidence": {
+    "status": "timeout",
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1241,
+   "evidence": {
+    "status": "completed",
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 959,
+   "evidence": {
+    "status": "completed",
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S44 dom-html": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1023,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "base-uri",
+      "blocked": "http://127.0.0.1:4332/",
+      "sample": ""
+     },
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/sandbox/probe/S44.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 957,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "base-uri",
+      "blocked": "http://127.0.0.1:4332/",
+      "sample": ""
+     },
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/sandbox/probe/S44.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1236,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "base-uri",
+      "blocked": "http://127.0.0.1:4332/",
+      "sample": ""
+     },
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/sandbox/probe/S44.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 973,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "base-uri",
+      "blocked": "http://127.0.0.1:4332/",
+      "sample": ""
+     },
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/sandbox/probe/S44.png",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S-font dom-html": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1013,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "font-src",
+      "blocked": "http://127.0.0.1:4331/probe/font.woff",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 1026,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "font-src",
+      "blocked": "http://127.0.0.1:4331/probe/font.woff",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1223,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "font-src",
+      "blocked": "http://127.0.0.1:4331/probe/font.woff",
+      "sample": ""
+     },
+     {
+      "directive": "font-src",
+      "blocked": "http://127.0.0.1:4331/probe/font.woff",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 1005,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "font-src",
+      "blocked": "http://127.0.0.1:4331/probe/font.woff",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S-script-src dom-html": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1010,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S-script.js",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 959,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S-script.js",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1216,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S-script.js",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 999,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S-script.js",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S-object dom-html": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1042,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "object-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     },
+     {
+      "directive": "object-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 953,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "object-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     },
+     {
+      "directive": "object-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1339,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "object-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     },
+     {
+      "directive": "object-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 1005,
+   "evidence": {
+    "status": "completed",
+    "csp": [
+     {
+      "directive": "object-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     },
+     {
+      "directive": "object-src",
+      "blocked": "http://127.0.0.1:4331",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S-prefetch dom-html": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1015,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "default-src",
+      "blocked": "http://127.0.0.1:4331/probe/S-prefetch",
+      "sample": ""
+     },
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/probe/S-preload",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 939,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "default-src",
+      "blocked": "http://127.0.0.1:4331/probe/S-prefetch",
+      "sample": ""
+     },
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/probe/S-preload",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1325,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "default-src",
+      "blocked": "http://127.0.0.1:4331/probe/S-prefetch",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 982,
+   "evidence": {
+    "status": "error",
+    "csp": [
+     {
+      "directive": "img-src",
+      "blocked": "http://127.0.0.1:4331/probe/S-preload",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S1-w js-console": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1035,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S1w",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 934,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S1w",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1299,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S1w",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 937,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S1-w-ext js-console": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1015,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4332/probe/S1wx",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 926,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4332/probe/S1wx",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1359,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4332/probe/S1wx",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 956,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S3-w js-console": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1018,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "xhr error"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S3w",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 923,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "xhr error"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S3w",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1268,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "xhr error"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "http://127.0.0.1:4331/probe/S3w",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 957,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "xhr error"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S4-w js-console": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1025,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "ws error"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "ws://127.0.0.1:4331/probe/S4w",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 916,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "ws error"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "ws://127.0.0.1:4331/probe/S4w",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1210,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked NS_ERROR_CONTENT_BLOCKED"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "connect-src",
+      "blocked": "ws://127.0.0.1:4331/probe/S4w",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 939,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked SecurityError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S5-w js-console": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1016,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "no EventSource"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 931,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "no EventSource"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1249,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "no EventSource"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 937,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "no EventSource"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S25-w js-console": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1022,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked NetworkError"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S25w.js",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 943,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked NetworkError"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S25w.js",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1231,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked NetworkError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 933,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked NetworkError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S25-w-import js-console": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1023,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S25wi.js",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 930,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [
+     {
+      "directive": "script-src-elem",
+      "blocked": "http://127.0.0.1:4331/probe/S25wi.js",
+      "sample": ""
+     }
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1219,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 945,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S5-w-nested js-console": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1026,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 923,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1242,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 960,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S-w-nested-worker js-console": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1020,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 949,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1279,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 964,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "blocked TypeError"
+    ],
+    "errors": [],
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S5-dom-worker-unmitigated (recorded): learner blob Worker EventSource without the worker-src meta": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1026,
+   "evidence": {
+    "console": [
+     "worker created"
+    ],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 934,
+   "evidence": {
+    "console": [
+     "worker created"
+    ],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1265,
+   "evidence": {
+    "console": [
+     "worker created"
+    ],
+    "csp": [],
+    "leaks": [
+     {
+      "server": "app",
+      "t": 1794590785877,
+      "method": "GET",
+      "url": "/probe/S5dwu",
+      "origin": "null",
+      "referer": null,
+      "secFetchSite": "cross-site",
+      "secFetchDest": "empty"
+     }
+    ]
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 938,
+   "evidence": {
+    "console": [
+     "worker created"
+    ],
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "network is blocked › S13/Q3 form POST to app API: submit handler runs, request not sent": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1025,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "submit handler ran"
+    ],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 942,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "submit handler ran"
+    ],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1243,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "submit handler ran"
+    ],
+    "csp": [],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 939,
+   "evidence": {
+    "status": "completed",
+    "console": [
+     "submit handler ran"
+    ],
+    "csp": [],
+    "leaks": []
+   }
+  }
+ },
+ "app isolation › S14/S15 parent & top document, cookie, localStorage": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 329,
+   "evidence": {
+    "console": [
+     "parent.document threw SecurityError",
+     "top.document threw SecurityError",
+     "top.cookie threw SecurityError",
+     "parent.localStorage threw SecurityError",
+     "top.localStorage threw SecurityError",
+     "opener OK null",
+     "top.pg threw SecurityError"
+    ],
+    "caps": {
+     "env": "dom",
+     "dialogShim": true,
+     "nativeLocalStorage": "throws SecurityError",
+     "storageShim": "installed",
+     "cookieRead": "throws SecurityError",
+     "cookieWrite": "throws SecurityError",
+     "isSecureContext": true,
+     "origin": "null",
+     "unhandledRejectionEventSupported": true
+    },
+    "app": {
+     "ls": "app-value",
+     "cookie": "appcookie=app-secret"
+    }
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 239,
+   "evidence": {
+    "console": [
+     "parent.document threw SecurityError",
+     "top.document threw SecurityError",
+     "top.cookie threw SecurityError",
+     "parent.localStorage threw SecurityError",
+     "top.localStorage threw SecurityError",
+     "opener OK null",
+     "top.pg threw SecurityError"
+    ],
+    "caps": {
+     "env": "dom",
+     "dialogShim": true,
+     "nativeLocalStorage": "throws SecurityError",
+     "storageShim": "installed",
+     "cookieRead": "throws SecurityError",
+     "cookieWrite": "throws SecurityError",
+     "isSecureContext": true,
+     "origin": "null",
+     "unhandledRejectionEventSupported": true
+    },
+    "app": {
+     "ls": "app-value",
+     "cookie": "appcookie=app-secret"
+    }
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 545,
+   "evidence": {
+    "console": [
+     "parent.document threw SecurityError",
+     "top.document threw SecurityError",
+     "top.cookie threw SecurityError",
+     "parent.localStorage threw SecurityError",
+     "top.localStorage threw SecurityError",
+     "opener OK null",
+     "top.pg threw SecurityError"
+    ],
+    "caps": {
+     "env": "dom",
+     "dialogShim": true,
+     "nativeLocalStorage": "throws SecurityError",
+     "storageShim": "installed",
+     "cookieRead": "throws SecurityError",
+     "cookieWrite": "throws SecurityError",
+     "isSecureContext": true,
+     "origin": "null",
+     "unhandledRejectionEventSupported": true
+    },
+    "app": {
+     "ls": "app-value",
+     "cookie": "appcookie=app-secret"
+    }
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 237,
+   "evidence": {
+    "console": [
+     "parent.document threw SecurityError",
+     "top.document threw SecurityError",
+     "top.cookie threw SecurityError",
+     "parent.localStorage threw SecurityError",
+     "top.localStorage threw SecurityError",
+     "opener OK null",
+     "top.pg threw SecurityError"
+    ],
+    "caps": {
+     "env": "dom",
+     "dialogShim": true,
+     "nativeLocalStorage": "throws SecurityError",
+     "storageShim": "installed",
+     "cookieRead": "ok:\"\"",
+     "cookieWrite": "no-throw, now \"\"",
+     "isSecureContext": true,
+     "origin": "null",
+     "unhandledRejectionEventSupported": true
+    },
+    "app": {
+     "ls": "app-value",
+     "cookie": "appcookie=app-secret"
+    }
+   }
+  }
+ },
+ "app isolation › S16/Q8 localStorage shim and cookie behavior in opaque origin": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 298,
+   "evidence": {
+    "console": [
+     "ls v"
+    ],
+    "errors": [],
+    "caps": {
+     "env": "dom",
+     "dialogShim": true,
+     "nativeLocalStorage": "throws SecurityError",
+     "storageShim": "installed",
+     "cookieRead": "throws SecurityError",
+     "cookieWrite": "throws SecurityError",
+     "isSecureContext": true,
+     "origin": "null",
+     "unhandledRejectionEventSupported": true
+    },
+    "shellCaps": {
+     "origin": "null",
+     "isSecureContext": true,
+     "hasWorker": true,
+     "hasMessageChannel": true,
+     "shellCookie": "throws SecurityError",
+     "shellLocalStorage": "throws SecurityError"
+    },
+    "appLs": "app-value"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 253,
+   "evidence": {
+    "console": [
+     "ls v"
+    ],
+    "errors": [],
+    "caps": {
+     "env": "dom",
+     "dialogShim": true,
+     "nativeLocalStorage": "throws SecurityError",
+     "storageShim": "installed",
+     "cookieRead": "throws SecurityError",
+     "cookieWrite": "throws SecurityError",
+     "isSecureContext": true,
+     "origin": "null",
+     "unhandledRejectionEventSupported": true
+    },
+    "shellCaps": {
+     "origin": "null",
+     "isSecureContext": true,
+     "hasWorker": true,
+     "hasMessageChannel": true,
+     "shellCookie": "throws SecurityError",
+     "shellLocalStorage": "throws SecurityError"
+    },
+    "appLs": "app-value"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 513,
+   "evidence": {
+    "console": [
+     "ls v"
+    ],
+    "errors": [],
+    "caps": {
+     "env": "dom",
+     "dialogShim": true,
+     "nativeLocalStorage": "throws SecurityError",
+     "storageShim": "installed",
+     "cookieRead": "throws SecurityError",
+     "cookieWrite": "throws SecurityError",
+     "isSecureContext": true,
+     "origin": "null",
+     "unhandledRejectionEventSupported": true
+    },
+    "shellCaps": {
+     "origin": "null",
+     "isSecureContext": true,
+     "hasWorker": true,
+     "hasMessageChannel": true,
+     "shellCookie": "throws SecurityError",
+     "shellLocalStorage": "throws SecurityError"
+    },
+    "appLs": "app-value"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 236,
+   "evidence": {
+    "console": [
+     "ls v"
+    ],
+    "errors": [],
+    "caps": {
+     "env": "dom",
+     "dialogShim": true,
+     "nativeLocalStorage": "throws SecurityError",
+     "storageShim": "installed",
+     "cookieRead": "ok:\"\"",
+     "cookieWrite": "no-throw, now \"\"",
+     "isSecureContext": true,
+     "origin": "null",
+     "unhandledRejectionEventSupported": true
+    },
+    "shellCaps": {
+     "origin": "null",
+     "isSecureContext": true,
+     "hasWorker": true,
+     "hasMessageChannel": true,
+     "shellCookie": "throws SecurityError",
+     "shellLocalStorage": "throws SecurityError"
+    },
+    "appLs": "app-value"
+   }
+  }
+ },
+ "app isolation › S17 top navigation blocked": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1026,
+   "evidence": {
+    "console": [
+     "threw SecurityError",
+     "threw2 SecurityError"
+    ],
+    "url": "http://127.0.0.1:4331/",
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 952,
+   "evidence": {
+    "console": [
+     "threw SecurityError",
+     "threw2 SecurityError"
+    ],
+    "url": "http://127.0.0.1:4331/",
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1203,
+   "evidence": {
+    "console": [
+     "threw SecurityError",
+     "threw2 SecurityError"
+    ],
+    "url": "http://127.0.0.1:4331/",
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 943,
+   "evidence": {
+    "console": [
+     "threw SecurityError",
+     "threw2 SecurityError"
+    ],
+    "url": "http://127.0.0.1:4331/",
+    "leaks": []
+   }
+  }
+ },
+ "app isolation › S18 window.open / S19 download": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1107,
+   "evidence": {
+    "console": [
+     "open null"
+    ],
+    "popups": 0,
+    "downloads": 0,
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 1018,
+   "evidence": {
+    "console": [
+     "open null"
+    ],
+    "popups": 0,
+    "downloads": 0,
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1323,
+   "evidence": {
+    "console": [],
+    "popups": 0,
+    "downloads": 0,
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 1044,
+   "evidence": {
+    "console": [
+     "open null"
+    ],
+    "popups": 0,
+    "downloads": 0,
+    "leaks": []
+   }
+  }
+ },
+ "app isolation › S20 alert/confirm/prompt do not block (both modes)": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 389,
+   "evidence": {
+    "dom": [
+     "alert",
+     "confirm",
+     "log",
+     "prompt",
+     "log"
+    ],
+    "worker": [
+     "alert",
+     "confirm",
+     "log",
+     "prompt",
+     "log"
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 286,
+   "evidence": {
+    "dom": [
+     "alert",
+     "confirm",
+     "log",
+     "prompt",
+     "log"
+    ],
+    "worker": [
+     "alert",
+     "confirm",
+     "log",
+     "prompt",
+     "log"
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 561,
+   "evidence": {
+    "dom": [
+     "alert",
+     "confirm",
+     "log",
+     "prompt",
+     "log"
+    ],
+    "worker": [
+     "alert",
+     "confirm",
+     "log",
+     "prompt",
+     "log"
+    ]
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 303,
+   "evidence": {
+    "dom": [
+     "alert",
+     "confirm",
+     "log",
+     "prompt",
+     "log"
+    ],
+    "worker": [
+     "alert",
+     "confirm",
+     "log",
+     "prompt",
+     "log"
+    ]
+   }
+  }
+ },
+ "app isolation › S21 clipboard / S22 fullscreen & pointer lock / S23 service worker (Q9)": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 832,
+   "evidence": {
+    "console": [
+     "pointerLock called",
+     "serviceWorker rejected SecurityError",
+     "clipboard.write rejected NotAllowedError",
+     "clipboard.read rejected NotAllowedError",
+     "fullscreen rejected TypeError"
+    ],
+    "leaks": []
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 728,
+   "evidence": {
+    "console": [
+     "pointerLock called",
+     "serviceWorker rejected SecurityError",
+     "clipboard.write rejected NotAllowedError",
+     "clipboard.read rejected NotAllowedError",
+     "fullscreen rejected TypeError"
+    ],
+    "leaks": []
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1118,
+   "evidence": {
+    "console": [
+     "pointerLock called",
+     "clipboard.write rejected NotAllowedError",
+     "clipboard.read rejected NotAllowedError",
+     "fullscreen rejected TypeError",
+     "serviceWorker rejected SecurityError"
+    ],
+    "leaks": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 762,
+   "evidence": {
+    "console": [
+     "pointerLock called",
+     "serviceWorker rejected SecurityError",
+     "clipboard.write rejected NotAllowedError",
+     "clipboard.read rejected NotAllowedError",
+     "fullscreen rejected TypeError"
+    ],
+    "leaks": []
+   }
+  }
+ },
+ "app isolation › S24 eval / new Function / string timers blocked (both modes)": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 375,
+   "evidence": {
+    "dom": [
+     "eval threw EvalError",
+     "Function threw EvalError",
+     "string timer scheduled"
+    ],
+    "domCsp": [
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     }
+    ],
+    "worker": [
+     "eval threw EvalError",
+     "Function threw EvalError",
+     "string timer scheduled"
+    ],
+    "workerCsp": [
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     }
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 284,
+   "evidence": {
+    "dom": [
+     "eval threw EvalError",
+     "Function threw EvalError",
+     "string timer scheduled"
+    ],
+    "domCsp": [
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     }
+    ],
+    "worker": [
+     "eval threw EvalError",
+     "Function threw EvalError",
+     "string timer scheduled"
+    ],
+    "workerCsp": [
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     }
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 567,
+   "evidence": {
+    "dom": [
+     "eval threw EvalError",
+     "Function threw EvalError",
+     "string timer scheduled"
+    ],
+    "domCsp": [
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     }
+    ],
+    "worker": [
+     "eval threw EvalError",
+     "Function threw EvalError",
+     "string timer scheduled"
+    ],
+    "workerCsp": [
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     },
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     }
+    ]
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 299,
+   "evidence": {
+    "dom": [
+     "eval threw EvalError",
+     "Function threw EvalError",
+     "string timer scheduled"
+    ],
+    "domCsp": [
+     {
+      "directive": "script-src",
+      "blocked": "eval",
+      "sample": ""
+     }
+    ],
+    "worker": [
+     "eval threw EvalError",
+     "Function threw EvalError",
+     "string timer scheduled"
+    ],
+    "workerCsp": []
+   }
+  }
+ },
+ "app isolation › S36 postMessage spoofing to shell and app is ignored": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 324,
+   "evidence": {
+    "observations": [
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": -1
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     }
+    ],
+    "ignoredByShell": 2,
+    "rejectedByApp": [
+     {
+      "origin": "null",
+      "fromShell": false,
+      "type": "shell-hello"
+     },
+     {
+      "origin": "null",
+      "fromShell": false,
+      "type": "result"
+     }
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 238,
+   "evidence": {
+    "observations": [
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": -1
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     }
+    ],
+    "ignoredByShell": 2,
+    "rejectedByApp": [
+     {
+      "origin": "null",
+      "fromShell": false,
+      "type": "shell-hello"
+     },
+     {
+      "origin": "null",
+      "fromShell": false,
+      "type": "result"
+     }
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 489,
+   "evidence": {
+    "observations": [
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": -1
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     }
+    ],
+    "ignoredByShell": 2,
+    "rejectedByApp": [
+     {
+      "origin": "null",
+      "fromShell": false,
+      "type": "shell-hello"
+     },
+     {
+      "origin": "null",
+      "fromShell": false,
+      "type": "result"
+     }
+    ]
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 239,
+   "evidence": {
+    "observations": [
+     {
+      "kind": "callFunction",
+      "value": {
+       "returned": {
+        "t": "number",
+        "v": -1
+       },
+       "consoleEntriesDuringCall": 0
+      }
+     }
+    ],
+    "ignoredByShell": 2,
+    "rejectedByApp": [
+     {
+      "origin": "null",
+      "fromShell": false,
+      "type": "shell-hello"
+     },
+     {
+      "origin": "null",
+      "fromShell": false,
+      "type": "result"
+     }
+    ]
+   }
+  }
+ },
+ "loops and limits › S26 js-console while(true): loop guard, and terminate() without instrumentation": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 3638,
+   "evidence": {
+    "guarded": {
+     "status": "loop_limit",
+     "errors": [
+      {
+       "phase": "loop_limit",
+       "name": "LoopLimitError",
+       "message": "loop ran longer than 1000ms",
+       "position": {
+        "line": 2,
+        "column": 0,
+        "loopId": 1
+       },
+       "iterations": 275930368
+      }
+     ],
+     "wallMs": 1006,
+     "maxRafGapMs": 10
+    },
+    "raw": {
+     "status": "timeout",
+     "reason": "shell maxDurationMs",
+     "wallMs": 2303,
+     "maxRafGapMs": 10,
+     "heartbeats": 9
+    },
+    "after": "completed"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 3566,
+   "evidence": {
+    "guarded": {
+     "status": "loop_limit",
+     "errors": [
+      {
+       "phase": "loop_limit",
+       "name": "LoopLimitError",
+       "message": "loop ran longer than 1000ms",
+       "position": {
+        "line": 2,
+        "column": 0,
+        "loopId": 1
+       },
+       "iterations": 272702976
+      }
+     ],
+     "wallMs": 1010,
+     "maxRafGapMs": 17
+    },
+    "raw": {
+     "status": "timeout",
+     "reason": "shell maxDurationMs",
+     "wallMs": 2302,
+     "maxRafGapMs": 17,
+     "heartbeats": 9
+    },
+    "after": "completed"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 3805,
+   "evidence": {
+    "guarded": {
+     "status": "loop_limit",
+     "errors": [
+      {
+       "phase": "loop_limit",
+       "name": "LoopLimitError",
+       "message": "loop ran longer than 1000ms",
+       "position": {
+        "line": 2,
+        "column": 0,
+        "loopId": 1
+       },
+       "iterations": 181840896
+      }
+     ],
+     "wallMs": 1009,
+     "maxRafGapMs": 9
+    },
+    "raw": {
+     "status": "timeout",
+     "reason": "shell maxDurationMs",
+     "wallMs": 2300,
+     "maxRafGapMs": 9,
+     "heartbeats": 9
+    },
+    "after": "completed"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 3545,
+   "evidence": {
+    "guarded": {
+     "status": "loop_limit",
+     "errors": [
+      {
+       "phase": "loop_limit",
+       "name": "LoopLimitError",
+       "message": "loop ran longer than 1000ms",
+       "position": {
+        "line": 2,
+        "column": 0,
+        "loopId": 1
+       },
+       "iterations": 308581888
+      }
+     ],
+     "wallMs": 1006,
+     "maxRafGapMs": 18
+    },
+    "raw": {
+     "status": "timeout",
+     "reason": "shell maxDurationMs",
+     "wallMs": 2301,
+     "maxRafGapMs": 18,
+     "heartbeats": 9
+    },
+    "after": "completed"
+   }
+  }
+ },
+ "loops and limits › S27 dom while(true) on line 3: loop_limit with line, UI responsive": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1267,
+   "evidence": {
+    "status": "loop_limit",
+    "errors": [
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "message": "loop ran longer than 1000ms",
+      "position": {
+       "line": 3,
+       "column": 0,
+       "loopId": 1
+      },
+      "iterations": 279649536
+     }
+    ],
+    "wallMs": 1011,
+    "maxRafGapMs": 10,
+    "maxTimerLagMs": 2
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 1191,
+   "evidence": {
+    "status": "loop_limit",
+    "errors": [
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "message": "loop ran longer than 1000ms",
+      "position": {
+       "line": 3,
+       "column": 0,
+       "loopId": 1
+      },
+      "iterations": 275760896
+     }
+    ],
+    "wallMs": 1014,
+    "maxRafGapMs": 17,
+    "maxTimerLagMs": 2
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1445,
+   "evidence": {
+    "status": "loop_limit",
+    "errors": [
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "message": "loop ran longer than 1000ms",
+      "position": {
+       "line": 3,
+       "column": 0,
+       "loopId": 1
+      },
+      "iterations": 181510912
+     }
+    ],
+    "wallMs": 1012,
+    "maxRafGapMs": 1000,
+    "maxTimerLagMs": 987
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 1185,
+   "evidence": {
+    "status": "loop_limit",
+    "errors": [
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "message": "loop ran longer than 1000ms",
+      "position": {
+       "line": 3,
+       "column": 0,
+       "loopId": 1
+      },
+      "iterations": 310779392
+     }
+    ],
+    "wallMs": 1009,
+    "maxRafGapMs": 1007,
+    "maxTimerLagMs": 987
+   }
+  }
+ },
+ "loops and limits › S28/S29/S30 loops in timers, inline handlers, do-while, generators, labels": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 7374,
+   "evidence": {
+    "S28": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1010
+    },
+    "S29": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1065
+    },
+    "S30-do": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1008
+    },
+    "S30-gen": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1008
+    },
+    "S30-label": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1008
+    },
+    "S30-nobody": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1008
+    },
+    "S30-async": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1009
+    }
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 7301,
+   "evidence": {
+    "S28": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1011
+    },
+    "S29": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1062
+    },
+    "S30-do": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1008
+    },
+    "S30-gen": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 2,
+     "wallMs": 1007
+    },
+    "S30-label": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1007
+    },
+    "S30-nobody": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1008
+    },
+    "S30-async": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1007
+    }
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 7604,
+   "evidence": {
+    "S28": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1012
+    },
+    "S29": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1065
+    },
+    "S30-do": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1011
+    },
+    "S30-gen": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1015
+    },
+    "S30-label": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1011
+    },
+    "S30-nobody": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1009
+    },
+    "S30-async": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1009
+    }
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 7305,
+   "evidence": {
+    "S28": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1007
+    },
+    "S29": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1060
+    },
+    "S30-do": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1007
+    },
+    "S30-gen": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1009
+    },
+    "S30-label": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1007
+    },
+    "S30-nobody": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1006
+    },
+    "S30-async": {
+     "status": "loop_limit",
+     "phase": "loop_limit",
+     "line": 1,
+     "wallMs": 1006
+    }
+   }
+  }
+ },
+ "loops and limits › S31 infinite recursion → RangeError (both modes)": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 392,
+   "evidence": {
+    "dom": [
+     "RangeError"
+    ],
+    "worker": [
+     "RangeError"
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 314,
+   "evidence": {
+    "dom": [
+     "RangeError"
+    ],
+    "worker": [
+     "RangeError"
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 641,
+   "evidence": {
+    "dom": [
+     "InternalError"
+    ],
+    "worker": [
+     "InternalError"
+    ]
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 315,
+   "evidence": {
+    "dom": [
+     "RangeError"
+    ],
+    "worker": [
+     "RangeError"
+    ]
+   }
+  }
+ },
+ "loops and limits › S34/S35 console flood and huge strings are capped": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 516,
+   "evidence": {
+    "flood": {
+     "status": "completed",
+     "count": 1000,
+     "dropped": 999000,
+     "maxRafGapMs": 14
+    },
+    "big": {
+     "status": "completed",
+     "truncated": true,
+     "len": 8000
+    },
+    "domFlood": {
+     "status": "completed",
+     "count": 1000,
+     "dropped": 199000,
+     "maxRafGapMs": 10
+    }
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 469,
+   "evidence": {
+    "flood": {
+     "status": "completed",
+     "count": 1000,
+     "dropped": 999000,
+     "maxRafGapMs": 17
+    },
+    "big": {
+     "status": "completed",
+     "truncated": true,
+     "len": 8000
+    },
+    "domFlood": {
+     "status": "completed",
+     "count": 1000,
+     "dropped": 199000,
+     "maxRafGapMs": 17
+    }
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 717,
+   "evidence": {
+    "flood": {
+     "status": "completed",
+     "count": 1000,
+     "dropped": 999000,
+     "maxRafGapMs": 8
+    },
+    "big": {
+     "status": "completed",
+     "truncated": true,
+     "len": 8000
+    },
+    "domFlood": {
+     "status": "completed",
+     "count": 1000,
+     "dropped": 199000,
+     "maxRafGapMs": 9
+    }
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 450,
+   "evidence": {
+    "flood": {
+     "status": "completed",
+     "count": 1000,
+     "dropped": 999000,
+     "maxRafGapMs": 17
+    },
+    "big": {
+     "status": "completed",
+     "truncated": true,
+     "len": 8000
+    },
+    "domFlood": {
+     "status": "completed",
+     "count": 1000,
+     "dropped": 199000,
+     "maxRafGapMs": 18
+    }
+   }
+  }
+ },
+ "loops and limits › S37/S38/S39 harness integrity against tampering (both modes)": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 388,
+   "evidence": {
+    "worker": {
+     "status": "completed",
+     "obs": [
+      {
+       "kind": "callFunction",
+       "value": {
+        "returned": {
+         "t": "number",
+         "v": 6
+        },
+        "consoleEntriesDuringCall": 0
+       }
+      }
+     ],
+     "console": [
+      "after tamper object"
+     ]
+    },
+    "dom": {
+     "status": "completed",
+     "obs": [
+      {
+       "kind": "callFunction",
+       "value": {
+        "returned": {
+         "t": "number",
+         "v": 6
+        },
+        "consoleEntriesDuringCall": 0
+       }
+      }
+     ],
+     "console": [
+      "after tamper object"
+     ]
+    }
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 333,
+   "evidence": {
+    "worker": {
+     "status": "completed",
+     "obs": [
+      {
+       "kind": "callFunction",
+       "value": {
+        "returned": {
+         "t": "number",
+         "v": 6
+        },
+        "consoleEntriesDuringCall": 0
+       }
+      }
+     ],
+     "console": [
+      "after tamper object"
+     ]
+    },
+    "dom": {
+     "status": "completed",
+     "obs": [
+      {
+       "kind": "callFunction",
+       "value": {
+        "returned": {
+         "t": "number",
+         "v": 6
+        },
+        "consoleEntriesDuringCall": 0
+       }
+      }
+     ],
+     "console": [
+      "after tamper object"
+     ]
+    }
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 557,
+   "evidence": {
+    "worker": {
+     "status": "completed",
+     "obs": [
+      {
+       "kind": "callFunction",
+       "value": {
+        "returned": {
+         "t": "number",
+         "v": 6
+        },
+        "consoleEntriesDuringCall": 0
+       }
+      }
+     ],
+     "console": [
+      "after tamper object"
+     ]
+    },
+    "dom": {
+     "status": "completed",
+     "obs": [
+      {
+       "kind": "callFunction",
+       "value": {
+        "returned": {
+         "t": "number",
+         "v": 6
+        },
+        "consoleEntriesDuringCall": 0
+       }
+      }
+     ],
+     "console": [
+      "after tamper object"
+     ]
+    }
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 294,
+   "evidence": {
+    "worker": {
+     "status": "completed",
+     "obs": [
+      {
+       "kind": "callFunction",
+       "value": {
+        "returned": {
+         "t": "number",
+         "v": 6
+        },
+        "consoleEntriesDuringCall": 0
+       }
+      }
+     ],
+     "console": [
+      "after tamper object"
+     ]
+    },
+    "dom": {
+     "status": "completed",
+     "obs": [
+      {
+       "kind": "callFunction",
+       "value": {
+        "returned": {
+         "t": "number",
+         "v": 6
+        },
+        "consoleEntriesDuringCall": 0
+       }
+      }
+     ],
+     "console": [
+      "after tamper object"
+     ]
+    }
+   }
+  }
+ },
+ "loops and limits › S40 unhandled rejection / S41 setInterval pending at end": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1213,
+   "evidence": {
+    "workerRejection": [
+     {
+      "phase": "unhandled_rejection",
+      "name": "Error",
+      "message": "x",
+      "stackPositions": [
+       {
+        "file": "main.js",
+        "line": 1,
+        "column": 16
+       },
+       {
+        "file": "blob:null/0e7ab350-57f5-435c-bc4f-11c1e93e3488",
+        "line": 1,
+        "column": 22624
+       }
+      ],
+      "rawStackHead": "Error: x\n    at blob:null/006f87d7-8225-442b-9e16-16b4d1e216c6:1:16\n    at onStart (blob:null/0e7ab350-57f5-435c-bc4f-11c1e93e3488:1:22624)"
+     }
+    ],
+    "workerCaps": {
+     "env": "worker",
+     "dialogShim": true,
+     "unhandledRejectionEventSupported": true,
+     "hiddenInWorker": [
+      "EventSource",
+      "Worker",
+      "SharedWorker"
+     ],
+     "importScripts": "function"
+    },
+    "domRejection": [
+     {
+      "phase": "unhandled_rejection",
+      "name": "Error",
+      "message": "x",
+      "stackPositions": [
+       {
+        "file": "index.html#script1",
+        "line": 1,
+        "column": 16
+       }
+      ],
+      "rawStackHead": "Error: x\n    at blob:null/4ed692b5-5532-4c71-8b98-5f34cdae329c:1:16"
+     }
+    ],
+    "interval": {
+     "status": "completed",
+     "pendingAtEnd": {
+      "timers": 0,
+      "intervals": 1
+     },
+     "consoleCount": 80,
+     "wallMs": 818
+    }
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 1137,
+   "evidence": {
+    "workerRejection": [
+     {
+      "phase": "unhandled_rejection",
+      "name": "Error",
+      "message": "x",
+      "stackPositions": [
+       {
+        "file": "main.js",
+        "line": 1,
+        "column": 16
+       },
+       {
+        "file": "blob:null/3b1c874e-7ebb-4fa7-9653-8bd2bfad220c",
+        "line": 1,
+        "column": 22624
+       }
+      ],
+      "rawStackHead": "Error: x\n    at blob:null/9838cbe8-ef8a-47c5-820e-4b2f42c790e5:1:16\n    at onStart (blob:null/3b1c874e-7ebb-4fa7-9653-8bd2bfad220c:1:22624)"
+     }
+    ],
+    "workerCaps": {
+     "env": "worker",
+     "dialogShim": true,
+     "unhandledRejectionEventSupported": true,
+     "hiddenInWorker": [
+      "EventSource",
+      "Worker",
+      "SharedWorker"
+     ],
+     "importScripts": "function"
+    },
+    "domRejection": [
+     {
+      "phase": "unhandled_rejection",
+      "name": "Error",
+      "message": "x",
+      "stackPositions": [
+       {
+        "file": "index.html#script1",
+        "line": 1,
+        "column": 16
+       }
+      ],
+      "rawStackHead": "Error: x\n    at blob:null/f286b187-5352-4357-9b6d-09e3f54ffa09:1:16"
+     }
+    ],
+    "interval": {
+     "status": "completed",
+     "pendingAtEnd": {
+      "timers": 0,
+      "intervals": 1
+     },
+     "consoleCount": 80,
+     "wallMs": 815
+    }
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 1395,
+   "evidence": {
+    "workerRejection": [
+     {
+      "phase": "unhandled_rejection",
+      "name": "Error",
+      "message": "x",
+      "stackPositions": [
+       {
+        "file": "main.js",
+        "line": 1,
+        "column": 16
+       },
+       {
+        "file": "blob:null/c260ad73-f892-4b7c-89a2-07542b219821",
+        "line": 1,
+        "column": 22624
+       },
+       {
+        "file": "blob:null/c260ad73-f892-4b7c-89a2-07542b219821",
+        "line": 1,
+        "column": 22903
+       },
+       {
+        "file": "blob:null/c260ad73-f892-4b7c-89a2-07542b219821",
+        "line": 1,
+        "column": 23465
+       }
+      ],
+      "rawStackHead": "@blob:null/9748dc8c-d484-45d5-ae24-246e3ada689a:1:16\nonStart@blob:null/c260ad73-f892-4b7c-89a2-07542b219821:1:22624\nEventListener.handleEvent*@blob:null/c260ad73-f892-4b7c-89a2-07542b219821:1:22903\n@blob:null/c260ad73-f892-4b7c-89a2-07542b219821:1:23465\n"
+     }
+    ],
+    "workerCaps": {
+     "env": "worker",
+     "dialogShim": true,
+     "unhandledRejectionEventSupported": true,
+     "hiddenInWorker": [
+      "EventSource",
+      "Worker",
+      "SharedWorker"
+     ],
+     "importScripts": "function"
+    },
+    "domRejection": [
+     {
+      "phase": "unhandled_rejection",
+      "name": "Error",
+      "message": "x",
+      "stackPositions": [
+       {
+        "file": "index.html#script1",
+        "line": 1,
+        "column": 16
+       }
+      ],
+      "rawStackHead": "@blob:null/460c1a37-164b-4863-aa78-9db7bea11af1:1:16\n"
+     }
+    ],
+    "interval": {
+     "status": "completed",
+     "pendingAtEnd": {
+      "timers": 0,
+      "intervals": 1
+     },
+     "consoleCount": 72,
+     "wallMs": 816
+    }
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 1157,
+   "evidence": {
+    "workerRejection": [
+     {
+      "phase": "unhandled_rejection",
+      "name": "Error",
+      "message": "x",
+      "stackPositions": [
+       {
+        "file": "main.js",
+        "line": 1,
+        "column": 25
+       },
+       {
+        "file": "blob:null/cf763711-aa5e-4f00-949b-5705b5c45a1b",
+        "line": 1,
+        "column": 22637
+       }
+      ],
+      "rawStackHead": "global code@blob:null/c5256d50-68ea-480e-868b-f37a2b87a9c7:1:25\nimportScripts@[native code]\nonStart@blob:null/cf763711-aa5e-4f00-949b-5705b5c45a1b:1:22637"
+     }
+    ],
+    "workerCaps": {
+     "env": "worker",
+     "dialogShim": true,
+     "unhandledRejectionEventSupported": true,
+     "hiddenInWorker": [
+      "EventSource",
+      "Worker",
+      "SharedWorker"
+     ],
+     "importScripts": "function"
+    },
+    "domRejection": [
+     {
+      "phase": "unhandled_rejection",
+      "name": "Error",
+      "message": "x",
+      "stackPositions": [
+       {
+        "file": "index.html#script1",
+        "line": 1,
+        "column": 25
+       }
+      ],
+      "rawStackHead": "global code@blob:null/d6ca2c66-47b8-4f2f-a55d-a9a158f253b0:1:25"
+     }
+    ],
+    "interval": {
+     "status": "completed",
+     "pendingAtEnd": {
+      "timers": 0,
+      "intervals": 1
+     },
+     "consoleCount": 72,
+     "wallMs": 815
+    }
+   }
+  }
+ },
+ "loops and limits › S43 oversized RunRequest rejected by host validation": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 252,
+   "evidence": {
+    "r": {
+     "status": "rejected",
+     "reason": "too many files"
+    },
+    "r2": {
+     "status": "rejected",
+     "reason": "file too large: main.js"
+    }
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 165,
+   "evidence": {
+    "r": {
+     "status": "rejected",
+     "reason": "too many files"
+    },
+    "r2": {
+     "status": "rejected",
+     "reason": "file too large: main.js"
+    }
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 422,
+   "evidence": {
+    "r": {
+     "status": "rejected",
+     "reason": "too many files"
+    },
+    "r2": {
+     "status": "rejected",
+     "reason": "file too large: main.js"
+    }
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 234,
+   "evidence": {
+    "r": {
+     "status": "rejected",
+     "reason": "too many files"
+    },
+    "r2": {
+     "status": "rejected",
+     "reason": "file too large: main.js"
+    }
+   }
+  }
+ },
+ "browser behavior (recorded) › Q4/Q5 uninstrumented DOM infinite loop (same-site shell): app freeze? recovery?": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 41498,
+   "evidence": {
+    "placement": "same-site",
+    "appFrozen": false,
+    "result": {
+     "status": "crashed",
+     "watchdog": "no-heartbeat",
+     "wallMs": 1511,
+     "appMaxRafGapMs": 19,
+     "heartbeats": 0
+    },
+    "firstSamples": [
+     {
+      "atMs": 1,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 255,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 505,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 756,
+      "evalLatencyMs": 1,
+      "frozen": false
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": [
+     {
+      "id": 11790,
+      "cpuDeltaS": 1.5
+     },
+     {
+      "busyRendererStoppedAfterWatchdogMs": null
+     }
+    ],
+    "nextRun": {
+     "status": "NO-RESULT-8s",
+     "afterMs": 8002,
+     "retries": [
+      "completed"
+     ],
+     "renderersNow": [
+      {
+       "type": "renderer",
+       "id": 12115,
+       "cpuTime": 0.044728
+      },
+      {
+       "type": "renderer",
+       "id": 11792,
+       "cpuTime": 0.070067
+      },
+      {
+       "type": "renderer",
+       "id": 11791,
+       "cpuTime": 0.530099
+      }
+     ]
+    }
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 41407,
+   "evidence": {
+    "placement": "same-site",
+    "appFrozen": false,
+    "result": {
+     "status": "crashed",
+     "watchdog": "no-heartbeat",
+     "wallMs": 1502,
+     "appMaxRafGapMs": 17,
+     "heartbeats": 0
+    },
+    "firstSamples": [
+     {
+      "atMs": 5,
+      "evalLatencyMs": 5,
+      "frozen": false
+     },
+     {
+      "atMs": 258,
+      "evalLatencyMs": 2,
+      "frozen": false
+     },
+     {
+      "atMs": 510,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 762,
+      "evalLatencyMs": 2,
+      "frozen": false
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": [
+     {
+      "id": 13337,
+      "cpuDeltaS": 1.5
+     },
+     {
+      "busyRendererStoppedAfterWatchdogMs": null
+     }
+    ],
+    "nextRun": {
+     "status": "NO-RESULT-8s",
+     "afterMs": 8001,
+     "retries": [
+      "completed"
+     ],
+     "renderersNow": [
+      {
+       "type": "renderer",
+       "id": 13661,
+       "cpuTime": 0.046564
+      },
+      {
+       "type": "renderer",
+       "id": 13339,
+       "cpuTime": 0.073197
+      },
+      {
+       "type": "renderer",
+       "id": 13338,
+       "cpuTime": 0.416676
+      },
+      {
+       "type": "renderer",
+       "id": 13336,
+       "cpuTime": 0.115543
+      }
+     ]
+    }
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 9448,
+   "evidence": {
+    "placement": "same-site",
+    "appFrozen": true,
+    "result": null,
+    "firstSamples": [
+     {
+      "atMs": 2,
+      "evalLatencyMs": 2,
+      "frozen": false
+     },
+     {
+      "atMs": 1756,
+      "evalLatencyMs": 1503,
+      "frozen": true
+     },
+     {
+      "atMs": 3506,
+      "evalLatencyMs": 1501,
+      "frozen": true
+     },
+     {
+      "atMs": 5257,
+      "evalLatencyMs": 1501,
+      "frozen": true
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": null,
+    "nextRun": null
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 9197,
+   "evidence": {
+    "placement": "same-site",
+    "appFrozen": true,
+    "result": null,
+    "firstSamples": [
+     {
+      "atMs": 0,
+      "evalLatencyMs": 0,
+      "frozen": false
+     },
+     {
+      "atMs": 1752,
+      "evalLatencyMs": 1500,
+      "frozen": true
+     },
+     {
+      "atMs": 3503,
+      "evalLatencyMs": 1500,
+      "frozen": true
+     },
+     {
+      "atMs": 5257,
+      "evalLatencyMs": 1502,
+      "frozen": true
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": null,
+    "nextRun": null
+   }
+  }
+ },
+ "browser behavior (recorded) › Q4/Q5 uninstrumented DOM infinite loop (cross-site shell): app freeze? recovery?": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 41706,
+   "evidence": {
+    "placement": "cross-site",
+    "appFrozen": false,
+    "result": {
+     "status": "crashed",
+     "watchdog": "no-heartbeat",
+     "wallMs": 1502,
+     "appMaxRafGapMs": 10,
+     "heartbeats": 0
+    },
+    "firstSamples": [
+     {
+      "atMs": 1,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 252,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 505,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 757,
+      "evalLatencyMs": 1,
+      "frozen": false
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": [
+     {
+      "id": 12116,
+      "cpuDeltaS": 1.5
+     },
+     {
+      "busyRendererStoppedAfterWatchdogMs": null
+     }
+    ],
+    "nextRun": {
+     "status": "NO-RESULT-8s",
+     "afterMs": 8002,
+     "retries": [
+      "completed"
+     ],
+     "renderersNow": [
+      {
+       "type": "renderer",
+       "id": 12505,
+       "cpuTime": 0.053826
+      },
+      {
+       "type": "renderer",
+       "id": 12118,
+       "cpuTime": 0.232681
+      },
+      {
+       "type": "renderer",
+       "id": 12117,
+       "cpuTime": 0.95864
+      }
+     ]
+    }
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 41389,
+   "evidence": {
+    "placement": "cross-site",
+    "appFrozen": false,
+    "result": {
+     "status": "crashed",
+     "watchdog": "no-heartbeat",
+     "wallMs": 1505,
+     "appMaxRafGapMs": 17,
+     "heartbeats": 0
+    },
+    "firstSamples": [
+     {
+      "atMs": 2,
+      "evalLatencyMs": 2,
+      "frozen": false
+     },
+     {
+      "atMs": 253,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 506,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 758,
+      "evalLatencyMs": 1,
+      "frozen": false
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": [
+     {
+      "id": 13663,
+      "cpuDeltaS": 1.5
+     },
+     {
+      "busyRendererStoppedAfterWatchdogMs": null
+     }
+    ],
+    "nextRun": {
+     "status": "NO-RESULT-8s",
+     "afterMs": 8002,
+     "retries": [
+      "completed"
+     ],
+     "renderersNow": [
+      {
+       "type": "renderer",
+       "id": 14012,
+       "cpuTime": 0.046465
+      },
+      {
+       "type": "renderer",
+       "id": 13665,
+       "cpuTime": 0.06636
+      },
+      {
+       "type": "renderer",
+       "id": 13664,
+       "cpuTime": 0.436113
+      },
+      {
+       "type": "renderer",
+       "id": 13662,
+       "cpuTime": 0.114413
+      }
+     ]
+    }
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 4042,
+   "evidence": {
+    "placement": "cross-site",
+    "appFrozen": false,
+    "result": {
+     "status": "crashed",
+     "watchdog": "no-heartbeat",
+     "wallMs": 1525,
+     "appMaxRafGapMs": 9,
+     "heartbeats": 0
+    },
+    "firstSamples": [
+     {
+      "atMs": 1,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 254,
+      "evalLatencyMs": 2,
+      "frozen": false
+     },
+     {
+      "atMs": 506,
+      "evalLatencyMs": 2,
+      "frozen": false
+     },
+     {
+      "atMs": 759,
+      "evalLatencyMs": 2,
+      "frozen": false
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": null,
+    "nextRun": {
+     "status": "completed",
+     "wallMs": 73,
+     "afterMs": 93
+    }
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 9199,
+   "evidence": {
+    "placement": "cross-site",
+    "appFrozen": true,
+    "result": null,
+    "firstSamples": [
+     {
+      "atMs": 2,
+      "evalLatencyMs": 2,
+      "frozen": false
+     },
+     {
+      "atMs": 1754,
+      "evalLatencyMs": 1501,
+      "frozen": true
+     },
+     {
+      "atMs": 3506,
+      "evalLatencyMs": 1501,
+      "frozen": true
+     },
+     {
+      "atMs": 5257,
+      "evalLatencyMs": 1500,
+      "frozen": true
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": null,
+    "nextRun": null
+   }
+  }
+ },
+ "browser behavior (recorded) › Q4/Q5 uninstrumented DOM infinite loop (per-shell-subdomain shell): app freeze? recovery?": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 4106,
+   "evidence": {
+    "placement": "per-shell-subdomain",
+    "appFrozen": false,
+    "result": {
+     "status": "crashed",
+     "watchdog": "no-heartbeat",
+     "wallMs": 1601,
+     "appMaxRafGapMs": 9,
+     "heartbeats": 0
+    },
+    "firstSamples": [
+     {
+      "atMs": 3,
+      "evalLatencyMs": 3,
+      "frozen": false
+     },
+     {
+      "atMs": 256,
+      "evalLatencyMs": 2,
+      "frozen": false
+     },
+     {
+      "atMs": 508,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 761,
+      "evalLatencyMs": 2,
+      "frozen": false
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": [
+     {
+      "id": 12506,
+      "cpuDeltaS": 1.49
+     },
+     {
+      "busyRendererStoppedAfterWatchdogMs": 3501
+     }
+    ],
+    "nextRun": {
+     "status": "completed",
+     "wallMs": 55,
+     "afterMs": 60
+    }
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 11789,
+   "evidence": {
+    "placement": "per-shell-subdomain",
+    "appFrozen": false,
+    "result": {
+     "status": "crashed",
+     "watchdog": "no-heartbeat",
+     "wallMs": 1505,
+     "appMaxRafGapMs": 17,
+     "heartbeats": 0
+    },
+    "firstSamples": [
+     {
+      "atMs": 1,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 253,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 504,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 756,
+      "evalLatencyMs": 1,
+      "frozen": false
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": [
+     {
+      "id": 14014,
+      "cpuDeltaS": 1.5
+     },
+     {
+      "busyRendererStoppedAfterWatchdogMs": 11536
+     }
+    ],
+    "nextRun": {
+     "status": "completed",
+     "wallMs": 68,
+     "afterMs": 73
+    }
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 4047,
+   "evidence": {
+    "placement": "per-shell-subdomain",
+    "appFrozen": false,
+    "result": {
+     "status": "crashed",
+     "watchdog": "no-heartbeat",
+     "wallMs": 1539,
+     "appMaxRafGapMs": 10,
+     "heartbeats": 0
+    },
+    "firstSamples": [
+     {
+      "atMs": 1,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 254,
+      "evalLatencyMs": 2,
+      "frozen": false
+     },
+     {
+      "atMs": 506,
+      "evalLatencyMs": 2,
+      "frozen": false
+     },
+     {
+      "atMs": 758,
+      "evalLatencyMs": 2,
+      "frozen": false
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": null,
+    "nextRun": {
+     "status": "completed",
+     "wallMs": 77,
+     "afterMs": 92
+    }
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 9199,
+   "evidence": {
+    "placement": "per-shell-subdomain",
+    "appFrozen": true,
+    "result": null,
+    "firstSamples": [
+     {
+      "atMs": 1,
+      "evalLatencyMs": 1,
+      "frozen": false
+     },
+     {
+      "atMs": 1752,
+      "evalLatencyMs": 1501,
+      "frozen": true
+     },
+     {
+      "atMs": 3506,
+      "evalLatencyMs": 1502,
+      "frozen": true
+     },
+     {
+      "atMs": 5257,
+      "evalLatencyMs": 1501,
+      "frozen": true
+     }
+    ],
+    "busyRenderersAfterRemoval_1500ms": null,
+    "nextRun": null
+   }
+  }
+ },
+ "browser behavior (recorded) › S42 learner-created Worker with infinite loop after the nested frame is removed (allowLearnerWorkers)": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 3367,
+   "evidence": {
+    "variant": "allowLearnerWorkers",
+    "console": [
+     "learner worker created"
+    ],
+    "csp": [],
+    "status": "completed",
+    "chromiumBusySecondsTimeline": [
+     {
+      "s": 1,
+      "busy": 1
+     },
+     {
+      "s": 2,
+      "busy": 1
+     },
+     {
+      "s": 3,
+      "busy": 0
+     }
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 3267,
+   "evidence": {
+    "variant": "allowLearnerWorkers",
+    "console": [
+     "learner worker created"
+    ],
+    "csp": [],
+    "status": "completed",
+    "chromiumBusySecondsTimeline": [
+     {
+      "s": 1,
+      "busy": 1
+     },
+     {
+      "s": 2,
+      "busy": 1
+     },
+     {
+      "s": 3,
+      "busy": 0
+     }
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 528,
+   "evidence": {
+    "variant": "allowLearnerWorkers",
+    "console": [
+     "learner worker created"
+    ],
+    "csp": [],
+    "status": "completed",
+    "chromiumBusySecondsTimeline": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 247,
+   "evidence": {
+    "variant": "allowLearnerWorkers",
+    "console": [
+     "learner worker created"
+    ],
+    "csp": [],
+    "status": "completed",
+    "chromiumBusySecondsTimeline": []
+   }
+  }
+ },
+ "browser behavior (recorded) › S42 learner-created Worker with infinite loop after the nested frame is removed (default-meta-worker-src-none)": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1348,
+   "evidence": {
+    "variant": "default-meta-worker-src-none",
+    "console": [
+     "learner worker created",
+     "worker error event"
+    ],
+    "csp": [
+     {
+      "directive": "worker-src",
+      "blocked": "blob",
+      "sample": ""
+     }
+    ],
+    "status": "completed",
+    "chromiumBusySecondsTimeline": [
+     {
+      "s": 1,
+      "busy": 0
+     }
+    ]
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 1248,
+   "evidence": {
+    "variant": "default-meta-worker-src-none",
+    "console": [
+     "learner worker created",
+     "worker error event"
+    ],
+    "csp": [
+     {
+      "directive": "worker-src",
+      "blocked": "blob",
+      "sample": ""
+     }
+    ],
+    "status": "completed",
+    "chromiumBusySecondsTimeline": [
+     {
+      "s": 1,
+      "busy": 0
+     }
+    ]
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 512,
+   "evidence": {
+    "variant": "default-meta-worker-src-none",
+    "console": [
+     "learner worker created",
+     "worker error event"
+    ],
+    "csp": [
+     {
+      "directive": "worker-src",
+      "blocked": "blob",
+      "sample": ""
+     }
+    ],
+    "status": "completed",
+    "chromiumBusySecondsTimeline": []
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 241,
+   "evidence": {
+    "variant": "default-meta-worker-src-none",
+    "console": [
+     "learner worker created",
+     "worker error event"
+    ],
+    "csp": [
+     {
+      "directive": "worker-src",
+      "blocked": "blob",
+      "sample": ""
+     }
+    ],
+    "status": "completed",
+    "chromiumBusySecondsTimeline": []
+   }
+  }
+ },
+ "browser behavior (recorded) › S32 memory bomb in js-console mode": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 2334,
+   "evidence": {
+    "status": "loop_limit",
+    "errors": [
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "message": "loop ran longer than 1000ms",
+      "position": {
+       "line": 2,
+       "column": 0,
+       "loopId": 1
+      },
+      "iterations": 768
+     }
+    ],
+    "wallMs": 1609,
+    "maxRafGapMs": 10,
+    "next": "completed"
+   }
+  },
+  "chrome": {
+   "status": "passed",
+   "durationMs": 1916,
+   "evidence": {
+    "status": "loop_limit",
+    "errors": [
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "message": "loop ran longer than 1000ms",
+      "position": {
+       "line": 2,
+       "column": 0,
+       "loopId": 1
+      },
+      "iterations": 768
+     }
+    ],
+    "wallMs": 1197,
+    "maxRafGapMs": 58,
+    "next": "completed"
+   }
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 2662,
+   "evidence": {
+    "status": "loop_limit",
+    "errors": [
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "message": "loop ran longer than 1000ms",
+      "position": {
+       "line": 2,
+       "column": 0,
+       "loopId": 1
+      },
+      "iterations": 256
+     }
+    ],
+    "wallMs": 1602,
+    "maxRafGapMs": 10,
+    "next": "completed"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 1801,
+   "evidence": {
+    "status": "loop_limit",
+    "errors": [
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "message": "loop ran longer than 1000ms",
+      "position": {
+       "line": 2,
+       "column": 0,
+       "loopId": 1
+      },
+      "iterations": 768
+     }
+    ],
+    "wallMs": 1115,
+    "maxRafGapMs": 44,
+    "next": "completed"
+   }
+  }
+ },
+ "browser behavior (recorded) › S33 memory bomb in dom mode": {
+  "chromium": {
+   "status": "passed",
+   "durationMs": 1909,
+   "evidence": {
+    "status": "loop_limit",
+    "errors": [
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "message": "loop ran longer than 1000ms",
+      "position": {
+       "line": 3,
+       "column": 0,
+       "loopId": 1
+      },
+      "iterations": 768
+     }
+    ],
+    "wallMs": 1439,
+    "maxRafGapMs": 13,
+    "appTabCrashed": false,
+    "next": "completed"
+   }
+  },
+  "chrome": {
+   "status": "timedOut",
+   "durationMs": 60023,
+   "evidence": {
+    "status": "crashed",
+    "watchdog": "no-heartbeat",
+    "wallMs": 1509,
+    "maxRafGapMs": 17,
+    "appTabCrashed": false,
+    "next": "evaluate-failed"
+   },
+   "error": "Test timeout of 60000ms exceeded."
+  },
+  "firefox": {
+   "status": "passed",
+   "durationMs": 2004,
+   "evidence": {
+    "status": "loop_limit",
+    "errors": [
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "message": "loop ran longer than 1000ms",
+      "position": {
+       "line": 3,
+       "column": 0,
+       "loopId": 1
+      },
+      "iterations": 256
+     }
+    ],
+    "wallMs": 1499,
+    "maxRafGapMs": 1492,
+    "appTabCrashed": false,
+    "next": "completed"
+   }
+  },
+  "webkit": {
+   "status": "passed",
+   "durationMs": 1415,
+   "evidence": {
+    "status": "loop_limit",
+    "errors": [
+     {
+      "phase": "loop_limit",
+      "name": "LoopLimitError",
+      "message": "loop ran longer than 1000ms",
+      "position": {
+       "line": 3,
+       "column": 0,
+       "loopId": 1
+      },
+      "iterations": 768
+     }
+    ],
+    "wallMs": 1107,
+    "maxRafGapMs": 1105,
+    "appTabCrashed": false,
+    "next": "completed"
+   }
+  }
+ }
+}

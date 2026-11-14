@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>ProgInOne sandbox PoC — app</title>
+<style>
+  body { font: 14px/1.4 system-ui, sans-serif; margin: 16px; }
+  #shell-slot iframe { width: 820px; height: 640px; border: 1px solid #ccc; }
+  #shell-slot.offscreen iframe { position: fixed; left: -10000px; top: 0; }
+  #shell-slot.hiddenvp iframe { position: fixed; left: 0; top: 0; opacity: 0; pointer-events: none; z-index: -1; }
+</style>
+</head>
+<body>
+<h1>Sandbox PoC host</h1>
+<p>App origin page. Exposes <code>window.pg</code> for Playwright.</p>
+<button id="btn" type="button">click target</button> <span id="clicks">0</span>
+<div id="shell-slot"></div>
+<script type="module" src="/host.js"></script>
+</body>
+</html>

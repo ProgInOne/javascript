@@ -1,0 +1,13 @@
+{
+  "name": "proginone-poc-codex-tutor",
+  "private": true,
+  "type": "module",
+  "description": "M1-A throwaway PoC: Codex App Server as a tutor backend",
+  "scripts": {
+    "probe": "node probe-basic.mjs",
+    "turns": "node run-turns.mjs --home dedicated"
+  },
+  "devDependencies": {
+    "ajv": "8.17.1"
+  }
+}

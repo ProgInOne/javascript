@@ -5,7 +5,7 @@ MVP의 유일한 AI 제공자는 ChatGPT 구독으로 인증하는 Codex App Ser
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-13
+- 최종 수정: 2026-11-14 (M1-A PoC 결과 반영)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [학습 엔진 설계](/docs/design/learning-engine.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -366,7 +366,7 @@ stateDiagram-v2
 - **지연 시작**: 서버 시작 시 Codex를 띄우지 않습니다. 첫 AI 요청, 설정 화면의 AI 섹션 진입, 또는 학습 화면 진입 후 3초(예열) 중 먼저 오는 시점에 시작합니다.
 - **실행 파일 탐색**: 설정 `codexPath` → `PATH`의 `codex` 순서. 없으면 `not_installed` 상태와 설치 안내를 반환합니다.
 - **실행 인자**: `codex app-server` (stdio). 작업 디렉터리는 `<dataDir>/codex-workspace/`(빈 디렉터리).
-- **환경**: 부모 환경을 그대로 물려주되, `CODEX_HOME`은 기본값(사용자의 Codex 설정)을 씁니다. 학습자가 Codex CLI에서 이미 로그인했다면 그 로그인을 공유합니다. 별도 `CODEX_HOME`을 쓸지는 [미결 사항](#ai-시스템-미결-사항)에 있습니다.
+- **환경**: 부모 환경을 물려주되 `CODEX_HOME=<dataDir>/codex-home`(튜터 전용)으로 덮어씁니다. 첫 시작 시 이 폴더와 `config.toml`(기능 플래그 묶음, [격리 설정](#격리-설정-스레드-시작-옵션))을 만들고, 매 시작마다 내용이 기대값과 같은지 확인합니다. 사용자의 Codex CLI 설정과 로그인은 공유하지 않습니다(M1-A 결정).
 - **재시작 백오프**: 1초, 2초, 4초, 8초, 16초(최대 30초), 지터 ±20%. 연속 5회 실패하면 `error` 상태로 멈추고 사용자의 "다시 연결"을 기다립니다. 60초 이상 정상 동작하면 실패 횟수를 초기화합니다.
 - **stderr**: 줄 단위로 서버 로그(`debug`)에 기록합니다. 시작 실패 진단에 씁니다.
 - **종료**: 앱 종료 시 진행 중인 턴에 `turn/interrupt`를 보내고(최대 2초 대기), stdin을 닫고, 5초 후에도 살아 있으면 `SIGTERM`, 다시 3초 후 `SIGKILL`.
@@ -398,12 +398,15 @@ stateDiagram-v2
 |---|---|---|
 | `item/commandExecution/requestApproval` | `decline` | `warn` 로그 + `ai_calls.tool_attempts` 증가 |
 | `item/fileChange/requestApproval` | `decline` | 동일 |
-| `item/permissions/requestApproval` | 거부 응답 (형식은 PoC 확인) | 동일 |
-| `mcpServer/elicitation/request` | 거부 응답 | 동일 |
+| `item/permissions/requestApproval` | `{ permissions: {}, scope: "turn" }` | 동일 |
+| `mcpServer/elicitation/request` | `{ action: "decline", content: null }` | 동일 |
+| `item/tool/requestUserInput` | `{ answers: {} }` | 동일 |
+| `item/tool/call` | `{ success: false, contentItems: [] }` | 동일 |
+| `applyPatchApproval`, `execCommandApproval` (v1) | `denied` | 동일 |
 | 알 수 없는 서버 요청 | JSON-RPC 오류 `-32601` (Method not found) | `warn` 로그 |
 
-- 한 턴에서 도구 시도가 2회를 넘으면 `turn/interrupt`로 턴을 중단하고, 작업을 1회 재시도합니다(지침에 "도구를 쓰지 말 것" 강조 추가). 재시도도 실패하면 폴백.
-- 정책상 `approvalPolicy: "never"`이면 승인 요청 없이 샌드박스 안에서 실행될 수 있으므로 **`never`를 쓰지 않습니다.** 대신 `untrusted` 또는 `on-request` + 자동 거부로 모든 실행 시도를 앱이 볼 수 있게 합니다. 정책별 실제 동작(읽기 전용 명령이 승인 없이 실행되는지)은 PoC에서 확인하고 가장 제한적인 조합을 고릅니다.
+- **도구 항목 감지 즉시 중단 (M1-A 반영)**: `item/started`·`item/completed`에 도구 계열 항목(`commandExecution`, `fileChange`, `mcpToolCall`, `webSearch`, `dynamicToolCall`, `collabAgentToolCall`, `imageGeneration` 등)이 나타나면 승인 요청이 없더라도 즉시 `turn/interrupt`하고, 그 턴의 응답을 버린 뒤 작업을 1회 재시도합니다(지침에 "도구를 쓰지 말 것" 강조 추가). 재시도도 실패하면 폴백. M1-A에서 앱(커넥터) 경유 `mcpToolCall`은 승인 요청 없이 실행되었으므로 승인 거부만으로는 충분하지 않습니다.
+- 정책상 `approvalPolicy: "never"`이면 승인 요청 없이 샌드박스 안에서 실행될 수 있으므로 **`never`를 쓰지 않습니다.** 대신 `untrusted` 또는 `on-request` + 자동 거부로 모든 실행 시도를 앱이 볼 수 있게 합니다. M1-A에서 `untrusted` + `read-only` 조합으로 `ls`, `cat` 요청이 모두 승인 요청으로 올라오는 것을 확인했습니다. 단, `config.toml`에는 `approval_policy = "untrusted"`를 쓸 수 없어(0.155.1에서 지원 종료, app-server가 종료됨) 파일에는 `on-request`를 쓰고 `thread/start`에서 `untrusted`로 재정의합니다.
 
 #### 격리 설정 (스레드 시작 옵션)
 
@@ -429,12 +432,14 @@ stateDiagram-v2
 
 | 통제 | 방법 | 확인 상태 |
 |---|---|---|
-| 파일 접근 최소화 | `cwd`를 빈 디렉터리로. 턴 단위 `sandboxPolicy: { type: "readOnly", access: { type: "restricted", readableRoots: [<codex-workspace>], includePlatformDefaults: false } }` | 필드 존재 확인됨. 실제 효과는 PoC 확인 필요 |
-| 쓰기 금지 | `sandbox: "read-only"` | 확인됨 |
-| 셸·파일 도구 실행 차단 | 승인 정책 + 자동 거부 | 확인됨(승인 요청 형식). 정책별 동작은 PoC 확인 필요 |
-| 웹 검색 차단 | `config.web_search = "disabled"` | 설정 키·값 확인됨. `thread/start.config`로 적용되는지 PoC 확인 필요 |
-| MCP 서버·플러그인·스킬 | 사용자의 Codex 설정에 MCP 서버가 있으면 튜터 스레드에도 노출될 수 있음 | PoC 확인 필요. 필요 시 전용 `CODEX_HOME` 사용 |
-| 지침 교체 | `baseInstructions`로 Codex 기본 코딩 에이전트 지침을 교체 | 필드 존재 확인됨. 교체 범위(완전 교체인지 추가인지)는 PoC 확인 필요 |
+| 설정 격리 | **튜터 전용 `CODEX_HOME`**(`<dataDir>/codex-home`). 사용자 전역 설정(예: `danger-full-access`, MCP 서버, 스킬)을 공유하지 않음. 로그인은 이 폴더에서 따로 함 | M1-A 확인. 공유 홈은 MCP 6개·스킬 85개가 노출되어 **필수** |
+| 기능 플래그 | 전용 홈 `config.toml`의 공식 `[features]`로 `apps`, `plugins`, `remote_plugin`, `plugin_sharing`, `multi_agent`, `image_generation`, `browser_use*`, `computer_use`, `in_app_browser`, `shell_tool`, `unified_exec`, `view_image`, `skill_search`, `skill_mcp_dependency_install`, `tool_suggest`, `tool_call_mcp_elicitation`, `goals`, `hooks`, `sleep_tool`, `code_mode_host`를 끔. 서버 시작 시 `codex features list`로 확인하고 어긋나면 튜터 비활성화 | M1-A 확인. 끈 뒤 도구 실행·승인 요청 0건. `unified_exec`는 0.155.1에서 꺼지지 않음 |
+| 파일 접근 최소화 | `cwd`를 빈 임시 디렉터리로 | M1-A 확인 |
+| 쓰기 금지 | `sandbox: "read-only"` | 확인됨. `thread/start` 응답의 실효 값으로 검증 |
+| 셸·파일 도구 실행 차단 | `approvalPolicy: "untrusted"` + 자동 거부 | M1-A 확인. `ls`, `cat` 요청이 승인 요청으로 올라와 거부됨 |
+| 웹 검색 차단 | `config.web_search = "disabled"` **+ `apps = false`** | M1-A: `web_search`만으로는 **부족**. 로그인 후 동기화된 계정 앱이 `mcpToolCall`로 웹 조회에 성공함. `apps`를 끈 뒤 차단 확인 |
+| 남는 노출 | 모델에게 `functions.exec`(내부 `apply_patch`), `collaboration.*`, 기본 스킬 약 28개가 여전히 보임 | 호출 관측 없음. 승인 거부·읽기 전용·빈 cwd·도구 항목 즉시 중단으로 방어 |
+| 지침 교체 | `baseInstructions`로 Codex 기본 코딩 에이전트 지침을 교체 | M1-A: 골든 질문 20/20 준수. 페르소나 안정적 |
 | 클라이언트 식별 | `clientInfo.name = "proginone"`, `serviceName = "proginone"` | 확인됨 |
 
 `baseInstructions`로 기본 지침을 교체할 수 없는 경우의 대안: `developerInstructions`에 "너는 코딩 에이전트가 아니라 튜터다, 도구를 쓰지 않는다"를 강하게 넣고, 도구 시도 감지·중단 로직에 의존합니다.
@@ -498,11 +503,11 @@ sequenceDiagram
     W-->>U: "연결됨 · ChatGPT Pro" 표시
 ```
 
-- **시작 시 상태 확인**: 프로세스가 준비되면 `account/read`로 로그인 여부를 확인합니다. Codex CLI에서 이미 로그인했다면 바로 `ready`입니다.
+- **시작 시 상태 확인**: 프로세스가 준비되면 `account/read`로 로그인 여부를 확인합니다. 전용 홈에 로그인 정보가 남아 있으면 바로 `ready`이고, 처음에는 앱 안에서 한 번 로그인해야 합니다(Codex CLI 로그인과 별개).
 - **로그인 창**: 웹 앱이 `authUrl`을 새 탭으로 엽니다. 팝업 차단 시 링크 버튼을 표시합니다. 콜백은 app-server가 호스팅합니다(공식 문서).
 - **대체 흐름**: 브라우저 콜백이 실패하는 환경을 위해 "기기 코드로 로그인"(`chatgptDeviceCode`: `verificationUrl`, `userCode` 표시)을 제공합니다.
 - **취소**: 사용자가 로그인 대화상자를 닫으면 `account/login/cancel(loginId)`. 5분 동안 완료되지 않으면 자동 취소합니다.
-- **로그아웃**: 설정 > "연결 해제" → `account/logout` → `account/updated { authMode: null }` → `logged_out`. 학습 데이터는 그대로 둡니다. Codex CLI의 로그인도 함께 해제된다는 점을 확인 대화상자에서 안내합니다(같은 `CODEX_HOME`을 쓰는 경우).
+- **로그아웃**: 설정 > "연결 해제" → `account/logout` → `account/updated { authMode: null }` → `logged_out`. 학습 데이터는 그대로 둡니다. 전용 홈의 로그인만 해제되며 Codex CLI 로그인에는 영향이 없습니다.
 - **토큰 만료**: `chatgpt` 모드는 Codex가 토큰을 갱신합니다(공식 문서). 그래도 `unauthorized` 오류가 오면 `logged_out`으로 전환하고, 진행 중 작업을 `AI_UNAUTHORIZED`로 실패시키고, 튜터 영역에 "다시 로그인" 버튼을 표시합니다.
 - **앱은 자격 증명을 저장하거나 중개하지 않습니다.** `chatgptAuthTokens`(호스트가 토큰을 공급하는 실험적 모드)는 쓰지 않습니다.
 - **API 키 로그인**: Codex는 `apiKey` 로그인도 지원하지만, MVP UI에서는 ChatGPT 로그인만 노출합니다. 고급 설정에서만 허용할지는 미결입니다.
@@ -1148,18 +1153,18 @@ Learning Analyst와 Curriculum Planner의 "결정"은 학습 엔진(코드)이 �
 - AI에 전송되는 정보: 현재 학습 맥락(레슨·문제 일부, 학습자 코드, 질문, 관련 개념 숙련도, 오개념, 요약). 학습자의 이름·이메일 등 계정 정보는 보내지 않습니다.
 - 설정 화면에 "AI에 전송되는 정보" 설명과, 마지막 튜터 호출의 컨텍스트 섹션 목록 미리보기를 제공합니다(P1).
 - 전송 데이터는 OpenAI의 ChatGPT/Codex 데이터 정책을 따른다는 점을 AI 연결 화면에 안내합니다.
-- `ephemeral: false` Codex 튜터 스레드는 사용자의 `CODEX_HOME`에 기록이 남을 수 있습니다. 이 점을 안내하고, 전용 `CODEX_HOME` 사용 여부를 미결 사항으로 둡니다.
+- `ephemeral: false` Codex 튜터 스레드는 튜터 전용 `CODEX_HOME`(`<dataDir>/codex-home`)에 기록이 남습니다. 사용자의 Codex CLI 기록과 섞이지 않으며, "내 데이터 삭제" 시 이 폴더의 대화 기록도 함께 지웁니다.
 
 ### 성능
 
 | 지표 | 목표 |
 |---|---|
-| 튜터 첫 델타 (스레드 재사용) | p50 3초, p95 8초 |
+| 튜터 첫 델타 (스레드 재사용) | p50 4초, p95 8초 (M1-A 측정: 재사용 3.1초, 새 스레드 3.7초) |
 | 튜터 첫 델타 (재구성) | p95 12초 |
 | 힌트 생성 완료 | p95 10초 (초과 시 저작 힌트 먼저 표시) |
 | Codex 프로세스 시작 → ready | 5초 이내 (예열로 체감 지연 제거) |
 
-- 목표는 PoC 측정 후 확정합니다. 목표를 크게 넘으면 `effort`를 낮추거나, 작업을 OpenAI API 직접 호출로 돌리는 방안을 검토합니다.
+- M1-A 측정 후 첫 델타 목표를 3초에서 4초로 조정했습니다([D-002](/docs/decisions.md)). 문제를 열 때 스레드를 미리 만들고(prewarm), 요청 직후 진행 상태와 취소 버튼을 보여 줍니다. 목표를 크게 넘으면 `effort`를 낮추거나, 작업을 OpenAI API 직접 호출로 돌리는 방안을 검토합니다.
 
 ### 접근성
 
@@ -1176,18 +1181,29 @@ Learning Analyst와 Curriculum Planner의 "결정"은 학습 엔진(코드)이 �
 
 ## AI 시스템 미결 사항
 
-PoC(로드맵 첫 마일스톤)에서 확인할 항목입니다. 결과는 결정 기록 D-002 확정 근거로 남깁니다.
+### M1-A에서 해소된 항목
 
-1.  `baseInstructions`가 Codex 기본 지침을 완전히 교체하는지, 튜터 페르소나가 안정적으로 지켜지는지.
-1.  `approvalPolicy`별(`untrusted`, `on-request`) 실제 동작: 읽기 전용 명령이 승인 없이 실행되는지. 가장 제한적인 조합.
-1.  `thread/start.config`로 `web_search: "disabled"`가 적용되는지. 사용자 Codex 설정의 MCP 서버·스킬·플러그인이 튜터 스레드에 노출되는지, 끌 수 있는지.
-1.  전용 `CODEX_HOME`(예: `<dataDir>/codex-home`) 사용 여부: 격리는 좋아지지만 사용자가 별도로 로그인해야 하고, Codex CLI 로그인과 공유되지 않음.
-1.  `turn/start`의 `additionalContext`(`untrusted`)가 비실험적 API인지, 인젝션 저항에 실제로 도움이 되는지.
-1.  `outputSchema` 사용 시 스트리밍 델타 형태, 스키마 준수율, 지원 스키마 범위(중첩, `oneOf`).
-1.  첫 델타 지연(스레드 재사용·재구성), ChatGPT Pro에서 일반적인 학습 세션(튜터 질문 30회, 힌트 20회)의 사용량 소모.
-1.  최소 지원 Codex 버전과 버전 확인 방법(`codex --version` 형식, `userAgent` 파싱).
-1.  `item/permissions/requestApproval`, `mcpServer/elicitation/request`의 거부 응답 형식.
-1.  `optOutNotificationMethods`로 끌 알림 목록.
+2026-11-14, Codex CLI 0.155.1. 상세: [M1-A PoC 보고서](/poc/codex-tutor/README.md).
+
+| 질문 | 결과 |
+|---|---|
+| `baseInstructions`가 페르소나를 안정적으로 지키는가 | 예. 골든 질문 20/20(정답 요구, 지침 무시 유도, 가짜 `<context>` 주입 포함) |
+| 가장 제한적인 승인·샌드박스 조합 | `untrusted` + `read-only`(스레드 재정의). `config.toml`에서는 `untrusted` 사용 불가 |
+| `web_search: "disabled"` 적용, MCP·스킬·플러그인 노출 | `thread/start.config`로 적용되지만 계정 앱 경유 웹 조회는 막지 못함. 전용 홈 + `[features]` 플래그로 해결 |
+| 전용 `CODEX_HOME` | **채택**. 앱 안에서 공식 `account/login/start`로 별도 로그인 |
+| `additionalContext` | 0.155.1 `TurnStartParams`에 없음. 학습자 입력은 태그 블록(`<learner_input>` 등)으로 감싸고, 지침에서 데이터로 취급하도록 함 |
+| `outputSchema` | 20/20 스키마 통과, 스트리밍 델타 정상(턴당 40~95개) |
+| 첫 델타 지연 | p50 재사용 3.1초, 새 스레드 3.7초. 목표 4초로 조정 |
+| 사용량 | 약 60턴에 주간 한도 약 1%p, 크레딧 차감 없음(ChatGPT Pro) |
+| 거부 응답 형식 | [서버 요청 처리](#서버-요청-처리-승인-자동-거부) 표에 반영 |
+| 중단 | `turn/interrupt` 후 `interrupted`로 즉시 종료 |
+
+### 남은 항목
+
+1.  최소 지원 Codex 버전과 버전 확인 방법(`codex --version` 형식, `userAgent` 파싱). 0.155.1에서 검증했으므로 우선 이 버전 이상을 요구합니다.
+1.  Codex 업데이트로 기능 플래그 이름이 바뀌거나 새 도구 기능이 기본으로 켜질 때의 대응. 시작 시 `codex features list`를 허용 목록과 비교해, 모르는 기능이 켜져 있으면 경고하고 튜터를 막습니다(M3에서 구현·테스트).
+1.  `optOutNotificationMethods`로 끌 알림 목록. PoC에서는 reasoning 델타, diff, plan 알림을 껐습니다.
+1.  일반 학습 세션(튜터 질문 30회, 힌트 20회)의 사용량. v0.1 시범판 사용 중에 측정합니다.
 1.  MVP UI에서 Codex `apiKey` 로그인을 고급 설정으로 노출할지.
 
 ## 참고 자료

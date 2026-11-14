@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>변수와 상수 · 연습 8 / 22 · ProgInOne</title>
+  <script src="assets/proto.js"></script>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/base.css">
+</head>
+<body>
+<a class="skip-link" href="#problem">문제로 건너뛰기</a>
+<div class="learn">
+  <header class="learn-header">
+    <div class="left">
+      <a class="icon-btn" href="course.html" aria-label="과정 상세로 돌아가기"><i data-icon="arrow-left" class="icon-20"></i></a>
+      <div class="segmented" role="group" aria-label="학습 모드">
+        <a href="learn-read.html"><i data-icon="book" class="icon-14"></i>읽기</a>
+        <a href="learn-practice.html" aria-current="page"><i data-icon="code" class="icon-14"></i>실습</a>
+      </div>
+      <nav class="crumb" aria-label="현재 위치"><b>변수와 상수</b> <span class="sep">·</span> 단원 연습</nav>
+    </div>
+    <div class="set-progress" aria-label="연습 진행: 22문제 중 8번째">
+      <ol aria-hidden="true">
+        <li class="ok">✓</li><li class="ok">✓</li><li class="retry">↻</li><li class="ok">✓</li><li class="ok">✓</li><li class="bad">✕</li><li class="ok">✓</li><li class="cur">8</li>
+        <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+      </ol>
+      <span class="count tnum">8 <span>/ 22</span></span>
+    </div>
+    <div class="right">
+      <button class="goal-chip" type="button" aria-label="오늘 목표 30분 중 18분 학습"><i data-ring="60" data-size="20" data-label="오늘 목표 60%"></i><span class="tnum">18 / 30분</span></button>
+      <button class="ai-chip" type="button" aria-label="AI 연결됨"><span class="ai-dot"></span>AI</button>
+      <button class="tutor-toggle" type="button" data-toggle-drawer aria-expanded="true" aria-controls="tutor"><i data-icon="sparkle"></i>튜터 <span class="kbd">⌘J</span></button>
+    </div>
+  </header>
+
+  <div class="learn-body">
+    <nav class="rail" aria-label="커리큘럼">
+      <button class="icon-btn rail-toggle" type="button" aria-label="커리큘럼 펼치기 ([)"><i data-icon="panel" class="icon-20"></i></button>
+      <span class="rail-mod">M1</span>
+      <a href="#" class="is-done" aria-label="1.1 첫 프로그램 (완료)">1</a>
+      <a href="#" class="is-done" aria-label="1.2 오류 메시지 읽기 (완료)">2</a>
+      <span class="rail-mod">M2</span>
+      <a href="#" aria-current="page" aria-label="2.1 변수와 상수 (현재)">1</a>
+      <a href="#" aria-label="2.2 자료형">2</a>
+      <a href="#" aria-label="2.3 비어 있는 값">3</a>
+      <a href="#" aria-label="2.4 var와 선언 전 사용">4</a>
+    </nav>
+
+    <div class="practice">
+      <div class="panes">
+        <section class="problem-pane" id="problem" aria-labelledby="p-title">
+          <div class="ex-meta">
+            <span class="badge">함수 구현</span>
+            <span class="difficulty" aria-label="난이도 3 / 5, 복합 개념"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><span>L3 복합 개념</span></span>
+          </div>
+          <h1 id="p-title" tabindex="-1">주문 금액 계산하기</h1>
+          <div class="prose">
+            <p>온라인 서점의 주문 금액을 계산하는 <code>calcOrder</code> 함수를 완성하세요. 책 가격 <code>price</code>와 수량 <code>quantity</code>를 받아, 아래 순서대로 계산한 최종 금액을 돌려줘요.</p>
+          </div>
+
+          <div class="feedback feedback-incorrect" role="status">
+            <span class="ico"><i data-icon="x" class="icon-20"></i></span>
+            <div>
+              <span class="ttl">확신했는데 아니었네요. 이런 순간이 가장 잘 기억에 남아요.</span>
+              테스트 3개를 모두 통과하지 못했어요. 6번째 줄에서 <code>TypeError</code>가 났어요. 오류 메시지 <em>Assignment to constant variable</em>은 상수로 선언한 이름에 값을 다시 넣으려 할 때 나요.
+              <div class="actions">
+                <a class="btn btn-secondary btn-sm" href="learn-read.html#sec-const"><i data-icon="book" class="icon-14"></i>관련 레슨: 바뀌지 않을 이름은 const로</a>
+                <button class="btn btn-ghost btn-sm" type="button" data-toggle-drawer><i data-icon="sparkle" class="icon-14"></i>튜터에게 왜 틀렸는지 묻기</button>
+              </div>
+            </div>
+          </div>
+
+          <h2>요구사항</h2>
+          <ul class="req-list">
+            <li class="todo"><span class="box" aria-hidden="true"></span><span>상품 금액은 <code>price × quantity</code>예요.<span class="why tertiary" style="display:block;font:var(--text-caption)">실행 오류로 확인하지 못했어요</span></span></li>
+            <li class="todo"><span class="box" aria-hidden="true"></span><span>쿠폰 할인 2,000원을 빼요.</span></li>
+            <li class="todo"><span class="box" aria-hidden="true"></span><span>배송비 3,000원을 더해요.</span></li>
+            <li class="pass"><span class="box" aria-hidden="true"><i data-icon="check" class="icon-14"></i></span><span>바뀌지 않는 값(쿠폰, 배송비)은 <code>const</code>로 선언해요.</span></li>
+          </ul>
+
+          <h2>예시</h2>
+          <table class="example-table">
+            <thead><tr><th scope="col">호출</th><th scope="col">돌려줄 값</th></tr></thead>
+            <tbody>
+              <tr><td><code>calcOrder(12000, 2)</code></td><td><code>25000</code></td></tr>
+              <tr><td><code>calcOrder(8000, 1)</code></td><td><code>9000</code></td></tr>
+            </tbody>
+          </table>
+          <p class="scaffold-note"><i data-icon="info"></i><span>함수 모양은 미리 준비돼 있어요. 함수는 모듈 6에서 자세히 배우니, 지금은 <code>// 여기에</code> 아래만 채우면 돼요.</span></p>
+
+          <section class="hint-ladder" aria-labelledby="hint-title">
+            <div class="head">
+              <h2 id="hint-title"><i data-icon="lightbulb"></i>힌트</h2>
+              <span class="hint-steps" role="img" aria-label="힌트 3단계 중 1단계 열림"><i class="on"></i><i></i><i></i></span>
+            </div>
+            <div class="hint"><span class="lv">① 방향</span><span>오류 메시지는 "상수 변수에 값을 대입했다"는 뜻이에요. 어떤 이름에 값을 두 번 이상 넣고 있는지 찾아보세요.</span></div>
+            <div class="hint-actions">
+              <button class="btn btn-secondary btn-sm" type="button">힌트 2 / 3 보기 <span class="kbd">⌘.</span></button>
+              <button class="btn btn-sm" type="button" aria-disabled="true" title="힌트 3단계를 본 뒤에 열려요"><i data-icon="eye" class="icon-14"></i>정답 보기</button>
+              <span class="note">힌트를 볼수록 이 문제의 숙련도 반영이 조금 줄어요.</span>
+            </div>
+          </section>
+        </section>
+
+        <div class="resize-handle" role="separator" aria-orientation="vertical" aria-label="문제 패널 크기 조절" aria-valuenow="40" aria-valuemin="25" aria-valuemax="55" tabindex="0"></div>
+
+        <section class="workbench" aria-label="작업 패널">
+          <div class="editor-pane">
+            <div class="pane-bar">
+              <span class="file-tab"><i data-icon="file" class="icon-14"></i>index.js<span class="dot" title="저장됨"></span></span>
+              <div class="tools">
+                <button class="icon-btn" type="button" aria-label="코드 포맷 (⇧⌥F)"><i data-icon="format"></i></button>
+                <button class="icon-btn" type="button" aria-label="처음 코드로 초기화"><i data-icon="reset"></i></button>
+              </div>
+            </div>
+            <div class="editor" role="textbox" aria-multiline="true" aria-label="코드 에디터, JavaScript" tabindex="0">
+<div class="line"><span class="gutter">1</span><span><span class="k">function</span> <span class="f">calcOrder</span><span class="p">(</span>price<span class="p">,</span> quantity<span class="p">) {</span></span></div>
+<div class="line"><span class="gutter">2</span><span>  <span class="c">// 여기에 코드를 작성하세요</span></span></div>
+<div class="line"><span class="gutter">3</span><span>  <span class="k">const</span> coupon <span class="p">=</span> <span class="n">2000</span><span class="p">;</span></span></div>
+<div class="line"><span class="gutter">4</span><span>  <span class="k">const</span> shipping <span class="p">=</span> <span class="n">3000</span><span class="p">;</span></span></div>
+<div class="line active"><span class="gutter">5</span><span>  <span class="k">const</span> total <span class="p">=</span> price <span class="p">*</span> quantity<span class="p">;</span><span class="cursor" aria-hidden="true"></span></span></div>
+<div class="line error"><span class="gutter">6</span><span>  <span class="err-squiggle">total</span> <span class="p">=</span> total <span class="p">-</span> coupon<span class="p">;</span></span></div>
+<div class="line"><span class="gutter">7</span><span>  total <span class="p">=</span> total <span class="p">+</span> shipping<span class="p">;</span></span></div>
+<div class="line"><span class="gutter">8</span><span>  <span class="k">return</span> total<span class="p">;</span></span></div>
+<div class="line"><span class="gutter">9</span><span><span class="p">}</span></span></div>
+            </div>
+            <div class="editor-status">
+              <span>JavaScript</span><span class="tnum">줄 5, 열 34</span><span class="sp">Esc 다음 Tab: 에디터 밖으로</span>
+            </div>
+          </div>
+
+          <div class="h-handle" role="separator" aria-orientation="horizontal" aria-label="결과 영역 크기 조절" aria-valuenow="62" aria-valuemin="15" aria-valuemax="85" tabindex="0"></div>
+
+          <div class="results-pane">
+            <div class="pane-bar" role="tablist" aria-label="실행 결과">
+              <button class="ptab" role="tab" aria-selected="true" type="button"><i data-icon="beaker" class="icon-14"></i>테스트 결과 <span class="cnt">✕ 3</span></button>
+              <button class="ptab" role="tab" aria-selected="false" type="button"><i data-icon="terminal" class="icon-14"></i>콘솔</button>
+              <span class="run-state tnum">제출 · 완료 · 6ms</span>
+            </div>
+            <div class="results-body" role="tabpanel">
+              <div class="test-summary tnum">테스트 3개 중 0개 통과 <span class="bar" aria-hidden="true"><span style="width:0%"></span></span></div>
+              <details class="test-row fail" open>
+                <summary><span class="res" aria-label="실패">✕</span><span class="tname">기본 예시</span><span class="tcall">calcOrder(12000, 2)</span><i data-icon="chevron-right" class="chev"></i></summary>
+                <div class="test-detail">
+                  <dl class="kv"><dt>기대값</dt><dd>25000</dd></dl>
+                  <div class="kv"><span class="tertiary">결과</span><span class="err">TypeError: Assignment to constant variable. <a href="#">(index.js:6)</a></span></div>
+                  <span class="plain"><code>total</code>에 값을 다시 넣으려 했는데, 다시 넣을 수 없는 이름이에요.</span>
+                </div>
+              </details>
+              <details class="test-row fail">
+                <summary><span class="res" aria-label="실패">✕</span><span class="tname">수량 1개</span><span class="tcall">calcOrder(8000, 1)</span><i data-icon="chevron-right" class="chev"></i></summary>
+              </details>
+              <details class="test-row fail">
+                <summary><span class="res" aria-label="실패">✕</span><span class="tname">숨김 테스트 · 수량이 많을 때</span><span class="tcall">입력 비공개</span><i data-icon="chevron-right" class="chev"></i></summary>
+              </details>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="action-bar">
+        <span class="saved"><i data-icon="check" class="icon-14"></i>저장됨 · 방금</span>
+        <button class="btn btn-secondary" type="button"><i data-icon="play" class="icon-14"></i>실행 <span class="kbd">⌘'</span></button>
+        <span class="conf-q">실습 문제는 첫 제출에만 확신도를 물어요</span>
+        <button class="btn btn-primary" type="button">다시 제출 <span class="kbd">⌘↵</span></button>
+        <span class="divider" aria-hidden="true"></span>
+        <button class="btn btn-ghost" type="button"><i data-icon="skip" class="icon-14"></i>건너뛰기</button>
+        <button class="btn btn-ghost" type="button" aria-disabled="true">다음 <i data-icon="arrow-right" class="icon-14"></i></button>
+      </div>
+    </div>
+
+    <aside class="drawer" id="tutor" aria-label="AI 튜터">
+      <div class="drawer-head">
+        <span class="ttl"><i data-icon="sparkle" class="icon-20"></i>AI 튜터</span>
+        <div class="tools">
+          <button class="icon-btn" type="button" aria-label="스레드 메뉴"><i data-icon="more"></i></button>
+          <button class="icon-btn" type="button" data-toggle-drawer aria-label="튜터 닫기 (⌘J)"><i data-icon="x"></i></button>
+        </div>
+      </div>
+      <div class="drawer-ctx">
+        <p class="thread">변수와 상수 · 문제 8 스레드</p>
+        <div class="ctx-chips" aria-label="튜터에게 전달되는 맥락">
+          <span class="ctx-chip">현재 문제<button type="button" aria-label="현재 문제 맥락 제거"><i data-icon="x" class="icon-14"></i></button></span>
+          <span class="ctx-chip">내 코드 9줄<button type="button" aria-label="내 코드 맥락 제거"><i data-icon="x" class="icon-14"></i></button></span>
+          <span class="ctx-chip">테스트 결과 <span class="bad">✕3</span><button type="button" aria-label="테스트 결과 맥락 제거"><i data-icon="x" class="icon-14"></i></button></span>
+          <button class="ctx-chip add" type="button"><i data-icon="plus" class="icon-14"></i>추가</button>
+        </div>
+      </div>
+      <div class="messages" role="log" aria-label="튜터 대화" tabindex="0">
+        <div class="msg-user">6번째 줄에서 TypeError가 나요. 계산식은 맞는 것 같은데 왜 그런가요?</div>
+        <div class="msg-ai">
+          <div class="who"><i data-icon="sparkle" class="icon-14"></i>AI 튜터</div>
+          <p>계산식부터 확인했다니 좋은 접근이에요. 오류 메시지를 같이 읽어 볼게요.</p>
+          <p><code>Assignment to constant variable</code>은 "상수(constant) 변수에 대입(assignment)했다"는 뜻이에요. 그러니 문제는 계산식보다 <strong>값을 넣는 방식</strong>에 있을 가능성이 커요.</p>
+          <p class="q">코드에서 <code>total</code>에 값을 넣는 줄은 몇 번째 줄들인가요?</p>
+        </div>
+        <div class="msg-user">5, 6, 7번째 줄이요.</div>
+        <div class="msg-ai">
+          <div class="who"><i data-icon="sparkle" class="icon-14"></i>AI 튜터</div>
+          <p>맞아요, 세 번이에요. 이제 <code>total</code>을 처음 만든 5번째 줄을 보세요. 어떤 키워드로 선언했나요?</p>
+          <p class="q">그 키워드로 만든 이름에, 처음 값을 넣은 뒤 다른 값을 다시 넣을 수 있을까요?</p>
+          <p class="policy"><i data-icon="info" class="icon-14"></i>정답 코드는 힌트 3단계 이후에 볼 수 있어요</p>
+        </div>
+      </div>
+      <div class="composer">
+        <div class="quick" aria-label="빠른 질문">
+          <button type="button">개념 다시 설명</button>
+          <button type="button">비슷한 예시 보기</button>
+          <button type="button">오류 메시지 읽는 법</button>
+        </div>
+        <div class="box">
+          <label class="sr-only" for="ask">튜터에게 질문</label>
+          <textarea id="ask" rows="2" placeholder="질문을 입력하세요…"></textarea>
+          <div class="row">
+            <span class="tip">Enter 보내기 · Shift+Enter 줄바꿈</span>
+            <button class="btn btn-sm btn-secondary" type="button"><i data-icon="send" class="icon-14"></i>보내기</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+</body>
+</html>

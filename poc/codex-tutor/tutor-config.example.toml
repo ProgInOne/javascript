@@ -1,0 +1,28 @@
+approval_policy = "on-request"
+sandbox_mode = "read-only"
+web_search = "disabled"
+
+# ProgInOne tutor: no tools of any kind. Official feature flags only.
+[features]
+apps = false
+plugins = false
+remote_plugin = false
+plugin_sharing = false
+multi_agent = false
+image_generation = false
+browser_use = false
+browser_use_external = false
+browser_use_full_cdp_access = false
+computer_use = false
+in_app_browser = false
+shell_tool = false
+unified_exec = false
+view_image = false
+skill_search = false
+skill_mcp_dependency_install = false
+tool_suggest = false
+tool_call_mcp_elicitation = false
+goals = false
+hooks = false
+sleep_tool = false
+code_mode_host = false

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JavaScript 기초 · ProgInOne</title>
+  <script src="assets/proto.js"></script>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/base.css">
+</head>
+<body>
+<a class="skip-link" href="#main">본문으로 건너뛰기</a>
+
+<header class="app-header">
+  <div class="inner">
+    <a class="brand" href="dashboard.html" aria-label="ProgInOne 대시보드">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--color-action-primary)"/><path d="M13.2 9.5 7.6 16l5.6 6.5" fill="none" stroke="var(--color-text-on-action)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.8 9.5 24.4 16l-5.6 6.5" fill="none" stroke="var(--color-text-on-action)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="16" r="2.4" fill="var(--color-text-on-action)"/></svg>
+      <span>Prog<span class="in">In</span>One</span>
+    </a>
+    <nav class="main-nav" aria-label="주 메뉴">
+      <a href="dashboard.html">대시보드</a>
+      <a href="course.html" aria-current="page">과정</a>
+      <a href="#">복습</a>
+      <a href="#">통계</a>
+    </nav>
+    <div class="header-tools">
+      <button class="search-trigger" type="button" aria-label="검색 (⌘K)"><i data-icon="search"></i><span class="label">개념·단원 검색</span><span class="kbd">⌘K</span></button>
+      <button class="goal-chip" type="button" aria-label="오늘 목표 30분 중 18분 학습"><i data-ring="60" data-size="20" data-label="오늘 목표 60%"></i><span class="tnum">18 / 30분</span></button>
+      <button class="ai-chip" type="button" aria-label="AI 연결됨"><span class="ai-dot"></span>AI</button>
+      <button class="icon-btn" type="button" aria-label="설정"><i data-icon="settings" class="icon-20"></i></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="course-hero" aria-labelledby="course-title">
+    <div class="inner">
+      <div>
+      <div class="course-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><path d="M6 8.5h12.5a7.5 7.5 0 0 1 0 15H6z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M11 13.5h7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M11 18.5h4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="25.5" cy="8.5" r="2.5" fill="currentColor"/></svg>
+      </div>
+      <p class="eyebrow">웹 프론트엔드 기초 · 과정 3</p>
+      <h1 id="course-title" tabindex="-1">JavaScript 기초</h1>
+      <p class="lead">값과 변수부터 함수·배열·객체, DOM과 이벤트까지. 작은 문제를 스스로 해결하는 프로그램을 만들고, 오류 메시지를 읽고 직접 디버깅하는 힘을 길러요.</p>
+      <div class="course-meta">
+        <span><i data-icon="layers"></i><b>10</b>개 모듈</span>
+        <span><i data-icon="book"></i><b>45</b>개 단원</span>
+        <span><i data-icon="clock"></i>약 <b>22</b>시간</span>
+        <span><i data-icon="code"></i>문제 약 <b>860</b>개</span>
+        <span><i data-icon="target"></i>목표일 <b>2027. 3. 31.</b></span>
+      </div>
+      </div>
+      <section class="module-strip" aria-labelledby="ms-title">
+        <h2 id="ms-title">모듈별 진도 <span class="tnum">2 / 45단원</span></h2>
+        <ol aria-label="모듈 1 완료, 모듈 2 진행 중(4단원 중 0단원 완료, 첫 단원 학습 중), 모듈 3~10 시작 전">
+          <li><span style="height:100%"></span></li>
+          <li class="cur"><span style="height:16%"></span></li>
+          <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+        </ol>
+        <div class="labels" aria-hidden="true"><span>1</span><span class="cur">2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+        <p class="legend-line">지금 <b>2. 값과 변수</b>를 배우고 있어요. 다음 모듈은 <b>연산자와 형 변환</b>이에요.</p>
+      </section>
+    </div>
+  </section>
+
+  <div class="page" style="padding-top:var(--space-6)">
+    <div class="course-layout">
+      <div>
+        <nav class="tabs" aria-label="과정 보기">
+          <a href="#" aria-current="page">커리큘럼</a>
+          <a href="#">개념 지도</a>
+          <a href="#">소개</a>
+        </nav>
+
+        <div class="accordion">
+          <section class="acc-section">
+            <button class="acc-head" type="button" aria-expanded="false">
+              <i data-icon="chevron-right" class="chev"></i>
+              <span class="t"><small>1</small>시작하기</span>
+              <span class="m">2단원 · 45분</span>
+              <span class="state badge badge-brand"><i data-icon="check" class="icon-14"></i>완료</span>
+            </button>
+            <div class="acc-body"></div>
+          </section>
+
+          <section class="acc-section is-open">
+            <button class="acc-head" type="button" aria-expanded="true">
+              <i data-icon="chevron-right" class="chev"></i>
+              <span class="t"><small>2</small>값과 변수</span>
+              <span class="m">4단원 · 1시간 55분</span>
+              <span class="state badge">학습 중</span>
+            </button>
+            <div class="acc-body">
+              <a class="lesson-row is-current" href="learn-read.html" aria-current="step">
+                <span class="status" aria-label="현재 단원"><i data-icon="play" class="icon-14"></i></span>
+                <span class="no tnum">2.1</span>
+                <span class="name">변수와 상수 <span class="badge badge-brand">현재</span><span class="star" title="핵심 단원">★ 핵심</span></span>
+                <span class="info tnum">35분 · 22문제</span>
+                <span class="mastery"><i data-stage="practicing"></i><i data-stage="practicing" data-weak></i><i data-stage="introduced"></i><i data-stage="introduced"></i></span>
+              </a>
+              <a class="lesson-row" href="#">
+                <span class="status" aria-label="시작 전"></span>
+                <span class="no tnum">2.2</span>
+                <span class="name">자료형 <span class="star" title="핵심 단원">★ 핵심</span></span>
+                <span class="info tnum">40분 · 24문제</span>
+                <span class="mastery"><i data-stage="not_started"></i><i data-stage="not_started"></i><i data-stage="not_started"></i><i data-stage="not_started"></i><i data-stage="not_started"></i></span>
+              </a>
+              <a class="lesson-row" href="#">
+                <span class="status" aria-label="시작 전"></span>
+                <span class="no tnum">2.3</span>
+                <span class="name">비어 있는 값</span>
+                <span class="info tnum">20분 · 14문제</span>
+                <span class="mastery"><i data-stage="not_started"></i><i data-stage="not_started"></i></span>
+              </a>
+              <a class="lesson-row" href="#">
+                <span class="status" aria-label="시작 전"></span>
+                <span class="no tnum">2.4</span>
+                <span class="name"><code style="font-size:13px">var</code>와 선언 전 사용 <span class="tertiary" title="먼저 ‘변수와 상수’를 마치면 더 쉬워요" style="display:inline-flex"><i data-icon="info" class="icon-14"></i></span></span>
+                <span class="info tnum">20분 · 12문제</span>
+                <span class="mastery"><i data-stage="not_started"></i><i data-stage="not_started"></i></span>
+              </a>
+            </div>
+          </section>
+
+          <section class="acc-section"><button class="acc-head" type="button" aria-expanded="false"><i data-icon="chevron-right" class="chev"></i><span class="t"><small>3</small>연산자와 형 변환</span><span class="m">6단원 · 3시간</span><span class="state"></span></button><div class="acc-body"></div></section>
+          <section class="acc-section"><button class="acc-head" type="button" aria-expanded="false"><i data-icon="chevron-right" class="chev"></i><span class="t"><small>4</small>조건문</span><span class="m">4단원 · 1시간 40분</span><span class="state"></span></button><div class="acc-body"></div></section>
+          <section class="acc-section"><button class="acc-head" type="button" aria-expanded="false"><i data-icon="chevron-right" class="chev"></i><span class="t"><small>5</small>반복문</span><span class="m">5단원 · 2시간 20분</span><span class="state"></span></button><div class="acc-body"></div></section>
+          <section class="acc-section"><button class="acc-head" type="button" aria-expanded="false"><i data-icon="chevron-right" class="chev"></i><span class="t"><small>6</small>함수</span><span class="m">7단원 · 3시간 30분</span><span class="state"></span></button><div class="acc-body"></div></section>
+          <section class="acc-section"><button class="acc-head" type="button" aria-expanded="false"><i data-icon="chevron-right" class="chev"></i><span class="t"><small>7</small>문자열</span><span class="m">2단원 · 1시간</span><span class="state"></span></button><div class="acc-body"></div></section>
+          <section class="acc-section"><button class="acc-head" type="button" aria-expanded="false"><i data-icon="chevron-right" class="chev"></i><span class="t"><small>8</small>배열</span><span class="m">6단원 · 3시간</span><span class="state"></span></button><div class="acc-body"></div></section>
+        </div>
+      </div>
+
+      <aside class="card summary-card" aria-labelledby="sum-title">
+        <h2 id="sum-title" class="sr-only">학습 요약</h2>
+        <div class="ring-wrap">
+          <i data-ring="4" data-size="64" data-label="과정 진도 4%"></i>
+          <div><div class="pct tnum">4%</div><div class="muted" style="font:var(--text-small)">45단원 중 2단원 완료</div></div>
+        </div>
+        <dl>
+          <div><dt>숙련 분포</dt><dd class="tnum">숙련 3 · 연습 중 4 · 입문 2</dd></div>
+          <div><dt>푼 문제</dt><dd class="tnum">31문제 · 1차 정답 74%</dd></div>
+          <div><dt>다음 복습</dt><dd>내일 · 1개 개념</dd></div>
+          <div><dt>목표 페이스</dt><dd>여유 있어요</dd></div>
+        </dl>
+        <a class="btn btn-primary btn-lg" href="learn-practice.html" style="width:100%">이어서 학습 <i data-icon="arrow-right"></i></a>
+        <div class="next-up">이어서 할 곳<b>2.1 변수와 상수 · 연습 7 / 22</b></div>
+      </aside>
+    </div>
+  </div>
+</main>
+</body>
+</html>

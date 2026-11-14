@@ -1,0 +1,5 @@
+node_modules/
+results/raw/
+schema-*/
+codex-home/
+results-login.log

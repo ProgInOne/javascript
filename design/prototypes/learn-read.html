@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>변수와 상수 · 읽기 · ProgInOne</title>
+  <script src="assets/proto.js"></script>
+  <link rel="stylesheet" href="assets/tokens.css">
+  <link rel="stylesheet" href="assets/base.css">
+</head>
+<body>
+<a class="skip-link" href="#lesson">본문으로 건너뛰기</a>
+<div class="learn">
+  <header class="learn-header">
+    <div class="left">
+      <a class="icon-btn" href="course.html" aria-label="과정 상세로 돌아가기"><i data-icon="arrow-left" class="icon-20"></i></a>
+      <nav class="crumb" aria-label="현재 위치">JavaScript 기초 <span class="sep">/</span> 값과 변수 <span class="sep">/</span> <b>변수와 상수</b></nav>
+    </div>
+    <div class="segmented" role="group" aria-label="학습 모드">
+      <a href="learn-read.html" aria-current="page"><i data-icon="book" class="icon-14"></i>읽기</a>
+      <a href="learn-practice.html"><i data-icon="code" class="icon-14"></i>실습</a>
+    </div>
+    <div class="right">
+      <button class="goal-chip" type="button" aria-label="오늘 목표 30분 중 18분 학습"><i data-ring="60" data-size="20" data-label="오늘 목표 60%"></i><span class="tnum">18 / 30분</span></button>
+      <button class="ai-chip" type="button" aria-label="AI 연결됨"><span class="ai-dot"></span>AI</button>
+      <button class="tutor-toggle" type="button" data-toggle-drawer aria-expanded="false" aria-controls="tutor"><i data-icon="sparkle"></i>튜터 <span class="kbd">⌘J</span></button>
+    </div>
+  </header>
+
+  <div class="learn-body">
+    <nav class="rail" aria-label="커리큘럼">
+      <button class="icon-btn rail-toggle" type="button" aria-label="커리큘럼 펼치기 ([)"><i data-icon="panel" class="icon-20"></i></button>
+      <span class="rail-mod">M1</span>
+      <a href="#" class="is-done" aria-label="1.1 첫 프로그램 (완료)">1</a>
+      <a href="#" class="is-done" aria-label="1.2 오류 메시지 읽기 (완료)">2</a>
+      <span class="rail-mod">M2</span>
+      <a href="#" aria-current="page" aria-label="2.1 변수와 상수 (현재)">1</a>
+      <a href="#" aria-label="2.2 자료형">2</a>
+      <a href="#" aria-label="2.3 비어 있는 값">3</a>
+      <a href="#" aria-label="2.4 var와 선언 전 사용">4</a>
+    </nav>
+
+    <main class="reader" id="lesson">
+      <div class="reader-grid">
+        <article class="lesson" aria-labelledby="lesson-title">
+          <p class="lesson-kicker">값과 변수 · 단원 1 <span class="badge badge-warning">★ 핵심 단원</span></p>
+          <h1 id="lesson-title" tabindex="-1">변수와 상수</h1>
+          <div class="lesson-meta">
+            <span><i data-icon="clock"></i>약 35분</span>
+            <span><i data-icon="code"></i>연습 22문제</span>
+            <span><i data-icon="layers"></i>개념 4개</span>
+          </div>
+
+          <section class="objectives-box" aria-labelledby="sec-goal">
+            <h2 id="sec-goal">이 단원을 마치면 이런 걸 할 수 있어요</h2>
+            <ul class="objectives">
+              <li><span><code>let</code>과 <code>const</code>로 이름을 만들고 값을 넣을 수 있어요.</span></li>
+              <li><span><code>=</code>를 "같다"가 아니라 "오른쪽 값을 왼쪽 이름에 넣는다"로 읽을 수 있어요.</span></li>
+              <li><span>값이 바뀌는 이름과 바뀌면 안 되는 이름을 구분해 <code>let</code>과 <code>const</code>를 고를 수 있어요.</span></li>
+            </ul>
+          </section>
+
+          <div class="prereq" aria-label="선수 개념">
+            <span>먼저 알면 좋아요</span>
+            <span class="chip"><i data-stage="proficient"></i><code>console.log</code> 출력</span>
+            <span class="chip"><i data-stage="proficient"></i>문장과 실행 순서</span>
+            <span class="tertiary">· 모두 준비됐어요</span>
+          </div>
+
+          <h2 id="sec-why"><span class="sec-ico"><i data-icon="lightbulb" class="icon-20"></i></span>왜 이름이 필요할까요</h2>
+          <p>온라인 서점에서 주문 금액을 계산한다고 해봅시다. 책 가격 <code>12000</code>이 코드 곳곳에 숫자로 흩어져 있다면, 가격이 바뀔 때마다 모든 곳을 찾아 고쳐야 해요. 게다가 <code>12000 * 3</code>만 봐서는 12000이 무슨 값인지 알 수 없죠.</p>
+          <p><strong>변수</strong>는 값에 이름을 붙여 두는 방법이에요. 이름을 한 번 정해 두면 그 이름으로 값을 꺼내 쓰고, 필요하면 새 값을 넣을 수 있어요.</p>
+
+          <h2 id="sec-let"><span class="sec-ico"><i data-icon="book" class="icon-20"></i></span>let으로 만들고 =로 넣어요</h2>
+          <p><code>let</code> 뒤에 이름을 쓰면 새 변수가 만들어져요(<strong>선언</strong>). <code>=</code>는 오른쪽을 먼저 계산해서 그 결과를 왼쪽 이름에 넣으라는 뜻이에요(<strong>대입</strong>).</p>
+
+          <figure class="code">
+            <figcaption class="code-head"><span class="label"><i data-icon="file" class="icon-14"></i>JavaScript</span><button class="icon-btn" type="button" aria-label="코드 복사"><i data-icon="copy"></i></button></figcaption>
+<pre><code><span class="ln">1</span><span class="k">let</span> count <span class="p">=</span> <span class="n">1</span><span class="p">;</span>
+<span class="ln">2</span>count <span class="p">=</span> count <span class="p">+</span> <span class="n">1</span><span class="p">;</span>     <span class="c">// 오른쪽(1 + 1)을 먼저 계산해 2를 넣어요</span>
+<span class="ln">3</span><span class="f">console</span><span class="p">.</span><span class="f">log</span><span class="p">(</span>count<span class="p">);</span></code></pre>
+          </figure>
+
+          <p>그럼 다른 변수로 계산한 값은 어떨까요? 실행하기 전에 결과를 먼저 예측해 보세요.</p>
+
+          <figure class="code runnable">
+            <figcaption class="code-head"><span class="label"><i data-icon="play" class="icon-14"></i>예제 · 실행해 보기</span><span class="tertiary">예측 → 실행 → 비교</span></figcaption>
+<pre><code><span class="ln">1</span><span class="k">let</span> price <span class="p">=</span> <span class="n">12000</span><span class="p">;</span>
+<span class="ln">2</span><span class="k">let</span> quantity <span class="p">=</span> <span class="n">2</span><span class="p">;</span>
+<span class="ln">3</span><span class="k">let</span> total <span class="p">=</span> price <span class="p">*</span> quantity<span class="p">;</span>
+<span class="ln">4</span>quantity <span class="p">=</span> <span class="n">3</span><span class="p">;</span>
+<span class="ln">5</span><span class="f">console</span><span class="p">.</span><span class="f">log</span><span class="p">(</span>total<span class="p">);</span></code></pre>
+            <div class="predict">
+              <label for="predict-1">콘솔에 무엇이 출력될까요? <span class="sub-hint">줄마다 하나씩 적어요</span></label>
+              <div class="predict-row">
+                <textarea id="predict-1" placeholder="예: 36000" aria-describedby="predict-help"></textarea>
+                <button class="btn btn-secondary" type="button"><i data-icon="play" class="icon-14"></i>예측하고 실행 <span class="kbd">⌘↵</span></button>
+              </div>
+              <span id="predict-help" class="skip">예측은 숙련도에 반영되지 않아요 · <a href="#">예측 없이 실행</a></span>
+            </div>
+          </figure>
+
+          <aside class="callout callout-pitfall" aria-labelledby="pit-1">
+            <span class="ico"><i data-icon="alert" class="icon-20"></i></span>
+            <div>
+              <span class="ttl" id="pit-1">흔한 실수 · <code>=</code>를 "같다"로 읽어요</span>
+              <dl class="pitfall-steps">
+                <div><dt>잘못된 생각</dt><dd><code>count = count + 1</code>은 성립할 수 없는 식이다.</dd></div>
+                <div><dt>실제 동작</dt><dd>오른쪽 <code>count + 1</code>을 먼저 계산하고, 그 결과를 <code>count</code>에 넣어요.</dd></div>
+                <div><dt>올바른 이해</dt><dd><code>=</code>는 "넣는다"로 읽어요. 같은지 비교할 때는 <code>===</code>를 써요(모듈 3).</dd></div>
+              </dl>
+            </div>
+          </aside>
+
+          <h2 id="sec-const"><span class="sec-ico"><i data-icon="book" class="icon-20"></i></span>바뀌지 않을 이름은 const로</h2>
+          <p><code>const</code>로 만든 이름에는 처음 넣은 값 말고 다른 값을 <strong>다시 넣을 수 없어요</strong>. 바뀌면 안 되는 값을 <code>const</code>로 선언해 두면, 실수로 덮어쓸 때 JavaScript가 바로 알려 줘요.</p>
+
+          <figure class="code">
+            <figcaption class="code-head"><span class="label"><i data-icon="file" class="icon-14"></i>JavaScript</span><button class="icon-btn" type="button" aria-label="코드 복사"><i data-icon="copy"></i></button></figcaption>
+<pre><code><span class="ln">1</span><span class="k">const</span> shippingFee <span class="p">=</span> <span class="n">3000</span><span class="p">;</span>
+<span class="ln">2</span>shippingFee <span class="p">=</span> <span class="n">0</span><span class="p">;</span>  <span class="c">// TypeError: Assignment to constant variable.</span></code></pre>
+          </figure>
+
+          <aside class="callout callout-tip" aria-labelledby="tip-1">
+            <span class="ico"><i data-icon="info" class="icon-20"></i></span>
+            <div><span class="ttl" id="tip-1">언제 무엇을 쓸까요</span>기본은 <code>const</code>로 쓰고, 값을 다시 넣어야 할 때만 <code>let</code>으로 바꾸세요. 코드를 읽는 사람이 "이 값은 바뀌는구나"를 바로 알 수 있어요.</div>
+          </aside>
+
+          <section class="inline-ex" aria-labelledby="chk-1">
+            <div class="ex-head"><i data-icon="check" class="icon-14"></i><span id="chk-1">이해도 확인 · 1 / 2</span><span class="badge" style="margin-left:auto">실행 결과 예측</span></div>
+            <div class="ex-body">
+              <p class="q">다음 코드를 실행하면 콘솔에 무엇이 출력될까요?</p>
+              <figure class="code" style="margin-bottom:var(--space-4)">
+<pre><code><span class="k">let</span> score <span class="p">=</span> <span class="n">10</span><span class="p">;</span>
+score <span class="p">=</span> score <span class="p">+</span> <span class="n">5</span><span class="p">;</span>
+score <span class="p">=</span> score <span class="p">*</span> <span class="n">2</span><span class="p">;</span>
+<span class="f">console</span><span class="p">.</span><span class="f">log</span><span class="p">(</span>score<span class="p">);</span></code></pre>
+              </figure>
+              <div class="choices" role="radiogroup" aria-labelledby="chk-1">
+                <button class="choice" type="button" role="radio" aria-checked="false"><span class="key">1</span><code>10</code></button>
+                <button class="choice" type="button" role="radio" aria-checked="false"><span class="key">2</span><code>15</code></button>
+                <button class="choice" type="button" role="radio" aria-checked="true"><span class="key">3</span><code>30</code></button>
+                <button class="choice" type="button" role="radio" aria-checked="false"><span class="key">4</span>오류가 발생한다</button>
+              </div>
+              <div class="confidence" role="group" aria-label="확신도를 고르며 제출">
+                <span class="prompt">답을 골랐다면, 얼마나 확신하나요?</span>
+                <button class="btn btn-primary" type="button">확실해요 <span class="kbd">⌘↵</span></button>
+                <button class="btn btn-secondary" type="button">애매해요</button>
+                <button class="btn btn-secondary" type="button">찍었어요</button>
+              </div>
+            </div>
+          </section>
+
+          <h2 id="sec-sum"><span class="sec-ico"><i data-icon="target" class="icon-20"></i></span>정리</h2>
+          <div class="recall">
+            <i data-icon="lightbulb" class="icon-20"></i>
+            <span><b>요약을 보기 전에</b> 이 단원의 핵심 두 가지를 떠올려 보세요.</span>
+            <button class="btn btn-ghost btn-sm" type="button">요약 펼치기 <i data-icon="chevron-down"></i></button>
+          </div>
+
+          <div class="practice-cta">
+            <div>
+              <p class="t">본문을 다 읽었어요. 이제 직접 풀어볼까요?</p>
+              <p class="s">연습 22문제 · 약 25분 · 예측 → 버그 수정 → 구현 순서로 나와요</p>
+            </div>
+            <a class="btn btn-primary btn-lg" href="learn-practice.html">연습 시작 <i data-icon="arrow-right"></i></a>
+          </div>
+        </article>
+
+        <aside class="aside-col" aria-label="단원 정보">
+          <section>
+            <h2>이 단원의 개념</h2>
+            <ul class="aside-concepts">
+              <li><i data-stage="practicing"></i><code style="font-size:13px">let</code> 선언<span class="lvl">연습 중</span></li>
+              <li><i data-stage="practicing" data-weak></i><code style="font-size:13px">const</code> 선언<span class="lvl">연습 중</span></li>
+              <li><i data-stage="introduced"></i>대입 연산자<span class="lvl">입문</span></li>
+              <li><i data-stage="introduced"></i>이름 짓기 규칙<span class="lvl">입문</span></li>
+            </ul>
+          </section>
+          <section>
+            <h2>목차</h2>
+            <nav class="toc" aria-label="목차">
+              <a href="#sec-goal" class="is-read">학습 목표</a>
+              <a href="#sec-why" class="is-read">왜 이름이 필요할까요</a>
+              <a href="#sec-let" aria-current="true">let으로 만들고 =로 넣어요</a>
+              <a href="#pit-1">흔한 실수</a>
+              <a href="#sec-const">바뀌지 않을 이름은 const로</a>
+              <a href="#chk-1">이해도 확인</a>
+              <a href="#sec-sum">정리</a>
+            </nav>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <aside class="drawer" id="tutor" hidden aria-label="AI 튜터">
+      <div class="drawer-head"><span class="ttl"><i data-icon="sparkle" class="icon-20"></i>AI 튜터</span><div class="tools"><button class="icon-btn" type="button" data-toggle-drawer aria-label="튜터 닫기 (⌘J)"><i data-icon="x"></i></button></div></div>
+      <div class="drawer-ctx"><p class="thread">변수와 상수 · 레슨 스레드</p><div class="ctx-chips"><span class="ctx-chip">현재 단원<button type="button" aria-label="현재 단원 맥락 제거"><i data-icon="x" class="icon-14"></i></button></span><button class="ctx-chip add" type="button"><i data-icon="plus" class="icon-14"></i>추가</button></div></div>
+      <div class="messages" role="log" aria-label="튜터 대화" tabindex="0"><div class="msg-ai"><div class="who"><i data-icon="sparkle" class="icon-14"></i>AI 튜터</div><p>본문에서 이해가 안 되는 문장이나 코드를 선택하면, 그 부분을 맥락으로 붙여서 물어볼 수 있어요.</p></div></div>
+      <div class="composer"><div class="quick"><button type="button">다른 예시로 설명해줘요</button><button type="button">let과 const 차이</button></div><div class="box"><label class="sr-only" for="ask">튜터에게 질문</label><textarea id="ask" rows="2" placeholder="질문을 입력하세요…"></textarea><div class="row"><span class="tip">Enter 보내기 · Shift+Enter 줄바꿈</span><button class="btn btn-sm btn-secondary" type="button"><i data-icon="send" class="icon-14"></i>보내기</button></div></div></div>
+    </aside>
+  </div>
+</div>
+</body>
+</html>

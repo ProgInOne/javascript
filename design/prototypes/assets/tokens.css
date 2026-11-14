@@ -1,0 +1,344 @@
+/*
+ * ProgInOne 디자인 토큰 (프로토타입 v0)
+ * 원천: docs/design/ui-ux.md "디자인 토큰"
+ * 3계층: 기본(primitive) → 의미(semantic) → 컴포넌트.
+ * 컴포넌트 CSS는 의미 토큰만 사용합니다.
+ *
+ * 전환 축
+ *   html[data-theme="light" | "dark"]
+ *   html[data-direction="a" | "b" | "c"]
+ *     a = 밝은 교실, b = 밝은 교실 + 어두운 작업대, c = 차분한 교실
+ */
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/jetbrains-mono@5.2.5/index.min.css");
+
+:root {
+  /* ── 기본 토큰: 제이드 (hue 168) ── */
+  --jade-50: oklch(0.975 0.015 168);
+  --jade-100: oklch(0.950 0.035 168);
+  --jade-200: oklch(0.900 0.060 168);
+  --jade-300: oklch(0.830 0.090 168);
+  --jade-400: oklch(0.740 0.120 168);
+  --jade-500: oklch(0.650 0.130 168);
+  --jade-600: oklch(0.545 0.120 168); /* 문서 0.560 → 0.545: 흰 글자 4.5:1 확보 (프로토타입 측정) */
+  --jade-700: oklch(0.480 0.105 168);
+  --jade-800: oklch(0.400 0.085 168);
+  --jade-900: oklch(0.320 0.065 168);
+  --jade-950: oklch(0.240 0.045 168);
+
+  /* ── 뉴트럴 (hue 168을 아주 약하게) ── */
+  --neutral-0: oklch(1.000 0 0);
+  --neutral-25: oklch(0.985 0.002 168);
+  --neutral-50: oklch(0.970 0.003 168);
+  --neutral-100: oklch(0.940 0.004 168);
+  --neutral-200: oklch(0.900 0.005 168);
+  --neutral-300: oklch(0.830 0.006 168);
+  --neutral-400: oklch(0.700 0.007 168);
+  --neutral-500: oklch(0.580 0.008 168);
+  --neutral-550: oklch(0.540 0.008 168); /* 추가 제안: 작은 3차 텍스트용 (4.5:1) */
+  --neutral-600: oklch(0.480 0.008 168);
+  --neutral-700: oklch(0.380 0.008 168);
+  --neutral-800: oklch(0.290 0.007 168);
+  --neutral-850: oklch(0.240 0.006 168);
+  --neutral-900: oklch(0.210 0.006 168);
+  --neutral-950: oklch(0.170 0.005 168);
+
+  /* ── 의미 색 스케일 (jade와 같은 명도 규칙) ── */
+  --red-50: oklch(0.975 0.012 25);
+  --red-100: oklch(0.945 0.030 25);
+  --red-200: oklch(0.900 0.060 25);
+  --red-300: oklch(0.830 0.100 25);
+  --red-400: oklch(0.740 0.150 25);
+  --red-500: oklch(0.650 0.190 25);
+  --red-600: oklch(0.560 0.190 25);
+  --red-700: oklch(0.480 0.170 25);
+  --red-800: oklch(0.400 0.140 25);
+  --red-900: oklch(0.320 0.100 25);
+  --red-950: oklch(0.240 0.065 25);
+
+  --amber-50: oklch(0.980 0.020 80);
+  --amber-100: oklch(0.955 0.050 80);
+  --amber-200: oklch(0.910 0.090 80);
+  --amber-300: oklch(0.850 0.130 78);
+  --amber-400: oklch(0.790 0.150 75);
+  --amber-500: oklch(0.720 0.150 70);
+  --amber-600: oklch(0.620 0.135 65);
+  --amber-700: oklch(0.520 0.115 60);
+  --amber-800: oklch(0.430 0.090 60);
+  --amber-900: oklch(0.340 0.070 60);
+  --amber-950: oklch(0.250 0.050 60);
+
+  --blue-50: oklch(0.975 0.012 250);
+  --blue-100: oklch(0.945 0.030 250);
+  --blue-200: oklch(0.900 0.055 250);
+  --blue-300: oklch(0.830 0.090 250);
+  --blue-400: oklch(0.740 0.120 250);
+  --blue-500: oklch(0.650 0.150 250);
+  --blue-600: oklch(0.560 0.160 250);
+  --blue-700: oklch(0.480 0.150 250);
+  --blue-800: oklch(0.400 0.120 250);
+  --blue-900: oklch(0.320 0.090 250);
+  --blue-950: oklch(0.240 0.060 250);
+
+  --violet-50: oklch(0.975 0.015 295);
+  --violet-100: oklch(0.945 0.035 295);
+  --violet-200: oklch(0.900 0.065 295);
+  --violet-300: oklch(0.830 0.100 295);
+  --violet-400: oklch(0.740 0.140 295);
+  --violet-500: oklch(0.650 0.170 295);
+  --violet-600: oklch(0.560 0.190 295);
+  --violet-700: oklch(0.480 0.180 295);
+  --violet-800: oklch(0.400 0.150 295);
+  --violet-900: oklch(0.320 0.110 295);
+  --violet-950: oklch(0.240 0.070 295);
+
+  /* ── 타이포그래피 ── */
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", "Pretendard Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --text-display: 800 36px/1.25 var(--font-sans);
+  --text-h1: 700 28px/1.3 var(--font-sans);
+  --text-h2: 700 22px/1.35 var(--font-sans);
+  --text-h3: 600 18px/1.4 var(--font-sans);
+  --text-lesson: 400 17px/1.75 var(--font-sans);
+  --text-body: 400 15px/1.6 var(--font-sans);
+  --text-ui: 500 14px/1.5 var(--font-sans);
+  --text-small: 500 13px/1.45 var(--font-sans);
+  --text-caption: 500 12px/1.4 var(--font-sans);
+  --text-code: 400 14px/1.6 var(--font-mono);
+
+  /* ── 간격 (4px 그리드) ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* 밀도: 카드·섹션 간격은 이 값으로 (안 C가 조정) */
+  --card-pad: var(--space-6);
+  --section-gap: var(--space-8);
+  --grid-gap: var(--space-6);
+  --page-pad-top: var(--space-10);
+
+  /* ── 반경 ── */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+
+  /* ── 모션 ── */
+  --duration-instant: 80ms;
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0, 1.15);
+
+  /* ── 레이아웃 상수 ── */
+  --header-h: 56px;
+  --learn-header-h: 48px;
+  --rail-w: 56px;
+  --drawer-w: 400px;
+  --page-max: 1200px;
+  --lesson-max: 680px;
+}
+
+/* ───────────── 의미 토큰: 라이트 ───────────── */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --color-bg-canvas: var(--neutral-25);
+  --color-bg-surface: var(--neutral-0);
+  --color-bg-surface-raised: var(--neutral-0);
+  --color-bg-subtle: var(--neutral-50);
+  --color-bg-muted: var(--neutral-100);
+  --color-bg-selected: var(--jade-50);
+  --color-bg-hover: var(--neutral-50);
+  --color-border-default: var(--neutral-200);
+  --color-border-strong: var(--neutral-300);
+  --color-border-input: var(--neutral-500);
+  --color-text-primary: var(--neutral-900);
+  --color-text-heading: var(--neutral-900);
+  --color-text-secondary: var(--neutral-600);
+  --color-text-tertiary: var(--neutral-550); /* 문서 neutral-500은 작은 글자에서 4.27:1 */
+  --color-text-disabled: var(--neutral-400);
+  --color-text-link: var(--jade-700);
+  --color-text-brand: var(--jade-700);
+  --color-text-on-action: var(--neutral-0);
+  --color-action-primary: var(--jade-600);
+  --color-action-primary-hover: var(--jade-700);
+  --color-action-primary-active: var(--jade-800);
+  --color-focus-ring: var(--jade-600);
+
+  --color-feedback-correct-bg: var(--jade-50);
+  --color-feedback-correct-border: var(--jade-200);
+  --color-feedback-correct-fg: var(--jade-800);
+  --color-feedback-incorrect-bg: var(--red-50);
+  --color-feedback-incorrect-border: var(--red-200);
+  --color-feedback-incorrect-fg: var(--red-700);
+  --color-warning-bg: var(--amber-50);
+  --color-warning-border: var(--amber-200);
+  --color-warning-fg: var(--amber-800);
+  --color-warning-accent: var(--amber-500);
+  --color-info-bg: var(--blue-50);
+  --color-info-border: var(--blue-200);
+  --color-info-fg: var(--blue-700);
+  --color-ai-accent: var(--violet-600);
+  --color-ai-bg: var(--violet-50);
+  --color-ai-border: var(--violet-200);
+  --color-ai-fg: var(--violet-700);
+  --color-error-accent: var(--red-600);
+
+  /* 진도·숙련 */
+  --color-progress-track: var(--jade-100);
+  --color-progress-fill: var(--jade-600);
+  --mastery-intro: var(--jade-100);
+  --mastery-practicing: var(--jade-300);
+  --mastery-proficient: var(--jade-500);
+  --mastery-mastered: var(--jade-700);
+  --mastery-outline: var(--jade-600);
+  --mastery-empty: var(--neutral-400);
+  --mastery-check: var(--neutral-0);
+
+  /* 그림자 */
+  --elevation-1: 0 1px 2px oklch(0.2 0.01 168 / 0.06);
+  --elevation-2: 0 4px 12px oklch(0.2 0.01 168 / 0.08);
+  --elevation-3: 0 12px 32px oklch(0.2 0.01 168 / 0.12);
+
+  /* 코드 (라이트 테마 에디터) */
+  --code-bg: var(--neutral-50);
+  --code-surface: var(--neutral-0);
+  --code-gutter-bg: var(--neutral-50);
+  --code-gutter-fg: var(--neutral-500);
+  --code-fg: var(--neutral-900);
+  --code-line-active: var(--jade-50);
+  --code-line-error: var(--red-50);
+  --code-border: var(--neutral-200);
+  --syn-keyword: var(--jade-700);
+  --syn-fn: var(--blue-700);
+  --syn-number: var(--amber-700);
+  --syn-string: var(--violet-700);
+  --syn-comment: var(--neutral-600);
+  --syn-punct: var(--neutral-600);
+  --syn-prop: var(--neutral-800);
+}
+
+/* ───────────── 의미 토큰: 다크 ─────────────
+ * 안 B(라이트)의 작업대(.workbench)에도 같은 매핑을 적용합니다.
+ */
+[data-theme="dark"],
+[data-direction="b"][data-theme="light"] .workbench {
+  color-scheme: dark;
+  --color-bg-canvas: var(--neutral-950);
+  --color-bg-surface: var(--neutral-900);
+  --color-bg-surface-raised: var(--neutral-850);
+  --color-bg-subtle: var(--neutral-850);
+  --color-bg-muted: var(--neutral-800);
+  --color-bg-selected: var(--jade-950);
+  --color-bg-hover: var(--neutral-850);
+  --color-border-default: var(--neutral-800);
+  --color-border-strong: var(--neutral-700);
+  --color-border-input: var(--neutral-500); /* 문서 neutral-600은 2.7:1로 1.4.11 미달 */
+  --color-text-primary: var(--neutral-50);
+  --color-text-heading: var(--neutral-0);
+  --color-text-secondary: var(--neutral-300);
+  --color-text-tertiary: var(--neutral-400);
+  --color-text-disabled: var(--neutral-500);
+  --color-text-link: var(--jade-400);
+  --color-text-brand: var(--jade-400);
+  --color-text-on-action: var(--neutral-950);
+  --color-action-primary: var(--jade-500);
+  --color-action-primary-hover: var(--jade-400);
+  --color-action-primary-active: var(--jade-300);
+  --color-focus-ring: var(--jade-400);
+
+  --color-feedback-correct-bg: var(--jade-950);
+  --color-feedback-correct-border: var(--jade-900);
+  --color-feedback-correct-fg: var(--jade-300);
+  --color-feedback-incorrect-bg: var(--red-950);
+  --color-feedback-incorrect-border: var(--red-900);
+  --color-feedback-incorrect-fg: var(--red-300);
+  --color-warning-bg: var(--amber-950);
+  --color-warning-border: var(--amber-900);
+  --color-warning-fg: var(--amber-300);
+  --color-warning-accent: var(--amber-400);
+  --color-info-bg: var(--blue-950);
+  --color-info-border: var(--blue-900);
+  --color-info-fg: var(--blue-300);
+  --color-ai-accent: var(--violet-400);
+  --color-ai-bg: var(--violet-950);
+  --color-ai-border: var(--violet-900);
+  --color-ai-fg: var(--violet-300);
+  --color-error-accent: var(--red-400);
+
+  --color-progress-track: var(--neutral-800);
+  --color-progress-fill: var(--jade-500);
+  --mastery-intro: var(--jade-950);
+  --mastery-practicing: var(--jade-800);
+  --mastery-proficient: var(--jade-500);
+  --mastery-mastered: var(--jade-300);
+  --mastery-outline: var(--jade-500);
+  --mastery-empty: var(--neutral-600);
+  --mastery-check: var(--neutral-950);
+
+  --elevation-1: 0 1px 2px oklch(0 0 0 / 0.3);
+  --elevation-2: 0 4px 12px oklch(0 0 0 / 0.35);
+  --elevation-3: 0 12px 32px oklch(0 0 0 / 0.45);
+
+  --code-bg: var(--neutral-900);
+  --code-surface: var(--neutral-900);
+  --code-gutter-bg: var(--neutral-900);
+  --code-gutter-fg: var(--neutral-500);
+  --code-fg: var(--neutral-50);
+  --code-line-active: oklch(0.260 0.020 168);
+  --code-line-error: oklch(0.270 0.050 25);
+  --code-border: var(--neutral-800);
+  --syn-keyword: var(--jade-400);
+  --syn-fn: var(--blue-300);
+  --syn-number: var(--amber-300);
+  --syn-string: var(--violet-300);
+  --syn-comment: var(--neutral-400);
+  --syn-punct: var(--neutral-300);
+  --syn-prop: var(--neutral-100);
+}
+
+/* 다크 작업대: 패널 표면 단계를 한 칸 내림 (에디터가 가장 어둡게) */
+[data-direction="b"][data-theme="light"] .workbench {
+  --color-bg-surface: var(--neutral-900);
+  --code-bg: var(--neutral-950);
+  --code-surface: var(--neutral-950);
+  --code-gutter-bg: var(--neutral-950);
+}
+
+/* ───────────── 안 C: 차분한 교실 ───────────── */
+[data-direction="c"] {
+  --card-pad: var(--space-5);
+  --section-gap: var(--space-6);
+  --grid-gap: var(--space-4);
+  --page-pad-top: var(--space-8);
+}
+[data-direction="c"][data-theme="light"] {
+  --color-bg-canvas: var(--neutral-50);
+  --color-bg-subtle: var(--neutral-50);
+  --color-border-default: oklch(0.915 0.005 168);
+  --code-bg: var(--neutral-25);
+}
+[data-direction="c"][data-theme="dark"] {
+  --color-bg-canvas: var(--neutral-950);
+  --color-bg-surface: var(--neutral-900);
+}
+
+/* ───────────── 안 A: 밝은 교실 ─────────────
+ * 기본 토큰 그대로. 캔버스는 거의 흰색(neutral-25), 넓은 여백.
+ */
+[data-direction="a"] {
+  --page-pad-top: var(--space-12);
+}

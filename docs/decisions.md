@@ -10,13 +10,21 @@
 ## D-001. 플랫폼 이름 — `확정`
 **ProgInOne**. 저장소: GitHub 비공개 레포 `ProgInOne`.
 
-## D-002. 1순위 AI 제공자 — `잠정` (PoC 후 확정)
+## D-002. 1순위 AI 제공자 — `확정`
+- 2026-11-14 M1-A PoC 결과로 확정(사용자 승인). 보고서: [poc/codex-tutor](/poc/codex-tutor/README.md).
 - **Codex App Server** (stdio JSON-RPC)를 MVP의 유일한 AI 제공자로 사용합니다.
 - 인증: ChatGPT 로그인 (`account/login/start`, type `chatgpt`). 사용자는 ChatGPT Pro 구독 보유.
 - Claude 구독은 없으므로 Claude 어댑터는 계획에서 제외합니다 (API 키 기반 어댑터는 후속 버전에서 일반 API 어댑터로 수용 가능).
 - Gemini CLI는 일반 사용자 대상 서비스가 2026-06-18 Antigravity CLI로 대체되어 CLI 통합 대상에서 제외합니다.
 - **확정 조건 (PoC)**: ① 튜터 응답 품질(한국어, 교수법 지침 준수) ② 첫 토큰 지연 ③ `outputSchema` 구조화 출력 안정성 ④ 셸/파일 도구 비활성화(빈 cwd + readOnly sandbox + 승인 자동 거부) 동작 확인.
 - 설계 원칙: Provider Adapter 계층을 두고, AI가 없어도 레슨·문제·채점·복습·통계는 동작해야 합니다.
+- **PoC 결과**: 골든 질문 20/20, 구조화 출력 20/20, 중단 정상, 첫 토큰 p50 3.1~3.7초.
+- **확정 조건으로 추가된 필수 사항**:
+  - 사용자 전역 설정을 공유하지 않고 **튜터 전용 `CODEX_HOME`** 을 씁니다. 로그인도 그 폴더에서 따로 합니다.
+  - 전용 홈 `config.toml`의 공식 `[features]` 플래그로 앱(커넥터), 플러그인, 셸, 브라우저, 멀티 에이전트, 이미지 생성 등을 끕니다. 로그인하면 계정 연동 앱이 동기화되어, `web_search = "disabled"`만으로는 웹 조회가 막히지 않았습니다.
+  - 서버 시작 시 기능 플래그 상태를 확인하고, 어긋나면 튜터를 비활성화합니다.
+  - 턴 중 도구 계열 항목이 나타나면 즉시 `turn/interrupt`하고 응답을 버립니다.
+- **지연 목표 조정**: 튜터 첫 토큰 p50 **4초 이하**(기존 3초). 문제를 열 때 스레드를 미리 만들고(prewarm), 요청 직후 진행 상태와 취소 버튼을 보여 줍니다.
 
 ## D-003. 콘텐츠 범위 — `확정`
 - **JavaScript: 완전한 품질** (충분한 설명, 단원당 충분한 문제, 다양한 유형, 응용 실습).
@@ -97,12 +105,18 @@ GitHub 비공개 저장소에서 관리합니다. 기본 브랜치 `main`.
 ## D-017. 버전·커밋·릴리스 규칙 — `확정`
 SemVer(앱), 콘텐츠 팩 날짜 버전, Conventional Commits, Keep a Changelog, `v*` 태그로 GitHub Release 생성. 상세: [시스템 아키텍처 설계](/docs/design/system-architecture.md#버전-관리와-릴리스).
 
-## D-018. 샌드박스 러너 셸 방식 — `잠정` (M1-B PoC 후 확정)
-- 2026-11-14 사용자 승인. 방향은 확정이며, 브라우저 동작 세부만 PoC로 확인합니다.
+## D-018. 샌드박스 러너 셸 방식 — `확정`
+- 2026-11-14 사용자 승인. M1-B PoC(Chromium, Chrome, Firefox, WebKit) 결과를 반영해 2026-11-14 확정했습니다.
 - 서버가 `/sandbox/runner.html`을 전용 CSP 응답 헤더와 함께 제공하고, 앱은 `sandbox="allow-scripts allow-forms"` iframe으로 삽입합니다.
 - 앱 문서에서 직접 `srcdoc` iframe을 만들지 않습니다. `srcdoc` 문서는 부모의 CSP를 상속하므로 러너 전용 정책(`connect-src 'none'` 등)을 독립적으로 줄 수 없기 때문입니다.
 - 순수 JS는 셸 내부 Worker(`terminate()`로 중단), DOM·미리보기는 셸 내부 중첩 iframe + 루프 가드 + 워치독으로 실행합니다.
 - 채점은 관측 모델입니다: 하네스는 관측값만 반환하고 서버가 기대값과 비교합니다.
+- **PoC 보완 (확정 시 추가)**:
+  - 셸은 실행 환경마다 다른 서브도메인 `http://<shellId>.localhost:<port>/sandbox/runner.html`에서 엽니다. 멈춘 셸 프로세스를 다음 실행이 재사용하지 않고, Firefox에서 앱 탭이 함께 멈추는 문제를 막습니다. 3초 안에 `shell-hello`가 오지 않으면 같은 사이트 경로로 대체합니다.
+  - 서버는 `*.localhost` 호스트로 들어온 요청에 `/sandbox/runner.html`과 그 자산만 제공합니다. 앱 CSP는 `frame-src 'self' http://*.localhost:<port>`를 허용합니다.
+  - 인라인 스크립트는 blob 스크립트로 전달해 WebKit의 `"Script error."` 마스킹을 피합니다.
+  - Worker 범위에서 `EventSource`, `Worker`, `SharedWorker`를 제거하고, 학습자 문서에는 `worker-src 'none'`을 겁니다.
+  - 남은 위험: WebKit은 루프 가드가 동작해도 앱 탭이 약 1초 멈출 수 있습니다. 실제 Safari의 `*.localhost` 처리는 M3에서 다시 확인합니다.
 - 상세: [코드 실행 샌드박스 설계](/docs/design/code-execution-sandbox.md).
 
 ## D-019. Node.js 버전 — `확정`
@@ -131,3 +145,12 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - **체크 가중 부분 점수**: 체크마다 `weight`와 연결 요구사항을 둡니다.
 - 숙련도 모델과 복습 스케줄러(FSRS)는 계산을 섞지 않으며, 추천은 둘을 읽기만 합니다(D-009 구체화).
 - 계수는 초기 추정이며 v0.x 사용 데이터로 보정합니다. 상세: [학습 엔진 설계](/docs/design/learning-engine.md).
+
+## D-024. 시각 방향과 디자인 토큰 v1 — `확정`
+- 2026-11-14 M2 프로토타입 검토 후 사용자 승인. D-011을 구체화합니다.
+- **시각 방향: C 차분한 교실.** 캔버스 `neutral-50` 위에 흰 카드, 레슨 본문도 카드에 담습니다.
+- **에디터 기본 테마: 라이트.** 레슨 코드 블록과 실습 에디터가 같은 모습이 되도록 합니다. 어두운 작업대(B안)는 설정 "작업대 테마: 어둡게"로 제공합니다.
+- **로고: 1안 맞물린 꺾쇠.** 3안(네 조각 하나)은 온보딩·빈 상태 보조 그래픽으로 쓸 수 있습니다.
+- **토큰 수정**: `--jade-600`을 `oklch(0.545 0.120 168)`로(흰 글자 4.60:1), 기본 토큰 `--neutral-550` 추가와 라이트 `--color-text-tertiary` 재매핑, 의미 토큰 `--color-border-input` 신설(입력 테두리 3:1 이상).
+- **레슨 제목 크기**: 문서 타입 스케일의 h1 28px을 따릅니다.
+- 근거와 비교: [디자인 프로토타입](/design/prototypes/README.md), [UI/UX 설계](/docs/design/ui-ux.md).

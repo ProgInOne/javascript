@@ -1,0 +1,15 @@
+{
+  "name": "proginone-poc-sandbox",
+  "private": true,
+  "type": "module",
+  "description": "M1-B sandbox PoC (throwaway). See README.md.",
+  "scripts": {
+    "serve": "node server.mjs",
+    "test": "playwright test",
+    "report": "node tools/report.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "acorn": "8.15.0"
+  }
+}

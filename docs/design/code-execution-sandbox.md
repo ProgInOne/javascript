@@ -5,7 +5,7 @@
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-13
+- 최종 수정: 2026-11-14 (M1-B PoC 결과 반영: 셸별 사이트, blob 전달, 학습자 Worker 차단, 채점 셸 배치)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [학습 엔진 설계](/docs/design/learning-engine.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -148,7 +148,7 @@ flowchart TB
 
 ```html
 <iframe
-  src="/sandbox/runner.html?v=1"
+  src="http://<shellId>.localhost:<port>/sandbox/runner.html?v=1"
   sandbox="allow-scripts allow-forms"
   allow="clipboard-read 'none'; clipboard-write 'none'; camera 'none'; microphone 'none';
          geolocation 'none'; fullscreen 'none'; display-capture 'none'; usb 'none';
@@ -172,6 +172,16 @@ sandbox 토큰 선택 근거(MDN의 `iframe` 문서 기준):
 | `allow-pointer-lock`, `allow-presentation`, `allow-storage-access-by-user-activation` | ❌ | 불필요 |
 
 `allow` 속성(Permissions Policy)은 sandbox 프레임이 교차 origin이라 대부분 기본 거부되지만, 정책이 바뀌어도 안전하도록 명시적으로 `'none'`을 지정합니다.
+
+**셸마다 다른 사이트에서 로드합니다(M1-B PoC 결과로 추가).**
+셸 iframe의 `src`는 셸을 만들 때마다 새로 정한 하위 도메인 `http://<shellId>.localhost:<port>/sandbox/runner.html`입니다(`<shellId>`는 무작위 소문자 영숫자).
+같은 서버·같은 포트이지만 사이트(scheme + 등록 가능 도메인)가 앱(`127.0.0.1`)과도, 이전 셸과도 다릅니다.
+
+- Firefox(Fission)는 사이트 단위로 프로세스를 나눕니다. 셸이 앱과 같은 사이트면 sandbox iframe도 앱과 같은 프로세스에 있어, 계측을 빠져나간 무한 루프가 앱 탭을 영구히 멈춥니다. 다른 사이트면 앱은 계속 응답하고 Watchdog이 복구합니다([PoC 결과](#m1-b-poc-결과-2026-11-14)).
+- Chromium은 sandbox iframe을 별도 프로세스로 옮기지만, 같은 사이트의 새 셸을 **아직 멈춰 있는 이전 프로세스에 다시 배치** 합니다. 그래서 Watchdog이 셸을 버린 직후 만든 새 셸도 응답하지 않습니다(8초 이상). 셸마다 사이트를 바꾸면 새 셸은 새 프로세스에서 즉시 동작하고, 이전 프로세스는 프레임이 없어져 회수됩니다.
+- `*.localhost`는 Chromium과 Firefox가 브라우저 안에서 루프백으로 해석합니다. 실제 Safari에서의 해석은 확인하지 못했으므로, 셸이 3초 안에 `shell-hello`를 보내지 않으면 같은 사이트 경로(`/sandbox/runner.html`)로 대체합니다.
+- 서버는 `Host`가 `*.localhost:<port>`인 요청에는 `/sandbox/runner.html`만 응답하고, `/api`를 포함한 나머지 경로는 거부합니다(`Host` 허용 목록). 앱 CSP의 `frame-src`는 `'self' http://*.localhost:<port>`입니다.
+- `allow-same-origin`은 여전히 주지 않습니다. 셸은 opaque origin이며, 하위 도메인은 프로세스 배치만을 위한 것입니다.
 
 #### 셸의 CSP
 
@@ -199,8 +209,8 @@ Content-Security-Policy:
 - 해시·nonce를 쓰지 않는 이유: CSP Level 2 이후 `script-src`에 해시나 nonce가 있으면 `'unsafe-inline'`이 무시되는데, 중첩 `srcdoc` 문서가 이 정책을 그대로 상속하므로 학습자 인라인 스크립트가 막힙니다.
   셸 자신의 하네스 코드도 인라인으로 번들합니다(`'self'`를 쓰지 않음. opaque origin 문서에서 `'self'` 매칭 동작을 신뢰하지 않기 위함).
 - **`'unsafe-eval'` 미포함**: `eval`, `new Function`, 문자열 인자 `setTimeout`/`setInterval`이 차단됩니다. 반복문 계측 우회를 막고, 학습 측면에서도 권장하지 않는 기능입니다. 이 사실은 관련 레슨과 오류 메시지 번역에서 안내합니다.
-- **`frame-src 'none'`**: 학습자 HTML의 `<iframe src=...>`과 중첩 문서의 자기 탐색을 막는 것이 목적입니다. `about:srcdoc` 탐색은 네트워크 요청이 아니므로 차단되지 않을 것으로 예상하지만 **PoC로 반드시 확인** 합니다. 차단된다면 `frame-src` 대신 서버 토큰 요구에만 의존합니다(T6 잔여 위험 증가).
-- 앱 문서의 CSP는 `frame-src 'self'`만 허용해 셸 로드를 가능하게 하고, 나머지는 엄격하게 유지합니다.
+- **`frame-src 'none'`**: 학습자 HTML의 `<iframe src=...>`과 중첩 문서의 자기 탐색을 막는 것이 목적입니다. PoC에서 Chromium·Firefox·WebKit 모두 `frame-src 'none'` 아래에서 중첩 `srcdoc` iframe 생성이 허용되고, 학습자의 `<iframe src="http://...">`(S10)와 중첩 문서의 `http:` 자기 탐색(S11)은 서버 요청 없이 차단됨을 확인했습니다.
+- 앱 문서의 CSP는 `frame-src 'self' http://*.localhost:<port>`만 허용해 셸 로드(서브도메인 셸과 대체 경로)를 가능하게 하고, 나머지는 엄격하게 유지합니다([D-018](/docs/decisions.md) 확정).
 
 CSP 상속 규칙(HTML 표준 정책 컨테이너 규칙 기준):
 
@@ -209,7 +219,8 @@ CSP 상속 규칙(HTML 표준 정책 컨테이너 규칙 기준):
 | 앱 문서 | 서버 응답 헤더 (엄격) |
 | 러너 셸 (`/sandbox/runner.html`) | 서버 응답 헤더 (위 셸 CSP). 별도 HTTP 응답이므로 앱 정책을 상속하지 않음 |
 | 중첩 `srcdoc` 문서 | 부모(셸)의 정책 컨테이너를 복제해 상속 → 셸 CSP 적용. 문서 안 `<meta>` CSP는 추가로만 적용됨(완화 불가) |
-| `blob:` Worker | blob URL을 만든 환경(셸)의 정책 컨테이너를 복제 → 셸 CSP 적용 |
+| `blob:` Worker | blob URL을 만든 환경(셸)의 정책 컨테이너를 복제 → 셸 CSP 적용. 단 **Firefox는 Worker 안의 `EventSource`에 상속된 `connect-src`를 적용하지 않습니다**(PoC S5-w). 하네스가 Worker 전역에서 `EventSource`·`Worker`·`SharedWorker`를 제거해 막습니다 |
+| 학습자 문서 안의 `<meta>` CSP | 셸이 학습자 문서 맨 앞에 `worker-src 'none'`을 주입합니다. 학습자 Worker가 루프를 돌거나(S42) Firefox의 `EventSource` 결함을 이용하는 경로를 막습니다. MVP 커리큘럼에 학습자 Worker는 없습니다 |
 
 #### 왜 중첩 iframe인가
 
@@ -224,15 +235,17 @@ DOM 모드에서 학습자 HTML을 셸 문서에 직접 쓰지 않고 중첩 `sr
 #### 프로세스 분리와 메인 스레드
 
 - Chromium 문서에 따르면 데스크톱 Chromium 127.0.6483.0 이후 opaque origin을 쓰는 sandboxed 문서는 부모와 **별도 프로세스** 로 옮겨집니다. Android는 부분 사이트 격리를 쓰는 경우에만 분리됩니다.
-  따라서 데스크톱 Chrome·Edge에서는 DOM 모드의 무한 루프가 앱 메인 스레드를 멈추지 않을 것으로 예상합니다.
-- Firefox와 Safari에서 같은 사이트(`127.0.0.1`)의 sandboxed iframe이 별도 프로세스에 배치되는지는 **확인하지 못했습니다.** 같은 스레드를 공유한다고 가정하고 설계합니다.
+  PoC에서 Chrome 157과 Playwright Chromium 141(new headless)로 확인했습니다. Playwright의 기본 headless shell은 분리하지 않으므로 CI는 `channel: 'chromium'`을 써야 합니다.
+- Firefox 142(Fission 켬)는 **사이트 단위** 로만 나눕니다. 같은 사이트의 sandboxed iframe은 앱과 같은 프로세스여서 앱 탭이 멈추고, 다른 사이트의 셸은 분리됩니다. 그래서 셸을 셸마다 다른 사이트에서 로드합니다([러너 셸 iframe](#러너-셸-iframe)).
+- WebKit 26(Playwright)은 사이트와 관계없이 분리하지 않았습니다. 실제 Safari는 확인하지 못했으며, 같은 스레드를 공유한다고 가정합니다.
 - 그러므로 **반복문 계측은 모든 브라우저에서 1차 방어선** 이고, Watchdog은 프로세스가 분리된 경우의 2차 방어선입니다.
+- 계측이 정상 동작해도 분리되지 않은 브라우저에서는 `loopBudgetMs`(1초) 동안 앱 화면이 멈춥니다(PoC S27: Firefox 같은 사이트·WebKit에서 앱 rAF 최대 간격 약 1,000ms). Chromium 계열과 셸마다 다른 사이트를 쓰는 Firefox에서는 멈추지 않습니다.
 
 | 상황 | 1차 방어 | 2차 방어 |
 |---|---|---|
 | `js-console` 모드 무한 루프 (모든 브라우저) | 셸이 `maxDurationMs` 후 `worker.terminate()` | Host Watchdog이 셸 응답 없음 감지 시 셸 iframe 폐기 |
-| DOM 모드 무한 루프 (Chromium 데스크톱) | 반복문 계측 오류 | 셸 하트비트 상실 → Host가 셸 iframe 폐기 |
-| DOM 모드 무한 루프 (메인 스레드 공유 브라우저) | 반복문 계측 오류 | 없음(메인 스레드가 멈추면 Watchdog도 멈춤). 계측 우회 경로를 CSP로 최대한 차단 |
+| DOM 모드 무한 루프 (Chromium 데스크톱, Firefox + 셸별 사이트) | 반복문 계측 오류 | 셸 하트비트 상실 → Host가 셸 iframe 폐기 후 **새 사이트** 에 새 셸 생성 |
+| DOM 모드 무한 루프 (메인 스레드 공유 브라우저: WebKit/Safari) | 반복문 계측 오류 | 없음(메인 스레드가 멈추면 Watchdog도 멈춤, 탭을 닫아야 복구). 계측 우회 경로를 CSP로 최대한 차단 |
 
 ### 실행 모드
 
@@ -259,8 +272,7 @@ DOM 모드에서 학습자 HTML을 셸 문서에 직접 쓰지 않고 중첩 `sr
 1.  하네스가 비동기 완료를 기다린 뒤([비동기 완료 판정](#비동기-완료-판정)) 체크를 실행하고 결과를 보냅니다.
 1.  셸은 결과를 Host에 전달하고 Worker를 종료합니다. 시간 제한 초과 시 셸이 즉시 `terminate()`하고 `status: 'timeout'`을 보냅니다.
 
-> 확인 필요: opaque origin 문서에서 `blob:` URL로 Worker를 만들 수 있는지, Worker 안에서 같은 origin의 `blob:` URL로 `importScripts`가 되는지 주요 브라우저에서 PoC로 확인합니다.
-> 실패할 경우 대안은 ① `data:` URL Worker(새 opaque origin을 가짐), ② 학습자 코드를 프렐류드와 한 파일로 결합하고 줄 오프셋을 계산하는 방식입니다.
+> PoC 확인: opaque origin 셸에서 `blob:` Worker 생성과 Worker 안의 `blob:` `importScripts`가 Chromium·Chrome·Firefox·WebKit에서 모두 동작했습니다. 스택의 blob URL로 학습자 파일과 줄 번호(파일 기준)를 복원할 수 있었습니다(PoC B5).
 
 #### `dom` / `preview` 모드 실행 순서
 
@@ -270,8 +282,11 @@ DOM 모드에서 학습자 HTML을 셸 문서에 직접 쓰지 않고 중첩 `sr
         - `<script src="app.js">` → 해당 파일 내용의 인라인 `<script data-file="app.js">`
         - 프로젝트 밖을 가리키는 외부 URL은 그대로 두되 CSP로 차단되며, 경고를 미리 표시합니다.
     - 모든 JS(인라인 스크립트, 외부 파일, `onclick` 같은 이벤트 핸들러 속성)를 acorn으로 파싱하고 반복문 계측을 삽입합니다.
-    - `<head>` 맨 앞에 하네스 스크립트를 삽입합니다.
-    - 각 스크립트 블록의 문서 내 시작 줄과 원본 파일을 기록한 **위치 매핑 표** 를 만듭니다.
+    - 하네스 스크립트(한 줄)와 `<meta http-equiv="Content-Security-Policy" content="worker-src 'none'">`를 문서 맨 앞(doctype 바로 뒤, 같은 줄)에 삽입합니다.
+    - 각 인라인 스크립트의 본문은 `__pg.w(i)` 호출로 바꾸고, 계측된 본문은 `RunRequest`로 따로 보냅니다. 하네스의 `__pg.w(i)`는 **학습자 문서 안에서** 본문으로 `blob:` URL을 만들고 `document.write('<script src="blob:...">')`로 같은 위치에 씁니다(**blob 전달**).
+      파서가 삽입한 외부 스크립트이므로 실행 순서, `DOMContentLoaded`, 최상위 `let`/`const` 공유가 원래 인라인 스크립트와 같습니다(PoC B6, 세 엔진).
+      이렇게 하는 이유: WebKit은 opaque origin 문서의 인라인 스크립트 오류를 `"Script error."`(줄 0, `error` 없음)로 가립니다. 같은 문서가 만든 `blob:` 스크립트의 오류는 가리지 않습니다(PoC B5·B6·S31). 덤으로 모든 브라우저에서 오류 줄 번호가 스크립트 기준이 됩니다.
+    - 위치 매핑 표는 스크립트 순번 → 원본 파일과 시작 줄만 기록합니다.
     - `<body>` 끝에 노출 스크립트를 삽입합니다.
 1.  Host가 셸에 `RunRequest`를 보내면, 셸이 중첩 iframe을 만들고 `srcdoc`에 준비된 문서를 넣습니다.
 1.  하네스가 셸에서 전달받은 `MessagePort`로 진행 상황과 결과를 보냅니다.
@@ -419,7 +434,7 @@ UI는 콘솔을 실시간으로 그리고, 채점은 최종 `RunResult`만 씁�
 |---|---|
 | 중첩 깊이 | 6 (초과 시 `{ t: 'object', className, collapsed: true }`) |
 | 컬렉션 항목 수 | 100 (초과 시 `truncated: true`, `length` 유지) |
-| 문자열 길이 | 10,000자 |
+| 문자열 길이 | 8,000자 (`maxEntryBytes`보다 작아야 잘린 문자열이 항목 상한에 걸려 통째로 버려지지 않음. PoC S35) |
 | 항목 하나의 직렬화 크기 | 10KB (`maxEntryBytes`) |
 | 실행당 콘솔 항목 수 | 1,000 (`maxConsoleEntries`) |
 | 관측값 하나(체크 단계 하나)의 크기 | 64KB (`maxObservationBytes`) |
@@ -453,8 +468,9 @@ UI는 콘솔을 실시간으로 그리고, 채점은 최종 `RunResult`만 씁�
 
 #### DOM 모드
 
-- 인라인 스크립트의 오류 위치(`ErrorEvent.lineno`)는 브라우저가 문서 기준 줄로 보고하는 경우가 많습니다. Prepare Worker가 만든 **위치 매핑 표**(각 스크립트 블록의 문서 내 시작 줄 → 원본 파일과 원본 시작 줄)로 변환합니다.
-- 각 인라인 스크립트 끝에 `//# sourceURL=learner:///<파일 경로>`도 붙입니다. 이를 지원하는 브라우저에서는 개발자 도구와 스택이 파일 이름으로 표시됩니다. 위치 매핑 표가 1차, `sourceURL`은 보조입니다.
+- blob 전달 덕분에 오류의 `filename`과 스택 프레임은 스크립트별 `blob:` URL이고 줄 번호는 스크립트 기준입니다. 하네스가 `blob URL → index.html#scriptN` 표로 바꾸고, 위치 매핑 표로 원본 파일의 줄로 옮깁니다.
+- 참고(PoC B5): 인라인 그대로 실행하면 Chromium·Firefox는 `ErrorEvent.lineno`를 문서 기준 줄로 보고했고, `//# sourceURL`이 있어도 `ErrorEvent`의 줄은 바뀌지 않았습니다. WebKit은 줄 0과 `"Script error."`만 줬습니다. 그래서 `sourceURL`은 쓰지 않습니다.
+- 인라인 이벤트 핸들러 속성(`onclick="..."`)의 오류는 WebKit에서 여전히 가려집니다. 레슨은 `addEventListener`를 기본으로 가르치고, 이 경우 WebKit에서는 "오류가 발생했지만 브라우저가 위치를 알려주지 않았습니다" 안내를 보여줍니다.
 - 반복문 계측은 **줄바꿈을 추가하지 않고 같은 줄에 삽입** 합니다. 줄 번호는 보존되고 열 번호만 밀리므로, 열 번호는 계측 삽입 기록으로 보정합니다(오차가 있으면 열 번호를 생략).
 
 #### 오류 메시지
@@ -510,12 +526,14 @@ var __lg3_5 = __pg.enter(3, 5); while (true) { if (__pg.tick(__lg3_5)) break; co
 - 셸은 실행 중 250ms마다 Host에 하트비트를 보냅니다.
 - Host Watchdog은 `maxDurationMs + 1,000ms`가 지나거나 하트비트가 1,500ms 동안 없으면 셸 iframe을 DOM에서 제거하고 새 셸을 만듭니다. 결과는 `status: 'crashed'` 또는 `'timeout'`입니다.
 - Watchdog이 셸을 폐기하면 UI는 "실행이 응답하지 않아 중단했습니다"와 함께 반복문 계측이 놓친 가능성이 있는 코드 위치(마지막 하트비트 시점의 진행 정보)를 보여줍니다.
-- iframe을 제거했을 때 별도 프로세스에서 돌고 있던 루프가 즉시 중단되고 프로세스가 회수되는지는 **확인하지 못했습니다**([미결 사항](#샌드박스-미결-사항)).
+- 새 셸은 항상 **새 사이트**(새 `<shellId>`)로 만듭니다. Chromium에서 iframe을 제거해도 돌던 프로세스는 즉시 멈추지 않고(측정: 3.5~11.5초 뒤 회수), 같은 사이트로 만든 새 셸은 그 프로세스에 배치되어 응답하지 않기 때문입니다(PoC Q4/Q5).
+- 새 셸이 3초 안에 `ready`를 보내지 않으면 다시 새 사이트로 만들고, 그래도 실패하면 "실행 환경을 다시 준비하는 중" 상태를 보여줍니다.
 
 ### 메모리 제한
 
 - 브라우저에는 iframe 또는 Worker의 메모리 상한을 설정하는 API가 없습니다. `performance.measureUserAgentSpecificMemory()`는 교차 출처 격리(cross-origin isolation)가 필요해 이 구조에서 쓸 수 없습니다.
 - 따라서 **예방이 아니라 탐지와 복구** 를 합니다.
+    - PoC(S32/S33): `while (true) a.push(new Array(1e6).fill(1))`은 모든 브라우저에서 반복문 계측이 1초에 멈췄고 앱 탭은 살아 있었습니다. Chrome의 DOM 모드에서만 셸이 응답을 멈춰 Watchdog이 동작했고, 셸별 사이트를 쓰면 다음 실행이 정상이었습니다.
     - Worker 모드: 메모리 부족으로 Worker가 죽으면 `error` 이벤트 또는 응답 없음으로 탐지하고 `status: 'crashed'`로 보고합니다.
     - DOM 모드: 렌더러 충돌이나 응답 없음을 하트비트 상실로 탐지하고 셸을 재생성합니다.
     - 거대한 할당은 엔진이 `RangeError: Invalid array length` 등으로 막는 경우가 많고, 이는 일반 런타임 오류로 보고됩니다.
@@ -647,7 +665,7 @@ __pg.expose({
 - `boxRect`는 `getBoundingClientRect()`를 읽습니다. 이 호출은 레이아웃을 동기적으로 강제하므로 별도 프레임 대기 없이 측정할 수 있습니다.
 - **뷰포트 전환**: 셸이 중첩 iframe 요소의 `width`/`height`를 바꿔 학습자 문서의 뷰포트 크기를 바꿉니다. 미디어 쿼리는 iframe 뷰포트 기준으로 평가됩니다.
   전환 후 하네스는 `resize` 이벤트를 받고 `setTimeout(0)` 두 번 뒤에 측정합니다(`requestAnimationFrame`은 보이지 않는 iframe에서 지연될 수 있어 쓰지 않음).
-- 채점용 셸은 보이지 않게 둡니다. 화면 밖 배치가 레이아웃 측정에 영향을 주지 않도록 `position: fixed; left: -10000px; top: 0`과 명시적 크기를 사용합니다(`display: none`은 레이아웃이 없으므로 금지).
+- 채점용 셸은 보이지 않게 두되 **뷰포트 안** 에 둡니다: `position: fixed; left: 0; top: 0; opacity: 0; pointer-events: none; z-index: -1`과 명시적 크기. 화면 밖 배치(`left: -10000px`)는 WebKit에서 중첩 문서의 `setTimeout`이 3초 넘게 멈춰 채점이 시간 초과됩니다(PoC Q6). `display: none`은 레이아웃이 없으므로 금지합니다.
 - 폰트 차이로 인한 측정 오차를 줄이기 위해 하네스는 실습 문서의 기본 폰트를 번들된 폰트로 고정하는 기본 스타일시트를 주입합니다(학습자 CSS가 덮어쓸 수 있음). 채점 규칙은 픽셀 단위 일치 대신 허용 오차를 씁니다.
 
 #### html-validate와 axe-core의 실행 위치
@@ -809,6 +827,15 @@ Playwright로 실행하며, CI 필수 항목입니다. 각 케이스는 "차단�
 | S44 | `<base href="http://evil.example/">` | dom | `base-uri` 위반 |
 
 - 브라우저 매트릭스: CI는 Chromium 필수, Firefox·WebKit은 S1~S25(정책 계열)와 S27~S31(계측 계열)을 실행합니다. 프로세스 분리에 의존하는 S26 UI 지연, S33은 Chromium에서만 필수로 판정합니다.
+- CI의 Chromium은 Playwright의 `channel: 'chromium'`(new headless)을 씁니다. 기본 headless shell은 sandbox iframe을 별도 프로세스로 나누지 않아 실제 Chrome과 결과가 다릅니다. Firefox는 출시판과 같게 `fission.autostart`를 켭니다(Playwright Firefox 기본값은 꺼짐).
+- PoC에서 추가된 항목:
+
+| # | 공격 코드 (요약) | 모드 | 기대 결과 |
+|---|---|---|---|
+| S45 | Worker 안에서 `new EventSource(...)` | js-console | 하네스가 제거해 `EventSource` 없음, 요청 0건 (Firefox는 제거하지 않으면 요청이 나감) |
+| S46 | 학습자 문서에서 `new Worker(blob)` 안의 `EventSource`·무한 루프 | dom | `worker-src 'none'` 위반, 요청 0건, CPU 점유 없음 |
+| S47 | 셸 iframe 밖에 둔 채점 셸의 타이머·측정 | dom | 뷰포트 안 투명 배치에서 정상 |
+| S48 | 계측 없는 DOM 무한 루프 후 다음 실행 | dom | 앱 응답 유지, Watchdog 후 새 사이트 셸에서 다음 실행 정상 (Chromium·Firefox) |
 - 메인 UI 응답성 측정: 테스트 페이지가 앱 메인 스레드에서 `requestAnimationFrame` 간격을 기록하고, 공격 실행 중 최대 간격을 검사합니다.
 
 ## 검토한 대안
@@ -827,6 +854,7 @@ Playwright로 실행하며, CI 필수 항목입니다. 각 케이스는 "차단�
 - **장점**: 진짜 교차 사이트이므로 사이트 격리를 지원하는 브라우저에서 별도 프로세스가 됩니다. `allow-same-origin`을 줘도 앱과 다른 origin이라 안전하므로, 러너 문서가 **실제 `localStorage`와 쿠키** 를 쓸 수 있습니다(Web Storage·쿠키 단원).
 - **단점**: 두 번째 포트와 서버, `localhost`의 IPv4/IPv6 해석 차이, 러너 origin 저장소의 실행 간 정리 필요, 개발 환경 구성 복잡도 증가.
 - **결론**: MVP는 opaque origin + shim으로 충분합니다. 브라우저 JS의 Web Storage·쿠키 단원(v1.x) 착수 시 실제 저장소의 학습 가치와 비용을 비교해 다시 결정합니다.
+- **M1-B PoC 후 부분 채택**: 프로세스 분리 효과만 필요하므로 두 번째 포트·서버 없이 같은 서버의 `*.localhost` 하위 도메인을 셸마다 쓰고, `allow-same-origin`은 주지 않습니다([러너 셸 iframe](#러너-셸-iframe)). 실제 저장소가 필요한 v1.x 결정은 그대로 남습니다.
 
 ### WebContainers
 
@@ -893,26 +921,69 @@ Playwright로 실행하며, CI 필수 항목입니다. 각 케이스는 "차단�
 - 브라우저(Playwright): 모드별 실행, 비동기 완료 판정, 가상 타이머, 관측 단계, 뷰포트 전환, 보안 스위트, 성능 예산.
 - 계약: `RunRequest`/`RunResult` 스키마 하위 호환 테스트(프로토콜 버전을 올리지 않는 변경은 기존 메시지를 계속 수용).
 
+## M1-B PoC 결과 (2026-11-14)
+
+PoC 코드와 실행 방법, 테스트별 근거는 [`poc/sandbox/`](/poc/sandbox/README.md)에 있습니다.
+측정 환경은 macOS, Playwright 1.56.1(Chromium 141 new headless, Firefox 142 + Fission, WebKit 26), Google Chrome 157입니다.
+
+### 결론
+
+- 서버가 고유 CSP로 제공하는 러너 셸 + `sandbox="allow-scripts allow-forms"` + `blob:` Worker / 중첩 `srcdoc` + 관측 모델이라는 D-018의 구조는 네 브라우저 프로젝트에서 동작했습니다.
+- 같은 사이트 셸 기준 252개 테스트 중 251개가 통과했습니다. 나머지 1개(Chrome S33)는 아래 3번 문제로 시간 초과되었습니다.
+- 셸별 하위 도메인 기준으로는 180개 테스트가 모두 통과했습니다.
+- 대신 다음 네 가지를 설계에 반영했습니다. 모두 PoC로 효과를 확인했습니다.
+    1. **셸별 사이트**: 셸을 `http://<shellId>.localhost:<port>/sandbox/runner.html`에서 로드합니다([러너 셸 iframe](#러너-셸-iframe)).
+    1. **blob 전달**: DOM 모드의 인라인 스크립트를 학습자 문서 안에서 만든 `blob:` 스크립트로 실행합니다([`dom` / `preview` 모드 실행 순서](#dom--preview-모드-실행-순서)).
+    1. **학습자 Worker 차단**: DOM 문서에 `worker-src 'none'`을 주입하고, Worker 모드 하네스는 `EventSource`·`Worker`·`SharedWorker`를 제거합니다.
+    1. **채점 셸 배치**: 화면 밖이 아니라 뷰포트 안 `opacity: 0`에 둡니다.
+
+### 발견한 문제
+
+| # | 발견 | 브라우저 | 반영 |
+|---|---|---|---|
+| 1 | Worker 안 `EventSource`가 상속된 `connect-src 'none'`을 무시해 요청이 서버에 도달(`Origin: null`). 서버의 토큰·Origin 검사가 데이터 노출은 막음 | Firefox | Worker 전역에서 제거, 학습자 문서 `worker-src 'none'` (S45, S46) |
+| 2 | 같은 사이트 셸에서 계측 없는 무한 루프가 앱 탭을 영구히 멈춤 | Firefox, WebKit | 셸별 사이트로 Firefox 해결. WebKit은 해결 불가(잔여 위험) |
+| 3 | Watchdog 뒤 같은 사이트 새 셸이 멈춘 이전 프로세스에 배치되어 8초 넘게 무응답 | Chromium, Chrome | 셸별 사이트 (S48) |
+| 4 | opaque origin 문서의 인라인 스크립트 오류가 `"Script error."`로 가려짐 | WebKit | blob 전달 |
+| 5 | 화면 밖 셸의 중첩 문서 타이머가 멈춤 | WebKit | 뷰포트 안 투명 배치 (S47) |
+| 6 | 계측이 동작해도 루프 예산(1초) 동안 앱 화면이 멈춤 | Firefox 같은 사이트, WebKit | Firefox는 셸별 사이트로 해결. WebKit 잔여 |
+| 7 | 문자열 절단(10,000자)이 항목 상한(10KB)보다 커서 큰 문자열 항목이 통째로 버려짐 | 공통 | 문자열 8,000자 |
+| 8 | Playwright 기본 headless shell은 sandbox iframe을 분리하지 않음. Playwright Firefox는 Fission 꺼짐 | 테스트 환경 | CI 설정 고정 |
+
+### 미결 사항 답변
+
+1.  **`blob:` Worker와 Worker 안 `blob:` `importScripts`**: 네 브라우저 모두 동작합니다. 스택의 blob URL로 파일과 파일 기준 줄을 복원했습니다(B1, B5).
+1.  **`frame-src 'none'`과 중첩 `srcdoc`**: 중첩 `srcdoc`은 생성되고, 학습자 `<iframe src>`(S10), `location` 탐색(S11), `<meta refresh>`(S12)는 서버 요청 0건으로 막혔습니다. S11·S12는 Chromium에서 중첩 문서가 빈 오류 문서로 바뀌어 결과가 `timeout`으로 끝나므로, 탐색 시도는 "실행 중 페이지 이동이 차단됨" 오류로 번역합니다.
+1.  **`allow-forms` + `form-action 'none'`**: `submit` 이벤트와 핸들러는 실행되고 전송은 0건입니다(B4, S13).
+1.  **Firefox·Safari의 프로세스 배치**: Firefox(Fission)는 사이트 단위로 분리해 같은 사이트 셸은 앱과 같은 프로세스, 다른 사이트 셸은 별도 프로세스였습니다. WebKit 26은 사이트와 관계없이 앱과 같은 스레드였습니다. DOM 모드 메모리 폭주는 계측이 먼저 멈춰 앱 탭이 죽지 않았습니다(S33). 실제 Safari는 확인하지 못했습니다.
+1.  **멈춘 iframe 제거 시 루프 중단**: Chromium은 즉시 멈추지 않습니다. 셸별 사이트를 쓰면 이전 프로세스가 3.5~11.5초 뒤 회수되고 그동안 앱과 다음 실행은 정상입니다. 같은 사이트로 새 셸을 만들면 그 프로세스가 30초 넘게 살아 있었습니다. 학습자 Worker는 중첩 iframe 제거 후 약 2초 뒤 정리되었고, `worker-src 'none'`이면 생성 자체가 막힙니다(S42).
+1.  **화면 밖 iframe의 스로틀링**: Chromium·Firefox는 화면 밖에서도 `setTimeout(0)` 평균 약 5ms, 레이아웃 측정 정상이었습니다. WebKit은 화면 밖 중첩 문서의 타이머가 3초 넘게 멈췄고, 뷰포트 안 `opacity: 0` 배치에서는 정상이었습니다. WebKit은 보이는 경우에도 `setTimeout(0)`이 평균 약 22ms라 비동기 정착 판정 예산에 여유를 둡니다(Q6).
+1.  **`ErrorEvent.lineno`와 `sourceURL`**: Chromium·Firefox는 문서 기준 줄을 보고했고 `//# sourceURL`은 `ErrorEvent`의 줄을 바꾸지 않았습니다. WebKit은 줄 0과 `"Script error."`만 줬습니다. blob 전달로 세 엔진 모두 스크립트 기준 줄과 오류 객체를 얻었습니다(B5, B6).
+1.  **opaque origin의 `document.cookie`**: Chromium·Firefox는 읽기·쓰기 모두 `SecurityError`입니다. WebKit은 예외 없이 빈 문자열을 읽고 쓰기는 무시합니다. 하네스는 쿠키 대체 구현(shim)을 둘 때 이 차이를 덮어써야 합니다. 셸 문서 자체는 세 엔진 모두 `SecurityError`였습니다(S16).
+1.  **서비스 워커 등록**: 세 엔진 모두 `SecurityError`로 거부되었습니다(S23).
+1.  **Vite 개발 서버의 경로별 CSP**: 브라우저 동작이 아니므로 PoC 범위 밖입니다. M3 기반 구축에서 확인합니다.
+
+### 그 밖의 측정값
+
+- `js-console` 계측 없는 `while (true) {}`: `terminate()`로 약 2.3초(`maxDurationMs` + 셸 여유 300ms)에 종료, 앱 rAF 최대 간격 10~18ms(S26).
+- 콘솔 100만 회 출력: 1,000개 표시 + 999,000개 버림, 앱 rAF 최대 간격 18ms 이하(S34).
+- `eval`·`new Function`은 `EvalError`, 문자열 `setTimeout`은 예외 없이 무시됩니다. 학습자에게는 "문자열로 된 코드는 실행되지 않습니다" 안내가 필요합니다(S24).
+- `top.pg` 같은 앱 전역 접근은 `SecurityError`, `window.opener`는 `null`입니다(S14).
+
 ## 샌드박스 미결 사항
 
-PoC(구현 첫 마일스톤의 러너 스파이크)에서 확인할 항목입니다. 결과에 따라 이 문서를 갱신합니다.
+M1-B PoC 이후 남은 항목입니다.
 
-1.  opaque origin 셸에서 `blob:` URL Worker 생성과 Worker 안의 `blob:` `importScripts`가 Chromium, Firefox, WebKit에서 모두 동작하는가.
-1.  셸 CSP의 `frame-src 'none'`이 중첩 `srcdoc` iframe 생성은 허용하고, 중첩 문서의 `http:` 자기 탐색과 `<meta refresh>`는 차단하는가.
-1.  `allow-forms` + `form-action 'none'` 조합에서 `submit` 이벤트가 발생하고 실제 전송만 차단되는가.
-1.  Firefox와 Safari에서 같은 사이트의 sandboxed(opaque origin) iframe이 별도 프로세스·스레드에 배치되는가. 배치되지 않으면 DOM 모드 메모리 폭주의 영향 범위를 측정합니다.
-1.  별도 프로세스에서 무한 루프 중인 iframe을 DOM에서 제거하면 루프가 즉시 중단되고 CPU 점유가 사라지는가.
-1.  보이지 않는(화면 밖) 교차 origin iframe에서 `setTimeout`·레이아웃 측정이 지연되거나 스로틀되는가. 스로틀된다면 채점 셸을 보이는 영역의 투명 레이어에 배치하는 방안을 검토합니다.
-1.  인라인 스크립트의 `ErrorEvent.lineno`가 브라우저별로 문서 기준인지, `//# sourceURL`이 있을 때 스크립트 기준으로 바뀌는지. 위치 매핑 표가 두 경우를 모두 처리하도록 확인합니다.
-1.  opaque origin 문서에서 `document.cookie` 읽기·쓰기의 정확한 동작(예외 발생 여부).
-1.  opaque origin 문서에서 서비스 워커 등록 시도가 예외로 거부되는가.
-1.  셸 CSP 헤더를 Vite 개발 서버에서 경로별로 붙이는 방법(미들웨어 플러그인)의 동작.
+1.  실제 Safari에서 셸별 사이트(`*.localhost`) 해석, 프로세스 배치, 인라인 스크립트 오류 가림이 Playwright WebKit과 같은지. Safari 자동화(`safaridriver`)를 설정해 확인합니다.
+1.  셸 CSP 헤더를 Vite 개발 서버에서 경로별·`Host`별로 붙이는 방법(미들웨어 플러그인)의 동작. M3에서 확인합니다.
+1.  WebKit에서 인라인 이벤트 핸들러 속성(`onclick="..."`)의 오류 위치를 얻는 방법. 필요하면 Prepare 단계에서 속성을 `addEventListener` 호출로 바꾸는 변환을 검토합니다.
+1.  끝나지 않는 마이크로태스크 체인과 계측 밖의 긴 내장 함수 호출을 Chromium·Firefox에서 Watchdog이 같은 방식으로 복구하는지 측정합니다(Q4와 같은 경로로 예상).
 
 ## 다른 설계 문서와의 연결
 
 정합성 검토(2026-11-13)에서 다음과 같이 맞췄습니다.
 
-- [시스템 아키텍처 설계](/docs/design/system-architecture.md): 러너 셸은 서버가 셸 CSP 헤더와 함께 제공하는 `/sandbox/runner.html`입니다. 로컬 서버는 GET을 포함한 모든 `/api` 요청에 세션 토큰 헤더를 요구하고 `Origin: null`을 거부합니다. 앱 문서 CSP는 `frame-src 'self'`를 포함합니다.
+- [시스템 아키텍처 설계](/docs/design/system-architecture.md): 러너 셸은 서버가 셸 CSP 헤더와 함께 제공하는 `/sandbox/runner.html`입니다. 로컬 서버는 GET을 포함한 모든 `/api` 요청에 세션 토큰 헤더를 요구하고 `Origin: null`을 거부합니다. 앱 문서 CSP는 `frame-src 'self' http://*.localhost:<port>`를 포함하고, `*.localhost` 호스트에는 러너 경로만 제공합니다.
 - [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#체크-종류와-관측-단계의-대응): 저작용 체크 종류(`call`, `console`, `dom` 등)는 이 문서의 관측 단계로 컴파일되며, 기대값 비교는 서버가 합니다. 실행 결과 예측의 정답 비교는 `SerializedValue`에서 만든 ProgInOne 콘솔 형식을 씁니다. 클라이언트 평가 체크는 예외로만 허용합니다.
 - [UI/UX 설계](/docs/design/ui-ux.md#콘솔-패널): 콘솔 패널은 `SerializedValue` 표시(접기·펼치기), 출력 잘림 안내, `alert`/`confirm`/`prompt` 대체 표시, `prompt` 입력값 패널, 실행 상태를 표현합니다.
 - [학습 엔진 설계](/docs/design/learning-engine.md#관측값): `timeout`·`loop_limit`·`error`는 학습자 코드의 결과로 오답 처리하고, `crashed`·`aborted`는 숙련도·FSRS에 반영하지 않습니다.

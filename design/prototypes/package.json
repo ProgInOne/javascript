@@ -1,0 +1,15 @@
+{
+  "name": "proginone-design-prototypes",
+  "private": true,
+  "version": "0.0.0",
+  "description": "M2 정적 디자인 프로토타입 스크린샷 도구 (일회성 산출물)",
+  "type": "module",
+  "scripts": {
+    "shots": "node capture.mjs",
+    "contrast": "node contrast.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "4.11.4",
+    "playwright": "1.64.1"
+  }
+}

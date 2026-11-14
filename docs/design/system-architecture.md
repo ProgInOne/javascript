@@ -102,7 +102,9 @@ flowchart TB
 - 샌드박스는 별도 포트를 쓰지 않습니다. 서버가 `/sandbox/runner.html`(러너 셸)을 **전용 CSP 응답 헤더** 와 함께 제공하고, 앱은 이를 `sandbox="allow-scripts allow-forms"` iframe으로 삽입해 opaque origin을 얻습니다.
   앱 문서에서 `srcdoc` iframe을 직접 만들지 않는 이유는 `srcdoc` 문서가 부모의 CSP를 상속해 러너 전용 정책을 줄 수 없기 때문입니다.
   개발 모드에서는 Vite가 같은 경로를 같은 헤더로 제공합니다. 상세와 대안은 [코드 실행 샌드박스 설계](/docs/design/code-execution-sandbox.md)에 있습니다.
-- 앱 문서의 CSP에는 `frame-src 'self'`를 두어 러너 셸 외의 iframe을 막습니다.
+- **셸 서브도메인 (D-018, M1-B 반영)**: 러너 셸은 실행 환경마다 다른 서브도메인 `http://<shellId>.localhost:<port>/sandbox/runner.html`에서 엽니다. 멈춘 셸 프로세스를 다음 실행이 재사용하지 않고, 브라우저가 셸을 앱과 다른 프로세스에 둘 수 있게 하기 위해서입니다. 3초 안에 `shell-hello`가 오지 않으면 같은 사이트 경로 `/sandbox/runner.html`로 대체합니다.
+- 서버는 `Host`가 `<shellId>.localhost:<port>`인 요청에 **`/sandbox/runner.html`과 러너 자산만** 제공하고, 그 밖의 경로(특히 `/api`)는 404로 거부합니다. `shellId`는 영숫자 짧은 ID만 허용합니다.
+- 앱 문서의 CSP에는 `frame-src 'self' http://*.localhost:<port>`를 두어 러너 셸 외의 iframe을 막습니다.
 
 ### 모노레포 구조
 
@@ -382,10 +384,10 @@ sequenceDiagram
 
 | 경계 | 위협 | 통제 |
 |---|---|---|
-| 외부 웹페이지 → 로컬 서버 | CSRF, DNS 리바인딩으로 학습 데이터 조회·조작, Codex 호출 | `127.0.0.1` 바인딩, `Host` 헤더 허용 목록, `Origin` 검사(`Origin: null` 거부, 샌드박스 요청 차단 목적), 시작 시 생성하는 세션 토큰을 **GET을 포함한 모든 `/api` 요청** 의 커스텀 헤더로 요구, CORS 미허용 |
+| 외부 웹페이지 → 로컬 서버 | CSRF, DNS 리바인딩으로 학습 데이터 조회·조작, Codex 호출 | `127.0.0.1` 바인딩, `Host` 헤더 허용 목록(`127.0.0.1:<port>`, `localhost:<port>`, 셸 전용 `<shellId>.localhost:<port>`는 러너 경로만), `Origin` 검사(`Origin: null` 거부, 샌드박스 요청 차단 목적), 시작 시 생성하는 세션 토큰을 **GET을 포함한 모든 `/api` 요청** 의 커스텀 헤더로 요구, CORS 미허용 |
 | 학습자 코드 → 앱 | 부모 DOM·저장소 접근, 로컬 서버 호출, 네트워크 요청, 무한 루프 | opaque origin 샌드박스, CSP `connect-src 'none'`, postMessage 출처·스키마 검증, 워치독. 상세는 [샌드박스 설계](/docs/design/code-execution-sandbox.md) |
 | AI 출력 → 앱 | 잘못된 구조, 악성 마크업, 잘못된 정답, 프롬프트 인젝션에 따른 이상 행동 | 출력 스키마 검증, 마크다운 렌더러 원시 HTML 비활성화·sanitize, 생성 문제 실행 검증, AI는 학습 상태에 직접 쓰기 불가 |
-| Codex 프로세스 → 호스트 | 에이전트가 셸·파일 도구 사용 | 빈 작업 디렉터리, 읽기 전용 샌드박스 정책, 승인 요청 자동 거부, 네트워크 도구 비활성. 상세는 [AI 시스템 설계](/docs/design/ai-system.md) |
+| Codex 프로세스 → 호스트 | 에이전트가 셸·파일·웹·커넥터 도구 사용 | 튜터 전용 `CODEX_HOME`과 `[features]` 도구 기능 비활성, 빈 작업 디렉터리, 읽기 전용 샌드박스 정책, 승인 요청 자동 거부, 도구 항목 감지 시 턴 중단. 상세는 [AI 시스템 설계](/docs/design/ai-system.md) |
 | 콘텐츠 원본 → 빌드 | 잘못된 콘텐츠로 인한 오류 | 빌드 시 스키마·링크·실행 검증 |
 
 - 비밀값: 앱은 ChatGPT 자격 증명을 저장하지 않습니다. 인증은 Codex가 관리합니다([D-002](/docs/decisions.md)).
