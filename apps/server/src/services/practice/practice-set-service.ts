@@ -11,6 +11,7 @@ import { excludedExerciseIds } from '../../db/user/exercise-records.ts';
 import { newId } from '../../db/user/learners.ts';
 import { loadConceptStates } from '../../db/user/learning-state.ts';
 import {
+  findActiveSet,
   getSet,
   insertSet,
   lastSeenAtByGroup,
@@ -20,6 +21,7 @@ import { getLessonProgress, upsertLessonProgress } from '../../db/user/progress.
 import { AppError } from '../../http/errors.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
+import type { ReviewService } from '../review/review-service.ts';
 import { candidateOf, learnerContext, passRuleOverrides } from './engine.ts';
 import { buildSetView } from './views.ts';
 
@@ -28,6 +30,7 @@ export interface PracticeSetServiceDeps {
   content: ContentAccess;
   engine: EngineDeps;
   now: Clock;
+  review: ReviewService;
 }
 
 /** Builds and reads practice sets (learning-engine.md#연습-세트-구성). */
@@ -36,12 +39,14 @@ export class PracticeSetService {
   readonly #content: ContentAccess;
   readonly #engine: EngineDeps;
   readonly #now: Clock;
+  readonly #review: ReviewService;
 
   constructor(deps: PracticeSetServiceDeps) {
     this.#userDb = deps.userDb;
     this.#content = deps.content;
     this.#engine = deps.engine;
     this.#now = deps.now;
+    this.#review = deps.review;
   }
 
   get(id: string): PracticeSetView {
@@ -53,7 +58,55 @@ export class PracticeSetService {
   }
 
   create(request: CreatePracticeSetRequest): PracticeSetView {
-    return this.#createLessonSet(request.lessonId);
+    return request.kind === 'lesson'
+      ? this.#createLessonSet(request.lessonId)
+      : this.#createReviewSet();
+  }
+
+  /**
+   * The active review set, or a new one for today's queue (`buildReviewSet`). Review sets have no
+   * pass rule; their ratings update FSRS as each concept's items are done.
+   */
+  #createReviewSet(): PracticeSetView {
+    const orm = this.#userDb.orm;
+    const { learnerId } = learnerContext(this.#userDb);
+    const activeId = findActiveSet(orm, learnerId, 'review');
+    const active = activeId === null ? null : getSet(orm, learnerId, activeId);
+    if (active) return this.#view(active);
+
+    const setId = newId();
+    const plan = this.#review.planSet(setId);
+    if (!plan) {
+      throw new AppError('PRACTICE_NOTHING_DUE', 409, '오늘 복습할 개념이 없습니다.');
+    }
+    if (plan.items.length === 0) {
+      throw new AppError('PRACTICE_NO_EXERCISES', 409, '복습에 쓸 문제가 없습니다.', {
+        details: { conceptIds: plan.conceptIds },
+      });
+    }
+    orm.transaction(() => {
+      insertSet(
+        orm,
+        {
+          id: setId,
+          learnerId,
+          kind: 'review',
+          status: 'active',
+          scope: {
+            v: 1,
+            lessonId: null,
+            conceptIds: plan.conceptIds,
+            rationale: { ...plan.rationale },
+          },
+          passRule: null,
+          engineVersion: ENGINE_VERSION,
+          createdAt: new Date(plan.now),
+          completedAt: null,
+        },
+        itemRows(setId, learnerId, plan.items),
+      );
+    });
+    return this.get(setId);
   }
 
   #view(set: PracticeSet): PracticeSetView {

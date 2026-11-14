@@ -2,6 +2,10 @@ import type { EngineDeps } from '@proginone/learning-engine';
 import type { UserDb } from '../../db/user/connection.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
+import { ActivityService } from '../learning/activity-service.ts';
+import { DashboardService } from '../learning/dashboard-service.ts';
+import { LessonProgressService } from '../learning/lesson-progress-service.ts';
+import { ReviewService } from '../review/review-service.ts';
 import { AttemptService } from './attempt-service.ts';
 import { ExerciseService } from './exercise-service.ts';
 import { PracticeSetService } from './practice-set-service.ts';
@@ -14,17 +18,26 @@ export interface PracticeDeps {
   now: Clock;
 }
 
-/** Services behind the practice API, created once at startup. */
+/** Services behind the learning-record API (practice, reading, review, activity), created once. */
 export interface PracticeServices {
   exercises: ExerciseService;
   sets: PracticeSetService;
   attempts: AttemptService;
+  lessons: LessonProgressService;
+  review: ReviewService;
+  activity: ActivityService;
+  dashboard: DashboardService;
 }
 
 export function createPracticeServices(deps: PracticeDeps): PracticeServices {
+  const review = new ReviewService(deps);
   return {
     exercises: new ExerciseService(deps),
-    sets: new PracticeSetService(deps),
+    sets: new PracticeSetService({ ...deps, review }),
     attempts: new AttemptService(deps),
+    lessons: new LessonProgressService(deps),
+    review,
+    activity: new ActivityService(deps),
+    dashboard: new DashboardService({ ...deps, review }),
   };
 }

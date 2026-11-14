@@ -291,6 +291,31 @@ export class ContentRepository {
     return rows.map((r) => this.#toExercise(r, concepts.get(r.id) ?? []));
   }
 
+  /** Practice exercises whose primary concept is one of `conceptIds` (review sets). */
+  listPracticeExercisesForConcepts(conceptIds: readonly string[]): ContentExercise[] {
+    if (conceptIds.length === 0) return [];
+    const ids = this.#db
+      .select({ id: t.exerciseConcepts.exerciseId })
+      .from(t.exerciseConcepts)
+      .where(
+        and(
+          inArray(t.exerciseConcepts.conceptId, [...conceptIds]),
+          eq(t.exerciseConcepts.isPrimary, true),
+        ),
+      )
+      .all()
+      .map((r) => r.id);
+    if (ids.length === 0) return [];
+    const rows = this.#db
+      .select()
+      .from(t.exercises)
+      .where(and(eq(t.exercises.usage, 'practice'), inArray(t.exercises.id, ids)))
+      .orderBy(asc(t.exercises.id))
+      .all();
+    const concepts = this.#exerciseConcepts(rows.map((r) => r.id));
+    return rows.map((r) => this.#toExercise(r, concepts.get(r.id) ?? []));
+  }
+
   /** What the practice set builder needs about a lesson. */
   getLessonPlan(id: string): LessonPlan | null {
     const lesson = this.#db.select().from(t.lessons).where(eq(t.lessons.id, id)).get();

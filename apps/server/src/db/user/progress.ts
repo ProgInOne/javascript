@@ -1,4 +1,4 @@
-import { and, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import type { Orm } from './connection.ts';
 import { dailyActivity, lessonProgress } from './schema.ts';
 
@@ -69,6 +69,24 @@ export function getDailyActivity(orm: Orm, learnerId: string, date: string) {
       .select()
       .from(dailyActivity)
       .where(and(eq(dailyActivity.learnerId, learnerId), eq(dailyActivity.date, date)))
+      .get() ?? null
+  );
+}
+
+/** The most recently active lesson that is being read or practiced ("이어서 학습"). */
+export function latestActiveLesson(orm: Orm, learnerId: string) {
+  return (
+    orm
+      .select()
+      .from(lessonProgress)
+      .where(
+        and(
+          eq(lessonProgress.learnerId, learnerId),
+          inArray(lessonProgress.status, ['reading', 'practicing']),
+        ),
+      )
+      .orderBy(desc(lessonProgress.updatedAt))
+      .limit(1)
       .get() ?? null
   );
 }

@@ -1,63 +1,9 @@
-import {
-  apiErrorSchema,
-  attemptResponseSchema,
-  practiceSetViewSchema,
-  type AttemptResponse,
-  type PracticeSetView,
-} from '@proginone/shared';
+import { practiceSetViewSchema, type AttemptResponse } from '@proginone/shared';
 import { describe, expect, it } from 'vitest';
-import { CORRECT, runFor, WRONG } from '../../test/answers.ts';
+import { CORRECT } from '../../test/answers.ts';
 import { EX } from '../../test/content-fixture.ts';
-import { count, MINUTE, practiceApp, T0 } from '../../test/practice-app.ts';
-
-type Ctx = Awaited<ReturnType<typeof practiceApp>>;
-
-const LESSON = 'js-basics.start.first-program';
-const RUN_BASED = new Set<string>([EX.fillCode, EX.implement, EX.fixBug, EX.web]);
-const errorCode = (json: unknown) => apiErrorSchema.parse(json).error.code;
-
-async function lessonSet(ctx: Ctx): Promise<PracticeSetView> {
-  const res = await ctx.call('POST', '/practice-sets', { kind: 'lesson', lessonId: LESSON });
-  expect(res.status).toBe(200);
-  return practiceSetViewSchema.parse(res.json);
-}
-
-/** Submits an answer for an item the way the web app does (run plan → sandbox → attempt). */
-async function submit(
-  ctx: Ctx,
-  item: { id: string; exerciseId: string },
-  options: { correct?: boolean; status?: 'crashed' | 'completed'; body?: object } = {},
-) {
-  const correct = options.correct ?? true;
-  const answer = (correct ? CORRECT : WRONG)[item.exerciseId];
-  let runResult: unknown;
-  if (RUN_BASED.has(item.exerciseId)) {
-    const plan = await ctx.call('POST', `/exercises/${item.exerciseId}/run-plan`, {
-      answer,
-      purpose: 'grading',
-    });
-    runResult = runFor(plan.json, {
-      correct,
-      ...(options.status ? { status: options.status } : {}),
-    });
-  }
-  ctx.clock.now += MINUTE;
-  return ctx.call('POST', '/attempts', {
-    practiceSetItemId: item.id,
-    exerciseId: item.exerciseId,
-    answer,
-    ...(runResult === undefined ? {} : { runResult }),
-    confidence: 'sure',
-    startedAt: ctx.clock.now - 40_000,
-    activeMs: 30_000,
-    ...options.body,
-  });
-}
-
-const parsed = (res: { status: number; json: unknown }): AttemptResponse => {
-  expect(res.status).toBe(201);
-  return attemptResponseSchema.parse(res.json);
-};
+import { count, practiceApp, T0 } from '../../test/practice-app.ts';
+import { errorCode, LESSON, lessonSet, parsed, submit } from '../../test/practice-flow.ts';
 
 describe('POST /practice-sets (lesson)', () => {
   it('builds a lesson set once and returns it while active', async () => {

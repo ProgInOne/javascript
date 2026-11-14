@@ -162,6 +162,8 @@ const contentId = z.string().min(1).max(200);
 /** `POST /practice-sets`. A lesson set is returned as-is while it is active (idempotent). */
 export const createPracticeSetRequestSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('lesson'), lessonId: contentId }).strict(),
+  /** Today's review set from the review queue (one active review set at a time). */
+  z.object({ kind: z.literal('review') }).strict(),
 ]);
 export type CreatePracticeSetRequest = z.infer<typeof createPracticeSetRequestSchema>;
 
@@ -335,3 +337,101 @@ export const attemptResponseSchema = z.object({
   }),
 });
 export type AttemptResponse = z.infer<typeof attemptResponseSchema>;
+
+// ── Reading progress, review queue, activity, dashboard ──────────────────────
+
+/** `POST /lessons/:id/progress`: reading position. The first call starts the lesson. */
+export const lessonProgressRequestSchema = z
+  .object({
+    /** 0–1 scroll progress of the body; stored as the maximum seen. */
+    readProgress: z.number().min(0).max(1),
+    /** Section to restore the reading position to. */
+    lastSectionId: z
+      .string()
+      .max(120)
+      .regex(/^[A-Za-z0-9][A-Za-z0-9_-]*$/)
+      .nullable()
+      .optional(),
+  })
+  .strict();
+export type LessonProgressRequest = z.infer<typeof lessonProgressRequestSchema>;
+
+export const lessonProgressSchema = z.object({
+  lessonId: z.string(),
+  status: z.enum(LESSON_PROGRESS_STATUSES),
+  readProgress: z.number(),
+  lastSectionId: z.string().nullable(),
+  practiceSetId: z.string().nullable(),
+  startedAt: z.number().nullable(),
+  completedAt: z.number().nullable(),
+  /** Concepts this call moved from `not_started` to `introduced` (first visit only). */
+  introducedConcepts: z.array(conceptRefSchema),
+});
+export type LessonProgress = z.infer<typeof lessonProgressSchema>;
+
+export const reviewQueueEntrySchema = z.object({
+  conceptId: z.string(),
+  title: z.string(),
+  dueAt: z.number(),
+  /** Due before today (learner-local): "예정일이 지났어요". */
+  overdue: z.boolean(),
+  overdueDays: z.int().min(0),
+  itemCount: z.int().min(1).max(2),
+  estimatedSeconds: z.number(),
+  priority: z.number(),
+});
+export type ReviewQueueEntryView = z.infer<typeof reviewQueueEntrySchema>;
+
+/** `GET /review-queue?budgetMinutes=`. */
+export const reviewQueueQuerySchema = z
+  .object({ budgetMinutes: z.coerce.number().int().min(1).max(240).optional() })
+  .strict();
+
+export const reviewQueueSchema = z.object({
+  /** Learner-local date (day starts at `day_start_hour`). */
+  date: z.string(),
+  budgetMinutes: z.int(),
+  /** Today's reviews, highest priority first. */
+  due: z.array(reviewQueueEntrySchema),
+  /** Due but over today's budget ("밀림"). */
+  deferred: z.array(reviewQueueEntrySchema),
+  estimatedMinutes: z.number(),
+});
+export type ReviewQueue = z.infer<typeof reviewQueueSchema>;
+
+/** `POST /activity/heartbeat`, every 30 s while the app is open (learning-engine.md#학습-시간-측정). */
+export const heartbeatRequestSchema = z
+  .object({
+    /** Last keyboard/pointer/scroll/editor input (epoch ms). Clamped to the server clock. */
+    lastInputAt: z.number().int().min(0),
+    visible: z.boolean(),
+    focused: z.boolean(),
+  })
+  .strict();
+export type HeartbeatRequest = z.infer<typeof heartbeatRequestSchema>;
+
+export const heartbeatResponseSchema = z.object({
+  date: z.string(),
+  /** Active time counted from the previous heartbeat to this one. */
+  countedMs: z.int().min(0),
+  activeMsToday: z.int().min(0),
+});
+export type HeartbeatResponse = z.infer<typeof heartbeatResponseSchema>;
+
+/** `GET /dashboard`: the minimal v0.1 dashboard. */
+export const dashboardSchema = z.object({
+  date: z.string(),
+  activeMinutesToday: z.int().min(0),
+  reviewDueCount: z.int().min(0),
+  /** Most recently active lesson that is being read or practiced. */
+  continueLesson: z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      status: z.enum(LESSON_PROGRESS_STATUSES),
+      readProgress: z.number(),
+      practiceSetId: z.string().nullable(),
+    })
+    .nullable(),
+});
+export type Dashboard = z.infer<typeof dashboardSchema>;

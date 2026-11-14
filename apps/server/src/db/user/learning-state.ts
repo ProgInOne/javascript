@@ -9,7 +9,7 @@ import type {
   ReviewFact,
   ReviewLogRecord,
 } from '@proginone/learning-engine';
-import { and, desc, eq, inArray } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, lt } from 'drizzle-orm';
 import type { Orm } from './connection.ts';
 import { breakdownJson, cardJson, revlogJson, stringListJson } from './json.ts';
 import { forWrite, fromRow } from './json-io.ts';
@@ -242,4 +242,21 @@ export function insertReviewLog(orm: Orm, learnerId: string, record: ReviewLogRe
       retrievabilityBefore: record.retrievabilityBefore,
     })
     .run();
+}
+
+/** Concepts with an FSRS card due before `before` (end of the learner's day), not suspended. */
+export function dueConceptIds(orm: Orm, learnerId: string, before: number): string[] {
+  return orm
+    .select({ conceptId: conceptMemory.conceptId })
+    .from(conceptMemory)
+    .where(
+      and(
+        eq(conceptMemory.learnerId, learnerId),
+        eq(conceptMemory.suspended, false),
+        lt(conceptMemory.dueAt, new Date(before)),
+      ),
+    )
+    .orderBy(asc(conceptMemory.dueAt))
+    .all()
+    .map((r) => r.conceptId);
 }
