@@ -1,5 +1,6 @@
 import type { Root, RootContent } from 'mdast';
 import type { MdxJsxAttribute, MdxJsxFlowElement, MdxJsxTextElement } from 'mdast-util-mdx-jsx';
+import remarkCjkFriendly from 'remark-cjk-friendly';
 import remarkGfm from 'remark-gfm';
 import remarkMdx from 'remark-mdx';
 import remarkParse from 'remark-parse';
@@ -171,7 +172,13 @@ export function compileLessonMdx(
 
   let root: Root;
   try {
-    root = unified().use(remarkParse).use(remarkGfm).use(remarkMdx).parse(source);
+    root = unified()
+      .use(remarkParse)
+      .use(remarkGfm)
+      // Korean particles right after `**…**` would otherwise leave the emphasis unclosed.
+      .use(remarkCjkFriendly)
+      .use(remarkMdx)
+      .parse(source);
   } catch (e) {
     return {
       tree: [],

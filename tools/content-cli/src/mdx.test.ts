@@ -84,4 +84,14 @@ describe('compileLessonMdx', () => {
       '중복',
     );
   });
+
+  it('closes emphasis before a Korean particle (CJK-friendly emphasis)', () => {
+    const r = compileLessonMdx(
+      sections({ intro: '값은 **`21`**이에요. 그리고 **"안녕"**을 출력해요.' }),
+    );
+    expect(r.errors).toEqual([]);
+    const json = JSON.stringify(r.tree);
+    expect(json).not.toContain('**');
+    expect((json.match(/"type":"strong"/g) ?? []).length).toBe(2);
+  });
 });

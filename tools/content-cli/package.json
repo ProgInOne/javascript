@@ -19,6 +19,7 @@
     "drizzle-orm": "^0.45.4",
     "esbuild": "0.28.2",
     "playwright-core": "1.65.1",
+    "remark-cjk-friendly": "^2.3.4",
     "remark-gfm": "^4.0.1",
     "remark-mdx": "^3.1.1",
     "remark-parse": "^11.0.0",
