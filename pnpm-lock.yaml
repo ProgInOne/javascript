@@ -312,6 +312,9 @@ importers:
 
   packages/content-schema:
     dependencies:
+      drizzle-orm:
+        specifier: ^0.45.4
+        version: 0.45.4(@types/better-sqlite3@9.6.0)(better-sqlite3@13.1.1)
       zod:
         specifier: ^4.6.7
         version: 4.6.7
@@ -370,6 +373,12 @@ importers:
       '@proginone/content-schema':
         specifier: workspace:*
         version: link:../../packages/content-schema
+      better-sqlite3:
+        specifier: ^13.1.1
+        version: 13.1.1
+      drizzle-orm:
+        specifier: ^0.45.4
+        version: 0.45.4(@types/better-sqlite3@9.6.0)(better-sqlite3@13.1.1)
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1(supports-color@7.2.0)
@@ -389,6 +398,9 @@ importers:
         specifier: ^4.6.7
         version: 4.6.7
     devDependencies:
+      '@types/better-sqlite3':
+        specifier: ^9.6.0
+        version: 9.6.0
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4

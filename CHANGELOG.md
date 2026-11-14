@@ -7,6 +7,7 @@
 
 ### Added
 
+- `content-cli build`(M4): 검사를 통과한 콘텐츠로 content.db를 원자적으로 생성(커리큘럼·개념·선수 관계·오개념·문제·trigram 전문 검색), 공개 스펙·정답 누설 지문은 exercise-kit 연결점으로 계산, 미검토 문제 제외
 - 콘텐츠 스키마와 검사(M4): `@proginone/content-schema`(pack·개념·오개념·과정·모듈·단원·문제 공통 필드 zod 스키마, slug 규칙), `content-cli check`(참조 무결성, 선수 관계 순환, 디렉터리·목록 순서, 레슨 MDX 허용 컴포넌트·섹션 규칙, 원시 HTML 금지, 유형별 스펙 검증 연결점)
 - Tailwind CSS v4(D-025): 웹 앱 화면 배치를 토큰 기반 유틸리티로 전환(시각 변화 없음)
 - 가이드(M3): 시작하기(`docs/guides/getting-started.md`), 테스트(`docs/guides/testing.md`)

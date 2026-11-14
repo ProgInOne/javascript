@@ -160,7 +160,9 @@ flowchart LR
 ### content.db 설계
 
 `content-cli build`가 매번 새로 만드는 파일입니다. 마이그레이션이 없습니다(전체 재생성).
-스키마는 `apps/server/src/db/content/schema.ts`에 Drizzle로 정의하고, 빌드 도구와 서버가 공유합니다.
+스키마는 `packages/content-schema/src/db/`에 DDL(`ddl.ts`)과 읽기용 Drizzle 테이블(`schema.ts`)로 정의하고, 빌드 도구와 서버가 공유합니다(두 정의가 같은지 테스트로 확인). 빌드 도구(`tools/`)가 앱(`apps/`)에 의존하지 않도록 서버 대신 패키지에 둡니다.
+
+M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons.read_minutes`·`objectives_json`, `exercises.prompt`·`code`·`misconception_ids_json`·`tags_json`, `misconceptions.diagnostic_hint`·`remedial_lesson_anchor`. `lessons.body_compiled`에는 검증된 MDX JSON 트리를 저장합니다([콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#mdx-컴포넌트)). `assessments`, `projects`, `exercise_templates`는 해당 콘텐츠가 생길 때 추가합니다.
 
 #### content_meta
 
