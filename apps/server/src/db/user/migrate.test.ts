@@ -46,10 +46,11 @@ describe('migrateUserDb', () => {
       '0001_learning_records',
       '0002_ai_tutor',
       '0003_engine_v02',
+      '0004_goals',
     ]);
     expect(backup).not.toHaveBeenCalled();
     expect(schemaState(userDb.sqlite)).toMatchObject({
-      current: '0003_engine_v02',
+      current: '0004_goals',
       pending: [],
     });
   });
@@ -90,7 +91,7 @@ describe('migrateUserDb', () => {
     const marker = reopened.sqlite.prepare("SELECT value FROM app_meta WHERE key = 'marker'").get();
     expect(marker).toEqual({ value: 'before' });
     expect(schemaState(reopened.sqlite)).toMatchObject({
-      current: '0003_engine_v02',
+      current: '0004_goals',
       pending: [],
     });
     const oops = reopened.sqlite
@@ -110,6 +111,7 @@ describe('migrateUserDb', () => {
       '0001_learning_records',
       '0002_ai_tutor',
       '0003_engine_v02',
+      '0004_goals',
     ]);
     userDb.sqlite
       .prepare(
@@ -135,6 +137,7 @@ describe('migrateUserDb', () => {
       '0001_learning_records',
       '0002_ai_tutor',
       '0003_engine_v02',
+      '0004_goals',
     ]);
 
     expect(backup).toHaveBeenCalledOnce();
@@ -200,7 +203,11 @@ describe('migrateUserDb', () => {
       )
       .run();
     const backup = vi.fn(() => Promise.resolve(join(dataDir, 'unused')));
-    expect(await migrateUserDb(userDb, { backup })).toEqual(['0002_ai_tutor', '0003_engine_v02']);
+    expect(await migrateUserDb(userDb, { backup })).toEqual([
+      '0002_ai_tutor',
+      '0003_engine_v02',
+      '0004_goals',
+    ]);
     expect(backup).toHaveBeenCalledOnce();
     expect(userDb.sqlite.prepare('SELECT id FROM hint_events').all()).toEqual([{ id: 'H1' }]);
     userDb.sqlite
@@ -237,7 +244,7 @@ describe('migrateUserDb', () => {
       )
       .run();
     const backup = vi.fn(() => Promise.resolve(join(dataDir, 'unused')));
-    expect(await migrateUserDb(userDb, { backup })).toEqual(['0003_engine_v02']);
+    expect(await migrateUserDb(userDb, { backup })).toEqual(['0003_engine_v02', '0004_goals']);
     expect(backup).toHaveBeenCalledOnce();
     const insert = (id: string, mc: string, status: string, evidence: string, extra = '') =>
       userDb.sqlite
@@ -268,6 +275,34 @@ describe('migrateUserDb', () => {
         )
         .run(),
     ).toThrow(/CHECK/);
+  });
+
+  it('upgrades a 0003 database to 0004 (goals with history)', async () => {
+    const dataDir = tmpDir();
+    const userDb = new UserDb(join(dataDir, 'user.db')).open();
+    await migrateUserDb(userDb, {
+      backup: () => Promise.resolve(''),
+      migrationsDir: migrationsUpTo('0003_engine_v02'),
+    });
+    userDb.sqlite
+      .prepare(
+        "INSERT INTO learners (id, timezone, day_start_hour, created_at) VALUES ('L1', 'Asia/Seoul', 4, 1)",
+      )
+      .run();
+    const backup = vi.fn(() => Promise.resolve(join(dataDir, 'unused')));
+    expect(await migrateUserDb(userDb, { backup })).toEqual(['0004_goals']);
+    const insert = (id: string, minutes: number, to: number | null, date: string | null = null) =>
+      userDb.sqlite
+        .prepare(
+          'INSERT INTO goals (id, learner_id, daily_minutes, weekly_days, target_date, effective_from, effective_to) VALUES (?, ?, ?, 5, ?, 1, ?)',
+        )
+        .run(id, 'L1', minutes, date, to);
+    insert('G1', 30, 2);
+    insert('G2', 45, null, '2026-12-31');
+    // One current goal per learner.
+    expect(() => insert('G3', 20, null)).toThrow(/UNIQUE/);
+    expect(() => insert('G4', 600, 3)).toThrow(/CHECK/);
+    expect(() => insert('G5', 30, 3, 'next week')).toThrow(/CHECK/);
   });
 
   it('refuses a database written by a newer app', async () => {

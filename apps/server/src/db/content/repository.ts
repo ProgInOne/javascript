@@ -28,6 +28,24 @@ export interface ContentExerciseConcept {
 
 export type ConceptPrerequisiteRow = typeof t.conceptPrerequisites.$inferSelect;
 
+export interface CourseLessonEstimate {
+  id: string;
+  title: string;
+  courseId: string;
+  estimatedMinutes: number;
+  readMinutes: number;
+}
+
+export interface ConceptDetailRow {
+  id: string;
+  title: string;
+  summary: string;
+  importance: 'core' | 'standard' | 'minor';
+  mdnUrl: string | null;
+  course: { id: string; title: string };
+  lessons: { id: string; title: string; role: 'introduces' | 'practices' | 'reviews' }[];
+}
+
 export interface LessonPlan {
   id: string;
   title: string;
@@ -384,6 +402,80 @@ export class ContentRepository {
       });
     }
     return out;
+  }
+
+  /**
+   * Lessons of a course in reading order with their time estimates (pace and today's plan).
+   * Only `kind: lesson` units count; assessments and projects are planned elsewhere.
+   */
+  listCourseLessons(courseId: string): CourseLessonEstimate[] {
+    return this.#db
+      .select({
+        id: t.lessons.id,
+        title: t.lessons.title,
+        estimatedMinutes: t.lessons.estimatedMinutes,
+        readMinutes: t.lessons.readMinutes,
+        kind: t.lessons.kind,
+      })
+      .from(t.lessons)
+      .innerJoin(t.modules, eq(t.lessons.moduleId, t.modules.id))
+      .where(eq(t.modules.courseId, courseId))
+      .orderBy(asc(t.modules.orderIndex), asc(t.lessons.orderIndex))
+      .all()
+      .filter((l) => l.kind === 'lesson')
+      .map(({ kind: _kind, ...l }) => ({ ...l, courseId }));
+  }
+
+  /** Course of a lesson, or null. */
+  courseOfLesson(lessonId: string): string | null {
+    return (
+      this.#db
+        .select({ courseId: t.modules.courseId })
+        .from(t.lessons)
+        .innerJoin(t.modules, eq(t.lessons.moduleId, t.modules.id))
+        .where(eq(t.lessons.id, lessonId))
+        .get()?.courseId ?? null
+    );
+  }
+
+  /** Published/preview courses in catalog order (the first one starts a new learner). */
+  listCourseIds(): string[] {
+    return this.#db
+      .select({ id: t.courses.id })
+      .from(t.courses)
+      .innerJoin(t.tracks, eq(t.courses.trackId, t.tracks.id))
+      .where(inArray(t.courses.status, ['published', 'preview']))
+      .orderBy(asc(t.tracks.orderIndex), asc(t.courses.orderIndex))
+      .all()
+      .map((r) => r.id);
+  }
+
+  /** A concept with its course and the lessons that use it (concept detail). */
+  getConceptDetail(id: string): ConceptDetailRow | null {
+    const row = this.#db
+      .select({ concept: t.concepts, courseTitle: t.courses.title, status: t.courses.status })
+      .from(t.concepts)
+      .innerJoin(t.courses, eq(t.concepts.courseId, t.courses.id))
+      .where(eq(t.concepts.id, id))
+      .get();
+    if (!row || row.status === 'hidden') return null;
+    const lessons = this.#db
+      .select({ id: t.lessons.id, title: t.lessons.title, role: t.lessonConcepts.role })
+      .from(t.lessonConcepts)
+      .innerJoin(t.lessons, eq(t.lessonConcepts.lessonId, t.lessons.id))
+      .innerJoin(t.modules, eq(t.lessons.moduleId, t.modules.id))
+      .where(eq(t.lessonConcepts.conceptId, id))
+      .orderBy(asc(t.modules.orderIndex), asc(t.lessons.orderIndex))
+      .all();
+    return {
+      id: row.concept.id,
+      title: row.concept.title,
+      summary: row.concept.summary,
+      importance: row.concept.importance,
+      mdnUrl: row.concept.mdnUrl,
+      course: { id: row.concept.courseId, title: row.courseTitle },
+      lessons,
+    };
   }
 
   /** Every `concept_prerequisites` edge (small; cached for the life of the pack). */

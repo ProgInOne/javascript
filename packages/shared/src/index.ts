@@ -7,3 +7,4 @@ export * from './console-format.ts';
 export * from './practice.ts';
 export * from './ai.ts';
 export * from './tutor.ts';
+export * from './learning.ts';

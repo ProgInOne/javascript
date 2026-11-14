@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, inArray, lte, sql } from 'drizzle-orm';
 import type { Orm } from './connection.ts';
 import { dailyActivity, lessonProgress } from './schema.ts';
 
@@ -71,6 +71,49 @@ export function getDailyActivity(orm: Orm, learnerId: string, date: string) {
       .where(and(eq(dailyActivity.learnerId, learnerId), eq(dailyActivity.date, date)))
       .get() ?? null
   );
+}
+
+/** `daily_activity` rows of a date range (inclusive), oldest first. */
+export function listDailyActivity(orm: Orm, learnerId: string, from: string, to: string) {
+  return orm
+    .select()
+    .from(dailyActivity)
+    .where(
+      and(
+        eq(dailyActivity.learnerId, learnerId),
+        gte(dailyActivity.date, from),
+        lte(dailyActivity.date, to),
+      ),
+    )
+    .orderBy(asc(dailyActivity.date))
+    .all();
+}
+
+/** Marks a date's goal as met (`daily_activity.goal_met`); never unmarks. */
+export function markGoalMet(orm: Orm, learnerId: string, date: string): void {
+  orm
+    .update(dailyActivity)
+    .set({ goalMet: true })
+    .where(and(eq(dailyActivity.learnerId, learnerId), eq(dailyActivity.date, date)))
+    .run();
+}
+
+/** Lesson progress rows of the learner (all lessons, or the given ones). */
+export function listLessonProgress(
+  orm: Orm,
+  learnerId: string,
+  lessonIds?: readonly string[],
+): LessonProgressRow[] {
+  return orm
+    .select()
+    .from(lessonProgress)
+    .where(
+      and(
+        eq(lessonProgress.learnerId, learnerId),
+        lessonIds === undefined ? undefined : inArray(lessonProgress.lessonId, [...lessonIds]),
+      ),
+    )
+    .all();
 }
 
 /** The most recently active lesson that is being read or practiced ("이어서 학습"). */

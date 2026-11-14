@@ -1,4 +1,6 @@
 import {
+  conceptDetailQuerySchema,
+  goalRequestSchema,
   heartbeatRequestSchema,
   lessonProgressRequestSchema,
   reviewQueueQuerySchema,
@@ -30,5 +32,16 @@ export function learningRoutes(services: PracticeServices) {
       return c.json(services.activity.heartbeat(request));
     })
     .get('/dashboard', (c) => c.json(services.dashboard.get()))
-    .get('/weak-concepts', (c) => c.json(services.weakness.list()));
+    .get('/weak-concepts', (c) => c.json(services.weakness.list()))
+    .get('/daily-plan', (c) => c.json(services.dailyPlan.get()))
+    .get('/goals', (c) => c.json(services.goals.get()))
+    .put('/goals', small, async (c) => {
+      const request = goalRequestSchema.parse(await jsonBody(c));
+      return c.json(services.goals.put(request));
+    })
+    .get('/concepts/:id', (c) => {
+      const id = contentIdParam(c.req.param('id'));
+      const query = conceptDetailQuerySchema.parse(c.req.query());
+      return c.json(services.concepts.get(id, query.evidenceLimit));
+    });
 }

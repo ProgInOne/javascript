@@ -128,6 +128,43 @@ export interface EngineConfig {
     readonly itemsMax: number;
     readonly extraItemBelowEffective: number;
   };
+  /** Active time (learning-engine.md#학습-시간-측정). */
+  readonly activity: {
+    /** Input older than this ends the active stretch (FR-GOAL-05: 2 minutes). */
+    readonly idleThresholdMs: number;
+    /** A longer gap between heartbeats counts as nothing (app closed, asleep). */
+    readonly maxHeartbeatGapMs: number;
+    /** A "studied day" has at least this much active time. */
+    readonly studyDayMinMs: number;
+  };
+  /** Goals and pace (learning-engine.md#목표-페이스-계산-computepace). */
+  readonly goals: {
+    readonly defaultDailyMinutes: number;
+    readonly defaultWeeklyDays: number;
+    /** Share of the daily goal assumed for new lessons (the rest: reviews and weakness). */
+    readonly newLearningShare: number;
+    /** `on_track` while `requiredPerDay ≤ budget × onTrackRatio`. */
+    readonly onTrackRatio: number;
+    /** Completed lessons needed before estimates are calibrated with actual time. */
+    readonly calibrationMinLessons: number;
+    readonly calibrationMin: number;
+    readonly calibrationMax: number;
+  };
+  /** Today's plan (learning-engine.md#오늘의-학습-구성-builddailyplan). */
+  readonly dailyPlan: {
+    readonly minBudgetMinutes: number;
+    readonly reviewShare: number;
+    /** Review share when the overdue reviews add up to `backlogDays` days of reviews. */
+    readonly reviewShareBacklog: number;
+    readonly backlogDays: number;
+    readonly newLessonMinMinutes: number;
+    /** A lesson is planned in part when at least this much time is left. */
+    readonly minPartialMinutes: number;
+    readonly weaknessMinMinutes: number;
+    readonly weaknessBelowEffective: number;
+    readonly weaknessConcepts: number;
+    readonly weaknessItemsPerConcept: number;
+  };
   /** Misconception observations (learning-engine.md#오개념-상태-전이). */
   readonly misconception: {
     /** A second piece of evidence from another exercise within this window confirms. */
@@ -279,6 +316,32 @@ export const defaultEngineConfig: EngineConfig = {
     itemsMin: 3,
     itemsMax: 4,
     extraItemBelowEffective: 40,
+  },
+  activity: {
+    idleThresholdMs: 2 * 60_000,
+    maxHeartbeatGapMs: 90_000,
+    studyDayMinMs: 5 * 60_000,
+  },
+  goals: {
+    defaultDailyMinutes: 30,
+    defaultWeeklyDays: 5,
+    newLearningShare: 0.6,
+    onTrackRatio: 0.85,
+    calibrationMinLessons: 5,
+    calibrationMin: 0.5,
+    calibrationMax: 2.0,
+  },
+  dailyPlan: {
+    minBudgetMinutes: 10,
+    reviewShare: 0.5,
+    reviewShareBacklog: 0.6,
+    backlogDays: 3,
+    newLessonMinMinutes: 10,
+    minPartialMinutes: 5,
+    weaknessMinMinutes: 8,
+    weaknessBelowEffective: 60,
+    weaknessConcepts: 3,
+    weaknessItemsPerConcept: 3,
   },
   misconception: {
     confirmWindowMs: 30 * DAY_MS,

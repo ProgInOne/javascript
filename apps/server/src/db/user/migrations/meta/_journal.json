@@ -29,6 +29,13 @@
       "when": 1794678488689,
       "tag": "0003_engine_v02",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1794680376623,
+      "tag": "0004_goals",
+      "breakpoints": true
     }
   ]
 }

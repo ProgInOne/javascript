@@ -671,3 +671,36 @@ export const remediationSuggestions = sqliteTable(
     check('remediation_suggestions_item_ids_json', jsonValid(t.itemIdsJson)),
   ],
 );
+
+// ── Goals (M5, migration 0004) ───────────────────────────────────────────────
+// docs/design/data-model.md#goals-daily_activity.
+
+/**
+ * Learning goals with history: changing the goal closes the current row (`effective_to`) and
+ * adds a new one, so past weeks are judged against the goal of their time (FR-GOAL-01).
+ */
+export const goals = sqliteTable(
+  'goals',
+  {
+    id: text('id').primaryKey(),
+    learnerId: learnerId(),
+    dailyMinutes: integer('daily_minutes').notNull().default(30),
+    weeklyDays: integer('weekly_days').notNull().default(5),
+    targetCourseId: text('target_course_id'),
+    targetDate: text('target_date'),
+    effectiveFrom: at('effective_from').notNull(),
+    effectiveTo: at('effective_to'),
+  },
+  (t) => [
+    uniqueIndex('goals_current')
+      .on(t.learnerId)
+      .where(sql`${t.effectiveTo} IS NULL`),
+    index('goals_learner_from').on(t.learnerId, t.effectiveFrom),
+    check('goals_daily_minutes', sql`${t.dailyMinutes} BETWEEN 5 AND 480`),
+    check('goals_weekly_days', sql`${t.weeklyDays} BETWEEN 1 AND 7`),
+    check(
+      'goals_target_date',
+      sql`${t.targetDate} IS NULL OR ${t.targetDate} GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'`,
+    ),
+  ],
+);

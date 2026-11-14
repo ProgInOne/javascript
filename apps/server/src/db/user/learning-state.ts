@@ -9,7 +9,7 @@ import type {
   ReviewFact,
   ReviewLogRecord,
 } from '@proginone/learning-engine';
-import { and, asc, desc, eq, inArray, lt } from 'drizzle-orm';
+import { and, asc, count, desc, eq, inArray, lt } from 'drizzle-orm';
 import type { Orm } from './connection.ts';
 import { breakdownJson, cardJson, revlogJson, stringListJson } from './json.ts';
 import { forWrite, fromRow } from './json-io.ts';
@@ -242,6 +242,39 @@ export function insertReviewLog(orm: Orm, learnerId: string, record: ReviewLogRe
       retrievabilityBefore: record.retrievabilityBefore,
     })
     .run();
+}
+
+/** Newest `mastery_evidence` rows of a concept with the total count (concept detail). */
+export function listEvidence(orm: Orm, learnerId: string, conceptId: string, limit: number) {
+  const where = and(
+    eq(masteryEvidence.learnerId, learnerId),
+    eq(masteryEvidence.conceptId, conceptId),
+  );
+  const rows = orm
+    .select()
+    .from(masteryEvidence)
+    .where(where)
+    .orderBy(desc(masteryEvidence.createdAt), desc(masteryEvidence.id))
+    .limit(limit)
+    .all()
+    .map((row) => ({
+      ...row,
+      breakdown: fromRow(breakdownJson, row.breakdownJson, 'mastery_evidence', row.id),
+    }));
+  const total = orm.select({ n: count() }).from(masteryEvidence).where(where).get()?.n ?? 0;
+  return { rows, total };
+}
+
+/** Newest FSRS reviews of a concept. */
+export function recentReviews(orm: Orm, learnerId: string, conceptId: string, limit: number) {
+  return orm
+    .select({ reviewedAt: reviewLogs.reviewedAt, rating: reviewLogs.rating })
+    .from(reviewLogs)
+    .where(and(eq(reviewLogs.learnerId, learnerId), eq(reviewLogs.conceptId, conceptId)))
+    .orderBy(desc(reviewLogs.reviewedAt), desc(reviewLogs.id))
+    .limit(limit)
+    .all()
+    .map((r) => ({ reviewedAt: r.reviewedAt.getTime(), rating: r.rating }));
 }
 
 /** Every concept the learner has a `concept_mastery` row for. */

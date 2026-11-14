@@ -319,7 +319,7 @@ M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons
 스키마는 `apps/server/src/db/user/schema.ts`, 마이그레이션은 `apps/server/src/db/user/migrations/`에 있습니다.
 모든 학습 기록 테이블은 `learner_id TEXT NOT NULL REFERENCES learners(id)`를 가집니다. 아래 표에서는 반복을 줄이기 위해 생략합니다. 예외: `app_meta`, `variant_cache`, `exercise_snapshots`는 학습자와 무관한 캐시·메타이므로 `learner_id`가 없습니다.
 
-구현 현황: 0000(M3)은 `app_meta`, `learners`, `settings`, 0001(M4)은 `lesson_progress`, `practice_sets`, `practice_set_items`, `attempts`, `submissions`, `hint_events`, `exercise_snapshots`, `concept_mastery`, `mastery_evidence`, `concept_memory`, `review_logs`, `pending_ratings`(M4에서 추가), `exercise_reports`, `daily_activity`를 만듭니다. 0002(M4)는 튜터 테이블, 0003(M5)은 `misconception_observations`, `remediation_suggestions`(M5에서 추가)를 만듭니다. 나머지 테이블은 해당 기능과 함께 추가합니다. 0001에서 표와 달라진 점: `lesson_progress.updated_at` 추가, `pending_ratings` 추가. 열거형·0/1·`json_valid` 외에 범위 `CHECK`(점수 0~1·0~100, 힌트 단계 0~3, `daily_activity.date` 형식)를 더했습니다.
+구현 현황: 0000(M3)은 `app_meta`, `learners`, `settings`, 0001(M4)은 `lesson_progress`, `practice_sets`, `practice_set_items`, `attempts`, `submissions`, `hint_events`, `exercise_snapshots`, `concept_mastery`, `mastery_evidence`, `concept_memory`, `review_logs`, `pending_ratings`(M4에서 추가), `exercise_reports`, `daily_activity`를 만듭니다. 0002(M4)는 튜터 테이블, 0003(M5)은 `misconception_observations`, `remediation_suggestions`(M5에서 추가), 0004(M5)는 `goals`를 만듭니다. 나머지 테이블은 해당 기능과 함께 추가합니다. 0001에서 표와 달라진 점: `lesson_progress.updated_at` 추가, `pending_ratings` 추가. 열거형·0/1·`json_valid` 외에 범위 `CHECK`(점수 0~1·0~100, 힌트 단계 0~3, `daily_activity.date` 형식)를 더했습니다.
 
 #### 연결 설정 (PRAGMA)
 
@@ -378,6 +378,7 @@ PRAGMA cache_size = -20000;       -- 약 20MB
 
 - 목표를 바꾸면 기존 행의 `effective_to`를 채우고 새 행을 추가합니다. 과거 주간 달성률을 당시 목표로 계산하기 위함입니다.
 - 부분 고유 인덱스 `goals(learner_id) WHERE effective_to IS NULL`로 현재 목표를 하나로 강제합니다.
+- M5 구현(마이그레이션 `0004_goals`): `goals` 테이블을 표대로 만들고, `target_date` 형식 `CHECK`와 인덱스 `(learner_id, effective_from)`을 더했습니다. 목표 행이 없으면 기본값(30분, 주 5일)으로 계산합니다. `daily_activity.goal_met`은 하트비트가 그날 목표 시간을 넘기는 순간 1로 바꾸고 되돌리지 않습니다.
 - `daily_activity`는 `study_sessions`와 `attempts`에서 파생할 수 있는 집계 테이블입니다. 쓰기 경로에서 같은 트랜잭션으로 증가시키고, 불일치 시 재계산 명령(`content-cli`가 아닌 서버 관리 명령 `pnpm db:recompute`)으로 복구합니다.
 
 #### study_sessions

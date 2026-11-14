@@ -1,0 +1,2831 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "722c146c-0075-48fa-99e2-5ad47553de1a",
+  "prevId": "e13d6248-26b6-45b0-af86-f4ea7914dfc9",
+  "tables": {
+    "ai_calls": {
+      "name": "ai_calls",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "task_name": {
+          "name": "task_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "task_version": {
+          "name": "task_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "base_version": {
+          "name": "base_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "model": {
+          "name": "model",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "effort": {
+          "name": "effort",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "provider_thread_id": {
+          "name": "provider_thread_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "provider_turn_id": {
+          "name": "provider_turn_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "subject_type": {
+          "name": "subject_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "subject_id": {
+          "name": "subject_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "error_code": {
+          "name": "error_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "error_message": {
+          "name": "error_message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "retries": {
+          "name": "retries",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "latency_first_token_ms": {
+          "name": "latency_first_token_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "latency_total_ms": {
+          "name": "latency_total_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "input_tokens": {
+          "name": "input_tokens",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "cached_input_tokens": {
+          "name": "cached_input_tokens",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "output_tokens": {
+          "name": "output_tokens",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reasoning_tokens": {
+          "name": "reasoning_tokens",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "context_tokens_estimated": {
+          "name": "context_tokens_estimated",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "context_manifest_json": {
+          "name": "context_manifest_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tool_attempts": {
+          "name": "tool_attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "validation_issues_json": {
+          "name": "validation_issues_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "prompt_snapshot_path": {
+          "name": "prompt_snapshot_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "ai_calls_learner_created": {
+          "name": "ai_calls_learner_created",
+          "columns": ["learner_id", "created_at"],
+          "isUnique": false
+        },
+        "ai_calls_task_status": {
+          "name": "ai_calls_task_status",
+          "columns": ["task_name", "status"],
+          "isUnique": false
+        },
+        "ai_calls_subject": {
+          "name": "ai_calls_subject",
+          "columns": ["subject_type", "subject_id"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "ai_calls_learner_id_learners_id_fk": {
+          "name": "ai_calls_learner_id_learners_id_fk",
+          "tableFrom": "ai_calls",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "ai_calls_status": {
+          "name": "ai_calls_status",
+          "value": "\"ai_calls\".\"status\" IN ('ok', 'bad_output', 'fallback', 'cancelled', 'timeout', 'rate_limited', 'unauthorized', 'provider_error')"
+        },
+        "ai_calls_subject_type": {
+          "name": "ai_calls_subject_type",
+          "value": "\"ai_calls\".\"subject_type\" IS NULL OR \"ai_calls\".\"subject_type\" IN ('tutor_message', 'attempt', 'generation_job', 'tutor_thread', 'content_draft', 'hint_event')"
+        },
+        "ai_calls_tool_attempts": {
+          "name": "ai_calls_tool_attempts",
+          "value": "\"ai_calls\".\"tool_attempts\" >= 0"
+        },
+        "ai_calls_context_manifest_json": {
+          "name": "ai_calls_context_manifest_json",
+          "value": "json_valid(\"ai_calls\".\"context_manifest_json\")"
+        },
+        "ai_calls_validation_issues_json": {
+          "name": "ai_calls_validation_issues_json",
+          "value": "json_valid(\"ai_calls\".\"validation_issues_json\")"
+        }
+      }
+    },
+    "app_meta": {
+      "name": "app_meta",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "attempts": {
+      "name": "attempts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "exercise_id": {
+          "name": "exercise_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "exercise_origin": {
+          "name": "exercise_origin",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "variant_group_key": {
+          "name": "variant_group_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "exercise_version_hash": {
+          "name": "exercise_version_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "practice_set_item_id": {
+          "name": "practice_set_item_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "study_session_id": {
+          "name": "study_session_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "attempt_no": {
+          "name": "attempt_no",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "attempt_in_item": {
+          "name": "attempt_in_item",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "outcome": {
+          "name": "outcome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "score": {
+          "name": "score",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "confidence": {
+          "name": "confidence",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "hint_level_max": {
+          "name": "hint_level_max",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "solution_viewed": {
+          "name": "solution_viewed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "tutor_assisted": {
+          "name": "tutor_assisted",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "submitted_at": {
+          "name": "submitted_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "active_ms": {
+          "name": "active_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "misconception_ids_json": {
+          "name": "misconception_ids_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "grading_json": {
+          "name": "grading_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "is_review": {
+          "name": "is_review",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "engine_applied": {
+          "name": "engine_applied",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        }
+      },
+      "indexes": {
+        "attempts_learner_submitted": {
+          "name": "attempts_learner_submitted",
+          "columns": ["learner_id", "submitted_at"],
+          "isUnique": false
+        },
+        "attempts_learner_exercise_submitted": {
+          "name": "attempts_learner_exercise_submitted",
+          "columns": ["learner_id", "exercise_id", "submitted_at"],
+          "isUnique": false
+        },
+        "attempts_item": {
+          "name": "attempts_item",
+          "columns": ["practice_set_item_id"],
+          "isUnique": false
+        },
+        "attempts_learner_outcome_submitted": {
+          "name": "attempts_learner_outcome_submitted",
+          "columns": ["learner_id", "outcome", "submitted_at"],
+          "isUnique": false
+        },
+        "attempts_learner_group_submitted": {
+          "name": "attempts_learner_group_submitted",
+          "columns": ["learner_id", "variant_group_key", "submitted_at"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "attempts_learner_id_learners_id_fk": {
+          "name": "attempts_learner_id_learners_id_fk",
+          "tableFrom": "attempts",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "attempts_practice_set_item_id_practice_set_items_id_fk": {
+          "name": "attempts_practice_set_item_id_practice_set_items_id_fk",
+          "tableFrom": "attempts",
+          "tableTo": "practice_set_items",
+          "columnsFrom": ["practice_set_item_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "attempts_origin": {
+          "name": "attempts_origin",
+          "value": "\"attempts\".\"exercise_origin\" IN ('authored', 'template', 'generated')"
+        },
+        "attempts_outcome": {
+          "name": "attempts_outcome",
+          "value": "\"attempts\".\"outcome\" IN ('correct', 'partial', 'incorrect', 'error')"
+        },
+        "attempts_confidence": {
+          "name": "attempts_confidence",
+          "value": "\"attempts\".\"confidence\" IS NULL OR \"attempts\".\"confidence\" IN ('sure', 'unsure', 'guess')"
+        },
+        "attempts_score": {
+          "name": "attempts_score",
+          "value": "\"attempts\".\"score\" BETWEEN 0 AND 1"
+        },
+        "attempts_hint_level_max": {
+          "name": "attempts_hint_level_max",
+          "value": "\"attempts\".\"hint_level_max\" BETWEEN 0 AND 3"
+        },
+        "attempts_solution_viewed": {
+          "name": "attempts_solution_viewed",
+          "value": "\"attempts\".\"solution_viewed\" IN (0, 1)"
+        },
+        "attempts_tutor_assisted": {
+          "name": "attempts_tutor_assisted",
+          "value": "\"attempts\".\"tutor_assisted\" IN (0, 1)"
+        },
+        "attempts_is_review": {
+          "name": "attempts_is_review",
+          "value": "\"attempts\".\"is_review\" IN (0, 1)"
+        },
+        "attempts_engine_applied": {
+          "name": "attempts_engine_applied",
+          "value": "\"attempts\".\"engine_applied\" IN (0, 1)"
+        },
+        "attempts_misconception_ids_json": {
+          "name": "attempts_misconception_ids_json",
+          "value": "json_valid(\"attempts\".\"misconception_ids_json\")"
+        },
+        "attempts_grading_json": {
+          "name": "attempts_grading_json",
+          "value": "json_valid(\"attempts\".\"grading_json\")"
+        }
+      }
+    },
+    "concept_mastery": {
+      "name": "concept_mastery",
+      "columns": {
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "concept_id": {
+          "name": "concept_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "score": {
+          "name": "score",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "stage": {
+          "name": "stage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'not_started'"
+        },
+        "evidence_weight_sum": {
+          "name": "evidence_weight_sum",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "distinct_types_correct_json": {
+          "name": "distinct_types_correct_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "max_difficulty_correct": {
+          "name": "max_difficulty_correct",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "consecutive_failures": {
+          "name": "consecutive_failures",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "last_attempt_at": {
+          "name": "last_attempt_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "stage_changed_at": {
+          "name": "stage_changed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "engine_version": {
+          "name": "engine_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "concept_mastery_learner_stage": {
+          "name": "concept_mastery_learner_stage",
+          "columns": ["learner_id", "stage"],
+          "isUnique": false
+        },
+        "concept_mastery_learner_score": {
+          "name": "concept_mastery_learner_score",
+          "columns": ["learner_id", "score"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "concept_mastery_learner_id_learners_id_fk": {
+          "name": "concept_mastery_learner_id_learners_id_fk",
+          "tableFrom": "concept_mastery",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "concept_mastery_learner_id_concept_id_pk": {
+          "columns": ["learner_id", "concept_id"],
+          "name": "concept_mastery_learner_id_concept_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "concept_mastery_stage": {
+          "name": "concept_mastery_stage",
+          "value": "\"concept_mastery\".\"stage\" IN ('not_started', 'introduced', 'practicing', 'proficient', 'mastered')"
+        },
+        "concept_mastery_score": {
+          "name": "concept_mastery_score",
+          "value": "\"concept_mastery\".\"score\" BETWEEN 0 AND 100"
+        },
+        "concept_mastery_distinct_types_json": {
+          "name": "concept_mastery_distinct_types_json",
+          "value": "json_valid(\"concept_mastery\".\"distinct_types_correct_json\")"
+        }
+      }
+    },
+    "concept_memory": {
+      "name": "concept_memory",
+      "columns": {
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "concept_id": {
+          "name": "concept_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "card_json": {
+          "name": "card_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fsrs_version": {
+          "name": "fsrs_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "due_at": {
+          "name": "due_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "stability": {
+          "name": "stability",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "difficulty": {
+          "name": "difficulty",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "last_review_at": {
+          "name": "last_review_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reps": {
+          "name": "reps",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "lapses": {
+          "name": "lapses",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "suspended": {
+          "name": "suspended",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "concept_memory_learner_suspended_due": {
+          "name": "concept_memory_learner_suspended_due",
+          "columns": ["learner_id", "suspended", "due_at"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "concept_memory_learner_id_learners_id_fk": {
+          "name": "concept_memory_learner_id_learners_id_fk",
+          "tableFrom": "concept_memory",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "concept_memory_learner_id_concept_id_pk": {
+          "columns": ["learner_id", "concept_id"],
+          "name": "concept_memory_learner_id_concept_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "concept_memory_state": {
+          "name": "concept_memory_state",
+          "value": "\"concept_memory\".\"state\" IN ('new', 'learning', 'review', 'relearning')"
+        },
+        "concept_memory_suspended": {
+          "name": "concept_memory_suspended",
+          "value": "\"concept_memory\".\"suspended\" IN (0, 1)"
+        },
+        "concept_memory_card_json": {
+          "name": "concept_memory_card_json",
+          "value": "json_valid(\"concept_memory\".\"card_json\")"
+        }
+      }
+    },
+    "daily_activity": {
+      "name": "daily_activity",
+      "columns": {
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "date": {
+          "name": "date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "active_ms": {
+          "name": "active_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "attempts_count": {
+          "name": "attempts_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "correct_count": {
+          "name": "correct_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "reviews_done": {
+          "name": "reviews_done",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "lessons_completed": {
+          "name": "lessons_completed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "goal_met": {
+          "name": "goal_met",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "daily_activity_learner_id_learners_id_fk": {
+          "name": "daily_activity_learner_id_learners_id_fk",
+          "tableFrom": "daily_activity",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "daily_activity_learner_id_date_pk": {
+          "columns": ["learner_id", "date"],
+          "name": "daily_activity_learner_id_date_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "daily_activity_date": {
+          "name": "daily_activity_date",
+          "value": "\"daily_activity\".\"date\" GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'"
+        },
+        "daily_activity_active_ms": {
+          "name": "daily_activity_active_ms",
+          "value": "\"daily_activity\".\"active_ms\" >= 0"
+        },
+        "daily_activity_goal_met": {
+          "name": "daily_activity_goal_met",
+          "value": "\"daily_activity\".\"goal_met\" IN (0, 1)"
+        }
+      }
+    },
+    "exercise_reports": {
+      "name": "exercise_reports",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "exercise_id": {
+          "name": "exercise_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "exercise_origin": {
+          "name": "exercise_origin",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "excluded": {
+          "name": "excluded",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'open'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "exercise_reports_learner_exercise": {
+          "name": "exercise_reports_learner_exercise",
+          "columns": ["learner_id", "exercise_id"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "exercise_reports_learner_id_learners_id_fk": {
+          "name": "exercise_reports_learner_id_learners_id_fk",
+          "tableFrom": "exercise_reports",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "exercise_reports_reason": {
+          "name": "exercise_reports_reason",
+          "value": "\"exercise_reports\".\"reason\" IN ('wrong_answer', 'unclear', 'wrong_hint_or_explanation', 'difficulty_mismatch', 'other')"
+        },
+        "exercise_reports_origin": {
+          "name": "exercise_reports_origin",
+          "value": "\"exercise_reports\".\"exercise_origin\" IN ('authored', 'template', 'generated')"
+        },
+        "exercise_reports_excluded": {
+          "name": "exercise_reports_excluded",
+          "value": "\"exercise_reports\".\"excluded\" IN (0, 1)"
+        },
+        "exercise_reports_status": {
+          "name": "exercise_reports_status",
+          "value": "\"exercise_reports\".\"status\" IN ('open', 'resolved', 'dismissed')"
+        }
+      }
+    },
+    "exercise_snapshots": {
+      "name": "exercise_snapshots",
+      "columns": {
+        "content_hash": {
+          "name": "content_hash",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "exercise_id": {
+          "name": "exercise_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "public_spec_json": {
+          "name": "public_spec_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "revision": {
+          "name": "revision",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "exercise_snapshots_public_spec_json": {
+          "name": "exercise_snapshots_public_spec_json",
+          "value": "json_valid(\"exercise_snapshots\".\"public_spec_json\")"
+        }
+      }
+    },
+    "goals": {
+      "name": "goals",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "daily_minutes": {
+          "name": "daily_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 30
+        },
+        "weekly_days": {
+          "name": "weekly_days",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 5
+        },
+        "target_course_id": {
+          "name": "target_course_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "target_date": {
+          "name": "target_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "effective_from": {
+          "name": "effective_from",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "effective_to": {
+          "name": "effective_to",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "goals_current": {
+          "name": "goals_current",
+          "columns": ["learner_id"],
+          "isUnique": true,
+          "where": "\"goals\".\"effective_to\" IS NULL"
+        },
+        "goals_learner_from": {
+          "name": "goals_learner_from",
+          "columns": ["learner_id", "effective_from"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "goals_learner_id_learners_id_fk": {
+          "name": "goals_learner_id_learners_id_fk",
+          "tableFrom": "goals",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "goals_daily_minutes": {
+          "name": "goals_daily_minutes",
+          "value": "\"goals\".\"daily_minutes\" BETWEEN 5 AND 480"
+        },
+        "goals_weekly_days": {
+          "name": "goals_weekly_days",
+          "value": "\"goals\".\"weekly_days\" BETWEEN 1 AND 7"
+        },
+        "goals_target_date": {
+          "name": "goals_target_date",
+          "value": "\"goals\".\"target_date\" IS NULL OR \"goals\".\"target_date\" GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'"
+        }
+      }
+    },
+    "hint_events": {
+      "name": "hint_events",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "exercise_id": {
+          "name": "exercise_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "practice_set_item_id": {
+          "name": "practice_set_item_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "level": {
+          "name": "level",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "hint_events_learner_exercise_created": {
+          "name": "hint_events_learner_exercise_created",
+          "columns": ["learner_id", "exercise_id", "created_at"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "hint_events_learner_id_learners_id_fk": {
+          "name": "hint_events_learner_id_learners_id_fk",
+          "tableFrom": "hint_events",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "hint_events_practice_set_item_id_practice_set_items_id_fk": {
+          "name": "hint_events_practice_set_item_id_practice_set_items_id_fk",
+          "tableFrom": "hint_events",
+          "tableTo": "practice_set_items",
+          "columnsFrom": ["practice_set_item_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "hint_events_kind": {
+          "name": "hint_events_kind",
+          "value": "\"hint_events\".\"kind\" IN ('hint', 'solution', 'ai_hint')"
+        },
+        "hint_events_level": {
+          "name": "hint_events_level",
+          "value": "(\"hint_events\".\"kind\" = 'solution' AND \"hint_events\".\"level\" IS NULL) OR (\"hint_events\".\"kind\" <> 'solution' AND \"hint_events\".\"level\" BETWEEN 1 AND 3)"
+        }
+      }
+    },
+    "learners": {
+      "name": "learners",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "display_name": {
+          "name": "display_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "timezone": {
+          "name": "timezone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "day_start_hour": {
+          "name": "day_start_hour",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 4
+        },
+        "experience_level": {
+          "name": "experience_level",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'none'"
+        },
+        "onboarded_at": {
+          "name": "onboarded_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "learners_day_start_hour": {
+          "name": "learners_day_start_hour",
+          "value": "\"learners\".\"day_start_hour\" BETWEEN 0 AND 23"
+        },
+        "learners_experience_level": {
+          "name": "learners_experience_level",
+          "value": "\"learners\".\"experience_level\" IN ('none', 'some', 'basics')"
+        }
+      }
+    },
+    "lesson_progress": {
+      "name": "lesson_progress",
+      "columns": {
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lesson_id": {
+          "name": "lesson_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'not_started'"
+        },
+        "last_section_id": {
+          "name": "last_section_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "read_progress": {
+          "name": "read_progress",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "practice_set_id": {
+          "name": "practice_set_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "content_hash_seen": {
+          "name": "content_hash_seen",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "lesson_progress_learner_status": {
+          "name": "lesson_progress_learner_status",
+          "columns": ["learner_id", "status"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "lesson_progress_learner_id_learners_id_fk": {
+          "name": "lesson_progress_learner_id_learners_id_fk",
+          "tableFrom": "lesson_progress",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "lesson_progress_learner_id_lesson_id_pk": {
+          "columns": ["learner_id", "lesson_id"],
+          "name": "lesson_progress_learner_id_lesson_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "lesson_progress_status": {
+          "name": "lesson_progress_status",
+          "value": "\"lesson_progress\".\"status\" IN ('not_started', 'reading', 'practicing', 'completed')"
+        },
+        "lesson_progress_read_progress": {
+          "name": "lesson_progress_read_progress",
+          "value": "\"lesson_progress\".\"read_progress\" BETWEEN 0 AND 1"
+        }
+      }
+    },
+    "mastery_evidence": {
+      "name": "mastery_evidence",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "concept_id": {
+          "name": "concept_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "attempt_id": {
+          "name": "attempt_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "score_before": {
+          "name": "score_before",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "score_after": {
+          "name": "score_after",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "stage_before": {
+          "name": "stage_before",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "stage_after": {
+          "name": "stage_after",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "breakdown_json": {
+          "name": "breakdown_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "mastery_evidence_learner_concept_created": {
+          "name": "mastery_evidence_learner_concept_created",
+          "columns": ["learner_id", "concept_id", "created_at"],
+          "isUnique": false
+        },
+        "mastery_evidence_attempt": {
+          "name": "mastery_evidence_attempt",
+          "columns": ["attempt_id"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "mastery_evidence_learner_id_learners_id_fk": {
+          "name": "mastery_evidence_learner_id_learners_id_fk",
+          "tableFrom": "mastery_evidence",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "mastery_evidence_attempt_id_attempts_id_fk": {
+          "name": "mastery_evidence_attempt_id_attempts_id_fk",
+          "tableFrom": "mastery_evidence",
+          "tableTo": "attempts",
+          "columnsFrom": ["attempt_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "mastery_evidence_kind": {
+          "name": "mastery_evidence_kind",
+          "value": "\"mastery_evidence\".\"kind\" IN ('attempt', 'stage_gate', 'diagnostic_seed', 'recompute')"
+        },
+        "mastery_evidence_stage_before": {
+          "name": "mastery_evidence_stage_before",
+          "value": "\"mastery_evidence\".\"stage_before\" IN ('not_started', 'introduced', 'practicing', 'proficient', 'mastered')"
+        },
+        "mastery_evidence_stage_after": {
+          "name": "mastery_evidence_stage_after",
+          "value": "\"mastery_evidence\".\"stage_after\" IN ('not_started', 'introduced', 'practicing', 'proficient', 'mastered')"
+        },
+        "mastery_evidence_breakdown_json": {
+          "name": "mastery_evidence_breakdown_json",
+          "value": "json_valid(\"mastery_evidence\".\"breakdown_json\")"
+        }
+      }
+    },
+    "misconception_observations": {
+      "name": "misconception_observations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "misconception_id": {
+          "name": "misconception_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "concept_id": {
+          "name": "concept_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'suspected'"
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ai_description": {
+          "name": "ai_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "evidence_attempt_ids_json": {
+          "name": "evidence_attempt_ids_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "resolution_attempt_ids_json": {
+          "name": "resolution_attempt_ids_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "confirm_count": {
+          "name": "confirm_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "first_seen_at": {
+          "name": "first_seen_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "last_seen_at": {
+          "name": "last_seen_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "resolved_at": {
+          "name": "resolved_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "misconception_observations_active": {
+          "name": "misconception_observations_active",
+          "columns": ["learner_id", "misconception_id"],
+          "isUnique": true,
+          "where": "\"misconception_observations\".\"status\" IN ('suspected', 'confirmed')"
+        },
+        "misconception_observations_learner_concept_status": {
+          "name": "misconception_observations_learner_concept_status",
+          "columns": ["learner_id", "concept_id", "status"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "misconception_observations_learner_id_learners_id_fk": {
+          "name": "misconception_observations_learner_id_learners_id_fk",
+          "tableFrom": "misconception_observations",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "misconception_observations_status": {
+          "name": "misconception_observations_status",
+          "value": "\"misconception_observations\".\"status\" IN ('suspected', 'confirmed', 'resolved', 'dismissed')"
+        },
+        "misconception_observations_source": {
+          "name": "misconception_observations_source",
+          "value": "\"misconception_observations\".\"source\" IN ('distractor', 'pattern', 'ai')"
+        },
+        "misconception_observations_evidence": {
+          "name": "misconception_observations_evidence",
+          "value": "json_valid(\"misconception_observations\".\"evidence_attempt_ids_json\") AND json_array_length(\"misconception_observations\".\"evidence_attempt_ids_json\") > 0"
+        },
+        "misconception_observations_resolution": {
+          "name": "misconception_observations_resolution",
+          "value": "json_valid(\"misconception_observations\".\"resolution_attempt_ids_json\")"
+        },
+        "misconception_observations_ai": {
+          "name": "misconception_observations_ai",
+          "value": "\"misconception_observations\".\"misconception_id\" NOT LIKE 'ai.%' OR (\"misconception_observations\".\"source\" = 'ai' AND \"misconception_observations\".\"ai_description\" IS NOT NULL)"
+        }
+      }
+    },
+    "pending_ratings": {
+      "name": "pending_ratings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "practice_set_id": {
+          "name": "practice_set_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "concept_id": {
+          "name": "concept_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rating": {
+          "name": "rating",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "attempt_id": {
+          "name": "attempt_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "variant_group_key": {
+          "name": "variant_group_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rated_at": {
+          "name": "rated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "flushed_at": {
+          "name": "flushed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "flush_outcome": {
+          "name": "flush_outcome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "pending_ratings_set_flushed": {
+          "name": "pending_ratings_set_flushed",
+          "columns": ["practice_set_id", "flushed_at"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "pending_ratings_learner_id_learners_id_fk": {
+          "name": "pending_ratings_learner_id_learners_id_fk",
+          "tableFrom": "pending_ratings",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pending_ratings_practice_set_id_practice_sets_id_fk": {
+          "name": "pending_ratings_practice_set_id_practice_sets_id_fk",
+          "tableFrom": "pending_ratings",
+          "tableTo": "practice_sets",
+          "columnsFrom": ["practice_set_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "pending_ratings_attempt_id_attempts_id_fk": {
+          "name": "pending_ratings_attempt_id_attempts_id_fk",
+          "tableFrom": "pending_ratings",
+          "tableTo": "attempts",
+          "columnsFrom": ["attempt_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "pending_ratings_rating": {
+          "name": "pending_ratings_rating",
+          "value": "\"pending_ratings\".\"rating\" IN ('again', 'hard', 'good', 'easy')"
+        },
+        "pending_ratings_flush": {
+          "name": "pending_ratings_flush",
+          "value": "(\"pending_ratings\".\"flushed_at\" IS NULL AND \"pending_ratings\".\"flush_outcome\" IS NULL) OR (\"pending_ratings\".\"flushed_at\" IS NOT NULL AND \"pending_ratings\".\"flush_outcome\" IN ('applied', 'skipped'))"
+        }
+      }
+    },
+    "practice_set_items": {
+      "name": "practice_set_items",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "practice_set_id": {
+          "name": "practice_set_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "exercise_id": {
+          "name": "exercise_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "exercise_origin": {
+          "name": "exercise_origin",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "target_concept_id": {
+          "name": "target_concept_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "final_attempt_id": {
+          "name": "final_attempt_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "practice_set_items_set_position": {
+          "name": "practice_set_items_set_position",
+          "columns": ["practice_set_id", "position"],
+          "isUnique": true
+        },
+        "practice_set_items_exercise": {
+          "name": "practice_set_items_exercise",
+          "columns": ["exercise_id"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "practice_set_items_learner_id_learners_id_fk": {
+          "name": "practice_set_items_learner_id_learners_id_fk",
+          "tableFrom": "practice_set_items",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "practice_set_items_practice_set_id_practice_sets_id_fk": {
+          "name": "practice_set_items_practice_set_id_practice_sets_id_fk",
+          "tableFrom": "practice_set_items",
+          "tableTo": "practice_sets",
+          "columnsFrom": ["practice_set_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "practice_set_items_origin": {
+          "name": "practice_set_items_origin",
+          "value": "\"practice_set_items\".\"exercise_origin\" IN ('authored', 'template', 'generated')"
+        },
+        "practice_set_items_status": {
+          "name": "practice_set_items_status",
+          "value": "\"practice_set_items\".\"status\" IN ('pending', 'answered', 'skipped')"
+        }
+      }
+    },
+    "practice_sets": {
+      "name": "practice_sets",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "scope_json": {
+          "name": "scope_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'active'"
+        },
+        "pass_rule_json": {
+          "name": "pass_rule_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "result_json": {
+          "name": "result_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "engine_version": {
+          "name": "engine_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "practice_sets_learner_kind_status": {
+          "name": "practice_sets_learner_kind_status",
+          "columns": ["learner_id", "kind", "status"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "practice_sets_learner_id_learners_id_fk": {
+          "name": "practice_sets_learner_id_learners_id_fk",
+          "tableFrom": "practice_sets",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "practice_sets_kind": {
+          "name": "practice_sets_kind",
+          "value": "\"practice_sets\".\"kind\" IN ('lesson', 'review', 'weakness', 'assessment', 'remedial', 'extra', 'custom', 'diagnostic')"
+        },
+        "practice_sets_status": {
+          "name": "practice_sets_status",
+          "value": "\"practice_sets\".\"status\" IN ('active', 'completed', 'abandoned')"
+        },
+        "practice_sets_scope_json": {
+          "name": "practice_sets_scope_json",
+          "value": "json_valid(\"practice_sets\".\"scope_json\")"
+        },
+        "practice_sets_pass_rule_json": {
+          "name": "practice_sets_pass_rule_json",
+          "value": "\"practice_sets\".\"pass_rule_json\" IS NULL OR json_valid(\"practice_sets\".\"pass_rule_json\")"
+        },
+        "practice_sets_result_json": {
+          "name": "practice_sets_result_json",
+          "value": "\"practice_sets\".\"result_json\" IS NULL OR json_valid(\"practice_sets\".\"result_json\")"
+        }
+      }
+    },
+    "remediation_suggestions": {
+      "name": "remediation_suggestions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "concept_id": {
+          "name": "concept_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "practice_set_id": {
+          "name": "practice_set_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "attempt_id": {
+          "name": "attempt_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "trigger": {
+          "name": "trigger",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "prerequisite_id": {
+          "name": "prerequisite_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "worked_example_stage": {
+          "name": "worked_example_stage",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "detail_json": {
+          "name": "detail_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "item_ids_json": {
+          "name": "item_ids_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "remediation_suggestions_learner_concept_created": {
+          "name": "remediation_suggestions_learner_concept_created",
+          "columns": ["learner_id", "concept_id", "created_at"],
+          "isUnique": false
+        },
+        "remediation_suggestions_set": {
+          "name": "remediation_suggestions_set",
+          "columns": ["practice_set_id"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "remediation_suggestions_learner_id_learners_id_fk": {
+          "name": "remediation_suggestions_learner_id_learners_id_fk",
+          "tableFrom": "remediation_suggestions",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "remediation_suggestions_practice_set_id_practice_sets_id_fk": {
+          "name": "remediation_suggestions_practice_set_id_practice_sets_id_fk",
+          "tableFrom": "remediation_suggestions",
+          "tableTo": "practice_sets",
+          "columnsFrom": ["practice_set_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "remediation_suggestions_attempt_id_attempts_id_fk": {
+          "name": "remediation_suggestions_attempt_id_attempts_id_fk",
+          "tableFrom": "remediation_suggestions",
+          "tableTo": "attempts",
+          "columnsFrom": ["attempt_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "remediation_suggestions_trigger": {
+          "name": "remediation_suggestions_trigger",
+          "value": "\"remediation_suggestions\".\"trigger\" IN ('set_consecutive_failures', 'recent_consecutive_failures')"
+        },
+        "remediation_suggestions_kind": {
+          "name": "remediation_suggestions_kind",
+          "value": "\"remediation_suggestions\".\"kind\" IN ('prerequisite_check', 'worked_example', 'easier_with_hint', 'reread_lesson')"
+        },
+        "remediation_suggestions_detail_json": {
+          "name": "remediation_suggestions_detail_json",
+          "value": "json_valid(\"remediation_suggestions\".\"detail_json\")"
+        },
+        "remediation_suggestions_item_ids_json": {
+          "name": "remediation_suggestions_item_ids_json",
+          "value": "json_valid(\"remediation_suggestions\".\"item_ids_json\")"
+        }
+      }
+    },
+    "review_logs": {
+      "name": "review_logs",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "concept_id": {
+          "name": "concept_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rating": {
+          "name": "rating",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source_attempt_ids_json": {
+          "name": "source_attempt_ids_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reviewed_at": {
+          "name": "reviewed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "elapsed_days": {
+          "name": "elapsed_days",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "scheduled_days": {
+          "name": "scheduled_days",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "state_before": {
+          "name": "state_before",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "revlog_json": {
+          "name": "revlog_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "retrievability_before": {
+          "name": "retrievability_before",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "review_logs_learner_concept_reviewed": {
+          "name": "review_logs_learner_concept_reviewed",
+          "columns": ["learner_id", "concept_id", "reviewed_at"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "review_logs_learner_id_learners_id_fk": {
+          "name": "review_logs_learner_id_learners_id_fk",
+          "tableFrom": "review_logs",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "review_logs_rating": {
+          "name": "review_logs_rating",
+          "value": "\"review_logs\".\"rating\" IN ('again', 'hard', 'good', 'easy')"
+        },
+        "review_logs_state_before": {
+          "name": "review_logs_state_before",
+          "value": "\"review_logs\".\"state_before\" IN ('new', 'learning', 'review', 'relearning')"
+        },
+        "review_logs_source_attempt_ids_json": {
+          "name": "review_logs_source_attempt_ids_json",
+          "value": "json_valid(\"review_logs\".\"source_attempt_ids_json\")"
+        },
+        "review_logs_revlog_json": {
+          "name": "review_logs_revlog_json",
+          "value": "json_valid(\"review_logs\".\"revlog_json\")"
+        }
+      }
+    },
+    "settings": {
+      "name": "settings",
+      "columns": {
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "value_json": {
+          "name": "value_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "settings_learner_id_learners_id_fk": {
+          "name": "settings_learner_id_learners_id_fk",
+          "tableFrom": "settings",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "settings_learner_id_key_pk": {
+          "columns": ["learner_id", "key"],
+          "name": "settings_learner_id_key_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "settings_value_json": {
+          "name": "settings_value_json",
+          "value": "json_valid(\"settings\".\"value_json\")"
+        }
+      }
+    },
+    "submissions": {
+      "name": "submissions",
+      "columns": {
+        "attempt_id": {
+          "name": "attempt_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "answer_json": {
+          "name": "answer_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "run_result_json": {
+          "name": "run_result_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "answer_hash": {
+          "name": "answer_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "submissions_attempt_id_attempts_id_fk": {
+          "name": "submissions_attempt_id_attempts_id_fk",
+          "tableFrom": "submissions",
+          "tableTo": "attempts",
+          "columnsFrom": ["attempt_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "submissions_learner_id_learners_id_fk": {
+          "name": "submissions_learner_id_learners_id_fk",
+          "tableFrom": "submissions",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "submissions_answer_json": {
+          "name": "submissions_answer_json",
+          "value": "json_valid(\"submissions\".\"answer_json\")"
+        },
+        "submissions_run_result_json": {
+          "name": "submissions_run_result_json",
+          "value": "\"submissions\".\"run_result_json\" IS NULL OR json_valid(\"submissions\".\"run_result_json\")"
+        }
+      }
+    },
+    "tutor_messages": {
+      "name": "tutor_messages",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "thread_id": {
+          "name": "thread_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "attachments_json": {
+          "name": "attachments_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'[]'"
+        },
+        "meta_json": {
+          "name": "meta_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'complete'"
+        },
+        "ai_call_id": {
+          "name": "ai_call_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "task_name": {
+          "name": "task_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "task_version": {
+          "name": "task_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "base_version": {
+          "name": "base_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "model": {
+          "name": "model",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "tutor_messages_thread_created": {
+          "name": "tutor_messages_thread_created",
+          "columns": ["thread_id", "created_at"],
+          "isUnique": false
+        },
+        "tutor_messages_status": {
+          "name": "tutor_messages_status",
+          "columns": ["status"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "tutor_messages_thread_id_tutor_threads_id_fk": {
+          "name": "tutor_messages_thread_id_tutor_threads_id_fk",
+          "tableFrom": "tutor_messages",
+          "tableTo": "tutor_threads",
+          "columnsFrom": ["thread_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "tutor_messages_ai_call_id_ai_calls_id_fk": {
+          "name": "tutor_messages_ai_call_id_ai_calls_id_fk",
+          "tableFrom": "tutor_messages",
+          "tableTo": "ai_calls",
+          "columnsFrom": ["ai_call_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "tutor_messages_role": {
+          "name": "tutor_messages_role",
+          "value": "\"tutor_messages\".\"role\" IN ('learner', 'tutor', 'system_event')"
+        },
+        "tutor_messages_status": {
+          "name": "tutor_messages_status",
+          "value": "\"tutor_messages\".\"status\" IN ('streaming', 'complete', 'cancelled', 'interrupted', 'failed', 'withheld')"
+        },
+        "tutor_messages_attachments_json": {
+          "name": "tutor_messages_attachments_json",
+          "value": "json_valid(\"tutor_messages\".\"attachments_json\")"
+        },
+        "tutor_messages_meta_json": {
+          "name": "tutor_messages_meta_json",
+          "value": "\"tutor_messages\".\"meta_json\" IS NULL OR json_valid(\"tutor_messages\".\"meta_json\")"
+        }
+      }
+    },
+    "tutor_threads": {
+      "name": "tutor_threads",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "learner_id": {
+          "name": "learner_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "scope_type": {
+          "name": "scope_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "scope_id": {
+          "name": "scope_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "provider_thread_id": {
+          "name": "provider_thread_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "provider_model": {
+          "name": "provider_model",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "provider_instructions_version": {
+          "name": "provider_instructions_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'open'"
+        },
+        "summary_id": {
+          "name": "summary_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "message_count": {
+          "name": "message_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "last_message_at": {
+          "name": "last_message_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "closed_at": {
+          "name": "closed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "archived_at": {
+          "name": "archived_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "tutor_threads_learner_scope_status": {
+          "name": "tutor_threads_learner_scope_status",
+          "columns": ["learner_id", "scope_type", "scope_id", "status"],
+          "isUnique": false
+        },
+        "tutor_threads_learner_last_message": {
+          "name": "tutor_threads_learner_last_message",
+          "columns": ["learner_id", "last_message_at"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "tutor_threads_learner_id_learners_id_fk": {
+          "name": "tutor_threads_learner_id_learners_id_fk",
+          "tableFrom": "tutor_threads",
+          "tableTo": "learners",
+          "columnsFrom": ["learner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "tutor_threads_scope_type": {
+          "name": "tutor_threads_scope_type",
+          "value": "\"tutor_threads\".\"scope_type\" IN ('lesson', 'exercise', 'review', 'general')"
+        },
+        "tutor_threads_status": {
+          "name": "tutor_threads_status",
+          "value": "\"tutor_threads\".\"status\" IN ('open', 'closed')"
+        },
+        "tutor_threads_message_count": {
+          "name": "tutor_threads_message_count",
+          "value": "\"tutor_threads\".\"message_count\" >= 0"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

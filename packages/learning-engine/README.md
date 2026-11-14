@@ -142,6 +142,20 @@ buildWeaknessSet(deps, { targets, concepts, candidates, confirmedTargetIds, … 
 | `replace` | 대기 중 항목의 `exercise_id`, `exercise_origin`, `reason` |
 | `append` | 새 `practice_set_items` 행(`position`은 이어 붙임) |
 
+### 계획: 오늘의 학습, 목표 페이스, 주간 달성, 학습 시간
+
+```ts
+buildDailyPlan(deps, { goal, todayActiveMs, reviewQueue, continueLesson, nextLesson, weakConcepts, pace, firstRun }): DailyPlan
+dailyReviewMinutes(deps, goal, queue)        // 복습 큐의 하루 예산(목표의 복습 몫)
+computePace(deps, { goal, lessons, completedTimings, today, todayGoalMet }): PaceResult | null
+remainingLessonMinutes(lesson, calibration?) / paceCalibration(deps, timings)
+summarizeWeek(deps, { days, goalOn, weekStart, today }) / weeklyStreak(deps, { days, goalOn, today }) / weekStartOf(date)
+accumulateActiveTime(config, prev, cur, dayBoundary): { date, ms }[]   // 하트비트 → 날짜별 활동 시간
+conceptReport(deps, state, now, dayBoundary)   // 유효 숙련도 + 다음 단계 게이트(개념 상세)
+```
+
+모두 저장할 행을 만들지 않는 읽기용 계산입니다. 서버는 `goals`, `daily_activity`, `lesson_progress`, 복습 큐, 약점 순위를 읽어 넘깁니다.
+
 ### 보조 함수
 
 - `resolveVariantGroupKey({ id, variantGroup, templateId })`: `variant_group` → 템플릿 ID → 문제 ID

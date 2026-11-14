@@ -15,7 +15,10 @@ function concept(
   overrides: Partial<ConceptState['mastery']> = {},
 ): ConceptState {
   const base = initialConceptState(conceptId);
-  return { ...base, mastery: { ...base.mastery, score, stage: 'practicing', ...overrides } };
+  return {
+    ...base,
+    mastery: { ...base.mastery, score, stage: 'practicing', lastAttemptAt: T0, ...overrides },
+  };
 }
 
 function weak(
@@ -60,6 +63,8 @@ describe('rankWeakConcepts', () => {
         weak(concept('b', 50, { consecutiveFailures: 5 })),
         weak(concept('c', 90)),
         weak(concept('d', 0, { stage: 'not_started' })),
+        // Read about but never practised: not weak yet.
+        weak(concept('e', 0, { stage: 'introduced', lastAttemptAt: null })),
       ],
       now: T0,
     });

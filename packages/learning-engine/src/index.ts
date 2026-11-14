@@ -9,6 +9,8 @@ export { computeEvidence, isUnassisted, observationOf } from './mastery/evidence
 export { updateScore } from './mastery/update.ts';
 export type { EffectiveMastery } from './mastery/effective.ts';
 export { effectiveMastery } from './mastery/effective.ts';
+export type { ConceptReport } from './mastery/report.ts';
+export { conceptReport } from './mastery/report.ts';
 export type {
   GateCode,
   GateInput,
@@ -121,3 +123,25 @@ export {
   inspectPrerequisites,
   remediationTrigger,
 } from './remediation/detect.ts';
+
+export type { ActiveTimeDelta, Heartbeat } from './time/active-time.ts';
+export { accumulateActiveTime, splitByLocalDay } from './time/active-time.ts';
+export type {
+  Goal,
+  LessonEstimate,
+  LessonStatus,
+  LessonTiming,
+  PaceResult,
+  PaceStatus,
+} from './planning/pace.ts';
+export { computePace, paceCalibration, remainingLessonMinutes } from './planning/pace.ts';
+export type {
+  DailyBlockKind,
+  DailyBlockReason,
+  DailyPlan,
+  DailyPlanBlock,
+  DailyPlanInput,
+} from './planning/daily-plan.ts';
+export { buildDailyPlan, dailyReviewMinutes, reviewShareFor } from './planning/daily-plan.ts';
+export type { DayActivity, GoalOnDate, WeekDay, WeekSummary } from './planning/week.ts';
+export { summarizeWeek, weekStartOf, weeklyStreak } from './planning/week.ts';

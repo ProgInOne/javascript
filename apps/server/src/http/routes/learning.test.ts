@@ -96,7 +96,8 @@ describe('review queue and review sets', () => {
     const due = await queue(ctx);
     expect(due.due.map((e) => e.conceptId)).toEqual(['js.basics.statement']);
     expect(due.due[0]).toMatchObject({ overdue: true, title: 'js.basics.statement' });
-    expect(due.budgetMinutes).toBe(20);
+    // The review share of the default goal: 30 minutes × 0.5.
+    expect(due.budgetMinutes).toBe(15);
 
     const set = await createSet(ctx, { kind: 'review' });
     expect(set.kind).toBe('review');

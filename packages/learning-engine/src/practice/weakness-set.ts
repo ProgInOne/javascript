@@ -42,7 +42,10 @@ export interface WeakConceptEntry {
   readonly consecutiveFailures: number;
 }
 
-/** Concepts at `introduced` or above, weakest first (ties: concept ID). */
+/**
+ * Concepts at `introduced` or above that have been practised at least once, weakest first (ties:
+ * concept ID). A concept only read about is "not practised yet", not weak.
+ */
 export function rankWeakConcepts(
   deps: EngineDeps,
   input: { readonly concepts: readonly WeakConceptInput[]; readonly now: number },
@@ -50,7 +53,11 @@ export function rankWeakConcepts(
   const { config } = deps;
   const introduced = MASTERY_STAGES.indexOf('introduced');
   return input.concepts
-    .filter((c) => MASTERY_STAGES.indexOf(c.state.mastery.stage) >= introduced)
+    .filter(
+      (c) =>
+        MASTERY_STAGES.indexOf(c.state.mastery.stage) >= introduced &&
+        c.state.mastery.lastAttemptAt !== null,
+    )
     .map((c): WeakConceptEntry => {
       const m = c.state.mastery;
       const { effective } = effectiveMastery(deps, m.score, c.state.memory, input.now);

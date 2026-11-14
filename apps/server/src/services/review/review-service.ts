@@ -1,5 +1,6 @@
 import {
   buildReviewQueue,
+  dailyReviewMinutes,
   buildReviewSet,
   endOfLocalDay,
   localDateOf,
@@ -14,14 +15,12 @@ import { dueConceptIds, lastRatings, loadConceptStates } from '../../db/user/lea
 import { lastSeenAtByGroup } from '../../db/user/practice-sets.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
+import { loadGoal } from '../learning/planning-input.ts';
 import { candidateOf, learnerContext } from '../practice/engine.ts';
 import { activeMisconceptionsByConcept, misconceptionTargetIds } from '../practice/signals.ts';
 
-/**
- * Minutes of review per day. Goals ("오늘의 학습" time split) are not in v0.1, so the queue uses
- * a fixed budget that a request may override.
- */
-export const DEFAULT_REVIEW_BUDGET_MINUTES = 20;
+/** Upper bound for building the full queue (the `maxDailyReviews` cap still applies). */
+const UNBOUNDED_MINUTES = 24 * 60;
 
 export interface ReviewServiceDeps {
   userDb: UserDb;
@@ -48,7 +47,7 @@ export class ReviewService {
    * `buildReviewQueue` over cards due before the end of the learner's day, except concepts already
    * reviewed today (D-029). Concepts missing from the content pack (orphans) are left out.
    */
-  #engineQueue(budgetMinutes: number) {
+  #engineQueue(requestedBudget?: number) {
     const orm = this.#userDb.orm;
     const repo = this.#content.repo;
     const now = this.#now();
@@ -78,17 +77,45 @@ export class ReviewService {
         },
       ];
     });
-    const queue = buildReviewQueue(this.#engine, {
-      concepts: input,
+    const build = (budgetMinutes: number) =>
+      buildReviewQueue(this.#engine, { concepts: input, budgetMinutes, now, dayBoundary });
+    // Every due review in priority order (for today's plan), then the queue within the budget:
+    // the goal's review share of the day unless a request asks for another budget.
+    const full = build(UNBOUNDED_MINUTES);
+    const all = [...full.due, ...full.deferred];
+    const budgetMinutes =
+      requestedBudget ??
+      Math.round(
+        dailyReviewMinutes(this.#engine, loadGoal(this.#engine, orm, learnerId).goal, all),
+      );
+    const queue = build(budgetMinutes);
+    return {
+      queue,
+      all,
       budgetMinutes,
       now,
+      learnerId,
       dayBoundary,
-    });
-    return { queue, now, learnerId, dayBoundary, concepts, states, repo, active };
+      concepts,
+      states,
+      repo,
+      active,
+    };
   }
 
-  queue(budgetMinutes = DEFAULT_REVIEW_BUDGET_MINUTES): ReviewQueue {
-    const { queue, now, dayBoundary, concepts } = this.#engineQueue(budgetMinutes);
+  /** Every review due today in priority order, not cut to a budget (today's plan). */
+  allDue(): { entries: ReviewQueueEntry[]; titles: Map<string, string> } {
+    const { all, concepts } = this.#engineQueue();
+    return {
+      entries: all,
+      titles: new Map(
+        all.map((e) => [e.conceptId, concepts.get(e.conceptId)?.title ?? e.conceptId]),
+      ),
+    };
+  }
+
+  queue(requestedBudget?: number): ReviewQueue {
+    const { queue, budgetMinutes, now, dayBoundary, concepts } = this.#engineQueue(requestedBudget);
     const view = (e: ReviewQueueEntry): ReviewQueueEntryView => ({
       conceptId: e.conceptId,
       title: concepts.get(e.conceptId)?.title ?? e.conceptId,
@@ -110,7 +137,7 @@ export class ReviewService {
 
   /** Number of reviews planned for today (dashboard). */
   dueCount(): number {
-    return this.#engineQueue(DEFAULT_REVIEW_BUDGET_MINUTES).queue.due.length;
+    return this.#engineQueue().queue.due.length;
   }
 
   /**
@@ -118,9 +145,7 @@ export class ReviewService {
    * due. The caller stores the set.
    */
   planSet(seed: string) {
-    const { queue, now, learnerId, concepts, states, repo, active } = this.#engineQueue(
-      DEFAULT_REVIEW_BUDGET_MINUTES,
-    );
+    const { queue, now, learnerId, concepts, states, repo, active } = this.#engineQueue();
     if (queue.due.length === 0) return null;
     const orm = this.#userDb.orm;
     const ids = queue.due.map((e) => e.conceptId);
