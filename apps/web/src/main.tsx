@@ -1,7 +1,6 @@
 import '@proginone/ui/fonts.css';
 import '@proginone/ui/tokens.css';
-import '@proginone/ui/base.css';
-import '@proginone/ui/components.css';
+import './app/tailwind.css';
 import './app/shell.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

@@ -1,0 +1,82 @@
+/*
+ * Tailwind CSS v4 on top of the ProgInOne design tokens (D-006, D-025).
+ *
+ * - Tokens stay the source of truth (packages/ui/src/tokens/tokens.css). This file only exposes
+ *   them as utilities; no Tailwind default palette, so off-token colors cannot creep in.
+ * - Preflight is skipped: packages/ui base.css is the reset (layer base).
+ * - Same-named variables (--radius-*, --font-*) resolve to the unlayered token values, which
+ *   win over Tailwind's @layer theme declarations.
+ */
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+/* Design-system CSS goes into layers below utilities, so a utility can always override it.
+   tokens.css stays unlayered (imported in main.tsx) so token values beat Tailwind's theme vars. */
+@import '@proginone/ui/base.css' layer(base);
+@import '@proginone/ui/components.css' layer(components);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme {
+  --color-*: initial;
+  --shadow-*: initial;
+  --text-*: initial;
+  --breakpoint-*: initial;
+  /* ui-ux.md 반응형 규칙: 1024 / 1280 / 1440 */
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1280px;
+  --breakpoint-xl: 1440px;
+}
+
+@theme inline {
+  --color-canvas: var(--color-bg-canvas);
+  --color-surface: var(--color-bg-surface);
+  --color-subtle: var(--color-bg-subtle);
+  --color-muted: var(--color-bg-muted);
+  --color-hover: var(--color-bg-hover);
+  --color-selected: var(--color-bg-selected);
+  --color-fg: var(--color-text-primary);
+  --color-fg-secondary: var(--color-text-secondary);
+  --color-fg-tertiary: var(--color-text-tertiary);
+  --color-heading: var(--color-text-heading);
+  --color-brand: var(--color-text-brand);
+  --color-link: var(--color-text-link);
+  --color-on-action: var(--color-text-on-action);
+  --color-action: var(--color-action-primary);
+  --color-line: var(--color-border-default);
+  --color-line-strong: var(--color-border-strong);
+
+  --shadow-1: var(--elevation-1);
+  --shadow-2: var(--elevation-2);
+  --shadow-3: var(--elevation-3);
+
+  --z-index-header: var(--z-header);
+}
+
+/* Typography uses the token `font` shorthands (`type-*`, since `text-*` is Tailwind's color/size). */
+@utility type-h1 {
+  font: var(--text-h1);
+  letter-spacing: var(--tracking-h1);
+}
+@utility type-h2 {
+  font: var(--text-h2);
+  letter-spacing: var(--tracking-h2);
+}
+@utility type-h3 {
+  font: var(--text-h3);
+  letter-spacing: var(--tracking-h3);
+}
+@utility type-body {
+  font: var(--text-body);
+}
+@utility type-ui {
+  font: var(--text-ui);
+}
+@utility type-small {
+  font: var(--text-small);
+}
+@utility type-caption {
+  font: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+}

@@ -7,6 +7,7 @@
 
 ### Added
 
+- Tailwind CSS v4(D-025): 웹 앱 화면 배치를 토큰 기반 유틸리티로 전환(시각 변화 없음)
 - 가이드(M3): 시작하기(`docs/guides/getting-started.md`), 테스트(`docs/guides/testing.md`)
 - E2E·시각 회귀·접근성 테스트(M3): Playwright(`e2e/`)로 핵심 흐름·로컬 서버 보안, 화면 × 테마별 axe-core WCAG 2.2 AA 검사, 화면 × 테마 × 뷰포트 스크린샷 비교(Playwright Docker 이미지), CI `e2e` 작업, `pnpm test:e2e`·`pnpm test:e2e:visual`
 - 웹 앱 셸(M3): 상단 내비게이션, 라우팅(TanStack Router), 테마 동기화(라이트·다크·시스템, 첫 화면 깜빡임 방지), 페이지 전환 시 포커스·알림, 페이지 오류·유지보수·없는 화면 처리, 설정 > 화면(테마), 설정 > 데이터(백업 목록·지금 백업·복원 확인), `pnpm dev`·`pnpm start`

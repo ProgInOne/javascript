@@ -44,7 +44,7 @@
 - `pnpm start` 한 번으로 실행. 서버는 `127.0.0.1`에만 바인딩.
 - 데스크톱 패키징(Tauri 등)은 필요 시 후속 검토.
 
-## D-006. 기술 스택 — `잠정` (시스템 설계서에서 확정)
+## D-006. 기술 스택 — `확정` (2026-11-14, M3 구현으로 확정. 스타일 적용 범위는 D-025)
 | 영역 | 선택 |
 |---|---|
 | 프론트엔드 | Vite, React, TypeScript strict, TanStack Router/Query |
@@ -154,3 +154,11 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - **토큰 수정**: `--jade-600`을 `oklch(0.545 0.120 168)`로(흰 글자 4.60:1), 기본 토큰 `--neutral-550` 추가와 라이트 `--color-text-tertiary` 재매핑, 의미 토큰 `--color-border-input` 신설(입력 테두리 3:1 이상).
 - **레슨 제목 크기**: 문서 타입 스케일의 h1 28px을 따릅니다.
 - 근거와 비교: [디자인 프로토타입](/design/prototypes/README.md), [UI/UX 설계](/docs/design/ui-ux.md).
+
+## D-025. 스타일 도구 적용 범위 — `확정`
+- 2026-11-14 사용자 결정. D-006의 "Tailwind CSS v4 + CSS 변수 디자인 토큰"을 구체화합니다.
+- **`apps/web`**: 화면 배치와 페이지 스타일은 Tailwind v4 유틸리티로 씁니다. 디자인 토큰을 유틸리티 이름으로 연결하고(`bg-canvas`, `text-fg-secondary`, `type-h1` 등), Tailwind 기본 색 팔레트는 지웁니다.
+- **`packages/ui`**: 기본 컴포넌트는 일반 CSS(`components.css`)를 유지합니다. 공용 컴포넌트가 앱의 CSS 도구에 묶이지 않게 하기 위해서입니다.
+- CSS 계층: `theme < base < components < utilities`. 토큰은 계층 밖에 둡니다.
+- 경위: M3에서 디자인 시스템을 일반 CSS로 먼저 만들었고(지시 착오), 사용자가 앱에 Tailwind를 도입하기로 결정했습니다. 도입 전후 시각 회귀 스크린샷 12장이 같음을 확인했습니다.
+

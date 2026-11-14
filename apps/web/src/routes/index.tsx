@@ -1,6 +1,7 @@
 import { EmptyState } from '@proginone/ui';
 import { createFileRoute } from '@tanstack/react-router';
 import { BookOpen } from 'lucide-react';
+import { pageClass, pageTitleClass } from '../app/layout.ts';
 
 export const Route = createFileRoute('/')({
   component: Dashboard,
@@ -9,8 +10,8 @@ export const Route = createFileRoute('/')({
 /** Placeholder until the dashboard lands with the v0.1 content (M4). */
 function Dashboard() {
   return (
-    <div className="page">
-      <h1 className="page-title">대시보드</h1>
+    <div className={pageClass}>
+      <h1 className={pageTitleClass}>대시보드</h1>
       <EmptyState
         icon={BookOpen}
         title="첫 단원을 준비하고 있어요"

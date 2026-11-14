@@ -14,6 +14,8 @@ import '@proginone/ui/base.css'; // 전역 기본 스타일, 포커스 링, redu
 import '@proginone/ui/components.css'; // 기본 컴포넌트 스타일
 ```
 
+Tailwind를 함께 쓰는 앱(`apps/web`)은 `base.css`와 `components.css`를 각각 `@layer base`, `@layer components`로 가져와 유틸리티가 덮어쓸 수 있게 합니다(`apps/web/src/app/tailwind.css`, [D-025](/docs/decisions.md)).
+
 빌드 단계가 없습니다. `exports`가 `src`의 TypeScript·CSS 파일을 직접 가리키며, 웹 앱의 번들러(Vite)가 처리합니다.
 
 앱 루트를 `UiProvider`로 한 번 감쌉니다. 툴팁 지연(400ms)과 토스트 영역을 제공하며, `IconButton`, `Dialog`, `Drawer`, `useToast`가 이를 필요로 합니다.

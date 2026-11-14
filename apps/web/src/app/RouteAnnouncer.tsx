@@ -27,7 +27,7 @@ export function RouteAnnouncer() {
   );
 
   return (
-    <div className="visually-hidden" role="status" aria-live="polite">
+    <div className="sr-only" role="status" aria-live="polite">
       {message}
     </div>
   );

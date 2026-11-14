@@ -2,6 +2,7 @@ import { THEMES, type Settings } from '@proginone/shared';
 import { ErrorState, RadioGroup, Skeleton, useToast } from '@proginone/ui';
 import { createFileRoute } from '@tanstack/react-router';
 import { useSettings, useUpdateSettings } from '../../api/queries.ts';
+import { cardClass, pageTitleClass } from '../../app/layout.ts';
 
 export const Route = createFileRoute('/settings/appearance')({
   component: AppearanceSettings,
@@ -19,11 +20,11 @@ function AppearanceSettings() {
   const toast = useToast();
 
   return (
-    <section aria-labelledby="appearance-title" className="settings-section">
-      <h1 id="appearance-title" className="page-title">
+    <section aria-labelledby="appearance-title" className="max-w-[760px]">
+      <h1 id="appearance-title" className={pageTitleClass}>
         화면
       </h1>
-      <div className="card">
+      <div className={cardClass}>
         {settings.isPending ? (
           <Skeleton height={96} />
         ) : settings.isError ? (

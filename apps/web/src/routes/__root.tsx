@@ -32,13 +32,14 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <UiProvider>
-      <a className="skip-link" href="#main">
+      <a
+        className="absolute -top-24 left-4 z-[calc(var(--z-header)+1)] rounded-md bg-surface px-4 py-2 text-fg shadow-2 focus:top-2"
+        href="#main"
+      >
         본문으로 건너뛰기
       </a>
       <AppHeader />
-      <main id="main" className="app-main">
-        {children}
-      </main>
+      <main id="main">{children}</main>
       <RouteAnnouncer />
     </UiProvider>
   );
