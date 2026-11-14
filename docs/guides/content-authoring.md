@@ -239,8 +239,8 @@ review:
 
 ### 유형별 스펙
 
-v0.1에서 쓸 수 있는 유형은 `mcq_single`, `fill_blank`, `predict_output`, `implement_function`, `fix_bug`, `web_task`입니다.
-아래 예는 `content/`의 실제 문제를 줄인 것입니다.
+쓸 수 있는 유형은 `mcq_single`, `mcq_multi`, `true_false`, `fill_blank`, `predict_output`, `implement_function`, `fix_bug`, `web_task`입니다(`mcq_multi`·`true_false`는 v0.2부터).
+아래 예는 `content/`의 실제 문제를 줄인 것입니다. v0.2 유형의 예는 E2E 고정 콘텐츠(`e2e/fixtures/content`)를 줄인 것입니다.
 
 **CSS 과정**(`language: css`)에서는 `mcq_single`, `fill_blank`, `web_task`만 씁니다([D-028](/docs/decisions.md)). 다른 유형은 `content:check` 오류입니다. HTML/CSS 핵심(`depth: core`) 과정에는 "단원 풀의 유형 4종 이상" 규칙을 적용하지 않습니다.
 
@@ -262,6 +262,55 @@ spec:
 
 - "모두 정답", "정답 없음" 같은 선택지는 쓸 수 없습니다.
 - `shuffle`(기본 `true`), `codeOptions`(선택지를 코드로 표시)를 쓸 수 있습니다.
+
+#### mcq_multi
+
+정답이 하나 이상인 선택형입니다. 학습자에게는 "해당하는 것을 모두 고르세요. 정답이 여러 개일 수 있어요."가 항상 보이고, 정답 개수는 알려 주지 않습니다.
+
+```yaml
+spec:
+  options:                       # 3~6개
+    - id: a
+      text: 괄호 안의 값을 콘솔에 보여 준다
+      missedMisconception: js.mc.log-is-silent    # 선택. 이 정답을 놓치면 시사되는 오개념
+    - id: b
+      text: 한 번 호출하면 콘솔에 한 줄이 생긴다
+    - id: c
+      text: 출력한 값을 저장해 두었다가 다음 줄에서 돌려준다
+      misconception: js.mc.log-is-return          # 이 오답을 고르면 시사되는 오개념
+      rationale: console.log는 보여 주기만 하고 값을 저장하지 않아요.
+  correct: [a, b]                # 1개 이상
+  minSelect: 1                   # 선택. 제출 전에 골라야 하는 최소 개수(학습자에게 보임)
+```
+
+- 고른 집합이 정답 집합과 정확히 같아야 정답입니다. 부분 점수는 `(맞게 고른 수 − 잘못 고른 수) / 정답 수`(0 미만은 0)입니다.
+- 정답 선택지에는 `misconception`·`rationale`을, 오답 선택지에는 `missedMisconception`을 쓰지 않습니다.
+- 모든 선택지가 정답이면 `content:check` 오류입니다(전부 고르기만 해도 맞힘).
+- `minSelect`는 정답 수보다 클 수 없습니다. `minSelect: 2` 이상이면 "(2개 이상)"이 안내에 붙으므로 정답이 최소 몇 개인지 드러납니다.
+
+#### true_false
+
+설명 하나가 참인지 거짓인지 고릅니다. 찍어서 맞힐 확률이 50%라 숙련도 반영 가중치가 0.5로 가장 낮습니다([학습 엔진](/docs/design/learning-engine.md)). L2 이상에서는 `requireReason`으로 이유도 고르게 하세요.
+
+```yaml
+spec:
+  statement: 문장이 여러 개 있으면 가장 짧은 문장부터 실행된다.
+  answer: false                  # 정답
+  misconceptionIfWrong: js.mc.short-runs-first    # 선택. 참/거짓을 틀리면 시사되는 오개념
+  requireReason: true            # 선택(기본 false)
+  reasons:                       # requireReason일 때 2~5개, 정답은 정확히 하나
+    - id: r1
+      text: 문장은 적힌 순서대로 위에서 아래로 실행된다
+      correct: true
+    - id: r2
+      text: 짧은 문장일수록 빨리 끝나서 먼저 실행된다
+      misconception: js.mc.short-runs-first
+```
+
+- `requireReason`이면 참/거짓과 이유가 모두 맞아야 정답입니다. 참/거짓만 맞으면 부분 점수 0.5입니다.
+- 지문(`prompt`)에는 "다음 설명이 맞는지 고르세요."처럼 지시만 쓰고, 판단할 설명은 `statement`에 씁니다.
+
+`mcq_multi`·`true_false`를 포함한 모든 유형에서, 스펙 안의 오개념 ID(`misconception`, `missedMisconception`, `misconceptionIfWrong`, `misconceptionIfFail`, `misconceptionMap`·`misconceptionByAnswer`의 값 등 이름에 `misconception`이 들어간 필드)는 `misconceptions/*.yaml`에 있어야 합니다. 없으면 `content:check` 오류입니다.
 
 #### fill_blank (text 모드)
 
@@ -482,7 +531,7 @@ spec:
 | `predict_output` | 3번 실행해 결과가 같은지 확인하고 기대값을 계산·기록 |
 | `implement_function`, `fix_bug`, `fill_blank`(code), `web_task` | 참조 정답이 실행으로 확인하는 필수 체크를 모두 통과하고, 시작 코드(버그 코드, 빈칸을 비운 코드)는 하나 이상 실패 |
 | `<RunnableExample>` | 오류 없이 실행. `expectError`가 있으면 오류가 나야 함. `css`, `src` 예제는 건너뜀 |
-| `mcq_single`, `fill_blank`(text) | 실행할 코드가 없어 건너뜀 |
+| `mcq_single`, `mcq_multi`, `true_false`, `fill_blank`(text) | 실행할 코드가 없어 건너뜀. 스펙의 오개념 ID가 있는지는 정적 검사에서 확인 |
 
 - `static`, `html-valid` 체크는 서버가 실행 없이 채점하므로 실행 검증에서 뺍니다.
 - v0.1의 `mcq_single`에는 선택지 코드를 실행하는 `verifyChecks`가 없어 실행 검증 대상이 아닙니다.
@@ -560,6 +609,7 @@ spec:
 | `CSS 과정에서는 mcq_single, fill_blank, web_task 유형만 쓸 수 있습니다` | CSS 과정 문제는 세 유형 중 하나로 바꿉니다([D-028](/docs/decisions.md)). |
 | `승인된 문제는 검토자(...)가 필요합니다` / `초안 작성자가 스스로 검토할 수 없습니다` | `reviewedBy`를 `human` 또는 `ai:reviewer`로, `draftedBy`와 다르게 씁니다. |
 | `spec: checks.N: call 체크에는 entry가 필요합니다. (CHECK_NEEDS_ENTRY)` | `entry` 없는 `implement_function`(프로그램 작성 문제)에는 `console`·`program` 체크만 씁니다. |
+| `spec: 없는 오개념입니다: ...` | 스펙 안의 오개념 ID(선택지 `misconception` 등)를 `misconceptions/*.yaml`에 추가하거나 고칩니다. |
 | `spec: ...` | 유형별 스펙 오류입니다. 경로(`blanks.0.accept` 등)를 보고 위의 유형별 예와 비교합니다. |
 | `실행 기대값이 아직 없습니다` / `낡았습니다` | `pnpm content:check:run`을 실행하고 바뀐 기대값 파일을 커밋합니다. |
 | `실행 결과로 기대값을 만들 수 없습니다` | 예측 코드가 예상하지 못한 오류를 냈습니다. 오류를 묻는 문제면 `answerKind: error`로 바꿉니다. |

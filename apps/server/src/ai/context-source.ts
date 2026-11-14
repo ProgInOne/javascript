@@ -41,6 +41,10 @@ export function solutionText(view: SolutionView): string {
   switch (view.kind) {
     case 'choice':
       return `정답 선택지: ${view.text}`;
+    case 'choices':
+      return `정답 선택지: ${view.choices.map((c) => c.text).join(' / ')}`;
+    case 'text':
+      return `정답: ${view.text}`;
     case 'blanks':
       return view.blanks.map((b) => `${b.id}: ${b.answer ?? ''}`).join('\n');
     case 'console':

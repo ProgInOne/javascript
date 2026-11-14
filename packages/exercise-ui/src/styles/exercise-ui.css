@@ -184,6 +184,45 @@
   color: var(--color-feedback-incorrect-fg);
 }
 
+/* ── mcq_multi ── */
+.pi-ex-choice-set {
+  display: grid;
+  gap: var(--space-3);
+}
+.pi-ex-choice-set__note {
+  font: var(--text-small);
+  color: var(--color-text-secondary);
+}
+/* Checkbox options: a rounded square instead of the radio circle. */
+.pi-ex-choice__key--box {
+  border-radius: var(--radius-xs);
+}
+
+/* ── true_false ── */
+.pi-ex-true-false {
+  display: grid;
+  gap: var(--space-5);
+}
+.pi-ex-true-false__statement {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  border-inline-start: 3px solid var(--color-action-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+  font: var(--text-body);
+  font-weight: 600;
+}
+.pi-ex-true-false__verdicts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.pi-ex-true-false__reasons {
+  display: grid;
+  gap: var(--space-3);
+}
+
 /* ── fill_blank ── */
 .pi-ex-fill-blank {
   display: grid;

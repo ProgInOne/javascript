@@ -50,7 +50,7 @@ export const mcqSingleAnswerSchema = z.object({ optionId: z.string().max(64) });
 export type McqSingleAnswer = z.infer<typeof mcqSingleAnswerSchema>;
 
 /** Option texts that make a question undiagnostic (doc: forbidden). */
-const BANNED_OPTION_TEXT =
+export const BANNED_OPTION_TEXT =
   /^(모두 정답|정답 없음|위의 모든 것|all of the above|none of the above)/i;
 
 export const mcqSingle: ExerciseTypeDef<McqSingleSpec, McqSinglePublicSpec, McqSingleAnswer> = {

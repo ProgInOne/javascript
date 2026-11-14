@@ -2,25 +2,33 @@ import {
   fillBlankPublicSpecSchema,
   fixBugPublicSpecSchema,
   implementFunctionPublicSpecSchema,
+  mcqMultiPublicSpecSchema,
   mcqSinglePublicSpecSchema,
   predictOutputPublicSpecSchema,
+  trueFalsePublicSpecSchema,
   webTaskPublicSpecSchema,
   type CodeAnswer,
   type FillBlankAnswer,
   type FillBlankPublicSpec,
   type FixBugPublicSpec,
   type ImplementFunctionPublicSpec,
+  type McqMultiAnswer,
+  type McqMultiPublicSpec,
   type McqSingleAnswer,
   type McqSinglePublicSpec,
   type PredictOutputAnswer,
   type PredictOutputPublicSpec,
+  type TrueFalsePublicSpec,
   type WebTaskPublicSpec,
 } from '@proginone/exercise-kit';
 import type { z } from 'zod';
+import type { TrueFalseDraft } from './renderers/TrueFalse.tsx';
 
-/** Exercise types with a v0.1 renderer (roadmap M4). */
+/** Exercise types with a renderer (roadmap M4, M5). */
 export const RENDERABLE_TYPE_IDS = [
   'mcq_single',
+  'mcq_multi',
+  'true_false',
   'fill_blank',
   'predict_output',
   'implement_function',
@@ -31,6 +39,8 @@ export type RenderableTypeId = (typeof RENDERABLE_TYPE_IDS)[number];
 
 export interface PublicSpecByType {
   mcq_single: McqSinglePublicSpec;
+  mcq_multi: McqMultiPublicSpec;
+  true_false: TrueFalsePublicSpec;
   fill_blank: FillBlankPublicSpec;
   predict_output: PredictOutputPublicSpec;
   implement_function: ImplementFunctionPublicSpec;
@@ -44,6 +54,9 @@ export interface PublicSpecByType {
  */
 export interface AnswerByType {
   mcq_single: McqSingleAnswer | null;
+  mcq_multi: McqMultiAnswer;
+  /** Submittable once `value` is set (and `reasonId` when reasons are asked for). */
+  true_false: TrueFalseDraft;
   fill_blank: FillBlankAnswer;
   predict_output: PredictOutputAnswer | null;
   implement_function: CodeAnswer;
@@ -58,6 +71,8 @@ export type RenderableExercise = {
 
 const PUBLIC_SPEC_SCHEMAS: { [T in RenderableTypeId]: z.ZodType<PublicSpecByType[T]> } = {
   mcq_single: mcqSinglePublicSpecSchema,
+  mcq_multi: mcqMultiPublicSpecSchema,
+  true_false: trueFalsePublicSpecSchema,
   fill_blank: fillBlankPublicSpecSchema,
   predict_output: predictOutputPublicSpecSchema,
   implement_function: implementFunctionPublicSpecSchema,
@@ -92,6 +107,10 @@ function initialAnswerOf(exercise: RenderableExercise): AnswerByType[RenderableT
     case 'mcq_single':
     case 'predict_output':
       return null;
+    case 'mcq_multi':
+      return { optionIds: [] };
+    case 'true_false':
+      return {};
     case 'fill_blank':
       return { blanks: {} };
     case 'implement_function':
@@ -114,6 +133,15 @@ export function isAnswerReady(
   switch (exercise.typeId) {
     case 'mcq_single':
       return 'optionId' in answer && answer.optionId !== '';
+    case 'mcq_multi':
+      return 'optionIds' in answer && answer.optionIds.length >= exercise.spec.minSelect;
+    case 'true_false':
+      return (
+        'value' in answer &&
+        typeof answer.value === 'boolean' &&
+        (exercise.spec.reasons === undefined ||
+          ('reasonId' in answer && typeof answer.reasonId === 'string'))
+      );
     case 'fill_blank':
       return (
         'blanks' in answer &&
@@ -121,7 +149,7 @@ export function isAnswerReady(
       );
     case 'predict_output':
       if ('console' in answer) return answer.console.trim() !== '';
-      if ('value' in answer) return answer.value.trim() !== '';
+      if ('value' in answer) return typeof answer.value === 'string' && answer.value.trim() !== '';
       if ('choiceId' in answer) return answer.choiceId !== '';
       return 'error' in answer;
     case 'implement_function':
@@ -136,6 +164,12 @@ export function notReadyReason(exercise: RenderableExercise): string {
   switch (exercise.typeId) {
     case 'mcq_single':
       return '답을 먼저 골라 주세요.';
+    case 'mcq_multi':
+      return exercise.spec.minSelect > 1
+        ? `답을 ${exercise.spec.minSelect}개 이상 골라 주세요.`
+        : '답을 먼저 골라 주세요.';
+    case 'true_false':
+      return exercise.spec.reasons ? '참/거짓과 이유를 골라 주세요.' : '참/거짓을 골라 주세요.';
     case 'fill_blank':
       return '빈칸을 모두 채워 주세요.';
     case 'predict_output':

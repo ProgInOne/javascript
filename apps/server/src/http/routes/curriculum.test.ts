@@ -7,7 +7,7 @@ import {
 import { describe, expect, it } from 'vitest';
 import { ContentAccess } from '../../services/curriculum/content-access.ts';
 import { SettingsService } from '../../services/settings/service.ts';
-import { writeContentDb } from '../../test/content-fixture.ts';
+import { FIXTURE_EXERCISES, writeContentDb } from '../../test/content-fixture.ts';
 import { setupDb, silentLog } from '../../test/helpers.ts';
 import type { PracticeServices } from '../../services/practice/index.ts';
 import { createApp } from '../app.ts';
@@ -44,7 +44,7 @@ describe('curriculum routes', () => {
     const get = await setup(ContentAccess.open(writeContentDb()));
     const course = courseDetailSchema.parse(await (await get('/courses/js-basics')).json());
     expect(course.modules[0]?.lessons.map((l) => [l.id, l.exerciseCount])).toEqual([
-      ['js-basics.start.first-program', 7],
+      ['js-basics.start.first-program', FIXTURE_EXERCISES.length],
       ['js-basics.start.reading-errors', 0],
     ]);
     expect((await get('/courses/secret')).status).toBe(404);

@@ -58,6 +58,22 @@ export function SolutionContent({ solution }: { solution: SolutionView }) {
           <InlineText text={solution.text} />
         </p>
       );
+    case 'choices':
+      return (
+        <ul>
+          {solution.choices.map((c) => (
+            <li key={c.id}>
+              <InlineText text={c.text} />
+            </li>
+          ))}
+        </ul>
+      );
+    case 'text':
+      return (
+        <p>
+          <InlineText text={solution.text} />
+        </p>
+      );
     case 'blanks':
       return (
         <ul>

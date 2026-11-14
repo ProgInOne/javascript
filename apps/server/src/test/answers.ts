@@ -11,6 +11,8 @@ const shoutFile = (body: string) => ({
 /** Correct answers by exercise id. */
 export const CORRECT: Record<string, unknown> = {
   [EX.mcq]: { optionId: 'b' },
+  [EX.mcqMulti]: { optionIds: ['b', 'a'] },
+  [EX.trueFalse]: { value: false },
   [EX.fillText]: { blanks: { b1: ';' } },
   [EX.predict]: { console: '2' },
   [EX.fillCode]: { blanks: { b1: "s.toUpperCase() + '!'" } },
@@ -22,6 +24,8 @@ export const CORRECT: Record<string, unknown> = {
 /** Wrong answers by exercise id. */
 export const WRONG: Record<string, unknown> = {
   [EX.mcq]: { optionId: 'a' },
+  [EX.mcqMulti]: { optionIds: ['a', 'c'] },
+  [EX.trueFalse]: { value: true },
   [EX.fillText]: { blanks: { b1: ':' } },
   [EX.predict]: { console: '11' },
   [EX.fillCode]: { blanks: { b1: 's' } },

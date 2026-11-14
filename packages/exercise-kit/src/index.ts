@@ -9,6 +9,7 @@ export {
   parseAnswer,
   parseSpec,
   redactSpec,
+  specMisconceptions,
   verifySpec,
   type RegisteredExerciseType,
 } from './core/registry.ts';
@@ -18,6 +19,8 @@ export * from './core/ids.ts';
 
 // Per-type definitions and schemas.
 export * from './types/mcq-single.ts';
+export * from './types/mcq-multi.ts';
+export * from './types/true-false.ts';
 export * from './types/fill-blank.ts';
 export * from './types/predict-output.ts';
 export * from './types/implement-function.ts';

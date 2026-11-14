@@ -4,8 +4,10 @@ import type { z } from 'zod';
 import { fillBlank } from '../types/fill-blank.ts';
 import { fixBug } from '../types/fix-bug.ts';
 import { implementFunction } from '../types/implement-function.ts';
+import { mcqMulti } from '../types/mcq-multi.ts';
 import { mcqSingle } from '../types/mcq-single.ts';
 import { predictOutput } from '../types/predict-output.ts';
+import { trueFalse } from '../types/true-false.ts';
 import { webTask } from '../types/web-task.ts';
 import { ExerciseKitError } from './errors.ts';
 import type {
@@ -78,6 +80,8 @@ function register<S, P, A>(def: ExerciseTypeDef<S, P, A>): RegisteredExerciseTyp
 const REGISTRY = new Map<ExerciseTypeId, RegisteredExerciseType>(
   [
     register(mcqSingle),
+    register(mcqMulti),
+    register(trueFalse),
     register(fillBlank),
     register(predictOutput),
     register(implementFunction),
@@ -203,13 +207,17 @@ export function leakFingerprints(typeId: string, rawSpec: unknown): string[] {
 export function checkSpec(
   typeId: string,
   rawSpec: unknown,
-): { ok: true; warnings: string[] } | { ok: false; errors: string[] } {
+): { ok: true; warnings: string[]; misconceptions: string[] } | { ok: false; errors: string[] } {
   try {
     const issues = verifySpec(typeId, rawSpec);
     const format = (i: VerifyIssue) => `${i.path ? `${i.path}: ` : ''}${i.message} (${i.code})`;
     const errors = issues.filter((i) => i.severity === 'error').map(format);
     if (errors.length > 0) return { ok: false, errors };
-    return { ok: true, warnings: issues.filter((i) => i.severity === 'warning').map(format) };
+    return {
+      ok: true,
+      warnings: issues.filter((i) => i.severity === 'warning').map(format),
+      misconceptions: specMisconceptions(typeId, rawSpec),
+    };
   } catch (error) {
     if (error instanceof ExerciseKitError) {
       return { ok: false, errors: error.details.length > 0 ? [...error.details] : [error.message] };
@@ -221,4 +229,28 @@ export function checkSpec(
 /** Validates a spec and runs the type's static content checks. */
 export function verifySpec(typeId: string, rawSpec: unknown): VerifyIssue[] {
   return requireType(typeId).verify(parseSpec(typeId, rawSpec));
+}
+
+/**
+ * Misconception IDs a spec refers to (option `misconception`, `missedMisconception`,
+ * `misconceptionIfWrong`, check `misconceptionIfFail`, the values of `misconceptionMap` /
+ * `misconceptionByAnswer`, ...), deduplicated in document order. Every spec field whose name
+ * contains "misconception" holds misconception IDs by convention, so new types are covered
+ * without registering anything. `content-cli check` verifies that they exist.
+ */
+export function specMisconceptions(typeId: string, rawSpec: unknown): string[] {
+  const found = new Set<string>();
+  const collect = (value: unknown, underMisconceptionKey: boolean): void => {
+    if (typeof value === 'string') {
+      if (underMisconceptionKey) found.add(value);
+    } else if (Array.isArray(value)) {
+      for (const item of value) collect(item, underMisconceptionKey);
+    } else if (value !== null && typeof value === 'object') {
+      for (const [key, child] of Object.entries(value)) {
+        collect(child, underMisconceptionKey || /misconception/i.test(key));
+      }
+    }
+  };
+  collect(parseSpec(typeId, rawSpec), false);
+  return [...found];
 }

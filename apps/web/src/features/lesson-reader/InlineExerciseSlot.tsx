@@ -24,7 +24,13 @@ import { Markdown } from '../practice/Markdown.tsx';
 import { feedbackResultOf, MasteryChangeList } from '../practice/parts.tsx';
 
 /** Short types answered in the body (ui-ux.md 읽기 모드: 객관식·빈칸 등 짧은 유형만). */
-const INLINE_TYPES = new Set(['mcq_single', 'fill_blank', 'predict_output']);
+const INLINE_TYPES = new Set([
+  'mcq_single',
+  'mcq_multi',
+  'true_false',
+  'fill_blank',
+  'predict_output',
+]);
 
 /**
  * Inline check exercise (`<InlineExercise ref>`): answered while reading, graded at once by

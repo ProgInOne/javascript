@@ -5,7 +5,7 @@ import {
 } from '@proginone/shared';
 import { describe, expect, it } from 'vitest';
 import { CORRECT } from '../../test/answers.ts';
-import { EX } from '../../test/content-fixture.ts';
+import { EX, FIXTURE_EXERCISES } from '../../test/content-fixture.ts';
 import { count, practiceApp, T0 } from '../../test/practice-app.ts';
 import { errorCode, LESSON, lessonSet, parsed, submit } from '../../test/practice-flow.ts';
 
@@ -60,6 +60,10 @@ describe('POST /practice-sets (lesson)', () => {
   });
 });
 
+/** Every fixture exercise is in the lesson set; one attempt each. */
+const N = FIXTURE_EXERCISES.length;
+const TYPES = new Set(FIXTURE_EXERCISES.map((e) => e.type)).size;
+
 describe('POST /attempts', () => {
   it('grades every type end to end, applies the engine and completes the set', async () => {
     const ctx = await practiceApp();
@@ -81,12 +85,12 @@ describe('POST /attempts', () => {
       expect(change?.scoreAfter).toBeGreaterThan(change?.scoreBefore ?? 100);
     }
     expect(last?.set.status).toBe('completed');
-    expect(last?.set.progress).toEqual({ total: 7, answered: 7, skipped: 0, pending: 0 });
+    expect(last?.set.progress).toEqual({ total: N, answered: N, skipped: 0, pending: 0 });
     expect(last?.set.nextItemId).toBeNull();
     const result = last?.set.result;
-    expect(result).toMatchObject({ total: 7, answered: 7, correct: 7 });
+    expect(result).toMatchObject({ total: N, answered: N, correct: N });
     expect(result?.pass?.checks.allAnswered).toBe(true);
-    expect(result?.pass?.checks.minDistinctTypes.actual).toBe(6);
+    expect(result?.pass?.checks.minDistinctTypes.actual).toBe(TYPES);
     expect(result?.pass?.passed).toBe(true);
 
     // Engine effects are persisted.
@@ -95,14 +99,14 @@ describe('POST /attempts', () => {
       .all() as { concept_id: string; stage: string; score: number }[];
     expect(mastery.map((m) => m.concept_id)).toEqual(['js.basics.comment', 'js.basics.statement']);
     expect(mastery[1]?.score).toBeGreaterThanOrEqual(50);
-    expect(count(ctx, 'attempts')).toBe(7);
-    expect(count(ctx, 'submissions')).toBe(7);
-    expect(count(ctx, 'exercise_snapshots')).toBe(7);
+    expect(count(ctx, 'attempts')).toBe(N);
+    expect(count(ctx, 'submissions')).toBe(N);
+    expect(count(ctx, 'exercise_snapshots')).toBe(N);
     expect(
       ctx.userDb.sqlite
         .prepare("SELECT COUNT(*) AS n FROM mastery_evidence WHERE kind = 'attempt'")
         .get(),
-    ).toEqual({ n: 8 }); // 7 primary + 1 secondary tag
+    ).toEqual({ n: N + 1 }); // one primary per exercise + 1 secondary tag
     // FSRS: the card is created when the set's pending ratings are applied.
     expect(ctx.userDb.sqlite.prepare('SELECT concept_id, reps FROM concept_memory').all()).toEqual([
       { concept_id: 'js.basics.statement', reps: 1 },
@@ -125,7 +129,7 @@ describe('POST /attempts', () => {
           'SELECT date, attempts_count, correct_count, lessons_completed FROM daily_activity',
         )
         .all(),
-    ).toEqual([{ date: '2026-11-14', attempts_count: 7, correct_count: 7, lessons_completed: 1 }]);
+    ).toEqual([{ date: '2026-11-14', attempts_count: N, correct_count: N, lessons_completed: 1 }]);
 
     // A finished set is closed; asking again builds the next one.
     const closed = await submit(ctx, set.items[0] ?? { id: '', exerciseId: '' });

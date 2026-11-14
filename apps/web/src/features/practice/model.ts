@@ -17,6 +17,8 @@ export const STAGE_LABELS: Readonly<Record<MasteryStage, string>> = {
 
 export const TYPE_LABELS: Readonly<Record<string, string>> = {
   mcq_single: '객관식',
+  mcq_multi: '복수 선택',
+  true_false: '참/거짓',
   fill_blank: '빈칸 채우기',
   predict_output: '실행 결과 예측',
   implement_function: '함수 구현',

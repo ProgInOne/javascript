@@ -1,0 +1,30 @@
+id: js-basics.start.first-program.multi-log-facts
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+estimatedSeconds: 50
+prompt: |
+  `console.log`에 대한 설명으로 맞는 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: 괄호 안의 값을 콘솔에 보여 준다
+    - id: b
+      text: 한 번 호출하면 콘솔에 한 줄이 생긴다
+    - id: c
+      text: 출력한 값을 저장해 두었다가 다음 줄에서 돌려준다
+      misconception: js.mc.log-is-return
+      rationale: console.log는 보여 주기만 하고 값을 저장하지 않아요.
+  correct: [a, b]
+misconceptions: [js.mc.log-is-return]
+hints:
+  - 정답이 하나가 아닐 수 있어요.
+  - console.log가 하는 일은 "보여 주기" 하나뿐이에요.
+  - 보여 주는 것과 저장하는 것은 다른 일이에요.
+explanation: |
+  console.log는 괄호 안의 값을 콘솔에 한 줄로 **보여 주기만** 해요. 값을 저장하거나 돌려주지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

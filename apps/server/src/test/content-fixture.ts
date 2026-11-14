@@ -154,6 +154,8 @@ const P = 'js-basics.start.first-program';
 
 export const EX = {
   mcq: `${P}.mcq-x`,
+  mcqMulti: `${P}.mcq-multi-x`,
+  trueFalse: `${P}.tf-x`,
   fillText: `${P}.fill-semicolon`,
   fillCode: `${P}.fill-add`,
   predict: `${P}.predict-log`,
@@ -177,6 +179,9 @@ export const ANSWER_KEY_FIELDS = [
   'solution',
   'misconceptionIfFail',
   'bugMisconception',
+  'missedMisconception',
+  'misconceptionIfWrong',
+  'answer',
 ];
 
 const shoutChecks = [
@@ -218,6 +223,34 @@ export const FIXTURE_EXERCISES: FixtureExercise[] = [
         { id: 'c', text: '아무 일도 없다' },
       ],
       correct: 'b',
+    },
+  },
+  {
+    id: EX.mcqMulti,
+    type: 'mcq_multi',
+    difficulty: 1,
+    spec: {
+      options: [
+        { id: 'a', text: '`console.log`는 값을 출력한다' },
+        { id: 'b', text: '문장은 위에서 아래로 실행된다' },
+        {
+          id: 'c',
+          text: '`console.log`는 값을 돌려준다',
+          misconception: 'js.mc.log-is-return',
+          rationale: 'RATIONALE-MARK',
+        },
+      ],
+      correct: ['a', 'b'],
+    },
+  },
+  {
+    id: EX.trueFalse,
+    type: 'true_false',
+    difficulty: 1,
+    spec: {
+      statement: '`console.log(2)`는 2를 돌려준다.',
+      answer: false,
+      misconceptionIfWrong: 'js.mc.log-is-return',
     },
   },
   {

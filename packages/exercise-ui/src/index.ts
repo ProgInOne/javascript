@@ -62,6 +62,8 @@ export { InlineText } from './text/InlineText.tsx';
 
 // Exercise type renderers.
 export { McqSingle, type McqSingleProps } from './renderers/McqSingle.tsx';
+export { McqMulti, mcqMultiInstruction, type McqMultiProps } from './renderers/McqMulti.tsx';
+export { TrueFalse, type TrueFalseDraft, type TrueFalseProps } from './renderers/TrueFalse.tsx';
 export { FillBlank, parseBlankTemplate, type FillBlankProps } from './renderers/FillBlank.tsx';
 export {
   OutputComparison,

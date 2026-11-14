@@ -18,7 +18,14 @@ import { compileLessonMdx, type CompiledLesson } from './mdx.ts';
 export type SpecValidator = (
   type: string,
   spec: unknown,
-) => { ok: true; warnings?: string[] } | { ok: false; errors: string[] };
+) =>
+  | {
+      ok: true;
+      warnings?: string[];
+      /** Misconception IDs the spec refers to (checked against the catalog). */
+      misconceptions?: string[];
+    }
+  | { ok: false; errors: string[] };
 
 export interface CheckOptions {
   validateSpec?: SpecValidator;
@@ -187,6 +194,9 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
         const r = options.validateSpec(ex.type, ex.spec);
         if (!r.ok) for (const e of r.errors) diag.error(exFile, `spec: ${e}`);
         else {
+          for (const m of r.misconceptions ?? []) {
+            if (!misconceptions.has(m)) diag.error(exFile, `spec: 없는 오개념입니다: ${m}`);
+          }
           for (const w of r.warnings ?? []) {
             // Reported above with the command that fixes it.
             if (!w.endsWith('(PREDICT_EXPECTED_MISSING)')) diag.warn(exFile, `spec: ${w}`);

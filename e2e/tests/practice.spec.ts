@@ -20,15 +20,23 @@ test.describe('practice mode', () => {
     await expect(page.getByRole('link', { name: '실습' })).toHaveAttribute('aria-current', 'page');
 
     const { total, seen } = await solveSet(page, true);
-    expect(total).toBe(8);
+    expect(total).toBe(10);
     expect(seen).toEqual(
-      new Set(['mcq_single', 'fill_blank', 'predict_output', 'fix_bug', 'web_task']),
+      new Set([
+        'mcq_single',
+        'mcq_multi',
+        'true_false',
+        'fill_blank',
+        'predict_output',
+        'fix_bug',
+        'web_task',
+      ]),
     );
 
     // 단원 완료 순간: counts, concept stage changes, pass checks, next step.
     const summary = page.getByRole('region', { name: '첫 프로그램 단원을 마쳤어요' });
     await expect(summary.getByRole('heading', { level: 2 })).toBeFocused();
-    await expect(summary).toContainText('연습 8문제 · 정답 8');
+    await expect(summary).toContainText('연습 10문제 · 정답 10');
     await expect(summary.getByText(/→ 연습 중/).first()).toBeVisible();
     await expect(summary.getByText('이 단원의 개념을 모두 기준만큼 연습했어요')).toBeVisible();
     await expect(summary.getByRole('link', { name: '대시보드로' })).toBeVisible();
@@ -43,6 +51,6 @@ test.describe('practice mode', () => {
     await page.getByRole('button', { name: '한 번 더 연습' }).click();
     await expect(page).toHaveURL(/i=1$/);
     expect(new URL(page.url()).searchParams.get('set')).not.toBe(finished);
-    await expect(page.getByRole('navigation', { name: '연습 진행' })).toContainText('0 / 8');
+    await expect(page.getByRole('navigation', { name: '연습 진행' })).toContainText('0 / 10');
   });
 });

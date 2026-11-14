@@ -17,6 +17,9 @@ export const ANSWER_KEY_FIELDS = [
   'solution',
   'misconceptionIfFail',
   'bugMisconception',
+  'missedMisconception',
+  'misconceptionIfWrong',
+  'answer',
 ] as const;
 
 const JS_STARTER = { files: [{ path: 'main.js', content: 'function sum(a) {\n  // 여기에\n}\n' }] };
@@ -68,6 +71,26 @@ export const RAW_SPECS: Record<string, unknown> = {
       { id: 'c', text: '`null`', misconception: 'js.mc.secret-c' },
     ],
     correct: 'b',
+  },
+  mcq_multi: {
+    options: [
+      { id: 'a', text: '`let`', missedMisconception: 'js.mc.secret-missed' },
+      { id: 'b', text: '`var`', misconception: 'js.mc.secret-b', rationale: 'secret rationale' },
+      { id: 'c', text: '`const`' },
+      { id: 'd', text: '`int`', misconception: 'js.mc.secret-d' },
+    ],
+    correct: ['a', 'c'],
+    minSelect: 2,
+  },
+  true_false: {
+    statement: '`const`로 선언한 배열에는 `push`를 할 수 없다.',
+    answer: false,
+    misconceptionIfWrong: 'js.mc.secret-wrong',
+    requireReason: true,
+    reasons: [
+      { id: 'r1', text: 'const는 재할당만 막는다', correct: true },
+      { id: 'r2', text: 'const는 값 내부 변경도 막는다', misconception: 'js.mc.secret-r2' },
+    ],
   },
   fill_blank: {
     mode: 'text',

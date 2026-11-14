@@ -16,6 +16,7 @@ import {
   implementedExerciseTypes,
   parseSpec,
   redactSpec,
+  specMisconceptions,
   verifySpec,
 } from './registry.ts';
 import { EXERCISE_TYPE_IDS } from './types.ts';
@@ -38,18 +39,23 @@ describe('registry', () => {
       expect(RAW_SPECS[id], `fixture for ${id}`).toBeDefined();
     }
     expect(getExerciseType('mcq_single')?.category).toBe('recognition');
+    expect(getExerciseType('mcq_multi')?.category).toBe('recognition');
+    expect(getExerciseType('true_false')).toMatchObject({
+      category: 'recognition',
+      weightOverride: 0.5,
+    });
     expect(getExerciseType('fill_blank')?.category).toBe('recall');
     expect(getExerciseType('predict_output')?.category).toBe('recall');
     for (const id of ['implement_function', 'fix_bug', 'web_task']) {
       expect(getExerciseType(id)?.category).toBe('production');
       expect(getExerciseType(id)?.supportsRunPlan).toBe(true);
     }
-    expect(implementedExerciseTypes()).toHaveLength(6);
+    expect(implementedExerciseTypes()).toHaveLength(8);
     expect(getExerciseType('nope')).toBeUndefined();
   });
 
   it('throws UNKNOWN_TYPE for unregistered types', () => {
-    expectKitError(() => parseSpec('true_false', {}), 'UNKNOWN_TYPE');
+    expectKitError(() => parseSpec('matching', {}), 'UNKNOWN_TYPE');
     expectKitError(() => gradeSubmission({ typeId: 'x', spec: {}, answer: {} }), 'UNKNOWN_TYPE');
   });
 
@@ -123,7 +129,11 @@ describe('registry', () => {
   });
 
   it('checkSpec reports schema errors, verification errors and warnings as strings', () => {
-    expect(checkSpec('mcq_single', RAW_SPECS['mcq_single'])).toEqual({ ok: true, warnings: [] });
+    expect(checkSpec('mcq_single', RAW_SPECS['mcq_single'])).toEqual({
+      ok: true,
+      warnings: [],
+      misconceptions: ['js.mc.secret-a', 'js.mc.secret-c'],
+    });
     const schemaError = checkSpec('mcq_single', { options: [], correct: 'a' });
     expect(schemaError.ok).toBe(false);
     if (!schemaError.ok) expect(schemaError.errors[0]).toMatch(/^options/);
@@ -145,6 +155,24 @@ describe('registry', () => {
       ok: false,
       errors: ['exercise type nope is not implemented'],
     });
+  });
+
+  it('collects every misconception ID a spec refers to', () => {
+    expect(specMisconceptions('mcq_multi', RAW_SPECS['mcq_multi'])).toEqual([
+      'js.mc.secret-missed',
+      'js.mc.secret-b',
+      'js.mc.secret-d',
+    ]);
+    expect(specMisconceptions('true_false', RAW_SPECS['true_false'])).toEqual([
+      'js.mc.secret-wrong',
+      'js.mc.secret-r2',
+    ]);
+    expect(specMisconceptions('fill_blank', RAW_SPECS['fill_blank'])).toEqual(['js.mc.secret-log']);
+    expect(specMisconceptions('fix_bug', RAW_SPECS['fix_bug'])).toEqual([
+      'js.mc.secret-v',
+      'js.mc.secret-h',
+      'js.mc.secret-bug',
+    ]);
   });
 
   it('extracts normalized answer-leak fingerprints', () => {
@@ -174,7 +202,7 @@ describe('answer-key stripping', () => {
   it.each(allSpecs)(
     '%s: no answer key, misconception or sentinel survives redaction',
     (typeId, raw) => {
-      const options = typeId === 'mcq_single' ? [undefined, { shuffleSeed: 'a1' }] : [undefined];
+      const options = [undefined, { shuffleSeed: 'a1' }];
       for (const option of options) {
         const publicSpec = redactSpec(typeId, raw, option);
         const keys = collectKeys(publicSpec);

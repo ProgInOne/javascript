@@ -1,0 +1,28 @@
+id: js-basics.start.first-program.tf-order
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.basics.statement, weight: 1 }
+estimatedSeconds: 40
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: 문장이 여러 개 있으면 가장 짧은 문장부터 실행된다.
+  answer: false
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 문장은 적힌 순서대로 위에서 아래로 실행된다
+      correct: true
+    - id: r2
+      text: 짧은 문장일수록 빨리 끝나서 먼저 실행된다
+hints:
+  - 문장의 길이와 실행 순서가 관계있을까요?
+  - 프로그램은 책을 읽듯이 실행돼요.
+  - 위에서 아래로, 적힌 순서대로예요.
+explanation: |
+  **거짓**이에요. 문장은 길이와 관계없이 적힌 순서대로 위에서 아래로 실행돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

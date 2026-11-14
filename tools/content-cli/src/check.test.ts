@@ -132,4 +132,12 @@ describe('checkContent', () => {
     });
     expect(diagnostics.items.map((d) => d.message)).toContain('spec: options: 2개 이상');
   });
+
+  it('reports misconception IDs in a spec that are not in the catalog', () => {
+    const { diagnostics } = checkContent(writeContent(), {
+      validateSpec: () => ({ ok: true, misconceptions: ['js.mc.log-is-return', 'js.mc.nope'] }),
+    });
+    const errors = diagnostics.items.filter((d) => d.level === 'error').map((d) => d.message);
+    expect(errors).toEqual(['spec: 없는 오개념입니다: js.mc.nope']);
+  });
 });

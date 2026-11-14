@@ -2,8 +2,10 @@ import type {
   FillBlankSpec,
   FixBugSpec,
   ImplementFunctionSpec,
+  McqMultiSpec,
   McqSingleSpec,
   PredictOutputSpec,
+  TrueFalseSpec,
   WebTaskSpec,
 } from '@proginone/exercise-kit';
 import { formatValue, type SolutionView } from '@proginone/shared';
@@ -19,6 +21,21 @@ export function solutionView(typeId: string, spec: unknown): SolutionView {
       const s = spec as McqSingleSpec;
       const option = s.options.find((o) => o.id === s.correct);
       return { kind: 'choice', choiceId: s.correct, text: option?.text ?? '' };
+    }
+    case 'mcq_multi': {
+      const s = spec as McqMultiSpec;
+      return {
+        kind: 'choices',
+        choices: s.options
+          .filter((o) => s.correct.includes(o.id))
+          .map((o) => ({ id: o.id, text: o.text })),
+      };
+    }
+    case 'true_false': {
+      const s = spec as TrueFalseSpec;
+      const verdict = s.answer ? '참이에요.' : '거짓이에요.';
+      const reason = s.requireReason ? s.reasons?.find((r) => r.correct)?.text : undefined;
+      return { kind: 'text', text: reason ? `${verdict} 이유: ${reason}` : verdict };
     }
     case 'fill_blank': {
       const s = spec as FillBlankSpec;

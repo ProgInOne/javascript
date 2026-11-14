@@ -114,6 +114,13 @@ export type HintResponse = z.infer<typeof hintResponseSchema>;
 /** What "정답 보기" shows, per exercise kind. Never includes hidden checks. */
 export const solutionViewSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('choice'), choiceId: z.string(), text: z.string() }),
+  /** mcq_multi: every correct option. */
+  z.object({
+    kind: z.literal('choices'),
+    choices: z.array(z.object({ id: z.string(), text: z.string() })),
+  }),
+  /** A short answer in words (true_false verdict and reason, find_bug_line line and cause). */
+  z.object({ kind: z.literal('text'), text: z.string() }),
   z.object({
     kind: z.literal('blanks'),
     blanks: z.array(z.object({ id: z.string(), answer: z.string().nullable() })),

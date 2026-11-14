@@ -56,6 +56,25 @@ async function answer(page: Page, exerciseId: string, firstSet: boolean) {
       await main.locator('label', { hasText: '맨 위의 문장' }).click();
       await submitSure();
       break;
+    case 'multi-log-facts':
+      if (firstSet) {
+        // Partial answer first (one of two correct options), then complete it.
+        await main.locator('label', { hasText: '한 줄이 생긴다' }).click();
+        await submitSure();
+        await expect(main.getByRole('heading', { name: '부분 정답이에요.' })).toBeVisible();
+        await expect(main.getByText('빠뜨린 정답이 있습니다.')).toBeVisible();
+        await main.getByRole('button', { name: '다시 풀기' }).click();
+      } else {
+        await main.locator('label', { hasText: '한 줄이 생긴다' }).click();
+      }
+      await main.locator('label', { hasText: '값을 콘솔에 보여 준다' }).click();
+      await submitSure();
+      break;
+    case 'tf-order':
+      await main.locator('label', { hasText: '거짓' }).click();
+      await main.locator('label', { hasText: '적힌 순서대로' }).click();
+      await submitSure();
+      break;
     case 'fill-semicolon':
       await main.getByRole('textbox', { name: /빈칸/ }).fill(';');
       await submitSure();
