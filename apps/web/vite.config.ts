@@ -27,7 +27,16 @@ function devSessionToken(): Plugin {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  // Under `pnpm dev` the page is served by Vite, but the sandbox shell must come from the server.
+  define:
+    command === 'serve'
+      ? {
+          'import.meta.env.VITE_PROGINONE_SERVER_ORIGIN': JSON.stringify(
+            `http://127.0.0.1:${apiPort}`,
+          ),
+        }
+      : {},
   plugins: [
     tanstackRouter({ target: 'react', autoCodeSplitting: true }),
     react(),
@@ -49,4 +58,4 @@ export default defineConfig({
     // Served from localhost, so one ~500KB vendor chunk costs nothing noticeable.
     chunkSizeWarningLimit: 800,
   },
-});
+}));

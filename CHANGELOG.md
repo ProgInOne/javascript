@@ -7,6 +7,7 @@
 
 ### Added
 
+- 레슨 예제 실행(M4): `RunnableExample`이 러너로 실제 실행됩니다. 예측 후 실행(예측 입력 또는 건너뛰기 → 실행 → 예측과 콘솔 출력 비교), 오류의 줄 번호, 시간 초과·반복 제한 안내, HTML 예제 미리보기
 - 코드 실행 샌드박스 `@proginone/runner`(M4): 러너 셸(`/sandbox/runner.html`, 셸 CSP, 셸마다 다른 `*.localhost` 사이트와 같은 사이트 대체), `@proginone/shared` 샌드박스 계약(`RunPlan`·관측 단계·`Observation`·`RunResult`)을 따르는 관측 전용 하네스(콘솔 직렬화, 타이머 추적, `alert`·`confirm`·`prompt`·`localStorage` 대체 구현, 관측 단계, `argsExpr`), 반복문 가드(acorn 계측), DOM 모드 HTML 재작성(blob 전달), 호스트 API(`createRunnerHost`)와 `parseRunResult` 경계 검증, Watchdog, 오류 위치의 학습자 파일·줄 역매핑, Playwright 보안 스위트와 채점기 계약 테스트
 - `@proginone/exercise-kit` 코드 채점기(M4): 체크 명세 언어 스키마(call·console·program·dom·event·css·layout·a11y·html-valid·static), 체크 → 관측 단계 컴파일(`buildRunPlan`), 관측값과 기대값 비교, 체크 가중 부분 점수·요구사항별 피드백·마일스톤, `implement_function`·`fix_bug`(토큰 편집 거리 규칙)·`web_task` 기본형·`fill_blank` 코드 모드
 - `@proginone/exercise-kit`(M4): 문제 유형 레지스트리와 경계 함수(`parseSpec`·`redactSpec`·`gradeSubmission`·`verifySpec`), `mcq_single`·`fill_blank`(텍스트)·`predict_output` 스펙·답안 스키마와 순수 채점기, 정답 키 제거, 학습자 리터럴 안전 파서, 결정론적 PRNG(`xoshiro128**`). `@proginone/shared`에 샌드박스 계약(`SerializedValue`, 관측 단계·관측값, `RunResult`, `RunPlan`)과 ProgInOne 콘솔 형식
