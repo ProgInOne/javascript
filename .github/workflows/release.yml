@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build app and content
+        run: |
+          pnpm build
+          pnpm content:build
+
+      - name: Bundle
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          name="proginone-${version}"
+          git archive --format=tar --prefix="${name}/" HEAD > "${name}.tar"
+          tar --append -f "${name}.tar" --transform "s,^,${name}/," apps/web/dist content/dist/content.db
+          gzip -9 "${name}.tar"
+          sha256sum "${name}.tar.gz" > "${name}.tar.gz.sha256"
+
+      - name: Release notes from CHANGELOG
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v v="$version" '
+            $0 ~ "^## \\[" v "\\]" { on = 1; next }
+            on && /^## \[/ { exit }
+            on { print }
+          ' CHANGELOG.md > notes.md
+          test -s notes.md
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" --title "ProgInOne ${version}" --notes-file notes.md \
+            "proginone-${version}.tar.gz" "proginone-${version}.tar.gz.sha256"
