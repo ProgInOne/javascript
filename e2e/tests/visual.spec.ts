@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { openScreen, SCREENS } from './fixtures.ts';
+import { mockPractice, PRACTICE_URL } from './practice-mocks.ts';
 
 // Fixed backup list so the data screen looks the same regardless of what earlier tests did.
 const BACKUPS = {
@@ -50,5 +51,34 @@ for (const viewport of VIEWPORTS) {
         await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
       });
     }
+  }
+}
+
+// Practice screen (ui-ux.md 실습 모드) with fixed API responses: a choice item after a wrong,
+// confident answer, and a code item with the editor.
+for (const viewport of VIEWPORTS) {
+  for (const scheme of ['light', 'dark'] as const) {
+    test(`practice-choice-feedback-${scheme}-${viewport.width} @visual`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await mockPractice(page);
+      await openScreen(page, `${PRACTICE_URL}&i=1`, '첫 프로그램 연습', scheme);
+      await page.locator('label', { hasText: '저장되어' }).click();
+      await page.getByRole('button', { name: /확실해요/ }).click();
+      await expect(page.getByRole('heading', { name: '정답이 아니에요.' })).toBeVisible();
+      await expect(page).toHaveScreenshot(
+        `practice-choice-feedback-${scheme}-${viewport.width}.png`,
+        { fullPage: true },
+      );
+    });
+
+    test(`practice-code-${scheme}-${viewport.width} @visual`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await mockPractice(page);
+      await openScreen(page, `${PRACTICE_URL}&i=2`, '첫 프로그램 연습', scheme);
+      await expect(page.getByRole('textbox', { name: 'main.js 편집기' })).toBeVisible();
+      await expect(page).toHaveScreenshot(`practice-code-${scheme}-${viewport.width}.png`, {
+        fullPage: true,
+      });
+    });
   }
 }

@@ -257,6 +257,12 @@ importers:
 
   apps/web:
     dependencies:
+      '@proginone/exercise-kit':
+        specifier: workspace:*
+        version: link:../../packages/exercise-kit
+      '@proginone/exercise-ui':
+        specifier: workspace:*
+        version: link:../../packages/exercise-ui
       '@proginone/runner':
         specifier: workspace:*
         version: link:../../packages/runner

@@ -1,0 +1,24 @@
+id: js-basics.start.first-program.predict-quoted
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+estimatedSeconds: 45
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    console.log("1 + 2");
+    console.log(1 + 2);
+  answerKind: console
+hints:
+  - 두 줄의 차이는 따옴표뿐이에요.
+  - 따옴표로 감싼 것은 글자예요.
+  - 따옴표가 없는 식은 계산돼요.
+explanation: |
+  첫 줄은 글자 `1 + 2`를 그대로, 둘째 줄은 계산한 `3`을 출력해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

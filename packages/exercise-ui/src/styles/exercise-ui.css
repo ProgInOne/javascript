@@ -41,6 +41,10 @@
   text-align: center;
   opacity: 0.85;
 }
+/* On a filled (primary) button the dimmed hint would drop below 4.5:1. */
+.pi-button--primary .pi-ex-kbd kbd {
+  opacity: 1;
+}
 .pi-ex-field {
   display: grid;
   gap: var(--space-2);

@@ -2,19 +2,20 @@ import { mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildContent } from '../tools/content-cli/src/build.ts';
+import { exerciseKit } from '../tools/content-cli/src/kit.ts';
 
 /**
- * Builds the fixture content pack the E2E server reads (PROGINONE_CONTENT_DB). Called from the
+ * Builds the fixture content pack the E2E server reads (PROGINONE_CONTENT_DB), with one lesson's
+ * practice exercises (one per v0.1 type except implement_function). Called from the
  * Playwright config because the web server starts before globalSetup would run.
  */
 export function buildFixtureContent(out: string) {
   const here = dirname(fileURLToPath(import.meta.url));
   mkdirSync(dirname(out), { recursive: true });
-  const unused = () => {
-    throw new Error('fixture content has no exercises');
-  };
+  // Fixture exercises are drafts (authored for tests, never human-reviewed): include them.
   const result = buildContent(join(here, 'fixtures', 'content'), out, {
-    kit: { validateSpec: () => ({ ok: true }), redact: unused, leakFingerprints: unused },
+    kit: exerciseKit,
+    includeDrafts: true,
   });
   if (!result.written) {
     const lines = result.diagnostics.items

@@ -14,6 +14,7 @@
    tokens.css stays unlayered (imported in main.tsx) so token values beat Tailwind's theme vars. */
 @import '@proginone/ui/base.css' layer(base);
 @import '@proginone/ui/components.css' layer(components);
+@import '@proginone/exercise-ui/exercise-ui.css' layer(components);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));

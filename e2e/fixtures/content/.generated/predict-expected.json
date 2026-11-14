@@ -1,0 +1,25 @@
+{
+  "v": 1,
+  "entries": {
+    "js-basics.start.first-program.predict-order": {
+      "inputHash": "b0dc0b5a921b5cd02cc1eed2d2213511729262f5f385e291141570a537645155",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "일어나기",
+          "3"
+        ]
+      }
+    },
+    "js-basics.start.first-program.predict-quoted": {
+      "inputHash": "31efbe1b97988099dd73244a85472b4cab26046e81f0066d72d953d0fc8fab8a",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1 + 2",
+          "3"
+        ]
+      }
+    }
+  }
+}

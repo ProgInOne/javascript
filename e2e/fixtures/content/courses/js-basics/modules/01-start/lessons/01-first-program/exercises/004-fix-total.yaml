@@ -1,0 +1,45 @@
+id: js-basics.start.first-program.fix-total
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+estimatedSeconds: 150
+prompt: |
+  김밥 두 줄(1줄에 3500원)의 가격을 출력하려고 해요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  김밥 2줄
+  7000
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          console.log("김밥 2줄");
+          console.log("3500 * 2");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          console.log("김밥 2줄");
+          console.log(3500 * 2);
+  bugDescription: 둘째 줄에 7000 대신 계산식이 글자 그대로 출력돼요.
+  maxEditDistance: 6
+  checks:
+    - kind: console
+      id: output
+      description: '"김밥 2줄"과 계산 결과 7000이 차례로 출력되어야 합니다.'
+      requirement: 가격 계산 출력
+      expect:
+        lines: ['김밥 2줄', '7000']
+hints:
+  - 둘째 줄은 왜 계산되지 않았을까요?
+  - 둘째 줄의 식은 무엇으로 감싸여 있나요?
+  - 따옴표로 감싸면 글자가 되어 계산하지 않아요.
+explanation: |
+  둘째 줄의 따옴표를 빼서 `console.log(3500 * 2);`로 고치면 `7000`이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

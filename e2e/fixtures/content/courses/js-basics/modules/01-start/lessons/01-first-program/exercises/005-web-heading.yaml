@@ -1,0 +1,69 @@
+id: js-basics.start.first-program.web-heading
+type: web_task
+difficulty: 2
+concepts:
+  - { id: js.basics.statement, weight: 1 }
+estimatedSeconds: 120
+prompt: |
+  `h1` 제목의 글자색을 `rgb(200, 0, 0)`으로 바꿔 주세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>제목</title>
+              <style>
+                h1 {
+                  font-size: 24px;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>안녕하세요</h1>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>제목</title>
+              <style>
+                h1 {
+                  font-size: 24px;
+                  color: rgb(200, 0, 0);
+                }
+              </style>
+            </head>
+            <body>
+              <h1>안녕하세요</h1>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: color
+      description: 제목 글자색이 rgb(200, 0, 0)이어야 합니다.
+      requirement: 제목 글자색
+      visible: true
+      selector: h1
+      expect:
+        computed:
+          color: { equals: 'rgb(200, 0, 0)' }
+hints:
+  - 글자색을 정하는 속성이 있어요.
+  - '`color` 속성이에요.'
+  - '`h1` 규칙 안에 `color: rgb(200, 0, 0);`을 추가해요.'
+explanation: |
+  `h1` 규칙에 `color: rgb(200, 0, 0);`을 추가하면 제목이 빨간색이 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

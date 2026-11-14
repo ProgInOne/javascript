@@ -1,11 +1,13 @@
 import type { LessonConcept } from '@proginone/shared';
 import { Badge } from '@proginone/ui';
+import { Link } from '@tanstack/react-router';
 import {
   AlertTriangle,
   ExternalLink,
   Info,
   Lightbulb,
   OctagonAlert,
+  PencilLine,
   Telescope,
 } from 'lucide-react';
 import { createContext, useContext, type ReactNode } from 'react';
@@ -263,10 +265,21 @@ function PrerequisitesSection() {
   );
 }
 
+/** "직접 풀어 보기": the way into practice mode (ui-ux.md 읽기 모드, 연습 시작). */
 function PracticeSection() {
+  const { lessonId } = useLesson();
   return (
-    <div className="lesson-inline-exercise">
-      <span>본문을 다 읽었다면 직접 풀어 볼 차례예요. 연습 문제는 실습 모드와 함께 열려요.</span>
+    <div className="lesson-practice-cta">
+      <p className="m-0">본문을 다 읽었어요. 이제 직접 풀어볼까요?</p>
+      <Link
+        to="/learn/$lessonId"
+        params={{ lessonId }}
+        search={{ mode: 'practice' }}
+        className="pi-button pi-button--primary pi-button--md no-underline"
+      >
+        <PencilLine size={16} aria-hidden="true" />
+        연습 시작
+      </Link>
     </div>
   );
 }

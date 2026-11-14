@@ -1,0 +1,24 @@
+id: js-basics.start.first-program.predict-order
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.basics.statement, weight: 1 }
+estimatedSeconds: 45
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    console.log("일어나기");
+    console.log(1 + 2);
+  answerKind: console
+hints:
+  - 프로그램은 어느 쪽부터 실행될까요?
+  - console.log 한 번이 콘솔의 한 줄이 돼요.
+  - 따옴표가 없는 식은 계산한 값이 출력돼요.
+explanation: |
+  정답은 `일어나기`, `3` 두 줄이에요. 문장은 위에서 아래로 실행되고, `1 + 2`는 계산되어 `3`이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

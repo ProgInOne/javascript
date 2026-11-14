@@ -1,0 +1,26 @@
+id: js-basics.start.first-program.fill-log-name
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+estimatedSeconds: 50
+prompt: |
+  콘솔에 `안녕`을 출력하는 문장이 되도록 빈칸을 채워 주세요.
+spec:
+  mode: text
+  template: |
+    {{blank:fn}}("안녕");
+  blanks:
+    - id: fn
+      accept: ['console.log']
+      width: 12
+hints:
+  - 콘솔에 값을 보여 주는 명령을 떠올려 보세요.
+  - 두 단어가 점으로 이어져 있어요.
+  - '`console` 다음에 점과 `log`가 와요.'
+explanation: |
+  정답은 `console.log`예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

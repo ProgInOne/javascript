@@ -1,0 +1,26 @@
+id: js-basics.start.first-program.fill-semicolon
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.basics.statement, weight: 1 }
+estimatedSeconds: 60
+prompt: |
+  두 문장이 차례로 실행되도록 빈칸에 알맞은 기호 하나를 써 주세요.
+spec:
+  mode: text
+  template: |
+    console.log("하나"){{blank:sep}} console.log("둘");
+  blanks:
+    - id: sep
+      accept: [';']
+      width: 3
+hints:
+  - 빈칸이 없으면 두 문장의 경계를 알 수 없어요.
+  - 문장이 끝났다는 표시로 쓰는 기호가 있었어요.
+  - 둘째 문장 끝을 보세요.
+explanation: |
+  정답은 세미콜론 **`;`**이에요. 세미콜론은 문장의 끝을 표시해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

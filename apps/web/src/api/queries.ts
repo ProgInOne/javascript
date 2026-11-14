@@ -1,4 +1,15 @@
 import {
+  attemptResponseSchema,
+  exerciseViewSchema,
+  hintResponseSchema,
+  practiceSetViewSchema,
+  reportResponseSchema,
+  runPlanSchema,
+  solutionResponseSchema,
+  type AttemptRequest,
+  type CreatePracticeSetRequest,
+  type ReportRequest,
+  type RunPlanRequest,
   backupListSchema,
   courseDetailSchema,
   courseListSchema,
@@ -82,4 +93,63 @@ export const lessonQuery = (id: string) =>
     queryFn: ({ signal }) =>
       api(`/lessons/${encodeURIComponent(id)}`, { schema: lessonDetailSchema, signal }),
     staleTime: Infinity,
+  });
+
+// ── Practice (docs/design/system-architecture.md#api-규약) ──
+
+export const practiceSetQuery = (id: string) =>
+  queryOptions({
+    queryKey: ['practice-sets', id],
+    queryFn: ({ signal }) =>
+      api(`/practice-sets/${encodeURIComponent(id)}`, { schema: practiceSetViewSchema, signal }),
+  });
+
+/** The exercise as shown in a practice set item (hint ladder state is per item). */
+export const exerciseQuery = (id: string, practiceSetItemId: string | null) =>
+  queryOptions({
+    queryKey: ['exercises', id, practiceSetItemId],
+    queryFn: ({ signal }) =>
+      api(
+        `/exercises/${encodeURIComponent(id)}${
+          practiceSetItemId === null
+            ? ''
+            : `?practiceSetItemId=${encodeURIComponent(practiceSetItemId)}`
+        }`,
+        { schema: exerciseViewSchema, signal },
+      ),
+    staleTime: Infinity,
+  });
+
+export const createPracticeSet = (request: CreatePracticeSetRequest) =>
+  api('/practice-sets', { method: 'POST', body: request, schema: practiceSetViewSchema });
+
+export const fetchRunPlan = (exerciseId: string, request: RunPlanRequest) =>
+  api(`/exercises/${encodeURIComponent(exerciseId)}/run-plan`, {
+    method: 'POST',
+    body: request,
+    schema: runPlanSchema,
+  });
+
+export const submitAttempt = (request: AttemptRequest) =>
+  api('/attempts', { method: 'POST', body: request, schema: attemptResponseSchema });
+
+export const openHint = (exerciseId: string, practiceSetItemId: string | null) =>
+  api(`/exercises/${encodeURIComponent(exerciseId)}/hints`, {
+    method: 'POST',
+    body: practiceSetItemId === null ? {} : { practiceSetItemId },
+    schema: hintResponseSchema,
+  });
+
+export const viewSolution = (exerciseId: string, practiceSetItemId: string | null) =>
+  api(`/exercises/${encodeURIComponent(exerciseId)}/solution`, {
+    method: 'POST',
+    body: practiceSetItemId === null ? {} : { practiceSetItemId },
+    schema: solutionResponseSchema,
+  });
+
+export const reportExercise = (exerciseId: string, request: ReportRequest) =>
+  api(`/exercises/${encodeURIComponent(exerciseId)}/reports`, {
+    method: 'POST',
+    body: request,
+    schema: reportResponseSchema,
   });
