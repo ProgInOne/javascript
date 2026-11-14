@@ -346,7 +346,7 @@
     outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
   }
-  button.concept-tile[aria-pressed='true'] {
+  button.concept-tile[aria-expanded='true'] {
     border-color: var(--color-action-primary);
     background: var(--color-bg-selected);
   }
@@ -399,5 +399,108 @@
   .course-progress__name {
     font-weight: 700;
     color: var(--color-text-heading);
+  }
+
+  /* ── 개념 상세 (sheet and page) ── */
+  .concept-sheet {
+    --drawer-w: 480px;
+  }
+  .concept-sheet .pi-overlay__body {
+    overflow-y: auto;
+  }
+  .concept-page {
+    padding: var(--card-pad);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-surface);
+    box-shadow: var(--elevation-1);
+  }
+  .concept-detail {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .concept-detail__head {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .concept-detail__title {
+    font: var(--text-h1);
+    letter-spacing: var(--tracking-h1);
+    color: var(--color-text-heading);
+  }
+  .concept-detail__title:focus {
+    outline: none;
+  }
+  .concept-detail__stage {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-secondary);
+  }
+  .concept-detail__stage b {
+    color: var(--color-text-heading);
+  }
+  .concept-detail__section {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .concept-detail__subtitle {
+    font: var(--text-ui);
+    font-weight: 700;
+    color: var(--color-text-heading);
+  }
+  .concept-detail__missing,
+  .concept-detail__list {
+    margin: 0;
+    padding-left: var(--space-5);
+  }
+  .concept-detail__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .concept-detail__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .evidence-list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .evidence-list li {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border-default);
+    font: var(--text-small);
+  }
+  .evidence-list time {
+    color: var(--color-text-tertiary);
+  }
+  .evidence-list__title {
+    display: block;
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+  .evidence-list__details {
+    display: block;
+    color: var(--color-text-secondary);
+  }
+  .evidence-list__delta {
+    font-weight: 700;
+    color: var(--color-text-secondary);
+  }
+  .evidence-list li[data-outcome='correct'] .evidence-list__delta {
+    color: var(--color-feedback-correct-fg);
   }
 }

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as SettingsRouteRouteImport } from './routes/settings/route'
+import { Route as ConceptsConceptIdRouteImport } from './routes/concepts/$conceptId'
 import { Route as CoursesIndexRouteImport } from './routes/courses/index'
 import { Route as CoursesCourseIdRouteImport } from './routes/courses/$courseId'
 import { Route as LearnLessonIdRouteImport } from './routes/learn/$lessonId'
@@ -36,6 +37,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const SettingsRouteRoute = SettingsRouteRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConceptsConceptIdRoute = ConceptsConceptIdRouteImport.update({
+  id: '/concepts/$conceptId',
+  path: '/concepts/$conceptId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesIndexRoute = CoursesIndexRouteImport.update({
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/settings': typeof SettingsRouteRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/concepts/$conceptId': typeof ConceptsConceptIdRoute
   '/courses/$courseId': typeof CoursesCourseIdRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/settings/ai': typeof SettingsAiRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/onboarding': typeof OnboardingRoute
+  '/concepts/$conceptId': typeof ConceptsConceptIdRoute
   '/courses/$courseId': typeof CoursesCourseIdRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/settings/ai': typeof SettingsAiRoute
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/settings': typeof SettingsRouteRouteWithChildren
   '/onboarding': typeof OnboardingRoute
+  '/concepts/$conceptId': typeof ConceptsConceptIdRoute
   '/courses/$courseId': typeof CoursesCourseIdRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/settings/ai': typeof SettingsAiRoute
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/settings'
     | '/onboarding'
+    | '/concepts/$conceptId'
     | '/courses/$courseId'
     | '/learn/$lessonId'
     | '/settings/ai'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/onboarding'
+    | '/concepts/$conceptId'
     | '/courses/$courseId'
     | '/learn/$lessonId'
     | '/settings/ai'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/'
     | '/settings'
     | '/onboarding'
+    | '/concepts/$conceptId'
     | '/courses/$courseId'
     | '/learn/$lessonId'
     | '/settings/ai'
@@ -185,6 +197,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SettingsRouteRoute: typeof SettingsRouteRouteWithChildren
   OnboardingRoute: typeof OnboardingRoute
+  ConceptsConceptIdRoute: typeof ConceptsConceptIdRoute
   CoursesCourseIdRoute: typeof CoursesCourseIdRoute
   LearnLessonIdRoute: typeof LearnLessonIdRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
@@ -213,6 +226,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/concepts/$conceptId': {
+      id: '/concepts/$conceptId'
+      path: '/concepts/$conceptId'
+      fullPath: '/concepts/$conceptId'
+      preLoaderRoute: typeof ConceptsConceptIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses/': {
@@ -312,6 +332,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SettingsRouteRoute: SettingsRouteRouteWithChildren,
   OnboardingRoute: OnboardingRoute,
+  ConceptsConceptIdRoute: ConceptsConceptIdRoute,
   CoursesCourseIdRoute: CoursesCourseIdRoute,
   LearnLessonIdRoute: LearnLessonIdRoute,
   CoursesIndexRoute: CoursesIndexRoute,

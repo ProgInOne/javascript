@@ -234,6 +234,31 @@ test('long-term learner: a month of lessons, reviews and rest days', async ({ pa
 // long-term screenshots use responses recorded from this journey on 2026-12-16, with the
 // `const` misconception kept confirmed so the 약점 marker is covered.
 dashboardShots('long', LONG_TERM);
+test('concept detail: sheet from the concept map, then the full page', async ({ page }) => {
+  await prepare(page);
+  await openDashboard(page);
+  const map = page.getByRole('region', { name: '개념 지도' });
+  const tile = map.getByRole('button', { name: /const 선언/ });
+  await tile.click();
+  const sheet = page.getByRole('dialog', { name: '개념: const 선언' });
+  await expect(sheet).toBeVisible();
+  await expect(sheet.getByRole('heading', { name: '숙련도가 이렇게 계산됐어요' })).toBeVisible();
+  await expect(sheet.locator('.evidence-list li').first()).toBeVisible();
+  await expect(sheet.getByRole('heading', { name: '선수 개념' })).toBeVisible();
+  await expectNoA11yViolations(page);
+  // A prerequisite opens in place; Esc closes and focus returns to the tile.
+  await sheet.getByRole('button', { name: /let 선언/ }).click();
+  await expect(page.getByRole('dialog', { name: '개념: let 선언' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(tile).toBeFocused();
+
+  await page.goto('/concepts/js.basics.const');
+  await expect(page.getByRole('heading', { level: 1, name: 'const 선언' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '관련 레슨' })).toBeVisible();
+  await expectNoA11yViolations(page);
+});
+
 test('weakness set from the dashboard', async ({ page }) => {
   await prepare(page);
   await openDashboard(page);

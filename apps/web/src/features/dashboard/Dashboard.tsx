@@ -19,7 +19,7 @@ import {
   Repeat,
   Target,
 } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
 import {
   dailyPlanQuery,
@@ -33,6 +33,7 @@ import { formatMinutes } from '../../lib/format.ts';
 import { GoalRing, todayMinutes, WeekStrip } from '../goals/GoalRing.tsx';
 import { formatLocalDate, formatShortDate, paceText } from '../goals/pace.ts';
 import { MasteryIcon, STAGE_NAMES } from '../mastery/MasteryIcon.tsx';
+import { ConceptSheet } from '../concepts/ConceptSheet.tsx';
 import { blockReason, blockTitle } from './plan.ts';
 import { useStartSet } from './useStartSet.ts';
 
@@ -50,6 +51,14 @@ export function Dashboard() {
   const queue = useQuery(reviewQueueQuery);
   const weak = useQuery(weakConceptsQuery);
   const start = useStartSet();
+  // Concept detail sheet (ui-ux.md: from the dashboard the detail opens as a sheet).
+  const [sheet, setSheet] = useState<{ id: string; title: string } | null>(null);
+  // The tile that opened the sheet gets focus back when it closes (ui-ux.md 포커스 관리).
+  const opener = useRef<HTMLElement | null>(null);
+  const openFromMap = (concept: { id: string; title: string }) => {
+    if (document.activeElement instanceof HTMLElement) opener.current = document.activeElement;
+    setSheet(concept);
+  };
 
   if (plan.isError && mastery.isError) {
     const e = plan.error instanceof ApiRequestError ? plan.error : null;
@@ -119,7 +128,12 @@ export function Dashboard() {
             {(data) => <ReviewCard queue={data} mastery={mastery.data} start={start} />}
           </Loaded>
         </Card>
-        <ConceptMapCard query={mastery} weak={weak.data} />
+        <ConceptMapCard
+          query={mastery}
+          weak={weak.data}
+          openId={sheet?.id ?? null}
+          onOpenConcept={openFromMap}
+        />
         <Card
           id="course-progress"
           icon={BookOpen}
@@ -136,6 +150,18 @@ export function Dashboard() {
           </Loaded>
         </Card>
       </div>
+      <ConceptSheet
+        concept={sheet}
+        today={mastery.data?.date ?? null}
+        onOpen={setSheet}
+        onClose={() => {
+          setSheet(null);
+          const target = opener.current;
+          opener.current = null;
+          // After the drawer has unmounted (it would take the focus back to the page).
+          setTimeout(() => target?.focus(), 0);
+        }}
+      />
     </div>
   );
 }
@@ -505,12 +531,18 @@ const VIEW_LABELS: Readonly<Record<MapView, string>> = {
 };
 
 /** The concept map card: course and view selects in the header, the map below. */
+type OpenConcept = (concept: { id: string; title: string }) => void;
+
 function ConceptMapCard({
   query,
   weak,
+  openId,
+  onOpenConcept,
 }: {
   query: UseQueryResult<MasteryOverview>;
   weak: WeakConcepts | undefined;
+  openId: string | null;
+  onOpenConcept: OpenConcept;
 }) {
   const [courseId, setCourseId] = useState<string | null>(null);
   const [view, setView] = useState<MapView>('modules');
@@ -551,7 +583,14 @@ function ConceptMapCard({
       <Loaded query={query} height={200} what="개념 지도">
         {(data) =>
           course ? (
-            <ConceptMap mastery={data} course={course} view={view} weak={weak} />
+            <ConceptMap
+              mastery={data}
+              course={course}
+              view={view}
+              weak={weak}
+              openId={openId}
+              onOpenConcept={onOpenConcept}
+            />
           ) : (
             <p className="text-fg-secondary">아직 학습 콘텐츠가 없어요.</p>
           )
@@ -566,11 +605,15 @@ function ConceptMap({
   course,
   view,
   weak,
+  openId,
+  onOpenConcept,
 }: {
   mastery: MasteryOverview;
   course: MasteryOverview['courses'][number];
   view: MapView;
   weak: WeakConcepts | undefined;
+  openId: string | null;
+  onOpenConcept: OpenConcept;
 }) {
   // "약점" marker: a confirmed misconception (ui-ux.md 숙련 단계 스케일). The "약점만" view also
   // shows the concepts the weakness ranking would practise next.
@@ -613,7 +656,15 @@ function ConceptMap({
               <ul className="concept-map__tiles">
                 {m.shown.map((t) => (
                   <li key={t.id}>
-                    <ConceptTile tile={t} weak={confirmed(t)} today={mastery.date} />
+                    <ConceptTile
+                      tile={t}
+                      weak={confirmed(t)}
+                      today={mastery.date}
+                      open={openId === t.id}
+                      onOpen={() => {
+                        onOpenConcept({ id: t.id, title: t.title });
+                      }}
+                    />
                   </li>
                 ))}
               </ul>
@@ -641,19 +692,31 @@ function ConceptMap({
   );
 }
 
+/**
+ * ConceptTile (ui-ux.md 학습 특화 컴포넌트): stage icon with markers, the name (two lines at
+ * most) and the next review. Hover shows the score; a click opens the concept detail sheet.
+ */
 export function ConceptTile({
   tile,
   weak,
   today,
+  open,
+  onOpen,
 }: {
   tile: MasteryOverview['courses'][number]['modules'][number]['concepts'][number];
   weak: boolean;
   today: string;
+  open: boolean;
+  onOpen: () => void;
 }) {
   const confirmed = tile.misconceptions.find((m) => m.status === 'confirmed');
   return (
-    <span
+    <button
+      type="button"
       className="concept-tile"
+      aria-haspopup="dialog"
+      aria-expanded={open}
+      onClick={onOpen}
       data-dim={tile.stage === 'not_started' || undefined}
       title={
         tile.stage === 'not_started'
@@ -676,7 +739,7 @@ export function ConceptTile({
           </span>
         )
       )}
-    </span>
+    </button>
   );
 }
 
