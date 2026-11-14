@@ -5,7 +5,7 @@ MVP의 유일한 AI 제공자는 ChatGPT 구독으로 인증하는 Codex App Ser
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-15 (v0.1 구현 메모 추가)
+- 최종 수정: 2026-11-15 (v0.2 구현 메모 추가)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [학습 엔진 설계](/docs/design/learning-engine.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -1052,7 +1052,7 @@ data: {"messageId":"msg_01","code":"AI_RATE_LIMITED","message":"...","retryable"
 
 #### Codex 프로토콜 계약 테스트
 
-- 실제 `codex app-server`와 주고받은 JSON-RPC 메시지를 녹화해 `packages/ai/test/fixtures/codex/<version>/`에 둡니다.
+- 실제 `codex app-server`와 주고받은 JSON-RPC 메시지를 녹화해 `packages/ai/src/provider/codex/testing/recordings/<version>/`에 둡니다(v0.2 구현, [구현 메모 (v0.2)](#구현-메모-v02)).
 - JSON-RPC 클라이언트, 턴 상관, 승인 거부, 중단, 재구성 로직을 녹화 메시지 재생으로 테스트합니다.
 - Codex를 업그레이드할 때 녹화를 다시 만들고 차이를 리뷰합니다.
 
@@ -1124,6 +1124,22 @@ v0.1(M4)에서 `packages/ai`와 서버 튜터 백엔드를 구현하면서 위 �
 - AI 상태에는 계정 이메일을 넣지 않습니다(`planType`만).
 
 **수동 확인 (2026-11-15, Codex CLI 0.155.1, 로컬)**: PoC 로그인 홈의 사본으로 서버를 띄워 `tutor.reply` 4회(새 스레드, 같은 스레드 재개 2회, 취소 1회)와 `tutor.hint` 1회를 실행했습니다. 기능 플래그 검증 통과, 도구 항목·승인 요청 0건, 정답 요구·지침 무시 유도·도구 요청(터미널 실행, 웹 검색)을 모두 정답 코드 없이 거절하고 학습으로 되돌림, 한국어 해요체, 첫 델타(제공자 기준) 새 스레드 4.8초·재개 1.8~2.2초, 취소는 요청 직후 `cancelled`로 종료, 종료 시 Codex 자식 프로세스가 남지 않음을 확인했습니다.
+
+### 구현 메모 (v0.2)
+
+v0.2(M5)에서 바꾸거나 구체화한 점입니다.
+
+**Codex 프로토콜 계약 테스트 (녹화 재생)**
+
+- 녹화는 실제 `CodexAdapter`가 녹화용 래퍼(`tee-codex.mjs`)를 Codex 실행 파일로 써서 만듭니다. 녹화와 재생이 같은 시나리오 코드(`testing/scenarios.ts`)를 구동하므로, 재생 테스트는 "어댑터가 녹화 때와 같은 요청을 보내는가"와 "실제 서버 메시지를 제대로 읽는가"를 함께 검사합니다.
+- 시나리오(0.155.1): `login-logged-out`(초기화, 로그아웃 계정, 로그인 시작·취소), `startup-ready`(계정 플랜, 사용량, 모델 목록), `turn-stream`, `turn-structured`(`outputSchema`), `thread-resume`(지속 스레드, `thread/resume`, 없는 스레드 → 재구성 신호), `turn-interrupt`. 녹화에 실제 모델 턴 5회를 썼습니다.
+- 재생기(`replay-codex.mjs`)는 녹화된 클라이언트 메시지를 메서드별 순번으로 맞춰 응답(ID 교체)과 그 뒤의 서버 메시지를 보냅니다. 녹화에 없는 요청은 읽기 요청(`account/read`, `account/rateLimits/read`, `model/list`)만 마지막 응답을 다시 쓰고, 나머지는 오류로 답해 프로토콜 변화가 테스트 실패로 드러나게 합니다.
+- 녹화본은 커밋 전에 스크럽합니다(`scrub.ts`): 계정 이메일, 로컬 경로(`$CODEX_HOME`·`$WORKSPACE` 자리표시자로, 재생 때 실제 경로로 바꿈), 호스트·사용자 이름, 로그인 URL의 쿼리, UUID·제공자 항목 ID, 시각, 크레딧 잔액. 남은 흔적(이메일, JWT, 홈 경로, 사용자 이름)이 보이면 저장을 거부합니다.
+- 녹화에서 확인한 사실:
+    - 겹친 `account/rateLimits/read` 요청은 마지막 것만 응답을 받았습니다. 어댑터의 사용량 조회를 한 번에 하나만 보내도록(single-flight) 바꿨습니다.
+    - `baseInstructions`로 기본 지침을 바꿔도 짧은 질문 한 턴의 입력 토큰이 약 9,400이었습니다(Codex 쪽 고정 부분). 같은 스레드를 재개한 턴은 그중 약 9,200이 캐시 입력이었습니다.
+    - 0.155.1의 사용량 응답은 `primary`(주간 창, 10,080분) 하나만 있었고, `rateLimitsByLimitId`, `credits`, `rateLimitReachedType` 같은 필드가 함께 옵니다. 앱은 지금처럼 `primary`·`secondary`의 `usedPercent`, `windowDurationMins`, `resetsAt`만 씁니다.
+    - 매 턴 시작에 "Code Mode is unavailable" `warning` 알림이 옵니다(`code_mode_host`를 끈 결과). 어댑터는 이 알림을 무시합니다.
 
 ## 검토한 대안
 

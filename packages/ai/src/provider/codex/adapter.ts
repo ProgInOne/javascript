@@ -152,6 +152,7 @@ export class CodexAdapter implements ProviderAdapter {
   #readyAt: number | null = null;
   #restartTimer: NodeJS.Timeout | null = null;
   #usage: AIUsage | null = null;
+  #usageRead: Promise<AIUsage | null> | null = null;
   #pendingLogin: { loginId: string; startedAt: number; timer: NodeJS.Timeout } | null = null;
   #disposed = false;
   /** Bumped per process; exit handlers of older processes are ignored. */
@@ -481,20 +482,31 @@ export class CodexAdapter implements ProviderAdapter {
     return this.#setStatus({ state: 'ready', planType: res.account.planType ?? null });
   }
 
-  async usage(): Promise<AIUsage | null> {
+  /**
+   * Reads `account/rateLimits/read`. Concurrent callers share one request: 0.155.1 answers only
+   * the last of overlapping reads (recorded in `startup-ready`), so a second request would leave
+   * the first waiting until its timeout.
+   */
+  usage(): Promise<AIUsage | null> {
     const rpc = this.#rpc;
-    if (!rpc || this.#status.state === 'logged_out') return this.#usage;
-    try {
-      const res = await rpc.request<{ rateLimits?: RateLimitSnapshot }>(
+    if (!rpc || this.#status.state === 'logged_out') return Promise.resolve(this.#usage);
+    this.#usageRead ??= rpc
+      .request<{ rateLimits?: RateLimitSnapshot }>(
         'account/rateLimits/read',
         undefined,
         this.#requestTimeout,
-      );
-      this.#applyUsage(res.rateLimits ?? null);
-    } catch (e) {
-      this.#log('debug', 'codex.usage.failed', { err: String(e) });
-    }
-    return this.#usage;
+      )
+      .then((res) => {
+        this.#applyUsage(res.rateLimits ?? null);
+      })
+      .catch((e: unknown) => {
+        this.#log('debug', 'codex.usage.failed', { err: String(e) });
+      })
+      .then(() => this.#usage)
+      .finally(() => {
+        this.#usageRead = null;
+      });
+    return this.#usageRead;
   }
 
   #applyUsage(snapshot: RateLimitSnapshot | null): void {
