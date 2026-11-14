@@ -296,7 +296,7 @@ sequenceDiagram
 ```
 
 - `code`는 대문자 스네이크 케이스의 안정적 식별자입니다. 웹은 `code`로 분기하고 `message`는 표시용입니다.
-- 오류 코드는 영역 접두사를 씁니다: `VALIDATION_*`, `NOT_FOUND`, `CONTENT_*`, `RUNNER_*`, `AI_*`, `BACKUP_*`, `MAINTENANCE`, `INTERNAL`.
+- 오류 코드는 영역 접두사를 씁니다: `VALIDATION_*`, `NOT_FOUND`, `CONTENT_*`, `EXERCISE_*`(문제·힌트·정답 열람), `PRACTICE_*`(연습 세트·시도), `RUNNER_*`, `AI_*`, `BACKUP_*`, `MAINTENANCE`, `INTERNAL`.
 - 서버는 예상하지 못한 예외를 `INTERNAL`로 감싸고, 스택은 로그에만 남깁니다.
 - 백업 복원이나 데이터 재계산 중에는 서버가 유지보수 모드가 되어 `/api` 요청에 `503`과 `MAINTENANCE`를 반환합니다. 웹은 전체 화면 안내를 표시합니다.
 - AI 관련 오류 코드(`AI_*`)의 전체 목록은 [AI 시스템 설계](/docs/design/ai-system.md)가 원천입니다.

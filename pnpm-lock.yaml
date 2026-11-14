@@ -208,6 +208,9 @@ importers:
       '@proginone/content-schema':
         specifier: workspace:*
         version: link:../../packages/content-schema
+      '@proginone/exercise-kit':
+        specifier: workspace:*
+        version: link:../../packages/exercise-kit
       '@proginone/runner':
         specifier: workspace:*
         version: link:../../packages/runner

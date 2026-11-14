@@ -2,6 +2,7 @@ import { ContentAccess } from '../services/curriculum/content-access.ts';
 import { SHELL_CSP } from '@proginone/runner/shell-build';
 import { describe, expect, it } from 'vitest';
 import type { BackupService } from '../services/backup/service.ts';
+import type { PracticeServices } from '../services/practice/index.ts';
 import type { SettingsService } from '../services/settings/service.ts';
 import { silentLog } from '../test/helpers.ts';
 import { createApp } from './app.ts';
@@ -15,6 +16,7 @@ function setup(mode: 'production' | 'development' = 'production') {
     backups: {} as BackupService,
     settings: {} as SettingsService,
     content: ContentAccess.unavailable(),
+    practice: {} as PracticeServices,
   });
   return (path: string, host: string) =>
     app.request(`http://127.0.0.1:4310${path}`, { headers: { host } });

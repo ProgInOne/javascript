@@ -3,6 +3,7 @@ import { apiErrorSchema, backupListSchema, backupSummarySchema } from '@proginon
 import { describe, expect, it } from 'vitest';
 import { setupDb, silentLog } from '../../test/helpers.ts';
 import { SettingsService } from '../../services/settings/service.ts';
+import type { PracticeServices } from '../../services/practice/index.ts';
 import { createApp } from '../app.ts';
 import { TOKEN_HEADER } from '../security.ts';
 
@@ -15,6 +16,7 @@ async function setup() {
     backups: ctx.backups,
     settings: new SettingsService({ userDb: ctx.userDb, log: silentLog }),
     content: ContentAccess.unavailable(),
+    practice: {} as PracticeServices,
     maintenance: ctx.maintenance,
   });
   const call = (method: string, path: string) =>

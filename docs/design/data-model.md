@@ -319,6 +319,8 @@ M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons
 스키마는 `apps/server/src/db/user/schema.ts`, 마이그레이션은 `apps/server/src/db/user/migrations/`에 있습니다.
 모든 학습 기록 테이블은 `learner_id TEXT NOT NULL REFERENCES learners(id)`를 가집니다. 아래 표에서는 반복을 줄이기 위해 생략합니다. 예외: `app_meta`, `variant_cache`, `exercise_snapshots`는 학습자와 무관한 캐시·메타이므로 `learner_id`가 없습니다.
 
+구현 현황: 0000(M3)은 `app_meta`, `learners`, `settings`, 0001(M4)은 `lesson_progress`, `practice_sets`, `practice_set_items`, `attempts`, `submissions`, `hint_events`, `exercise_snapshots`, `concept_mastery`, `mastery_evidence`, `concept_memory`, `review_logs`, `pending_ratings`(M4에서 추가), `exercise_reports`, `daily_activity`를 만듭니다. 나머지 테이블은 해당 기능과 함께 추가합니다. 0001에서 표와 달라진 점: `lesson_progress.updated_at` 추가, `pending_ratings` 추가. 열거형·0/1·`json_valid` 외에 범위 `CHECK`(점수 0~1·0~100, 힌트 단계 0~3, `daily_activity.date` 형식)를 더했습니다.
+
 #### 연결 설정 (PRAGMA)
 
 서버가 `user.db`를 열 때 다음을 설정합니다.
@@ -405,6 +407,7 @@ PRAGMA cache_size = -20000;       -- 약 20MB
 | `started_at` | INTEGER | Y | | |
 | `completed_at` | INTEGER | Y | | |
 | `content_hash_seen` | TEXT | Y | | 학습자가 본 본문 해시. 콘텐츠 갱신 표시용 |
+| `updated_at` | INTEGER | N | | 마지막 읽기·연습 활동 시각. "이어서 학습"의 최근순 정렬에 사용(M4에서 추가) |
 
 PK `(learner_id, lesson_id)`. 인덱스 `(learner_id, status)`.
 
@@ -590,7 +593,7 @@ PK `(learner_id, concept_id)`. 인덱스 `(learner_id, stage)`, `(learner_id, sc
 | `suspended` | INTEGER | N | `0` | 학습자가 복습에서 제외한 개념 |
 | `updated_at` | INTEGER | N | | |
 
-- 행은 개념이 `introduced` 단계에 처음 도달할 때 만듭니다(단원 연습에서 첫 정답 또는 레슨 완료 시).
+- 행은 그 개념의 보류 등급이 처음 FSRS에 적용될 때(보통 첫 단원 연습 세트가 끝날 때) 만듭니다. 레슨만 읽은 개념에는 카드가 없습니다([학습 엔진 설계의 구현 메모](/docs/design/learning-engine.md#구현-메모-v01)).
 - `card_json`이 정본이고, 나머지 FSRS 컬럼은 복습 큐 조회를 위한 사본입니다. 쓰기 시 항상 함께 갱신합니다.
 - 인덱스: `concept_memory(learner_id, suspended, due_at)` — 복습 큐의 핵심 쿼리.
 
@@ -610,6 +613,26 @@ PK `(learner_id, concept_id)`. 인덱스 `(learner_id, stage)`, `(learner_id, sc
 | `retrievability_before` | REAL | Y | 평가 직전 회상 확률 |
 
 인덱스 `review_logs(learner_id, concept_id, reviewed_at)`.
+
+#### pending_ratings
+
+`pending_ratings`는 아직 FSRS에 적용하지 않은 **보류 등급** 입니다(M4에서 추가). 학습 엔진은 시도마다 주 개념의 등급(`PendingRating`)을 돌려주고, 서버는 그 개념의 세트 항목이 모두 끝나거나 세트가 끝날 때 등급을 합쳐 적용합니다([학습 엔진 설계](/docs/design/learning-engine.md#평가-적용-단위-개념당-하루-한-번)). 그 사이에 서버가 재시작해도 등급을 잃지 않도록 테이블로 둡니다.
+
+| 컬럼 | 타입 | Null | 설명 |
+|---|---|---|---|
+| `id` | TEXT | N | PK, ULID |
+| `practice_set_id` | TEXT | N | FK → `practice_sets.id` ON DELETE CASCADE. 등급이 속한 세트 |
+| `concept_id` | TEXT | N | 주 개념 |
+| `rating` | TEXT | N | `again` / `hard` / `good` / `easy` (시도 하나의 등급) |
+| `attempt_id` | TEXT | N | FK → `attempts.id`. 적용 시 `review_logs.source_attempt_ids_json`이 됨 |
+| `variant_group_key` | TEXT | N | 근거 시도의 변형 그룹 키(단계 게이트의 변형 그룹 다양성) |
+| `rated_at` | INTEGER | N | 시도 제출 시각 |
+| `flushed_at` | INTEGER | Y | `flushPendingRatings`로 처리한 시각. NULL이면 아직 보류 |
+| `flush_outcome` | TEXT | Y | `applied`(FSRS에 적용) / `skipped`(그날 이미 평가한 개념이라 버림) |
+
+- 행은 지우지 않고 처리 결과를 남깁니다(재계산과 디버깅의 근거). `CHECK`로 `flushed_at`과 `flush_outcome`이 함께 채워지게 합니다.
+- 처리 대상은 `conceptsReadyToFlush`로 고릅니다: 세트가 끝났거나, 그 개념을 겨냥한 `pending` 항목이 더 없을 때입니다. 시도 제출과 같은 트랜잭션에서 씁니다.
+- 인덱스 `pending_ratings(practice_set_id, flushed_at)`.
 
 #### misconception_observations
 
@@ -858,6 +881,8 @@ erDiagram
     learners ||--o{ concept_mastery : has
     learners ||--o{ concept_memory : has
     concept_memory ||--o{ review_logs : "logged by"
+    practice_sets ||--o{ pending_ratings : holds
+    attempts ||--o{ pending_ratings : rates
     learners ||--o{ misconception_observations : has
     learners ||--o{ lesson_progress : has
     learners ||--o{ goals : sets
@@ -897,7 +922,7 @@ erDiagram
 
 | 유스케이스 | 한 트랜잭션에서 쓰는 테이블 |
 |---|---|
-| 시도 제출 | `attempts`, `submissions`, `exercise_snapshots`, `practice_set_items`, `concept_mastery`, `mastery_evidence`, `concept_memory`, `review_logs`, `misconception_observations`, `exercise_stats`, `daily_activity`, (세트 완료 시) `practice_sets`, `lesson_progress` |
+| 시도 제출 | `attempts`, `submissions`, `exercise_snapshots`, `practice_set_items`, `concept_mastery`, `mastery_evidence`, `pending_ratings`, `concept_memory`, `review_logs`, `misconception_observations`, `exercise_stats`, `daily_activity`, (세트 완료 시) `practice_sets`, `lesson_progress` |
 | 힌트 열기 | `hint_events`, `exercise_stats` |
 | 튜터 메시지 완료 | `tutor_messages`, `tutor_threads`, `ai_calls` |
 | 백그라운드 AI 작업 연기·완료 | `ai_jobs`, `ai_calls`, (결과에 따라) `session_summaries`, `misconception_observations`, `generated_exercises` |

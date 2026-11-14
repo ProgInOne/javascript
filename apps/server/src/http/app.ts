@@ -4,11 +4,13 @@ import type { Config } from '../config/schema.ts';
 import type { Logger } from '../observability/logger.ts';
 import type { BackupService } from '../services/backup/service.ts';
 import type { ContentAccess } from '../services/curriculum/content-access.ts';
+import type { PracticeServices } from '../services/practice/index.ts';
 import type { SettingsService } from '../services/settings/service.ts';
 import type { AppEnv } from './env.ts';
 import { AppError, errorResponse, handleError } from './errors.ts';
 import { backupRoutes } from './routes/backups.ts';
 import { curriculumRoutes } from './routes/curriculum.ts';
+import { exerciseRoutes } from './routes/exercises.ts';
 import { settingsRoutes } from './routes/settings.ts';
 import { runnerRoutes } from './runner.ts';
 import { maintenance, MaintenanceState, security } from './security.ts';
@@ -21,6 +23,7 @@ export interface AppDeps {
   backups: BackupService;
   settings: SettingsService;
   content: ContentAccess;
+  practice: PracticeServices;
   /** Built web app to serve (production). Omitted in development, where Vite serves it. */
   webDistDir?: string;
   maintenance?: MaintenanceState;
@@ -39,6 +42,7 @@ export function createApp({
   backups,
   settings,
   content,
+  practice,
   webDistDir,
   maintenance: state = new MaintenanceState(),
   version = '0.0.0',
@@ -73,7 +77,8 @@ export function createApp({
     .get('/health', (c) => c.json({ status: 'ok' as const, version }))
     .route('/backups', backupRoutes(backups))
     .route('/settings', settingsRoutes(settings))
-    .route('/', curriculumRoutes(content));
+    .route('/', curriculumRoutes(content))
+    .route('/exercises', exerciseRoutes(practice.exercises));
   const routes = app.route('/api/v1', api);
   app.route('/sandbox', runnerRoutes());
   if (webDistDir) app.route('/', webRoutes({ distDir: webDistDir, token, port: config.port }));

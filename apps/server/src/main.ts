@@ -16,7 +16,9 @@ import { openBrowser } from './lifecycle/open-browser.ts';
 import { createLogger } from './observability/logger.ts';
 import { BackupScheduler } from './services/backup/scheduler.ts';
 import { BackupService } from './services/backup/service.ts';
+import { systemClock } from './services/clock.ts';
 import { ContentAccess } from './services/curriculum/content-access.ts';
+import { createPracticeServices } from './services/practice/index.ts';
 import { SettingsService } from './services/settings/service.ts';
 import { APP_VERSION } from './version.ts';
 
@@ -107,30 +109,6 @@ const scheduler = new BackupScheduler({
   log,
   boundary: () => {
     const { timezone, dayStartHour } = ensureLearner(userDb);
-
-    let content: ContentAccess;
-    try {
-      content = ContentAccess.open(config.contentDbPath);
-    } catch (e) {
-      log.error({ err: e, path: config.contentDbPath }, (e as Error).message);
-      userDb.close();
-      release();
-      process.exit(1);
-    }
-    if (content.available) {
-      const packVersion = content.repo.packVersion;
-      userDb.orm
-        .insert(appMeta)
-        .values({ key: 'last_content_pack_version', value: packVersion })
-        .onConflictDoUpdate({ target: appMeta.key, set: { value: packVersion } })
-        .run();
-      log.info({ packVersion }, 'content.db loaded');
-    } else {
-      log.warn(
-        { path: config.contentDbPath },
-        '학습 콘텐츠(content.db)가 없습니다. `pnpm content:build`를 실행하세요.',
-      );
-    }
     return { timezone, dayStartHour };
   },
 });
@@ -145,6 +123,7 @@ const app = createApp({
   backups,
   settings: new SettingsService({ userDb, log }),
   content,
+  practice: createPracticeServices({ userDb, content, now: systemClock }),
   maintenance,
   version: APP_VERSION,
   ...(config.mode === 'production' ? { webDistDir } : {}),

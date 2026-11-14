@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import type { BackupService } from '../services/backup/service.ts';
 import type { SettingsService } from '../services/settings/service.ts';
+import type { PracticeServices } from '../services/practice/index.ts';
 import { createApp } from './app.ts';
 import { AppError } from './errors.ts';
 import { MaintenanceState, TOKEN_HEADER } from './security.ts';
@@ -24,6 +25,7 @@ function setup(mode: 'production' | 'development' = 'production') {
     backups,
     settings,
     content: ContentAccess.unavailable(),
+    practice: {} as PracticeServices,
     maintenance: state,
   });
   const req = (path: string, headers: Record<string, string> = {}, init: RequestInit = {}) =>
@@ -129,6 +131,7 @@ describe('error model', () => {
       backups,
       settings,
       content: ContentAccess.unavailable(),
+      practice: {} as PracticeServices,
     });
     app.get('/api/v1/_test/app-error', () => {
       throw new AppError('BACKUP_NOT_FOUND', 404, '백업이 없습니다.', { details: { id: 'b1' } });

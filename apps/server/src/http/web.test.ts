@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { SettingsService } from '../services/settings/service.ts';
 import { setupDb, silentLog, tmpDir } from '../test/helpers.ts';
+import type { PracticeServices } from '../services/practice/index.ts';
 import { createApp } from './app.ts';
 import { TOKEN_HEADER } from './security.ts';
 import { injectToken } from './web.ts';
@@ -29,6 +30,7 @@ async function setup(withDist = true) {
     backups: ctx.backups,
     settings: new SettingsService({ userDb: ctx.userDb, log: silentLog }),
     content: ContentAccess.unavailable(),
+    practice: {} as PracticeServices,
     maintenance: ctx.maintenance,
     webDistDir: distDir,
   });

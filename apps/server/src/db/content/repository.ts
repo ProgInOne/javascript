@@ -7,7 +7,7 @@ import type {
   LessonDetail,
   LessonSummary,
 } from '@proginone/shared';
-import { and, asc, count, eq, inArray } from 'drizzle-orm';
+import { and, asc, count, desc, eq, inArray } from 'drizzle-orm';
 import { drizzle, type BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { openSqlite } from '../user/connection.ts';
 
@@ -19,6 +19,31 @@ export class ContentDbError extends Error {
 }
 
 type Db = BetterSQLite3Database<typeof t>;
+
+export interface ContentExerciseConcept {
+  conceptId: string;
+  weight: number;
+  isPrimary: boolean;
+}
+
+/** An `exercises` row with its concept tags. `spec` holds answer keys (server only). */
+export interface ContentExercise {
+  id: string;
+  type: string;
+  difficulty: number;
+  lessonId: string | null;
+  usage: (typeof t.exercises.$inferSelect)['usage'];
+  variantGroup: string | null;
+  prompt: string;
+  code: string | null;
+  spec: Record<string, unknown>;
+  hints: { v: 1; levels: string[] };
+  explanation: string;
+  estimatedSeconds: number;
+  origin: 'authored' | 'template';
+  contentHash: string;
+  concepts: ContentExerciseConcept[];
+}
 
 /** Read-only access to content.db (docs/design/data-model.md#contentdb-설계). */
 export class ContentRepository {
@@ -150,6 +175,65 @@ export class ContentRepository {
       .where(eq(t.modules.courseId, courseId))
       .orderBy(asc(t.modules.orderIndex), asc(t.lessons.orderIndex))
       .all();
+  }
+
+  /** Concept tags of the given exercises, primary first. */
+  #exerciseConcepts(ids: readonly string[]): Map<string, ContentExerciseConcept[]> {
+    const out = new Map<string, ContentExerciseConcept[]>();
+    if (ids.length === 0) return out;
+    for (const row of this.#db
+      .select()
+      .from(t.exerciseConcepts)
+      .where(inArray(t.exerciseConcepts.exerciseId, [...ids]))
+      .orderBy(desc(t.exerciseConcepts.isPrimary), asc(t.exerciseConcepts.conceptId))
+      .all()) {
+      const list = out.get(row.exerciseId) ?? [];
+      list.push({ conceptId: row.conceptId, weight: row.weight, isPrimary: row.isPrimary });
+      out.set(row.exerciseId, list);
+    }
+    return out;
+  }
+
+  #toExercise(row: typeof t.exercises.$inferSelect, concepts: ContentExerciseConcept[]) {
+    const exercise: ContentExercise = {
+      id: row.id,
+      type: row.type,
+      difficulty: row.difficulty,
+      lessonId: row.lessonId,
+      usage: row.usage,
+      variantGroup: row.variantGroup,
+      prompt: row.prompt,
+      code: row.code,
+      spec: row.spec,
+      hints: row.hints,
+      explanation: row.explanation,
+      estimatedSeconds: row.estimatedSeconds,
+      origin: row.origin,
+      contentHash: row.contentHash,
+      concepts,
+    };
+    return exercise;
+  }
+
+  /**
+   * A full exercise including its server-only spec (answer keys). Never send `spec` to the
+   * client; use exercise-kit `redactSpec`.
+   */
+  getExercise(id: string): ContentExercise | null {
+    const row = this.#db.select().from(t.exercises).where(eq(t.exercises.id, id)).get();
+    if (!row) return null;
+    return this.#toExercise(row, this.#exerciseConcepts([id]).get(id) ?? []);
+  }
+
+  getExercises(ids: readonly string[]): ContentExercise[] {
+    if (ids.length === 0) return [];
+    const rows = this.#db
+      .select()
+      .from(t.exercises)
+      .where(inArray(t.exercises.id, [...ids]))
+      .all();
+    const concepts = this.#exerciseConcepts(rows.map((r) => r.id));
+    return rows.map((r) => this.#toExercise(r, concepts.get(r.id) ?? []));
   }
 
   getLesson(id: string): LessonDetail | null {
