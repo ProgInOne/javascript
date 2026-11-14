@@ -10,6 +10,7 @@
 - 서버의 웹 앱 제공(M3): 설정 API(`GET/PATCH /api/v1/settings`, 테마), 빌드된 웹 앱 정적 제공과 SPA 대체, 앱 문서 CSP, 세션 토큰 전달(프로덕션 메타 태그, 개발 모드 세션 파일), 시작 시 브라우저 열기
 - user.db와 자동 백업(M3): Drizzle 스키마·첫 마이그레이션(`app_meta`, `learners`, `settings`), 마이그레이션 전 백업과 실패 시 자동 복구, 일간·주간 백업과 보존 정책, 백업 검증(무결성·체크섬·스키마 호환), 복원(유지보수 모드, 복원 전 백업), `GET/POST /api/v1/backups`, `POST /api/v1/backups/:id/restore`
 - 서버 골격(M3): Hono 앱, 설정 로더(환경 변수 > `config.json` > 기본값), 구조화 로그, 오류 응답 모델, 보안 미들웨어(Host·Origin·세션 토큰), 유지보수 모드, 단일 인스턴스 잠금, `GET /api/v1/health`
+- `@proginone/ui` 기본 컴포넌트(M3): Button, IconButton, Input, Select, Checkbox, RadioGroup, Tabs, Dialog, Drawer, Tooltip, Toast, Badge, ProgressBar, ProgressRing, Skeleton, EmptyState, ErrorState와 `UiProvider`. Radix 프리미티브와 Lucide 아이콘 기반, 키보드·ARIA·axe 테스트(jsdom)
 - `@proginone/ui` 디자인 토큰(M3): 기본·의미·컴포넌트 토큰 CSS(C 차분한 교실 기본, 라이트·다크, 선택형 다크 작업대), 번들 폰트(Pretendard, JetBrains Mono), 전역 기본 스타일, 토큰 대비 검사(`pnpm check:contrast`, CI 포함)
 - 모노레포 기반(M3): pnpm 워크스페이스, TypeScript strict, ESLint, Prettier, Vitest, 의존 방향 검사, 문서 링크 검사, GitHub Actions CI, Dependabot, PR 템플릿, `@proginone/shared` 오류 계약
 - M1 기술 검증(2026-11-14): Codex 튜터 PoC(`poc/codex-tutor`)와 샌드박스 PoC(`poc/sandbox`) 결과, D-002·D-018 확정. 튜터 전용 `CODEX_HOME`과 도구 기능 비활성화, 셸 서브도메인 방식 추가

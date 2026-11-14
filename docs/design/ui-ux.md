@@ -181,6 +181,7 @@ ProgInOne의 디자인 콘셉트는 **"밝은 교실, 정돈된 작업대"** 입
 - 의미 색은 CSS `light-dark()`로 정의하고, 테마는 `<html data-theme="light|dark">`(없으면 `prefers-color-scheme`)가 `color-scheme`만 바꿉니다. 다크 작업대는 `<html data-workbench="dark">`일 때 `.workbench` 범위에 `color-scheme: dark`를 걸어 같은 매핑을 재사용합니다. 라이트·다크 값을 한 곳에 두어 중복과 누락을 막기 위해서입니다.
 - 시각 방향 전환(A/B/C)은 프로토타입 전용이었으므로 구현에는 C만 기본값으로 둡니다.
 - 대비 검사: `pnpm check:contrast`([`packages/ui/scripts/check-contrast.ts`](/packages/ui/scripts/check-contrast.ts))가 라이트·다크·다크 작업대에서 의미 토큰 쌍을 검사합니다. 이 과정에서 라이트 코드 줄 번호(`--code-gutter-fg`)를 `neutral-500`(4.5:1 미만)에서 `neutral-550`(4.83:1)으로 올렸습니다.
+- `packages/ui` 기본 컴포넌트는 Tailwind 없이 의미 토큰만 쓰는 일반 CSS(`components.css`, `pi-` 접두사)로 스타일링합니다. 공용 컴포넌트가 앱의 CSS 도구에 묶이지 않게 하기 위해서이며, 토큰은 CSS 변수이므로 앱(`apps/web`)에서 Tailwind v4 테마에 그대로 연결할 수 있습니다.
 
 #### 색: 브랜드 제이드 그린
 

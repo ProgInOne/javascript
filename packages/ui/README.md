@@ -11,9 +11,59 @@ ProgInOne의 디자인 토큰(CSS 변수)과 기본 React 컴포넌트입니다.
 import '@proginone/ui/fonts.css'; // Pretendard Variable, JetBrains Mono (번들 포함, CDN 없음)
 import '@proginone/ui/tokens.css'; // 기본·의미·컴포넌트 토큰
 import '@proginone/ui/base.css'; // 전역 기본 스타일, 포커스 링, reduced-motion
+import '@proginone/ui/components.css'; // 기본 컴포넌트 스타일
 ```
 
 빌드 단계가 없습니다. `exports`가 `src`의 TypeScript·CSS 파일을 직접 가리키며, 웹 앱의 번들러(Vite)가 처리합니다.
+
+앱 루트를 `UiProvider`로 한 번 감쌉니다. 툴팁 지연(400ms)과 토스트 영역을 제공하며, `IconButton`, `Dialog`, `Drawer`, `useToast`가 이를 필요로 합니다.
+
+```tsx
+import { Button, UiProvider, useToast } from '@proginone/ui';
+
+function SaveButton() {
+  const toast = useToast();
+  return (
+    <Button variant="primary" onClick={() => toast({ title: '저장했어요', variant: 'success' })}>
+      저장
+    </Button>
+  );
+}
+
+root.render(
+  <UiProvider>
+    <SaveButton />
+  </UiProvider>,
+);
+```
+
+## 컴포넌트
+
+규격은 [UI/UX 설계 기본 컴포넌트](/docs/design/ui-ux.md#기본-컴포넌트)를 따릅니다. 스타일은 `components.css` 한 파일의 `pi-` 접두사 클래스(BEM 방식)이며 의미 토큰만 씁니다.
+
+| 컴포넌트 | 기반 | 접근성 동작 |
+|---|---|---|
+| `Button` | `<button>` | 기본 `type="button"`. `loading`이면 레이블과 포커스를 유지하고 `aria-busy`, `aria-disabled`를 걸며 클릭을 무시합니다. 스피너는 `icon` 자리에 나타납니다 |
+| `IconButton` | `<button>` + Tooltip | `label`이 필수이며 `aria-label`과 툴팁(단축키 포함)에 함께 쓰입니다. 32×32px |
+| `Input` | `<input>` | 보이는 레이블 필수. `error`가 있으면 `aria-invalid`, 힌트·오류 메시지를 `aria-describedby`로 연결하고 아이콘과 텍스트로 표시합니다 |
+| `Select` | Radix Select | 레이블이 연결된 combobox. 화살표·타입어헤드·Esc |
+| `Checkbox`, `RadioGroup` | Radix | 레이블 텍스트 클릭으로 선택, 설명은 `aria-describedby`. 라디오는 탭 정지 하나, 화살표로 이동·선택 |
+| `Tabs` (`TabsList`, `TabsTrigger`, `TabsContent`) | Radix Tabs | `underline`(콘텐츠 탭), `pill`(패널 내부 전환). ←/→, Home/End |
+| `Dialog` | Radix Dialog | 모달. 포커스 트랩, Esc 닫기, 트리거로 포커스 복귀, 레이블된 닫기 버튼 |
+| `Drawer` | Radix Dialog(`modal={false}`) | 오른쪽 비모달 드로어(튜터). 배경 조작 가능, 바깥 클릭으로 닫히지 않음, Esc 닫기 |
+| `Tooltip` | Radix Tooltip | 400ms 지연, 키보드 포커스에도 표시, Esc로 닫힘 |
+| `useToast` | Radix Toast | 우하단. 정보·성공은 5초 후 사라지고 오류는 직접 닫을 때까지 유지. 학습 피드백에는 쓰지 않습니다 |
+| `Badge` | `<span>` | neutral, brand, success, error, warning, ai. 상태 배지는 아이콘이나 텍스트를 함께 씁니다 |
+| `ProgressBar`, `ProgressRing` | Radix Progress, SVG | `role="progressbar"`, `aria-label` 필수, 값 텍스트는 % |
+| `Skeleton` | `<span>` | 300ms 뒤에 보이며(공간은 처음부터 확보) 보조 기술에서 숨김. 로딩 영역에 `aria-busy`를 겁니다 |
+| `EmptyState`, `ErrorState` | `<section>` | 아이콘 + 제목 + 설명 + 행동 1개. `ErrorState`는 오류 코드를 작게 표시하고 `inline` 변형은 `role="alert"`로 알립니다 |
+
+`prefers-reduced-motion: reduce`에서는 이동·크기 애니메이션이 꺼지고 짧은 색·불투명도 전환만 남습니다(`base.css`).
+
+## 테스트
+
+`pnpm test`가 루트 Vitest `projects`로 이 패키지의 `src/**/*.test.tsx`를 jsdom 환경에서 실행합니다(다른 패키지는 node 환경).
+Testing Library와 user-event로 키보드·ARIA 동작을 검사하고, axe-core로 WCAG 2.2 A/AA 규칙을 검사합니다. 색 대비는 jsdom에서 계산할 수 없으므로 `check:contrast`와 E2E에서 확인합니다.
 
 ## 토큰 계층
 
