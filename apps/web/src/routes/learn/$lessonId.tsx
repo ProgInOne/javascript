@@ -3,12 +3,13 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, ArrowRight, ChevronLeft } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
-import { lessonQuery } from '../../api/queries.ts';
+import { lessonQuery, recordLessonProgress } from '../../api/queries.ts';
 import { QueryState } from '../../app/QueryState.tsx';
 import { ConceptImportanceBadge, LessonBody } from '../../features/lesson-reader/LessonBody.tsx';
 import { LessonPractice } from '../../features/practice/LessonPractice.tsx';
 import { SECTION_LABELS } from '../../features/lesson-reader/sections.ts';
 import { useActiveSection } from '../../features/lesson-reader/useActiveSection.ts';
+import { useReadingProgress } from '../../features/lesson-reader/useReadingProgress.ts';
 import { formatMinutes } from '../../lib/format.ts';
 
 /** URL state of the learning screen (ui-ux.md 사이트맵): `?mode=practice&set=:id&i=n`. */
@@ -152,6 +153,11 @@ function LearnHeader({ lesson, mode }: { lesson: LessonDetail; mode: 'read' | 'p
 
 function LessonReader({ lesson }: { lesson: LessonDetail }) {
   const active = useActiveSection(lesson.sections.map((s) => s.id));
+  const progress = useReadingProgress(lesson.id, active, recordLessonProgress);
+  const resume =
+    progress?.lastSectionId && progress.lastSectionId !== lesson.sections[0]?.id
+      ? lesson.sections.find((s) => s.id === progress.lastSectionId)
+      : undefined;
   const own = lesson.concepts.filter((c) => c.role !== 'linked');
   return (
     <div className="min-h-screen bg-canvas">
@@ -166,6 +172,14 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
             읽기 약 {formatMinutes(lesson.readMinutes)} · 전체 약{' '}
             {formatMinutes(lesson.estimatedMinutes)}
           </p>
+          {resume && (
+            <p className="lesson-resume" role="note">
+              지난번에 ‘{resume.title ?? SECTION_LABELS[resume.kind] ?? resume.kind}’까지 읽었어요.{' '}
+              <a href={`#${resume.id}`} className="lesson-link">
+                이어서 읽기
+              </a>
+            </p>
+          )}
           <LessonBody lessonId={lesson.id} body={lesson.body} concepts={lesson.concepts} />
 
           {(lesson.previous ?? lesson.next) && (

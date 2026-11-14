@@ -1,13 +1,19 @@
 import {
   attemptResponseSchema,
   exerciseViewSchema,
+  heartbeatResponseSchema,
   hintResponseSchema,
+  inlineAttemptResponseSchema,
+  lessonProgressSchema,
   practiceSetViewSchema,
   reportResponseSchema,
   runPlanSchema,
   solutionResponseSchema,
   type AttemptRequest,
   type CreatePracticeSetRequest,
+  type HeartbeatRequest,
+  type InlineAttemptRequest,
+  type LessonProgressRequest,
   type ReportRequest,
   type RunPlanRequest,
   backupListSchema,
@@ -153,3 +159,23 @@ export const reportExercise = (exerciseId: string, request: ReportRequest) =>
     body: request,
     schema: reportResponseSchema,
   });
+
+/** Inline check in the lesson body (outside any practice set). */
+export const submitInlineAttempt = (exerciseId: string, request: InlineAttemptRequest) =>
+  api(`/exercises/${encodeURIComponent(exerciseId)}/inline-attempts`, {
+    method: 'POST',
+    body: request,
+    schema: inlineAttemptResponseSchema,
+  });
+
+// ── Reading progress and activity ──
+
+export const recordLessonProgress = (lessonId: string, request: LessonProgressRequest) =>
+  api(`/lessons/${encodeURIComponent(lessonId)}/progress`, {
+    method: 'POST',
+    body: request,
+    schema: lessonProgressSchema,
+  });
+
+export const sendHeartbeat = (request: HeartbeatRequest) =>
+  api('/activity/heartbeat', { method: 'POST', body: request, schema: heartbeatResponseSchema });

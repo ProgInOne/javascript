@@ -32,6 +32,17 @@ const BACKUPS = {
   ],
 };
 
+const FIRST_VISIT = {
+  lessonId: 'js-basics.start.first-program',
+  status: 'reading',
+  readProgress: 0,
+  lastSectionId: null,
+  practiceSetId: null,
+  startedAt: 1,
+  completedAt: null,
+  introducedConcepts: [],
+};
+
 // Baselines are generated in the Playwright Docker image: `pnpm test:e2e:visual --update`.
 const VIEWPORTS = [
   { width: 1280, height: 800 },
@@ -47,6 +58,10 @@ for (const viewport of VIEWPORTS) {
       test(`${name} @visual`, async ({ page }) => {
         await page.setViewportSize(viewport);
         await page.route('**/api/v1/backups', (route) => route.fulfill({ json: BACKUPS }));
+        // Reading position depends on earlier tests: always show a first visit.
+        await page.route('**/api/v1/lessons/*/progress', (route) =>
+          route.fulfill({ json: FIRST_VISIT }),
+        );
         await openScreen(page, path, heading, scheme);
         await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
       });

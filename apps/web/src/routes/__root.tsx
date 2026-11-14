@@ -6,6 +6,8 @@ import { AppError } from '../app/AppError.tsx';
 import { AppHeader } from '../app/AppHeader.tsx';
 import { RouteAnnouncer } from '../app/RouteAnnouncer.tsx';
 import { ThemeSync } from '../app/ThemeSync.tsx';
+import { sendHeartbeat } from '../api/queries.ts';
+import { useActivityHeartbeat } from '../features/activity/useActivityHeartbeat.ts';
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -47,10 +49,16 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function ActivityHeartbeat() {
+  useActivityHeartbeat(sendHeartbeat);
+  return null;
+}
+
 function RootLayout() {
   return (
     <Shell>
       <ThemeSync />
+      <ActivityHeartbeat />
       <Outlet />
     </Shell>
   );

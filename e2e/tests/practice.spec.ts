@@ -157,7 +157,7 @@ test.describe('practice mode', () => {
     const summary = page.getByRole('region', { name: '첫 프로그램 단원을 마쳤어요' });
     await expect(summary.getByRole('heading', { level: 2 })).toBeFocused();
     await expect(summary).toContainText('연습 8문제 · 정답 8');
-    await expect(summary.getByText('미학습 → 연습 중').first()).toBeVisible();
+    await expect(summary.getByText(/→ 연습 중/).first()).toBeVisible();
     await expect(summary.getByText('이 단원의 개념을 모두 기준만큼 연습했어요')).toBeVisible();
     await expect(summary.getByRole('link', { name: '대시보드로' })).toBeVisible();
     await expectNoA11yViolations(page);
