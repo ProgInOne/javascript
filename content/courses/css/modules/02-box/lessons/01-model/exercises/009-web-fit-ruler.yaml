@@ -1,0 +1,111 @@
+id: css.box.model.web-fit-ruler
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.box.size, weight: 1 }
+tags: [width, content-box, web-task]
+estimatedSeconds: 300
+prompt: |
+  파란 안내선은 정확히 `300px`이에요. 노란 상자도 `width: 300px`인데, 화면에서는 안내선보다 넓게 보여요.
+
+  노란 상자가 **테두리까지 포함해** 안내선과 정확히 같은 너비(300px)로 보이게 고치세요. 단, 안쪽 여백(`padding: 20px`)과 테두리(`border: 5px`)는 그대로 두어야 해요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>안내선에 맞추기</title>
+              <style>
+                .ruler {
+                  width: 300px;
+                  height: 8px;
+                  margin-bottom: 8px;
+                  background: #2563eb;
+                }
+                .box {
+                  width: 300px;
+                  padding: 20px;
+                  border: 5px solid #1f2937;
+                  background: #fde68a;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="ruler"></div>
+              <div class="box">안내선과 너비가 같아야 해요.</div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>안내선에 맞추기</title>
+              <style>
+                .ruler {
+                  width: 300px;
+                  height: 8px;
+                  margin-bottom: 8px;
+                  background: #2563eb;
+                }
+                .box {
+                  width: 250px;
+                  padding: 20px;
+                  border: 5px solid #1f2937;
+                  background: #fde68a;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="ruler"></div>
+              <div class="box">안내선과 너비가 같아야 해요.</div>
+            </body>
+          </html>
+  checks:
+    - kind: layout
+      id: same-as-ruler
+      description: 노란 상자의 너비(테두리까지)가 파란 안내선과 같아야 합니다.
+      requirement: 안내선과 같은 너비
+      visible: true
+      a: .box
+      container: .ruler
+      relation: fills-width
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.width-includes-padding
+    - kind: css
+      id: padding-border-kept
+      description: 안쪽 여백 20px과 테두리 5px은 그대로 있어야 합니다.
+      requirement: padding·border 유지
+      visible: true
+      selector: .box
+      expect:
+        computed:
+          padding-left: { px: { value: 20 } }
+          padding-right: { px: { value: 20 } }
+          border-left-width: { px: { value: 5 } }
+          border-right-width: { px: { value: 5 } }
+misconceptions: [css.mc.width-includes-padding]
+hints:
+  - 지금 노란 상자가 화면에서 몇 px로 보이는지 먼저 계산해 보세요. `width`에 무엇이 더해질까요?
+  - "지금 보이는 너비는 `300 + 20 × 2 + 5 × 2`예요. 300px이 되려면 content 너비가 얼마여야 할까요?"
+  - padding과 border가 양쪽에서 차지하는 너비를 300px에서 빼면 `width`에 넣을 값이 나와요.
+explanation: |
+  지금 상자는 `300 + 40(padding) + 10(border) = 350px`로 보여요. 기본값 `content-box`에서는 `width`가 content 너비라서 padding과 border가 바깥에 더해지기 때문이에요.
+
+  테두리까지 300px로 맞추려면 content 너비를 `300 − 40 − 10 = 250px`로 줄이면 돼요. 그래서 예시 정답은 `width: 250px;`예요.
+
+  `box-sizing: border-box;`를 추가하고 `width: 300px`을 그대로 두는 방법도 정답이에요. border-box에서는 width가 border까지의 너비를 뜻하기 때문이에요. 두 방법 모두 "보이는 너비 = content + 양쪽 padding + 양쪽 border"라는 같은 규칙에서 나와요.
+
+  padding이나 border를 지워서 맞추면 요구사항(padding·border 유지)을 만족하지 못해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

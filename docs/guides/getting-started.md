@@ -38,6 +38,19 @@ pnpm dev
 - 개발 모드의 데이터는 저장소의 `.data/`에 저장되며 git에 올라가지 않습니다. 처음부터 다시 시작하려면 서버를 끄고 `.data/`를 지웁니다.
 - Vite가 `/api`를 서버로 프록시하고, 서버가 쓴 세션 토큰(`.data/dev-session.json`)을 페이지에 넣습니다. 서버를 재시작하면 토큰이 바뀌므로 페이지를 새로 고칩니다.
 
+## 콘텐츠 빌드
+
+서버는 `content/dist/content.db`(또는 `PROGINONE_CONTENT_DB`)의 콘텐츠를 읽습니다.
+
+```shell
+pnpm content:check      # 스키마·참조·레슨 본문 검사
+pnpm content:build      # 승인된(approved) 문제만 넣어 content.db 생성
+pnpm content:build:dev  # 개발용: 검토 전(draft) 문제도 포함
+```
+
+- AI가 쓴 문제는 사람이 검토해 `review.status: approved`로 바꾸기 전까지 `draft`입니다. `content:build`는 draft 문제를 빼므로, 검토 전에는 연습 문제가 비어 보입니다.
+- `content:build:dev`는 draft 문제를 `auto_verified` 상태로 넣고 `content_meta`에 `includes_drafts = 1`을 남깁니다. 개발 중 화면 확인용이며 실사용 content.db에는 쓰지 않습니다.
+
 ## 설정
 
 설정 우선순위는 **환경 변수 > `<데이터 위치>/config.json` > 기본값**입니다. 값이 잘못되면 서버가 어떤 값이 문제인지 출력하고 종료합니다.

@@ -21,6 +21,7 @@
     "test:e2e:visual": "bash tools/e2e-docker.sh",
     "content:check": "node tools/content-cli/src/cli.ts check --dir content",
     "content:build": "node tools/content-cli/src/cli.ts build --dir content --out content/dist/content.db",
+    "content:build:dev": "node tools/content-cli/src/cli.ts build --dir content --out content/dist/content.db --include-drafts",
     "build": "pnpm -r --if-present build",
     "check:deps": "depcruise apps packages tools --config .dependency-cruiser.cjs",
     "check:links": "node tools/check-links.mjs",

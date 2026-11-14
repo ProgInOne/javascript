@@ -1,0 +1,33 @@
+# CSS 개념 (v0.1: 박스 모델 단원)
+# HTML/CSS 핵심은 얕은 과정(depth: core)이므로 개념을 모두 standard로 둡니다.
+
+- id: css.box.areas
+  title: 박스의 네 영역
+  importance: standard
+  summary: 모든 요소는 안쪽부터 content, padding, border, margin 네 영역으로 이루어진 상자로 그려집니다.
+  misconceptions: [css.mc.margin-is-inside, css.mc.background-under-margin]
+  mdn: Web/CSS/CSS_box_model/Introduction_to_the_CSS_box_model
+
+- id: css.box.spacing
+  title: padding과 margin 값 쓰기
+  importance: standard
+  summary: padding·margin은 네 방향에 따로 줄 수 있고, 단축 속성은 위에서 시작해 시계 방향 순서로 값을 읽습니다.
+  prerequisites: [css.box.areas]
+  misconceptions: [css.mc.shorthand-order]
+  mdn: Web/CSS/padding
+
+- id: css.box.size
+  title: 요소의 크기 계산
+  importance: standard
+  summary: 기본값(content-box)에서 width는 콘텐츠 영역의 너비이고, 화면에 차지하는 너비는 여기에 padding과 border가 더해집니다.
+  prerequisites: [css.box.areas]
+  misconceptions: [css.mc.width-includes-padding]
+  mdn: Web/CSS/width
+
+- id: css.box.box-sizing
+  title: box-sizing
+  importance: standard
+  summary: box-sizing은 width가 어느 영역의 너비를 뜻할지 정합니다. border-box면 padding과 border까지 포함합니다.
+  prerequisites: [css.box.size]
+  misconceptions: [css.mc.border-box-includes-margin]
+  mdn: Web/CSS/box-sizing

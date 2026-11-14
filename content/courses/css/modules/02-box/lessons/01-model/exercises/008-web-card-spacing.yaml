@@ -1,0 +1,118 @@
+id: css.box.model.web-card-spacing
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.box.spacing, weight: 1 }
+  - { id: css.box.areas, weight: 0.5 }
+tags: [padding, margin, web-task]
+estimatedSeconds: 240
+prompt: |
+  공지 카드 두 개의 글자가 테두리에 딱 붙어 있고, 카드끼리도 붙어 있어 답답해 보여요. `.card` 규칙에 속성을 추가해 아래 두 가지를 만족시키세요.
+
+  1. 카드 **테두리 안쪽**, 글자와 테두리 사이에 네 방향 모두 `16px`의 여백을 주세요.
+  2. 첫 번째 카드와 두 번째 카드 사이에 `24px`의 간격을 주세요.
+
+  테두리와 배경색은 그대로 두세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공지 카드</title>
+              <style>
+                body {
+                  background: #f3f4f6;
+                }
+                .card {
+                  background: white;
+                  border: 2px solid #9ca3af;
+                  /* 여기에 속성을 추가하세요 */
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card" id="card1">오늘은 박스 모델을 배워요.</div>
+              <div class="card" id="card2">다음에는 display와 흐름을 배워요.</div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공지 카드</title>
+              <style>
+                body {
+                  background: #f3f4f6;
+                }
+                .card {
+                  background: white;
+                  border: 2px solid #9ca3af;
+                  padding: 16px;
+                  margin-bottom: 24px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card" id="card1">오늘은 박스 모델을 배워요.</div>
+              <div class="card" id="card2">다음에는 display와 흐름을 배워요.</div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: inner-space
+      description: 카드의 테두리 안쪽 여백이 네 방향 모두 16px이어야 합니다.
+      requirement: 안쪽 여백 16px
+      visible: true
+      selector: .card
+      all: true
+      expect:
+        computed:
+          padding-top: { px: { value: 16 } }
+          padding-right: { px: { value: 16 } }
+          padding-bottom: { px: { value: 16 } }
+          padding-left: { px: { value: 16 } }
+      misconceptionIfFail: css.mc.margin-is-inside
+    - kind: layout
+      id: card-gap
+      description: 첫 번째 카드와 두 번째 카드 사이의 간격이 24px이어야 합니다.
+      requirement: 카드 사이 간격 24px
+      visible: true
+      a: "#card1"
+      b: "#card2"
+      gap: { axis: y, min: 24, max: 24 }
+      tolerancePx: 1
+    - kind: css
+      id: border-kept
+      description: 테두리는 2px 두께 그대로 있어야 합니다.
+      requirement: 테두리 유지
+      selector: .card
+      expect:
+        computed:
+          border-top-width: { px: { value: 2 } }
+misconceptions: [css.mc.margin-is-inside]
+hints:
+  - 테두리 안쪽 여백과 테두리 바깥 간격은 서로 다른 속성으로 정해요. 각각 무엇인지 떠올려 보세요.
+  - 글자와 테두리 사이는 `padding`, 카드와 카드 사이는 `margin`이에요. 네 방향에 같은 값을 줄 때는 값을 하나만 써도 돼요.
+  - "카드 사이 간격은 위 카드의 아래쪽 바깥 간격(`margin-bottom`)이나 네 방향 `margin`으로 만들 수 있어요. 둘 다 써도 위아래 margin은 겹쳐져서 24px로 보여요."
+explanation: |
+  예시 정답은 `.card`에 `padding: 16px;`와 `margin-bottom: 24px;`를 추가하는 거예요.
+
+  - **글자와 테두리 사이**는 테두리 안쪽이므로 `padding`이에요. `padding: 16px`는 네 방향에 모두 16px을 줘요.
+  - **카드와 카드 사이**는 테두리 바깥이므로 `margin`이에요. 첫 카드의 아래쪽에 24px을 주면 두 카드가 24px 떨어져요.
+
+  `margin: 24px 0;`이나 `margin: 24px;`처럼 써도 정답이에요. 위아래로 맞닿은 두 margin은 더해지지 않고 큰 쪽 하나로 겹쳐지기 때문에(마진 상쇄) 간격이 48px이 아니라 24px이 돼요. 마진 상쇄는 다음 단원에서 더 자세히 봐요.
+
+  안쪽 여백 체크가 실패했다면 `padding` 대신 `margin`을 썼는지 확인해 보세요. margin은 카드 바깥을 띄울 뿐 글자를 테두리에서 떼어 주지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

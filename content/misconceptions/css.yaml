@@ -1,0 +1,51 @@
+# CSS 오개념 (v0.1: 박스 모델 단원)
+
+- id: css.mc.margin-is-inside
+  concept: css.box.areas
+  title: padding과 margin을 혼동함
+  statement: margin이 테두리 안쪽의 여백이고, padding이 상자 바깥의 간격이라고 생각한다.
+  reality: padding은 테두리 안쪽(콘텐츠와 테두리 사이) 여백이고, margin은 테두리 바깥(다른 요소와의 사이) 간격이다.
+  diagnosticHint: 상자에 배경색과 테두리를 주고 padding과 margin을 하나씩 늘려 보면, 배경색이 넓어지는 쪽이 padding이다.
+  remediation:
+    lessonSection: css.box.model#pitfalls
+    exercises: [css.box.model.mcq-area-order]
+
+- id: css.mc.background-under-margin
+  concept: css.box.areas
+  title: 배경색이 margin까지 칠해진다고 생각함
+  statement: background-color를 주면 margin 영역까지 같은 색으로 칠해진다고 생각한다.
+  reality: 배경은 content와 padding 영역에 칠해진다(정확히는 테두리 밑까지 칠해지지만 보통 테두리에 가려진다). margin은 항상 투명해서 바깥(부모)의 배경이 보인다.
+  diagnosticHint: margin을 크게 주고 상자 주변의 색을 보면 부모의 배경색이 보인다.
+  remediation:
+    lessonSection: css.box.model#pitfalls
+    exercises: [css.box.model.mcq-background-area]
+
+- id: css.mc.shorthand-order
+  concept: css.box.spacing
+  title: 단축 속성 값의 순서를 잘못 읽음
+  statement: "`padding: 10px 20px`의 첫 값이 좌우, 두 번째 값이 위아래라고 생각하거나, 네 값의 순서를 왼쪽부터라고 생각한다."
+  reality: 값은 위에서 시작해 시계 방향(위 → 오른쪽 → 아래 → 왼쪽)으로 읽는다. 값이 두 개면 첫 값이 위아래, 두 번째 값이 좌우다.
+  diagnosticHint: 시계의 12시(위)에서 출발해 오른쪽으로 돈다고 떠올리면 된다.
+  remediation:
+    lessonSection: css.box.model#pitfalls
+    exercises: [css.box.model.mcq-shorthand-two-values, css.box.model.fill-shorthand-four-values]
+
+- id: css.mc.width-includes-padding
+  concept: css.box.size
+  title: width에 padding·border가 포함된다고 생각함
+  statement: 기본 상태(content-box)에서도 width가 padding과 border를 포함한 전체 너비라고 생각한다.
+  reality: content-box에서 width는 콘텐츠 영역의 너비다. 화면에서 차지하는 너비는 width + 좌우 padding + 좌우 border다.
+  diagnosticHint: 너비를 계산할 때 padding과 border를 양쪽에 한 번씩, 모두 두 번 더했는지 확인한다.
+  remediation:
+    lessonSection: css.box.model#pitfalls
+    exercises: [css.box.model.fill-content-box-width, css.box.model.web-fit-ruler]
+
+- id: css.mc.border-box-includes-margin
+  concept: css.box.box-sizing
+  title: border-box가 margin까지 포함한다고 생각함
+  statement: box-sizing을 border-box로 바꾸면 width 안에 margin까지 들어간다고 생각한다.
+  reality: border-box의 width는 content + padding + border까지다. margin은 어떤 box-sizing에서도 width 밖에 따로 더해진다.
+  diagnosticHint: 이름 그대로 "border까지의 상자(border-box)"라고 기억하면 margin이 빠진다는 것을 알 수 있다.
+  remediation:
+    lessonSection: css.box.model#pitfalls
+    exercises: [css.box.model.mcq-border-box-meaning, css.box.model.fill-border-box-content]

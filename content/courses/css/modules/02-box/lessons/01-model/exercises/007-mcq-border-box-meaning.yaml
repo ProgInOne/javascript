@@ -1,0 +1,41 @@
+id: css.box.model.mcq-border-box-meaning
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.box.box-sizing, weight: 1 }
+tags: [box-sizing, border-box]
+estimatedSeconds: 50
+prompt: |
+  어떤 요소에 `box-sizing: border-box`를 주면, 그 요소의 `width`는 어느 영역까지의 너비를 뜻하게 되나요?
+spec:
+  options:
+    - id: a
+      text: content + padding + border
+    - id: b
+      text: content + padding + border + margin
+      misconception: css.mc.border-box-includes-margin
+      rationale: margin은 border 바깥이라 border-box의 width에도 들어가지 않아요.
+    - id: c
+      text: content만
+      rationale: content만을 뜻하는 것은 기본값인 content-box일 때예요.
+    - id: d
+      text: content + padding (border는 제외)
+      rationale: 이름 그대로 border까지 포함해요.
+  correct: a
+misconceptions: [css.mc.border-box-includes-margin]
+hints:
+  - "`border-box`라는 이름을 \"무엇까지의 상자\"로 풀어 읽어 보세요."
+  - 네 영역을 안쪽부터 나열했을 때 border는 몇 번째이고, 그보다 바깥에 있는 영역은 무엇인가요?
+  - border-box는 border까지 포함해요. border보다 바깥에 있는 영역은 포함되지 않아요.
+explanation: |
+  정답은 **content + padding + border**예요.
+
+  `border-box`는 "border까지의 상자"라는 뜻이에요. width가 border 바깥 끝까지의 너비가 되므로, padding과 border를 넣어도 상자가 화면에서 width만큼만 차지해요.
+
+  - margin까지라고 고른 경우: margin은 border **바깥**에 있어서 어떤 `box-sizing`에서도 width에 포함되지 않아요.
+  - content만이라고 고른 경우: 그건 기본값인 `content-box`의 동작이에요.
+  - border를 뺀 경우: 이름 그대로 border까지 포함해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

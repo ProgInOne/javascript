@@ -1,0 +1,15 @@
+id: css.box.model
+title: 박스 모델
+summary: 모든 요소가 content·padding·border·margin으로 이루어진 상자라는 것을 이해하고, 상자의 실제 크기를 계산합니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 12, practice: 15 }
+concepts:
+  primary: [css.box.areas, css.box.spacing, css.box.size, css.box.box-sizing]
+objectives:
+  - 요소의 content·padding·border·margin 영역을 안쪽부터 순서대로 구분할 수 있다.
+  - padding·margin 단축 속성의 값이 어느 방향에 적용되는지 읽고 쓸 수 있다.
+  - content-box에서 요소가 화면에 차지하는 너비를 계산할 수 있다.
+  - box-sizing border-box가 크기 계산을 어떻게 바꾸는지 설명하고 레이아웃 문제를 고칠 수 있다.
+practice:
+  targetCount: 10

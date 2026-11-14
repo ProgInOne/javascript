@@ -1,0 +1,266 @@
+<Section kind="objectives">
+- 요소의 content·padding·border·margin 영역을 안쪽부터 순서대로 구분할 수 있어요.
+- `padding`·`margin` 단축 속성의 값이 어느 방향에 적용되는지 읽고 쓸 수 있어요.
+- 기본 상태(`content-box`)에서 요소가 화면에 차지하는 너비를 계산할 수 있어요.
+- `box-sizing: border-box`가 크기 계산을 어떻게 바꾸는지 설명하고, 그걸로 레이아웃 문제를 고칠 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+웹 페이지를 만들다 보면 이런 일을 자주 겪어요.
+
+- 버튼 글자가 테두리에 딱 붙어서 답답해 보여요.
+- 카드 두 개를 나란히 놓으려고 둘 다 `width: 50%`를 줬는데, 두 번째 카드가 아래 줄로 떨어져요.
+- 너비를 `300px`로 정했는데, 화면에서 재 보면 `300px`보다 넓어요.
+
+세 가지 모두 원인은 하나예요. 브라우저는 모든 요소를 **상자(box)** 로 그리고, 그 상자의 크기와 여백을 정해진 규칙으로 계산해요. 이 규칙을 **박스 모델**이라고 불러요. 박스 모델을 알면 "왜 이렇게 보이지?"를 추측하지 않고 계산으로 설명할 수 있어요.
+
+<Callout kind="note" title="이 단원에서 쓰는 CSS 문법">
+CSS 규칙은 "어떤 요소에(선택자) 어떤 모양을(속성: 값) 줄지"를 적은 거예요. 예를 들어 아래 규칙은 `class="box"`인 요소의 안쪽 여백을 `20px`로 정해요.
+
+```css
+.box {
+  padding: 20px;
+}
+```
+
+선택자와 규칙 구조는 "CSS의 원리" 모듈에서 자세히 배워요. 이 단원에서는 `.box`처럼 클래스 이름 앞에 점을 붙인 선택자만 써요.
+</Callout>
+</Section>
+
+<Section kind="principle">
+### 상자의 네 영역
+
+요소 하나는 안쪽부터 바깥쪽으로 네 겹의 영역으로 이루어져 있어요.
+
+| 영역 (안쪽부터) | 무엇인가요 | 정하는 속성 | 배경색 |
+|---|---|---|---|
+| content | 글자나 이미지 같은 내용이 들어가는 곳 | `width`, `height` | 칠해져요 |
+| padding | 내용과 테두리 사이의 **안쪽 여백** | `padding` | 칠해져요 |
+| border | 상자의 **테두리** 선 | `border` | 테두리 색으로 그려져요 |
+| margin | 테두리 바깥, 다른 요소와의 **바깥 간격** | `margin` | 항상 투명해요 |
+
+그림으로 그리면 이렇게 겹쳐 있어요.
+
+```text
+┌──────────── margin (투명) ────────────┐
+│  ┏━━━━━━━━━━━ border ━━━━━━━━━━━┓    │
+│  ┃   ┌────── padding ──────┐    ┃    │
+│  ┃   │      content        │    ┃    │
+│  ┃   └─────────────────────┘    ┃    │
+│  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛    │
+└───────────────────────────────────────┘
+```
+
+기억하는 방법: **padding은 테두리 안쪽, margin은 테두리 바깥**이에요. 배경색은 테두리 안쪽에만 칠해지므로, padding을 늘리면 색칠된 상자가 커지고 margin을 늘리면 상자 주변의 빈 공간이 커져요.
+
+### 네 방향에 값 주기
+
+`padding`과 `margin`은 위·오른쪽·아래·왼쪽에 따로 값을 줄 수 있어요. `padding-top`, `padding-right`, `padding-bottom`, `padding-left`처럼 방향을 붙여 하나씩 써도 되고, 단축 속성 하나에 여러 값을 써도 돼요. 단축 속성은 **위에서 시작해 시계 방향**(위 → 오른쪽 → 아래 → 왼쪽)으로 읽어요.
+
+<CompareTable columns={["쓰는 법", "위", "오른쪽", "아래", "왼쪽"]}>
+<Row label="값 1개">`padding: 10px` | 10px | 10px | 10px | 10px</Row>
+<Row label="값 2개">`padding: 10px 20px` | 10px | 20px | 10px | 20px</Row>
+<Row label="값 3개">`padding: 10px 20px 30px` | 10px | 20px | 30px | 20px</Row>
+<Row label="값 4개">`padding: 10px 20px 30px 40px` | 10px | 20px | 30px | 40px</Row>
+</CompareTable>
+
+값이 2개면 "위아래, 좌우" 순서예요. 값이 모자라면 맞은편 값을 그대로 빌려 써요(3개일 때 왼쪽은 오른쪽 값을 씀). `margin`도 규칙이 똑같아요.
+
+### 상자의 실제 너비 계산하기
+
+여기가 이 단원의 핵심이에요. 기본 상태에서 `width`는 **content 영역의 너비**예요. 화면에서 상자(테두리까지)가 차지하는 너비는 여기에 양쪽 padding과 양쪽 border가 더해져요. padding과 border는 왼쪽과 오른쪽에 하나씩 있으니 두 번씩 더해요.
+
+```text
+보이는 너비 = width + (padding × 2) + (border × 2)
+```
+
+예를 들어 `width: 200px; padding: 20px; border: 5px solid;`이면 `200 + 20 + 20 + 5 + 5 = 250`, 즉 **250px**이에요. margin은 상자 바깥의 간격이라 이 너비에 들어가지 않고, 그 바깥에 따로 자리를 차지해요.
+
+### box-sizing: width가 어디까지인지 정하기
+
+`box-sizing` 속성은 `width`가 어느 영역까지의 너비인지 정해요.
+
+<CompareTable columns={["content-box (기본값)", "border-box"]}>
+<Row label="width가 뜻하는 것">content 영역의 너비 | content + padding + border 의 너비</Row>
+<Row label="width: 200px; padding: 20px; border: 5px">보이는 너비 250px, 콘텐츠 200px | 보이는 너비 200px, 콘텐츠 150px</Row>
+<Row label="padding을 늘리면">상자가 커져요 | 상자 크기는 그대로, 콘텐츠가 좁아져요</Row>
+<Row label="margin은">width에 포함되지 않아요 | width에 포함되지 않아요</Row>
+</CompareTable>
+
+두 가지 관점으로 기억해 보세요.
+
+- **계산 관점**: `content-box`는 padding·border를 width에 **더하고**, `border-box`는 width에서 **빼서** 콘텐츠 너비를 구해요.
+- **이름 관점**: `border-box`는 "border까지 포함한 상자"라는 뜻이에요. 그래서 border 바깥에 있는 margin은 들어가지 않아요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 네 영역이 화면에서 어떻게 보이는지 보여 줘요. 실행한 뒤 `padding`과 `margin` 값을 하나씩 바꿔 보세요.
+
+<RunnableExample id="four-areas" lang="web" concepts={["css.box.areas", "css.box.spacing"]}>
+```html
+<style>
+  body {
+    background: #e5e7eb;
+  }
+  .box {
+    background: #fde68a;
+    padding: 20px;
+    border: 4px solid #1f2937;
+    margin: 30px;
+  }
+</style>
+<div class="box">안녕하세요, 저는 상자예요.</div>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- 노란 배경은 글자 주변 `20px`(padding)까지 칠해져요. 글자가 테두리에 붙지 않는 이유가 padding이에요.
+- 그 바깥에 `4px` 두께의 진한 테두리(border)가 그려져요.
+- 테두리 바깥 `30px`(margin)은 투명해서, 부모인 `body`의 회색 배경이 보여요. margin을 늘리면 회색 띠가 두꺼워지고, padding을 늘리면 노란 영역이 넓어져요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제를 실행하기 전에, 노란 상자가 화면에서 몇 px 너비로 보일지 먼저 계산해 보세요.
+
+<RunnableExample id="size-predict" lang="web" predict predictKind="value" concepts={["css.box.size"]}>
+```html
+<style>
+  .ruler {
+    width: 200px;
+    height: 8px;
+    background: #2563eb;
+  }
+  .box {
+    width: 200px;
+    padding: 20px;
+    border: 5px solid #1f2937;
+    background: #fde68a;
+  }
+</style>
+<div class="ruler"></div>
+<div class="box">width: 200px</div>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+위의 파란 막대는 정확히 `200px`이에요. 그런데 노란 상자는 막대보다 넓은 **250px**로 보여요.
+
+| 부분 | 너비 |
+|---|---|
+| content (`width`) | 200px |
+| padding (왼쪽 + 오른쪽) | 20px + 20px = 40px |
+| border (왼쪽 + 오른쪽) | 5px + 5px = 10px |
+| **합계 (보이는 너비)** | **250px** |
+
+`width: 200px`는 노란 상자 전체가 아니라 가장 안쪽 content의 너비예요. padding과 border는 양쪽에 하나씩 있으니 **두 번씩** 더한다는 점도 기억해 두세요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `width`와 `padding`이 같은 두 상자에서 `box-sizing`만 다르게 줬어요.
+
+<RunnableExample id="border-box" lang="web" concepts={["css.box.box-sizing"]}>
+```html
+<style>
+  .box {
+    width: 200px;
+    padding: 20px;
+    border: 5px solid #1f2937;
+    margin-bottom: 12px;
+    background: #fde68a;
+  }
+  .content-box {
+    box-sizing: content-box;
+  }
+  .border-box {
+    box-sizing: border-box;
+  }
+</style>
+<div class="box content-box">content-box</div>
+<div class="box border-box">border-box</div>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- 위 상자(`content-box`)는 `200 + 40 + 10 = 250px`로 보여요.
+- 아래 상자(`border-box`)는 테두리까지 딱 `200px`로 보여요. 대신 콘텐츠 영역이 `200 - 40 - 10 = 150px`로 줄어들어요.
+- 두 상자 사이의 간격 `12px`(margin)는 어느 쪽이든 width와 상관없이 바깥에 따로 생겨요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="css.mc.margin-is-inside">
+<Wrong>글자가 테두리에 붙어 있으니 `margin`을 늘리면 떨어지겠지.</Wrong>
+<Actual>`margin`은 테두리 **바깥** 간격이라, 상자가 다른 요소에서 멀어질 뿐 글자는 여전히 테두리에 붙어 있어요.</Actual>
+<Right>테두리 **안쪽** 여백은 `padding`이에요. "padding은 안, margin은 밖"으로 기억하세요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.background-under-margin">
+<Wrong>`background-color`를 주면 margin 영역까지 같은 색이 칠해진다.</Wrong>
+<Actual>margin은 항상 투명해요. margin 자리에는 부모 요소의 배경이 보여요.</Actual>
+<Right>배경은 content와 padding 영역에 칠해져요. 색칠된 영역을 넓히고 싶다면 `padding`을 늘려야 해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.shorthand-order">
+<Wrong>`padding: 10px 20px`는 좌우 10px, 위아래 20px이다.</Wrong>
+<Actual>위아래가 10px, 좌우가 20px이에요.</Actual>
+<Right>단축 속성은 위에서 시작해 시계 방향(위 → 오른쪽 → 아래 → 왼쪽)으로 읽어요. 값이 2개면 "위아래, 좌우"예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.width-includes-padding">
+<Wrong>`width: 200px`를 줬으니 padding과 border를 넣어도 상자는 200px이다.</Wrong>
+<Actual>기본값인 `content-box`에서는 padding과 border가 바깥에 더해져서 상자가 200px보다 넓어져요.</Actual>
+<Right>보이는 너비 = width + 양쪽 padding + 양쪽 border예요. 상자를 정확히 200px로 맞추려면 그만큼 width를 줄이거나 `box-sizing: border-box`를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.border-box-includes-margin">
+<Wrong>`border-box`로 바꾸면 margin까지 width 안에 들어간다.</Wrong>
+<Actual>`border-box`의 width는 content + padding + border까지예요. margin은 여전히 바깥에 따로 더해져요.</Actual>
+<Right>이름 그대로 "border까지의 상자"예요. margin은 어떤 `box-sizing`에서도 width에 포함되지 않아요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+실제 웹 사이트의 CSS 파일 맨 위에서 아래 규칙을 아주 자주 볼 수 있어요.
+
+```css
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+```
+
+`*`는 "모든 요소"를 뜻하는 선택자예요(`::before`, `::after`는 나중에 배우는 특별한 요소예요). 모든 요소를 `border-box`로 바꿔 두면 "너비 300px짜리 카드"라고 정했을 때 padding과 border를 넣어도 정말 300px로 보여요. 그래서 카드를 나란히 놓거나 화면 너비를 나눠 쓰는 레이아웃이 훨씬 쉬워져요.
+
+<Callout kind="tip" title="개발자 도구에서 상자 보기">
+브라우저에서 <Key>F12</Key>를 눌러 개발자 도구를 열고 요소를 선택하면, content·padding·border·margin이 색으로 나뉜 상자 그림과 각 영역의 크기를 볼 수 있어요. 레이아웃이 이상할 때 가장 먼저 확인하는 곳이에요.
+</Callout>
+</Section>
+
+<Section kind="check">
+네 영역의 순서를 기억하는지 확인해 보세요.
+
+<InlineExercise ref="css.box.model.mcq-area-order" />
+
+이번에는 직접 너비를 계산해 보세요.
+
+<InlineExercise ref="css.box.model.fill-content-box-width" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 모든 요소는 안쪽부터 content → padding → border → margin 네 영역으로 된 상자예요.
+- padding은 테두리 안쪽 여백이고 배경색이 칠해져요. margin은 테두리 바깥 간격이고 항상 투명해요.
+- 단축 속성의 값은 위 → 오른쪽 → 아래 → 왼쪽(시계 방향)으로 읽어요. 값이 2개면 "위아래, 좌우"예요.
+- 기본값 `content-box`에서 보이는 너비는 width + 양쪽 padding + 양쪽 border예요.
+- `box-sizing: border-box`면 width가 border까지의 너비가 돼요. margin은 어느 쪽이든 포함되지 않아요.
+</Section>
+
+<Section kind="next">
+다음 단원 "display와 흐름"에서는 상자들이 위아래로 쌓일지, 한 줄에 나란히 놓일지를 정하는 규칙을 배워요. 그때 오늘 배운 margin과 padding이 요소 종류에 따라 다르게 동작하는 모습도 보게 돼요. <MdnLink path="Web/CSS/CSS_box_model/Introduction_to_the_CSS_box_model" />
+</Section>

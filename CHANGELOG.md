@@ -7,6 +7,9 @@
 
 ### Added
 
+- v0.1 콘텐츠 CSS 박스 모델(M4·C): `content/` 콘텐츠 팩(트랙 "웹 프론트엔드 기초"), CSS 개념 4개·오개념 5개, `css.box.model` 레슨 본문과 문제 10개(선택형·빈칸·기본 웹 실습). AI 초안(`draft`)이며 사람 검토 전입니다
+- `content-cli build --include-drafts`와 `pnpm content:build:dev`: 개발용으로 검토 전(draft) 문제를 `auto_verified` 상태로 content.db에 포함(경고 출력, `content_meta.includes_drafts`). CI에 `pnpm content:check` 단계 추가
+
 - `@proginone/exercise-ui` 코드 에디터와 코드 유형 렌더러(M4): CodeMirror 6 에디터(토큰 기반 라이트·다크 작업대 테마, `Esc`→`Tab` 탈출, `⇧⌥F` Prettier 포맷, 자동 완성 기본 끔, 오류 줄 표시), 파일·포맷·초기화·저장 상태를 갖춘 에디터 패널, HTML/CSS 미리보기 자리(실행은 러너), `implement_function`·`fix_bug`·`web_task` 기본형 렌더러와 유형 선택 렌더러
 - `@proginone/exercise-ui`(M4): `mcq_single`·`fill_blank`·`predict_output` 렌더러, 확신도 선택, 힌트 사다리(3단계 + 확인 후 정답 보기), 피드백 배너(확신도별 문구·실패한 테스트·오개념 설명), 체크 목록(숨김 체크는 설명만), 콘솔 보기(`RunResult` 상태·오류 설명), 문제 단축키 훅
 - `@proginone/exercise-kit` 파라메트릭 템플릿 엔진(M4): `<템플릿 ID>@<seed>` → 항상 같은 변형(SplitMix64 시딩 + `xoshiro128**`), 매개변수 8종, 제약 재시도(최대 100회), eval 없는 템플릿 표현식 언어, 렌더링 후 유형 스펙 검증, 빌드용 표본 시드

@@ -1,0 +1,42 @@
+id: css.box.model.mcq-area-order
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.box.areas, weight: 1 }
+tags: [box-model, padding, margin]
+estimatedSeconds: 40
+prompt: |
+  박스 모델의 네 영역을 **가장 안쪽부터 바깥쪽 순서로** 바르게 나열한 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: content → padding → border → margin
+    - id: b
+      text: content → margin → border → padding
+      misconception: css.mc.margin-is-inside
+      rationale: margin과 padding의 위치가 바뀌었어요. 테두리 안쪽 여백은 padding이에요.
+    - id: c
+      text: content → border → padding → margin
+      rationale: padding은 테두리 안쪽에 있어요. 내용과 테두리 사이를 띄우는 여백이에요.
+    - id: d
+      text: margin → padding → content → border
+      rationale: content가 가장 안쪽이고, margin이 가장 바깥이에요.
+  correct: a
+misconceptions: [css.mc.margin-is-inside]
+hints:
+  - 가장 안쪽에는 글자나 이미지 같은 "내용"이 있어요.
+  - 테두리(border)를 기준으로 생각해 보세요. 테두리 안쪽 여백과 테두리 바깥 간격은 각각 무엇일까요?
+  - padding은 테두리 안쪽, margin은 테두리 바깥에 있어요.
+explanation: |
+  정답은 **content → padding → border → margin**이에요.
+
+  - content는 내용이 들어가는 가장 안쪽 영역이에요.
+  - padding은 내용과 테두리 사이의 안쪽 여백이에요.
+  - border는 테두리 선이에요.
+  - margin은 테두리 바깥, 다른 요소와의 간격이에요.
+
+  margin과 padding의 자리를 바꾼 선택지는 "padding은 안, margin은 밖"을 반대로 기억한 경우예요. border 안쪽에 padding이 있다는 점을 테두리를 기준으로 떠올리면 헷갈리지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

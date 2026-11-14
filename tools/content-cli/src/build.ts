@@ -21,6 +21,11 @@ export interface BuildOptions {
   kit: ExerciseKitHooks;
   now?: Date;
   sourceCommit?: string | null;
+  /**
+   * Development only: also include `review.status: draft` exercises so the app has content
+   * before human review. Never use for a release build (D-004: only approved content ships).
+   */
+  includeDrafts?: boolean;
 }
 
 export interface BuildResult {
@@ -32,6 +37,8 @@ export interface BuildResult {
     concepts: number;
     exercises: number;
     skippedDrafts: number;
+    /** Draft exercises written because of `includeDrafts`. */
+    includedDrafts: number;
   };
 }
 
@@ -79,16 +86,25 @@ const prereqOf = (p: ConceptSource['prerequisites'][number]) =>
 
 /**
  * `content-cli build`: check, then write a fresh content.db atomically (temp file + rename).
- * Nothing is written when the check reports errors. Draft exercises are excluded.
+ * Nothing is written when the check reports errors. Draft exercises are excluded unless
+ * `includeDrafts` (development builds) is set; they are then stored like approved ones and the
+ * pack records `includes_drafts: 1` in content_meta so a dev database is recognizable.
  */
 export function buildContent(root: string, outFile: string, options: BuildOptions): BuildResult {
-  const { kit, now = new Date(), sourceCommit = null } = options;
+  const { kit, now = new Date(), sourceCommit = null, includeDrafts = false } = options;
   const {
     source,
     diagnostics,
     lessons: compiled,
   } = checkContent(root, { validateSpec: kit.validateSpec });
-  const stats = { courses: 0, lessons: 0, concepts: 0, exercises: 0, skippedDrafts: 0 };
+  const stats = {
+    courses: 0,
+    lessons: 0,
+    concepts: 0,
+    exercises: 0,
+    skippedDrafts: 0,
+    includedDrafts: 0,
+  };
   if (diagnostics.errorCount > 0 || !source.pack) return { diagnostics, written: false, stats };
   const pack = source.pack.data;
 
@@ -236,10 +252,12 @@ export function buildContent(root: string, outFile: string, options: BuildOption
             insert('lesson_concepts', { lesson_id: l.id, concept_id, role });
 
           for (const { data: ex } of lesson.exercises) {
-            if (ex.review.status !== 'approved') {
+            const isDraft = ex.review.status !== 'approved';
+            if (isDraft && !includeDrafts) {
               stats.skippedDrafts++;
               continue;
             }
+            if (isDraft) stats.includedDrafts++;
             insert('exercises', {
               id: ex.id,
               type: ex.type,
@@ -259,7 +277,8 @@ export function buildContent(root: string, outFile: string, options: BuildOption
               tags_json: JSON.stringify(ex.tags),
               estimated_seconds: ex.estimatedSeconds,
               origin: 'authored',
-              review_status: 'trusted',
+              // Drafts have passed automated checks only (no human review yet).
+              review_status: isDraft ? 'auto_verified' : 'trusted',
               content_hash: sha256(canonical(ex)),
               dedupe_signature: dedupeSignature(ex),
             });
@@ -297,6 +316,7 @@ export function buildContent(root: string, outFile: string, options: BuildOption
         built_at: now.toISOString(),
         content_hash: sourceHash(root),
         ...(sourceCommit ? { source_commit: sourceCommit } : {}),
+        ...(includeDrafts ? { includes_drafts: '1' } : {}),
       };
       for (const [key, value] of Object.entries(meta)) insert('content_meta', { key, value });
     })();

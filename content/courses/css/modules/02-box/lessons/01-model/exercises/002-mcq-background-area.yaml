@@ -1,0 +1,49 @@
+id: css.box.model.mcq-background-area
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.box.areas, weight: 1 }
+tags: [box-model, background, margin]
+estimatedSeconds: 50
+prompt: |
+  회색 배경의 `body` 안에 아래 상자가 있어요. 상자 주변에서 **노란색이 칠해지지 않고 회색이 보이는** 영역은 어디인가요?
+code: |
+  .box {
+    background-color: yellow;
+    padding: 20px;
+    border: 2px solid black;
+    margin: 20px;
+  }
+spec:
+  options:
+    - id: a
+      text: margin 영역
+    - id: b
+      text: padding 영역
+      misconception: css.mc.margin-is-inside
+      rationale: padding은 테두리 안쪽 여백이라 배경색이 칠해져요. padding과 margin의 위치를 바꿔 생각했어요.
+    - id: c
+      text: 회색이 보이는 곳은 없다. margin까지 모두 노란색으로 칠해진다
+      misconception: css.mc.background-under-margin
+      rationale: margin은 항상 투명해서 배경색이 칠해지지 않아요.
+    - id: d
+      text: content 영역
+      rationale: content는 배경색이 칠해지는 가장 기본 영역이에요.
+  correct: a
+misconceptions: [css.mc.background-under-margin, css.mc.margin-is-inside]
+hints:
+  - 배경색은 상자의 테두리를 기준으로 어느 쪽에 칠해질까요?
+  - 네 영역 중 테두리 바깥에 있는 영역은 하나뿐이에요.
+  - 테두리 안쪽(content, padding)에는 배경색이 칠해지고, 테두리 바깥은 투명해요.
+explanation: |
+  정답은 **margin 영역**이에요.
+
+  배경색은 content와 padding 영역에 칠해져요. margin은 테두리 바깥의 간격이고 항상 투명하므로, 그 자리에서는 부모인 `body`의 회색 배경이 보여요.
+
+  - padding을 고른 경우: padding은 테두리 **안쪽** 여백이라 노란색이 칠해져요.
+  - "모두 노란색"을 고른 경우: margin에는 어떤 배경색도 칠해지지 않아요. 색칠된 영역을 넓히고 싶다면 padding을 늘려야 해요.
+  - content는 배경색이 칠해지는 가장 안쪽 영역이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

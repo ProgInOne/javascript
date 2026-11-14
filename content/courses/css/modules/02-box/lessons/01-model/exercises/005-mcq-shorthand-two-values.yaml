@@ -1,0 +1,42 @@
+id: css.box.model.mcq-shorthand-two-values
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.box.spacing, weight: 1 }
+tags: [padding, shorthand]
+estimatedSeconds: 40
+prompt: |
+  `padding: 10px 20px;`를 쓰면 안쪽 여백은 어떻게 적용되나요?
+spec:
+  options:
+    - id: a
+      text: 위·아래 10px, 왼쪽·오른쪽 20px
+    - id: b
+      text: 왼쪽·오른쪽 10px, 위·아래 20px
+      misconception: css.mc.shorthand-order
+      rationale: 값이 두 개일 때는 첫 값이 위아래, 두 번째 값이 좌우예요.
+    - id: c
+      text: 위 10px, 아래 20px, 왼쪽·오른쪽 0
+      misconception: css.mc.shorthand-order
+      rationale: 값이 모자라면 0이 되는 게 아니라 맞은편 값을 빌려 써요. 두 번째 값은 오른쪽과 왼쪽에 함께 쓰여요.
+    - id: d
+      text: 네 방향 모두 30px
+      rationale: 두 값은 더해지지 않아요. 각 값이 서로 다른 방향에 적용돼요.
+  correct: a
+misconceptions: [css.mc.shorthand-order]
+hints:
+  - 단축 속성의 값은 어느 방향에서 시작해서 어느 쪽으로 돌까요?
+  - 위에서 시작해 시계 방향(위 → 오른쪽 → 아래 → 왼쪽)으로 읽어요. 값이 두 개뿐이면 나머지 방향은 어떻게 될까요?
+  - 값이 모자라면 맞은편 값을 빌려 써요. 아래는 위의 값을, 왼쪽은 오른쪽의 값을 써요.
+explanation: |
+  정답은 **위·아래 10px, 왼쪽·오른쪽 20px**이에요.
+
+  단축 속성은 위 → 오른쪽 → 아래 → 왼쪽 순서로 값을 읽고, 값이 모자라면 맞은편 값을 빌려 써요. 값이 두 개면 위=10px, 오른쪽=20px이고, 아래는 위를 따라 10px, 왼쪽은 오른쪽을 따라 20px이에요.
+
+  - 좌우 10px로 고른 경우: 순서를 반대로 읽었어요. 두 값일 때는 "위아래, 좌우" 순서예요.
+  - 왼쪽·오른쪽 0을 고른 경우: 빠진 방향은 0이 아니라 맞은편 값을 써요.
+  - 30px을 고른 경우: 값은 더해지지 않고 각자 다른 방향에 적용돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

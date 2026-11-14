@@ -1,0 +1,60 @@
+id: css.box.model.fill-shorthand-four-values
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.box.spacing, weight: 1 }
+tags: [margin, shorthand]
+estimatedSeconds: 60
+prompt: |
+  아래 규칙에서 각 방향의 바깥 간격(margin)은 몇 px인가요? 숫자만 써도 돼요.
+code: |
+  .notice {
+    margin: 5px 10px 15px 20px;
+  }
+spec:
+  mode: text
+  template: |
+    margin-top: {{blank:top}}
+    margin-left: {{blank:left}}
+  blanks:
+    - id: top
+      accept: ["5px", "5"]
+      acceptRegex: "5 ?(?:px)?"
+      caseSensitive: false
+      width: 6
+      misconceptionMap:
+        "20": css.mc.shorthand-order
+        "20px": css.mc.shorthand-order
+    - id: left
+      accept: ["20px", "20"]
+      acceptRegex: "20 ?(?:px)?"
+      caseSensitive: false
+      width: 6
+      misconceptionMap:
+        "5": css.mc.shorthand-order
+        "5px": css.mc.shorthand-order
+        "10": css.mc.shorthand-order
+        "10px": css.mc.shorthand-order
+misconceptions: [css.mc.shorthand-order]
+hints:
+  - 값이 네 개면 방향마다 하나씩 대응해요. 어느 방향부터 시작할까요?
+  - 시계의 12시(위)에서 출발해 시계 방향으로 돌아요.
+  - 순서는 위 → 오른쪽 → 아래 → 왼쪽이에요. 각 위치의 값을 차례로 짝지어 보세요.
+explanation: |
+  정답은 **margin-top 5px, margin-left 20px**이에요.
+
+  값이 네 개면 위 → 오른쪽 → 아래 → 왼쪽(시계 방향) 순서로 하나씩 대응해요.
+
+  | 방향 | 값 |
+  |---|---|
+  | 위 | 5px |
+  | 오른쪽 | 10px |
+  | 아래 | 15px |
+  | 왼쪽 | 20px |
+
+  - 왼쪽을 5px로 답했다면 값을 "왼쪽부터" 읽은 거예요.
+  - 왼쪽을 10px로 답했다면 두 번째 값을 좌우로 읽는 2값 규칙과 섞인 거예요. 값이 네 개면 네 번째 값이 왼쪽이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

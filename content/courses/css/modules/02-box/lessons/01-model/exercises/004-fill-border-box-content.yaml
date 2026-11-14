@@ -1,0 +1,50 @@
+id: css.box.model.fill-border-box-content
+type: fill_blank
+difficulty: 3
+concepts:
+  - { id: css.box.box-sizing, weight: 1 }
+  - { id: css.box.size, weight: 0.5 }
+tags: [box-model, box-sizing, border-box]
+estimatedSeconds: 90
+prompt: |
+  아래 상자는 `box-sizing: border-box`예요. 글자가 들어가는 **content 영역의 너비**는 몇 px인가요? 숫자만 써도 돼요.
+code: |
+  .card {
+    box-sizing: border-box;
+    width: 200px;
+    padding: 20px;
+    border: 5px solid black;
+    margin: 10px;
+  }
+spec:
+  mode: text
+  template: |
+    content 영역의 너비: {{blank:w}}
+  blanks:
+    - id: w
+      accept: ["150px", "150"]
+      acceptRegex: "150 ?(?:px)?"
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "130": css.mc.border-box-includes-margin
+        "130px": css.mc.border-box-includes-margin
+misconceptions: [css.mc.border-box-includes-margin]
+hints:
+  - "`border-box`에서 `width: 200px`는 어느 영역까지의 너비일까요?"
+  - "content 너비를 구하려면 200px에서 무엇을 빼야 할까요? `border-box`라는 이름이 \"어디까지의 상자\"를 뜻하는지 생각해 보세요."
+  - "border까지가 200px이에요. 양쪽 padding과 양쪽 border를 빼세요. margin은 border 바깥이에요."
+explanation: |
+  정답은 **150px**이에요.
+
+  `border-box`에서 `width: 200px`는 content + padding + border를 합친 너비예요. 그래서 content 너비는 거기서 양쪽 padding과 양쪽 border를 뺀 값이에요.
+
+  `200 − (20 × 2) − (5 × 2) = 150px`
+
+  - `130`이라고 답했다면 margin(양쪽 10px)까지 뺀 거예요. margin은 border 바깥이라 `border-box`의 width에도 포함되지 않아요.
+  - `200`이라고 답했다면 `content-box`처럼 width를 content 너비로 본 거예요. `border-box`에서는 width가 border까지를 뜻해요.
+  - `160`, `170`, `175`라면 padding이나 border를 한쪽만 뺐을 가능성이 커요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
