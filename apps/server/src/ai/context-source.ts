@@ -5,15 +5,24 @@ import type {
   ExerciseAccess,
   ExerciseContext,
   LessonContext,
+  MisconceptionContext,
+  SessionSummaryContext,
   TutorMessageContext,
 } from '@proginone/ai';
 import { exerciseOriginOf, redactSpec } from '@proginone/exercise-kit';
-import { HINT_LEVELS, type SolutionView } from '@proginone/shared';
+import {
+  defaultEngineConfig,
+  isAiMisconception,
+  misconceptionStatusAt,
+} from '@proginone/learning-engine';
+import { HINT_LEVELS, sessionSummaryContentSchema, type SolutionView } from '@proginone/shared';
 import { and, desc, eq, inArray } from 'drizzle-orm';
 import type { UserDb } from '../db/user/connection.ts';
 import { hintState, listHintEvents } from '../db/user/exercise-records.ts';
 import { gradingJson } from '../db/user/json.ts';
 import { attempts, conceptMastery, conceptMemory, submissions } from '../db/user/schema.ts';
+import { listObservationsForConcepts } from '../db/user/misconceptions.ts';
+import { pastSummaries, threadSummary, type SummaryRow } from '../db/user/summaries.ts';
 import { recentMessages } from '../db/user/tutor.ts';
 import { localDate } from '../services/backup/local-date.ts';
 import type { ContentAccess } from '../services/curriculum/content-access.ts';
@@ -31,6 +40,26 @@ export interface TutorContextScope {
   dayStartHour: number;
   /** Hint scope: the practice set item, or `null` for the exercise outside any set. */
   practiceSetItemId: string | null;
+  /** Clock of the learning services (misconception time rules). Default: system time. */
+  now?: () => number;
+}
+
+/** A stored summary as context (AI-written content: the prompt renders it as data). */
+export function summaryContext(row: SummaryRow): SessionSummaryContext | null {
+  const parsed = sessionSummaryContentSchema.safeParse(row.summaryJson);
+  if (!parsed.success) return null;
+  const s = parsed.data;
+  return {
+    id: row.id,
+    threadId: row.scopeId,
+    createdAt: row.createdAt.getTime(),
+    coveredUntil: row.coveredUntil.getTime(),
+    conceptIds: s.conceptIds,
+    shortSummary: s.shortSummary,
+    struggles: s.struggles.map((x) => ({ conceptId: x.conceptId, note: x.note })),
+    openQuestions: s.openQuestions,
+    misconceptionSignals: s.misconceptionSignals.map((m) => m.description),
+  };
 }
 
 const clip = (text: string, max: number) =>
@@ -118,9 +147,24 @@ export class TutorContextSource implements ContextSource {
     };
   }
 
-  conceptStates(conceptIds: readonly string[]): Promise<ConceptStateContext[]> {
-    const ids = [...new Set(conceptIds)];
-    if (ids.length === 0 || !this.#content.available) return Promise.resolve([]);
+  conceptStates(
+    conceptIds: readonly string[],
+    opts: { includePrerequisites?: boolean } = {},
+  ): Promise<ConceptStateContext[]> {
+    const requested = [...new Set(conceptIds)];
+    if (requested.length === 0 || !this.#content.available) return Promise.resolve([]);
+    // Direct prerequisites only (docs: 선수 개념을 직계만 남김).
+    const prerequisiteOf = new Map<string, string>();
+    if (opts.includePrerequisites) {
+      for (const edge of this.#content.repo.listPrerequisites()) {
+        if (!requested.includes(edge.conceptId) || requested.includes(edge.prerequisiteId))
+          continue;
+        if (!prerequisiteOf.has(edge.prerequisiteId)) {
+          prerequisiteOf.set(edge.prerequisiteId, edge.conceptId);
+        }
+      }
+    }
+    const ids = [...requested, ...prerequisiteOf.keys()];
     const orm = this.#userDb.orm;
     const mastery = new Map(
       orm
@@ -162,6 +206,7 @@ export class TutorContextSource implements ContextSource {
             stage: m?.stage ?? 'not_started',
             mastery: m?.score ?? 0,
             due: due ? localDate(due, this.#scope.timezone, this.#scope.dayStartHour) : null,
+            ...(prerequisiteOf.has(id) ? { prerequisiteOf: prerequisiteOf.get(id) ?? '' } : {}),
           },
         ];
       }),
@@ -255,15 +300,90 @@ export class TutorContextSource implements ContextSource {
 
   threadMessages(
     threadId: string,
-    opts: { limit: number; excludeMessageIds: readonly string[] },
+    opts: { limit: number; excludeMessageIds: readonly string[]; after?: number },
   ): Promise<TutorMessageContext[]> {
     return Promise.resolve(
-      recentMessages(this.#userDb.orm, threadId, opts.limit, opts.excludeMessageIds).map((m) => ({
+      recentMessages(
+        this.#userDb.orm,
+        threadId,
+        opts.limit,
+        opts.excludeMessageIds,
+        opts.after,
+      ).map((m) => ({
         id: m.id,
         role: m.role,
         content: m.content,
         createdAt: m.createdAt.getTime(),
       })),
+    );
+  }
+
+  /**
+   * Active observations (time rules applied at read, learning-engine.md#오개념-상태-전이) of these
+   * concepts, confirmed first. AI-proposed rows (`ai.<ULID>`) are included: tutor context is the
+   * one place they are used.
+   */
+  misconceptions(conceptIds: readonly string[]): Promise<MisconceptionContext[]> {
+    if (conceptIds.length === 0) return Promise.resolve([]);
+    const now = (this.#scope.now ?? Date.now)();
+    const active = listObservationsForConcepts(
+      this.#userDb.orm,
+      this.#scope.learnerId,
+      conceptIds,
+    ).flatMap(({ state, aiDescription }) => {
+      const status = misconceptionStatusAt(defaultEngineConfig, state, now);
+      return status === 'suspected' || status === 'confirmed'
+        ? [{ state, status, aiDescription }]
+        : [];
+    });
+    const catalog = this.#content.available
+      ? new Map(
+          this.#content.repo
+            .listMisconceptionDetails({
+              ids: active
+                .map((a) => a.state.misconceptionId)
+                .filter((id) => !isAiMisconception(id)),
+            })
+            .map((m) => [m.id, m]),
+        )
+      : new Map<string, { title: string; description: string }>();
+    const seen = new Set<string>();
+    const out: MisconceptionContext[] = [];
+    for (const { state, status, aiDescription } of active) {
+      if (seen.has(state.misconceptionId)) continue;
+      seen.add(state.misconceptionId);
+      const ai = isAiMisconception(state.misconceptionId);
+      const entry = ai ? null : catalog.get(state.misconceptionId);
+      if (!ai && !entry) continue; // removed from the content pack
+      const description = ai ? (aiDescription ?? '') : (entry?.description ?? '');
+      out.push({
+        id: state.misconceptionId,
+        conceptId: state.conceptId,
+        title: ai ? clip(description, 80) : (entry?.title ?? state.misconceptionId),
+        description,
+        status,
+        origin: ai ? 'ai' : 'catalog',
+        evidenceCount: state.evidence.length,
+      });
+    }
+    out.sort((a, b) => (a.status === b.status ? 0 : a.status === 'confirmed' ? -1 : 1));
+    return Promise.resolve(out);
+  }
+
+  threadSummary(threadId: string): Promise<SessionSummaryContext | null> {
+    const row = threadSummary(this.#userDb.orm, this.#scope.learnerId, threadId);
+    return Promise.resolve(row ? summaryContext(row) : null);
+  }
+
+  pastSummaries(
+    conceptIds: readonly string[],
+    opts: { limit: number; excludeThreadId: string | null },
+  ): Promise<SessionSummaryContext[]> {
+    return Promise.resolve(
+      pastSummaries(this.#userDb.orm, this.#scope.learnerId, conceptIds, opts).flatMap((row) => {
+        const ctx = summaryContext(row);
+        return ctx ? [ctx] : [];
+      }),
     );
   }
 }

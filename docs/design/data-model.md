@@ -781,7 +781,12 @@ AI가 생성한 문제는 학습자 고유 데이터이므로 `user.db`에 둡�
 | `session_summary_concepts` | `summary_id`, `concept_id` | TEXT | N | | 개념 ID로 과거 요약을 찾는 조인 테이블. PK `(summary_id, concept_id)`, 인덱스 `(concept_id)` |
 
 - 메시지가 스트리밍 중일 때도 행을 먼저 만들고(`status = 'streaming'`), 완료 시 `content`를 확정합니다. 비정상 종료 후 남은 `streaming` 행은 시작 시 `interrupted`로 바꿉니다.
-- v0.1(마이그레이션 `0002_ai_tutor`)은 `tutor_threads`, `tutor_messages`, `ai_calls`만 만듭니다. `session_summaries`·`session_summary_concepts`는 `session.summarize`와 함께 v0.2에서 추가하며, 그때까지 `tutor_threads.summary_id`는 비어 있습니다.
+- v0.1(마이그레이션 `0002_ai_tutor`)은 `tutor_threads`, `tutor_messages`, `ai_calls`만 만듭니다. `session_summaries`·`session_summary_concepts`는 `session.summarize`와 함께 v0.2(마이그레이션 `0005_session_summaries`)에서 추가했습니다.
+- v0.2에서 표와 달라진 점:
+    - `session_summaries`에 `learner_id`(FK), `source`(`ai` / `fallback`: AI가 요약하지 못해 결정론적 요약을 쓴 경우), `message_count`(요약이 다루는 메시지 수), `covered_until`(요약이 다룬 마지막 메시지의 `created_at`)을 추가했습니다. 인덱스 `(learner_id, scope_type, scope_id, created_at)`.
+    - **롤링 요약**: 스레드의 새 요약은 이전 요약을 합쳐 대화 전체를 다루고, `tutor_threads.summary_id`가 가장 최근 요약을 가리킵니다. 이전 요약 행은 지우지 않지만, 장기 기억 조회(과거 요약, 재구성)는 `summary_id`가 가리키는 행만 읽습니다. 다음 요약은 `covered_until` 이후 메시지만 읽습니다.
+    - `session_summary_concepts.summary_id`는 `ON DELETE CASCADE`입니다.
+    - `scope_type = 'study_session'`은 열거형에만 두었습니다. `study_sessions`가 아직 없어 v0.2에서는 튜터 스레드만 요약합니다([D-035](/docs/decisions.md)).
 - `tutor_messages.meta_json`(TEXT, NULL 허용)을 추가했습니다. 튜터 답변의 `<meta>` 블록(`referencedConcepts`, `suggestedFollowUp`, `possibleMisconception` 등, 스키마는 `packages/shared`의 `tutorReplyMetaSchema`)을 담고, 이후 `misconception.propose`의 입력 신호로 씁니다. `attachments_json`에는 선택 영역(`{ type: 'selection', kind, text, sectionId? }`)을 담습니다.
 - 인덱스: `tutor_threads(learner_id, scope_type, scope_id, status)`, `tutor_threads(learner_id, last_message_at)`, `tutor_messages(thread_id, created_at)`.
 - 컨텍스트 빌더는 "현재 개념과 선수 개념에 연결된 최근 요약"을 `session_summary_concepts`로 조회합니다([AI 시스템 설계](/docs/design/ai-system.md)).

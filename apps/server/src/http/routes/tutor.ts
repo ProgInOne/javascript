@@ -6,6 +6,7 @@ import {
 } from '@proginone/shared';
 import { Hono } from 'hono';
 import { streamSSE } from 'hono/streaming';
+import type { MemoryService } from '../../services/tutor/memory-service.ts';
 import type { TutorService } from '../../services/tutor/tutor-service.ts';
 import type { AppEnv } from '../env.ts';
 import { KEEP_ALIVE_MS } from './ai.ts';
@@ -19,9 +20,13 @@ const MESSAGE_BODY_LIMIT = 512 * 1024;
  * answers with SSE: `message.created` → (`status`) → `delta`… (`reset`) → `done` | `error`.
  * The turn runs to the end even if the client disconnects; the web reloads the thread.
  */
-export function tutorRoutes(tutor: TutorService, opts: { keepAliveMs?: number } = {}) {
+export function tutorRoutes(
+  tutor: TutorService,
+  opts: { keepAliveMs?: number; memory?: MemoryService } = {},
+) {
   const keepAliveMs = opts.keepAliveMs ?? KEEP_ALIVE_MS;
-  return new Hono<AppEnv>()
+  const memory = opts.memory;
+  const routes = new Hono<AppEnv>()
     .post('/threads', limitBody(4 * 1024), async (c) => {
       const request = createTutorThreadRequestSchema.parse(await jsonBody(c));
       const { thread, created } = tutor.createThread(request);
@@ -64,6 +69,13 @@ export function tutorRoutes(tutor: TutorService, opts: { keepAliveMs?: number } 
     })
     .post('/threads/:id/messages/:messageId/cancel', (c) =>
       c.json(tutor.cancel(rowIdParam(c.req.param('id')), rowIdParam(c.req.param('messageId')))),
+    );
+  if (!memory) return routes;
+  // Long-term memory: the thread's rolling summary (session.summarize).
+  return routes
+    .get('/threads/:id/summary', (c) => c.json(memory.summary(rowIdParam(c.req.param('id')))))
+    .post('/threads/:id/summary', limitBody(1024), async (c) =>
+      c.json(await memory.summarizeThread(rowIdParam(c.req.param('id')), 'manual')),
     );
 }
 

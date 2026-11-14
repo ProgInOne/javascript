@@ -54,15 +54,27 @@ export function memoizeSource(src: ContextSource): ContextSource {
     return hit;
   };
   return {
-    conceptStates: (ids) =>
-      memo(`concepts:${JSON.stringify([...ids].sort())}`, () => src.conceptStates(ids)),
+    conceptStates: (ids, opts) =>
+      memo(
+        `concepts:${opts?.includePrerequisites ? 'pre:' : ''}${JSON.stringify([...ids].sort())}`,
+        () => src.conceptStates(ids, opts),
+      ),
+    misconceptions: (ids) =>
+      memo(`misconceptions:${JSON.stringify([...ids].sort())}`, () => src.misconceptions(ids)),
     exercise: (id, access) =>
       memo(`exercise:${id}:${JSON.stringify(access)}`, () => src.exercise(id, access)),
     attempts: (id, opts) => memo(`attempts:${id}:${opts.limit}`, () => src.attempts(id, opts)),
     lesson: (id, opts) => memo(`lesson:${id}:${opts.sectionId ?? ''}`, () => src.lesson(id, opts)),
     threadMessages: (id, opts) =>
-      memo(`messages:${id}:${opts.limit}:${opts.excludeMessageIds.join(',')}`, () =>
-        src.threadMessages(id, opts),
+      memo(
+        `messages:${id}:${opts.limit}:${opts.after ?? ''}:${opts.excludeMessageIds.join(',')}`,
+        () => src.threadMessages(id, opts),
+      ),
+    threadSummary: (id) => memo(`summary:${id}`, () => src.threadSummary(id)),
+    pastSummaries: (ids, opts) =>
+      memo(
+        `past:${JSON.stringify([...ids].sort())}:${opts.limit}:${opts.excludeThreadId ?? ''}`,
+        () => src.pastSummaries(ids, opts),
       ),
   };
 }

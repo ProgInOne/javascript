@@ -26,6 +26,7 @@ import { ContentAccess } from './services/curriculum/content-access.ts';
 import { createEngine } from './services/practice/engine.ts';
 import { createPracticeServices } from './services/practice/index.ts';
 import { SettingsService } from './services/settings/service.ts';
+import { MemoryService } from './services/tutor/memory-service.ts';
 import { TutorService } from './services/tutor/tutor-service.ts';
 import { APP_VERSION } from './version.ts';
 
@@ -134,14 +135,22 @@ if (testClockFile) log.warn({ testClockFile }, '테스트용 시계를 사용합
 // Codex starts lazily on the first AI request (docs/design/ai-system.md#프로세스-수명주기).
 const provider = createProvider(config, log, APP_VERSION);
 const ai = new AiService({ provider, log });
-const tutor = new TutorService({
+// One runner, so every AI task shares the turn limit (interactive before background).
+const runner = new TaskRunner({ provider, now: systemClock });
+let tutorRef: TutorService | null = null;
+const memory = new MemoryService({
   userDb,
   content,
-  runner: new TaskRunner({ provider, now: systemClock }),
+  runner,
   ai,
   now: systemClock,
   log,
+  interactiveBusy: () => (tutorRef?.activeCount ?? 0) > 0,
 });
+const tutor = new TutorService({ userDb, content, runner, ai, now: systemClock, log, memory });
+tutorRef = tutor;
+// Rolling summaries of idle tutor threads (docs/design/ai-system.md#sessionsummarize).
+memory.start();
 const token = randomBytes(32).toString('base64url');
 const webDistDir = fileURLToPath(new URL('../../web/dist', import.meta.url));
 const app = createApp({
@@ -152,7 +161,7 @@ const app = createApp({
   settings: new SettingsService({ userDb, log }),
   content,
   practice: createPracticeServices({ userDb, content, engine, now: learningClock }),
-  ai: { ai, tutor },
+  ai: { ai, tutor, memory },
   maintenance,
   version: APP_VERSION,
   ...(config.mode === 'production' ? { webDistDir } : {}),
@@ -190,6 +199,7 @@ function shutdown(signal: string) {
   shuttingDown = true;
   log.info({ signal }, '종료합니다.');
   scheduler.stop();
+  memory.stop();
   // Stop running AI turns and the Codex child process (turn/interrupt → stdin close → signals).
   tutor.cancelAll();
   const providerClosed = provider.dispose().catch((err: unknown) => {

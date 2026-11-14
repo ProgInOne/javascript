@@ -18,6 +18,7 @@ import {
   lessonSection,
   runResultSection,
 } from '../context/tutor-sections.ts';
+import { misconceptionsSection, pastSummariesSection } from '../context/memory-sections.ts';
 import { metaStart } from '../output/stream.ts';
 import { exerciseAccessSchema } from './access.ts';
 import { defineTask } from './define.ts';
@@ -61,6 +62,8 @@ const INSTRUCTIONS = `[현재 작업: 튜터 답변]
   관련 개념을 짚는다. 학습자가 정답을 요구하면 화면의 "힌트 보기"나 "정답 보기"를 쓰도록 안내한다.
 - <exercise state="solution_viewed">이면 정답과 해설을 바탕으로 왜 그렇게 되는지 설명해도 된다.
 - 학습자가 같은 지점에서 여러 번 막혔다면(<conversation_so_far>, <attempt_history>) 질문을 줄이고 직접 설명으로 전환한다.
+- <active_misconceptions>가 있으면 질문과 관련된 경우에만 그 오개념을 바로잡도록 설명한다. 오개념이 있다고 학습자를 단정하지 않는다.
+- <prerequisite>의 숙련도가 낮으면 선수 개념부터 짧게 짚는다. <past_summaries>는 지난 대화의 맥락이며, 이어지는 질문이면 자연스럽게 연결한다.
 - 질문이 ProgInOne 학습 범위(HTML/CSS/JavaScript, 웹 기초)를 벗어나면 짧게 답하고 학습으로 돌아오게 돕는다.
 - 답변 마지막 줄에 <meta>{...}</meta> 형식으로 메타데이터 JSON을 붙인다. 이 블록은 학습자에게 보이지 않는다.
   형식: ${META_FORMAT}
@@ -86,7 +89,7 @@ export function parseTutorReply(text: string): TutorReplyOutput {
 
 export const tutorReply = defineTask<TutorReplyInput, TutorReplyOutput>({
   name: 'tutor.reply',
-  version: 1,
+  version: 2,
   role: 'tutor',
   priority: 'interactive',
   inputSchema: tutorReplyInputSchema,
@@ -107,7 +110,7 @@ export const tutorReply = defineTask<TutorReplyInput, TutorReplyOutput>({
         maxTokens: 800,
         load: async (src, input) => {
           const ids = await conceptIdsFor(src, input, input.access);
-          return learnerStateSection(await src.conceptStates(ids));
+          return learnerStateSection(await src.conceptStates(ids, { includePrerequisites: true }));
         },
       },
       {
@@ -134,6 +137,16 @@ export const tutorReply = defineTask<TutorReplyInput, TutorReplyOutput>({
         priority: 9,
         maxTokens: 500,
         load: (_src, input) => Promise.resolve(runResultSection(input.lastRunResult)),
+      },
+      {
+        kind: 'active_misconceptions',
+        required: false,
+        priority: 8,
+        maxTokens: 500,
+        load: async (src, input) =>
+          misconceptionsSection(
+            await src.misconceptions(await conceptIdsFor(src, input, input.access)),
+          ),
       },
       {
         kind: 'attempt_history',
@@ -163,15 +176,35 @@ export const tutorReply = defineTask<TutorReplyInput, TutorReplyOutput>({
         required: false,
         priority: 5,
         maxTokens: 2_500,
-        load: async (src, input, env) =>
-          env.rehydrate
-            ? conversationSection(
-                await src.threadMessages(input.threadId, {
-                  limit: 12,
-                  excludeMessageIds: input.excludeMessageIds,
-                }),
-              )
-            : null,
+        // A rebuilt provider thread gets the rolling summary plus the messages after it.
+        load: async (src, input, env) => {
+          if (!env.rehydrate) return null;
+          const summary = await src.threadSummary(input.threadId);
+          const messages = await src.threadMessages(input.threadId, {
+            limit: 12,
+            excludeMessageIds: input.excludeMessageIds,
+            ...(summary ? { after: summary.coveredUntil } : {}),
+          });
+          return conversationSection(messages, summary);
+        },
+      },
+      {
+        kind: 'past_summaries',
+        required: false,
+        priority: 4,
+        maxTokens: 900,
+        // Related conversations, once per provider thread (it keeps them afterwards).
+        load: async (src, input, env) => {
+          if (!env.rehydrate) return null;
+          const ids = await conceptIdsFor(src, input, input.access);
+          const states = await src.conceptStates(ids, { includePrerequisites: true });
+          return pastSummariesSection(
+            await src.pastSummaries(states.length > 0 ? states.map((s) => s.id) : ids, {
+              limit: 3,
+              excludeThreadId: input.threadId,
+            }),
+          );
+        },
       },
     ],
   },

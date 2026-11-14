@@ -1141,6 +1141,18 @@ v0.2(M5)에서 바꾸거나 구체화한 점입니다.
     - 0.155.1의 사용량 응답은 `primary`(주간 창, 10,080분) 하나만 있었고, `rateLimitsByLimitId`, `credits`, `rateLimitReachedType` 같은 필드가 함께 옵니다. 앱은 지금처럼 `primary`·`secondary`의 `usedPercent`, `windowDurationMins`, `resetsAt`만 씁니다.
     - 매 턴 시작에 "Code Mode is unavailable" `warning` 알림이 옵니다(`code_mode_host`를 끈 결과). 어댑터는 이 알림을 무시합니다.
 
+**장기 학습 기억과 컨텍스트의 학습 상태 연결** ([D-035](/docs/decisions.md))
+
+- `ContextSource`에 `misconceptions`, `threadSummary`, `pastSummaries`를 추가하고, `conceptStates`에 `includePrerequisites`(직계 선수 개념), `threadMessages`에 `after`(요약 이후 메시지만)를 더했습니다. 서버 구현은 오개념 시간 규칙(30일 무근거 → 기각)을 읽을 때 적용하고, AI가 제안한 미분류 오개념(`ai.<ULID>`)도 튜터 맥락에는 넣습니다.
+- `tutor.reply` v2: 학습 상태에 직계 선수 개념(`<prerequisite of="...">`), 활성 오개념(`<active_misconceptions>`, 확정 먼저 최대 3개)을 매 턴 넣습니다. 새 Codex 스레드를 만들 때(재구성)만 스레드 요약(`<thread_summary>`) + 요약 이후 최근 메시지 12개와 관련 과거 요약(`<past_summaries>`, 최대 3개)을 넣습니다. 이어지는 턴은 Codex 스레드가 이미 갖고 있어 다시 보내지 않습니다.
+- `BASE_INSTRUCTIONS_VERSION`을 2로 올렸습니다(데이터 블록 목록과 요약 취급 규칙 추가). 기존 튜터 스레드는 다음 턴에 재구성합니다.
+- `session.summarize` v1: 스레드의 이전 요약을 입력으로 받아 합친 **롤링 요약**을 만듭니다. 이전 요약이 다룬 시각(`covered_until`) 이후 메시지만 읽고(메시지 ID 포함), 근거 메시지 ID가 스레드에 없거나 개념 ID가 콘텐츠 팩에 없는 항목은 서버가 지우고 그 사실을 `ai_calls.validation_issues_json`에 남깁니다. 목록·문자열이 상한을 넘으면 실패 대신 잘라서 받습니다.
+- 요약 시점: 마지막 메시지 후 30분(5분마다 도는 백그라운드 점검), `POST /tutor/threads/:id/summary`, 재구성 직전 요약되지 않은 메시지가 14개를 넘을 때(롤링 요약, 진행 중인 질문은 제외).
+- 백그라운드 요약은 Codex가 **이미 연결되어 있을 때만** 합니다(백그라운드 작업 때문에 Codex를 띄우지 않음). 사용량 80% 이상이거나 대화형 턴이 진행 중이면 미루고, 미룬 지 7일이 지난 스레드는 결정론적 요약(`source = 'fallback'`)으로 대체합니다. 연기 작업 큐(`ai_jobs`) 대신 DB 상태("요약 이후 완료된 답변이 있는 스레드")에서 할 일을 다시 계산하므로 앱을 재시작해도 잃지 않습니다.
+- 출력이 재시도 후에도 스키마를 통과하지 못하면 결정론적 요약을 쓰고 `ai_calls.status = 'fallback'`입니다. 수동 요약에서 AI를 쓸 수 없으면 `AI_*` 오류를 그대로 돌려줍니다.
+- 앱 재시작 후 맥락 복원: Codex 스레드는 튜터 전용 홈에 남아 있어 보통 `thread/resume`으로 이어집니다. 재개가 실패하거나(`threadLost`) 컨텍스트 창을 넘으면(`AI_CONTEXT_TOO_LARGE`) 러너가 같은 턴에서 DB의 요약 + 최근 메시지로 새 스레드를 만듭니다.
+- `preferenceSignals`는 요약에만 저장하고 학습자 선호로 반영하지 않습니다(확인 화면은 후속). 학습자 선호 컨텍스트 섹션도 아직 없습니다.
+
 ## 검토한 대안
 
 ### 역할 구성: 다중 에이전트 vs 단일 모델 역할 함수

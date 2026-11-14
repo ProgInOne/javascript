@@ -22,6 +22,40 @@ export interface ConceptStateContext {
   mastery: number;
   /** Review due date (`YYYY-MM-DD`) when there is a memory card. */
   due: string | null;
+  /**
+   * Set on direct prerequisites added by `includePrerequisites`: the requested concept this one
+   * is a prerequisite of. Absent on requested concepts.
+   */
+  prerequisiteOf?: string;
+}
+
+/**
+ * An active misconception observation (docs/design/ai-system.md#컨텍스트-조립-우선순위 "활성 오개념").
+ * `origin: 'ai'` rows are unclassified AI proposals (`ai.<ULID>`): tutor context only.
+ */
+export interface MisconceptionContext {
+  id: string;
+  conceptId: string;
+  title: string;
+  description: string;
+  status: 'suspected' | 'confirmed';
+  origin: 'catalog' | 'ai';
+  evidenceCount: number;
+}
+
+/** A stored conversation summary (long-term memory). AI-written: render as data. */
+export interface SessionSummaryContext {
+  id: string;
+  /** Tutor thread the summary belongs to. */
+  threadId: string;
+  createdAt: number;
+  /** `created_at` of the last message the summary covers. */
+  coveredUntil: number;
+  conceptIds: string[];
+  shortSummary: string;
+  struggles: { conceptId: string; note: string }[];
+  openQuestions: string[];
+  misconceptionSignals: string[];
 }
 
 export interface ExerciseContext {
@@ -75,15 +109,34 @@ export interface TutorMessageContext {
 }
 
 export interface ContextSource {
-  conceptStates(conceptIds: readonly string[]): Promise<ConceptStateContext[]>;
+  /** Requested concepts first; with `includePrerequisites`, then their direct prerequisites. */
+  conceptStates(
+    conceptIds: readonly string[],
+    opts?: { includePrerequisites?: boolean },
+  ): Promise<ConceptStateContext[]>;
+  /** Active observations of these concepts (time rules applied), confirmed first. */
+  misconceptions(conceptIds: readonly string[]): Promise<MisconceptionContext[]>;
   /** `null` when the exercise does not exist. */
   exercise(exerciseId: string, access: ExerciseAccess): Promise<ExerciseContext | null>;
   /** Most recent first. */
   attempts(exerciseId: string, opts: { limit: number }): Promise<AttemptContext[]>;
   lesson(lessonId: string, opts: { sectionId: string | null }): Promise<LessonContext | null>;
-  /** Oldest first, excluding `excludeMessageIds` (the turn being answered). */
+  /**
+   * The last `limit` messages, oldest first, excluding `excludeMessageIds` (the turn being
+   * answered) and, with `after`, messages created at or before it (already summarized).
+   */
   threadMessages(
     threadId: string,
-    opts: { limit: number; excludeMessageIds: readonly string[] },
+    opts: { limit: number; excludeMessageIds: readonly string[]; after?: number },
   ): Promise<TutorMessageContext[]>;
+  /** The thread's current rolling summary. */
+  threadSummary(threadId: string): Promise<SessionSummaryContext | null>;
+  /**
+   * Summaries of other threads for these concepts, best first (docs/design/ai-system.md
+   * #개념-id-기반-검색). Without concepts, the most recent ones.
+   */
+  pastSummaries(
+    conceptIds: readonly string[],
+    opts: { limit: number; excludeThreadId: string | null },
+  ): Promise<SessionSummaryContext[]>;
 }

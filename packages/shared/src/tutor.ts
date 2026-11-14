@@ -212,3 +212,77 @@ export const aiHintResponseSchema = z.object({
   fallbackCode: errorCodeSchema.nullable(),
 });
 export type AIHintResponse = z.infer<typeof aiHintResponseSchema>;
+
+// ── Session summaries (session.summarize, long-term memory) ─────────────────────
+// docs/design/ai-system.md#sessionsummarize, #장기-학습-기억; docs/design/data-model.md
+// #tutor_threads-tutor_messages-session_summaries.
+
+export const SESSION_SUMMARY_SCOPE_TYPES = ['tutor_thread', 'study_session'] as const;
+/** `ai`: made by `session.summarize`; `fallback`: deterministic summary when AI could not. */
+export const SESSION_SUMMARY_SOURCES = ['ai', 'fallback'] as const;
+
+const evidenceIds = z.array(z.string().max(64)).min(1).max(10);
+
+/**
+ * Structured summary of a tutor conversation. AI output is untrusted: the server keeps only
+ * evidence message IDs that were in the conversation and concept IDs the content pack has.
+ * A summary never changes mastery or misconceptions by itself (D-010).
+ */
+export const sessionSummaryContentSchema = z.object({
+  conceptIds: z.array(z.string().max(200)).max(10),
+  topicsDiscussed: z.array(z.string().max(120)).max(8),
+  /** What the learner actually asked. */
+  learnerQuestions: z.array(z.string().max(200)).max(8),
+  understoodWell: z
+    .array(z.object({ conceptId: z.string().max(200), note: z.string().max(200) }))
+    .max(5),
+  struggles: z
+    .array(
+      z.object({
+        conceptId: z.string().max(200),
+        note: z.string().max(200),
+        evidenceMessageIds: evidenceIds,
+      }),
+    )
+    .max(5),
+  misconceptionSignals: z
+    .array(z.object({ description: z.string().max(300), evidenceMessageIds: evidenceIds }))
+    .max(3),
+  /** Questions left open at the end. */
+  openQuestions: z.array(z.string().max(200)).max(3),
+  /** Preference candidates ("예제를 먼저 보여 주길 선호"); never applied automatically. */
+  preferenceSignals: z.array(z.string().max(150)).max(3),
+  shortSummary: z.string().max(500),
+});
+export type SessionSummaryContent = z.infer<typeof sessionSummaryContentSchema>;
+
+export const sessionSummarySchema = z.object({
+  id: z.string(),
+  scopeType: z.enum(SESSION_SUMMARY_SCOPE_TYPES),
+  scopeId: z.string(),
+  source: z.enum(SESSION_SUMMARY_SOURCES),
+  content: sessionSummaryContentSchema,
+  /** Conversation messages the summary covers (rolling: the whole thread so far). */
+  messageCount: z.int().min(0),
+  /** `created_at` of the last covered message (epoch ms). */
+  coveredUntil: z.number(),
+  createdAt: z.number(),
+});
+export type SessionSummary = z.infer<typeof sessionSummarySchema>;
+
+/** `GET /tutor/threads/:id/summary`: the thread's latest (rolling) summary. */
+export const tutorThreadSummaryResponseSchema = z.object({
+  summary: sessionSummarySchema.nullable(),
+});
+export type TutorThreadSummaryResponse = z.infer<typeof tutorThreadSummaryResponseSchema>;
+
+/**
+ * `POST /tutor/threads/:id/summary`: summarizes the messages since the last summary now (the
+ * server also does this after 30 minutes without messages). `created: false` when there was
+ * nothing new; `summary` stays null when AI is unavailable and nothing could be written yet.
+ */
+export const summarizeTutorThreadResponseSchema = z.object({
+  summary: sessionSummarySchema.nullable(),
+  created: z.boolean(),
+});
+export type SummarizeTutorThreadResponse = z.infer<typeof summarizeTutorThreadResponseSchema>;

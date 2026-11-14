@@ -2,21 +2,48 @@ import type {
   ContextSource,
   ExerciseAccess,
   ExerciseContext,
+  MisconceptionContext,
+  SessionSummaryContext,
   TutorMessageContext,
 } from '../context/source.ts';
 
 /** In-memory ContextSource honoring access the same way the server must (D-010). */
 export function fakeSource(
-  overrides: { messages?: TutorMessageContext[]; solution?: string } = {},
+  overrides: {
+    messages?: TutorMessageContext[];
+    solution?: string;
+    misconceptions?: MisconceptionContext[];
+    summary?: SessionSummaryContext | null;
+    pastSummaries?: SessionSummaryContext[];
+    prerequisites?: Record<string, string[]>;
+  } = {},
 ): ContextSource & { exerciseCalls: ExerciseAccess[] } {
   const exerciseCalls: ExerciseAccess[] = [];
   const hints = ['방향 힌트', '개념 힌트', '거의 완성 힌트'];
   return {
     exerciseCalls,
-    conceptStates: (ids) =>
-      Promise.resolve(
-        ids.map((id) => ({ id, title: `${id} 제목`, stage: 'practicing', mastery: 48, due: null })),
-      ),
+    conceptStates: (ids, opts) => {
+      const state = (id: string) => ({
+        id,
+        title: `${id} 제목`,
+        stage: 'practicing',
+        mastery: 48,
+        due: null,
+      });
+      const pre = opts?.includePrerequisites
+        ? ids.flatMap((id) =>
+            (overrides.prerequisites?.[id] ?? []).map((p) => ({
+              ...state(p),
+              stage: 'introduced',
+              mastery: 20,
+              prerequisiteOf: id,
+            })),
+          )
+        : [];
+      return Promise.resolve([...ids.map(state), ...pre]);
+    },
+    misconceptions: (ids) =>
+      Promise.resolve((overrides.misconceptions ?? []).filter((m) => ids.includes(m.conceptId))),
     exercise: (id, access): Promise<ExerciseContext | null> => {
       exerciseCalls.push(access);
       if (id === 'missing') return Promise.resolve(null);
@@ -59,6 +86,15 @@ export function fakeSource(
         sectionId: opts.sectionId,
         concepts: [{ id: 'js.loops.for', title: 'for 문', summary: '반복' }],
       }),
-    threadMessages: () => Promise.resolve(overrides.messages ?? []),
+    threadMessages: (_id, opts) =>
+      Promise.resolve(
+        (overrides.messages ?? []).filter(
+          (m) =>
+            !opts.excludeMessageIds.includes(m.id) &&
+            (opts.after === undefined || m.createdAt > opts.after),
+        ),
+      ),
+    threadSummary: () => Promise.resolve(overrides.summary ?? null),
+    pastSummaries: () => Promise.resolve(overrides.pastSummaries ?? []),
   };
 }

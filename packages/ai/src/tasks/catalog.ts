@@ -1,10 +1,12 @@
+import { sessionSummarize } from './session-summarize.ts';
 import { tutorHint } from './tutor-hint.ts';
 import { tutorReply } from './tutor-reply.ts';
 
-/** Registered tasks (v0.1: the two tutor tasks). */
+/** Registered tasks (docs/design/ai-system.md#작업-목록-요약). */
 export const TASKS = {
   'tutor.reply': tutorReply,
   'tutor.hint': tutorHint,
+  'session.summarize': sessionSummarize,
 } as const;
 
 export type TaskName = keyof typeof TASKS;

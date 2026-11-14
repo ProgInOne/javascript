@@ -21,6 +21,11 @@ export {
 } from './context/builder.ts';
 export { estimateTokens, truncateToTokens } from './context/budget.ts';
 export { neutralize, RESERVED_TAGS } from './context/sections.ts';
+export {
+  misconceptionsSection,
+  pastSummariesSection,
+  renderSummaryText,
+} from './context/memory-sections.ts';
 export { countCodeLines, type OutputGuard } from './output/validate.ts';
 export { StreamGate } from './output/stream.ts';
 export { BASE_INSTRUCTIONS_VERSION, baseInstructions } from './prompts/base.ts';
@@ -41,6 +46,15 @@ export {
   type TutorHintInput,
   type TutorHintOutput,
 } from './tasks/tutor-hint.ts';
+export {
+  sessionSummarize,
+  sessionSummarizeInputSchema,
+  sanitizeSummary,
+  fallbackSummary,
+  SESSION_SUMMARY_JSON_SCHEMA,
+  type SessionSummarizeInput,
+} from './tasks/session-summarize.ts';
+export { parseJsonOutput } from './tasks/json-output.ts';
 export { TASKS, type TaskName } from './tasks/catalog.ts';
 export {
   CodexAdapter,

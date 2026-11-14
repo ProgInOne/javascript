@@ -18,6 +18,8 @@ import {
   PRACTICE_SET_STATUSES,
   REPORT_REASONS,
   REPORT_STATUSES,
+  SESSION_SUMMARY_SCOPE_TYPES,
+  SESSION_SUMMARY_SOURCES,
   TUTOR_MESSAGE_ROLES,
   TUTOR_MESSAGE_STATUSES,
   TUTOR_SCOPE_TYPES,
@@ -459,7 +461,6 @@ export const dailyActivity = sqliteTable(
 
 // ── AI tutor (M4, migration 0002) ────────────────────────────────────────────
 // docs/design/data-model.md#tutor_threads-tutor_messages-session_summaries and #ai_calls.
-// `session_summaries` comes with `session.summarize` (v0.2).
 
 export const AI_CALL_SUBJECT_TYPES = [
   'tutor_message',
@@ -532,7 +533,7 @@ export const tutorThreads = sqliteTable(
     providerModel: text('provider_model'),
     providerInstructionsVersion: text('provider_instructions_version'),
     status: text('status', { enum: TUTOR_THREAD_STATUSES }).notNull().default('open'),
-    /** `session_summaries.id` once summaries exist (v0.2). */
+    /** The latest `session_summaries` row of the thread (rolling summary, v0.2). */
     summaryId: text('summary_id'),
     messageCount: integer('message_count').notNull().default(0),
     createdAt: at('created_at').notNull(),
@@ -577,6 +578,55 @@ export const tutorMessages = sqliteTable(
     check('tutor_messages_status', inList(t.status, TUTOR_MESSAGE_STATUSES)),
     check('tutor_messages_attachments_json', jsonValid(t.attachmentsJson)),
     check('tutor_messages_meta_json', sql`${t.metaJson} IS NULL OR json_valid(${t.metaJson})`),
+  ],
+);
+
+// ── Long-term memory (M5, migration 0005) ────────────────────────────────────
+// docs/design/data-model.md#tutor_threads-tutor_messages-session_summaries.
+
+/**
+ * Structured conversation summaries (`session.summarize`). Rolling: a new summary of a thread
+ * merges the previous one, and `tutor_threads.summary_id` points at the latest. Added to the
+ * table sketch: `source` (`ai` / `fallback`), `message_count` and `covered_until` (the
+ * `created_at` of the last summarized message, so the next summary starts after it).
+ */
+export const sessionSummaries = sqliteTable(
+  'session_summaries',
+  {
+    id: text('id').primaryKey(),
+    learnerId: learnerId(),
+    scopeType: text('scope_type', { enum: SESSION_SUMMARY_SCOPE_TYPES }).notNull(),
+    scopeId: text('scope_id').notNull(),
+    source: text('source', { enum: SESSION_SUMMARY_SOURCES }).notNull(),
+    summaryJson: text('summary_json', { mode: 'json' }).notNull(),
+    conceptIdsJson: text('concept_ids_json', { mode: 'json' }).notNull(),
+    messageCount: integer('message_count').notNull(),
+    coveredUntil: at('covered_until').notNull(),
+    aiCallId: text('ai_call_id').references(() => aiCalls.id),
+    createdAt: at('created_at').notNull(),
+  },
+  (t) => [
+    index('session_summaries_learner_scope').on(t.learnerId, t.scopeType, t.scopeId, t.createdAt),
+    check('session_summaries_scope_type', inList(t.scopeType, SESSION_SUMMARY_SCOPE_TYPES)),
+    check('session_summaries_source', inList(t.source, SESSION_SUMMARY_SOURCES)),
+    check('session_summaries_summary_json', jsonValid(t.summaryJson)),
+    check('session_summaries_concept_ids_json', jsonValid(t.conceptIdsJson)),
+    check('session_summaries_message_count', sql`${t.messageCount} >= 0`),
+  ],
+);
+
+/** Concept IDs of a summary, for "past summaries of these concepts" (ai-system.md#개념-id-기반-검색). */
+export const sessionSummaryConcepts = sqliteTable(
+  'session_summary_concepts',
+  {
+    summaryId: text('summary_id')
+      .notNull()
+      .references(() => sessionSummaries.id, { onDelete: 'cascade' }),
+    conceptId: text('concept_id').notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.summaryId, t.conceptId] }),
+    index('session_summary_concepts_concept').on(t.conceptId),
   ],
 );
 

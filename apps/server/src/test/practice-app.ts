@@ -6,6 +6,7 @@ import { createEngine } from '../services/practice/engine.ts';
 import { createPracticeServices } from '../services/practice/index.ts';
 import { AiService } from '../services/ai/ai-service.ts';
 import { SettingsService } from '../services/settings/service.ts';
+import { MemoryService } from '../services/tutor/memory-service.ts';
 import { TutorService } from '../services/tutor/tutor-service.ts';
 import { writeContentDb } from './content-fixture.ts';
 import { setupDb, silentLog } from './helpers.ts';
@@ -35,6 +36,14 @@ export async function practiceApp() {
   const provider = new MockProvider({ deltaDelayMs: 0 });
   const aiService = new AiService({ provider, log: silentLog });
   const runner = new TaskRunner({ provider, now, sleep: () => Promise.resolve() });
+  const memory = new MemoryService({
+    userDb: ctx.userDb,
+    content,
+    runner,
+    ai: aiService,
+    now,
+    log: silentLog,
+  });
   const tutor = new TutorService({
     userDb: ctx.userDb,
     content,
@@ -42,6 +51,7 @@ export async function practiceApp() {
     ai: aiService,
     now,
     log: silentLog,
+    memory,
   });
   const app = createApp({
     config: { port: 4310, mode: 'production' },
@@ -51,7 +61,7 @@ export async function practiceApp() {
     settings: new SettingsService({ userDb: ctx.userDb, log: silentLog }),
     content,
     practice,
-    ai: { ai: aiService, tutor, keepAliveMs: 50 },
+    ai: { ai: aiService, tutor, memory, keepAliveMs: 50 },
     maintenance: ctx.maintenance,
   });
   ctx.userDb.sqlite
@@ -97,7 +107,7 @@ export async function practiceApp() {
     call,
     open,
     practice,
-    ai: { provider, service: aiService, tutor },
+    ai: { provider, service: aiService, tutor, memory, runner },
   };
 }
 

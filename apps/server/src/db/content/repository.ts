@@ -28,6 +28,15 @@ export interface ContentExerciseConcept {
 
 export type ConceptPrerequisiteRow = typeof t.conceptPrerequisites.$inferSelect;
 
+/** A catalog misconception (content.db `misconceptions`). */
+export interface MisconceptionDetail {
+  id: string;
+  conceptId: string;
+  title: string;
+  description: string;
+  correction: string;
+}
+
 export interface CourseLessonEstimate {
   id: string;
   title: string;
@@ -537,6 +546,37 @@ export class ContentRepository {
       out.set(row.id, { title: row.title, conceptId: row.conceptId });
     }
     return out;
+  }
+
+  /**
+   * Catalog misconceptions with their descriptions (tutor context, AI proposals), by id and/or by
+   * concept. Ordered by concept, then id.
+   */
+  listMisconceptionDetails(query: {
+    ids?: readonly string[];
+    conceptIds?: readonly string[];
+  }): MisconceptionDetail[] {
+    const ids = [...new Set(query.ids ?? [])];
+    const conceptIds = [...new Set(query.conceptIds ?? [])];
+    if (ids.length === 0 && conceptIds.length === 0) return [];
+    return this.#db
+      .select()
+      .from(t.misconceptions)
+      .where(
+        or(
+          ids.length > 0 ? inArray(t.misconceptions.id, ids) : undefined,
+          conceptIds.length > 0 ? inArray(t.misconceptions.conceptId, conceptIds) : undefined,
+        ),
+      )
+      .orderBy(asc(t.misconceptions.conceptId), asc(t.misconceptions.id))
+      .all()
+      .map((row) => ({
+        id: row.id,
+        conceptId: row.conceptId,
+        title: row.title,
+        description: row.description,
+        correction: row.correction,
+      }));
   }
 
   getLesson(id: string): LessonDetail | null {

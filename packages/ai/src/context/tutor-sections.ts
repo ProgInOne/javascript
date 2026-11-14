@@ -9,8 +9,10 @@ import type {
   ExerciseAccess,
   ExerciseContext,
   LessonContext,
+  SessionSummaryContext,
   TutorMessageContext,
 } from './source.ts';
+import { renderSummaryText } from './memory-sections.ts';
 
 // Section loaders shared by the tutor tasks. Each returns variants from fullest to most compact
 // (docs/design/ai-system.md#컨텍스트-조립-우선순위 truncation rules).
@@ -39,6 +41,13 @@ export async function conceptIdsFor(
 }
 
 function renderConcept(c: ConceptStateContext): string {
+  if (c.prerequisiteOf !== undefined) {
+    return tag(
+      'prerequisite',
+      { id: c.id, of: c.prerequisiteOf, stage: c.stage, mastery: Math.round(c.mastery) },
+      data(c.title),
+    );
+  }
   return tag(
     'concept',
     { id: c.id, stage: c.stage, mastery: Math.round(c.mastery), due: c.due },
@@ -46,11 +55,20 @@ function renderConcept(c: ConceptStateContext): string {
   );
 }
 
+/**
+ * `<learner_state>`: the concepts in focus, then their direct prerequisites (docs: 현재 학습 상태,
+ * 우선순위 10). Cut by dropping prerequisites, then all but three concepts.
+ */
 export function learnerStateSection(states: ConceptStateContext[]): LoadedSection | null {
   if (states.length === 0) return null;
+  const targets = states.filter((s) => s.prerequisiteOf === undefined);
   const render = (list: ConceptStateContext[]) =>
     tag('learner_state', {}, list.map(renderConcept).join('\n'));
-  return section('learner_state', null, [render(states), render(states.slice(0, 3))]);
+  return section('learner_state', null, [
+    render(states),
+    render(targets.length > 0 ? targets : states),
+    render((targets.length > 0 ? targets : states).slice(0, 3)),
+  ]);
 }
 
 export function exerciseSection(ex: ExerciseContext): LoadedSection {
@@ -165,16 +183,34 @@ export function lessonSection(lesson: LessonContext): LoadedSection {
   return section('lesson', lesson.id, [render(6_000), render(1_500), render(null)]);
 }
 
-export function conversationSection(messages: TutorMessageContext[]): LoadedSection | null {
-  if (messages.length === 0) return null;
+/**
+ * `<conversation_so_far>` for a rebuilt provider thread (docs: 재구성): the thread's rolling
+ * summary, then the messages after it. Cut by keeping fewer recent messages; the summary stays.
+ */
+export function conversationSection(
+  messages: TutorMessageContext[],
+  summary: SessionSummaryContext | null = null,
+): LoadedSection | null {
+  if (messages.length === 0 && !summary) return null;
+  const summaryBlock = summary
+    ? tag(
+        'thread_summary',
+        { covered_until: new Date(summary.coveredUntil).toISOString() },
+        data(renderSummaryText(summary)),
+      )
+    : null;
   const render = (n: number) =>
     tag(
       'conversation_so_far',
       {},
-      messages
-        .slice(-n)
-        .map((m) => tag('message', { role: m.role }, data(clip(m.content, 2_000))))
+      [
+        summaryBlock,
+        ...messages
+          .slice(messages.length - Math.min(n, messages.length))
+          .map((m) => tag('message', { role: m.role }, data(clip(m.content, 2_000)))),
+      ]
+        .filter((p): p is string => p !== null)
         .join('\n'),
     );
-  return section('conversation_so_far', null, [render(12), render(6), render(2)]);
+  return section('conversation_so_far', null, [render(12), render(6), render(2), render(0)]);
 }

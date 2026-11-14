@@ -15,8 +15,8 @@ AI 제공자 어댑터, AI 작업 정의, 컨텍스트 빌더입니다.
 | 경로 | 내용 |
 |---|---|
 | `runner.ts` | `TaskRunner.run(task, input, { source, signal, onDelta, onReset, providerThread, guard })` → `TaskResult` 또는 `AIError`(둘 다 `ai_calls`용 `AICallRecord` 포함) |
-| `tasks/` | `tutorReply`, `tutorHint` 작업 정의(지침, 입력·출력 스키마, 컨텍스트 명세, 검증, 재시도 정책) |
-| `context/` | `ContextSource` 인터페이스, 토큰 예산 빌더, XML 태그 섹션 렌더러 |
+| `tasks/` | `tutorReply`, `tutorHint`, `sessionSummarize`(롤링 대화 요약, `sanitizeSummary`·`fallbackSummary`) 작업 정의(지침, 입력·출력 스키마, 컨텍스트 명세, 검증, 재시도 정책) |
+| `context/` | `ContextSource` 인터페이스(학습 상태·선수 개념, 활성 오개념, 스레드·과거 요약 포함), 토큰 예산 빌더, XML 태그 섹션 렌더러(`tutor-sections.ts`, `memory-sections.ts`) |
 | `prompts/` | 공통 페르소나·한국어·데이터 경계 지침, `BASE_INSTRUCTIONS_VERSION` |
 | `output/` | 스트림 게이트(`<meta>` 숨김, 누설 검사용 꼬리 보류), 코드 줄 수 |
 | `provider/types.ts` | `ProviderAdapter` 계약 |

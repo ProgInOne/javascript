@@ -6,7 +6,7 @@ import {
   type TutorScopeType,
   type TutorThread,
 } from '@proginone/shared';
-import { and, asc, desc, eq, inArray, isNull, lt, notInArray, or, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, inArray, isNull, lt, notInArray, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import type { Orm } from './connection.ts';
 import { forWrite } from './json-io.ts';
@@ -166,6 +166,8 @@ export function recentMessages(
   threadId: string,
   limit: number,
   excludeIds: readonly string[],
+  /** Only messages created after this (epoch ms): the part a summary does not cover yet. */
+  after?: number,
 ): MessageRow[] {
   return orm
     .select()
@@ -175,6 +177,7 @@ export function recentMessages(
         eq(tutorMessages.threadId, threadId),
         inArray(tutorMessages.status, ['complete', 'cancelled']),
         excludeIds.length > 0 ? notInArray(tutorMessages.id, [...excludeIds]) : undefined,
+        after !== undefined ? gt(tutorMessages.createdAt, new Date(after)) : undefined,
       ),
     )
     .orderBy(desc(tutorMessages.createdAt), desc(tutorMessages.id))

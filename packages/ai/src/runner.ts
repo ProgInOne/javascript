@@ -222,7 +222,9 @@ export class TaskRunner {
 
         // The output guard stopped the stream: treat as a policy violation below.
         if (error && guardState.violations === null) {
-          if (error.threadLost && resumeId !== null) {
+          // A lost thread, or one whose history no longer fits the context window, is rebuilt
+          // from the database (docs: 스레드 매핑 전략, 컨텍스트 창 초과).
+          if ((error.threadLost || error.code === 'AI_CONTEXT_TOO_LARGE') && resumeId !== null) {
             resumeId = null;
             context = await buildContext(task.context, opts.source, input, { rehydrate: true });
             continue;

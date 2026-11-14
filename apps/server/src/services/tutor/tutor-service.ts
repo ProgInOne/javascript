@@ -1,6 +1,8 @@
 import {
   AIError,
+  BASE_INSTRUCTIONS_VERSION,
   errorForStatus,
+  instructionsVersion,
   isAIError,
   tutorHint,
   tutorReply,
@@ -47,6 +49,7 @@ import type { Logger } from '../../observability/logger.ts';
 import type { AiService } from '../ai/ai-service.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
+import type { MemoryService } from './memory-service.ts';
 
 /** Shown instead of a reply that kept failing the answer-leak check (docs: 출력 검증). */
 export const WITHHELD_REPLY =
@@ -59,7 +62,16 @@ export interface TutorDeps {
   ai: AiService;
   now: Clock;
   log: Logger;
+  /** Rolling summaries before a long thread is rebuilt (v0.2 long-term memory). */
+  memory?: MemoryService;
 }
+
+/**
+ * A thread rebuilt with more unsummarized messages than the rebuild replays (12) is summarized
+ * first, so older messages reach the new provider thread through the summary
+ * (docs/design/ai-system.md#sessionsummarize 트리거 "재구성 직전(롤링 요약)").
+ */
+export const REHYDRATE_SUMMARY_THRESHOLD = 12;
 
 /** Receives the SSE events of one turn. Writes after the client left are ignored by the route. */
 export type TurnSink = (event: TutorStreamEventName, data: Record<string, unknown>) => void;
@@ -385,6 +397,24 @@ export class TutorService {
             instructionsVersion: thread.providerInstructionsVersion,
           }
         : null;
+    const iv = instructionsVersion(tutorReply, BASE_INSTRUCTIONS_VERSION);
+    const memory = this.#deps.memory;
+    if (
+      memory &&
+      cached?.instructionsVersion !== iv &&
+      memory.unsummarizedCount(learner.id, thread.id) > REHYDRATE_SUMMARY_THRESHOLD + 2
+    ) {
+      await memory
+        .summarizeThread(thread.id, 'rehydrate', {
+          excludeMessageIds: turn.input.excludeMessageIds,
+        })
+        .catch((err: unknown) => {
+          this.#deps.log.warn(
+            { err, threadId: thread.id },
+            'rolling summary before rebuild failed',
+          );
+        });
+    }
     try {
       const result = await runner.run(tutorReply, turn.input, {
         source: turn.source,

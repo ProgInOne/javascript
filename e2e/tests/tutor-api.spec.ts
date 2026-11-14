@@ -44,5 +44,20 @@ test.describe('tutor API (mock AI)', () => {
       ['learner', 'complete'],
       ['tutor', 'complete'],
     ]);
+
+    // Long-term memory: summarize the conversation now (session.summarize).
+    const summarized = await request.post(`/api/v1/tutor/threads/${thread.id}/summary`, {
+      headers,
+      data: {},
+    });
+    expect(summarized.status()).toBe(200);
+    expect((await summarized.json()) as unknown).toMatchObject({
+      created: true,
+      summary: { scopeType: 'tutor_thread', scopeId: thread.id, source: 'ai' },
+    });
+    const got = await request.get(`/api/v1/tutor/threads/${thread.id}/summary`, { headers });
+    expect(
+      ((await got.json()) as { summary: { messageCount: number } }).summary.messageCount,
+    ).toBeGreaterThanOrEqual(2);
   });
 });

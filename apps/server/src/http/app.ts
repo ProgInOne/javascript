@@ -7,6 +7,7 @@ import type { ContentAccess } from '../services/curriculum/content-access.ts';
 import type { AiService } from '../services/ai/ai-service.ts';
 import type { PracticeServices } from '../services/practice/index.ts';
 import type { SettingsService } from '../services/settings/service.ts';
+import type { MemoryService } from '../services/tutor/memory-service.ts';
 import type { TutorService } from '../services/tutor/tutor-service.ts';
 import type { AppEnv } from './env.ts';
 import { AppError, errorResponse, handleError } from './errors.ts';
@@ -31,7 +32,7 @@ export interface AppDeps {
   content: ContentAccess;
   practice: PracticeServices;
   /** AI status/login and the tutor. Omitted in tests that do not exercise AI. */
-  ai?: { ai: AiService; tutor: TutorService; keepAliveMs?: number };
+  ai?: { ai: AiService; tutor: TutorService; memory?: MemoryService; keepAliveMs?: number };
   /** Built web app to serve (production). Omitted in development, where Vite serves it. */
   webDistDir?: string;
   maintenance?: MaintenanceState;
@@ -95,7 +96,10 @@ export function createApp({
     const opts = ai.keepAliveMs ? { keepAliveMs: ai.keepAliveMs } : {};
     api
       .route('/ai', aiRoutes(ai.ai, opts))
-      .route('/tutor', tutorRoutes(ai.tutor, opts))
+      .route(
+        '/tutor',
+        tutorRoutes(ai.tutor, { ...opts, ...(ai.memory ? { memory: ai.memory } : {}) }),
+      )
       .route('/exercises', aiHintRoutes(ai.tutor));
   }
   const routes = app.route('/api/v1', api);

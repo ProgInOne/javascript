@@ -311,7 +311,7 @@ sequenceDiagram
 | 학습 상태 | `GET /mastery`, `GET /concepts/:id`, `GET /review-queue`, `GET /daily-plan` |
 | 활동 | `POST /activity/heartbeat` (30초 간격, 학습 시간 측정) |
 | 목표 | `GET/PUT /goals` |
-| 튜터 | `POST /tutor/threads`, `GET /tutor/threads`, `GET /tutor/threads/:id/messages`, `POST /tutor/threads/:id/messages` (SSE), `POST /tutor/threads/:id/messages/:messageId/cancel`, `POST /exercises/:id/ai-hint` (`tutor.hint`) |
+| 튜터 | `POST /tutor/threads`, `GET /tutor/threads`, `GET /tutor/threads/:id/messages`, `POST /tutor/threads/:id/messages` (SSE), `POST /tutor/threads/:id/messages/:messageId/cancel`, `GET`·`POST /tutor/threads/:id/summary` (`session.summarize`, v0.2), `POST /exercises/:id/ai-hint` (`tutor.hint`) |
 | AI | `GET /ai/status`, `POST /ai/login`, `POST /ai/login/cancel`, `POST /ai/logout`, `POST /ai/reconnect`, `GET /ai/models`, `GET /ai/events` (SSE: 연결 상태·사용량·로그인 완료) |
 | 코드 초안 | `PUT /code-drafts/:exerciseId` (자동 저장 동기화) |
 | 문제 신고 | `POST /exercises/:id/reports` |

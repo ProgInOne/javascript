@@ -56,7 +56,7 @@ describe('TaskRunner · tutor.reply', () => {
     });
     expect(result.record).toMatchObject({
       taskName: 'tutor.reply',
-      taskVersion: 1,
+      taskVersion: 2,
       provider: 'mock',
       status: 'ok',
       retries: 0,

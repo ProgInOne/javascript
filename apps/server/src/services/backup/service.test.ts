@@ -21,7 +21,7 @@ describe('BackupService', () => {
     expect(meta).toMatchObject({
       kind: 'manual',
       appVersion: '0.1.0',
-      schemaMigration: '0004_goals',
+      schemaMigration: '0005_session_summaries',
       integrityCheck: 'ok',
     });
     expect(entry.id).toMatch(/^manual:\d{4}-\d{2}-\d{2}T\d{9}Z$/);

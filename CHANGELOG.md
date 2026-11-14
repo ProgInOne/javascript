@@ -5,6 +5,9 @@
 
 ## [Unreleased]
 
+### Added
+
+- AI 튜터의 장기 학습 기억(M5, D-035): user.db 마이그레이션 0005(`session_summaries`, `session_summary_concepts`). `session.summarize`가 튜터 대화를 구조화 요약(다룬 개념·질문·잘 이해한 점·어려워한 점과 근거 메시지·오개념 신호·남은 질문)으로 남기고, 마지막 메시지 30분 뒤(Codex가 연결되어 있고 사용량 80% 미만일 때) 이전 요약에 더해 갱신합니다. `GET`·`POST /tutor/threads/:id/summary`. 튜터 답변이 직계 선수 개념의 숙련도와 활성 오개념을 매 턴 참고하고, 앱 재시작 등으로 대화를 다시 시작할 때 스레드 요약·최근 메시지·관련된 지난 대화 요약으로 맥락을 복원합니다
 ### Fixed
 
 - 레슨 MDX에서 `**…**` 바로 뒤에 한국어 조사가 오면 굵게가 닫히지 않던 문제(CommonMark 강조 규칙의 CJK 한계, `remark-cjk-friendly` 적용)

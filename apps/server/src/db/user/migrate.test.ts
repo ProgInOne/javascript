@@ -47,10 +47,11 @@ describe('migrateUserDb', () => {
       '0002_ai_tutor',
       '0003_engine_v02',
       '0004_goals',
+      '0005_session_summaries',
     ]);
     expect(backup).not.toHaveBeenCalled();
     expect(schemaState(userDb.sqlite)).toMatchObject({
-      current: '0004_goals',
+      current: '0005_session_summaries',
       pending: [],
     });
   });
@@ -91,7 +92,7 @@ describe('migrateUserDb', () => {
     const marker = reopened.sqlite.prepare("SELECT value FROM app_meta WHERE key = 'marker'").get();
     expect(marker).toEqual({ value: 'before' });
     expect(schemaState(reopened.sqlite)).toMatchObject({
-      current: '0004_goals',
+      current: '0005_session_summaries',
       pending: [],
     });
     const oops = reopened.sqlite
@@ -112,6 +113,7 @@ describe('migrateUserDb', () => {
       '0002_ai_tutor',
       '0003_engine_v02',
       '0004_goals',
+      '0005_session_summaries',
     ]);
     userDb.sqlite
       .prepare(
@@ -138,6 +140,7 @@ describe('migrateUserDb', () => {
       '0002_ai_tutor',
       '0003_engine_v02',
       '0004_goals',
+      '0005_session_summaries',
     ]);
 
     expect(backup).toHaveBeenCalledOnce();
@@ -207,6 +210,7 @@ describe('migrateUserDb', () => {
       '0002_ai_tutor',
       '0003_engine_v02',
       '0004_goals',
+      '0005_session_summaries',
     ]);
     expect(backup).toHaveBeenCalledOnce();
     expect(userDb.sqlite.prepare('SELECT id FROM hint_events').all()).toEqual([{ id: 'H1' }]);
@@ -244,7 +248,11 @@ describe('migrateUserDb', () => {
       )
       .run();
     const backup = vi.fn(() => Promise.resolve(join(dataDir, 'unused')));
-    expect(await migrateUserDb(userDb, { backup })).toEqual(['0003_engine_v02', '0004_goals']);
+    expect(await migrateUserDb(userDb, { backup })).toEqual([
+      '0003_engine_v02',
+      '0004_goals',
+      '0005_session_summaries',
+    ]);
     expect(backup).toHaveBeenCalledOnce();
     const insert = (id: string, mc: string, status: string, evidence: string, extra = '') =>
       userDb.sqlite
@@ -290,7 +298,10 @@ describe('migrateUserDb', () => {
       )
       .run();
     const backup = vi.fn(() => Promise.resolve(join(dataDir, 'unused')));
-    expect(await migrateUserDb(userDb, { backup })).toEqual(['0004_goals']);
+    expect(await migrateUserDb(userDb, { backup })).toEqual([
+      '0004_goals',
+      '0005_session_summaries',
+    ]);
     const insert = (id: string, minutes: number, to: number | null, date: string | null = null) =>
       userDb.sqlite
         .prepare(
@@ -313,5 +324,39 @@ describe('migrateUserDb', () => {
     await expect(migrateUserDb(userDb, { backup: () => Promise.resolve('') })).rejects.toThrow(
       '더 새로운 버전',
     );
+  });
+  it('upgrades a 0004 database to 0005 (session summaries)', async () => {
+    const dataDir = tmpDir();
+    const userDb = new UserDb(join(dataDir, 'user.db')).open();
+    await migrateUserDb(userDb, {
+      backup: () => Promise.resolve(''),
+      migrationsDir: migrationsUpTo('0004_goals'),
+    });
+    userDb.sqlite
+      .prepare(
+        "INSERT INTO learners (id, timezone, day_start_hour, created_at) VALUES ('L1', 'Asia/Seoul', 4, 1)",
+      )
+      .run();
+    userDb.sqlite
+      .prepare(
+        "INSERT INTO tutor_threads (id, learner_id, scope_type, provider, created_at, last_message_at) VALUES ('T1', 'L1', 'general', 'mock', 1, 1)",
+      )
+      .run();
+    const backup = vi.fn(() => Promise.resolve(join(dataDir, 'unused')));
+    expect(await migrateUserDb(userDb, { backup })).toEqual(['0005_session_summaries']);
+    const insert = (id: string, source: string, json: string) =>
+      userDb.sqlite
+        .prepare(
+          "INSERT INTO session_summaries (id, learner_id, scope_type, scope_id, source, summary_json, concept_ids_json, message_count, covered_until, created_at) VALUES (?, 'L1', 'tutor_thread', 'T1', ?, ?, '[]', 2, 1, 1)",
+        )
+        .run(id, source, json);
+    insert('S1', 'ai', '{}');
+    expect(() => insert('S2', 'guess', '{}')).toThrow(/CHECK/);
+    expect(() => insert('S3', 'ai', 'not json')).toThrow(/CHECK/);
+    userDb.sqlite
+      .prepare("INSERT INTO session_summary_concepts (summary_id, concept_id) VALUES ('S1', 'c')")
+      .run();
+    userDb.sqlite.prepare("DELETE FROM session_summaries WHERE id = 'S1'").run();
+    expect(userDb.sqlite.prepare('SELECT * FROM session_summary_concepts').all()).toEqual([]);
   });
 });
