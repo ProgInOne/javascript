@@ -105,6 +105,8 @@ flowchart TB
 - **셸 서브도메인 (D-018, M1-B 반영)**: 러너 셸은 실행 환경마다 다른 서브도메인 `http://<shellId>.localhost:<port>/sandbox/runner.html`에서 엽니다. 멈춘 셸 프로세스를 다음 실행이 재사용하지 않고, 브라우저가 셸을 앱과 다른 프로세스에 둘 수 있게 하기 위해서입니다. 3초 안에 `shell-hello`가 오지 않으면 같은 사이트 경로 `/sandbox/runner.html`로 대체합니다.
 - 서버는 `Host`가 `<shellId>.localhost:<port>`인 요청에 **`/sandbox/runner.html`과 러너 자산만** 제공하고, 그 밖의 경로(특히 `/api`)는 404로 거부합니다. `shellId`는 영숫자 짧은 ID만 허용합니다.
 - 앱 문서의 CSP에는 `frame-src 'self' http://*.localhost:<port>`를 두어 러너 셸 외의 iframe을 막습니다.
+- **앱 문서 CSP 전체** (M3 구현, `apps/server/src/http/web.ts`): `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-src 'self' http://*.localhost:<port>; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'`. `style-src 'unsafe-inline'`은 Radix와 CodeMirror가 인라인 `style` 속성을 쓰기 때문입니다. 스크립트 인라인은 허용하지 않습니다.
+- **세션 토큰 전달**: 프로덕션에서는 서버가 `index.html`을 내려줄 때 `<meta name="proginone-token">`으로 토큰을 넣습니다(`Cache-Control: no-store`). 다른 출처는 동일 출처 정책 때문에 이 HTML을 읽을 수 없고, DNS 리바인딩은 `Host` 검사로 막힙니다. 개발 모드에서는 Vite가 `index.html`을 제공하므로, 서버가 `<dataDir>/dev-session.json`(권한 0600)에 토큰을 쓰고 Vite 플러그인이 같은 메타 태그를 넣습니다. 서버가 끝나면 파일을 지웁니다.
 
 ### 모노레포 구조
 

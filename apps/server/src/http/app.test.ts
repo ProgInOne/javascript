@@ -3,6 +3,7 @@ import { pino } from 'pino';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import type { BackupService } from '../services/backup/service.ts';
+import type { SettingsService } from '../services/settings/service.ts';
 import { createApp } from './app.ts';
 import { AppError } from './errors.ts';
 import { MaintenanceState, TOKEN_HEADER } from './security.ts';
@@ -11,6 +12,7 @@ const TOKEN = 'test-token-0123456789';
 const log = pino({ level: 'silent' });
 // Routes that need the backup service are covered in services/backup tests.
 const backups = {} as BackupService;
+const settings = {} as SettingsService;
 
 function setup(mode: 'production' | 'development' = 'production') {
   const state = new MaintenanceState();
@@ -19,6 +21,7 @@ function setup(mode: 'production' | 'development' = 'production') {
     log,
     token: TOKEN,
     backups,
+    settings,
     maintenance: state,
   });
   const req = (path: string, headers: Record<string, string> = {}, init: RequestInit = {}) =>
@@ -120,6 +123,7 @@ describe('error model', () => {
       log,
       token: TOKEN,
       backups,
+      settings,
     });
     app.get('/api/v1/_test/app-error', () => {
       throw new AppError('BACKUP_NOT_FOUND', 404, '백업이 없습니다.', { details: { id: 'b1' } });

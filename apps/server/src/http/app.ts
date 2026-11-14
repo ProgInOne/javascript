@@ -3,16 +3,22 @@ import { requestId } from 'hono/request-id';
 import type { Config } from '../config/schema.ts';
 import type { Logger } from '../observability/logger.ts';
 import type { BackupService } from '../services/backup/service.ts';
+import type { SettingsService } from '../services/settings/service.ts';
 import type { AppEnv } from './env.ts';
 import { AppError, errorResponse, handleError } from './errors.ts';
 import { backupRoutes } from './routes/backups.ts';
+import { settingsRoutes } from './routes/settings.ts';
 import { maintenance, MaintenanceState, security } from './security.ts';
+import { webRoutes } from './web.ts';
 
 export interface AppDeps {
   config: Pick<Config, 'port' | 'mode'>;
   log: Logger;
   token: string;
   backups: BackupService;
+  settings: SettingsService;
+  /** Built web app to serve (production). Omitted in development, where Vite serves it. */
+  webDistDir?: string;
   maintenance?: MaintenanceState;
   version?: string;
 }
@@ -27,6 +33,8 @@ export function createApp({
   log,
   token,
   backups,
+  settings,
+  webDistDir,
   maintenance: state = new MaintenanceState(),
   version = '0.0.0',
 }: AppDeps) {
@@ -58,8 +66,10 @@ export function createApp({
 
   const api = new Hono<AppEnv>()
     .get('/health', (c) => c.json({ status: 'ok' as const, version }))
-    .route('/backups', backupRoutes(backups));
+    .route('/backups', backupRoutes(backups))
+    .route('/settings', settingsRoutes(settings));
   const routes = app.route('/api/v1', api);
+  if (webDistDir) app.route('/', webRoutes({ distDir: webDistDir, token, port: config.port }));
 
   app.notFound((c) =>
     errorResponse(c, new AppError('NOT_FOUND', 404, `찾을 수 없습니다: ${c.req.path}`)),

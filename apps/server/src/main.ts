@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
-import { mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { serve } from '@hono/node-server';
 import { ConfigError, loadConfig } from './config/load.ts';
 import { UserDb } from './db/user/connection.ts';
@@ -8,14 +9,17 @@ import { ensureLearner } from './db/user/learners.ts';
 import { MigrationError, migrateUserDb } from './db/user/migrate.ts';
 import { createApp } from './http/app.ts';
 import { MaintenanceState } from './http/security.ts';
+import { writeDevSession } from './lifecycle/dev-session.ts';
 import { acquireInstanceLock } from './lifecycle/instance-lock.ts';
+import { openBrowser } from './lifecycle/open-browser.ts';
 import { createLogger } from './observability/logger.ts';
 import { BackupScheduler } from './services/backup/scheduler.ts';
 import { BackupService } from './services/backup/service.ts';
+import { SettingsService } from './services/settings/service.ts';
 import { APP_VERSION } from './version.ts';
 
 // Startup order: docs/design/system-architecture.md#앱-시작-절차.
-// content.db (M4) and browser opening (web app shell PR) are added later.
+// content.db arrives in M4.
 
 let config;
 try {
@@ -33,8 +37,14 @@ mkdirSync(config.dataDir, { recursive: true });
 
 const url = `http://127.0.0.1:${config.port}`;
 const lock = acquireInstanceLock(config.dataDir, { url });
+const open = (target: string) => {
+  openBrowser(target, (err) => {
+    log.warn({ err }, `브라우저를 열지 못했습니다. ${target} 을(를) 직접 여세요.`);
+  });
+};
 if (!lock.acquired) {
   log.info({ url: lock.running.url, pid: lock.running.pid }, 'ProgInOne이 이미 실행 중입니다.');
+  if (config.openBrowser) open(lock.running.url);
   process.exit(0);
 }
 const { release } = lock;
@@ -78,10 +88,28 @@ const scheduler = new BackupScheduler({
 scheduler.start();
 
 const token = randomBytes(32).toString('base64url');
-const app = createApp({ config, log, token, backups, maintenance, version: APP_VERSION });
+const webDistDir = fileURLToPath(new URL('../../web/dist', import.meta.url));
+const app = createApp({
+  config,
+  log,
+  token,
+  backups,
+  settings: new SettingsService({ userDb, log }),
+  maintenance,
+  version: APP_VERSION,
+  ...(config.mode === 'production' ? { webDistDir } : {}),
+});
+if (config.mode === 'production' && !existsSync(join(webDistDir, 'index.html'))) {
+  log.warn('웹 앱 빌드가 없습니다. `pnpm build`를 먼저 실행하세요.');
+}
+const removeDevSession =
+  config.mode === 'development'
+    ? writeDevSession(config.dataDir, { token, port: config.port })
+    : () => undefined;
 
 const server = serve({ fetch: app.fetch, hostname: '127.0.0.1', port: config.port }, () => {
   log.info({ url, dataDir: config.dataDir, mode: config.mode }, 'ProgInOne 서버가 시작되었습니다.');
+  if (config.openBrowser) open(url);
 });
 
 server.on('error', (err: NodeJS.ErrnoException) => {
@@ -93,6 +121,7 @@ server.on('error', (err: NodeJS.ErrnoException) => {
   } else {
     log.error({ err }, '서버를 시작하지 못했습니다.');
   }
+  removeDevSession();
   release();
   process.exit(1);
 });
@@ -105,10 +134,12 @@ function shutdown(signal: string) {
   scheduler.stop();
   server.close(() => {
     userDb.close();
+    removeDevSession();
     release();
     process.exit(0);
   });
   setTimeout(() => {
+    removeDevSession();
     release();
     process.exit(0);
   }, 5000).unref();

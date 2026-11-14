@@ -1,6 +1,7 @@
 import { apiErrorSchema, backupListSchema, backupSummarySchema } from '@proginone/shared';
 import { describe, expect, it } from 'vitest';
 import { setupDb, silentLog } from '../../test/helpers.ts';
+import { SettingsService } from '../../services/settings/service.ts';
 import { createApp } from '../app.ts';
 import { TOKEN_HEADER } from '../security.ts';
 
@@ -11,6 +12,7 @@ async function setup() {
     log: silentLog,
     token: 't',
     backups: ctx.backups,
+    settings: new SettingsService({ userDb: ctx.userDb, log: silentLog }),
     maintenance: ctx.maintenance,
   });
   const call = (method: string, path: string) =>
