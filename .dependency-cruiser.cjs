@@ -40,6 +40,13 @@ module.exports = {
       to: { path: '^(packages/(?!shared/)|apps/|tools/)' },
     },
     {
+      name: 'runner-only-to-shared',
+      severity: 'error',
+      comment: 'packages/runner는 내부 패키지 중 shared에만 의존합니다(앱과 서버가 함께 씁니다).',
+      from: { path: '^packages/runner/' },
+      to: { path: '^(packages/(?!(runner|shared)/)|apps/|tools/)' },
+    },
+    {
       name: 'pure-packages-no-io',
       severity: 'error',
       comment: 'learning-engine과 exercise-kit 채점기는 I/O 없는 순수 함수입니다.',

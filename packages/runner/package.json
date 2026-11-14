@@ -1,0 +1,22 @@
+{
+  "name": "@proginone/runner",
+  "version": "0.0.0",
+  "private": true,
+  "description": "코드 실행 샌드박스: 러너 셸, 관측 하네스, 호스트 프로토콜",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./protocol": "./src/protocol/index.ts",
+    "./shell-build": "./src/shell/build.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@proginone/shared": "workspace:*",
+    "acorn": "8.19.0",
+    "esbuild": "0.28.2",
+    "parse5": "8.1.1",
+    "zod": "^4.6.7"
+  }
+}

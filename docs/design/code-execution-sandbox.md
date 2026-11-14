@@ -5,7 +5,7 @@
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-14 (M1-B PoC 결과 반영: 셸별 사이트, blob 전달, 학습자 Worker 차단, 채점 셸 배치)
+- 최종 수정: 2026-11-14 (M4 `packages/runner` v0.1 구현 반영: [v0.1 구현 노트](#v01-구현-노트-m4))
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [학습 엔진 설계](/docs/design/learning-engine.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -969,6 +969,57 @@ PoC 코드와 실행 방법, 테스트별 근거는 [`poc/sandbox/`](/poc/sandbo
 - 콘솔 100만 회 출력: 1,000개 표시 + 999,000개 버림, 앱 rAF 최대 간격 18ms 이하(S34).
 - `eval`·`new Function`은 `EvalError`, 문자열 `setTimeout`은 예외 없이 무시됩니다. 학습자에게는 "문자열로 된 코드는 실행되지 않습니다" 안내가 필요합니다(S24).
 - `top.pg` 같은 앱 전역 접근은 `SecurityError`, `window.opener`는 `null`입니다(S14).
+
+## v0.1 구현 노트 (M4)
+
+`packages/runner`의 첫 구현(M4)에서 이 설계와 다르게 하거나 아직 하지 않은 것을 기록합니다. 나머지는 위 설계대로입니다.
+
+### 실제 패키지 구성
+
+| 경로 | 역할 |
+|---|---|
+| `src/protocol/` | 러너 전송 메시지(`RunRequest`, `RunEvent`, 셸·하네스 채널), 실행 가능성 검사를 더한 `runnablePlanSchema`, 목적별 기본 제한값. 채점기와 공유하는 계약(`RunPlan`, `CheckBundle`, `ObservationStep`, `Observation`, `RunResult`, `SerializedValue`, `parseRunResult`)은 `@proginone/shared`(`run-protocol.ts`)에 있고 러너는 그것을 그대로 씁니다 |
+| `src/prepare/` | acorn 반복문 계측, parse5 기반 HTML 재작성(원문 오프셋 편집), 노출 스크립트, 오류 위치 역매핑 |
+| `src/harness/` | 하네스(내장 함수 확보, 직렬화, 콘솔, 타이머 추적, 대체 구현, 반복문 가드, 관측 단계) |
+| `src/shell/` | 셸 컨트롤러와 `runner.html` 빌드(`@proginone/runner/shell-build`, Node 전용) |
+
+단위 테스트는 설계의 `test/unit/` 대신 저장소 규칙대로 각 모듈 옆(`*.test.ts`)에 둡니다. `format/`(표시 형식)은 콘솔 패널·예측 문제 채점과 함께 만듭니다.
+
+### 셸·하네스 빌드
+
+- 셸과 하네스는 TypeScript 모듈이고, 서버가 처음 요청을 받을 때 esbuild로 묶어 `runner.html` 하나로 만든 뒤 프로세스 동안 캐시합니다(약 100ms). 패키지에 별도 빌드 단계를 두지 않는 저장소 규칙을 지키면서 하네스를 타입 검사·단위 테스트하기 위해서입니다.
+- 하네스는 한 줄로 축소되어야 하며(학습자 문서 줄 번호 보존), `</script`·`<!--`가 없어야 합니다. 빌드가 이를 검사하고 위반하면 실패합니다.
+- 하네스에는 zod가 들어가지 않습니다(약 18KB). 셸은 수신 메시지 검증에 zod를 쓰며, 사용하지 않는 zod 로캘을 빼서 약 240KB입니다.
+- zod는 `new Function`으로 검증기를 컴파일할 수 있는지 시험하는데, 셸 CSP에서는 이 시험이 CSP 위반 보고를 남깁니다. 셸 번들은 시작할 때 `jitless`를 설정합니다.
+
+### 프로토콜
+
+- **샌드박스 계약은 `@proginone/shared`가 원천입니다.** 설계의 "정식 정의는 `packages/runner`의 zod 스키마" 대신, `exercise-kit`과 `runner`가 모두 `shared`에만 의존할 수 있어서 계약을 `shared`에 두었습니다(M4-4). 러너는 `RunPlan`을 입력으로 받고, `ObservationStep`을 실행해 `Observation`(`{ op, id, status, error? }` 봉투 + 단계별 필드)을 만들고, 셸 → 호스트 경계에서 결과를 `parseRunResult`(깊이·`__proto__` 검사 후 스키마)로 검증합니다. 서버도 같은 함수로 다시 검증합니다.
+- 호스트가 Prepare 단계를 거쳐 셸에 보내는 `RunRequest`에는 원본 파일 대신 **준비된 코드만** 들어갑니다(`scripts`: `{ id, code }`, `expose`, DOM 모드의 `document`·`harnessAt`). `js-console`은 `entry` 파일을 먼저, 나머지 JS 파일을 계획 순서대로 실행합니다.
+- 하네스는 오류 위치를 `src:<id>`(계측된 코드 기준) 또는 `orig:<id>`(원본 기준, 반복문 가드)로 보고하고, **호스트가** 학습자 파일·줄·열로 되돌립니다. 위치 매핑 표가 학습자 realm에 들어가지 않아 하네스가 작고 변조에 덜 노출됩니다. 열 번호는 계측 삽입 기록으로 보정합니다.
+- 단계 실행 규칙: 시간 초과는 `status: 'timeout'`, 단계 자체의 실패(잘못된 선택자, 관측값 크기 초과)는 `status: 'error'`와 `error`, 아직 없는 단계(`advance`, `a11y`)와 실행 시간 안에 실행하지 못한 단계는 `status: 'skipped'`입니다. 이때도 단계별 필수 필드는 빈 값으로 채워 스키마를 지킵니다. 이벤트 핸들러 오류는 단계 실패가 아니라 `dispatch`의 `ok: false, reason: 'HANDLER_ERROR'`와 `error`입니다.
+- `callFunction`: 인수(`SerializedValue`)를 하네스 realm 값으로 되살려 넘기고(`Map`·`Set`·`Date`·순환 포함), `argsExpr`는 노출 스크립트 안의 함수로 만들어 호출마다 새 배열을 받습니다(식 하나인지 acorn으로 확인, 런타임 문자열 평가 없음). 결과는 `outcome`(`returned`·`threw`·`missing`·`not_callable`, TDZ는 `missing`), `value`/`thrown`, `returnIsArg`(반환값과 같은 참조인 인수 위치), `observeArgsAfter`일 때 `argsAfter`, 호출 중 콘솔(`console`)입니다.
+- `consoleOutput`은 그 시점까지의 콘솔 전체 스냅샷입니다. 콘솔 상한으로 이미 제한되므로 관측값 크기 상한(`maxObservationBytes`)을 적용하지 않습니다.
+- 단계가 있는 실행은 하네스가 따로 정착을 기다리지 않습니다. 묶음의 첫 단계(`waitSettled`)가 대기 시간을 정하고, 남은 실행 시간은 모두 단계에 씁니다. 단계가 없는 실행만 하네스가 `maxDurationMs`까지 정착을 기다립니다.
+- 직렬화는 공유 `SerializedValue`를 따릅니다: 배열의 빈 칸은 `holes` 개수와 그 자리의 `undefined`, 순환은 조상 컨테이너에만 `refId`를 붙이고 참조를 `circular`로 표시합니다(Node `<ref *1>`·`[Circular *1]`과 같음). 같은 객체가 형제로 두 번 나오는 것은 순환이 아닙니다.
+- 셸 CSP가 막은 요청(지시어, URI)은 결과가 아니라 `RunEvent`의 `blocked` 이벤트로 보냅니다(`RunResult`는 공유 계약 그대로). UI가 "네트워크 요청은 차단됩니다"를 설명할 때 씁니다.
+- 콘솔 항목 위치(`ConsoleEntry.source`)는 아직 채우지 않습니다.
+
+### 실행 동작
+
+- **노출 스크립트는 값이 아니라 읽기 함수를 넘깁니다.** 값을 한 번 복사하면 클릭이나 타이머 뒤에 실행되는 관측 단계가 바뀌기 전 값을 봅니다. 읽기 함수는 학습자 전역 스코프에서 정의되어 현재 값, 선언 안 됨, TDZ를 구별해 돌려줍니다.
+- **반복문 가드는 한 번 걸리면 이후 모든 가드 반복문을 즉시 멈춥니다.** `try { while (true) {} } catch { while (true) {} }`처럼 오류를 잡고 다시 반복하면 반복문마다 1초씩 멈추고, Chromium에서는 셸 스레드가 하트비트 제한(1.5초)을 넘겨 Watchdog이 셸을 버렸습니다. 실행은 이미 `loop_limit`이므로 이후 반복은 의미가 없습니다.
+- **학습자 문서가 페이지를 떠나면(`pagehide`) 즉시 `NavigationError`로 끝냅니다.** Chromium은 막힌 `location` 이동·`<meta refresh>`·폼 전송 뒤 중첩 문서를 오류 페이지로 바꾸므로, 기다리면 `maxDurationMs` 뒤 `timeout`이 됩니다. 폼 전송 실습의 `submit` 핸들러는 그 전에 실행됩니다. 실습은 `event.preventDefault()`를 쓰므로 영향이 없습니다.
+- `type="module"` 인라인 스크립트는 구문 오류로 거부합니다(계측 경로가 없음).
+- 구문 오류는 두 모드 모두 실행 없이 즉시 돌려줍니다. DOM 모드에서도 스크립트 하나의 구문 오류가 나머지 실행을 막습니다.
+- `interactive` 실행도 `maxDurationMs`에서 끝냅니다(남은 타이머 수는 `pendingAtEnd`). "계속 실행" 미리보기는 미리보기 화면과 함께 만듭니다. `preview` 모드는 실행이 끝난 뒤 중첩 문서를 다음 실행까지 화면에 남깁니다.
+- `setViewport`는 `resize` 이벤트를 최대 300ms만 기다립니다. 보이지 않는 채점 셸에서는 Chromium이 이 이벤트를 보내지 않는 경우가 있었고, 크기와 미디어 쿼리 결과는 이벤트 없이도 정확했습니다.
+- `confirm()`은 `stdin`이 없으면 `true`, 있으면 `false`·`no`·`n`·`0`·`아니오`·`취소`·빈 문자열을 `false`로 읽습니다.
+- Prepare 단계는 앱 메인 스레드에서 실행합니다. Prepare Worker는 에디터·Prettier와 함께 만듭니다.
+
+### 아직 없는 것 (v0.1 범위 밖)
+
+가상 타이머와 `advance` 단계, `a11y` 단계(axe-core; 두 단계는 `skipped`로 보고), 쿠키 대체 구현, 여러 파일 연결(`<script src>`·`<link href>`를 프로젝트 파일로 인라인), 미리보기 이중 버퍼링·스크롤 유지, 박스 모델 인스펙터, 성능 예산 테스트, Prepare Worker. 각각 필요한 화면·단원과 함께 추가합니다.
 
 ## 샌드박스 미결 사항
 
