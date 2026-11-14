@@ -24,7 +24,10 @@ const VERSION = 1;
 export const PREDICT_ANSWER_MAX_LENGTH = 10_000;
 const identifierSchema = z.string().regex(/^[A-Za-z_$][\w$]{0,99}$/);
 
-/** Execution-derived answer key. Written by `content-cli build`, never by authors. */
+/**
+ * Execution-derived answer key. Computed by `content-cli check --run` (recorded in
+ * `content/.generated/predict-expected.json`) and filled in by check/build, never by authors.
+ */
 export const predictExpectedSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('console'), lines: z.array(z.string().max(10_000)).max(1_000) }),
   z.object({ kind: z.literal('value'), value: serializedValueSchema }),
@@ -302,7 +305,7 @@ export const predictOutput: ExerciseTypeDef<
       issues.push({
         severity: 'warning',
         code: 'PREDICT_EXPECTED_MISSING',
-        message: '기대값이 없습니다. content-cli build가 실행해서 채워야 합니다.',
+        message: '기대값이 없습니다. content-cli check --run이 실행해서 계산해야 합니다.',
         path: 'expected',
       });
       return issues;

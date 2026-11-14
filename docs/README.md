@@ -27,6 +27,7 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 |---|---|
 | [시작하기](/docs/guides/getting-started.md) | 실행, 개발 모드, 설정, 데이터와 백업, 문제 해결 |
 | [테스트 가이드](/docs/guides/testing.md) | 테스트 종류, 실행 방법, 작성 규칙, 시각 회귀 |
+| [콘텐츠 작성 가이드](/docs/guides/content-authoring.md) | 디렉터리 구조, 파일 형식, MDX 컴포넌트, 검사·실행 검증·빌드, 검토 |
 
 ## 제품 문서
 
@@ -60,7 +61,6 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 |---|---|
 | `docs/guides/getting-started.md`: 개발 환경 준비와 실행 | M1 (기반 구축) |
 | `docs/guides/testing.md`: 테스트 실행, 시각 회귀 기준 갱신 | M1 |
-| `docs/guides/content-authoring.md`: 콘텐츠 작성과 검증 | 콘텐츠 파이프라인 구축 마일스톤 |
 | `docs/guides/debugging.md`: 로그, 진단, 자주 발생하는 문제 | AI 통합 마일스톤 |
 | `docs/guides/install-and-upgrade.md`: 설치, 업그레이드, 백업 복원 | 첫 릴리스 전 |
 | `docs/guides/release.md`: 릴리스 절차 | 첫 릴리스 전 |

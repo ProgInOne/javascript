@@ -1,0 +1,127 @@
+{
+  "v": 1,
+  "entries": {
+    "js-basics.start.first-program.predict-comment-one-line": {
+      "inputHash": "3511b8b8df112bf3ad5067f9c9f68f004769d5151b48012e7c373e9b1d0abc2c",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "준비 운동",
+          "스트레칭",
+          "달리기"
+        ]
+      }
+    },
+    "js-basics.start.first-program.predict-log-of-log": {
+      "inputHash": "811f4012295448237b9fb190bb12a62e8d01cd62426106525cf51b47812645a7",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "안녕",
+          "undefined"
+        ]
+      }
+    },
+    "js-basics.start.first-program.predict-quoted-expression": {
+      "inputHash": "da436984d85591b2b5f392b426a0dfbcc8e6f107ed58a7a0ba943afb494aa71f",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "10 + 5",
+          "15"
+        ]
+      }
+    },
+    "js-basics.start.first-program.predict-statement-order": {
+      "inputHash": "5fc9187f2e64e54800e07b1c34d22593d6063368b8cc292645cb4c7cd7b36b7a",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "일어나기",
+          "세수하기",
+          "아침 먹기"
+        ]
+      }
+    },
+    "js-basics.start.reading-errors.predict-error-method-typo": {
+      "inputHash": "a643b519b03ebaaa43b6336ece27d50b27f1f857b57b164d013690ea4efe89fa",
+      "expected": {
+        "kind": "error",
+        "thrown": true,
+        "name": "TypeError"
+      }
+    },
+    "js-basics.start.reading-errors.predict-error-missing-quotes": {
+      "inputHash": "afacec3131fd57da9dcd9b3fc5116e6d52b0cd4f4d57757843e1de113870bdcc",
+      "expected": {
+        "kind": "error",
+        "thrown": true,
+        "name": "ReferenceError"
+      }
+    },
+    "js-basics.values.variables.predict-copy-not-link": {
+      "inputHash": "19a4cc5c10edb02bb8dd8b17f854c748c525cf3b3b2cdd88c9747c61b09a11a9",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "95 70"
+        ]
+      }
+    },
+    "js-basics.values.variables.predict-error-const-reassign": {
+      "inputHash": "9efa814b67fdb95263e381e5e82a5faca51e5fe6f92aeab2b7bca1065e17fa7c",
+      "expected": {
+        "kind": "error",
+        "thrown": true,
+        "name": "TypeError"
+      }
+    },
+    "js-basics.values.variables.predict-error-name-case": {
+      "inputHash": "41cd2f711a95ef0ed63b0b17807c2145bac5532ff0a84dcdb71fa10d2e9a1afc",
+      "expected": {
+        "kind": "error",
+        "thrown": true,
+        "name": "ReferenceError"
+      }
+    },
+    "js-basics.values.variables.predict-let-reassign": {
+      "inputHash": "bb7fa164831127f0702a39af310266897a636eed52bd4d5c4921ecb0abfa26dd",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "졸려요",
+          "신나요"
+        ]
+      }
+    },
+    "js-basics.values.variables.predict-name-vs-string": {
+      "inputHash": "206808289a30799be50b6c61566b716e751d102dab1e06bb29c3da7487418259",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "city",
+          "부산"
+        ]
+      }
+    },
+    "js-basics.values.variables.predict-reassign-chain": {
+      "inputHash": "8a1e1fdb8a001907b27168867a05c65df06c325081cbf8e2570f9041a86ac28f",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "15"
+        ]
+      }
+    },
+    "js-basics.values.variables.predict-total-not-updated": {
+      "inputHash": "47d0ee836eb7c891a5bebc801499daf90578ee054e705de76067da332be1f56a",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "4",
+          "3000"
+        ]
+      }
+    }
+  }
+}

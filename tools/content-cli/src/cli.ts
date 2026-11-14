@@ -5,15 +5,23 @@ import { buildContent } from './build.ts';
 import { checkContent } from './check.ts';
 import type { Diagnostics } from './diagnostics.ts';
 import { exerciseKit } from './kit.ts';
+import { runCheck, type RunCheckItem } from './run-check.ts';
+import { BrowserMissingError, startBrowserRunner } from './verify/browser.ts';
 
 const USAGE = `사용법: content-cli <명령> [옵션]
 
 명령
   check    콘텐츠 스키마와 참조 무결성을 검사합니다
+           --run을 붙이면 헤드리스 Chromium에서 앱과 같은 러너로 실행 검증도 합니다
   build    검사 후 content.db를 만듭니다
 
 옵션
   --dir <경로>   콘텐츠 디렉터리 (기본: ./content)
+  --run          check: 문제와 레슨 예제를 실제로 실행해 검증하고, 예측 문제의
+                 기대값을 .generated/predict-expected.json에 기록합니다
+  --frozen       check --run: 기대값 파일이 최신이 아니면 쓰지 않고 실패합니다(CI용)
+  --concurrency <n>
+                 check --run: 동시에 실행할 브라우저 페이지 수 (기본: 4)
   --out <경로>   build 결과 파일 (기본: ./content/dist/content.db)
   --strict       경고도 실패로 처리합니다
   --include-drafts
@@ -26,6 +34,9 @@ const { positionals, values } = parseArgs({
     dir: { type: 'string', default: 'content' },
     out: { type: 'string', default: 'content/dist/content.db' },
     strict: { type: 'boolean', default: false },
+    run: { type: 'boolean', default: false },
+    frozen: { type: 'boolean', default: false },
+    concurrency: { type: 'string', default: '4' },
     'include-drafts': { type: 'boolean', default: false },
     help: { type: 'boolean', short: 'h', default: false },
   },
@@ -43,6 +54,70 @@ function report(diagnostics: Diagnostics): boolean {
   }
   console.log(`\n오류 ${diagnostics.errorCount}개, 경고 ${diagnostics.warningCount}개`);
   return diagnostics.errorCount > 0 || (values.strict && diagnostics.warningCount > 0);
+}
+
+const STATUS_LABELS = { pass: '통과', fail: '실패', skip: '건너뜀' } as const;
+
+function reportRun(items: readonly RunCheckItem[]): void {
+  for (const item of items) {
+    const { status, messages } = item.outcome;
+    if (status === 'skip') continue;
+    const name = item.kind === 'example' ? `예제 ${item.id.split('#')[1] ?? item.id}` : item.type;
+    const [head, ...rest] = messages;
+    console.log(`${STATUS_LABELS[status]}  ${item.file}  ${name}  ${head ?? ''}`);
+    for (const line of rest) console.log(`      ${line}`);
+  }
+  const count = (s: string) => items.filter((i) => i.outcome.status === s).length;
+  const examples = items.filter((i) => i.kind === 'example').length;
+  console.log(
+    `\n실행 검증: 문제 ${items.length - examples}개, 예제 ${examples}개 — 통과 ${count('pass')}, 실패 ${count('fail')}, 실행 대상 아님 ${count('skip')}`,
+  );
+}
+
+async function checkWithRun(): Promise<boolean> {
+  const concurrency = Number.parseInt(values.concurrency, 10);
+  if (!Number.isInteger(concurrency) || concurrency < 1) {
+    console.error('--concurrency는 1 이상의 정수여야 합니다');
+    return false;
+  }
+  let runner;
+  try {
+    runner = await startBrowserRunner({ concurrency });
+  } catch (error) {
+    if (error instanceof BrowserMissingError) {
+      console.error(
+        '오류  Chromium을 찾을 수 없습니다. 먼저 설치하세요:\n' +
+          '      pnpm --filter @proginone/e2e exec playwright install chromium',
+      );
+      return false;
+    }
+    throw error;
+  }
+  const started = Date.now();
+  try {
+    const result = await runCheck(resolve(values.dir), {
+      validateSpec: exerciseKit.validateSpec,
+      runner,
+      frozen: values.frozen,
+      concurrency,
+    });
+    if (!result.ran) {
+      console.log('스키마 검사에서 오류가 나서 실행 검증을 하지 않았습니다.\n');
+      report(result.diagnostics);
+      return false;
+    }
+    reportRun(result.items);
+    if (result.wrote) console.log(`기대값 파일을 갱신했습니다: ${result.wrote}`);
+    console.log(`(${((Date.now() - started) / 1000).toFixed(1)}초)\n`);
+    const failed = report(result.diagnostics);
+    return result.ok && !failed;
+  } finally {
+    await runner.close();
+  }
+}
+
+if (command === 'check' && values.run) {
+  process.exit((await checkWithRun()) ? 0 : 1);
 }
 
 if (command === 'check') {

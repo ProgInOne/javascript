@@ -83,6 +83,11 @@ jobs:
 
       - run: pnpm build
 
+      # Execution verification of the real content in the same runner (needs Chromium, which
+      # this image has). --frozen: the committed predict answer keys must be up to date.
+      - name: Content run check
+        run: pnpm content:check:run --frozen
+
       - name: Playwright
         working-directory: e2e
         run: pnpm exec playwright test

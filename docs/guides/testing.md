@@ -35,6 +35,7 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 - **컴포넌트·화면**: Testing Library로 역할과 이름을 찾습니다(`getByRole('button', { name: '지금 백업' })`). 클래스나 테스트 ID로 찾지 않습니다. 화면 테스트는 `apps/web/src/test/render-app.tsx`로 실제 라우트 트리를 가짜 API와 함께 렌더링합니다.
 - **시간**: 날짜 경계나 보존 정책은 `now`를 주입해 테스트합니다. 실제 시계를 기다리지 않습니다.
 - 버그 수정에는 재현 테스트를 먼저 추가합니다.
+- **콘텐츠 실행 검증**: `tools/content-cli`의 판정 로직은 가짜 러너(`src/test/fake-runner.ts`)로 테스트합니다. 실제 러너를 쓰는 `src/verify/browser.test.ts`는 Chromium이 없으면 건너뜁니다. 실제 `content/` 전체는 CI e2e 작업의 `pnpm content:check:run --frozen`이 검증합니다([콘텐츠 작성 가이드](/docs/guides/content-authoring.md#contentcheckrun-실행-검증)).
 
 ## E2E (Playwright)
 

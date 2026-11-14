@@ -31,7 +31,7 @@ I/O가 없는 순수 패키지이며 `@proginone/shared`에만 의존합니다.
 |---|---|---|
 | `mcq_single` | recognition | 답안만 |
 | `fill_blank` (`text` 모드) | recall | 답안만 |
-| `predict_output` | recall | 답안 + 빌드가 실행으로 채운 `expected` |
+| `predict_output` | recall | 답안 + `content-cli check --run`이 실행으로 계산하고 빌드가 채운 `expected` |
 | `fill_blank` (`code` 모드) | recall | 답안 + `RunResult` |
 | `implement_function` | production | 답안 + `RunResult` (+ `serverFindings`) |
 | `fix_bug` | production | 답안 + `RunResult` (+ `serverFindings`) |

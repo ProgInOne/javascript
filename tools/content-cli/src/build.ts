@@ -7,6 +7,7 @@ import { CONTENT_DB_SCHEMA_VERSION, CONTENT_DDL } from '@proginone/content-schem
 import Database from 'better-sqlite3';
 import { checkContent, type SpecValidator } from './check.ts';
 import type { Diagnostics } from './diagnostics.ts';
+import { canonical, sha256 } from './hash.ts';
 
 /** Type-specific operations supplied by exercise-kit. */
 export interface ExerciseKitHooks {
@@ -40,20 +41,6 @@ export interface BuildResult {
     /** Draft exercises written because of `includeDrafts`. */
     includedDrafts: number;
   };
-}
-
-const sha256 = (data: string | Buffer) => createHash('sha256').update(data).digest('hex');
-
-/** Stable JSON (sorted keys) so hashes don't depend on YAML key order. */
-function canonical(value: unknown): string {
-  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
-  if (value && typeof value === 'object') {
-    return `{${Object.entries(value)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([k, v]) => `${JSON.stringify(k)}:${canonical(v)}`)
-      .join(',')}}`;
-  }
-  return JSON.stringify(value);
 }
 
 function sourceHash(root: string): string {

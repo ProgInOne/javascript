@@ -7,6 +7,7 @@
 
 ### Added
 
+- `content-cli check --run`과 `pnpm content:check:run`(M4): 헤드리스 Chromium에서 앱과 같은 러너로 실행 검증(예측 문제는 3회 실행 결정론 검사 후 기대값을 `content/.generated/predict-expected.json`에 기록하고 check·build가 채움, 코드 문제는 참조 정답 통과·시작 코드 실패, 레슨 예제는 `expectError` 표시와 실제 오류 일치). CI e2e 작업에 `--frozen`으로 추가. [콘텐츠 작성 가이드](docs/guides/content-authoring.md) 추가
 - v0.1 콘텐츠 JS `variables` 변수와 상수 핵심 단원(M4·C): let·대입·const·이름 규칙 레슨 본문(예제 5개, 흔한 실수 11개), 개념 4개·오개념 11개, 문제 22개. AI 초안(`draft`)이며 사람 검토 전입니다
 - v0.1 콘텐츠 JS 모듈 1 "시작하기"(M4·C): `first-program`(console.log·문장·주석)과 `reading-errors`(오류 메시지 구조·SyntaxError/ReferenceError/TypeError) 레슨 본문, 개념 5개·오개념 9개, 문제 24개. AI 초안(`draft`)이며 사람 검토 전입니다
 - v0.1 콘텐츠 CSS 박스 모델(M4·C): `content/` 콘텐츠 팩(트랙 "웹 프론트엔드 기초"), CSS 개념 4개·오개념 5개, `css.box.model` 레슨 본문과 문제 10개(선택형·빈칸·기본 웹 실습). AI 초안(`draft`)이며 사람 검토 전입니다

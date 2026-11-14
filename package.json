@@ -20,6 +20,7 @@
     "test:e2e": "pnpm build && pnpm --filter @proginone/e2e test",
     "test:e2e:visual": "bash tools/e2e-docker.sh",
     "content:check": "node tools/content-cli/src/cli.ts check --dir content",
+    "content:check:run": "node tools/content-cli/src/cli.ts check --dir content --run",
     "content:build": "node tools/content-cli/src/cli.ts build --dir content --out content/dist/content.db",
     "content:build:dev": "node tools/content-cli/src/cli.ts build --dir content --out content/dist/content.db --include-drafts",
     "build": "pnpm -r --if-present build",
