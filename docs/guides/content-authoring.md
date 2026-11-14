@@ -239,7 +239,7 @@ review:
 
 ### 유형별 스펙
 
-쓸 수 있는 유형은 `mcq_single`, `mcq_multi`, `true_false`, `fill_blank`, `predict_output`, `implement_function`, `fix_bug`, `web_task`입니다(`mcq_multi`·`true_false`는 v0.2부터).
+쓸 수 있는 유형은 `mcq_single`, `mcq_multi`, `true_false`, `fill_blank`, `predict_output`, `parsons`, `implement_function`, `fix_bug`, `web_task`입니다(`mcq_multi`·`true_false`·`parsons`는 v0.2부터).
 아래 예는 `content/`의 실제 문제를 줄인 것입니다. v0.2 유형의 예는 E2E 고정 콘텐츠(`e2e/fixtures/content`)를 줄인 것입니다.
 
 **CSS 과정**(`language: css`)에서는 `mcq_single`, `fill_blank`, `web_task`만 씁니다([D-028](/docs/decisions.md)). 다른 유형은 `content:check` 오류입니다. HTML/CSS 핵심(`depth: core`) 과정에는 "단원 풀의 유형 4종 이상" 규칙을 적용하지 않습니다.
@@ -376,6 +376,53 @@ spec:
 - `answerKind: choice`는 `choices`를 주고, 실제 출력과 정확히 하나만 같아야 합니다.
 - 무작위 값, 현재 시각, 타이머 순서에 기대는 코드는 결정론 검사에서 실패합니다.
 - `misconceptionByAnswer`의 답이 실제 정답과 같으면 오류입니다(기대값이 계산된 뒤 검사합니다).
+
+#### parsons
+
+코드 조각을 순서대로 놓아 프로그램을 완성합니다. `lines`는 **정답 순서대로** 쓰고, 학습자에게는 방해 줄과 섞여 보입니다(ID도 감춤). 지문에 출력 예시처럼 목표를 분명히 적습니다. "필요 없는 조각이 섞여 있을 수 있어요"는 화면이 항상 보여 주므로 지문에 쓰지 않아도 됩니다.
+
+**순서로 채점**(체크 없음):
+
+```yaml
+spec:
+  lines:                         # 정답 순서. 2~30줄, 한 줄에 한 문장
+    - { id: l1, code: "function sum(arr) {" }
+    - { id: l2, code: "let total = 0;", indent: 1 }
+    - { id: l3, code: "for (const n of arr) {", indent: 1 }
+    - { id: l4, code: "total += n;", indent: 2 }
+    - { id: l5, code: "}", indent: 1 }
+    - { id: l6, code: "return total;", indent: 1 }
+    - { id: l7, code: "}" }
+  distractors:                   # 선택. 어디에도 쓰지 않는 줄
+    - { id: d1, code: "total = n;", misconception: js.mc.accumulator-overwrite }
+  gradeIndent: true              # 기본 true. 들여쓰기 수준도 채점
+  alternatives:                  # 선택. 허용하는 다른 순서(모든 줄 ID를 한 번씩)
+    - [l2, l1, l3, l4, l5, l6, l7]
+```
+
+**실행으로 채점**(`checks`가 있으면 동작이 같은 다른 순서도 정답):
+
+```yaml
+spec:
+  lines:
+    - { id: wake, code: 'console.log("일어나기");' }
+    - { id: wash, code: 'console.log("세수하기");' }
+    - { id: eat, code: 'console.log("아침 먹기");' }
+  distractors:
+    - { id: sleep, code: 'console.log("다시 자기");', replaces: wash }   # replaces: 선택
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: order
+      description: 세 줄이 아침 순서대로 출력되어야 합니다.
+      expect:
+        lines: ['일어나기', '세수하기', '아침 먹기']
+```
+
+- 코드가 같은 줄(여러 개의 `}` 등)은 서로 바꿔 놓아도 정답입니다. 그래서 정답 줄과 코드가 같은 방해 줄은 쓸 수 없습니다.
+- 들여쓰기 1단계는 공백 2칸입니다. `checks`로 채점하면 들여쓰기는 채점하지 않습니다(`gradeIndent: false`로 두세요).
+- `checks`가 있으면 `content:check:run`이 정답 순서(와 `alternatives`)로 조립한 코드가 필수 체크를 모두 통과하는지, 방해 줄을 넣으면 실패하는지 확인합니다. 방해 줄은 `replaces`에 적은 줄 자리에, 없으면 **모든 위치**에 넣어 봅니다. 맨 끝에 넣어도 출력이 같은 방해 줄처럼 어딘가에서 통과하면 실패이니, `replaces`를 적거나 체크를 보강하세요.
+- 함수를 부르는 `call` 체크에는 `entry`가 필요합니다.
 
 #### fix_bug
 
@@ -531,6 +578,7 @@ spec:
 | `predict_output` | 3번 실행해 결과가 같은지 확인하고 기대값을 계산·기록 |
 | `implement_function`, `fix_bug`, `fill_blank`(code), `web_task` | 참조 정답이 실행으로 확인하는 필수 체크를 모두 통과하고, 시작 코드(버그 코드, 빈칸을 비운 코드)는 하나 이상 실패 |
 | `<RunnableExample>` | 오류 없이 실행. `expectError`가 있으면 오류가 나야 함. `css`, `src` 예제는 건너뜀 |
+| `parsons` | `checks`가 있으면 정답 순서(와 `alternatives`)로 조립한 코드가 필수 체크를 모두 통과하고, 방해 줄을 넣으면(`replaces` 자리, 없으면 모든 위치) 하나 이상 실패. 없으면 조립한 코드에 문법 오류가 없는지만 확인 |
 | `mcq_single`, `mcq_multi`, `true_false`, `fill_blank`(text) | 실행할 코드가 없어 건너뜀. 스펙의 오개념 ID가 있는지는 정적 검사에서 확인 |
 
 - `static`, `html-valid` 체크는 서버가 실행 없이 채점하므로 실행 검증에서 뺍니다.
@@ -616,6 +664,7 @@ spec:
 | `결정론 위반` | `Math.random()`, `Date`, 타이머 순서 등에 기대지 않게 코드를 바꿉니다. |
 | `참조 정답이 필수 체크 N개를 통과하지 못합니다` | `solution`(또는 첫 `accept`)이나 체크의 기대값이 틀렸습니다. 아래 줄의 기대·실제 값을 비교합니다. |
 | `시작 코드가 이미 모든 필수 체크를 통과합니다` | 아무것도 고치지 않아도 정답이 됩니다. 체크를 보강하거나 시작 코드를 바꿉니다. |
+| `방해 줄 ...을 ...에 넣어도 모든 필수 체크를 통과합니다` | 파슨스의 방해 줄이 동작을 바꾸지 않는 자리가 있습니다. `replaces`로 대신할 줄을 적거나 체크를 보강합니다. |
 | `오류 없이 실행되어야 합니다` / `expectError로 표시했지만` | 예제의 `expectError` 표시를 실제 동작과 맞춥니다. |
 | `Chromium을 찾을 수 없습니다` | `pnpm --filter @proginone/e2e exec playwright install chromium`을 실행합니다. |
 

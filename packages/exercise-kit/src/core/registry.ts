@@ -6,6 +6,7 @@ import { fixBug } from '../types/fix-bug.ts';
 import { implementFunction } from '../types/implement-function.ts';
 import { mcqMulti } from '../types/mcq-multi.ts';
 import { mcqSingle } from '../types/mcq-single.ts';
+import { parsons } from '../types/parsons.ts';
 import { predictOutput } from '../types/predict-output.ts';
 import { trueFalse } from '../types/true-false.ts';
 import { webTask } from '../types/web-task.ts';
@@ -84,6 +85,7 @@ const REGISTRY = new Map<ExerciseTypeId, RegisteredExerciseType>(
     register(trueFalse),
     register(fillBlank),
     register(predictOutput),
+    register(parsons),
     register(implementFunction),
     register(fixBug),
     register(webTask),

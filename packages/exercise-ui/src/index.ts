@@ -65,6 +65,7 @@ export { McqSingle, type McqSingleProps } from './renderers/McqSingle.tsx';
 export { McqMulti, mcqMultiInstruction, type McqMultiProps } from './renderers/McqMulti.tsx';
 export { TrueFalse, type TrueFalseDraft, type TrueFalseProps } from './renderers/TrueFalse.tsx';
 export { FillBlank, parseBlankTemplate, type FillBlankProps } from './renderers/FillBlank.tsx';
+export { Parsons, PARSONS_UI_MAX_INDENT, type ParsonsProps } from './renderers/Parsons.tsx';
 export {
   OutputComparison,
   PredictOutput,

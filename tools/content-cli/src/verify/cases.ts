@@ -1,15 +1,20 @@
 import type { ExerciseSource } from '@proginone/content-schema';
 import {
+  assembleParsons,
   buildPredictExpectationPlan,
   buildRunPlan,
   derivePredictExpected,
   ExerciseKitError,
   gradeSubmission,
   parseSpec,
+  parsonsPublicId,
+  parsonsReferenceAnswer,
   type CheckFailReason,
   type CheckResult,
   type CodeFile,
   type FillBlankSpec,
+  type ParsonsAnswer,
+  type ParsonsSpec,
   type PredictExpected,
   type PredictOutputSpec,
 } from '@proginone/exercise-kit';
@@ -269,6 +274,95 @@ async function verifyCode(
   return pass(messages);
 }
 
+// ── parsons ─────────────────────────────────────────────────────────────────
+
+/** Where a distractor is tried: in place of `replaces`, otherwise at every position. */
+function distractorPlacements(
+  spec: ParsonsSpec,
+  distractor: ParsonsSpec['distractors'][number],
+): { answer: ParsonsAnswer; where: string }[] {
+  const reference = parsonsReferenceAnswer(spec).order;
+  const block = (indent: number) => ({ id: parsonsPublicId(distractor.id), indent });
+  if (distractor.replaces !== undefined) {
+    const at = spec.lines.findIndex((l) => l.id === distractor.replaces);
+    const order = [...reference];
+    order.splice(at, 1, block(reference[at]?.indent ?? 0));
+    return [{ answer: { order }, where: `${distractor.replaces} 대신` }];
+  }
+  return Array.from({ length: reference.length + 1 }, (_, at) => {
+    const order = [...reference];
+    order.splice(at, 0, block(reference[at]?.indent ?? reference[at - 1]?.indent ?? 0));
+    return { answer: { order }, where: `${at + 1}번째 줄` };
+  });
+}
+
+async function verifyParsons(ex: ExerciseSource, runner: PlanRunner): Promise<VerifyOutcome> {
+  const spec = parseSpec('parsons', ex.spec) as ParsonsSpec;
+  const orders = [
+    { label: '정답 순서', ids: spec.lines.map((l) => l.id) },
+    ...spec.alternatives.map((ids, i) => ({ label: `alternatives ${i + 1}`, ids })),
+  ];
+
+  if (!spec.checks) {
+    // Graded by order: the assembled programs only have to be valid JavaScript.
+    const notes: string[] = [];
+    for (const order of orders) {
+      const code = assembleParsons(spec, parsonsReferenceAnswer(spec, order.ids));
+      const run = await runner.run(examplePlan('js', code));
+      const syntax = run.errors.filter((e) => e.phase === 'syntax');
+      if (syntax.length > 0) {
+        return fail([
+          `${order.label}로 조립한 코드에 문법 오류가 있습니다`,
+          ...syntax.map(describeRunError),
+        ]);
+      }
+      notes.push(...runProblems(run).map((p) => `${order.label} 실행(참고): ${p}`));
+    }
+    return pass([
+      `checks가 없어 순서로 채점합니다. 정답 순서${spec.alternatives.length > 0 ? `와 대체 순서 ${spec.alternatives.length}개` : ''}로 조립한 코드에 문법 오류 없음`,
+      ...notes,
+    ]);
+  }
+
+  let required = 0;
+  for (const order of orders) {
+    const ref = await runAndGrade(ex, parsonsReferenceAnswer(spec, order.ids), runner);
+    if (ref.required.length === 0) {
+      return fail(['실행으로 확인하는 필수 체크가 없습니다(정적 체크만으로는 판정하지 않습니다)']);
+    }
+    const failed = ref.required.filter((c) => !c.passed);
+    if (failed.length > 0) {
+      return fail([
+        `${order.label}로 조립한 코드가 필수 체크 ${failed.length}개를 통과하지 못합니다`,
+        ...failed.map(describeCheck),
+        ...runProblems(ref.run).map((p) => `${order.label} 실행: ${p}`),
+      ]);
+    }
+    required = ref.required.length;
+  }
+
+  const harmless: string[] = [];
+  for (const distractor of spec.distractors) {
+    for (const placement of distractorPlacements(spec, distractor)) {
+      const result = await runAndGrade(ex, placement.answer, runner);
+      if (result.required.every((c) => c.passed)) {
+        harmless.push(
+          `방해 줄 ${distractor.id}(\`${distractor.code.trim()}\`)을 ${placement.where}에 넣어도 모든 필수 체크를 통과합니다`,
+        );
+      }
+    }
+  }
+  if (harmless.length > 0) {
+    return fail([
+      ...harmless,
+      '방해 줄을 쓰면 실패해야 합니다. replaces로 대신할 줄을 지정하거나 체크를 보강하세요',
+    ]);
+  }
+  return pass([
+    `정답 순서${spec.alternatives.length > 0 ? `와 대체 순서 ${spec.alternatives.length}개` : ''}가 필수 체크 ${required}개 통과, 방해 줄 ${spec.distractors.length}개는 넣으면 실패`,
+  ]);
+}
+
 /** Verifies one exercise. Types without code to run are skipped. */
 export async function verifyExercise(
   ex: ExerciseSource,
@@ -276,6 +370,7 @@ export async function verifyExercise(
 ): Promise<VerifyOutcome> {
   try {
     if (ex.type === 'predict_output') return await verifyPredict(ex, runner);
+    if (ex.type === 'parsons') return await verifyParsons(ex, runner);
     const built = codeCase(ex.type, parseSpec(ex.type, ex.spec));
     if (typeof built === 'string') return fail([built]);
     if (built === null) return skip('실행할 코드가 없는 유형입니다');

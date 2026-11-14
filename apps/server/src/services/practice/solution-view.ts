@@ -1,12 +1,15 @@
-import type {
-  FillBlankSpec,
-  FixBugSpec,
-  ImplementFunctionSpec,
-  McqMultiSpec,
-  McqSingleSpec,
-  PredictOutputSpec,
-  TrueFalseSpec,
-  WebTaskSpec,
+import {
+  assembleParsons,
+  parsonsReferenceAnswer,
+  type FillBlankSpec,
+  type FixBugSpec,
+  type ImplementFunctionSpec,
+  type McqMultiSpec,
+  type McqSingleSpec,
+  type ParsonsSpec,
+  type PredictOutputSpec,
+  type TrueFalseSpec,
+  type WebTaskSpec,
 } from '@proginone/exercise-kit';
 import { formatValue, type SolutionView } from '@proginone/shared';
 
@@ -63,6 +66,13 @@ export function solutionView(typeId: string, spec: unknown): SolutionView {
         default:
           return { kind: 'none' };
       }
+    }
+    case 'parsons': {
+      const s = spec as ParsonsSpec;
+      return {
+        kind: 'files',
+        files: [{ path: 'main.js', content: `${assembleParsons(s, parsonsReferenceAnswer(s))}\n` }],
+      };
     }
     case 'implement_function':
       return { kind: 'files', files: filesOf((spec as ImplementFunctionSpec).solution.files) };

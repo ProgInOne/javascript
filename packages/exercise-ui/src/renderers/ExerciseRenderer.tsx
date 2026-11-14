@@ -3,6 +3,7 @@ import type {
   FeedbackItem,
   FillBlankAnswer,
   McqMultiAnswer,
+  ParsonsAnswer,
 } from '@proginone/exercise-kit';
 import type { RunResult } from '@proginone/shared';
 import type { AnswerByType, RenderableExercise, RenderableTypeId } from '../exercise.ts';
@@ -12,6 +13,7 @@ import type { CodeRunProps } from './CodeWorkspace.tsx';
 import { FillBlank } from './FillBlank.tsx';
 import { McqMulti } from './McqMulti.tsx';
 import { McqSingle } from './McqSingle.tsx';
+import { Parsons } from './Parsons.tsx';
 import { PredictOutput } from './PredictOutput.tsx';
 import { TrueFalse, type TrueFalseDraft } from './TrueFalse.tsx';
 
@@ -22,7 +24,7 @@ export interface ExerciseRendererProps extends CodeRunProps {
   onChange: (answer: NonNullable<AnswerByType[RenderableTypeId]>) => void;
   disabled?: boolean;
   labelledBy?: string;
-  /** Grader feedback (fill_blank marks blanks from it). */
+  /** Grader feedback (fill_blank marks blanks, parsons marks lines from it). */
   feedback?: readonly FeedbackItem[];
   /** mcq_single: correct option revealed after grading. */
   correctOptionId?: string | null;
@@ -105,6 +107,17 @@ export function ExerciseRenderer(props: ExerciseRendererProps) {
           {...(onRunActual === undefined ? {} : { onRunActual })}
           actual={actual ?? null}
           running={props.running ?? false}
+        />
+      );
+    case 'parsons':
+      return (
+        <Parsons
+          {...base}
+          spec={exercise.spec}
+          value={value as ParsonsAnswer}
+          onChange={onChange}
+          {...(feedback === undefined ? {} : { feedback })}
+          checkResults={props.checkResults ?? null}
         />
       );
     case 'implement_function':

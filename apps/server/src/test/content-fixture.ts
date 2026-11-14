@@ -159,6 +159,7 @@ export const EX = {
   fillText: `${P}.fill-semicolon`,
   fillCode: `${P}.fill-add`,
   predict: `${P}.predict-log`,
+  parsons: `${P}.parsons-greet`,
   implement: `${P}.impl-shout`,
   fixBug: `${P}.fix-shout`,
   web: `${P}.web-list`,
@@ -182,6 +183,9 @@ export const ANSWER_KEY_FIELDS = [
   'missedMisconception',
   'misconceptionIfWrong',
   'answer',
+  'distractors',
+  'alternatives',
+  'replaces',
 ];
 
 const shoutChecks = [
@@ -273,6 +277,20 @@ export const FIXTURE_EXERCISES: FixtureExercise[] = [
       answerKind: 'console',
       expected: { kind: 'console', lines: ['2'] },
       misconceptionByAnswer: { '11': 'js.mc.log-is-return' },
+    },
+  },
+  {
+    id: EX.parsons,
+    type: 'parsons',
+    difficulty: 2,
+    spec: {
+      lines: [
+        { id: 'l1', code: 'const name = "코코";' },
+        { id: 'l2', code: 'console.log(name);' },
+      ],
+      distractors: [
+        { id: 'd1', code: 'console.log("name");', misconception: 'js.mc.log-is-return' },
+      ],
     },
   },
   {

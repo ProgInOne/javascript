@@ -75,6 +75,28 @@ async function answer(page: Page, exerciseId: string, firstSet: boolean) {
       await main.locator('label', { hasText: '적힌 순서대로' }).click();
       await submitSure();
       break;
+    case 'parsons-morning': {
+      const block = (text: string) =>
+        main.getByRole('region', { name: '코드 조각' }).getByRole('button', { name: text });
+      if (firstSet) {
+        // Keyboard only: add blocks in the wrong order, then move the line up with Alt+↑.
+        await block('console.log("세수하기");').focus();
+        await page.keyboard.press('Enter');
+        await block('console.log("일어나기");').focus();
+        await page.keyboard.press('Enter');
+        const answer = main.getByRole('listbox', { name: '내 답안' });
+        await answer.focus();
+        await page.keyboard.press('End');
+        await page.keyboard.press('Alt+ArrowUp');
+        await expect(main.getByText('1번째 줄로 옮겼어요.')).toBeVisible();
+      } else {
+        await block('console.log("일어나기");').click();
+        await block('console.log("세수하기");').click();
+      }
+      await block('console.log("아침 먹기");').click();
+      await submitSure();
+      break;
+    }
     case 'fill-semicolon':
       await main.getByRole('textbox', { name: /빈칸/ }).fill(';');
       await submitSure();

@@ -191,6 +191,81 @@ describe('verifyExercise: code types', () => {
   });
 });
 
+describe('verifyExercise: parsons', () => {
+  const lines = [
+    { id: 'l1', code: 'let total = 0;' },
+    { id: 'l2', code: 'total += 2;' },
+    { id: 'l3', code: 'console.log(total);' },
+  ];
+  const parsonsEx = (extra: Record<string, unknown> = {}) =>
+    exercise('parsons', {
+      lines,
+      distractors: [{ id: 'd1', code: 'total = 5;' }],
+      gradeIndent: false,
+      checks: [consoleCheck(['2'])],
+      ...extra,
+    });
+  const correct = 'let total = 0;\ntotal += 2;\nconsole.log(total);';
+
+  it('passes when the correct order passes and every distractor placement fails', async () => {
+    const runner = fakeRunner({ [correct]: { lines: ['2'] } });
+    const outcome = await verifyExercise(parsonsEx(), runner);
+    expect(outcome).toMatchObject({
+      status: 'pass',
+      messages: ['정답 순서가 필수 체크 1개 통과, 방해 줄 1개는 넣으면 실패'],
+    });
+    // Reference, then the distractor at each of the 4 positions.
+    expect(runner.plans).toHaveLength(5);
+    expect(runner.plans[1]?.files[0]?.content).toBe(`total = 5;\n${correct}`);
+  });
+
+  it('substitutes a distractor for the line it replaces', async () => {
+    const runner = fakeRunner({ [correct]: { lines: ['2'] } });
+    const ex = parsonsEx({ distractors: [{ id: 'd1', code: 'total = 5;', replaces: 'l2' }] });
+    expect((await verifyExercise(ex, runner)).status).toBe('pass');
+    expect(runner.plans.map((p) => p.files[0]?.content)).toEqual([
+      correct,
+      'let total = 0;\ntotal = 5;\nconsole.log(total);',
+    ]);
+  });
+
+  it('fails when a distractor changes nothing, or the correct order fails', async () => {
+    const harmless = 'let total = 0;\ntotal += 2;\nconsole.log(total);\ntotal = 5;';
+    const outcome = await verifyExercise(
+      parsonsEx(),
+      fakeRunner({ [correct]: { lines: ['2'] }, [harmless]: { lines: ['2'] } }),
+    );
+    expect(outcome.status).toBe('fail');
+    expect(outcome.messages[0]).toBe(
+      '방해 줄 d1(`total = 5;`)을 4번째 줄에 넣어도 모든 필수 체크를 통과합니다',
+    );
+
+    const broken = await verifyExercise(parsonsEx(), fakeRunner({ [correct]: { lines: ['3'] } }));
+    expect(broken.status).toBe('fail');
+    expect(broken.messages[0]).toBe('정답 순서로 조립한 코드가 필수 체크 1개를 통과하지 못합니다');
+  });
+
+  it('checks alternatives too', async () => {
+    const ex = parsonsEx({ alternatives: [['l1', 'l3', 'l2']] });
+    const outcome = await verifyExercise(ex, fakeRunner({ [correct]: { lines: ['2'] } }));
+    expect(outcome.status).toBe('fail');
+    expect(outcome.messages[0]).toContain('alternatives 1로 조립한 코드가');
+  });
+
+  it('without checks, only needs the assembled orders to be valid JavaScript', async () => {
+    const ex = parsonsEx({ checks: undefined });
+    const ok = await verifyExercise(ex, fakeRunner({}));
+    expect(ok.status).toBe('pass');
+    expect(ok.messages[0]).toContain('순서로 채점');
+    const bad = await verifyExercise(
+      ex,
+      fakeRunner({ [correct]: { errors: [syntaxError('Unexpected token')] } }),
+    );
+    expect(bad.status).toBe('fail');
+    expect(bad.messages[0]).toBe('정답 순서로 조립한 코드에 문법 오류가 있습니다');
+  });
+});
+
 describe('lesson examples', () => {
   it('collects RunnableExample nodes with their code', () => {
     const { tree } = compileLessonMdx(

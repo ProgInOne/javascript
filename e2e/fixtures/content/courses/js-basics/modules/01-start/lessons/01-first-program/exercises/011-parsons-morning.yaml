@@ -1,0 +1,38 @@
+id: js-basics.start.first-program.parsons-morning
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.basics.statement, weight: 1 }
+estimatedSeconds: 60
+prompt: |
+  아침에 하는 일을 순서대로 출력하도록 코드 조각을 배열하세요.
+
+  ```text
+  일어나기
+  세수하기
+  아침 먹기
+  ```
+spec:
+  lines:
+    - { id: wake, code: 'console.log("일어나기");' }
+    - { id: wash, code: 'console.log("세수하기");' }
+    - { id: eat, code: 'console.log("아침 먹기");' }
+  distractors:
+    - { id: sleep, code: 'console.log("다시 자기");' }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: order
+      description: 세 줄이 아침 순서대로 출력되어야 합니다.
+      expect:
+        lines: ['일어나기', '세수하기', '아침 먹기']
+hints:
+  - 출력은 코드가 적힌 순서대로 나와요.
+  - 가장 먼저 출력할 줄을 맨 위에 두세요.
+  - 필요 없는 조각이 하나 있어요. 출력 예시에 없는 줄을 찾아보세요.
+explanation: |
+  문장은 위에서 아래로 실행되므로, 출력하고 싶은 순서대로 `console.log`를 적으면 돼요. `"다시 자기"`는 출력 예시에 없어서 쓰지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

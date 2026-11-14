@@ -1,4 +1,4 @@
-import { fromJson } from '@proginone/exercise-kit';
+import { fromJson, parsonsPublicId } from '@proginone/exercise-kit';
 import { runPlanSchema, type RunPlan, type RunResult } from '@proginone/shared';
 import { EX } from './content-fixture.ts';
 
@@ -15,6 +15,12 @@ export const CORRECT: Record<string, unknown> = {
   [EX.trueFalse]: { value: false },
   [EX.fillText]: { blanks: { b1: ';' } },
   [EX.predict]: { console: '2' },
+  [EX.parsons]: {
+    order: [
+      { id: parsonsPublicId('l1'), indent: 0 },
+      { id: parsonsPublicId('l2'), indent: 0 },
+    ],
+  },
   [EX.fillCode]: { blanks: { b1: "s.toUpperCase() + '!'" } },
   [EX.implement]: shoutFile("s.toUpperCase() + '!'"),
   [EX.fixBug]: shoutFile("s.toUpperCase() + '!'"),
@@ -28,6 +34,12 @@ export const WRONG: Record<string, unknown> = {
   [EX.trueFalse]: { value: true },
   [EX.fillText]: { blanks: { b1: ':' } },
   [EX.predict]: { console: '11' },
+  [EX.parsons]: {
+    order: [
+      { id: parsonsPublicId('l2'), indent: 0 },
+      { id: parsonsPublicId('l1'), indent: 0 },
+    ],
+  },
   [EX.fillCode]: { blanks: { b1: 's' } },
   [EX.implement]: shoutFile('s'),
   [EX.fixBug]: shoutFile("s + '!'"),

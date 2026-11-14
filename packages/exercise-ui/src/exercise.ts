@@ -4,6 +4,7 @@ import {
   implementFunctionPublicSpecSchema,
   mcqMultiPublicSpecSchema,
   mcqSinglePublicSpecSchema,
+  parsonsPublicSpecSchema,
   predictOutputPublicSpecSchema,
   trueFalsePublicSpecSchema,
   webTaskPublicSpecSchema,
@@ -16,6 +17,8 @@ import {
   type McqMultiPublicSpec,
   type McqSingleAnswer,
   type McqSinglePublicSpec,
+  type ParsonsAnswer,
+  type ParsonsPublicSpec,
   type PredictOutputAnswer,
   type PredictOutputPublicSpec,
   type TrueFalsePublicSpec,
@@ -31,6 +34,7 @@ export const RENDERABLE_TYPE_IDS = [
   'true_false',
   'fill_blank',
   'predict_output',
+  'parsons',
   'implement_function',
   'fix_bug',
   'web_task',
@@ -43,6 +47,7 @@ export interface PublicSpecByType {
   true_false: TrueFalsePublicSpec;
   fill_blank: FillBlankPublicSpec;
   predict_output: PredictOutputPublicSpec;
+  parsons: ParsonsPublicSpec;
   implement_function: ImplementFunctionPublicSpec;
   fix_bug: FixBugPublicSpec;
   web_task: WebTaskPublicSpec;
@@ -59,6 +64,7 @@ export interface AnswerByType {
   true_false: TrueFalseDraft;
   fill_blank: FillBlankAnswer;
   predict_output: PredictOutputAnswer | null;
+  parsons: ParsonsAnswer;
   implement_function: CodeAnswer;
   fix_bug: CodeAnswer;
   web_task: CodeAnswer;
@@ -75,6 +81,7 @@ const PUBLIC_SPEC_SCHEMAS: { [T in RenderableTypeId]: z.ZodType<PublicSpecByType
   true_false: trueFalsePublicSpecSchema,
   fill_blank: fillBlankPublicSpecSchema,
   predict_output: predictOutputPublicSpecSchema,
+  parsons: parsonsPublicSpecSchema,
   implement_function: implementFunctionPublicSpecSchema,
   fix_bug: fixBugPublicSpecSchema,
   web_task: webTaskPublicSpecSchema,
@@ -113,6 +120,8 @@ function initialAnswerOf(exercise: RenderableExercise): AnswerByType[RenderableT
       return {};
     case 'fill_blank':
       return { blanks: {} };
+    case 'parsons':
+      return { order: [] };
     case 'implement_function':
     case 'web_task':
       return { files: exercise.spec.starter.files.map((f) => ({ ...f })) };
@@ -152,6 +161,8 @@ export function isAnswerReady(
       if ('value' in answer) return typeof answer.value === 'string' && answer.value.trim() !== '';
       if ('choiceId' in answer) return answer.choiceId !== '';
       return 'error' in answer;
+    case 'parsons':
+      return 'order' in answer && answer.order.length > 0;
     case 'implement_function':
     case 'fix_bug':
     case 'web_task':
@@ -176,6 +187,8 @@ export function notReadyReason(exercise: RenderableExercise): string {
       return exercise.spec.answerKind === 'choice' || exercise.spec.answerKind === 'error'
         ? '답을 먼저 골라 주세요.'
         : '예측한 결과를 먼저 적어 주세요.';
+    case 'parsons':
+      return '코드 조각을 답안에 놓아 주세요.';
     default:
       return '코드를 작성해 주세요.';
   }

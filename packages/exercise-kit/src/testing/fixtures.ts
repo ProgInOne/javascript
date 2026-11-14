@@ -20,6 +20,9 @@ export const ANSWER_KEY_FIELDS = [
   'missedMisconception',
   'misconceptionIfWrong',
   'answer',
+  'distractors',
+  'alternatives',
+  'replaces',
 ] as const;
 
 const JS_STARTER = { files: [{ path: 'main.js', content: 'function sum(a) {\n  // 여기에\n}\n' }] };
@@ -91,6 +94,19 @@ export const RAW_SPECS: Record<string, unknown> = {
       { id: 'r1', text: 'const는 재할당만 막는다', correct: true },
       { id: 'r2', text: 'const는 값 내부 변경도 막는다', misconception: 'js.mc.secret-r2' },
     ],
+  },
+  parsons: {
+    lines: [
+      { id: 'secret1', code: 'function sum(arr) {' },
+      { id: 'secret2', code: 'let total = 0;', indent: 1 },
+      { id: 'secret3', code: 'for (const n of arr) total += n;', indent: 1 },
+      { id: 'secret4', code: 'return total;', indent: 1 },
+      { id: 'secret5', code: '}' },
+    ],
+    distractors: [
+      { id: 'secret6', code: 'total = n;', misconception: 'js.mc.secret-d', replaces: 'secret3' },
+    ],
+    alternatives: [],
   },
   fill_blank: {
     mode: 'text',
@@ -167,8 +183,22 @@ export const RAW_SPECS: Record<string, unknown> = {
   },
 };
 
-/** Additional raw specs for type variants (fill_blank code mode). */
+/** Additional raw specs for type variants (fill_blank code mode, parsons with checks). */
 export const EXTRA_RAW_SPECS: [typeId: string, spec: unknown][] = [
+  [
+    'parsons',
+    {
+      lines: [
+        { id: 'secret1', code: 'function sum(a) {' },
+        { id: 'secret2', code: 'return a.reduce((s, n) => s + n, 0);', indent: 1 },
+        { id: 'secret3', code: '}' },
+      ],
+      distractors: [{ id: 'secret4', code: 'return 0;', misconception: 'js.mc.secret-p' }],
+      gradeIndent: false,
+      entry: 'sum',
+      checks: CODE_CHECKS,
+    },
+  ],
   [
     'fill_blank',
     {
