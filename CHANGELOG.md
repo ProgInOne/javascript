@@ -7,6 +7,7 @@
 
 ### Added
 
+- `@proginone/exercise-ui` 코드 에디터와 코드 유형 렌더러(M4): CodeMirror 6 에디터(토큰 기반 라이트·다크 작업대 테마, `Esc`→`Tab` 탈출, `⇧⌥F` Prettier 포맷, 자동 완성 기본 끔, 오류 줄 표시), 파일·포맷·초기화·저장 상태를 갖춘 에디터 패널, HTML/CSS 미리보기 자리(실행은 러너), `implement_function`·`fix_bug`·`web_task` 기본형 렌더러와 유형 선택 렌더러
 - `@proginone/exercise-ui`(M4): `mcq_single`·`fill_blank`·`predict_output` 렌더러, 확신도 선택, 힌트 사다리(3단계 + 확인 후 정답 보기), 피드백 배너(확신도별 문구·실패한 테스트·오개념 설명), 체크 목록(숨김 체크는 설명만), 콘솔 보기(`RunResult` 상태·오류 설명), 문제 단축키 훅
 - `@proginone/exercise-kit` 파라메트릭 템플릿 엔진(M4): `<템플릿 ID>@<seed>` → 항상 같은 변형(SplitMix64 시딩 + `xoshiro128**`), 매개변수 8종, 제약 재시도(최대 100회), eval 없는 템플릿 표현식 언어, 렌더링 후 유형 스펙 검증, 빌드용 표본 시드
 - 레슨 예제 실행(M4): `RunnableExample`이 러너로 실제 실행됩니다. 예측 후 실행(예측 입력 또는 건너뛰기 → 실행 → 예측과 콘솔 출력 비교), 오류의 줄 번호, 시간 초과·반복 제한 안내, HTML 예제 미리보기

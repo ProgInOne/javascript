@@ -4,6 +4,11 @@ import { UiProvider } from '@proginone/ui';
 import axe from 'axe-core';
 import type { ReactElement } from 'react';
 
+// jsdom has no layout. CodeMirror measures text ranges after rendering; give it empty geometry.
+const rangeProto = Range.prototype as Partial<Range>;
+rangeProto.getClientRects ??= () => Object.assign([], { item: () => null });
+rangeProto.getBoundingClientRect ??= () => new DOMRect();
+
 /** Renders inside UiProvider (tooltips, dialogs) and returns a user-event instance. */
 export function renderUi(ui: ReactElement): RenderResult & { user: UserEvent } {
   const user = userEvent.setup();

@@ -69,3 +69,27 @@ export {
   PREDICT_ERROR_NAMES,
   type PredictOutputProps,
 } from './renderers/PredictOutput.tsx';
+export {
+  FixBug,
+  ImplementFunction,
+  WebTask,
+  type FixBugProps,
+  type ImplementFunctionProps,
+  type WebTaskProps,
+} from './renderers/CodeRenderers.tsx';
+export {
+  errorLinesByFile,
+  type CodeRendererProps,
+  type CodeRunProps,
+} from './renderers/CodeWorkspace.tsx';
+export { ExerciseRenderer, type ExerciseRendererProps } from './renderers/ExerciseRenderer.tsx';
+
+// Code editor and preview container.
+export { CodeEditor, type CodeEditorHandle, type CodeEditorProps } from './editor/CodeEditor.tsx';
+export { EditorPane, type EditorPaneHandle, type EditorPaneProps } from './editor/EditorPane.tsx';
+export { FormatError, formatCode, languageOfPath, type EditorLanguage } from './editor/format.ts';
+export {
+  PreviewFrame,
+  type PreviewFrameProps,
+  type PreviewStatus,
+} from './preview/PreviewFrame.tsx';

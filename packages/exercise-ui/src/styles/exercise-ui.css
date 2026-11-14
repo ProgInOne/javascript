@@ -790,3 +790,216 @@
   font: var(--text-ui);
   color: var(--color-text-primary);
 }
+
+/* ── Code editor (CodeMirror; colors live in editor/theme.ts) ── */
+.pi-ex-editor {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 0;
+}
+.pi-ex-editor__host {
+  min-height: 240px;
+  overflow: hidden;
+}
+.pi-ex-editor__host .cm-editor {
+  height: 100%;
+  min-height: 240px;
+}
+.pi-ex-editor__help {
+  padding: var(--space-1) var(--space-3);
+  border-top: 1px solid var(--code-border);
+  background: var(--code-surface);
+  font: var(--text-caption);
+  color: var(--color-text-tertiary);
+}
+.pi-ex-editor__errors {
+  color: var(--color-feedback-incorrect-fg);
+  font-weight: 600;
+}
+
+/* ── EditorPane ── */
+.pi-ex-pane {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 0;
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-md);
+  background: var(--code-surface);
+  color: var(--code-fg);
+  overflow: hidden;
+}
+.pi-ex-pane__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 40px;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border-bottom: 1px solid var(--code-border);
+  background: var(--color-bg-surface);
+}
+.pi-ex-pane__files {
+  display: flex;
+  gap: var(--space-1);
+}
+.pi-ex-pane__file {
+  min-height: 28px;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: none;
+  font: var(--text-code);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+button.pi-ex-pane__file {
+  cursor: pointer;
+}
+.pi-ex-pane__file[aria-pressed='true'],
+.pi-ex-pane__file--single {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+.pi-ex-pane__save {
+  font: var(--text-small);
+  color: var(--color-text-tertiary);
+}
+.pi-ex-pane__actions {
+  display: inline-flex;
+  gap: var(--space-1);
+  margin-inline-start: auto;
+}
+.pi-ex-pane__message:empty {
+  display: none;
+}
+.pi-ex-pane__message {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-fg);
+  font: var(--text-small);
+}
+
+/* ── PreviewFrame ── */
+.pi-ex-preview {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 240px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  overflow: hidden;
+}
+.pi-ex-preview__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 40px;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border-bottom: 1px solid var(--color-border-default);
+}
+.pi-ex-preview__title {
+  font: var(--text-small);
+  font-weight: 600;
+}
+.pi-ex-preview__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font: var(--text-small);
+  color: var(--color-text-secondary);
+}
+.pi-ex-preview__refresh {
+  margin-inline-start: auto;
+}
+.pi-ex-preview__stage {
+  position: relative;
+  min-height: 200px;
+  background: var(--color-bg-surface);
+}
+.pi-ex-preview__mount,
+.pi-ex-preview__mount > iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  border: 0;
+}
+.pi-ex-preview__empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-2);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
+  font: var(--text-small);
+  text-align: center;
+}
+
+/* ── Code workspace (implement_function, fix_bug, web_task) ── */
+.pi-ex-workspace {
+  display: grid;
+  gap: var(--space-3);
+  min-height: 0;
+  /* Re-resolve text color inside `.workbench` (the dark workbench remaps tokens here). */
+  color: var(--color-text-primary);
+}
+.pi-ex-workspace__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 1fr);
+  gap: var(--space-3);
+}
+.pi-ex-workspace__editor,
+.pi-ex-workspace__side {
+  display: grid;
+  min-width: 0;
+}
+@media (max-width: 1023px) {
+  .pi-ex-workspace__split {
+    grid-template-columns: 1fr;
+  }
+}
+.pi-ex-workspace__results {
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  overflow: hidden;
+}
+.pi-ex-workspace__results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--code-border);
+}
+.pi-ex-workspace__panel {
+  padding: var(--space-3) var(--space-4);
+}
+.pi-ex-workspace__panel--console {
+  padding: 0;
+}
+.pi-ex-symptom {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-inline-start: 3px solid var(--color-error-accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-feedback-incorrect-bg);
+  color: var(--color-text-primary);
+  font: var(--text-ui);
+}
+.pi-ex-symptom > svg {
+  flex: none;
+  margin-top: 3px;
+  color: var(--color-feedback-incorrect-fg);
+}
+.pi-ex-symptom__title {
+  font-weight: 600;
+}
+.pi-ex-symptom__note {
+  margin-top: var(--space-1);
+  font: var(--text-small);
+  color: var(--color-text-secondary);
+}

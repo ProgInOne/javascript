@@ -39,6 +39,23 @@
 | `FillBlank` | `fill_blank` (text·code) | `spec`, `value: { blanks }`, `onChange`, `feedback`(빈칸별 정오 표시), `checkResults`(코드 모드 체크 목록). 읽는 순서대로 인라인 입력, `Tab`으로 다음 빈칸 |
 | `PredictOutput` | `predict_output` | `spec`, `value`, `onChange`, `onRunActual`·`actual`·`running`(제출 후 "실제로 실행"과 줄 단위 비교). `answerKind`별 입력: 여러 줄 출력, 값, 오류 여부·이름, 선택지 |
 
+| `ImplementFunction` | `implement_function` | `spec`, `value: { files }`, `onChange` + 코드 실행 props(아래). 에디터 + [테스트 결과 / 콘솔] 탭. 초기화 → 시작 코드 |
+| `FixBug` | `fix_bug` | 위와 같음 + 증상(`bugDescription`)과 `maxEditDistance` 안내. 초기화 → 버그 코드 |
+| `WebTask` | `web_task` 기본형 | 위와 같음 + `preview`(`PreviewFrame` props). 에디터 \| 미리보기, 요구사항 목록(마일스톤 묶음). `focus: dom`이면 콘솔 탭이 먼저 열림 |
+| `ExerciseRenderer` | 6종 모두 | `exercise`(`parsePublicSpec` 결과)로 위 렌더러를 고르는 편의 컴포넌트 |
+
+코드 유형의 실행 props(`CodeRunProps`): `onRun()`(실행 버튼, `⌘'`), `onStop()`, `running`, `run: RunResult | null`(콘솔 탭, 에디터 오류 줄), `checkResults`(공개 체크 빠른 피드백 `gradeChecks` 또는 채점 결과), `saveStatus`, `autocomplete`, `timeoutMs`.
+실행 자체는 `packages/runner`가 합니다. 이 패키지는 iframe을 만들지도, 코드를 실행하지도 않습니다.
+
+## 에디터와 미리보기
+
+| 컴포넌트 | 주요 props | 동작 |
+|---|---|---|
+| `CodeEditor` | `value`, `onChange`, `language`(`js`·`html`·`css`), `label`, `readOnly`, `autocomplete`(기본 끔), `lineNumbers`, `errorLines`, `onFormatError`, `ref`(`focus`·`goToLine`·`format`) | CodeMirror 6. 토큰 기반 테마라 라이트 기본과 다크 작업대가 함께 동작합니다. `Tab` 들여쓰기, `Esc` 다음 `Tab`으로 빠져나가기(하단 안내), `⇧⌥F` 포맷(물리 키 기준이라 macOS Option 조합도 동작), `⌘Enter`는 비워 두어 제출 단축키로 전달 |
+| `EditorPane` | `files`, `onChange`, `onReset`, `saveStatus`, `readOnly`, `autocomplete`, `errorLines`, `ref`(`goTo(file, line)`) | 파일 이름(여러 파일은 전환 버튼, P1), 포맷, 확인 후 초기화, 자동 저장 상태, 포맷 실패 안내 |
+| `PreviewFrame` | `mountRef`(러너가 샌드박스 iframe을 붙일 자리) 또는 `children`, `status`(`idle`·`loading`·`ready`·`error`), `errorMessage`, `onRefresh` | 툴바(새로 고침), 빈 상태·로딩·오류 상태. 뷰포트 전환과 요소 검사는 P1 |
+| `formatCode(code, language)` | — | Prettier(첫 사용 때 지연 로드). 문법 오류는 줄 번호가 있는 `FormatError` |
+
 ## 위젯
 
 | 컴포넌트 | 주요 props | 동작 |
@@ -56,3 +73,4 @@
 ## 테스트
 
 루트 Vitest의 `ui` 프로젝트(jsdom)에서 실행합니다. Testing Library + user-event로 역할·이름과 키보드 동작을, axe-core로 WCAG 2.2 A/AA 규칙을 검사합니다.
+jsdom에는 레이아웃이 없어 에디터는 래퍼 계약(값·`onChange`·접근성 이름·오류 줄·포맷·줄 이동)만 검사합니다. 실제 타이핑·키보드 탈출·`⇧⌥F` 같은 브라우저 동작은 실습 화면 통합 후 Playwright E2E로 검사합니다.
