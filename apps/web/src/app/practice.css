@@ -337,4 +337,18 @@
     font-weight: 600;
     color: var(--color-text-brand);
   }
+
+  .nav-badge {
+    display: inline-grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    margin-inline-start: var(--space-1);
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--color-action-primary);
+    color: var(--color-text-on-action);
+    font: var(--text-caption);
+    font-weight: 700;
+  }
 }

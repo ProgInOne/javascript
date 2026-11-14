@@ -50,6 +50,8 @@ export default defineConfig({
       PROGINONE_LOG_LEVEL: 'warn',
       // Deterministic AI; E2E never starts Codex (docs/design/ai-system.md#mockprovider).
       PROGINONE_AI_PROVIDER: 'mock',
+      // Test-only clock shift for next-day reviews (tests/clock.ts writes it).
+      PROGINONE_TEST_CLOCK_FILE: join(dataDir, 'clock-offset-ms'),
     },
   },
 });

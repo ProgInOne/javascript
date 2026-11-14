@@ -21,6 +21,7 @@ import { BackupScheduler } from './services/backup/scheduler.ts';
 import { BackupService } from './services/backup/service.ts';
 import { AiService } from './services/ai/ai-service.ts';
 import { systemClock } from './services/clock.ts';
+import { offsetFileClock } from './services/test-clock.ts';
 import { ContentAccess } from './services/curriculum/content-access.ts';
 import { createEngine } from './services/practice/engine.ts';
 import { createPracticeServices } from './services/practice/index.ts';
@@ -125,6 +126,11 @@ const scheduler = new BackupScheduler({
 scheduler.start();
 
 const engine = await createEngine();
+// E2E only (e2e/playwright.config.ts): learning services read a shifted clock so tests can reach
+// "tomorrow". Never set in normal runs.
+const testClockFile = process.env['PROGINONE_TEST_CLOCK_FILE'];
+const learningClock = testClockFile ? offsetFileClock(testClockFile) : systemClock;
+if (testClockFile) log.warn({ testClockFile }, '테스트용 시계를 사용합니다 (E2E 전용).');
 // Codex starts lazily on the first AI request (docs/design/ai-system.md#프로세스-수명주기).
 const provider = createProvider(config, log, APP_VERSION);
 const ai = new AiService({ provider, log });
@@ -145,7 +151,7 @@ const app = createApp({
   backups,
   settings: new SettingsService({ userDb, log }),
   content,
-  practice: createPracticeServices({ userDb, content, engine, now: systemClock }),
+  practice: createPracticeServices({ userDb, content, engine, now: learningClock }),
   ai: { ai, tutor },
   maintenance,
   version: APP_VERSION,

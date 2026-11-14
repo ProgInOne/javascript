@@ -7,6 +7,7 @@
 
 ### Added
 
+- 최소 대시보드와 복습(M4): 대시보드에 오늘 학습 시간, 오늘의 복습(개수·복습 시작), 이어서 학습(읽는 중·연습 중 단원으로 바로 이동, 해야 할 일 하나만 primary). 헤더에 `복습` 메뉴와 오늘 복습 수 배지(0이면 숨김). `/review` 오늘의 복습(개념 목록·밀린 복습 안내·빈 상태)과 `/review/session/:setId` 복습 세트(실습 화면 재사용, 채점 전 개념 이름 숨김, 종료 요약). E2E 전용 서버 시계 `PROGINONE_TEST_CLOCK_FILE`
 - 읽기 모드 진도·확인 문제·학습 시간(M4): 레슨을 열면 시작 기록(단원 개념이 "입문"), 스크롤 진도와 현재 섹션 저장, 다음 방문 때 "지난번에 ○○까지 읽었어요 · 이어서 읽기", 본문 `<InlineExercise>` 확인 문제를 그 자리에서 채점(짧은 유형만, 코드 문제는 실습 모드 안내), 화면이 보이고 입력이 있는 동안 30초마다 활동 하트비트
 - 학습 화면 실습 모드(M4): 읽기/실습 전환(`?mode=practice&set=&i=`, `⌘1`/`⌘2`), 단원 연습 세트 시작·이어 풀기, 6종 문제 풀이(확신도 제출 `⌘Enter`, 코드 실행 `⌘'`, 힌트 `⌘.`), 코드 문제는 실제 샌드박스로 채점 후 제출, 웹 실습 미리보기, 피드백(확신도별 문구·오개념·해설)과 개념 단계 변화, 힌트 사다리와 정답 보기, 문제 신고, 연습 진행 표시, 코드 답안 자동 저장(이 브라우저), 단원 완료 요약(통과 기준·다음 단원·한 번 더 연습)
 - 튜터 백엔드(M4): user.db 마이그레이션 0002(`tutor_threads`, `tutor_messages`, `ai_calls`), `GET /api/v1/ai/status`·`POST /ai/login`(공식 ChatGPT 로그인)·`/ai/login/cancel`·`/ai/logout`·`/ai/reconnect`·`GET /ai/models`·`GET /ai/events`(SSE 상태·로그인), `POST /tutor/threads`(범위당 하나)·`GET /tutor/threads`·`GET /tutor/threads/:id/messages`·`POST /tutor/threads/:id/messages`(SSE 스트리밍)·취소, `POST /exercises/:id/ai-hint`(연 힌트 단계의 맞춤 힌트, 실패 시 저작 힌트). 힌트 기록으로 AI가 볼 수 있는 정답 범위를 서버가 정하고(D-010), 답변을 정답 누설 지문으로 검사해 숨김 처리, 평가 맥락 잠금, 대화 원문 저장(D-014), 시작 시 끊긴 답변 정리. E2E는 `PROGINONE_AI_PROVIDER=mock`

@@ -1,5 +1,7 @@
 import { IconButton } from '@proginone/ui';
+import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate } from '@tanstack/react-router';
+import { dashboardQuery } from '../api/queries.ts';
 import { Settings } from 'lucide-react';
 import { LogoMark } from './Logo.tsx';
 
@@ -11,10 +13,11 @@ const navLink =
 
 /**
  * Global top navigation (docs/design/ui-ux.md#전역-내비게이션). Only destinations that exist in
- * this milestone are shown; 과정·복습·통계, goal ring and AI status arrive with their features.
+ * this milestone are shown; 통계, goal ring and AI status arrive with their features.
  */
 export function AppHeader() {
   const navigate = useNavigate();
+  const due = useQuery(dashboardQuery).data?.reviewDueCount ?? 0;
   return (
     <header className="sticky top-0 z-header h-(--header-h) border-b border-line bg-surface/92 backdrop-blur-md backdrop-saturate-150">
       <div className="mx-auto flex h-full max-w-[calc(var(--page-max)+2*var(--space-8))] items-center gap-8 px-5 lg:px-8">
@@ -39,6 +42,16 @@ export function AppHeader() {
           </Link>
           <Link to="/courses" className={navLink} activeProps={{ 'aria-current': 'page' }}>
             과정
+          </Link>
+          <Link to="/review" className={navLink} activeProps={{ 'aria-current': 'page' }}>
+            복습
+            {due > 0 && (
+              <span className="nav-badge">
+                <span className="sr-only">: 오늘 </span>
+                {due}
+                <span className="sr-only">개 개념</span>
+              </span>
+            )}
           </Link>
         </nav>
         <div className="ml-auto flex items-center gap-3">

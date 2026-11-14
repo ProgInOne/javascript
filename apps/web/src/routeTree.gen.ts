@@ -14,9 +14,11 @@ import { Route as SettingsRouteRouteImport } from './routes/settings/route'
 import { Route as CoursesIndexRouteImport } from './routes/courses/index'
 import { Route as CoursesCourseIdRouteImport } from './routes/courses/$courseId'
 import { Route as LearnLessonIdRouteImport } from './routes/learn/$lessonId'
+import { Route as ReviewIndexRouteImport } from './routes/review/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as SettingsAppearanceRouteImport } from './routes/settings/appearance'
 import { Route as SettingsDataRouteImport } from './routes/settings/data'
+import { Route as ReviewSessionSetIdRouteImport } from './routes/review/session/$setId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -43,6 +45,11 @@ const LearnLessonIdRoute = LearnLessonIdRouteImport.update({
   path: '/learn/$lessonId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewIndexRoute = ReviewIndexRouteImport.update({
+  id: '/review/',
+  path: '/review/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsIndexRoute = SettingsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -58,6 +65,11 @@ const SettingsDataRoute = SettingsDataRouteImport.update({
   path: '/data',
   getParentRoute: () => SettingsRouteRoute,
 } as any)
+const ReviewSessionSetIdRoute = ReviewSessionSetIdRouteImport.update({
+  id: '/review/session/$setId',
+  path: '/review/session/$setId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -67,7 +79,9 @@ export interface FileRoutesByFullPath {
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/data': typeof SettingsDataRoute
   '/courses/': typeof CoursesIndexRoute
+  '/review/': typeof ReviewIndexRoute
   '/settings/': typeof SettingsIndexRoute
+  '/review/session/$setId': typeof ReviewSessionSetIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -76,7 +90,9 @@ export interface FileRoutesByTo {
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/data': typeof SettingsDataRoute
   '/courses': typeof CoursesIndexRoute
+  '/review': typeof ReviewIndexRoute
   '/settings': typeof SettingsIndexRoute
+  '/review/session/$setId': typeof ReviewSessionSetIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -87,7 +103,9 @@ export interface FileRoutesById {
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/data': typeof SettingsDataRoute
   '/courses/': typeof CoursesIndexRoute
+  '/review/': typeof ReviewIndexRoute
   '/settings/': typeof SettingsIndexRoute
+  '/review/session/$setId': typeof ReviewSessionSetIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -99,7 +117,9 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/data'
     | '/courses/'
+    | '/review/'
     | '/settings/'
+    | '/review/session/$setId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -108,7 +128,9 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/data'
     | '/courses'
+    | '/review'
     | '/settings'
+    | '/review/session/$setId'
   id:
     | '__root__'
     | '/'
@@ -118,7 +140,9 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/data'
     | '/courses/'
+    | '/review/'
     | '/settings/'
+    | '/review/session/$setId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -127,6 +151,8 @@ export interface RootRouteChildren {
   CoursesCourseIdRoute: typeof CoursesCourseIdRoute
   LearnLessonIdRoute: typeof LearnLessonIdRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
+  ReviewIndexRoute: typeof ReviewIndexRoute
+  ReviewSessionSetIdRoute: typeof ReviewSessionSetIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -166,6 +192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnLessonIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/review/': {
+      id: '/review/'
+      path: '/review'
+      fullPath: '/review/'
+      preLoaderRoute: typeof ReviewIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/': {
       id: '/settings/'
       path: '/'
@@ -186,6 +219,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings/data'
       preLoaderRoute: typeof SettingsDataRouteImport
       parentRoute: typeof SettingsRouteRoute
+    }
+    '/review/session/$setId': {
+      id: '/review/session/$setId'
+      path: '/review/session/$setId'
+      fullPath: '/review/session/$setId'
+      preLoaderRoute: typeof ReviewSessionSetIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -212,6 +252,8 @@ const rootRouteChildren: RootRouteChildren = {
   CoursesCourseIdRoute: CoursesCourseIdRoute,
   LearnLessonIdRoute: LearnLessonIdRoute,
   CoursesIndexRoute: CoursesIndexRoute,
+  ReviewIndexRoute: ReviewIndexRoute,
+  ReviewSessionSetIdRoute: ReviewSessionSetIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,5 +1,7 @@
 import {
   attemptResponseSchema,
+  dashboardSchema,
+  reviewQueueSchema,
   exerciseViewSchema,
   heartbeatResponseSchema,
   hintResponseSchema,
@@ -179,3 +181,16 @@ export const recordLessonProgress = (lessonId: string, request: LessonProgressRe
 
 export const sendHeartbeat = (request: HeartbeatRequest) =>
   api('/activity/heartbeat', { method: 'POST', body: request, schema: heartbeatResponseSchema });
+
+// ── Dashboard and review ──
+
+export const dashboardQuery = queryOptions({
+  queryKey: ['dashboard'],
+  queryFn: ({ signal }) => api('/dashboard', { schema: dashboardSchema, signal }),
+  staleTime: 30_000,
+});
+
+export const reviewQueueQuery = queryOptions({
+  queryKey: ['review-queue'],
+  queryFn: ({ signal }) => api('/review-queue', { schema: reviewQueueSchema, signal }),
+});

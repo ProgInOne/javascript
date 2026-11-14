@@ -32,6 +32,40 @@ const BACKUPS = {
   ],
 };
 
+const DASHBOARD = {
+  date: '2026-11-15',
+  activeMinutesToday: 18,
+  reviewDueCount: 3,
+  continueLesson: {
+    id: 'js-basics.start.first-program',
+    title: '첫 프로그램',
+    status: 'reading',
+    readProgress: 0.4,
+    practiceSetId: null,
+  },
+};
+
+const due = (conceptId: string, title: string, overdueDays: number) => ({
+  conceptId,
+  title,
+  dueAt: 1,
+  overdue: overdueDays > 0,
+  overdueDays,
+  itemCount: 1,
+  estimatedSeconds: 90,
+  priority: 1,
+});
+const QUEUE = {
+  date: '2026-11-15',
+  budgetMinutes: 20,
+  due: [
+    due('js.basics.console-log', 'console.log로 출력하기', 0),
+    due('js.basics.statement', '문장과 실행 순서', 1),
+  ],
+  deferred: [],
+  estimatedMinutes: 3,
+};
+
 const FIRST_VISIT = {
   lessonId: 'js-basics.start.first-program',
   status: 'reading',
@@ -58,7 +92,9 @@ for (const viewport of VIEWPORTS) {
       test(`${name} @visual`, async ({ page }) => {
         await page.setViewportSize(viewport);
         await page.route('**/api/v1/backups', (route) => route.fulfill({ json: BACKUPS }));
-        // Reading position depends on earlier tests: always show a first visit.
+        // Learning state depends on earlier tests: fixed dashboard, first visit of the lesson.
+        await page.route('**/api/v1/dashboard', (route) => route.fulfill({ json: DASHBOARD }));
+        await page.route('**/api/v1/review-queue', (route) => route.fulfill({ json: QUEUE }));
         await page.route('**/api/v1/lessons/*/progress', (route) =>
           route.fulfill({ json: FIRST_VISIT }),
         );
