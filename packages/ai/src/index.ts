@@ -41,3 +41,17 @@ export {
   type TutorHintOutput,
 } from './tasks/tutor-hint.ts';
 export { TASKS, type TaskName } from './tasks/catalog.ts';
+export {
+  CodexAdapter,
+  type CodexAdapterOptions,
+  type CodexLogLevel,
+  type BackoffPolicy,
+} from './provider/codex/adapter.ts';
+export { TUTOR_CONFIG_TOML, prepareTutorDirs, type TutorDirs } from './provider/codex/home.ts';
+export { MIN_CODEX_VERSION, PROTOCOL_CODEX_VERSION } from './provider/codex/protocol.ts';
+export {
+  REQUIRED_OFF,
+  ALLOWED_ON,
+  parseFeatureList,
+  verifyFeatureFlags,
+} from './provider/codex/features.ts';

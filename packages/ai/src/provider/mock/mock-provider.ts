@@ -87,6 +87,7 @@ export class MockProvider implements ProviderAdapter {
   #threadSeq = 0;
   #turnSeq = 0;
   #loginSeq = 0;
+  #pendingLogin: { loginId: string; startedAt: number } | null = null;
 
   constructor(options: MockProviderOptions = {}) {
     this.#deltaDelayMs = options.deltaDelayMs ?? 5;
@@ -161,7 +162,9 @@ export class MockProvider implements ProviderAdapter {
 
   login(): Promise<AILoginResponse> {
     const loginId = `mock-login-${++this.#loginSeq}`;
+    this.#pendingLogin = { loginId, startedAt: Date.now() };
     setTimeout(() => {
+      this.#pendingLogin = null;
       this.#emit({ type: 'login', login: { loginId, success: true, error: null } });
       this.setStatus({ state: 'ready', planType: 'mock' });
     }, 10);
@@ -169,7 +172,12 @@ export class MockProvider implements ProviderAdapter {
   }
 
   cancelLogin(): Promise<void> {
+    this.#pendingLogin = null;
     return Promise.resolve();
+  }
+
+  pendingLogin(): { loginId: string; startedAt: number } | null {
+    return this.#pendingLogin;
   }
 
   logout(): Promise<void> {

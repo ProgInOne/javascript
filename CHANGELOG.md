@@ -7,6 +7,7 @@
 
 ### Added
 
+- Codex App Server 어댑터(M4, D-002): stdio JSON-RPC 클라이언트(과부하 재시도), 지연 시작·재시작 백오프(1→30초, 5회 후 중지, "다시 연결"), 튜터 전용 `CODEX_HOME`(`<dataDir>/codex-home`)과 기능 플래그 묶음 `config.toml`, 시작 시 `codex features list` 검증(도구 기능이나 모르는 기능이 켜져 있으면 튜터 비활성), `codex app-server`가 보고한 홈 경로 확인, 스레드 격리 재정의(`untrusted`·`read-only`·빈 작업 폴더·웹 검색 끔·`baseInstructions`)와 실효 값 검증, 모든 서버 요청 자동 거부, 도구 계열 항목이 나타나면 즉시 `turn/interrupt`하고 응답 폐기, 스트리밍·취소·시간 초과, 사용량·모델 목록, 공식 ChatGPT 로그인(`account/login/start`)과 5분 자동 취소
 - `@proginone/ai` 기반(M4): 제공자 어댑터 계약(`ProviderAdapter`), AI 작업 정의 `tutor.reply`(스트리밍, 숨김 `<meta>` 메타데이터)·`tutor.hint`(단계 고정 구조화 출력, 단계별 코드 줄 수 상한), 토큰 예산 컨텍스트 빌더와 `ContextSource` 인터페이스, 한국어 튜터 페르소나·교수법·데이터 경계 지침(버전 관리), 정답 누설 검사를 화면 표시 전에 하는 스트림 게이트, 재시도·도구 시도·취소·스레드 재구성을 다루는 `TaskRunner`, 결정론적 `MockProvider`. `@proginone/shared`에 `AI_*` 오류 코드와 AI 상태·사용량·로그인 계약
 - `implement_function` 프로그램 작성 문제(D-028): `entry`(함수 이름)가 선택이 되어, 없으면 학습자가 최상위 코드를 쓰고 `console`·`program` 체크로만 채점합니다(`call` 체크는 `CHECK_NEEDS_ENTRY` 스펙 오류). 체크 목록은 `program` 체크의 공개 기대값(`nickname → "코코"`)을 보여줍니다
 - 콘텐츠 검토자 `reviewedBy: ai:reviewer`(D-027): 사람 검토 대신 초안 작성자와 분리된 컨텍스트의 독립 AI 검토자가 승인할 수 있습니다. `reviewedBy`는 `draftedBy`와 달라야 하며, 승인된 문제는 검토자와 관계없이 `review_status = 'trusted'`

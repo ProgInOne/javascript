@@ -95,6 +95,8 @@ export interface ProviderAdapter {
   /** Starts the official ChatGPT browser login. Completion arrives as a `login` event. */
   login(): Promise<AILoginResponse>;
   cancelLogin(loginId: string): Promise<void>;
+  /** The login started with {@link login} that has not completed (auto-cancelled after 5 min). */
+  pendingLogin(): { loginId: string; startedAt: number } | null;
   logout(): Promise<void>;
   /**
    * Runs one turn. Rejects with `AIError`: `AI_CANCELLED` when `signal` aborts (with the text so
