@@ -36,7 +36,10 @@ export default tseslint.config(
       // 단위 테스트와 경계 검증 코드에서 템플릿 문자열에 숫자를 넣는 일은 흔하고 안전합니다.
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
       '@typescript-eslint/consistent-type-imports': 'error',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', ignoreRestSiblings: true },
+      ],
       eqeqeq: ['error', 'always'],
       'no-console': 'error',
     },

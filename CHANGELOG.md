@@ -7,6 +7,7 @@
 
 ### Added
 
+- 콘텐츠 스키마와 검사(M4): `@proginone/content-schema`(pack·개념·오개념·과정·모듈·단원·문제 공통 필드 zod 스키마, slug 규칙), `content-cli check`(참조 무결성, 선수 관계 순환, 디렉터리·목록 순서, 레슨 MDX 허용 컴포넌트·섹션 규칙, 원시 HTML 금지, 유형별 스펙 검증 연결점)
 - Tailwind CSS v4(D-025): 웹 앱 화면 배치를 토큰 기반 유틸리티로 전환(시각 변화 없음)
 - 가이드(M3): 시작하기(`docs/guides/getting-started.md`), 테스트(`docs/guides/testing.md`)
 - E2E·시각 회귀·접근성 테스트(M3): Playwright(`e2e/`)로 핵심 흐름·로컬 서버 보안, 화면 × 테마별 axe-core WCAG 2.2 AA 검사, 화면 × 테마 × 뷰포트 스크린샷 비교(Playwright Docker 이미지), CI `e2e` 작업, `pnpm test:e2e`·`pnpm test:e2e:visual`

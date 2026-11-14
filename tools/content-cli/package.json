@@ -1,0 +1,28 @@
+{
+  "name": "@proginone/content-cli",
+  "version": "0.0.0",
+  "private": true,
+  "description": "콘텐츠 검증과 content.db 빌드 도구",
+  "type": "module",
+  "bin": {
+    "content-cli": "./src/cli.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@proginone/content-schema": "workspace:*",
+    "remark-gfm": "^4.0.1",
+    "remark-mdx": "^3.1.1",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/mdast": "^4.0.4",
+    "mdast-util-mdx-expression": "^2.0.1",
+    "mdast-util-mdx-jsx": "^3.2.1",
+    "mdast-util-mdxjs-esm": "^2.0.1"
+  }
+}

@@ -499,6 +499,13 @@ title: 웹 프론트엔드 기초
 courses: [html, css, js-basics]  # 빌드에 포함할 과정 (v1.x에서 js-advanced, browser-js 추가)
 ```
 
+구현 메모 (M4, `packages/content-schema`):
+
+- `pack.yaml`은 `courses` 대신 `tracks: [{ id, title, summary, courses }]`를 씁니다. content.db의 `tracks` 테이블과 과정 목록 화면의 묶음이 여기서 나옵니다.
+- `course.yaml`에는 `language`(`html`/`css`/`javascript`), `level`(`intro`/`basic`/`advanced`), `depth`(`full`/`core`), `status`가 있습니다(content.db `courses` 컬럼과 일치). `lesson.yaml`에는 `summary`가 필수입니다.
+- 오개념에는 피드백에 쓰는 짧은 이름 `title`이 필수입니다(content.db `misconceptions.title`).
+- 문제에는 선택 필드 `misconceptions`(이 문제가 겨냥하는 오개념 목록)가 있습니다.
+
 ### concepts/js.yaml
 
 ```yaml
@@ -616,6 +623,8 @@ console.log(result);`}
 <InlineExercise ref="js-basics.functions.function-basics.mcq-return-vs-log" />
 </Section>
 ```
+
+레슨 MDX는 빌드 시 **검증된 JSON 트리**(mdast + 허용 컴포넌트 노드)로 바꿔 content.db에 저장하고, 웹 앱이 React로 렌더링합니다. 컴파일된 JS 함수를 런타임에 실행하지 않습니다(앱 CSP가 `unsafe-eval`을 허용하지 않고, 콘텐츠가 코드를 실행할 경로를 없애기 위해서). `RunnableExample`의 코드는 표현식 대신 보간(`${`)이 없는 템플릿 문자열 하나 또는 코드 블록 하나만 허용합니다.
 
 `RunnableExample`의 코드를 JSX 템플릿 문자열로 넣는 대신 `examples/` 파일을 참조하는 `src` prop도 허용합니다(긴 예제용).
 

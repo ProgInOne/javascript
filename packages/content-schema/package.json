@@ -1,0 +1,16 @@
+{
+  "name": "@proginone/content-schema",
+  "version": "0.0.0",
+  "private": true,
+  "description": "콘텐츠 원본(YAML·MDX)의 zod 스키마와 slug 규칙",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  }
+}
