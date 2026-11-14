@@ -1,0 +1,41 @@
+id: js-basics.values.variables.predict-reassign-chain
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.values.assignment, weight: 1 }
+tags: [assignment, trace]
+estimatedSeconds: 75
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요?
+spec:
+  lang: js
+  code: |
+    let points = 4;
+    points = points + 6;
+    points = points * 2;
+    points = points - 5;
+    console.log(points);
+  answerKind: console
+  misconceptionByAnswer:
+    "4": js.mc.assign-is-equality
+hints:
+  - "\"이름 → 값\" 표를 그려서 한 줄씩 따라가 보세요."
+  - 대입할 때마다 오른쪽의 `points`는 처음 값이 아니라 바로 앞 줄까지 반영된 지금 값이에요.
+  - 4에서 시작해 +6, ×2, −5를 차례로 적용해 보세요.
+explanation: |
+  정답은 **15**예요.
+
+  | 실행한 줄 | 오른쪽 계산 | 대입 후 `points` |
+  |---|---|---|
+  | `let points = 4;` | 4 | 4 |
+  | `points = points + 6;` | 4 + 6 | 10 |
+  | `points = points * 2;` | 10 × 2 | 20 |
+  | `points = points - 5;` | 20 − 5 | 15 |
+
+  대입할 때마다 오른쪽의 `points`는 그 순간의 값이에요. 그래서 계산이 차곡차곡 쌓여요.
+
+  `4`라고 답했다면 `points = points + 6`같은 문장이 값을 바꾸지 못한다고 본 거예요. `=`는 "같다"가 아니라 새 값을 넣는 대입이에요. `-1`처럼 답했다면 모든 계산을 처음 값 4에 따로따로 적용했을 가능성이 있어요(4 + 6, 4 × 2, 4 − 5).
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

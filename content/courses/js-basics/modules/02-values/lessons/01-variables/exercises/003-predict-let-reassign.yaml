@@ -1,0 +1,48 @@
+id: js-basics.values.variables.predict-let-reassign
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.values.let, weight: 1 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [let, reassignment]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    let mood = "졸려요";
+    console.log(mood);
+    mood = "신나요";
+    console.log(mood);
+  answerKind: console
+  misconceptionByAnswer:
+    "신나요\n신나요": js.mc.variable-remembers-formula
+    "졸려요\n졸려요": js.mc.assign-is-equality
+hints:
+  - console.log는 실행되는 그 순간 변수에 들어 있는 값을 출력해요.
+  - 2번 줄이 실행될 때 `mood`의 값은 무엇인가요? 4번 줄이 실행될 때는요?
+  - 3번 줄은 `mood`에 새 값을 넣어요. 이전 값은 어떻게 될까요?
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  졸려요
+  신나요
+  ```
+
+  | 실행한 줄 | `mood` | 출력 |
+  |---|---|---|
+  | `let mood = "졸려요";` | 졸려요 | |
+  | `console.log(mood);` | 졸려요 | 졸려요 |
+  | `mood = "신나요";` | 신나요 | |
+  | `console.log(mood);` | 신나요 | 신나요 |
+
+  console.log는 실행되는 **그 순간**의 값을 출력해요. 2번 줄이 실행될 때는 아직 `졸려요`였어요. 3번 줄의 대입으로 값이 `신나요`로 바뀐 뒤에 4번 줄이 실행돼요.
+
+  - 두 줄 모두 `신나요`라고 답했다면, 앞에서 출력한 내용도 나중 값으로 바뀐다고 생각한 거예요. 이미 출력된 줄은 바뀌지 않아요.
+  - 두 줄 모두 `졸려요`라고 답했다면, let 변수는 처음 값에서 바뀌지 않는다고 생각한 거예요. `=`로 새 값을 넣으면 바뀌어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

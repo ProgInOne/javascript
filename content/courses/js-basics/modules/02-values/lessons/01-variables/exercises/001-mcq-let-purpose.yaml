@@ -1,0 +1,41 @@
+id: js-basics.values.variables.mcq-let-purpose
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.values.let, weight: 1 }
+tags: [let, variable]
+estimatedSeconds: 40
+prompt: |
+  `let score = 90;`을 실행하면 어떤 일이 일어나나요?
+spec:
+  options:
+    - id: a
+      text: "`score`라는 이름의 변수가 만들어지고, 그 안에 90이 저장된다"
+    - id: b
+      text: 콘솔에 90이 출력된다
+      misconception: js.mc.log-is-return
+      rationale: 변수를 만드는 문장은 아무것도 출력하지 않아요. 보려면 console.log(score)가 필요해요.
+    - id: c
+      text: "`score`와 90이 영원히 같다는 규칙이 정해져서, score는 앞으로 90만 될 수 있다"
+      misconception: js.mc.assign-is-equality
+      rationale: "=는 \"같다\"는 규칙이 아니라 값을 넣는 대입이에요. let 변수에는 나중에 다른 값을 넣을 수 있어요."
+    - id: d
+      text: 글자 "score"가 숫자 90으로 바뀐다
+      rationale: score는 글자가 아니라 변수의 이름이에요. 따옴표가 없다는 점에 주목하세요.
+  correct: a
+hints:
+  - "`let`은 무엇을 만드는 명령이었나요?"
+  - 문장을 세 부분 `let` / `score` / `= 90`으로 나눠서 각각의 역할을 생각해 보세요.
+  - 이 문장에는 console.log가 없어요. 무엇을 저장할 뿐인지, 무엇을 보여 주는지 구분해 보세요.
+explanation: |
+  정답은 **`score`라는 이름의 변수가 만들어지고, 그 안에 90이 저장된다**예요.
+
+  `let`은 새 변수를 만드는 선언이고, `score`는 이름, `= 90`은 처음 넣을 값이에요. 이후에는 `score`라는 이름으로 90을 꺼내 쓸 수 있어요.
+
+  - 출력된다고 고른 경우: 저장과 출력은 달라요. 값을 보려면 `console.log(score);`를 따로 써야 해요.
+  - "영원히 같다"를 고른 경우: `=`는 수학의 등호가 아니라 값을 넣는 대입이에요. `let` 변수는 나중에 `score = 95;`처럼 다른 값을 넣을 수 있어요.
+  - 글자가 바뀐다고 고른 경우: 따옴표가 없는 `score`는 글자가 아니라 이름이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

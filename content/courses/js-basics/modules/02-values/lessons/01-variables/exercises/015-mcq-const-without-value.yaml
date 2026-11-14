@@ -1,0 +1,51 @@
+id: js-basics.values.variables.mcq-const-without-value
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: js.values.const, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [const, syntax-error]
+estimatedSeconds: 75
+prompt: |
+  다음 프로그램을 실행하면 어떻게 되나요?
+code: |
+  console.log("생일을 저장해요");
+  const birthday;
+  birthday = "5월 5일";
+  console.log(birthday);
+spec:
+  options:
+    - id: a
+      text: 아무것도 출력되지 않고 `SyntaxError`가 난다
+    - id: b
+      text: "`생일을 저장해요`, `5월 5일`이 출력된다. const에 처음 한 번은 값을 넣을 수 있으니까"
+      misconception: js.mc.const-declare-later
+      rationale: const는 만드는 그 문장에서 바로 값을 넣어야 해요. 나중에 넣는 첫 대입도 허용되지 않아요.
+    - id: c
+      text: "`생일을 저장해요`가 출력된 뒤, 3번 줄에서 `TypeError`가 난다"
+      misconception: js.mc.syntax-error-partial-run
+      rationale: 값 없는 const는 문법 오류라서 실행 전에 걸려요. 그래서 1번 줄도 실행되지 않아요.
+    - id: d
+      text: "`생일을 저장해요`, `undefined`가 출력된다"
+      misconception: js.mc.let-needs-initial-value
+      rationale: 값 없이 만들 수 있는 것은 let이에요. const는 값 없이 만들 수 없어요.
+  correct: a
+misconceptions: [js.mc.const-declare-later, js.mc.syntax-error-partial-run]
+hints:
+  - let과 const 중 값 없이 만들 수 없는 것은 무엇이었나요?
+  - "값 없는 const는 문장의 모양 자체가 틀린 것으로 봐요. 이런 오류는 실행 전과 실행 중 언제 발견될까요?"
+  - 실행 전 문법 검사에서 걸리면 1번 줄은 실행될까요?
+explanation: |
+  정답은 **아무것도 출력되지 않고 `SyntaxError`가 난다**예요.
+
+  `const`는 다시 대입할 수 없으니, 만드는 그 문장에서 반드시 값을 넣어야 해요. `const birthday;`처럼 값이 없으면 `SyntaxError: Missing initializer in const declaration`(const 선언에 초기값이 없어요)이 나요.
+
+  이건 문법 오류라서 실행 전 검사에서 걸려요. 그래서 문제가 없어 보이는 1번 줄의 `생일을 저장해요`도 출력되지 않아요.
+
+  - 나중에 한 번은 넣을 수 있다고 생각했다면: const의 값은 선언하는 순간에만 정할 수 있어요. `const birthday = "5월 5일";`처럼 한 줄로 써야 해요.
+  - 1번 줄이 먼저 실행된다고 생각했다면: 그건 실행 중 오류일 때의 동작이에요.
+  - `undefined`를 골랐다면: 값 없이 만들어 `undefined`가 되는 것은 `let`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

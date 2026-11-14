@@ -1,0 +1,35 @@
+id: js-basics.values.variables.predict-error-const-reassign
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.values.const, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [const, type-error]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 실행하면 오류가 날까요? 오류가 난다면 어떤 종류의 오류인가요?
+spec:
+  lang: js
+  code: |
+    const daysInWeek = 7;
+    daysInWeek = 8;
+    console.log(daysInWeek);
+  answerKind: error
+  misconceptionByAnswer:
+    none: js.mc.const-can-reassign
+misconceptions: [js.mc.const-can-reassign]
+hints:
+  - "`const`로 만든 이름에 다시 대입하면 어떻게 된다고 배웠나요?"
+  - 2번 줄은 문장의 모양(문법)은 맞아요. 그렇다면 오류는 실행 전과 실행 중 언제 날까요?
+  - 이름은 찾았지만 그 이름으로 할 수 없는 일(다시 대입)을 시켰어요. 이런 오류의 종류를 떠올려 보세요.
+explanation: |
+  정답은 **오류가 난다, `TypeError`**예요.
+
+  `daysInWeek`는 `const`로 만들었으니 다시 대입할 수 없어요. 2번 줄이 실행될 때 `TypeError: Assignment to constant variable.`이 나고 프로그램이 멈춰서, 3번 줄은 실행되지 않아요.
+
+  - 오류가 나지 않는다고 생각했다면: const에 대입하면 바뀌지도, 조용히 무시되지도 않고 오류가 나요. 바꿔야 하는 값이라면 `let`으로 만들어야 해요.
+  - `SyntaxError`와 헷갈렸다면: 2번 줄은 모양이 올바른 대입문이라 문법 검사는 통과해요. 실행해 보니 그 이름이 상수라서 오류가 나는 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

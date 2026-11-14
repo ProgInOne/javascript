@@ -1,0 +1,43 @@
+id: js-basics.values.variables.predict-total-not-updated
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.values.assignment, weight: 1 }
+tags: [assignment, snapshot]
+estimatedSeconds: 90
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    let price = 1500;
+    let count = 2;
+    let total = price * count;
+    count = 4;
+    console.log(count);
+    console.log(total);
+  answerKind: console
+  misconceptionByAnswer:
+    "4\n6000": js.mc.variable-remembers-formula
+misconceptions: [js.mc.variable-remembers-formula]
+hints:
+  - 3번 줄이 실행되는 순간 `total`에 들어가는 것은 식일까요, 계산 결과일까요?
+  - 3번 줄이 실행될 때 `count`는 몇이었나요? 4번 줄은 어느 변수를 바꾸나요?
+  - 4번 줄 뒤에 `total`을 다시 계산하는 문장이 있는지 확인해 보세요.
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  4
+  3000
+  ```
+
+  3번 줄이 실행되는 순간 `price * count`는 `1500 * 2 = 3000`으로 계산되고, `total`에는 **결과 3000**이 들어가요. `total`은 식을 기억하지 않아요.
+
+  4번 줄은 `count`만 4로 바꿔요. `total`을 다시 계산하는 문장이 없으니 `total`은 여전히 3000이에요.
+
+  `6000`이라고 답했다면 스프레드시트처럼 `count`가 바뀌면 `total`도 다시 계산된다고 생각한 거예요. 새 합계가 필요하면 `count = 4;` 다음에 `total = price * count;`를 다시 실행해야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

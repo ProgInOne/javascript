@@ -1,0 +1,40 @@
+id: js-basics.values.variables.mcq-const-prevents
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.values.const, weight: 1 }
+tags: [const]
+estimatedSeconds: 50
+prompt: |
+  `const taxRate = 10;`으로 상수를 만들었어요. `const`가 막아 주는 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`taxRate = 8;`처럼 다른 값을 다시 대입하는 것"
+    - id: b
+      text: "`console.log(taxRate)`처럼 값을 꺼내 읽는 것"
+      rationale: const의 값도 얼마든지 읽고 출력할 수 있어요.
+    - id: c
+      text: "`taxRate * 2`처럼 값을 계산에 쓰는 것"
+      rationale: 계산에 쓰는 것은 값을 읽기만 하는 거라 괜찮아요. taxRate 자체는 바뀌지 않아요.
+    - id: d
+      text: 어떤 경우에도, 어떤 방법으로도 그 값이 달라지는 모든 일
+      misconception: js.mc.const-is-immutable
+      rationale: const가 막는 것은 재할당(=로 다시 넣기)뿐이에요. 나중에 배울 배열·객체는 const여도 안의 내용이 바뀔 수 있어요.
+  correct: a
+misconceptions: [js.mc.const-is-immutable]
+hints:
+  - const로 만든 값을 읽거나 계산에 쓰면 그 값 자체가 바뀌나요?
+  - const와 let의 차이는 "다시 무엇을 할 수 있느냐"였어요.
+  - 레슨의 CompareTable에서 let은 되고 const는 안 되는 첫 번째 줄을 떠올려 보세요.
+explanation: |
+  정답은 **`taxRate = 8;`처럼 다른 값을 다시 대입하는 것**이에요.
+
+  `const`는 이름에 다른 값을 **다시 대입하는 것(재할당)**을 막아요. 시도하면 `TypeError: Assignment to constant variable.`이 나요.
+
+  - 읽기와 계산은 값을 바꾸지 않으므로 얼마든지 할 수 있어요. `console.log(taxRate)`, `price * taxRate` 모두 괜찮아요.
+  - "모든 변화"를 고른 경우: 숫자나 글자는 재할당만 막으면 바뀔 일이 없어서 그렇게 보일 수 있어요. 하지만 const가 막는 것은 정확히 재할당뿐이에요. 나중에 배울 배열과 객체는 const로 만들어도 안의 내용을 바꿀 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,16 @@
+id: js-basics.values.variables
+title: 변수와 상수
+summary: let과 const로 값에 이름을 붙여 저장하고, 대입으로 값을 바꾸며, 올바른 이름을 짓는 법을 배웁니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 15, practice: 25 }
+concepts:
+  primary: [js.values.let, js.values.assignment, js.values.const, js.values.identifiers]
+  reviewed: [js.basics.console-log, js.errors.error-messages, js.errors.error-types]
+objectives:
+  - let으로 변수를 만들고, 변수 이름으로 저장한 값을 꺼내 쓸 수 있다.
+  - 대입(=)이 오른쪽 값을 계산해 왼쪽 변수에 넣는 과정을 한 줄씩 추적해 결과를 예측할 수 있다.
+  - 바뀌지 않는 값은 const, 바뀌는 값은 let으로 골라 쓰고, const 재할당 오류를 고칠 수 있다.
+  - 이름 규칙에 맞는 변수 이름을 짓고, 이름 때문에 생긴 오류를 고칠 수 있다.
+practice:
+  targetCount: 22

@@ -1,0 +1,41 @@
+id: js-basics.values.variables.mcq-equals-meaning
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.values.assignment, weight: 1 }
+tags: [assignment]
+estimatedSeconds: 45
+prompt: |
+  `lives`라는 변수가 이미 있을 때, `lives = lives - 1;`은 무슨 뜻인가요?
+spec:
+  options:
+    - id: a
+      text: 지금 `lives`의 값에서 1을 뺀 결과를 다시 `lives`에 넣는다
+    - id: b
+      text: "`lives`와 `lives - 1`이 같다는 뜻이라, 이 문장은 틀린 문장이다"
+      misconception: js.mc.assign-is-equality
+      rationale: "=는 \"같다\"가 아니라 대입이에요. 오른쪽을 계산해 왼쪽에 넣어요."
+    - id: c
+      text: "`lives`에서 1을 빼서 콘솔에 보여 준다"
+      rationale: 대입은 출력하지 않아요. 값을 저장할 뿐이에요.
+    - id: d
+      text: "`lives - 1`이라는 새 변수를 만든다"
+      rationale: 새 변수를 만들려면 let이 필요하고, 이름에 `-`를 쓸 수도 없어요.
+  correct: a
+misconceptions: [js.mc.assign-is-equality]
+hints:
+  - 이 단원에서 `=`를 무엇이라고 읽자고 했나요?
+  - 대입은 오른쪽과 왼쪽 중 어디를 먼저 처리할까요?
+  - 오른쪽 `lives - 1`을 지금 값으로 계산한 뒤, 그 결과가 어디로 가는지 생각해 보세요.
+explanation: |
+  정답은 **지금 `lives`의 값에서 1을 뺀 결과를 다시 `lives`에 넣는다**예요.
+
+  대입은 오른쪽을 먼저 계산하고, 그 결과를 왼쪽 변수에 넣어요. `lives`가 3이었다면 오른쪽 `lives - 1`은 2가 되고, 그 2가 `lives`에 들어가요. 게임에서 목숨을 하나 줄이는 문장이에요.
+
+  - "같다"로 고른 경우: 수학의 등호로 읽으면 말이 안 되지만, 프로그래밍의 `=`는 "넣는다"예요.
+  - 출력한다고 고른 경우: 대입은 아무것도 보여 주지 않아요.
+  - 새 변수를 만든다고 고른 경우: 변수를 새로 만들 때는 `let`을 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,40 @@
+id: js-basics.values.variables.predict-name-vs-string
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.values.let, weight: 1 }
+  - { id: js.basics.console-log, weight: 0.3 }
+tags: [let, quotes]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    let city = "부산";
+    console.log("city");
+    console.log(city);
+  answerKind: console
+  misconceptionByAnswer:
+    "부산\n부산": js.mc.variable-name-in-quotes
+misconceptions: [js.mc.variable-name-in-quotes]
+hints:
+  - 2번 줄과 3번 줄의 차이는 무엇인가요?
+  - 따옴표가 있으면 글자, 없으면 이름이에요. 각 줄의 `city`는 글자일까요, 변수 이름일까요?
+  - 2번 줄은 변수와 상관없는 글자를 출력하고, 3번 줄은 변수에 들어 있는 값을 출력해요.
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  city
+  부산
+  ```
+
+  - 2번 줄의 `"city"`는 따옴표로 감싼 **글자**예요. 변수와 상관없이 글자 그대로 `city`가 나와요.
+  - 3번 줄의 `city`는 따옴표가 없는 **변수 이름**이에요. 들어 있는 값 `부산`이 나와요.
+
+  두 줄 모두 `부산`이라고 답했다면 변수 이름에 따옴표를 붙여도 값이 나온다고 생각한 거예요. 변수 값을 출력할 때는 따옴표를 붙이지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

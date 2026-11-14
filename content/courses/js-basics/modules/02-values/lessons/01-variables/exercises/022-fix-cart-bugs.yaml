@@ -1,0 +1,110 @@
+id: js-basics.values.variables.fix-cart-bugs
+type: fix_bug
+difficulty: 5
+concepts:
+  - { id: js.values.identifiers, weight: 1 }
+  - { id: js.values.const, weight: 0.5 }
+  - { id: js.values.let, weight: 0.5 }
+  - { id: js.errors.error-messages, weight: 0.5 }
+tags: [identifiers, const, let, debugging]
+estimatedSeconds: 420
+prompt: |
+  문구점 장바구니 프로그램이에요. 버그가 **세 개** 있고, 하나를 고치면 다음 오류가 나타나요. 오류 메시지를 읽고 고친 뒤 다시 실행하는 과정을 반복해서, 아래처럼 출력되게 하세요.
+
+  ```text
+  공책 1권을 담았어요
+  상품 수: 1
+  합계: 1200
+  펜 2자루를 담았어요
+  상품 수: 3
+  합계: 2800
+  ```
+
+  가격(`notebookPrice`, `penPrice`)은 바뀌지 않는 값이니 `const`로 두세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const notebookPrice = 1200;
+          const penPrice = 800;
+          const itemCount = 0;
+          let total = 0;
+
+          console.log("공책 1권을 담았어요");
+          itemCount = itemCount + 1;
+          total = total + notebookPrice;
+          console.log("상품 수:", itemCount);
+          console.log("합계:", total);
+
+          console.log("펜 2자루를 담았어요");
+          let itemCount = itemCount + 2;
+          total = total + penprice * 2;
+          console.log("상품 수:", itemCount);
+          console.log("합계:", total);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const notebookPrice = 1200;
+          const penPrice = 800;
+          let itemCount = 0;
+          let total = 0;
+
+          console.log("공책 1권을 담았어요");
+          itemCount = itemCount + 1;
+          total = total + notebookPrice;
+          console.log("상품 수:", itemCount);
+          console.log("합계:", total);
+
+          console.log("펜 2자루를 담았어요");
+          itemCount = itemCount + 2;
+          total = total + penPrice * 2;
+          console.log("상품 수:", itemCount);
+          console.log("합계:", total);
+  bugDescription: 실행하면 아무것도 출력되지 않고 SyntaxError가 나요. 고치면 다른 오류가 차례로 나타나요.
+  maxEditDistance: 6
+  checks:
+    - kind: console
+      id: output
+      description: 장바구니에 담을 때마다 상품 수와 합계가 정해진 순서로 출력되어야 합니다.
+      requirement: 장바구니 출력
+      expect:
+        lines:
+          - 공책 1권을 담았어요
+          - "상품 수: 1"
+          - "합계: 1200"
+          - 펜 2자루를 담았어요
+          - "상품 수: 3"
+          - "합계: 2800"
+    - kind: program
+      id: final-values
+      description: 끝났을 때 itemCount는 3, total은 2800, 가격은 처음 값 그대로여야 합니다.
+      requirement: 최종 값
+      expect:
+        globals:
+          itemCount: { equals: 3 }
+          total: { equals: 2800 }
+          notebookPrice: { equals: 1200 }
+          penPrice: { equals: 800 }
+misconceptions:
+  - js.mc.let-again-to-change
+  - js.mc.const-can-reassign
+  - js.mc.identifier-case-insensitive
+  - js.mc.error-line-is-cause
+hints:
+  - "처음 오류는 `SyntaxError: Identifier 'itemCount' has already been declared`예요. 같은 이름을 두 번 만들고 있는 줄을 찾아보세요."
+  - "그걸 고치고 다시 실행하면 `TypeError: Assignment to constant variable.`이 7번 줄에서 나요. 7번 줄은 멀쩡해 보이니, itemCount를 처음 만든 줄을 확인하세요."
+  - "마지막 오류는 `ReferenceError: penprice is not defined`예요. 2번 줄에서 만든 이름과 대소문자를 한 글자씩 비교해 보세요."
+explanation: |
+  버그 세 개가 차례로 드러나요.
+
+  1. **`SyntaxError: Identifier 'itemCount' has already been declared` (13번 줄)**: `itemCount`는 3번 줄에서 이미 만들었는데 13번 줄에서 `let`으로 또 만들었어요. 값을 바꾸는 문장이니 `let`을 빼고 `itemCount = itemCount + 2;`로 고쳐요. 문법 오류라 처음에는 아무것도 출력되지 않았어요.
+  1. **`TypeError: Assignment to constant variable.` (7번 줄)**: 7번 줄의 대입은 올바르지만, `itemCount`를 3번 줄에서 `const`로 만들었어요. 상품 수는 바뀌는 값이니 3번 줄을 `let itemCount = 0;`으로 고쳐요. 오류가 난 줄과 원인이 있는 줄이 다른 경우예요.
+  1. **`ReferenceError: penprice is not defined` (14번 줄)**: 2번 줄에서 만든 이름은 `penPrice`(대문자 P)예요. 대소문자가 다르면 다른 이름이라 `penPrice`로 고쳐요.
+
+  가격은 바뀌지 않으니 `const`로 두는 것이 맞아요. 문법 오류 → 실행 중 오류 순서로 하나씩 드러나는 것, 그리고 변수 오류의 원인이 그 변수를 **만든 줄**에 있는 경우가 많다는 것을 기억해 두세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

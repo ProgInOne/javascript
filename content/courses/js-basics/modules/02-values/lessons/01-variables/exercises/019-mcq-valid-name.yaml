@@ -1,0 +1,45 @@
+id: js-basics.values.variables.mcq-valid-name
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.values.identifiers, weight: 1 }
+tags: [identifiers, naming]
+estimatedSeconds: 45
+prompt: |
+  다음 중 변수 이름으로 **쓸 수 있는** 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`firstPlace`"
+    - id: b
+      text: "`first-place`"
+      misconception: js.mc.identifier-invalid-chars
+      rationale: 하이픈(-)은 빼기 기호로 읽혀서 이름에 쓸 수 없어요.
+    - id: c
+      text: "`1stPlace`"
+      misconception: js.mc.identifier-invalid-chars
+      rationale: 이름은 숫자로 시작할 수 없어요.
+    - id: d
+      text: "`first place`"
+      misconception: js.mc.identifier-invalid-chars
+      rationale: 공백이 있으면 이름이 둘로 나뉘어요.
+    - id: e
+      text: "`const`"
+      rationale: const는 JavaScript가 이미 쓰는 예약어라 이름으로 쓸 수 없어요.
+  correct: a
+misconceptions: [js.mc.identifier-invalid-chars]
+hints:
+  - 이름에 쓸 수 있는 문자는 글자, 숫자, `_`, `$`뿐이에요.
+  - 숫자로 시작하는 이름, 공백이나 하이픈이 있는 이름, 예약어를 하나씩 지워 보세요.
+  - 여러 단어를 이어 쓰는 관례(camelCase)를 따른 이름이 남아요.
+explanation: |
+  정답은 **`firstPlace`**예요. 글자만으로 되어 있고, 두 번째 단어의 첫 글자를 대문자로 이어 쓴 camelCase 이름이에요.
+
+  - `first-place`: 하이픈은 빼기 기호로 읽혀서 `first - place`라는 계산이 돼요.
+  - `1stPlace`: 숫자로 시작하는 이름은 쓸 수 없어요. `place1`처럼 숫자를 뒤에 붙이는 건 괜찮아요.
+  - `first place`: 공백 때문에 이름이 둘로 나뉘어요.
+  - `const`: JavaScript가 이미 쓰는 예약어예요. `let`, `if`, `class`, `return` 등도 마찬가지예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

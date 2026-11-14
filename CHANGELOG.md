@@ -7,6 +7,7 @@
 
 ### Added
 
+- v0.1 콘텐츠 JS `variables` 변수와 상수 핵심 단원(M4·C): let·대입·const·이름 규칙 레슨 본문(예제 5개, 흔한 실수 11개), 개념 4개·오개념 11개, 문제 22개. AI 초안(`draft`)이며 사람 검토 전입니다
 - v0.1 콘텐츠 JS 모듈 1 "시작하기"(M4·C): `first-program`(console.log·문장·주석)과 `reading-errors`(오류 메시지 구조·SyntaxError/ReferenceError/TypeError) 레슨 본문, 개념 5개·오개념 9개, 문제 24개. AI 초안(`draft`)이며 사람 검토 전입니다
 - v0.1 콘텐츠 CSS 박스 모델(M4·C): `content/` 콘텐츠 팩(트랙 "웹 프론트엔드 기초"), CSS 개념 4개·오개념 5개, `css.box.model` 레슨 본문과 문제 10개(선택형·빈칸·기본 웹 실습). AI 초안(`draft`)이며 사람 검토 전입니다
 - `content-cli build --include-drafts`와 `pnpm content:build:dev`: 개발용으로 검토 전(draft) 문제를 `auto_verified` 상태로 content.db에 포함(경고 출력, `content_meta.includes_drafts`). CI에 `pnpm content:check` 단계 추가

@@ -1,0 +1,45 @@
+id: js-basics.values.variables.mcq-let-without-value
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.values.let, weight: 1 }
+tags: [let, undefined]
+estimatedSeconds: 50
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  let answer;
+  console.log(answer);
+spec:
+  options:
+    - id: a
+      text: "`undefined`"
+    - id: b
+      text: "`SyntaxError`가 난다. let은 처음에 값이 꼭 있어야 하니까"
+      misconception: js.mc.let-needs-initial-value
+      rationale: let은 값 없이 만들 수 있어요. 값 없이 만들 수 없는 것은 const예요.
+    - id: c
+      text: "`0`"
+      rationale: 값을 넣지 않은 변수에 0이 자동으로 들어가지는 않아요.
+    - id: d
+      text: "`answer`"
+      misconception: js.mc.variable-name-in-quotes
+      rationale: 따옴표가 없으니 글자가 아니라 변수의 값을 출력해요.
+  correct: a
+misconceptions: [js.mc.let-needs-initial-value]
+hints:
+  - 1번 줄은 오류일까요? let과 const 중 값 없이 만들 수 없는 것은 무엇이었나요?
+  - 값을 넣지 않은 변수에는 "아직 값이 없음"을 뜻하는 특별한 값이 들어 있어요.
+  - 레슨에서 console.log의 결과로도 본 적 있는 값이에요.
+explanation: |
+  정답은 **`undefined`**예요.
+
+  `let answer;`처럼 값 없이 변수를 만들 수 있어요. 이때 변수에는 "아직 값이 없음"을 뜻하는 `undefined`가 들어 있어서, 출력하면 `undefined`가 나와요. 나중에 `answer = 42;`처럼 값을 넣으면 돼요.
+
+  - SyntaxError를 고른 경우: 값 없이 만들 수 없는 것은 `const`예요. `let`은 괜찮아요.
+  - `0`을 고른 경우: 숫자 0이 자동으로 들어가지 않아요. `0`과 "값 없음"은 다른 것이에요.
+  - `answer`를 고른 경우: 따옴표가 없으므로 이름의 값을 출력해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

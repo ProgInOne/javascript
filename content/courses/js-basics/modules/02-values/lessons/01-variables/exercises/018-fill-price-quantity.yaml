@@ -1,0 +1,64 @@
+id: js-basics.values.variables.fill-price-quantity
+type: fill_blank
+difficulty: 4
+concepts:
+  - { id: js.values.const, weight: 1 }
+  - { id: js.values.let, weight: 0.5 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [const, let, write-code]
+estimatedSeconds: 240
+prompt: |
+  떡볶이 1인분은 3000원으로 정해져 있고, 처음에 2인분을 주문했다가 1인분을 추가했어요. 빈칸 두 곳에 **변수를 만드는 문장을 하나씩** 써서 프로그램을 완성하세요.
+
+  - 1인분 가격을 담는 `price`: 바뀌지 않는 값이에요.
+  - 주문 수량을 담는 `quantity`: 처음 값은 2이고, 아래에서 바뀌어요.
+
+  실행하면 결제 금액 `9000`이 출력되어야 해요.
+spec:
+  mode: code
+  lang: js
+  template: |
+    {{blank:price}}
+    {{blank:quantity}}
+    quantity = quantity + 1;
+    console.log(price * quantity);
+  blanks:
+    - id: price
+      accept: ["const price = 3000;"]
+      width: 30
+    - id: quantity
+      accept: ["let quantity = 2;"]
+      width: 30
+      misconceptionMap:
+        "const quantity = 2;": js.mc.const-can-reassign
+  checks:
+    - kind: console
+      id: output
+      description: 결제 금액 9000이 출력되어야 합니다.
+      requirement: 결제 금액 출력
+      expect:
+        lines: ["9000"]
+    - kind: program
+      id: values
+      description: 끝났을 때 price는 3000, quantity는 3이어야 합니다.
+      requirement: 변수 값
+      expect:
+        globals:
+          price: { equals: 3000 }
+          quantity: { equals: 3 }
+misconceptions: [js.mc.const-can-reassign]
+hints:
+  - 두 변수 중 아래 코드에서 다시 대입되는 것은 무엇인가요?
+  - 바뀌지 않는 값은 `const`, 다시 대입해야 하는 값은 `let`으로 만들어요. 둘 다 `키워드 이름 = 값;` 모양이에요.
+  - 처음 값은 price가 3000, quantity가 2예요. 3번 줄에서 quantity가 바뀐다는 점을 생각해 키워드를 고르세요.
+explanation: |
+  예시 정답은 `const price = 3000;`과 `let quantity = 2;`예요.
+
+  - `price`는 정해진 가격이라 바뀌지 않아요. `const`로 만들면 실수로 바꾸는 일을 막아 줘요.
+  - `quantity`는 3번 줄에서 `quantity = quantity + 1;`로 다시 대입돼요. 그래서 `let`이어야 해요. `const`로 만들면 3번 줄에서 `TypeError`가 나요.
+
+  3번 줄이 실행되면 `quantity`는 2 + 1 = 3이 되고, 결제 금액은 `3000 * 3 = 9000`이에요. `price`를 `let`으로 만들어도 출력은 같지만, 바뀌지 않는 값에는 `const`를 쓰는 습관을 들여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

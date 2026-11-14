@@ -1,0 +1,77 @@
+id: js-basics.values.variables.fix-const-counter
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.values.const, weight: 1 }
+  - { id: js.errors.error-messages, weight: 0.5 }
+tags: [const, let, type-error, debugging]
+estimatedSeconds: 240
+prompt: |
+  방문자 수를 세는 프로그램이에요. 실행하면 첫 줄만 출력되고 오류가 나요. 오류 메시지를 읽고 원인을 찾아 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  오늘의 방문자 수를 셉니다
+  방문자: 1
+  방문자: 2
+  최대 인원: 100
+  ```
+
+  단, 최대 인원(`maxVisitors`)은 바뀌면 안 되는 값이니 그대로 두세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const maxVisitors = 100;
+          const visitors = 0;
+          console.log("오늘의 방문자 수를 셉니다");
+          visitors = visitors + 1;
+          console.log("방문자:", visitors);
+          visitors = visitors + 1;
+          console.log("방문자:", visitors);
+          console.log("최대 인원:", maxVisitors);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const maxVisitors = 100;
+          let visitors = 0;
+          console.log("오늘의 방문자 수를 셉니다");
+          visitors = visitors + 1;
+          console.log("방문자:", visitors);
+          visitors = visitors + 1;
+          console.log("방문자:", visitors);
+          console.log("최대 인원:", maxVisitors);
+  bugDescription: "\"오늘의 방문자 수를 셉니다\"만 출력되고 4번 줄에서 TypeError: Assignment to constant variable.이 나요."
+  bugMisconception: js.mc.const-can-reassign
+  maxEditDistance: 2
+  checks:
+    - kind: console
+      id: output
+      description: 안내 문구, 방문자 1과 2, 최대 인원이 차례로 출력되어야 합니다.
+      requirement: 방문자 수 출력
+      expect:
+        lines: ["오늘의 방문자 수를 셉니다", "방문자: 1", "방문자: 2", "최대 인원: 100"]
+    - kind: program
+      id: final-count
+      description: 끝났을 때 visitors는 2, maxVisitors는 100이어야 합니다.
+      requirement: 값 확인
+      expect:
+        globals:
+          visitors: { equals: 2 }
+          maxVisitors: { equals: 100 }
+misconceptions: [js.mc.const-can-reassign, js.mc.error-line-is-cause]
+hints:
+  - "`Assignment to constant variable.`은 \"상수에 대입했어요\"라는 뜻이에요. 4번 줄에서 대입하는 변수는 무엇인가요?"
+  - 오류는 4번 줄에서 났지만, 그 변수가 상수가 된 이유는 다른 줄에 있어요. 그 변수를 처음 만든 줄을 찾아보세요.
+  - 다시 대입해야 하는 변수는 무엇으로 만들어야 할까요? maxVisitors는 건드리지 마세요.
+explanation: |
+  오류 메시지는 4번 줄을 가리키지만, 4번 줄 `visitors = visitors + 1;`은 올바른 대입문이에요. 원인은 **2번 줄**에서 `visitors`를 `const`로 만든 것이에요. 방문자 수는 계속 바뀌어야 하는 값인데 상수로 만들었으니, 처음 다시 대입하는 4번 줄에서 `TypeError`가 났어요.
+
+  2번 줄을 `let visitors = 0;`으로 바꾸면 돼요. `maxVisitors`는 바뀌지 않는 값이니 `const` 그대로 두는 게 맞아요.
+
+  이 문제처럼 오류가 난 줄과 원인이 있는 줄이 다를 때가 많아요. 변수와 관련된 오류가 나면 **그 변수를 만든 줄**을 꼭 확인하세요. 4번과 6번 줄의 대입을 지워서 오류를 없애면 방문자 수를 셀 수 없게 되니 주의하세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

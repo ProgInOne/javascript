@@ -1,0 +1,68 @@
+id: js-basics.values.variables.fix-assign-direction
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.values.assignment, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [assignment, syntax-error, debugging]
+estimatedSeconds: 150
+prompt: |
+  쪽지 시험 점수를 기록하는 프로그램이에요. 처음 점수는 0점이고, 시험을 본 뒤 90점으로 바꾸려고 했는데 오류가 나요. 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  시험 전: 0
+  시험 후: 90
+  ```
+
+  실행했을 때의 오류 메시지는 다음과 같아요.
+
+  ```text
+  Uncaught SyntaxError: Invalid left-hand side in assignment
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          let quizScore = 0;
+          console.log("시험 전:", quizScore);
+          90 = quizScore;
+          console.log("시험 후:", quizScore);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let quizScore = 0;
+          console.log("시험 전:", quizScore);
+          quizScore = 90;
+          console.log("시험 후:", quizScore);
+  bugDescription: 실행하면 아무것도 출력되지 않고 SyntaxError가 나요.
+  bugMisconception: js.mc.assign-direction
+  maxEditDistance: 3
+  checks:
+    - kind: console
+      id: output
+      description: 시험 전 점수 0과 시험 후 점수 90이 차례로 출력되어야 합니다.
+      requirement: 점수 출력
+      expect:
+        lines: ["시험 전: 0", "시험 후: 90"]
+    - kind: program
+      id: final-score
+      description: 프로그램이 끝났을 때 quizScore에는 90이 들어 있어야 합니다.
+      requirement: quizScore에 90 대입
+      expect:
+        globals:
+          quizScore: { equals: 90 }
+misconceptions: [js.mc.assign-direction]
+hints:
+  - "`left-hand side`는 \"왼쪽\"이라는 뜻이에요. 대입문의 왼쪽에 무엇이 와야 할까요?"
+  - 대입은 어느 쪽의 값을 어느 쪽에 넣나요? 3번 줄의 왼쪽과 오른쪽을 보세요.
+  - 값을 받을 변수가 `=`의 어느 쪽에 있어야 하는지 생각해 보세요.
+explanation: |
+  3번 줄 `90 = quizScore;`가 문제예요. 대입은 항상 **오른쪽 값을 왼쪽 변수에** 넣어요. 그런데 왼쪽에 숫자 90이 있으니, "90이라는 값에 무언가를 넣으라"는 말이 되어 `SyntaxError: Invalid left-hand side in assignment`(대입의 왼쪽이 잘못되었어요)가 났어요.
+
+  값을 받을 변수를 왼쪽에 써서 `quizScore = 90;`으로 고치면 돼요. 문법 오류라 고치기 전에는 1~2번 줄도 실행되지 않았다는 점도 기억해 두세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

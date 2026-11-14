@@ -1,0 +1,33 @@
+id: js-basics.values.variables.predict-error-name-case
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.values.identifiers, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [identifiers, case, reference-error]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 실행하면 오류가 날까요? 오류가 난다면 어떤 종류의 오류인가요?
+spec:
+  lang: js
+  code: |
+    let userName = "하늘";
+    console.log(username);
+  answerKind: error
+  misconceptionByAnswer:
+    none: js.mc.identifier-case-insensitive
+misconceptions: [js.mc.identifier-case-insensitive]
+hints:
+  - 1번 줄에서 만든 이름과 2번 줄에서 쓴 이름을 한 글자씩 비교해 보세요.
+  - JavaScript는 대문자 `N`과 소문자 `n`을 같은 글자로 볼까요?
+  - 다른 이름이라면, 2번 줄의 이름은 만든 적이 없는 이름이에요. 없는 이름을 쓰면 어떤 오류가 났나요?
+explanation: |
+  정답은 **오류가 난다, `ReferenceError`**예요.
+
+  1번 줄에서 만든 이름은 `userName`(대문자 N)이고, 2번 줄에서 쓴 이름은 `username`(소문자 n)이에요. JavaScript는 대문자와 소문자를 다른 글자로 보기 때문에 두 이름은 완전히 달라요. 만든 적 없는 이름을 썼으니 `ReferenceError: username is not defined`가 나요.
+
+  오류가 나지 않는다고 생각했다면 대소문자를 구분하지 않는다고 본 거예요. 오류 메시지의 이름과 변수를 만든 줄의 이름을 한 글자씩 비교하는 습관을 들이세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

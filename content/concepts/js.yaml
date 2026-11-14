@@ -43,3 +43,37 @@
   prerequisites: [js.errors.error-messages]
   misconceptions: [js.mc.syntax-error-partial-run, js.mc.typo-is-syntax-error]
   mdn: Web/JavaScript/Reference/Global_Objects/Error
+
+# ── 모듈 2. 값과 변수: variables ──
+
+- id: js.values.let
+  title: let으로 변수 만들기
+  importance: core
+  summary: let 이름 = 값; 으로 값에 이름을 붙여 저장하고, 그 이름으로 값을 꺼내 씁니다. let 변수는 나중에 다른 값을 넣을 수 있습니다.
+  prerequisites: [js.basics.console-log]
+  misconceptions: [js.mc.variable-name-in-quotes, js.mc.let-again-to-change, js.mc.let-needs-initial-value]
+  mdn: Web/JavaScript/Reference/Statements/let
+
+- id: js.values.assignment
+  title: 대입
+  importance: core
+  summary: "=는 \"같다\"가 아니라 오른쪽 값을 계산해 왼쪽 변수에 넣는 대입입니다. 대입은 그 순간의 값을 복사할 뿐, 변수끼리 연결하지 않습니다."
+  prerequisites: [js.values.let]
+  misconceptions: [js.mc.assign-is-equality, js.mc.assign-direction, js.mc.variable-remembers-formula]
+  mdn: Web/JavaScript/Reference/Operators/Assignment
+
+- id: js.values.const
+  title: const로 상수 만들기
+  importance: core
+  summary: const로 만든 이름에는 처음 넣은 값 대신 다른 값을 다시 대입할 수 없습니다. 선언할 때 반드시 값을 넣어야 합니다.
+  prerequisites: [js.values.assignment, { id: js.errors.error-types, strength: helpful }]
+  misconceptions: [js.mc.const-can-reassign, js.mc.const-declare-later, js.mc.const-is-immutable]
+  mdn: Web/JavaScript/Reference/Statements/const
+
+- id: js.values.identifiers
+  title: 변수 이름 규칙
+  importance: standard
+  summary: 이름은 글자·숫자·_·$로 쓰되 숫자로 시작할 수 없고, 공백·하이픈과 예약어는 쓸 수 없습니다. 대문자와 소문자는 다른 글자로 구분합니다.
+  prerequisites: [js.values.let]
+  misconceptions: [js.mc.identifier-case-insensitive, js.mc.identifier-invalid-chars]
+  mdn: Web/JavaScript/Guide/Grammar_and_types
