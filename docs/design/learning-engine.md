@@ -834,7 +834,16 @@ v0.1(M4)에서 구현하면서 위 스케치를 구체화하거나 바꾼 점입
 | `missing` 형식 | 문자열 대신 `{ gate, required, actual }` 객체입니다. `gate`는 `GateCode` 열거형입니다 |
 | 가중치 요소 | `breakdown_json.factors`에 `repetition`(`W_rep`), `context`(`W_ctx`), `secondary`(부 개념 오답 0.5배)를 추가했습니다 |
 | `FsrsPort` | `newCard(cardId, now)`로 개념 ID를 받습니다. ts-fsrs v6은 `cardId`로 퍼즈를 시드하며, 주지 않으면 무작위 UUID를 만들어 결정론이 깨집니다. `fromRaw(raw)`로 `card_json`에서 카드를 복원합니다. 필드 이름은 `due` 대신 `dueAt`입니다 |
+| 보류 등급 적용 `flushPendingRatings` | "같은 날 이미 평가함"은 `concept_memory.last_review_at`의 로컬 날짜로 판정하므로 `lastAppliedDates` 입력이 없습니다. 단계 재판정을 위해 `ConceptState`를 받고, 적용하지 않은 등급(`skipped`)과 단계 변화(`mastery`, `evidence`)도 돌려줍니다 |
+| 복습 큐 예산 | 문항 예상 시간은 서버가 개념별로 줄 수 있고(`estimatedSecondsPerItem`), 없으면 `EngineConfig.review.defaultItemSeconds`(90초)입니다. 우선순위 순서를 지키기 위해 예산을 처음 넘는 개념부터 모두 `deferred`로 보내고, 예산이 0보다 크면 첫 개념은 항상 포함합니다 |
 | 카드 생성 시점 | 이 문서(첫 단원 연습 세트에서 그 개념의 보류 등급을 처음 적용할 때)를 따릅니다. [데이터 모델 설계](/docs/design/data-model.md#concept_memory-review_logs)의 "`introduced` 도달 시 행 생성"과 다르며, 레슨만 읽은 개념에는 카드가 없습니다 |
+
+**ts-fsrs v6 확인 결과** ([미결 사항](#미결-사항)의 첫 항목 해소):
+
+- `DefaultScheduler()` 생성만 비동기이고 `review`, `newCard`, `model.forgettingCurve`는 동기입니다. `review`는 입력 카드를 바꾸지 않습니다.
+- 카드 필드는 `stability`, `stabilityFast`, `difficulty`, `state`(숫자), `scheduleStatus`, `dueAt`, `lastReviewAt`(Date), `cardId`, `reps`, `lapses`, `scheduledDays`, `learningStep`입니다. `card_json`에는 이 필드를 그대로 두고 날짜만 epoch ms로 바꿔 저장합니다.
+- `forgettingCurve`에는 카드 전체(FSRS-7은 `stabilityFast` 포함)를 넘깁니다.
+- `enableShortTerm: false`여도 새 카드의 `again`·`hard`와 복습 카드의 `again`은 하루 미만 간격(`learning`·`relearning`)이 됩니다. 그날 안에 다시 예정되므로 복습 큐에 오늘 항목으로 나타납니다. `good`·`easy`는 날짜 단위 간격입니다.
 
 ## 검토한 대안
 
@@ -940,7 +949,7 @@ v0.1(M4)에서 구현하면서 위 스케치를 구체화하거나 바꾼 점입
 
 ## 미결 사항
 
-- **ts-fsrs v6 세부 API 확인**: `review()`의 동기 여부, 카드 직렬화 형식, `enableShortTerm: false`일 때의 동작, `forgettingCurve`에 필요한 메모리 상태(FSRS-7은 `stabilityFast` 포함)를 구현 첫 단계에서 확인하고 `fsrs-adapter.ts`를 확정합니다.
+- ~~**ts-fsrs v6 세부 API 확인**~~: v0.1 구현에서 확인했습니다. [구현 메모](#구현-메모-v01)의 "ts-fsrs v6 확인 결과" 참고.
 - **FSRS 파라미터 최적화**: 개념 단위 평가는 문제 단위보다 데이터가 적게 쌓입니다. `review_logs`가 수백 건을 넘으면 `@open-spaced-repetition/binding`으로 최적화를 시도할지, 그 경우 개념 단위 평가의 잡음이 최적화를 왜곡하지 않는지 검토합니다.
 - **계수 보정**: `α`, 가중치 표, `W_rep`·`W_ctx` 값과 14일 창, 게이트 기준(70/85, 7일 간격 2회)은 초기 추정입니다. v0.1~v0.3 사용 데이터와 PRD 성공 지표(숙달 전이율, 장기 유지율)로 조정합니다.
 - **읽기 모드 비활성 기준**: 2분 기준이 긴 설명을 읽는 동안 활동 시간을 과소 집계하는지 실제 사용으로 확인합니다.

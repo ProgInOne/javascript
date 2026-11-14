@@ -77,6 +77,17 @@ export interface EngineConfig {
     readonly enableShortTerm: boolean;
   };
   readonly importanceFactor: Readonly<Record<Importance, number>>;
+  readonly review: {
+    /** Daily cap on concepts in the review queue (`maxDailyReviews`). */
+    readonly maxDailyReviews: number;
+    /** Seconds per review item when the server gives no estimate. */
+    readonly defaultItemSeconds: number;
+    /** A second item is planned when `effective` is below this (or the last rating was again). */
+    readonly extraItemBelowEffective: number;
+    /** Target difficulty of review items: `clamp(maxDifficultyCorrect, min, max)`. */
+    readonly minDifficulty: number;
+    readonly maxDifficulty: number;
+  };
 }
 
 const DAY_MS = 86_400_000;
@@ -139,6 +150,13 @@ export const defaultEngineConfig: EngineConfig = {
     enableShortTerm: false,
   },
   importanceFactor: { core: 1.3, standard: 1.0, minor: 0.8 },
+  review: {
+    maxDailyReviews: 20,
+    defaultItemSeconds: 90,
+    extraItemBelowEffective: 60,
+    minDifficulty: 2,
+    maxDifficulty: 4,
+  },
 };
 
 /** Dependencies every engine function receives. The FSRS port is created once at server start. */

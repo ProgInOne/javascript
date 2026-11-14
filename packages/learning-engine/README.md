@@ -1,6 +1,6 @@
 # @proginone/learning-engine
 
-숙련도, 단계 게이트, 개념 단위 FSRS를 계산하는 학습 엔진입니다.
+숙련도, 단계 게이트, 개념 단위 FSRS, 복습 큐를 계산하는 학습 엔진입니다.
 모든 함수는 I/O가 없는 순수 함수이며, 같은 입력에는 같은 출력을 냅니다.
 규격의 원천은 [학습 엔진 설계](/docs/design/learning-engine.md)와 결정 [D-009, D-023](/docs/decisions.md)이고, v0.1에서 구체화한 점은 설계 문서의 [구현 메모](/docs/design/learning-engine.md#구현-메모-v01)에 있습니다.
 
@@ -38,6 +38,32 @@ effectiveMastery(deps, score, memory, now)  // { effective, decay, retrievabilit
 
 `ConceptState`는 `concept_mastery` 행(`mastery`), 저장된 증거 사실(`history`: `mastery_evidence.breakdown_json.fact`), FSRS 평가 이력(`reviews`: `review_logs` + 근거 시도의 `variant_group_key`), `concept_memory` 행(`memory`)으로 만듭니다.
 
+### FSRS와 복습 큐
+
+```ts
+createTsFsrsPort(defaultEngineConfig.fsrs): Promise<FsrsPort>  // 서버 시작 시 한 번. 이후 모든 메서드는 동기·결정론적
+
+flushPendingRatings(deps, {
+  pending: PendingRating[];     // 지금 적용할 보류 등급(conceptsReadyToFlush로 고름)
+  concepts: ConceptState[];
+  now: number; dayBoundary: DayBoundary;
+}): { memory: ConceptMemoryState[]; reviewLogs: ReviewLogRecord[]; skipped: SkippedRating[];
+      mastery: MasteryUpdate[]; evidence: MasteryEvidenceRecord[] }
+
+buildReviewQueue(deps, {
+  concepts: ReviewQueueConcept[];   // concept_memory + concept_mastery + importance + 마지막 등급
+  budgetMinutes: number; now: number; dayBoundary: DayBoundary;
+}): { due: ReviewQueueEntry[]; deferred: ReviewQueueEntry[] }
+```
+
+| 출력 | 저장 위치 |
+|---|---|
+| `ConceptMemoryState` | `concept_memory` 행. `card.raw` → `card_json`, `card`의 나머지 필드 → 비정규화 컬럼, `fsrsVersion` → `fsrs_version` |
+| `ReviewLogRecord` | `review_logs` 행. `revlog` → `revlog_json`, `sourceAttemptIds` → `source_attempt_ids_json` |
+| `skipped` | 저장하지 않고 버림(그날 이미 평가한 개념) |
+
+`concept_memory.card_json`은 `deps.fsrs.fromRaw(JSON.parse(card_json))`로 카드를 복원해 `ConceptMemoryState.card`에 넣습니다.
+
 ### 보조 함수
 
 - `resolveVariantGroupKey({ id, variantGroup, templateId })`: `variant_group` → 템플릿 ID → 문제 ID
@@ -47,7 +73,7 @@ effectiveMastery(deps, score, memory, now)  // { effective, decay, retrievabilit
 
 ## 테스트
 
-설계 문서의 테스트 시나리오 중 v0.1 범위를 `scenario N` 이름의 테스트로 둡니다. FSRS는 결정론적 가짜 포트(`src/test/fixtures.ts`)로 테스트합니다.
+설계 문서의 테스트 시나리오 중 v0.1 범위를 `scenario N` 이름의 테스트로 둡니다. FSRS는 결정론적 가짜 포트(`src/test/fixtures.ts`)와 실제 ts-fsrs 어댑터 둘 다로 테스트합니다.
 
 ```bash
 pnpm vitest run packages/learning-engine

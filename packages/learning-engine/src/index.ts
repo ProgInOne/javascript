@@ -36,3 +36,8 @@ export {
 
 export type { PendingRating } from './memory/rating.ts';
 export { aggregateRatings, ratingForAttempt } from './memory/rating.ts';
+export type { FlushInput, FlushResult, ReviewLogRecord, SkippedRating } from './memory/flush.ts';
+export { conceptsReadyToFlush, flushPendingRatings } from './memory/flush.ts';
+export { createTsFsrsPort } from './memory/fsrs-adapter.ts';
+export type { ReviewQueue, ReviewQueueConcept, ReviewQueueEntry } from './memory/review-queue.ts';
+export { buildReviewQueue } from './memory/review-queue.ts';
