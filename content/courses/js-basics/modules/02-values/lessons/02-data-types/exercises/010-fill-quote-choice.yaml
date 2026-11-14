@@ -1,0 +1,63 @@
+id: js-basics.values.data-types.fill-quote-choice
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.types.string, weight: 1 }
+tags: [string, quotes]
+estimatedSeconds: 90
+prompt: |
+  빈칸마다 따옴표 기호를 **하나씩** 넣어서, 실행하면 콘솔에 아래 두 줄이 나오게 하세요. 글자 안에 있는 따옴표도 그대로 출력되어야 해요.
+
+  ```text
+  선생님이 "조용히"라고 말했어요
+  오늘의 단어는 '봄'이에요
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    console.log({{blank:a1}}선생님이 "조용히"라고 말했어요{{blank:a2}});
+    console.log({{blank:b1}}오늘의 단어는 '봄'이에요{{blank:b2}});
+  blanks:
+    - id: a1
+      accept: ["'"]
+      width: 3
+    - id: a2
+      accept: ["'"]
+      width: 3
+    - id: b1
+      accept: ['"']
+      width: 3
+    - id: b2
+      accept: ['"']
+      width: 3
+  checks:
+    - kind: console
+      id: output
+      description: 두 문장이 안의 따옴표까지 그대로 차례로 출력되어야 합니다.
+      requirement: 따옴표가 든 문장 출력
+      expect:
+        lines: ['선생님이 "조용히"라고 말했어요', "오늘의 단어는 '봄'이에요"]
+      misconceptionIfFail: js.mc.quotes-mismatch
+misconceptions: [js.mc.quotes-mismatch]
+hints:
+  - 문자열은 연 따옴표와 같은 종류의 따옴표를 만나면 끝나요. 첫 번째 줄의 글자 안에는 어떤 따옴표가 들어 있나요?
+  - 글자 안에 큰따옴표가 있는데 바깥도 큰따옴표로 감싸면, 글자 중간에서 문자열이 끝나 버려요.
+  - 바깥 따옴표는 글자 안에 있는 따옴표와 **다른 종류**로 고르고, 여는 것과 닫는 것은 같은 종류로 맞춰요.
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  console.log('선생님이 "조용히"라고 말했어요');
+  console.log("오늘의 단어는 '봄'이에요");
+  ```
+
+  - 1번 줄: 글자 안에 큰따옴표가 있으니 바깥을 **작은따옴표**로 감싸요. 바깥도 큰따옴표면 `"선생님이 "`에서 문자열이 끝나 버려 `SyntaxError`가 나요.
+  - 2번 줄: 글자 안에 작은따옴표가 있으니 바깥을 **큰따옴표**로 감싸요.
+  - 여는 따옴표와 닫는 따옴표는 같은 종류여야 해요. `'...", "...'`처럼 섞으면 문자열의 끝을 찾지 못해 `SyntaxError`가 나요.
+
+  백틱(`` ` ``)으로 감싸도 두 줄 모두 출력은 같아요. 백틱의 특별한 기능은 모듈 7에서 배워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

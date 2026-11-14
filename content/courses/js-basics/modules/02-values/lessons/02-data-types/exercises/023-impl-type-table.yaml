@@ -1,0 +1,113 @@
+id: js-basics.values.data-types.impl-type-table
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.types.typeof, weight: 1 }
+  - { id: js.types.primitives, weight: 0.5 }
+  - { id: js.types.string, weight: 0.3 }
+tags: [typeof, primitives, "null", write-code]
+estimatedSeconds: 300
+prompt: |
+  다섯 변수의 자료형을 정리한 "자료형 표"를 출력하는 프로그램을 완성하세요.
+
+  - 변수마다 한 줄씩, `이름: 자료형` 모양으로 `a`부터 `e`까지 차례로 출력해요. 예를 들어 `a`가 숫자라면 `a: number`예요.
+  - 자료형을 직접 적지 말고 `typeof`로 확인해 출력해 보세요.
+
+  기대 출력은 공개하지 않아요. 표를 다 만들었다면, 결과가 예상과 같은지도 스스로 확인해 보세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const a = 0;
+          const b = "0";
+          const c = null;
+          const d = "null";
+          const e = false;
+
+          // 변수마다 "이름: 자료형" 모양으로 한 줄씩 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const a = 0;
+          const b = "0";
+          const c = null;
+          const d = "null";
+          const e = false;
+
+          // 변수마다 "이름: 자료형" 모양으로 한 줄씩 출력하세요.
+          console.log("a:", typeof a);
+          console.log("b:", typeof b);
+          console.log("c:", typeof c);
+          console.log("d:", typeof d);
+          console.log("e:", typeof e);
+  checks:
+    - kind: console
+      id: number-and-string
+      description: a와 b의 줄에 각각의 자료형이 맞게 출력되어야 합니다.
+      requirement: "숫자 0과 문자열 \"0\""
+      visible: false
+      expect:
+        lines: ["a: number", "b: string"]
+        mode: ordered-subset
+      misconceptionIfFail: js.mc.typeof-reads-content
+    - kind: console
+      id: null-line
+      description: c의 줄에 null의 typeof 결과가 맞게 출력되어야 합니다.
+      requirement: "null의 자료형"
+      visible: false
+      expect:
+        lines: ["c: object"]
+        mode: contains
+      misconceptionIfFail: js.mc.typeof-null-is-null
+    - kind: console
+      id: rest
+      description: d와 e의 줄에 각각의 자료형이 맞게 출력되어야 합니다.
+      requirement: "문자열 \"null\"과 불리언"
+      visible: false
+      expect:
+        lines: ["d: string", "e: boolean"]
+        mode: ordered-subset
+      misconceptionIfFail: js.mc.typeof-reads-content
+    - kind: console
+      id: whole-table
+      description: "a부터 e까지 다섯 줄이 \"이름: 자료형\" 모양으로 차례로, 다른 출력 없이 나와야 합니다."
+      requirement: 표 모양
+      visible: false
+      expect:
+        lines: ["a: number", "b: string", "c: object", "d: string", "e: boolean"]
+misconceptions: [js.mc.typeof-null-is-null, js.mc.typeof-reads-content]
+hints:
+  - 한 줄은 글자 `"a:"`와 `typeof a`의 결과를 console.log에 쉼표로 나눠 넣으면 만들 수 있어요.
+  - typeof는 따옴표 안의 내용을 보지 않아요. `b`와 `d`는 무엇처럼 생겼든 따옴표로 감싼 값이에요.
+  - 다섯 줄 모두 같은 모양으로 쓰면 돼요. `c`의 결과는 typeof의 예외라서 예상과 다를 수 있으니, 출력된 결과를 레슨의 typeof 표와 비교해 보세요.
+explanation: |
+  예시 정답과 출력은 다음과 같아요.
+
+  ```js
+  console.log("a:", typeof a);
+  console.log("b:", typeof b);
+  console.log("c:", typeof c);
+  console.log("d:", typeof d);
+  console.log("e:", typeof e);
+  ```
+
+  ```text
+  a: number
+  b: string
+  c: object
+  d: string
+  e: boolean
+  ```
+
+  - `a`(숫자 0)와 `b`(문자열 `"0"`)는 출력하면 둘 다 `0`으로 보이지만 자료형이 달라요.
+  - `c`는 `null`인데 typeof 결과는 `object`예요. JavaScript 초기의 설계 실수가 남은 예외예요.
+  - `d`는 따옴표로 감싼 글자 `null`이라서 그냥 문자열이에요. typeof는 내용이 아니라 자료형을 봐요.
+  - `e`는 따옴표 없는 `false`라서 불리언이에요.
+
+  결과를 직접 적은 `console.log("c: object");`도 출력은 같지만, typeof를 쓰면 값을 바꿔도 표가 저절로 맞게 나와요. 값이 이상하게 동작할 때 이런 표를 출력해 보는 것이 실무에서도 쓰는 디버깅 방법이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

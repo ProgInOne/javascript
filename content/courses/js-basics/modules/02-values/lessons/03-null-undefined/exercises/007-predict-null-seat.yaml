@@ -1,0 +1,53 @@
+id: js-basics.values.null-undefined.predict-null-seat
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.types.null, weight: 1 }
+  - { id: js.types.typeof, weight: 0.5 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: ["null", typeof, assignment]
+estimatedSeconds: 90
+prompt: |
+  영화 좌석 예약 프로그램이에요. 실행하면 콘솔에 무엇이 출력되나요? 콘솔에 보이는 그대로 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    let seat = null;
+    console.log(typeof seat);
+    seat = "A3";
+    console.log(seat, typeof seat);
+    seat = null;
+    console.log(seat);
+  answerKind: console
+  misconceptionByAnswer:
+    "null\nA3 string\nnull": js.mc.typeof-null-is-null
+    "undefined\nA3 string\nundefined": js.mc.null-undefined-same
+misconceptions: [js.mc.null-undefined-same, js.mc.typeof-null-is-null]
+hints:
+  - 줄마다 `seat`에 들어 있는 값을 표로 적어 보세요.
+  - "`typeof null`의 결과는 null이라는 이름과 달랐어요. 지난 단원의 typeof 표를 떠올려 보세요."
+  - "`null`은 프로그래머가 넣은 그대로 `null`이에요. 다른 값으로 저절로 바뀌지 않아요."
+explanation: |
+  정답은 다음 세 줄이에요.
+
+  ```text
+  object
+  A3 string
+  null
+  ```
+
+  | 실행한 줄 | `seat`의 값 |
+  |---|---|
+  | `let seat = null;` | `null` (아직 예약 없음) |
+  | `seat = "A3";` | `"A3"` (예약함) |
+  | `seat = null;` | `null` (예약 취소) |
+
+  - 2번 줄: `typeof null`은 설계 실수 때문에 `object`예요.
+  - 4번 줄: 문자열 `"A3"`가 들어 있으니 `A3 string`이에요.
+  - 6번 줄: 예약을 취소하면서 다시 `null`을 넣었으니 `null`이 출력돼요.
+
+  첫 줄을 `null`이라고 답했다면 typeof null의 예외를 기억해 두세요. `null` 대신 `undefined`라고 답했다면, null과 undefined를 같은 값으로 본 거예요. 프로그래머가 넣은 `null`은 그대로 `null`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

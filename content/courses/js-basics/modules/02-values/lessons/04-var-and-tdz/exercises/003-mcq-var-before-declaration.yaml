@@ -1,0 +1,47 @@
+id: js-basics.values.var-and-tdz.mcq-var-before-declaration
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.values.var, weight: 1 }
+  - { id: js.types.undefined, weight: 0.3 }
+tags: [var, hoisting, undefined]
+estimatedSeconds: 60
+prompt: |
+  오래된 블로그에서 가져온 코드예요. 실행하면 콘솔의 **첫 줄**에는 무엇이 나오나요?
+code: |
+  console.log("남은 시간:", timeLeft);
+  var timeLeft = 30;
+  console.log("남은 시간:", timeLeft);
+spec:
+  options:
+    - id: a
+      text: "`남은 시간: undefined`"
+    - id: b
+      text: "`남은 시간: 30`"
+      misconception: js.mc.var-hoists-value
+      rationale: 미리 준비되는 것은 이름과 undefined뿐이에요. 30은 2번 줄이 실행될 때 들어가요.
+    - id: c
+      text: "`ReferenceError: Cannot access 'timeLeft' before initialization`"
+      rationale: 이 오류는 let과 const 변수를 선언 전에 쓸 때 나요. var는 오류를 내지 않아요.
+    - id: d
+      text: "`ReferenceError: timeLeft is not defined`"
+      misconception: js.mc.not-defined-is-undefined
+      rationale: var 선언이 아래에 있어서 이름은 이미 등록되어 있어요. 이름이 아예 없을 때만 이 오류가 나요.
+  correct: a
+misconceptions: [js.mc.var-hoists-value]
+hints:
+  - 선언에 쓰인 단어가 `let`이 아니라 `var`예요. var는 선언 전에 쓰면 오류를 낼까요?
+  - 실행 전 준비 단계에서 var 변수에는 무엇을 미리 넣어 둔다고 했나요?
+  - 값 30은 2번 줄이 실행될 때 들어가요. 1번 줄은 그보다 먼저 실행돼요.
+explanation: |
+  정답은 **`남은 시간: undefined`예요**.
+
+  JavaScript는 실행 전에 `var timeLeft`라는 이름을 등록하고 `undefined`를 넣어 둬요. 1번 줄이 실행될 때 `timeLeft`에는 아직 `undefined`가 들어 있고, 30은 2번 줄에서 들어가요. 그래서 3번 줄에서야 `남은 시간: 30`이 나와요.
+
+  - `30`을 고른 경우: 값까지 끌어올려진다고 생각했어요. 끌어올려지는 것은 이름뿐이에요.
+  - `Cannot access ... before initialization`을 고른 경우: `let`·`const`였다면 맞아요. `var`는 오류 없이 `undefined`를 줘서 실수를 숨겨요.
+  - `is not defined`를 고른 경우: 아래에 `var` 선언이 있으니 이름은 이미 등록되어 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

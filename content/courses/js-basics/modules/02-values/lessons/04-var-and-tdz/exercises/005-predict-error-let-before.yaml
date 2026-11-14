@@ -1,0 +1,39 @@
+id: js-basics.values.var-and-tdz.predict-error-let-before
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.values.tdz, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [tdz, let, reference-error]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 끝까지 실행하면 오류가 날까요? 오류가 난다면 어떤 종류의 오류인가요?
+spec:
+  lang: js
+  code: |
+    console.log("쇼핑 시작");
+    console.log("장바구니:", cartTotal);
+    let cartTotal = 0;
+  answerKind: error
+  misconceptionByAnswer:
+    none: js.mc.let-before-declaration-undefined
+misconceptions: [js.mc.let-before-declaration-undefined]
+hints:
+  - "`cartTotal`을 쓰는 줄과 선언하는 줄 중 어느 쪽이 먼저 실행되나요?"
+  - 선언에 쓰인 단어는 `var`가 아니라 `let`이에요. let 변수를 선언 전에 쓰면 undefined가 나올까요?
+  - 선언 줄 전의 구간(TDZ)에서 let 변수를 쓰면 어떤 종류의 오류가 났는지 떠올려 보세요. 이름을 찾는 데 실패한 오류와 같은 종류예요.
+explanation: |
+  정답은 **오류가 난다, `ReferenceError`예요**.
+
+  ```text
+  쇼핑 시작
+  ReferenceError: Cannot access 'cartTotal' before initialization (2번째 줄)
+  ```
+
+  `cartTotal`은 `let`으로 3번 줄에서 선언돼요. 2번 줄은 선언 줄이 실행되기 전이라 TDZ 안이고, 여기서 쓰면 `ReferenceError`가 나요. 1번 줄은 이미 실행됐으니 `쇼핑 시작`은 출력돼요.
+
+  "오류가 나지 않는다"고 답했다면 `let`도 `var`처럼 선언 전에 `undefined`라고 생각한 거예요. `var`였다면 `장바구니: undefined`가 나왔겠지만, `let`과 `const`는 선언 전에 아예 쓸 수 없어요. 선언 줄을 위로 옮기면 고쳐져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,30 @@
+id: js-basics.values.var-and-tdz.tf-var-before-declaration
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.values.var, weight: 1 }
+tags: [var, hoisting]
+estimatedSeconds: 40
+prompt: |
+  다음 설명이 맞는지 고르세요.
+code: |
+  console.log(bonus);
+  var bonus = 100;
+spec:
+  statement: 위 코드의 1번 줄은 `100`을 출력한다. 선언이 끌어올려질 때 값도 함께 끌어올려지기 때문이다.
+  answer: false
+  misconceptionIfWrong: js.mc.var-hoists-value
+hints:
+  - 실행 전 준비 단계에서 var 변수에 미리 넣어 두는 값은 무엇이었나요?
+  - "`100`이 `bonus`에 들어가는 것은 몇 번 줄이 실행될 때인가요?"
+  - 끌어올려지는 것은 이름뿐이고, 그때 들어 있는 값은 "아직 정해지지 않음"이에요.
+explanation: |
+  정답은 **거짓**이에요. 1번 줄은 `undefined`를 출력해요.
+
+  JavaScript는 실행 전에 `var bonus`라는 이름을 등록하고 `undefined`를 미리 넣어 둬요. 값 `100`은 2번 줄이 실행될 때 비로소 들어가요. 그래서 1번 줄이 실행되는 순간 `bonus`에는 아직 `undefined`가 들어 있어요.
+
+  "끌어올림(호이스팅)"은 **이름**에만 해당하고, 값은 선언 줄이 실행될 때 들어가요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

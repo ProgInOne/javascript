@@ -1,0 +1,43 @@
+id: js-basics.values.data-types.mcq-typeof-null
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.types.typeof, weight: 1 }
+tags: [typeof, "null"]
+estimatedSeconds: 40
+prompt: |
+  다음 코드를 실행하면 콘솔에 무엇이 출력되나요?
+code: |
+  console.log(typeof null);
+spec:
+  options:
+    - id: a
+      text: "`object`"
+    - id: b
+      text: "`null`"
+      misconception: js.mc.typeof-null-is-null
+      rationale: 다른 값과 달리 typeof null은 자기 이름이 아니라 "object"예요.
+    - id: c
+      text: "`undefined`"
+      rationale: undefined는 typeof undefined의 결과예요. null과 undefined는 다른 값이에요.
+    - id: d
+      text: "`TypeError`가 난다"
+      rationale: typeof는 어떤 값에 써도 오류 없이 자료형 이름을 알려 줘요.
+  correct: a
+misconceptions: [js.mc.typeof-null-is-null]
+hints:
+  - 레슨의 typeof 결과 표에 "주의!"가 붙은 줄이 있었어요.
+  - typeof null의 결과는 null이라는 이름과 달라요. JavaScript 초기의 설계 실수 때문이에요.
+  - 결과는 일곱 가지 원시 자료형 이름 중 어느 것도 아니에요.
+explanation: |
+  정답은 **`object`예요**.
+
+  `typeof null`은 `"object"`예요. JavaScript를 처음 만들 때의 설계 실수인데, 이미 많은 웹사이트가 이 동작에 기대고 있어서 고치지 못하고 남았어요. `null`이 객체라는 뜻은 아니니, 이 결과 하나만 따로 외워 두세요.
+
+  - `null`을 고른 경우: 다른 값은 typeof 결과가 자료형 이름과 같아서 그렇게 생각하기 쉬워요. null만 예외예요.
+  - `undefined`를 고른 경우: `typeof undefined`가 `"undefined"`예요. null과 undefined는 다른 값이고, 다음 단원에서 차이를 배워요.
+  - TypeError를 고른 경우: typeof는 어떤 값에 써도 오류를 내지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

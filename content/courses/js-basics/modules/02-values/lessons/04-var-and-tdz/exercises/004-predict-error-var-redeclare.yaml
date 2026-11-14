@@ -1,0 +1,35 @@
+id: js-basics.values.var-and-tdz.predict-error-var-redeclare
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.values.var, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [var, redeclare]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 끝까지 실행하면 오류가 날까요? 오류가 난다면 어떤 종류의 오류인가요?
+spec:
+  lang: js
+  code: |
+    var coins = 50;
+    console.log(coins);
+    var coins = 0;
+    console.log(coins);
+  answerKind: error
+  misconceptionByAnswer:
+    SyntaxError: js.mc.var-redeclare-silent
+misconceptions: [js.mc.var-redeclare-silent]
+hints:
+  - 같은 이름을 두 번 선언하고 있어요. 선언에 쓰인 단어는 `let`인가요, `var`인가요?
+  - "`let`으로 같은 이름을 두 번 선언하면 SyntaxError가 났어요. `var`도 그럴까요?"
+  - var는 실수를 숨기는 성질이 있다고 배웠어요.
+explanation: |
+  정답은 **오류가 나지 않는다**예요. 콘솔에는 `50`과 `0`이 차례로 나와요.
+
+  `var`는 같은 이름으로 다시 선언해도 오류를 내지 않고, 3번 줄을 그냥 `coins = 0;`이라는 대입처럼 처리해요. 그래서 앞의 값 50이 조용히 덮어써져요.
+
+  `SyntaxError`라고 답했다면 `let`의 규칙을 `var`에도 적용한 거예요. 같은 코드를 `let`으로 쓰면 `SyntaxError: Identifier 'coins' has already been declared`가 나서 실행 전에 실수를 알려 줘요. `var`는 이렇게 실수를 숨기기 때문에 새 코드에서는 쓰지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

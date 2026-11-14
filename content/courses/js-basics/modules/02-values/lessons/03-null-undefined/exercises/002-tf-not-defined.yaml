@@ -1,0 +1,46 @@
+id: js-basics.values.null-undefined.tf-not-defined
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.types.undefined, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [undefined, reference-error]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`ReferenceError: total is not defined`는 변수 `total`에 `undefined`가 들어 있다는 뜻이다."
+  answer: false
+  misconceptionIfWrong: js.mc.not-defined-is-undefined
+  requireReason: true
+  reasons:
+    - id: r1
+      text: total이라는 이름의 변수가 아예 없다는 오류이고, undefined는 변수는 있지만 값이 아직 없을 때의 값이다
+      correct: true
+    - id: r2
+      text: not defined는 "정해지지 않음", 즉 undefined를 풀어 쓴 말이라서 같은 뜻이다
+      misconception: js.mc.not-defined-is-undefined
+    - id: r3
+      text: undefined가 들어 있는 변수를 출력하면 오류가 나는데, 그 오류 메시지가 바로 이것이다
+      misconception: js.mc.undefined-is-error
+hints:
+  - "`let total;` 다음에 `console.log(total);`을 실행하면 무엇이 나오나요?"
+  - 오류가 났을 때와 undefined가 출력됐을 때, 프로그램은 각각 계속 실행되나요?
+  - is not defined는 "그런 이름이 없어요", undefined는 "이름은 있는데 값이 아직 없어요"예요.
+explanation: |
+  정답은 **거짓**, 이유는 **total이라는 이름의 변수가 아예 없다는 오류이고, undefined는 변수는 있지만 값이 아직 없을 때의 값이다**예요.
+
+  ```js
+  let total;
+  console.log(total);   // undefined (값)
+  console.log(totl);    // ReferenceError: totl is not defined (오류, 여기서 멈춤)
+  ```
+
+  - `is not defined`는 만든 적 없는 이름이나 오타 난 이름을 쓸 때 나는 오류이고, 프로그램이 그 줄에서 멈춰요. "정해지지 않은 값"이 아니라 "정의된(만들어진) 적 없는 이름"이라는 뜻이에요.
+  - 값 없이 만든 변수를 쓰면 오류 없이 `undefined`가 출력되고, 프로그램은 계속 실행돼요. 그래서 세 번째 이유도 틀렸어요.
+
+  둘 다 "defined"가 들어가서 헷갈리지만, 하나는 **값**이고 하나는 **오류**예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

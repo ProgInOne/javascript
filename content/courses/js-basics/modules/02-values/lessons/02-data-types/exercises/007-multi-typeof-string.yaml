@@ -1,0 +1,46 @@
+id: js-basics.values.data-types.multi-typeof-string
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.types.typeof, weight: 1 }
+  - { id: js.types.string, weight: 0.3 }
+tags: [typeof, string]
+estimatedSeconds: 70
+prompt: |
+  다음 중 `typeof`의 결과가 `"string"`인 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`typeof \"42\"`"
+      missedMisconception: js.mc.typeof-reads-content
+    - id: b
+      text: "`typeof \"true\"`"
+      missedMisconception: js.mc.typeof-reads-content
+    - id: c
+      text: "`typeof 42`"
+      rationale: 따옴표 없는 42는 숫자라서 결과는 "number"예요.
+    - id: d
+      text: "`typeof \"\"`"
+    - id: e
+      text: "`typeof false`"
+      rationale: 따옴표 없는 false는 불리언이라서 결과는 "boolean"이에요.
+    - id: f
+      text: "`typeof typeof 42`"
+      missedMisconception: js.mc.typeof-result-not-string
+  correct: [a, b, d, f]
+misconceptions: [js.mc.typeof-reads-content, js.mc.typeof-result-not-string]
+hints:
+  - typeof 뒤의 값에 따옴표가 있는지 하나씩 확인해 보세요.
+  - "`\"\"`처럼 따옴표 사이에 아무것도 없어도 문자열이에요. 그리고 typeof의 결과 자체는 어떤 자료형이었나요?"
+  - 따옴표로 감싼 값은 내용과 관계없이 문자열이에요. typeof의 결과도 "number" 같은 문자열이에요.
+explanation: |
+  정답은 **`typeof "42"`, `typeof "true"`, `typeof ""`, `typeof typeof 42`예요**.
+
+  - `"42"`, `"true"`: 안의 글자가 숫자나 불리언처럼 생겼어도 따옴표로 감쌌으니 문자열이에요. typeof는 내용이 아니라 자료형을 봐요.
+  - `""`: 글자가 하나도 없는 빈 문자열도 문자열이에요.
+  - `typeof typeof 42`: 안쪽 `typeof 42`의 결과가 문자열 `"number"`예요. 그 문자열에 다시 typeof를 쓰니 `"string"`이에요.
+  - `typeof 42`는 `"number"`, `typeof false`는 `"boolean"`이에요. 따옴표가 없어서 문자열이 아니에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

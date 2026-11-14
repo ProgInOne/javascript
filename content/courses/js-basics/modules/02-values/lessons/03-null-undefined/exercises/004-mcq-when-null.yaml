@@ -1,0 +1,45 @@
+id: js-basics.values.null-undefined.mcq-when-null
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.types.null, weight: 1 }
+tags: ["null"]
+estimatedSeconds: 50
+prompt: |
+  학생의 과학 점수를 담는 변수 `scienceScore`가 있어요. 이 학생은 **아직 과학 시험을 보지 않았어요.** 이 상황을 가장 정확하게 표현한 코드는 무엇인가요?
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: let scienceScore = null;
+    - id: b
+      text: let scienceScore = 0;
+      misconception: js.mc.empty-value-is-zero
+      rationale: 0은 "0점을 받았다"는 뜻이에요. 시험을 안 본 학생과 0점 받은 학생을 구별할 수 없어요.
+    - id: c
+      text: let scienceScore = "";
+      misconception: js.mc.empty-value-is-zero
+      rationale: 빈 문자열은 글자가 없는 문자열이 "있는" 것이에요. 점수는 숫자인데 자료형도 맞지 않아요.
+    - id: d
+      text: let scienceScore = "null";
+      rationale: 따옴표로 감싸면 n, u, l, l 네 글자로 된 문자열이에요.
+  correct: a
+misconceptions: [js.mc.empty-value-is-zero]
+hints:
+  - 이 학생의 과학 점수는 "0점"인가요, "아직 없음"인가요?
+  - 0과 빈 문자열은 비어 보여도 값이 있는 숫자와 문자열이에요.
+  - 값이 없다는 것을 프로그래머가 일부러 표시할 때 쓰는 값이 있어요. 따옴표는 붙이지 않아요.
+explanation: |
+  정답은 **`let scienceScore = null;`이에요**.
+
+  시험을 아직 보지 않았으니 점수는 "없음"이에요. 값이 없다는 것을 일부러 표시할 때는 `null`을 써요.
+
+  - `0`: "0점을 받았다"는 뜻이 돼요. 나중에 평균을 내면 시험을 안 본 학생이 0점으로 계산되는 버그가 생겨요.
+  - `""`: 글자가 없는 문자열이 있는 것이고, 점수는 숫자인데 자료형도 맞지 않아요.
+  - `"null"`: 따옴표 때문에 문자열이에요. `typeof "null"`은 `"string"`이에요.
+
+  `let scienceScore;`처럼 값 없이 만들어 `undefined`로 두는 방법도 있지만, "일부러 비워 두었다"는 뜻을 분명히 하려면 `null`을 직접 넣는 것이 관례예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

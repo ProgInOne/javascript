@@ -1,0 +1,44 @@
+id: js-basics.values.data-types.predict-typeof-typeof
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.types.typeof, weight: 1 }
+tags: [typeof, "null"]
+estimatedSeconds: 90
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 콘솔에 보이는 그대로 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    let kind = typeof 3.5;
+    console.log(kind);
+    console.log(typeof kind);
+    console.log(typeof null);
+  answerKind: console
+  misconceptionByAnswer:
+    "number\nnumber\nobject": js.mc.typeof-result-not-string
+    "number\nstring\nnull": js.mc.typeof-null-is-null
+    "number\nnumber\nnull": js.mc.typeof-result-not-string
+misconceptions: [js.mc.typeof-result-not-string, js.mc.typeof-null-is-null]
+hints:
+  - 1번 줄이 실행된 뒤 `kind`에는 어떤 값이 들어 있나요? 그 값은 어떤 자료형인가요?
+  - typeof의 결과는 언제나 자료형 이름이 담긴 문자열이에요. 3번 줄은 그 문자열의 자료형을 묻고 있어요.
+  - 마지막 줄은 레슨의 typeof 표에서 "주의!"가 붙은 줄이에요.
+explanation: |
+  정답은 다음 세 줄이에요.
+
+  ```text
+  number
+  string
+  object
+  ```
+
+  - 1~2번 줄: 소수 `3.5`도 number라서 `kind`에는 문자열 `"number"`가 들어가요. 콘솔은 따옴표 없이 `number`로 보여 줘요.
+  - 3번 줄: `kind`에 든 값은 `"number"`라는 **문자열**이에요. 그래서 `typeof kind`는 `string`이에요.
+  - 4번 줄: `typeof null`은 JavaScript 초기의 설계 실수 때문에 `object`예요.
+
+  3번 줄을 `number`라고 답했다면 typeof의 결과가 문자열이라는 점을 놓친 거예요. 4번 줄을 `null`이라고 답했다면 typeof null의 예외를 기억해 두세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

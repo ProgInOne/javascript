@@ -1,0 +1,51 @@
+id: js-basics.values.data-types.predict-boolean-reassign
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.types.boolean, weight: 1 }
+  - { id: js.types.typeof, weight: 0.5 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [boolean, typeof, assignment]
+estimatedSeconds: 90
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 콘솔에 보이는 그대로 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    let isMember = "false";
+    console.log(typeof isMember);
+    isMember = true;
+    console.log(isMember);
+    console.log(typeof isMember);
+  answerKind: console
+  misconceptionByAnswer:
+    "boolean\ntrue\nboolean": js.mc.quoted-boolean
+    "string\ntrue\nstring": js.mc.type-belongs-to-variable
+misconceptions: [js.mc.quoted-boolean, js.mc.type-belongs-to-variable]
+hints:
+  - 1번 줄에서 `isMember`에 처음 넣은 값에는 따옴표가 있나요?
+  - 3번 줄이 실행된 뒤 `isMember`에 들어 있는 값은 무엇이고, 따옴표가 있나요?
+  - typeof는 그 순간 변수에 들어 있는 값의 자료형을 알려 줘요. 줄마다 들어 있는 값을 표로 적어 보세요.
+explanation: |
+  정답은 다음 세 줄이에요.
+
+  ```text
+  string
+  true
+  boolean
+  ```
+
+  | 실행한 줄 | `isMember`의 값 | 자료형 |
+  |---|---|---|
+  | `let isMember = "false";` | `"false"` | string |
+  | `isMember = true;` | `true` | boolean |
+
+  - 2번 줄: 처음 값 `"false"`는 따옴표로 감쌌으니 불리언이 아니라 문자열이에요. 그래서 `string`이에요.
+  - 4번 줄: 따옴표 없는 `true`를 대입했으니 `true`가 출력돼요.
+  - 5번 줄: 이제 `isMember`에는 불리언이 들어 있으니 `boolean`이에요.
+
+  첫 줄을 `boolean`이라고 답했다면 `"false"`를 불리언으로 본 거예요. 마지막 줄을 `string`이라고 답했다면 변수의 자료형이 처음 값으로 고정된다고 생각한 거예요. 자료형은 변수가 아니라 그 순간 들어 있는 값에 붙어 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

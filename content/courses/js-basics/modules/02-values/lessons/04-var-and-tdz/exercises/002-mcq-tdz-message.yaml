@@ -1,0 +1,48 @@
+id: js-basics.values.var-and-tdz.mcq-tdz-message
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.values.tdz, weight: 1 }
+  - { id: js.errors.error-messages, weight: 0.3 }
+tags: [tdz, reference-error, error-message]
+estimatedSeconds: 50
+prompt: |
+  프로그램을 실행했더니 다음 오류가 났어요. 이 오류는 무엇을 뜻하나요?
+
+  ```text
+  ReferenceError: Cannot access 'score' before initialization (2번째 줄)
+  ```
+spec:
+  options:
+    - id: a
+      text: "`score`를 선언하는 줄이 있지만, 그 줄이 실행되기 전인 2번 줄에서 `score`를 썼다"
+    - id: b
+      text: "`score`라는 이름이 프로그램 어디에도 없다(오타)"
+      misconception: js.mc.tdz-means-misspelled
+      rationale: 이름이 아예 없으면 score is not defined가 나요. 이 오류는 선언 줄이 있다는 뜻이에요.
+    - id: c
+      text: "`score`에 `undefined`가 들어 있어서 출력할 수 없다"
+      misconception: js.mc.let-before-declaration-undefined
+      rationale: undefined가 들어 있는 변수는 오류 없이 출력돼요. 이 오류는 아예 쓸 수 없는 구간에서 썼다는 뜻이에요.
+    - id: d
+      text: "`score`를 `const`로 만들어서 값을 바꿀 수 없다"
+      misconception: js.mc.const-can-reassign
+      rationale: const에 다시 대입하면 TypeError(Assignment to constant variable.)가 나요. 메시지가 달라요.
+  correct: a
+misconceptions: [js.mc.tdz-means-misspelled, js.mc.let-before-declaration-undefined]
+hints:
+  - "`before initialization`은 \"초기화 전에\"라는 뜻이에요. 변수의 초기화는 어느 줄이 실행될 때 일어날까요?"
+  - 이름이 아예 없을 때의 메시지는 `score is not defined`였어요. 이 메시지와 무엇이 다른가요?
+  - JavaScript는 `score`가 선언된다는 것을 이미 알고 있어요. 문제는 쓰는 줄과 선언하는 줄의 순서예요.
+explanation: |
+  정답은 **`score`를 선언하는 줄이 있지만, 그 줄이 실행되기 전인 2번 줄에서 `score`를 썼다**예요.
+
+  `Cannot access 'score' before initialization`은 "초기화(선언 줄 실행) 전에는 score에 접근할 수 없어요"라는 뜻이에요. `let`이나 `const`로 만든 변수를 선언 줄보다 위에서 쓰면 나요. 선언 줄을 2번 줄보다 위로 옮기면 고쳐져요.
+
+  - "이름이 없다"를 고른 경우: 그때는 `score is not defined`가 나요. 이 오류는 JavaScript가 `score`의 선언을 이미 알고 있다는 뜻이에요.
+  - "`undefined`가 들어 있다"를 고른 경우: `var` 변수는 선언 전에 `undefined`지만, `let`·`const` 변수는 선언 전에 아예 쓸 수 없어요.
+  - "`const`라서 바꿀 수 없다"를 고른 경우: 그 오류는 `TypeError: Assignment to constant variable.`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,45 @@
+id: js-basics.values.null-undefined.multi-null-vs-undefined
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.types.null, weight: 1 }
+  - { id: js.types.undefined, weight: 0.5 }
+tags: ["null", undefined]
+estimatedSeconds: 75
+prompt: |
+  `null`과 `undefined`에 대한 설명으로 맞는 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: 값 없이 만든 `let` 변수에는 JavaScript가 자동으로 `undefined`를 넣는다
+    - id: b
+      text: "\"값이 없음\"을 일부러 표시할 때는 보통 프로그래머가 `null`을 직접 넣는다"
+      missedMisconception: js.mc.null-undefined-same
+    - id: c
+      text: "`typeof null`은 `\"object\"`, `typeof undefined`는 `\"undefined\"`다"
+    - id: d
+      text: "`null`과 `undefined`는 이름만 다를 뿐 완전히 같은 값이다"
+      misconception: js.mc.null-undefined-same
+      rationale: 둘 다 "값이 없음"을 나타내지만 다른 값이에요. 누가 넣는지, typeof 결과가 달라요.
+    - id: e
+      text: "`null`은 숫자 `0`과 같은 값이다"
+      misconception: js.mc.empty-value-is-zero
+      rationale: 0은 "숫자 0이 있음"이고 null은 "값이 없음"이에요.
+  correct: [a, b, c]
+misconceptions: [js.mc.null-undefined-same, js.mc.empty-value-is-zero]
+hints:
+  - 둘 중 JavaScript가 자동으로 넣는 것은 무엇이고, 프로그래머가 직접 넣는 것은 무엇인가요?
+  - 지난 단원의 typeof 표에서 "주의!"가 붙은 줄을 떠올려 보세요.
+  - null과 undefined는 비슷하지만 다른 값이에요. 그리고 0은 엄연히 값이 있는 숫자예요.
+explanation: |
+  정답은 **a, b, c**예요.
+
+  - a: `let x;`처럼 값 없이 만들면 `undefined`가 자동으로 들어가요.
+  - b: "없음"을 직접 표시할 때는 `null`을 쓰는 것이 관례예요. 그래야 "일부러 비웠다"(null)와 "아직 아무도 넣지 않았다"(undefined)를 구별할 수 있어요.
+  - c: `typeof null`은 설계 실수 때문에 `"object"`예요. 결과가 서로 다르다는 것도 둘이 다른 값이라는 증거예요.
+  - d는 틀렸어요. 둘 다 "값이 없음"을 나타내지만 다른 값이에요.
+  - e는 틀렸어요. `0`은 숫자 0이 있는 것이고, `null`은 값이 없는 것이에요. 시험 점수 0점과 "아직 점수 없음"은 달라요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

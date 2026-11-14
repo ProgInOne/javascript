@@ -1,0 +1,101 @@
+id: js-basics.values.null-undefined.impl-profile-from-typeof
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.types.null, weight: 1 }
+  - { id: js.types.undefined, weight: 0.5 }
+  - { id: js.types.typeof, weight: 0.5 }
+tags: ["null", undefined, typeof, write-code]
+estimatedSeconds: 330
+prompt: |
+  회원 프로필을 확인하는 프로그램인데, 변수를 만드는 부분이 지워졌어요. 출력하는 네 줄은 시작 코드에 그대로 있어요(고치지 마세요).
+
+  출력 결과를 단서로 **각 변수에 어떤 값이 들어 있었는지** 알아내서, 출력 코드 위에 네 변수 `phone`, `withdrawnAt`, `points`, `nickname`을 만드세요. 각 줄은 `이름: 값 자료형` 모양이에요.
+
+  ```text
+  phone: undefined undefined
+  withdrawnAt: null object
+  points: 0 number
+  nickname:  string
+  ```
+
+  마지막 줄의 `nickname:`과 `string` 사이에는 공백이 두 칸이에요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 여기에 phone, withdrawnAt, points, nickname 변수를 만드세요.
+
+
+          console.log("phone:", phone, typeof phone);
+          console.log("withdrawnAt:", withdrawnAt, typeof withdrawnAt);
+          console.log("points:", points, typeof points);
+          console.log("nickname:", nickname, typeof nickname);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 여기에 phone, withdrawnAt, points, nickname 변수를 만드세요.
+          let phone;
+          let withdrawnAt = null;
+          let points = 0;
+          let nickname = "";
+
+          console.log("phone:", phone, typeof phone);
+          console.log("withdrawnAt:", withdrawnAt, typeof withdrawnAt);
+          console.log("points:", points, typeof points);
+          console.log("nickname:", nickname, typeof nickname);
+  checks:
+    - kind: console
+      id: output
+      description: 네 변수의 값과 자료형이 출력 예시와 같게 나와야 합니다.
+      requirement: 프로필 출력
+      expect:
+        lines:
+          - "phone: undefined undefined"
+          - "withdrawnAt: null object"
+          - "points: 0 number"
+          - "nickname:  string"
+    - kind: program
+      id: empty-values
+      description: 프로그램이 오류 없이 끝나고, 네 변수에 출력 예시와 맞는 값이 들어 있어야 합니다.
+      requirement: 알맞은 값 고르기
+      expect:
+        globals:
+          phone: { equalsLiteral: "undefined" }
+          withdrawnAt: { equalsLiteral: "null" }
+          points: { equals: 0 }
+          nickname: { equals: "" }
+        noError: true
+      misconceptionIfFail: js.mc.null-undefined-same
+misconceptions: [js.mc.null-undefined-same, js.mc.empty-value-is-zero, js.mc.typeof-null-is-null]
+hints:
+  - 줄마다 두 번째 단어는 값, 세 번째 단어는 typeof 결과예요. 자료형부터 보면 어떤 값인지 좁힐 수 있어요.
+  - typeof 결과가 `object`인데 값이 `null`로 보인다면? 그리고 `nickname` 줄은 값이 보이지 않는데 자료형은 `string`이에요. 글자가 하나도 없는 문자열을 떠올려 보세요.
+  - "`phone`은 값을 넣지 않고 만든 변수, `withdrawnAt`은 일부러 비워 둔 값, `points`는 숫자 0, `nickname`은 빈 문자열이에요. 변수는 출력 코드보다 위에서 만들어야 해요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  let phone;
+  let withdrawnAt = null;
+  let points = 0;
+  let nickname = "";
+  ```
+
+  | 줄 | 단서 | 값 |
+  |---|---|---|
+  | phone | 값도 자료형도 `undefined` | 값을 넣지 않고 만든 변수 → `undefined` |
+  | withdrawnAt | 값 `null`, 자료형 `object` | `null` (typeof null은 `object`) |
+  | points | 값 `0`, 자료형 `number` | 숫자 `0` |
+  | nickname | 값이 안 보이고 자료형 `string` | 빈 문자열 `""` |
+
+  - `phone`은 `let phone = undefined;`라고 써도 정답이지만, 보통은 값 없이 만들어 JavaScript가 `undefined`를 넣게 둬요.
+  - `withdrawnAt`을 `"null"`로 쓰면 자료형이 `string`이 되어 출력이 달라져요.
+  - `points`의 `0`과 `nickname`의 `""`는 비어 보여도 값이 있는 숫자와 문자열이에요. "값이 없음"인 `null`, `undefined`와 자료형부터 달라요.
+  - 변수를 출력 코드 아래에 만들면 `ReferenceError: Cannot access 'phone' before initialization`이 나요. 그 이유는 다음 단원에서 배워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

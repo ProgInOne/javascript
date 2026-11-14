@@ -1,0 +1,40 @@
+id: js-basics.values.data-types.tf-quote-kinds
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.types.string, weight: 1 }
+tags: [string, quotes]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`'사과'`와 `\"사과\"`는 따옴표 종류가 다르므로 서로 다른 값이다."
+  answer: false
+  misconceptionIfWrong: js.mc.quote-kinds-differ
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 따옴표는 문자열의 시작과 끝을 표시할 뿐 값의 일부가 아니어서, 두 문자열은 똑같다
+      correct: true
+    - id: r2
+      text: 작은따옴표는 한 글자, 큰따옴표는 여러 글자를 담는 서로 다른 자료형이다
+      misconception: js.mc.quote-kinds-differ
+    - id: r3
+      text: 작은따옴표로 감싼 값은 문자열이 아니라 이름(변수)으로 읽힌다
+hints:
+  - 두 값을 출력하면 콘솔에 각각 무엇이 보일까요?
+  - "`typeof '사과'`와 `typeof \"사과\"`의 결과를 떠올려 보세요."
+  - 따옴표는 "여기서부터 여기까지가 글자예요"라는 표시예요. 표시 방법이 다르다고 글자가 달라질까요?
+explanation: |
+  정답은 **거짓**, 이유는 **따옴표는 문자열의 시작과 끝을 표시할 뿐 값의 일부가 아니어서, 두 문자열은 똑같다**예요.
+
+  `'사과'`와 `"사과"`는 모두 글자 `사과`로 된 같은 문자열이에요. 출력해도 둘 다 `사과`가 나오고, `typeof`도 둘 다 `"string"`이에요.
+
+  - "한 글자와 여러 글자를 담는 다른 자료형"을 고른 경우: 일부 다른 프로그래밍 언어에는 그런 구분이 있지만, JavaScript에서는 두 따옴표 모두 같은 문자열을 만들어요.
+  - "작은따옴표는 이름으로 읽힌다"를 고른 경우: 이름(변수)은 따옴표 없이 쓴 것이에요. 작은따옴표로 감싸도 글자예요.
+
+  두 따옴표는 글자 안에 다른 따옴표를 넣고 싶을 때 골라 써요. `'그가 "안녕"이라고 했어요'`처럼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

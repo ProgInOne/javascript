@@ -1,0 +1,57 @@
+id: js-basics.values.var-and-tdz.find-bug-var-hoisting
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.values.var, weight: 1 }
+  - { id: js.types.undefined, weight: 0.3 }
+tags: [var, hoisting, undefined, debugging]
+estimatedSeconds: 90
+prompt: |
+  손님을 맞이하는 인사 프로그램이에요. 손님 이름 자리에 이상한 값이 나와요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    console.log("환영합니다,", guestName);
+    var guestName = "다온";
+    console.log("즐거운 하루 보내세요");
+  bugLines: [2]
+  acceptLines: [1]
+  symptom: "`환영합니다, 다온` 대신 `환영합니다, undefined`가 나와요. 오류 메시지는 없어요."
+  symptomCheck:
+    console: ["환영합니다, undefined", "즐거운 하루 보내세요"]
+  fixedCode: |-
+    const guestName = "다온";
+    console.log("환영합니다,", guestName);
+    console.log("즐거운 하루 보내세요");
+  causeOptions:
+    - id: c1
+      text: 이름을 넣는 선언이 출력보다 아래에 있어서, 출력할 때는 미리 준비된 undefined만 들어 있었다
+      correct: true
+    - id: c2
+      text: guestName이 선언되지 않아서 JavaScript가 값을 찾지 못했다
+      misconception: js.mc.not-defined-is-undefined
+    - id: c3
+      text: var 선언은 값까지 끌어올려지는데, 1번 줄의 쉼표 때문에 값이 출력되지 않았다
+      misconception: js.mc.var-hoists-value
+misconceptions: [js.mc.var-hoists-value]
+hints:
+  - 오류가 아니라 `undefined`가 출력됐어요. 변수가 없는 걸까요, 값이 아직 없는 걸까요?
+  - 1번 줄이 실행되는 순간 `guestName`에 들어 있는 값은 무엇일까요? var 변수는 실행 전에 무엇으로 준비되었나요?
+  - "`\"다온\"`이 들어가는 줄은 출력하는 줄보다 먼저 실행되나요?"
+explanation: |
+  원인은 **2번 줄**이에요. 이름을 넣는 선언이 출력보다 아래에 있어요.
+
+  `var guestName`은 실행 전에 이름이 등록되고 `undefined`가 미리 들어가요. 그래서 1번 줄에서 오류는 나지 않지만, 값 `"다온"`은 2번 줄이 실행될 때 들어가므로 1번 줄에서는 `undefined`가 출력돼요. 선언을 출력보다 위로 옮기면 돼요. 1번 줄과 2번 줄의 순서가 문제라서 1번 줄을 골라도 정답으로 인정해요.
+
+  ```js
+  const guestName = "다온";
+  console.log("환영합니다,", guestName);
+  ```
+
+  옮기는 김에 `var` 대신 `const`로 바꾸면, 다음에 또 선언보다 먼저 쓰는 실수를 했을 때 조용한 `undefined` 대신 오류로 바로 알 수 있어요.
+
+  - "선언되지 않았다"를 고른 경우: 선언이 없었다면 `ReferenceError: guestName is not defined`가 났을 거예요.
+  - "값까지 끌어올려진다"를 고른 경우: 끌어올려지는 것은 이름과 `undefined`뿐이에요. 쉼표는 값을 나눌 뿐 아무 문제가 없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,45 @@
+id: js-basics.values.data-types.mcq-boolean-literal
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.types.boolean, weight: 1 }
+tags: [boolean]
+estimatedSeconds: 40
+prompt: |
+  "문이 열려 있다"는 상태를 불리언 값으로 `isOpen`에 담으려고 해요. 빈칸 `???`에 들어갈 값으로 알맞은 것은 무엇인가요?
+code: |
+  let isOpen = ???;
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: "true"
+    - id: b
+      text: '"true"'
+      misconception: js.mc.quoted-boolean
+      rationale: 따옴표로 감싸면 네 글자로 된 문자열이 돼요.
+    - id: c
+      text: "True"
+      misconception: js.mc.boolean-capitalized
+      rationale: 대문자로 시작하면 불리언이 아니라 이름으로 읽혀서 ReferenceError가 나요.
+    - id: d
+      text: '"열림"'
+      rationale: 상태를 글자로 적은 문자열이에요. 예/아니요 상태는 불리언으로 담아요.
+  correct: a
+misconceptions: [js.mc.quoted-boolean, js.mc.boolean-capitalized]
+hints:
+  - 불리언 자료형에는 값이 딱 두 개 있어요. 무엇이었나요?
+  - 불리언 값에는 따옴표를 붙일까요, 붙이지 않을까요?
+  - 불리언은 소문자로, 따옴표 없이 써요.
+explanation: |
+  정답은 **`true`예요**.
+
+  불리언은 `true`(참)와 `false`(거짓) 두 값뿐이고, 소문자로 따옴표 없이 써요. "문이 열려 있다"는 참이므로 `let isOpen = true;`예요.
+
+  - `"true"`: 따옴표 때문에 t, r, u, e 네 글자로 된 문자열이에요. `typeof "true"`는 `"string"`이에요.
+  - `True`: JavaScript는 대소문자를 구별해요. `True`는 불리언이 아니라 이름으로 읽히고, 그런 변수가 없으니 `ReferenceError: True is not defined`가 나요.
+  - `"열림"`: 상태를 설명하는 문자열이에요. 예/아니요로 답하는 상태는 불리언으로 담아야 나중에 조건문에서 바로 쓸 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

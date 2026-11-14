@@ -1,0 +1,64 @@
+id: js-basics.values.data-types.parsons-light-switch
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.types.boolean, weight: 1 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [boolean, assignment, parsons]
+estimatedSeconds: 120
+prompt: |
+  거실 전등의 상태를 불리언 변수 `isOn`에 담는 프로그램이에요. 처음에는 꺼져 있다가 켜지는 과정을 출력하도록 코드 조각을 순서대로 배열하세요.
+
+  ```text
+  전등 켜짐: false
+  전등 켜짐: true
+  ```
+
+  프로그램이 끝났을 때 `isOn`에는 **불리언** 값이 들어 있어야 해요.
+spec:
+  lines:
+    - { id: l1, code: "let isOn = false;" }
+    - { id: l2, code: 'console.log("전등 켜짐:", isOn);' }
+    - { id: l3, code: "isOn = true;" }
+    - { id: l4, code: 'console.log("전등 켜짐:", isOn);' }
+  distractors:
+    - { id: d1, code: 'isOn = "true";', replaces: l3, misconception: js.mc.quoted-boolean }
+    - { id: d2, code: "let isOn = True;", replaces: l1, misconception: js.mc.boolean-capitalized }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 꺼진 상태와 켜진 상태가 차례로 출력되어야 합니다.
+      requirement: 전등 상태 출력
+      expect:
+        lines: ["전등 켜짐: false", "전등 켜짐: true"]
+    - kind: program
+      id: boolean-at-end
+      description: 프로그램이 오류 없이 끝나고, 끝났을 때 isOn에는 불리언 true가 들어 있어야 합니다.
+      requirement: 불리언으로 담기
+      expect:
+        globals:
+          isOn: { equals: true }
+        noError: true
+      misconceptionIfFail: js.mc.quoted-boolean
+misconceptions: [js.mc.quoted-boolean, js.mc.boolean-capitalized]
+hints:
+  - 변수를 만드는 줄 → 출력 → 값 바꾸기 → 출력 순서로 생각해 보세요.
+  - 비슷해 보이는 조각이 있어요. 불리언 값은 어떻게 쓰나요? 따옴표나 대문자가 붙어 있지 않은지 확인하세요.
+  - "`\"true\"`는 문자열이고 `True`는 없는 이름이에요. 소문자이면서 따옴표 없는 조각만 고르세요."
+explanation: |
+  정답 순서는 다음과 같아요.
+
+  ```js
+  let isOn = false;
+  console.log("전등 켜짐:", isOn);
+  isOn = true;
+  console.log("전등 켜짐:", isOn);
+  ```
+
+  - `let isOn = True;`를 고르면 `True`를 변수 이름으로 읽어서 `ReferenceError: True is not defined`가 나요. 불리언은 소문자예요.
+  - `isOn = "true";`를 고르면 출력은 똑같이 `전등 켜짐: true`로 보여요. 콘솔이 문자열의 따옴표를 보여 주지 않기 때문이에요. 하지만 `isOn`에는 불리언이 아니라 문자열이 들어가서 두 번째 요구사항을 통과하지 못해요. 출력 모양만으로는 자료형을 알 수 없다는 점을 기억해 두세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

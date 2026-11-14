@@ -1,0 +1,16 @@
+id: js-basics.values.null-undefined
+title: 비어 있는 값
+summary: 값이 아직 정해지지 않았을 때의 undefined와, 값이 없음을 일부러 표시하는 null을 구별해 쓰는 법을 배웁니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 10, practice: 18 }
+concepts:
+  primary: [js.types.undefined, js.types.null]
+  practiced: [js.types.typeof, js.values.let, js.values.assignment]
+  reviewed: [js.errors.error-types, js.types.primitives]
+objectives:
+  - undefined가 나타나는 상황을 설명하고, 콘솔에 나온 undefined와 is not defined 오류를 구별할 수 있다.
+  - 값이 없음을 일부러 표시할 때 null을 쓰고, null과 undefined·0·빈 문자열의 차이를 설명할 수 있다.
+  - 값을 넣기 전에 쓰거나 계산 결과를 담지 않아서 생긴 버그를 찾아 고칠 수 있다.
+practice:
+  targetCount: 14

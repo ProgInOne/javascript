@@ -1,0 +1,74 @@
+id: js-basics.values.null-undefined.fix-total-not-stored
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.types.undefined, weight: 1 }
+  - { id: js.values.assignment, weight: 0.5 }
+tags: [undefined, assignment, debugging]
+estimatedSeconds: 120
+prompt: |
+  떡볶이 3인분 값을 계산하는 프로그램이에요. 오류 메시지는 없는데 합계가 이상하게 나와요.
+
+  지금 실행하면 이렇게 나와요.
+
+  ```text
+  합계: undefined
+  ```
+
+  고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  합계: 13500
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const price = 4500;
+          const count = 3;
+          let total;
+          price * count;
+          console.log("합계:", total);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const price = 4500;
+          const count = 3;
+          let total;
+          total = price * count;
+          console.log("합계:", total);
+  bugDescription: 합계 자리에 숫자 대신 undefined가 나와요.
+  maxEditDistance: 3
+  checks:
+    - kind: console
+      id: output
+      description: 계산한 합계가 출력되어야 합니다.
+      requirement: 합계 출력
+      expect:
+        lines: ["합계: 13500"]
+    - kind: program
+      id: total-value
+      description: 프로그램이 끝났을 때 total에는 계산한 합계 13500이 들어 있어야 합니다.
+      requirement: total에 계산 결과 담기
+      expect:
+        globals:
+          total: { equals: 13500 }
+misconceptions: [js.mc.undefined-is-error]
+hints:
+  - "`total`에 값이 들어가는 줄이 있나요? 한 줄씩 `total`의 값을 따라가 보세요."
+  - 4번 줄은 계산은 하지만, 그 결과는 어디에 들어갈까요?
+  - 계산 결과를 변수에 넣으려면 대입(`=`)이 필요해요. 왼쪽에는 값을 받을 변수가 와요.
+explanation: |
+  4번 줄 `price * count;`가 문제예요. 계산은 하지만 결과를 **어디에도 넣지 않아서** 그대로 버려져요.
+
+  `total`은 3번 줄에서 값 없이 만들어졌고 그 뒤로 아무것도 대입되지 않았으니, 5번 줄에서는 여전히 `undefined`예요. 오류가 아니라서 메시지도 없었어요.
+
+  4번 줄을 `total = price * count;`로 고치면 계산 결과 13500이 `total`에 들어가요. 3번과 4번 줄을 합쳐 `let total = price * count;`로 써도 정답이에요.
+
+  예상하지 못한 `undefined`가 보이면 "이 변수에 값을 넣는 대입이 실제로 실행됐나?"를 먼저 확인해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,82 @@
+id: js-basics.values.null-undefined.fix-delivery-status
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.types.undefined, weight: 1 }
+  - { id: js.values.identifiers, weight: 0.5 }
+  - { id: js.values.assignment, weight: 0.5 }
+  - { id: js.errors.error-messages, weight: 0.3 }
+tags: [undefined, identifiers, statement-order, debugging]
+estimatedSeconds: 360
+prompt: |
+  택배 배송 상태를 출력하는 프로그램이에요. 택배사는 `빠른택배`, 도착 예정일은 `목요일`이에요. 문제가 **세 군데** 있어요. 하나를 고치면 다음 문제가 드러나요. 실행해 보고 고치기를 반복해서 아래처럼 나오게 하세요.
+
+  ```text
+  주문 번호: A-1024
+  택배사: 빠른택배
+  도착 예정: 목요일
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const orderId = "A-1024";
+          let courier;
+          let arrivalDay;
+
+          console.log("주문 번호:", orderID);
+          console.log("택배사:", courier);
+          courier = "빠른택배";
+          let arrivalDate = "목요일";
+          console.log("도착 예정:", arrivalDay);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const orderId = "A-1024";
+          let courier;
+          let arrivalDay;
+
+          console.log("주문 번호:", orderId);
+          courier = "빠른택배";
+          console.log("택배사:", courier);
+          arrivalDay = "목요일";
+          console.log("도착 예정:", arrivalDay);
+  bugDescription: 실행하면 첫 출력 줄에서 ReferenceError가 나요. 고치고 나면 값 자리에 undefined가 보여요.
+  checks:
+    - kind: console
+      id: output
+      description: 주문 번호, 택배사, 도착 예정일이 차례로 출력되어야 합니다.
+      requirement: 배송 상태 출력
+      expect:
+        lines: ["주문 번호: A-1024", "택배사: 빠른택배", "도착 예정: 목요일"]
+      misconceptionIfFail: js.mc.undefined-is-error
+    - kind: program
+      id: final-values
+      description: 프로그램이 끝났을 때 courier에는 "빠른택배", arrivalDay에는 "목요일"이 들어 있어야 합니다.
+      requirement: 변수에 값 넣기
+      expect:
+        globals:
+          courier: { equals: "빠른택배" }
+          arrivalDay: { equals: "목요일" }
+misconceptions:
+  - js.mc.not-defined-is-undefined
+  - js.mc.undefined-is-error
+  - js.mc.identifier-case-insensitive
+hints:
+  - "처음 오류는 `ReferenceError: orderID is not defined (5번째 줄)`이에요. 1번 줄에서 만든 이름과 한 글자씩 비교해 보세요."
+  - "고치고 나면 오류 없이 `택배사: undefined`가 나와요. 6번 줄이 실행되는 순간 `courier`에는 무엇이 들어 있나요? 값을 넣는 줄은 어디에 있나요?"
+  - "마지막으로 `도착 예정: undefined`가 나와요. 8번 줄에서 `목요일`을 넣은 변수의 이름이 9번 줄에서 출력하는 변수와 같은지 확인해 보세요."
+explanation: |
+  문제 세 개가 차례로 드러나요.
+
+  1. **`ReferenceError: orderID is not defined` (5번 줄)**: 1번 줄에서 만든 이름은 `orderId`(소문자 d)예요. 대소문자가 다르면 없는 이름이라 오류가 나고 프로그램이 멈춰요. `orderId`로 고쳐요.
+  1. **오류 없이 `택배사: undefined`**: 6번 줄에서 출력할 때 `courier`에는 아직 값이 없어요. 값을 넣는 7번 줄이 출력보다 나중에 있기 때문이에요. 두 줄의 순서를 바꿔요.
+  1. **오류 없이 `도착 예정: undefined`**: 8번 줄은 `arrivalDay`가 아니라 새 변수 `arrivalDate`를 만들어 `목요일`을 넣었어요. `arrivalDay`에는 끝까지 아무것도 들어가지 않았어요. `arrivalDay = "목요일";`로 대입해요.
+
+  첫 번째는 **오류**(`is not defined`, 변수가 없음)이고, 두세 번째는 오류가 아닌 **값** `undefined`(변수는 있는데 값이 없음)예요. 예상하지 못한 `undefined`가 보이면 "값을 넣는 대입이 출력보다 먼저, 그리고 같은 이름으로 실행됐나?"를 확인해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

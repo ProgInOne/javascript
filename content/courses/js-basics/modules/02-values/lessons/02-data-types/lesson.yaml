@@ -1,0 +1,16 @@
+id: js-basics.values.data-types
+title: 자료형
+summary: 값에는 숫자·문자열·불리언 같은 종류(자료형)가 있다는 것을 알고, 각 값을 바르게 쓰며, typeof로 자료형을 확인하는 법을 배웁니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 15, practice: 25 }
+concepts:
+  primary: [js.types.primitives, js.types.number, js.types.string, js.types.boolean, js.types.typeof]
+  practiced: [js.values.let, js.values.assignment]
+  reviewed: [js.basics.console-log, js.errors.error-types, js.values.const]
+objectives:
+  - "\"5\"와 5처럼 겉모습이 비슷한 값의 자료형을 구별하고, 자료형에 따라 결과가 달라지는 코드를 예측할 수 있다."
+  - 숫자·문자열·불리언 값을 규칙에 맞게 쓰고, 값을 잘못 써서 생긴 오류를 고칠 수 있다.
+  - typeof로 값의 자료형을 확인하고, typeof null을 포함한 결과를 예측할 수 있다.
+practice:
+  targetCount: 24

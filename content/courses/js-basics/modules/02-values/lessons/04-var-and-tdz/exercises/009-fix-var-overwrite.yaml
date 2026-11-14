@@ -1,0 +1,89 @@
+id: js-basics.values.var-and-tdz.fix-var-overwrite
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.values.var, weight: 1 }
+  - { id: js.values.identifiers, weight: 0.3 }
+tags: [var, redeclare, debugging]
+estimatedSeconds: 200
+prompt: |
+  온라인 쇼핑몰의 오래된 결제 코드예요. 상품 한 개는 5000원이고 3개를 샀어요. 배송비는 2500원이에요. 오류 메시지는 없는데 금액이 틀려요.
+
+  지금 실행하면 이렇게 나와요.
+
+  ```text
+  상품 금액: 7500
+  배송비: 2500
+  결제 금액: 10000
+  ```
+
+  고쳐서 아래처럼 나오게 하세요. 배송비를 담는 변수의 이름은 자유롭게 정해도 돼요.
+
+  ```text
+  상품 금액: 15000
+  배송비: 2500
+  결제 금액: 17500
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          var price = 5000; // 상품 한 개 가격
+          var count = 3;
+          var price = 2500; // 배송비
+          console.log("상품 금액:", price * count);
+          console.log("배송비:", price);
+          console.log("결제 금액:", price * count + price);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const price = 5000; // 상품 한 개 가격
+          const count = 3;
+          const shippingFee = 2500; // 배송비
+          console.log("상품 금액:", price * count);
+          console.log("배송비:", shippingFee);
+          console.log("결제 금액:", price * count + shippingFee);
+  bugDescription: 오류 메시지는 없는데 상품 금액과 결제 금액이 틀려요.
+  bugMisconception: js.mc.var-redeclare-silent
+  checks:
+    - kind: console
+      id: output
+      description: 상품 금액, 배송비, 결제 금액이 차례로 맞게 출력되어야 합니다.
+      requirement: 결제 금액 출력
+      expect:
+        lines: ["상품 금액: 15000", "배송비: 2500", "결제 금액: 17500"]
+    - kind: program
+      id: price-kept
+      description: 프로그램이 오류 없이 끝나고, price에는 상품 한 개 가격 5000이 남아 있어야 합니다.
+      requirement: 상품 가격 지키기
+      expect:
+        globals:
+          price: { equals: 5000 }
+        noError: true
+      misconceptionIfFail: js.mc.var-redeclare-silent
+misconceptions: [js.mc.var-redeclare-silent]
+hints:
+  - 상품 금액이 15000이 아니라 7500이에요. 4번 줄이 실행될 때 `price`에는 얼마가 들어 있을까요?
+  - 1번 줄과 3번 줄을 비교해 보세요. 두 줄은 서로 다른 값을 담으려고 했는데, 이름은 어떤가요?
+  - var는 같은 이름을 다시 선언해도 오류 없이 덮어써요. 배송비에는 다른 이름을 붙이고, 배송비를 쓰는 곳도 그 이름으로 바꿔요.
+explanation: |
+  3번 줄이 문제예요. 배송비를 담으려고 `var price`를 **다시** 선언했어요. `var`는 같은 이름을 다시 선언해도 오류를 내지 않고 앞의 값을 덮어써서, 상품 가격 5000이 2500으로 바뀌어 버렸어요. 그래서 상품 금액이 2500 × 3 = 7500으로 계산됐어요.
+
+  배송비에 다른 이름(예: `shippingFee`)을 붙이고, 배송비를 쓰는 5번·6번 줄도 그 이름으로 바꿔요.
+
+  ```js
+  const price = 5000;
+  const count = 3;
+  const shippingFee = 2500;
+  console.log("상품 금액:", price * count);
+  console.log("배송비:", shippingFee);
+  console.log("결제 금액:", price * count + shippingFee);
+  ```
+
+  예시 정답처럼 `var`를 `const`로 바꾸면 좋아요. 처음 코드를 `const`로만 바꿔도 3번 줄에서 `SyntaxError: Identifier 'price' has already been declared`가 나서, 같은 이름을 두 번 쓴 실수를 실행 전에 알려 줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

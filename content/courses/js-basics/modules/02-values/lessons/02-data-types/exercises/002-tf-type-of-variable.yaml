@@ -1,0 +1,47 @@
+id: js-basics.values.data-types.tf-type-of-variable
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.types.primitives, weight: 1 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [primitives, assignment]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`let age = 10;`처럼 숫자를 넣어 만든 변수에는 앞으로 숫자만 대입할 수 있다."
+  answer: false
+  misconceptionIfWrong: js.mc.type-belongs-to-variable
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 자료형은 변수가 아니라 값에 붙어 있어서, 변수에는 어떤 자료형의 값이든 다시 대입할 수 있다
+      correct: true
+    - id: r2
+      text: 변수의 자료형은 처음 넣은 값으로 정해지고, 다른 자료형을 넣으면 TypeError가 난다
+      misconception: js.mc.type-belongs-to-variable
+    - id: r3
+      text: let은 숫자를 담는 변수이고, 문자열은 const로만 담을 수 있다
+hints:
+  - "`age = \"열 살\";`을 실행하면 어떻게 될지 떠올려 보세요."
+  - 레슨의 `box` 예제에서 `typeof box`의 결과가 어떻게 바뀌었나요?
+  - 변수는 이름표일 뿐이고, 자료형 꼬리표는 값에 붙어 있어요.
+explanation: |
+  정답은 **거짓**, 이유는 **자료형은 변수가 아니라 값에 붙어 있어서, 변수에는 어떤 자료형의 값이든 다시 대입할 수 있다**예요.
+
+  ```js
+  let age = 10;
+  age = "열 살";
+  console.log(typeof age);   // string
+  ```
+
+  `age = "열 살";`은 오류 없이 실행되고, 그 뒤로 `age`에 들어 있는 값은 문자열이에요. `typeof age`는 그 순간 들어 있는 값의 자료형을 알려 줘요.
+
+  - "TypeError가 난다"를 고른 경우: 다른 자료형을 대입해도 오류가 나지 않아요. 다시 대입할 수 없는 것은 `const`로 만든 이름이에요.
+  - "let은 숫자, 문자열은 const"를 고른 경우: `let`과 `const`는 다시 대입할 수 있는지의 차이일 뿐, 담는 자료형과 관계없어요.
+
+  다만 한 변수에 여러 자료형을 번갈아 넣으면 읽는 사람이 헷갈려요. 보통은 한 변수에 한 가지 자료형만 담아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

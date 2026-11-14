@@ -1,0 +1,53 @@
+id: js-basics.values.data-types.find-bug-comma-number
+type: find_bug_line
+difficulty: 2
+concepts:
+  - { id: js.types.number, weight: 1 }
+  - { id: js.basics.console-log, weight: 0.3 }
+tags: [number, comma, console-log]
+estimatedSeconds: 80
+prompt: |
+  분식집 메뉴판을 출력하는 프로그램이에요. 그런데 결과가 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    console.log("김밥", 3500);
+    console.log("떡볶이", 4000);
+    console.log("라면", 4,500);
+    console.log("순대", 5000);
+  bugLines: [3]
+  symptom: "라면 가격이 `라면 4 500`처럼 숫자 사이가 띄어진 채로 나와요."
+  symptomCheck:
+    console: ["김밥 3500", "떡볶이 4000", "라면 4 500", "순대 5000"]
+  fixedCode: |-
+    console.log("김밥", 3500);
+    console.log("떡볶이", 4000);
+    console.log("라면", 4500);
+    console.log("순대", 5000);
+  causeOptions:
+    - id: c1
+      text: 숫자 안의 쉼표가 값을 나누는 기호로 읽혀서, 4와 500 두 값이 출력되었다
+      correct: true
+    - id: c2
+      text: 숫자는 4000보다 크면 자릿수를 쉼표로 나눠 써야 하는데 그러지 않았다
+      misconception: js.mc.number-with-comma
+    - id: c3
+      text: 가격을 따옴표로 감싸지 않아서 문자열로 출력되지 않았다
+      misconception: js.mc.quoted-number-is-number
+misconceptions: [js.mc.number-with-comma]
+hints:
+  - 이상하게 출력된 줄은 몇 번 줄의 결과인가요? 다른 줄과 무엇이 다른가요?
+  - console.log의 괄호 안에서 쉼표는 어떤 역할을 했나요? `console.log("김밥", 3500)`을 떠올려 보세요.
+  - 쉼표는 값과 값을 나눠요. `4,500`이 한 값으로 읽힐까요, 두 값으로 읽힐까요?
+explanation: |
+  원인은 **3번 줄**이에요. 숫자 안의 쉼표가 값을 나누는 기호로 읽혔어요.
+
+  console.log의 괄호 안에서 쉼표는 "값과 값을 나누는" 기호예요. 그래서 `console.log("라면", 4,500)`은 `"라면"`, `4`, `500` 세 값을 출력하라는 뜻이 되고, 콘솔에는 세 값이 공백으로 이어진 `라면 4 500`이 나와요. 오류 메시지가 없어서 놓치기 쉬운 버그예요.
+
+  `4500`처럼 쉼표 없이 쓰면 돼요. 자릿수를 꼭 나누고 싶다면 `4_500`처럼 밑줄을 쓸 수 있어요.
+
+  - "쉼표로 나눠 써야 한다"를 고른 경우: 종이에 쓰는 습관이에요. 코드의 숫자에는 쉼표를 쓰지 않아요.
+  - "따옴표로 감싸지 않아서"를 고른 경우: 1, 2, 4번 줄도 따옴표 없는 숫자인데 잘 출력됐어요. 가격은 계산할 수 있게 숫자로 두는 것이 맞아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

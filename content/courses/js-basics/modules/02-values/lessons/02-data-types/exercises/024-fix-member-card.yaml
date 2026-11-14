@@ -1,0 +1,81 @@
+id: js-basics.values.data-types.fix-member-card
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.types.string, weight: 1 }
+  - { id: js.types.boolean, weight: 0.5 }
+  - { id: js.types.primitives, weight: 0.5 }
+  - { id: js.errors.error-messages, weight: 0.3 }
+tags: [string, boolean, primitives, debugging]
+estimatedSeconds: 360
+prompt: |
+  게임 회원 카드를 출력하는 프로그램이에요. 버그가 **세 개** 있어요. 하나를 고치면 다음 문제가 드러나요. 실행 → 오류나 출력 확인 → 고치기를 반복해서 아래처럼 나오게 하세요.
+
+  ```text
+  이름: 보라
+  다음 레벨: 4
+  VIP: false
+  ```
+
+  레벨은 계산할 수 있는 숫자, VIP 여부는 불리언으로 담아야 해요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const memberName = "보라';
+          const level = "3";
+          let isVip = False;
+
+          console.log("이름:", memberName);
+          console.log("다음 레벨:", level + 1);
+          console.log("VIP:", isVip);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const memberName = "보라";
+          const level = 3;
+          let isVip = false;
+
+          console.log("이름:", memberName);
+          console.log("다음 레벨:", level + 1);
+          console.log("VIP:", isVip);
+  bugDescription: 실행하면 아무것도 출력되지 않고 SyntaxError가 나요. 고치면 다른 문제가 차례로 드러나요.
+  maxEditDistance: 6
+  checks:
+    - kind: console
+      id: output
+      description: 이름, 다음 레벨, VIP 여부가 차례로 출력되어야 합니다.
+      requirement: 회원 카드 출력
+      expect:
+        lines: ["이름: 보라", "다음 레벨: 4", "VIP: false"]
+    - kind: program
+      id: typed-values
+      description: 프로그램이 끝났을 때 memberName은 문자열 "보라", level은 숫자 3, isVip는 불리언 false여야 합니다.
+      requirement: 알맞은 자료형
+      expect:
+        globals:
+          memberName: { equals: "보라" }
+          level: { equals: 3 }
+          isVip: { equals: false }
+misconceptions:
+  - js.mc.quotes-mismatch
+  - js.mc.boolean-capitalized
+  - js.mc.quoted-number-is-number
+hints:
+  - "처음 오류는 `SyntaxError: Invalid or unexpected token (1번째 줄)`이에요. 1번 줄의 문자열이 어디서 시작하고 어디서 끝나는지 따옴표를 하나씩 확인해 보세요."
+  - "그걸 고치면 `ReferenceError: False is not defined (3번째 줄)`이 나요. 불리언 값은 어떻게 쓰는지 떠올려 보세요."
+  - "마지막에는 오류 없이 `다음 레벨: 31`이 나와요. `3`에 `1`을 더했는데 `31`이 됐다면 `level`의 자료형을 의심해 보세요."
+explanation: |
+  버그 세 개가 차례로 드러나요.
+
+  1. **`SyntaxError: Invalid or unexpected token` (1번 줄)**: `"보라'`는 큰따옴표로 열고 작은따옴표로 닫았어요. 문자열은 연 따옴표와 같은 종류를 만나야 끝나므로 끝을 찾지 못했어요. `"보라"`로 맞춰요. 문법 오류라 처음에는 아무것도 출력되지 않았어요.
+  1. **`ReferenceError: False is not defined` (3번 줄)**: 불리언은 소문자예요. `False`는 없는 이름으로 읽혀요. `false`로 고쳐요.
+  1. **오류 없이 `다음 레벨: 31`**: `level`에 문자열 `"3"`이 들어 있어서 `level + 1`이 글자를 이어 붙였어요. 따옴표를 빼고 `const level = 3;`으로 고치면 `4`가 나와요.
+
+  세 번째 버그는 오류 메시지가 없어서 가장 찾기 어려워요. 결과가 이상하면 `console.log(typeof level)`처럼 자료형부터 확인하는 습관을 들여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

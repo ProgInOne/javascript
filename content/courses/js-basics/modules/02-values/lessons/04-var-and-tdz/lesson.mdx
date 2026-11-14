@@ -1,0 +1,234 @@
+<Section kind="objectives">
+- `var`로 만든 변수를 선언 전에 쓰거나 다시 선언했을 때의 결과를 예측할 수 있어요.
+- `let`·`const` 변수를 선언 전에 쓰면 나는 오류를 읽고, `is not defined` 오류와 구별할 수 있어요.
+- 선언 순서와 `var` 때문에 생긴 버그를 찾아 `let`·`const`로 고칠 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+인터넷에서 JavaScript 예제를 찾아보면 `let`이나 `const` 대신 이런 코드를 자주 만나요.
+
+```js
+var score = 0;
+```
+
+`var`는 `let`과 `const`가 생기기 전(2015년 이전)에 쓰던 변수 선언이에요. 지금도 오래된 웹사이트와 블로그 글, 책에 많이 남아 있어서 읽을 줄은 알아야 해요.
+
+그런데 `var`에는 실수를 숨기는 이상한 성질이 있어요. 변수를 **만들기도 전에** 써도 오류가 나지 않고, 같은 이름으로 **두 번** 만들어도 아무 말이 없어요. `let`과 `const`는 바로 이런 문제를 막으려고 생긴 거예요. 이 단원에서는 `var`의 동작과, `let`·`const`를 선언 전에 쓰면 어떤 오류가 나는지 배워요.
+</Section>
+
+<Section kind="principle">
+### 실행 전에 선언부터 훑어봐요
+
+JavaScript는 프로그램을 한 줄씩 실행하기 **전에**, 먼저 전체를 훑어보며 "어떤 변수 이름이 선언되어 있는지"를 등록해요. 그래서 선언 줄보다 위에서도 그 이름이 있다는 것은 이미 알고 있어요. 선언이 맨 위로 끌어올려진 것처럼 보인다고 해서 이것을 **호이스팅**(hoisting, 끌어올림)이라고 불러요.
+
+차이는 **등록한 이름을 선언 줄 전에 쓸 수 있느냐**예요.
+
+| 선언 | 실행 전 준비 | 선언 줄 전에 쓰면 |
+|---|---|---|
+| `var` | 이름을 등록하고 `undefined`를 미리 넣어 둠 | 오류 없이 `undefined` |
+| `let`, `const` | 이름만 등록하고 "아직 쓰면 안 됨"으로 표시 | `ReferenceError: Cannot access '이름' before initialization` |
+| (선언 없음) | 아무것도 등록하지 않음 | `ReferenceError: 이름 is not defined` |
+
+중요한 점: `var`에서 미리 준비되는 것은 **이름과 `undefined`뿐**이에요. `var level = 5;`의 값 `5`는 선언 줄이 실행될 때 비로소 들어가요.
+
+### TDZ: 선언 줄 전의 "쓰면 안 되는 구간"
+
+`let`이나 `const` 변수는 프로그램이 시작될 때부터 이름은 등록되어 있지만, 선언 줄이 실행되기 전까지는 쓸 수 없어요. 이 구간을 **TDZ**(Temporal Dead Zone, 일시적 사각지대)라고 불러요.
+
+```js
+// ↓ 여기부터
+console.log(goal);      // TDZ 안: ReferenceError
+// ↑ 여기까지가 goal의 TDZ
+const goal = 10000;     // 선언 줄이 실행되면 TDZ가 끝나요
+console.log(goal);      // 10000
+```
+
+오류 메시지 `Cannot access 'goal' before initialization`은 "초기화(선언 줄 실행) 전에는 goal에 접근할 수 없어요"라는 뜻이에요. 이름은 맞으니 오타를 찾지 말고, **선언 줄을 쓰는 줄보다 위로** 옮기면 돼요.
+
+<CompareTable columns={["Cannot access 'x' before initialization", "x is not defined"]}>
+<Row label="뜻">x를 선언하는 줄이 있지만 아직 실행되지 않았어요 | x를 선언하는 줄이 아예 없어요</Row>
+<Row label="흔한 원인">선언보다 위에서 사용 | 오타, 대소문자 차이, 선언을 빠뜨림</Row>
+<Row label="고치는 법">선언 줄을 위로 옮겨요 | 이름을 맞추거나 선언을 추가해요</Row>
+</CompareTable>
+
+TDZ 덕분에 "아직 값을 넣지 않은 변수를 실수로 쓰는" 버그를 오류로 바로 알 수 있어요. `var`였다면 조용히 `undefined`가 나와서 한참 뒤에야 이상한 결과로 드러났을 거예요.
+
+### var는 같은 이름을 다시 선언해도 조용해요
+
+```js
+var price = 5000;   // 상품 가격
+var price = 500;    // 배송비라고 생각하고 같은 이름을 또 씀 → 오류 없음!
+```
+
+`var`는 같은 이름으로 다시 선언해도 오류가 나지 않고, 앞의 값을 **조용히 덮어써요.** 상품 가격 5000은 사라졌는데 아무도 알려 주지 않아요. `let`이나 `const`로 썼다면 `SyntaxError: Identifier 'price' has already been declared`로 실행 전에 바로 알려 줬을 거예요.
+
+### 엄격 모드와 var
+
+아주 오래된 JavaScript에서는 `var`조차 없이 `score = 10;`이라고만 써도 변수가 몰래 만들어졌어요. 오타 난 이름에 대입해도 새 변수가 생겨서 버그를 찾기 어려웠죠. 그래서 이런 동작을 막는 **엄격 모드**(strict mode)가 생겼어요.
+
+ProgInOne은 학습자의 코드를 항상 엄격 모드로 실행해요. 그래서 선언 없이 대입하면 `ReferenceError: score is not defined`가 나요. 요즘의 JavaScript 모듈과 클래스도 항상 엄격 모드로 동작해요.
+
+### 결론: 새 코드에서는 let과 const
+
+`var`는 읽을 줄만 알면 돼요. 새로 쓰는 코드에서는 항상 `let`과 `const`를 써요.
+
+- 바뀌지 않는 값은 `const`, 바뀌는 값은 `let`
+- 변수는 **쓰기 전에** 선언하고, 되도록 파일 위쪽에서 선언해요
+
+<Reveal title="var의 차이가 더 있나요?">
+있어요. `var`는 중괄호 `{ }`로 만든 구역(블록)을 무시하고, 함수 단위로만 범위가 나뉘어요. 블록은 모듈 4 "조건문"에서, 변수의 범위(스코프)는 모듈 6 "스코프 기초"에서 배우면서 이 차이를 다시 봐요.
+
+그리고 `typeof`는 선언하지 않은 이름에 써도 오류 없이 `"undefined"`를 돌려주지만, TDZ 안의 `let` 변수에 쓰면 `ReferenceError`가 나요. TDZ는 `typeof`로도 피해 갈 수 없어요.
+</Reveal>
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. `var` 변수를 선언 줄보다 먼저 출력해요. 1번 줄의 결과를 예측해 보세요.
+
+<RunnableExample id="var-before" lang="js" predict predictKind="console" concepts={["js.values.var"]}>
+```js
+console.log(level);
+var level = 5;
+console.log(level);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+undefined
+5
+```
+
+| 단계 | `level` |
+|---|---|
+| 실행 전 준비 | 이름 등록, `undefined`를 미리 넣음 |
+| 1번 줄 실행 | `undefined` 출력 |
+| 2번 줄 실행 | `5`를 넣음 |
+| 3번 줄 실행 | `5` 출력 |
+
+1번 줄에서 `5`가 나오지 않는 점이 중요해요. 미리 준비되는 것은 이름과 `undefined`뿐이고, 값 `5`는 2번 줄이 실행될 때 들어가요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 같은 코드를 `let`으로 바꿨어요. 결과도 같을까요?
+
+<RunnableExample id="let-before" lang="js" expectError concepts={["js.values.tdz"]}>
+```js
+console.log(level);
+let level = 5;
+console.log(level);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+ReferenceError: Cannot access 'level' before initialization (1번째 줄)
+```
+
+`let`도 실행 전에 이름은 등록하지만, 선언 줄(2번 줄)이 실행되기 전까지는 쓸 수 없어요. 1번 줄은 `level`의 TDZ 안이라 `ReferenceError`가 나고, 프로그램이 멈춰서 3번 줄도 실행되지 않아요.
+
+`var`처럼 `undefined`가 나오지 않는다는 점, 그리고 메시지가 `level is not defined`가 아니라는 점을 기억해요. JavaScript는 `level`이 아래에서 선언된다는 것을 알고 있어요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제예요. `var`로 같은 이름을 두 번 선언하면 어떻게 될까요?
+
+<RunnableExample id="var-redeclare" lang="js" predict predictKind="console" concepts={["js.values.var"]}>
+```js
+var count = 10;
+console.log(count);
+var count = 0;
+console.log(count);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+10
+0
+```
+
+3번 줄에서 같은 이름을 다시 선언했지만 오류가 나지 않아요. 그냥 `count = 0;`이라고 대입한 것처럼 앞의 값 10을 덮어써요. 이 코드에서는 일부러 그런 거라 괜찮지만, 다른 용도의 변수에 실수로 같은 이름을 쓰면 원래 값이 사라진 줄도 모르게 돼요.
+
+같은 코드를 `let`으로 쓰면 3번 줄 때문에 `SyntaxError: Identifier 'count' has already been declared`가 나서, 실행 전에 실수를 알 수 있어요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.let-before-declaration-undefined">
+<Wrong>`let`이나 `const` 변수도 `var`처럼 선언 줄보다 먼저 쓰면 `undefined`가 나온다.</Wrong>
+<Actual>`ReferenceError: Cannot access 'x' before initialization`이 나고 프로그램이 멈춰요.</Actual>
+<Right>`let`·`const` 변수는 선언 줄이 실행된 뒤에만 쓸 수 있어요. 변수는 항상 쓰는 줄보다 위에서 선언해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.tdz-means-misspelled">
+<Wrong>`Cannot access 'goal' before initialization`은 이름을 잘못 썼다는 뜻이니, 이름을 고치거나 `let goal`을 하나 더 넣으면 된다.</Wrong>
+<Actual>이름은 맞아요. `goal`을 선언하는 줄이 있는데 그보다 위에서 썼다는 뜻이에요. 선언을 하나 더 넣으면 `SyntaxError: Identifier 'goal' has already been declared`가 나요.</Actual>
+<Right>선언 줄을 쓰는 줄보다 위로 옮겨요. 이름이 틀렸을 때 나는 오류는 `goal is not defined`예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.var-hoists-value">
+<Wrong>`var level = 5;`보다 위에서 `level`을 쓰면, 끌어올려진 값 `5`가 나온다.</Wrong>
+<Actual>`undefined`가 나와요. 미리 준비되는 것은 이름과 `undefined`뿐이에요.</Actual>
+<Right>값은 선언 줄이 실행될 때 들어가요. "끌어올림"은 이름에만 해당해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.var-redeclare-silent">
+<Wrong>`var`도 같은 이름으로 다시 선언하면 오류가 나서 실수를 막아 준다.</Wrong>
+<Actual>`var`는 오류 없이 앞의 값을 조용히 덮어써요.</Actual>
+<Right>`let`과 `const`는 같은 이름을 다시 선언하면 `SyntaxError`로 알려 줘요. 새 코드에서는 `var` 대신 `let`과 `const`를 써요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+실무에서 `var`를 만나는 가장 흔한 장면은 **오래된 코드를 고칠 때**예요. 예를 들어 회사의 오래된 웹사이트에 이런 코드가 있다고 해 봐요.
+
+```js
+var userName = "가온";
+var visitCount = 3;
+var visitCount = visitCount + 1;
+console.log(userName, visitCount);
+```
+
+이 코드를 요즘 방식으로 바꿀 때는 이렇게 해요.
+
+```js
+const userName = "가온";
+let visitCount = 3;
+visitCount = visitCount + 1;
+console.log(userName, visitCount);
+```
+
+- 다시 대입하지 않는 `userName`은 `const`, 값이 바뀌는 `visitCount`는 `let`으로 바꿔요.
+- `var visitCount = ...`가 두 번 있던 곳은, 두 번째를 선언 없는 대입으로 바꿔요. `let`을 두 번 쓰면 `SyntaxError`예요.
+- 많은 팀이 코드 검사 도구(린터)에 "`var` 금지" 규칙을 켜 두고, 새 코드에 `var`가 들어오지 못하게 해요.
+</Section>
+
+<Section kind="check">
+`var` 변수를 선언 전에 쓰면 무엇이 나오는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.values.var-and-tdz.tf-var-before-declaration" />
+
+선언 전 사용 오류의 뜻을 확인해 보세요.
+
+<InlineExercise ref="js-basics.values.var-and-tdz.mcq-tdz-message" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `var`는 `let`·`const` 이전에 쓰던 변수 선언이에요. 읽을 줄만 알고, 새 코드에서는 `let`과 `const`를 써요.
+- JavaScript는 실행 전에 선언된 이름을 먼저 등록해요(호이스팅).
+- `var` 변수를 선언 줄 전에 쓰면 오류 없이 `undefined`가 나와요. 값은 선언 줄이 실행될 때 들어가요.
+- `let`·`const` 변수를 선언 줄 전에 쓰면 `ReferenceError: Cannot access '이름' before initialization`이 나요. 이 구간이 TDZ예요.
+- 이 오류는 이름이 틀렸다는 `is not defined`와 달라요. 선언 줄을 위로 옮겨서 고쳐요.
+- `var`는 같은 이름을 다시 선언해도 조용히 덮어쓰지만, `let`·`const`는 `SyntaxError`로 알려 줘요.
+</Section>
+
+<Section kind="next">
+이것으로 모듈 2 "값과 변수"를 마쳐요. 다음 모듈 "연산자와 형 변환"에서는 값으로 계산하고 비교하는 방법과, `"5" + 1`처럼 자료형이 섞일 때 일어나는 일을 배워요. `var`와 `let`의 범위 차이는 모듈 6 "스코프 기초"에서 다시 만나요. <MdnLink path="Web/JavaScript/Reference/Statements/var" />
+</Section>

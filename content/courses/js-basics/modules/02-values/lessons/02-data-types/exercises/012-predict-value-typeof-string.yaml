@@ -1,0 +1,35 @@
+id: js-basics.values.data-types.predict-value-typeof-string
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.types.typeof, weight: 1 }
+  - { id: js.types.string, weight: 0.3 }
+tags: [typeof, string]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 실행한 뒤 변수 `result`에 들어 있는 값은 무엇인가요? JavaScript 값으로 적어 주세요. 문자열이면 따옴표까지 적어요(예: `"안녕"`).
+spec:
+  lang: js
+  code: |
+    let age = "42";
+    let result = typeof age;
+  answerKind: value
+  expression: result
+  misconceptionByAnswer:
+    '"number"': js.mc.typeof-reads-content
+misconceptions: [js.mc.typeof-reads-content, js.mc.typeof-result-not-string]
+hints:
+  - "`age`에 들어 있는 값에는 따옴표가 있나요?"
+  - typeof는 안의 글자가 무엇처럼 생겼는지가 아니라 값의 자료형을 봐요.
+  - typeof의 결과는 자료형 이름이 담긴 문자열이에요. 그러니 답에도 따옴표가 필요해요.
+explanation: |
+  정답은 **`"string"`이에요**.
+
+  - `age`에 들어 있는 `"42"`는 따옴표로 감쌌으니 숫자처럼 보여도 문자열이에요. typeof는 내용이 아니라 자료형을 보므로 `"string"`을 돌려줘요.
+  - typeof의 결과는 `"string"`이라는 **문자열**이에요. 그래서 따옴표를 붙여 적어야 해요. 콘솔에 출력하면 따옴표 없이 `string`으로 보일 뿐이에요.
+
+  `"number"`라고 답했다면 typeof가 글자의 내용을 보고 판단한다고 생각한 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

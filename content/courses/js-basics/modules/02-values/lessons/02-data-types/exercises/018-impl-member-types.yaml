@@ -1,0 +1,87 @@
+id: js-basics.values.data-types.impl-member-types
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.types.primitives, weight: 1 }
+  - { id: js.types.typeof, weight: 0.3 }
+tags: [primitives, typeof, write-code]
+estimatedSeconds: 180
+prompt: |
+  회원 카드 프로그램을 작성하세요.
+
+  1. 변수 세 개를 만들어요.
+     - `memberName`: 회원 이름 `하늘` (문자열)
+     - `points`: 포인트 `1200` (숫자)
+     - `isVip`: VIP 여부 `false` (불리언)
+  1. 세 변수의 값을 한 줄에 출력해요.
+  1. 세 변수의 자료형을 `typeof`로 한 줄에 출력해요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  하늘 1200 false
+  string number boolean
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1. memberName, points, isVip 변수를 만드세요.
+
+          // 2. 세 변수의 값을 한 줄에 출력하세요.
+
+          // 3. 세 변수의 자료형을 한 줄에 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 1. memberName, points, isVip 변수를 만드세요.
+          const memberName = "하늘";
+          let points = 1200;
+          let isVip = false;
+          // 2. 세 변수의 값을 한 줄에 출력하세요.
+          console.log(memberName, points, isVip);
+          // 3. 세 변수의 자료형을 한 줄에 출력하세요.
+          console.log(typeof memberName, typeof points, typeof isVip);
+  checks:
+    - kind: console
+      id: output
+      description: 세 변수의 값과 세 자료형 이름이 각각 한 줄씩 출력되어야 합니다.
+      requirement: 값과 자료형 출력
+      expect:
+        lines: ["하늘 1200 false", "string number boolean"]
+    - kind: program
+      id: types
+      description: 프로그램이 오류 없이 끝나고, memberName은 문자열 "하늘", points는 숫자 1200, isVip는 불리언 false여야 합니다.
+      requirement: 알맞은 자료형으로 담기
+      expect:
+        globals:
+          memberName: { equals: "하늘" }
+          points: { equals: 1200 }
+          isVip: { equals: false }
+        noError: true
+      misconceptionIfFail: js.mc.quoted-number-is-number
+misconceptions: [js.mc.quoted-number-is-number, js.mc.quoted-boolean]
+hints:
+  - 자료형마다 값을 쓰는 모양이 달라요. 문자열, 숫자, 불리언은 각각 따옴표가 필요한가요?
+  - console.log의 괄호 안에 여러 값을 쉼표로 나눠 넣으면 공백으로 이어서 한 줄에 출력돼요. typeof도 값마다 하나씩 붙여요.
+  - 이름만 따옴표로 감싸고, 포인트와 VIP 여부는 따옴표 없이 써요. 두 번째 출력 줄에서는 세 변수 앞에 각각 `typeof`를 붙여요.
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const memberName = "하늘";
+  let points = 1200;
+  let isVip = false;
+  console.log(memberName, points, isVip);
+  console.log(typeof memberName, typeof points, typeof isVip);
+  ```
+
+  - 이름은 글자이니 따옴표로 감싼 문자열, 포인트는 계산할 수 있게 따옴표 없는 숫자, VIP 여부는 예/아니요이니 따옴표 없는 불리언으로 담아요.
+  - `"1200"`이나 `"false"`처럼 따옴표를 붙여도 첫 줄의 출력은 똑같이 보여요. 콘솔이 문자열의 따옴표를 보여 주지 않기 때문이에요. 하지만 두 번째 줄의 typeof가 `string`으로 바뀌고, 두 번째 요구사항도 통과하지 못해요.
+  - `let`과 `const`는 어느 것을 써도 정답이에요. 바뀌지 않을 이름은 `const`, 나중에 바뀔 포인트는 `let`처럼 골라 써 보세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

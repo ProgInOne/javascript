@@ -77,3 +77,81 @@
   prerequisites: [js.values.let]
   misconceptions: [js.mc.identifier-case-insensitive, js.mc.identifier-invalid-chars]
   mdn: Web/JavaScript/Guide/Grammar_and_types
+
+# ── 모듈 2. 값과 변수: data-types ──
+
+- id: js.types.primitives
+  title: 값의 종류(원시 자료형)
+  importance: core
+  summary: 모든 값에는 종류(자료형)가 있어요. 숫자 5와 글자 "5"는 겉모습이 비슷해도 자료형이 다른 값이에요. 자료형은 변수가 아니라 값에 붙어 있어서, 한 변수에 다른 자료형의 값을 다시 넣을 수 있어요.
+  prerequisites: [js.values.assignment]
+  misconceptions: [js.mc.quoted-number-is-number, js.mc.type-belongs-to-variable, js.mc.same-output-same-type]
+  mdn: Web/JavaScript/Guide/Data_structures
+
+- id: js.types.number
+  title: 숫자(number)
+  importance: standard
+  summary: 정수와 소수는 모두 같은 number 자료형이에요. 숫자에는 따옴표를 붙이지 않고, 1,000처럼 쉼표로 자릿수를 나누지 않아요.
+  prerequisites: [js.types.primitives]
+  misconceptions: [js.mc.decimal-separate-type, js.mc.number-with-comma]
+  mdn: Web/JavaScript/Reference/Global_Objects/Number
+
+- id: js.types.string
+  title: 문자열(string)
+  importance: standard
+  summary: 따옴표로 감싼 글자는 문자열이에요. 작은따옴표와 큰따옴표 중 무엇을 써도 같은 문자열이지만, 여는 따옴표와 닫는 따옴표는 같은 종류여야 해요.
+  prerequisites: [js.types.primitives]
+  misconceptions: [js.mc.quote-kinds-differ, js.mc.quotes-mismatch]
+  mdn: Web/JavaScript/Reference/Global_Objects/String
+
+- id: js.types.boolean
+  title: 불리언(boolean)
+  importance: standard
+  summary: 불리언은 true(참)와 false(거짓) 두 값뿐인 자료형이에요. 소문자로, 따옴표 없이 써요.
+  prerequisites: [js.types.primitives]
+  misconceptions: [js.mc.quoted-boolean, js.mc.boolean-capitalized]
+  mdn: Web/JavaScript/Reference/Global_Objects/Boolean
+
+- id: js.types.typeof
+  title: typeof로 자료형 확인하기
+  importance: core
+  summary: typeof 값은 그 값의 자료형 이름을 "number", "string" 같은 문자열로 알려 줘요. 단, typeof null은 오래된 설계 실수 때문에 "object"예요.
+  prerequisites: [js.types.primitives]
+  misconceptions: [js.mc.typeof-null-is-null, js.mc.typeof-reads-content, js.mc.typeof-result-not-string]
+  mdn: Web/JavaScript/Reference/Operators/typeof
+
+# ── 모듈 2. 값과 변수: null-undefined ──
+
+- id: js.types.undefined
+  title: undefined
+  importance: standard
+  summary: undefined는 "아직 값이 정해지지 않음"을 뜻하는 값이에요. 값 없이 만든 변수에는 JavaScript가 자동으로 undefined를 넣어요. 변수가 아예 없다는 오류(is not defined)와는 달라요.
+  prerequisites: [js.types.primitives]
+  misconceptions: [js.mc.undefined-is-error, js.mc.not-defined-is-undefined]
+  mdn: Web/JavaScript/Reference/Global_Objects/undefined
+
+- id: js.types.null
+  title: "null"
+  importance: standard
+  summary: null은 프로그래머가 "값이 없음"을 일부러 표시할 때 넣는 값이에요. undefined와 비슷하지만 다른 값이고, 숫자 0이나 빈 문자열 ""과도 달라요.
+  prerequisites: [js.types.undefined]
+  misconceptions: [js.mc.null-undefined-same, js.mc.empty-value-is-zero]
+  mdn: Web/JavaScript/Reference/Operators/null
+
+# ── 모듈 2. 값과 변수: var-and-tdz ──
+
+- id: js.values.var
+  title: var로 변수 만들기
+  importance: standard
+  summary: var는 let 이전에 쓰던 변수 선언이에요. 선언 전에 써도 오류 없이 undefined가 나오고, 같은 이름으로 다시 선언해도 오류가 나지 않아서 실수를 숨겨요. 새 코드에서는 let과 const를 써요.
+  prerequisites: [js.values.let, js.types.undefined]
+  misconceptions: [js.mc.var-hoists-value, js.mc.var-redeclare-silent]
+  mdn: Web/JavaScript/Reference/Statements/var
+
+- id: js.values.tdz
+  title: 선언 전 사용과 TDZ
+  importance: standard
+  summary: let과 const로 만든 변수는 선언하는 줄이 실행되기 전에는 쓸 수 없어요. 그 전에 쓰면 ReferenceError(Cannot access ... before initialization)가 나요. 이 구간을 TDZ(일시적 사각지대)라고 불러요.
+  prerequisites: [js.values.const, js.values.var]
+  misconceptions: [js.mc.let-before-declaration-undefined, js.mc.tdz-means-misspelled]
+  mdn: Web/JavaScript/Reference/Statements/let

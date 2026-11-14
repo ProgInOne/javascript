@@ -1,0 +1,99 @@
+id: js-basics.values.data-types.impl-weekly-pay
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.types.number, weight: 1 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [number, decimal, write-code]
+estimatedSeconds: 240
+prompt: |
+  아르바이트 주급을 계산하는 프로그램을 작성하세요. 근무 조건은 이래요.
+
+  - 시급: 10,030원
+  - 하루 근무 시간: 4.5시간
+  - 일주일 근무일: 5일
+
+  1. 세 조건을 각각 `hourlyWage`, `hoursPerDay`, `days` 변수에 숫자로 담아요.
+  1. 하루 일당(시급 × 하루 근무 시간)을 `dailyPay` 변수에 담아 출력해요.
+  1. 주급(하루 일당 × 근무일)을 `weeklyPay` 변수에 담아 출력해요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  하루 일당: 45135
+  주급: 225675
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 근무 조건을 숫자로 담고, 하루 일당과 주급을 계산해 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const hourlyWage = 10030;
+          const hoursPerDay = 4.5;
+          const days = 5;
+
+          const dailyPay = hourlyWage * hoursPerDay;
+          console.log("하루 일당:", dailyPay);
+
+          const weeklyPay = dailyPay * days;
+          console.log("주급:", weeklyPay);
+  checks:
+    - kind: console
+      id: output
+      description: 하루 일당과 주급이 차례로 출력되어야 합니다.
+      requirement: 일당과 주급 출력
+      expect:
+        lines: ["하루 일당: 45135", "주급: 225675"]
+    - kind: program
+      id: conditions
+      description: hourlyWage, hoursPerDay, days에 근무 조건이 숫자로 들어 있어야 합니다.
+      requirement: 조건을 숫자로 담기
+      expect:
+        globals:
+          hourlyWage: { equals: 10030 }
+          hoursPerDay: { equals: 4.5 }
+          days: { equals: 5 }
+      misconceptionIfFail: js.mc.number-with-comma
+    - kind: program
+      id: results
+      description: 프로그램이 오류 없이 끝나고, dailyPay와 weeklyPay에 계산 결과가 숫자로 들어 있어야 합니다.
+      requirement: 계산 결과 담기
+      expect:
+        globals:
+          dailyPay: { equals: 45135 }
+          weeklyPay: { equals: 225675 }
+        noError: true
+misconceptions: [js.mc.number-with-comma, js.mc.decimal-separate-type]
+hints:
+  - 조건에 적힌 `10,030`을 코드에 그대로 옮겨도 될까요? 코드에서 쉼표는 어떤 기호였나요?
+  - 4.5처럼 소수도 정수와 같은 number예요. 곱하기는 `*`로 써요. 일당을 먼저 구해 변수에 담아야 주급 계산에 쓸 수 있어요.
+  - 시급은 쉼표 없이 `10030`으로 써요. `dailyPay`는 `hourlyWage`와 `hoursPerDay`를 곱한 값, `weeklyPay`는 `dailyPay`와 `days`를 곱한 값이에요.
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const hourlyWage = 10030;
+  const hoursPerDay = 4.5;
+  const days = 5;
+
+  const dailyPay = hourlyWage * hoursPerDay;
+  console.log("하루 일당:", dailyPay);
+
+  const weeklyPay = dailyPay * days;
+  console.log("주급:", weeklyPay);
+  ```
+
+  - 조건에는 `10,030원`이라고 적혀 있지만, 코드에서 쉼표는 값을 나누는 기호라서 `10,030`이라고 쓰면 `SyntaxError`가 나요. 숫자는 `10030`처럼 쉼표 없이 써요.
+  - 4.5처럼 소수도 정수와 같은 number라서 그대로 곱할 수 있어요. 10030 × 4.5 = 45135예요.
+  - 일당을 `dailyPay`에 담아 두었기 때문에 주급은 `dailyPay * days`로 간단히 구할 수 있어요.
+
+  `"10030"`처럼 따옴표로 감싸면 문자열이 되어 첫 번째 요구사항을 통과하지 못해요. 계산할 값은 숫자로 담아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

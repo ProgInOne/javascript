@@ -1,0 +1,44 @@
+id: js-basics.values.data-types.multi-number-values
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.types.number, weight: 1 }
+  - { id: js.types.primitives, weight: 0.3 }
+tags: [number]
+estimatedSeconds: 60
+prompt: |
+  다음 중 자료형이 **number**인 값을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`42`"
+    - id: b
+      text: "`3.14`"
+      missedMisconception: js.mc.decimal-separate-type
+    - id: c
+      text: "`-7`"
+    - id: d
+      text: "`\"42\"`"
+      misconception: js.mc.quoted-number-is-number
+      rationale: 따옴표로 감쌌으니 숫자처럼 보여도 문자열이에요.
+    - id: e
+      text: "`\"3.14\"`"
+      misconception: js.mc.quoted-number-is-number
+      rationale: 따옴표 안의 소수는 문자열이에요.
+    - id: f
+      text: "`0`"
+  correct: [a, b, c, f]
+misconceptions: [js.mc.decimal-separate-type, js.mc.quoted-number-is-number]
+hints:
+  - 따옴표가 있는 값과 없는 값으로 먼저 나눠 보세요.
+  - 따옴표 없는 값 중에는 정수, 소수, 음수, 0이 있어요. 이 중 number가 아닌 것이 있을까요?
+  - JavaScript에는 정수 전용 자료형이 없어요. 따옴표가 없는 숫자는 모두 number예요.
+explanation: |
+  정답은 **`42`, `3.14`, `-7`, `0`이에요**.
+
+  - 정수(`42`), 소수(`3.14`), 음수(`-7`), `0`은 모두 같은 number 자료형이에요. JavaScript에는 정수와 소수를 나누는 자료형이 따로 없어요. `3.14`를 빼먹었다면 소수는 다른 자료형이라고 생각한 거예요.
+  - `"42"`, `"3.14"`는 따옴표로 감쌌으니 안의 글자가 숫자처럼 생겼어도 문자열(string)이에요. `typeof "42"`는 `"string"`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

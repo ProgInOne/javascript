@@ -1,0 +1,249 @@
+<Section kind="objectives">
+- `undefined`가 나타나는 상황을 설명하고, 콘솔에 나온 `undefined`와 `is not defined` 오류를 구별할 수 있어요.
+- 값이 없음을 일부러 표시할 때 `null`을 쓰고, `null`과 `undefined`·`0`·빈 문자열의 차이를 설명할 수 있어요.
+- 값을 넣기 전에 쓰거나 계산 결과를 담지 않아서 생긴 버그를 찾아 고칠 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+영화관 예매 프로그램을 만든다고 해 봐요. 손님이 아직 좌석을 고르지 않았다면 "선택한 좌석" 변수에는 무엇을 넣어야 할까요?
+
+- `0`을 넣으면? 0번 좌석을 고른 것처럼 보여요.
+- `""`(빈 문자열)을 넣으면? 이름이 빈 좌석을 고른 것인지, 고르지 않은 것인지 헷갈려요.
+
+프로그램에는 **"값이 없음"을** 나타낼 방법이 필요해요. JavaScript에는 이런 값이 두 개 있어요. 아직 정해지지 않았다는 뜻의 **`undefined`**, 그리고 일부러 비워 두었다는 뜻의 **`null`** 두 가지예요. 지난 단원의 자료형 표에서 이름만 봤던 두 값이에요.
+
+둘은 비슷해 보이지만 쓰임이 달라요. 그리고 이름이 비슷한 오류 `is not defined`와는 전혀 다른 것이에요. 이 단원에서 셋을 구별해 봐요.
+</Section>
+
+<Section kind="principle">
+### undefined: 아직 정해지지 않은 값
+
+변수를 만들면서 값을 넣지 않으면, JavaScript가 **자동으로** `undefined`를 넣어 둬요.
+
+```js
+let nickname;              // 값을 넣지 않았어요 → undefined
+console.log(nickname);     // undefined
+nickname = "별이";
+console.log(nickname);     // 별이
+```
+
+`undefined`는 오류가 아니라 정상적인 **값**이에요. 출력해도 프로그램은 멈추지 않고 다음 줄을 계속 실행해요. 다만 예상하지 못한 곳에서 `undefined`가 보인다면 "값을 넣기 전에 썼다"는 신호일 때가 많아요.
+
+`typeof undefined`는 `"undefined"`예요. 나중에 함수가 아무것도 돌려주지 않을 때(모듈 6)나 객체에 없는 속성을 읽을 때(모듈 9)도 `undefined`를 만나요.
+
+### undefined와 is not defined는 달라요
+
+이름이 비슷해서 가장 많이 헷갈리는 부분이에요.
+
+<CompareTable columns={["값 undefined", "오류 ReferenceError: x is not defined"]}>
+<Row label="뜻">변수는 있는데 아직 값이 정해지지 않았어요 | 그런 이름의 변수가 아예 없어요</Row>
+<Row label="언제">let x; 처럼 값 없이 만든 변수를 쓸 때 | 만든 적 없는 이름이나 오타 난 이름을 쓸 때</Row>
+<Row label="프로그램은">계속 실행돼요 | 그 줄에서 멈춰요</Row>
+<Row label="콘솔에는">undefined | ReferenceError: x is not defined (N번째 줄)</Row>
+</CompareTable>
+
+콘솔에 무엇이 나왔는지 볼 때는 **맨 앞에 오류 종류(`ReferenceError`)가 붙어 있는지**부터 확인해요. 붙어 있으면 오류이고, `undefined`만 덩그러니 있으면 값이에요.
+
+### null: 일부러 비워 둔 값
+
+`null`은 프로그래머가 **"여기는 값이 없어요"라고 일부러 표시할 때** 직접 넣는 값이에요.
+
+```js
+let selectedSeat = null;   // 아직 고르지 않았어요 (일부러 비워 둠)
+selectedSeat = "C5";       // 좌석을 골랐어요
+selectedSeat = null;       // 선택을 취소했어요
+```
+
+- `null`은 자동으로 생기지 않아요. 누군가 `null`이라고 써야 들어가요.
+- 지난 단원에서 배운 대로 `typeof null`은 `"object"`예요. 설계 실수가 남은 것일 뿐 `null`은 객체가 아니에요.
+- 관례: 값이 없다고 **직접 표시할 때는 `null`을** 쓰고, `undefined`는 JavaScript가 넣도록 둬요. 그래야 코드를 읽는 사람이 "누가 일부러 비웠구나"(null)와 "아직 아무도 넣지 않았구나"(undefined)를 구별할 수 있어요.
+
+### 0과 ""는 "값이 있음"이에요
+
+`0`과 빈 문자열 `""`은 비어 보이지만, 엄연히 **값이 있는** 숫자와 문자열이에요.
+
+| 값 | 뜻 | 누가 넣나요 | `typeof` |
+|---|---|---|---|
+| `undefined` | 아직 정해지지 않음 | JavaScript가 자동으로 | `"undefined"` |
+| `null` | 없음 (일부러 비워 둠) | 프로그래머가 직접 | `"object"` |
+| `0` | 숫자 0이 있음 | 프로그래머 | `"number"` |
+| `""` | 글자가 하나도 없는 문자열이 있음 | 프로그래머 | `"string"` |
+
+예를 들어 시험 점수에서 `0`은 "0점을 받았어요", `null`은 "아직 시험을 보지 않아서 점수가 없어요"예요. 둘을 섞어 쓰면 0점 받은 학생과 시험을 안 본 학생을 구별할 수 없어요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 값을 넣기 전과 넣은 뒤에 같은 변수를 출력해요. 무엇이 나올지 예측해 보세요.
+
+<RunnableExample id="undefined-then-value" lang="js" predict predictKind="console" concepts={["js.types.undefined"]}>
+```js
+let nickname;
+console.log(nickname);
+nickname = "별이";
+console.log(nickname);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+undefined
+별이
+```
+
+| 실행한 줄 | `nickname`의 값 |
+|---|---|
+| `let nickname;` | `undefined` (자동으로 들어감) |
+| `console.log(nickname);` | `undefined` 출력 |
+| `nickname = "별이";` | `"별이"` |
+| `console.log(nickname);` | `별이` 출력 |
+
+2번 줄의 `undefined`는 오류가 아니에요. 프로그램은 멈추지 않고 3번, 4번 줄을 계속 실행했어요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제예요. 2번 줄과 3번 줄은 거의 같아 보여요. 결과도 같을까요?
+
+<RunnableExample id="not-defined" lang="js" expectError concepts={["js.types.undefined"]}>
+```js
+let nickname;
+console.log(nickname);
+console.log(nickName);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+undefined
+ReferenceError: nickName is not defined (3번째 줄)
+```
+
+- 2번 줄: `nickname`은 1번 줄에서 만들었지만 값을 넣지 않았어요. 그래서 값 `undefined`가 출력돼요.
+- 3번 줄: `nickName`(대문자 N)은 만든 적 없는 이름이에요. 대소문자가 다르면 다른 이름이라 `ReferenceError`가 나고 프로그램이 멈춰요.
+
+둘 다 "defined"라는 말이 들어가지만, 하나는 **값**이고 하나는 **오류**예요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `null`이에요. `typeof`의 결과도 예측해 보세요.
+
+<RunnableExample id="null-coupon" lang="js" predict predictKind="console" concepts={["js.types.null"]}>
+```js
+let coupon = null;
+console.log(coupon);
+console.log(typeof coupon);
+coupon = "WELCOME10";
+console.log(coupon);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+null
+object
+WELCOME10
+```
+
+- 1번 줄: 쿠폰이 아직 없다는 것을 `null`로 **일부러** 표시했어요.
+- 3번 줄: `typeof null`은 `"object"`예요. 지난 단원에서 본 예외예요.
+- 4~5번 줄: 쿠폰을 받으면 그 값을 대입해요. `null`은 "없음"을 표시하는 자리 표시일 뿐, 나중에 다른 값을 넣을 수 있어요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 "비어 보이는" 값들을 한자리에 모았어요.
+
+<RunnableExample id="empty-values" lang="js" predict predictKind="console" concepts={["js.types.null", "js.types.undefined"]}>
+```js
+let a;
+let b = null;
+let c = 0;
+console.log(a, b, c);
+console.log(typeof a, typeof b, typeof c, typeof "");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+undefined null 0
+undefined object number string
+```
+
+네 값의 자료형이 모두 달라요. `undefined`와 `null`은 "값이 없음"을 나타내는 서로 다른 값이고, `0`과 `""`는 값이 있는 숫자와 문자열이에요. 어느 것을 쓰느냐에 따라 프로그램이 전하는 뜻이 달라져요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.undefined-is-error">
+<Wrong>콘솔에 `undefined`가 나오면 프로그램에 오류가 난 것이다.</Wrong>
+<Actual>`undefined`는 정상적인 값이에요. 앞에 오류 종류가 붙지 않고, 프로그램은 다음 줄을 계속 실행해요.</Actual>
+<Right>예상하지 못한 `undefined`는 "값을 넣기 전에 썼다"는 신호예요. 대입하는 줄이 쓰는 줄보다 먼저 실행되는지, 계산 결과를 변수에 담았는지 확인해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.not-defined-is-undefined">
+<Wrong>`ReferenceError: total is not defined`는 `total`에 `undefined`가 들어 있다는 뜻이다.</Wrong>
+<Actual>`total`이라는 변수가 **아예 없다**는 오류예요. 프로그램은 그 줄에서 멈춰요.</Actual>
+<Right>`is not defined`가 나오면 그 이름을 만든 줄이 있는지, 철자와 대소문자가 같은지 확인해요. `undefined`가 출력되면 변수는 있지만 값이 아직 없는 거예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.null-undefined-same">
+<Wrong>`null`과 `undefined`는 이름만 다르고 완전히 같은 값이라 아무거나 써도 된다.</Wrong>
+<Actual>둘은 다른 값이에요. `typeof`도 `"object"`와 `"undefined"`로 달라요.</Actual>
+<Right>`undefined`는 JavaScript가 "아직 정해지지 않음"으로 넣는 값, `null`은 프로그래머가 "없음"을 일부러 표시하는 값이에요. 직접 비워 둘 때는 `null`을 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.empty-value-is-zero">
+<Wrong>값이 없다는 뜻으로 `0`이나 `""`을 넣어도 `null`과 같다.</Wrong>
+<Actual>`0`은 숫자 0이 **있다**는 뜻이고, `""`는 글자가 없는 문자열이 **있다**는 뜻이에요. 점수 `0`은 "0점을 받음"이에요.</Actual>
+<Right>"아직 없음", "해당 없음"을 표시할 때는 `null`을 써요. `0`과 `""`는 진짜로 그 값일 때만 써요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+회원 정보를 다루는 서비스는 "값이 없음"을 자주 표시해요. 예를 들어 회원 한 명의 정보는 이렇게 담을 수 있어요.
+
+```js
+const memberName = "도윤";
+let phoneNumber;            // 아직 입력받지 않았어요 → undefined
+let withdrawnAt = null;     // 탈퇴하지 않았어요 → 탈퇴일 없음을 일부러 표시
+let points = 0;             // 포인트가 0점 있어요
+
+console.log(memberName, phoneNumber, withdrawnAt, points);
+```
+
+- 서버에서 받은 데이터에도 `null`이 자주 들어 있어요. "탈퇴일: null"은 "탈퇴일이 아직 없음"이라는 뜻이에요.
+- 화면에 `undefined`가 그대로 보이는 버그(예: "안녕하세요, undefined님")는 실제 서비스에서도 흔해요. 대부분 값을 넣기 전에 화면에 그렸거나, 이름을 잘못 읽어 온 경우예요.
+- `null`이나 `undefined`인지 확인해서 "미입력"처럼 다르게 보여 주는 방법은 모듈 3과 모듈 4에서 비교 연산과 조건문을 배운 뒤에 다뤄요.
+</Section>
+
+<Section kind="check">
+콘솔에 나온 `undefined`가 무슨 뜻인지 확인해 보세요.
+
+<InlineExercise ref="js-basics.values.null-undefined.mcq-undefined-meaning" />
+
+`is not defined` 오류와 `undefined`를 구별할 수 있는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.values.null-undefined.tf-not-defined" />
+
+`null`을 언제 쓰는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.values.null-undefined.mcq-when-null" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `undefined`는 "아직 정해지지 않음"이에요. 값 없이 만든 변수에 JavaScript가 자동으로 넣어요.
+- `undefined`는 오류가 아닌 정상적인 값이고, 프로그램은 계속 실행돼요. 예상하지 못한 곳에 보이면 값을 넣기 전에 쓴 것인지 확인해요.
+- `ReferenceError: x is not defined`는 그런 변수가 아예 없다는 오류예요. `undefined` 값과 다르고, 프로그램이 멈춰요.
+- `null`은 프로그래머가 "없음"을 일부러 표시하는 값이에요. 직접 비워 둘 때는 `null`을 써요.
+- `typeof undefined`는 `"undefined"`, `typeof null`은 `"object"`예요.
+- `0`과 `""`는 값이 있는 숫자와 문자열이라 "값이 없음"과 달라요.
+</Section>
+
+<Section kind="next">
+다음 단원 "`var`와 선언 전 사용"에서는 변수를 만들기 **전에** 쓰면 어떻게 되는지 배워요. 옛날 방식인 `var`에서는 이때 `undefined`가 나와요. `null`이나 `undefined`인지 확인하는 방법은 모듈 3 "비교 연산"과 모듈 4 "조건문"에서 다시 만나요. <MdnLink path="Web/JavaScript/Reference/Operators/null" />
+</Section>

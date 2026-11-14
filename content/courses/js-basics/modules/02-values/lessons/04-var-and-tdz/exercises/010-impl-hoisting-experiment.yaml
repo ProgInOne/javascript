@@ -1,0 +1,81 @@
+id: js-basics.values.var-and-tdz.impl-hoisting-experiment
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.values.var, weight: 1 }
+  - { id: js.types.undefined, weight: 0.3 }
+tags: [var, hoisting, write-code]
+estimatedSeconds: 150
+prompt: |
+  `var`의 끌어올림(호이스팅)을 직접 확인하는 실험 프로그램을 작성하세요.
+
+  1. 첫 줄에서, 아직 선언하지 않은 `luckyNumber`를 출력해요.
+  1. 그다음 줄에서 `var`로 `luckyNumber`를 선언하면서 `7`을 넣어요.
+  1. 다시 `luckyNumber`를 출력해요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  선언 전: undefined
+  선언 후: 7
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1. 선언하기 전에 luckyNumber를 출력하세요.
+
+          // 2. var로 luckyNumber를 선언하면서 7을 넣으세요.
+
+          // 3. 다시 luckyNumber를 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 1. 선언하기 전에 luckyNumber를 출력하세요.
+          console.log("선언 전:", luckyNumber);
+          // 2. var로 luckyNumber를 선언하면서 7을 넣으세요.
+          var luckyNumber = 7;
+          // 3. 다시 luckyNumber를 출력하세요.
+          console.log("선언 후:", luckyNumber);
+  checks:
+    - kind: console
+      id: output
+      description: 선언 전과 선언 후의 luckyNumber가 차례로 출력되어야 합니다.
+      requirement: 실험 결과 출력
+      expect:
+        lines: ["선언 전: undefined", "선언 후: 7"]
+      misconceptionIfFail: js.mc.var-hoists-value
+    - kind: program
+      id: lucky-number
+      description: 프로그램이 오류 없이 끝나고, 끝났을 때 luckyNumber에는 7이 들어 있어야 합니다.
+      requirement: 오류 없이 선언하기
+      expect:
+        globals:
+          luckyNumber: { equals: 7 }
+        noError: true
+      misconceptionIfFail: js.mc.let-before-declaration-undefined
+misconceptions: [js.mc.var-hoists-value]
+hints:
+  - 출력하는 줄을 선언하는 줄보다 **위에** 써야 해요. 이 순서가 실험의 핵심이에요.
+  - "`let`으로 선언하면 첫 줄에서 어떤 일이 생길까요? 이 실험에는 반드시 `var`가 필요해요."
+  - "첫 줄은 `\"선언 전:\"`과 `luckyNumber`를 쉼표로 나눠 출력하고, 둘째 줄은 `var luckyNumber = 7;`이에요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  console.log("선언 전:", luckyNumber);
+  var luckyNumber = 7;
+  console.log("선언 후:", luckyNumber);
+  ```
+
+  - JavaScript는 실행 전에 `var luckyNumber`라는 이름을 등록하고 `undefined`를 넣어 둬요. 그래서 1번 줄은 오류 없이 `undefined`를 출력해요.
+  - 값 `7`은 2번 줄이 실행될 때 들어가므로, 3번 줄에서야 `7`이 나와요.
+  - 같은 실험을 `let`으로 하면 1번 줄에서 `ReferenceError: Cannot access 'luckyNumber' before initialization`이 나요. `let`은 이런 실수를 오류로 알려 주는 거예요.
+
+  이 동작을 알아 두면 오래된 코드를 읽을 때 도움이 돼요. 하지만 새 코드에서는 변수를 항상 쓰기 전에 선언하고, `let`과 `const`를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,40 @@
+id: js-basics.values.null-undefined.predict-error-typo-vs-undefined
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.types.undefined, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [undefined, reference-error]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 끝까지 실행하면 오류가 날까요? 오류가 난다면 어떤 종류의 오류인가요?
+spec:
+  lang: js
+  code: |
+    let answer;
+    console.log(answer);
+    console.log(anwser);
+  answerKind: error
+  misconceptionByAnswer:
+    none: js.mc.not-defined-is-undefined
+misconceptions: [js.mc.not-defined-is-undefined]
+hints:
+  - 2번 줄과 3번 줄의 이름을 한 글자씩 비교해 보세요.
+  - 2번 줄의 `answer`는 1번 줄에서 만든 변수예요. 3번 줄의 이름도 만든 적이 있나요?
+  - 값이 없는 변수를 출력하면 undefined가 나오지만, 만든 적 없는 이름을 쓰면 이야기가 달라요.
+explanation: |
+  정답은 **오류가 난다, `ReferenceError`예요**.
+
+  ```text
+  undefined
+  ReferenceError: anwser is not defined (3번째 줄)
+  ```
+
+  - 2번 줄: `answer`는 1번 줄에서 값 없이 만든 변수라서 `undefined`가 출력돼요. 여기까지는 오류가 아니에요.
+  - 3번 줄: `anwser`는 `answer`의 철자를 잘못 쓴 이름이에요(w와 s의 순서). 만든 적 없는 이름이라 `ReferenceError`가 나요.
+
+  "오류가 나지 않는다"고 답했다면 3번 줄도 `undefined`가 출력될 거라고 생각했을 수 있어요. `undefined`는 "변수는 있는데 값이 없음", `is not defined`는 "그런 변수가 아예 없음"이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,46 @@
+id: js-basics.values.null-undefined.mcq-undefined-meaning
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.types.undefined, weight: 1 }
+tags: [undefined]
+estimatedSeconds: 45
+prompt: |
+  다음 프로그램을 실행했더니 콘솔에 `undefined`가 나왔어요. 이것은 무엇을 뜻하나요?
+code: |
+  let winner;
+  console.log(winner);
+spec:
+  options:
+    - id: a
+      text: 변수 `winner`는 있지만, 아직 값이 정해지지 않았다
+    - id: b
+      text: 프로그램에 오류가 나서 실행이 멈췄다
+      misconception: js.mc.undefined-is-error
+      rationale: undefined는 오류가 아니라 정상적인 값이에요. 앞에 오류 종류도 붙지 않아요.
+    - id: c
+      text: "`winner`라는 이름의 변수가 없다"
+      misconception: js.mc.not-defined-is-undefined
+      rationale: 변수가 없으면 ReferenceError(winner is not defined)가 나요. 1번 줄에서 winner를 만들었어요.
+    - id: d
+      text: 변수 `winner`에 숫자 0이 들어 있다
+      misconception: js.mc.empty-value-is-zero
+      rationale: 값을 넣지 않은 변수에 0이 자동으로 들어가지는 않아요. 0이 들어 있다면 0이 출력돼요.
+  correct: a
+misconceptions: [js.mc.undefined-is-error, js.mc.not-defined-is-undefined]
+hints:
+  - 1번 줄에서 `winner`를 만들 때 값을 넣었나요?
+  - 출력에 `ReferenceError` 같은 오류 종류가 붙어 있나요?
+  - 값 없이 만든 변수에는 "아직 정해지지 않음"을 뜻하는 값이 자동으로 들어가요.
+explanation: |
+  정답은 **변수 `winner`는 있지만, 아직 값이 정해지지 않았다**예요.
+
+  `let winner;`처럼 값 없이 변수를 만들면 JavaScript가 자동으로 `undefined`를 넣어 둬요. `undefined`는 "아직 정해지지 않음"을 뜻하는 정상적인 값이에요.
+
+  - "오류가 나서 멈췄다"를 고른 경우: 오류라면 `ReferenceError: ...`처럼 오류 종류가 앞에 붙어요. `undefined`는 그냥 값이고, 프로그램은 계속 실행돼요.
+  - "변수가 없다"를 고른 경우: 변수가 없으면 `ReferenceError: winner is not defined`가 나요. 이름은 비슷해도 다른 상황이에요.
+  - "0이 들어 있다"를 고른 경우: 0이 자동으로 들어가지 않아요. `0`과 "값 없음"은 다른 것이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -59,6 +59,84 @@
         "name": "ReferenceError"
       }
     },
+    "js-basics.values.data-types.predict-boolean-reassign": {
+      "inputHash": "cc44b2aaf0e241cf4f6d10b97989910e2c311a95a1007913e191f0de7af3a33c",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "string",
+          "true",
+          "boolean"
+        ]
+      }
+    },
+    "js-basics.values.data-types.predict-same-output": {
+      "inputHash": "250fd21b88144f4210ca0f5271f48171bcefcc4a243a0593b2c3406cce4426df",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "900",
+          "900",
+          "number",
+          "string"
+        ]
+      }
+    },
+    "js-basics.values.data-types.predict-typeof-typeof": {
+      "inputHash": "55613b650c0d19fa7ac7eced6d8249a04dda2d6515ceb9f947095c3fe9f12367",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "number",
+          "string",
+          "object"
+        ]
+      }
+    },
+    "js-basics.values.data-types.predict-value-typeof-string": {
+      "inputHash": "f759979e9543a40a2b2a6fbd195ad80079ab7203402097be82a23ec8ba93d904",
+      "expected": {
+        "kind": "value",
+        "value": {
+          "t": "string",
+          "v": "string"
+        }
+      }
+    },
+    "js-basics.values.null-undefined.predict-error-typo-vs-undefined": {
+      "inputHash": "8cc1b9e701a0d5aeab833e41130a9297be9d55174475ab9c0b3e937d6716c374",
+      "expected": {
+        "kind": "error",
+        "thrown": true,
+        "name": "ReferenceError"
+      }
+    },
+    "js-basics.values.null-undefined.predict-null-seat": {
+      "inputHash": "ad4e70ca02be69110709f5ce4a33ddb072714429d36113937a1defe143f655ab",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "object",
+          "A3 string",
+          "null"
+        ]
+      }
+    },
+    "js-basics.values.var-and-tdz.predict-error-let-before": {
+      "inputHash": "701cca06ded8c851b4dd6ac8691423b9c944e892e94d5814bfcb0dfc0c899848",
+      "expected": {
+        "kind": "error",
+        "thrown": true,
+        "name": "ReferenceError"
+      }
+    },
+    "js-basics.values.var-and-tdz.predict-error-var-redeclare": {
+      "inputHash": "8108b3786ec62bacd036b4f479524735591315a51e1982412cda198efe9476dc",
+      "expected": {
+        "kind": "error",
+        "thrown": false
+      }
+    },
     "js-basics.values.variables.predict-copy-not-link": {
       "inputHash": "19a4cc5c10edb02bb8dd8b17f854c748c525cf3b3b2cdd88c9747c61b09a11a9",
       "expected": {

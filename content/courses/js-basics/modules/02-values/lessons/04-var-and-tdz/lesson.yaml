@@ -1,0 +1,16 @@
+id: js-basics.values.var-and-tdz
+title: var와 선언 전 사용
+summary: 옛날 방식의 변수 선언 var가 let과 어떻게 다른지, 변수를 선언하기 전에 쓰면 어떤 일이 생기는지 배웁니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 10, practice: 16 }
+concepts:
+  primary: [js.values.var, js.values.tdz]
+  practiced: [js.values.let, js.values.const, js.types.undefined]
+  reviewed: [js.errors.error-messages, js.errors.error-types]
+objectives:
+  - var로 만든 변수를 선언 전에 쓰거나 다시 선언했을 때의 결과를 예측할 수 있다.
+  - let·const 변수를 선언 전에 쓰면 나는 오류를 읽고, is not defined 오류와 구별할 수 있다.
+  - 선언 순서와 var 때문에 생긴 버그를 찾아 let·const로 고칠 수 있다.
+practice:
+  targetCount: 12

@@ -1,0 +1,41 @@
+id: js-basics.values.data-types.mcq-quoted-number
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.types.primitives, weight: 1 }
+tags: [primitives, number, string]
+estimatedSeconds: 40
+prompt: |
+  코드에 쓴 두 값 `"5"`와 `5`에 대한 설명으로 맞는 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: 첫 번째는 문자열, 두 번째는 숫자로, 자료형이 다른 두 값이다
+    - id: b
+      text: 따옴표는 꾸밈일 뿐이라서 두 값은 완전히 같은 값이다
+      misconception: js.mc.quoted-number-is-number
+      rationale: 따옴표로 감싸면 문자열이 돼요. "5" + 1은 51, 5 + 1은 6처럼 결과도 달라요.
+    - id: c
+      text: 첫 번째는 숫자, 두 번째는 문자열이다
+      rationale: 반대예요. 따옴표로 감싼 쪽이 문자열이에요.
+    - id: d
+      text: 숫자에 따옴표를 붙이는 것은 문법 오류라서 첫 번째는 쓸 수 없다
+      rationale: 따옴표 안에는 숫자를 포함해 어떤 글자든 넣을 수 있어요. 그러면 문자열이 될 뿐이에요.
+  correct: a
+misconceptions: [js.mc.quoted-number-is-number]
+hints:
+  - 따옴표로 감싼 값은 무엇이라고 불렀나요?
+  - 따옴표가 있으면 안의 내용이 무엇이든 글자, 즉 문자열이에요.
+  - 따옴표가 있는 쪽은 string, 없는 쪽은 number예요. 자료형이 같은지 생각해 보세요.
+explanation: |
+  정답은 **첫 번째는 문자열, 두 번째는 숫자로, 자료형이 다른 두 값이다**예요.
+
+  `"5"`는 글자 `5` 하나로 된 문자열(string)이고, `5`는 숫자(number)예요. 자료형이 다르면 같은 연산도 다르게 동작해요. `"5" + 1`은 글자를 이어 붙여 `51`이 되고, `5 + 1`은 더해서 `6`이 돼요.
+
+  - "완전히 같은 값"을 고른 경우: 따옴표는 꾸밈이 아니라 "이것은 글자예요"라는 표시예요.
+  - 숫자와 문자열을 반대로 고른 경우: 따옴표가 있는 쪽이 문자열이에요.
+  - "문법 오류"를 고른 경우: 따옴표 안에는 숫자도 넣을 수 있어요. 그러면 숫자처럼 보이는 문자열이 될 뿐이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

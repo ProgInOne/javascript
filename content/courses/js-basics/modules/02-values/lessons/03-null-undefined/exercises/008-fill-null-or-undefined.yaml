@@ -1,0 +1,60 @@
+id: js-basics.values.null-undefined.fill-null-or-undefined
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.types.null, weight: 1 }
+  - { id: js.types.undefined, weight: 0.5 }
+  - { id: js.types.typeof, weight: 0.3 }
+tags: ["null", undefined, typeof]
+estimatedSeconds: 90
+prompt: |
+  빈칸에 알맞은 값을 쓰세요. 값은 JavaScript 코드에 쓰는 모양 그대로 적어요(따옴표가 필요 없으면 붙이지 않아요).
+spec:
+  mode: text
+  template: |
+    1. let a; 를 실행한 뒤 a에 들어 있는 값: {{blank:a}}
+    2. typeof undefined 의 결과(따옴표 없이): {{blank:b}}
+    3. typeof null 의 결과(따옴표 없이): {{blank:c}}
+    4. 손님이 좌석 선택을 취소해서, 좌석이 "없음"을 일부러 표시할 때 넣는 값: {{blank:d}}
+  blanks:
+    - id: a
+      accept: ["undefined"]
+      caseSensitive: true
+      width: 10
+      misconceptionMap:
+        "null": js.mc.null-undefined-same
+        "0": js.mc.empty-value-is-zero
+    - id: b
+      accept: ["undefined", "\"undefined\""]
+      caseSensitive: true
+      width: 10
+    - id: c
+      accept: ["object", "\"object\""]
+      caseSensitive: true
+      width: 10
+      misconceptionMap:
+        "null": js.mc.typeof-null-is-null
+    - id: d
+      accept: ["null"]
+      caseSensitive: true
+      width: 10
+      misconceptionMap:
+        "undefined": js.mc.null-undefined-same
+        "0": js.mc.empty-value-is-zero
+        '""': js.mc.empty-value-is-zero
+misconceptions: [js.mc.null-undefined-same, js.mc.typeof-null-is-null, js.mc.empty-value-is-zero]
+hints:
+  - 값 없이 만든 변수에는 JavaScript가 자동으로 넣는 값이 있어요. 그 값의 typeof 결과는 자기 이름과 같아요.
+  - typeof null은 예외였어요. 지난 단원의 typeof 표에서 "주의!"가 붙은 줄을 떠올려 보세요.
+  - 프로그래머가 "없음"을 일부러 표시할 때 직접 넣는 값은 JavaScript가 자동으로 넣는 값과 달라요.
+explanation: |
+  정답은 차례로 `undefined`, `undefined`, `object`, `null`이에요.
+
+  1. 값 없이 만든 변수에는 JavaScript가 자동으로 `undefined`를 넣어요. `0`이나 `null`이 들어가지 않아요.
+  1. `typeof undefined`는 `"undefined"`예요.
+  1. `typeof null`은 설계 실수 때문에 `"object"`예요. `null`이 아니에요.
+  1. "없음"을 일부러 표시할 때는 프로그래머가 `null`을 직접 넣는 것이 관례예요. `undefined`는 "아직 아무도 값을 넣지 않음"을 뜻하도록 JavaScript에 맡겨 둬요. `0`이나 `""`는 값이 있는 숫자와 문자열이라 "없음"과 달라요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

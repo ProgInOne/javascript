@@ -1,0 +1,103 @@
+id: js-basics.values.data-types.impl-survey-types
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.types.primitives, weight: 1 }
+  - { id: js.types.number, weight: 0.5 }
+  - { id: js.types.boolean, weight: 0.5 }
+  - { id: js.types.typeof, weight: 0.3 }
+tags: [primitives, number, boolean, typeof, write-code]
+estimatedSeconds: 330
+prompt: |
+  온라인 설문 결과를 받았는데, 모든 답이 문자열로 들어왔어요(시작 코드의 `raw...` 변수). 이대로는 나이 계산이 제대로 되지 않아요.
+
+  설문 내용을 **알맞은 자료형**으로 다시 담고 정리하는 프로그램을 작성하세요.
+
+  1. 같은 내용을 담은 변수 세 개를 새로 만들어요.
+     - `userName`: 이름 (글자)
+     - `age`: 나이 (계산할 수 있어야 해요)
+     - `agreed`: 개인정보 수집 동의 여부 (예/아니요)
+  1. 세 변수의 값을 한 줄에, 세 변수의 자료형을 다음 줄에 출력해요.
+  1. 내년 나이(`age`에 1을 더한 값)를 출력해요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  민지 27 true
+  string number boolean
+  내년 나이: 28
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 설문에서 받은 값 (모두 문자열이에요)
+          const rawName = "민지";
+          const rawAge = "27";
+          const rawAgree = "true";
+
+          // 아래에 userName, age, agreed를 알맞은 자료형으로 만들고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 설문에서 받은 값 (모두 문자열이에요)
+          const rawName = "민지";
+          const rawAge = "27";
+          const rawAgree = "true";
+
+          // 아래에 userName, age, agreed를 알맞은 자료형으로 만들고 출력하세요.
+          const userName = rawName;
+          const age = 27;
+          const agreed = true;
+          console.log(userName, age, agreed);
+          console.log(typeof userName, typeof age, typeof agreed);
+          console.log("내년 나이:", age + 1);
+  checks:
+    - kind: console
+      id: output
+      description: 정리한 값, 세 자료형, 내년 나이가 차례로 출력되어야 합니다.
+      requirement: 정리 결과 출력
+      expect:
+        lines: ["민지 27 true", "string number boolean", "내년 나이: 28"]
+      misconceptionIfFail: js.mc.quoted-number-is-number
+    - kind: program
+      id: typed-values
+      description: 프로그램이 오류 없이 끝나고, userName은 문자열, age는 숫자, agreed는 불리언으로 설문 내용을 담고 있어야 합니다.
+      requirement: 알맞은 자료형으로 담기
+      expect:
+        globals:
+          userName: { equals: "민지" }
+          age: { equals: 27 }
+          agreed: { equals: true }
+        noError: true
+      misconceptionIfFail: js.mc.quoted-boolean
+misconceptions: [js.mc.quoted-number-is-number, js.mc.quoted-boolean, js.mc.same-output-same-type]
+hints:
+  - 세 값 중 이미 알맞은 자료형인 것은 무엇이고, 바꿔야 하는 것은 무엇인가요? "계산할 수 있어야 해요", "예/아니요"가 힌트예요.
+  - "`age = rawAge;`처럼 그대로 옮기면 `age + 1`은 어떻게 될까요? 문자열에 `+`를 쓰면 무슨 일이 일어났는지 떠올려 보세요."
+  - 이름은 `rawName`을 그대로 써도 돼요. 나이와 동의 여부는 따옴표 없는 숫자와 불리언으로 새로 써요. 마지막 줄은 `"내년 나이:"`와 `age + 1`을 쉼표로 나눠 출력해요.
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const userName = rawName;
+  const age = 27;
+  const agreed = true;
+  console.log(userName, age, agreed);
+  console.log(typeof userName, typeof age, typeof agreed);
+  console.log("내년 나이:", age + 1);
+  ```
+
+  - **이름**은 원래 글자이니 문자열 그대로 두면 돼요. `rawName`을 대입해도, `"민지"`를 새로 써도 돼요.
+  - **나이**는 계산해야 하니 숫자로 담아요. `const age = rawAge;`로 옮기면 `age`는 문자열 `"27"`이라서 `age + 1`이 `271`이 돼요.
+  - **동의 여부**는 예/아니요이니 불리언으로 담아요. `"true"`는 네 글자로 된 문자열이에요.
+
+  `age = rawAge`, `agreed = rawAgree`로 옮겨도 첫 줄은 `민지 27 true`로 똑같이 보여요. 콘솔이 문자열의 따옴표를 보여 주지 않기 때문이에요. 둘째 줄의 typeof와 셋째 줄의 계산에서야 차이가 드러나요.
+
+  지금은 숫자와 불리언을 직접 다시 썼지만, 실제 프로그램에서는 값을 미리 알 수 없어요. 문자열을 숫자나 불리언으로 바꾸는 방법은 모듈 3 "명시적 형 변환"에서 배워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
