@@ -1,4 +1,4 @@
-import { and, count, eq } from 'drizzle-orm';
+import { and, count, eq, isNull } from 'drizzle-orm';
 import type { Orm } from './connection.ts';
 import {
   answerJson,
@@ -100,6 +100,28 @@ export function countAppliedItemAttempts(orm: Orm, itemId: string): number {
       .select({ n: count() })
       .from(attempts)
       .where(and(eq(attempts.practiceSetItemId, itemId), eq(attempts.engineApplied, true)))
+      .get()?.n ?? 0
+  );
+}
+
+/** Engine-applied attempts on an exercise outside any practice set (inline checks). */
+export function countAppliedStandaloneAttempts(
+  orm: Orm,
+  learnerId: string,
+  exerciseId: string,
+): number {
+  return (
+    orm
+      .select({ n: count() })
+      .from(attempts)
+      .where(
+        and(
+          eq(attempts.learnerId, learnerId),
+          eq(attempts.exerciseId, exerciseId),
+          isNull(attempts.practiceSetItemId),
+          eq(attempts.engineApplied, true),
+        ),
+      )
       .get()?.n ?? 0
   );
 }

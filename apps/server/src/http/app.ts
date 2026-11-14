@@ -87,7 +87,7 @@ export function createApp({
     .route('/backups', backupRoutes(backups))
     .route('/settings', settingsRoutes(settings))
     .route('/', curriculumRoutes(content))
-    .route('/exercises', exerciseRoutes(practice.exercises))
+    .route('/exercises', exerciseRoutes(practice.exercises, practice.attempts))
     .route('/practice-sets', practiceSetRoutes(practice.sets))
     .route('/attempts', attemptRoutes(practice.attempts))
     .route('/', learningRoutes(practice));

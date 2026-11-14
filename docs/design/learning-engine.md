@@ -152,7 +152,7 @@ w = W_concept × W_type × W_diff × W_try × W_hint × W_conf × W_time × W_re
 
 유형 → 범주 매핑은 `exercise-kit`의 유형 정의(`ExerciseTypeDef.category`, [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#문제-유형-레지스트리))가 원천이며, 위 표는 그 값을 옮긴 것입니다. `true_false`의 0.5는 범주 기본값을 유형별로 덮어쓴 값(`ExerciseTypeDef.weightOverride`)입니다.
 
-레슨 본문의 `RunnableExample` 예측(예측 후 실행)은 숙련도 증거로 쓰지 않습니다. 본문의 `InlineExercise`는 일반 문제와 같은 증거로 반영합니다.
+레슨 본문의 `RunnableExample` 예측(예측 후 실행)은 숙련도 증거로 쓰지 않습니다. 본문의 `InlineExercise`는 일반 문제와 같은 증거로 반영합니다(`setKind` 없음. `W_try`의 시도 번호는 연습 세트 밖에서 같은 문제를 푼 횟수로 셉니다). 다만 설명을 읽은 직후의 확인이라 간격 반복 인출이 아니므로 FSRS 평가는 만들지 않습니다.
 
 **W_diff: 난이도**
 

@@ -323,6 +323,8 @@ export const attemptResponseSchema = z.object({
       .optional(),
     /** Misconceptions suggested by the answer, with content.db titles. */
     misconceptions: z.array(z.object({ id: z.string(), title: z.string() })),
+    /** Authored explanation, shown after grading ("해설 보기"). */
+    explanation: z.string(),
   }),
   /** One entry per tagged concept: state before this attempt → after it (and any FSRS review). */
   masteryChanges: z.array(masteryChangeSchema),
@@ -337,6 +339,23 @@ export const attemptResponseSchema = z.object({
   }),
 });
 export type AttemptResponse = z.infer<typeof attemptResponseSchema>;
+
+/**
+ * `POST /exercises/:id/inline-attempts`: a lesson's inline check (`<InlineExercise>`), answered
+ * while reading, outside any practice set. Only exercises graded without a sandbox run.
+ * Mastery is updated like any attempt; FSRS scheduling is left to practice and review sets.
+ */
+export const inlineAttemptRequestSchema = attemptRequestSchema
+  .omit({ practiceSetItemId: true, exerciseId: true, runResult: true })
+  .strict();
+export type InlineAttemptRequest = z.infer<typeof inlineAttemptRequestSchema>;
+
+export const inlineAttemptResponseSchema = attemptResponseSchema.pick({
+  attempt: true,
+  grade: true,
+  masteryChanges: true,
+});
+export type InlineAttemptResponse = z.infer<typeof inlineAttemptResponseSchema>;
 
 // ── Reading progress, review queue, activity, dashboard ──────────────────────
 

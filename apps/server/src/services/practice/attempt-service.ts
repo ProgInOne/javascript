@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import {
+  exerciseOriginOf,
   gradeSubmission,
   parseAnswer,
   redactSpec,
@@ -30,11 +31,14 @@ import {
   parseRunResult,
   type AttemptRequest,
   type AttemptResponse,
+  type InlineAttemptRequest,
+  type InlineAttemptResponse,
   type RunResult,
 } from '@proginone/shared';
 import type { ContentExercise } from '../../db/content/repository.ts';
 import {
   countAppliedItemAttempts,
+  countAppliedStandaloneAttempts,
   countExerciseAttempts,
   insertAttempt,
   insertSnapshot,
@@ -279,6 +283,163 @@ export class AttemptService {
       attemptNo,
       attemptInItem,
     });
+  }
+
+  /**
+   * `POST /exercises/:id/inline-attempts`: an inline check answered while reading the lesson
+   * (learning-engine.md: `InlineExercise` counts as regular evidence). There is no practice set:
+   * the attempt has no item, mastery and evidence are written, and the FSRS ratings the engine
+   * proposes are dropped (spaced scheduling comes from practice and review sets, not from a check
+   * right after the explanation). Run-based exercises are not inline checks.
+   */
+  submitInline(exerciseId: string, request: InlineAttemptRequest): InlineAttemptResponse {
+    const now = this.#now();
+    const orm = this.#userDb.orm;
+    const repo = this.#content.repo;
+    const { learnerId, dayBoundary } = learnerContext(this.#userDb);
+    const exercise = repo.getExercise(exerciseId);
+    if (!exercise) {
+      throw new AppError('NOT_FOUND', 404, '문제를 찾을 수 없습니다.', {
+        details: { id: exerciseId },
+      });
+    }
+    const candidate = candidateOf(exercise);
+    if (!candidate) {
+      throw new AppError('EXERCISE_UNSUPPORTED', 500, '이 문제는 채점할 수 없습니다.', {
+        details: { id: exercise.id },
+      });
+    }
+    const { def, spec } = loadSpec(exercise);
+    if (def.requiresRun(spec)) {
+      throw new AppError(
+        'EXERCISE_RUN_REQUIRED',
+        409,
+        '코드를 실행해야 채점할 수 있는 문제는 본문 확인 문제로 풀 수 없습니다.',
+        { details: { type: exercise.type } },
+      );
+    }
+    const answer = kit(() => parseAnswer(exercise.type, request.answer));
+    const grade = kit(() => gradeSubmission({ typeId: exercise.type, spec, answer }));
+    const misconceptions = repo.getMisconceptions(grade.misconceptionIds);
+
+    const hints = hintState(listHintEvents(orm, { learnerId, exerciseId, itemId: null }));
+    const attemptId = newId();
+    const attemptNo = countExerciseAttempts(orm, learnerId, exerciseId) + 1;
+    const attemptInItem = countAppliedStandaloneAttempts(orm, learnerId, exerciseId) + 1;
+    const startedAt = Math.min(request.startedAt, now);
+    const activeMs = Math.min(request.activeMs, now - startedAt);
+    const facts: AttemptFacts = {
+      attemptId,
+      outcome: grade.outcome,
+      score: grade.score,
+      confidence: request.confidence ?? null,
+      hintLevelMax: Math.min(3, hints.level) as HintLevel,
+      solutionViewed: hints.solutionViewed,
+      tutorAssisted: request.tutorAssisted ?? false,
+      attemptInItem,
+      activeMs,
+      setKind: null,
+      misconceptionConceptIds: [...misconceptions.values()].map((m) => m.conceptId),
+      submittedAt: now,
+    };
+    const engineApplied = grade.engineApplicable;
+    const effects = engineApplied
+      ? applyAttempt(this.#engine, {
+          attempt: facts,
+          exercise: candidate,
+          concepts: [
+            ...loadConceptStates(
+              orm,
+              learnerId,
+              candidate.concepts.map((c) => c.conceptId),
+              this.#engine.fsrs,
+            ).values(),
+          ],
+          now,
+          dayBoundary,
+        })
+      : null;
+
+    orm.transaction(() => {
+      insertSnapshot(orm, {
+        contentHash: exercise.contentHash,
+        exerciseId: exercise.id,
+        publicSpec: kit(() => redactSpec(exercise.type, spec, { shuffleSeed: exercise.id })),
+        createdAt: now,
+      });
+      insertAttempt(orm, {
+        id: attemptId,
+        learnerId,
+        exerciseId: exercise.id,
+        exerciseOrigin: exerciseOriginOf(exercise.id) ?? exercise.origin,
+        variantGroupKey: candidate.variantGroupKey,
+        exerciseVersionHash: exercise.contentHash,
+        practiceSetItemId: null,
+        studySessionId: null,
+        attemptNo,
+        attemptInItem: engineApplied ? attemptInItem : attemptInItem - 1,
+        outcome: grade.outcome,
+        score: grade.score,
+        confidence: facts.confidence,
+        hintLevelMax: facts.hintLevelMax,
+        solutionViewed: facts.solutionViewed,
+        tutorAssisted: facts.tutorAssisted,
+        startedAt: new Date(startedAt),
+        submittedAt: new Date(now),
+        activeMs,
+        misconceptionIds: grade.misconceptionIds,
+        grading: gradingOf(grade, null),
+        isReview: false,
+        engineApplied,
+      });
+      insertSubmission(orm, {
+        attemptId,
+        learnerId,
+        answer,
+        runResult: null,
+        answerHash: createHash('sha256').update(JSON.stringify(answer)).digest('hex'),
+      });
+      if (effects) {
+        for (const update of effects.mastery) upsertMastery(orm, learnerId, update, now);
+        for (const record of effects.evidence) insertEvidence(orm, learnerId, record);
+      }
+      addDailyActivity(orm, learnerId, localDateOf(now, dayBoundary), {
+        attempts: 1,
+        correct: grade.correct ? 1 : 0,
+        lessonsCompleted: 0,
+        reviewsDone: 0,
+      });
+    });
+
+    const titles = repo.getConcepts(effects?.mastery.map((m) => m.conceptId) ?? []);
+    return {
+      attempt: {
+        id: attemptId,
+        outcome: grade.outcome,
+        score: grade.score,
+        correct: grade.correct,
+        engineApplied,
+        attemptNo,
+        attemptInItem: engineApplied ? attemptInItem : attemptInItem - 1,
+      },
+      grade: {
+        feedback: grade.feedback,
+        ...(grade.checkResults ? { checkResults: grade.checkResults } : {}),
+        misconceptions: grade.misconceptionIds.map((id) => ({
+          id,
+          title: misconceptions.get(id)?.title ?? id,
+        })),
+        explanation: exercise.explanation,
+      },
+      masteryChanges: (effects?.mastery ?? []).map((m) => ({
+        conceptId: m.conceptId,
+        title: titles.get(m.conceptId)?.title ?? m.conceptId,
+        scoreBefore: m.before.score,
+        scoreAfter: m.after.score,
+        stageBefore: m.before.stage,
+        stageAfter: m.after.stage,
+      })),
+    };
   }
 
   #plan(input: {
@@ -567,6 +728,7 @@ export class AttemptService {
           id,
           title: misconceptions.get(id)?.title ?? id,
         })),
+        explanation: input.exercise.explanation,
       },
       masteryChanges: (plan?.mastery ?? []).map((m) => ({
         conceptId: m.conceptId,

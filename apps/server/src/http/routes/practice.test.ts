@@ -1,4 +1,8 @@
-import { practiceSetViewSchema, type AttemptResponse } from '@proginone/shared';
+import {
+  inlineAttemptResponseSchema,
+  practiceSetViewSchema,
+  type AttemptResponse,
+} from '@proginone/shared';
 import { describe, expect, it } from 'vitest';
 import { CORRECT } from '../../test/answers.ts';
 import { EX } from '../../test/content-fixture.ts';
@@ -154,6 +158,7 @@ describe('POST /attempts', () => {
     const retry = parsed(await submit(ctx, mcq));
     expect(retry.attempt).toMatchObject({ attemptInItem: 2, attemptNo: 2, correct: true });
     expect(retry.item.attempts).toBe(2);
+    expect(retry.grade.explanation).toBe(`${EX.mcq} 해설`);
   });
 
   it('records hints before the attempt and rates it accordingly', async () => {
@@ -262,5 +267,76 @@ describe('POST /attempts', () => {
 
     ctx.userDb.sqlite.exec('DROP TRIGGER fail_evidence');
     expect(parsed(await submit(ctx, item)).attempt.correct).toBe(true);
+  });
+});
+
+describe('POST /exercises/:id/inline-attempts', () => {
+  const inline = (ctx: Awaited<ReturnType<typeof practiceApp>>, id: string, body: object) =>
+    ctx.call('POST', `/exercises/${id}/inline-attempts`, {
+      startedAt: T0 - 20_000,
+      activeMs: 15_000,
+      confidence: 'sure',
+      ...body,
+    });
+
+  it('grades a lesson check outside any set and updates mastery without FSRS', async () => {
+    const ctx = await practiceApp();
+    const wrong = await inline(ctx, EX.mcq, { answer: { optionId: 'a' } });
+    expect(wrong.status).toBe(201);
+    const first = inlineAttemptResponseSchema.parse(wrong.json);
+    expect(first.attempt).toMatchObject({
+      outcome: 'incorrect',
+      engineApplied: true,
+      attemptNo: 1,
+      attemptInItem: 1,
+    });
+    expect(first.grade.misconceptions).toEqual([
+      { id: 'js.mc.log-is-return', title: 'console.log를 반환으로 생각함' },
+    ]);
+    expect(first.grade.explanation).toBe(`${EX.mcq} 해설`);
+
+    const right = inlineAttemptResponseSchema.parse(
+      (await inline(ctx, EX.mcq, { answer: { optionId: 'b' } })).json,
+    );
+    expect(right.attempt).toMatchObject({ correct: true, attemptNo: 2, attemptInItem: 2 });
+    const change = right.masteryChanges.find((m) => m.conceptId === 'js.basics.statement');
+    expect(change?.scoreAfter).toBeGreaterThan(change?.scoreBefore ?? 100);
+
+    expect(
+      ctx.userDb.sqlite
+        .prepare('SELECT practice_set_item_id, is_review, engine_applied FROM attempts')
+        .all(),
+    ).toEqual([
+      { practice_set_item_id: null, is_review: 0, engine_applied: 1 },
+      { practice_set_item_id: null, is_review: 0, engine_applied: 1 },
+    ]);
+    expect(count(ctx, 'pending_ratings')).toBe(0);
+    expect(count(ctx, 'concept_memory')).toBe(0);
+    expect(count(ctx, 'practice_sets')).toBe(0);
+    expect(
+      ctx.userDb.sqlite.prepare('SELECT attempts_count, correct_count FROM daily_activity').get(),
+    ).toEqual({ attempts_count: 2, correct_count: 1 });
+
+    // An inline attempt does not count as an attempt in a later practice set item.
+    const set = await lessonSet(ctx);
+    const mcq = set.items.find((i) => i.exerciseId === EX.mcq);
+    if (!mcq) throw new Error('fixture set misses mcq');
+    expect(parsed(await submit(ctx, mcq)).attempt).toMatchObject({
+      attemptInItem: 1,
+      attemptNo: 3,
+    });
+  });
+
+  it('rejects run-based exercises, bad answers and unknown exercises', async () => {
+    const ctx = await practiceApp();
+    const run = await inline(ctx, EX.implement, { answer: CORRECT[EX.implement] });
+    expect(run.status).toBe(409);
+    expect(errorCode(run.json)).toBe('EXERCISE_RUN_REQUIRED');
+    const bad = await inline(ctx, EX.mcq, { answer: { optionId: 7 } });
+    expect(errorCode(bad.json)).toBe('VALIDATION_ANSWER_INVALID');
+    const extra = await inline(ctx, EX.mcq, { answer: { optionId: 'b' }, practiceSetItemId: 'x' });
+    expect(extra.status).toBe(400);
+    expect((await inline(ctx, 'a.b.c.nope', { answer: { optionId: 'b' } })).status).toBe(404);
+    expect(count(ctx, 'attempts')).toBe(0);
   });
 });
