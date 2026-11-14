@@ -33,7 +33,7 @@ I/O가 없는 순수 패키지이며 `@proginone/shared`에만 의존합니다.
 | `fill_blank` (`text` 모드) | recall | 답안만 |
 | `predict_output` | recall | 답안 + `content-cli check --run`이 실행으로 계산하고 빌드가 채운 `expected` |
 | `fill_blank` (`code` 모드) | recall | 답안 + `RunResult` |
-| `implement_function` | production | 답안 + `RunResult` (+ `serverFindings`) |
+| `implement_function` (`entry` 선택: 없으면 `console`·`program` 체크만 쓰는 프로그램 작성 문제, D-028) | production | 답안 + `RunResult` (+ `serverFindings`) |
 | `fix_bug` | production | 답안 + `RunResult` (+ `serverFindings`) |
 | `web_task` (기본형: `index.html` 하나) | production | 답안 + `RunResult` (+ `serverFindings`) |
 

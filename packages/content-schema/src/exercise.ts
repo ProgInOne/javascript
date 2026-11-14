@@ -1,6 +1,9 @@
 import { z } from 'zod';
 import { conceptId, exerciseId, misconceptionId } from './slug.ts';
 
+/** Allowed `review.reviewedBy` values (D-027). */
+export const REVIEWERS = ['human', 'ai:reviewer'] as const;
+
 export const EXERCISE_USAGES = [
   'practice',
   'assessment',
@@ -39,7 +42,11 @@ export const exerciseSourceSchema = z
     review: z.strictObject({
       status: z.enum(['draft', 'approved']),
       draftedBy: z.string().regex(/^(human|ai:[a-z0-9-]+)$/),
-      reviewedBy: z.literal('human').optional(),
+      /**
+       * Who approved it (D-027): a person, or an independent AI reviewer working in a separate
+       * context from the drafter. Must differ from `draftedBy`.
+       */
+      reviewedBy: z.enum(REVIEWERS).optional(),
     }),
   })
   .superRefine((ex, ctx) => {
@@ -58,11 +65,18 @@ export const exerciseSourceSchema = z
         message: 'worked_example에는 단계가 필요합니다',
       });
     }
-    if (ex.review.status === 'approved' && ex.review.reviewedBy !== 'human') {
+    if (ex.review.status === 'approved' && ex.review.reviewedBy === undefined) {
       ctx.addIssue({
         code: 'custom',
         path: ['review', 'reviewedBy'],
-        message: '승인된 문제는 사람 검토가 필요합니다',
+        message: '승인된 문제는 검토자(reviewedBy: human 또는 ai:reviewer)가 필요합니다',
+      });
+    }
+    if (ex.review.reviewedBy !== undefined && ex.review.reviewedBy === ex.review.draftedBy) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['review', 'reviewedBy'],
+        message: '초안 작성자가 스스로 검토할 수 없습니다(reviewedBy는 draftedBy와 달라야 합니다)',
       });
     }
   });

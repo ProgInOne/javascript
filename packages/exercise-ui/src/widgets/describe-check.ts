@@ -36,7 +36,31 @@ export function checkSummary(check: PublicCheck, entry?: string): string | null 
     if (!Array.isArray(lines)) return null;
     return lines.map(String).join('\n');
   }
+  if (check.kind === 'program') return programSummary(check);
   return null;
+}
+
+/** `nickname → "코코"` per expected variable, plus `오류 없이 끝나요` for `noError`. */
+function programSummary(check: PublicCheck): string | null {
+  const expect = asRecord(check['expect']);
+  if (!expect) return null;
+  const parts: string[] = [];
+  const globals = asRecord(expect['globals']);
+  for (const [name, raw] of Object.entries(globals ?? {}).sort(([a], [b]) => a.localeCompare(b))) {
+    const value = asRecord(raw);
+    if (!value) continue;
+    if ('equals' in value) parts.push(`${name} → ${formatJson(value['equals'])}`);
+    else if ('strictEquals' in value) parts.push(`${name} → ${formatJson(value['strictEquals'])}`);
+    else if ('equalsLiteral' in value) parts.push(`${name} → ${String(value['equalsLiteral'])}`);
+    else if ('strictEqualsLiteral' in value)
+      parts.push(`${name} → ${String(value['strictEqualsLiteral'])}`);
+    else if ('closeTo' in value)
+      parts.push(`${name} → ≈ ${formatJson(asRecord(value['closeTo'])?.['value'])}`);
+    else if ('matches' in value)
+      parts.push(`${name} → ${describeMatches(asRecord(value['matches']))}`);
+  }
+  if (expect['noError'] === true) parts.push('오류 없이 끝나요');
+  return parts.length > 0 ? parts.join('\n') : null;
 }
 
 function callSummary(check: PublicCheck, entry: string): string {

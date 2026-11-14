@@ -7,6 +7,9 @@
 
 ### Added
 
+- `implement_function` 프로그램 작성 문제(D-028): `entry`(함수 이름)가 선택이 되어, 없으면 학습자가 최상위 코드를 쓰고 `console`·`program` 체크로만 채점합니다(`call` 체크는 `CHECK_NEEDS_ENTRY` 스펙 오류). 체크 목록은 `program` 체크의 공개 기대값(`nickname → "코코"`)을 보여줍니다
+- 콘텐츠 검토자 `reviewedBy: ai:reviewer`(D-027): 사람 검토 대신 초안 작성자와 분리된 컨텍스트의 독립 AI 검토자가 승인할 수 있습니다. `reviewedBy`는 `draftedBy`와 달라야 하며, 승인된 문제는 검토자와 관계없이 `review_status = 'trusted'`
+- `content-cli check`가 CSS 과정(`language: css`)에서 `mcq_single`·`fill_blank`·`web_task` 외 유형을 오류로 처리(D-028)
 - `content-cli check --run`과 `pnpm content:check:run`(M4): 헤드리스 Chromium에서 앱과 같은 러너로 실행 검증(예측 문제는 3회 실행 결정론 검사 후 기대값을 `content/.generated/predict-expected.json`에 기록하고 check·build가 채움, 코드 문제는 참조 정답 통과·시작 코드 실패, 레슨 예제는 `expectError` 표시와 실제 오류 일치). CI e2e 작업에 `--frozen`으로 추가. [콘텐츠 작성 가이드](docs/guides/content-authoring.md) 추가
 - v0.1 콘텐츠 JS `variables` 변수와 상수 핵심 단원(M4·C): let·대입·const·이름 규칙 레슨 본문(예제 5개, 흔한 실수 11개), 개념 4개·오개념 11개, 문제 22개. AI 초안(`draft`)이며 사람 검토 전입니다
 - v0.1 콘텐츠 JS 모듈 1 "시작하기"(M4·C): `first-program`(console.log·문장·주석)과 `reading-errors`(오류 메시지 구조·SyntaxError/ReferenceError/TypeError) 레슨 본문, 개념 5개·오개념 9개, 문제 24개. AI 초안(`draft`)이며 사람 검토 전입니다
@@ -45,3 +48,8 @@
 - 외부 검토 반영(2026-11-14): 단계별 출시(v0.1 시범판 → v1.0 MVP), 학습 맥락별 규칙, 문제 수량 기준과 유형 구성비, 변형 그룹 반복 감쇠·게이트 강화, 체크 가중 부분 점수, 노트·자유 연습·인터랙티브 컴포넌트(P1), 결정 D-021~D-023
 - 프로젝트 기획 문서: PRD, 시스템 아키텍처, 데이터 모델, 학습 엔진, 콘텐츠·문제 시스템, 코드 실행 샌드박스, AI 시스템, UI/UX 설계, 구현 로드맵.
 - 결정 기록, 용어집, 문서 작성 규칙, 기여 가이드.
+
+### Changed
+
+- 학습자 JavaScript를 엄격 모드로 실행(D-026): 러너 준비 단계가 1번 줄 앞에 `'use strict';`를 줄바꿈 없이 붙이고 열 번호를 보정합니다(`js-console`, DOM 인라인 스크립트·`on*` 핸들러, 레슨 예제, 실행 검증). `let` 없는 대입은 `ReferenceError`, 엄격 모드 전용 문법 오류는 실행 전에 보고. `variables` 레슨에 `let`을 빼면 오류가 난다는 설명 추가
+- 콘텐츠 파이프라인 6단계를 "사람 검토"에서 "AI 교차 검토"로 바꾸고(검토자는 `content:check:run` 재실행, 판단 기록), HTML/CSS 핵심 과정은 "단원 유형 4종 이상" 규칙에서 제외

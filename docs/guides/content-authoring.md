@@ -242,6 +242,8 @@ review:
 v0.1에서 쓸 수 있는 유형은 `mcq_single`, `fill_blank`, `predict_output`, `implement_function`, `fix_bug`, `web_task`입니다.
 아래 예는 `content/`의 실제 문제를 줄인 것입니다.
 
+**CSS 과정**(`language: css`)에서는 `mcq_single`, `fill_blank`, `web_task`만 씁니다([D-028](/docs/decisions.md)). 다른 유형은 `content:check` 오류입니다. HTML/CSS 핵심(`depth: core`) 과정에는 "단원 풀의 유형 4종 이상" 규칙을 적용하지 않습니다.
+
 #### mcq_single
 
 ```yaml
@@ -353,7 +355,9 @@ spec:
 
 #### implement_function
 
-v0.1 콘텐츠에는 아직 없습니다. 형식은 다음과 같습니다.
+v0.1 콘텐츠에는 아직 없습니다. `entry`(함수 이름)는 선택입니다([D-028](/docs/decisions.md)).
+
+**함수 작성 문제**(`entry` 있음, 함수를 배운 모듈 6부터):
 
 ```yaml
 spec:
@@ -375,6 +379,33 @@ spec:
     - { kind: call, id: basic, args: [[1, 2]], expect: { equals: 3 } }
     - { kind: call, id: empty, args: [[]], expect: { equals: 0 } }
 ```
+
+**프로그램 작성 문제**(`entry` 없음, 모듈 1부터): 학습자가 최상위 코드를 씁니다. 프로그램 전체를 관측하는 `console`(출력)과 `program`(끝난 뒤의 변수 값, `noError`) 체크만 씁니다. `call` 체크를 쓰면 `CHECK_NEEDS_ENTRY` 오류입니다.
+
+```yaml
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // price와 count를 곱해 total에 넣고 출력하세요
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let price = 1000;
+          let count = 3;
+          let total = price * count;
+          console.log(total);
+  checks:
+    - { kind: console, id: output, expect: { lines: ["3000"] } }
+    - kind: program
+      id: has-total
+      description: total 변수에 계산 결과가 들어 있어야 합니다.
+      expect: { globals: { total: { equals: 3000 } }, noError: true }
+```
+
+`program` 체크의 `globals`는 최상위 `let`·`const`로 만든 변수도 읽습니다.
 
 #### web_task
 
@@ -418,6 +449,15 @@ spec:
 - `requirement`로 묶은 체크는 피드백에서 하나의 요구사항으로 보입니다.
 
 종류별 필드는 설계 문서의 [체크 명세 언어](/docs/design/content-and-exercises.md#체크-명세-언어)를 봅니다.
+
+### 학습자 코드는 엄격 모드로 실행됩니다
+
+러너는 학습자 JavaScript(문제 답안, 시작 코드, 예측 문제 코드, 레슨 예제)를 모두 엄격 모드로 실행합니다([D-026](/docs/decisions.md)). 문제를 쓸 때 다음을 기억합니다.
+
+- `let`·`const` 없이 `nickname = "코코";`처럼 대입하면 `ReferenceError: nickname is not defined`가 납니다. 선언을 빠뜨린 답안은 실패해야 정상입니다.
+- 일반 함수 호출(`f()`)의 `this`는 `undefined`입니다.
+- `with`, `010` 같은 8진수 리터럴, 중복 매개변수는 실행 전 `SyntaxError`입니다.
+- 예측 문제의 기대값도 엄격 모드 실행 결과입니다.
 
 ## 검사와 실행 검증
 
@@ -480,21 +520,26 @@ spec:
 
 ## 검토와 승인
 
-자동 검증은 "실행상 올바름"만 보장합니다. 교육적 품질은 사람이 판단합니다.
+자동 검증은 "실행상 올바름"만 보장합니다. 교육적 품질은 검토자가 판단합니다.
+사용자가 학습자 본인이므로, 검토는 **AI 교차 검토**로 합니다([D-027](/docs/decisions.md), [설계 6단계](/docs/design/content-and-exercises.md#6단계-ai-교차-검토)).
 
 1. 작성자(사람 또는 AI)는 `review.status: draft`로 씁니다. AI 초안은 `draftedBy: ai:<이름>`입니다.
-1. `content:check`와 `content:check:run`을 모두 통과시킵니다.
-1. 검토자는 설계 문서의 [품질 체크리스트](/docs/design/content-and-exercises.md#품질-체크리스트-검토자용)로 확인합니다. 레슨 본문, `core` 개념의 문제, 단원 평가 문제는 전수 검토합니다.
-1. 승인하면 다음처럼 바꿉니다. `reviewedBy: human` 없이 `approved`로 두면 오류입니다.
+1. 작성자는 `content:check`와 `content:check:run`을 모두 통과시킵니다.
+1. **독립 AI 검토자**가 초안 작성자와 분리된 컨텍스트(새 세션, 초안 대화 없음)에서 검토합니다.
+   - 시작할 때와 고친 뒤에 `pnpm content:check:run`을 **직접 다시 실행**해 오류 0개를 확인합니다.
+   - 설계 문서의 [품질 체크리스트](/docs/design/content-and-exercises.md#품질-체크리스트-검토자용)로 확인합니다. 레슨 본문, `core` 개념의 문제, 단원 평가 문제는 전수 검토하고, 그 밖의 문제는 배치마다 30% 이상 무작위 + 경고가 있는 문제 전부를 봅니다.
+   - 승인·수정·거부 판단과 이유, 직접 고친 내용을 PR 설명(또는 검토 기록)에 남깁니다.
+1. 승인하면 다음처럼 바꿉니다. `reviewedBy`는 `human` 또는 `ai:reviewer`만 쓸 수 있고, `draftedBy`와 같으면(자기 승인) 오류입니다. `reviewedBy` 없이 `approved`로 두어도 오류입니다.
 
    ```yaml
    review:
      status: approved
      draftedBy: ai:claude
-     reviewedBy: human
+     reviewedBy: ai:reviewer
    ```
 
 1. 승인한 예측 문제는 기대값이 최신이어야 빌드됩니다.
+1. 승인된 문제는 검토자와 관계없이 content.db에 `review_status = 'trusted'`로 들어갑니다.
 
 단원의 승인된 문제 수가 `practice.targetCount`와 다르면 경고가 납니다.
 
@@ -512,6 +557,9 @@ spec:
 | `속성 표현식은 JSON 리터럴...만 쓸 수 있습니다` | `concepts={["a"]}`처럼 큰따옴표 JSON으로 씁니다. |
 | `힌트는 정확히 3개여야 합니다` | `hints`를 3단계로 맞춥니다. |
 | `주 개념(weight: 1)이 정확히 1개여야 합니다` | `concepts`에서 `weight: 1`을 하나만 둡니다. |
+| `CSS 과정에서는 mcq_single, fill_blank, web_task 유형만 쓸 수 있습니다` | CSS 과정 문제는 세 유형 중 하나로 바꿉니다([D-028](/docs/decisions.md)). |
+| `승인된 문제는 검토자(...)가 필요합니다` / `초안 작성자가 스스로 검토할 수 없습니다` | `reviewedBy`를 `human` 또는 `ai:reviewer`로, `draftedBy`와 다르게 씁니다. |
+| `spec: checks.N: call 체크에는 entry가 필요합니다. (CHECK_NEEDS_ENTRY)` | `entry` 없는 `implement_function`(프로그램 작성 문제)에는 `console`·`program` 체크만 씁니다. |
 | `spec: ...` | 유형별 스펙 오류입니다. 경로(`blanks.0.accept` 등)를 보고 위의 유형별 예와 비교합니다. |
 | `실행 기대값이 아직 없습니다` / `낡았습니다` | `pnpm content:check:run`을 실행하고 바뀐 기대값 파일을 커밋합니다. |
 | `실행 결과로 기대값을 만들 수 없습니다` | 예측 코드가 예상하지 못한 오류를 냈습니다. 오류를 묻는 문제면 `answerKind: error`로 바꿉니다. |

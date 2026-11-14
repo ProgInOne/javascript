@@ -44,7 +44,7 @@ function contentWithPredict(
       review:
         options.status === 'draft'
           ? { status: 'draft', draftedBy: 'ai:claude' }
-          : { status: 'approved', draftedBy: 'human', reviewedBy: 'human' },
+          : { status: 'approved', draftedBy: 'ai:claude', reviewedBy: 'human' },
     };
   });
 }

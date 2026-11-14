@@ -62,12 +62,26 @@ describe('exerciseSourceSchema', () => {
     expect(r.success).toBe(false);
   });
 
-  it('requires human review for approved exercises', () => {
+  it('requires a reviewer for approved exercises', () => {
     const r = exerciseSourceSchema.safeParse({
       ...exercise,
       review: { status: 'approved', draftedBy: 'ai:codex' },
     });
     expect(r.success).toBe(false);
+  });
+
+  it('accepts an independent AI reviewer, never the drafter itself (D-027)', () => {
+    const review = (draftedBy: string, reviewedBy: string) =>
+      exerciseSourceSchema.safeParse({
+        ...exercise,
+        review: { status: 'approved', draftedBy, reviewedBy },
+      }).success;
+    expect(review('ai:claude', 'ai:reviewer')).toBe(true);
+    expect(review('ai:reviewer', 'human')).toBe(true);
+    expect(review('ai:reviewer', 'ai:reviewer')).toBe(false);
+    expect(review('human', 'human')).toBe(false);
+    // Only `human` and `ai:reviewer` can approve.
+    expect(review('ai:codex', 'ai:claude')).toBe(false);
   });
 
   it('rejects unknown fields', () => {

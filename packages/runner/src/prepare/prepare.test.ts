@@ -169,7 +169,9 @@ describe('prepareHtml', () => {
   it('instruments inline handlers in place', () => {
     const r = prepareHtml(page, { file: 'index.html', expose: null });
     if (!r.ok) throw new Error('unexpected error');
-    expect(r.document).toMatch(/onclick="\{let __pgL1=__pg\.enter\(0,1,0\);while \(true\)/);
+    expect(r.document).toMatch(
+      /onclick="'use strict';\{let __pgL1=__pg\.enter\(0,1,0\);while \(true\)/,
+    );
     // Source 0 is the handler (line 3), source 1 the script body (starts on line 4).
     expect(r.sources[0]).toMatchObject({ file: 'index.html', line: 3 });
     expect(r.sources[1]).toMatchObject({ file: 'index.html', line: 4, column: 8 });

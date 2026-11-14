@@ -86,7 +86,7 @@ export function writeContent(
       spec: { options: [] },
       hints: ['a', 'b', 'c'],
       explanation: '출력합니다.',
-      review: { status: 'approved', draftedBy: 'human', reviewedBy: 'human' },
+      review: { status: 'approved', draftedBy: 'ai:claude', reviewedBy: 'ai:reviewer' },
     },
   };
   patch(files);

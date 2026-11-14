@@ -82,6 +82,41 @@ function Impl({ onRun, withRun }: { onRun?: () => void; withRun?: boolean }) {
 }
 
 describe('ImplementFunction', () => {
+  it('renders a program exercise (no entry) with program and console summaries', () => {
+    const programSpec: ImplementFunctionPublicSpec = {
+      starter: { files: [{ path: 'main.js', content: '// 변수를 선언하세요\n' }] },
+      checks: [
+        {
+          id: 'out',
+          kind: 'console',
+          visible: true,
+          required: true,
+          weight: 1,
+          expect: { lines: ['코코'] },
+        },
+        {
+          id: 'state',
+          kind: 'program',
+          visible: true,
+          required: true,
+          weight: 1,
+          expect: { globals: { nickname: { equals: '코코' } }, noError: true },
+        },
+      ],
+    };
+    renderUi(
+      <ImplementFunction
+        spec={programSpec}
+        value={initialAnswer({ typeId: 'implement_function', spec: programSpec })}
+        onChange={() => undefined}
+        labelledBy="p"
+      />,
+    );
+    const tests = screen.getByRole('tabpanel');
+    expect(within(tests).getByText(/nickname → "코코"/)).toBeTruthy();
+    expect(within(tests).queryByText(/함수 호출/)).toBeNull();
+  });
+
   it('shows the starter code, the tests and a run button', async () => {
     const onRun = vi.fn();
     const { user, container } = renderUi(<Impl onRun={onRun} />);

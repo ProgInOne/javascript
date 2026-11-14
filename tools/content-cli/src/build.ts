@@ -264,7 +264,8 @@ export function buildContent(root: string, outFile: string, options: BuildOption
               tags_json: JSON.stringify(ex.tags),
               estimated_seconds: ex.estimatedSeconds,
               origin: 'authored',
-              // Drafts have passed automated checks only (no human review yet).
+              // Drafts have passed automated checks only; approved ones also passed review by a
+              // person or the independent AI reviewer (D-027). Provenance stays in the YAML.
               review_status: isDraft ? 'auto_verified' : 'trusted',
               content_hash: sha256(canonical(ex)),
               dedupe_signature: dedupeSignature(ex),

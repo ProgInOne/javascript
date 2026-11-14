@@ -162,3 +162,26 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - CSS 계층: `theme < base < components < utilities`. 토큰은 계층 밖에 둡니다.
 - 경위: M3에서 디자인 시스템을 일반 CSS로 먼저 만들었고(지시 착오), 사용자가 앱에 Tailwind를 도입하기로 결정했습니다. 도입 전후 시각 회귀 스크린샷 12장이 같음을 확인했습니다.
 
+
+## D-026. 학습자 JavaScript의 엄격 모드 기본 적용 — `확정`
+- 2026-11-15 사용자 승인(권장안 채택).
+- 학습자 JavaScript(`js-console` 파일, DOM·미리보기 모드의 인라인 스크립트와 `on*` 핸들러 속성, 레슨 `<RunnableExample>`, 콘텐츠 실행 검증)를 모두 **엄격 모드**로 실행합니다.
+- 근거: 요즘 JavaScript(모듈, 클래스)는 항상 엄격 모드이고, 실무 코드도 대부분 모듈입니다. 비엄격 모드에서는 `let` 없이 대입한 코드가 조용히 전역 변수를 만들어 채점을 통과합니다(예: `nickname` 선언 문제). 엄격 모드에서는 `ReferenceError: nickname is not defined`가 나서, 선언을 빠뜨린 실수를 바로 알려줄 수 있습니다.
+- 구현: 러너 준비 단계가 1번 줄 맨 앞에 `'use strict';`를 줄바꿈 없이 붙이고, 이 접두사를 1번 줄 0열의 삽입 기록으로 남겨 열 번호를 원래대로 보정합니다. 줄 번호는 바뀌지 않습니다. 엄격 모드 전용 문법 오류도 실행 전에 학습자 위치로 보고합니다.
+- 영향: 비엄격 모드에 기대던 콘텐츠는 실행 검증(`pnpm content:check:run`)에서 드러납니다. `var`와 비엄격 모드의 차이는 "`var`와 선언 전 사용" 단원에서 설명합니다.
+- 상세: [코드 실행 샌드박스 설계](/docs/design/code-execution-sandbox.md#엄격-모드-기본-적용).
+
+## D-027. 사람 검토를 AI 교차 검토로 대체 — `확정`
+- 2026-11-15 사용자 결정. D-004의 "샘플 검토"를 구체화합니다.
+- 사용자는 이 제품의 학습자 본인이라, 아직 배우지 않은 내용의 레슨과 문제를 검토할 수 없습니다. 그래서 **초안 작성자와 분리된 컨텍스트에서 일하는 독립 AI 검토자**가 검토합니다.
+- 스키마: `review.reviewedBy`에 `ai:reviewer`를 허용합니다. `status: approved`에는 `reviewedBy`가 `human` 또는 `ai:reviewer`여야 하고, `reviewedBy`는 `draftedBy`와 달라야 합니다(자기 승인 금지).
+- 검토 범위: 레슨 본문, `core` 개념의 문제, 단원 평가 문제는 전수 검토, 그 밖의 문제는 샘플링 검토(기존 기준 유지). 검토자는 `pnpm content:check:run`을 직접 다시 실행하고, 승인·수정·거부 판단과 이유를 기록합니다.
+- 빌드: 승인된 문제는 검토자와 관계없이 `review_status = 'trusted'`입니다. 별도 값(예: `ai_reviewed`)을 두지 않은 이유: `review_status`는 "검토 관문을 통과했는가"를 나타내는 값이고, 현재 이 값으로 동작을 바꾸는 소비자가 없습니다. 출처가 필요해지면 원본 YAML의 `reviewedBy`와 git 이력에서 알 수 있고, 그때 DB 열을 추가합니다.
+- 상세: [콘텐츠·문제 시스템 설계 6단계](/docs/design/content-and-exercises.md#6단계-ai-교차-검토), [콘텐츠 작성 가이드](/docs/guides/content-authoring.md).
+
+## D-028. 프로그램 작성 문제와 CSS 문제 유형 범위 — `확정`
+- 2026-11-15 사용자 결정.
+- **`implement_function`의 `entry`(함수 이름)를 선택으로 바꿉니다.** `entry`가 없으면 학습자는 최상위 코드(프로그램)를 쓰고, 프로그램 전체를 관측하는 `console`·`program` 체크로만 채점합니다. 이때 `call` 체크는 스펙 오류입니다. `entry`가 있으면 기존과 같습니다.
+  - 근거: JavaScript 함수는 모듈 6에서야 배우지만, 입문자는 모듈 1부터 직접 코드를 써야 합니다. 빈칸 채우기·버그 수정만으로는 "처음부터 쓰기" 연습이 부족합니다.
+- **CSS 과정의 문제는 `mcq_single`, `fill_blank`, `web_task`만 씁니다.** 이 제품에서 CSS는 기초(`depth: core`)만 다루므로, "단원 풀의 유형 4종 이상" 규칙은 HTML/CSS 핵심(`depth: core`) 과정에 적용하지 않습니다. `content-cli check`가 CSS 과정(`language: css`)의 다른 유형을 오류로 처리합니다. CSS 전 범위의 유형 구성은 앞으로 만들 전용 CSS 과정에서 다룹니다.
+- 상세: [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#implement_function-함수-구현), [단원 연습 세트의 난이도 분포](/docs/design/content-and-exercises.md#단원-연습-세트의-난이도-분포).

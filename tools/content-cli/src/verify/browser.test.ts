@@ -96,6 +96,33 @@ describe('browser runner', () => {
     expect(web.status).toBe('pass');
   });
 
+  it('verifies a program exercise without entry; strict mode fails a missing let', async (ctx) => {
+    if (!runner) return ctx.skip();
+    const program = (starter: string) =>
+      exercise('implement_function', {
+        starter: { files: [{ path: 'main.js', content: starter }] },
+        solution: {
+          files: [{ path: 'main.js', content: "let nickname = '코코';\nconsole.log(nickname);" }],
+        },
+        checks: [
+          {
+            kind: 'program',
+            id: 'state',
+            expect: { globals: { nickname: { equals: '코코' } }, noError: true },
+          },
+          { kind: 'console', id: 'out', expect: { lines: ['코코'] } },
+        ],
+      });
+    expect((await verifyExercise(program('// 여기에 작성하세요\n'), runner)).status).toBe('pass');
+    // A starter that forgets `let` already passes only in sloppy mode; strict mode makes it fail,
+    // so the case still passes (reference passes, starter fails).
+    const noLet = await verifyExercise(
+      program("nickname = '코코';\nconsole.log(nickname);"),
+      runner,
+    );
+    expect(noLet.status).toBe('pass');
+  });
+
   it('detects a nondeterministic predict program and a mislabeled example', async (ctx) => {
     if (!runner) return ctx.skip();
     const random = await verifyExercise(

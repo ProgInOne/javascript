@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { editDistanceExceeds, tokenize } from '../common/edit-distance.ts';
 import { ExerciseKitError } from '../core/errors.ts';
 import { buildRunPlan, gradeSubmission, verifySpec } from '../core/registry.ts';
-import { makeRun, returned } from '../testing/run.ts';
+import { logEntries, makeRun, returned, sv } from '../testing/run.ts';
 import { codeAnswerSchema } from './code-common.ts';
 import { fillBlank, fillBlankSpecSchema, fillTemplate } from './fill-blank.ts';
 import { fixBug, fixBugSpecSchema, REWRITE_PENALTY } from './fix-bug.ts';
@@ -242,6 +242,79 @@ describe('implement_function', () => {
     expect(implementFunction.leakFingerprints(implSpec)).toEqual([
       'return numbers.filter((n) => n % 2 === 0).reduce((a, n) => a + n, 0);',
     ]);
+  });
+});
+
+describe('implement_function without entry (program exercise, D-028)', () => {
+  const programSpec = implementFunctionSpecSchema.parse({
+    starter: { files: [{ path: 'main.js', content: '// nickname 변수를 선언하세요\n' }] },
+    solution: {
+      files: [{ path: 'main.js', content: "let nickname = '코코';\nconsole.log(nickname);\n" }],
+    },
+    checks: [
+      { kind: 'console', id: 'out', expect: { lines: ['코코'] } },
+      {
+        kind: 'program',
+        id: 'state',
+        expect: { globals: { nickname: { equals: '코코' } }, noError: true },
+      },
+    ],
+  });
+  const programAnswer = { files: [{ path: 'main.js', content: "let nickname = '코코';" }] };
+
+  it('parses without entry and redacts without an entry field', () => {
+    expect(programSpec.entry).toBeUndefined();
+    const pub = implementFunction.redact(programSpec, {});
+    expect(pub).not.toHaveProperty('entry');
+    expect(JSON.stringify(pub)).not.toContain('let nickname');
+  });
+
+  it('builds a plan that only observes the whole program', () => {
+    const plan = implementFunction.buildRunPlan?.(programSpec, programAnswer, {
+      purpose: 'grading',
+    });
+    expect(plan?.checks.steps.some((s) => s.op === 'callFunction')).toBe(false);
+    expect(plan?.checks.steps.map((s) => s.op)).toEqual(
+      expect.arrayContaining(['consoleOutput', 'readGlobal']),
+    );
+  });
+
+  it('grades console and program checks', () => {
+    const run = makeRun(
+      [
+        { op: 'consoleOutput', id: 'out#0', entries: logEntries('코코') },
+        { op: 'readGlobal', id: 'state#0', outcome: 'ok', value: sv('코코') },
+      ],
+      { console: [] },
+    );
+    expect(
+      implementFunction.grade({ spec: programSpec, answer: programAnswer, run }),
+    ).toMatchObject({ correct: true, score: 1 });
+    const missing = makeRun([
+      { op: 'consoleOutput', id: 'out#0', entries: [] },
+      { op: 'readGlobal', id: 'state#0', outcome: 'missing' },
+    ]);
+    expect(
+      implementFunction.grade({ spec: programSpec, answer: programAnswer, run: missing }).correct,
+    ).toBe(false);
+  });
+
+  it('verifies: call checks without entry are a spec error', () => {
+    expect(implementFunction.verify(programSpec)).toEqual([]);
+    const withCall = implementFunctionSpecSchema.parse({
+      ...programSpec,
+      checks: [{ kind: 'call', id: 'c', args: [], expect: { equals: 1 } }],
+    });
+    expect(implementFunction.verify(withCall).map((i) => i.code)).toContain('CHECK_NEEDS_ENTRY');
+    expect(verifySpec('implement_function', withCall).some((i) => i.severity === 'error')).toBe(
+      true,
+    );
+  });
+
+  it('extracts leak fingerprints from the program solution', () => {
+    expect(implementFunction.leakFingerprints(programSpec)).toEqual(
+      expect.arrayContaining(['console.log(nickname);']),
+    );
   });
 });
 

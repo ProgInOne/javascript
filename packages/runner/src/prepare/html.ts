@@ -93,7 +93,7 @@ export function prepareHtml(
     const end = loc.endTag?.startOffset ?? loc.endOffset;
     const body = html.slice(start, end);
     const id = sources.length;
-    const result = instrumentJs(body, { sourceId: id });
+    const result = instrumentJs(body, { sourceId: id, strict: true });
     if (!result.ok) {
       errors.push(at(loc.startTag.endLine, loc.startTag.endCol, result.error));
       return;
@@ -118,7 +118,7 @@ export function prepareHtml(
       const loc = attrLocs[attr.name];
       if (!loc) continue;
       const id = sources.length;
-      const result = instrumentJs(attr.value, { sourceId: id, handler: true });
+      const result = instrumentJs(attr.value, { sourceId: id, handler: true, strict: true });
       if (!result.ok) {
         errors.push({
           file,
@@ -141,12 +141,13 @@ export function prepareHtml(
           column: before.length === 1 ? loc.startCol - 1 + lastLine.length : lastLine.length,
           insertions: result.insertions,
         });
-        edits.push({
-          start: loc.startOffset,
-          end: loc.endOffset,
-          text: `${attr.name}="${escapeAttr(result.code)}"`,
-        });
       }
+      // Always rewritten: the strict prefix applies to every handler (D-026). No line is added.
+      edits.push({
+        start: loc.startOffset,
+        end: loc.endOffset,
+        text: `${attr.name}="${escapeAttr(result.code)}"`,
+      });
     }
   };
 

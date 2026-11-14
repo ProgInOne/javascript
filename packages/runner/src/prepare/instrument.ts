@@ -12,7 +12,16 @@ import { parse } from 'acorn';
  * columns can be mapped back.
  *
  * This only parses learner code, it never runs it.
+ *
+ * Strict mode (D-026): with `strict`, {@link STRICT_PREFIX} is put in front of line 1 (no newline)
+ * so that learner code runs as strict-mode code, like modules and classes. The prefix is parsed
+ * too, so strict-only syntax errors (`with`, octal literals, duplicate parameters, ...) are found
+ * here with learner positions, and it is recorded as an insertion at line 1, column 0 so that
+ * {@link originalColumn} maps columns back like any guard text.
  */
+
+/** Directive prepended to learner scripts and inline handlers (single quotes: attribute-safe). */
+export const STRICT_PREFIX = "'use strict';";
 
 const LOOP_TYPES = new Set([
   'ForStatement',
@@ -85,12 +94,15 @@ function locate(starts: number[], offset: number): { line: number; column: numbe
  */
 export function instrumentJs(
   code: string,
-  options: { sourceId?: number; handler?: boolean } = {},
+  options: { sourceId?: number; handler?: boolean; strict?: boolean } = {},
 ): InstrumentResult {
   const sourceId = options.sourceId ?? 0;
+  const prefix = options.strict ? STRICT_PREFIX : '';
+  /** AST offsets are in `prefix + code`; this many characters precede the learner's code. */
+  const shift = prefix.length;
   let ast: unknown;
   try {
-    ast = parse(code, {
+    ast = parse(prefix + code, {
       ecmaVersion: 'latest',
       sourceType: 'script',
       locations: true,
@@ -104,7 +116,7 @@ export function instrumentJs(
         // acorn appends " (line:col)"; the position is reported separately.
         message: (err.message ?? 'SyntaxError').replace(/ \(\d+:\d+\)$/, ''),
         line: err.loc?.line ?? 1,
-        column: (err.loc?.column ?? 0) + 1,
+        column: Math.max(0, (err.loc?.column ?? 0) - ((err.loc?.line ?? 1) === 1 ? shift : 0)) + 1,
       },
     };
   }
@@ -118,9 +130,10 @@ export function instrumentJs(
     if (LOOP_TYPES.has(node.type)) {
       const loop = node as LoopNode;
       const id = ++loops;
-      const { line, column } = locate(starts, loop.start);
+      const loopStart = loop.start - shift;
+      const { line, column } = locate(starts, loopStart);
       const handle = `__pgL${id}`;
-      const outer = labelStart ?? loop.start;
+      const outer = labelStart ?? loopStart;
       const o = order++;
       // Wrapping outside the label keeps `continue label` / `break label` valid.
       edits.push({
@@ -128,16 +141,19 @@ export function instrumentJs(
         text: `{let ${handle}=__pg.enter(${sourceId},${line},${column});`,
         order: o,
       });
-      edits.push({ pos: loop.end, text: '}', order: o });
+      edits.push({ pos: loop.end - shift, text: '}', order: o });
       const tick = `__pg.tick(${handle});`;
+      const bodyStart = loop.body.start - shift;
+      const bodyEnd = loop.body.end - shift;
       if (loop.body.type === 'BlockStatement') {
-        edits.push({ pos: loop.body.start + 1, text: tick, order: o });
+        edits.push({ pos: bodyStart + 1, text: tick, order: o });
       } else {
-        edits.push({ pos: loop.body.start, text: `{${tick}`, order: o });
-        edits.push({ pos: loop.body.end, text: '}', order: o });
+        edits.push({ pos: bodyStart, text: `{${tick}`, order: o });
+        edits.push({ pos: bodyEnd, text: '}', order: o });
       }
     }
-    const nextLabel = node.type === 'LabeledStatement' ? (labelStart ?? node.start) : undefined;
+    const nextLabel =
+      node.type === 'LabeledStatement' ? (labelStart ?? node.start - shift) : undefined;
     for (const [key, value] of Object.entries(node)) {
       if (key === 'loc') continue;
       if (Array.isArray(value)) {
@@ -158,7 +174,9 @@ export function instrumentJs(
   const insertions = edits
     .map((e) => ({ ...locate(starts, e.pos), length: e.text.length }))
     .sort((a, b) => a.line - b.line || a.column - b.column);
-  return { ok: true, code: out, loops, insertions };
+  // The prefix sits in front of everything else on line 1 (stable sort keeps it first).
+  if (prefix) insertions.unshift({ line: 1, column: 0, length: prefix.length });
+  return { ok: true, code: prefix + out, loops, insertions };
 }
 
 /**

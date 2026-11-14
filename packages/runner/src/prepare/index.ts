@@ -6,7 +6,7 @@ import { instrumentJs, originalColumn } from './instrument.ts';
 
 export { ArgsExprError, exposedNames, exposeScript } from './expose.ts';
 export { prepareHtml, type SourceInfo } from './html.ts';
-export { instrumentJs, originalColumn, type Insertion } from './instrument.ts';
+export { instrumentJs, originalColumn, STRICT_PREFIX, type Insertion } from './instrument.ts';
 
 /** The code part of a `RunRequest` plus what the host needs to map positions back. */
 export interface PreparedRun {
@@ -65,7 +65,7 @@ export function prepareRun(plan: RunPlan): PrepareOutcome {
     const sources: SourceInfo[] = [];
     for (const f of jsRunOrder(plan)) {
       const id = sources.length;
-      const r = instrumentJs(f.content, { sourceId: id });
+      const r = instrumentJs(f.content, { sourceId: id, strict: true });
       sources.push({ file: f.path, line: 1, column: 0, insertions: r.ok ? r.insertions : [] });
       if (!r.ok) {
         errors.push(syntax(f.path, r.error.message, r.error.line, r.error.column));

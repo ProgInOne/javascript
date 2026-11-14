@@ -662,7 +662,7 @@ origin: authored                  # authored | template | generated
 review:                           # 제작 이력 (빌드가 검사)
   status: approved                # draft | approved
   draftedBy: ai:codex             # human | ai:<provider>
-  reviewedBy: human
+  reviewedBy: ai:reviewer         # human | ai:reviewer (D-027). draftedBy와 달라야 함
 ```
 
 - 정답 관련 필드(`spec` 내부의 `answer`, `correct`, `solution`, `checks`의 기대값 등)는 서버만 읽습니다. API는 문제를 클라이언트에 보낼 때 **유형별 `redact` 함수** 로 이 필드를 제거합니다([채점 위치와 정답 키 비노출](#채점-위치와-정답-키-비노출) 참고).
@@ -967,7 +967,7 @@ spec:
           function sumOfEvens(numbers) {
             // 여기에 작성하세요
           }
-  entry: sumOfEvens                        # 테스트가 호출할 export 이름
+  entry: sumOfEvens                        # 선택. call 체크가 호출할 함수 이름 (없으면 프로그램 문제)
   solution:                                # 참조 구현 (정답 키)
     files:
       - path: main.js
@@ -1001,6 +1001,38 @@ spec:
   staticRules:                             # 선택. 정적 규칙 (AST 검사)
     - { rule: forbid-identifier, value: var, message: "var 대신 let/const를 쓰세요." }
   limits: { timeoutMs: 3000 }
+```
+
+- `entry`는 선택입니다([D-028](/docs/decisions.md)). 함수는 모듈 6에서야 배우지만, 모듈 1부터 학습자가 직접 코드를 써야 하기 때문입니다.
+  - `entry`가 있으면 위 예처럼 함수를 작성하는 문제이고, `call` 체크로 함수를 호출해 검사합니다.
+  - `entry`가 없으면 **프로그램 작성 문제**입니다. 학습자는 최상위 코드(문장 여러 줄)를 쓰고, 프로그램 전체를 관측하는 체크인 `console`(출력)과 `program`(프로그램이 끝난 뒤의 변수 값, `noError`로 실행 중 오류 여부)만으로 채점합니다. 이때 `call` 체크가 있으면 스펙 오류(`CHECK_NEEDS_ENTRY`)입니다.
+  - 학습자 화면에는 `entry`가 없을 때 함수 이름이나 호출 예시를 보여주지 않고, `program` 체크의 공개 기대값(예: `nickname → "코코"`)과 `console` 체크의 기대 출력을 보여줍니다.
+
+프로그램 작성 문제의 예:
+
+```yaml
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // nickname 변수를 만들고 출력하세요
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let nickname = "코딩왕";
+          console.log(nickname);
+  checks:
+    - kind: console
+      id: output
+      expect: { lines: ["코딩왕"] }
+    - kind: program
+      id: has-nickname
+      description: nickname이라는 변수에 "코딩왕"이 들어 있어야 합니다.
+      expect:
+        globals: { nickname: { equals: "코딩왕" } }
+        noError: true
 ```
 
 - 답안: `{ files: { path, content }[] }`
@@ -1505,6 +1537,7 @@ variantPolicy:
 유형 분포 규칙:
 
 - 단원 풀의 문제 유형은 최소 4종 이상입니다. 한 유형이 50%를 넘지 않습니다.
+  - **예외: HTML/CSS 핵심(`depth: core`) 과정**은 이 규칙을 적용하지 않습니다([D-028](/docs/decisions.md)). 이 제품에서 CSS는 기초만 다루므로, CSS 과정(`language: css`)의 문제는 `mcq_single`, `fill_blank`, `web_task` 세 유형만 씁니다. `content-cli check`가 그 밖의 유형을 오류로 처리합니다. CSS 전 범위의 유형 구성은 앞으로 만들 전용 CSS 과정에서 다룹니다.
 - 범주별 구성비(개념 확인·코드 이해·디버깅·구현·응용)는 PRD의 [문제 수량 기준](/docs/product/prd.md#문제-수량-기준)을 따릅니다. 이 표가 원천이며, `content-cli check`가 단원별로 검사합니다.
 - 각 주 개념은 "개념 이해 유형" 1개 이상, "코드 이해 유형" 1개 이상, "실습 유형" 1개 이상(`minor` 개념은 실습 유형 생략 가능)을 가집니다. 숙련 단계 게이트(서로 다른 유형 2개 이상, L3 이상 1문제)를 충족할 수 있게 하기 위함입니다.
 - 각 주 개념은 복습 출제용 템플릿 1개 이상을 가집니다(`minor` 제외). 템플릿이 없으면 복습 시 같은 문제가 반복될 수 있습니다.
@@ -1526,8 +1559,9 @@ PRD [FR-EX-09](/docs/product/prd.md)의 목표를 다음과 같이 셉니다.
 
 ## 콘텐츠 제작 파이프라인
 
-결정 [D-004](/docs/decisions.md)에 따라, 초안은 AI가 대량으로 만들고 사람은 검토와 판단을 맡습니다.
+결정 [D-004](/docs/decisions.md)에 따라, 초안은 AI가 대량으로 만듭니다.
 약 1,000개(MVP)에서 2,100개(v1.x) 문제와 63~109개 레슨 본문을 사람이 모두 처음부터 쓰는 것은 현실적이지 않기 때문입니다.
+검토는 결정 [D-027](/docs/decisions.md)에 따라 **AI 교차 검토**가 맡습니다. 이 제품의 사용자는 학습자 본인이라, 아직 배우지 않은 내용의 문제를 사람이 검토할 수 없기 때문입니다.
 
 ### 제작 흐름
 
@@ -1537,7 +1571,7 @@ flowchart TB
     D --> S["3. 스키마 검증<br/>zod, 필수 섹션, 힌트 3단계"]
     S --> E["4. 실행 검증<br/>참조 정답 통과, 오답 실제 오답, 예측값 계산"]
     E --> U["5. 중복·분포 검사<br/>지문 해시, n-gram, 난이도·유형 분포"]
-    U --> R["6. 사람 검토<br/>전수(레슨·core) / 샘플링(그 외)"]
+    U --> R["6. AI 교차 검토<br/>독립 검토자 · 전수(레슨·core·평가) / 샘플링(그 외)"]
     R -- 수정 요청 --> D
     R --> A["7. 승인<br/>review.status: approved"]
     A --> B["8. 빌드<br/>MDX 컴파일, content.db 생성"]
@@ -1562,7 +1596,7 @@ pnpm content draft template js-basics.functions.function-basics --concept js.fn.
 
 - `content-cli`는 `packages/ai`의 `ProviderAdapter`로 Codex App Server를 호출합니다([AI 시스템 설계](/docs/design/ai-system.md)의 콘텐츠 저작 작업). 출력은 유형별 `generation.outputSchema`로 강제합니다(`outputSchema`).
 - 입력 컨텍스트: 단원 메타데이터, 개념·오개념 정의, 이미 있는 문제의 지문 목록(중복 회피), 난이도·유형 분포 목표, 이 문서의 스타일 규칙 요약.
-- 출력은 `review.status: draft`, `review.draftedBy: ai:codex`로 파일에 기록합니다. 사람이 직접 쓴 문제는 `draftedBy: human`입니다.
+- 출력은 `review.status: draft`, `review.draftedBy: ai:codex`처럼 초안 작성자를 기록합니다. 사람이 직접 쓴 문제는 `draftedBy: human`입니다.
 - AI에게 **기대값을 쓰게 하지 않습니다.** 예측 문제의 정답, 변수 추적 표, 실행 순서는 4단계에서 실행으로 채웁니다.
 - 생성은 배치 단위(단원당 1회 10~15문제)로 하고, 실패한 문제만 다시 생성합니다.
 
@@ -1616,9 +1650,16 @@ pnpm content draft template js-basics.functions.function-basics --concept js.fn.
 
 [문제 수 산정 방식](#문제-수-산정-방식)의 목표 대비 실제 수, 난이도 분포, 유형 분포, 개념별 유형 커버리지를 보고합니다.
 
-### 6단계: 사람 검토
+### 6단계: AI 교차 검토
 
-자동 검증은 "실행상 올바름"만 보장합니다. 교육적 품질은 사람이 판단합니다.
+자동 검증은 "실행상 올바름"만 보장합니다. 교육적 품질은 검토자가 판단합니다.
+결정 [D-027](/docs/decisions.md)에 따라 검토자는 **독립 AI 검토자**(`ai:reviewer`)입니다. 사람(`human`)이 검토할 수 있으면 그것도 유효합니다.
+
+독립성 규칙:
+
+- 검토자는 초안 작성자와 **분리된 컨텍스트**에서 일합니다. 초안 작성 대화를 이어받지 않고, 원본 파일과 이 문서·[작성 가이드](/docs/guides/content-authoring.md)만 보고 판단합니다.
+- 스키마가 `reviewedBy`와 `draftedBy`가 다른지 검사합니다. 같은 작성자가 스스로 승인할 수 없습니다.
+- `review.status: approved`에는 `reviewedBy: human` 또는 `reviewedBy: ai:reviewer`가 필요합니다. 그 밖의 값은 스키마 오류입니다.
 
 | 대상 | 검토 방식 |
 |---|---|
@@ -1628,8 +1669,15 @@ pnpm content draft template js-basics.functions.function-basics --concept js.fn.
 | 그 외 문제 | **샘플링 검토**: 배치마다 최소 30% 무작위 + 자동 검증 경고가 있는 문제 전부. 샘플에서 결함률 10% 이상이면 해당 배치 전수 검토 |
 | 템플릿 | 전수 검토 + 생성된 변형 5개 무작위 확인 |
 
-`content-cli review`는 검토 대상 목록을 만들고, 터미널에서 문제를 렌더링해 승인/수정/거부를 기록합니다(`review.reviewedBy`, `review.reviewedAt`).
+검토자가 지킬 절차:
+
+1.  검토를 시작하기 전과 수정한 뒤에 **`pnpm content:check:run`을 직접 다시 실행**하고, 오류 0개를 확인합니다. 초안 작성자의 실행 결과를 믿지 않습니다.
+1.  [품질 체크리스트](#품질-체크리스트-검토자용)를 항목별로 확인합니다. 학습자 관점(아직 배우지 않은 개념을 쓰지 않았는가, 정답이 하나로 확정되는가)을 특히 봅니다.
+1.  판단을 기록합니다. 승인하면 `review.status: approved`, `reviewedBy: ai:reviewer`로 바꾸고, 수정 요청·거부는 이유와 함께 PR 설명(또는 검토 기록)에 남깁니다. 검토자가 직접 고친 부분도 무엇을 왜 고쳤는지 적습니다.
+
+`content-cli review`(예정)는 검토 대상 목록을 만들고 문제를 렌더링해 승인/수정/거부를 기록합니다(`review.reviewedBy`, `review.reviewedAt`).
 승인되지 않은(`draft`) 문제는 빌드에 포함되지 않습니다.
+승인된 문제는 검토자가 사람이든 AI 검토자이든 `content.db`에서 `review_status = 'trusted'`입니다. 누가 검토했는지는 원본 YAML의 `reviewedBy`와 git 이력에 남습니다.
 
 ### 품질 체크리스트 (검토자용)
 
@@ -1894,7 +1942,7 @@ slug는 바꾸지 않는 것이 원칙이지만, 커리큘럼 재구성(단원 �
 
 ## 미결 사항
 
-- **사람 검토 인력**: 검토자는 학습자 본인(입문자)일 가능성이 높습니다. 입문자는 교육적 품질은 판단할 수 있지만 기술적 정확성 판단은 어렵습니다. 기술적 정확성은 실행 검증에 더 의존하고, `core` 개념 레슨은 AI 교차 검토(다른 프롬프트로 사실 확인 목록 생성)를 보조 수단으로 쓰는 방안을 검토합니다.
+- ~~**사람 검토 인력**~~: [D-027](/docs/decisions.md)에서 해결했습니다. 학습자 본인은 검토할 수 없으므로 독립 AI 검토자가 교차 검토합니다([6단계](#6단계-ai-교차-검토)). AI 검토의 결함률은 첫 모듈들의 검토 기록과 학습 중 신고로 측정해, 필요하면 전수 검토 범위를 넓힙니다.
 - **문제 수 목표의 현실성**: JavaScript 기초 약 860문제 중 템플릿 비중을 30% 이상으로 높이면 제작 부담이 줄어듭니다. v0.1 시범판(4단원, 약 55문제)의 실제 저작 속도를 측정한 뒤 목표를 재조정합니다([PRD 단계별 출시](/docs/product/prd.md#단계별-출시)).
 - **MDX 저작 비용**: AI 초안이 MDX 문법 오류를 자주 내면 Markdown + 지시자 형식으로 전환을 검토합니다(첫 모듈 저작 후 판단).
 

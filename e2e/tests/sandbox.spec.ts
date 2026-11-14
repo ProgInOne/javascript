@@ -317,6 +317,54 @@ test.describe('runner: execution and observations', () => {
     });
   });
 
+  test('learner code runs in strict mode with learner line numbers (D-026)', async ({ page }) => {
+    await setup(page);
+    // Assigning to an undeclared variable throws instead of creating a global (V8 points at `=`).
+    const undeclared = await run(page, js('let a = 1;\nnickname = "코코";\nconsole.log("after");'));
+    expect(undeclared.status).toBe('error');
+    expect(undeclared.errors[0]).toMatchObject({
+      phase: 'runtime',
+      name: 'ReferenceError',
+      message: expect.stringContaining('nickname is not defined'),
+      position: { file: 'main.js', line: 2, column: 10 },
+    });
+    expect(consoleText(undeclared)).toEqual([]);
+
+    // Line 1 columns are not shifted by the directive.
+    const lineOne = await run(page, js('let b = 1; missingName;'));
+    expect(lineOne.errors[0]).toMatchObject({
+      name: 'ReferenceError',
+      position: { file: 'main.js', line: 1, column: 12 },
+    });
+
+    // `this` in a plain function call is undefined; top-level `this` is still the global.
+    const thisCheck = await run(
+      page,
+      js('function f() { return this; }\nconsole.log(f() === undefined, this === globalThis);'),
+    );
+    expect(thisCheck.status).toBe('completed');
+    expect(consoleText(thisCheck)).toEqual(['true true']);
+
+    // Strict-only syntax is a syntax error before anything runs.
+    const octal = await run(page, js('console.log("never");\nlet n = 010;'));
+    expect(octal).toMatchObject({
+      status: 'error',
+      console: [],
+      errors: [{ phase: 'syntax', position: { file: 'main.js', line: 2 } }],
+    });
+
+    // DOM mode: inline scripts and handlers are strict too.
+    const dom = await run(
+      page,
+      html('<!doctype html>\n<p>x</p>\n<script>\nconst a = 1;\ncount = 2;\n</script>'),
+    );
+    expect(dom.errors[0]).toMatchObject({
+      phase: 'runtime',
+      name: 'ReferenceError',
+      position: { file: 'index.html', line: 5, column: 7 },
+    });
+  });
+
   test('syntax errors come back before anything runs', async ({ page }) => {
     await setup(page);
     const result = await run(page, js('console.log("never");\nlet x = ;'));
@@ -621,7 +669,8 @@ test.describe('runner: loops, output and integrity', () => {
       'JSON.stringify = () => "{}";',
       'Object.keys = () => [];',
       'MessagePort.prototype.postMessage = function () {};',
-      'globalThis.__pg = null;',
+      // Strict mode (D-026): writing the read-only __pg throws instead of being ignored.
+      'try { globalThis.__pg = null; } catch (e) { console.log("write", e.name); }',
       'try { delete globalThis.__pg; } catch (e) {}',
       'console.log("pg", typeof __pg);',
     ].join('\n');
@@ -632,13 +681,16 @@ test.describe('runner: loops, output and integrity', () => {
     for (const plan of [js(code, { steps }), html(`<script>${code}</script>`, { steps })]) {
       const r = await run(page, plan);
       expect(r.status).toBe('completed');
-      expect(consoleText(r)).toEqual(['pg object']);
+      expect(consoleText(r)).toEqual(['write TypeError', 'pg object']);
       const [call, read] = payloads(r);
       expect(call).toEqual({ outcome: 'returned', value: num(5), returnIsArg: [] });
       expect(read).toMatchObject({ outcome: 'ok', value: { t: 'function' } });
     }
     // The loop guard still works after the overwrite attempt.
-    const loop = await run(page, js('globalThis.__pg = null;\nwhile (true) {}'));
+    const loop = await run(
+      page,
+      js('try { globalThis.__pg = null; } catch (e) {}\nwhile (true) {}'),
+    );
     expect(loop.status).toBe('loop_limit');
   });
 

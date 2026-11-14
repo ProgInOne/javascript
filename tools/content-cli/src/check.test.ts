@@ -107,6 +107,14 @@ describe('checkContent', () => {
       '목표 5개',
     ],
     [
+      'type outside the CSS allowlist',
+      (f) => {
+        obj(f, 'courses/js-basics/course.yaml')['language'] = 'css';
+        obj(f, EXERCISE_YAML)['type'] = 'predict_output';
+      },
+      'CSS 과정에서는 mcq_single, fill_blank, web_task 유형만',
+    ],
+    [
       'yaml syntax',
       (f) => {
         f['pack.yaml'] = 'id: [oops';

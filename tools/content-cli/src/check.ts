@@ -38,6 +38,16 @@ export interface CheckResult {
   lessons: Map<string, CompiledLesson>;
 }
 
+/**
+ * Exercise types a CSS course may use (D-028). CSS is foundations-only (`depth: core`) in this
+ * product; production/recall types for CSS come with a dedicated CSS course later.
+ */
+export const CSS_EXERCISE_TYPES: ReadonlySet<string> = new Set([
+  'mcq_single',
+  'fill_blank',
+  'web_task',
+]);
+
 const prereqId = (p: ConceptSource['prerequisites'][number]) => (typeof p === 'string' ? p : p.id);
 
 /** Schema + cross-reference checks (content-cli check --schema). */
@@ -67,6 +77,11 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
 
   const allLessons: LessonNodeSource[] = source.courses.flatMap((c) =>
     c.modules.flatMap((m) => m.lessons),
+  );
+  const courseOfLesson = new Map(
+    source.courses.flatMap((c) =>
+      c.modules.flatMap((m) => m.lessons.map((l) => [l.meta.data.id, c.meta.data] as const)),
+    ),
   );
   const exerciseIds = new Set(allLessons.flatMap((l) => l.exercises.map((e) => e.data.id)));
 
@@ -145,8 +160,15 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
     }
 
     let approved = 0;
+    const course = courseOfLesson.get(data.id);
     for (const { file: exFile, data: ex } of lesson.exercises) {
       unique(ex.id, exFile);
+      if (course?.language === 'css' && !CSS_EXERCISE_TYPES.has(ex.type)) {
+        diag.error(
+          exFile,
+          `CSS 과정에서는 ${[...CSS_EXERCISE_TYPES].join(', ')} 유형만 쓸 수 있습니다: ${ex.type}`,
+        );
+      }
       if (!ex.id.startsWith(`${data.id}.`))
         diag.error(exFile, `문제 ID는 단원 ID(${data.id})로 시작해야 합니다`);
       for (const c of ex.concepts)

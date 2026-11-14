@@ -30,8 +30,11 @@ const jsFileSetSchema = fileSetSchema.refine(
 
 export const implementFunctionSpecSchema = z.object({
   starter: jsFileSetSchema,
-  /** Function the `call` checks invoke. */
-  entry: identifierSchema,
+  /**
+   * Function the `call` checks invoke. Optional (D-028): without it the learner writes a
+   * program (top-level code) graded only by whole-program checks (`console`, `program`).
+   */
+  entry: identifierSchema.optional(),
   /** Reference implementation (answer key). */
   solution: jsFileSetSchema,
   checks: checkListSchema,
@@ -41,7 +44,7 @@ export type ImplementFunctionSpec = z.infer<typeof implementFunctionSpecSchema>;
 
 export const implementFunctionPublicSpecSchema = z.object({
   starter: z.object({ files: z.array(z.object({ path: z.string(), content: z.string() })) }),
-  entry: z.string(),
+  entry: z.string().optional(),
   checks: z.array(publicCheckSchema),
   limits: z.object({ timeoutMs: z.int() }).optional(),
 });
@@ -63,9 +66,9 @@ export const implementFunction: ExerciseTypeDef<
   redact(spec) {
     const out: ImplementFunctionPublicSpec = {
       starter: { files: spec.starter.files.map(({ path, content }) => ({ path, content })) },
-      entry: spec.entry,
       checks: spec.checks.map(redactCheck),
     };
+    if (spec.entry !== undefined) out.entry = spec.entry;
     if (spec.limits) out.limits = spec.limits;
     return out;
   },
@@ -78,7 +81,7 @@ export const implementFunction: ExerciseTypeDef<
       entry: files[0]?.path ?? 'main.js',
       checks: spec.checks,
       options,
-      functionName: spec.entry,
+      ...(spec.entry === undefined ? {} : { functionName: spec.entry }),
       ...(spec.limits ? { checkTimeoutMs: spec.limits.timeoutMs } : {}),
     });
   },
@@ -95,7 +98,7 @@ export const implementFunction: ExerciseTypeDef<
   },
 
   verify(spec) {
-    return verifyChecks(spec.checks, { allowDom: false, hasEntry: true });
+    return verifyChecks(spec.checks, { allowDom: false, hasEntry: spec.entry !== undefined });
   },
 
   leakFingerprints(spec) {
