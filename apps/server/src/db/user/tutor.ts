@@ -1,6 +1,7 @@
 import type { AICallRecord } from '@proginone/ai';
 import {
   tutorReplyMetaSchema,
+  type AICall,
   type TutorMessage,
   type TutorReplyMeta,
   type TutorScopeType,
@@ -341,4 +342,52 @@ export function markInterruptedMessages(orm: Orm): number {
     .set({ status: 'interrupted' })
     .where(eq(tutorMessages.status, 'streaming'))
     .run().changes;
+}
+
+/** Recent `ai_calls` rows, newest first (`GET /ai/calls`). Corrupt JSON columns read as empty. */
+export function listAiCalls(
+  orm: Orm,
+  learnerId: string,
+  query: { limit: number; taskName?: string | undefined },
+): AICall[] {
+  return orm
+    .select()
+    .from(aiCalls)
+    .where(
+      and(
+        eq(aiCalls.learnerId, learnerId),
+        query.taskName ? eq(aiCalls.taskName, query.taskName) : undefined,
+      ),
+    )
+    .orderBy(desc(aiCalls.createdAt), desc(aiCalls.id))
+    .limit(query.limit)
+    .all()
+    .map((r) => {
+      const issues = issuesJson.safeParse(r.validationIssuesJson);
+      return {
+        id: r.id,
+        createdAt: r.createdAt.getTime(),
+        taskName: r.taskName,
+        taskVersion: r.taskVersion,
+        baseVersion: r.baseVersion,
+        provider: r.provider,
+        model: r.model,
+        effort: r.effort,
+        status: r.status,
+        errorCode: r.errorCode,
+        errorMessage: r.errorMessage,
+        retries: r.retries,
+        latencyFirstTokenMs: r.latencyFirstTokenMs,
+        latencyTotalMs: r.latencyTotalMs,
+        inputTokens: r.inputTokens,
+        cachedInputTokens: r.cachedInputTokens,
+        outputTokens: r.outputTokens,
+        reasoningTokens: r.reasoningTokens,
+        contextTokensEstimated: r.contextTokensEstimated,
+        toolAttempts: r.toolAttempts,
+        validationIssues: issues.success ? issues.data : [],
+        subjectType: r.subjectType,
+        subjectId: r.subjectId,
+      };
+    });
 }

@@ -6,6 +6,7 @@ export { TurnGate, type TaskPriority } from './provider/gate.ts';
 export { errorForStatus } from './provider/status.ts';
 export {
   MockProvider,
+  MOCK_ERROR_MARKER,
   chunk,
   type MockStep,
   type MockProviderOptions,

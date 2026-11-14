@@ -36,3 +36,20 @@ describe('MockProvider slow marker', () => {
     expect(res.text).toContain('보통 질문');
   });
 });
+
+describe('MockProvider error marker', () => {
+  it('fails an unscripted reply with the marked AI error, keeping the provider ready', async () => {
+    const mock = new MockProvider({ deltaDelayMs: 1 });
+    const signal = new AbortController().signal;
+    await expect(
+      mock.run(request('[mock:error:AI_RATE_LIMITED] 질문'), { signal }),
+    ).rejects.toMatchObject({ code: 'AI_RATE_LIMITED' });
+    await expect(mock.run(request('[mock:error:AI_TIMEOUT]'), { signal })).rejects.toMatchObject({
+      code: 'AI_TIMEOUT',
+    });
+    expect(mock.currentStatus().state).toBe('ready');
+    // Unknown codes are ignored.
+    const res = await mock.run(request('[mock:error:AI_NOPE]'), { signal });
+    expect(res.text).toContain('모의 튜터');
+  });
+});

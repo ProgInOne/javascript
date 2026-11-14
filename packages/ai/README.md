@@ -22,7 +22,7 @@ AI 제공자 어댑터, AI 작업 정의, 컨텍스트 빌더입니다.
 | `provider/types.ts` | `ProviderAdapter` 계약 |
 | `provider/codex/` | `CodexAdapter`: JSON-RPC, 프로세스 수명주기, 격리(기능 플래그 검증, 스레드 재정의, 자동 거부, 도구 항목 즉시 중단), 로그인, 사용량 |
 | `provider/codex/testing/` | 계약 테스트 도구: 가짜 `codex`(`fake-codex.mjs`, 시나리오 주입), 녹화 재생기(`replay-codex.mjs`), 녹화 스크립트(`record-codex.ts`, `tee-codex.mjs`, `scrub.ts`), 녹화 시나리오(`scenarios.ts`), 녹화본(`recordings/<버전>/*.jsonl`) |
-| `provider/mock/` | `MockProvider`: 결정론적 응답, 시나리오 주입(`enqueue`), 요청 기록(`requests`). 질문에 `[mock:slow]`(`MOCK_SLOW_MARKER`)가 있으면 시나리오 없는 답을 400ms 간격으로 보내 E2E가 중단을 검증할 수 있음 |
+| `provider/mock/` | `MockProvider`: 결정론적 응답, 시나리오 주입(`enqueue`), 요청 기록(`requests`). 질문에 `[mock:slow]`(`MOCK_SLOW_MARKER`)가 있으면 시나리오 없는 답을 400ms 간격으로 보내 E2E가 중단을 검증할 수 있음. `[mock:error:AI_*]`(`MOCK_ERROR_MARKER`)가 있으면 그 오류로 실패(상태는 그대로) |
 
 ## 서버에서 쓰기
 

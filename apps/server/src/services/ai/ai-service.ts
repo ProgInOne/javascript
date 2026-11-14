@@ -1,11 +1,16 @@
 import { errorForStatus, type ProviderAdapter } from '@proginone/ai';
 import type {
+  AICallList,
+  AICallListQuery,
   AILoginEvent,
   AILoginResponse,
   AIModel,
   AIStatusResponse,
   AIUsage,
 } from '@proginone/shared';
+import type { UserDb } from '../../db/user/connection.ts';
+import { ensureLearner } from '../../db/user/learners.ts';
+import { listAiCalls } from '../../db/user/tutor.ts';
 import type { Logger } from '../../observability/logger.ts';
 
 export type AIEvent =
@@ -18,12 +23,14 @@ export type AIEvent =
 export class AiService {
   readonly #provider: ProviderAdapter;
   readonly #log: Logger;
+  readonly #userDb: UserDb | null;
   readonly #listeners = new Set<(event: AIEvent) => void>();
   #usage: AIUsage | null = null;
 
-  constructor(deps: { provider: ProviderAdapter; log: Logger }) {
+  constructor(deps: { provider: ProviderAdapter; log: Logger; userDb?: UserDb }) {
     this.#provider = deps.provider;
     this.#log = deps.log;
+    this.#userDb = deps.userDb ?? null;
     this.#provider.onEvent((event) => {
       if (event.type === 'usage') this.#usage = event.usage;
       if (event.type === 'login') {
@@ -92,6 +99,13 @@ export class AiService {
   async models(): Promise<AIModel[]> {
     await this.ensureReady();
     return this.#provider.listModels();
+  }
+
+  /** Recent AI calls for diagnosis (`GET /ai/calls`); empty without a database. */
+  calls(query: AICallListQuery): AICallList {
+    if (!this.#userDb) return { calls: [] };
+    const learner = ensureLearner(this.#userDb);
+    return { calls: listAiCalls(this.#userDb.orm, learner.id, query) };
   }
 
   subscribe(listener: (event: AIEvent) => void): () => void {

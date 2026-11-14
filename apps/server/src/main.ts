@@ -135,7 +135,7 @@ const learningClock = testClockFile ? offsetFileClock(testClockFile) : systemClo
 if (testClockFile) log.warn({ testClockFile }, '테스트용 시계를 사용합니다 (E2E 전용).');
 // Codex starts lazily on the first AI request (docs/design/ai-system.md#프로세스-수명주기).
 const provider = createProvider(config, log, APP_VERSION);
-const ai = new AiService({ provider, log });
+const ai = new AiService({ provider, log, userDb });
 // One runner, so every AI task shares the turn limit (interactive before background).
 const runner = new TaskRunner({ provider, now: systemClock });
 let tutorRef: TutorService | null = null;

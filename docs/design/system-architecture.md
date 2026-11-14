@@ -312,7 +312,7 @@ sequenceDiagram
 | 활동 | `POST /activity/heartbeat` (30초 간격, 학습 시간 측정) |
 | 목표 | `GET/PUT /goals` |
 | 튜터 | `POST /tutor/threads`, `GET /tutor/threads`, `GET /tutor/threads/:id/messages`, `POST /tutor/threads/:id/messages` (SSE), `POST /tutor/threads/:id/messages/:messageId/cancel`, `GET`·`POST /tutor/threads/:id/summary` (`session.summarize`, v0.2), `POST /exercises/:id/ai-hint` (`tutor.hint`), `POST /attempts/:id/explanation` (`evaluator.explainMistake`, v0.2. 맞힌 시도는 `409 ATTEMPT_CORRECT`) |
-| AI | `GET /ai/status`, `POST /ai/login`, `POST /ai/login/cancel`, `POST /ai/logout`, `POST /ai/reconnect`, `GET /ai/models`, `GET /ai/events` (SSE: 연결 상태·사용량·로그인 완료) |
+| AI | `GET /ai/status`, `POST /ai/login`, `POST /ai/login/cancel`, `POST /ai/logout`, `POST /ai/reconnect`, `GET /ai/models`, `GET /ai/events` (SSE: 연결 상태·사용량·로그인 완료), `GET /ai/calls` (AI 호출 기록, 프롬프트 없음. v0.2) |
 | 코드 초안 | `PUT /code-drafts/:exerciseId` (자동 저장 동기화) |
 | 문제 신고 | `POST /exercises/:id/reports` |
 | 문제 생성 | `POST /generation-jobs`, `GET /generation-jobs/:id` |

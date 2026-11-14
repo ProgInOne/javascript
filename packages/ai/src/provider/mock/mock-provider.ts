@@ -1,4 +1,10 @@
-import type { AILoginResponse, AIModel, AIStatus, AIUsage } from '@proginone/shared';
+import {
+  AI_ERROR_CODES,
+  type AILoginResponse,
+  type AIModel,
+  type AIStatus,
+  type AIUsage,
+} from '@proginone/shared';
 import { AIError, type AIErrorCode } from '../../errors.ts';
 import type {
   ProviderAdapter,
@@ -67,6 +73,12 @@ function learnerQuestion(req: ProviderRequest): string | undefined {
  */
 export const MOCK_SLOW_MARKER = '[mock:slow]';
 const SLOW_DELTA_MS = 400;
+
+/**
+ * A question containing `[mock:error:AI_*]` fails its unscripted reply with that error code
+ * (provider state unchanged), so E2E can check how AI failures are shown. Mock provider only.
+ */
+export const MOCK_ERROR_MARKER = /\[mock:error:(AI_[A-Z_]+)\]/;
 
 function defaultReply(req: ProviderRequest): string {
   const question = learnerQuestion(req);
@@ -218,6 +230,15 @@ export class MockProvider implements ProviderAdapter {
     }
     const turnId = `mock-turn-${++this.#turnSeq}`;
     const step = this.#steps.shift();
+    const injected = step ? undefined : MOCK_ERROR_MARKER.exec(learnerQuestion(req) ?? '')?.[1];
+    if (injected && (AI_ERROR_CODES as readonly string[]).includes(injected)) {
+      await this.#tick(opts.signal, '');
+      throw new AIError(injected as AIErrorCode, {
+        ...(injected === 'AI_RATE_LIMITED'
+          ? { details: { resetsAt: new Date(Date.now() + 3_600_000).toISOString() } }
+          : {}),
+      });
+    }
     const text =
       step?.text ??
       step?.deltas?.join('') ??

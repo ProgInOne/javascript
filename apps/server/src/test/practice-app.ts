@@ -35,7 +35,7 @@ export async function practiceApp() {
     now,
   });
   const provider = new MockProvider({ deltaDelayMs: 0 });
-  const aiService = new AiService({ provider, log: silentLog });
+  const aiService = new AiService({ provider, log: silentLog, userDb: ctx.userDb });
   const runner = new TaskRunner({ provider, now, sleep: () => Promise.resolve() });
   const evaluator = new EvaluatorService({
     userDb: ctx.userDb,

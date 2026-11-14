@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { streamSSE } from 'hono/streaming';
+import { aiCallListQuerySchema } from '@proginone/shared';
 import { z } from 'zod';
 import type { AiService } from '../../services/ai/ai-service.ts';
 import type { AppEnv } from '../env.ts';
@@ -12,7 +13,8 @@ const cancelLoginSchema = z.object({ loginId: z.string().min(1).max(200) }).stri
 
 /**
  * `/ai` (docs/design/system-architecture.md#api-규약): connection status, ChatGPT login, models,
- * and `GET /ai/events` (SSE `status` snapshots and `login` completions). Login is guarded by the
+ * the AI call log (`GET /ai/calls`, no prompts) and `GET /ai/events` (SSE `status` snapshots
+ * and `login` completions). Login is guarded by the
  * same session token and Origin checks as every `/api` route.
  */
 export function aiRoutes(ai: AiService, opts: { keepAliveMs?: number } = {}) {
@@ -29,6 +31,7 @@ export function aiRoutes(ai: AiService, opts: { keepAliveMs?: number } = {}) {
     .post('/logout', async (c) => c.json(await ai.logout()))
     .post('/reconnect', async (c) => c.json(await ai.reconnect()))
     .get('/models', async (c) => c.json({ models: await ai.models() }))
+    .get('/calls', (c) => c.json(ai.calls(aiCallListQuerySchema.parse(c.req.query()))))
     .get('/events', (c) =>
       streamSSE(c, async (stream) => {
         const state = { closed: false };

@@ -147,3 +147,62 @@ export const tutorReplyMetaSchema = z.object({
   possibleMisconception: z.object({ description: z.string().max(300) }).optional(),
 });
 export type TutorReplyMeta = z.infer<typeof tutorReplyMetaSchema>;
+
+// ── AI call log (ai_calls) ──────────────────────────────────────────────────────
+
+/** `ai_calls.status` (docs/design/data-model.md#ai_calls). */
+export const AI_CALL_STATUSES = [
+  'ok',
+  'bad_output',
+  'fallback',
+  'cancelled',
+  'timeout',
+  'rate_limited',
+  'unauthorized',
+  'provider_error',
+] as const;
+export const aiCallStatusSchema = z.enum(AI_CALL_STATUSES);
+export type AICallStatus = z.infer<typeof aiCallStatusSchema>;
+
+/**
+ * One AI call as recorded for diagnosis: task and prompt version, provider and model, outcome,
+ * latency and tokens. Prompts and responses are never stored or returned.
+ */
+export const aiCallSchema = z.object({
+  id: z.string(),
+  createdAt: z.number(),
+  taskName: z.string(),
+  taskVersion: z.int(),
+  baseVersion: z.int(),
+  provider: z.string(),
+  model: z.string().nullable(),
+  effort: z.string().nullable(),
+  status: aiCallStatusSchema,
+  errorCode: z.string().nullable(),
+  errorMessage: z.string().nullable(),
+  retries: z.int(),
+  latencyFirstTokenMs: z.int().nullable(),
+  latencyTotalMs: z.int().nullable(),
+  inputTokens: z.int().nullable(),
+  cachedInputTokens: z.int().nullable(),
+  outputTokens: z.int().nullable(),
+  reasoningTokens: z.int().nullable(),
+  contextTokensEstimated: z.int().nullable(),
+  toolAttempts: z.int(),
+  validationIssues: z.array(z.object({ rule: z.string(), message: z.string() })),
+  subjectType: z.string().nullable(),
+  subjectId: z.string().nullable(),
+});
+export type AICall = z.infer<typeof aiCallSchema>;
+
+/** `GET /ai/calls?limit=&taskName=`: the most recent calls first (diagnosis, debugging guide). */
+export const aiCallListQuerySchema = z
+  .object({
+    limit: z.coerce.number().int().min(1).max(200).default(50),
+    taskName: z.string().min(1).max(60).optional(),
+  })
+  .strict();
+export type AICallListQuery = z.infer<typeof aiCallListQuerySchema>;
+
+export const aiCallListSchema = z.object({ calls: z.array(aiCallSchema) });
+export type AICallList = z.infer<typeof aiCallListSchema>;

@@ -1,19 +1,9 @@
-import type { AIErrorCode, AIProviderId } from '@proginone/shared';
+import type { AICallStatus, AIErrorCode, AIProviderId } from '@proginone/shared';
 
 // One AI call as stored in `ai_calls` (docs/design/data-model.md#ai_calls). The runner builds it;
 // the server writes it in the same transaction as the result (tutor message, hint event).
 
-export const AI_CALL_STATUSES = [
-  'ok',
-  'bad_output',
-  'fallback',
-  'cancelled',
-  'timeout',
-  'rate_limited',
-  'unauthorized',
-  'provider_error',
-] as const;
-export type AICallStatus = (typeof AI_CALL_STATUSES)[number];
+export { AI_CALL_STATUSES, type AICallStatus } from '@proginone/shared';
 
 export interface ContextManifestEntry {
   kind: string;

@@ -3,7 +3,7 @@
 ProgInOne의 테스트 종류, 실행 방법, 작성 규칙입니다.
 
 - 대상: 기여자
-- 최종 수정: 2026-11-14
+- 최종 수정: 2026-11-15
 - 전략의 원천: [시스템 아키텍처 설계 테스트 전략](/docs/design/system-architecture.md#테스트-전략)
 
 ## 한눈에 보기
@@ -35,6 +35,7 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 - **컴포넌트·화면**: Testing Library로 역할과 이름을 찾습니다(`getByRole('button', { name: '지금 백업' })`). 클래스나 테스트 ID로 찾지 않습니다. 화면 테스트는 `apps/web/src/test/render-app.tsx`로 실제 라우트 트리를 가짜 API와 함께 렌더링합니다.
 - **시간**: 날짜 경계나 보존 정책은 `now`를 주입해 테스트합니다. 실제 시계를 기다리지 않습니다.
 - 버그 수정에는 재현 테스트를 먼저 추가합니다.
+- **AI**: 서비스 흐름은 `MockProvider`(시나리오 주입 `enqueue`, 요청 기록 `requests`)로 테스트합니다. Codex 어댑터는 실제 `codex app-server` 교환을 녹화해 재생하는 계약 테스트(`packages/ai/src/provider/codex/replay.test.ts`)와 가짜 `codex`(`fake-codex.mjs`)로 테스트하며, CI는 실제 Codex를 쓰지 않습니다. 다시 녹화하는 법은 [`@proginone/ai` README](/packages/ai/README.md#codex-프로토콜-계약-테스트)에 있습니다.
 - **콘텐츠 실행 검증**: `tools/content-cli`의 판정 로직은 가짜 러너(`src/test/fake-runner.ts`)로 테스트합니다. 실제 러너를 쓰는 `src/verify/browser.test.ts`는 Chromium이 없으면 건너뜁니다. 실제 `content/` 전체는 CI e2e 작업의 `pnpm content:check:run --frozen`이 검증합니다([콘텐츠 작성 가이드](/docs/guides/content-authoring.md#contentcheckrun-실행-검증)).
 
 ## E2E (Playwright)
@@ -51,6 +52,7 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 | `tests/practice.spec.ts` | 실습 흐름: 레슨 → 연습 세트의 모든 유형 풀이(코드는 실제 러너로 채점) → 힌트 → 단원 통과 |
 | `tests/reading.spec.ts` | 읽기 모드: 본문 확인 문제, 읽기 위치 이어 읽기, 활동 하트비트(`page.clock`) |
 | `tests/review.spec.ts` | 대시보드와 다음 날 복습: 테스트 시계를 하루 넘겨 복습 세트를 풀고 끝냄 |
+| `tests/ai-unavailable.spec.ts` | AI 비가용 상태: 실패한 답변의 오류 표시(모의 제공자의 `[mock:error:AI_*]`), 연결 해제 시 AI 진입점 비활성·서버 거부·오답 설명 대체, 다시 연결 |
 
 - 처음 한 번 `pnpm --filter @proginone/e2e exec playwright install chromium`으로 브라우저를 설치합니다.
 - 테스트는 서버 하나를 공유하며 순서대로 실행됩니다(`workers: 1`). 앞 테스트가 만든 상태(예: 백업)를 뒤 테스트가 가정하지 않도록, 각 테스트는 필요한 상태를 직접 만들거나 확인합니다.
