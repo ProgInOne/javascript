@@ -19,6 +19,7 @@ import type {
   OpenedHint,
   PracticeItemView,
   PracticeSetView,
+  Remediation,
   RunResult,
   SolutionResponse,
 } from '@proginone/shared';
@@ -39,6 +40,13 @@ import { clearDraft, loadDraft, saveDraft, useActiveTime, useExerciseRunner } fr
 import { Markdown } from './Markdown.tsx';
 import { CODE_TYPES, TYPE_LABELS } from './model.ts';
 import { feedbackResultOf, MasteryChangeList, ReportButton, SolutionContent } from './parts.tsx';
+import {
+  adaptationNote,
+  addedItemLabel,
+  MisconceptionProgress,
+  RemediationCard,
+  remediationWhy,
+} from './Relearning.tsx';
 import { AiHint } from '../tutor/AiHint.tsx';
 import { AiMistakeExplanation } from '../tutor/AiMistakeExplanation.tsx';
 import { codeFilesOf, runSummaryOf } from '../tutor/context.ts';
@@ -65,6 +73,14 @@ export interface PracticeItemProps {
   onShowSummary: () => void;
   /** Session heading for the tutor drawer header, e.g. "첫 프로그램 연습". */
   contextTitle?: string;
+  /** Relearning suggestion to show above the problem (ui-ux.md 재학습 유도). */
+  remediation?: Remediation | null;
+  onFollowRemediation?: () => void;
+  onDismissRemediation?: () => void;
+  /** Records a skip (`POST …/skip`); without it "건너뛰기" only moves on. */
+  onSkip?: () => Promise<void>;
+  /** Worked example stage of an appended item ("풀이 예제 1/3"). */
+  workedExample?: { stage: number; of: number } | null;
 }
 
 /** One practice set item: the exercise, submission, feedback and hints (ui-ux.md 실습 모드). */
@@ -117,6 +133,11 @@ function ItemWorkspace({
   nextPending,
   onShowSummary,
   contextTitle,
+  remediation = null,
+  onFollowRemediation,
+  onDismissRemediation,
+  onSkip,
+  workedExample = null,
   view,
   exercise,
 }: PracticeItemProps & { view: ExerciseView; exercise: RenderableExercise }) {
@@ -176,6 +197,8 @@ function ItemWorkspace({
     if (autoFocus) headingRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- on mount only
   }, []);
+  const [skipping, setSkipping] = useState(false);
+  const added = addedItemLabel(item.reason);
 
   const graded = result !== null;
   const setOpen = (result?.set.status ?? set.status) === 'active';
@@ -262,6 +285,16 @@ function ItemWorkspace({
     }
   };
 
+  // An easier relearning item opens hint 1 by itself (learning-engine.md 재학습 규칙).
+  const autoHint = useRef(
+    item.reason === 'remedial_easier' && item.status === 'pending' && view.openedHints.length === 0,
+  );
+  useEffect(() => {
+    if (!autoHint.current) return;
+    autoHint.current = false;
+    void revealHint();
+  });
+
   const revealSolution = async () => {
     try {
       setSolution(await viewSolution(view.id, item.id));
@@ -322,6 +355,17 @@ function ItemWorkspace({
 
   const problem = (
     <div className="practice-problem">
+      {/* Announced without moving focus; the card itself is not a live region. */}
+      <p className="sr-only" aria-live="polite">
+        {remediation ? `잠깐 쉬어가요. ${remediationWhy(remediation)}` : ''}
+      </p>
+      {remediation && (
+        <RemediationCard
+          remediation={remediation}
+          onGo={() => onFollowRemediation?.()}
+          onDismiss={() => onDismissRemediation?.()}
+        />
+      )}
       <header className="practice-problem__meta">
         <h2 ref={headingRef} tabIndex={-1} className="practice-problem__title" id={promptId}>
           문제 {index + 1}
@@ -335,6 +379,13 @@ function ItemWorkspace({
         </span>
         {conceptShown && item.targetConcept && (
           <Badge variant="neutral">개념: {item.targetConcept.title}</Badge>
+        )}
+        {added && (
+          <Badge variant="brand">
+            {workedExample
+              ? `단계적 풀이 예제 ${String(workedExample.stage)}/${String(workedExample.of)}`
+              : added}
+          </Badge>
         )}
       </header>
       <div className="practice-problem__prompt">
@@ -417,6 +468,10 @@ function ItemWorkspace({
         <AiMistakeExplanation key={result.attempt.id} attemptId={result.attempt.id} />
       )}
       {result && <MasteryChangeList changes={result.masteryChanges} />}
+      {result && <MisconceptionProgress changes={result.misconceptionChanges} />}
+      {result && adaptationNote(result.adaptations) && (
+        <p className="text-fg-secondary type-small">{adaptationNote(result.adaptations)}</p>
+      )}
       {result && !result.attempt.engineApplied && (
         <p className="text-fg-secondary type-small">
           실행 환경 문제로 이번 제출은 기록에 반영하지 않았어요. 다시 제출해 주세요.
@@ -473,18 +528,29 @@ function ItemWorkspace({
               이전 문제
             </Button>
           )}
-          {!graded && item.status === 'pending' && nextPending !== null && (
-            <Button
-              variant="ghost"
-              size="sm"
-              icon={<SkipForward size={14} aria-hidden="true" />}
-              onClick={() => {
-                onNavigate(nextPending);
-              }}
-            >
-              건너뛰기
-            </Button>
-          )}
+          {!graded &&
+            item.status === 'pending' &&
+            setOpen &&
+            (onSkip !== undefined || nextPending !== null) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                loading={skipping}
+                icon={<SkipForward size={14} aria-hidden="true" />}
+                onClick={() => {
+                  if (!onSkip) {
+                    if (nextPending !== null) onNavigate(nextPending);
+                    return;
+                  }
+                  setSkipping(true);
+                  void onSkip().finally(() => {
+                    setSkipping(false);
+                  });
+                }}
+              >
+                건너뛰기
+              </Button>
+            )}
           {!graded && item.status !== 'pending' && index < set.items.length - 1 && (
             <Button
               variant="ghost"

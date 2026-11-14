@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { openScreen, SCREENS } from './fixtures.ts';
-import { mockPractice, mockTutor, PRACTICE_URL } from './practice-mocks.ts';
+import { mockPractice, mockRemediation, mockTutor, PRACTICE_URL } from './practice-mocks.ts';
 
 // Fixed backup list so the data screen looks the same regardless of what earlier tests did.
 const BACKUPS = {
@@ -176,6 +176,21 @@ for (const viewport of VIEWPORTS) {
       await expect(drawer.getByText('대기 중')).toHaveCount(0);
       await page.evaluate(() => document.fonts.ready);
       await expect(page).toHaveScreenshot(`tutor-drawer-${scheme}-${viewport.width}.png`, {
+        fullPage: true,
+      });
+    });
+
+    // 재학습 유도 card above the problem after a second wrong answer (ui-ux.md).
+    test(`practice-remediation-${scheme}-${viewport.width} @visual`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await mockPractice(page);
+      await mockRemediation(page);
+      await openScreen(page, `${PRACTICE_URL}&i=1`, '첫 프로그램 연습', scheme);
+      await page.locator('label', { hasText: '저장되어' }).click();
+      await page.getByRole('button', { name: /확실해요/ }).click();
+      await expect(page.getByRole('region', { name: '잠깐 쉬어가요' })).toBeVisible();
+      await expect(page.getByRole('button', { name: /문제 3:.*선수 개념 확인/ })).toBeVisible();
+      await expect(page).toHaveScreenshot(`practice-remediation-${scheme}-${viewport.width}.png`, {
         fullPage: true,
       });
     });

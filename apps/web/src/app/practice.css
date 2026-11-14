@@ -351,4 +351,72 @@
     font: var(--text-caption);
     font-weight: 700;
   }
+
+  /* ── 재학습 유도 (ui-ux.md 학습 인터랙션 설계) ── */
+  .remediation {
+    display: grid;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid var(--color-info-border);
+    border-left: 3px solid var(--color-info-fg);
+    border-radius: var(--radius-md);
+    background: var(--color-info-bg);
+    color: var(--color-text-primary);
+  }
+  .remediation__title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font: var(--text-ui);
+    font-weight: 700;
+    color: var(--color-text-heading);
+  }
+  .remediation__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+  }
+  .remediation__why {
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .remediation__why summary {
+    cursor: pointer;
+  }
+  .remediation__why ul {
+    display: grid;
+    gap: var(--space-1);
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .remediation__why li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .remediation__tutor {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .misconception-progress {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-subtle);
+    list-style: none;
+    font: var(--text-small);
+  }
+  .set-progress__dot[data-added] {
+    outline: 1.5px dashed var(--color-border-strong);
+    outline-offset: 1px;
+  }
 }

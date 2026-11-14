@@ -268,4 +268,11 @@ test('weakness set from the dashboard', async ({ page }) => {
   await expect(page).toHaveURL(/\/review\/session\/[0-9A-Z]{26}\?i=\d+/);
   await expect(page.getByRole('heading', { name: /문제 1/ })).toBeVisible();
   await expectNoA11yViolations(page);
+  // Skipping is recorded: the item is marked and a follow-up comes at the end of the set.
+  const progress = page.getByRole('navigation', { name: '연습 진행' });
+  const before = await progress.getByRole('button').count();
+  await page.getByRole('button', { name: '건너뛰기' }).click();
+  await expect(progress.getByRole('button', { name: '문제 1: 건너뜀' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /문제 2/ })).toBeVisible();
+  expect(await progress.getByRole('button').count()).toBeGreaterThanOrEqual(before);
 });

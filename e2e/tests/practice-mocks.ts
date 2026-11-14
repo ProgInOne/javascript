@@ -209,3 +209,89 @@ export async function mockTutor(page: Page) {
     }),
   );
 }
+
+// 재학습 유도: the wrong answer is the second in a row on the concept, so the engine suggests a
+// short prerequisite check and appends its item to the set (D-033).
+const remedialItem = {
+  ...item(2, MCQ, 'mcq_single', 1),
+  reason: 'remedial_prereq',
+  targetConcept: { id: 'js.basics.statement', title: '문장과 실행 순서' },
+};
+const remediationAttempt = {
+  ...wrongAttempt,
+  misconceptionChanges: [
+    {
+      misconceptionId: 'js.mc.log-is-return',
+      title: '출력을 반환으로 착각함',
+      conceptId: 'js.basics.console-log',
+      statusBefore: 'suspected',
+      statusAfter: 'confirmed',
+      transitions: ['confirmed'],
+      resolution: { done: 0, required: 2 },
+    },
+  ],
+  remediation: {
+    id: 'r1',
+    concept: { id: 'js.basics.console-log', title: 'console.log로 출력하기' },
+    trigger: 'set_consecutive_failures',
+    kind: 'prerequisite_check',
+    prerequisite: {
+      conceptId: 'js.basics.statement',
+      title: '문장과 실행 순서',
+      stage: 'introduced',
+      effective: 32,
+    },
+    check: { items: 2, minDifficulty: 1, maxDifficulty: 2, passCorrect: 2 },
+    workedExampleStages: [],
+    targetDifficulty: null,
+    autoHintLevel: 0,
+    tutorBadge: false,
+    lesson: { id: 'js-basics.start.first-program', title: '첫 프로그램' },
+    prerequisitesChecked: [
+      {
+        conceptId: 'js.basics.statement',
+        title: '문장과 실행 순서',
+        stage: 'introduced',
+        effective: 32,
+        depth: 1,
+        weak: true,
+      },
+    ],
+    itemIds: [remedialItem.id],
+  },
+  adaptations: [
+    {
+      kind: 'append',
+      itemId: remedialItem.id,
+      position: 2,
+      exerciseId: MCQ,
+      reason: 'remedial_prereq',
+      targetConcept: remedialItem.targetConcept,
+    },
+  ],
+  set: { ...wrongAttempt.set, progress: { total: 3, answered: 1, skipped: 0, pending: 2 } },
+};
+
+/** `mockPractice` whose wrong answer brings a relearning suggestion (call after it). */
+export async function mockRemediation(page: Page) {
+  let answered = false;
+  await page.route('**/api/v1/practice-sets**', (route) =>
+    route.fulfill({
+      json: answered
+        ? {
+            ...set,
+            items: [
+              { ...items[0], status: 'answered', attempts: 1, lastOutcome: 'incorrect' },
+              items[1],
+              remedialItem,
+            ],
+            progress: { total: 3, answered: 1, skipped: 0, pending: 2 },
+          }
+        : set,
+    }),
+  );
+  await page.route('**/api/v1/attempts', (route) => {
+    answered = true;
+    return route.fulfill({ status: 201, json: remediationAttempt });
+  });
+}

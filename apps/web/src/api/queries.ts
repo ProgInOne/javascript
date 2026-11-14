@@ -10,6 +10,7 @@ import {
   practiceSetViewSchema,
   reportResponseSchema,
   runPlanSchema,
+  skipItemResponseSchema,
   solutionResponseSchema,
   type AttemptRequest,
   type CreatePracticeSetRequest,
@@ -148,6 +149,13 @@ export const fetchRunPlan = (exerciseId: string, request: RunPlanRequest) =>
 
 export const submitAttempt = (request: AttemptRequest) =>
   api('/attempts', { method: 'POST', body: request, schema: attemptResponseSchema });
+
+/** `POST /practice-sets/:id/items/:itemId/skip` (a follow-up of another type is appended). */
+export const skipItem = (setId: string, itemId: string) =>
+  api(`/practice-sets/${encodeURIComponent(setId)}/items/${encodeURIComponent(itemId)}/skip`, {
+    method: 'POST',
+    schema: skipItemResponseSchema,
+  });
 
 export const openHint = (exerciseId: string, practiceSetItemId: string | null) =>
   api(`/exercises/${encodeURIComponent(exerciseId)}/hints`, {

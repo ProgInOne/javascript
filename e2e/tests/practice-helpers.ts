@@ -43,7 +43,7 @@ async function answer(page: Page, exerciseId: string, firstSet: boolean) {
         await main.getByRole('button', { name: /확실해요/ }).click();
         await expect(main.getByRole('heading', { name: '정답이 아니에요.' })).toBeVisible();
         await expect(main.getByText(/확신했는데 아니었네요/)).toBeVisible();
-        await expect(main.getByText('출력을 반환으로 착각함')).toBeVisible();
+        await expect(main.getByRole('group').getByText('출력을 반환으로 착각함')).toBeVisible();
         await main.getByRole('button', { name: '다시 풀기' }).click();
         await main.locator('label', { hasText: '글자가 보인다' }).click();
         await main.getByRole('button', { name: '애매해요' }).click();

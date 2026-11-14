@@ -1,6 +1,7 @@
 import type { PracticeSetView } from '@proginone/shared';
 import { Check, Minus, RotateCw, X } from 'lucide-react';
 import { ITEM_STATE_LABELS, itemState, type ItemState } from './model.ts';
+import { addedItemLabel } from './Relearning.tsx';
 
 const ICONS: Partial<Record<ItemState, typeof Check>> = {
   correct: Check,
@@ -31,14 +32,16 @@ export function SetProgress({
           const state = itemState(item);
           const Icon = ICONS[state];
           const isCurrent = i === current;
+          const added = addedItemLabel(item.reason);
           return (
             <li key={item.id}>
               <button
                 type="button"
                 className="set-progress__dot"
                 data-state={state}
+                data-added={added ? '' : undefined}
                 aria-current={isCurrent ? 'step' : undefined}
-                aria-label={`문제 ${i + 1}: ${ITEM_STATE_LABELS[state]}`}
+                aria-label={`문제 ${String(i + 1)}: ${ITEM_STATE_LABELS[state]}${added ? ` (${added})` : ''}`}
                 onClick={() => {
                   onSelect(i);
                 }}
