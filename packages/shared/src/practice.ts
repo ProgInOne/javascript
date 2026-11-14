@@ -153,3 +153,185 @@ export const reportResponseSchema = z.object({
   excluded: z.boolean(),
 });
 export type ReportResponse = z.infer<typeof reportResponseSchema>;
+
+// ── Practice sets and attempts ───────────────────────────────────────────────
+
+const rowId = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+const contentId = z.string().min(1).max(200);
+
+/** `POST /practice-sets`. A lesson set is returned as-is while it is active (idempotent). */
+export const createPracticeSetRequestSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('lesson'), lessonId: contentId }).strict(),
+]);
+export type CreatePracticeSetRequest = z.infer<typeof createPracticeSetRequestSchema>;
+
+export const conceptRefSchema = z.object({ id: z.string(), title: z.string() });
+export type ConceptRef = z.infer<typeof conceptRefSchema>;
+
+export const practiceItemViewSchema = z.object({
+  id: z.string(),
+  position: z.int().min(0),
+  exerciseId: z.string(),
+  type: z.string(),
+  difficulty: z.int().min(1).max(5),
+  status: z.enum(PRACTICE_ITEM_STATUSES),
+  /** Engine reason code (`lesson_practice`, `production_required`, `review_due`, …). */
+  reason: z.string(),
+  targetConcept: conceptRefSchema.nullable(),
+  /** Attempts recorded for the item (sandbox failures excluded). */
+  attempts: z.int().min(0),
+  lastOutcome: z.enum(ATTEMPT_OUTCOMES).nullable(),
+});
+export type PracticeItemView = z.infer<typeof practiceItemViewSchema>;
+
+export const practiceProgressSchema = z.object({
+  total: z.int().min(0),
+  answered: z.int().min(0),
+  skipped: z.int().min(0),
+  pending: z.int().min(0),
+});
+export type PracticeProgress = z.infer<typeof practiceProgressSchema>;
+
+export const passRuleSchema = z.object({
+  minCorrect: z.number(),
+  minConceptScore: z.number(),
+  minDistinctTypes: z.int(),
+  minLevel3Correct: z.int(),
+});
+export type PassRuleView = z.infer<typeof passRuleSchema>;
+
+const passCheckSchema = z.object({ met: z.boolean(), required: z.number(), actual: z.number() });
+
+/** Lesson pass rule evaluation (learning-engine.md#단원-연습-세트). */
+export const passResultSchema = z.object({
+  passed: z.boolean(),
+  checks: z.object({
+    allAnswered: z.boolean(),
+    minCorrect: passCheckSchema,
+    minConceptScore: passCheckSchema.extend({ below: z.array(conceptRefSchema) }),
+    minDistinctTypes: passCheckSchema,
+    minLevel3Correct: passCheckSchema,
+  }),
+});
+export type PassResultView = z.infer<typeof passResultSchema>;
+
+export const practiceSetResultSchema = z.object({
+  total: z.int(),
+  answered: z.int(),
+  skipped: z.int(),
+  /** Items whose last attempt was correct. */
+  correct: z.int(),
+  /** Lesson sets only. */
+  pass: passResultSchema.nullable(),
+});
+export type PracticeSetResult = z.infer<typeof practiceSetResultSchema>;
+
+export const practiceSetViewSchema = z.object({
+  id: z.string(),
+  kind: z.enum(PRACTICE_SET_KINDS),
+  status: z.enum(PRACTICE_SET_STATUSES),
+  lessonId: z.string().nullable(),
+  items: z.array(practiceItemViewSchema),
+  progress: practiceProgressSchema,
+  /** First pending item, `null` when every item is done. */
+  nextItemId: z.string().nullable(),
+  passRule: passRuleSchema.nullable(),
+  result: practiceSetResultSchema.nullable(),
+  createdAt: z.number(),
+  completedAt: z.number().nullable(),
+});
+export type PracticeSetView = z.infer<typeof practiceSetViewSchema>;
+
+/**
+ * `POST /attempts`. `answer` and `runResult` are validated by exercise-kit (`parseAnswer`,
+ * `parseRunResult`); run-based types need `runResult` from the sandbox.
+ */
+export const attemptRequestSchema = z
+  .object({
+    practiceSetItemId: rowId,
+    exerciseId: contentId,
+    answer: z.unknown(),
+    runResult: z.unknown().optional(),
+    /** `null`/absent when the learner was not asked. */
+    confidence: confidenceSchema.nullable().optional(),
+    /** When the learner first saw the exercise (epoch ms). Clamped to the server clock. */
+    startedAt: z.number().int().min(0),
+    /** Active solving time without idle gaps. */
+    activeMs: z.number().int().min(0).max(86_400_000),
+    tutorAssisted: z.boolean().optional(),
+  })
+  .strict();
+export type AttemptRequest = z.infer<typeof attemptRequestSchema>;
+
+export const masteryChangeSchema = z.object({
+  conceptId: z.string(),
+  title: z.string(),
+  scoreBefore: z.number(),
+  scoreAfter: z.number(),
+  stageBefore: masteryStageSchema,
+  stageAfter: masteryStageSchema,
+});
+export type MasteryChange = z.infer<typeof masteryChangeSchema>;
+
+const feedbackItemSchema = z.object({
+  level: z.enum(['success', 'error', 'warning', 'info']),
+  code: z.string(),
+  message: z.string(),
+  target: z.string().optional(),
+  requirement: z.string().optional(),
+});
+
+/** exercise-kit `CheckResult` (expected/actual detail only for visible checks). */
+const checkResultSchema = z.object({
+  id: z.string(),
+  kind: z.string(),
+  passed: z.boolean(),
+  required: z.boolean(),
+  weight: z.number(),
+  visible: z.boolean(),
+  description: z.string().optional(),
+  requirement: z.string().optional(),
+  reason: z.string().optional(),
+  detail: z
+    .object({
+      path: z.string().optional(),
+      expected: z.string().optional(),
+      actual: z.string().optional(),
+    })
+    .optional(),
+});
+
+export const attemptResponseSchema = z.object({
+  attempt: z.object({
+    id: z.string(),
+    outcome: z.enum(ATTEMPT_OUTCOMES),
+    score: z.number(),
+    correct: z.boolean(),
+    /** False for sandbox failures (`crashed`/`aborted`): recorded, not counted. */
+    engineApplied: z.boolean(),
+    attemptNo: z.int(),
+    attemptInItem: z.int(),
+  }),
+  grade: z.object({
+    feedback: z.array(feedbackItemSchema),
+    checkResults: z.array(checkResultSchema).optional(),
+    failedRequirements: z.array(z.string()).optional(),
+    milestones: z
+      .array(z.object({ id: z.string(), title: z.string(), passed: z.boolean() }))
+      .optional(),
+    /** Misconceptions suggested by the answer, with content.db titles. */
+    misconceptions: z.array(z.object({ id: z.string(), title: z.string() })),
+  }),
+  /** One entry per tagged concept: state before this attempt → after it (and any FSRS review). */
+  masteryChanges: z.array(masteryChangeSchema),
+  item: z.object({ id: z.string(), status: z.enum(PRACTICE_ITEM_STATUSES), attempts: z.int() }),
+  set: z.object({
+    id: z.string(),
+    status: z.enum(PRACTICE_SET_STATUSES),
+    progress: practiceProgressSchema,
+    nextItemId: z.string().nullable(),
+    /** Present when this attempt completed the set. */
+    result: practiceSetResultSchema.nullable(),
+  }),
+});
+export type AttemptResponse = z.infer<typeof attemptResponseSchema>;

@@ -211,6 +211,9 @@ importers:
       '@proginone/exercise-kit':
         specifier: workspace:*
         version: link:../../packages/exercise-kit
+      '@proginone/learning-engine':
+        specifier: workspace:*
+        version: link:../../packages/learning-engine
       '@proginone/runner':
         specifier: workspace:*
         version: link:../../packages/runner

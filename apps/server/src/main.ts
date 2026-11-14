@@ -18,6 +18,7 @@ import { BackupScheduler } from './services/backup/scheduler.ts';
 import { BackupService } from './services/backup/service.ts';
 import { systemClock } from './services/clock.ts';
 import { ContentAccess } from './services/curriculum/content-access.ts';
+import { createEngine } from './services/practice/engine.ts';
 import { createPracticeServices } from './services/practice/index.ts';
 import { SettingsService } from './services/settings/service.ts';
 import { APP_VERSION } from './version.ts';
@@ -114,6 +115,7 @@ const scheduler = new BackupScheduler({
 });
 scheduler.start();
 
+const engine = await createEngine();
 const token = randomBytes(32).toString('base64url');
 const webDistDir = fileURLToPath(new URL('../../web/dist', import.meta.url));
 const app = createApp({
@@ -123,7 +125,7 @@ const app = createApp({
   backups,
   settings: new SettingsService({ userDb, log }),
   content,
-  practice: createPracticeServices({ userDb, content, now: systemClock }),
+  practice: createPracticeServices({ userDb, content, engine, now: systemClock }),
   maintenance,
   version: APP_VERSION,
   ...(config.mode === 'production' ? { webDistDir } : {}),

@@ -72,16 +72,25 @@ const feedbackItem = z.object({
 });
 
 /** One exercise-kit `CheckResult` (visible checks carry an expected/actual summary). */
-export const checkResultJson = z
-  .object({
-    id: z.string(),
-    kind: z.string(),
-    passed: z.boolean(),
-    required: z.boolean(),
-    weight: z.number(),
-    visible: z.boolean(),
-  })
-  .loose();
+export const checkResultJson = z.object({
+  id: z.string(),
+  kind: z.string(),
+  passed: z.boolean(),
+  required: z.boolean(),
+  weight: z.number(),
+  visible: z.boolean(),
+  description: z.string().optional(),
+  requirement: z.string().optional(),
+  reason: z.string().optional(),
+  detail: z
+    .object({
+      path: z.string().optional(),
+      expected: z.string().optional(),
+      actual: z.string().optional(),
+    })
+    .optional(),
+  misconceptionId: z.string().optional(),
+});
 
 /** `attempts.grading_json`: exercise-kit `GradeResult` minus the columns stored separately. */
 export const gradingJson = z.object({

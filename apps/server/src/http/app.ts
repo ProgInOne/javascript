@@ -11,6 +11,7 @@ import { AppError, errorResponse, handleError } from './errors.ts';
 import { backupRoutes } from './routes/backups.ts';
 import { curriculumRoutes } from './routes/curriculum.ts';
 import { exerciseRoutes } from './routes/exercises.ts';
+import { attemptRoutes, practiceSetRoutes } from './routes/practice.ts';
 import { settingsRoutes } from './routes/settings.ts';
 import { runnerRoutes } from './runner.ts';
 import { maintenance, MaintenanceState, security } from './security.ts';
@@ -78,7 +79,9 @@ export function createApp({
     .route('/backups', backupRoutes(backups))
     .route('/settings', settingsRoutes(settings))
     .route('/', curriculumRoutes(content))
-    .route('/exercises', exerciseRoutes(practice.exercises));
+    .route('/exercises', exerciseRoutes(practice.exercises))
+    .route('/practice-sets', practiceSetRoutes(practice.sets))
+    .route('/attempts', attemptRoutes(practice.attempts));
   const routes = app.route('/api/v1', api);
   app.route('/sandbox', runnerRoutes());
   if (webDistDir) app.route('/', webRoutes({ distDir: webDistDir, token, port: config.port }));

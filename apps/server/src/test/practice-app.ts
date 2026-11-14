@@ -1,6 +1,7 @@
 import { createApp } from '../http/app.ts';
 import { TOKEN_HEADER } from '../http/security.ts';
 import { ContentAccess } from '../services/curriculum/content-access.ts';
+import { createEngine } from '../services/practice/engine.ts';
 import { createPracticeServices } from '../services/practice/index.ts';
 import { SettingsService } from '../services/settings/service.ts';
 import { writeContentDb } from './content-fixture.ts';
@@ -11,6 +12,8 @@ export const T0 = Date.UTC(2026, 10, 14, 1, 0, 0);
 export const MINUTE = 60_000;
 export const DAY = 86_400_000;
 
+let engine: ReturnType<typeof createEngine> | undefined;
+
 /**
  * The real app over a migrated temp user.db and the fixture content.db, with a controllable
  * clock (`clock.now`) and a learner in Asia/Seoul.
@@ -20,7 +23,12 @@ export async function practiceApp() {
   const content = ContentAccess.open(writeContentDb());
   const clock = { now: T0 };
   const now = () => clock.now;
-  const practice = createPracticeServices({ userDb: ctx.userDb, content, now });
+  const practice = createPracticeServices({
+    userDb: ctx.userDb,
+    content,
+    engine: await (engine ??= createEngine()),
+    now,
+  });
   const app = createApp({
     config: { port: 4310, mode: 'production' },
     log: silentLog,

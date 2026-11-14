@@ -7,7 +7,7 @@ import type {
   LessonDetail,
   LessonSummary,
 } from '@proginone/shared';
-import { and, asc, count, desc, eq, inArray } from 'drizzle-orm';
+import { and, asc, count, desc, eq, inArray, or, sql } from 'drizzle-orm';
 import { drizzle, type BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { openSqlite } from '../user/connection.ts';
 
@@ -24,6 +24,25 @@ export interface ContentExerciseConcept {
   conceptId: string;
   weight: number;
   isPrimary: boolean;
+}
+
+export interface LessonPlan {
+  id: string;
+  title: string;
+  importance: 'core' | 'standard' | 'minor';
+  /** `lesson.yaml` `practice.passRule` overrides (unvalidated numbers). */
+  passRule: Record<string, number>;
+  introduces: string[];
+  reviews: string[];
+  contentHash: string;
+}
+
+export interface ContentConcept {
+  id: string;
+  title: string;
+  importance: 'core' | 'standard' | 'minor';
+  /** Module of the lesson that introduces the concept (review set interleaving). */
+  moduleId: string;
 }
 
 /** An `exercises` row with its concept tags. `spec` holds answer keys (server only). */
@@ -234,6 +253,98 @@ export class ContentRepository {
       .all();
     const concepts = this.#exerciseConcepts(rows.map((r) => r.id));
     return rows.map((r) => this.#toExercise(r, concepts.get(r.id) ?? []));
+  }
+
+  /**
+   * Practice candidates for a lesson set: the lesson's practice exercises plus practice
+   * exercises whose primary concept is one of `reviewConceptIds` (interleaving).
+   */
+  listPracticeExercises(lessonId: string, reviewConceptIds: readonly string[]): ContentExercise[] {
+    const reviewed =
+      reviewConceptIds.length === 0
+        ? []
+        : this.#db
+            .select({ id: t.exerciseConcepts.exerciseId })
+            .from(t.exerciseConcepts)
+            .where(
+              and(
+                inArray(t.exerciseConcepts.conceptId, [...reviewConceptIds]),
+                eq(t.exerciseConcepts.isPrimary, true),
+              ),
+            )
+            .all()
+            .map((r) => r.id);
+    const rows = this.#db
+      .select()
+      .from(t.exercises)
+      .where(
+        and(
+          eq(t.exercises.usage, 'practice'),
+          reviewed.length === 0
+            ? eq(t.exercises.lessonId, lessonId)
+            : or(eq(t.exercises.lessonId, lessonId), inArray(t.exercises.id, reviewed)),
+        ),
+      )
+      .orderBy(asc(t.exercises.id))
+      .all();
+    const concepts = this.#exerciseConcepts(rows.map((r) => r.id));
+    return rows.map((r) => this.#toExercise(r, concepts.get(r.id) ?? []));
+  }
+
+  /** What the practice set builder needs about a lesson. */
+  getLessonPlan(id: string): LessonPlan | null {
+    const lesson = this.#db.select().from(t.lessons).where(eq(t.lessons.id, id)).get();
+    if (!lesson) return null;
+    const roles = this.#db
+      .select()
+      .from(t.lessonConcepts)
+      .where(eq(t.lessonConcepts.lessonId, id))
+      // Insertion order is the lesson's concept order (lesson.yaml).
+      .orderBy(sql`rowid`)
+      .all();
+    return {
+      id: lesson.id,
+      title: lesson.title,
+      importance: lesson.importance,
+      passRule: lesson.passRule ?? {},
+      introduces: roles.filter((r) => r.role === 'introduces').map((r) => r.conceptId),
+      reviews: roles.filter((r) => r.role === 'reviews').map((r) => r.conceptId),
+      contentHash: lesson.contentHash,
+    };
+  }
+
+  /** Concepts by id with their importance and the module that introduces them. */
+  getConcepts(ids: readonly string[]): Map<string, ContentConcept> {
+    const out = new Map<string, ContentConcept>();
+    if (ids.length === 0) return out;
+    for (const row of this.#db
+      .select({ concept: t.concepts, moduleId: t.lessons.moduleId })
+      .from(t.concepts)
+      .leftJoin(t.lessons, eq(t.concepts.introducedInLessonId, t.lessons.id))
+      .where(inArray(t.concepts.id, [...new Set(ids)]))
+      .all()) {
+      out.set(row.concept.id, {
+        id: row.concept.id,
+        title: row.concept.title,
+        importance: row.concept.importance,
+        moduleId: row.moduleId ?? row.concept.courseId,
+      });
+    }
+    return out;
+  }
+
+  /** Misconceptions by id (titles for feedback, concepts for the engine). */
+  getMisconceptions(ids: readonly string[]): Map<string, { title: string; conceptId: string }> {
+    const out = new Map<string, { title: string; conceptId: string }>();
+    if (ids.length === 0) return out;
+    for (const row of this.#db
+      .select()
+      .from(t.misconceptions)
+      .where(inArray(t.misconceptions.id, [...new Set(ids)]))
+      .all()) {
+      out.set(row.id, { title: row.title, conceptId: row.conceptId });
+    }
+    return out;
   }
 
   getLesson(id: string): LessonDetail | null {
