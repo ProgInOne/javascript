@@ -1,3 +1,4 @@
+import { ContentAccess } from '../services/curriculum/content-access.ts';
 import { apiErrorSchema } from '@proginone/shared';
 import { pino } from 'pino';
 import { describe, expect, it } from 'vitest';
@@ -22,6 +23,7 @@ function setup(mode: 'production' | 'development' = 'production') {
     token: TOKEN,
     backups,
     settings,
+    content: ContentAccess.unavailable(),
     maintenance: state,
   });
   const req = (path: string, headers: Record<string, string> = {}, init: RequestInit = {}) =>
@@ -124,6 +126,7 @@ describe('error model', () => {
       token: TOKEN,
       backups,
       settings,
+      content: ContentAccess.unavailable(),
     });
     app.get('/api/v1/_test/app-error', () => {
       throw new AppError('BACKUP_NOT_FOUND', 404, '백업이 없습니다.', { details: { id: 'b1' } });

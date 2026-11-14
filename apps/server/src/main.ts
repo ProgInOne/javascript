@@ -6,6 +6,7 @@ import { serve } from '@hono/node-server';
 import { ConfigError, loadConfig } from './config/load.ts';
 import { UserDb } from './db/user/connection.ts';
 import { ensureLearner } from './db/user/learners.ts';
+import { appMeta } from './db/user/schema.ts';
 import { MigrationError, migrateUserDb } from './db/user/migrate.ts';
 import { createApp } from './http/app.ts';
 import { MaintenanceState } from './http/security.ts';
@@ -15,11 +16,11 @@ import { openBrowser } from './lifecycle/open-browser.ts';
 import { createLogger } from './observability/logger.ts';
 import { BackupScheduler } from './services/backup/scheduler.ts';
 import { BackupService } from './services/backup/service.ts';
+import { ContentAccess } from './services/curriculum/content-access.ts';
 import { SettingsService } from './services/settings/service.ts';
 import { APP_VERSION } from './version.ts';
 
 // Startup order: docs/design/system-architecture.md#앱-시작-절차.
-// content.db arrives in M4.
 
 let config;
 try {
@@ -76,12 +77,60 @@ try {
 }
 
 ensureLearner(userDb);
+
+let content: ContentAccess;
+try {
+  content = ContentAccess.open(config.contentDbPath);
+} catch (e) {
+  log.error({ err: e, path: config.contentDbPath }, (e as Error).message);
+  userDb.close();
+  release();
+  process.exit(1);
+}
+if (content.available) {
+  const packVersion = content.repo.packVersion;
+  userDb.orm
+    .insert(appMeta)
+    .values({ key: 'last_content_pack_version', value: packVersion })
+    .onConflictDoUpdate({ target: appMeta.key, set: { value: packVersion } })
+    .run();
+  log.info({ packVersion }, 'content.db loaded');
+} else {
+  log.warn(
+    { path: config.contentDbPath },
+    '학습 콘텐츠(content.db)가 없습니다. `pnpm content:build`를 실행하세요.',
+  );
+}
 const scheduler = new BackupScheduler({
   userDb,
   backups,
   log,
   boundary: () => {
     const { timezone, dayStartHour } = ensureLearner(userDb);
+
+    let content: ContentAccess;
+    try {
+      content = ContentAccess.open(config.contentDbPath);
+    } catch (e) {
+      log.error({ err: e, path: config.contentDbPath }, (e as Error).message);
+      userDb.close();
+      release();
+      process.exit(1);
+    }
+    if (content.available) {
+      const packVersion = content.repo.packVersion;
+      userDb.orm
+        .insert(appMeta)
+        .values({ key: 'last_content_pack_version', value: packVersion })
+        .onConflictDoUpdate({ target: appMeta.key, set: { value: packVersion } })
+        .run();
+      log.info({ packVersion }, 'content.db loaded');
+    } else {
+      log.warn(
+        { path: config.contentDbPath },
+        '학습 콘텐츠(content.db)가 없습니다. `pnpm content:build`를 실행하세요.',
+      );
+    }
     return { timezone, dayStartHour };
   },
 });
@@ -95,6 +144,7 @@ const app = createApp({
   token,
   backups,
   settings: new SettingsService({ userDb, log }),
+  content,
   maintenance,
   version: APP_VERSION,
   ...(config.mode === 'production' ? { webDistDir } : {}),
@@ -134,6 +184,7 @@ function shutdown(signal: string) {
   scheduler.stop();
   server.close(() => {
     userDb.close();
+    content.close();
     removeDevSession();
     release();
     process.exit(0);

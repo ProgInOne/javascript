@@ -14,6 +14,7 @@ describe('loadConfig', () => {
       port: 4310,
       dataDir: join(repo, '.data'),
       backupDir: join(repo, '.data', 'backups'),
+      contentDbPath: join(repo, 'content', 'dist', 'content.db'),
       logLevel: 'info',
       openBrowser: false,
       aiProvider: 'codex',

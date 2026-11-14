@@ -1,3 +1,4 @@
+import { ContentAccess } from '../services/curriculum/content-access.ts';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -27,6 +28,7 @@ async function setup(withDist = true) {
     token: TOKEN,
     backups: ctx.backups,
     settings: new SettingsService({ userDb: ctx.userDb, log: silentLog }),
+    content: ContentAccess.unavailable(),
     maintenance: ctx.maintenance,
     webDistDir: distDir,
   });

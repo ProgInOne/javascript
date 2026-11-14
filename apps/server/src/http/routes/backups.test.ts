@@ -1,3 +1,4 @@
+import { ContentAccess } from '../../services/curriculum/content-access.ts';
 import { apiErrorSchema, backupListSchema, backupSummarySchema } from '@proginone/shared';
 import { describe, expect, it } from 'vitest';
 import { setupDb, silentLog } from '../../test/helpers.ts';
@@ -13,6 +14,7 @@ async function setup() {
     token: 't',
     backups: ctx.backups,
     settings: new SettingsService({ userDb: ctx.userDb, log: silentLog }),
+    content: ContentAccess.unavailable(),
     maintenance: ctx.maintenance,
   });
   const call = (method: string, path: string) =>

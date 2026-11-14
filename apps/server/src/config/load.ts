@@ -84,6 +84,7 @@ export function loadConfig({
   const defaults = {
     port: 4310,
     backupDir: join(dataDir, 'backups'),
+    contentDbPath: join(repoRoot, 'content', 'dist', 'content.db'),
     codexPath: 'codex',
     logLevel: 'info',
     openBrowser: mode === 'production',
@@ -97,5 +98,9 @@ export function loadConfig({
       formatIssues(parsed.error, '환경 변수 또는 설정'),
     );
   }
-  return { ...parsed.data, backupDir: resolve(parsed.data.backupDir) };
+  return {
+    ...parsed.data,
+    backupDir: resolve(parsed.data.backupDir),
+    contentDbPath: resolve(parsed.data.contentDbPath),
+  };
 }

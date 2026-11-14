@@ -20,6 +20,7 @@
     "test:e2e": "pnpm build && pnpm --filter @proginone/e2e test",
     "test:e2e:visual": "bash tools/e2e-docker.sh",
     "content:check": "node tools/content-cli/src/cli.ts check --dir content",
+    "content:build": "node tools/content-cli/src/cli.ts build --dir content --out content/dist/content.db",
     "build": "pnpm -r --if-present build",
     "check:deps": "depcruise apps packages tools --config .dependency-cruiser.cjs",
     "check:links": "node tools/check-links.mjs",
