@@ -32,3 +32,6 @@ e2e/**/*-diff.png
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+
+# Local agent worktrees
+.claude/

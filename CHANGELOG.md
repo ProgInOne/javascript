@@ -7,6 +7,7 @@
 
 ### Added
 
+- 서버 골격(M3): Hono 앱, 설정 로더(환경 변수 > `config.json` > 기본값), 구조화 로그, 오류 응답 모델, 보안 미들웨어(Host·Origin·세션 토큰), 유지보수 모드, 단일 인스턴스 잠금, `GET /api/v1/health`
 - 모노레포 기반(M3): pnpm 워크스페이스, TypeScript strict, ESLint, Prettier, Vitest, 의존 방향 검사, 문서 링크 검사, GitHub Actions CI, Dependabot, PR 템플릿, `@proginone/shared` 오류 계약
 - M1 기술 검증(2026-11-14): Codex 튜터 PoC(`poc/codex-tutor`)와 샌드박스 PoC(`poc/sandbox`) 결과, D-002·D-018 확정. 튜터 전용 `CODEX_HOME`과 도구 기능 비활성화, 셸 서브도메인 방식 추가
 - M2 디자인 프로토타입(2026-11-14): 3개 시각 안 비교(`design/prototypes`), D-024(C 차분한 교실, 라이트 에디터, 로고 1안, 토큰 v1 수정)

@@ -9,6 +9,7 @@
     "node": ">=24"
   },
   "scripts": {
+    "dev:server": "pnpm --filter @proginone/server dev",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -16,7 +17,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build": "pnpm -r --if-present build",
-    "check:deps": "depcruise packages tools --config .dependency-cruiser.cjs",
+    "check:deps": "depcruise apps packages tools --config .dependency-cruiser.cjs",
     "check:links": "node tools/check-links.mjs",
     "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm check:deps && pnpm test && pnpm check:links"
   },

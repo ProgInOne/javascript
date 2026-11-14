@@ -5,7 +5,15 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, normalize, relative, resolve } from 'node:path';
 
 const root = resolve(process.argv[2] ?? '.');
-const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'coverage', '.data', 'codex-home']);
+const SKIP_DIRS = new Set([
+  'node_modules',
+  '.git',
+  'dist',
+  'coverage',
+  '.data',
+  'codex-home',
+  '.claude',
+]);
 
 /** @param {string} dir @returns {string[]} */
 function walk(dir) {

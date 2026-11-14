@@ -12,6 +12,7 @@ export default tseslint.config(
       'poc/**',
       'design/prototypes/**',
       '.data/**',
+      '.claude/**',
       'playwright-report/**',
       'test-results/**',
     ],
