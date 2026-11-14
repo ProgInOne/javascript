@@ -1,0 +1,16 @@
+id: html.content.forms
+title: 폼 기초
+summary: form으로 입력 요소를 묶고, 값의 종류에 맞는 input type을 고르며, label로 입력칸에 이름을 붙이고, button의 type이 하는 일을 이해합니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 15, practice: 16 }
+concepts:
+  primary: [html.forms.form, html.forms.inputs, html.forms.labels, html.forms.buttons]
+  practiced: [html.doc.attributes]
+objectives:
+  - form, input, label, button으로 값을 입력받아 보내는 폼을 작성할 수 있다.
+  - 받을 값의 종류에 맞게 input의 type(text, email, password, number 등)을 고를 수 있다.
+  - label의 for와 input의 id로 설명 글자와 입력칸을 연결할 수 있다.
+  - form 안의 button이 type에 따라 폼을 보내는지 예측할 수 있다.
+practice:
+  targetCount: 10

@@ -1,0 +1,40 @@
+id: html.content.forms.mcq-form-role
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: html.forms.form, weight: 1 }
+tags: [form]
+estimatedSeconds: 50
+prompt: |
+  `form` 요소가 하는 일로 가장 알맞은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: 입력 요소들을 하나로 묶어, 보낼 때 그 안의 입력값을 한꺼번에 action의 주소로 보낸다
+    - id: b
+      text: 입력칸 하나를 화면에 그린다
+      rationale: 입력칸 하나는 input 요소가 그려요. form은 여러 입력 요소를 묶는 상자예요.
+    - id: c
+      text: 입력칸들에 테두리를 그려 한 덩어리처럼 보이게 꾸민다
+      rationale: 모양은 CSS의 몫이에요. form은 기본으로 테두리 같은 모양이 없어요.
+    - id: d
+      text: 입력한 값을 검사하고 계산해서 결과를 화면에 보여 준다
+      misconception: html.mc.html-is-programming
+      rationale: 값을 계산해서 보여 주는 동작은 JavaScript(또는 서버)가 맡아요. form은 값을 묶어 보내기만 해요.
+  correct: a
+hints:
+  - 회원 가입 페이지의 이메일, 비밀번호, 나이 칸은 "가입하기"를 누를 때 어떻게 전송될까요?
+  - form은 눈에 보이는 무언가를 그리는 요소가 아니라 여러 요소를 담는 상자예요.
+  - form의 action 속성에는 무엇을 적었나요?
+explanation: |
+  정답은 **입력 요소들을 묶어 한꺼번에 action의 주소로 보낸다**예요.
+
+  form은 입력칸과 버튼을 담는 상자예요. 폼을 보내면(submit) 그 안의 입력값들이 `action`에 적힌 주소로 함께 전송돼요. form 밖에 있는 입력칸은 함께 가지 않아요.
+
+  - 입력칸 하나를 그리는 것은 `input`이에요.
+  - 테두리 같은 모양은 CSS로 정해요.
+  - 값을 계산해서 화면에 보여 주는 동작은 HTML이 아니라 JavaScript나 서버의 몫이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

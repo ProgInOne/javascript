@@ -1,0 +1,42 @@
+id: html.semantics.landmarks.mcq-article-or-section
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: html.semantics.sectioning, weight: 1 }
+tags: [semantic, article, section]
+estimatedSeconds: 60
+prompt: |
+  뉴스 사이트의 본문에 기사 한 편이 있어요. 기사에는 제목, 기자 이름, 본문이 들어 있고, 이 기사만 다른 사이트에 옮겨 실어도 내용이 온전히 이해돼요. 이 기사 한 편을 감쌀 요소로 가장 알맞은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`article`"
+    - id: b
+      text: "`section`"
+      misconception: html.mc.section-article-same
+      rationale: section은 한 문서 안의 주제별 구역이에요. 혼자서도 뜻이 통하는 독립된 글은 article이에요.
+    - id: c
+      text: "`div`"
+      misconception: html.mc.div-is-wrong
+      rationale: 기사 한 편은 "독립된 글"이라는 뜻이 분명해요. 뜻이 있는 묶음에는 시맨틱 요소를 써요.
+    - id: d
+      text: "`header`"
+      rationale: header는 페이지나 구역의 머리말이에요. 기사 전체를 감싸는 요소가 아니에요.
+  correct: a
+misconceptions: [html.mc.section-article-same]
+hints:
+  - 이 묶음만 잘라서 다른 곳에 붙여도 뜻이 통한다고 했어요.
+  - 독립된 글과 주제별 구역을 뜻하는 요소가 각각 있어요.
+  - 블로그 글, 뉴스 기사, 댓글처럼 혼자서도 뜻이 통하는 글을 뜻하는 요소예요.
+explanation: |
+  정답은 **`article`**이에요.
+
+  기사 한 편은 다른 곳에 옮겨도 뜻이 통하는 **독립된 글**이라 `article`로 감싸요.
+
+  - `section`은 "자주 묻는 질문"처럼 한 문서 안에서 주제별로 나눈 구역이에요. 혼자 떼어 내면 뜻이 부족할 수 있어요.
+  - `div`는 뜻이 없는 묶음이라, 뜻이 분명한 기사에는 맞지 않아요. 기사 안에서 배치를 위해 묶을 때는 div를 써도 돼요.
+  - `header`는 머리말이에요. 기사의 제목과 기자 이름 부분만 article 안에서 header로 감쌀 수는 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

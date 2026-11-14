@@ -1,0 +1,42 @@
+id: html.basics.document.mcq-attribute-place
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: html.doc.attributes, weight: 1 }
+  - { id: html.doc.elements, weight: 0.3 }
+tags: [attribute]
+estimatedSeconds: 50
+prompt: |
+  문단에 마우스를 올리면 "도움말"이라는 설명이 나타나도록 `title` 속성을 주려고 해요. 속성을 **바르게** 쓴 코드는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`<p title="도움말">내용</p>`'
+    - id: b
+      text: '`<p>내용</p title="도움말">`'
+      rationale: 속성은 닫는 태그가 아니라 여는 태그 안에 써요.
+    - id: c
+      text: '`<p>title="도움말" 내용</p>`'
+      misconception: html.mc.attribute-shown-on-page
+      rationale: 태그 사이에 쓰면 속성이 아니라 내용이 되어 `title="도움말"`이 화면에 글자로 그대로 보여요.
+    - id: d
+      text: '`<title="도움말" p>내용</p>`'
+      rationale: 여는 태그 안에서는 요소 이름(`p`)을 먼저 쓰고, 그 뒤에 속성을 써요.
+  correct: a
+misconceptions: [html.mc.attribute-shown-on-page]
+hints:
+  - 속성은 요소에 주는 추가 정보예요. 화면에 보이는 내용과는 다른 곳에 써요.
+  - 속성은 여는 태그와 닫는 태그 중 한쪽에만 쓸 수 있어요.
+  - 여는 태그 안에서 요소 이름 뒤에 공백을 두고 `이름="값"`으로 써요.
+explanation: |
+  정답은 **`<p title="도움말">내용</p>`**예요.
+
+  속성은 **여는 태그 안, 요소 이름 뒤**에 `이름="값"`으로 써요.
+
+  - 닫는 태그에 쓴 속성은 브라우저가 무시해요.
+  - 태그 사이에 쓰면 속성이 아니라 내용이라서, `title="도움말"`이라는 글자가 화면에 그대로 나와요.
+  - 꺾쇠 바로 뒤에는 요소 이름이 와야 해요. `<title=...`처럼 쓰면 브라우저가 요소 이름을 알아볼 수 없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

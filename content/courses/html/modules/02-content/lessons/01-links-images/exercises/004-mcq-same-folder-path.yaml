@@ -1,0 +1,45 @@
+id: html.content.links-images.mcq-same-folder-path
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: html.content.paths, weight: 1 }
+tags: [path, relative-path]
+estimatedSeconds: 50
+prompt: |
+  사이트 폴더가 아래와 같아요. `index.html`에서 `menu.html`로 가는 링크를 만들 때, `href`에 쓸 경로로 알맞은 것은 무엇인가요?
+code: |
+  bakery/
+  ├── index.html
+  └── menu.html
+spec:
+  options:
+    - id: a
+      text: "`menu.html`"
+    - id: b
+      text: "`bakery/menu.html`"
+      misconception: html.mc.relative-path-base
+      rationale: index.html은 이미 bakery 폴더 안에 있어요. 상대 경로는 지금 문서의 폴더에서 출발하므로, bakery 안에서 bakery 폴더를 또 찾게 돼요.
+    - id: c
+      text: "`../menu.html`"
+      rationale: "`../`는 한 단계 위 폴더로 나가는 것이에요. menu.html은 위 폴더가 아니라 같은 폴더에 있어요."
+    - id: d
+      text: "`https://menu.html`"
+      rationale: "`https://` 뒤에는 사이트 주소(도메인)가 와야 해요. 파일 이름만 쓰면 menu.html이라는 사이트를 찾게 돼요."
+  correct: a
+misconceptions: [html.mc.relative-path-base]
+hints:
+  - 상대 경로는 어느 폴더에서 출발하나요?
+  - index.html과 menu.html은 같은 폴더에 있어요. 폴더를 들어가거나 나갈 필요가 있을까요?
+  - 같은 폴더에 있는 파일은 파일 이름만 쓰면 돼요.
+explanation: |
+  정답은 **`menu.html`**이에요.
+
+  상대 경로는 **지금 문서(index.html)가 있는 폴더**에서 출발해요. menu.html은 같은 bakery 폴더에 있으니 파일 이름만 쓰면 돼요.
+
+  - `bakery/menu.html`: 이미 bakery 안에 있는데 그 안에서 bakery 폴더를 또 찾아요. 그런 폴더는 없어서 페이지를 찾을 수 없어요.
+  - `../menu.html`: bakery의 위 폴더에서 menu.html을 찾아요.
+  - `https://menu.html`: 다른 사이트의 주소처럼 읽혀요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

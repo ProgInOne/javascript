@@ -1,0 +1,57 @@
+id: html.basics.document.fill-close-nested
+type: fill_blank
+difficulty: 3
+concepts:
+  - { id: html.doc.nesting, weight: 1 }
+  - { id: html.doc.elements, weight: 0.3 }
+tags: [nesting, closing-tag]
+estimatedSeconds: 70
+prompt: |
+  `body` 안에 문단이 있고, 문단 안에 중요한 낱말을 감싼 `strong`이 있어요. 빈칸 세 개에 닫는 태그를 **올바른 순서로** 채워 요소를 모두 닫으세요.
+spec:
+  mode: text
+  template: |
+    <body>
+      <p>내일은 <strong>체육복{{blank:first}}을 챙겨요.{{blank:second}}
+    {{blank:third}}
+  blanks:
+    - id: first
+      accept: ["</strong>"]
+      caseSensitive: false
+      width: 10
+      misconceptionMap:
+        "</p>": html.mc.overlapping-tags
+        "</body>": html.mc.overlapping-tags
+    - id: second
+      accept: ["</p>"]
+      caseSensitive: false
+      width: 10
+      misconceptionMap:
+        "</strong>": html.mc.overlapping-tags
+        "</body>": html.mc.overlapping-tags
+    - id: third
+      accept: ["</body>"]
+      caseSensitive: false
+      width: 10
+      misconceptionMap:
+        "</strong>": html.mc.overlapping-tags
+        "</p>": html.mc.overlapping-tags
+misconceptions: [html.mc.overlapping-tags]
+hints:
+  - 아직 열려 있는 요소를 바깥부터 순서대로 적어 보세요.
+  - body → p → strong 순서로 열었어요. 닫는 순서는 여는 순서와 어떤 관계일까요?
+  - 가장 나중에 연 strong부터 닫아요. "체육복"만 강조하려면 첫 빈칸에서 바로 닫아야 해요.
+explanation: |
+  정답은 차례로 **`</strong>`**, **`</p>`**, **`</body>`**예요.
+
+  ```html
+  <body>
+    <p>내일은 <strong>체육복</strong>을 챙겨요.</p>
+  </body>
+  ```
+
+  body → p → strong 순서로 열었으니, 가장 안쪽(나중에 연) strong부터 닫고 p, body 순서로 닫아요. 순서를 바꾸면 태그가 엇갈려서 잘못된 중첩이 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

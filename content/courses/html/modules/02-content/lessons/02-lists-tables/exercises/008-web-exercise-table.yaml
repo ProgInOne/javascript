@@ -1,0 +1,165 @@
+id: html.content.lists-tables.web-exercise-table
+type: web_task
+difficulty: 4
+concepts:
+  - { id: html.content.tables, weight: 1 }
+  - { id: html.doc.nesting, weight: 0.3 }
+tags: [table, thead, tbody, th, td, web-task]
+estimatedSeconds: 360
+prompt: |
+  이번 주 운동 계획을 문단으로 적어 두었어요. 이 내용을 **표**로 바꾸세요.
+
+  - 제목 행은 `thead`로 묶고, 제목 칸 세 개(요일, 운동, 시간)를 둬요.
+  - 데이터 행 세 개(월, 수, 금)는 `tbody`로 묶어요.
+  - 각 데이터 행의 칸은 요일, 운동, 시간 순서예요.
+
+  위의 `<style>`은 칸에 테두리를 그려 주는 CSS라서 그대로 두세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>운동 계획</title>
+              <style>
+                th, td {
+                  border: 1px solid #9ca3af;
+                  padding: 4px 8px;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>이번 주 운동 계획</h1>
+              <p>월 - 줄넘기 - 20분</p>
+              <p>수 - 달리기 - 30분</p>
+              <p>금 - 스트레칭 - 15분</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>운동 계획</title>
+              <style>
+                th, td {
+                  border: 1px solid #9ca3af;
+                  padding: 4px 8px;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>이번 주 운동 계획</h1>
+              <table>
+                <thead>
+                  <tr>
+                    <th>요일</th>
+                    <th>운동</th>
+                    <th>시간</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>월</td>
+                    <td>줄넘기</td>
+                    <td>20분</td>
+                  </tr>
+                  <tr>
+                    <td>수</td>
+                    <td>달리기</td>
+                    <td>30분</td>
+                  </tr>
+                  <tr>
+                    <td>금</td>
+                    <td>스트레칭</td>
+                    <td>15분</td>
+                  </tr>
+                </tbody>
+              </table>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: header-cells
+      description: thead 안에 제목 칸(th)이 세 개 있어야 합니다.
+      requirement: 제목 행
+      visible: true
+      selector: table thead th
+      expect:
+        count: 3
+      misconceptionIfFail: html.mc.th-is-bold-td
+    - kind: dom
+      id: header-order
+      description: 제목 칸은 요일, 운동, 시간 순서여야 합니다.
+      requirement: 제목 행
+      visible: true
+      selector: "table thead th:nth-child(2)"
+      expect:
+        text: { equals: 운동 }
+    - kind: dom
+      id: body-rows
+      description: tbody 안에 데이터 행(tr)이 세 개 있어야 합니다.
+      requirement: 데이터 행 세 개
+      visible: true
+      selector: table tbody tr
+      expect:
+        count: 3
+    - kind: dom
+      id: data-cells
+      description: 데이터 칸(td)이 모두 아홉 개(3행 × 3칸) 있어야 합니다.
+      requirement: 데이터 행 세 개
+      visible: true
+      selector: table tbody td
+      expect:
+        count: 9
+    - kind: dom
+      id: wednesday-row
+      description: 둘째 데이터 행은 수, 달리기, 30분이어야 합니다.
+      requirement: 칸 순서
+      selector: "table tbody tr:nth-child(2) > td:nth-child(2)"
+      expect:
+        text: { equals: 달리기 }
+misconceptions: [html.mc.th-is-bold-td]
+hints:
+  - 표는 table 안에 행을 쌓아서 만들어요. 행 하나를 만드는 요소와 칸 두 종류를 떠올려 보세요.
+  - "행은 `tr`, 제목 칸은 `th`, 데이터 칸은 `td`예요. 제목 행은 `thead`, 데이터 행은 `tbody`로 묶어요."
+  - "`<table>` 안에 `<thead><tr><th>요일</th>...</tr></thead>`를 쓰고, 이어서 `<tbody>` 안에 `<tr><td>월</td><td>줄넘기</td><td>20분</td></tr>` 같은 행을 세 개 써요."
+explanation: |
+  예시 정답은 이래요(데이터 행은 하나만 보여요).
+
+  ```html
+  <table>
+    <thead>
+      <tr>
+        <th>요일</th>
+        <th>운동</th>
+        <th>시간</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>월</td>
+        <td>줄넘기</td>
+        <td>20분</td>
+      </tr>
+      <!-- 수, 금 행도 같은 모양 -->
+    </tbody>
+  </table>
+  ```
+
+  - 맨 윗줄의 "요일, 운동, 시간"은 각 열이 무엇인지 알려 주는 이름표라 `th`예요.
+  - 실제 계획 값은 `td`예요. 행마다 칸이 세 개라서 3열 표가 돼요.
+  - 문단은 지워요. 같은 내용을 두 번 보여 줄 필요가 없어요.
+
+  `thead`를 빼면 제목 행 체크가 실패해요(브라우저는 빠진 `tbody`는 채워 주지만 `thead`는 채워 주지 않아요).
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

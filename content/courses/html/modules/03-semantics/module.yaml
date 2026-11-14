@@ -1,0 +1,5 @@
+id: html.semantics
+title: 의미와 구조
+summary: 페이지의 구역을 뜻이 있는 시맨틱 요소로 나누고, 뜻 없는 묶음인 div와 구분해 씁니다.
+# 단원 평가(review)는 평가 세트가 들어오는 M6에서 추가합니다. 전체 목록: landmarks, review
+lessons: [landmarks]

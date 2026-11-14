@@ -1,0 +1,46 @@
+id: html.basics.document.mcq-element-parts
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: html.doc.elements, weight: 1 }
+tags: [element, tag]
+estimatedSeconds: 40
+prompt: |
+  아래 코드 한 줄 **전체**(`<em>`부터 `</em>`까지)를 가리키는 말로 알맞은 것은 무엇인가요?
+code: |
+  <em>정말</em>
+spec:
+  options:
+    - id: a
+      text: em 요소
+    - id: b
+      text: 여는 태그
+      misconception: html.mc.tag-is-element
+      rationale: 여는 태그는 맨 앞의 `<em>` 하나뿐이에요. 내용과 닫는 태그까지 합친 전체는 요소예요.
+    - id: c
+      text: 속성
+      rationale: 속성은 여는 태그 안에 `이름="값"`으로 쓰는 추가 정보예요. 이 코드에는 속성이 없어요.
+    - id: d
+      text: 닫는 태그
+      rationale: 닫는 태그는 맨 끝의 `</em>` 하나뿐이에요.
+  correct: a
+misconceptions: [html.mc.tag-is-element]
+hints:
+  - 이 코드는 세 부분(여는 태그, 내용, 닫는 태그)으로 나눌 수 있어요.
+  - 꺾쇠로 감싼 표시 하나하나는 "태그"라고 불러요. 그렇다면 세 부분을 모두 합친 것은 무엇일까요?
+  - 여는 태그 + 내용 + 닫는 태그를 합친 전체를 부르는 이름이 따로 있어요.
+explanation: |
+  정답은 **em 요소**예요.
+
+  | 부분 | 코드 |
+  |---|---|
+  | 여는 태그 | `<em>` |
+  | 내용 | `정말` |
+  | 닫는 태그 | `</em>` |
+  | 요소 (전체) | `<em>정말</em>` |
+
+  태그는 꺾쇠로 감싼 표시 하나하나이고, 요소는 그 태그와 내용을 모두 합친 전체예요. "여는 태그"를 골랐다면 태그와 요소를 같은 것으로 생각한 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

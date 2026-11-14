@@ -1,0 +1,41 @@
+id: html.semantics.landmarks.mcq-div-when
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: html.semantics.div-vs-semantic, weight: 1 }
+tags: [semantic, div]
+estimatedSeconds: 60
+prompt: |
+  다음 중 **`div`로 감싸는 것이 가장 알맞은** 경우는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: 사진 카드 여러 개를 CSS로 격자 모양으로 배치하려고 한꺼번에 감쌀 때
+    - id: b
+      text: 사이트 맨 아래의 연락처와 저작권 안내를 감쌀 때
+      rationale: 연락처와 저작권 안내는 꼬리말이라는 뜻이 있어요. footer가 맞아요.
+    - id: c
+      text: 페이지마다 다른 핵심 내용 전체를 감쌀 때
+      rationale: 페이지의 핵심 내용은 main이에요.
+    - id: d
+      text: div는 낡은 요소라서 어떤 경우에도 쓰지 않는다
+      misconception: html.mc.div-is-wrong
+      rationale: div는 뜻 없이 모양이나 배치만을 위해 묶을 때 쓰는 올바른 요소예요.
+  correct: a
+misconceptions: [html.mc.div-is-wrong]
+hints:
+  - div는 뜻이 없는 묶음이에요. 뜻이 있는 묶음에는 다른 요소가 있었어요.
+  - 각 경우에 "이 묶음에 붙일 이름(머리말, 꼬리말, 본문 등)이 있는지" 생각해 보세요.
+  - 이름 없이 모양이나 배치 때문에만 묶는 경우가 div의 자리예요.
+explanation: |
+  정답은 **사진 카드 여러 개를 CSS로 배치하려고 감쌀 때**예요.
+
+  이 묶음은 "카드들을 격자로 놓는다"는 **배치** 때문에 생긴 상자일 뿐, 머리말이나 본문 같은 뜻이 없어요. 이렇게 뜻 없이 모양이나 배치만을 위해 묶을 때 `div`를 써요.
+
+  - 연락처와 저작권 안내는 꼬리말이라는 뜻이 있으니 `footer`예요.
+  - 페이지의 핵심 내용은 `main`이에요.
+  - div가 낡아서 쓰면 안 된다는 생각은 틀렸어요. 오히려 뜻 없는 묶음에 시맨틱 요소를 쓰면 화면 낭독기에 엉뚱한 구역이 생겨요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

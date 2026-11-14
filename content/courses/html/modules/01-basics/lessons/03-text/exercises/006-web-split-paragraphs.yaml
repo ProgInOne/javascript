@@ -1,0 +1,106 @@
+id: html.basics.text.web-split-paragraphs
+type: web_task
+difficulty: 2
+concepts:
+  - { id: html.text.paragraphs, weight: 1 }
+tags: [paragraphs, whitespace, web-task]
+estimatedSeconds: 180
+prompt: |
+  동아리 소개 글을 세 문단으로 나누려고 코드에서 Enter를 쳐서 줄을 바꿨는데, 실행해 보면 모두 한 문단으로 붙어 보여요.
+
+  세 문장이 화면에서 **각각 다른 문단**으로 보이도록 고치세요. 문장의 글자는 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>동아리 소개</title>
+            </head>
+            <body>
+              <h1>사진 동아리</h1>
+              <p>
+                우리는 매주 토요일에 모여요.
+
+                함께 동네를 걸으며 사진을 찍어요.
+
+                누구나 카메라 없이 휴대폰으로 참여할 수 있어요.
+              </p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>동아리 소개</title>
+            </head>
+            <body>
+              <h1>사진 동아리</h1>
+              <p>우리는 매주 토요일에 모여요.</p>
+              <p>함께 동네를 걸으며 사진을 찍어요.</p>
+              <p>누구나 카메라 없이 휴대폰으로 참여할 수 있어요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: three-paragraphs
+      description: 본문에 문단(p)이 세 개 있어야 합니다.
+      requirement: 문단 세 개
+      visible: true
+      selector: body > p
+      expect:
+        count: 3
+      misconceptionIfFail: html.mc.newline-in-source
+    - kind: dom
+      id: first
+      description: 첫째 문단은 "우리는 매주 토요일에 모여요."여야 합니다.
+      requirement: 문장마다 한 문단
+      visible: true
+      selector: "body > p:nth-of-type(1)"
+      expect:
+        text: { equals: 우리는 매주 토요일에 모여요. }
+    - kind: dom
+      id: second
+      description: 둘째 문단은 "함께 동네를 걸으며 사진을 찍어요."여야 합니다.
+      requirement: 문장마다 한 문단
+      visible: true
+      selector: "body > p:nth-of-type(2)"
+      expect:
+        text: { equals: 함께 동네를 걸으며 사진을 찍어요. }
+    - kind: dom
+      id: third
+      description: 셋째 문단은 "누구나 카메라 없이 휴대폰으로 참여할 수 있어요."여야 합니다.
+      requirement: 문장마다 한 문단
+      visible: true
+      selector: "body > p:nth-of-type(3)"
+      expect:
+        text: { equals: 누구나 카메라 없이 휴대폰으로 참여할 수 있어요. }
+misconceptions: [html.mc.newline-in-source]
+hints:
+  - 코드의 빈 줄은 화면에서 어떻게 그려지나요? 지금 이 글에는 문단을 나누는 요소가 몇 개 있나요?
+  - 문단을 나누는 것은 Enter가 아니라 `p` 요소예요.
+  - "지금의 `p` 하나를 문장마다 하나씩, `<p>`와 `</p>`로 감싼 세 개로 바꿔 보세요."
+explanation: |
+  예시 정답은 문장마다 `p` 요소를 하나씩 쓰는 거예요.
+
+  ```html
+  <p>우리는 매주 토요일에 모여요.</p>
+  <p>함께 동네를 걸으며 사진을 찍어요.</p>
+  <p>누구나 카메라 없이 휴대폰으로 참여할 수 있어요.</p>
+  ```
+
+  브라우저는 코드의 줄바꿈과 빈 줄을 공백 한 칸으로 합쳐요. 그래서 하나의 `p` 안에서 Enter를 아무리 쳐도 한 문단이에요. `p`를 세 개로 나누면 브라우저가 문단 세 개로 그리고, 문단 사이에 간격도 둬요.
+
+  `<br>`로 줄만 바꾸면 화면에서는 줄이 바뀌지만 여전히 한 문단이라 이 문제의 체크를 통과하지 못해요. `<br>`는 주소나 시의 행처럼 줄바꿈 자체가 내용일 때 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

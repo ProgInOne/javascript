@@ -5,8 +5,6 @@ title: 웹 프론트엔드 기초
 tracks:
   - id: web-frontend-basics
     title: 웹 프론트엔드 기초
-    summary: JavaScript로 첫 프로그램을 쓰고, CSS로 화면의 상자를 다루는 웹 개발의 기본기를 배웁니다.
-    # v0.1 순서: js-basics를 먼저 둡니다. JS 모듈 1은 선수 지식 없이 시작할 수 있지만,
-    # CSS 박스 모델은 원래 css.basics(규칙·선택자) 다음 모듈이고 v0.1에는 그 모듈이 없습니다.
-    # HTML·CSS 기초가 들어오는 v0.2에서 설계 문서의 권장 순서(html → css → js-basics)로 바꿉니다.
-    courses: [js-basics, css]
+    summary: HTML로 문서의 구조를 잡고, CSS로 화면의 상자를 다루고, JavaScript로 첫 프로그램을 쓰는 웹 개발의 기본기를 배웁니다.
+    # 설계 문서의 권장 순서(html → css → js-basics)입니다. 잠금이 없으므로 학습자는 순서를 바꿔 들을 수 있습니다.
+    courses: [html, css, js-basics]

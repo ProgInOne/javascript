@@ -1,0 +1,34 @@
+id: html.basics.document.fill-closing-tag
+type: fill_blank
+difficulty: 1
+concepts:
+  - { id: html.doc.elements, weight: 1 }
+tags: [element, closing-tag]
+estimatedSeconds: 40
+prompt: |
+  문단 요소를 완성하려고 해요. 빈칸에 들어갈 **닫는 태그**를 쓰세요.
+spec:
+  mode: text
+  template: |
+    <p>오늘은 HTML을 배워요.{{blank:close}}
+  blanks:
+    - id: close
+      accept: ["</p>"]
+      caseSensitive: false
+      width: 6
+      misconceptionMap:
+        "<p>": html.mc.tag-is-element
+hints:
+  - 닫는 태그는 요소가 끝나는 곳을 표시해요. 여는 태그와 이름이 같아요.
+  - 여는 태그 `<p>`와 모양이 거의 같지만, 이름 앞에 기호 하나가 더 붙어요.
+  - 꺾쇠 안에서 이름 `p` 앞에 빗금(`/`)을 붙여요.
+explanation: |
+  정답은 **`</p>`**예요.
+
+  닫는 태그는 여는 태그와 같은 이름을 쓰고, 이름 앞에 `/`를 붙여요. `<p>`와 `</p>`가 내용을 감싸서 `<p>오늘은 HTML을 배워요.</p>`라는 하나의 문단 요소가 돼요.
+
+  `<p>`를 한 번 더 쓰면 요소를 닫는 것이 아니라 새 문단을 여는 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

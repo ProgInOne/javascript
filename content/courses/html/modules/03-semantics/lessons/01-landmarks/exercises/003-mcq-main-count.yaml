@@ -1,0 +1,48 @@
+id: html.semantics.landmarks.mcq-main-count
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: html.semantics.page-landmarks, weight: 1 }
+tags: [semantic, main]
+estimatedSeconds: 60
+prompt: |
+  쇼핑몰의 상품 페이지 본문에 "상품 설명", "구매 후기", "배송 안내" 세 구역이 있어요. 이 본문을 어떻게 감싸는 것이 가장 알맞은가요?
+spec:
+  options:
+    - id: a
+      text: 본문 전체를 `main` 하나로 감싸고, 그 안을 세 개의 `section`으로 나눈다
+    - id: b
+      text: 세 구역을 각각 `main`으로 감싸 `main`을 세 개 쓴다
+      misconception: html.mc.many-mains
+      rationale: main은 페이지의 핵심 내용 하나를 가리켜서 한 페이지에 하나만 써요.
+    - id: c
+      text: 세 구역을 각각 `header`로 감싼다
+      rationale: header는 머리말이라는 뜻이에요. 본문의 구역에 쓰면 뜻이 틀려요.
+    - id: d
+      text: 구역마다 `nav`로 감싸 바로 갈 수 있게 한다
+      rationale: nav는 주요 탐색 링크 묶음이에요. 설명이나 후기 같은 내용 구역은 nav가 아니에요.
+  correct: a
+misconceptions: [html.mc.many-mains]
+hints:
+  - "\"본문으로 바로 가기\"를 눌렀을 때 갈 곳은 몇 군데여야 할까요?"
+  - main은 한 페이지에 몇 개 쓸 수 있었나요?
+  - 본문 안을 주제별로 나눌 때는 소제목이 붙는 구역을 뜻하는 요소를 써요.
+explanation: |
+  정답은 **본문 전체를 `main` 하나로 감싸고, 그 안을 `section` 세 개로 나눈다**예요.
+
+  ```html
+  <main>
+    <section><h2>상품 설명</h2>...</section>
+    <section><h2>구매 후기</h2>...</section>
+    <section><h2>배송 안내</h2>...</section>
+  </main>
+  ```
+
+  - `main`은 이 페이지의 핵심 내용 하나를 가리키므로 한 페이지에 하나만 써요. 세 개면 "본문으로 바로 가기"가 어디로 갈지 알 수 없어요.
+  - `header`는 머리말, `nav`는 주요 메뉴라는 뜻이라 본문의 구역에 맞지 않아요.
+
+  (구매 후기 하나하나는 독립된 글이라 section 안에서 각각 `article`로 감쌀 수도 있어요.)
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

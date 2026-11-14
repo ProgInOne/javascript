@@ -1,0 +1,50 @@
+id: html.content.forms.fill-button-type
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: html.forms.buttons, weight: 1 }
+  - { id: html.forms.form, weight: 0.3 }
+tags: [button, type]
+estimatedSeconds: 60
+prompt: |
+  주문 폼에 버튼이 두 개 있어요.
+
+  - "주문하기"는 누르면 **폼을 보내야** 해요.
+  - "수량 확인"은 나중에 JavaScript로 기능을 붙일 버튼이라, 누를 때 **폼을 보내면 안 돼요**.
+
+  두 빈칸에 알맞은 `type` 값을 쓰세요.
+spec:
+  mode: text
+  template: |
+    <form action="/order">
+      <input name="count" type="number" />
+      <button type="{{blank:check}}">수량 확인</button>
+      <button type="{{blank:order}}">주문하기</button>
+    </form>
+  blanks:
+    - id: check
+      accept: ["button"]
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "submit": html.mc.button-does-nothing
+    - id: order
+      accept: ["submit"]
+      caseSensitive: false
+      width: 8
+misconceptions: [html.mc.button-does-nothing]
+hints:
+  - form 안의 button type에는 submit, button, reset이 있어요. 각각 누르면 무엇을 하나요?
+  - 폼을 보내는 type과, 아무 일도 하지 않는(나중에 JavaScript로 할 일을 붙이는) type을 찾으세요.
+  - "\"수량 확인\"이 폼을 보내지 않으려면 type을 반드시 써야 해요. 쓰지 않으면 submit이 되니까요."
+explanation: |
+  정답은 **수량 확인 `button`**, **주문하기 `submit`**이에요.
+
+  - `type="button"`은 눌러도 폼을 보내지 않아요. JavaScript로 "수량 확인" 같은 기능을 붙일 버튼에 써요.
+  - `type="submit"`은 누르면 폼을 `action`의 주소로 보내요.
+
+  "수량 확인"에 `submit`을 쓰거나 type을 아예 빼면, 수량만 확인하려다 주문이 보내져 버려요. form 안의 button은 type을 쓰지 않으면 submit이기 때문이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

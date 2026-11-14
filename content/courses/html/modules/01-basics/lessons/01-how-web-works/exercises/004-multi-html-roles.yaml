@@ -1,0 +1,43 @@
+id: html.basics.how-web-works.multi-html-roles
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: html.web.three-languages, weight: 1 }
+tags: [html-css-js, roles]
+estimatedSeconds: 60
+prompt: |
+  다음 중 **HTML이 맡는 일**을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: 페이지에 "이 글자는 제목이다", "이 글자는 문단이다"라고 표시하기
+    - id: b
+      text: 페이지의 어느 위치에 사진과 링크가 들어가는지 표시하기
+    - id: c
+      text: 입력칸에 쓴 두 숫자를 더해서 결과를 보여 주기
+      misconception: html.mc.html-is-programming
+      rationale: 숫자를 더하는 계산은 JavaScript가 맡아요. HTML은 계산을 하지 않아요.
+    - id: d
+      text: 제목 글자를 파란색으로, 문단 글자를 조금 더 크게 바꾸기
+      rationale: 글자 색과 크기 같은 모양은 CSS의 몫이에요.
+    - id: e
+      text: 버튼을 누르면 숨겨져 있던 메뉴가 나타나게 하기
+      misconception: html.mc.html-is-programming
+      rationale: 누르면 무언가가 바뀌는 반응은 JavaScript가 맡아요.
+  correct: [a, b]
+misconceptions: [html.mc.html-is-programming]
+hints:
+  - 각 선택지가 "내용과 구조", "모양", "동작" 중 무엇에 해당하는지 나눠 보세요.
+  - 계산이나 "누르면 바뀐다"는 동작이고, 색과 크기는 모양이에요.
+  - HTML은 무엇이 어디에 있고 그것이 무슨 뜻인지만 표시해요.
+explanation: |
+  정답은 **제목·문단 표시하기**와 **사진과 링크의 자리 표시하기**예요.
+
+  HTML은 내용에 뜻을 붙이고(제목, 문단, 링크, 사진) 그 순서와 구조를 정하는 표시 언어예요.
+
+  - 숫자를 더해서 보여 주기, 버튼을 누르면 메뉴가 나타나기: 계산과 반응은 **JavaScript**가 맡아요. HTML로 만들 수 있다고 생각했다면 HTML을 프로그래밍 언어로 오해한 거예요.
+  - 글자 색과 크기 바꾸기: 모양은 **CSS**의 몫이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

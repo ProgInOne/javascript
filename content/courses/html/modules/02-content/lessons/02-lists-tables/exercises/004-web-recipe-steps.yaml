@@ -1,0 +1,116 @@
+id: html.content.lists-tables.web-recipe-steps
+type: web_task
+difficulty: 2
+concepts:
+  - { id: html.content.lists, weight: 1 }
+  - { id: html.text.paragraphs, weight: 0.3 }
+tags: [list, ol, li, web-task]
+estimatedSeconds: 240
+prompt: |
+  달걀말이 만드는 순서를 문단에 번호를 직접 써서 적었더니, 번호와 줄이 뒤죽박죽이에요.
+
+  만드는 순서를 **순서가 중요한 목록**으로 바꾸세요.
+
+  - 각 단계는 목록의 항목 하나가 되어야 해요.
+  - 번호(`1.`, `2.`, `3.`)는 브라우저가 매기도록 글자에서 지우세요.
+  - 단계의 글자(번호 제외)는 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>달걀말이</title>
+            </head>
+            <body>
+              <h1>달걀말이</h1>
+              <h2>만드는 순서</h2>
+              <p>
+                1. 달걀 세 개를 풀어요.
+                2. 팬에 기름을 두르고 달걀물을 부어요.
+                3. 끝에서부터 돌돌 말아요.
+              </p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>달걀말이</title>
+            </head>
+            <body>
+              <h1>달걀말이</h1>
+              <h2>만드는 순서</h2>
+              <ol>
+                <li>달걀 세 개를 풀어요.</li>
+                <li>팬에 기름을 두르고 달걀물을 부어요.</li>
+                <li>끝에서부터 돌돌 말아요.</li>
+              </ol>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: ordered-list
+      description: 단계 세 개가 순서가 중요한 목록(ol)의 항목(li)이어야 합니다.
+      requirement: 순서 있는 목록
+      visible: true
+      selector: ol > li
+      expect:
+        count: 3
+    - kind: dom
+      id: step1
+      description: 첫째 항목은 번호 없이 "달걀 세 개를 풀어요."여야 합니다.
+      requirement: 번호는 브라우저가
+      visible: true
+      selector: "ol > li:nth-child(1)"
+      expect:
+        text: { equals: 달걀 세 개를 풀어요. }
+    - kind: dom
+      id: step2
+      description: 둘째 항목은 번호 없이 "팬에 기름을 두르고 달걀물을 부어요."여야 합니다.
+      requirement: 번호는 브라우저가
+      visible: true
+      selector: "ol > li:nth-child(2)"
+      expect:
+        text: { equals: 팬에 기름을 두르고 달걀물을 부어요. }
+    - kind: dom
+      id: step3
+      description: 셋째 항목은 번호 없이 "끝에서부터 돌돌 말아요."여야 합니다.
+      requirement: 번호는 브라우저가
+      visible: true
+      selector: "ol > li:nth-child(3)"
+      expect:
+        text: { equals: 끝에서부터 돌돌 말아요. }
+misconceptions: [html.mc.li-alone]
+hints:
+  - 순서가 중요한 목록을 감싸는 요소와, 목록의 항목을 나타내는 요소가 필요해요.
+  - 목록 상자는 `ol`, 항목은 `li`예요. `p`는 더 이상 필요 없어요.
+  - "`<ol>` 안에 `<li>달걀 세 개를 풀어요.</li>`처럼 단계마다 li를 하나씩 쓰고, 앞의 `1.`은 지우세요."
+explanation: |
+  예시 정답은 문단을 `ol`과 `li`로 바꾸는 거예요.
+
+  ```html
+  <ol>
+    <li>달걀 세 개를 풀어요.</li>
+    <li>팬에 기름을 두르고 달걀물을 부어요.</li>
+    <li>끝에서부터 돌돌 말아요.</li>
+  </ol>
+  ```
+
+  - 요리 순서는 순서를 바꾸면 안 되니 `ol`이에요. `ul`을 쓰면 체크가 실패해요.
+  - 번호는 `ol`이 매겨 주므로 글자에서 지워요. 지우지 않으면 화면에 "1. 1. 달걀 세 개를..."처럼 번호가 두 번 보여요.
+  - `li`는 반드시 `ol` 안에 넣어요.
+
+  나중에 단계를 끼워 넣어도 번호를 고칠 필요가 없다는 것이 목록 요소의 장점이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

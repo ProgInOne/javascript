@@ -1,0 +1,94 @@
+id: html.basics.document.web-skeleton
+type: web_task
+difficulty: 2
+concepts:
+  - { id: html.doc.skeleton, weight: 1 }
+  - { id: html.doc.attributes, weight: 0.5 }
+tags: [skeleton, head, title, lang, web-task]
+estimatedSeconds: 180
+prompt: |
+  자기소개 페이지의 뼈대에 빠진 것이 두 가지 있어요. 문서를 고쳐서 아래 두 가지를 만족시키세요.
+
+  1. 브라우저 탭에 **자기소개**라는 이름이 보여야 해요.
+  1. 문서 전체가 **한국어**(`ko`)로 쓰였다는 정보를 가장 바깥 요소에 주세요.
+
+  본문(`body`)의 내용은 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html>
+            <head>
+              <meta charset="utf-8" />
+            </head>
+            <body>
+              <h1>안녕하세요</h1>
+              <p>저는 웹 개발을 배우고 있어요.</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>자기소개</title>
+            </head>
+            <body>
+              <h1>안녕하세요</h1>
+              <p>저는 웹 개발을 배우고 있어요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: tab-title
+      description: head 안에 탭 이름 "자기소개"를 정하는 요소가 있어야 합니다.
+      requirement: 탭 이름
+      visible: true
+      selector: head > title
+      expect:
+        count: 1
+        text: { equals: 자기소개 }
+      misconceptionIfFail: html.mc.head-is-visible
+    - kind: dom
+      id: lang-ko
+      description: 가장 바깥 요소(html)에 한국어를 뜻하는 lang 속성이 있어야 합니다.
+      requirement: 문서 언어
+      visible: true
+      selector: html
+      expect:
+        attr: { name: lang, equals: ko }
+    - kind: dom
+      id: body-kept
+      description: 본문의 제목과 문단은 그대로 있어야 합니다.
+      requirement: 본문 유지
+      selector: body > h1
+      expect:
+        text: { equals: 안녕하세요 }
+misconceptions: [html.mc.head-is-visible]
+hints:
+  - 탭 이름은 화면(본문)에 그리지 않는 문서 정보예요. 그런 정보는 뼈대의 어느 부분에 넣었나요?
+  - 탭 이름은 `head` 안의 `title` 요소로 정해요. 문서의 언어는 `html` 여는 태그의 속성으로 줘요.
+  - "`head` 안에 `<title>자기소개</title>`을 넣고, `<html>`을 `lang` 속성이 있는 여는 태그로 바꿔 보세요."
+explanation: |
+  예시 정답은 다음 두 곳을 고치는 거예요.
+
+  ```html
+  <html lang="ko">
+    <head>
+      <meta charset="utf-8" />
+      <title>자기소개</title>
+    </head>
+  ```
+
+  - **탭 이름**은 `head` 안의 `title`로 정해요. head에는 화면에 그리지 않는 문서 정보를 넣어요. `title`을 body에 넣으면 탭 이름 체크가 실패해요. 본문 맨 위의 큰 제목은 이미 `h1`이 맡고 있어요.
+  - **문서의 언어**는 가장 바깥 요소 `html`의 `lang` 속성으로 알려 줘요. 화면 낭독기는 이 정보를 보고 한국어 발음으로 읽어요. 속성 값 `ko`는 화면에 보이지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

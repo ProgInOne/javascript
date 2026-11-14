@@ -1,0 +1,209 @@
+<Section kind="objectives">
+- 항목의 순서가 중요한지에 따라 `ul`과 `ol`을 골라 목록을 만들 수 있어요.
+- 표의 행(`tr`), 제목 칸(`th`), 데이터 칸(`td`), 제목 행 묶음(`thead`), 본문 행 묶음(`tbody`)을 구분해 쓸 수 있어요.
+- 주어진 데이터를 제목 칸이 있는 표로 작성할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+장보기 목록, 라면 끓이는 순서, 시간표, 가격표처럼 생활 속 정보는 목록이나 표로 정리할 때가 많아요. 이런 내용을 문단에 "1. 물 끓이기 2. 면 넣기"처럼 쓰거나 공백으로 줄을 맞추면 어떻게 될까요?
+
+- 앞 단원에서 본 것처럼 공백과 줄바꿈이 합쳐져서 모양이 무너져요.
+- 중간에 단계 하나를 끼워 넣으면 뒤의 번호를 모두 손으로 고쳐야 해요.
+- 화면 낭독기는 "목록, 항목 3개"나 "3행 2열 표"처럼 구조를 알려 주지 못하고 글자만 줄줄이 읽어요.
+
+HTML에는 목록과 표를 위한 요소가 따로 있어요. 이 요소들로 감싸면 브라우저가 번호를 매기고 줄을 맞춰 주고, 화면 낭독기도 구조를 이해해요.
+</Section>
+
+<Section kind="principle">
+### 목록: ul, ol, li
+
+| 요소 | 뜻 | 기본 모양 | 예 |
+|---|---|---|---|
+| `ul` (unordered list) | 순서가 상관없는 목록 | 글머리 기호(•) | 장보기 목록, 준비물 |
+| `ol` (ordered list) | 순서가 중요한 목록 | 번호(1, 2, 3) | 요리 순서, 순위 |
+| `li` (list item) | 목록의 항목 하나 | | |
+
+```html
+<ul>
+  <li>우유</li>
+  <li>달걀</li>
+</ul>
+```
+
+- `ul`과 `ol`은 **목록 전체를 감싸는 상자**이고, `li`는 그 안의 **항목**이에요.
+- `li`는 반드시 `ul`이나 `ol` 바로 안에 넣어요. 반대로 `ul`·`ol` 바로 안에는 `li`만 넣어요.
+- `ol`의 번호는 브라우저가 매겨요. 항목을 끼워 넣거나 빼도 번호가 저절로 다시 매겨져요.
+
+ul과 ol은 모양이 아니라 **순서가 뜻을 가지는지**로 골라요. 항목의 순서를 바꿨을 때 내용이 달라지면 `ol`, 그대로면 `ul`이에요.
+
+### 표: table, tr, th, td
+
+표는 행(가로줄)을 위에서부터 쌓아 만들어요.
+
+| 요소 | 뜻 |
+|---|---|
+| `table` | 표 전체 |
+| `tr` (table row) | 행 하나(가로줄) |
+| `th` (table header) | **제목 칸**: 그 열이나 행이 무엇인지 알려 주는 이름표 |
+| `td` (table data) | **데이터 칸**: 실제 값 |
+| `thead` | 제목 행들을 묶는 부분 |
+| `tbody` | 본문(데이터) 행들을 묶는 부분 |
+
+```html
+<table>
+  <thead>
+    <tr>
+      <th>과일</th>
+      <th>가격</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>사과</td>
+      <td>1500원</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+```text
+table
+├── thead
+│   └── tr
+│       ├── th  (fruit)
+│       └── th  (price)
+└── tbody
+    └── tr
+        ├── td  (apple)
+        └── td  (1500)
+```
+
+- 열(세로줄)을 만드는 요소는 따로 없어요. 각 행의 첫째 칸끼리, 둘째 칸끼리가 한 열이 돼요. 그래서 행마다 칸 수를 같게 맞춰요.
+- `th`는 굵고 가운데 정렬로 보이지만, 그건 기본 모양일 뿐이에요. 중요한 것은 **제목 칸이라는 뜻**이에요. 화면 낭독기는 `td`를 읽을 때 그 열의 `th`를 함께 읽어 줘서("가격, 1500원") 표를 눈으로 보지 않아도 이해할 수 있어요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 같은 항목을 `ul`과 `ol`로 쓴 거예요. 실행해서 차이를 보세요.
+
+<RunnableExample id="lists" lang="html" concepts={["html.content.lists"]}>
+```html
+<h2>준비물</h2>
+<ul>
+  <li>컵라면</li>
+  <li>뜨거운 물</li>
+  <li>젓가락</li>
+</ul>
+
+<h2>만드는 순서</h2>
+<ol>
+  <li>뚜껑을 반쯤 연다</li>
+  <li>뜨거운 물을 선까지 붓는다</li>
+  <li>3분 기다린다</li>
+</ol>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- 준비물은 어떤 순서로 챙겨도 상관없어서 `ul`로 썼어요. 항목 앞에 글머리 기호가 붙어요.
+- 만드는 순서는 순서가 바뀌면 안 되니 `ol`로 썼어요. 번호 1, 2, 3은 코드에 쓰지 않았는데 브라우저가 매겼어요.
+- `ol`의 둘째 항목 앞에 `<li>젓가락을 준비한다</li>`를 끼워 넣고 다시 실행해 보세요. 뒤의 번호가 저절로 바뀌어요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 요일별 급식 표예요. 실행하기 전에, 화면에 표가 몇 행 몇 열로 보일지 예측해 보세요(제목 행 포함).
+
+<RunnableExample id="table" lang="web" predict predictKind="value" concepts={["html.content.tables"]}>
+```html
+<style>
+  th, td {
+    border: 1px solid #9ca3af;
+    padding: 4px 8px;
+  }
+</style>
+
+<table>
+  <thead>
+    <tr>
+      <th>요일</th>
+      <th>점심</th>
+      <th>후식</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>월</td>
+      <td>카레라이스</td>
+      <td>요구르트</td>
+    </tr>
+    <tr>
+      <td>화</td>
+      <td>비빔밥</td>
+      <td>귤</td>
+    </tr>
+  </tbody>
+</table>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- `tr`이 세 개(thead에 1개, tbody에 2개)라서 표는 **3행**이에요.
+- 행마다 칸이 세 개라서 **3열**이에요. 첫째 칸들(요일, 월, 화)이 한 열, 둘째 칸들이 또 한 열이 돼요.
+- 맨 윗줄은 `th`라서 굵게 보이고, 각 열이 무엇인지 알려 줘요. 화면 낭독기는 "비빔밥"을 읽을 때 "점심, 비빔밥"처럼 제목 칸을 함께 읽어요.
+- 테두리는 HTML이 아니라 위쪽 `<style>`의 CSS가 그렸어요. 표 요소는 기본으로 테두리가 없어요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="html.mc.li-alone">
+<Wrong>`<li>`만 여러 개 쓰면 목록이 된다.</Wrong>
+<Actual>감싸는 `ul`이나 `ol`이 없으면 순서가 있는 목록인지 없는 목록인지 알 수 없는 잘못된 HTML이에요. 화면 낭독기도 목록으로 알려 주지 못해요.</Actual>
+<Right>항목(`li`)은 항상 목록 상자(`ul` 또는 `ol`) 안에 넣어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="html.mc.th-is-bold-td">
+<Wrong>`th`는 굵은 글씨 칸이니까, 강조하고 싶은 데이터 칸에 써도 된다.</Wrong>
+<Actual>`th`는 제목 칸이라는 뜻이에요. 데이터 칸에 쓰면 화면 낭독기가 그 값을 다른 칸의 이름표로 읽어서 표가 엉뚱하게 전해져요.</Actual>
+<Right>열이나 행의 이름표에는 `th`, 값에는 `td`를 써요. 데이터를 굵게 보이고 싶으면 `td` 안에 `strong`을 넣거나 CSS를 써요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+웹 사이트 맨 위의 메뉴는 대부분 **링크의 목록**이에요. 메뉴 항목들은 순서가 상관없으니 `ul`로 묶고, 각 `li` 안에 링크를 넣어요. 가로로 나란히 놓는 모양은 CSS로 만들어요.
+
+```html
+<ul>
+  <li><a href="index.html">첫 페이지</a></li>
+  <li><a href="menu.html">메뉴</a></li>
+  <li><a href="contact.html">오시는 길</a></li>
+</ul>
+```
+
+표는 시간표, 가격 비교, 성적표처럼 **행과 열로 비교하는 데이터**에만 써요. 예전에는 화면을 칸으로 나누는 배치에 표를 쓰기도 했지만, 지금은 배치를 CSS로 해요. 표로 배치하면 화면 낭독기가 배치용 칸까지 데이터 표로 읽어 버리기 때문이에요.
+</Section>
+
+<Section kind="check">
+목록 요소를 고르는 기준을 확인해 보세요.
+
+<InlineExercise ref="html.content.lists-tables.mcq-ol-or-ul" />
+
+`th`의 역할을 확인해 보세요.
+
+<InlineExercise ref="html.content.lists-tables.mcq-th-meaning" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 순서가 상관없는 목록은 `ul`, 순서가 중요한 목록은 `ol`로 감싸고, 항목은 `li`로 써요.
+- `li`는 반드시 `ul`이나 `ol` 안에 넣어요. `ol`의 번호는 브라우저가 매겨요.
+- 표는 `table` 안에 행(`tr`)을 쌓고, 행 안에 칸을 넣어요. 열을 만드는 요소는 따로 없어요.
+- `th`는 열이나 행의 이름표인 제목 칸, `td`는 값이 들어가는 데이터 칸이에요.
+- 제목 행은 `thead`, 데이터 행은 `tbody`로 묶어요. 표는 데이터에만 쓰고, 화면 배치는 CSS로 해요.
+</Section>
+
+<Section kind="next">
+다음 단원 "폼 기초"에서는 사용자에게 글자를 입력받는 입력칸과 버튼을 만들어요. 목록과 표로 정리한 데이터를 JavaScript로 바꾸는 방법은 JavaScript 기초 과정의 "브라우저 JS 입문"에서 배워요. <MdnLink path="Web/HTML/Reference/Elements/table" />
+</Section>

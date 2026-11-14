@@ -1,0 +1,213 @@
+<Section kind="objectives">
+- `form`, `input`, `label`, `button`으로 값을 입력받아 보내는 폼을 작성할 수 있어요.
+- 받을 값의 종류에 맞게 `input`의 `type`(`text`, `email`, `password`, `number` 등)을 고를 수 있어요.
+- `label`의 `for`와 `input`의 `id`로 설명 글자와 입력칸을 연결할 수 있어요.
+- `form` 안의 `button`이 `type`에 따라 폼을 보내는지 예측할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+지금까지 만든 페이지는 읽기만 할 수 있었어요. 그런데 웹에서는 정보를 **입력**할 일이 많아요. 검색어 입력, 회원 가입, 로그인, 댓글 쓰기가 모두 입력이에요.
+
+입력칸을 만들 때는 이런 점을 신경 써야 해요.
+
+- 이메일 칸에 "안녕"이라고 써도 그냥 넘어가면 곤란해요.
+- 비밀번호를 입력할 때 글자가 그대로 보이면 옆 사람이 볼 수 있어요.
+- 휴대폰에서 나이 칸을 눌렀는데 숫자 키패드 대신 한글 자판이 뜨면 불편해요.
+- 화면 낭독기 사용자는 입력칸만으로는 무엇을 쓰는 칸인지 알 수 없어요.
+
+HTML의 폼 요소는 이런 일을 브라우저가 대신 처리하게 해 줘요. 이 단원에서는 폼을 이루는 네 가지 요소를 배워요. 입력값을 실제로 처리하는 일은 나중에 JavaScript로 해요.
+</Section>
+
+<Section kind="principle">
+### form: 보낼 묶음
+
+`form`은 입력 요소들을 하나로 묶는 상자예요. 폼을 **보내면(submit)** 그 안의 입력값들이 한꺼번에 전송돼요.
+
+```html
+<form action="/search">
+  ...입력칸과 버튼...
+</form>
+```
+
+- `action`: 입력값을 보낼 주소. 서버의 그 주소가 값을 받아 처리해요.
+- `form` 밖에 있는 입력칸은 폼을 보낼 때 함께 가지 않아요.
+
+### input: 값의 종류를 정하는 type
+
+`input`은 한 줄짜리 입력칸이에요. 내용이 없는 빈 요소라서 닫는 태그가 없어요. `type` 속성으로 **받을 값의 종류**를 정해요.
+
+| type | 받을 값 | 브라우저가 해 주는 일 |
+|---|---|---|
+| `text` | 일반 글자(기본값) | |
+| `email` | 이메일 주소 | 보낼 때 `@`가 있는지 검사, 휴대폰에서 `@` 키가 있는 자판 |
+| `password` | 비밀번호 | 입력한 글자를 ●로 가림 |
+| `number` | 숫자 | 숫자가 아닌 값 거부, 위아래 화살표, 휴대폰 숫자 자판 |
+| `tel` | 전화번호 | 휴대폰 숫자 자판 |
+| `search` | 검색어 | 입력한 글자를 지우는 버튼 등 |
+| `checkbox` | 켜기/끄기 선택 | 체크 상자 |
+
+`type`은 모양만 바꾸는 것이 아니라 **입력값 검사, 휴대폰 자판, 글자 가리기**까지 바꿔요. 그래서 받을 값에 맞는 `type`을 고르는 것만으로도 사용하기 편하고 안전한 폼이 돼요.
+
+`name` 속성은 보낼 때 값에 붙는 이름이에요(`q=고양이`처럼). 서버가 어떤 값인지 알아보는 데 써요.
+
+### label: 입력칸의 이름표
+
+`label`은 입력칸이 무엇을 쓰는 칸인지 알려 주는 **이름표**예요. 그냥 글자를 옆에 쓰는 것과 달리, 입력칸과 **연결**해야 해요. 연결 방법은 두 가지예요.
+
+```html
+<!-- 방법 1: for와 id를 같은 값으로 -->
+<label for="nickname">별명</label>
+<input id="nickname" type="text" />
+
+<!-- 방법 2: label 안에 input을 넣기 -->
+<label>별명 <input type="text" /></label>
+```
+
+연결하면 이런 일이 생겨요.
+
+- 글자 "별명"을 눌러도 입력칸에 커서가 들어가요. 체크 상자처럼 작은 입력칸을 누르기 쉬워져요.
+- 화면 낭독기가 입력칸에 들어갈 때 "별명, 입력칸"처럼 이름을 읽어 줘요.
+
+`placeholder`는 입력칸 안에 흐리게 보이는 **예시 글자**예요. 입력을 시작하면 사라지므로 이름표를 대신할 수 없어요. 이름표는 항상 `label`로 써요.
+
+### button: 누르면 무엇을 할까
+
+`button`은 누를 수 있는 버튼이에요. `form` 안의 `button`은 `type`에 따라 하는 일이 달라요.
+
+| type | 누르면 |
+|---|---|
+| `submit` (**form 안에서 아무것도 안 쓰면 이것**) | 폼을 보내요 |
+| `button` | 아무 일도 하지 않아요. JavaScript로 할 일을 붙일 때 써요 |
+| `reset` | 입력값을 모두 처음으로 되돌려요 |
+
+`type`을 쓰지 않은 `button`도 폼을 보낸다는 점을 꼭 기억하세요. 폼을 보내면 페이지가 새로 열리면서 입력한 내용이 사라져요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 회원 가입 폼이에요. 실행한 뒤 다음을 해 보세요.
+
+1. "이메일" 글자를 눌러 보세요. 어디에 커서가 들어가나요?
+1. 비밀번호 칸에 아무 글자나 써 보세요.
+1. 이메일 칸에 `abc`만 쓰고 **가입하기**를 눌러 보세요.
+
+<RunnableExample id="signup" lang="html" concepts={["html.forms.form", "html.forms.inputs", "html.forms.labels"]}>
+```html
+<form action="/signup">
+  <p>
+    <label for="email">이메일</label>
+    <input id="email" name="email" type="email" />
+  </p>
+  <p>
+    <label for="pw">비밀번호</label>
+    <input id="pw" name="pw" type="password" />
+  </p>
+  <p>
+    <label for="age">나이</label>
+    <input id="age" name="age" type="number" />
+  </p>
+  <button type="submit">가입하기</button>
+</form>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- "이메일" 글자를 누르면 이메일 칸에 커서가 들어가요. `for="email"`과 `id="email"`로 연결되어 있기 때문이에요.
+- 비밀번호 칸은 `type="password"`라서 입력한 글자가 ●로 가려져요.
+- 이메일 칸에 `abc`만 쓰고 가입하기를 누르면, 브라우저가 "@를 포함해 주세요" 같은 안내를 띄우고 폼을 보내지 않아요. JavaScript 없이 `type="email"`만으로 생긴 검사예요.
+- 나이 칸은 `type="number"`라서 오른쪽에 위아래 화살표가 생기고 숫자만 받아요.
+
+올바른 이메일을 쓰고 가입하기를 누르면 폼이 보내져요. 이 앱의 미리보기는 안전을 위해 실제 전송을 막아 두어서, 보내는 순간 미리보기가 빈 화면이 돼요. 실제 사이트라면 이 자리에 `action`의 주소(`/signup`)에서 온 새 페이지가 열려요. 다시 해 보려면 **다시 실행**을 누르세요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제에는 `type`이 다른 버튼 두 개가 있어요. 각 버튼을 누르면 어떻게 될지 먼저 예측해 보세요.
+
+<RunnableExample id="button-types" lang="html" predict predictKind="value" concepts={["html.forms.buttons"]}>
+```html
+<form action="/memo">
+  <label for="memo">메모</label>
+  <input id="memo" name="memo" type="text" />
+  <button>저장</button>
+  <button type="button">미리 보기</button>
+</form>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- **저장** 버튼에는 `type`이 없어요. form 안의 button은 `type`을 쓰지 않으면 `submit`이라서, 누르면 폼을 보내요. 미리보기가 빈 화면이 되는 것이 폼을 보냈다는 표시예요(실제 전송은 막혀 있어요). **다시 실행**으로 되돌리세요.
+- **미리 보기** 버튼은 `type="button"`이라서 눌러도 아무 일도 일어나지 않아요. 나중에 JavaScript로 "미리 보기"라는 할 일을 붙일 버튼이에요.
+
+JavaScript로 버튼에 기능을 붙였는데 누를 때마다 페이지가 새로 열리고 입력이 사라진다면, form 안의 버튼에 `type="button"`을 빠뜨린 경우가 많아요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="html.mc.input-type-looks-only">
+<Wrong>`type="email"`은 이메일 칸처럼 보이게 하는 것뿐이니, 모두 `type="text"`로 써도 똑같다.</Wrong>
+<Actual>`type`에 따라 입력값 검사, 휴대폰 자판, 비밀번호 가리기가 달라져요. 모두 `text`로 쓰면 이 기능이 하나도 동작하지 않아요.</Actual>
+<Right>받을 값의 종류에 맞는 `type`을 골라요. 이메일은 `email`, 비밀번호는 `password`, 숫자는 `number`예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="html.mc.label-just-text">
+<Wrong>입력칸 옆에 `<label>별명</label>`을 쓰기만 하면 이름표 역할을 한다.</Wrong>
+<Actual>연결하지 않은 label은 그냥 글자예요. 글자를 눌러도 입력칸이 선택되지 않고, 화면 낭독기는 입력칸의 이름을 알 수 없어요.</Actual>
+<Right>`label`의 `for`를 `input`의 `id`와 같은 값으로 쓰거나, `label` 안에 `input`을 넣어 연결해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="html.mc.placeholder-is-label">
+<Wrong>입력칸 안에 `placeholder="이메일"`이 보이니 label은 필요 없다.</Wrong>
+<Actual>placeholder는 입력을 시작하면 사라져서, 몇 글자 쓰고 나면 무엇을 쓰는 칸이었는지 알 수 없어요. 흐린 글자라 잘 안 보이기도 해요.</Actual>
+<Right>입력칸마다 `label`을 두고, `placeholder`는 `예: coco@example.com`처럼 입력 예시를 보여 줄 때만 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="html.mc.button-does-nothing">
+<Wrong>form 안의 `<button>`은 JavaScript를 붙이기 전까지 눌러도 아무 일도 하지 않는다.</Wrong>
+<Actual>`type`을 쓰지 않은 button은 `submit`이라서 누르면 폼을 보내요. 페이지가 새로 열리고 입력한 내용이 사라져요.</Actual>
+<Right>폼을 보내는 버튼은 `type="submit"`, 보내지 않는 버튼은 `type="button"`으로 분명하게 써요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+검색 사이트의 첫 화면은 사실 아주 작은 폼이에요. 검색어 입력칸 하나와 버튼 하나가 `form`에 들어 있고, 버튼을 누르면 검색어가 `action`의 주소로 보내져요.
+
+```html
+<form action="/search">
+  <label for="q">검색어</label>
+  <input id="q" name="q" type="search" />
+  <button type="submit">검색</button>
+</form>
+```
+
+"고양이"를 검색하면 브라우저는 `/search?q=고양이` 주소로 이동해요. `?` 뒤의 `q=고양이`가 입력칸의 `name`과 값이에요. 주소창에서 검색 사이트의 주소를 유심히 보면 이런 모양을 찾을 수 있어요.
+
+<Callout kind="note" title="입력값 검사는 서버에서도 해야 해요">
+`type="email"` 같은 브라우저의 검사는 사용자를 돕는 기능이에요. 개발자 도구로 쉽게 끌 수 있어서, 실제 서비스는 받은 값을 서버에서 다시 검사해요.
+</Callout>
+</Section>
+
+<Section kind="check">
+`label`을 연결하는 방법을 확인해 보세요.
+
+<InlineExercise ref="html.content.forms.mcq-label-for" />
+
+`type`이 없는 버튼이 하는 일을 확인해 보세요.
+
+<InlineExercise ref="html.content.forms.tf-button-submits" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `form`은 입력 요소들을 묶어 한꺼번에 보내는 단위이고, 보낼 주소는 `action`에 써요.
+- `input`의 `type`은 받을 값의 종류를 정하고, 입력값 검사·휴대폰 자판·글자 가리기를 바꿔요.
+- `label`은 `for`와 `id`(또는 감싸기)로 입력칸과 연결해야 이름표 역할을 해요.
+- `placeholder`는 입력 예시일 뿐 `label`을 대신하지 못해요.
+- form 안의 `button`은 `type`을 쓰지 않으면 `submit`이라서 누르면 폼을 보내요. 보내지 않는 버튼은 `type="button"`이에요.
+</Section>
+
+<Section kind="next">
+다음 모듈 "의미와 구조"에서는 지금까지 배운 요소들을 페이지의 머리말, 메뉴, 본문, 꼬리말 같은 큰 구역으로 묶어요. 입력값을 JavaScript로 읽고 버튼에 기능을 붙이는 방법은 JavaScript 기초 과정의 "브라우저 JS 입문"에서 배워요. <MdnLink path="Web/HTML/Reference/Elements/form" />
+</Section>

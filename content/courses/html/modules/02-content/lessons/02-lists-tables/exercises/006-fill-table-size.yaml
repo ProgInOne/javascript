@@ -1,0 +1,58 @@
+id: html.content.lists-tables.fill-table-size
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: html.content.tables, weight: 1 }
+tags: [table, tr, th, td]
+estimatedSeconds: 80
+prompt: |
+  아래 표를 브라우저로 열면 몇 행 몇 열로 보이나요? (제목 행도 한 행으로 세요.) 빈칸에 숫자를 쓰세요.
+code: |
+  <table>
+    <thead>
+      <tr>
+        <th>이름</th>
+        <th>좋아하는 계절</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>하늘</td>
+        <td>봄</td>
+      </tr>
+      <tr>
+        <td>바다</td>
+        <td>여름</td>
+      </tr>
+      <tr>
+        <td>나무</td>
+        <td>가을</td>
+      </tr>
+    </tbody>
+  </table>
+spec:
+  mode: text
+  template: |
+    {{blank:rows}}행 {{blank:cols}}열
+  blanks:
+    - id: rows
+      accept: ["4"]
+      width: 3
+    - id: cols
+      accept: ["2"]
+      width: 3
+hints:
+  - 행(가로줄) 하나를 만드는 요소가 무엇이었는지 떠올리고, 그 요소의 개수를 세어 보세요.
+  - "`tr`은 thead에 1개, tbody에 몇 개 있나요? 열은 한 행 안의 칸 수예요."
+  - 제목 행 1개 + 데이터 행 3개, 그리고 각 행의 칸(th 또는 td)은 2개씩이에요.
+explanation: |
+  정답은 **4행 2열**이에요.
+
+  - **행**: `tr`이 thead에 1개, tbody에 3개 있어서 모두 4행이에요. 제목 행도 한 행이에요.
+  - **열**: 각 행에 칸(`th` 또는 `td`)이 2개씩 있어서 2열이에요. 첫째 칸들(이름, 하늘, 바다, 나무)이 한 열, 둘째 칸들이 또 한 열이 돼요.
+
+  열을 만드는 요소는 따로 없고, 같은 위치의 칸들이 모여 열이 돼요. 그래서 행마다 칸 수를 같게 맞춰야 표가 반듯해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

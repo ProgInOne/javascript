@@ -1,0 +1,15 @@
+id: html.basics.text
+title: 텍스트와 제목
+summary: 제목 계층(h1~h6)으로 문서의 목차를 만들고, 문단과 공백이 화면에 그려지는 규칙과 strong·em의 의미를 익힙니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 12, practice: 12 }
+concepts:
+  primary: [html.text.headings, html.text.paragraphs, html.text.emphasis]
+  practiced: [html.doc.nesting]
+objectives:
+  - 글의 구조에 맞게 h1부터 단계를 건너뛰지 않고 제목 요소를 고를 수 있다.
+  - 코드의 줄바꿈과 공백이 화면에서 어떻게 보일지 예측하고, 문단을 p 요소로 나눌 수 있다.
+  - 중요한 내용과 말의 강세를 strong과 em으로 구분해 표시할 수 있다.
+practice:
+  targetCount: 8

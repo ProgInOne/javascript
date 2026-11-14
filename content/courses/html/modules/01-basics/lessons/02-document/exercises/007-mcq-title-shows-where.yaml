@@ -1,0 +1,51 @@
+id: html.basics.document.mcq-title-shows-where
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: html.doc.skeleton, weight: 1 }
+tags: [skeleton, head, title]
+estimatedSeconds: 50
+prompt: |
+  아래 문서를 브라우저로 열었을 때, "우리 반 소식"이라는 글자는 **어디에** 보이나요?
+code: |
+  <!doctype html>
+  <html lang="ko">
+    <head>
+      <meta charset="utf-8" />
+      <title>우리 반 소식</title>
+    </head>
+    <body>
+      <p>이번 주 금요일은 체육대회예요.</p>
+    </body>
+  </html>
+spec:
+  options:
+    - id: a
+      text: 브라우저 탭(과 즐겨찾기 이름)
+    - id: b
+      text: 페이지 본문 맨 위에 큰 제목으로
+      misconception: html.mc.head-is-visible
+      rationale: head 안의 내용은 화면(본문)에 그려지지 않아요. 본문 제목은 body 안에 h1으로 써요.
+    - id: c
+      text: 페이지 본문의 문단 바로 위에 보통 크기 글자로
+      misconception: html.mc.head-is-visible
+      rationale: title은 body에 있지 않아서 본문 어디에도 나오지 않아요.
+    - id: d
+      text: 어디에도 보이지 않는다
+      rationale: title은 본문에는 없지만 브라우저 탭에 보여요.
+  correct: a
+misconceptions: [html.mc.head-is-visible]
+hints:
+  - "`<title>`이 `head`와 `body` 중 어디에 들어 있는지 보세요."
+  - head에는 화면(본문)에 그리지 않는 문서 정보가 들어가요.
+  - 브라우저 창 위쪽, 여러 페이지를 바꿔 볼 때 누르는 곳을 떠올려 보세요.
+explanation: |
+  정답은 **브라우저 탭**이에요.
+
+  `title`은 `head` 안에 있어요. head에는 화면에 그리지 않는 문서 정보가 들어가고, title의 글자는 브라우저 탭과 즐겨찾기 이름, 검색 결과의 제목으로 쓰여요.
+
+  본문(body)에는 "이번 주 금요일은 체육대회예요."만 보여요. 본문에도 큰 제목을 보이고 싶다면 body 안에 `<h1>우리 반 소식</h1>`을 따로 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

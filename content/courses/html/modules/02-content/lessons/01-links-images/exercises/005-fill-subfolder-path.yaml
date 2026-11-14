@@ -1,0 +1,47 @@
+id: html.content.links-images.fill-subfolder-path
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: html.content.paths, weight: 1 }
+  - { id: html.content.images, weight: 0.3 }
+tags: [path, relative-path, img]
+estimatedSeconds: 60
+prompt: |
+  사이트 폴더가 아래와 같아요. `index.html`에 `bread.jpg` 그림을 넣으려고 해요. `src`에 쓸 **상대 경로**를 빈칸에 쓰세요.
+code: |
+  bakery/
+  ├── index.html
+  └── photos/
+      └── bread.jpg
+spec:
+  mode: text
+  template: |
+    <img src="{{blank:path}}" alt="갓 구운 식빵" />
+  blanks:
+    - id: path
+      accept: ["photos/bread.jpg", "./photos/bread.jpg"]
+      caseSensitive: true
+      width: 20
+      misconceptionMap:
+        "bread.jpg": html.mc.relative-path-base
+        "bakery/photos/bread.jpg": html.mc.relative-path-base
+        "../photos/bread.jpg": html.mc.relative-path-base
+misconceptions: [html.mc.relative-path-base]
+hints:
+  - 상대 경로는 index.html이 있는 bakery 폴더에서 출발해요.
+  - bread.jpg는 bakery 바로 안에 있지 않고, 그 안의 다른 폴더에 들어 있어요.
+  - 폴더 안으로 들어갈 때는 `폴더이름/`을 앞에 붙여요.
+explanation: |
+  정답은 **`photos/bread.jpg`**예요(`./photos/bread.jpg`도 같은 뜻이에요).
+
+  index.html이 있는 bakery 폴더에서 출발해서, photos 폴더로 들어간(`photos/`) 다음 bread.jpg를 가리켜요.
+
+  - `bread.jpg`만 쓰면 bakery 폴더 바로 안에서 찾아요. 그곳에는 bread.jpg가 없어요.
+  - `bakery/photos/bread.jpg`는 bakery 안에서 bakery 폴더를 또 찾아요.
+  - `../photos/bread.jpg`는 bakery의 위 폴더로 나간 다음 photos를 찾아요.
+
+  폴더와 파일 이름은 대문자와 소문자를 구분하는 서버가 많아서, 이름을 정확히 같게 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

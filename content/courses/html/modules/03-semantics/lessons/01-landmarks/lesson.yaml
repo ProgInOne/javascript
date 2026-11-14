@@ -1,0 +1,16 @@
+id: html.semantics.landmarks
+title: 시맨틱 태그
+summary: header·nav·main·footer로 페이지의 큰 구역을, section·article로 주제별 구역과 독립된 글을 나타내고, 뜻 없는 묶음인 div와 구분해 씁니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 14, practice: 16 }
+concepts:
+  primary: [html.semantics.page-landmarks, html.semantics.sectioning, html.semantics.div-vs-semantic]
+  practiced: [html.text.headings]
+  reviewed: [html.content.lists, html.content.links]
+objectives:
+  - 페이지의 머리말·주요 메뉴·본문·꼬리말을 header·nav·main·footer로 나눌 수 있다.
+  - 독립된 글은 article, 문서 안의 주제별 구역은 section으로 구분해 고를 수 있다.
+  - 뜻이 있는 묶음과 모양만을 위한 묶음을 구분해 시맨틱 요소와 div를 골라 쓸 수 있다.
+practice:
+  targetCount: 10

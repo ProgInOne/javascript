@@ -1,0 +1,42 @@
+id: html.basics.text.mcq-strong-or-em
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: html.text.emphasis, weight: 1 }
+tags: [strong, em, emphasis]
+estimatedSeconds: 60
+prompt: |
+  실험실 안내문에 "실험이 끝나면 가스 밸브를 반드시 잠그세요."라는 문장이 있어요. 잠그지 않으면 위험하므로 "가스 밸브를 반드시 잠그세요"가 **중요한 내용**이라는 것을 HTML로 표시하려고 해요. 가장 알맞은 요소는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`strong`"
+    - id: b
+      text: "`em`"
+      rationale: em은 말할 때 힘을 주는 강세예요. 이 문장은 강세가 아니라 안전과 관련된 중요한 내용이에요.
+    - id: c
+      text: "`h2`"
+      misconception: html.mc.heading-for-size
+      rationale: 이 문장은 목차에 들어갈 제목이 아니에요. 눈에 띄게 하려고 제목 요소를 쓰면 목차가 망가져요.
+    - id: d
+      text: 어떤 요소든 상관없고, 굵게만 보이면 된다
+      misconception: html.mc.strong-is-bold
+      rationale: 화면 낭독기는 모양이 아니라 뜻을 전해요. 중요하다는 뜻은 요소로 표시해야 해요.
+  correct: a
+misconceptions: [html.mc.strong-is-bold]
+hints:
+  - strong과 em은 모양이 아니라 뜻이 달라요. 각각 무엇을 나타내나요?
+  - 이 문장은 "어느 낱말에 힘을 주느냐"의 문제인가요, "놓치면 안 되는 중요한 내용"인가요?
+  - 중요하거나 심각하거나 급한 내용은 strong으로 표시해요.
+explanation: |
+  정답은 **`strong`**이에요.
+
+  가스 밸브를 잠그지 않으면 위험하므로, 이 부분은 놓치면 안 되는 **중요한** 내용이에요. 중요도는 `strong`으로 표시해요.
+
+  - `em`은 말할 때 힘을 주는 강세예요. "나는 *사과*가 좋다고 했어"처럼, 어느 낱말에 힘을 주느냐에 따라 뜻이 달라질 때 써요.
+  - `h2`는 목차의 장 제목이라 문장 중간에 쓰지 않아요.
+  - "굵게만 보이면 된다"는 틀렸어요. 굵은 모양은 strong의 기본 스타일일 뿐이고, 화면 낭독기 사용자에게 전해지는 것은 "중요하다"는 뜻이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

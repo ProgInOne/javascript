@@ -1,0 +1,27 @@
+id: html.basics.text.tf-newline-in-source
+type: true_false
+difficulty: 1
+concepts:
+  - { id: html.text.paragraphs, weight: 1 }
+tags: [paragraphs, whitespace]
+estimatedSeconds: 30
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: 하나의 `p` 요소 안에서 코드를 Enter로 줄 바꿔 쓰면, 화면에서도 그 자리에서 줄이 바뀐다.
+  answer: false
+  misconceptionIfWrong: html.mc.newline-in-source
+hints:
+  - 브라우저가 코드의 줄바꿈을 화면에서 어떻게 다루는지 떠올려 보세요.
+  - 레슨의 첫 예제에서 네 줄로 쓴 문장들이 화면에서 어떻게 보였나요?
+  - 줄바꿈과 연속된 공백은 화면에서 공백 한 칸으로 합쳐져요.
+explanation: |
+  정답은 **거짓**이에요.
+
+  브라우저는 코드의 줄바꿈과 연속된 공백을 **공백 한 칸**으로 합쳐요. 그래서 한 `p` 안에서 Enter로 줄을 바꿔 써도, 화면에서는 문장들이 공백 한 칸을 사이에 두고 이어져 보여요.
+
+  문단을 나누려면 문단마다 `p` 요소를 따로 써요. 시의 행이나 주소처럼 문단 안에서 줄바꿈 자체가 내용일 때만 `<br>`를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,124 @@
+id: html.content.forms.web-signup-types
+type: web_task
+difficulty: 2
+concepts:
+  - { id: html.forms.inputs, weight: 1 }
+tags: [input, type, web-task]
+estimatedSeconds: 240
+prompt: |
+  회원 가입 폼의 입력칸이 모두 `type="text"`라서 이런 문제가 있어요.
+
+  - 이메일 칸에 `@`가 없어도 그냥 보내져요.
+  - 비밀번호가 화면에 그대로 보여요.
+  - 나이 칸에 글자를 써도 받아 줘요.
+
+  세 입력칸의 `type`을 받을 값에 맞게 바꿔서 세 문제를 모두 고치세요. 다른 속성과 `label`은 그대로 두세요. (올바른 값으로 가입하기를 누르면 폼이 보내지면서 미리보기가 빈 화면이 돼요. 실제 전송은 막혀 있으니 다시 실행하면 돼요.)
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>회원 가입</title>
+            </head>
+            <body>
+              <h1>회원 가입</h1>
+              <form action="/signup">
+                <p>
+                  <label for="email">이메일</label>
+                  <input id="email" name="email" type="text" />
+                </p>
+                <p>
+                  <label for="pw">비밀번호</label>
+                  <input id="pw" name="pw" type="text" />
+                </p>
+                <p>
+                  <label for="age">나이</label>
+                  <input id="age" name="age" type="text" />
+                </p>
+                <button type="submit">가입하기</button>
+              </form>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>회원 가입</title>
+            </head>
+            <body>
+              <h1>회원 가입</h1>
+              <form action="/signup">
+                <p>
+                  <label for="email">이메일</label>
+                  <input id="email" name="email" type="email" />
+                </p>
+                <p>
+                  <label for="pw">비밀번호</label>
+                  <input id="pw" name="pw" type="password" />
+                </p>
+                <p>
+                  <label for="age">나이</label>
+                  <input id="age" name="age" type="number" />
+                </p>
+                <button type="submit">가입하기</button>
+              </form>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: email-type
+      description: 이메일 칸은 이메일 형식을 검사하는 type이어야 합니다.
+      requirement: 이메일 검사
+      visible: true
+      selector: "#email"
+      expect:
+        attr: { name: type, equals: email }
+      misconceptionIfFail: html.mc.input-type-looks-only
+    - kind: dom
+      id: pw-type
+      description: 비밀번호 칸은 입력한 글자를 가리는 type이어야 합니다.
+      requirement: 비밀번호 가리기
+      visible: true
+      selector: "#pw"
+      expect:
+        attr: { name: type, equals: password }
+    - kind: dom
+      id: age-type
+      description: 나이 칸은 숫자만 받는 type이어야 합니다.
+      requirement: 숫자만 받기
+      visible: true
+      selector: "#age"
+      expect:
+        attr: { name: type, equals: number }
+misconceptions: [html.mc.input-type-looks-only]
+hints:
+  - 받을 값의 종류를 정하는 속성이 바로 `type`이에요. 세 칸은 각각 어떤 종류의 값을 받나요?
+  - 레슨의 type 표에서 "이메일 검사", "글자 가리기", "숫자만 받기"를 해 주는 값을 찾아보세요.
+  - "각각 `email`, `password`, `number`예요. `type=\"text\"`의 `text`를 바꾸면 돼요."
+explanation: |
+  예시 정답은 세 입력칸의 `type`을 이렇게 바꾸는 거예요.
+
+  ```html
+  <input id="email" name="email" type="email" />
+  <input id="pw" name="pw" type="password" />
+  <input id="age" name="age" type="number" />
+  ```
+
+  - `email`: 보내기 전에 `@`가 있는 이메일 모양인지 브라우저가 검사해요.
+  - `password`: 입력한 글자를 ●로 가려요.
+  - `number`: 숫자가 아닌 값을 받지 않고, 휴대폰에서는 숫자 자판이 떠요.
+
+  JavaScript 없이 속성 하나만 바꿔도 이만큼 달라져요. 고친 뒤 미리보기에서 직접 입력해 보세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

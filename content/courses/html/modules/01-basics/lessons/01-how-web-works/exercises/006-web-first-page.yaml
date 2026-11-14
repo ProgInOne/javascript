@@ -1,0 +1,88 @@
+id: html.basics.how-web-works.web-first-page
+type: web_task
+difficulty: 2
+concepts:
+  - { id: html.web.rendering, weight: 1 }
+tags: [rendering, h1, p, web-task]
+estimatedSeconds: 180
+prompt: |
+  시작 코드를 실행하면 두 문장이 같은 크기로 한 줄에 붙어 보여요. 브라우저에게 각 문장의 뜻을 알려 주는 태그가 없기 때문이에요.
+
+  태그를 추가해서 브라우저가 아래처럼 그리게 만드세요.
+
+  1. "나의 첫 웹 페이지"는 **가장 큰 제목**(`h1`)으로 보여야 해요.
+  1. "HTML을 배우고 있어요."는 **문단**(`p`)으로 보여야 해요.
+
+  문장의 글자는 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>나의 첫 웹 페이지</title>
+            </head>
+            <body>
+              나의 첫 웹 페이지
+              HTML을 배우고 있어요.
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>나의 첫 웹 페이지</title>
+            </head>
+            <body>
+              <h1>나의 첫 웹 페이지</h1>
+              <p>HTML을 배우고 있어요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: has-heading
+      description: "\"나의 첫 웹 페이지\"가 h1 요소 안에 있어야 합니다."
+      requirement: 가장 큰 제목
+      visible: true
+      selector: body h1
+      expect:
+        count: 1
+        text: { equals: 나의 첫 웹 페이지 }
+      misconceptionIfFail: html.mc.code-shown-as-is
+    - kind: dom
+      id: has-paragraph
+      description: "\"HTML을 배우고 있어요.\"가 p 요소 안에 있어야 합니다."
+      requirement: 문단
+      visible: true
+      selector: body p
+      expect:
+        count: 1
+        text: { equals: HTML을 배우고 있어요. }
+misconceptions: [html.mc.code-shown-as-is]
+hints:
+  - 브라우저는 태그를 보고 글자의 뜻(제목인지, 문단인지)을 알아요. 지금은 두 문장에 태그가 하나도 없어요.
+  - 가장 큰 제목은 `h1`, 문단은 `p` 요소예요. 여는 태그와 닫는 태그로 문장을 감싸요.
+  - "첫 문장은 `<h1>`과 `</h1>` 사이에, 둘째 문장은 `<p>`와 `</p>` 사이에 넣어 보세요."
+explanation: |
+  예시 정답은 두 문장을 각각 태그로 감싸는 거예요.
+
+  ```html
+  <h1>나의 첫 웹 페이지</h1>
+  <p>HTML을 배우고 있어요.</p>
+  ```
+
+  태그가 없으면 브라우저는 두 문장을 그냥 이어진 글자로 보고 한 줄에 그려요. 코드에서 줄을 바꿨어도 마찬가지예요(줄바꿈이 공백 한 칸이 되는 이유는 "텍스트와 제목" 단원에서 자세히 배워요).
+
+  `h1`으로 감싸면 브라우저가 "가장 큰 제목"으로 해석해 크고 굵게 그리고, `p`로 감싸면 "문단"으로 해석해 따로 한 덩어리로 그려요. 태그 자체는 화면에 보이지 않아요. 이것이 렌더링이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

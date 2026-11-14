@@ -1,0 +1,45 @@
+id: html.content.forms.mcq-label-for
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: html.forms.labels, weight: 1 }
+tags: [label, for, id]
+estimatedSeconds: 60
+prompt: |
+  "전화번호" 글자를 누르면 전화번호 입력칸에 커서가 들어가도록 **label과 입력칸을 연결한** 코드는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`<label for="phone">전화번호</label> <input id="phone" type="tel" />`'
+    - id: b
+      text: '`<label>전화번호</label> <input id="phone" type="tel" />`'
+      misconception: html.mc.label-just-text
+      rationale: label을 쓰기만 하고 연결하지 않았어요. for도 없고 input을 감싸지도 않아서 그냥 글자예요.
+    - id: c
+      text: '`<label for="tel">전화번호</label> <input id="phone" type="tel" />`'
+      misconception: html.mc.label-just-text
+      rationale: for는 input의 type이 아니라 id와 같은 값이어야 해요.
+    - id: d
+      text: '`<input id="phone" type="tel" placeholder="전화번호" />`'
+      misconception: html.mc.placeholder-is-label
+      rationale: placeholder는 입력 예시일 뿐 이름표(label)가 아니에요. 입력을 시작하면 사라져요.
+  correct: a
+misconceptions: [html.mc.label-just-text, html.mc.placeholder-is-label]
+hints:
+  - label과 input을 연결하는 방법 중 하나는 두 요소에 같은 값을 쓰는 거예요.
+  - label의 어떤 속성과 input의 어떤 속성이 같아야 할까요?
+  - label의 `for` 값과 input의 `id` 값이 같아야 연결돼요.
+explanation: |
+  정답은 **`<label for="phone">` + `<input id="phone">`**이에요.
+
+  label의 `for`와 input의 `id`가 같은 값(`phone`)이라서 둘이 연결돼요. 그러면 "전화번호" 글자를 눌러도 입력칸이 선택되고, 화면 낭독기가 입력칸을 "전화번호"라고 읽어 줘요.
+
+  - `for` 없는 label은 input을 감싸지도 않았으니 연결되지 않은 그냥 글자예요.
+  - `for="tel"`은 input의 type 값과 같을 뿐 id(`phone`)와 다르니 연결되지 않아요.
+  - placeholder는 이름표를 대신하지 못해요.
+
+  `<label>전화번호 <input type="tel" /></label>`처럼 label 안에 input을 넣어도 연결돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

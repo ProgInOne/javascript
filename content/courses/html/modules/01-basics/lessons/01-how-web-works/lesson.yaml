@@ -1,0 +1,14 @@
+id: html.basics.how-web-works
+title: 브라우저는 무엇을 하는가
+summary: 주소를 입력하면 브라우저가 서버에서 HTML을 받아 화면에 그리는 흐름과, HTML·CSS·JavaScript가 나눠 맡는 일을 알아봅니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 10, practice: 10 }
+concepts:
+  primary: [html.web.client-server, html.web.three-languages, html.web.rendering]
+objectives:
+  - 주소를 입력했을 때 브라우저와 서버 사이에 오가는 요청과 응답을 순서대로 설명할 수 있다.
+  - 웹 페이지에서 하려는 일이 HTML·CSS·JavaScript 중 어느 것의 몫인지 고를 수 있다.
+  - 브라우저가 HTML 코드를 받아 태그를 해석하고 내용을 그린다는 것을 예측에 활용할 수 있다.
+practice:
+  targetCount: 6

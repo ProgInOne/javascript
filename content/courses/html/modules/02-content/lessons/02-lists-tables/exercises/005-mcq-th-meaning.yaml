@@ -1,0 +1,41 @@
+id: html.content.lists-tables.mcq-th-meaning
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: html.content.tables, weight: 1 }
+tags: [table, th, td]
+estimatedSeconds: 50
+prompt: |
+  표에서 `th`와 `td`를 구분해 쓰는 이유로 가장 알맞은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: th는 열이나 행이 무엇인지 알려 주는 제목 칸이고, td는 값이 들어가는 데이터 칸이라서
+    - id: b
+      text: th는 글자를 굵게, td는 보통 굵기로 보여 주는 칸이라서
+      misconception: html.mc.th-is-bold-td
+      rationale: 굵은 글씨는 th의 기본 모양일 뿐이에요. th를 쓰는 이유는 제목 칸이라는 뜻 때문이에요.
+    - id: c
+      text: th는 세로줄(열)을, td는 가로줄(행)을 만드는 요소라서
+      rationale: 행은 tr로 만들고, 열을 만드는 요소는 따로 없어요. th와 td는 둘 다 칸이에요.
+    - id: d
+      text: th는 thead 안에서만, td는 tbody 안에서만 쓸 수 있어서
+      rationale: 행의 제목 칸처럼 tbody 안에서도 th를 쓸 수 있어요. 구분하는 기준은 위치가 아니라 칸의 역할이에요.
+  correct: a
+misconceptions: [html.mc.th-is-bold-td]
+hints:
+  - th와 td는 둘 다 칸이에요. 칸의 역할이 어떻게 다를까요?
+  - 시간표에서 "월, 화, 수"나 "1교시, 2교시"가 적힌 칸은 어떤 역할을 하나요?
+  - th의 h는 header(제목), td의 d는 data(데이터)예요.
+explanation: |
+  정답은 **th는 제목 칸, td는 데이터 칸이라서**예요.
+
+  `th`는 그 열이나 행이 무엇인지 알려 주는 이름표예요. 화면 낭독기는 `td`의 값을 읽을 때 해당 `th`를 함께 읽어 줘서("점심, 비빔밥"), 표를 보지 않아도 각 값이 무엇인지 알 수 있어요.
+
+  - 굵게 보이는 것은 브라우저의 기본 모양일 뿐이에요. 모양 때문에 th를 고르면 뜻이 틀린 표가 돼요.
+  - 행은 `tr`로 만들고, 열은 같은 위치의 칸들이 모여 생겨요.
+  - 행마다 맨 앞에 이름표가 있는 표에서는 tbody 안에도 th를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

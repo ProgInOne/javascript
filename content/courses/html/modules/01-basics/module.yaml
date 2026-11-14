@@ -1,0 +1,4 @@
+id: html.basics
+title: 웹 문서의 구조
+summary: 브라우저가 웹 페이지를 가져와 그리는 흐름을 알고, HTML 문서의 뼈대와 텍스트 요소를 작성합니다.
+lessons: [how-web-works, document, text]

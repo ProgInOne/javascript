@@ -1,0 +1,197 @@
+# HTML 개념 (v0.2: HTML 핵심 과정)
+# HTML/CSS 핵심은 얕은 과정(depth: core)이므로 개념을 모두 standard로 둡니다.
+
+# ---- html.basics.how-web-works ----
+
+- id: html.web.client-server
+  title: 클라이언트와 서버
+  importance: standard
+  summary: 브라우저(클라이언트)가 주소에 해당하는 파일을 서버에 요청하고, 서버가 HTML 같은 파일을 응답으로 보내 줘요.
+  misconceptions: [html.mc.page-lives-in-browser]
+  mdn: Web/HTTP/Overview
+
+- id: html.web.three-languages
+  title: HTML·CSS·JavaScript의 역할
+  importance: standard
+  summary: HTML은 내용과 구조, CSS는 모양, JavaScript는 동작을 맡아요. HTML은 계산이나 동작을 하지 않는 표시(마크업) 언어예요.
+  misconceptions: [html.mc.html-is-programming]
+  mdn: Web/HTML
+
+- id: html.web.rendering
+  title: 렌더링
+  importance: standard
+  summary: 브라우저는 받은 HTML을 읽어 태그의 뜻을 해석하고, 태그는 감춘 채 내용을 화면에 그려요. 이 과정을 렌더링이라고 해요.
+  prerequisites: [html.web.client-server]
+  misconceptions: [html.mc.code-shown-as-is]
+  mdn: Web/Performance/How_browsers_work
+
+# ---- html.basics.document ----
+
+- id: html.doc.elements
+  title: 요소와 태그
+  importance: standard
+  summary: 여는 태그, 내용, 닫는 태그를 합친 것이 요소예요. img처럼 내용 없이 여는 태그만 쓰는 빈 요소도 있어요.
+  prerequisites: [html.web.rendering]
+  misconceptions: [html.mc.tag-is-element]
+  mdn: Web/HTML/Reference/Elements
+
+- id: html.doc.attributes
+  title: 속성
+  importance: standard
+  summary: 속성은 여는 태그 안에 이름="값" 형태로 써서 요소에 추가 정보를 줘요. 속성 값은 보통 화면에 글자로 나오지 않아요.
+  prerequisites: [html.doc.elements]
+  misconceptions: [html.mc.attribute-shown-on-page]
+  mdn: Web/HTML/Reference/Attributes
+
+- id: html.doc.nesting
+  title: 요소의 중첩
+  importance: standard
+  summary: 요소 안에 다른 요소를 넣을 수 있고, 나중에 연 요소를 먼저 닫아야 해요. 태그를 엇갈려 닫으면 안 돼요.
+  prerequisites: [html.doc.elements]
+  misconceptions: [html.mc.overlapping-tags]
+  mdn: Web/HTML/Reference/Elements
+
+- id: html.doc.skeleton
+  title: HTML 문서의 뼈대
+  importance: standard
+  summary: "<!doctype html> 뒤에 html 요소가 오고, 그 안의 head에는 문서 정보(제목 등)를, body에는 화면에 보일 내용을 넣어요."
+  prerequisites: [html.doc.nesting, html.doc.attributes]
+  misconceptions: [html.mc.head-is-visible]
+  mdn: Web/HTML/Reference/Elements/html
+
+- id: html.doc.dom-tree
+  title: DOM 트리
+  importance: standard
+  summary: 브라우저는 HTML을 읽어 요소들이 부모·자식으로 이어진 나무 모양의 구조(DOM 트리)를 만들고, 빠진 부분은 스스로 채워요.
+  prerequisites: [html.doc.skeleton]
+  misconceptions: [html.mc.dom-is-source]
+  mdn: Web/API/Document_Object_Model/Introduction
+
+# ---- html.basics.text ----
+
+- id: html.text.headings
+  title: 제목 계층
+  importance: standard
+  summary: h1~h6은 글자 크기가 아니라 문서의 목차(제목의 단계)를 나타내요. 단계를 건너뛰지 않고 h1부터 차례로 내려가요.
+  prerequisites: [html.doc.skeleton]
+  misconceptions: [html.mc.heading-for-size, html.mc.heading-skip-levels]
+  mdn: Web/HTML/Reference/Elements/Heading_Elements
+
+- id: html.text.paragraphs
+  title: 문단과 공백
+  importance: standard
+  summary: 문단은 p 요소로 나눠요. 코드에서 줄을 바꾸거나 공백을 여러 칸 넣어도 화면에서는 공백 한 칸으로 보여요.
+  prerequisites: [html.doc.skeleton]
+  misconceptions: [html.mc.newline-in-source]
+  mdn: Web/HTML/Reference/Elements/p
+
+- id: html.text.emphasis
+  title: strong과 em의 의미
+  importance: standard
+  summary: strong은 중요한 내용, em은 말할 때 힘을 주는 강세를 나타내요. 굵거나 기울어진 모양은 브라우저의 기본 스타일일 뿐이에요.
+  prerequisites: [html.text.paragraphs]
+  misconceptions: [html.mc.strong-is-bold]
+  mdn: Web/HTML/Reference/Elements/strong
+
+# ---- html.content.links-images ----
+
+- id: html.content.links
+  title: 링크(a와 href)
+  importance: standard
+  summary: a 요소는 링크를 만들어요. 이동할 주소는 href 속성에 쓰고, a의 내용은 화면에 보이는 링크 글자예요.
+  prerequisites: [html.doc.attributes]
+  misconceptions: [html.mc.link-text-is-address]
+  mdn: Web/HTML/Reference/Elements/a
+
+- id: html.content.paths
+  title: 절대 경로와 상대 경로
+  importance: standard
+  summary: 절대 경로는 https://로 시작하는 전체 주소이고, 상대 경로는 지금 문서가 있는 폴더를 기준으로 파일 위치를 적어요. ../는 한 단계 위 폴더예요.
+  prerequisites: [html.content.links]
+  misconceptions: [html.mc.relative-path-base]
+  mdn: Web/HTML/Reference/Attributes/href
+
+- id: html.content.images
+  title: 이미지(img와 alt)
+  importance: standard
+  summary: img는 내용이 없는 빈 요소예요. 그림 파일은 src에, 그림을 볼 수 없을 때 대신 전할 설명은 alt에 써요.
+  prerequisites: [html.content.paths]
+  misconceptions: [html.mc.alt-optional, html.mc.img-has-content]
+  mdn: Web/HTML/Reference/Elements/img
+
+# ---- html.content.lists-tables ----
+
+- id: html.content.lists
+  title: 목록(ul·ol·li)
+  importance: standard
+  summary: 순서가 상관없는 목록은 ul, 순서가 중요한 목록은 ol로 감싸고, 각 항목은 li로 써요. li는 ul이나 ol 안에만 들어가요.
+  prerequisites: [html.doc.nesting]
+  misconceptions: [html.mc.li-alone]
+  mdn: Web/HTML/Reference/Elements/ul
+
+- id: html.content.tables
+  title: 표의 구조
+  importance: standard
+  summary: 표는 table 안에 행(tr)을 쌓고, 행 안에 칸을 넣어요. 제목 칸은 th, 데이터 칸은 td이고, 제목 행은 thead, 본문 행은 tbody로 묶어요.
+  prerequisites: [html.doc.nesting]
+  misconceptions: [html.mc.th-is-bold-td]
+  mdn: Web/HTML/Reference/Elements/table
+
+# ---- html.content.forms ----
+
+- id: html.forms.form
+  title: form 요소
+  importance: standard
+  summary: form은 입력 요소들을 하나로 묶어 한꺼번에 보내는 단위예요. 보낼 곳은 action 속성에 적어요.
+  prerequisites: [html.doc.attributes]
+  mdn: Web/HTML/Reference/Elements/form
+
+- id: html.forms.inputs
+  title: input의 종류
+  importance: standard
+  summary: input의 type 속성(text, email, password, number 등)은 받을 값의 종류를 정해요. 종류에 따라 입력 검사, 모바일 키보드, 글자 가리기가 달라져요.
+  prerequisites: [html.forms.form]
+  misconceptions: [html.mc.input-type-looks-only]
+  mdn: Web/HTML/Reference/Elements/input
+
+- id: html.forms.labels
+  title: label 연결
+  importance: standard
+  summary: label의 for 값을 input의 id와 같게 쓰거나 label 안에 input을 넣으면, 설명 글자와 입력칸이 연결돼요.
+  prerequisites: [html.forms.inputs]
+  misconceptions: [html.mc.label-just-text, html.mc.placeholder-is-label]
+  mdn: Web/HTML/Reference/Elements/label
+
+- id: html.forms.buttons
+  title: button과 type
+  importance: standard
+  summary: form 안의 button은 type을 쓰지 않으면 submit이라서 누르면 폼을 보내요. 보내지 않는 버튼은 type="button"으로 써요.
+  prerequisites: [html.forms.form]
+  misconceptions: [html.mc.button-does-nothing]
+  mdn: Web/HTML/Reference/Elements/button
+
+# ---- html.semantics.landmarks (lesson) ----
+
+- id: html.semantics.page-landmarks
+  title: 페이지의 큰 구역(header·nav·main·footer)
+  importance: standard
+  summary: header, nav, main, footer는 페이지의 머리말, 주요 메뉴, 본문, 꼬리말이라는 뜻을 가진 요소예요. 모양은 div와 같고 뜻만 달라요.
+  prerequisites: [html.text.headings, html.content.links]
+  misconceptions: [html.mc.semantic-is-style, html.mc.many-mains]
+  mdn: Web/HTML/Reference/Elements/main
+
+- id: html.semantics.sectioning
+  title: section과 article
+  importance: standard
+  summary: section은 제목이 붙는 주제별 구역이고, article은 따로 떼어 내도 뜻이 통하는 독립된 글(게시글, 기사, 댓글 등)이에요.
+  prerequisites: [html.semantics.page-landmarks]
+  misconceptions: [html.mc.section-article-same]
+  mdn: Web/HTML/Reference/Elements/article
+
+- id: html.semantics.div-vs-semantic
+  title: div와 시맨틱 요소
+  importance: standard
+  summary: 뜻이 있는 묶음은 시맨틱 요소로, 뜻 없이 모양이나 배치만을 위한 묶음은 div로 감싸요. div는 잘못된 요소가 아니에요.
+  prerequisites: [html.semantics.page-landmarks]
+  misconceptions: [html.mc.div-is-wrong]
+  mdn: Web/HTML/Reference/Elements/div

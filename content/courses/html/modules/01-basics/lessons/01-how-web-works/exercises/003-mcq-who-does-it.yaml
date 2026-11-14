@@ -1,0 +1,39 @@
+id: html.basics.how-web-works.mcq-who-does-it
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: html.web.three-languages, weight: 1 }
+tags: [html-css-js, roles]
+estimatedSeconds: 40
+prompt: |
+  장바구니 페이지에 **"수량 +" 버튼을 누를 때마다 수량 숫자가 1씩 늘어나는 기능**을 넣으려고 해요. 이 기능은 주로 어느 언어의 몫인가요?
+spec:
+  options:
+    - id: a
+      text: JavaScript
+    - id: b
+      text: HTML
+      misconception: html.mc.html-is-programming
+      rationale: HTML은 버튼과 숫자가 "있다"는 것까지만 표시해요. 누르면 숫자를 바꾸는 동작은 만들 수 없어요.
+    - id: c
+      text: CSS
+      rationale: CSS는 색, 크기, 배치 같은 모양을 정해요. 숫자를 계산해서 바꾸는 일은 하지 않아요.
+  correct: a
+misconceptions: [html.mc.html-is-programming]
+hints:
+  - 이 기능은 "내용", "모양", "동작" 중 무엇에 해당할까요?
+  - 버튼을 누르면 무언가가 바뀌는 것은 반응(동작)이고, 숫자를 1 늘리는 것은 계산이에요.
+  - HTML은 내용과 구조, CSS는 모양, 남은 하나가 동작을 맡아요.
+explanation: |
+  정답은 **JavaScript**예요.
+
+  버튼을 누를 때마다 숫자를 1씩 늘리려면 "누름"에 반응하고 계산하는 **동작**이 필요해요. 동작은 JavaScript가 맡아요.
+
+  - HTML은 "여기에 버튼이 있고, 여기에 수량 숫자가 있다"는 내용과 구조를 표시해요. 계산이나 반응은 할 수 없어요.
+  - CSS는 버튼의 색이나 크기 같은 모양을 정해요.
+
+  실제 페이지에서는 세 언어가 함께 쓰여요. HTML로 버튼을 만들고, CSS로 꾸미고, JavaScript로 누를 때의 동작을 붙여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

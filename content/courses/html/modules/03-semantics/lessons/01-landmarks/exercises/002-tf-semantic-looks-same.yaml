@@ -1,0 +1,38 @@
+id: html.semantics.landmarks.tf-semantic-looks-same
+type: true_false
+difficulty: 2
+concepts:
+  - { id: html.semantics.page-landmarks, weight: 1 }
+tags: [semantic, header, footer]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "CSS가 하나도 없는 페이지에서 `<div>`로 감싼 꼬리말을 `<footer>`로 바꾸면, 꼬리말이 화면 맨 아래에 고정되어 보인다."
+  answer: false
+  misconceptionIfWrong: html.mc.semantic-is-style
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 시맨틱 요소는 div와 똑같이 보이고 뜻만 다르며, 위치와 모양은 CSS로 정한다
+      correct: true
+    - id: r2
+      text: footer는 화면 맨 아래에 고정되지만, 글자가 작아지지는 않는다
+      misconception: html.mc.semantic-is-style
+    - id: r3
+      text: footer는 화면에 보이지 않는 요소라서 꼬리말이 사라진다
+hints:
+  - 레슨에서 header를 div로 바꿔 다시 실행했을 때 화면이 어떻게 달라졌나요?
+  - 시맨틱 요소가 바꾸는 것은 모양일까요, 뜻일까요?
+  - 위치를 고정하는 것은 HTML이 아니라 다른 언어의 몫이에요.
+explanation: |
+  정답은 **거짓**, 이유는 **시맨틱 요소는 div와 똑같이 보이고, 위치와 모양은 CSS로 정한다**예요.
+
+  `footer`로 바꿔도 화면은 전혀 달라지지 않아요. 꼬리말은 코드에 쓴 순서대로 다른 내용 아래에 쌓일 뿐이에요. 바뀌는 것은 "이 묶음은 꼬리말이다"라는 뜻이고, 화면 낭독기와 검색 엔진이 그 뜻을 써요.
+
+  - footer라고 맨 아래에 고정되지 않아요. 고정하려면 CSS를 써요.
+  - footer는 화면에 보이는 요소예요. head처럼 숨겨지는 곳이 아니라 body 안에 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

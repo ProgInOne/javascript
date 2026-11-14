@@ -1,0 +1,41 @@
+id: html.basics.document.mcq-nesting-order
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: html.doc.nesting, weight: 1 }
+tags: [nesting]
+estimatedSeconds: 60
+prompt: |
+  문단 안의 "꼭"이라는 낱말에 `strong`과 `em`을 함께 적용하려고 해요. 요소를 **올바르게 중첩한** 코드는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`<p><strong><em>꼭</em></strong> 오세요.</p>`'
+    - id: b
+      text: '`<p><strong><em>꼭</strong></em> 오세요.</p>`'
+      misconception: html.mc.overlapping-tags
+      rationale: em을 나중에 열었으니 em을 먼저 닫아야 해요. 지금은 strong과 em의 태그가 엇갈려 있어요.
+    - id: c
+      text: '`<p><strong><em>꼭 오세요.</p></em></strong>`'
+      misconception: html.mc.overlapping-tags
+      rationale: p 안에서 연 strong과 em이 닫히기 전에 p가 먼저 닫혔어요.
+    - id: d
+      text: '`<strong><p><em>꼭</em> 오세요.</strong></p>`'
+      misconception: html.mc.overlapping-tags
+      rationale: p를 나중에 열었으니 strong보다 p를 먼저 닫아야 해요.
+  correct: a
+misconceptions: [html.mc.overlapping-tags]
+hints:
+  - 요소는 상자 안에 상자를 넣는 것처럼 중첩해요. 안쪽 상자를 닫기 전에 바깥 상자를 닫을 수는 없어요.
+  - 각 선택지에서 여는 태그의 순서를 적고, 닫는 태그가 그 반대 순서인지 확인해 보세요.
+  - 나중에 연 요소를 먼저 닫아요. p → strong → em 순서로 열었다면 em → strong → p 순서로 닫아야 해요.
+explanation: |
+  정답은 **`<p><strong><em>꼭</em></strong> 오세요.</p>`**예요.
+
+  p → strong → em 순서로 열었으니, 닫을 때는 반대로 em → strong → p 순서예요. 여는 태그와 닫는 태그를 선으로 이으면 선이 엇갈리지 않아요.
+
+  나머지 선택지는 모두 태그가 엇갈려 있어요. 화면이 비슷하게 나오더라도, 브라우저가 추측해서 구조를 고친 것이라 의도와 다른 DOM 트리가 만들어질 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

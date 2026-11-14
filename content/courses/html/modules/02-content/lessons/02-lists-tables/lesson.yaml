@@ -1,0 +1,16 @@
+id: html.content.lists-tables
+title: 목록과 표
+summary: 순서 없는 목록(ul)과 순서 있는 목록(ol)으로 항목을 묶고, 행·제목 칸·데이터 칸으로 이루어진 표를 만듭니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 12, practice: 14 }
+concepts:
+  primary: [html.content.lists, html.content.tables]
+  practiced: [html.doc.nesting]
+  reviewed: [html.doc.dom-tree]
+objectives:
+  - 항목의 순서가 중요한지에 따라 ul과 ol을 골라 목록을 만들 수 있다.
+  - 표의 행(tr), 제목 칸(th), 데이터 칸(td), 제목 행 묶음(thead), 본문 행 묶음(tbody)을 구분해 쓸 수 있다.
+  - 주어진 데이터를 제목 칸이 있는 표로 작성할 수 있다.
+practice:
+  targetCount: 8

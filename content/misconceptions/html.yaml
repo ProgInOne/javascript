@@ -1,0 +1,275 @@
+# HTML 오개념 (v0.2: HTML 핵심 과정)
+
+# ---- html.basics.how-web-works ----
+
+- id: html.mc.page-lives-in-browser
+  concept: html.web.client-server
+  title: 웹 페이지가 브라우저 안에 들어 있다고 생각함
+  statement: 브라우저 프로그램 안에 웹 페이지 파일이 미리 들어 있어서, 주소를 입력하면 그 안에서 꺼내 보여 준다고 생각한다.
+  reality: 웹 페이지 파일은 서버에 있다. 브라우저는 주소를 보고 서버에 파일을 요청하고, 서버가 보내 준 응답을 받아 화면에 그린다.
+  diagnosticHint: 인터넷 연결을 끊으면 처음 가 보는 사이트가 열리지 않는 이유를 떠올려 본다.
+  remediation:
+    lessonSection: html.basics.how-web-works#pitfalls
+    exercises: [html.basics.how-web-works.tf-page-in-browser, html.basics.how-web-works.mcq-request-response]
+
+- id: html.mc.html-is-programming
+  concept: html.web.three-languages
+  title: HTML로 계산이나 동작을 만들 수 있다고 생각함
+  statement: HTML도 JavaScript처럼 계산을 하거나, 버튼을 누르면 무언가가 바뀌는 동작을 만들 수 있는 프로그래밍 언어라고 생각한다.
+  reality: HTML은 내용에 "이건 제목, 이건 문단"처럼 뜻을 붙이는 표시(마크업) 언어다. 계산과 동작은 JavaScript가, 모양은 CSS가 맡는다.
+  diagnosticHint: 하려는 일이 "무엇인가(내용)", "어떻게 보이나(모양)", "무엇을 하나(동작)" 중 어디에 속하는지 나눠 본다.
+  remediation:
+    lessonSection: html.basics.how-web-works#pitfalls
+    exercises: [html.basics.how-web-works.mcq-who-does-it, html.basics.how-web-works.multi-html-roles]
+
+- id: html.mc.code-shown-as-is
+  concept: html.web.rendering
+  title: 브라우저가 HTML 코드를 그대로 보여 준다고 생각함
+  statement: "`<h1>안녕</h1>`을 브라우저로 열면 화면에 `<h1>안녕</h1>`이라는 글자가 그대로 나온다고 생각한다."
+  reality: 브라우저는 태그를 읽어 뜻(제목, 문단 등)을 해석하고, 태그 자체는 감춘 채 내용만 그 뜻에 맞게 그린다.
+  diagnosticHint: 태그는 브라우저에게 주는 표시이고, 사람에게 보여 줄 글자는 태그 사이의 내용이라는 점을 떠올린다.
+  remediation:
+    lessonSection: html.basics.how-web-works#pitfalls
+    exercises: [html.basics.how-web-works.mcq-tags-not-shown]
+
+# ---- html.basics.document ----
+
+- id: html.mc.tag-is-element
+  concept: html.doc.elements
+  title: 태그와 요소를 같은 것으로 봄
+  statement: 여는 태그(`<p>`)만 요소라고 생각하거나, 태그와 요소를 같은 말로 쓴다.
+  reality: 태그는 `<p>`, `</p>`처럼 꺾쇠로 감싼 표시이고, 요소는 여는 태그·내용·닫는 태그를 합친 전체다. 빈 요소(`<img>`)는 여는 태그 하나가 곧 요소 전체다.
+  diagnosticHint: "\"요소 = 여는 태그 + 내용 + 닫는 태그\"로 나눠서 각 부분을 가리켜 본다."
+  remediation:
+    lessonSection: html.basics.document#pitfalls
+    exercises: [html.basics.document.mcq-element-parts]
+
+- id: html.mc.attribute-shown-on-page
+  concept: html.doc.attributes
+  title: 속성 값도 화면에 글자로 나온다고 생각함
+  statement: 여는 태그 안에 쓴 속성 값(`lang="ko"`의 `ko` 등)도 요소의 내용처럼 화면에 글자로 표시된다고 생각한다.
+  reality: 속성은 브라우저에게 주는 추가 정보다. 화면에 글자로 나오는 것은 여는 태그와 닫는 태그 사이의 내용이다.
+  diagnosticHint: 화면에 보이는 글자가 태그 사이에 있는지, 태그 꺾쇠 안에 있는지 확인한다.
+  remediation:
+    lessonSection: html.basics.document#pitfalls
+    exercises: [html.basics.document.tf-attribute-shown]
+
+- id: html.mc.overlapping-tags
+  concept: html.doc.nesting
+  title: 태그를 엇갈려 닫아도 된다고 생각함
+  statement: "`<p><strong>중요</p></strong>`처럼 먼저 연 요소를 먼저 닫아도, 화면이 비슷하면 괜찮다고 생각한다."
+  reality: 요소는 상자 안에 상자를 넣듯 중첩해야 하므로 나중에 연 요소를 먼저 닫는다. 엇갈린 태그는 잘못된 HTML이고, 브라우저가 추측해서 고친 구조는 의도와 다를 수 있다.
+  diagnosticHint: 여는 태그와 닫는 태그를 선으로 이어 봤을 때 선이 서로 엇갈리면 잘못된 중첩이다.
+  remediation:
+    lessonSection: html.basics.document#pitfalls
+    exercises: [html.basics.document.mcq-nesting-order, html.basics.document.fill-close-nested]
+
+- id: html.mc.head-is-visible
+  concept: html.doc.skeleton
+  title: head 안의 내용이 본문에 보인다고 생각함
+  statement: "`<head>` 안에 쓴 `<title>` 글자가 페이지 본문 맨 위에 제목처럼 나온다고 생각한다."
+  reality: head에는 화면에 그리지 않는 문서 정보가 들어간다. title은 브라우저 탭과 즐겨찾기 이름에 쓰이고, 본문에 보일 내용은 body에 넣는다.
+  diagnosticHint: 브라우저 탭에 적힌 글자와 페이지 안의 큰 제목을 각각 어디서 정하는지 비교해 본다.
+  remediation:
+    lessonSection: html.basics.document#pitfalls
+    exercises: [html.basics.document.mcq-title-shows-where]
+
+- id: html.mc.dom-is-source
+  concept: html.doc.dom-tree
+  title: DOM이 내가 쓴 HTML 글자 그대로라고 생각함
+  statement: 브라우저가 만든 DOM 트리는 내가 쓴 HTML 코드와 항상 똑같은 모양이고, 빠뜨린 태그는 빠진 채로 남는다고 생각한다.
+  reality: 브라우저는 HTML을 읽어 DOM 트리를 새로 만든다. 그 과정에서 빠진 `html`·`head`·`body`나 닫지 않은 `</p>` 같은 부분을 규칙에 따라 채워 넣는다.
+  diagnosticHint: "`<p>`를 닫지 않고 다음 `<p>`를 열었을 때 문단이 하나인지 둘인지 생각해 본다."
+  remediation:
+    lessonSection: html.basics.document#pitfalls
+    exercises: [html.basics.document.tf-dom-is-source]
+
+# ---- html.basics.text ----
+
+- id: html.mc.heading-for-size
+  concept: html.text.headings
+  title: 글자를 크게 하려고 제목 요소를 고름
+  statement: 글자를 크게 보이게 하고 싶으면 제목이 아니어도 `h1`~`h6` 중 원하는 크기를 고르면 된다고 생각한다.
+  reality: "`h1`~`h6`은 문서 목차의 단계를 나타낸다. 제목이 아닌 글자는 제목 요소로 감싸지 않고, 크기는 CSS로 바꾼다."
+  diagnosticHint: 그 글자를 목차에 넣었을 때 어울리는지 생각해 본다. 목차에 들어가지 않을 글자라면 제목이 아니다.
+  remediation:
+    lessonSection: html.basics.text#pitfalls
+    exercises: [html.basics.text.mcq-heading-for-size]
+
+- id: html.mc.heading-skip-levels
+  concept: html.text.headings
+  title: 제목 단계를 건너뛰어도 된다고 생각함
+  statement: 크기가 마음에 드는 단계를 고르면 되므로, `h1` 바로 다음에 `h4`를 써도 상관없다고 생각한다.
+  reality: 제목은 목차처럼 `h1` → `h2` → `h3` 순서로 한 단계씩 내려간다. 단계를 건너뛰면 화면 낭독기로 목차를 탐색하는 사람이 빠진 단계가 있다고 오해한다.
+  diagnosticHint: 책의 목차에서 "1장" 아래에 "1.1절" 없이 바로 "1.1.1"이 나오면 어색한 것과 같다.
+  remediation:
+    lessonSection: html.basics.text#pitfalls
+    exercises: [html.basics.text.mcq-heading-levels, html.basics.text.web-heading-outline]
+
+- id: html.mc.newline-in-source
+  concept: html.text.paragraphs
+  title: 코드에서 줄을 바꾸면 화면에서도 바뀐다고 생각함
+  statement: HTML 코드에서 Enter로 줄을 바꾸거나 공백을 여러 칸 넣으면, 화면에서도 그대로 줄이 바뀌고 공백이 여러 칸 생긴다고 생각한다.
+  reality: 브라우저는 연속된 공백과 줄바꿈을 공백 한 칸으로 합친다. 문단을 나누려면 `p` 요소를 여러 개 쓴다.
+  diagnosticHint: 화면에서 줄이 바뀐 곳마다 그 자리를 나누는 요소가 있는지 확인한다.
+  remediation:
+    lessonSection: html.basics.text#pitfalls
+    exercises: [html.basics.text.tf-newline-in-source, html.basics.text.mcq-whitespace-render]
+
+- id: html.mc.strong-is-bold
+  concept: html.text.emphasis
+  title: strong을 굵은 글씨용 태그로 생각함
+  statement: "`strong`은 글자를 굵게 만드는 태그이고, `em`은 기울이는 태그라서 모양이 필요할 때 고른다고 생각한다."
+  reality: strong은 "중요하다", em은 "힘을 줘서 말한다"는 뜻이다. 굵고 기울어진 모양은 브라우저 기본 스타일일 뿐이고, 뜻 없이 모양만 바꾸려면 CSS를 쓴다.
+  diagnosticHint: 화면 낭독기가 읽어 줄 때도 그 강조가 필요한지 생각해 본다.
+  remediation:
+    lessonSection: html.basics.text#pitfalls
+    exercises: [html.basics.text.mcq-strong-or-em]
+
+# ---- html.content.links-images ----
+
+- id: html.mc.link-text-is-address
+  concept: html.content.links
+  title: 링크 글자가 이동할 주소라고 생각함
+  statement: "`<a>` 사이에 쓴 글자가 곧 이동할 주소라서, 링크 글자를 바꾸면 이동하는 곳도 바뀐다고 생각한다."
+  reality: 이동할 주소는 `href` 속성에 쓴다. 태그 사이의 내용은 화면에 보이는 링크 글자일 뿐이다.
+  diagnosticHint: 링크 글자가 "여기를 누르세요"인 링크가 어디로 가는지는 어디를 보면 알 수 있을지 떠올린다.
+  remediation:
+    lessonSection: html.content.links-images#pitfalls
+    exercises: [html.content.links-images.mcq-link-destination]
+
+- id: html.mc.relative-path-base
+  concept: html.content.paths
+  title: 상대 경로의 기준을 잘못 잡음
+  statement: 상대 경로는 사이트의 맨 위 폴더(또는 아무 곳)에서부터 찾는다고 생각해서, 하위 폴더의 문서에서도 맨 위 폴더 기준으로 경로를 쓴다.
+  reality: 상대 경로는 지금 문서가 들어 있는 폴더를 기준으로 찾는다. 한 단계 위 폴더로 가려면 `../`를 쓴다.
+  diagnosticHint: 지금 문서가 어느 폴더에 있는지 먼저 짚고, 거기서 목표 파일까지 폴더를 하나씩 이동해 본다.
+  remediation:
+    lessonSection: html.content.links-images#pitfalls
+    exercises: [html.content.links-images.mcq-parent-folder-path, html.content.links-images.mcq-same-folder-path]
+
+- id: html.mc.alt-optional
+  concept: html.content.images
+  title: alt를 장식용 선택 속성으로 생각함
+  statement: "`alt`는 써도 되고 안 써도 되는 장식용 속성이라 그림이 잘 보이면 필요 없다고 생각한다."
+  reality: alt는 그림을 볼 수 없는 사람(화면 낭독기 사용자)과 그림이 열리지 않은 상황에 그림의 내용을 대신 전한다. 뜻이 있는 그림에는 반드시 설명을 쓰고, 꾸미기용 그림은 `alt=""`로 비워 둔다.
+  diagnosticHint: 그림을 가리고 alt 글자만 읽어도 페이지 내용이 전달되는지 확인한다.
+  remediation:
+    lessonSection: html.content.links-images#pitfalls
+    exercises: [html.content.links-images.mcq-alt-purpose, html.content.links-images.web-image-alt]
+
+- id: html.mc.img-has-content
+  concept: html.content.images
+  title: img에 닫는 태그와 내용이 있다고 생각함
+  statement: "`<img>고양이 사진</img>`처럼 img의 여는 태그와 닫는 태그 사이에 설명을 쓴다고 생각한다."
+  reality: img는 내용이 없는 빈 요소라서 닫는 태그를 쓰지 않는다. 그림 설명은 alt 속성에 쓴다.
+  diagnosticHint: 그림 요소가 화면에 보여 줄 "내용"은 글자가 아니라 그림 파일이라는 점을 떠올린다.
+  remediation:
+    lessonSection: html.content.links-images#pitfalls
+    exercises: [html.content.links-images.tf-img-content]
+
+# ---- html.content.lists-tables ----
+
+- id: html.mc.li-alone
+  concept: html.content.lists
+  title: li만 써도 목록이 된다고 생각함
+  statement: "`<li>`만 여러 개 쓰면 목록이 되므로 `ul`이나 `ol`로 감싸지 않아도 된다고 생각한다."
+  reality: li는 목록의 항목이라 반드시 ul이나 ol 안에 넣는다. 감싸는 요소가 순서가 중요한 목록인지(ol) 아닌지(ul)를 알려 준다.
+  diagnosticHint: 항목들을 묶는 "목록 상자"가 코드 어디에 있는지 찾아본다.
+  remediation:
+    lessonSection: html.content.lists-tables#pitfalls
+    exercises: [html.content.lists-tables.tf-li-alone, html.content.lists-tables.web-recipe-steps]
+
+- id: html.mc.th-is-bold-td
+  concept: html.content.tables
+  title: th를 굵은 글씨 칸으로 생각함
+  statement: "`th`는 글자가 굵고 가운데 정렬되는 칸이라서, 모양이 필요할 때 아무 칸에나 쓴다고 생각한다."
+  reality: th는 그 행이나 열이 무엇을 뜻하는지 알려 주는 제목 칸이다. 화면 낭독기는 데이터 칸(td)을 읽을 때 해당 th를 함께 읽어 준다. 모양은 기본 스타일일 뿐이다.
+  diagnosticHint: 그 칸이 다른 칸들의 "이름표" 역할을 하는지 생각해 본다.
+  remediation:
+    lessonSection: html.content.lists-tables#pitfalls
+    exercises: [html.content.lists-tables.mcq-th-meaning, html.content.lists-tables.multi-table-parts]
+
+# ---- html.content.forms ----
+
+- id: html.mc.input-type-looks-only
+  concept: html.forms.inputs
+  title: input의 type이 모양만 바꾼다고 생각함
+  statement: "`type=\"email\"`이나 `type=\"number\"`는 입력칸 모양만 조금 바꿀 뿐, `type=\"text\"`와 하는 일은 같다고 생각한다."
+  reality: type은 받을 값의 종류를 정한다. 그래서 브라우저가 입력값을 검사하고(이메일 형식 등), 모바일 키보드를 바꾸고, 비밀번호를 가린다.
+  diagnosticHint: 휴대폰에서 이메일 칸과 숫자 칸을 눌렀을 때 키보드가 어떻게 다른지 떠올린다.
+  remediation:
+    lessonSection: html.content.forms#pitfalls
+    exercises: [html.content.forms.multi-type-effects]
+
+- id: html.mc.label-just-text
+  concept: html.forms.labels
+  title: label을 그냥 설명 글자로 생각함
+  statement: "`<label>`은 입력칸 옆에 글자를 쓰는 요소일 뿐이라서, 입력칸과 연결하지 않아도 같은 역할을 한다고 생각한다."
+  reality: label은 for와 id(또는 감싸기)로 입력칸과 연결해야 뜻이 있다. 연결하면 글자를 눌러도 입력칸이 선택되고, 화면 낭독기가 입력칸의 이름으로 읽어 준다.
+  diagnosticHint: label 글자를 눌렀을 때 입력칸에 커서가 들어가는지 확인한다.
+  remediation:
+    lessonSection: html.content.forms#pitfalls
+    exercises: [html.content.forms.mcq-label-for, html.content.forms.web-connect-labels]
+
+- id: html.mc.placeholder-is-label
+  concept: html.forms.labels
+  title: placeholder가 label을 대신한다고 생각함
+  statement: 입력칸 안에 흐린 글자(`placeholder`)로 무엇을 쓸지 보여 주면 label은 없어도 된다고 생각한다.
+  reality: placeholder는 입력을 시작하면 사라지고, 입력칸의 이름으로 쓰이지 않을 수 있다. 입력칸마다 label을 두고, placeholder는 입력 예시에만 쓴다.
+  diagnosticHint: 입력칸에 글자를 몇 개 쓴 뒤에도 이 칸이 무엇을 쓰는 칸인지 알 수 있는지 확인한다.
+  remediation:
+    lessonSection: html.content.forms#pitfalls
+    exercises: [html.content.forms.tf-placeholder-label]
+
+- id: html.mc.button-does-nothing
+  concept: html.forms.buttons
+  title: form 안의 button은 아무 일도 하지 않는다고 생각함
+  statement: form 안의 `<button>`은 JavaScript를 연결하기 전까지 눌러도 아무 일도 일어나지 않는다고 생각한다.
+  reality: form 안의 button은 type을 쓰지 않으면 submit이라서 누르는 순간 폼을 보낸다(페이지가 새로 열림). 보내지 않는 버튼은 `type="button"`으로 쓴다.
+  diagnosticHint: 버튼을 눌렀더니 입력한 내용이 사라지고 페이지가 다시 열렸다면 폼이 보내진 것이다.
+  remediation:
+    lessonSection: html.content.forms#pitfalls
+    exercises: [html.content.forms.tf-button-submits, html.content.forms.fill-button-type]
+
+# ---- html.semantics.landmarks (lesson) ----
+
+- id: html.mc.semantic-is-style
+  concept: html.semantics.page-landmarks
+  title: 시맨틱 요소가 모양을 바꾼다고 생각함
+  statement: "`header`, `nav`, `main`, `footer` 같은 시맨틱 요소를 쓰면 화면 배치나 모양이 자동으로 바뀐다고 생각한다."
+  reality: 이 요소들은 div와 똑같이 보이고 뜻만 다르다. 뜻은 화면 낭독기, 검색 엔진, 코드를 읽는 사람이 쓰고, 모양은 CSS로 정한다.
+  diagnosticHint: "`div`를 `header`로 바꾸기 전과 후의 화면을 비교해 본다."
+  remediation:
+    lessonSection: html.semantics.landmarks#pitfalls
+    exercises: [html.semantics.landmarks.tf-semantic-looks-same]
+
+- id: html.mc.many-mains
+  concept: html.semantics.page-landmarks
+  title: main을 여러 개 써도 된다고 생각함
+  statement: 본문 구역이 여러 개처럼 보이면 `main`을 여러 개 써도 된다고 생각한다.
+  reality: main은 그 페이지의 핵심 내용 하나를 가리키므로 한 페이지에 (보이는 것은) 하나만 쓴다. 본문 안의 여러 구역은 section이나 article로 나눈다.
+  diagnosticHint: "\"본문으로 바로 가기\"를 눌렀을 때 갈 곳이 하나여야 한다고 생각해 본다."
+  remediation:
+    lessonSection: html.semantics.landmarks#pitfalls
+    exercises: [html.semantics.landmarks.mcq-main-count]
+
+- id: html.mc.section-article-same
+  concept: html.semantics.sectioning
+  title: section과 article을 같은 것으로 봄
+  statement: section과 article은 이름만 다르고 같은 뜻이라 아무거나 써도 된다고 생각한다.
+  reality: article은 따로 떼어 다른 곳에 옮겨도 뜻이 통하는 독립된 글이고, section은 한 문서 안의 주제별 구역이다.
+  diagnosticHint: 그 묶음만 잘라서 다른 사이트에 붙여도 혼자서 뜻이 통하는지 생각해 본다. 통하면 article이다.
+  remediation:
+    lessonSection: html.semantics.landmarks#pitfalls
+    exercises: [html.semantics.landmarks.mcq-article-or-section, html.semantics.landmarks.multi-article-candidates]
+
+- id: html.mc.div-is-wrong
+  concept: html.semantics.div-vs-semantic
+  title: div를 쓰면 안 되는 요소로 생각함
+  statement: 시맨틱 요소가 생겼으니 `div`는 쓰면 안 되는 낡은 요소이고, 모든 묶음을 시맨틱 요소로 바꿔야 한다고 생각한다.
+  reality: div는 뜻이 없는 묶음 요소라서, 뜻 없이 모양이나 배치만을 위해 묶을 때 쓰는 것이 맞다. 뜻이 있는 묶음에만 시맨틱 요소를 쓴다.
+  diagnosticHint: 그 묶음에 붙일 "이름"(머리말, 메뉴, 독립된 글 등)이 있는지 생각해 본다. 없으면 div다.
+  remediation:
+    lessonSection: html.semantics.landmarks#pitfalls
+    exercises: [html.semantics.landmarks.tf-div-is-wrong, html.semantics.landmarks.mcq-div-when]

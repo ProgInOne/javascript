@@ -1,0 +1,97 @@
+id: html.content.links-images.web-image-alt
+type: web_task
+difficulty: 3
+concepts:
+  - { id: html.content.images, weight: 1 }
+  - { id: html.doc.attributes, weight: 0.3 }
+tags: [img, alt, accessibility, web-task]
+estimatedSeconds: 240
+prompt: |
+  온라인 가게의 상품 페이지에 그림이 두 개 있어요. (이 미리보기에는 그림 파일이 없어서 깨진 그림으로 보여요. 그림이 열리지 않을 때 무엇이 보이는지 확인하기 좋은 상황이에요.)
+
+  - `id="product"`: 판매하는 **머그컵 사진**이에요. 그림을 볼 수 없는 사람도 어떤 상품인지 알 수 있게 해 주세요.
+  - `id="divider"`: 내용 없이 **꾸미기만 하는 물결무늬 구분선**이에요. 화면 낭독기가 건너뛰게 해 주세요.
+
+  두 그림에 알맞은 `alt`를 주세요. `src`는 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>머그컵 - 동네 그릇 가게</title>
+            </head>
+            <body>
+              <h1>하늘색 머그컵</h1>
+              <img id="product" src="mug.jpg" />
+              <img id="divider" src="wave-line.png" />
+              <p>350mL, 전자레인지에 쓸 수 있어요.</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>머그컵 - 동네 그릇 가게</title>
+            </head>
+            <body>
+              <h1>하늘색 머그컵</h1>
+              <img id="product" src="mug.jpg" alt="손잡이가 달린 하늘색 도자기 머그컵" />
+              <img id="divider" src="wave-line.png" alt="" />
+              <p>350mL, 전자레인지에 쓸 수 있어요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: product-alt
+      description: 머그컵 사진에 내용을 설명하는 alt가 있어야 합니다(비어 있으면 안 됩니다).
+      requirement: 상품 사진 설명
+      visible: true
+      selector: "#product"
+      expect:
+        attr: { name: alt, notEmpty: true }
+      misconceptionIfFail: html.mc.alt-optional
+    - kind: dom
+      id: divider-alt
+      description: 꾸미기용 구분선에는 비어 있는 alt(alt="")가 있어야 합니다.
+      requirement: 꾸미기용 그림
+      visible: true
+      selector: "#divider"
+      expect:
+        attr: { name: alt, equals: "" }
+    - kind: dom
+      id: src-kept
+      description: 머그컵 사진의 src는 mug.jpg 그대로여야 합니다.
+      requirement: src 유지
+      selector: "#product"
+      expect:
+        attr: { name: src, equals: mug.jpg }
+misconceptions: [html.mc.alt-optional]
+hints:
+  - 두 그림은 역할이 달라요. 하나는 내용을 전하는 그림이고, 하나는 꾸미기만 하는 그림이에요.
+  - 내용을 전하는 그림의 alt에는 그림을 보지 않고도 알 수 있게 무엇이 있는지 써요. 꾸미기용 그림은 alt를 빼는 것이 아니라 비워 둬요.
+  - "머그컵 사진에는 `alt=\"하늘색 머그컵 사진\"`처럼 설명을, 구분선에는 `alt=\"\"`를 써 보세요."
+explanation: |
+  예시 정답은 이래요.
+
+  ```html
+  <img id="product" src="mug.jpg" alt="손잡이가 달린 하늘색 도자기 머그컵" />
+  <img id="divider" src="wave-line.png" alt="" />
+  ```
+
+  - **머그컵 사진**은 상품을 보여 주는 중요한 그림이에요. 그림을 볼 수 없는 사람도 어떤 상품인지 알 수 있게 색, 모양처럼 눈에 보이는 내용을 `alt`에 써요. "사진", "이미지"만 쓰면 내용이 전해지지 않아요.
+  - **물결무늬 구분선**은 꾸미기만 하는 그림이라 전할 내용이 없어요. `alt=""`로 비워 두면 화면 낭독기가 건너뛰어요. `alt` 속성 자체를 빼면 화면 낭독기가 "wave-line.png" 같은 파일 이름을 읽어 버릴 수 있어요.
+
+  수정한 뒤 실행해 보면 머그컵 자리에는 alt 글자가 보이고, 구분선 자리에는 아무것도 보이지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

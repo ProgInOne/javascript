@@ -1,0 +1,63 @@
+id: html.basics.document.multi-body-children
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: html.doc.dom-tree, weight: 1 }
+  - { id: html.doc.nesting, weight: 0.5 }
+tags: [dom-tree, parent-child]
+estimatedSeconds: 80
+prompt: |
+  아래 HTML로 브라우저가 DOM 트리를 만들었어요. 이 트리에서 **`body`의 자식 요소**(`body` 바로 안에 든 요소)를 모두 고르세요.
+code: |
+  <html>
+    <head>
+      <title>장보기</title>
+    </head>
+    <body>
+      <h1>장보기</h1>
+      <p>우유와 <strong>달걀</strong>을 사요.</p>
+      <p>저녁 6시 전에 <em>꼭</em> 사기</p>
+    </body>
+  </html>
+spec:
+  options:
+    - id: a
+      text: "`h1`"
+    - id: b
+      text: "`p`"
+    - id: c
+      text: "`strong`"
+      rationale: strong은 첫째 p 바로 안에 있으니 p의 자식이에요. body에서 보면 자식의 자식(자손)이에요.
+    - id: d
+      text: "`em`"
+      rationale: em은 둘째 p의 자식이에요. body 안에 있지만 바로 안은 아니에요.
+    - id: e
+      text: "`head`"
+      rationale: head는 body 안이 아니라 body와 나란히 html 바로 안에 있어요. html의 자식이고, body와는 형제 사이예요.
+  correct: [a, b]
+hints:
+  - DOM 트리에서 자식은 "바로 안에" 든 요소만 가리켜요. 안의 안에 든 요소는 자식이 아니에요.
+  - 코드의 들여쓰기를 보세요. body보다 한 단계만 들여 쓴 요소가 body의 자식이에요.
+  - strong과 em은 p에 감싸여 있어요. head는 body를 감싸는 html의 자식이에요.
+explanation: |
+  정답은 **`h1`, `p`**예요(p는 두 개 모두 body의 자식이에요). DOM 트리로 그리면 이래요.
+
+  ```text
+  html
+  ├── head
+  │   └── title
+  └── body
+      ├── h1
+      ├── p
+      │   └── strong
+      └── p
+          └── em
+  ```
+
+  - `h1`과 두 `p`는 body 바로 안에 있으니 body의 **자식**이에요.
+  - `strong`과 `em`은 각각 p의 자식이에요. body에서 보면 자식이 아니라 **자손**(자식의 자식)이에요.
+  - `head`는 body 안에 있지 않아요. html의 자식이고, body와 같은 부모를 둔 **형제**예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,56 @@
+id: html.content.links-images.fill-link-href
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: html.content.links, weight: 1 }
+  - { id: html.doc.attributes, weight: 0.3 }
+tags: [link, href, attribute]
+estimatedSeconds: 70
+prompt: |
+  "MDN 문서 보기"를 누르면 `https://developer.mozilla.org`로 이동하는 링크를 만들려고 해요. 빈칸에 **속성 하나**를 채워 링크를 완성하세요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <p><a {{blank:attr}}>MDN 문서 보기</a></p>
+  blanks:
+    - id: attr
+      accept: ['href="https://developer.mozilla.org"']
+      width: 40
+  checks:
+    - kind: dom
+      id: href-set
+      description: 링크의 href 속성이 https://developer.mozilla.org 로 시작해야 합니다.
+      requirement: 이동할 주소
+      visible: true
+      selector: 'a[href^="https://developer.mozilla.org"]'
+      expect:
+        count: 1
+      misconceptionIfFail: html.mc.link-text-is-address
+    - kind: dom
+      id: text-kept
+      description: 링크 글자는 "MDN 문서 보기"여야 합니다.
+      requirement: 링크 글자
+      visible: true
+      selector: a
+      expect:
+        text: { equals: MDN 문서 보기 }
+misconceptions: [html.mc.link-text-is-address]
+hints:
+  - 링크가 이동할 주소는 화면에 보이는 글자가 아니라 속성에 써요.
+  - 속성은 `이름="값"` 형태로 써요. 링크 주소를 정하는 속성의 이름은 네 글자예요.
+  - "`href=\"주소\"` 형태로, 따옴표 안에 문제의 주소를 그대로 쓰세요."
+explanation: |
+  정답은 **`href="https://developer.mozilla.org"`**예요.
+
+  ```html
+  <p><a href="https://developer.mozilla.org">MDN 문서 보기</a></p>
+  ```
+
+  `href` 속성이 링크가 이동할 주소를 정해요. 다른 사이트로 가는 링크라서 `https://`로 시작하는 절대 경로를 써요. 주소 끝에 `/`를 붙여 `https://developer.mozilla.org/`로 써도 같은 곳으로 가요.
+
+  속성은 여는 태그 안, 요소 이름 `a` 뒤에 공백을 두고 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

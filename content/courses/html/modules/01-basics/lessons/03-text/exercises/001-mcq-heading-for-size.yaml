@@ -1,0 +1,43 @@
+id: html.basics.text.mcq-heading-for-size
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: html.text.headings, weight: 1 }
+tags: [headings]
+estimatedSeconds: 50
+prompt: |
+  빵집 페이지의 문단 중간에 "오늘의 빵은 오후 3시에 나와요"라는 안내 문장을 **눈에 띄게 크게** 보이고 싶어요. 이 문장은 제목이 아니라 안내 문구예요. 가장 알맞은 방법은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: 문단(`p`)으로 쓰고, 글자 크기는 CSS로 키운다
+    - id: b
+      text: 가장 크게 보이도록 `h1`으로 감싼다
+      misconception: html.mc.heading-for-size
+      rationale: h1은 페이지 전체의 제목이라는 뜻이에요. 크기만 원해서 쓰면 목차에 엉뚱한 제목이 생겨요.
+    - id: c
+      text: 너무 크지 않게 `h4`로 감싼다
+      misconception: html.mc.heading-for-size
+      rationale: 제목 요소의 숫자는 크기가 아니라 목차의 단계예요. 제목이 아닌 문장은 어떤 제목 요소로도 감싸지 않아요.
+    - id: d
+      text: 코드에서 문장 앞뒤에 빈 줄을 여러 개 넣는다
+      rationale: 빈 줄은 화면에서 공백 한 칸이 될 뿐, 글자 크기와 관계없어요.
+  correct: a
+misconceptions: [html.mc.heading-for-size]
+hints:
+  - 이 문장을 페이지의 목차에 넣는다면 어울릴까요?
+  - "`h1`~`h6`은 글자 크기가 아니라 목차의 단계를 나타내요."
+  - 제목이 아닌 글자의 모양(크기)은 HTML이 아니라 다른 언어가 맡아요.
+explanation: |
+  정답은 **문단으로 쓰고 크기는 CSS로 키운다**예요.
+
+  이 문장은 목차에 들어갈 제목이 아니라 안내 문구예요. 제목 요소(`h1`~`h6`)는 목차의 단계를 나타내므로, 제목이 아닌 글자를 크게 보이려고 쓰면 화면 낭독기와 검색 엔진이 이것을 페이지의 제목으로 오해해요.
+
+  - `h1`이나 `h4`를 고른 경우: 숫자를 크기로 생각한 거예요. 어떤 숫자를 고르든 제목이라는 뜻이 생겨요.
+  - 빈 줄 넣기: 줄바꿈은 화면에서 공백 한 칸으로 합쳐져요.
+
+  중요한 안내라면 `<p><strong>오늘의 빵은 오후 3시에 나와요</strong></p>`처럼 `strong`으로 중요하다는 뜻을 더할 수도 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

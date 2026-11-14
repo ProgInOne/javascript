@@ -1,0 +1,37 @@
+id: html.semantics.landmarks.mcq-nav-for-menu
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: html.semantics.page-landmarks, weight: 1 }
+tags: [semantic, nav]
+estimatedSeconds: 40
+prompt: |
+  사이트 맨 위에 "첫 페이지 · 메뉴 · 오시는 길"로 가는 **주요 메뉴 링크 목록**이 있어요. 이 목록을 감쌀 요소로 가장 알맞은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`nav`"
+    - id: b
+      text: "`footer`"
+      rationale: footer는 연락처나 저작권 같은 꼬리말이에요. 주요 메뉴의 뜻이 아니에요.
+    - id: c
+      text: "`main`"
+      rationale: main은 페이지마다 다른 핵심 내용이에요. 모든 페이지에 똑같이 나오는 메뉴는 main이 아니에요.
+    - id: d
+      text: "`article`"
+      rationale: article은 혼자서도 뜻이 통하는 독립된 글이에요. 링크 목록은 독립된 글이 아니에요.
+  correct: a
+hints:
+  - 이 묶음은 사이트의 다른 페이지로 이동하는 "길 안내" 역할을 해요.
+  - 탐색(navigation)을 뜻하는 요소가 있어요.
+  - navigation의 앞 세 글자예요.
+explanation: |
+  정답은 **`nav`**예요.
+
+  `nav`는 사이트의 주요 탐색(navigation) 링크 묶음이라는 뜻이에요. 화면 낭독기 사용자는 "탐색" 랜드마크로 바로 건너뛰어 메뉴를 찾을 수 있어요. 보통 `<nav><ul><li><a>...</a></li></ul></nav>`처럼 링크의 목록을 nav로 감싸요.
+
+  - `footer`는 꼬리말, `main`은 페이지의 핵심 내용, `article`은 독립된 글이라 메뉴의 뜻과 맞지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

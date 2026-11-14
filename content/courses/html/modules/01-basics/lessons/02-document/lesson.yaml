@@ -1,0 +1,16 @@
+id: html.basics.document
+title: HTML 문서의 뼈대
+summary: 요소·태그·속성을 구분하고, 올바른 중첩과 doctype·head·body로 이루어진 문서의 뼈대를 쓰며, 브라우저가 만드는 DOM 트리를 이해합니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 15, practice: 15 }
+concepts:
+  primary: [html.doc.elements, html.doc.attributes, html.doc.nesting, html.doc.skeleton, html.doc.dom-tree]
+  reviewed: [html.web.rendering]
+objectives:
+  - HTML 코드에서 여는 태그·닫는 태그·내용·요소·속성을 각각 가리킬 수 있다.
+  - 요소를 올바른 순서로 중첩하고, 엇갈린 태그를 찾을 수 있다.
+  - doctype·html·head·body로 이루어진 문서의 뼈대를 작성하고, head와 body에 들어갈 내용을 구분할 수 있다.
+  - HTML 코드를 보고 DOM 트리에서 요소 사이의 부모·자식 관계를 말할 수 있다.
+practice:
+  targetCount: 10

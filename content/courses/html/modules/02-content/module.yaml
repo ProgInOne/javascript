@@ -1,0 +1,4 @@
+id: html.content
+title: 콘텐츠 요소
+summary: 링크와 이미지, 목록과 표, 입력 폼처럼 웹 페이지를 채우는 요소를 뜻에 맞게 작성합니다.
+lessons: [links-images, lists-tables, forms]

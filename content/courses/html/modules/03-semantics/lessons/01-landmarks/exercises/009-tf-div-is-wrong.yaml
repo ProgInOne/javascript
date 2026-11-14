@@ -1,0 +1,39 @@
+id: html.semantics.landmarks.tf-div-is-wrong
+type: true_false
+difficulty: 2
+concepts:
+  - { id: html.semantics.div-vs-semantic, weight: 1 }
+tags: [semantic, div]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: 시맨틱 요소가 있으니, 좋은 HTML에서는 모든 `div`를 `section`이나 `article` 같은 시맨틱 요소로 바꿔야 한다.
+  answer: false
+  misconceptionIfWrong: html.mc.div-is-wrong
+  requireReason: true
+  reasons:
+    - id: r1
+      text: div는 뜻 없이 모양이나 배치만을 위해 묶을 때 쓰는 요소라서, 그런 묶음까지 시맨틱 요소로 바꾸면 오히려 뜻이 틀려진다
+      correct: true
+    - id: r2
+      text: div는 낡은 요소지만 브라우저가 아직 지원하므로 남겨 둬도 된다
+      misconception: html.mc.div-is-wrong
+    - id: r3
+      text: 시맨틱 요소는 화면 모양을 바꾸므로, 모양을 유지하려면 div를 남겨야 한다
+      misconception: html.mc.semantic-is-style
+hints:
+  - div는 어떤 묶음에 쓰는 요소였나요?
+  - 배치만을 위해 감싼 상자를 section으로 바꾸면, 화면 낭독기는 그 상자를 무엇으로 알려 줄까요?
+  - 시맨틱 요소와 div는 역할을 나눠 맡아요.
+explanation: |
+  정답은 **거짓**, 이유는 **div는 뜻 없는 묶음에 쓰는 요소라서, 그런 묶음까지 시맨틱 요소로 바꾸면 뜻이 틀려진다**예요.
+
+  카드를 나란히 놓으려고 감싼 상자처럼 뜻이 없는 묶음을 `section`으로 바꾸면, 화면 낭독기에는 이름 없는 "구역"이 생겨서 오히려 혼란스러워요. 뜻이 있는 묶음은 시맨틱 요소로, 뜻 없는 묶음은 `div`로 써요.
+
+  - div는 낡은 요소가 아니에요. 지금도 배치용 묶음에 가장 많이 쓰는 요소예요.
+  - 시맨틱 요소는 화면 모양을 바꾸지 않아요. div와 똑같이 보여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

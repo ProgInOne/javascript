@@ -1,0 +1,44 @@
+id: html.content.links-images.mcq-alt-purpose
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: html.content.images, weight: 1 }
+tags: [img, alt, accessibility]
+estimatedSeconds: 50
+prompt: |
+  `img` 요소의 `alt` 속성에 대한 설명으로 가장 알맞은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: 그림을 볼 수 없는 사람이나 그림이 열리지 않은 상황에 그림의 내용을 대신 전한다
+    - id: b
+      text: 그림 위에 마우스를 올렸을 때 보이는 장식용 말풍선이라 써도 되고 안 써도 된다
+      misconception: html.mc.alt-optional
+      rationale: alt는 장식이 아니에요. 화면 낭독기 사용자에게 그림의 내용을 전하는 유일한 방법이에요.
+    - id: c
+      text: 그림 파일이 있는 위치(경로)를 적는다
+      rationale: 그림 파일의 경로는 src 속성에 써요.
+    - id: d
+      text: 그림 아래에 항상 보이는 설명 글자(캡션)를 만든다
+      rationale: alt는 그림이 정상으로 보일 때는 화면에 나오지 않아요.
+  correct: a
+misconceptions: [html.mc.alt-optional]
+hints:
+  - 그림을 볼 수 없는 사람은 웹 페이지의 그림을 어떻게 알 수 있을까요?
+  - 레슨에서 그림 파일이 없을 때 그림 자리에 무엇이 보였는지 떠올려 보세요.
+  - alt는 "대체(alternative)"의 줄임말이에요. 무엇을 대체할까요?
+explanation: |
+  정답은 **그림을 볼 수 없는 사람이나 그림이 열리지 않은 상황에 그림의 내용을 대신 전한다**예요.
+
+  - 화면 낭독기는 그림 대신 `alt`의 글자를 읽어 줘요.
+  - 그림이 열리지 않으면 그림 자리에 `alt`가 보여요.
+
+  나머지 선택지:
+
+  - 장식용 말풍선이라 생략해도 된다는 생각은 틀렸어요. 마우스를 올렸을 때의 말풍선은 `title` 속성이고, `alt`는 뜻이 있는 그림이라면 꼭 써야 해요.
+  - 그림 파일의 위치는 `src`에 써요.
+  - 그림이 잘 보일 때 `alt`는 화면에 나오지 않아요. 항상 보이는 캡션은 다른 요소로 만들어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

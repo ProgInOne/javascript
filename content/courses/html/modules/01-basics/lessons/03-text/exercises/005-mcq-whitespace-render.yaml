@@ -1,0 +1,48 @@
+id: html.basics.text.mcq-whitespace-render
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: html.text.paragraphs, weight: 1 }
+tags: [paragraphs, whitespace]
+estimatedSeconds: 60
+prompt: |
+  아래 코드를 브라우저로 열면 화면에 어떻게 보이나요? (화면 너비는 충분히 넓다고 생각하세요.)
+code: |
+  <p>오늘     할 일:
+  빨래하기,
+
+  장보기</p>
+spec:
+  options:
+    - id: a
+      text: "`오늘 할 일: 빨래하기, 장보기`가 한 줄로, 낱말 사이에 공백 한 칸씩 보인다"
+    - id: b
+      text: 코드와 똑같이 세 줄로 나뉘고, 둘째 줄과 셋째 줄 사이에 빈 줄이 하나 보인다
+      misconception: html.mc.newline-in-source
+      rationale: 줄바꿈과 빈 줄은 화면에서 공백 한 칸으로 합쳐져요.
+    - id: c
+      text: 한 줄로 보이지만, "오늘"과 "할" 사이에는 공백이 다섯 칸 보인다
+      misconception: html.mc.newline-in-source
+      rationale: 연속된 공백도 한 칸으로 합쳐져요.
+    - id: d
+      text: 줄바꿈이 있는 곳마다 문단이 나뉘어 문단 세 개로 보인다
+      misconception: html.mc.newline-in-source
+      rationale: 문단은 p 요소로만 나뉘어요. 이 코드에는 p가 하나뿐이에요.
+  correct: a
+misconceptions: [html.mc.newline-in-source]
+hints:
+  - 이 코드에 `p` 요소는 몇 개인가요?
+  - 브라우저는 연속된 공백과 줄바꿈을 화면에서 어떻게 그리나요?
+  - 줄바꿈, 빈 줄, 여러 칸 공백은 모두 공백 한 칸이 돼요.
+explanation: |
+  정답은 **`오늘 할 일: 빨래하기, 장보기`가 한 줄로 보인다**예요.
+
+  브라우저는 연속된 공백, 줄바꿈, 빈 줄을 모두 **공백 한 칸**으로 합쳐요. 이 코드에는 `p`가 하나뿐이라 문단도 하나예요.
+
+  - 코드처럼 세 줄로 보이거나 빈 줄이 생긴다고 생각했다면, 코드의 줄바꿈이 화면에 그대로 나온다고 오해한 거예요.
+  - 여러 칸 공백도 한 칸으로 합쳐져요.
+  - 세 항목을 나눠 보이고 싶다면 문단을 나누거나(`p` 여러 개), "목록과 표" 단원에서 배우는 목록 요소를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

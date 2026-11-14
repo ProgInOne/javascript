@@ -1,0 +1,53 @@
+id: html.content.links-images.mcq-parent-folder-path
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: html.content.paths, weight: 1 }
+tags: [path, relative-path, parent-folder]
+estimatedSeconds: 80
+prompt: |
+  사이트 폴더가 아래와 같아요. `blog/day1.html`에 로고 그림 `logo.png`를 넣으려고 해요. `src`에 쓸 상대 경로로 알맞은 것은 무엇인가요?
+code: |
+  my-site/
+  ├── index.html
+  ├── images/
+  │   └── logo.png
+  └── blog/
+      └── day1.html
+spec:
+  options:
+    - id: a
+      text: "`../images/logo.png`"
+    - id: b
+      text: "`images/logo.png`"
+      misconception: html.mc.relative-path-base
+      rationale: 이 경로는 지금 문서가 있는 blog 폴더 안에서 images 폴더를 찾아요. images는 blog 안이 아니라 한 단계 위에 있어요.
+    - id: c
+      text: "`../logo.png`"
+      rationale: 위 폴더(my-site)로 나가는 것까지는 맞지만, logo.png는 my-site 바로 안이 아니라 images 폴더 안에 있어요.
+    - id: d
+      text: "`blog/images/logo.png`"
+      misconception: html.mc.relative-path-base
+      rationale: 지금 문서가 이미 blog 폴더 안에 있어서, blog 안에서 blog 폴더를 또 찾게 돼요.
+  correct: a
+misconceptions: [html.mc.relative-path-base]
+hints:
+  - 먼저 day1.html이 어느 폴더에 있는지 짚어 보세요. 거기가 출발점이에요.
+  - blog 폴더에서 images 폴더로 가려면, 먼저 두 폴더를 함께 담고 있는 위 폴더로 나가야 해요.
+  - 위 폴더로 나가는 것은 `../`, 폴더 안으로 들어가는 것은 `폴더이름/`이에요.
+explanation: |
+  정답은 **`../images/logo.png`**예요.
+
+  출발점은 day1.html이 있는 **blog 폴더**예요. 길을 따라가 보면:
+
+  1. `../`: blog의 위 폴더인 my-site로 나가요.
+  1. `images/`: my-site 안의 images 폴더로 들어가요.
+  1. `logo.png`: 그 안의 logo.png를 가리켜요.
+
+  - `images/logo.png`는 사이트 맨 위 폴더(my-site)에서 출발한다고 생각한 경로예요. index.html에서는 맞지만, blog 폴더의 문서에서는 blog 안에서 images를 찾아서 실패해요.
+  - `../logo.png`는 images 폴더로 들어가는 단계가 빠졌어요.
+  - `blog/images/logo.png`는 blog 안에서 blog를 또 찾아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

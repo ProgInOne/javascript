@@ -1,0 +1,48 @@
+id: html.content.forms.multi-type-effects
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: html.forms.inputs, weight: 1 }
+tags: [input, type]
+estimatedSeconds: 70
+prompt: |
+  `input`의 `type`을 `text`에서 다른 값으로 바꾸면 달라질 수 있는 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: 폼을 보내기 전에 브라우저가 입력값의 형식을 검사하는지 (예. `email`)
+      missedMisconception: html.mc.input-type-looks-only
+    - id: b
+      text: 휴대폰에서 입력칸을 눌렀을 때 뜨는 자판의 종류 (예. `number`)
+      missedMisconception: html.mc.input-type-looks-only
+    - id: c
+      text: 입력한 글자가 그대로 보이는지, 가려지는지 (예. `password`)
+    - id: d
+      text: 입력칸 옆에 "이메일" 같은 설명 글자가 저절로 생기는지
+      rationale: type은 설명 글자를 만들지 않아요. 입력칸의 이름표는 label로 따로 써요.
+    - id: e
+      text: 입력칸이 form 밖에 있어도 폼과 함께 보내지는지
+      rationale: 입력값은 type과 관계없이 form 안에 있어야 함께 보내져요.
+  correct: [a, b, c]
+misconceptions: [html.mc.input-type-looks-only]
+hints:
+  - 레슨의 type 표에서 "브라우저가 해 주는 일" 열을 떠올려 보세요.
+  - email, number, password는 각각 어떤 도움을 줬나요?
+  - 설명 글자와 폼에 함께 보내지는지는 type이 아니라 다른 요소(label, form)가 정해요.
+explanation: |
+  정답은 **입력값 형식 검사**, **휴대폰 자판의 종류**, **글자 가리기**예요.
+
+  `type`은 모양만 바꾸는 속성이 아니라 받을 값의 종류를 정해요. 그래서
+
+  - `email`은 보내기 전에 이메일 모양인지 검사하고,
+  - `number`는 휴대폰에서 숫자 자판을 띄우고,
+  - `password`는 입력한 글자를 가려요.
+
+  나머지 두 가지는 type과 관계없어요.
+
+  - 설명 글자(이름표)는 `label`로 따로 쓰고 연결해요.
+  - 폼과 함께 보내지려면 입력칸이 `form` 안에 있어야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

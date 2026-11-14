@@ -1,0 +1,167 @@
+id: html.semantics.landmarks.web-page-landmarks
+type: web_task
+difficulty: 3
+concepts:
+  - { id: html.semantics.page-landmarks, weight: 1 }
+  - { id: html.content.lists, weight: 0.3 }
+tags: [semantic, header, nav, main, footer, web-task]
+estimatedSeconds: 360
+prompt: |
+  동물 병원 페이지가 모두 `div`로만 나뉘어 있어서, 화면 낭독기 사용자가 메뉴나 본문으로 바로 건너뛸 수 없어요.
+
+  `class` 이름을 참고해서, 네 개의 `div`를 각 구역의 뜻에 맞는 **시맨틱 요소**로 바꾸세요.
+
+  | 지금 | 이 구역의 뜻 |
+  |---|---|
+  | `div class="top"` | 페이지의 머리말 |
+  | `div class="menu"` | 사이트의 주요 메뉴 (머리말 안에 있음) |
+  | `div class="content"` | 이 페이지의 핵심 내용 |
+  | `div class="bottom"` | 페이지의 꼬리말 |
+
+  안의 내용과 구역의 순서는 바꾸지 마세요. `class`는 지워도 되고 남겨 둬도 돼요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>튼튼 동물 병원</title>
+            </head>
+            <body>
+              <div class="top">
+                <h1>튼튼 동물 병원</h1>
+                <div class="menu">
+                  <ul>
+                    <li><a href="index.html">병원 소개</a></li>
+                    <li><a href="hours.html">진료 시간</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="content">
+                <h2>진료 안내</h2>
+                <p>강아지와 고양이를 진료해요. 예약 없이 오셔도 돼요.</p>
+              </div>
+              <div class="bottom">
+                <p>전화: 02-000-0000</p>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>튼튼 동물 병원</title>
+            </head>
+            <body>
+              <header>
+                <h1>튼튼 동물 병원</h1>
+                <nav>
+                  <ul>
+                    <li><a href="index.html">병원 소개</a></li>
+                    <li><a href="hours.html">진료 시간</a></li>
+                  </ul>
+                </nav>
+              </header>
+              <main>
+                <h2>진료 안내</h2>
+                <p>강아지와 고양이를 진료해요. 예약 없이 오셔도 돼요.</p>
+              </main>
+              <footer>
+                <p>전화: 02-000-0000</p>
+              </footer>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: has-header
+      description: 페이지의 머리말이 header 요소이고, 안에 사이트 이름(h1)이 있어야 합니다.
+      requirement: 머리말
+      visible: true
+      selector: body > header > h1
+      expect:
+        count: 1
+        text: { equals: 튼튼 동물 병원 }
+    - kind: dom
+      id: has-nav
+      description: 주요 메뉴가 header 안의 nav 요소이고, 메뉴 링크 두 개가 그 안에 있어야 합니다.
+      requirement: 주요 메뉴
+      visible: true
+      selector: header nav a
+      expect:
+        count: 2
+    - kind: dom
+      id: has-main
+      description: 핵심 내용이 main 요소 하나에 들어 있어야 합니다.
+      requirement: 핵심 내용
+      visible: true
+      selector: main
+      expect:
+        count: 1
+    - kind: dom
+      id: main-content
+      description: main 안에 "진료 안내" 제목이 있어야 합니다.
+      requirement: 핵심 내용
+      selector: main > h2
+      expect:
+        text: { equals: 진료 안내 }
+    - kind: dom
+      id: has-footer
+      description: 페이지의 꼬리말이 footer 요소여야 합니다.
+      requirement: 꼬리말
+      visible: true
+      selector: body > footer
+      expect:
+        count: 1
+        text: { includes: "02-000-0000" }
+    - kind: dom
+      id: order
+      description: 구역은 머리말 → 핵심 내용 → 꼬리말 순서여야 합니다.
+      requirement: 구역 순서
+      selector: body
+      expect:
+        tag: body
+        order: [header, main, footer]
+misconceptions: [html.mc.semantic-is-style]
+hints:
+  - 레슨의 표에서 머리말, 주요 메뉴, 핵심 내용, 꼬리말을 뜻하는 요소를 찾아보세요.
+  - "`top` → `header`, `menu` → `nav`처럼 각 div의 여는 태그와 닫는 태그를 함께 바꿔요."
+  - "나머지 둘은 `main`과 `footer`예요. 닫는 태그 `</div>`도 짝에 맞게 `</nav>`, `</header>` 등으로 바꿨는지 확인하세요."
+explanation: |
+  예시 정답은 네 개의 `div`를 이렇게 바꾸는 거예요.
+
+  ```html
+  <header>
+    <h1>튼튼 동물 병원</h1>
+    <nav>
+      <ul>...메뉴 링크...</ul>
+    </nav>
+  </header>
+  <main>
+    <h2>진료 안내</h2>
+    <p>...</p>
+  </main>
+  <footer>
+    <p>전화: 02-000-0000</p>
+  </footer>
+  ```
+
+  - `header`: 사이트 이름이 있는 머리말이에요.
+  - `nav`: 사이트의 주요 메뉴 링크 묶음이에요. 머리말 안에 있어도 돼요.
+  - `main`: 이 페이지의 핵심 내용이고, 하나만 써요.
+  - `footer`: 연락처가 있는 꼬리말이에요.
+
+  바꾼 뒤 실행해도 화면은 그대로예요. 시맨틱 요소는 모양이 아니라 뜻을 바꾸기 때문이에요. 이제 화면 낭독기 사용자는 "탐색"이나 "본문" 랜드마크로 바로 건너뛸 수 있어요.
+
+  닫는 태그를 바꾸지 않아 `<header>...</div>`처럼 짝이 맞지 않으면, 브라우저가 구조를 추측해서 고치면서 체크가 실패할 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

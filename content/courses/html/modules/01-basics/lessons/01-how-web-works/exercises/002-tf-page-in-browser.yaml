@@ -1,0 +1,40 @@
+id: html.basics.how-web-works.tf-page-in-browser
+type: true_false
+difficulty: 2
+concepts:
+  - { id: html.web.client-server, weight: 1 }
+tags: [client-server]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: 인터넷 연결이 끊겨도 브라우저 안에 웹 페이지가 들어 있으므로, 처음 가 보는 사이트도 주소만 알면 열 수 있다.
+  answer: false
+  misconceptionIfWrong: html.mc.page-lives-in-browser
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 웹 페이지 파일은 서버에 있어서, 브라우저가 인터넷으로 요청해 받아 와야 화면에 그릴 수 있다
+      correct: true
+    - id: r2
+      text: 브라우저에는 모든 사이트의 페이지가 들어 있지만, 인터넷이 끊기면 브라우저가 실행되지 않는다
+      misconception: html.mc.page-lives-in-browser
+    - id: r3
+      text: 웹 페이지는 주소를 입력할 때마다 브라우저가 새로 만들기 때문에 인터넷과 관계없다
+hints:
+  - 웹 페이지 파일이 어디에 저장되어 있는지가 핵심이에요.
+  - 브라우저는 주소를 보고 누구에게 파일을 달라고 하나요? 그 요청은 무엇을 통해 전달될까요?
+  - 요청과 응답은 인터넷을 통해 오가요. 연결이 끊기면 서버에 요청할 수 없어요.
+explanation: |
+  정답은 **거짓**, 이유는 **웹 페이지 파일은 서버에 있어서, 브라우저가 인터넷으로 요청해 받아 와야 한다**예요.
+
+  브라우저는 주소를 보고 서버에 파일을 요청하고, 서버가 보내 준 HTML을 받아 그려요. 인터넷이 끊기면 요청이 서버에 닿지 않으니, 처음 가 보는 사이트는 열 수 없어요.
+
+  - "브라우저에 모든 사이트가 들어 있다"는 이유는 틀렸어요. 브라우저는 페이지를 담아 두는 곳이 아니라, 받아 와서 그리는 프로그램이에요.
+  - "브라우저가 새로 만든다"도 틀렸어요. 페이지의 내용은 서버가 보내 준 파일에 들어 있어요.
+
+  (한 번 방문한 페이지는 브라우저가 잠시 저장해 두기도 하지만, 처음 가 보는 사이트에는 해당하지 않아요.)
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

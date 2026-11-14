@@ -1,0 +1,39 @@
+id: html.content.lists-tables.multi-table-parts
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: html.content.tables, weight: 1 }
+tags: [table, thead, tbody, tr]
+estimatedSeconds: 70
+prompt: |
+  표를 이루는 요소에 대한 설명으로 **맞는 것**을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`tr` 하나는 표의 가로줄(행) 하나다"
+    - id: b
+      text: "`thead`는 제목 행을, `tbody`는 데이터 행을 묶는다"
+    - id: c
+      text: "`td`는 실제 값이 들어가는 데이터 칸이다"
+    - id: d
+      text: "`th`는 글자를 굵게 보이게 하는 칸이라서, 강조하고 싶은 값에 쓴다"
+      misconception: html.mc.th-is-bold-td
+      rationale: th는 열이나 행의 이름표인 제목 칸이에요. 굵은 모양은 기본 스타일일 뿐이에요.
+    - id: e
+      text: "`tr` 하나는 표의 세로줄(열) 하나다"
+      rationale: tr은 가로줄(행)이에요. 열을 만드는 요소는 따로 없어요.
+  correct: [a, b, c]
+misconceptions: [html.mc.th-is-bold-td]
+hints:
+  - "`tr`의 r은 row예요. row는 가로줄일까요, 세로줄일까요?"
+  - th와 td는 모양이 아니라 칸의 역할로 구분해요.
+  - 표를 세 묶음(table, thead/tbody, tr)과 두 가지 칸(th, td)으로 나눠 생각해 보세요.
+explanation: |
+  정답은 **`tr`은 행 하나**, **thead는 제목 행·tbody는 데이터 행을 묶음**, **`td`는 데이터 칸**이에요.
+
+  - `th`는 강조용이 아니라 열이나 행의 이름표(제목 칸)예요. 강조하고 싶은 값은 `td` 안에 `strong`을 넣어요. 굵은 모양 때문에 th를 쓰면 화면 낭독기가 그 값을 이름표로 읽어 버려요.
+  - `tr`(table row)은 가로줄이에요. 세로줄(열)은 각 행의 같은 위치 칸이 모여 생겨요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
