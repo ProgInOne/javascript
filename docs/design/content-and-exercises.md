@@ -5,7 +5,7 @@ ProgInOne의 커리큘럼 구조, 레슨 본문 형식, 문제 유형과 채점 
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-13
+- 최종 수정: 2026-11-14
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [학습 엔진 설계](/docs/design/learning-engine.md), [코드 실행 샌드박스 설계](/docs/design/code-execution-sandbox.md), [AI 시스템 설계](/docs/design/ai-system.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -685,31 +685,44 @@ export interface ExerciseTypeDef<Spec, PublicSpec, Answer> {
   category: ExerciseCategory;      // 'recognition' | 'recall' | 'production'. 숙련도 증거 가중치 범주
   weightOverride?: number;         // 범주 기본 가중치를 유형별로 덮어씀 (예: true_false 0.5)
   specSchema: z.ZodType<Spec>;     // 원본 YAML·AI 생성 결과 검증
+  publicSpecSchema: z.ZodType<PublicSpec>; // redact 결과의 형식 (웹이 검증·렌더링에 사용)
   answerSchema: z.ZodType<Answer>; // 클라이언트 제출 검증
-  redact(spec: Spec): PublicSpec;  // 정답 키를 제거한 클라이언트용 스펙
+  requiresRun(spec: Spec): boolean; // 채점에 샌드박스 RunResult가 필요한가
+  redact(spec: Spec, options?: { shuffleSeed?: string }): PublicSpec; // 정답 키를 제거한 클라이언트용 스펙
 
   // 브라우저 샌드박스 실행이 필요한 유형만 구현. 서버가 실행 계획(하네스 포함)을 만든다.
-  buildRunPlan?(spec: Spec, answer: Answer): RunPlan;
+  // purpose가 'interactive'(실행 버튼)이면 공개 체크만 포함한다.
+  buildRunPlan?(spec: Spec, answer: Answer, options: { purpose: RunPurpose }): RunPlan;
 
-  // 결정론적 채점. run은 샌드박스 실행 결과(해당 시).
-  grade(input: { spec: Spec; answer: Answer; run?: RunResult }): GradeResult;
+  // 결정론적 채점. run은 샌드박스 실행 결과(해당 시), serverFindings는 서버가 계산한
+  // static(acorn)·html-valid(html-validate) 체크 결과.
+  grade(input: { spec: Spec; answer: Answer; run?: RunResult; serverFindings?: ServerFindings }): GradeResult;
 
-  // 문제 자체가 올바른지 검증 (콘텐츠 빌드, 런타임 생성 검증에서 사용)
-  verify(spec: Spec, ctx: VerifyContext): Promise<VerifyReport>;
+  // 문제 자체의 정적 검증 (콘텐츠 빌드, 런타임 생성 검증에서 사용).
+  // 실행 검증(참조 정답 통과, 시작 코드 실패, 예측 기대값 확정)은 content-cli가
+  // buildRunPlan → 러너 실행 → grade로 조립한다.
+  verify(spec: Spec): VerifyIssue[];
 
-  // 중복 검사용 지문
-  fingerprint(spec: Spec, prompt: string, code?: string): Fingerprint;
+  // 정답 누설 지문(정답 선택지 텍스트, 허용 답, 기대 출력, 참조 구현의 핵심 줄). 서버 전용,
+  // exercises.leak_fingerprints_json에 저장. 해시가 아니라 normalizeLeakText로 정규화한 문자열이며,
+  // AI 힌트 검사가 힌트 본문을 같은 함수로 정규화한 뒤 포함 여부를 봅니다.
+  leakFingerprints(spec: Spec): string[];
 
-  // 이 유형을 AI 생성으로 만들 수 있는지와 생성용 출력 스키마
-  generation?: { enabled: boolean; outputSchema: z.ZodType<unknown> };
+  // v0.1 미구현: 중복 검사용 지문 fingerprint(), AI 생성용 generation.
+  // 중복 검사(content-cli)와 런타임 AI 생성을 구현할 때 추가한다.
 }
 
 export interface GradeResult {
   correct: boolean;                // 숙련도에 "정답"으로 반영되는가
+  outcome: 'correct' | 'partial' | 'incorrect' | 'error'; // attempts.outcome
   score: number;                   // 0~1, 부분 점수 (피드백·통계용)
-  feedback: FeedbackItem[];        // 사용자에게 보여줄 항목별 피드백
+  feedback: FeedbackItem[];        // 사용자에게 보여줄 항목별 피드백 (숨김 기대값은 넣지 않음)
   misconceptionIds: string[];      // 이 답이 시사하는 오개념 (오개념 관측 근거)
   checkResults?: CheckResult[];    // 실습 유형의 체크별 결과
+  failedRequirements?: string[];   // 실패한 체크의 requirement 이름 (체크 순서, 중복 제거)
+  milestones?: MilestoneResult[];  // web_task 마일스톤별 통과
+  engineApplicable: boolean;       // 샌드박스 crashed/aborted면 false (기록하되 엔진 미반영)
+  graderVersion: string;           // '<유형 ID>@<version>', attempts.grading_json에 저장
 }
 
 // packages/exercise-ui
@@ -718,6 +731,9 @@ registerRenderer('mcq_single', McqSingleRenderer); // props: { spec: PublicSpec,
 
 공통 규칙:
 
+- 서버·웹·`content-cli`는 유형 정의를 직접 부르지 않고 경계 함수(`parseSpec`, `redactSpec`, `buildRunPlan`, `gradeSubmission`, `verifySpec`)를 씁니다. 경계 함수가 스펙·답안·`RunResult`를 스키마로 검증한 뒤 순수 구현을 호출하고, 잘못된 입력은 `ExerciseKitError`(`INVALID_SPEC`, `INVALID_ANSWER`, `INVALID_RUN_RESULT`, `RUN_REQUIRED` 등)로 던집니다. 오답은 오류가 아니라 정상적인 `GradeResult`입니다.
+- 샌드박스와 주고받는 계약(`SerializedValue`, 관측 단계 `ObservationStep`·`CheckBundle`, 관측값 `Observation`, `RunResult`, `RunPlan`)과 ProgInOne 콘솔 형식 함수는 `packages/shared`에 둡니다. `exercise-kit`과 `runner`가 모두 `shared`에만 의존할 수 있기 때문입니다([의존 방향 규칙](/docs/design/system-architecture.md#의존-방향-규칙)). 러너는 전송 전용 부분(`RunRequest`, `Limits`, `PreparedCode`, `RunEvent`)을 그 위에 정의합니다.
+- `outcome`은 `correct`이면 `correct`, 아니면 `score > 0`일 때 `partial`, 0이면 `incorrect`입니다. 실행이 `error`/`timeout`/`loop_limit`으로 끝나면 `error`이고, `crashed`/`aborted`면 `error`이면서 `engineApplicable: false`입니다([학습 엔진 설계](/docs/design/learning-engine.md#관측값)).
 - `correct`는 항상 이진 판정입니다. 부분 점수 `score`는 피드백과 통계에만 쓰고, 숙련도 반영 방식은 [학습 엔진 설계](/docs/design/learning-engine.md)가 정합니다.
 - 채점은 결정론적이어야 합니다. 같은 `spec`·`answer`·`run`이면 항상 같은 결과입니다.
 - 채점기는 사용자 입력을 신뢰하지 않습니다. `answerSchema`로 검증한 뒤 채점하고, 샌드박스 결과(`run`)도 스키마 검증을 거칩니다.
@@ -851,7 +867,7 @@ spec:
 ```
 
 - 답안: `{ blanks: Record<blankId, string> }`
-- 정규화(`text` 모드): 앞뒤 공백 제거, 연속 공백 1개로, 전각 문자 → 반각, 따옴표 종류 통일(`'`·`"`·`` ` ``는 `accept`에 문자열 리터럴로 적힌 경우 서로 동등). `caseSensitive: false`면 소문자화.
+- 정규화(`text` 모드): 앞뒤 공백 제거, 연속 공백 1개로, 전각 문자 → 반각, 따옴표 종류 통일(`'`·`"`·`` ` ``는 `accept`에 문자열 리터럴로 적힌 경우 서로 동등). `caseSensitive: false`면 소문자화. 한글 입력기가 넣는 타이포그래피 따옴표(`‘’“”`)도 ASCII 따옴표로 바꿉니다. `acceptRegex`는 정규화된 답 전체와 일치해야 하고(`^(?:…)$`), 중첩 수량자(`(a+)+`)처럼 역추적 폭주 위험이 있는 식은 스키마가 거부합니다.
 - 채점(`text` 모드): 빈칸별로 `accept` 또는 `acceptRegex`와 비교. 모든 빈칸이 맞으면 `correct`, `score = 맞은 빈칸 / 전체 빈칸`.
 - 채점(`code` 모드): 빈칸을 채운 코드를 샌드박스에서 `checks`로 실행합니다. 모든 체크 통과 시 `correct`. `accept`는 실행 전 빠른 피드백용 참고값입니다. 이렇게 하면 `a + b` 대신 `b + a`처럼 동등한 답도 정답이 됩니다.
 - UI: 코드 블록 안 인라인 입력, `Tab`으로 다음 빈칸 이동.
@@ -867,7 +883,7 @@ spec:
     b.push(4);
     console.log(a.length);
   answerKind: console                      # console | value | error | choice
-  expression: null                         # answerKind: value일 때 평가할 식 (예: "result")
+  expression: null                         # answerKind: value일 때 값을 물을 전역 식별자 (예: "result"). 식이 아니라 식별자만 허용 (readGlobal 관측)
   choices: null                            # answerKind: choice일 때 선택지 (정답은 실행으로 결정)
   expected: null                           # 정답 키. 원본에는 쓰지 않음 (빌드가 실행해서 채움)
   misconceptionByAnswer:                   # 특정 오답 → 오개념
@@ -884,7 +900,10 @@ spec:
   1. 리터럴로 해석할 수 없는 줄은 공백 정규화 후 문자열 비교합니다.
 - 정규화(`value`): 위의 리터럴 파싱 후 구조 비교. `"5"`와 `5`는 다른 값입니다(형 변환 학습에 중요).
 - 정규화(`error`): 오류 발생 여부와 오류 이름(`TypeError` 등)만 비교. 메시지는 비교하지 않습니다(엔진마다 다름).
-- 부분 점수: `console`에서 여러 줄일 때 `score = 맞은 줄 / 전체 줄`(순서 기준 줄 단위 비교). `correct`는 전체 일치일 때만.
+- 부분 점수: `console`에서 여러 줄일 때 `score = 맞은 줄 / 전체 줄`(순서 기준 줄 단위 비교). 전체 줄은 `max(기대 줄 수, 답 줄 수)`라서 덧붙인 줄도 점수를 깎습니다. `correct`는 전체 일치일 때만. `error`에서 오류 발생 여부만 맞고 이름이 틀리면 `score = 0.5`입니다.
+- `expected` 형식(빌드가 채움): `{ kind: console, lines: string[] }`(콘솔 형식 줄), `{ kind: value, value: SerializedValue }`, `{ kind: error, thrown, name? }`, `{ kind: choice, choiceId }`. `content-cli`는 `buildPredictExpectationPlan(spec)`으로 실행하고 `derivePredictExpected(spec, runResult)`로 기대값을 만듭니다. `choice`는 실제 출력과 일치하는 선택지가 정확히 하나여야 합니다.
+- 오개념 키 비교: `console`은 줄 단위 같은 정규화, `value`는 리터럴 구조 비교, `error`는 오류 이름 또는 `none`(오류 없음), `choice`는 선택지 ID입니다.
+- ProgInOne 콘솔 형식은 항목 하나를 항상 한 줄로 씁니다(`util.inspect`처럼 긴 객체를 여러 줄로 나누지 않음). 줄 단위 비교를 단순하게 유지하기 위함입니다.
 - 오개념 매핑: 정규화된 오답이 `misconceptionByAnswer`의 키와 일치하면 포함합니다.
 - UI: 코드(읽기 전용) + 출력 입력창(여러 줄). 제출 후 "실제로 실행" 버튼으로 실행 결과와 자신의 예측을 나란히 비교합니다.
 

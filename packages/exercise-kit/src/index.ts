@@ -1,0 +1,35 @@
+// Registry and boundary functions (validate untrusted input, then call pure graders).
+export {
+  buildRunPlan,
+  checkSpec,
+  getExerciseType,
+  gradeSubmission,
+  implementedExerciseTypes,
+  leakFingerprints,
+  parseAnswer,
+  parseSpec,
+  redactSpec,
+  verifySpec,
+  type RegisteredExerciseType,
+} from './core/registry.ts';
+export * from './core/types.ts';
+export * from './core/errors.ts';
+export * from './core/ids.ts';
+
+// Per-type definitions and schemas.
+export * from './types/mcq-single.ts';
+export * from './types/fill-blank.ts';
+export * from './types/predict-output.ts';
+
+// Reusable comparison helpers (e.g. client-side quick feedback).
+export { parseLiteral } from './common/literal.ts';
+export {
+  diffValues,
+  fromJson,
+  valuesEqual,
+  type JsonValue,
+  type ValueDiff,
+} from './common/values.ts';
+export { compareOutput, outputLineEquals, type LineComparison } from './common/output.ts';
+export { normalizeBlankText, normalizeLeakText, normalizeOutputLines } from './common/normalize.ts';
+export { createRng, deriveSeed, seedFromString, splitmix64, type Rng } from './common/prng.ts';

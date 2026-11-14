@@ -322,6 +322,15 @@ importers:
         specifier: ^4.6.7
         version: 4.6.7
 
+  packages/exercise-kit:
+    dependencies:
+      '@proginone/shared':
+        specifier: workspace:*
+        version: link:../shared
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
+
   packages/learning-engine:
     dependencies:
       ts-fsrs:

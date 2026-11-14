@@ -1,0 +1,17 @@
+{
+  "name": "@proginone/exercise-kit",
+  "version": "0.0.0",
+  "private": true,
+  "description": "문제 유형 레지스트리, 유형별 스펙·답안 스키마, 순수 채점기, 정답 키 제거, 파라메트릭 템플릿 엔진",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@proginone/shared": "workspace:*",
+    "zod": "^4.6.7"
+  }
+}

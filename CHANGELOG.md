@@ -7,6 +7,8 @@
 
 ### Added
 
+- `@proginone/exercise-kit`(M4): 문제 유형 레지스트리와 경계 함수(`parseSpec`·`redactSpec`·`gradeSubmission`·`verifySpec`), `mcq_single`·`fill_blank`(텍스트)·`predict_output` 스펙·답안 스키마와 순수 채점기, 정답 키 제거, 학습자 리터럴 안전 파서, 결정론적 PRNG(`xoshiro128**`). `@proginone/shared`에 샌드박스 계약(`SerializedValue`, 관측 단계·관측값, `RunResult`, `RunPlan`)과 ProgInOne 콘솔 형식
+- 학습 엔진 핵심(M4): `@proginone/learning-engine` 증거 가중치(`W_rep` 변형 그룹 반복 감쇠, `W_ctx` 학습 맥락 포함), 숙련도 갱신, 단계 게이트(`proficient` 변형 그룹 3개, `mastered` 간격 복습 2회·독립 응용), 유효 숙련도, 시도 → FSRS 등급, ts-fsrs v6(FSRS-7) 어댑터, 보류 등급의 "개념당 하루 한 번" 적용과 복습 후 단계 재판정, 복습 큐(우선순위·일일 예산)
 - 학습 엔진 핵심(M4): `@proginone/learning-engine` 증거 가중치(`W_rep` 변형 그룹 반복 감쇠, `W_ctx` 학습 맥락 포함), 숙련도 갱신, 단계 게이트(`proficient` 변형 그룹 3개, `mastered` 간격 복습 2회·독립 응용), 유효 숙련도, 시도 → FSRS 등급, ts-fsrs v6(FSRS-7) 어댑터, 보류 등급의 "개념당 하루 한 번" 적용과 복습 후 단계 재판정, 복습 큐(우선순위·일일 예산), 단원 연습 세트 구성(개념별 몫·난이도 구간·생성 문제 포함·변형 그룹 중복 금지·같은 유형 3연속 방지)과 통과 기준, 복습 세트 구성(교차 배치), 시드 RNG
 - 과정·단원 화면(M4): 과정 목록, 과정 상세(커리큘럼 아코디언·학습 목표·학습 시작), 학습 화면 읽기 모드(집중 헤더, 레슨 본문 렌더러, 이 단원의 개념, 스크롤 추적 목차, 이전/다음 단원). 예제 실행과 확인 문제는 러너·문제 UI와 함께 연결
 - 커리큘럼 API(M4): 서버가 content.db를 읽기 전용으로 열고(스키마 버전 검사, 없으면 `CONTENT_UNAVAILABLE`), `GET /api/v1/courses`, `/courses/:id`, `/lessons/:id`(본문 트리·개념·이전/다음 단원), `pnpm content:build`

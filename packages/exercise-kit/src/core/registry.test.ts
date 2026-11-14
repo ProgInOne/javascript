@@ -1,0 +1,182 @@
+import { describe, expect, it } from 'vitest';
+
+import { ANSWER_KEY_FIELDS, RAW_SPECS, SENTINEL, collectKeys } from '../testing/fixtures.ts';
+import { ExerciseKitError } from './errors.ts';
+import {
+  checkSpec,
+  getExerciseType,
+  leakFingerprints,
+  gradeSubmission,
+  implementedExerciseTypes,
+  parseSpec,
+  redactSpec,
+  verifySpec,
+} from './registry.ts';
+import { EXERCISE_TYPE_IDS } from './types.ts';
+
+function expectKitError(fn: () => unknown, code: string): void {
+  try {
+    fn();
+  } catch (error) {
+    expect(error).toBeInstanceOf(ExerciseKitError);
+    expect((error as ExerciseKitError).code).toBe(code);
+    return;
+  }
+  throw new Error(`expected ExerciseKitError ${code}`);
+}
+
+describe('registry', () => {
+  it('registers known type IDs with category metadata', () => {
+    for (const id of implementedExerciseTypes()) {
+      expect(EXERCISE_TYPE_IDS).toContain(id);
+      expect(RAW_SPECS[id], `fixture for ${id}`).toBeDefined();
+    }
+    expect(getExerciseType('mcq_single')?.category).toBe('recognition');
+    expect(getExerciseType('fill_blank')?.category).toBe('recall');
+    expect(getExerciseType('predict_output')?.category).toBe('recall');
+    expect(getExerciseType('nope')).toBeUndefined();
+  });
+
+  it('throws UNKNOWN_TYPE for unregistered types', () => {
+    expectKitError(() => parseSpec('true_false', {}), 'UNKNOWN_TYPE');
+    expectKitError(() => gradeSubmission({ typeId: 'x', spec: {}, answer: {} }), 'UNKNOWN_TYPE');
+  });
+
+  it('validates spec, answer and run result at the boundary', () => {
+    expectKitError(() => parseSpec('mcq_single', { options: [] }), 'INVALID_SPEC');
+    expectKitError(
+      () =>
+        gradeSubmission({
+          typeId: 'mcq_single',
+          spec: RAW_SPECS['mcq_single'],
+          answer: { optionId: 7 },
+        }),
+      'INVALID_ANSWER',
+    );
+    expectKitError(
+      () =>
+        gradeSubmission({
+          typeId: 'mcq_single',
+          spec: RAW_SPECS['mcq_single'],
+          answer: { optionId: 'b' },
+          run: { status: 'completed' },
+        }),
+      'INVALID_RUN_RESULT',
+    );
+    expectKitError(
+      () =>
+        gradeSubmission({
+          typeId: 'fill_blank',
+          spec: RAW_SPECS['fill_blank'],
+          answer: JSON.parse('{"blanks": {"__proto__": {"b1": "return"}}}'),
+        }),
+      'INVALID_ANSWER',
+    );
+    expectKitError(() => parseSpec('mcq_single', JSON.parse('{"__proto__": {}}')), 'INVALID_SPEC');
+    let deep: unknown = 'x';
+    for (let i = 0; i < 5_000; i++) deep = { blanks: deep };
+    expectKitError(
+      () => gradeSubmission({ typeId: 'fill_blank', spec: RAW_SPECS['fill_blank'], answer: deep }),
+      'INVALID_ANSWER',
+    );
+    expectKitError(
+      () =>
+        gradeSubmission({
+          typeId: 'fill_blank',
+          spec: RAW_SPECS['fill_blank'],
+          answer: { blanks: { b1: 'x'.repeat(501) } },
+        }),
+      'INVALID_ANSWER',
+    );
+  });
+
+  it('grades through the registry', () => {
+    expect(
+      gradeSubmission({
+        typeId: 'mcq_single',
+        spec: RAW_SPECS['mcq_single'],
+        answer: { optionId: 'b' },
+      }),
+    ).toMatchObject({ correct: true, engineApplicable: true });
+    expect(
+      gradeSubmission({
+        typeId: 'predict_output',
+        spec: RAW_SPECS['predict_output'],
+        answer: { choiceId: 'b' },
+      }).misconceptionIds,
+    ).toEqual(['js.mc.secret-b']);
+  });
+
+  it('runs static verification through the registry', () => {
+    expect(verifySpec('mcq_single', RAW_SPECS['mcq_single'])).toEqual([]);
+  });
+
+  it('checkSpec reports schema errors, verification errors and warnings as strings', () => {
+    expect(checkSpec('mcq_single', RAW_SPECS['mcq_single'])).toEqual({ ok: true, warnings: [] });
+    const schemaError = checkSpec('mcq_single', { options: [], correct: 'a' });
+    expect(schemaError.ok).toBe(false);
+    if (!schemaError.ok) expect(schemaError.errors[0]).toMatch(/^options/);
+    const banned = checkSpec('mcq_single', {
+      options: [
+        { id: 'a', text: '1' },
+        { id: 'b', text: '2' },
+        { id: 'c', text: '모두 정답' },
+      ],
+      correct: 'a',
+    });
+    expect(banned.ok).toBe(false);
+    const warning = checkSpec('predict_output', { code: 'console.log(1)', answerKind: 'console' });
+    expect(warning).toMatchObject({
+      ok: true,
+      warnings: [expect.stringContaining('PREDICT_EXPECTED_MISSING')],
+    });
+    expect(checkSpec('nope', {})).toEqual({
+      ok: false,
+      errors: ['exercise type nope is not implemented'],
+    });
+  });
+
+  it('extracts normalized answer-leak fingerprints', () => {
+    expect(leakFingerprints('mcq_single', RAW_SPECS['mcq_single'])).toEqual([
+      '`undefined`',
+      'undefined',
+    ]);
+    expect(leakFingerprints('fill_blank', RAW_SPECS['fill_blank'])).toEqual(['secret']);
+    expect(leakFingerprints('predict_output', RAW_SPECS['predict_output'])).toEqual(['1']);
+    expect(
+      leakFingerprints('predict_output', {
+        code: 'x',
+        answerKind: 'console',
+        expected: { kind: 'console', lines: ['a  b', '[1, "x"]'] },
+      }),
+    ).toEqual(['a b [1, "x"]', 'a b', '[1, "x"]']);
+  });
+});
+
+describe('answer-key stripping', () => {
+  const cases = implementedExerciseTypes().map((id) => [id] as const);
+
+  it.each(cases)('%s: no answer key, misconception or sentinel survives redaction', (typeId) => {
+    const options = typeId === 'mcq_single' ? [undefined, { shuffleSeed: 'a1' }] : [undefined];
+    for (const option of options) {
+      const publicSpec = redactSpec(typeId, RAW_SPECS[typeId], option);
+      const keys = collectKeys(publicSpec);
+      for (const field of ANSWER_KEY_FIELDS)
+        expect(keys.has(field), `${typeId}.${field}`).toBe(false);
+      expect(JSON.stringify(publicSpec).toLowerCase()).not.toContain(SENTINEL);
+    }
+  });
+
+  it.each(cases)('%s: public spec conforms to its published schema', (typeId) => {
+    const def = getExerciseType(typeId);
+    const publicSpec = redactSpec(typeId, RAW_SPECS[typeId]);
+    expect(def?.publicSpecSchema.safeParse(publicSpec).success).toBe(true);
+  });
+
+  it.each(cases)(
+    '%s: the raw fixture really contains the sentinel (guards the test itself)',
+    (typeId) => {
+      expect(JSON.stringify(RAW_SPECS[typeId]).toLowerCase()).toContain(SENTINEL);
+    },
+  );
+});
