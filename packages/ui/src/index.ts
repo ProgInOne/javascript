@@ -29,6 +29,7 @@ export {
 export { Dialog, Drawer, type DialogProps, type DrawerProps } from './components/Dialog.tsx';
 export { IconButton, type IconButtonProps } from './components/IconButton.tsx';
 export { Input, type InputProps } from './components/Input.tsx';
+export { Popover, type PopoverProps } from './components/Popover.tsx';
 export {
   ProgressBar,
   ProgressRing,

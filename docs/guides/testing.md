@@ -53,12 +53,15 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 | `tests/reading.spec.ts` | 읽기 모드: 본문 확인 문제, 읽기 위치 이어 읽기, 활동 하트비트(`page.clock`) |
 | `tests/review.spec.ts` | 대시보드와 다음 날 복습: 테스트 시계를 하루 넘겨 복습 세트를 풀고 끝냄 |
 | `tests/ai-unavailable.spec.ts` | AI 비가용 상태: 실패한 답변의 오류 표시(모의 제공자의 `[mock:error:AI_*]`), 연결 해제 시 AI 진입점 비활성·서버 거부·오답 설명 대체, 다시 연결 |
+| `tests/journey.spec.ts` | 첫 실행 전용 서버에서 새 학습자의 흐름: 온보딩 → 대시보드, 온보딩 목표 단계 시각 회귀 |
+| `tests/onboarded.setup.ts` | 준비 단계(`setup` 프로젝트): 주 서버의 학습자를 온보딩 완료 상태로 둠 |
 
 - 처음 한 번 `pnpm --filter @proginone/e2e exec playwright install chromium`으로 브라우저를 설치합니다.
-- 테스트는 서버 하나를 공유하며 순서대로 실행됩니다(`workers: 1`). 앞 테스트가 만든 상태(예: 백업)를 뒤 테스트가 가정하지 않도록, 각 테스트는 필요한 상태를 직접 만들거나 확인합니다.
+- **서버 두 개**: 주 서버(`E2E_PORT`)와 첫 실행 전용 서버(`E2E_PORT + 1`, 데이터 위치 `E2E_JOURNEY_DATA_DIR`)를 띄웁니다. 주 서버의 학습자는 `setup` 프로젝트가 먼저 온보딩을 마친 상태로 만듭니다. 새 학습자가 필요한 테스트는 `test.use({ baseURL: process.env['E2E_JOURNEY_URL'] })`로 두 번째 서버를 씁니다(D-034).
+- 테스트는 서버를 공유하며 순서대로 실행됩니다(`workers: 1`). 앞 테스트가 만든 상태(예: 백업)를 뒤 테스트가 가정하지 않도록, 각 테스트는 필요한 상태를 직접 만들거나 확인합니다.
 - 샌드박스 테스트는 앱 화면이 아직 러너를 쓰지 않으므로, `packages/runner`의 호스트 모듈을 테스트에서 번들해 앱 페이지에 `page.evaluate`로 넣고 실행합니다(DevTools 평가는 페이지 CSP를 받지 않음). 앱 문서와 CSP, 서버의 `/sandbox/runner.html`, 셸·하네스는 모두 실제 프로덕션 빌드입니다. 공격 코드가 노린 요청이 서버에 닿았는지는 테스트가 띄운 탐지용 서버와 페이지의 응답 기록으로 확인합니다.
 - E2E 콘텐츠는 `e2e/fixtures/content`(문제는 draft로 저작, `includeDrafts`로 빌드)입니다. 예측 문제의 기대값은 `node tools/content-cli/src/cli.ts check --dir e2e/fixtures/content --run`으로 `.generated/predict-expected.json`에 기록해 커밋합니다. 실제 `content/`가 바뀌어도 E2E와 시각 기준 이미지가 흔들리지 않게 따로 둡니다.
-- **테스트 시계**: E2E 서버는 `PROGINONE_TEST_CLOCK_FILE=<데이터 위치>/clock-offset-ms`로 시작합니다. 서버의 학습 서비스(복습 일정, 하루 경계, 활동 시간)는 이 파일의 밀리초만큼 미래로 옮긴 시각을 씁니다(`tests/clock.ts`의 `shiftServerClock`). 이 환경 변수는 E2E 설정에서만 쓰며, 일반 실행에서는 설정하지 않습니다(설정되면 시작 로그에 경고).
+- **테스트 시계**: E2E 서버는 `PROGINONE_TEST_CLOCK_FILE=<데이터 위치>/clock-offset-ms`로 시작합니다. 서버의 학습 서비스(복습 일정, 하루 경계, 활동 시간)는 이 파일의 밀리초만큼 미래로 옮긴 시각을 씁니다(`tests/clock.ts`의 `shiftServerClock`). 학습 상태를 찍는 시각 회귀는 `setServerTime(고정 시각, 'journey')`으로 서버 시각을 고정해 날짜·요일이 실행일과 상관없이 같게 합니다. 이 환경 변수는 E2E 설정에서만 쓰며, 일반 실행에서는 설정하지 않습니다(설정되면 시작 로그에 경고).
 - 실패하면 `e2e/test-results/`의 트레이스를 `pnpm --filter @proginone/e2e exec playwright show-trace <trace.zip>`으로 엽니다.
 
 ## 시각 회귀

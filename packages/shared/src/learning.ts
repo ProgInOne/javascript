@@ -285,3 +285,32 @@ export type ConceptDetail = z.infer<typeof conceptDetailSchema>;
 export const conceptDetailQuerySchema = z
   .object({ evidenceLimit: z.coerce.number().int().min(1).max(200).optional() })
   .strict();
+
+// ── Learner profile and onboarding ───────────────────────────────────────────
+
+/** `learners.experience_level` (ui-ux.md#온보딩과-목표-설정: 처음이에요 / 조금 해봤어요 / 기초는 알아요). */
+export const EXPERIENCE_LEVELS = ['none', 'some', 'basics'] as const;
+export const experienceLevelSchema = z.enum(EXPERIENCE_LEVELS);
+export type ExperienceLevel = z.infer<typeof experienceLevelSchema>;
+
+/** `GET /learner` and `PATCH /learner` response. */
+export const learnerProfileSchema = z.object({
+  experienceLevel: experienceLevelSchema,
+  /** When onboarding was completed or skipped; null before that. */
+  onboardedAt: z.number().nullable(),
+  /**
+   * Show the onboarding (first run only). False once `onboardedAt` is set, and for learners who
+   * already have learning records from before onboarding existed (v0.1 data).
+   */
+  needsOnboarding: z.boolean(),
+});
+export type LearnerProfile = z.infer<typeof learnerProfileSchema>;
+
+/** `PATCH /learner`. `onboarded: true` finishes (or skips) the onboarding; it never resets. */
+export const learnerPatchSchema = z
+  .object({
+    experienceLevel: experienceLevelSchema.optional(),
+    onboarded: z.literal(true).optional(),
+  })
+  .strict();
+export type LearnerPatch = z.infer<typeof learnerPatchSchema>;

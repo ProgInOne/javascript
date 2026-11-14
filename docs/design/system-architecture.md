@@ -311,6 +311,9 @@ sequenceDiagram
 | 학습 상태 | `GET /mastery`, `GET /concepts/:id`, `GET /review-queue`, `GET /daily-plan` |
 | 활동 | `POST /activity/heartbeat` (30초 간격, 학습 시간 측정) |
 | 목표 | `GET/PUT /goals` |
+| 학습자 | `GET/PATCH /learner` (온보딩: 경험 수준, 완료 시각, 온보딩 필요 여부) |
+| 튜터 | `POST /tutor/threads`, `GET /tutor/threads`, `GET /tutor/threads/:id/messages`, `POST /tutor/threads/:id/messages` (SSE), `POST /tutor/threads/:id/messages/:messageId/cancel`, `POST /exercises/:id/ai-hint` (`tutor.hint`) |
+| AI | `GET /ai/status`, `POST /ai/login`, `POST /ai/login/cancel`, `POST /ai/logout`, `POST /ai/reconnect`, `GET /ai/models`, `GET /ai/events` (SSE: 연결 상태·사용량·로그인 완료) |
 | 튜터 | `POST /tutor/threads`, `GET /tutor/threads`, `GET /tutor/threads/:id/messages`, `POST /tutor/threads/:id/messages` (SSE), `POST /tutor/threads/:id/messages/:messageId/cancel`, `GET`·`POST /tutor/threads/:id/summary` (`session.summarize`, v0.2), `POST /exercises/:id/ai-hint` (`tutor.hint`), `POST /attempts/:id/explanation` (`evaluator.explainMistake`, v0.2. 맞힌 시도는 `409 ATTEMPT_CORRECT`) |
 | AI | `GET /ai/status`, `POST /ai/login`, `POST /ai/login/cancel`, `POST /ai/logout`, `POST /ai/reconnect`, `GET /ai/models`, `GET /ai/events` (SSE: 연결 상태·사용량·로그인 완료), `GET /ai/calls` (AI 호출 기록, 프롬프트 없음. v0.2) |
 | 코드 초안 | `PUT /code-drafts/:exerciseId` (자동 저장 동기화) |

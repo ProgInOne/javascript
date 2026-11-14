@@ -6,6 +6,7 @@ import './app/lesson.css';
 import './app/practice.css';
 import './app/ai.css';
 import './app/tutor.css';
+import './app/learning.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRouter, RouterProvider } from '@tanstack/react-router';

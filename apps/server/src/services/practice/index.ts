@@ -7,6 +7,7 @@ import { ConceptService } from '../learning/concept-service.ts';
 import { DailyPlanService } from '../learning/daily-plan-service.ts';
 import { GoalService } from '../learning/goal-service.ts';
 import { DashboardService } from '../learning/dashboard-service.ts';
+import { LearnerService } from '../learning/learner-service.ts';
 import { LessonProgressService } from '../learning/lesson-progress-service.ts';
 import { ReviewService } from '../review/review-service.ts';
 import { AttemptService } from './attempt-service.ts';
@@ -35,6 +36,7 @@ export interface PracticeServices {
   goals: GoalService;
   dailyPlan: DailyPlanService;
   concepts: ConceptService;
+  learner: LearnerService;
 }
 
 export function createPracticeServices(deps: PracticeDeps): PracticeServices {
@@ -53,5 +55,6 @@ export function createPracticeServices(deps: PracticeDeps): PracticeServices {
     goals,
     dailyPlan: new DailyPlanService({ ...deps, review, weakness, goals }),
     concepts: new ConceptService(deps),
+    learner: new LearnerService(deps),
   };
 }

@@ -25,6 +25,11 @@ import {
   backupSummarySchema,
   settingsSchema,
   type SettingsPatch,
+  dailyPlanSchema,
+  goalStatusSchema,
+  learnerProfileSchema,
+  type GoalRequest,
+  type LearnerPatch,
 } from '@proginone/shared';
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
@@ -193,4 +198,48 @@ export const dashboardQuery = queryOptions({
 export const reviewQueueQuery = queryOptions({
   queryKey: ['review-queue'],
   queryFn: ({ signal }) => api('/review-queue', { schema: reviewQueueSchema, signal }),
+});
+
+// ── Learner profile (onboarding) and goals ──
+
+export const learnerQuery = queryOptions({
+  queryKey: ['learner'],
+  queryFn: ({ signal }) => api('/learner', { schema: learnerProfileSchema, signal }),
+  staleTime: Infinity,
+});
+
+export function useUpdateLearner() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (patch: LearnerPatch) =>
+      api('/learner', { method: 'PATCH', body: patch, schema: learnerProfileSchema }),
+    onSuccess: (learner) => {
+      client.setQueryData(learnerQuery.queryKey, learner);
+    },
+  });
+}
+
+export const goalsQuery = queryOptions({
+  queryKey: ['goals'],
+  queryFn: ({ signal }) => api('/goals', { schema: goalStatusSchema, signal }),
+  staleTime: 30_000,
+});
+
+export function useSaveGoal() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (goal: GoalRequest) =>
+      api('/goals', { method: 'PUT', body: goal, schema: goalStatusSchema }),
+    onSuccess: (status) => {
+      client.setQueryData(goalsQuery.queryKey, status);
+      // Today's plan and pace follow the goal.
+      void client.invalidateQueries({ queryKey: ['daily-plan'] });
+    },
+  });
+}
+
+export const dailyPlanQuery = queryOptions({
+  queryKey: ['daily-plan'],
+  queryFn: ({ signal }) => api('/daily-plan', { schema: dailyPlanSchema, signal }),
+  staleTime: 30_000,
 });

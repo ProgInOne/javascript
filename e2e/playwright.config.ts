@@ -16,6 +16,28 @@ if (process.env['E2E_CONTENT_DB'] !== contentDb) {
   process.env['E2E_CONTENT_DB'] = contentDb;
 }
 const visual = process.env['PW_VISUAL'] === '1';
+// A second server with its own fresh learner for the first-run journey (onboarding → dashboard
+// states → weakness set, tests/journey.spec.ts). The main server's learner skips onboarding
+// (tests/onboarded.setup.ts) so the other tests open the dashboard directly.
+const JOURNEY_PORT = PORT + 1;
+const journeyDir =
+  process.env['E2E_JOURNEY_DATA_DIR'] ?? mkdtempSync(join(tmpdir(), 'proginone-e2e-journey-'));
+process.env['E2E_JOURNEY_DATA_DIR'] = journeyDir;
+process.env['E2E_JOURNEY_URL'] = `http://127.0.0.1:${JOURNEY_PORT}`;
+
+const serverEnv = (port: number, dir: string) => ({
+  NODE_ENV: 'production',
+  PROGINONE_PORT: String(port),
+  PROGINONE_DATA_DIR: dir,
+  PROGINONE_CONTENT_DB: contentDb,
+  PROGINONE_OPEN_BROWSER: 'false',
+  PROGINONE_LOG_LEVEL: 'warn',
+  // Deterministic AI; E2E never starts Codex (docs/design/ai-system.md#mockprovider).
+  PROGINONE_AI_PROVIDER: 'mock',
+  // Test-only clock shift for next-day reviews (tests/clock.ts writes it).
+  PROGINONE_TEST_CLOCK_FILE: join(dir, 'clock-offset-ms'),
+});
+const browser = { ...devices['Desktop Chrome'], channel: 'chromium' };
 
 export default defineConfig({
   testDir: './tests',
@@ -35,23 +57,24 @@ export default defineConfig({
     timezoneId: 'Asia/Seoul',
     trace: 'retain-on-failure',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], channel: 'chromium' } }],
-  webServer: {
-    command: 'node ../apps/server/src/main.ts',
-    url: `http://127.0.0.1:${PORT}/`,
-    reuseExistingServer: false,
-    timeout: 30_000,
-    env: {
-      NODE_ENV: 'production',
-      PROGINONE_PORT: String(PORT),
-      PROGINONE_DATA_DIR: dataDir,
-      PROGINONE_CONTENT_DB: contentDb,
-      PROGINONE_OPEN_BROWSER: 'false',
-      PROGINONE_LOG_LEVEL: 'warn',
-      // Deterministic AI; E2E never starts Codex (docs/design/ai-system.md#mockprovider).
-      PROGINONE_AI_PROVIDER: 'mock',
-      // Test-only clock shift for next-day reviews (tests/clock.ts writes it).
-      PROGINONE_TEST_CLOCK_FILE: join(dataDir, 'clock-offset-ms'),
+  projects: [
+    { name: 'setup', testMatch: /\.setup\.ts$/, use: browser },
+    { name: 'chromium', use: browser, dependencies: ['setup'] },
+  ],
+  webServer: [
+    {
+      command: 'node ../apps/server/src/main.ts',
+      url: `http://127.0.0.1:${PORT}/`,
+      reuseExistingServer: false,
+      timeout: 30_000,
+      env: serverEnv(PORT, dataDir),
     },
-  },
+    {
+      command: 'node ../apps/server/src/main.ts',
+      url: `http://127.0.0.1:${JOURNEY_PORT}/`,
+      reuseExistingServer: false,
+      timeout: 30_000,
+      env: serverEnv(JOURNEY_PORT, journeyDir),
+    },
+  ],
 });

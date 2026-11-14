@@ -6,6 +6,7 @@ export const Route = createFileRoute('/settings')({
 });
 
 const SECTIONS = [
+  { to: '/settings/goals', label: '학습 목표' },
   { to: '/settings/ai', label: 'AI' },
   { to: '/settings/appearance', label: '화면' },
   { to: '/settings/data', label: '데이터' },

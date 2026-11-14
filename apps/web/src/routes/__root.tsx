@@ -34,7 +34,11 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function Shell({ children }: { children: React.ReactNode }) {
   // The learning screen has its own focused header (docs/design/ui-ux.md#학습-화면-공통-구조).
-  const focused = useRouterState({ select: (s) => s.location.pathname.startsWith('/learn/') });
+  // Onboarding is a standalone first-run flow without the global header.
+  const focused = useRouterState({
+    select: (s) =>
+      s.location.pathname.startsWith('/learn/') || s.location.pathname === '/onboarding',
+  });
   return (
     <UiProvider>
       <a

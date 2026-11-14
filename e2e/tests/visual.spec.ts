@@ -45,6 +45,45 @@ const DASHBOARD = {
   },
 };
 
+// Header goal ring: 18 of 30 minutes, studied Monday and Wednesday (Sunday 2026-11-15 is today).
+const week = [
+  '2026-11-09',
+  '2026-11-10',
+  '2026-11-11',
+  '2026-11-12',
+  '2026-11-13',
+  '2026-11-14',
+  '2026-11-15',
+];
+const minutesOn = [32, 0, 41, 0, 0, 0, 18];
+const GOALS = {
+  date: '2026-11-15',
+  goal: {
+    dailyMinutes: 30,
+    weeklyDays: 5,
+    targetCourse: null,
+    targetDate: null,
+    effectiveFrom: null,
+    isDefault: true,
+  },
+  pace: null,
+  week: {
+    weekStart: '2026-11-09',
+    days: week.map((date, i) => ({
+      date,
+      activeMinutes: minutesOn[i] ?? 0,
+      studied: (minutesOn[i] ?? 0) >= 5,
+      goalMet: (minutesOn[i] ?? 0) >= 30,
+    })),
+    studiedDays: 3,
+    goalDays: 2,
+    weeklyDays: 5,
+    achieved: false,
+    activeMinutes: 91,
+  },
+  streakWeeks: 0,
+};
+
 const due = (conceptId: string, title: string, overdueDays: number) => ({
   conceptId,
   title,
@@ -95,6 +134,7 @@ for (const viewport of VIEWPORTS) {
         // Learning state depends on earlier tests: fixed dashboard, first visit of the lesson.
         await page.route('**/api/v1/dashboard', (route) => route.fulfill({ json: DASHBOARD }));
         await page.route('**/api/v1/review-queue', (route) => route.fulfill({ json: QUEUE }));
+        await page.route('**/api/v1/goals', (route) => route.fulfill({ json: GOALS }));
         await page.route('**/api/v1/lessons/*/progress', (route) =>
           route.fulfill({ json: FIRST_VISIT }),
         );

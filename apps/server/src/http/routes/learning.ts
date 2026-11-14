@@ -2,6 +2,7 @@ import {
   conceptDetailQuerySchema,
   goalRequestSchema,
   heartbeatRequestSchema,
+  learnerPatchSchema,
   lessonProgressRequestSchema,
   reviewQueueQuerySchema,
 } from '@proginone/shared';
@@ -11,7 +12,8 @@ import type { AppEnv } from '../env.ts';
 import { contentIdParam, jsonBody, limitBody } from './input.ts';
 
 /**
- * Reading progress, review queue, activity heartbeat and the dashboard summary
+ * Reading progress, review queue, activity heartbeat, the dashboard summary, goals, the concept
+ * detail and the learner profile
  * (docs/design/system-architecture.md#api-규약).
  */
 export function learningRoutes(services: PracticeServices) {
@@ -43,5 +45,10 @@ export function learningRoutes(services: PracticeServices) {
       const id = contentIdParam(c.req.param('id'));
       const query = conceptDetailQuerySchema.parse(c.req.query());
       return c.json(services.concepts.get(id, query.evidenceLimit));
+    })
+    .get('/learner', (c) => c.json(services.learner.get()))
+    .patch('/learner', small, async (c) => {
+      const patch = learnerPatchSchema.parse(await jsonBody(c));
+      return c.json(services.learner.update(patch));
     });
 }

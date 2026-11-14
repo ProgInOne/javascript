@@ -1,12 +1,21 @@
 import type { Dashboard } from '@proginone/shared';
 import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { ArrowRight, BookOpen, History } from 'lucide-react';
-import { dashboardQuery } from '../api/queries.ts';
+import { dashboardQuery, learnerQuery } from '../api/queries.ts';
 import { cardClass, pageClass, pageTitleClass } from '../app/layout.ts';
 import { QueryState } from '../app/QueryState.tsx';
 
 export const Route = createFileRoute('/')({
+  // First run: the onboarding comes first (ui-ux.md#온보딩과-목표-설정). If the profile cannot be
+  // loaded the dashboard opens anyway and shows its own error state.
+  beforeLoad: async ({ context }) => {
+    const learner = await context.queryClient
+      .query({ ...learnerQuery, staleTime: 'static' })
+      .catch(() => null);
+    // eslint-disable-next-line @typescript-eslint/only-throw-error -- TanStack Router's redirect API
+    if (learner?.needsOnboarding) throw redirect({ to: '/onboarding' });
+  },
   component: DashboardPage,
 });
 

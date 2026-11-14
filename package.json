@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "pnpm --parallel --filter @proginone/server --filter @proginone/web dev",
     "start": "pnpm --filter @proginone/server start",
-    "lint": "eslint .",
+    "lint": "NODE_OPTIONS=--max-old-space-size=4096 eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "pnpm -r --parallel --if-present typecheck",

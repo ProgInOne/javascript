@@ -1,0 +1,345 @@
+/*
+ * Learning-specific components (ui-ux.md 학습 특화 컴포넌트): GoalRing, WeekStrip, the goal form
+ * and the onboarding. SVG and multi-state markers read better as CSS than utilities (like
+ * practice.css). Colors come from the semantic and mastery tokens only.
+ */
+@layer components {
+  /* ── GoalRing ── */
+  .goal-ring {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+  }
+  .goal-ring > svg {
+    position: absolute;
+    inset: 0;
+    rotate: -90deg;
+  }
+  .goal-ring__track {
+    fill: none;
+    stroke: var(--color-progress-track);
+  }
+  .goal-ring__fill {
+    fill: none;
+    stroke: var(--color-progress-fill);
+    stroke-linecap: round;
+  }
+  .goal-ring[data-met] .goal-ring__fill {
+    stroke-linecap: butt;
+  }
+  .goal-ring__check {
+    position: relative;
+    color: var(--color-text-brand);
+  }
+
+  .goal-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 var(--space-2);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font: var(--text-small);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .goal-chip:hover {
+    background: var(--color-bg-hover);
+    color: var(--color-text-primary);
+  }
+  .goal-chip:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* ── WeekStrip ── */
+  .week-strip {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .week-strip__days {
+    display: flex;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .week-strip__day {
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    font: var(--text-caption);
+    color: var(--color-text-tertiary);
+  }
+  .week-strip__dot {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid var(--color-border-strong);
+    border-radius: 50%;
+  }
+  .week-strip__day[data-studied] .week-strip__dot {
+    border-color: var(--color-action-primary);
+    background: var(--color-action-primary);
+    color: var(--color-text-on-action);
+  }
+  .week-strip__day[data-today] {
+    color: var(--color-text-primary);
+    font-weight: 700;
+  }
+  .week-strip__day[data-today] .week-strip__dot {
+    border-width: 2px;
+    border-color: var(--color-action-primary);
+  }
+  .week-strip__summary {
+    display: grid;
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .week-strip__summary b {
+    color: var(--color-text-primary);
+  }
+
+  /* ── Goal form ── */
+  .goal-form {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .choice-chips {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .choice-chips__legend {
+    margin-bottom: var(--space-3);
+    padding: 0;
+    font: var(--text-ui);
+    font-weight: 700;
+    color: var(--color-text-heading);
+  }
+  .choice-chips__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .choice-chip {
+    position: relative;
+    display: inline-flex;
+  }
+  .choice-chip input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .choice-chip span {
+    display: inline-flex;
+    align-items: center;
+    min-width: 56px;
+    height: 36px;
+    justify-content: center;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--color-border-input);
+    border-radius: var(--radius-full, 999px);
+    background: var(--color-bg-surface);
+    color: var(--color-text-primary);
+    font: var(--text-ui);
+  }
+  .choice-chip:hover span {
+    background: var(--color-bg-hover);
+  }
+  .choice-chip input:checked + span {
+    border-color: var(--color-action-primary);
+    background: var(--color-bg-selected);
+    color: var(--color-text-brand);
+    font-weight: 700;
+    box-shadow: inset 0 0 0 1px var(--color-action-primary);
+  }
+  .choice-chip input:focus-visible + span {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+  .goal-form__pace {
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-muted);
+    color: var(--color-text-secondary);
+    font: var(--text-small);
+  }
+  .goal-form__pace[data-tight] {
+    background: var(--color-warning-bg);
+    color: var(--color-warning-fg);
+  }
+
+  /* ── Onboarding ── */
+  .onboarding {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 760px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-5) var(--space-16);
+  }
+  .onboarding__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .onboarding__card {
+    display: grid;
+    gap: var(--space-6);
+    padding: var(--space-8);
+  }
+  .onboarding__title {
+    font: var(--text-h2);
+    letter-spacing: var(--tracking-h2);
+    color: var(--color-text-heading);
+  }
+  .onboarding__title:focus {
+    outline: none;
+  }
+  .onboarding__stepper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font: var(--text-small);
+    color: var(--color-text-tertiary);
+  }
+  .onboarding__stepper li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .onboarding__stepper li[data-state='current'] {
+    color: var(--color-text-heading);
+    font-weight: 700;
+  }
+  .onboarding__stepper li[data-state='done'] {
+    color: var(--color-text-secondary);
+  }
+  .onboarding__step-num {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-bg-muted);
+    color: var(--color-text-secondary);
+    font: var(--text-caption);
+    font-weight: 700;
+  }
+  .onboarding__stepper li[data-state='current'] .onboarding__step-num {
+    background: var(--color-action-primary);
+    color: var(--color-text-on-action);
+  }
+  .onboarding__stepper li[data-state='done'] .onboarding__step-num {
+    background: var(--color-bg-selected);
+    color: var(--color-text-brand);
+  }
+  .onboarding__ways {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .onboarding__ways li {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-subtle);
+  }
+  .onboarding__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-top: var(--space-2);
+  }
+  .onboarding__levels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .onboarding__level {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border-input);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-surface);
+    cursor: pointer;
+  }
+  .onboarding__level input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .onboarding__level:hover {
+    background: var(--color-bg-hover);
+  }
+  .onboarding__level:has(input:checked) {
+    border-color: var(--color-action-primary);
+    background: var(--color-bg-selected);
+    box-shadow: inset 0 0 0 1px var(--color-action-primary);
+  }
+  .onboarding__level:has(input:focus-visible) {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+  .onboarding__connected {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-feedback-correct-fg);
+    font-weight: 600;
+  }
+  .onboarding__first {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    border: 1px solid color-mix(in oklch, var(--color-action-primary) 30%, transparent);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-selected);
+  }
+  .onboarding__plan {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .onboarding__plan li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border-default);
+  }
+  @media (max-width: 1023px) {
+    .onboarding__ways,
+    .onboarding__levels {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

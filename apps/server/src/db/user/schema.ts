@@ -1,5 +1,6 @@
 import {
   ATTEMPT_OUTCOMES,
+  EXPERIENCE_LEVELS,
   CONFIDENCES,
   EVIDENCE_KINDS,
   EXERCISE_ORIGINS,
@@ -41,8 +42,6 @@ import {
 
 // user.db schema. Source of truth for columns: docs/design/data-model.md#userdb-설계.
 // Times are epoch milliseconds (UTC); calendar dates are local YYYY-MM-DD text.
-
-export const EXPERIENCE_LEVELS = ['none', 'some', 'basics'] as const;
 
 export const appMeta = sqliteTable('app_meta', {
   key: text('key').primaryKey(),
