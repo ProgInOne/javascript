@@ -21,7 +21,7 @@ AI 제공자 어댑터, AI 작업 정의, 컨텍스트 빌더입니다.
 | `output/` | 스트림 게이트(`<meta>` 숨김, 누설 검사용 꼬리 보류), 코드 줄 수 |
 | `provider/types.ts` | `ProviderAdapter` 계약 |
 | `provider/codex/` | `CodexAdapter`: JSON-RPC, 프로세스 수명주기, 격리(기능 플래그 검증, 스레드 재정의, 자동 거부, 도구 항목 즉시 중단), 로그인, 사용량 |
-| `provider/mock/` | `MockProvider`: 결정론적 응답, 시나리오 주입(`enqueue`), 요청 기록(`requests`) |
+| `provider/mock/` | `MockProvider`: 결정론적 응답, 시나리오 주입(`enqueue`), 요청 기록(`requests`). 질문에 `[mock:slow]`(`MOCK_SLOW_MARKER`)가 있으면 시나리오 없는 답을 400ms 간격으로 보내 E2E가 중단을 검증할 수 있음 |
 
 ## 서버에서 쓰기
 

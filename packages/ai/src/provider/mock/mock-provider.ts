@@ -56,8 +56,20 @@ export function chunk(text: string, size = 12): string[] {
   return out;
 }
 
+/** The learner question of a `tutor.reply` input, if any. */
+function learnerQuestion(req: ProviderRequest): string | undefined {
+  return /<learner_question[^>]*>\n([\s\S]*?)\n<\/learner_question>/.exec(req.input)?.[1];
+}
+
+/**
+ * A question containing this marker streams its unscripted reply slowly (one delta per
+ * {@link SLOW_DELTA_MS}), so E2E can cancel a reply in flight. Mock provider only.
+ */
+export const MOCK_SLOW_MARKER = '[mock:slow]';
+const SLOW_DELTA_MS = 400;
+
 function defaultReply(req: ProviderRequest): string {
-  const question = /<learner_question[^>]*>\n([\s\S]*?)\n<\/learner_question>/.exec(req.input)?.[1];
+  const question = learnerQuestion(req);
   const topic = question ? question.trim().slice(0, 40) : '질문';
   return [
     `(모의 튜터) "${topic}"에 대해 함께 생각해 볼게요.`,
@@ -211,10 +223,12 @@ export class MockProvider implements ProviderAdapter {
       step?.deltas?.join('') ??
       (req.outputSchema ? JSON.stringify(sampleFromSchema(req.outputSchema)) : defaultReply(req));
     const deltas = step?.deltas ?? chunk(text);
+    const slow =
+      !step && !req.outputSchema && (learnerQuestion(req) ?? '').includes(MOCK_SLOW_MARKER);
 
     let streamed = '';
     for (const delta of deltas) {
-      await this.#tick(opts.signal, streamed);
+      await this.#tick(opts.signal, streamed, slow ? SLOW_DELTA_MS : undefined);
       streamed += delta;
       opts.onDelta?.(delta);
     }
@@ -260,9 +274,13 @@ export class MockProvider implements ProviderAdapter {
     return Promise.resolve();
   }
 
-  async #tick(signal: AbortSignal, partialText: string): Promise<void> {
+  async #tick(
+    signal: AbortSignal,
+    partialText: string,
+    delayMs = this.#deltaDelayMs,
+  ): Promise<void> {
     if (signal.aborted) throw new AIError('AI_CANCELLED', { partialText });
-    await new Promise((resolve) => setTimeout(resolve, this.#deltaDelayMs));
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
     if (isAborted(signal)) throw new AIError('AI_CANCELLED', { partialText });
   }
 

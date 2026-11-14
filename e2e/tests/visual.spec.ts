@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { openScreen, SCREENS } from './fixtures.ts';
-import { mockPractice, PRACTICE_URL } from './practice-mocks.ts';
+import { mockPractice, mockTutor, PRACTICE_URL } from './practice-mocks.ts';
 
 // Fixed backup list so the data screen looks the same regardless of what earlier tests did.
 const BACKUPS = {
@@ -121,6 +121,23 @@ for (const viewport of VIEWPORTS) {
         `practice-choice-feedback-${scheme}-${viewport.width}.png`,
         { fullPage: true },
       );
+    });
+
+    // Tutor drawer open next to a code item (pushes the content at 1280px and up).
+    test(`tutor-drawer-${scheme}-${viewport.width} @visual`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await mockPractice(page);
+      await mockTutor(page);
+      await openScreen(page, `${PRACTICE_URL}&i=2`, '첫 프로그램 연습', scheme);
+      await expect(page.getByRole('textbox', { name: 'main.js 편집기' })).toBeVisible();
+      await page.getByRole('button', { name: /튜터/ }).click();
+      const drawer = page.getByRole('complementary', { name: 'AI 튜터' });
+      await expect(drawer.getByText('둘째 줄에서 어느 부분이')).toBeVisible();
+      await expect(drawer.getByText('대기 중')).toHaveCount(0);
+      await page.evaluate(() => document.fonts.ready);
+      await expect(page).toHaveScreenshot(`tutor-drawer-${scheme}-${viewport.width}.png`, {
+        fullPage: true,
+      });
     });
 
     test(`practice-code-${scheme}-${viewport.width} @visual`, async ({ page }) => {

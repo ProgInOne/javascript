@@ -17,6 +17,8 @@ export interface PracticeSessionProps {
   /** Lesson title for the completion heading; null for review sets. */
   lessonTitle: string | null;
   summaryActions: (set: PracticeSetView) => ReactNode;
+  /** Extra controls at the end of the session bar (the review screen's tutor button). */
+  barActions?: ReactNode;
 }
 
 /**
@@ -30,6 +32,7 @@ export function PracticeSession({
   heading,
   lessonTitle,
   summaryActions,
+  barActions,
 }: PracticeSessionProps) {
   const client = useQueryClient();
   const [changes, setChanges] = useState<MasteryChange[]>([]);
@@ -61,6 +64,7 @@ export function PracticeSession({
           {heading}
         </h1>
         <SetProgress set={set} current={showSummary ? null : current} onSelect={go} />
+        {barActions}
       </div>
       {showSummary || !item || current === null ? (
         <SetSummary
@@ -77,6 +81,7 @@ export function PracticeSession({
           index={current}
           hideConceptUntilGraded={set.kind === 'review'}
           autoFocus={navigated}
+          contextTitle={heading}
           onAnswered={onAnswered}
           onNavigate={go}
           nextPending={nextPendingIndex(set, current)}

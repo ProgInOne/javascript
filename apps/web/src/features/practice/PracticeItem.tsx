@@ -39,6 +39,10 @@ import { clearDraft, loadDraft, saveDraft, useActiveTime, useExerciseRunner } fr
 import { Markdown } from './Markdown.tsx';
 import { CODE_TYPES, TYPE_LABELS } from './model.ts';
 import { feedbackResultOf, MasteryChangeList, ReportButton, SolutionContent } from './parts.tsx';
+import { AiHint } from '../tutor/AiHint.tsx';
+import { codeFilesOf, runSummaryOf } from '../tutor/context.ts';
+import { SELECTABLE_ATTR } from '../tutor/selection.ts';
+import { useTutorScope } from '../tutor/TutorContext.tsx';
 
 type Answer = AnswerByType[RenderableTypeId];
 
@@ -58,6 +62,8 @@ export interface PracticeItemProps {
   /** Next pending item after this one, or null when every other item is answered. */
   nextPending: number | null;
   onShowSummary: () => void;
+  /** Session heading for the tutor drawer header, e.g. "첫 프로그램 연습". */
+  contextTitle?: string;
 }
 
 /** One practice set item: the exercise, submission, feedback and hints (ui-ux.md 실습 모드). */
@@ -109,6 +115,7 @@ function ItemWorkspace({
   onNavigate,
   nextPending,
   onShowSummary,
+  contextTitle,
   view,
   exercise,
 }: PracticeItemProps & { view: ExerciseView; exercise: RenderableExercise }) {
@@ -137,6 +144,31 @@ function ItemWorkspace({
   const [attemptsHere, setAttemptsHere] = useState(item.attempts);
   const runner = useExerciseRunner();
   const timing = useActiveTime();
+
+  // What the tutor sees about this item: read when a question or AI hint is sent.
+  const work = useRef({ answer, run, result });
+  useEffect(() => {
+    work.current = { answer, run, result };
+  });
+  const tutorCode = () => (isCode ? codeFilesOf(work.current.answer) : null);
+  const tutorRun = () =>
+    runSummaryOf(
+      work.current.run,
+      work.current.result ? feedbackResultOf(work.current.result).checkResults : null,
+    );
+  useTutorScope({
+    scopeType: 'exercise',
+    scopeId: view.id,
+    title: `${contextTitle ?? '연습'} · 문제 ${index + 1}`,
+    lessonId: view.lessonId ?? undefined,
+    exerciseId: view.id,
+    practiceSetItemId: item.id,
+    getCode: tutorCode,
+    getRun: tutorRun,
+    hasCode: isCode,
+    hasRun: run !== null,
+    lastIncorrect: result !== null && result.attempt.outcome !== 'correct',
+  });
 
   // Problem change: focus the prompt heading (ui-ux.md 포커스 관리).
   useEffect(() => {
@@ -402,6 +434,24 @@ function ItemWorkspace({
             )
           }
           pending={hintPending}
+          afterHints={
+            <AiHint
+              exerciseId={view.id}
+              level={hints.length}
+              request={() => {
+                const code = tutorCode();
+                const lastRun = tutorRun();
+                return {
+                  practiceSetItemId: item.id,
+                  ...(code ? { currentCode: code } : {}),
+                  ...(lastRun ? { lastRunResult: lastRun } : {}),
+                  ...(!isCode && work.current.answer !== null
+                    ? { lastAnswer: JSON.stringify(work.current.answer).slice(0, 2_000) }
+                    : {}),
+                };
+              }}
+            />
+          }
         />
       )}
       <footer className="practice-item-footer">
@@ -451,6 +501,7 @@ function ItemWorkspace({
   if (isCode) {
     return (
       <div
+        {...{ [SELECTABLE_ATTR]: '' }}
         className={`practice-layout practice-layout--code${exercise.typeId === 'web_task' ? 'practice-layout--web' : ''}`}
         data-type={exercise.typeId}
         data-exercise-id={view.id}
@@ -465,6 +516,7 @@ function ItemWorkspace({
   }
   return (
     <div
+      {...{ [SELECTABLE_ATTR]: '' }}
       className="practice-layout practice-layout--single"
       data-type={exercise.typeId}
       data-exercise-id={view.id}

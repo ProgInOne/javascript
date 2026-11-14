@@ -3,6 +3,8 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { practiceSetQuery } from '../../../api/queries.ts';
 import { QueryState } from '../../../app/QueryState.tsx';
 import { PracticeSession } from '../../../features/practice/PracticeSession.tsx';
+import { TutorProvider } from '../../../features/tutor/TutorContext.tsx';
+import { TutorButton, TutorLayout } from '../../../features/tutor/TutorLayout.tsx';
 
 interface SessionSearch {
   /** 1-based item. */
@@ -24,37 +26,45 @@ function ReviewSession() {
   const navigate = useNavigate();
   const query = useQuery(practiceSetQuery(setId));
   return (
-    <div className="practice-page">
-      <QueryState query={query} notFoundTitle="복습 세트를 찾을 수 없어요">
-        {(set) => (
-          <PracticeSession
-            set={set}
-            index={i !== undefined && i <= set.items.length ? i - 1 : null}
-            onIndexChange={(next) => {
-              void navigate({
-                to: '/review/session/$setId',
-                params: { setId },
-                search: next === null ? {} : { i: next + 1 },
-              });
-            }}
-            heading="오늘의 복습"
-            lessonTitle={null}
-            summaryActions={() => (
-              <>
-                <Link
-                  to="/review"
-                  className="pi-button pi-button--secondary pi-button--md no-underline"
-                >
-                  복습 화면으로
-                </Link>
-                <Link to="/" className="pi-button pi-button--primary pi-button--md no-underline">
-                  대시보드로
-                </Link>
-              </>
+    <TutorProvider>
+      <TutorLayout top={56}>
+        <div className="practice-page">
+          <QueryState query={query} notFoundTitle="복습 세트를 찾을 수 없어요">
+            {(set) => (
+              <PracticeSession
+                set={set}
+                index={i !== undefined && i <= set.items.length ? i - 1 : null}
+                onIndexChange={(next) => {
+                  void navigate({
+                    to: '/review/session/$setId',
+                    params: { setId },
+                    search: next === null ? {} : { i: next + 1 },
+                  });
+                }}
+                heading="오늘의 복습"
+                barActions={<TutorButton />}
+                lessonTitle={null}
+                summaryActions={() => (
+                  <>
+                    <Link
+                      to="/review"
+                      className="pi-button pi-button--secondary pi-button--md no-underline"
+                    >
+                      복습 화면으로
+                    </Link>
+                    <Link
+                      to="/"
+                      className="pi-button pi-button--primary pi-button--md no-underline"
+                    >
+                      대시보드로
+                    </Link>
+                  </>
+                )}
+              />
             )}
-          />
-        )}
-      </QueryState>
-    </div>
+          </QueryState>
+        </div>
+      </TutorLayout>
+    </TutorProvider>
   );
 }

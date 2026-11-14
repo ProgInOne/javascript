@@ -128,6 +128,14 @@ describe('HintLadder', () => {
     );
   }
 
+  it('shows the after-hints slot only once a hint is open', () => {
+    const props = { hints, onReveal: () => undefined, afterHints: <button>AI 설명</button> };
+    const { rerender } = renderUi(<HintLadder {...props} revealed={0} />);
+    expect(screen.queryByRole('button', { name: 'AI 설명' })).toBeNull();
+    rerender(<HintLadder {...props} revealed={1} />);
+    expect(screen.getByRole('button', { name: 'AI 설명' })).toBeTruthy();
+  });
+
   it('opens hints one step at a time and keeps them stacked', async () => {
     const { user, container } = renderUi(<Harness />);
     expect(screen.getByRole('region', { name: '힌트' })).toBeTruthy();

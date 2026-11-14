@@ -32,6 +32,11 @@ export interface HintLadderProps {
   headingLevel?: 2 | 3 | 4;
   /** Renders hint text. Default: plain text with Markdown code spans. */
   renderText?: (text: string) => ReactNode;
+  /**
+   * Shown after the opened hints, e.g. an "AI에게 이 단계 다시 설명받기" action (same level,
+   * ui-ux.md 힌트 사다리). Rendered only while at least one hint is open.
+   */
+  afterHints?: ReactNode;
 }
 
 const LOCKED_REASON = '평가가 끝나면 열려요';
@@ -51,6 +56,7 @@ export function HintLadder({
   pending = false,
   headingLevel = 3,
   renderText = defaultRenderText,
+  afterHints,
 }: HintLadderProps) {
   const headingId = useId();
   const lockedId = useId();
@@ -88,6 +94,8 @@ export function HintLadder({
           ))}
         </ol>
       )}
+
+      {shown > 0 && afterHints}
 
       {locked && (
         <p id={lockedId} className="pi-ex-hints__note">

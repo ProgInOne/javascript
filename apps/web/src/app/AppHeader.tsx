@@ -20,7 +20,10 @@ export function AppHeader() {
   const navigate = useNavigate();
   const due = useQuery(dashboardQuery).data?.reviewDueCount ?? 0;
   return (
-    <header className="sticky top-0 z-header h-(--header-h) border-b border-line bg-surface/92 backdrop-blur-md backdrop-saturate-150">
+    <header
+      data-f6-region=""
+      className="sticky top-0 z-header h-(--header-h) border-b border-line bg-surface/92 backdrop-blur-md backdrop-saturate-150"
+    >
       <div className="mx-auto flex h-full max-w-[calc(var(--page-max)+2*var(--space-8))] items-center gap-8 px-5 lg:px-8">
         <Link
           to="/"

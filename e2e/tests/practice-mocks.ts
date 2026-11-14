@@ -147,3 +147,62 @@ export async function mockPractice(page: Page) {
     route.fulfill({ status: 201, json: wrongAttempt }),
   );
 }
+
+const THREAD_ID = '01JD3Z8Q6V2K9M4T7R1X5W0TH1';
+const thread = {
+  id: THREAD_ID,
+  scopeType: 'exercise',
+  scopeId: FIX,
+  title: '왜 계산이 안 되나요?',
+  status: 'open',
+  messageCount: 2,
+  createdAt: 1,
+  lastMessageAt: 1,
+};
+const message = (id: string, role: string, content: string) => ({
+  id,
+  threadId: THREAD_ID,
+  role,
+  content,
+  status: 'complete',
+  taskName: role === 'tutor' ? 'tutor.reply' : null,
+  taskVersion: role === 'tutor' ? 1 : null,
+  meta: null,
+  createdAt: 1,
+});
+
+/** A fixed tutor conversation for the drawer's visual and accessibility checks. */
+export async function mockTutor(page: Page) {
+  await page.route('**/api/v1/tutor/threads', (route) => route.fulfill({ json: thread }));
+  await page.route(`**/api/v1/tutor/threads/${THREAD_ID}/messages`, (route) =>
+    route.fulfill({
+      json: {
+        thread,
+        messages: [
+          message(
+            '01JD3Z8Q6V2K9M4T7R1X5W0ML1',
+            'learner',
+            '7000 대신 3500 * 2가 그대로 나와요. 왜 그래요?',
+          ),
+          message(
+            '01JD3Z8Q6V2K9M4T7R1X5W0MT1',
+            'tutor',
+            [
+              '좋은 질문이에요. 따옴표로 감싼 부분은 **문자열**이라서 계산하지 않고 글자 그대로 출력돼요.',
+              '',
+              '- 따옴표 안: 글자',
+              '- 따옴표 밖: 계산되는 식',
+              '',
+              '```js',
+              'console.log("1 + 1"); // 1 + 1',
+              'console.log(1 + 1);   // 2',
+              '```',
+              '',
+              '둘째 줄에서 어느 부분이 따옴표 안에 있는지 확인해 볼래요?',
+            ].join('\n'),
+          ),
+        ],
+      },
+    }),
+  );
+}

@@ -5,6 +5,9 @@ import { ArrowLeft, ArrowRight, ChevronLeft } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 import { lessonQuery, recordLessonProgress } from '../../api/queries.ts';
 import { AIStatusIndicator } from '../../features/ai/AIStatusIndicator.tsx';
+import { SELECTABLE_ATTR } from '../../features/tutor/selection.ts';
+import { TutorProvider, useTutorScope } from '../../features/tutor/TutorContext.tsx';
+import { TutorButton, TutorLayout } from '../../features/tutor/TutorLayout.tsx';
 import { QueryState } from '../../app/QueryState.tsx';
 import { ConceptImportanceBadge, LessonBody } from '../../features/lesson-reader/LessonBody.tsx';
 import { LessonPractice } from '../../features/practice/LessonPractice.tsx';
@@ -41,16 +44,32 @@ function LearnPage() {
   const search = Route.useSearch();
   const query = useQuery(lessonQuery(lessonId));
   return (
-    <QueryState query={query} notFoundTitle="단원을 찾을 수 없어요">
-      {(lesson) =>
-        search.mode === 'practice' ? (
-          <PracticeMode lesson={lesson} search={search} />
-        ) : (
-          <LessonReader lesson={lesson} />
-        )
-      }
-    </QueryState>
+    <TutorProvider>
+      <QueryState query={query} notFoundTitle="단원을 찾을 수 없어요">
+        {(lesson) => (
+          <>
+            <LessonTutorScope lesson={lesson} />
+            {search.mode === 'practice' ? (
+              <PracticeMode lesson={lesson} search={search} />
+            ) : (
+              <LessonReader lesson={lesson} />
+            )}
+          </>
+        )}
+      </QueryState>
+    </TutorProvider>
   );
+}
+
+/** The lesson thread of the tutor (an open practice item replaces it with its exercise). */
+function LessonTutorScope({ lesson }: { lesson: LessonDetail }) {
+  useTutorScope({
+    scopeType: 'lesson',
+    scopeId: lesson.id,
+    title: lesson.title,
+    lessonId: lesson.id,
+  });
+  return null;
 }
 
 /** `⌘1` / `⌘2` (Ctrl elsewhere): reading / practice mode (ui-ux.md 단축키). */
@@ -91,9 +110,11 @@ function PracticeMode({ lesson, search }: { lesson: LessonDetail; search: LearnS
   return (
     <div className="min-h-screen bg-canvas">
       <LearnHeader lesson={lesson} mode="practice" />
-      <div className="practice-page">
-        <LessonPractice lesson={lesson} setId={search.set} item={search.i} navigate={go} />
-      </div>
+      <TutorLayout top={48}>
+        <div className="practice-page">
+          <LessonPractice lesson={lesson} setId={search.set} item={search.i} navigate={go} />
+        </div>
+      </TutorLayout>
     </div>
   );
 }
@@ -104,7 +125,10 @@ const segment =
 function LearnHeader({ lesson, mode }: { lesson: LessonDetail; mode: 'read' | 'practice' }) {
   useModeShortcuts(lesson.id);
   return (
-    <header className="sticky top-0 z-header flex h-12 items-center gap-3 border-b border-line bg-surface px-4">
+    <header
+      data-f6-region=""
+      className="sticky top-0 z-header flex h-12 items-center gap-3 border-b border-line bg-surface px-4"
+    >
       <Link
         to="/courses/$courseId"
         params={{ courseId: lesson.course.id }}
@@ -149,6 +173,7 @@ function LearnHeader({ lesson, mode }: { lesson: LessonDetail; mode: 'read' | 'p
         </Link>
       </nav>
       <AIStatusIndicator />
+      <TutorButton />
     </header>
   );
 }
@@ -164,97 +189,103 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
   return (
     <div className="min-h-screen bg-canvas">
       <LearnHeader lesson={lesson} mode="read" />
-      <div className="mx-auto grid max-w-[1120px] gap-10 px-5 py-10 lg:grid-cols-[minmax(0,680px)_240px] lg:justify-center">
-        <article aria-labelledby="lesson-title">
-          <p className="text-fg-tertiary type-small">{lesson.module.title}</p>
-          <h1 id="lesson-title" className="mt-1 type-h1 text-heading">
-            {lesson.title}
-          </h1>
-          <p className="mt-2 mb-10 text-fg-tertiary type-small">
-            읽기 약 {formatMinutes(lesson.readMinutes)} · 전체 약{' '}
-            {formatMinutes(lesson.estimatedMinutes)}
-          </p>
-          {resume && (
-            <p className="lesson-resume" role="note">
-              지난번에 ‘{resume.title ?? SECTION_LABELS[resume.kind] ?? resume.kind}’까지 읽었어요.{' '}
-              <a href={`#${resume.id}`} className="lesson-link">
-                이어서 읽기
-              </a>
+      <TutorLayout top={48}>
+        <div className="mx-auto grid max-w-[1120px] gap-10 px-5 py-10 lg:grid-cols-[minmax(0,680px)_240px] lg:justify-center">
+          <article aria-labelledby="lesson-title" {...{ [SELECTABLE_ATTR]: '' }}>
+            <p className="text-fg-tertiary type-small">{lesson.module.title}</p>
+            <h1 id="lesson-title" className="mt-1 type-h1 text-heading">
+              {lesson.title}
+            </h1>
+            <p className="mt-2 mb-10 text-fg-tertiary type-small">
+              읽기 약 {formatMinutes(lesson.readMinutes)} · 전체 약{' '}
+              {formatMinutes(lesson.estimatedMinutes)}
             </p>
-          )}
-          <LessonBody lessonId={lesson.id} body={lesson.body} concepts={lesson.concepts} />
+            {resume && (
+              <p className="lesson-resume" role="note">
+                지난번에 ‘{resume.title ?? SECTION_LABELS[resume.kind] ?? resume.kind}’까지
+                읽었어요.{' '}
+                <a href={`#${resume.id}`} className="lesson-link">
+                  이어서 읽기
+                </a>
+              </p>
+            )}
+            <LessonBody lessonId={lesson.id} body={lesson.body} concepts={lesson.concepts} />
 
-          {(lesson.previous ?? lesson.next) && (
-            <nav
-              aria-label="단원 이동"
-              className="mt-12 flex justify-between gap-4 border-t border-line pt-6"
-            >
-              {lesson.previous ? (
-                <Link
-                  to="/learn/$lessonId"
-                  params={{ lessonId: lesson.previous.id }}
-                  search={{}}
-                  className="lesson-link inline-flex items-center gap-1"
-                >
-                  <ArrowLeft size={16} aria-hidden="true" />
-                  이전: {lesson.previous.title}
-                </Link>
-              ) : (
-                <span />
-              )}
-              {lesson.next && (
-                <Link
-                  to="/learn/$lessonId"
-                  params={{ lessonId: lesson.next.id }}
-                  search={{}}
-                  className="lesson-link inline-flex items-center gap-1"
-                >
-                  다음: {lesson.next.title}
-                  <ArrowRight size={16} aria-hidden="true" />
-                </Link>
-              )}
-            </nav>
-          )}
-        </article>
+            {(lesson.previous ?? lesson.next) && (
+              <nav
+                aria-label="단원 이동"
+                className="mt-12 flex justify-between gap-4 border-t border-line pt-6"
+              >
+                {lesson.previous ? (
+                  <Link
+                    to="/learn/$lessonId"
+                    params={{ lessonId: lesson.previous.id }}
+                    search={{}}
+                    className="lesson-link inline-flex items-center gap-1"
+                  >
+                    <ArrowLeft size={16} aria-hidden="true" />
+                    이전: {lesson.previous.title}
+                  </Link>
+                ) : (
+                  <span />
+                )}
+                {lesson.next && (
+                  <Link
+                    to="/learn/$lessonId"
+                    params={{ lessonId: lesson.next.id }}
+                    search={{}}
+                    className="lesson-link inline-flex items-center gap-1"
+                  >
+                    다음: {lesson.next.title}
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </Link>
+                )}
+              </nav>
+            )}
+          </article>
 
-        <aside className="hidden lg:block" aria-label="단원 정보">
-          <div className="sticky top-[calc(48px+var(--space-6))] grid gap-6">
-            {own.length > 0 && (
-              <section aria-labelledby="concepts-title">
-                <h2 id="concepts-title" className="mb-2 font-semibold text-fg-secondary type-small">
-                  이 단원의 개념
+          <aside className="hidden lg:block" aria-label="단원 정보">
+            <div className="sticky top-[calc(48px+var(--space-6))] grid gap-6">
+              {own.length > 0 && (
+                <section aria-labelledby="concepts-title">
+                  <h2
+                    id="concepts-title"
+                    className="mb-2 font-semibold text-fg-secondary type-small"
+                  >
+                    이 단원의 개념
+                  </h2>
+                  <ul className="m-0 grid list-none gap-1.5 p-0 type-small">
+                    {own.map((c) => (
+                      <li key={c.id} className="flex items-center gap-2" title={c.summary}>
+                        <span className="text-fg">{c.title}</span>
+                        <ConceptImportanceBadge importance={c.importance} />
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+              <nav aria-labelledby="toc-title">
+                <h2 id="toc-title" className="mb-2 font-semibold text-fg-secondary type-small">
+                  목차
                 </h2>
-                <ul className="m-0 grid list-none gap-1.5 p-0 type-small">
-                  {own.map((c) => (
-                    <li key={c.id} className="flex items-center gap-2" title={c.summary}>
-                      <span className="text-fg">{c.title}</span>
-                      <ConceptImportanceBadge importance={c.importance} />
+                <ol className="m-0 grid list-none gap-1 border-l border-line p-0 type-small">
+                  {lesson.sections.map((s) => (
+                    <li key={s.id}>
+                      <a
+                        href={`#${s.id}`}
+                        aria-current={active === s.id ? 'location' : undefined}
+                        className="-ml-px block border-l-2 border-transparent py-0.5 pl-3 text-fg-secondary no-underline hover:text-fg aria-[current=location]:border-action aria-[current=location]:font-semibold aria-[current=location]:text-heading"
+                      >
+                        {s.title ?? SECTION_LABELS[s.kind] ?? s.kind}
+                      </a>
                     </li>
                   ))}
-                </ul>
-              </section>
-            )}
-            <nav aria-labelledby="toc-title">
-              <h2 id="toc-title" className="mb-2 font-semibold text-fg-secondary type-small">
-                목차
-              </h2>
-              <ol className="m-0 grid list-none gap-1 border-l border-line p-0 type-small">
-                {lesson.sections.map((s) => (
-                  <li key={s.id}>
-                    <a
-                      href={`#${s.id}`}
-                      aria-current={active === s.id ? 'location' : undefined}
-                      className="-ml-px block border-l-2 border-transparent py-0.5 pl-3 text-fg-secondary no-underline hover:text-fg aria-[current=location]:border-action aria-[current=location]:font-semibold aria-[current=location]:text-heading"
-                    >
-                      {s.title ?? SECTION_LABELS[s.kind] ?? s.kind}
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </nav>
-          </div>
-        </aside>
-      </div>
+                </ol>
+              </nav>
+            </div>
+          </aside>
+        </div>
+      </TutorLayout>
     </div>
   );
 }
