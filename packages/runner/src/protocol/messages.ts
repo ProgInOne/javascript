@@ -91,6 +91,9 @@ const viewportSchema = z.object({
  * - `expose`: the classic script that hands learner bindings (and `argsExpr` arguments) to the
  *   harness after the learner's scripts.
  *
+ * - `syntaxOnly`: an engine syntax check (D-030) in `dom` mode. The shell runs it in a hidden
+ *   frame and keeps a finished preview on screen.
+ *
  * Positions the harness reports use `src:<id>` (instrumented coordinates) or `orig:<id>`
  * (original coordinates, from loop guards) as the file name; the host maps both back.
  */
@@ -108,6 +111,7 @@ export const runRequestSchema = z.object({
   expose: z.string().max(200_000).nullable(),
   document: z.string().max(2_000_000).optional(),
   harnessAt: z.number().int().nonnegative().optional(),
+  syntaxOnly: z.literal(true).optional(),
 });
 export type RunRequest = z.infer<typeof runRequestSchema>;
 

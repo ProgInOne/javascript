@@ -179,6 +179,44 @@ export function instrumentJs(
   return { ok: true, code: prefix + out, loops, insertions };
 }
 
+/** Stops a syntax-check script at once in case the engine parses it after all. */
+const CHECK_STOP = 'throw 0;';
+
+/**
+ * Wraps code that failed to parse for the engine syntax check (D-030,
+ * docs/design/code-execution-sandbox.md#문법-오류).
+ *
+ * The result goes to the sandbox as a classic script so that the browser engine raises its own
+ * `SyntaxError` with its own message and position. Nothing of it ever runs: an unparsable script
+ * never starts, and if the engine does accept it (a parser disagreement), the first statement is
+ * a `throw`. Function declarations are hoisted but not called, so no learner code runs either
+ * way, and loop guards are not needed.
+ *
+ * Like {@link instrumentJs}, nothing is inserted as a new line in front of learner code: the text
+ * in front of line 1 is recorded as an insertion so that columns map back.
+ * @param options.handler wrap as an inline event handler body (a function with `event`).
+ * @returns the script, its insertions and the number of learner lines (for clamping positions
+ *   the engine reports in the closing text of a handler).
+ */
+export function syntaxCheckScript(
+  code: string,
+  options: { handler?: boolean; strict?: boolean } = {},
+): { code: string; insertions: Insertion[]; lines: number } {
+  const strict = options.strict ? STRICT_PREFIX : '';
+  // A handler body is a function body (`return` is allowed), compiled like browsers compile
+  // `onclick="..."`: the directive goes inside the function, as D-026 puts it in the attribute.
+  // The newline before `});` keeps a trailing `//` comment from swallowing it.
+  const prefix = options.handler
+    ? `${CHECK_STOP}(function(event){${strict}`
+    : `${strict}${CHECK_STOP}`;
+  const suffix = options.handler ? '\n});' : '';
+  return {
+    code: prefix + code + suffix,
+    insertions: [{ line: 1, column: 0, length: prefix.length }],
+    lines: lineStarts(code).length,
+  };
+}
+
 /**
  * Maps a 1-based column in instrumented code back to the original line's column.
  * A position inside inserted guard text maps to where the text was inserted.

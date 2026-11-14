@@ -140,7 +140,7 @@
   concept: js.values.assignment
   title: 대입 방향을 거꾸로 씀
   statement: 90 = score; 처럼 값을 왼쪽에, 변수를 오른쪽에 써도 대입된다고 생각한다.
-  reality: 대입은 항상 오른쪽 값을 왼쪽 변수에 넣는다. 왼쪽에는 값을 받을 변수가 와야 하고, 90 = score; 는 SyntaxError다(Chrome의 설명은 Invalid left-hand side in assignment, ProgInOne의 설명은 Assigning to rvalue).
+  reality: 대입은 항상 오른쪽 값을 왼쪽 변수에 넣는다. 왼쪽에는 값을 받을 변수가 와야 하고, 90 = score; 는 SyntaxError다(Chrome의 설명은 Invalid left-hand side in assignment).
   remediation:
     lessonSection: js-basics.values.variables#pitfalls
     exercises: [js-basics.values.variables.fix-assign-direction]

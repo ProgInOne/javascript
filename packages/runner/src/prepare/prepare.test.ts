@@ -22,7 +22,14 @@ const plan = (overrides: Partial<RunPlan>): RunPlan =>
     ...overrides,
   });
 import { prepareHtml } from './html.ts';
-import { mapErrors, mapPosition, prepareRun } from './index.ts';
+import {
+  mapErrors,
+  mapPosition,
+  nativeSyntaxErrors,
+  prepareRun,
+  STRICT_PREFIX,
+  syntaxCheckScript,
+} from './index.ts';
 
 describe('exposeScript', () => {
   type Reader = () => { s: number; v?: unknown };
@@ -292,5 +299,192 @@ describe('prepareRun and position mapping', () => {
     );
     expect(mapped?.position).toEqual({ file: 'index.html', line: 2, column: 9 });
     expect(mapped?.stack).toEqual([{ file: 'index.html', line: 2, column: 9 }]);
+  });
+});
+
+describe('engine syntax check (D-030)', () => {
+  const engineError = (file: string, line: number, column: number, message: string) => ({
+    phase: 'runtime' as const,
+    name: 'SyntaxError',
+    message,
+    position: { file, line, column },
+  });
+
+  it('never runs learner code, even if the engine accepts it', () => {
+    const script = syntaxCheckScript('globalThis.ran = true;', { strict: true });
+    const handler = syntaxCheckScript('globalThis.ran = true; return false', {
+      handler: true,
+      strict: true,
+    });
+    for (const s of [script, handler]) {
+      const context: { ran?: boolean } = {};
+      expect(() => {
+        runInNewContext(s.code, context);
+      }).toThrow();
+      expect(context.ran).toBeUndefined();
+    }
+    expect(script.code.startsWith(`${STRICT_PREFIX}throw 0;`)).toBe(true);
+    // Line 1 text in front of learner code is one insertion; no line is added in front.
+    expect(script.insertions).toEqual([
+      { line: 1, column: 0, length: `${STRICT_PREFIX}throw 0;`.length },
+    ]);
+    expect(syntaxCheckScript('a\nb\n').lines).toBe(3);
+  });
+
+  it('builds a check for every broken js-console file, nothing else', () => {
+    const r = prepareRun(
+      plan({
+        files: [
+          { path: 'main.js', language: 'js', content: 'console.log(1);' },
+          { path: 'bad.js', language: 'js', content: '\n\nif (' },
+          { path: 'worse.js', language: 'js', content: "console.log('hi'" },
+        ],
+      }),
+    );
+    if (r.ok) throw new Error('expected syntax errors');
+    expect(r.errors.map((e) => e.position?.file)).toEqual(['bad.js', 'worse.js']);
+    const check = r.syntaxCheck;
+    if (!check) throw new Error('expected a syntax check');
+    expect(check.code.scripts.map((s) => s.id)).toEqual([0, 1]);
+    expect(check.code.scripts[1]?.code).toBe(`${STRICT_PREFIX}throw 0;console.log('hi'`);
+    expect(check.code.document).toBe(
+      '<!doctype html><script>__pg.w(0)</script><script>__pg.w(1)</script>',
+    );
+    expect(check.code.harnessAt).toBe('<!doctype html>'.length);
+    expect(check.targets.map((t) => t.errorIndex)).toEqual([0, 1]);
+  });
+
+  it("replaces the pre-parser's errors with the engine's, mapped to learner files", () => {
+    const r = prepareRun(
+      plan({
+        files: [
+          { path: 'main.js', language: 'js', content: 'let x = 1;\nlet y = x x;' },
+          { path: 'b.js', language: 'js', content: "console.log('hi'" },
+        ],
+      }),
+    );
+    if (r.ok || !r.syntaxCheck) throw new Error('expected a syntax check');
+    const shift = `${STRICT_PREFIX}throw 0;`.length;
+    const errors = nativeSyntaxErrors(r.errors, r.syntaxCheck, {
+      errors: [
+        // The `throw 0` sentinel of an accepted script and unrelated errors are ignored.
+        { phase: 'runtime', name: 'Error', message: '0', position: { file: 'src:1', line: 1 } },
+        engineError('src:0', 2, 11, "Unexpected identifier 'x'"),
+        engineError('src:1', 1, shift + 13, 'missing ) after argument list'),
+      ],
+    });
+    expect(errors).toEqual([
+      {
+        phase: 'syntax',
+        name: 'SyntaxError',
+        message: "Unexpected identifier 'x'",
+        position: { file: 'main.js', line: 2, column: 11 },
+      },
+      {
+        phase: 'syntax',
+        name: 'SyntaxError',
+        message: 'missing ) after argument list',
+        position: { file: 'b.js', line: 1, column: 13 },
+      },
+    ]);
+  });
+
+  it("keeps the pre-parser's error when the engine reports none", () => {
+    const r = prepareRun(
+      plan({ files: [{ path: 'main.js', language: 'js', content: 'let x = ;' }] }),
+    );
+    if (r.ok || !r.syntaxCheck) throw new Error('expected a syntax check');
+    // e.g. the check timed out, or the engine accepted the code and hit the sentinel.
+    expect(nativeSyntaxErrors(r.errors, r.syntaxCheck, { errors: [] })).toEqual(r.errors);
+    const sentinel = nativeSyntaxErrors(r.errors, r.syntaxCheck, {
+      errors: [
+        {
+          phase: 'runtime',
+          name: 'Error',
+          message: '0',
+          position: { file: 'src:0', line: 1, column: 14 },
+        },
+      ],
+    });
+    expect(sentinel).toEqual(r.errors);
+  });
+
+  it('maps DOM inline scripts and handlers, and keeps unsupported-feature errors', () => {
+    const content = [
+      '<!doctype html>',
+      '<script type="module">import x from "y";</script>',
+      '<script>',
+      'console.log("a";',
+      '</script>',
+      `<button onclick="alert('hi'">x</button>`,
+    ].join('\n');
+    const r = prepareRun(
+      plan({
+        mode: 'dom',
+        entry: 'index.html',
+        files: [{ path: 'index.html', language: 'html', content }],
+      }),
+    );
+    if (r.ok || !r.syntaxCheck) throw new Error('expected a syntax check');
+    expect(r.errors).toHaveLength(3);
+    const check = r.syntaxCheck;
+    expect(check.targets.map((t) => t.errorIndex)).toEqual([1, 2]);
+    expect(check.code.scripts[1]?.code).toBe(
+      `throw 0;(function(event){${STRICT_PREFIX}alert('hi'\n});`,
+    );
+    const errors = nativeSyntaxErrors(r.errors, check, {
+      errors: [
+        // Script line 2 is document line 4.
+        engineError('src:0', 2, 13, 'missing ) after argument list'),
+        // Reported in the handler wrapper's closing line: clamped to the value, column dropped.
+        engineError('src:1', 2, 1, 'missing ) after argument list'),
+      ],
+    });
+    expect(errors[0]).toEqual(r.errors[0]);
+    expect(errors[1]).toMatchObject({
+      message: 'missing ) after argument list',
+      position: { file: 'index.html', line: 4, column: 13 },
+    });
+    expect(errors[2]).toEqual({
+      phase: 'syntax',
+      name: 'SyntaxError',
+      message: 'missing ) after argument list',
+      position: { file: 'index.html', line: 6 },
+    });
+  });
+
+  it('maps a handler error inside the value to its column, and drops WebKit column 0', () => {
+    const r = prepareRun(
+      plan({
+        mode: 'dom',
+        entry: 'index.html',
+        files: [{ path: 'index.html', language: 'html', content: '<p onclick="let = 1">x</p>' }],
+      }),
+    );
+    if (r.ok || !r.syntaxCheck) throw new Error('expected a syntax check');
+    const prefix = `throw 0;(function(event){${STRICT_PREFIX}`.length;
+    const [inValue] = nativeSyntaxErrors(r.errors, r.syntaxCheck, {
+      errors: [engineError('src:0', 1, prefix + 5, "Unexpected token '='")],
+    });
+    // The value starts at column 13 (`<p onclick="` is 12 characters).
+    expect(inValue?.position).toEqual({ file: 'index.html', line: 1, column: 17 });
+    const [noColumn] = nativeSyntaxErrors(r.errors, r.syntaxCheck, {
+      errors: [engineError('src:0', 1, 0, 'Unexpected token')],
+    });
+    expect(noColumn?.position).toEqual({ file: 'index.html', line: 1 });
+  });
+
+  it('builds no check when no learner JavaScript failed to parse', () => {
+    const r = prepareRun(
+      plan({
+        mode: 'dom',
+        entry: 'index.html',
+        files: [
+          { path: 'index.html', language: 'html', content: '<script type="module"></script>' },
+        ],
+      }),
+    );
+    expect(r.ok).toBe(false);
+    expect(r).not.toHaveProperty('syntaxCheck');
   });
 });

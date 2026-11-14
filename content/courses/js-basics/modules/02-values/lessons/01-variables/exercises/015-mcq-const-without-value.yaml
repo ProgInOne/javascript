@@ -38,7 +38,7 @@ hints:
 explanation: |
   정답은 **아무것도 출력되지 않고 `SyntaxError`가 난다**예요.
 
-  `const`는 다시 대입할 수 없으니, 만드는 그 문장에서 반드시 값을 넣어야 해요. `const birthday;`처럼 값이 없으면 `SyntaxError`가 나요. Chrome 개발자 도구의 설명은 `Missing initializer in const declaration`(const 선언에 초기값이 없어요)이고, ProgInOne에서는 `Unexpected token`으로 보여요.
+  `const`는 다시 대입할 수 없으니, 만드는 그 문장에서 반드시 값을 넣어야 해요. `const birthday;`처럼 값이 없으면 `SyntaxError`가 나요. 설명은 `Missing initializer in const declaration`(const 선언에 초기값이 없어요)이에요(Chrome 기준).
 
   이건 문법 오류라서 실행 전 검사에서 걸려요. 그래서 문제가 없어 보이는 1번 줄의 `생일을 저장해요`도 출력되지 않아요.
 

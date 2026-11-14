@@ -375,6 +375,116 @@ test.describe('runner: execution and observations', () => {
     });
   });
 
+  test('syntax errors carry the browser engine message and position (D-030)', async ({ page }) => {
+    const { expectNoLeaks } = await setup(page);
+    // CI runs Chromium, so V8's wording is asserted; other engines word these differently.
+    const cases: [code: string, message: string, line: number, column: number][] = [
+      ['console.log("하나");\nconsole.log("셋";', 'missing ) after argument list', 2, 13],
+      ['let x = 1;\nlet y = x x;', "Unexpected identifier 'x'", 2, 11],
+      ['const birthYear;', 'Missing initializer in const declaration', 1, 7],
+      ['let quizScore = 80;\n90 = quizScore;', 'Invalid left-hand side in assignment', 2, 1],
+      ['let food-price = 18000;', "Unexpected token '-'", 1, 9],
+      ['console.log("끝);', 'Invalid or unexpected token', 1, 13],
+      // Strict-only syntax (D-026) comes from the engine too.
+      ['let a = 1;\nlet n = 010;', 'Octal literals are not allowed in strict mode.', 2, 9],
+    ];
+    for (const [code, message, line, column] of cases) {
+      const result = await run(page, js(code));
+      expect(result, code).toMatchObject({
+        status: 'error',
+        console: [],
+        errors: [
+          {
+            phase: 'syntax',
+            name: 'SyntaxError',
+            message,
+            position: { file: 'main.js', line, column },
+          },
+        ],
+      });
+      expect(result.errors, code).toHaveLength(1);
+    }
+
+    // Every broken file is reported; the working one never runs.
+    const files = await run(page, {
+      ...js('console.log("main");'),
+      files: [
+        { path: 'main.js', language: 'js', content: 'console.log("main");' },
+        { path: 'a.js', language: 'js', content: '\nif (x {\n}' },
+        { path: 'b.js', language: 'js', content: 'function f() {\n  return 1;\n' },
+      ],
+    });
+    expect(files).toMatchObject({
+      status: 'error',
+      console: [],
+      errors: [
+        { phase: 'syntax', message: "Unexpected token '{'", position: { file: 'a.js', line: 2 } },
+        {
+          phase: 'syntax',
+          message: 'Unexpected end of input',
+          position: { file: 'b.js', line: 3 },
+        },
+      ],
+    });
+
+    // DOM mode: inline scripts map to document lines; handlers to their attribute.
+    const dom = await run(
+      page,
+      html(
+        [
+          '<!doctype html>',
+          '<p>x</p>',
+          '<script>',
+          'console.log("ran");',
+          'console.log("a";',
+          '</script>',
+          `<button onclick="alert('hi'">x</button>`,
+        ].join('\n'),
+      ),
+    );
+    expect(dom).toMatchObject({
+      status: 'error',
+      console: [],
+      errors: [
+        {
+          phase: 'syntax',
+          message: 'missing ) after argument list',
+          position: { file: 'index.html', line: 5, column: 13 },
+        },
+        {
+          phase: 'syntax',
+          message: 'missing ) after argument list',
+          position: { file: 'index.html', line: 7 },
+        },
+      ],
+    });
+
+    // Code around the error never runs: no request leaves the sandbox.
+    const leak = await run(
+      page,
+      js(`fetch("${probe.origin}/syntax");\nnavigator.sendBeacon("/syntax");\nlet = ;`),
+    );
+    expect(leak.errors).toMatchObject([{ phase: 'syntax', position: { line: 3 } }]);
+    await expectNoLeaks();
+
+    // The next valid run works as usual.
+    const after = await run(page, js('console.log("ok");'));
+    expect(after.status).toBe('completed');
+    expect(consoleText(after)).toEqual(['ok']);
+  });
+
+  test('a syntax check keeps the last preview on screen (D-030)', async ({ page }) => {
+    await setup(page, { placement: 'visible' });
+    const preview = (content: string) => ({ ...html(content), mode: 'preview' as const });
+    await run(page, preview('<!doctype html><p id="p">미리보기</p>'));
+    const broken = await run(page, preview('<!doctype html><script>let = ;</script>'));
+    expect(broken.errors).toMatchObject([{ phase: 'syntax', name: 'SyntaxError' }]);
+    const shell = page.frameLocator('iframe[title="코드 실행 결과"]');
+    await expect(
+      shell.frameLocator('iframe[title="학습자 문서"]:visible').locator('#p'),
+    ).toHaveText('미리보기');
+  });
+
   test('dialogs never block and read stdin (S20)', async ({ page }) => {
     await setup(page);
     const code = 'alert("a"); console.log(confirm("b"), prompt("c", "def"));';

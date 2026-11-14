@@ -101,8 +101,11 @@ const scriptJson = (v: unknown) =>
 
 function startRun(request: RunRequest) {
   if (current) finish(current, { status: 'aborted' });
-  previewFrame?.remove();
-  previewFrame = null;
+  // A syntax check (D-030) runs nothing visible: the last preview stays until code runs again.
+  if (!request.syntaxOnly) {
+    previewFrame?.remove();
+    previewFrame = null;
+  }
 
   const channel = new MessageChannel();
   const started = performance.now();
@@ -173,6 +176,13 @@ function startRun(request: RunRequest) {
   const vp = request.viewport;
   frame.style.width = vp ? `${vp.width}px` : '100%';
   frame.style.height = vp ? `${vp.height}px` : '100%';
+  if (request.syntaxOnly) {
+    // Invisible but laid out in view: off-screen or `display: none` frames may stall timers
+    // (PoC Q6), and the harness ends the run from a timer.
+    frame.style.cssText = 'position:fixed;left:0;top:0;border:0;opacity:0;pointer-events:none';
+    frame.setAttribute('aria-hidden', 'true');
+    frame.tabIndex = -1;
+  }
   const harnessTag = `${LEARNER_CSP}<script>self.${HARNESS_CONFIG_GLOBAL}=${scriptJson(config)};${__HARNESS_SOURCE__}</script>`;
   const source = request.document ?? '';
   const at = Math.min(request.harnessAt ?? 0, source.length);

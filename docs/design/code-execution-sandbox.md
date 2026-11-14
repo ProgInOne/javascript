@@ -265,14 +265,14 @@ DOM 모드에서 학습자 HTML을 셸 문서에 직접 쓰지 않고 중첩 `sr
 
 - 이유: 요즘 JavaScript(모듈, 클래스 본문)는 항상 엄격 모드입니다. 비엄격 모드에서는 `let` 없이 `nickname = "코코";`라고 쓰면 조용히 전역 변수가 생겨, 선언을 빠뜨린 코드가 채점을 통과합니다. 엄격 모드에서는 `ReferenceError: nickname is not defined`가 납니다.
 - 방법: 준비 단계(`instrumentJs`)가 원본 1번 줄 맨 앞에 `'use strict';`를 **줄바꿈 없이** 붙입니다. 줄 번호는 그대로이고, 접두사는 1번 줄 0열의 삽입 기록으로 남아 반복문 계측과 같은 열 보정(`originalColumn`)으로 원래 열로 돌아갑니다. 작은따옴표를 쓰는 이유는 `onclick="..."` 속성 값 안에 그대로 넣을 수 있기 때문입니다.
-- 접두사를 붙인 코드를 acorn으로 파싱하므로, 엄격 모드에서만 문법 오류인 코드(`with`, `010` 같은 8진수 리터럴, 중복 매개변수)도 실행 전에 학습자 위치로 보고합니다.
+- 접두사를 붙인 코드를 acorn으로 파싱하므로, 엄격 모드에서만 문법 오류인 코드(`with`, `010` 같은 8진수 리터럴, 중복 매개변수)도 실행 전에 잡힙니다. 학습자에게 보여 주는 문구와 위치는 [엔진 문법 검사](#문법-오류)가 브라우저에서 받아 옵니다(예: Chrome `Octal literals are not allowed in strict mode.`).
 - 엄격 모드에서 달라지는 점 중 학습자가 만날 만한 것: 선언하지 않은 변수에 대입하면 `ReferenceError`, 일반 함수 호출의 `this`는 `undefined`(최상위 `this`는 여전히 전역 객체), 읽기 전용 속성에 대입하면 `TypeError`.
 - 체크 하네스가 만드는 노출 스크립트와 `argsExpr`(콘텐츠가 쓴 인수 식)에는 접두사를 붙이지 않습니다. 학습자 코드가 아니기 때문입니다.
 
 #### `js-console` 모드 실행 순서
 
 1.  Host가 Prepare Worker로 코드 준비를 요청합니다: 구문 검사(acorn), 체크용 노출 스크립트 생성.
-    구문 오류는 실행 없이 즉시 `RunResult(status: 'error', phase: 'syntax')`로 반환합니다.
+    구문 오류가 있으면 학습자 코드를 실행하지 않고, [엔진 문법 검사](#문법-오류)로 브라우저의 원래 메시지와 위치를 받아 `RunResult(status: 'error', phase: 'syntax')`로 반환합니다.
 1.  Host가 셸에 `RunRequest`를 보냅니다.
 1.  셸은 다음 blob을 만듭니다: 하네스 프렐류드, 학습자 파일별 blob(파일 하나당 blob URL 하나), 노출 스크립트.
 1.  셸이 프렐류드 blob으로 `new Worker(url)`을 만들고 시작 메시지를 보냅니다.
@@ -486,7 +486,23 @@ UI는 콘솔을 실시간으로 그리고, 채점은 최종 `RunResult`만 씁�
 #### 오류 메시지
 
 - 브라우저 원문 메시지를 그대로 보여주고, 자주 나오는 오류(예: `x is not defined`, `Cannot read properties of undefined`)에는 한국어 해설 카드를 덧붙입니다. 해설 매핑 표는 UI/UX 설계에서 정의합니다.
-- 구문 오류는 실행 전에 acorn이 잡으므로 위치가 정확합니다. acorn 메시지는 영어 원문과 한국어 해설을 함께 보여줍니다.
+- 구문 오류도 브라우저 원문입니다([문법 오류](#문법-오류)). 영어 원문과 한국어 해설을 함께 보여줍니다.
+
+#### 문법 오류
+
+결정 [D-030](/docs/decisions.md)에 따라 학습자에게 보여 주는 `SyntaxError`의 문구와 위치는 **브라우저 엔진이 직접 낸 것**입니다. 예전에는 준비 단계의 acorn 문구(`Unexpected token`, `Assigning to rvalue`)가 그대로 보여서, 레슨이 가르치는 Chrome 문구(`missing ) after argument list`, `Invalid left-hand side in assignment`)와 달랐습니다. 학습자가 실제 개발자 도구에서 보게 될 문구와 같아야 오류 읽기 학습이 전이됩니다.
+
+1.  준비 단계(acorn)가 학습자 스크립트 하나라도 파싱하지 못하면, 그 실행은 학습자 코드를 하나도 실행하지 않고 끝납니다(예전과 같음). acorn의 오류는 대체용으로 남겨 둡니다.
+1.  Host는 대신 **엔진 문법 검사**(`syntaxOnly: true`인 `dom` 모드 `RunRequest`)를 셸에 보냅니다. 문서는 `<!doctype html>`과 파싱에 실패한 스크립트마다 `__pg.w(i)` 하나뿐이고, 스크립트는 평소처럼 blob 전달로 들어갑니다. 실행 모드가 `js-console`이어도 검사는 문서에서 합니다. Worker의 `importScripts`는 문법 오류의 위치를 주지 않고 메시지 앞에 `Failed to execute 'importScripts'…`를 붙이지만, 문서의 `blob:` 스크립트는 `ErrorEvent`에 스크립트 기준 줄·열을 줍니다. 파서는 같은 엔진이라 문구가 같습니다.
+1.  검사 스크립트(`syntaxCheckScript`)는 원본 앞에 같은 줄로 `'use strict';throw 0;`를 붙입니다(D-026의 엄격 모드 유지). 문법 오류가 있는 스크립트는 시작하지 않으므로 아무것도 실행되지 않고, 혹시 엔진이 받아들이더라도(파서 사이의 차이) 첫 문장이 `throw`라 학습자 코드는 실행되지 않습니다. 함수 선언은 끌어올려지지만 호출되지 않습니다. 그래서 반복문 계측도 필요 없습니다.
+    `on*` 속성 값은 브라우저가 핸들러를 컴파일하는 방식처럼 함수 본문으로 감쌉니다: `throw 0;(function(event){'use strict';` + 값 + `\n});`.
+1.  하네스는 평소처럼 `error` 이벤트를 `src:<id>` 위치로 기록합니다. Host(`nativeSyntaxErrors`)는 검사 스크립트마다 `SyntaxError` 이름의 오류를 찾아, 메시지는 그대로 쓰고 위치는 삽입 기록으로 학습자 파일·줄·열로 되돌린 뒤 `phase: 'syntax'`로 바꿉니다. 핸들러 감싸기의 닫는 줄에서 보고된 위치는 값의 마지막 줄로 줄이고 열을 뺍니다. WebKit처럼 열을 0으로 주면 열을 뺍니다.
+1.  엔진이 오류를 보고하지 않으면(검사가 시간 초과되었거나, 엔진이 코드를 받아들여 `throw 0`에 걸림) acorn의 문구와 위치를 그대로 씁니다. 검사가 `aborted`면 결과도 `aborted`입니다.
+
+- 셸은 검사 문서를 보이지 않게(투명, 화면 안) 만들고, 직전 미리보기(`preview`) 문서를 지우지 않습니다. 입력 중 잠깐 생긴 문법 오류로 미리보기가 깜빡이지 않게 하기 위함입니다.
+- 보안: 새 평가 경로가 없습니다. 검사 스크립트는 일반 실행과 같은 샌드박스 문서에서 같은 blob 전달로 실행되고, 셸 CSP(`'unsafe-eval'` 없음)도 그대로입니다.
+- 브라우저마다 문구가 다릅니다. 예를 들어 `console.log('hi'`는 Chromium과 Firefox에서 `missing ) after argument list`, WebKit(Safari)에서 `Unexpected end of script`였습니다. 레슨은 Chrome 문구로 설명하고 다른 브라우저의 문구가 다를 수 있다고 안내합니다. E2E는 Chromium 문구만 검사합니다.
+- 비용: 문법 오류가 있을 때만 셸 실행이 한 번 더 듭니다(빈 문서와 정착 대기, 보통 100ms 안팎).
 
 ### 무한 루프 대응
 
@@ -1009,7 +1025,7 @@ PoC 코드와 실행 방법, 테스트별 근거는 [`poc/sandbox/`](/poc/sandbo
 ### 프로토콜
 
 - **샌드박스 계약은 `@proginone/shared`가 원천입니다.** 설계의 "정식 정의는 `packages/runner`의 zod 스키마" 대신, `exercise-kit`과 `runner`가 모두 `shared`에만 의존할 수 있어서 계약을 `shared`에 두었습니다(M4-4). 러너는 `RunPlan`을 입력으로 받고, `ObservationStep`을 실행해 `Observation`(`{ op, id, status, error? }` 봉투 + 단계별 필드)을 만들고, 셸 → 호스트 경계에서 결과를 `parseRunResult`(깊이·`__proto__` 검사 후 스키마)로 검증합니다. 서버도 같은 함수로 다시 검증합니다.
-- 호스트가 Prepare 단계를 거쳐 셸에 보내는 `RunRequest`에는 원본 파일 대신 **준비된 코드만** 들어갑니다(`scripts`: `{ id, code }`, `expose`, DOM 모드의 `document`·`harnessAt`). `js-console`은 `entry` 파일을 먼저, 나머지 JS 파일을 계획 순서대로 실행합니다.
+- 호스트가 Prepare 단계를 거쳐 셸에 보내는 `RunRequest`에는 원본 파일 대신 **준비된 코드만** 들어갑니다(`scripts`: `{ id, code }`, `expose`, DOM 모드의 `document`·`harnessAt`, 엔진 문법 검사의 `syntaxOnly`). `js-console`은 `entry` 파일을 먼저, 나머지 JS 파일을 계획 순서대로 실행합니다.
 - 하네스는 오류 위치를 `src:<id>`(계측된 코드 기준) 또는 `orig:<id>`(원본 기준, 반복문 가드)로 보고하고, **호스트가** 학습자 파일·줄·열로 되돌립니다. 위치 매핑 표가 학습자 realm에 들어가지 않아 하네스가 작고 변조에 덜 노출됩니다. 열 번호는 계측 삽입 기록으로 보정합니다.
 - 단계 실행 규칙: 시간 초과는 `status: 'timeout'`, 단계 자체의 실패(잘못된 선택자, 관측값 크기 초과)는 `status: 'error'`와 `error`, 아직 없는 단계(`advance`, `a11y`)와 실행 시간 안에 실행하지 못한 단계는 `status: 'skipped'`입니다. 이때도 단계별 필수 필드는 빈 값으로 채워 스키마를 지킵니다. 이벤트 핸들러 오류는 단계 실패가 아니라 `dispatch`의 `ok: false, reason: 'HANDLER_ERROR'`와 `error`입니다.
 - `callFunction`: 인수(`SerializedValue`)를 하네스 realm 값으로 되살려 넘기고(`Map`·`Set`·`Date`·순환 포함), `argsExpr`는 노출 스크립트 안의 함수로 만들어 호출마다 새 배열을 받습니다(식 하나인지 acorn으로 확인, 런타임 문자열 평가 없음). 결과는 `outcome`(`returned`·`threw`·`missing`·`not_callable`, TDZ는 `missing`), `value`/`thrown`, `returnIsArg`(반환값과 같은 참조인 인수 위치), `observeArgsAfter`일 때 `argsAfter`, 호출 중 콘솔(`console`)입니다.
@@ -1025,7 +1041,7 @@ PoC 코드와 실행 방법, 테스트별 근거는 [`poc/sandbox/`](/poc/sandbo
 - **반복문 가드는 한 번 걸리면 이후 모든 가드 반복문을 즉시 멈춥니다.** `try { while (true) {} } catch { while (true) {} }`처럼 오류를 잡고 다시 반복하면 반복문마다 1초씩 멈추고, Chromium에서는 셸 스레드가 하트비트 제한(1.5초)을 넘겨 Watchdog이 셸을 버렸습니다. 실행은 이미 `loop_limit`이므로 이후 반복은 의미가 없습니다.
 - **학습자 문서가 페이지를 떠나면(`pagehide`) 즉시 `NavigationError`로 끝냅니다.** Chromium은 막힌 `location` 이동·`<meta refresh>`·폼 전송 뒤 중첩 문서를 오류 페이지로 바꾸므로, 기다리면 `maxDurationMs` 뒤 `timeout`이 됩니다. 폼 전송 실습의 `submit` 핸들러는 그 전에 실행됩니다. 실습은 `event.preventDefault()`를 쓰므로 영향이 없습니다.
 - `type="module"` 인라인 스크립트는 구문 오류로 거부합니다(계측 경로가 없음).
-- 구문 오류는 두 모드 모두 실행 없이 즉시 돌려줍니다. DOM 모드에서도 스크립트 하나의 구문 오류가 나머지 실행을 막습니다.
+- 구문 오류는 두 모드 모두 학습자 코드를 실행하지 않고 돌려줍니다(문구와 위치는 [엔진 문법 검사](#문법-오류)). DOM 모드에서도 스크립트 하나의 구문 오류가 나머지 실행을 막습니다.
 - `interactive` 실행도 `maxDurationMs`에서 끝냅니다(남은 타이머 수는 `pendingAtEnd`). "계속 실행" 미리보기는 미리보기 화면과 함께 만듭니다. `preview` 모드는 실행이 끝난 뒤 중첩 문서를 다음 실행까지 화면에 남깁니다.
 - `setViewport`는 `resize` 이벤트를 최대 300ms만 기다립니다. 보이지 않는 채점 셸에서는 Chromium이 이 이벤트를 보내지 않는 경우가 있었고, 크기와 미디어 쿼리 결과는 이벤트 없이도 정확했습니다.
 - `confirm()`은 `stdin`이 없으면 `true`, 있으면 `false`·`no`·`n`·`0`·`아니오`·`취소`·빈 문자열을 `false`로 읽습니다.

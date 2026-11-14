@@ -15,8 +15,20 @@ export interface SourceInfo {
   insertions: Insertion[];
 }
 
+/** The learner code behind a syntax error, for the engine syntax check (D-030). */
+export interface CheckSource {
+  /** The original script body or handler attribute value. */
+  code: string;
+  handler: boolean;
+  /** 1-based line and 0-based column of the code's first character in the file. */
+  line: number;
+  column: number;
+}
+
 export interface HtmlSyntaxError extends LearnerSyntaxError {
   file: string;
+  /** Set when the error comes from parsing learner JavaScript (not for unsupported features). */
+  check?: CheckSource;
 }
 
 export type PrepareHtmlResult =
@@ -95,7 +107,15 @@ export function prepareHtml(
     const id = sources.length;
     const result = instrumentJs(body, { sourceId: id, strict: true });
     if (!result.ok) {
-      errors.push(at(loc.startTag.endLine, loc.startTag.endCol, result.error));
+      errors.push({
+        ...at(loc.startTag.endLine, loc.startTag.endCol, result.error),
+        check: {
+          code: body,
+          handler: false,
+          line: loc.startTag.endLine,
+          column: loc.startTag.endCol - 1,
+        },
+      });
       return;
     }
     const i = scripts.length;
@@ -119,28 +139,30 @@ export function prepareHtml(
       if (!loc) continue;
       const id = sources.length;
       const result = instrumentJs(attr.value, { sourceId: id, handler: true, strict: true });
+      // The value starts after `name=` and an optional quote. Entities may shift columns a little;
+      // loop and syntax error positions mostly need the right line.
+      const valueStart = () => {
+        const raw = html.slice(loc.startOffset, loc.endOffset);
+        const valueAt = /^[^=]*=\s*["']?/.exec(raw)?.[0] ?? '';
+        const before = valueAt.split(/\r\n|\r|\n/);
+        const lastLine = before.at(-1) ?? '';
+        return {
+          line: loc.startLine + before.length - 1,
+          column: before.length === 1 ? loc.startCol - 1 + lastLine.length : lastLine.length,
+        };
+      };
       if (!result.ok) {
         errors.push({
           file,
           message: result.error.message,
           line: loc.startLine,
           column: loc.startCol,
+          check: { code: attr.value, handler: true, ...valueStart() },
         });
         continue;
       }
       if (result.loops > 0) {
-        // The value starts after `name=` and an optional quote. Entities may shift columns a
-        // little; loop positions only need the right line.
-        const raw = html.slice(loc.startOffset, loc.endOffset);
-        const valueAt = /^[^=]*=\s*["']?/.exec(raw)?.[0] ?? '';
-        const before = valueAt.split(/\r\n|\r|\n/);
-        const lastLine = before.at(-1) ?? '';
-        sources.push({
-          file,
-          line: loc.startLine + before.length - 1,
-          column: before.length === 1 ? loc.startCol - 1 + lastLine.length : lastLine.length,
-          insertions: result.insertions,
-        });
+        sources.push({ file, ...valueStart(), insertions: result.insertions });
       }
       // Always rewritten: the strict prefix applies to every handler (D-026). No line is added.
       edits.push({

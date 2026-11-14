@@ -3,6 +3,7 @@ import { PROTOCOL_VERSION } from '../protocol/constants.ts';
 import {
   type HostToShell,
   type RunEvent,
+  type RunPlan,
   type RunPlanInput,
   type RunRequest,
   runnablePlanSchema,
@@ -12,7 +13,7 @@ import {
   shellHelloSchema,
 } from '../protocol/messages.ts';
 import { resolveLimits } from '../protocol/limits.ts';
-import { mapErrors, prepareRun } from '../prepare/index.ts';
+import { mapErrors, nativeSyntaxErrors, prepareRun } from '../prepare/index.ts';
 
 /**
  * RunnerHost: the app side of the sandbox (docs/design/code-execution-sandbox.md#메시지-프로토콜).
@@ -47,7 +48,8 @@ export interface RunnerHostOptions {
 
 export interface RunnerHost {
   /**
-   * Validates, prepares and runs a plan. Syntax errors resolve immediately without running.
+   * Validates, prepares and runs a plan. Syntax errors resolve without running learner code: the
+   * shell only parses the broken scripts so that the messages are the browser's own (D-030).
    * Resolves with `aborted` when another run or `abort()` supersedes it.
    * @throws ZodError (rejects) when the plan fails validation, e.g. too many or too large files.
    */
@@ -279,34 +281,19 @@ export function createRunnerHost(options: RunnerHostOptions = {}): RunnerHost {
     settle(p, hostResult(p.runId, 'aborted', { durationMs: performance.now() - p.started }));
   };
 
-  const run = async (input: RunPlanInput): Promise<RunResult> => {
-    const plan = runnablePlanSchema.parse(input);
-    const runId = crypto.randomUUID();
-    const prepared = prepareRun(plan);
-    if (!prepared.ok) return hostResult(runId, 'error', { errors: prepared.errors });
-
-    const limits = resolveLimits(plan.purpose, plan.limits);
-    const request: RunRequest = runRequestSchema.parse({
-      v: PROTOCOL_VERSION,
-      type: 'run',
-      runId,
-      mode: plan.mode,
-      purpose: plan.purpose,
-      limits,
-      ...(plan.viewport ? { viewport: plan.viewport } : {}),
-      stdin: plan.stdin ?? [],
-      steps: plan.checks.steps,
-      ...prepared.prepared.code,
-    });
-    const fallbackFile = plan.entry;
-    const sources = prepared.prepared.sources;
-
+  /** Sends a request to the shell and resolves with its (mapped) result or the watchdog's. */
+  const execute = async (
+    request: RunRequest,
+    map: (r: RunResult) => RunResult,
+    viewport: RunPlan['viewport'],
+  ): Promise<RunResult> => {
+    const { runId } = request;
     const token = ++runSeq;
     abort();
     await ensureShell();
     // A newer run() started while this one waited for the shell.
     if (token !== runSeq) return hostResult(runId, 'aborted');
-    if (shell && placement === 'hidden') style(shell.frame, plan.viewport ?? DEFAULT_VIEWPORT);
+    if (shell && placement === 'hidden') style(shell.frame, viewport ?? DEFAULT_VIEWPORT);
 
     return new Promise<RunResult>((resolve) => {
       const started = performance.now();
@@ -315,8 +302,8 @@ export function createRunnerHost(options: RunnerHostOptions = {}): RunnerHost {
         resolve,
         started,
         lastHeartbeat: started,
-        maxDurationMs: limits.maxDurationMs,
-        map: (r) => ({ ...r, errors: mapErrors(r.errors, sources, fallbackFile) }),
+        maxDurationMs: request.limits.maxDurationMs,
+        map,
         watchdog: setInterval(() => {
           const t = performance.now();
           const silent = t - p.lastHeartbeat > HEARTBEAT_TIMEOUT_MS;
@@ -332,6 +319,56 @@ export function createRunnerHost(options: RunnerHostOptions = {}): RunnerHost {
       pending = p;
       send(request);
     });
+  };
+
+  const run = async (input: RunPlanInput): Promise<RunResult> => {
+    const plan = runnablePlanSchema.parse(input);
+    const runId = crypto.randomUUID();
+    const prepared = prepareRun(plan);
+    const limits = resolveLimits(plan.purpose, plan.limits);
+    const base = {
+      v: PROTOCOL_VERSION,
+      type: 'run',
+      runId,
+      purpose: plan.purpose,
+      limits,
+      ...(plan.viewport ? { viewport: plan.viewport } : {}),
+      stdin: plan.stdin ?? [],
+    } as const;
+
+    if (!prepared.ok) {
+      const check = prepared.syntaxCheck;
+      if (!check) return hostResult(runId, 'error', { errors: prepared.errors });
+      // Engine syntax check (D-030): nothing runs, the browser only parses the broken scripts.
+      const request = runRequestSchema.parse({
+        ...base,
+        mode: 'dom',
+        steps: [],
+        expose: null,
+        syntaxOnly: true,
+        ...check.code,
+      });
+      const r = await execute(request, (x) => x, plan.viewport);
+      if (r.status === 'aborted') return r;
+      return hostResult(runId, 'error', {
+        durationMs: r.durationMs,
+        errors: nativeSyntaxErrors(prepared.errors, check, r),
+      });
+    }
+
+    const request: RunRequest = runRequestSchema.parse({
+      ...base,
+      mode: plan.mode,
+      steps: plan.checks.steps,
+      ...prepared.prepared.code,
+    });
+    const fallbackFile = plan.entry;
+    const sources = prepared.prepared.sources;
+    return execute(
+      request,
+      (r) => ({ ...r, errors: mapErrors(r.errors, sources, fallbackFile) }),
+      plan.viewport,
+    );
   };
 
   return {

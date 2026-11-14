@@ -59,5 +59,6 @@
 
 ### Changed
 
+- 문법 오류 메시지를 브라우저 엔진의 원문으로(D-030): 준비 단계의 사전 검사(acorn)가 실패하면 러너가 학습자 코드를 실행하지 않고 브라우저에 파싱만 시켜, 엔진이 낸 `SyntaxError` 문구와 위치(예: Chrome `missing ) after argument list`)를 `phase: 'syntax'`로 보여 줍니다(`js-console`, DOM 인라인 스크립트·`on*` 핸들러, 레슨 예제). 문법 오류가 나도 직전 미리보기는 그대로 남습니다. `reading-errors`·`variables` 레슨과 문제의 "ProgInOne에서는 …" 안내를 Chrome 문구 하나로 정리
 - 학습자 JavaScript를 엄격 모드로 실행(D-026): 러너 준비 단계가 1번 줄 앞에 `'use strict';`를 줄바꿈 없이 붙이고 열 번호를 보정합니다(`js-console`, DOM 인라인 스크립트·`on*` 핸들러, 레슨 예제, 실행 검증). `let` 없는 대입은 `ReferenceError`, 엄격 모드 전용 문법 오류는 실행 전에 보고. `variables` 레슨에 `let`을 빼면 오류가 난다는 설명 추가
 - 콘텐츠 파이프라인 6단계를 "사람 검토"에서 "AI 교차 검토"로 바꾸고(검토자는 `content:check:run` 재실행, 판단 기록), HTML/CSS 핵심 과정은 "단원 유형 4종 이상" 규칙에서 제외

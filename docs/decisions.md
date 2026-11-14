@@ -195,4 +195,5 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - 2026-11-15, 사용자가 위임한 결정.
 - 학습자에게 보여 주는 `SyntaxError` 문구를 **브라우저 엔진의 원래 메시지**로 맞춥니다. 지금은 러너의 사전 구문 검사기(acorn) 문구(`Unexpected token` 등)가 보여서, 레슨이 가르치는 Chrome 메시지(`missing ) after argument list` 등)와 다릅니다. 사전 검사에서 실패하면 계측 없이 원본을 샌드박스에서 실행해 엔진이 낸 `SyntaxError`와 위치를 그대로 쓰는 방식으로 M5에서 구현하고, 레슨의 "ProgInOne에서는 …" 안내를 함께 정리합니다.
 - 근거: 학습자가 실제 브라우저 개발자 도구에서 보게 될 문구와 같아야 오류 읽기 학습이 전이됩니다.
+- 구현: 사전 검사가 실패하면 Host가 실패한 스크립트만 담은 **엔진 문법 검사**(`syntaxOnly`인 `dom` 실행)를 셸에 보냅니다. 검사 스크립트는 `'use strict';throw 0;` 뒤에 원본을 같은 줄로 붙여(핸들러는 함수 본문으로 감싸서) 엔진이 받아들여도 학습자 코드가 실행되지 않습니다. 엔진의 `SyntaxError` 메시지와 위치를 학습자 파일로 되돌려 `phase: 'syntax'`로 보고하고, 엔진이 오류를 내지 않으면 acorn 문구로 대체합니다. `js-console`도 문서에서 검사합니다(Worker `importScripts`는 위치를 주지 않음). 상세: [코드 실행 샌드박스 설계](/docs/design/code-execution-sandbox.md#문법-오류).
 
