@@ -17,6 +17,8 @@
     "typecheck": "pnpm -r --parallel --if-present typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "pnpm build && pnpm --filter @proginone/e2e test",
+    "test:e2e:visual": "bash tools/e2e-docker.sh",
     "build": "pnpm -r --if-present build",
     "check:deps": "depcruise apps packages tools --config .dependency-cruiser.cjs",
     "check:links": "node tools/check-links.mjs",

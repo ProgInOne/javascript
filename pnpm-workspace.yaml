@@ -2,8 +2,14 @@ packages:
   - apps/*
   - packages/*
   - tools/*
+  - e2e
 
 # Dependency build scripts are opt-in. esbuild's postinstall only re-validates the binary that
 # its platform package already ships, so it stays off. better-sqlite3 ships prebuilds (no script).
 allowBuilds:
   esbuild: false
+
+minimumReleaseAgeExclude:
+  - '@playwright/test@1.65.1'
+  - playwright-core@1.65.1
+  - playwright@1.65.1

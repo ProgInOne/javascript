@@ -35,3 +35,5 @@ e2e/**/*-diff.png
 
 # Local agent worktrees
 .claude/
+e2e/test-results/
+e2e/playwright-report/
