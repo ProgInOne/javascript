@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@proginone/content-schema": "workspace:*",
+    "@proginone/exercise-kit": "workspace:*",
     "better-sqlite3": "^13.1.1",
     "drizzle-orm": "^0.45.4",
     "remark-gfm": "^4.0.1",

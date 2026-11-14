@@ -7,7 +7,7 @@ import { compileLessonMdx, type CompiledLesson } from './mdx.ts';
 export type SpecValidator = (
   type: string,
   spec: unknown,
-) => { ok: true } | { ok: false; errors: string[] };
+) => { ok: true; warnings?: string[] } | { ok: false; errors: string[] };
 
 export interface CheckOptions {
   validateSpec?: SpecValidator;
@@ -140,6 +140,7 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
       if (options.validateSpec) {
         const r = options.validateSpec(ex.type, ex.spec);
         if (!r.ok) for (const e of r.errors) diag.error(exFile, `spec: ${e}`);
+        else for (const w of r.warnings ?? []) diag.warn(exFile, `spec: ${w}`);
       }
       if (ex.review.status === 'approved') approved++;
     }

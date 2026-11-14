@@ -395,6 +395,9 @@ importers:
       '@proginone/content-schema':
         specifier: workspace:*
         version: link:../../packages/content-schema
+      '@proginone/exercise-kit':
+        specifier: workspace:*
+        version: link:../../packages/exercise-kit
       better-sqlite3:
         specifier: ^13.1.1
         version: 13.1.1
