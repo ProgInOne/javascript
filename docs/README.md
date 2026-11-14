@@ -21,29 +21,36 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 | [기여 가이드](/CONTRIBUTING.md) | 브랜치, 커밋, 리뷰, 완료 정의 |
 | [변경 이력](/CHANGELOG.md) | 릴리스별 변경 사항 |
 
+## 가이드
+
+| 문서 | 설명 |
+|---|---|
+| [시작하기](/docs/guides/getting-started.md) | 실행, 개발 모드, 설정, 데이터와 백업, 문제 해결 |
+| [테스트 가이드](/docs/guides/testing.md) | 테스트 종류, 실행 방법, 작성 규칙, 시각 회귀 |
+
 ## 제품 문서
 
 | 문서 | 상태 |
 |---|---|
-| [PRD](/docs/product/prd.md) | 초안 |
+| [PRD](/docs/product/prd.md) | 승인됨 |
 
 ## 설계 문서
 
 | 문서 | 다루는 내용 | 상태 |
 |---|---|---|
-| [시스템 아키텍처](/docs/design/system-architecture.md) | 런타임 구성, 모노레포, API 규약, 보안 경계, 빌드·CI·릴리스 | 초안 |
-| [데이터 모델](/docs/design/data-model.md) | content.db / user.db 스키마, 마이그레이션, 자동 백업 | 초안 |
-| [학습 엔진](/docs/design/learning-engine.md) | 숙련도, FSRS 복습, 연습 세트 구성, 재학습, 오늘의 학습 | 초안 |
-| [콘텐츠·문제 시스템](/docs/design/content-and-exercises.md) | 커리큘럼, 레슨 형식, 문제 유형, 템플릿, 제작·검증 파이프라인 | 초안 |
-| [코드 실행 샌드박스](/docs/design/code-execution-sandbox.md) | 격리 실행, 위협 모델, 러너 프로토콜, 체크 실행 | 초안 |
-| [AI 시스템](/docs/design/ai-system.md) | Codex 통합, AI 작업, 프롬프트, 장기 기억 | 초안 |
-| [UI/UX](/docs/design/ui-ux.md) | 디자인 시스템, 화면 설계, 인터랙션, 접근성 | 초안 |
+| [시스템 아키텍처](/docs/design/system-architecture.md) | 런타임 구성, 모노레포, API 규약, 보안 경계, 빌드·CI·릴리스 | 승인됨 |
+| [데이터 모델](/docs/design/data-model.md) | content.db / user.db 스키마, 마이그레이션, 자동 백업 | 승인됨 |
+| [학습 엔진](/docs/design/learning-engine.md) | 숙련도, FSRS 복습, 연습 세트 구성, 재학습, 오늘의 학습 | 승인됨 |
+| [콘텐츠·문제 시스템](/docs/design/content-and-exercises.md) | 커리큘럼, 레슨 형식, 문제 유형, 템플릿, 제작·검증 파이프라인 | 승인됨 |
+| [코드 실행 샌드박스](/docs/design/code-execution-sandbox.md) | 격리 실행, 위협 모델, 러너 프로토콜, 체크 실행 | 승인됨 |
+| [AI 시스템](/docs/design/ai-system.md) | Codex 통합, AI 작업, 프롬프트, 장기 기억 | 승인됨 |
+| [UI/UX](/docs/design/ui-ux.md) | 디자인 시스템, 화면 설계, 인터랙션, 접근성 | 승인됨 |
 
 ## 계획 문서
 
 | 문서 | 상태 |
 |---|---|
-| [구현 로드맵](/docs/roadmap.md) | 초안 |
+| [구현 로드맵](/docs/roadmap.md) | 승인됨 |
 
 ## 예정 문서
 
