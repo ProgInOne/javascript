@@ -115,7 +115,7 @@
   reality: let은 변수를 처음 만들 때 한 번만 쓴다. 같은 이름으로 let을 다시 쓰면 SyntaxError(Identifier has already been declared)가 난다. 값을 바꿀 때는 이름 = 새 값; 으로 대입만 한다.
   remediation:
     lessonSection: js-basics.values.variables#pitfalls
-    exercises: [js-basics.values.variables.fix-let-twice]
+    exercises: [js-basics.values.variables.fix-let-twice, js-basics.values.variables.impl-change-lives]
 
 - id: js.mc.let-needs-initial-value
   concept: js.values.let
@@ -140,7 +140,7 @@
   concept: js.values.assignment
   title: 대입 방향을 거꾸로 씀
   statement: 90 = score; 처럼 값을 왼쪽에, 변수를 오른쪽에 써도 대입된다고 생각한다.
-  reality: 대입은 항상 오른쪽 값을 왼쪽 변수에 넣는다. 왼쪽에는 값을 받을 변수가 와야 하고, 90 = score; 는 SyntaxError(Invalid left-hand side in assignment)다.
+  reality: 대입은 항상 오른쪽 값을 왼쪽 변수에 넣는다. 왼쪽에는 값을 받을 변수가 와야 하고, 90 = score; 는 SyntaxError다(Chrome의 설명은 Invalid left-hand side in assignment, ProgInOne의 설명은 Assigning to rvalue).
   remediation:
     lessonSection: js-basics.values.variables#pitfalls
     exercises: [js-basics.values.variables.fix-assign-direction]
@@ -168,7 +168,7 @@
   concept: js.values.const
   title: const를 먼저 만들고 나중에 값을 넣으려 함
   statement: const birthday; 처럼 먼저 이름만 만들고, 다음 줄에서 한 번만 값을 넣으면 된다고 생각한다.
-  reality: const는 만드는 그 문장에서 바로 값을 넣어야 한다. 값 없이 쓰면 실행 전에 SyntaxError(Missing initializer in const declaration)가 난다.
+  reality: const는 만드는 그 문장에서 바로 값을 넣어야 한다. 값 없이 쓰면 실행 전에 SyntaxError가 난다(Chrome의 설명은 Missing initializer in const declaration).
   remediation:
     lessonSection: js-basics.values.variables#pitfalls
     exercises: [js-basics.values.variables.mcq-const-without-value]

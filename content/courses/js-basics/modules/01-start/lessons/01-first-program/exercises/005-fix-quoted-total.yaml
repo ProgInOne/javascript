@@ -48,5 +48,6 @@ explanation: |
   따옴표가 있으면 글자, 없으면 계산할 값이라는 규칙을 기억하세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

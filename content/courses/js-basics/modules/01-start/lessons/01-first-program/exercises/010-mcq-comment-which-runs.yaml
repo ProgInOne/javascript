@@ -39,5 +39,6 @@ explanation: |
   둘째 줄 전체가 꺼진다고 생각했다면, `//`의 앞에 있는 코드는 영향을 받지 않는다는 점을 기억하세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

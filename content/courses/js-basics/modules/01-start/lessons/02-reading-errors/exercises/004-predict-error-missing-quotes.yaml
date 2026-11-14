@@ -28,5 +28,6 @@ explanation: |
   `SyntaxError`라고 생각했다면: 괄호와 세미콜론이 제자리에 있어서 문장의 모양(문법)은 맞아요. 문법은 맞는데 없는 이름을 쓴 것이라 `ReferenceError`예요. 오타나 실수라고 모두 `SyntaxError`는 아니에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

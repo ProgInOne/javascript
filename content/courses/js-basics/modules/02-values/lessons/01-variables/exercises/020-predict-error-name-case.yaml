@@ -29,5 +29,6 @@ explanation: |
   오류가 나지 않는다고 생각했다면 대소문자를 구분하지 않는다고 본 거예요. 오류 메시지의 이름과 변수를 만든 줄의 이름을 한 글자씩 비교하는 습관을 들이세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

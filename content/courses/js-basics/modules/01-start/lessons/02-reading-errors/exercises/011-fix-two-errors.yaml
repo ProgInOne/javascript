@@ -44,16 +44,17 @@ spec:
 misconceptions: [js.mc.syntax-error-partial-run, js.mc.typo-is-syntax-error]
 hints:
   - 처음 나오는 오류는 어떤 종류이고, 몇 번 줄을 가리키나요? 아무것도 출력되지 않은 이유도 함께 생각해 보세요.
-  - "`SyntaxError: missing ) after argument list`를 고치고 다시 실행하면, 이번에는 일부 줄이 출력된 뒤 다른 종류의 오류가 나요. 그 메시지는 무엇을 함수가 아니라고 하나요?"
+  - "4번째 줄의 `SyntaxError`를 고치고 다시 실행하면, 이번에는 일부 줄이 출력된 뒤 다른 종류의 오류가 나요. 그 메시지는 무엇을 함수가 아니라고 하나요?"
   - 4번 줄의 괄호 짝과 3번 줄의 점(`.`) 뒤 기능 이름을 다른 줄과 비교해 보세요.
 explanation: |
   버그는 두 개이고, 오류가 **차례로** 보여요.
 
-  1. **처음 실행**: `SyntaxError: missing ) after argument list`(4번 줄). `"18:00 운동"` 뒤에 닫는 괄호가 없어요. 문법 오류라서 1~3번 줄도 실행되지 않고 아무것도 출력되지 않았어요. `)`를 넣어 고쳐요.
+  1. **처음 실행**: `SyntaxError`(4번 줄). ProgInOne의 설명은 `Unexpected token`, Chrome의 설명은 `missing ) after argument list`예요. `"18:00 운동"` 뒤에 닫는 괄호가 없어요. 문법 오류라서 1~3번 줄도 실행되지 않고 아무것도 출력되지 않았어요. `)`를 넣어 고쳐요.
   1. **다시 실행**: 이번에는 `오늘의 일정`, `09:00 수업`이 출력된 뒤 `TypeError: console.lg is not a function`(3번 줄)이 나요. `console` 안에 `lg`라는 기능은 없어요. `log`로 고쳐요.
 
   문법 오류가 있으면 실행 중 오류는 아직 드러나지 않아요. 그래서 오류가 여러 개일 때는 **하나 고치고 다시 실행**하는 과정을 반복해요. 오류 종류가 바뀌고 출력되는 줄이 늘어나는 것이 제대로 고쳐 가고 있다는 신호예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

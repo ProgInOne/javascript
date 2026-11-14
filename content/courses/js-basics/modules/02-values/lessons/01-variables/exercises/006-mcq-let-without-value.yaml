@@ -30,7 +30,7 @@ misconceptions: [js.mc.let-needs-initial-value]
 hints:
   - 1번 줄은 오류일까요? let과 const 중 값 없이 만들 수 없는 것은 무엇이었나요?
   - 값을 넣지 않은 변수에는 "아직 값이 없음"을 뜻하는 특별한 값이 들어 있어요.
-  - 레슨에서 console.log의 결과로도 본 적 있는 값이에요.
+  - "\"첫 프로그램\" 단원에서 console.log가 끝나고 돌려주는 결과로 본 적 있는 값이에요."
 explanation: |
   정답은 **`undefined`**예요.
 
@@ -41,5 +41,6 @@ explanation: |
   - `answer`를 고른 경우: 따옴표가 없으므로 이름의 값을 출력해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

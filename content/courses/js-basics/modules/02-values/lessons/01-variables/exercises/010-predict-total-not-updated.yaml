@@ -39,5 +39,6 @@ explanation: |
   `6000`이라고 답했다면 스프레드시트처럼 `count`가 바뀌면 `total`도 다시 계산된다고 생각한 거예요. 새 합계가 필요하면 `count = 4;` 다음에 `total = price * count;`를 다시 실행해야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

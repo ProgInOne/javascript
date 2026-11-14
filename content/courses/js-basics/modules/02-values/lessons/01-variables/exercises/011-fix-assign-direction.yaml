@@ -14,10 +14,10 @@ prompt: |
   시험 후: 90
   ```
 
-  실행했을 때의 오류 메시지는 다음과 같아요.
+  ProgInOne에서 실행했을 때의 오류 메시지는 다음과 같아요. Chrome 개발자 도구에서는 같은 오류의 설명이 `Invalid left-hand side in assignment`로 나와요.
 
   ```text
-  Uncaught SyntaxError: Invalid left-hand side in assignment
+  SyntaxError: Assigning to rvalue (3번째 줄)
   ```
 spec:
   buggy:
@@ -55,14 +55,15 @@ spec:
           quizScore: { equals: 90 }
 misconceptions: [js.mc.assign-direction]
 hints:
-  - "`left-hand side`는 \"왼쪽\"이라는 뜻이에요. 대입문의 왼쪽에 무엇이 와야 할까요?"
+  - "Chrome의 설명 `left-hand side`는 \"왼쪽\", ProgInOne의 설명 `rvalue`는 \"오른쪽에 오는 값\"이라는 뜻이에요. 대입문의 왼쪽에는 무엇이 와야 할까요?"
   - 대입은 어느 쪽의 값을 어느 쪽에 넣나요? 3번 줄의 왼쪽과 오른쪽을 보세요.
   - 값을 받을 변수가 `=`의 어느 쪽에 있어야 하는지 생각해 보세요.
 explanation: |
-  3번 줄 `90 = quizScore;`가 문제예요. 대입은 항상 **오른쪽 값을 왼쪽 변수에** 넣어요. 그런데 왼쪽에 숫자 90이 있으니, "90이라는 값에 무언가를 넣으라"는 말이 되어 `SyntaxError: Invalid left-hand side in assignment`(대입의 왼쪽이 잘못되었어요)가 났어요.
+  3번 줄 `90 = quizScore;`가 문제예요. 대입은 항상 **오른쪽 값을 왼쪽 변수에** 넣어요. 그런데 왼쪽에 숫자 90이 있으니, "90이라는 값에 무언가를 넣으라"는 말이 되어 `SyntaxError`가 났어요. ProgInOne의 설명 `Assigning to rvalue`는 "오른쪽에 와야 할 값에 대입하려 했어요", Chrome의 설명 `Invalid left-hand side in assignment`는 "대입의 왼쪽이 잘못되었어요"라는 뜻이에요.
 
   값을 받을 변수를 왼쪽에 써서 `quizScore = 90;`으로 고치면 돼요. 문법 오류라 고치기 전에는 1~2번 줄도 실행되지 않았다는 점도 기억해 두세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

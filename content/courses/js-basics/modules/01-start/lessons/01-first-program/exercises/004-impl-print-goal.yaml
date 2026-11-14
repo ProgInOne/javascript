@@ -1,0 +1,59 @@
+id: js-basics.start.first-program.impl-print-goal
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+  - { id: js.basics.statements, weight: 0.3 }
+tags: [console-log, write-code]
+estimatedSeconds: 150
+prompt: |
+  첫 프로그램을 **처음부터** 직접 써 보세요. 실행하면 콘솔에 아래 세 줄이 이 순서대로 나와야 해요.
+
+  ```text
+  오늘의 목표
+  첫 프로그램 완성하기
+  목표 개수: 1
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 여기에 프로그램을 작성하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          console.log("오늘의 목표");
+          console.log("첫 프로그램 완성하기");
+          console.log("목표 개수:", 1);
+  checks:
+    - kind: console
+      id: output
+      description: 콘솔에 세 줄이 정해진 순서와 내용으로 출력되어야 합니다.
+      requirement: 세 줄 출력
+      expect:
+        lines: ["오늘의 목표", "첫 프로그램 완성하기", "목표 개수: 1"]
+hints:
+  - 콘솔에 나올 줄이 세 개예요. `console.log` 한 번이 콘솔의 한 줄이 된다는 점을 떠올려 보세요.
+  - 글자는 큰따옴표로 감싸고, 문장 끝에는 세미콜론을 붙여요. 문장은 위에서 아래로 실행되니 출력할 순서대로 써요.
+  - "`console.log(\"글자\");` 모양의 문장을 세 번 쓰면 돼요. 셋째 줄은 글자 `\"목표 개수:\"`와 숫자 `1`을 쉼표로 나눠 넣어도 되고, 한 덩어리 글자로 써도 돼요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  console.log("오늘의 목표");
+  console.log("첫 프로그램 완성하기");
+  console.log("목표 개수:", 1);
+  ```
+
+  - `console.log` 한 번이 콘솔의 한 줄이 되므로 문장이 세 개 필요해요. 문장은 위에서 아래로 실행되니 출력할 순서대로 써요.
+  - 글자는 따옴표로 감싸야 해요. 따옴표는 출력되지 않으니 콘솔에는 글자만 나와요.
+  - 셋째 줄의 `console.log("목표 개수:", 1);`은 쉼표로 나눈 두 값을 한 칸 띄어 출력하므로 `console.log("목표 개수: 1");`과 같은 줄이 나와요.
+
+  따옴표를 빠뜨리면 JavaScript가 글자를 이름이나 코드로 읽으려다 오류를 내요. 오류 메시지를 읽는 법은 다음 단원에서 배워요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

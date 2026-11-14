@@ -84,16 +84,6 @@
         "name": "ReferenceError"
       }
     },
-    "js-basics.values.variables.predict-let-reassign": {
-      "inputHash": "bb7fa164831127f0702a39af310266897a636eed52bd4d5c4921ecb0abfa26dd",
-      "expected": {
-        "kind": "console",
-        "lines": [
-          "졸려요",
-          "신나요"
-        ]
-      }
-    },
     "js-basics.values.variables.predict-name-vs-string": {
       "inputHash": "206808289a30799be50b6c61566b716e751d102dab1e06bb29c3da7487418259",
       "expected": {

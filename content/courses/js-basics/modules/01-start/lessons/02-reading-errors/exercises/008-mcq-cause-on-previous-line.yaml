@@ -7,7 +7,7 @@ concepts:
 tags: [error-message, line-number, semicolon]
 estimatedSeconds: 90
 prompt: |
-  다음 프로그램을 실행했더니 `시작`이 출력된 뒤 오류 메시지가 나왔어요. **원인**은 어디에 있나요?
+  다음 프로그램을 Chrome 개발자 도구에서 실행했더니 `시작`이 출력된 뒤 오류 메시지가 나왔어요. **원인**은 어디에 있나요?
 
   ```text
   시작
@@ -40,7 +40,7 @@ hints:
 explanation: |
   정답은 **1번 줄 끝에 세미콜론이 없어서 두 줄이 한 문장으로 이어졌다**예요.
 
-  1번 줄 끝에 세미콜론이 없으니, JavaScript는 다음 줄의 `(`를 앞 문장의 연속으로 읽었어요. 즉 두 줄을 `console.log("시작")(5 + 5)`라는 한 문장으로 본 거예요.
+  줄 끝의 세미콜론을 빠뜨려도 보통은 JavaScript가 줄이 바뀌는 곳에서 문장을 알아서 끝내 줘요. 하지만 다음 줄이 `(`로 시작하면 앞 문장에 이어지는 것으로 읽어요. 그래서 두 줄을 `console.log("시작")(5 + 5)`라는 한 문장으로 본 거예요.
 
   1. `console.log("시작")`이 실행되어 `시작`이 출력되고, 결과로 `undefined`를 돌려줘요.
   1. 그 결과에 `(5 + 5)`를 붙여 함수처럼 부르려 하니 `TypeError: console.log(...) is not a function`이 나요.
@@ -48,5 +48,6 @@ explanation: |
   메시지는 2번 줄을 가리키지만, 2번 줄을 고쳐서는 해결되지 않아요. 줄 번호는 문제를 **알아챈** 곳이고, 원인은 앞 줄에 있을 수 있어요. 1번 줄 끝에 `;`를 붙이면 오류가 사라져요. 문장 끝에 세미콜론을 붙이는 습관이 이런 문제를 막아 줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

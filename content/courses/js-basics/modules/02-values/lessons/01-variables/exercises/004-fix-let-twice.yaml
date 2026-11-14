@@ -17,7 +17,7 @@ prompt: |
   실행했을 때의 오류 메시지는 다음과 같아요.
 
   ```text
-  Uncaught SyntaxError: Identifier 'steps' has already been declared
+  SyntaxError: Identifier 'steps' has already been declared (3번째 줄)
   ```
 spec:
   buggy:
@@ -66,5 +66,6 @@ explanation: |
   다른 이름(`let eveningSteps = 8000;`)을 새로 만들어도 출력은 맞출 수 있지만, 이 문제의 목표는 같은 변수의 값을 바꾸는 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

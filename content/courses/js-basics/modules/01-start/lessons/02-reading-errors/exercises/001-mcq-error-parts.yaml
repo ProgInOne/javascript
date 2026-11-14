@@ -6,7 +6,7 @@ concepts:
 tags: [error-message, line-number]
 estimatedSeconds: 45
 prompt: |
-  프로그램을 실행했더니 아래 오류 메시지가 나왔어요. 문제가 발견된 곳은 **몇 번 줄**인가요?
+  Chrome 개발자 도구에서 프로그램을 실행했더니 아래 오류 메시지가 나왔어요. 문제가 발견된 곳은 **몇 번 줄**인가요?
 
   ```text
   Uncaught TypeError: console.lg is not a function
@@ -38,5 +38,6 @@ explanation: |
   메시지의 첫 줄 `TypeError: console.lg is not a function`은 오류 종류와 설명이고, 위치는 `at` 뒤에 나와요. 오류를 고칠 때는 종류 → 설명 → 줄 번호 순서로 읽으면 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

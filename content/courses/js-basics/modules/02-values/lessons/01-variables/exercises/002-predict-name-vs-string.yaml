@@ -36,5 +36,6 @@ explanation: |
   두 줄 모두 `부산`이라고 답했다면 변수 이름에 따옴표를 붙여도 값이 나온다고 생각한 거예요. 변수 값을 출력할 때는 따옴표를 붙이지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

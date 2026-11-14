@@ -73,5 +73,6 @@ explanation: |
   이 문제처럼 오류가 난 줄과 원인이 있는 줄이 다를 때가 많아요. 변수와 관련된 오류가 나면 **그 변수를 만든 줄**을 꼭 확인하세요. 4번과 6번 줄의 대입을 지워서 오류를 없애면 방문자 수를 셀 수 없게 되니 주의하세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

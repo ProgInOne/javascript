@@ -56,5 +56,6 @@ explanation: |
   - 왼쪽을 10px로 답했다면 두 번째 값을 좌우로 읽는 2값 규칙과 섞인 거예요. 값이 네 개면 네 번째 값이 왼쪽이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

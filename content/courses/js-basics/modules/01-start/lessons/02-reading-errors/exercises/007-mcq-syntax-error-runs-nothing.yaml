@@ -27,7 +27,6 @@ spec:
       rationale: 오류 난 줄만 건너뛰지 않아요. 게다가 문법 오류라 아무 줄도 실행되지 않아요.
     - id: d
       text: "`ReferenceError` 오류 메시지만 나온다"
-      misconception: js.mc.typo-is-syntax-error
       rationale: 닫는 괄호가 빠진 것은 이름 문제가 아니라 문장 모양(문법) 문제예요.
   correct: a
 misconceptions: [js.mc.syntax-error-partial-run]
@@ -38,7 +37,7 @@ hints:
 explanation: |
   정답은 **`SyntaxError` 오류 메시지만 나온다**예요.
 
-  3번 줄 `console.log("셋";`에는 닫는 괄호 `)`가 빠졌어요. 이것은 문장 모양의 문제라 `SyntaxError: missing ) after argument list`가 나요.
+  3번 줄 `console.log("셋";`에는 닫는 괄호 `)`가 빠졌어요. 이것은 문장 모양의 문제라 `SyntaxError`가 나요. 설명은 ProgInOne에서 `Unexpected token`, Chrome 개발자 도구에서 `missing ) after argument list`예요.
 
   JavaScript는 실행하기 전에 코드 **전체**의 문법을 먼저 검사해요. 검사에서 걸리면 실행을 시작하지 않으므로, 문제없는 1·2번 줄도 출력되지 않아요.
 
@@ -46,5 +45,6 @@ explanation: |
   - `넷`까지 나온다고 생각했다면: 오류는 그 줄만 건너뛰지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

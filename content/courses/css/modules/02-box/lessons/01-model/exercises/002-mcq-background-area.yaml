@@ -45,5 +45,6 @@ explanation: |
   - content는 배경색이 칠해지는 가장 안쪽 영역이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

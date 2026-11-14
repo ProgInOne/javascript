@@ -30,5 +30,6 @@ explanation: |
   - `ReferenceError`와 헷갈렸다면: `consol.log()`처럼 맨 앞 이름 자체가 없으면 `ReferenceError`예요. 여기서는 `console`은 있고, 점 뒤의 기능이 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

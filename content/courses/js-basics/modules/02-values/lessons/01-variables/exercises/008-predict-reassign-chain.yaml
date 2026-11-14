@@ -37,5 +37,6 @@ explanation: |
   `4`라고 답했다면 `points = points + 6`같은 문장이 값을 바꾸지 못한다고 본 거예요. `=`는 "같다"가 아니라 새 값을 넣는 대입이에요. `-1`처럼 답했다면 모든 계산을 처음 값 4에 따로따로 적용했을 가능성이 있어요(4 + 6, 4 × 2, 4 − 5).
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

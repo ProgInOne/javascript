@@ -37,5 +37,6 @@ explanation: |
   - border를 뺀 경우: 이름 그대로 border까지 포함해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

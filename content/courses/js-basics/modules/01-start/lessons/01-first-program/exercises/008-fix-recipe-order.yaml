@@ -51,5 +51,6 @@ explanation: |
   글자 안의 숫자를 고쳐서 맞추면 출력 모양은 비슷해 보여도 단계의 내용이 틀려지니 주의하세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

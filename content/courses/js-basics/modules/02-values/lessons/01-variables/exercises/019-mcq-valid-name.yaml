@@ -41,5 +41,6 @@ explanation: |
   - `const`: JavaScript가 이미 쓰는 예약어예요. `let`, `if`, `class`, `return` 등도 마찬가지예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

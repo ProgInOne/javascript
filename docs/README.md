@@ -53,6 +53,14 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 |---|---|
 | [구현 로드맵](/docs/roadmap.md) | 승인됨 |
 
+## 검토 기록
+
+콘텐츠 AI 교차 검토([D-027](/docs/decisions.md))의 판단과 수정 내용입니다.
+
+| 문서 | 대상 |
+|---|---|
+| [v0.1 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-v0.1-content-review.md) | 레슨 4개, 문제 56개 (`css.box.model`, `js-basics.start`, `js-basics.values.variables`) |
+
 ## 예정 문서
 
 구현이 시작되면 작성합니다. 아직 내용이 없으므로 파일을 만들지 않습니다.

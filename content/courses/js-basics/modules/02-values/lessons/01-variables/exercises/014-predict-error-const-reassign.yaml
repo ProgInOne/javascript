@@ -31,5 +31,6 @@ explanation: |
   - `SyntaxError`와 헷갈렸다면: 2번 줄은 모양이 올바른 대입문이라 문법 검사는 통과해요. 실행해 보니 그 이름이 상수라서 오류가 나는 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

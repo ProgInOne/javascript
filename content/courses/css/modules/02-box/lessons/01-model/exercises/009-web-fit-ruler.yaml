@@ -107,5 +107,6 @@ explanation: |
   padding이나 border를 지워서 맞추면 요구사항(padding·border 유지)을 만족하지 못해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

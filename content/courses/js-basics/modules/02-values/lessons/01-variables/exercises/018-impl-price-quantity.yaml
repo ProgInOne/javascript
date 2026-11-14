@@ -1,0 +1,78 @@
+id: js-basics.values.variables.impl-price-quantity
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.values.const, weight: 1 }
+  - { id: js.values.let, weight: 0.5 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [const, let, write-code]
+estimatedSeconds: 240
+prompt: |
+  떡볶이 1인분은 3000원으로 정해져 있어요. 처음에 2인분을 주문했다가 1인분을 추가했어요. 결제 금액을 계산해 출력하는 프로그램을 작성하세요.
+
+  1. 1인분 가격을 담는 `price`를 만들어요. 가격은 **바뀌지 않는 값**이에요.
+  1. 주문 수량을 담는 `quantity`를 만들어요. 처음 값은 `2`예요.
+  1. 1인분을 추가했어요. **`quantity`에 대입해서** 수량을 1 늘려요.
+  1. `price`와 `quantity`를 곱해서 결제 금액을 출력해요.
+
+  바뀌지 않는 값은 `const`, 바뀌는 값은 `let`으로 골라 만들어 보세요. 실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  결제 금액: 9000
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 떡볶이 결제 금액을 계산하는 프로그램을 작성하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const price = 3000;
+          let quantity = 2;
+          quantity = quantity + 1;
+          console.log("결제 금액:", price * quantity);
+  checks:
+    - kind: console
+      id: output
+      description: "\"결제 금액: 9000\"이 출력되어야 합니다."
+      requirement: 결제 금액 출력
+      expect:
+        lines: ["결제 금액: 9000"]
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, 끝났을 때 price는 3000, quantity는 3이어야 합니다.
+      requirement: 변수 값
+      expect:
+        globals:
+          price: { equals: 3000 }
+          quantity: { equals: 3 }
+        noError: true
+      misconceptionIfFail: js.mc.const-can-reassign
+misconceptions: [js.mc.const-can-reassign]
+hints:
+  - 문장이 네 개 필요해요. 설명의 1~4번을 한 문장씩 코드로 옮겨 보세요.
+  - 두 변수 중 프로그램 안에서 다시 대입되는 것은 무엇인가요? 다시 대입되는 변수를 `const`로 만들면 어떤 오류가 날까요?
+  - "`price`는 `const`, `quantity`는 `let`으로 만들어요. 수량을 늘릴 때는 지금 `quantity`에 1을 더한 값을 다시 `quantity`에 넣어요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const price = 3000;
+  let quantity = 2;
+  quantity = quantity + 1;
+  console.log("결제 금액:", price * quantity);
+  ```
+
+  - `price`는 정해진 가격이라 바뀌지 않아요. `const`로 만들면 실수로 바꾸는 일을 JavaScript가 막아 줘요.
+  - `quantity`는 3번 줄에서 다시 대입되니 `let`이어야 해요. `const quantity = 2;`로 만들면 3번 줄에서 `TypeError: Assignment to constant variable.`이 나고 프로그램이 멈춰요.
+  - 3번 줄이 실행되면 `quantity`는 2 + 1 = 3이 되고, 결제 금액은 3000 × 3 = 9000이에요.
+
+  `price`를 `let`으로 만들어도 출력은 같아요. 하지만 바뀌지 않는 값에는 `const`를 쓰는 습관을 들이면, 나중에 실수로 값을 바꾸는 버그를 JavaScript가 대신 찾아 줘요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

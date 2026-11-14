@@ -18,8 +18,7 @@ prompt: |
   실행했을 때의 오류 메시지는 다음과 같아요.
 
   ```text
-  Uncaught ReferenceError: 맑음 is not defined
-      at main.js:2:13
+  ReferenceError: 맑음 is not defined (2번째 줄)
   ```
 spec:
   buggy:
@@ -57,5 +56,6 @@ explanation: |
   이 오류는 문장 모양은 맞기 때문에 `SyntaxError`가 아니라 `ReferenceError`예요. "이름을 찾을 수 없다"는 메시지가 보이면 철자 오타와 함께 **빠진 따옴표**도 의심해 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

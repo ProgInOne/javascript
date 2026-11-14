@@ -41,5 +41,6 @@ explanation: |
   - 오류가 난다고 생각했다면: 식만 있는 문장도 문법에 맞아요. 다만 아무 쓸모가 없을 뿐이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

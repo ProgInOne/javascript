@@ -9,8 +9,7 @@ prompt: |
   자기소개를 출력하는 프로그램을 실행했더니 아래 오류가 났어요. 오류 메시지를 단서로 버그를 찾아 고쳐서 다섯 줄이 모두 출력되게 하세요.
 
   ```text
-  Uncaught ReferenceError: conosle is not defined
-      at main.js:4:1
+  ReferenceError: conosle is not defined (4번째 줄)
   ```
 spec:
   buggy:
@@ -55,5 +54,6 @@ explanation: |
   오류 전의 세 줄이 출력된 것도 단서예요. 실행 중 오류는 앞 줄까지 실행된 뒤 오류 난 줄에서 멈추니, 출력된 마지막 줄 바로 다음 줄이 의심할 곳이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

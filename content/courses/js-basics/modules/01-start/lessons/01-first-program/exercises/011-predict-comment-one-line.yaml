@@ -36,5 +36,6 @@ explanation: |
   `달리기`만 나온다고 답했다면 `//` 한 번이 여러 줄을 주석으로 만든다고 생각한 거예요. 두 줄을 정말 끄려면 각 줄 앞에 `//`를 붙이거나, 두 줄을 `/*`와 `*/`로 감싸야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

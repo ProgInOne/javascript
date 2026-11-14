@@ -46,5 +46,6 @@ explanation: |
   - `160`, `170`, `175`라면 padding이나 border를 한쪽만 뺐을 가능성이 커요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

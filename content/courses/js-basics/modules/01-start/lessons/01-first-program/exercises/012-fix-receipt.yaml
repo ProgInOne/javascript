@@ -66,5 +66,6 @@ explanation: |
   쉼표로 나눈 값은 한 칸 띄어서 나오므로 `"김밥 2줄:", 3500 * 2`는 `김밥 2줄: 7000`이 돼요. 버그가 여러 개일 때는 출력과 기대 결과를 한 줄씩 비교하면 어디를 고쳐야 할지 보여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

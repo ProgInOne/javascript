@@ -35,5 +35,6 @@ explanation: |
   두 줄 모두 `15`라고 답했다면 따옴표 안의 식도 계산된다고 생각한 거예요. 첫 줄을 `"10 + 5"`처럼 따옴표까지 적었다면, 따옴표는 글자의 범위를 표시할 뿐 출력되지 않는다는 점을 기억하세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

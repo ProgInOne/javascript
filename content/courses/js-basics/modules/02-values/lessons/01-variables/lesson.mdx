@@ -86,7 +86,7 @@ count = 5;                   // count만 바뀌어요. total은 여전히 2000
 const birthYear = 2000;
 ```
 
-`const`로 만든 이름에는 **다른 값을 다시 대입할 수 없어요.** 시도하면 `TypeError: Assignment to constant variable.`이 나고 프로그램이 멈춰요. 그리고 다시 대입할 수 없으니, 만드는 그 자리에서 **반드시 값을 넣어야** 해요. `const birthYear;`라고만 쓰면 실행 전에 `SyntaxError: Missing initializer in const declaration`이 나요.
+`const`로 만든 이름에는 **다른 값을 다시 대입할 수 없어요.** 시도하면 `TypeError: Assignment to constant variable.`이 나고 프로그램이 멈춰요. 그리고 다시 대입할 수 없으니, 만드는 그 자리에서 **반드시 값을 넣어야** 해요. `const birthYear;`라고만 쓰면 실행 전에 `SyntaxError`가 나요. Chrome 개발자 도구는 `Missing initializer in const declaration`(const 선언에 초기값이 없어요)이라고 친절하게 알려 주고, ProgInOne은 `Unexpected token`이라고 짧게 알려 줘요.
 
 <CompareTable columns={["let", "const"]}>
 <Row label="다시 대입">할 수 있어요 | 할 수 없어요 (TypeError)</Row>
@@ -202,8 +202,7 @@ console.log("여기까지 올까요?");
 <Section kind="walkthrough">
 ```text
 최대 레벨: 10
-Uncaught TypeError: Assignment to constant variable.
-    at main.js:3:10
+TypeError: Assignment to constant variable. (3번째 줄)
 ```
 
 1~2번 줄은 정상 실행돼요. 3번 줄에서 `const`로 만든 `maxLevel`에 다시 대입하려 하자 `TypeError`가 나고, 지난 단원에서 배운 대로 프로그램이 거기서 멈춰서 4번 줄은 실행되지 않아요. 레벨을 올려야 하는 프로그램이라면 `maxLevel`을 `let`으로 만들었어야 해요.
@@ -223,8 +222,7 @@ console.log(itemprice * itemCount);
 
 <Section kind="walkthrough">
 ```text
-Uncaught ReferenceError: itemprice is not defined
-    at main.js:3:13
+ReferenceError: itemprice is not defined (3번째 줄)
 ```
 
 오류는 3번 줄을 가리키지만, 3번 줄만 봐서는 무엇이 틀렸는지 잘 안 보여요. 1번 줄에서 만든 이름은 `itemPrice`(대문자 P)인데, 3번 줄에서는 `itemprice`(소문자 p)라고 썼어요. 대소문자가 다르면 다른 이름이라, 그런 변수는 없다는 `ReferenceError`가 났어요. 이처럼 변수 오류는 **이름을 만든 줄**과 비교해 봐야 원인이 보이는 경우가 많아요.
@@ -245,7 +243,7 @@ Uncaught ReferenceError: itemprice is not defined
 
 <Pitfall misconception="js.mc.assign-direction">
 <Wrong>`90 = score;`라고 써도 score에 90이 들어간다.</Wrong>
-<Actual>`SyntaxError: Invalid left-hand side in assignment`가 나요. 왼쪽에 값을 넣을 수 없다는 뜻이에요.</Actual>
+<Actual>실행 전에 `SyntaxError`가 나요. Chrome은 `Invalid left-hand side in assignment`(대입의 왼쪽이 잘못됐어요), ProgInOne은 `Assigning to rvalue`(값에 대입하려 했어요)라고 알려 줘요.</Actual>
 <Right>대입은 항상 오른쪽 → 왼쪽이에요. 값을 받을 변수를 왼쪽에 써서 `score = 90;`이라고 해요.</Right>
 </Pitfall>
 
@@ -275,7 +273,7 @@ Uncaught ReferenceError: itemprice is not defined
 
 <Pitfall misconception="js.mc.const-declare-later">
 <Wrong>`const birthday;`로 먼저 만들고, 다음 줄에서 한 번만 값을 넣으면 된다.</Wrong>
-<Actual>값이 없는 `const`는 실행 전에 `SyntaxError: Missing initializer in const declaration`이 나요. 첫 줄도 실행되지 않아요.</Actual>
+<Actual>값이 없는 `const`는 실행 전에 `SyntaxError`가 나요(Chrome의 설명은 `Missing initializer in const declaration`). 첫 줄도 실행되지 않아요.</Actual>
 <Right>`const`는 만드는 문장에서 바로 값을 넣어요: `const birthday = "5월 5일";`</Right>
 </Pitfall>
 

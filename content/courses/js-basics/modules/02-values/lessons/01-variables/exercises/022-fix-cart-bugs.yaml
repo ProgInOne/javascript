@@ -106,5 +106,6 @@ explanation: |
   가격은 바뀌지 않으니 `const`로 두는 것이 맞아요. 문법 오류 → 실행 중 오류 순서로 하나씩 드러나는 것, 그리고 변수 오류의 원인이 그 변수를 **만든 줄**에 있는 경우가 많다는 것을 기억해 두세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

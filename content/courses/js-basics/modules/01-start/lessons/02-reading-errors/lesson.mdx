@@ -16,7 +16,7 @@
 <Section kind="principle">
 ### 오류 메시지의 세 부분
 
-넷째 줄에 `console`을 `consol`로 잘못 쓴 프로그램을 실행하면 이런 메시지가 나와요.
+넷째 줄에 `console`을 `consol`로 잘못 쓴 프로그램을 Chrome 브라우저의 개발자 도구에서 실행하면 이런 메시지가 나와요. 실무에서 가장 많이 보게 될 모양이에요.
 
 ```text
 Uncaught ReferenceError: consol is not defined
@@ -31,8 +31,18 @@ Uncaught ReferenceError: consol is not defined
 
 맨 앞의 `Uncaught`는 "아무도 처리하지 않은 오류"라는 뜻이에요. 오류를 처리하는 방법은 나중에 "오류 처리 기초" 단원에서 배우니 지금은 넘어가도 돼요.
 
-<Callout kind="note" title="브라우저마다 문장이 조금 달라요">
-이 단원의 메시지는 Chrome(과 같은 엔진을 쓰는 Edge) 기준이에요. Firefox나 Safari에서는 같은 오류라도 설명 문장이 조금 다를 수 있어요. 예를 들어 Safari는 `consol is not defined` 대신 `Can't find variable: consol`이라고 써요. ProgInOne은 여러분의 브라우저 안에서 코드를 실행하므로 쓰는 브라우저의 문장이 나오고, 표시 모양도 위와 조금 다를 수 있어요. 하지만 **오류 종류 이름과 줄 번호는 어디서나 같아요.** 그래서 종류와 줄 번호부터 읽는 습관이 중요해요.
+ProgInOne의 콘솔에서는 같은 오류가 한 줄로 짧게 보여요. 모양은 달라도 세 부분은 똑같아요.
+
+```text
+ReferenceError: consol is not defined (4번째 줄)
+```
+
+<Callout kind="note" title="설명 문장은 환경마다 조금 달라요">
+이 단원의 메시지는 Chrome(과 같은 엔진을 쓰는 Edge) 기준이에요. Firefox나 Safari에서는 같은 오류라도 설명 문장이 조금 달라요. 예를 들어 Safari는 `consol is not defined` 대신 `Can't find variable: consol`이라고 써요.
+
+ProgInOne도 마찬가지예요. 실행 중 오류(`ReferenceError`, `TypeError`)는 여러분이 쓰는 브라우저의 문장이 그대로 나와요. 하지만 `SyntaxError`는 ProgInOne이 실행 전에 직접 문법을 검사해서 알려 주기 때문에 설명 문장이 Chrome과 다를 수 있어요. 예를 들어 Chrome의 `missing ) after argument list`가 ProgInOne에서는 `Unexpected token`("여기에 이게 올 줄 몰랐어요")으로 보여요.
+
+그래도 **오류 종류 이름과 줄 번호는 어디서나 같아요.** 그래서 종류와 줄 번호부터 읽는 습관이 중요해요.
 </Callout>
 
 ### 오류가 나면 프로그램은 거기서 멈춰요
@@ -56,15 +66,15 @@ JavaScript가 코드를 다루는 과정은 두 단계예요.
 
 <CompareTable columns={["SyntaxError", "ReferenceError", "TypeError"]}>
 <Row label="뜻">문법(쓰는 규칙)을 어겼어요 | 그런 이름을 찾을 수 없어요 | 값을 할 수 없는 방식으로 썼어요</Row>
-<Row label="흔한 원인">괄호·따옴표를 닫지 않음, 문장 사이 세미콜론 빠뜨림 | 이름의 철자·대소문자 오타, 글자에 따옴표를 빠뜨림 | 없는 기능을 부름(`console.lg`), 기능 이름의 대소문자 오타(`console.Log`)</Row>
-<Row label="메시지 예">`missing ) after argument list` | `consol is not defined` | `console.lg is not a function`</Row>
+<Row label="흔한 원인">괄호·따옴표를 닫지 않음, 한 줄에 쓴 두 문장 사이의 세미콜론 빠뜨림 | 이름의 철자·대소문자 오타, 글자에 따옴표를 빠뜨림 | 없는 기능을 부름(`console.lg`), 기능 이름의 대소문자 오타(`console.Log`)</Row>
+<Row label="메시지 예 (Chrome)">`missing ) after argument list` | `consol is not defined` | `console.lg is not a function`</Row>
 <Row label="실행되는 줄">한 줄도 실행되지 않아요 | 오류 난 줄 앞까지 | 오류 난 줄 앞까지</Row>
 </CompareTable>
 
 헷갈리기 쉬운 점이 있어요. **오타라고 다 `SyntaxError`가 아니에요.** 문장의 모양(괄호, 따옴표, 기호)이 틀리면 `SyntaxError`예요. 모양은 맞는데 없는 이름을 쓰면 `ReferenceError`, 이름은 찾았지만 그 값으로 할 수 없는 일을 시키면 `TypeError`예요.
 
 - `consol.log("안녕")`: `consol`이라는 이름 자체가 없어요 → `ReferenceError`
-- `console.lg("안녕")`: `console`은 있지만 그 안에 `lg`라는 기능이 없어서 "함수가 아니에요" → `TypeError`
+- `console.lg("안녕")`: `console`은 있지만 그 안에 `lg`라는 기능이 없어서 "함수가 아니에요(is not a function)" → `TypeError`. **함수**는 `log`처럼 괄호를 붙여 부를 수 있는 기능을 말해요. 함수는 "함수" 모듈에서 자세히 배워요.
 - `console.log(안녕)`: 따옴표가 없어서 `안녕`을 글자가 아니라 이름으로 읽었고, 그런 이름이 없어요 → `ReferenceError`
 </Section>
 
@@ -82,13 +92,12 @@ console.log("4. 출발");
 </Section>
 
 <Section kind="walkthrough">
-콘솔에는 이렇게 나와요.
+ProgInOne 콘솔에는 이렇게 나와요.
 
 ```text
 1. 가방 챙기기
 2. 신발 신기
-Uncaught ReferenceError: consol is not defined
-    at main.js:3:1
+ReferenceError: consol is not defined (3번째 줄)
 ```
 
 | 줄 | 무슨 일이 일어나나요 |
@@ -98,7 +107,7 @@ Uncaught ReferenceError: consol is not defined
 | 3 | `consol`이라는 이름을 찾지 못해 `ReferenceError`, 프로그램이 **여기서 멈춤** |
 | 4 | 실행되지 않음 |
 
-오류 메시지의 `main.js:3`이 3번 줄을 가리키고, `consol is not defined`가 무엇이 틀렸는지 알려 줘요. `consol`을 `console`로 고치면 네 줄이 모두 출력돼요.
+오류 메시지의 `3번째 줄`(개발자 도구에서는 `main.js:3:1`)이 3번 줄을 가리키고, `consol is not defined`가 무엇이 틀렸는지 알려 줘요. `consol`을 `console`로 고치면 네 줄이 모두 출력돼요.
 </Section>
 
 <Section kind="examples">
@@ -117,10 +126,10 @@ console.log("셋째 줄";
 콘솔에는 오류 메시지 **하나만** 나와요.
 
 ```text
-Uncaught SyntaxError: missing ) after argument list
+SyntaxError: Unexpected token (3번째 줄)
 ```
 
-첫째·둘째 줄은 아무 문제가 없는데도 출력되지 않아요. JavaScript는 실행하기 전에 문법부터 검사하는데, 셋째 줄에서 닫는 괄호가 없다는 것을 발견하고 **실행을 시작하지도 않았기** 때문이에요. 설명의 `missing ) after argument list`는 "인수 목록 뒤에 `)`가 없어요"라는 뜻이고, 줄 번호는 3번 줄을 가리켜요. `"셋째 줄"` 뒤에 `)`를 넣으면 세 줄이 모두 출력돼요.
+첫째·둘째 줄은 아무 문제가 없는데도 출력되지 않아요. JavaScript는 실행하기 전에 문법부터 검사하는데, 셋째 줄에서 닫는 괄호가 없다는 것을 발견하고 **실행을 시작하지도 않았기** 때문이에요. ProgInOne의 설명 `Unexpected token`은 "여기에 이게 올 줄 몰랐어요"라는 뜻이에요. 닫는 괄호가 와야 할 자리에 `;`가 와서 놀란 거예요. Chrome 개발자 도구에서는 같은 오류가 `missing ) after argument list`("인수 목록 뒤에 `)`가 없어요")로 더 친절하게 보여요. 어느 쪽이든 줄 번호는 3번 줄을 가리켜요. `"셋째 줄"` 뒤에 `)`를 넣으면 세 줄이 모두 출력돼요.
 </Section>
 
 <Section kind="examples">
@@ -135,15 +144,14 @@ console.log("계산을 시작해요")
 </Section>
 
 <Section kind="walkthrough">
-콘솔에는 이렇게 나와요.
+ProgInOne 콘솔에는 이렇게 나와요.
 
 ```text
 계산을 시작해요
-Uncaught TypeError: console.log(...) is not a function
-    at main.js:2:1
+TypeError: console.log(...) is not a function (2번째 줄)
 ```
 
-메시지는 2번 줄을 가리키지만, 2번 줄의 `(10 + 20)`만 봐서는 무엇이 틀렸는지 알 수 없어요. 원인은 **1번 줄 끝에 세미콜론이 없는 것**이에요. 줄이 바뀌었어도 세미콜론이 없으니, JavaScript는 두 줄을 이어서 `console.log("계산을 시작해요")(10 + 20)`이라는 한 문장으로 읽었어요. 그래서 `console.log(...)`의 결과를 다시 함수처럼 부르려다 `TypeError`가 났어요.
+메시지는 2번 줄을 가리키지만, 2번 줄의 `(10 + 20)`만 봐서는 무엇이 틀렸는지 알 수 없어요. 원인은 **1번 줄 끝에 세미콜론이 없는 것**이에요. 줄 끝의 세미콜론을 빠뜨려도 보통은 JavaScript가 줄이 바뀌는 곳에서 문장을 알아서 끝내 줘요. 하지만 다음 줄이 `(`로 시작하면 앞 문장에 이어지는 것으로 읽어요. 그래서 JavaScript는 두 줄을 이어서 `console.log("계산을 시작해요")(10 + 20)`이라는 한 문장으로 읽었어요. 그래서 `console.log(...)`의 결과를 다시 함수처럼 부르려다 `TypeError`가 났어요.
 
 이렇게 줄 번호는 JavaScript가 문제를 **알아챈** 곳이지, 항상 원인이 있는 곳은 아니에요. 표시된 줄이 멀쩡해 보이면 바로 앞 줄부터 거슬러 올라가며 읽어요. (참고로 `(10 + 20)`처럼 계산만 하는 문장은 출력하지도 않아요. 결과를 보려면 `console.log(10 + 20);`이라고 써야 해요.)
 </Section>

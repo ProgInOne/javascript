@@ -44,5 +44,6 @@ explanation: |
   `D`까지 출력된다고 생각했다면 오류 난 줄만 건너뛴다고 본 거예요. 아무것도 출력되지 않는 것은 실행 전에 걸리는 `SyntaxError`일 때예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

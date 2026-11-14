@@ -13,7 +13,7 @@ spec:
       text: "`score`라는 이름의 변수가 만들어지고, 그 안에 90이 저장된다"
     - id: b
       text: 콘솔에 90이 출력된다
-      misconception: js.mc.log-is-return
+      misconception: js.mc.expression-prints-itself
       rationale: 변수를 만드는 문장은 아무것도 출력하지 않아요. 보려면 console.log(score)가 필요해요.
     - id: c
       text: "`score`와 90이 영원히 같다는 규칙이 정해져서, score는 앞으로 90만 될 수 있다"
@@ -37,5 +37,6 @@ explanation: |
   - 글자가 바뀐다고 고른 경우: 따옴표가 없는 `score`는 글자가 아니라 이름이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

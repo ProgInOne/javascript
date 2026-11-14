@@ -121,5 +121,6 @@ explanation: |
   `width`를 줄이거나 padding을 없애서 한 줄에 넣을 수도 있지만, 이 문제의 요구사항은 크기를 그대로 두고 `box-sizing`으로 고치는 거예요. 실무에서도 이런 이유로 모든 요소에 `border-box`를 적용하는 경우가 많아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

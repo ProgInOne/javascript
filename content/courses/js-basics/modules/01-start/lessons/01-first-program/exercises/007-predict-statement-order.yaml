@@ -30,5 +30,6 @@ explanation: |
   프로그램은 문장을 위에서 아래로 하나씩 실행해요. console.log 한 번이 콘솔의 한 줄이 되므로, 코드에 적힌 순서 그대로 세 줄이 출력돼요. 글자를 감싼 따옴표는 출력되지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

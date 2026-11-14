@@ -1,0 +1,98 @@
+id: js-basics.start.reading-errors.impl-error-report
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.errors.error-messages, weight: 1 }
+  - { id: js.basics.console-log, weight: 0.3 }
+tags: [error-message, line-number, write-code]
+estimatedSeconds: 180
+prompt: |
+  친구가 Chrome 개발자 도구에서 프로그램을 실행했더니 아래 오류 메시지가 나왔대요.
+
+  ```text
+  Uncaught TypeError: console.lgo is not a function
+      at main.js:6:9
+  ```
+
+  친구에게 보낼 "오류 쪽지"를 출력하는 프로그램을 작성하세요. 메시지에서 **오류 종류**, **설명**, **줄 번호**를 찾아 콘솔에 아래 모양으로 세 줄을 출력해야 해요. `<...>` 자리에 찾은 내용을 넣고, `<`와 `>`는 쓰지 않아요.
+
+  ```text
+  종류: <오류 종류>
+  설명: <설명 문장>
+  줄 번호: <줄 번호 숫자>
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 오류 쪽지 세 줄을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          console.log("종류: TypeError");
+          console.log("설명: console.lgo is not a function");
+          console.log("줄 번호:", 6);
+  checks:
+    - kind: console
+      id: kind
+      description: "\"종류: <오류 종류>\" 줄에 오류 종류가 맞게 출력되어야 합니다."
+      requirement: 오류 종류
+      visible: false
+      expect:
+        lines: ["종류: TypeError"]
+        mode: contains
+    - kind: console
+      id: message
+      description: "\"설명: <설명 문장>\" 줄에 설명이 맞게 출력되어야 합니다."
+      requirement: 설명
+      visible: false
+      expect:
+        lines: ["설명: console.lgo is not a function"]
+        mode: contains
+    - kind: console
+      id: line-number
+      description: "\"줄 번호: <숫자>\" 줄에 줄 번호가 맞게 출력되어야 합니다."
+      requirement: 줄 번호
+      visible: false
+      expect:
+        lines: ["줄 번호: 6"]
+        mode: contains
+    - kind: console
+      id: format
+      description: 종류, 설명, 줄 번호 세 줄만 이 순서대로 출력되어야 합니다.
+      requirement: 세 줄 순서
+      visible: false
+      expect:
+        lines: ["종류: TypeError", "설명: console.lgo is not a function", "줄 번호: 6"]
+hints:
+  - 오류 메시지의 첫 줄에는 종류와 설명이, 둘째 줄에는 위치가 있어요. 맨 앞의 `Uncaught`는 종류가 아니에요.
+  - 종류는 첫 번째 콜론(:) 바로 앞의 단어, 설명은 그 콜론 뒤의 문장이에요. 위치 `main.js:6:9`의 숫자 두 개 중 줄 번호는 어느 쪽일까요?
+  - '각 줄을 `console.log("종류: ...");`처럼 글자로 출력해요. 줄 번호는 위치의 앞 숫자이고, `"줄 번호:"`와 숫자를 쉼표로 나눠 출력해도 돼요.'
+explanation: |
+  오류 메시지를 세 부분으로 나누면 이래요.
+
+  | 부분 | 메시지에서 | 쪽지에 쓸 내용 |
+  |---|---|---|
+  | 오류 종류 | 콜론 앞의 `TypeError` | `종류: TypeError` |
+  | 설명 | 콜론 뒤의 `console.lgo is not a function` | `설명: console.lgo is not a function` |
+  | 위치 | `main.js:6:9`의 앞 숫자 | `줄 번호: 6` |
+
+  예시 정답은 다음과 같아요.
+
+  ```js
+  console.log("종류: TypeError");
+  console.log("설명: console.lgo is not a function");
+  console.log("줄 번호:", 6);
+  ```
+
+  - `Uncaught`는 "처리되지 않은"이라는 뜻의 꾸밈말이라 종류에 넣지 않아요.
+  - `main.js:6:9`는 6번 줄의 9번째 글자라는 뜻이에요. 줄 번호는 앞 숫자 6이고, 뒤 숫자 9는 그 줄 안의 글자 위치예요.
+
+  친구는 쪽지를 보고 6번 줄의 `console.lgo`를 찾아 `log`의 철자를 확인하면 돼요. 이렇게 종류 → 설명 → 줄 번호 순서로 읽는 습관이 디버깅의 첫걸음이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

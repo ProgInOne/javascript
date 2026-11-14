@@ -114,5 +114,6 @@ explanation: |
   안쪽 여백 체크가 실패했다면 `padding` 대신 `margin`을 썼는지 확인해 보세요. margin은 카드 바깥을 띄울 뿐 글자를 테두리에서 떼어 주지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

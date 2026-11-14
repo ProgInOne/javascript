@@ -355,7 +355,7 @@ spec:
 
 #### implement_function
 
-v0.1 콘텐츠에는 아직 없습니다. `entry`(함수 이름)는 선택입니다([D-028](/docs/decisions.md)).
+v0.1 콘텐츠에는 프로그램 작성 문제(`entry` 없음)만 있습니다(예: `first-program/exercises/004-impl-print-goal.yaml`). `entry`(함수 이름)는 선택입니다([D-028](/docs/decisions.md)).
 
 **함수 작성 문제**(`entry` 있음, 함수를 배운 모듈 6부터):
 

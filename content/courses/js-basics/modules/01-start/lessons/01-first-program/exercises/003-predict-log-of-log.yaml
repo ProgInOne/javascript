@@ -36,5 +36,6 @@ explanation: |
   `안녕`이 두 번 나온다고 생각했다면, 출력한 값이 결과로 돌아온다고 본 거예요. 출력(사람에게 보여 주기)과 결과값(프로그램이 이어서 쓰는 값)은 다른 것이에요. 이 차이는 함수의 `return`을 배울 때 다시 중요해져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

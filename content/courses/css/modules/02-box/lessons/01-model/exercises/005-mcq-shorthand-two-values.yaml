@@ -38,5 +38,6 @@ explanation: |
   - 30px을 고른 경우: 값은 더해지지 않고 각자 다른 방향에 적용돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -38,5 +38,6 @@ explanation: |
   margin과 padding의 자리를 바꾼 선택지는 "padding은 안, margin은 밖"을 반대로 기억한 경우예요. border 안쪽에 padding이 있다는 점을 테두리를 기준으로 떠올리면 헷갈리지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

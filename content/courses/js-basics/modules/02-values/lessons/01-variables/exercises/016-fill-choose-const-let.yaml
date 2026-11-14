@@ -1,6 +1,6 @@
 id: js-basics.values.variables.fill-choose-const-let
 type: fill_blank
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.values.const, weight: 1 }
   - { id: js.values.let, weight: 0.5 }
@@ -41,5 +41,6 @@ explanation: |
   `birthYear`나 `maxLevel`에 `let`을 써도 프로그램은 실행되지만, 이 문제는 "바뀌지 않는 값은 const" 규칙을 연습하는 문제예요. 먼저 `const`로 쓰고, 다시 대입해야 할 때만 `let`으로 바꾸는 습관을 들여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

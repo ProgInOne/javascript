@@ -6,14 +6,14 @@
 - id: js.basics.statements
   title: 문장과 실행 순서
   importance: standard
-  summary: 프로그램은 문장의 목록이고, 위에서 아래로 한 문장씩 차례대로 실행됩니다. 문장 끝은 세미콜론(;)으로 표시합니다.
+  summary: 프로그램은 문장의 목록이고, 위에서 아래로 한 문장씩 차례대로 실행돼요. 문장 끝은 세미콜론(;)으로 표시해요.
   misconceptions: [js.mc.expression-prints-itself]
   mdn: Web/JavaScript/Reference/Statements
 
 - id: js.basics.console-log
   title: console.log로 출력하기
   importance: standard
-  summary: console.log(값)은 괄호 안의 값을 콘솔에 보여 줍니다. 결과를 눈으로 확인하는 가장 기본적인 방법입니다.
+  summary: console.log(값)은 괄호 안의 값을 콘솔에 보여 줘요. 결과를 눈으로 확인하는 가장 기본적인 방법이에요.
   prerequisites: [js.basics.statements]
   misconceptions: [js.mc.log-prints-quotes, js.mc.quoted-expression-evaluates, js.mc.log-is-return]
   mdn: Web/API/console/log_static
@@ -21,7 +21,7 @@
 - id: js.basics.comments
   title: 주석
   importance: minor
-  summary: "// 뒤의 내용이나 /* */ 사이의 내용은 실행되지 않는 메모(주석)입니다."
+  summary: "// 뒤의 내용이나 /* */ 사이의 내용은 실행되지 않는 메모(주석)예요."
   prerequisites: [js.basics.statements]
   misconceptions: [js.mc.line-comment-multiline]
   mdn: Web/JavaScript/Guide/Grammar_and_types
@@ -31,7 +31,7 @@
 - id: js.errors.error-messages
   title: 오류 메시지 읽기
   importance: standard
-  summary: 오류 메시지는 종류, 설명, 위치(파일과 줄 번호)로 이루어져 있고, 실행 중 오류가 나면 프로그램은 그 자리에서 멈춥니다.
+  summary: 오류 메시지는 종류, 설명, 위치(파일과 줄 번호)로 이루어져 있고, 실행 중 오류가 나면 프로그램은 그 자리에서 멈춰요.
   prerequisites: [js.basics.console-log]
   misconceptions: [js.mc.code-after-error-runs, js.mc.error-line-is-cause]
   mdn: Web/JavaScript/Reference/Errors
@@ -39,7 +39,7 @@
 - id: js.errors.error-types
   title: 오류의 종류
   importance: standard
-  summary: SyntaxError는 문법을 어겨 프로그램이 아예 시작되지 않는 오류, ReferenceError는 없는 이름을 쓴 오류, TypeError는 값을 할 수 없는 방식으로 쓴 오류입니다.
+  summary: SyntaxError는 문법을 어겨 프로그램이 아예 시작되지 않는 오류, ReferenceError는 없는 이름을 쓴 오류, TypeError는 값을 할 수 없는 방식으로 쓴 오류예요.
   prerequisites: [js.errors.error-messages]
   misconceptions: [js.mc.syntax-error-partial-run, js.mc.typo-is-syntax-error]
   mdn: Web/JavaScript/Reference/Global_Objects/Error
@@ -49,7 +49,7 @@
 - id: js.values.let
   title: let으로 변수 만들기
   importance: core
-  summary: let 이름 = 값; 으로 값에 이름을 붙여 저장하고, 그 이름으로 값을 꺼내 씁니다. let 변수는 나중에 다른 값을 넣을 수 있습니다.
+  summary: let 이름 = 값; 으로 값에 이름을 붙여 저장하고, 그 이름으로 값을 꺼내 써요. let 변수는 나중에 다른 값을 넣을 수 있어요.
   prerequisites: [js.basics.console-log]
   misconceptions: [js.mc.variable-name-in-quotes, js.mc.let-again-to-change, js.mc.let-needs-initial-value]
   mdn: Web/JavaScript/Reference/Statements/let
@@ -57,7 +57,7 @@
 - id: js.values.assignment
   title: 대입
   importance: core
-  summary: "=는 \"같다\"가 아니라 오른쪽 값을 계산해 왼쪽 변수에 넣는 대입입니다. 대입은 그 순간의 값을 복사할 뿐, 변수끼리 연결하지 않습니다."
+  summary: "=는 \"같다\"가 아니라 오른쪽 값을 계산해 왼쪽 변수에 넣는 대입이에요. 대입은 그 순간의 값을 복사할 뿐, 변수끼리 연결하지 않아요."
   prerequisites: [js.values.let]
   misconceptions: [js.mc.assign-is-equality, js.mc.assign-direction, js.mc.variable-remembers-formula]
   mdn: Web/JavaScript/Reference/Operators/Assignment
@@ -65,7 +65,7 @@
 - id: js.values.const
   title: const로 상수 만들기
   importance: core
-  summary: const로 만든 이름에는 처음 넣은 값 대신 다른 값을 다시 대입할 수 없습니다. 선언할 때 반드시 값을 넣어야 합니다.
+  summary: const로 만든 이름에는 처음 넣은 값 대신 다른 값을 다시 대입할 수 없어요. 선언할 때 반드시 값을 넣어야 해요.
   prerequisites: [js.values.assignment, { id: js.errors.error-types, strength: helpful }]
   misconceptions: [js.mc.const-can-reassign, js.mc.const-declare-later, js.mc.const-is-immutable]
   mdn: Web/JavaScript/Reference/Statements/const
@@ -73,7 +73,7 @@
 - id: js.values.identifiers
   title: 변수 이름 규칙
   importance: standard
-  summary: 이름은 글자·숫자·_·$로 쓰되 숫자로 시작할 수 없고, 공백·하이픈과 예약어는 쓸 수 없습니다. 대문자와 소문자는 다른 글자로 구분합니다.
+  summary: 이름은 글자·숫자·_·$로 쓰되 숫자로 시작할 수 없고, 공백·하이픈과 예약어는 쓸 수 없어요. 대문자와 소문자는 다른 글자로 구분해요.
   prerequisites: [js.values.let]
   misconceptions: [js.mc.identifier-case-insensitive, js.mc.identifier-invalid-chars]
   mdn: Web/JavaScript/Guide/Grammar_and_types

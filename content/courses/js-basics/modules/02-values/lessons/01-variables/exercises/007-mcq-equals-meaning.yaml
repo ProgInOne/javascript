@@ -37,5 +37,6 @@ explanation: |
   - 새 변수를 만든다고 고른 경우: 변수를 새로 만들 때는 `let`을 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
