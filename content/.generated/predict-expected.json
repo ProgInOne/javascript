@@ -662,6 +662,74 @@
         "name": "ReferenceError"
       }
     },
+    "js-basics.strings.string-basics.predict-index-assign": {
+      "inputHash": "f37c956c6800c4cbba029ecae4679fe46a1b96b5fba51b165e3a35080333a694",
+      "expected": {
+        "kind": "error",
+        "thrown": true,
+        "name": "TypeError"
+      }
+    },
+    "js-basics.strings.string-basics.predict-index-length": {
+      "inputHash": "1bc5d162f9e11c15b7f9ba308ae4e95796e1d0ede4e145ae6c3c3ba4b93e3748",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "5",
+          "-",
+          "0",
+          "undefined"
+        ]
+      }
+    },
+    "js-basics.strings.string-basics.predict-template-quotes": {
+      "inputHash": "7c33994ce605482f8d7f98f5cced45b5a3ca189c62ad3ff912bfb46803625f2d",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "${team}팀: ${score}점",
+          "A팀: 10점",
+          "A팀: 73점"
+        ]
+      }
+    },
+    "js-basics.strings.string-methods.predict-clean-chain": {
+      "inputHash": "87d77bbc325a58a1efc82c70c00b6a7e75ecf1c8bc9ecd5921c5feda9438ef8d",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "15",
+          "3",
+          "kim,lee, park",
+          "kim/lee/ park",
+          "5"
+        ]
+      }
+    },
+    "js-basics.strings.string-methods.predict-phone-slice": {
+      "inputHash": "0585131fbae0b7205540f94d4b1f68f7cd0eaa73309ba6f29270e0139d8aec7f",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "010",
+          "1234",
+          "5678",
+          "[]"
+        ]
+      }
+    },
+    "js-basics.strings.string-methods.predict-search-results": {
+      "inputHash": "ac3becd754ff402bdfff517e8ddee67a6c2aa7e97defd415217a98d2a66316c8",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "false",
+          "true",
+          "0",
+          "false"
+        ]
+      }
+    },
     "js-basics.values.data-types.predict-boolean-reassign": {
       "inputHash": "cc44b2aaf0e241cf4f6d10b97989910e2c311a95a1007913e191f0de7af3a33c",
       "expected": {

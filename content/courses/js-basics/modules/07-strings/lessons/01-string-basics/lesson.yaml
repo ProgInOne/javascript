@@ -1,0 +1,17 @@
+id: js-basics.strings.string-basics
+title: 문자열 다루기
+summary: 문자열의 글자를 0부터 세는 인덱스로 읽고 length로 글자 수를 재는 법, 만든 문자열은 바꿀 수 없다는 성질, 백틱과 ${}로 값을 끼워 넣는 템플릿 리터럴을 배웁니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 14, practice: 25 }
+concepts:
+  primary: [js.str.index-length, js.str.immutability, js.str.template-literal]
+  practiced: [js.loops.for, js.loops.accumulator-pattern]
+  reviewed: [js.types.string, js.conv.plus-concat]
+objectives:
+  - str[i]로 원하는 위치의 글자를 읽고, length로 글자 수와 마지막 글자의 인덱스를 구할 수 있다.
+  - 범위 밖 인덱스를 읽으면 undefined가 나온다는 것을 알고, 반복으로 글자를 하나씩 볼 때 범위를 맞게 정할 수 있다.
+  - 문자열의 글자를 인덱스로 바꿀 수 없다는 것을 알고, 새 문자열을 만들어 다시 대입하는 코드로 고칠 수 있다.
+  - 템플릿 리터럴의 ${}로 변수와 식의 값을 문자열에 끼워 넣고, 따옴표 문자열과의 차이를 설명할 수 있다.
+practice:
+  targetCount: 18

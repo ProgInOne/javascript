@@ -1,0 +1,120 @@
+id: js-basics.strings.string-methods.impl-format-name
+type: implement_function
+difficulty: 5
+concepts:
+  - { id: js.str.split-join, weight: 1 }
+  - { id: js.str.case-trim, weight: 0.5 }
+  - { id: js.str.slice, weight: 0.5 }
+  - { id: js.str.index-length, weight: 0.3 }
+  - { id: js.str.template-literal, weight: 0.3 }
+tags: [split, trim, case, slice, capitalize, chaining, function, write-code, challenge]
+estimatedSeconds: 720
+prompt: |
+  해외 학회 이름표를 만들어요. 참가 신청서에는 영어 이름이 `"성 이름"` 순서로, 대소문자가 제멋대로 적혀 있어요. 이름표에는 `"이름 성"` 순서로, 각 부분의 **첫 글자만 대문자**이고 나머지는 소문자로 적어야 해요. 이렇게 바꾸는 함수 `formatName(fullName)`을 완성하세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `formatName("kim MINJI")` | `"Minji Kim"` |
+  | `formatName("  lee jun ")` | `"Jun Lee"` |
+
+  - 성과 이름은 공백 **하나**로 나뉘어 있고, 둘 다 한 글자 이상이에요.
+  - 앞뒤에 공백이 있을 수 있어요.
+  - 배열은 다음 모듈에서 배우니 `split`의 결과는 `[0]`, `[1]`로 조각을 꺼내 쓰는 정도면 충분해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function formatName(fullName) {
+            // 여기에 작성하세요
+          }
+  entry: formatName
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function capitalize(word) {
+            return word.slice(0, 1).toUpperCase() + word.slice(1).toLowerCase();
+          }
+
+          function formatName(fullName) {
+            const parts = fullName.trim().split(" ");
+            const family = capitalize(parts[0]);
+            const given = capitalize(parts[1]);
+            return `${given} ${family}`;
+          }
+  checks:
+    - { kind: call, id: kim, args: ["kim MINJI"], expect: { equals: "Minji Kim" }, requirement: 순서와 대소문자 }
+    - kind: call
+      id: spaces
+      args: ["  lee jun "]
+      expect: { equals: "Jun Lee" }
+      requirement: 앞뒤 공백 정리
+    - kind: call
+      id: shouting
+      visible: false
+      description: 모두 대문자로 적혀 있어도 첫 글자만 대문자, 나머지는 소문자여야 합니다.
+      requirement: 순서와 대소문자
+      args: ["PARK SEOYEON"]
+      expect: { equals: "Seoyeon Park" }
+    - kind: call
+      id: lower-mixed
+      visible: false
+      description: 대소문자가 섞인 긴 이름도 바르게 바꿔야 합니다.
+      requirement: 순서와 대소문자
+      args: ["nAmGuNg hyeOnWoo"]
+      expect: { equals: "Hyeonwoo Namgung" }
+    - kind: call
+      id: one-letter
+      visible: false
+      description: 한 글자짜리 성이나 이름도 대문자 한 글자가 되어야 합니다.
+      requirement: 순서와 대소문자
+      args: ["o J"]
+      expect: { equals: "J O" }
+    - kind: call
+      id: many-spaces
+      visible: false
+      description: 앞뒤 공백이 많아도 이름표에는 공백 없이 "이름 성"만 들어가야 합니다.
+      requirement: 앞뒤 공백 정리
+      args: ["    choi DA   "]
+      expect: { equals: "Da Choi" }
+misconceptions: [js.mc.split-result-is-string, js.mc.string-method-mutates, js.mc.slice-end-inclusive]
+hints:
+  - 문제를 둘로 나눠 보세요. ① 성과 이름을 따로 꺼내기, ② 단어 하나를 "첫 글자만 대문자"로 바꾸기. ②는 따로 함수로 만들어 두 번 불러도 좋아요.
+  - 단어 하나는 "첫 글자"와 "나머지"로 잘라 각각 대문자·소문자로 바꾼 뒤 이어 붙이면 돼요. `slice`의 끝을 생략하면 어디까지 잘리는지 떠올려 보세요.
+  - 앞뒤 공백을 지우지 않고 나누면 첫 조각이 빈 문자열이 될 수 있어요. 결과가 이상하면 나누기 전에 무엇을 했는지 확인하세요.
+explanation: |
+  예시 정답이에요. 단어 하나를 다듬는 일을 `capitalize` 함수로 따로 만들어 두 번 불렀어요.
+
+  ```js
+  function capitalize(word) {
+    return word.slice(0, 1).toUpperCase() + word.slice(1).toLowerCase();
+  }
+
+  function formatName(fullName) {
+    const parts = fullName.trim().split(" ");
+    const family = capitalize(parts[0]);
+    const given = capitalize(parts[1]);
+    return `${given} ${family}`;
+  }
+  ```
+
+  `"  lee jun "`을 따라가 볼게요.
+
+  | 단계 | 값 |
+  |---|---|
+  | `fullName.trim()` | `"lee jun"` |
+  | `.split(" ")` | 조각 `"lee"`, `"jun"` |
+  | `capitalize("lee")` | `"L"` + `"ee"` → `"Lee"` |
+  | `capitalize("jun")` | `"J"` + `"un"` → `"Jun"` |
+  | 템플릿 리터럴 | `"Jun Lee"` |
+
+  - **trim 먼저**: 앞뒤 공백을 지우지 않고 `split(" ")`을 하면 맨 앞 공백 자리에 빈 조각 `""`이 생겨 `parts[0]`이 성이 아니게 돼요.
+  - **첫 글자와 나머지**: `slice(0, 1)`(또는 `word[0]`)이 첫 글자, `slice(1)`이 두 번째 글자부터 끝까지예요. 나머지를 `toLowerCase()`로 바꿔야 `"MINJI"`가 `"Minji"`가 돼요.
+  - **새 문자열 돌려받기**: `word.toUpperCase();`처럼 결과를 버리면 아무것도 바뀌지 않아요. 돌려받은 값을 이어 붙여 써요.
+  - **목록과 문자열**: `parts`는 목록이라 `parts.toUpperCase()`는 오류예요. `parts[0]`처럼 꺼낸 조각은 문자열이라 문자열 메서드를 쓸 수 있어요.
+  - 한 글자 단어도 `slice(1)`이 빈 문자열이라 문제없이 `"J"`, `"O"`가 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

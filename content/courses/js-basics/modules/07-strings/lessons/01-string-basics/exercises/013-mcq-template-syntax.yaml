@@ -1,0 +1,46 @@
+id: js-basics.strings.string-basics.mcq-template-syntax
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.str.template-literal, weight: 1 }
+tags: [template-literal, syntax]
+estimatedSeconds: 45
+prompt: |
+  `const name = "지우";`일 때 콘솔에 `지우님, 안녕하세요`가 출력되는 코드는 무엇인가요?
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: "console.log(`${name}님, 안녕하세요`);"
+    - id: b
+      text: 'console.log("${name}님, 안녕하세요");'
+      misconception: js.mc.template-in-normal-quotes
+      rationale: 큰따옴표 문자열 안의 `${name}`은 그냥 글자예요. `${name}님, 안녕하세요`가 그대로 출력돼요.
+    - id: c
+      text: "console.log(`$name님, 안녕하세요`);"
+      misconception: js.mc.template-missing-braces
+      rationale: 중괄호가 없으면 `$`와 `name`은 그냥 글자예요. `$name님, 안녕하세요`가 출력돼요.
+    - id: d
+      text: "console.log(`{name}님, 안녕하세요`);"
+      rationale: 값이 들어가는 자리는 `$`와 중괄호를 함께 써서 `${name}`이라고 표시해요. `{name}`만 쓰면 글자 그대로예요.
+  correct: a
+misconceptions: [js.mc.template-in-normal-quotes, js.mc.template-missing-braces]
+hints:
+  - 값을 끼워 넣을 수 있는 문자열은 따옴표가 아니라 다른 기호로 감싸요.
+  - 감싸는 기호뿐 아니라, 값이 들어갈 자리를 표시하는 모양도 확인해요.
+  - 값이 들어가는 자리에는 기호 두 종류가 함께 필요해요.
+explanation: |
+  정답은 ``console.log(`${name}님, 안녕하세요`);``예요.
+
+  템플릿 리터럴은 두 가지가 모두 맞아야 해요.
+
+  1. 문자열 전체를 **백틱**으로 감싸요.
+  1. 값이 들어갈 자리를 **`${}`** 로 표시해요.
+
+  - 큰따옴표로 감싼 코드: 감싸는 기호가 백틱이 아니라서 `${name}`이 글자 그대로 나와요.
+  - `$name`으로 쓴 코드: 중괄호가 없어서 `$name`이 글자 그대로 나와요.
+  - `{name}`으로 쓴 코드: `$`가 없어서 `{name}`이 글자 그대로 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

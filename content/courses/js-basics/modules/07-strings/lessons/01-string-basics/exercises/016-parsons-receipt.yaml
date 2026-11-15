@@ -1,0 +1,58 @@
+id: js-basics.strings.string-basics.parsons-receipt
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.str.template-literal, weight: 1 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+tags: [template-literal, expression, parsons]
+estimatedSeconds: 150
+prompt: |
+  분식집 영수증을 출력하는 프로그램이에요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  떡볶이 2인분
+  합계: 9000원
+  ```
+spec:
+  lines:
+    - { id: l1, code: 'const item = "떡볶이";' }
+    - { id: l2, code: "const price = 4500;" }
+    - { id: l3, code: "const qty = 2;" }
+    - { id: l4, code: "console.log(`${item} ${qty}인분`);" }
+    - { id: l5, code: "console.log(`합계: ${price * qty}원`);" }
+  distractors:
+    - { id: d1, code: 'console.log("합계: ${price * qty}원");', replaces: l5, misconception: js.mc.template-in-normal-quotes }
+    - { id: d2, code: "console.log(`합계: $price * qty원`);", replaces: l5, misconception: js.mc.template-missing-braces }
+    - { id: d3, code: "console.log(`${item} $qty인분`);", replaces: l4, misconception: js.mc.template-missing-braces }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 메뉴와 인분, 합계 금액이 두 줄로 출력되어야 합니다.
+      requirement: 영수증 출력
+      expect:
+        lines: ["떡볶이 2인분", "합계: 9000원"]
+misconceptions: [js.mc.template-in-normal-quotes, js.mc.template-missing-braces]
+hints:
+  - 변수를 쓰는 줄보다 변수를 만드는 줄이 먼저 와야 해요.
+  - 출력하는 줄은 비슷하게 생긴 것이 여러 개예요. 감싼 기호와 값이 들어갈 자리의 모양을 꼼꼼히 비교하세요.
+  - 합계는 `${}` 안에서 식을 계산한 결과가 들어가야 해요. 식 전체가 중괄호 안에 있어야 해요.
+explanation: |
+  정답 순서는 다음과 같아요(변수 세 줄의 순서는 바뀌어도 괜찮아요).
+
+  ```js
+  const item = "떡볶이";
+  const price = 4500;
+  const qty = 2;
+  console.log(`${item} ${qty}인분`);
+  console.log(`합계: ${price * qty}원`);
+  ```
+
+  - `${price * qty}`처럼 `${}` 안에는 식도 쓸 수 있어요. 계산한 결과 9000이 들어가요.
+  - 큰따옴표로 감싼 합계 줄은 `합계: ${price * qty}원`이 글자 그대로 나와요.
+  - `$price * qty`처럼 중괄호가 없으면 `$price * qty`도 글자 그대로예요.
+  - `$qty인분`도 중괄호가 없어서 `떡볶이 $qty인분`이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

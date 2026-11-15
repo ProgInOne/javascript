@@ -1,0 +1,90 @@
+id: js-basics.strings.string-methods.fix-admin-login
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.str.case-trim, weight: 1 }
+  - { id: js.ops.strict-equality, weight: 0.3 }
+tags: [trim, tolowercase, immutability, function, debugging]
+estimatedSeconds: 200
+prompt: |
+  관리자 아이디인지 확인하는 함수 `isAdmin(input)`이에요. 사용자가 앞뒤에 공백을 넣거나 대문자를 섞어 입력해도 `admin`이면 `true`를 돌려줘야 해요. 그런데 `"  Admin "`을 넣으면 `false`가 나와요. 고쳐 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `isAdmin("admin")` | `true` |
+  | `isAdmin("  Admin ")` | `true` |
+  | `isAdmin("guest")` | `false` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function isAdmin(input) {
+            input.trim();
+            input.toLowerCase();
+            return input === "admin";
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function isAdmin(input) {
+            input = input.trim();
+            input = input.toLowerCase();
+            return input === "admin";
+          }
+  entry: isAdmin
+  bugDescription: "`isAdmin(\"admin\")`은 `true`인데, `isAdmin(\"  Admin \")`은 `false`를 돌려줘요."
+  checks:
+    - { kind: call, id: plain, args: ["admin"], expect: { equals: true }, requirement: 관리자 확인 }
+    - kind: call
+      id: messy
+      args: ["  Admin "]
+      expect: { equals: true }
+      requirement: 공백과 대소문자 정리
+      misconceptionIfFail: js.mc.string-method-mutates
+    - { kind: call, id: guest, args: ["guest"], expect: { equals: false }, requirement: 관리자 확인 }
+    - kind: call
+      id: upper
+      visible: false
+      description: 모두 대문자로 입력해도 관리자로 확인해야 합니다.
+      requirement: 공백과 대소문자 정리
+      args: ["ADMIN"]
+      expect: { equals: true }
+    - kind: call
+      id: inner-space
+      visible: false
+      description: 글자 사이에 공백이 있는 다른 아이디는 관리자가 아니어야 합니다.
+      requirement: 관리자 확인
+      args: ["ad min"]
+      expect: { equals: false }
+misconceptions: [js.mc.string-method-mutates]
+hints:
+  - "`\"admin\"`은 맞는데 `\"  Admin \"`만 틀려요. 2번과 3번 줄이 정말 `input`을 바꾸고 있을까요?"
+  - 문자열 메서드는 원래 문자열을 고치지 않고 새 문자열을 돌려줘요. 돌려받은 값은 지금 어디에 담기나요?
+  - 메서드가 돌려준 값을 버리지 말고 써야 해요. 변수에 담거나, 비교하는 자리에서 바로 쓰는 방법이 있어요.
+explanation: |
+  2번과 3번 줄은 정리한 새 문자열을 돌려받기만 하고 버려요. 문자열은 바꿀 수 없으니 `input`은 여전히 `"  Admin "`이고, 4번 줄의 비교가 `false`가 돼요.
+
+  돌려받은 값을 다시 대입하면 돼요.
+
+  ```js
+  function isAdmin(input) {
+    input = input.trim();
+    input = input.toLowerCase();
+    return input === "admin";
+  }
+  ```
+
+  이어 불러서 한 줄로 써도 같아요.
+
+  ```js
+  return input.trim().toLowerCase() === "admin";
+  ```
+
+  - 매개변수 `input`도 변수라서 새 값을 대입할 수 있어요.
+  - `trim`은 앞뒤 공백만 지우므로 `"ad min"`은 그대로 `"ad min"`이라 관리자가 아니에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

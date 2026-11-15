@@ -599,3 +599,63 @@
   prerequisites: [js.fn.first-class, js.fn.arrow]
   misconceptions: [js.mc.callback-called-when-passed, js.mc.callback-runs-at-pass-time]
   mdn: Web/JavaScript/Guide/Functions
+
+# ── 모듈 7. 문자열: string-basics ──
+
+- id: js.str.index-length
+  title: 문자열의 인덱스와 길이
+  importance: core
+  summary: 문자열의 글자는 0부터 시작하는 번호(인덱스)로 str[0]처럼 읽어요. str.length는 공백까지 센 글자 수이고, 마지막 글자의 인덱스는 length - 1이에요. 범위 밖 인덱스를 읽으면 오류 대신 undefined가 나와요.
+  prerequisites: [js.types.string]
+  misconceptions: [js.mc.last-index-is-length, js.mc.index-starts-at-one, js.mc.out-of-range-index-throws, js.mc.length-is-method]
+  mdn: Web/JavaScript/Reference/Global_Objects/String/length
+
+- id: js.str.immutability
+  title: 문자열은 바꿀 수 없어요
+  importance: standard
+  summary: 한 번 만든 문자열의 글자는 바꿀 수 없어요. str[0] = "A"는 엄격 모드에서 TypeError가 나요. 글자를 바꾸고 싶으면 새 문자열을 만들어 변수에 다시 대입해요.
+  prerequisites: [js.str.index-length, js.values.assignment]
+  misconceptions: [js.mc.string-index-assign]
+  mdn: Web/JavaScript/Reference/Global_Objects/String
+
+- id: js.str.template-literal
+  title: 템플릿 리터럴
+  importance: standard
+  summary: 백틱(`)으로 감싼 문자열 안에서는 ${식}으로 값을 바로 끼워 넣을 수 있고, 줄바꿈도 그대로 들어가요. 작은따옴표·큰따옴표 문자열 안의 ${...}는 그냥 글자예요.
+  prerequisites: [js.types.string, js.conv.plus-concat]
+  misconceptions: [js.mc.template-in-normal-quotes, js.mc.template-missing-braces]
+  mdn: Web/JavaScript/Reference/Template_literals
+
+# ── 모듈 7. 문자열: string-methods ──
+
+- id: js.str.search
+  title: 문자열에서 찾기
+  importance: standard
+  summary: includes·startsWith·endsWith는 찾는 글자가 있는지를 true·false로, indexOf는 처음 나오는 위치(인덱스)를 알려 줘요. indexOf는 찾지 못하면 -1을 돌려줘요. 모두 대소문자를 구별해요.
+  prerequisites: [js.str.index-length, js.types.boolean, js.fn.call, js.fn.return]
+  misconceptions: [js.mc.indexof-as-boolean, js.mc.includes-ignores-case]
+  mdn: Web/JavaScript/Reference/Global_Objects/String/indexOf
+
+- id: js.str.slice
+  title: slice로 잘라 내기
+  importance: core
+  summary: str.slice(시작, 끝)은 시작 인덱스부터 끝 인덱스 바로 앞까지를 새 문자열로 돌려줘요. 끝을 생략하면 마지막까지, 음수는 뒤에서부터 센 위치예요.
+  prerequisites: [js.str.index-length, js.fn.call, js.fn.return]
+  misconceptions: [js.mc.slice-end-inclusive, js.mc.slice-second-arg-length, js.mc.slice-negative-invalid]
+  mdn: Web/JavaScript/Reference/Global_Objects/String/slice
+
+- id: js.str.case-trim
+  title: 대소문자 바꾸기와 공백 지우기
+  importance: standard
+  summary: toUpperCase·toLowerCase는 대소문자를 바꾼 새 문자열을, trim은 앞뒤 공백을 지운 새 문자열을 돌려줘요. 원래 문자열은 그대로이므로 결과를 쓰려면 변수에 담아요.
+  prerequisites: [js.str.immutability, js.fn.call, js.fn.return]
+  misconceptions: [js.mc.string-method-mutates, js.mc.trim-removes-all-spaces]
+  mdn: Web/JavaScript/Reference/Global_Objects/String/trim
+
+- id: js.str.split-join
+  title: split으로 나누고 join으로 합치기
+  importance: standard
+  summary: str.split(구분자)는 문자열을 구분자에서 잘라 조각들의 목록(배열)을 만들고, 목록.join(구분자)는 조각을 구분자로 이어 다시 문자열을 만들어요. join()처럼 구분자를 생략하면 쉼표로 이어요.
+  prerequisites: [js.str.index-length, js.fn.call, js.fn.return]
+  misconceptions: [js.mc.split-result-is-string, js.mc.join-default-no-separator]
+  mdn: Web/JavaScript/Reference/Global_Objects/String/split

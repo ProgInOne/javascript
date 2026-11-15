@@ -1,0 +1,93 @@
+id: js-basics.strings.string-methods.impl-file-kind
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.str.search, weight: 1 }
+  - { id: js.control.else-if, weight: 0.3 }
+  - { id: js.ops.logical-and-or-not, weight: 0.3 }
+tags: [endswith, if, logical, function, write-code]
+estimatedSeconds: 300
+prompt: |
+  메신저에 파일을 올리면 종류에 따라 아이콘을 다르게 보여 줘요. 파일 이름을 받아 종류를 돌려주는 함수 `fileKind(fileName)`을 완성하세요.
+
+  | 파일 이름의 끝 | 돌려줄 값 |
+  |---|---|
+  | `.png` 또는 `.jpg` | `"사진"` |
+  | `.mp4` | `"동영상"` |
+  | 그 밖의 모든 경우 | `"파일"` |
+
+  - 파일 이름은 모두 소문자로 들어온다고 생각해도 돼요.
+  - 이름 **중간**에 `.png`가 들어 있어도 끝이 아니면 사진이 아니에요. 예: `"png-guide.pdf"`는 `"파일"`이에요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function fileKind(fileName) {
+            // 여기에 작성하세요
+          }
+  entry: fileKind
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function fileKind(fileName) {
+            if (fileName.endsWith(".png") || fileName.endsWith(".jpg")) {
+              return "사진";
+            } else if (fileName.endsWith(".mp4")) {
+              return "동영상";
+            }
+            return "파일";
+          }
+  checks:
+    - { kind: call, id: png, args: ["cat.png"], expect: { equals: "사진" }, requirement: 사진 }
+    - { kind: call, id: mp4, args: ["trip.mp4"], expect: { equals: "동영상" }, requirement: 동영상 }
+    - { kind: call, id: other, args: ["memo.txt"], expect: { equals: "파일" }, requirement: 그 밖의 파일 }
+    - kind: call
+      id: jpg
+      visible: false
+      description: .jpg로 끝나는 파일도 사진이어야 합니다.
+      requirement: 사진
+      args: ["sea.jpg"]
+      expect: { equals: "사진" }
+    - kind: call
+      id: middle
+      visible: false
+      description: 이름 중간에 .png가 있어도 끝이 아니면 사진이 아니어야 합니다.
+      requirement: 끝만 보기
+      args: ["png-guide.pdf"]
+      expect: { equals: "파일" }
+    - kind: call
+      id: middle-mp4
+      visible: false
+      description: 이름 중간에 .mp4가 있어도 끝이 아니면 동영상이 아니어야 합니다.
+      requirement: 끝만 보기
+      args: ["clip.mp4.zip"]
+      expect: { equals: "파일" }
+misconceptions: []
+hints:
+  - 끝이 어떤 글자로 끝나는지 `true`·`false`로 알려 주는 메서드가 있어요.
+  - 사진은 두 경우 중 하나만 맞아도 돼요. 두 조건을 잇는 논리 연산자를 떠올려 보세요.
+  - "`includes`는 이름 어디에 있든 `true`라서 `png-guide.pdf` 같은 이름에서 틀려요. 어느 경우에도 맞지 않을 때 돌려줄 값도 잊지 마세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function fileKind(fileName) {
+    if (fileName.endsWith(".png") || fileName.endsWith(".jpg")) {
+      return "사진";
+    } else if (fileName.endsWith(".mp4")) {
+      return "동영상";
+    }
+    return "파일";
+  }
+  ```
+
+  - **끝만 보기**: `endsWith`는 문자열이 그 글자로 **끝나는지**만 봐요. `includes(".png")`를 쓰면 `"png-guide.pdf"`처럼 중간에 있는 경우도 `true`가 되어 틀려요.
+  - **둘 중 하나**: 사진은 `.png`이거나 `.jpg`이면 되므로 `||`로 이어요.
+  - **나머지**: 어느 조건에도 맞지 않으면 마지막 `return "파일";`에 닿아요. 이 줄이 없으면 `undefined`를 돌려줘요.
+  - `return`을 만나면 함수가 바로 끝나므로, `else if` 대신 `if`를 세 번 써도 같은 결과예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

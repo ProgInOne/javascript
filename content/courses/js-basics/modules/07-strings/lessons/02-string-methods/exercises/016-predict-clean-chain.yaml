@@ -1,0 +1,62 @@
+id: js-basics.strings.string-methods.predict-clean-chain
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.str.case-trim, weight: 1 }
+  - { id: js.str.split-join, weight: 0.5 }
+  - { id: js.str.immutability, weight: 0.3 }
+tags: [trim, tolowercase, split, join, immutability, chaining, trace]
+estimatedSeconds: 180
+prompt: |
+  모임 참가자 이름을 쉼표로 받아 정리하는 코드예요. 실행하면 콘솔에 무엇이 출력될까요? 다섯 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    let raw = " Kim,LEE, Park ";
+    raw.trim();
+    console.log(raw.length);
+    const names = raw.trim().toLowerCase().split(",");
+    console.log(names.length);
+    console.log(names.join());
+    console.log(names.join("/"));
+    console.log(names[2].length);
+  answerKind: console
+  misconceptionByAnswer:
+    "13\n3\nkim,lee, park\nkim/lee/ park\n5": js.mc.string-method-mutates
+    "15\n3\nkimlee park\nkim/lee/ park\n5": js.mc.join-default-no-separator
+    "15\n3\nkim,lee,park\nkim/lee/park\n4": js.mc.trim-removes-all-spaces
+hints:
+  - 2번 줄의 결과는 어디에 담겼나요? 그렇다면 3번 줄의 `raw`는 어떤 문자열일까요?
+  - 4번 줄은 왼쪽부터 차례로 실행돼요. `trim`이 지우는 공백과 남기는 공백을 구별하고, `split(",")`이 어디서 자르는지 따라가 보세요.
+  - 구분자 없이 부른 `join()`은 무엇으로 이을까요? 마지막 조각에 남은 공백도 글자 수에 들어가요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  15
+  3
+  kim,lee, park
+  kim/lee/ park
+  5
+  ```
+
+  한 줄씩 따라가 볼게요.
+
+  | 단계 | 값 |
+  |---|---|
+  | `raw` | `" Kim,LEE, Park "` (15글자) |
+  | `raw.trim()` | `"Kim,LEE, Park"` |
+  | `.toLowerCase()` | `"kim,lee, park"` |
+  | `.split(",")` | 조각 `"kim"`, `"lee"`, `" park"` |
+
+  - **2~3번 줄**: `raw.trim();`의 결과는 아무 데도 담기지 않아 버려져요. `raw`는 그대로라 길이는 앞뒤 공백을 포함한 15예요.
+  - **4번 줄**: 메서드는 왼쪽부터 차례로 실행되고, 마지막 `split`이 조각 3개의 목록을 만들어요. `trim`은 문자열 전체의 앞뒤만 정리해서 `Park` 앞의 공백(쉼표 뒤)은 남아요.
+  - **6번 줄**: `join()`은 구분자를 생략하면 쉼표로 이어서 `kim,lee, park`이에요.
+  - **7번 줄**: `/`로 이으면 `kim/lee/ park`이에요. 세 번째 조각 앞의 공백이 그대로 보여요.
+  - **8번 줄**: `names[2]`는 `" park"`라 공백을 포함해 5글자예요.
+
+  조각마다 공백까지 정리하려면 각 조각에 `trim()`을 써야 해요. 배열의 조각을 한꺼번에 다루는 방법은 모듈 8에서 배워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

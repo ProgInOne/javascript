@@ -1,0 +1,17 @@
+id: js-basics.strings.string-methods
+title: 문자열 메서드
+summary: includes·indexOf로 찾고, slice로 자르고, toUpperCase·toLowerCase·trim으로 다듬고, split·join으로 나누고 합치는 문자열 메서드와, 메서드가 원래 문자열을 바꾸지 않고 새 문자열을 돌려준다는 원칙을 배웁니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 16, practice: 32 }
+concepts:
+  primary: [js.str.search, js.str.slice, js.str.case-trim, js.str.split-join]
+  practiced: [js.str.index-length, js.str.immutability, js.control.if]
+  reviewed: [js.str.template-literal, js.conv.truthy-falsy, js.loops.accumulator-pattern]
+objectives:
+  - includes·startsWith·endsWith·indexOf로 글자가 있는지와 위치를 찾고, indexOf가 못 찾으면 -1을 돌려준다는 것을 조건에 맞게 쓸 수 있다.
+  - slice(시작, 끝)이 끝 인덱스 바로 앞까지 자른다는 것을 알고, 음수 위치를 포함해 원하는 부분을 잘라 낼 수 있다.
+  - toUpperCase·toLowerCase·trim이 새 문자열을 돌려준다는 것을 알고, 결과를 변수에 담아 입력을 정리할 수 있다.
+  - split으로 문자열을 조각으로 나누고 join으로 다시 합치며, 여러 메서드를 이어 불러 문자열을 원하는 모양으로 바꿀 수 있다.
+practice:
+  targetCount: 22

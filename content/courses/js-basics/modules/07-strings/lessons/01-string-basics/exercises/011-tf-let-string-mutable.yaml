@@ -1,0 +1,27 @@
+id: js-basics.strings.string-basics.tf-let-string-mutable
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.str.immutability, weight: 1 }
+tags: [immutability, let]
+estimatedSeconds: 40
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: "`const`로 만든 문자열은 글자를 바꿀 수 없지만, `let`으로 만든 문자열은 `word[0] = \"A\"`처럼 인덱스로 글자를 바꿀 수 있다."
+  answer: false
+  misconceptionIfWrong: js.mc.string-index-assign
+hints:
+  - 레슨 세 번째 예제의 `grade`는 `let`과 `const` 중 무엇으로 만들었나요? 결과는 어땠나요?
+  - "`let`이 허락하는 것은 변수에 다른 값을 다시 대입하는 일이에요."
+  - 문자열의 글자를 바꿀 수 없는 것은 변수의 성질일까요, 문자열이라는 값의 성질일까요?
+explanation: |
+  정답은 **거짓**이에요.
+
+  문자열을 바꿀 수 없는 것은 변수가 아니라 **문자열이라는 값**의 성질이에요. 그래서 `let`으로 만든 변수에 담았어도 `word[0] = "A"`는 글자를 바꾸지 못해요. 엄격 모드에서는 `TypeError`가 나요.
+
+  `let`과 `const`의 차이는 변수에 **다시 대입**할 수 있느냐예요. `let`이면 `word = "A" + word[1];`처럼 새 문자열을 만들어 다시 대입할 수 있고, `const`면 그것도 안 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

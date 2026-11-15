@@ -1,0 +1,45 @@
+id: js-basics.strings.string-basics.mcq-last-index
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.str.index-length, weight: 1 }
+tags: [index, length]
+estimatedSeconds: 45
+prompt: |
+  `const word = "hello";`에서 마지막 글자 `o`를 꺼내는 식은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`word[4]`"
+    - id: b
+      text: "`word[5]`"
+      misconception: js.mc.last-index-is-length
+      rationale: "`word.length`는 5지만 인덱스는 0부터라 마지막 인덱스는 4예요. `word[5]`는 범위 밖이라 `undefined`예요."
+    - id: c
+      text: "`word.length - 1`"
+      rationale: 이 식의 값은 마지막 글자의 인덱스인 숫자 4예요. 글자를 꺼내려면 이 번호를 대괄호에 넣어야 해요.
+    - id: d
+      text: "`word[-1]`"
+      rationale: 대괄호 인덱스에 음수를 쓰면 뒤에서 세지 않아요. 그런 칸은 없어서 `undefined`예요.
+  correct: a
+misconceptions: [js.mc.last-index-is-length, js.mc.index-starts-at-one]
+hints:
+  - "`hello`의 각 글자 아래에 0부터 번호를 적어 보세요."
+  - 글자가 5개일 때 번호는 0부터 몇까지 붙나요?
+  - 마지막 인덱스는 글자 수보다 하나 작아요.
+explanation: |
+  정답은 `word[4]`예요.
+
+  | 인덱스 | 0 | 1 | 2 | 3 | 4 |
+  |---|---|---|---|---|---|
+  | 글자 | h | e | l | l | o |
+
+  인덱스는 0부터 시작하므로 5글자의 마지막 인덱스는 `5 - 1 = 4`예요. 글자 수가 바뀌어도 맞는 식은 `word[word.length - 1]`이에요.
+
+  - `word[5]`: `word.length`와 같은 번호예요. 마지막 글자 다음 칸이라 `undefined`가 나와요.
+  - `word.length - 1`: 마지막 글자의 **번호**인 숫자 4예요. 글자가 아니에요. `word[word.length - 1]`처럼 대괄호에 넣어야 글자를 꺼내요.
+  - `word[-1]`: 대괄호 안의 음수는 뒤에서부터 세는 뜻이 아니에요. `undefined`가 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

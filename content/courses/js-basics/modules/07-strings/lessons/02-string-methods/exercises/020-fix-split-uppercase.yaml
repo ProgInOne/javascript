@@ -1,0 +1,76 @@
+id: js-basics.strings.string-methods.fix-split-uppercase
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.str.split-join, weight: 1 }
+  - { id: js.str.case-trim, weight: 0.5 }
+tags: [split, join, touppercase, type-error, function, debugging]
+estimatedSeconds: 240
+prompt: |
+  영어 단어를 공백으로 띄어 쓴 문자열을 받아, 단어 사이를 ` | `로 바꾸고 모두 대문자로 만든 **문자열**을 돌려주는 함수 `shout(text)`예요. 호출하면 오류가 나요. 고쳐 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `shout("red green blue")` | `"RED \| GREEN \| BLUE"` |
+  | `shout("hi")` | `"HI"` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function shout(text) {
+            const words = text.split(" ");
+            const upper = words.toUpperCase();
+            return upper.join(" | ");
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function shout(text) {
+            const words = text.toUpperCase().split(" ");
+            return words.join(" | ");
+          }
+  entry: shout
+  bugDescription: "`shout(\"red green blue\")`를 부르면 `TypeError: words.toUpperCase is not a function` 오류가 나요."
+  checks:
+    - { kind: call, id: colors, args: ["red green blue"], expect: { equals: "RED | GREEN | BLUE" }, requirement: 대문자로 잇기 }
+    - { kind: call, id: one, args: ["hi"], expect: { equals: "HI" }, requirement: 대문자로 잇기 }
+    - kind: call
+      id: returns-string
+      visible: false
+      description: 목록이 아니라 문자열을 돌려줘야 합니다.
+      requirement: 문자열 돌려주기
+      args: ["a b"]
+      expect: { matches: { type: string } }
+    - kind: call
+      id: mixed
+      visible: false
+      description: 대소문자가 섞인 단어도 모두 대문자가 되어야 합니다.
+      requirement: 대문자로 잇기
+      args: ["Java Script Fun"]
+      expect: { equals: "JAVA | SCRIPT | FUN" }
+misconceptions: [js.mc.split-result-is-string]
+hints:
+  - 오류 메시지는 `words`에 `toUpperCase`가 없다고 알려 줘요. `split`이 돌려준 `words`는 문자열일까요?
+  - "`toUpperCase`는 문자열에만 있어요. 문자열일 때 부르거나, 다시 문자열로 만든 뒤 불러야 해요."
+  - 대문자로 바꾸는 일과 나누는 일의 순서를 바꿔 보세요. 마지막에 돌려주는 값이 문자열인지도 확인하세요.
+explanation: |
+  `split`은 조각들의 **목록(배열)** 을 돌려줘요. 목록에는 `toUpperCase`가 없어서 3번 줄에서 `TypeError: words.toUpperCase is not a function`이 났어요.
+
+  문자열일 때 먼저 대문자로 바꾸고 나눠요.
+
+  ```js
+  function shout(text) {
+    const words = text.toUpperCase().split(" ");
+    return words.join(" | ");
+  }
+  ```
+
+  - 먼저 나눈 뒤 `words.join(" | ").toUpperCase()`처럼 다시 문자열로 합친 다음 대문자로 바꿔도 같은 결과예요.
+  - `split(" ")`은 공백을 구분자로 써서 공백은 조각에 들어가지 않아요. `join(" | ")`이 새 구분자를 넣어요.
+  - `words`를 그대로 돌려주면 문자열이 아니라 목록이라서 체크에 실패해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

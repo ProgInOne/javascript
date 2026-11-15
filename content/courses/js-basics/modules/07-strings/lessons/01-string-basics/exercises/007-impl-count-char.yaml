@@ -1,0 +1,96 @@
+id: js-basics.strings.string-basics.impl-count-char
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.str.index-length, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.5 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [index, length, loop, count, function, write-code]
+estimatedSeconds: 300
+prompt: |
+  문장에 어떤 글자가 몇 번 나오는지 세는 함수 `countChar(text, target)`을 완성하세요.
+
+  - `text`는 문장, `target`은 셀 글자 한 개예요.
+  - `text`의 글자를 처음부터 끝까지 하나씩 보며 `target`과 같은 글자의 개수를 세서 **돌려주세요(return)**.
+  - 대문자와 소문자는 다른 글자로 세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `countChar("banana", "a")` | `3` |
+  | `countChar("hello world", "o")` | `2` |
+  | `countChar("abc", "z")` | `0` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function countChar(text, target) {
+            // 여기에 작성하세요
+          }
+  entry: countChar
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function countChar(text, target) {
+            let count = 0;
+            for (let i = 0; i < text.length; i++) {
+              if (text[i] === target) {
+                count++;
+              }
+            }
+            return count;
+          }
+  checks:
+    - { kind: call, id: banana, args: ["banana", "a"], expect: { equals: 3 }, requirement: 글자 세기 }
+    - { kind: call, id: space, args: ["hello world", "o"], expect: { equals: 2 }, requirement: 글자 세기 }
+    - { kind: call, id: none, args: ["abc", "z"], expect: { equals: 0 }, requirement: 없으면 0 }
+    - kind: call
+      id: first-and-last
+      visible: false
+      description: 첫 글자와 마지막 글자도 빠짐없이 세야 합니다.
+      requirement: 처음부터 끝까지
+      args: ["level", "l"]
+      expect: { equals: 2 }
+    - kind: call
+      id: case
+      visible: false
+      description: 대문자와 소문자는 다른 글자로 세야 합니다.
+      requirement: 글자 세기
+      args: ["Apple pie", "p"]
+      expect: { equals: 3 }
+    - kind: call
+      id: empty
+      visible: false
+      description: 빈 문자열에서는 0을 돌려줘야 합니다.
+      requirement: 없으면 0
+      args: ["", "a"]
+      expect: { equals: 0 }
+misconceptions: [js.mc.last-index-is-length, js.mc.accumulator-reset-in-loop]
+hints:
+  - 모듈 5의 누적 패턴을 떠올려 보세요. 개수를 모을 변수를 반복 앞에서 0으로 만들어요.
+  - 반복 변수 `i`로 `text[i]`를 하나씩 보면서 `target`과 같은지 `===`로 비교해요. `i`는 0부터 어디까지 가야 할까요?
+  - 반복이 모두 끝난 뒤에 센 개수를 돌려줘요. 반복 안에서 `return`하면 첫 글자만 보고 끝나요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function countChar(text, target) {
+    let count = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] === target) {
+        count++;
+      }
+    }
+    return count;
+  }
+  ```
+
+  - **범위**: `i`는 0부터 `text.length - 1`까지 가야 첫 글자와 마지막 글자를 모두 봐요. `"level"`의 `l`은 0번과 4번에 있어요. `i = 1`부터 시작하면 하나를 놓쳐요.
+  - **누적 변수**: `count`는 반복 바깥에서 0으로 시작해요. 반복 안에서 `let count = 0;`을 하면 매 회차 0으로 돌아가요.
+  - **돌려주기**: `return count;`는 반복이 끝난 뒤에 있어야 해요. 결과를 `console.log`로 출력만 하면 함수가 `undefined`를 돌려줘서 체크에 실패해요.
+  - `"Apple pie"`에서 `p`는 1, 2, 6번으로 3개예요. 대문자 `A`는 `a`와 다른 글자예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

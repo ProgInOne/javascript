@@ -1,0 +1,47 @@
+id: js-basics.strings.string-basics.predict-index-length
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.str.index-length, weight: 1 }
+tags: [index, length, undefined]
+estimatedSeconds: 80
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요? 네 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const code = "A-102";
+    console.log(code.length);
+    console.log(code[1]);
+    console.log(code[code.length - 2]);
+    console.log(code[5]);
+  answerKind: console
+  misconceptionByAnswer:
+    "5\nA\n1\n2": js.mc.index-starts-at-one
+    "5\n-\n0\n2": js.mc.last-index-is-length
+hints:
+  - "`A-102`의 글자 아래에 0부터 번호를 적어 보세요. `-`도 한 글자예요."
+  - "`code.length - 2`를 먼저 숫자로 계산한 뒤 그 번호의 글자를 찾아요."
+  - 인덱스는 `length - 1`까지만 있어요. 그보다 큰 번호를 읽으면 오류가 날까요, 다른 값이 나올까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  5
+  -
+  0
+  undefined
+  ```
+
+  | 인덱스 | 0 | 1 | 2 | 3 | 4 |
+  |---|---|---|---|---|---|
+  | 글자 | A | - | 1 | 0 | 2 |
+
+  - `code.length`: `-`도 한 글자라 5예요.
+  - `code[1]`: 0번 다음 칸, 두 번째 글자 `-`예요. 첫 글자 `A`는 `code[0]`이에요.
+  - `code[code.length - 2]`: `5 - 2 = 3`이라 `code[3]`, `0`이에요.
+  - `code[5]`: 인덱스는 4까지라 범위 밖이에요. 오류가 나지 않고 `undefined`가 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

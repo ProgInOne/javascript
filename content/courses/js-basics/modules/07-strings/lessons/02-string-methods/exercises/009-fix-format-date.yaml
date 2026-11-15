@@ -1,0 +1,70 @@
+id: js-basics.strings.string-methods.fix-format-date
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.str.slice, weight: 1 }
+  - { id: js.str.template-literal, weight: 0.3 }
+tags: [slice, end-exclusive, date, function, debugging]
+estimatedSeconds: 240
+prompt: |
+  `"20261115"`처럼 붙여 쓴 8자리 날짜를 `"2026.11.15"`로 바꾸는 함수 `formatDate(date)`예요. 결과가 이상하게 나와요. 고쳐서 바른 모양의 날짜를 돌려주게 하세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `formatDate("20261115")` | `"2026.11.15"` |
+  | `formatDate("19990301")` | `"1999.03.01"` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function formatDate(date) {
+            const year = date.slice(0, 3);
+            const month = date.slice(4, 5);
+            const day = date.slice(6, 7);
+            return `${year}.${month}.${day}`;
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function formatDate(date) {
+            const year = date.slice(0, 4);
+            const month = date.slice(4, 6);
+            const day = date.slice(6, 8);
+            return `${year}.${month}.${day}`;
+          }
+  entry: formatDate
+  bugDescription: "`formatDate(\"20261115\")`가 `\"2026.11.15\"`가 아니라 `\"202.1.1\"`을 돌려줘요."
+  checks:
+    - { kind: call, id: today, args: ["20261115"], expect: { equals: "2026.11.15" }, requirement: 날짜 모양 }
+    - { kind: call, id: march, args: ["19990301"], expect: { equals: "1999.03.01" }, requirement: 날짜 모양 }
+    - kind: call
+      id: december
+      visible: false
+      description: 연도 네 자리, 월 두 자리, 일 두 자리가 모두 빠짐없이 들어가야 합니다.
+      requirement: 날짜 모양
+      args: ["20001231"]
+      expect: { equals: "2000.12.31" }
+      misconceptionIfFail: js.mc.slice-end-inclusive
+misconceptions: [js.mc.slice-end-inclusive]
+hints:
+  - 결과 `202.1.1`을 보면 연도·월·일 모두 마지막 한 글자씩 빠졌어요. 세 줄에 같은 종류의 실수가 있어요.
+  - "`slice(0, 3)`은 몇 번부터 몇 번까지의 글자를 고를까요? 끝 인덱스의 글자는 들어가나요?"
+  - 각 부분이 차지하는 인덱스를 표로 적고, 그 부분의 **마지막 인덱스 바로 다음** 번호가 끝 값이 되게 하세요.
+explanation: |
+  세 `slice`의 끝 인덱스가 모두 하나씩 작아요. 끝 인덱스의 글자도 들어간다고 생각하고 쓴 코드예요.
+
+  | 부분 | 인덱스 | 버그 코드 | 고친 코드 |
+  |---|---|---|---|
+  | 연도 | 0~3 | `slice(0, 3)` → `202` | `slice(0, 4)` → `2026` |
+  | 월 | 4~5 | `slice(4, 5)` → `1` | `slice(4, 6)` → `11` |
+  | 일 | 6~7 | `slice(6, 7)` → `1` | `slice(6, 8)` → `15` |
+
+  `slice`는 끝 인덱스 **바로 앞까지** 자르므로 끝 값은 "마지막 인덱스 + 1"이에요. 잘린 글자 수는 `끝 - 시작`이라 연도는 `4 - 0 = 4`글자, 월과 일은 2글자가 돼요.
+
+  일은 마지막 부분이라 `date.slice(6)`처럼 끝을 생략해도 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

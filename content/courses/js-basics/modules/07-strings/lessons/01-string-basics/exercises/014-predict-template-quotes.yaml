@@ -1,0 +1,42 @@
+id: js-basics.strings.string-basics.predict-template-quotes
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.str.template-literal, weight: 1 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [template-literal, quotes, expression]
+estimatedSeconds: 90
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요? 세 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const team = "A";
+    const score = 7;
+    console.log('${team}팀: ${score}점');
+    console.log(`${team}팀: ${score + 3}점`);
+    console.log(`${team}팀: ` + score + 3 + "점");
+  answerKind: console
+  misconceptionByAnswer:
+    "A팀: 7점\nA팀: 10점\nA팀: 73점": js.mc.template-in-normal-quotes
+    "A팀: 7점\nA팀: 10점\nA팀: 10점": js.mc.template-in-normal-quotes
+hints:
+  - 세 줄의 문자열을 감싼 기호를 하나씩 확인하세요. 작은따옴표와 백틱은 모양이 비슷해요.
+  - "`${}` 안의 식은 먼저 계산된 뒤 그 자리에 들어가요."
+  - 마지막 줄은 템플릿 리터럴과 `+`가 섞여 있어요. `+`는 왼쪽부터 하나씩 계산하고, 한쪽이 문자열이면 이어 붙여요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  ${team}팀: ${score}점
+  A팀: 10점
+  A팀: 73점
+  ```
+
+  - 3번 줄은 **작은따옴표** 문자열이에요. `${team}`, `${score}`가 그냥 글자라서 적힌 그대로 나와요.
+  - 4번 줄은 백틱 문자열이라 `${team}`은 `A`, `${score + 3}`은 계산한 결과 `10`이 들어가요.
+  - 5번 줄은 `` `${team}팀: ` ``이 먼저 문자열 `"A팀: "`이 되고, 그 뒤 `+`가 왼쪽부터 계산돼요. `"A팀: " + 7`은 `"A팀: 7"`, 여기에 `+ 3`을 하면 `"A팀: 73"`이에요. 모듈 3에서 배운 대로 문자열과 `+`를 만나면 숫자도 이어 붙여져요. 덧셈을 먼저 하려면 4번 줄처럼 `${}` 안에 식을 넣는 편이 안전해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

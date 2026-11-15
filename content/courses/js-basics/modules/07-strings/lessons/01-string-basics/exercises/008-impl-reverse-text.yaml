@@ -1,0 +1,98 @@
+id: js-basics.strings.string-basics.impl-reverse-text
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.str.index-length, weight: 1 }
+  - { id: js.loops.for, weight: 0.5 }
+  - { id: js.loops.accumulator-pattern, weight: 0.5 }
+tags: [index, length, loop, reverse, boundary, function, write-code]
+estimatedSeconds: 420
+prompt: |
+  앞에서 읽어도 뒤에서 읽어도 같은 말(회문)을 찾는 게임을 만들고 있어요. 그 첫 단계로, 문자열을 거꾸로 뒤집은 **새 문자열**을 돌려주는 함수 `reverseText(text)`를 완성하세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `reverseText("abc")` | `"cba"` |
+  | `reverseText("기러기 토마토")` | `"토마토 기러기"` |
+
+  - 공백도 한 글자로 다뤄요.
+  - 빈 문자열을 뒤집으면 빈 문자열이에요.
+  - 다 만들었다면 `reverseText(word) === word`로 회문인지 확인해 보세요. `"level"`은 `true`, `"hello"`는 `false`가 나와야 해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function reverseText(text) {
+            // 여기에 작성하세요
+          }
+  entry: reverseText
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function reverseText(text) {
+            let result = "";
+            for (let i = text.length - 1; i >= 0; i--) {
+              result += text[i];
+            }
+            return result;
+          }
+  checks:
+    - { kind: call, id: abc, args: ["abc"], expect: { equals: "cba" }, requirement: 거꾸로 뒤집기 }
+    - { kind: call, id: words, args: ["기러기 토마토"], expect: { equals: "토마토 기러기" }, requirement: 거꾸로 뒤집기 }
+    - kind: call
+      id: first-char
+      visible: false
+      description: 첫 글자도 빠짐없이 맨 뒤로 가야 하고, 범위 밖 글자(undefined)가 섞이면 안 됩니다.
+      requirement: 처음부터 끝까지
+      args: ["ProgInOne"]
+      expect: { equals: "enOnIgorP" }
+    - kind: call
+      id: palindrome
+      visible: false
+      description: 회문은 뒤집어도 같아야 합니다.
+      requirement: 거꾸로 뒤집기
+      args: ["level"]
+      expect: { equals: "level" }
+    - kind: call
+      id: empty
+      visible: false
+      description: 빈 문자열을 뒤집으면 빈 문자열이어야 합니다.
+      requirement: 빈 문자열
+      args: [""]
+      expect: { equals: "" }
+    - kind: call
+      id: one
+      visible: false
+      description: 한 글자는 그대로여야 합니다.
+      requirement: 처음부터 끝까지
+      args: ["가"]
+      expect: { equals: "가" }
+misconceptions: [js.mc.last-index-is-length, js.mc.out-of-range-index-throws, js.mc.accumulator-reset-in-loop]
+hints:
+  - 결과를 모을 빈 문자열을 반복 앞에 만들고, 글자를 하나씩 이어 붙여요. 어느 글자부터 붙여야 거꾸로가 될까요?
+  - 반복 변수가 마지막 인덱스에서 시작해 0까지 줄어들게 해 보세요. 마지막 인덱스는 `length`와 어떤 관계였나요?
+  - 결과 앞에 `undefined`라는 글자가 붙으면 반복의 시작값을, 첫 글자가 빠지면 끝 조건을 다시 확인하세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function reverseText(text) {
+    let result = "";
+    for (let i = text.length - 1; i >= 0; i--) {
+      result += text[i];
+    }
+    return result;
+  }
+  ```
+
+  - **시작값**: 마지막 글자는 `text.length - 1`번이에요. `i = text.length`로 시작하면 첫 회차에 `text[text.length]`, 즉 `undefined`를 이어 붙여서 결과 앞에 `undefined`라는 글자가 생겨요. 오류가 나지 않아서 알아채기 어려워요.
+  - **끝 조건**: 0번 글자까지 붙여야 하므로 `i >= 0`이에요. `i > 0`이면 첫 글자가 빠져요.
+  - **누적**: 빈 문자열 `""`에서 시작해 `+=`로 이어 붙여요. 문자열은 바꿀 수 없으니, 매번 한 글자 더 긴 새 문자열이 `result`에 다시 대입되는 거예요.
+  - 빈 문자열이면 `i`가 -1에서 시작해 반복이 한 번도 돌지 않고 `""`를 돌려줘요.
+  - 앞에서부터 보면서 `result = text[i] + result;`처럼 글자를 **앞에** 붙여도 같은 결과예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

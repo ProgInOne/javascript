@@ -1,0 +1,170 @@
+id: js-basics.strings.string-basics.web-char-counter
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.str.template-literal, weight: 1 }
+  - { id: js.str.index-length, weight: 0.5 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [template-literal, length, if, boundary, web]
+estimatedSeconds: 420
+prompt: |
+  한 줄 소개를 쓰는 화면에 글자 수 표시를 완성하세요. 소개는 **20자까지** 쓸 수 있어요. 입력할 때마다 아래 규칙대로 표시가 바뀌어야 해요.
+
+  | 입력한 글자 수 | 표시할 글자 |
+  |---|---|
+  | 20자 이하 (예: 12자) | `12/20자 (8자 남음)` |
+  | 20자 초과 (예: 23자) | `23/20자 (3자 초과)` |
+
+  - 공백도 한 글자로 세요.
+  - 시작 코드에서 입력할 때마다 `{ }` 안의 코드가 실행되도록 이미 연결해 두었어요(화면을 다루는 방법은 모듈 10에서 배워요). 입력한 글자는 `text`에 들어 있어요.
+  - 표시한 자리에 코드를 써서 `message`에 보여 줄 글자를 담으세요. 템플릿 리터럴을 써 보세요.
+  - 나머지 코드는 그대로 두세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>한 줄 소개</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #intro { width: 100%; max-width: 360px; font-size: 16px; padding: 6px; }
+                #counter { color: #555; }
+              </style>
+            </head>
+            <body>
+              <h1>한 줄 소개</h1>
+              <label for="intro">나를 소개해 주세요</label>
+              <p><input id="intro" type="text" /></p>
+              <p id="counter">0/20자 (20자 남음)</p>
+              <script>
+                const introInput = document.querySelector("#intro");
+                const counter = document.querySelector("#counter");
+                const limit = 20;
+
+                // 입력할 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                introInput.addEventListener("input", () => {
+                  const text = introInput.value;
+                  let message = "";
+
+                  // 여기에 코드를 써서 message에 표시할 글자를 담으세요.
+
+                  counter.textContent = message;
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>한 줄 소개</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #intro { width: 100%; max-width: 360px; font-size: 16px; padding: 6px; }
+                #counter { color: #555; }
+              </style>
+            </head>
+            <body>
+              <h1>한 줄 소개</h1>
+              <label for="intro">나를 소개해 주세요</label>
+              <p><input id="intro" type="text" /></p>
+              <p id="counter">0/20자 (20자 남음)</p>
+              <script>
+                const introInput = document.querySelector("#intro");
+                const counter = document.querySelector("#counter");
+                const limit = 20;
+
+                // 입력할 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                introInput.addEventListener("input", () => {
+                  const text = introInput.value;
+                  let message = "";
+
+                  // 여기에 코드를 써서 message에 표시할 글자를 담으세요.
+                  if (text.length <= limit) {
+                    message = `${text.length}/${limit}자 (${limit - text.length}자 남음)`;
+                  } else {
+                    message = `${text.length}/${limit}자 (${text.length - limit}자 초과)`;
+                  }
+
+                  counter.textContent = message;
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: short
+      description: "\"반가워요\"(4자)를 입력하면 \"4/20자 (16자 남음)\"이 보여야 합니다."
+      requirement: 남은 글자 수
+      visible: true
+      steps:
+        - { action: type, selector: "#intro", value: "반가워요" }
+      expect:
+        - { selector: "#counter", text: { equals: "4/20자 (16자 남음)" } }
+    - kind: event
+      id: spaces
+      description: 공백도 한 글자로 세야 합니다.
+      requirement: 남은 글자 수
+      steps:
+        - { action: type, selector: "#intro", value: "저는 고양이를 좋아해요" }
+      expect:
+        - { selector: "#counter", text: { equals: "12/20자 (8자 남음)" } }
+    - kind: event
+      id: exactly-limit
+      description: 정확히 20자이면 초과가 아니라 "0자 남음"이어야 합니다.
+      requirement: 20자 경계
+      steps:
+        - { action: type, selector: "#intro", value: "12345678901234567890" }
+      expect:
+        - { selector: "#counter", text: { equals: "20/20자 (0자 남음)" } }
+    - kind: event
+      id: over
+      description: 20자를 넘으면 넘은 글자 수를 "초과"로 보여야 합니다.
+      requirement: 초과 글자 수
+      visible: true
+      steps:
+        - { action: type, selector: "#intro", value: "안녕하세요 저는 자바스크립트를 배우고 있어요" }
+      expect:
+        - { selector: "#counter", text: { equals: "24/20자 (4자 초과)" } }
+    - kind: event
+      id: back-to-empty
+      description: 글자를 모두 지우면 다시 "0/20자 (20자 남음)"이 보여야 합니다.
+      requirement: 남은 글자 수
+      steps:
+        - { action: type, selector: "#intro", value: "abc" }
+        - { action: type, selector: "#intro", value: "" }
+      expect:
+        - { selector: "#counter", text: { equals: "0/20자 (20자 남음)" } }
+misconceptions: [js.mc.template-in-normal-quotes, js.mc.template-missing-braces, js.mc.length-is-method]
+hints:
+  - 글자 수는 `text.length`로 구해요. 괄호를 붙이지 않는다는 것을 기억하세요.
+  - 두 경우로 나눠야 해요. 20자일 때는 어느 쪽에 들어가야 하는지 표를 다시 보세요.
+  - 남은 글자 수와 초과 글자 수는 각각 `limit`과 글자 수의 뺄셈으로 구할 수 있어요. 뺄셈의 순서가 경우마다 달라요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  if (text.length <= limit) {
+    message = `${text.length}/${limit}자 (${limit - text.length}자 남음)`;
+  } else {
+    message = `${text.length}/${limit}자 (${text.length - limit}자 초과)`;
+  }
+  ```
+
+  - **경계**: 20자는 쓸 수 있는 글자 수라서 "초과"가 아니에요. 조건을 `text.length < limit`로 쓰면 20자에서 `20/20자 (0자 초과)`가 나와요.
+  - **식 끼워 넣기**: `${limit - text.length}`처럼 `${}` 안에 계산식을 바로 써요. `+`로 이어 붙이면 따옴표와 괄호가 많아져서 실수하기 쉬워요.
+  - **공백**: `"저는 고양이를 좋아해요"`는 글자 10개와 공백 2개라 12자예요. `length`는 공백도 세요.
+  - `limit` 대신 20을 직접 써도 동작은 같지만, 나중에 제한이 바뀌면 여러 곳을 고쳐야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

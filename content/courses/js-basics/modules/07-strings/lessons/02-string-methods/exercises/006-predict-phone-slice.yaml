@@ -1,0 +1,49 @@
+id: js-basics.strings.string-methods.predict-phone-slice
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.str.slice, weight: 1 }
+tags: [slice, negative-index, phone]
+estimatedSeconds: 100
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요? 네 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const phone = "010-1234-5678";
+    console.log(phone.slice(0, 3));
+    console.log(phone.slice(4, 8));
+    console.log(phone.slice(-4));
+    console.log("[" + phone.slice(9, 4) + "]");
+  answerKind: console
+  misconceptionByAnswer:
+    "010-\n1234-\n5678\n[]": js.mc.slice-end-inclusive
+    "010\n1234\n\n[]": js.mc.slice-negative-invalid
+    "010\n1234-567\n5678\n[]": js.mc.slice-second-arg-length
+    "010\n1234\n5678\n[5678]": js.mc.slice-second-arg-length
+hints:
+  - "`010-1234-5678`의 글자 아래에 0부터 번호를 적어 보세요. `-`도 한 글자예요."
+  - 끝 인덱스의 글자는 들어가지 않아요. 음수는 뒤에서부터 센 위치예요.
+  - 마지막 줄은 끝 위치가 시작 위치보다 앞에 있어요. 두 위치 사이에 고를 글자가 있을까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  010
+  1234
+  5678
+  []
+  ```
+
+  | 인덱스 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+  |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+  | 글자 | 0 | 1 | 0 | - | 1 | 2 | 3 | 4 | - | 5 | 6 | 7 | 8 |
+
+  - `slice(0, 3)`: 0~2번이라 `010`이에요. 3번 `-`는 들어가지 않아요.
+  - `slice(4, 8)`: 4~7번이라 `1234`예요. 8번 `-`는 들어가지 않아요.
+  - `slice(-4)`: 뒤에서 4글자라 `5678`이에요. 음수도 오류가 아니에요.
+  - `slice(9, 4)`: 두 번째 값은 글자 수가 아니라 끝 위치예요. 끝(4)이 시작(9)보다 앞이면 고를 글자가 없어서 빈 문자열 `""`이에요. 그래서 대괄호 사이에 아무것도 없는 `[]`가 출력돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

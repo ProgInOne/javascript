@@ -1,0 +1,92 @@
+id: js-basics.strings.string-methods.impl-slug
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.str.split-join, weight: 1 }
+  - { id: js.str.case-trim, weight: 0.5 }
+tags: [split, join, trim, tolowercase, chaining, slug, function, write-code]
+estimatedSeconds: 420
+prompt: |
+  블로그 글 주소에 쓸 **슬러그**를 만드는 함수 `toSlug(title)`을 완성하세요. 슬러그는 제목을 주소에 쓰기 좋게 바꾼 문자열이에요.
+
+  - 앞뒤 공백은 없애요.
+  - 영문자는 모두 소문자로 바꿔요.
+  - 단어 사이의 공백은 하이픈(`-`)으로 바꿔요. 단어 사이에는 공백이 **하나씩만** 있다고 생각해도 돼요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `toSlug("Hello World")` | `"hello-world"` |
+  | `toSlug("  My First Post ")` | `"my-first-post"` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function toSlug(title) {
+            // 여기에 작성하세요
+          }
+  entry: toSlug
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function toSlug(title) {
+            return title.trim().toLowerCase().split(" ").join("-");
+          }
+  checks:
+    - { kind: call, id: hello, args: ["Hello World"], expect: { equals: "hello-world" }, requirement: 하이픈으로 잇기 }
+    - kind: call
+      id: spaces
+      args: ["  My First Post "]
+      expect: { equals: "my-first-post" }
+      requirement: 앞뒤 공백 없애기
+    - kind: call
+      id: one-word
+      visible: false
+      description: 한 단어 제목은 소문자로만 바꿔야 합니다(하이픈이 붙으면 안 돼요).
+      requirement: 하이픈으로 잇기
+      args: ["JavaScript"]
+      expect: { equals: "javascript" }
+    - kind: call
+      id: korean
+      visible: false
+      description: 한글과 숫자가 섞인 제목도 단어 사이를 하이픈으로 이어야 합니다.
+      requirement: 하이픈으로 잇기
+      args: [" 문자열 메서드 정리 2편"]
+      expect: { equals: "문자열-메서드-정리-2편" }
+    - kind: call
+      id: long
+      visible: false
+      description: 단어가 많아도 모든 공백이 하이픈으로 바뀌고 소문자여야 합니다.
+      requirement: 하이픈으로 잇기
+      args: ["How To Learn CSS Grid Fast "]
+      expect: { equals: "how-to-learn-css-grid-fast" }
+misconceptions: [js.mc.join-default-no-separator, js.mc.split-result-is-string, js.mc.string-method-mutates]
+hints:
+  - 할 일을 순서대로 적어 보세요. 공백 정리, 소문자, 공백을 하이픈으로 바꾸기.
+  - "\"공백을 하이픈으로 바꾸기\"는 공백에서 잘라 조각을 만든 뒤, 하이픈으로 다시 잇는 두 단계로 할 수 있어요."
+  - 메서드는 이어 부를 수 있어요. 앞뒤 공백을 먼저 지우지 않으면 맨 앞과 맨 뒤에 무엇이 생기는지 두 번째 예로 확인해 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function toSlug(title) {
+    return title.trim().toLowerCase().split(" ").join("-");
+  }
+  ```
+
+  | 단계 | `"  My First Post "`의 변화 |
+  |---|---|
+  | `trim()` | `"My First Post"` |
+  | `toLowerCase()` | `"my first post"` |
+  | `split(" ")` | 조각 `"my"`, `"first"`, `"post"` |
+  | `join("-")` | `"my-first-post"` |
+
+  - **순서**: `trim`을 빼먹으면 `split(" ")`이 앞뒤 공백 자리에 빈 조각을 만들어 `"--my-first-post-"`처럼 하이픈이 붙어요.
+  - **구분자**: `join()`처럼 비우면 쉼표로 이어서 `"my,first,post"`가 돼요. `join("-")`처럼 하이픈을 꼭 적어요.
+  - **문자열 메서드는 문자열에**: `toLowerCase()`는 `split` 전에 불러요. `split` 뒤에 부르면 목록에 부르는 셈이라 오류가 나요. `join` 뒤에 불러도 결과는 같아요.
+  - 한 단어 제목은 조각이 하나라서 `join("-")`을 해도 하이픈이 붙지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

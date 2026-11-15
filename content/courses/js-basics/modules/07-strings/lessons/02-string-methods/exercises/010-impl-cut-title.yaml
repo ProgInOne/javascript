@@ -1,0 +1,79 @@
+id: js-basics.strings.string-methods.impl-cut-title
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.str.slice, weight: 1 }
+  - { id: js.str.index-length, weight: 0.5 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [slice, length, if, boundary, function, write-code]
+estimatedSeconds: 300
+prompt: |
+  뉴스 목록에서 긴 제목은 잘라서 보여 줘요. 제목과 최대 글자 수를 받는 함수 `cutTitle(title, max)`를 완성하세요.
+
+  - 제목이 `max`글자보다 **길면** 앞에서 `max`글자만 남기고 뒤에 `...`을 붙여 돌려줘요.
+  - 제목이 `max`글자 이하이면 그대로 돌려줘요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `cutTitle("오늘의 날씨는 맑음", 5)` | `"오늘의 날..."` |
+  | `cutTitle("속보", 5)` | `"속보"` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function cutTitle(title, max) {
+            // 여기에 작성하세요
+          }
+  entry: cutTitle
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function cutTitle(title, max) {
+            if (title.length > max) {
+              return title.slice(0, max) + "...";
+            }
+            return title;
+          }
+  checks:
+    - { kind: call, id: long, args: ["오늘의 날씨는 맑음", 5], expect: { equals: "오늘의 날..." }, requirement: 긴 제목 자르기 }
+    - { kind: call, id: short, args: ["속보", 5], expect: { equals: "속보" }, requirement: 짧은 제목은 그대로 }
+    - kind: call
+      id: exact
+      visible: false
+      description: 제목이 정확히 max글자이면 자르지 않고 그대로 돌려줘야 합니다.
+      requirement: 짧은 제목은 그대로
+      args: ["JS 공부", 5]
+      expect: { equals: "JS 공부" }
+    - kind: call
+      id: other-max
+      visible: false
+      description: max가 달라도 앞에서 max글자만 남겨야 합니다(끝 위치의 글자는 들어가지 않아요).
+      requirement: 긴 제목 자르기
+      args: ["JavaScript Basics", 10]
+      expect: { equals: "JavaScript..." }
+misconceptions: [js.mc.slice-end-inclusive]
+hints:
+  - 먼저 제목의 글자 수와 `max`를 비교해 두 경우로 나눠요.
+  - 앞에서 `max`글자를 고르려면 `slice`의 시작과 끝을 몇으로 해야 할까요? 끝 위치의 글자는 들어가지 않아요.
+  - 정확히 `max`글자인 제목은 "길다"에 들어갈까요? 비교 연산자를 고를 때 이 경우를 따져 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function cutTitle(title, max) {
+    if (title.length > max) {
+      return title.slice(0, max) + "...";
+    }
+    return title;
+  }
+  ```
+
+  - **앞에서 max글자**: `slice(0, max)`는 0번부터 `max` 바로 앞까지라 정확히 `max`글자예요. `slice(0, max - 1)`이면 한 글자가 모자라요.
+  - **경계**: 정확히 `max`글자인 제목은 자를 필요가 없어서 조건은 `>`예요. `>=`로 쓰면 `"JS 공부"`(5글자)가 `"JS 공부..."`가 돼요.
+  - `"오늘의 날씨는 맑음"`의 앞 5글자는 공백을 포함한 `오늘의 날`이에요. 공백도 한 글자로 세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,48 @@
+id: js-basics.strings.string-methods.mcq-split-count
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.str.split-join, weight: 1 }
+tags: [split, length, array]
+estimatedSeconds: 60
+prompt: |
+  다음 코드를 실행하면 무엇이 출력되나요?
+
+  ```js
+  const menu = "김밥,라면,떡볶이,순대";
+  const items = menu.split(",");
+  console.log(items.length);
+  ```
+spec:
+  options:
+    - id: a
+      text: "`4`"
+    - id: b
+      text: "`12`"
+      misconception: js.mc.split-result-is-string
+      rationale: 12는 원래 문자열 `menu`의 글자 수예요. `split`의 결과는 조각들의 목록이라 `length`는 조각 수예요.
+    - id: c
+      text: "`3`"
+      rationale: 쉼표는 3개지만, 쉼표 3개가 문자열을 네 조각으로 나눠요.
+    - id: d
+      text: "`1`"
+      misconception: js.mc.split-result-is-string
+      rationale: "`split`은 문자열 하나를 돌려주지 않고, 쉼표마다 잘라 여러 조각을 담은 목록을 만들어요."
+  correct: a
+misconceptions: [js.mc.split-result-is-string]
+hints:
+  - "`split(\",\")`은 쉼표가 있는 곳마다 문자열을 잘라요. 잘린 조각들은 어떤 모양으로 돌려받을까요?"
+  - 목록의 `length`는 글자 수일까요, 조각 수일까요?
+  - 쉼표의 개수와 조각의 개수는 같을까요? 막대기를 칼로 세 번 자르면 몇 토막이 될까요?
+explanation: |
+  정답은 `4`예요.
+
+  `split(",")`은 쉼표마다 문자열을 잘라 `"김밥"`, `"라면"`, `"떡볶이"`, `"순대"` 네 조각의 목록(배열)을 만들어요. 목록의 `length`는 **조각 수**라서 4예요.
+
+  - `12`: 원래 문자열 `menu`의 글자 수(쉼표 포함)예요. `items`는 문자열이 아니라 목록이에요.
+  - `3`: 쉼표의 개수예요. 쉼표 3개로 자르면 조각은 하나 더 많은 4개예요.
+  - `1`: `split`은 문자열 하나를 돌려주는 것이 아니라 조각 여러 개를 담은 목록을 만들어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

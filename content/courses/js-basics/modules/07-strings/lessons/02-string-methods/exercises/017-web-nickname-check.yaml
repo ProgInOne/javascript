@@ -1,0 +1,209 @@
+id: js-basics.strings.string-methods.web-nickname-check
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.str.case-trim, weight: 1 }
+  - { id: js.str.search, weight: 0.5 }
+  - { id: js.str.index-length, weight: 0.3 }
+  - { id: js.control.else-if, weight: 0.3 }
+tags: [trim, tolowercase, includes, length, validation, web]
+estimatedSeconds: 540
+prompt: |
+  회원 가입 화면의 닉네임 검사를 완성하세요. "확인" 버튼을 누르면 입력한 닉네임을 정리한 뒤, 아래 규칙을 **위에서부터 차례로** 검사해 처음 걸리는 메시지 하나를 보여 줘요.
+
+  1. 먼저 앞뒤 공백을 지운 닉네임으로 검사해요. 사용자가 실수로 넣은 앞뒤 공백은 문제가 아니에요.
+  1. 정리한 닉네임이 2글자보다 짧으면: `2글자 이상 입력해 주세요`
+  1. 10글자보다 길면: `10글자 이하로 입력해 주세요`
+  1. 가운데에 공백이 있으면: `닉네임에 공백을 넣을 수 없어요`
+  1. 대소문자와 관계없이 `admin`이 들어 있으면: `쓸 수 없는 단어가 들어 있어요`
+  1. 모두 통과하면: `코딩곰: 사용할 수 있어요`처럼 정리한 닉네임 뒤에 `: 사용할 수 있어요`
+
+  - 시작 코드에서 버튼을 누를 때마다 `{ }` 안의 코드가 실행되도록 이미 연결해 두었어요(화면을 다루는 방법은 모듈 10에서 배워요). 입력한 글자는 `input`에 들어 있어요.
+  - 표시한 자리에 코드를 써서 `message`에 보여 줄 글자를 담으세요. 나머지 코드는 그대로 두세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>닉네임 정하기</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #nick { font-size: 16px; padding: 6px; }
+                #result { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>닉네임 정하기</h1>
+              <label for="nick">닉네임</label>
+              <input id="nick" type="text" />
+              <button id="check" type="button">확인</button>
+              <p id="result"></p>
+              <script>
+                const nickInput = document.querySelector("#nick");
+                const checkButton = document.querySelector("#check");
+                const result = document.querySelector("#result");
+
+                // 버튼을 누를 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                checkButton.addEventListener("click", () => {
+                  const input = nickInput.value;
+                  let message = "";
+
+                  // 여기에 코드를 써서 message에 보여 줄 글자를 담으세요.
+
+                  result.textContent = message;
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>닉네임 정하기</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #nick { font-size: 16px; padding: 6px; }
+                #result { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>닉네임 정하기</h1>
+              <label for="nick">닉네임</label>
+              <input id="nick" type="text" />
+              <button id="check" type="button">확인</button>
+              <p id="result"></p>
+              <script>
+                const nickInput = document.querySelector("#nick");
+                const checkButton = document.querySelector("#check");
+                const result = document.querySelector("#result");
+
+                // 버튼을 누를 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                checkButton.addEventListener("click", () => {
+                  const input = nickInput.value;
+                  let message = "";
+
+                  // 여기에 코드를 써서 message에 보여 줄 글자를 담으세요.
+                  const nick = input.trim();
+                  if (nick.length < 2) {
+                    message = "2글자 이상 입력해 주세요";
+                  } else if (nick.length > 10) {
+                    message = "10글자 이하로 입력해 주세요";
+                  } else if (nick.includes(" ")) {
+                    message = "닉네임에 공백을 넣을 수 없어요";
+                  } else if (nick.toLowerCase().includes("admin")) {
+                    message = "쓸 수 없는 단어가 들어 있어요";
+                  } else {
+                    message = `${nick}: 사용할 수 있어요`;
+                  }
+
+                  result.textContent = message;
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: ok
+      description: "\"코딩곰\"을 입력하고 확인하면 \"코딩곰: 사용할 수 있어요\"가 보여야 합니다."
+      requirement: 사용할 수 있는 닉네임
+      visible: true
+      steps:
+        - { action: type, selector: "#nick", value: "코딩곰" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "코딩곰: 사용할 수 있어요" } }
+    - kind: event
+      id: trimmed
+      description: 앞뒤 공백은 지운 닉네임으로 검사하고 보여 줘야 합니다.
+      requirement: 앞뒤 공백 정리
+      steps:
+        - { action: type, selector: "#nick", value: "   Bear99  " }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "Bear99: 사용할 수 있어요" } }
+    - kind: event
+      id: too-short-with-spaces
+      description: 공백을 지우고 나면 1글자인 닉네임은 짧다고 알려야 합니다.
+      requirement: 글자 수 검사
+      steps:
+        - { action: type, selector: "#nick", value: "  A  " }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "2글자 이상 입력해 주세요" } }
+    - kind: event
+      id: too-long
+      description: 정리한 닉네임이 10글자를 넘으면 길다고 알려야 합니다.
+      requirement: 글자 수 검사
+      steps:
+        - { action: type, selector: "#nick", value: "javascriptlover" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "10글자 이하로 입력해 주세요" } }
+    - kind: event
+      id: exactly-ten
+      description: 정확히 10글자는 사용할 수 있어야 합니다.
+      requirement: 글자 수 검사
+      steps:
+        - { action: type, selector: "#nick", value: "abcdefghij" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "abcdefghij: 사용할 수 있어요" } }
+    - kind: event
+      id: inner-space
+      description: 가운데에 공백이 있으면 공백을 넣을 수 없다고 알려야 합니다.
+      requirement: 가운데 공백 검사
+      visible: true
+      steps:
+        - { action: type, selector: "#nick", value: "코딩 곰" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "닉네임에 공백을 넣을 수 없어요" } }
+    - kind: event
+      id: admin-mixed-case
+      description: 대소문자와 관계없이 admin이 들어 있으면 쓸 수 없다고 알려야 합니다.
+      requirement: 금지 단어 검사
+      steps:
+        - { action: type, selector: "#nick", value: "SuperAdmin" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "쓸 수 없는 단어가 들어 있어요" } }
+misconceptions: [js.mc.string-method-mutates, js.mc.includes-ignores-case, js.mc.trim-removes-all-spaces]
+hints:
+  - 맨 먼저 앞뒤 공백을 지운 닉네임을 새 변수에 담아 두고, 그 뒤의 모든 검사와 메시지에 그 변수를 쓰세요.
+  - 규칙을 위에서부터 차례로 검사하고 처음 걸린 것 하나만 보여 주려면 `if`·`else if`·`else`를 이어 써요. 정확히 10글자는 통과해야 해요.
+  - "`admin` 검사는 대소문자가 섞여 들어와도 찾아야 해요. 찾기 메서드는 대소문자를 구별하니, 비교하기 전에 무엇을 맞춰야 할까요?"
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const nick = input.trim();
+  if (nick.length < 2) {
+    message = "2글자 이상 입력해 주세요";
+  } else if (nick.length > 10) {
+    message = "10글자 이하로 입력해 주세요";
+  } else if (nick.includes(" ")) {
+    message = "닉네임에 공백을 넣을 수 없어요";
+  } else if (nick.toLowerCase().includes("admin")) {
+    message = "쓸 수 없는 단어가 들어 있어요";
+  } else {
+    message = `${nick}: 사용할 수 있어요`;
+  }
+  ```
+
+  - **정리한 값 담기**: `input.trim();`만 쓰면 결과가 버려져요. `const nick = input.trim();`처럼 담아 두고 모든 검사에 써요. 그래서 `"   Bear99  "`는 6글자로 검사되고 메시지에도 공백 없이 나와요.
+  - **순서**: 공백이 있는지 검사하기 전에 `trim`을 해야 앞뒤 공백 때문에 "공백을 넣을 수 없어요"가 잘못 나오지 않아요. `trim`은 가운데 공백은 지우지 않으므로 `"코딩 곰"`은 공백 검사에 걸려요.
+  - **경계**: "10글자보다 길면"이라서 조건은 `> 10`이에요. 정확히 10글자는 통과해요.
+  - **대소문자 무시**: `includes`는 대소문자를 구별하므로 `"SuperAdmin".includes("admin")`은 `false`예요. 소문자로 맞춘 뒤 찾아요. 이때 화면에 보여 줄 닉네임은 바꾸지 않도록 검사할 때만 `toLowerCase()`를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

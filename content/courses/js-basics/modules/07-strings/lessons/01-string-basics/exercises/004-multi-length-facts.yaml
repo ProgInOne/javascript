@@ -1,0 +1,51 @@
+id: js-basics.strings.string-basics.multi-length-facts
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.str.index-length, weight: 1 }
+tags: [length, index, space, type-error]
+estimatedSeconds: 120
+prompt: |
+  `const msg = " hi! ";`일 때(앞뒤에 공백이 하나씩 있어요), 맞는 설명을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`msg.length`는 5다"
+      missedMisconception: js.mc.last-index-is-length
+    - id: b
+      text: "`msg[0]`은 공백 한 글자인 `\" \"`이다"
+      missedMisconception: js.mc.index-starts-at-one
+    - id: c
+      text: "`msg[msg.length - 1]`은 공백 한 글자인 `\" \"`이다"
+    - id: d
+      text: "`msg.length()`를 실행하면 5가 나온다"
+      misconception: js.mc.length-is-method
+      rationale: "`length`는 숫자 값이라 부를 수 없어요. `TypeError: msg.length is not a function`이 나요."
+    - id: e
+      text: "`msg[msg.length]`는 `!`이다"
+      misconception: js.mc.last-index-is-length
+      rationale: "`msg[5]`는 범위 밖이라 `undefined`예요. `!`는 `msg[3]`이에요."
+    - id: f
+      text: 글자 수를 셀 때 공백은 빼고 세므로 `msg.length`는 3이다
+      rationale: 공백도 한 글자로 세요. 공백 2개와 `h`, `i`, `!`로 5글자예요.
+  correct: [a, b, c]
+misconceptions: [js.mc.length-is-method, js.mc.last-index-is-length]
+hints:
+  - "`msg`의 칸을 그려 보세요. 공백도 칸 하나를 차지해요."
+  - 칸이 5개라면 인덱스는 0부터 몇까지예요? 그 범위 밖의 번호를 읽으면 무엇이 나올까요?
+  - "`length`는 문자열이 가진 숫자 값이에요. 숫자 뒤에 `()`를 붙여 부를 수 있을까요?"
+explanation: |
+  정답은 "`msg.length`는 5다", "`msg[0]`은 공백", "`msg[msg.length - 1]`은 공백" 세 가지예요.
+
+  | 인덱스 | 0 | 1 | 2 | 3 | 4 |
+  |---|---|---|---|---|---|
+  | 글자 | (공백) | h | i | ! | (공백) |
+
+  - 공백도 한 글자로 세서 `length`는 5예요. 3이라는 설명은 틀렸어요.
+  - 첫 칸 `msg[0]`과 마지막 칸 `msg[4]`(`msg.length - 1`)는 둘 다 공백이에요.
+  - `msg.length()`: `length`는 괄호 없이 읽는 숫자 값이에요. 괄호를 붙이면 숫자를 함수처럼 부르게 되어 `TypeError: msg.length is not a function`이 나요.
+  - `msg[msg.length]`: `msg[5]`는 마지막 칸 다음이라 `undefined`예요. `!`는 `msg[3]`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

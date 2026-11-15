@@ -1,0 +1,56 @@
+id: js-basics.strings.string-basics.find-bug-loop-boundary
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.str.index-length, weight: 1 }
+  - { id: js.loops.for, weight: 0.5 }
+tags: [index, length, loop, off-by-one, debugging]
+estimatedSeconds: 110
+prompt: |
+  비밀번호를 한 글자씩 세로로 보여 주는 프로그램이에요. 오류는 나지 않는데 결과가 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const password = "ab12";
+    console.log("글자 수: " + password.length);
+    for (let i = 0; i <= password.length; i++) {
+      console.log(password[i]);
+    }
+  bugLines: [3]
+  symptom: "`a`, `b`, `1`, `2` 다음에 `undefined`가 한 줄 더 나와요."
+  symptomCheck:
+    console: ["글자 수: 4", "a", "b", "1", "2", "undefined"]
+  fixedCode: |-
+    const password = "ab12";
+    console.log("글자 수: " + password.length);
+    for (let i = 0; i < password.length; i++) {
+      console.log(password[i]);
+    }
+  causeOptions:
+    - id: c1
+      text: 조건이 i <= password.length라서 i가 4일 때도 반복하고, password[4]는 범위 밖이라 undefined다
+      correct: true
+    - id: c2
+      text: i가 0부터 시작해서 첫 글자 앞의 빈칸을 읽었다
+      misconception: js.mc.index-starts-at-one
+    - id: c3
+      text: password.length가 글자 수보다 1 크게 나와서 반복이 한 번 더 돌았다
+    - id: c4
+      text: console.log는 문자열의 글자를 출력하면 마지막에 undefined를 한 번 덧붙인다
+hints:
+  - 반복 변수 `i`가 거치는 값을 0부터 마지막까지 적어 보세요.
+  - "`password`의 인덱스는 0부터 몇까지 있나요? 2번 줄이 출력한 글자 수와 비교해 보세요."
+  - "`i`가 마지막 값일 때 `password[i]`는 범위 안인가요?"
+explanation: |
+  원인은 **3번 줄**의 조건이에요.
+
+  `"ab12"`는 4글자라 인덱스는 0~3이에요. 그런데 조건이 `i <= password.length`(`i <= 4`)라서 `i`가 4일 때도 본문을 실행해요. `password[4]`는 범위 밖이라 오류 없이 `undefined`가 출력돼요.
+
+  글자를 하나씩 볼 때는 `i < password.length`로 써요. 마지막 인덱스가 `length - 1`이기 때문이에요.
+
+  - 0부터 시작한 것은 맞아요. 첫 글자가 `password[0]`이에요. 첫 줄에 `a`가 제대로 나왔어요.
+  - `password.length`는 정확히 4예요. 2번 줄의 출력 `글자 수: 4`가 보여 줘요. 문제는 그 값을 쓰는 비교 연산자예요.
+  - `console.log`는 받은 값만 출력해요. `undefined`는 `password[4]`의 값이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

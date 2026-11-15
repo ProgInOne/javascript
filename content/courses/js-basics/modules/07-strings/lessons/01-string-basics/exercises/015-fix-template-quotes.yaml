@@ -1,0 +1,62 @@
+id: js-basics.strings.string-basics.fix-template-quotes
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.str.template-literal, weight: 1 }
+tags: [template-literal, quotes, debugging]
+estimatedSeconds: 150
+prompt: |
+  택배 도착 알림 문자를 만드는 프로그램이에요. 이름과 시간이 들어가야 하는데 이상한 글자가 그대로 나와요. 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  서준님, 택배가 오후 3시에 도착해요.
+  보관함 번호: 12번
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const name = "서준";
+          const hour = 3;
+          const box = 12;
+          console.log("${name}님, 택배가 오후 ${hour}시에 도착해요.");
+          console.log(`보관함 번호: $box번`);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const name = "서준";
+          const hour = 3;
+          const box = 12;
+          console.log(`${name}님, 택배가 오후 ${hour}시에 도착해요.`);
+          console.log(`보관함 번호: ${box}번`);
+  bugDescription: "`${name}님, 택배가 오후 ${hour}시에 도착해요.`와 `보관함 번호: $box번`이 글자 그대로 출력돼요."
+  checks:
+    - kind: console
+      id: output
+      description: 이름·시간·보관함 번호의 값이 들어간 두 줄이 출력되어야 합니다.
+      requirement: 값 끼워 넣기
+      expect:
+        lines: ["서준님, 택배가 오후 3시에 도착해요.", "보관함 번호: 12번"]
+misconceptions: [js.mc.template-in-normal-quotes, js.mc.template-missing-braces]
+hints:
+  - 버그가 두 줄에 하나씩 있어요. 두 줄의 문자열을 감싼 기호와 값을 넣는 자리의 모양을 비교해 보세요.
+  - "`${}`가 값으로 바뀌는 것은 어떤 기호로 감싼 문자열 안에서일까요?"
+  - 5번 줄은 감싼 기호는 맞아요. 값을 넣는 자리의 모양을 레슨의 예제와 비교해 보세요.
+explanation: |
+  버그는 두 개예요.
+
+  1. **4번 줄**: 큰따옴표 문자열이라 `${name}`, `${hour}`가 그냥 글자예요. 문자열 전체를 백틱으로 감싸요.
+  1. **5번 줄**: 백틱은 맞지만 `$box`에 중괄호가 없어요. `${box}`로 써야 값이 들어가요.
+
+  ```js
+  console.log(`${name}님, 택배가 오후 ${hour}시에 도착해요.`);
+  console.log(`보관함 번호: ${box}번`);
+  ```
+
+  `+`로 이어 붙여 `name + "님, 택배가 오후 " + hour + "시에 도착해요."`라고 써도 같은 결과지만, 템플릿 리터럴이 따옴표와 공백 실수가 적어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

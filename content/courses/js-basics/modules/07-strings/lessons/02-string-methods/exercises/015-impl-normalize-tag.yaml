@@ -1,0 +1,71 @@
+id: js-basics.strings.string-methods.impl-normalize-tag
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.str.case-trim, weight: 1 }
+tags: [trim, tolowercase, chaining, function, write-code]
+estimatedSeconds: 200
+prompt: |
+  사진에 태그를 달 때 사람마다 `"  JavaScript "`, `"javascript"`, `"JAVASCRIPT"`처럼 제각각 입력해요. 같은 태그로 모이도록 정리하는 함수 `normalizeTag(tag)`를 완성하세요.
+
+  - 앞뒤 공백을 지우고, 모두 소문자로 바꾼 뒤, 맨 앞에 `#`를 붙여 돌려줘요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `normalizeTag("  JavaScript ")` | `"#javascript"` |
+  | `normalizeTag("CSS")` | `"#css"` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function normalizeTag(tag) {
+            // 여기에 작성하세요
+          }
+  entry: normalizeTag
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function normalizeTag(tag) {
+            return "#" + tag.trim().toLowerCase();
+          }
+  checks:
+    - { kind: call, id: messy, args: ["  JavaScript "], expect: { equals: "#javascript" }, requirement: 태그 정리 }
+    - { kind: call, id: upper, args: ["CSS"], expect: { equals: "#css" }, requirement: 태그 정리 }
+    - kind: call
+      id: inner-space
+      visible: false
+      description: 글자 사이의 공백은 그대로 두고 앞뒤 공백만 지워야 합니다.
+      requirement: 태그 정리
+      args: [" Web Design  "]
+      expect: { equals: "#web design" }
+    - kind: call
+      id: korean
+      visible: false
+      description: 한글 태그도 앞뒤 공백을 지우고 #를 붙여야 합니다.
+      requirement: 태그 정리
+      args: ["  여행 "]
+      expect: { equals: "#여행" }
+misconceptions: [js.mc.string-method-mutates, js.mc.trim-removes-all-spaces]
+hints:
+  - 할 일이 세 가지예요. 공백 지우기, 소문자로 바꾸기, `#` 붙이기.
+  - 메서드는 새 문자열을 돌려주므로, 돌려받은 문자열에 바로 다음 메서드를 이어 부를 수 있어요.
+  - "`#`를 붙이는 것은 메서드가 아니라 문자열 이어 붙이기(`+`나 템플릿 리터럴)로 해요. 정리한 결과를 버리지 말고 돌려줘야 해요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function normalizeTag(tag) {
+    return "#" + tag.trim().toLowerCase();
+  }
+  ```
+
+  - `tag.trim()`이 앞뒤 공백을 지운 새 문자열을 돌려주고, 그 문자열의 `toLowerCase()`가 소문자로 바꾼 새 문자열을 돌려줘요.
+  - `tag.trim();`처럼 결과를 담지 않고 한 줄씩 부르면 `tag`는 그대로라서 공백과 대문자가 남아요.
+  - `trim`은 앞뒤 공백만 지워서 `" Web Design  "`은 `#web design`이 돼요.
+  - `` `#${tag.trim().toLowerCase()}` ``처럼 템플릿 리터럴로 써도 같아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

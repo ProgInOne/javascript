@@ -1,0 +1,47 @@
+id: js-basics.strings.string-methods.mcq-slice-range
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.str.slice, weight: 1 }
+tags: [slice, end-exclusive]
+estimatedSeconds: 50
+prompt: |
+  `"abcdefg".slice(2, 4)`의 결과는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`"cd"`'
+    - id: b
+      text: '`"cde"`'
+      misconception: js.mc.slice-end-inclusive
+      rationale: 끝 인덱스 4의 글자 `e`는 들어가지 않아요. `slice`는 끝 인덱스 바로 앞에서 멈춰요.
+    - id: c
+      text: '`"cdef"`'
+      misconception: js.mc.slice-second-arg-length
+      rationale: 두 번째 값 4는 글자 수가 아니라 끝 위치예요. 2부터 4글자를 원하면 `slice(2, 6)`이에요.
+    - id: d
+      text: '`"bcd"`'
+      misconception: js.mc.index-starts-at-one
+      rationale: 인덱스는 0부터라서 2번 글자는 `b`가 아니라 세 번째 글자 `c`예요.
+  correct: a
+misconceptions: [js.mc.slice-end-inclusive, js.mc.slice-second-arg-length]
+hints:
+  - "`abcdefg`의 각 글자 아래에 0부터 번호를 적어 보세요."
+  - 두 번째 값은 글자 수일까요, 위치일까요?
+  - 끝 인덱스의 글자는 결과에 들어갈까요? 잘린 글자 수는 `끝 - 시작`이에요.
+explanation: |
+  정답은 `"cd"`예요.
+
+  | 인덱스 | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+  |---|---|---|---|---|---|---|---|
+  | 글자 | a | b | c | d | e | f | g |
+
+  `slice(2, 4)`는 2번부터 4번 **바로 앞**까지, 즉 2번과 3번 글자예요. 잘린 글자 수는 `4 - 2 = 2`예요.
+
+  - `"cde"`: 끝 인덱스의 글자까지 넣으면 이렇게 돼요. 끝 인덱스는 "여기서 멈춤" 표시라 들어가지 않아요.
+  - `"cdef"`: 두 번째 값을 "4글자"로 읽으면 이렇게 돼요. 두 번째 값은 끝 위치예요.
+  - `"bcd"`: 첫 글자를 1번으로 세면 이렇게 돼요. 인덱스는 0부터예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

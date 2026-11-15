@@ -1402,3 +1402,151 @@
   remediation:
     lessonSection: js-basics.functions.callbacks-intro#pitfalls
     exercises: [js-basics.functions.callbacks-intro.predict-callback-order, js-basics.functions.callbacks-intro.multi-callback-facts]
+
+# ── 모듈 7. string-basics ──
+
+- id: js.mc.last-index-is-length
+  concept: js.str.index-length
+  title: 마지막 글자의 인덱스가 length라고 생각함
+  statement: 글자가 5개인 문자열의 마지막 글자는 str[5], 즉 str[str.length]로 읽는다고 생각한다.
+  reality: 인덱스는 0부터 세므로 글자가 5개면 인덱스는 0~4이고, 마지막 글자는 str[str.length - 1]이다. str[str.length]는 범위 밖이라 undefined다. 그래서 반복 조건을 i <= str.length로 쓰면 마지막 회차에 undefined가 나온다.
+  remediation:
+    lessonSection: js-basics.strings.string-basics#pitfalls
+    exercises: [js-basics.strings.string-basics.mcq-last-index, js-basics.strings.string-basics.find-bug-loop-boundary]
+
+- id: js.mc.index-starts-at-one
+  concept: js.str.index-length
+  title: 첫 글자의 인덱스가 1이라고 생각함
+  statement: 사람이 첫째, 둘째로 세듯이 문자열의 첫 글자는 str[1]로 읽는다고 생각한다.
+  reality: 인덱스는 "맨 앞에서 몇 칸 떨어져 있는가"라서 첫 글자는 0칸 떨어진 str[0]이다. str[1]은 두 번째 글자다.
+  remediation:
+    lessonSection: js-basics.strings.string-basics#pitfalls
+    exercises: [js-basics.strings.string-basics.predict-index-length, js-basics.strings.string-basics.mcq-last-index]
+
+- id: js.mc.out-of-range-index-throws
+  concept: js.str.index-length
+  title: 범위 밖 인덱스를 읽으면 오류가 난다고 생각함
+  statement: 글자가 3개인 문자열에서 str[10]을 읽으면 오류가 나서 프로그램이 멈춘다고 생각한다.
+  reality: 범위 밖 인덱스를 읽으면 오류 없이 undefined가 나온다. 오류가 나지 않으니 실수가 조용히 숨어 있다가 "undefined"라는 글자로 출력되거나 계산을 망친다.
+  remediation:
+    lessonSection: js-basics.strings.string-basics#pitfalls
+    exercises: [js-basics.strings.string-basics.tf-out-of-range, js-basics.strings.string-basics.predict-index-length]
+
+- id: js.mc.length-is-method
+  concept: js.str.index-length
+  title: length를 함수처럼 괄호를 붙여 부른다고 생각함
+  statement: 글자 수를 구할 때 str.length()처럼 괄호를 붙여야 한다고 생각한다.
+  reality: length는 문자열이 가진 값(속성)이라 괄호 없이 str.length로 읽는다. str.length()라고 쓰면 숫자를 함수처럼 부르게 되어 TypeError(str.length is not a function)가 난다. 반대로 toUpperCase() 같은 메서드는 괄호가 필요하다.
+  remediation:
+    lessonSection: js-basics.strings.string-basics#pitfalls
+    exercises: [js-basics.strings.string-basics.multi-length-facts]
+
+- id: js.mc.string-index-assign
+  concept: js.str.immutability
+  title: 인덱스에 대입하면 문자열의 글자가 바뀐다고 생각함
+  statement: let word = "cat"; word[0] = "b";를 실행하면 word가 "bat"이 된다고 생각한다. let으로 만든 변수라면 글자도 바꿀 수 있다고 생각하기도 한다.
+  reality: 문자열은 만든 뒤에 글자를 바꿀 수 없다(불변). 엄격 모드에서는 word[0] = "b"가 TypeError(Cannot assign to read only property '0' of string 'cat')를 내고, 엄격 모드가 아니면 오류 없이 무시되어 word는 그대로 "cat"이다. let은 변수에 다른 값을 다시 대입할 수 있다는 뜻이지 문자열 안의 글자를 바꿀 수 있다는 뜻이 아니다. 새 문자열을 만들어 다시 대입한다.
+  remediation:
+    lessonSection: js-basics.strings.string-basics#pitfalls
+    exercises: [js-basics.strings.string-basics.predict-index-assign, js-basics.strings.string-basics.tf-let-string-mutable, js-basics.strings.string-basics.fix-seat-code]
+
+- id: js.mc.template-in-normal-quotes
+  concept: js.str.template-literal
+  title: 따옴표 문자열 안에서도 ${...}가 값으로 바뀐다고 생각함
+  statement: console.log("안녕, ${name}")처럼 큰따옴표나 작은따옴표 문자열 안에 ${name}을 쓰면 name의 값이 들어간다고 생각한다.
+  reality: ${...}가 값으로 바뀌는 것은 백틱(`)으로 감싼 템플릿 리터럴 안에서뿐이다. 따옴표 문자열 안에서는 $, {, }도 그냥 글자라서 ${name}이 글자 그대로 출력된다.
+  remediation:
+    lessonSection: js-basics.strings.string-basics#pitfalls
+    exercises: [js-basics.strings.string-basics.predict-template-quotes, js-basics.strings.string-basics.fix-template-quotes]
+
+- id: js.mc.template-missing-braces
+  concept: js.str.template-literal
+  title: 템플릿 리터럴에서 중괄호 없이 $이름만 써도 된다고 생각함
+  statement: '백틱 문자열 안에 `합계: $total원`처럼 $ 뒤에 변수 이름만 쓰면 값이 들어간다고 생각한다.'
+  reality: 값을 끼워 넣으려면 반드시 ${ }로 감싸야 한다. $total처럼 중괄호가 없으면 $와 total은 그냥 글자다. 중괄호 안에는 변수뿐 아니라 price * qty 같은 식도 쓸 수 있다.
+  remediation:
+    lessonSection: js-basics.strings.string-basics#pitfalls
+    exercises: [js-basics.strings.string-basics.mcq-template-syntax, js-basics.strings.string-basics.parsons-receipt]
+
+# ── 모듈 7. string-methods ──
+
+- id: js.mc.indexof-as-boolean
+  concept: js.str.search
+  title: indexOf 결과를 참·거짓처럼 쓸 수 있다고 생각함
+  statement: indexOf는 찾으면 true, 못 찾으면 false나 0을 돌려준다고 생각해서 if (str.indexOf("@"))처럼 결과를 그대로 조건에 쓴다.
+  reality: indexOf는 찾은 위치(0 이상의 인덱스)를, 못 찾으면 -1을 돌려준다. -1은 truthy라서 못 찾았는데도 if 블록이 실행되고, 맨 앞(인덱스 0)에서 찾으면 0이 falsy라서 찾았는데도 실행되지 않는다. 있는지만 알고 싶으면 includes를 쓰거나 indexOf(...) !== -1로 비교한다.
+  remediation:
+    lessonSection: js-basics.strings.string-methods#pitfalls
+    exercises: [js-basics.strings.string-methods.mcq-indexof-not-found, js-basics.strings.string-methods.find-bug-indexof-if]
+
+- id: js.mc.includes-ignores-case
+  concept: js.str.search
+  title: 찾기 메서드가 대소문자를 구별하지 않는다고 생각함
+  statement: '"Hello World".includes("world")처럼 대소문자만 다른 글자도 찾아 준다고 생각한다.'
+  reality: includes·indexOf·startsWith·endsWith는 모두 대문자와 소문자를 다른 글자로 본다. 대소문자와 관계없이 찾으려면 양쪽을 toLowerCase()로 맞춘 뒤 찾는다.
+  remediation:
+    lessonSection: js-basics.strings.string-methods#pitfalls
+    exercises: [js-basics.strings.string-methods.predict-search-results]
+
+- id: js.mc.slice-end-inclusive
+  concept: js.str.slice
+  title: slice의 끝 인덱스 글자도 포함된다고 생각함
+  statement: '"abcdefg".slice(2, 4)가 인덱스 2, 3, 4의 글자인 "cde"를 돌려준다고 생각한다.'
+  reality: slice는 끝 인덱스 바로 앞까지만 자른다. slice(2, 4)는 인덱스 2와 3인 "cd"다. 그래서 끝 - 시작이 잘라 낸 글자 수가 된다.
+  remediation:
+    lessonSection: js-basics.strings.string-methods#pitfalls
+    exercises: [js-basics.strings.string-methods.mcq-slice-range, js-basics.strings.string-methods.multi-slice-world, js-basics.strings.string-methods.fix-format-date]
+
+- id: js.mc.slice-second-arg-length
+  concept: js.str.slice
+  title: slice의 두 번째 값이 잘라 낼 글자 수라고 생각함
+  statement: str.slice(2, 4)를 "인덱스 2부터 4글자"로 읽는다고 생각한다.
+  reality: 두 번째 값은 글자 수가 아니라 끝 위치(인덱스)다. 2부터 4글자를 원하면 slice(2, 2 + 4)처럼 끝 위치를 계산한다. 두 번째 값이 시작보다 작거나 같으면 빈 문자열이 나온다.
+  remediation:
+    lessonSection: js-basics.strings.string-methods#pitfalls
+    exercises: [js-basics.strings.string-methods.mcq-slice-range, js-basics.strings.string-methods.multi-slice-world]
+
+- id: js.mc.slice-negative-invalid
+  concept: js.str.slice
+  title: slice에 음수를 넣으면 오류나 빈 문자열이 된다고 생각함
+  statement: 인덱스는 0부터라서 slice(-4)처럼 음수를 넣으면 오류가 나거나 빈 문자열이 나온다고 생각한다.
+  reality: slice의 음수는 뒤에서부터 센 위치다. -1은 마지막 글자, slice(-4)는 뒤에서 4글자다. 길이가 달라도 끝부분을 자를 수 있어 편리하다. 단, str[-1]처럼 대괄호 인덱스에 음수를 쓰면 undefined다.
+  remediation:
+    lessonSection: js-basics.strings.string-methods#pitfalls
+    exercises: [js-basics.strings.string-methods.predict-phone-slice, js-basics.strings.string-methods.fill-last-four]
+
+- id: js.mc.string-method-mutates
+  concept: js.str.case-trim
+  title: 문자열 메서드가 원래 문자열을 바꾼다고 생각함
+  statement: name.toUpperCase();나 input.trim();만 실행하면 name과 input 안의 글자가 바뀐다고 생각한다.
+  reality: 문자열은 바꿀 수 없으므로 문자열 메서드는 모두 결과를 새 문자열로 돌려줄 뿐이다. 돌려받은 값을 name = name.toUpperCase();처럼 변수에 담거나 바로 써야 한다. 담지 않으면 결과는 버려진다.
+  remediation:
+    lessonSection: js-basics.strings.string-methods#pitfalls
+    exercises: [js-basics.strings.string-methods.tf-method-mutates, js-basics.strings.string-methods.fix-admin-login, js-basics.strings.string-methods.predict-clean-chain]
+
+- id: js.mc.trim-removes-all-spaces
+  concept: js.str.case-trim
+  title: trim이 가운데 공백까지 모두 지운다고 생각함
+  statement: '"  Hello   World  ".trim()이 공백을 모두 지운 "HelloWorld"가 된다고 생각한다.'
+  reality: trim은 앞과 뒤의 공백만 지운다. 글자 사이의 공백은 그대로라서 결과는 "Hello   World"다.
+  remediation:
+    lessonSection: js-basics.strings.string-methods#pitfalls
+    exercises: [js-basics.strings.string-methods.mcq-trim-inner]
+
+- id: js.mc.split-result-is-string
+  concept: js.str.split-join
+  title: split의 결과가 문자열이라고 생각함
+  statement: str.split(",")의 결과도 문자열이라서, 결과에 toUpperCase() 같은 문자열 메서드를 바로 쓸 수 있고 length는 글자 수라고 생각한다.
+  reality: split은 조각들을 담은 목록(배열)을 돌려준다. 결과의 length는 조각 수이고, 배열에는 toUpperCase가 없어 TypeError(... is not a function)가 난다. 조각 하나는 [0]처럼 인덱스로 꺼내 쓰고, 다시 문자열로 만들려면 join을 쓴다.
+  remediation:
+    lessonSection: js-basics.strings.string-methods#pitfalls
+    exercises: [js-basics.strings.string-methods.mcq-split-count, js-basics.strings.string-methods.fix-split-uppercase]
+
+- id: js.mc.join-default-no-separator
+  concept: js.str.split-join
+  title: join()이 구분자 없이 이어 붙인다고 생각함
+  statement: 목록.join()처럼 괄호를 비우면 조각을 사이에 아무것도 넣지 않고 이어 붙인다고 생각한다.
+  reality: join의 구분자를 생략하면 쉼표(,)로 잇는다. 아무것도 넣지 않고 이으려면 join("")처럼 빈 문자열을 구분자로 준다.
+  remediation:
+    lessonSection: js-basics.strings.string-methods#pitfalls
+    exercises: [js-basics.strings.string-methods.parsons-hashtags, js-basics.strings.string-methods.predict-clean-chain]

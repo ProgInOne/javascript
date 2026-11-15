@@ -1,0 +1,108 @@
+id: js-basics.strings.string-methods.impl-mask-name
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.str.slice, weight: 1 }
+  - { id: js.str.index-length, weight: 0.5 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [slice, length, mask, privacy, boundary, function, write-code]
+estimatedSeconds: 540
+prompt: |
+  당첨자 명단을 공개할 때는 개인정보를 지키려고 이름의 일부를 `*`로 가려요. 이름을 받아 가린 이름을 돌려주는 함수 `maskName(name)`을 완성하세요.
+
+  규칙은 다음과 같아요.
+
+  - **3글자 이상**: 첫 글자와 마지막 글자만 남기고, 가운데 글자는 **글자 수만큼** `*`로 바꿔요.
+  - **2글자**: 첫 글자만 남기고 두 번째 글자를 `*`로 바꿔요.
+  - **1글자**: 그대로 돌려줘요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `maskName("김민지")` | `"김*지"` |
+  | `maskName("남궁민수")` | `"남**수"` |
+  | `maskName("이준")` | `"이*"` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function maskName(name) {
+            // 여기에 작성하세요
+          }
+  entry: maskName
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function maskName(name) {
+            if (name.length <= 1) {
+              return name;
+            }
+            if (name.length === 2) {
+              return name.slice(0, 1) + "*";
+            }
+            let stars = "";
+            for (let i = 0; i < name.length - 2; i++) {
+              stars += "*";
+            }
+            return name.slice(0, 1) + stars + name.slice(-1);
+          }
+  checks:
+    - { kind: call, id: three, args: ["김민지"], expect: { equals: "김*지" }, requirement: 3글자 이상 }
+    - { kind: call, id: four, args: ["남궁민수"], expect: { equals: "남**수" }, requirement: 3글자 이상 }
+    - { kind: call, id: two, args: ["이준"], expect: { equals: "이*" }, requirement: 2글자 }
+    - kind: call
+      id: long
+      visible: false
+      description: 이름이 길어도 가운데 글자 수만큼 별표를 넣고 첫 글자와 마지막 글자를 남겨야 합니다.
+      requirement: 3글자 이상
+      args: ["Alexander"]
+      expect: { equals: "A*******r" }
+    - kind: call
+      id: one
+      visible: false
+      description: 1글자 이름은 그대로 돌려줘야 합니다.
+      requirement: 1글자
+      args: ["솔"]
+      expect: { equals: "솔" }
+    - kind: call
+      id: two-latin
+      visible: false
+      description: 2글자 이름은 마지막 글자를 남기지 않고 첫 글자와 별표 하나여야 합니다.
+      requirement: 2글자
+      args: ["Bo"]
+      expect: { equals: "B*" }
+misconceptions: [js.mc.slice-end-inclusive, js.mc.slice-negative-invalid]
+hints:
+  - 글자 수에 따라 세 경우로 나눠요. 경우마다 결과가 어떤 조각으로 이루어지는지 먼저 적어 보세요.
+  - 3글자 이상이면 결과는 "첫 글자 + 별표들 + 마지막 글자"예요. 별표는 몇 개가 필요할까요? 첫 글자와 마지막 글자는 `slice`(음수 포함)나 인덱스로 꺼낼 수 있어요.
+  - 별표 문자열은 반복으로 하나씩 이어 붙여 만들어요. 2글자 이름에 3글자 규칙을 그대로 쓰면 어떤 결과가 나오는지도 확인해 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function maskName(name) {
+    if (name.length <= 1) {
+      return name;
+    }
+    if (name.length === 2) {
+      return name.slice(0, 1) + "*";
+    }
+    let stars = "";
+    for (let i = 0; i < name.length - 2; i++) {
+      stars += "*";
+    }
+    return name.slice(0, 1) + stars + name.slice(-1);
+  }
+  ```
+
+  - **조각으로 나누기**: 3글자 이상은 첫 글자(`slice(0, 1)` 또는 `name[0]`) + 별표 + 마지막 글자(`slice(-1)` 또는 `name[name.length - 1]`)예요.
+  - **별표 개수**: 가운데 글자 수는 전체에서 첫 글자와 마지막 글자를 뺀 `name.length - 2`예요. 누적 패턴으로 그만큼 `"*"`를 이어 붙여요.
+  - **2글자 경계**: 3글자 규칙을 그대로 쓰면 별표가 0개라 `"이준"`이 그대로 나와 가려지지 않아요. 그래서 따로 처리해요.
+  - **1글자**: 가릴 글자가 없으니 그대로 돌려줘요.
+  - `slice(1, -1)`은 "첫 글자와 마지막 글자를 뺀 가운데"예요. 가운데 글자를 실제로 잘라 그 길이(`name.slice(1, -1).length`)만큼 별표를 만들어도 같은 결과예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

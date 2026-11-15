@@ -1,0 +1,54 @@
+id: js-basics.strings.string-methods.multi-slice-world
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.str.slice, weight: 1 }
+tags: [slice, negative-index, end-exclusive]
+estimatedSeconds: 140
+prompt: |
+  `const msg = "Hello World";`에서 `"World"`를 돌려주는 식을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`msg.slice(6)`"
+    - id: b
+      text: "`msg.slice(6, 11)`"
+      missedMisconception: js.mc.slice-end-inclusive
+    - id: c
+      text: "`msg.slice(-5)`"
+      missedMisconception: js.mc.slice-negative-invalid
+    - id: d
+      text: "`msg.slice(6, 10)`"
+      misconception: js.mc.slice-end-inclusive
+      rationale: 끝 인덱스 10의 글자 `d`는 들어가지 않아서 `"Worl"`이에요.
+    - id: e
+      text: "`msg.slice(6, 5)`"
+      misconception: js.mc.slice-second-arg-length
+      rationale: 두 번째 값은 글자 수가 아니라 끝 위치예요. 끝(5)이 시작(6)보다 앞이라 빈 문자열이에요.
+    - id: f
+      text: "`msg.slice(7)`"
+      misconception: js.mc.index-starts-at-one
+      rationale: "`W`는 7번째 글자지만 인덱스는 6이에요. 7부터 자르면 `\"orld\"`예요."
+  correct: [a, b, c]
+misconceptions: [js.mc.slice-end-inclusive, js.mc.slice-second-arg-length, js.mc.slice-negative-invalid]
+hints:
+  - "`Hello World`의 글자 아래에 0부터 번호를 적어 보세요. 공백도 한 칸이에요. `W`는 몇 번인가요?"
+  - 끝 인덱스의 글자는 들어가지 않아요. 마지막 글자 `d`까지 넣으려면 끝을 몇으로 해야 할까요? 끝을 생략하면 어떻게 될까요?
+  - 음수는 뒤에서부터 센 위치예요. 두 번째 값이 시작보다 작으면 고를 글자가 없어요.
+explanation: |
+  정답은 `msg.slice(6)`, `msg.slice(6, 11)`, `msg.slice(-5)` 세 가지예요.
+
+  | 인덱스 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+  |---|---|---|---|---|---|---|---|---|---|---|---|
+  | 글자 | H | e | l | l | o | (공백) | W | o | r | l | d |
+
+  - `slice(6)`: 끝을 생략하면 마지막까지라 `World`예요.
+  - `slice(6, 11)`: 11은 `msg.length`예요. 끝 인덱스 바로 앞인 10번 `d`까지 들어가서 `World`예요.
+  - `slice(-5)`: 뒤에서 5글자라 `World`예요. 길이가 11이라 `-5`는 6번과 같아요.
+  - `slice(6, 10)`: 10번 `d`가 빠진 `Worl`이에요.
+  - `slice(6, 5)`: 끝이 시작보다 앞이라 빈 문자열이에요. "6번부터 5글자"가 아니에요.
+  - `slice(7)`: `W`는 일곱 번째 글자지만 인덱스는 6이에요. 7부터면 `orld`예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

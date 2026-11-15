@@ -1,0 +1,42 @@
+id: js-basics.strings.string-methods.tf-method-mutates
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.str.case-trim, weight: 1 }
+  - { id: js.str.immutability, weight: 0.3 }
+tags: [touppercase, immutability, return]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: '`let code = "ab12";` 다음 줄에 `code.toUpperCase();`를 실행하면, 그 뒤로 `code`에는 `"AB12"`가 들어 있다.'
+  answer: false
+  misconceptionIfWrong: js.mc.string-method-mutates
+  requireReason: true
+  reasons:
+    - id: r1
+      text: toUpperCase는 대문자로 바꾼 새 문자열을 돌려줄 뿐이고, 돌려받은 값을 code에 다시 대입하지 않았다
+      correct: true
+    - id: r2
+      text: code를 let으로 만들었으므로 메서드가 code의 글자를 직접 바꿀 수 있다
+      misconception: js.mc.string-method-mutates
+    - id: r3
+      text: toUpperCase는 숫자가 섞인 문자열에는 동작하지 않아 오류가 난다
+    - id: r4
+      text: toUpperCase는 콘솔에 대문자를 출력하는 기능이라 값은 바뀌지 않는다
+hints:
+  - 앞 단원에서 배운 문자열의 성질을 떠올려 보세요. 문자열의 글자를 바꿀 수 있었나요?
+  - 메서드는 결과를 돌려줘요. 그 결과는 이 코드에서 어디에 담겼나요?
+  - 레슨 세 번째 예제에서 `nickname.trim();` 뒤의 길이를 다시 확인해 보세요.
+explanation: |
+  정답은 **거짓**이에요. 이유는 "toUpperCase는 대문자로 바꾼 새 문자열을 돌려줄 뿐이고, 돌려받은 값을 code에 다시 대입하지 않았다"예요.
+
+  문자열은 바꿀 수 없으므로, 문자열 메서드는 원래 문자열을 고치지 않고 결과를 새 문자열로 돌려줘요. `code.toUpperCase();`만 쓰면 돌려받은 `"AB12"`를 아무 데도 담지 않아서 버려지고, `code`는 그대로 `"ab12"`예요. 바꾸려면 `code = code.toUpperCase();`라고 써요.
+
+  - `let`이라 바꿀 수 있다는 이유: `let`은 다시 대입할 수 있다는 뜻일 뿐, 문자열 안의 글자를 바꾸게 해 주지 않아요.
+  - 숫자가 섞이면 오류라는 이유: 숫자와 기호는 대소문자가 없어서 그대로 두고, 영문자만 바꿔요. 오류는 나지 않아요.
+  - 콘솔에 출력한다는 이유: `toUpperCase`는 아무것도 출력하지 않아요. 결과를 **돌려줄** 뿐이라 출력하려면 `console.log(code.toUpperCase())`처럼 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

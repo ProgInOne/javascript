@@ -1,0 +1,55 @@
+id: js-basics.strings.string-methods.parsons-hashtags
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.str.split-join, weight: 1 }
+  - { id: js.str.case-trim, weight: 0.3 }
+tags: [split, join, tolowercase, parsons]
+estimatedSeconds: 160
+prompt: |
+  사용자가 쉼표로 입력한 관심사를 해시태그 한 줄로 바꾸는 프로그램이에요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  관심사 3개
+  #html #css #js
+  ```
+spec:
+  lines:
+    - { id: l1, code: 'const input = "HTML,CSS,JS";' }
+    - { id: l2, code: 'const tags = input.toLowerCase().split(",");' }
+    - { id: l3, code: 'console.log(`관심사 ${tags.length}개`);' }
+    - { id: l4, code: 'console.log("#" + tags.join(" #"));' }
+  distractors:
+    - { id: d1, code: 'console.log("#" + tags.join());', replaces: l4, misconception: js.mc.join-default-no-separator }
+    - { id: d2, code: 'console.log(`관심사 ${input.length}개`);', replaces: l3, misconception: js.mc.split-result-is-string }
+    - { id: d3, code: 'const tags = input.split(",").toLowerCase();', replaces: l2, misconception: js.mc.split-result-is-string }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 관심사 개수와 소문자 해시태그 한 줄이 차례로 출력되어야 합니다.
+      requirement: 해시태그 만들기
+      expect:
+        lines: ["관심사 3개", "#html #css #js"]
+misconceptions: [js.mc.join-default-no-separator, js.mc.split-result-is-string]
+hints:
+  - 입력 문자열을 만든 다음, 그것을 나눠 목록을 만들고, 목록을 써서 출력해요.
+  - 관심사 개수는 원래 문자열의 글자 수가 아니라 조각 수예요. 소문자로 바꾸는 일은 문자열일 때 해야 해요.
+  - 조각 사이에 `" #"`가 들어가야 해요. 구분자를 비운 `join()`은 무엇으로 이을까요?
+explanation: |
+  정답 순서는 다음과 같아요.
+
+  ```js
+  const input = "HTML,CSS,JS";
+  const tags = input.toLowerCase().split(",");
+  console.log(`관심사 ${tags.length}개`);
+  console.log("#" + tags.join(" #"));
+  ```
+
+  - `toLowerCase()`는 문자열 메서드라서 `split`하기 **전**, 문자열일 때 불러요. `input.split(",").toLowerCase()`는 목록에 문자열 메서드를 부르는 셈이라 `TypeError`가 나요.
+  - 개수는 목록의 `length`(3)예요. `input.length`는 글자 수 11이에요.
+  - `tags.join(" #")`은 `html #css #js`를 만들고, 맨 앞에 `#`를 하나 더 붙여요. `tags.join()`은 쉼표로 이어서 `#html,css,js`가 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

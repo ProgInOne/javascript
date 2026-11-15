@@ -1,0 +1,57 @@
+id: js-basics.strings.string-basics.fill-last-char
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.str.index-length, weight: 1 }
+tags: [index, length, last-char, function]
+estimatedSeconds: 90
+prompt: |
+  끝말잇기 게임에서 앞 사람이 말한 단어의 **마지막 글자**를 알려 주는 함수 `lastChar`를 완성하세요. 단어의 글자 수는 매번 달라요. 빈칸을 채워 아래처럼 출력되게 하세요.
+
+  ```text
+  끼
+  차
+  e
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    function lastChar(word) {
+      return word[{{blank:index}}];
+    }
+    console.log(lastChar("토끼"));
+    console.log(lastChar("기차"));
+    console.log(lastChar("apple"));
+  blanks:
+    - id: index
+      accept: ["word.length - 1"]
+      width: 16
+  checks:
+    - kind: console
+      id: output
+      description: 세 단어의 마지막 글자가 한 줄씩 출력되어야 합니다.
+      requirement: 마지막 글자 꺼내기
+      expect:
+        lines: ["끼", "차", "e"]
+misconceptions: [js.mc.last-index-is-length]
+hints:
+  - 단어마다 글자 수가 달라서 숫자 하나로는 세 단어를 모두 맞힐 수 없어요. 글자 수를 알려 주는 것을 써야 해요.
+  - "`토끼`는 2글자, `apple`은 5글자예요. 각각 마지막 글자의 인덱스는 몇인가요?"
+  - 마지막 인덱스는 글자 수와 어떤 관계인지 식으로 써 보세요.
+explanation: |
+  예시 정답은 `word.length - 1`이에요.
+
+  ```js
+  function lastChar(word) {
+    return word[word.length - 1];
+  }
+  ```
+
+  - 인덱스는 0부터라서 마지막 인덱스는 항상 글자 수보다 1 작아요. `"토끼"`는 `word[1]`, `"apple"`은 `word[4]`예요.
+  - `word.length`만 쓰면 마지막 글자 다음 칸이라 `undefined`가 세 번 출력돼요.
+  - `1`이나 `4`처럼 숫자를 직접 쓰면 그 길이의 단어에서만 맞아요. 길이가 다른 단어가 섞여 있어서 `length`로 계산해야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,37 @@
+id: js-basics.strings.string-basics.predict-index-assign
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.str.immutability, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [immutability, type-error, strict-mode]
+estimatedSeconds: 70
+prompt: |
+  사진 파일 이름의 첫 글자를 대문자로 바꾸려는 코드예요. 실행하면 오류가 날까요? 오류가 난다면 어떤 종류의 오류인가요?
+spec:
+  lang: js
+  code: |
+    let fileName = "photo.png";
+    fileName[0] = "P";
+    console.log(fileName);
+  answerKind: error
+  misconceptionByAnswer:
+    none: js.mc.string-index-assign
+    SyntaxError: js.mc.string-index-assign
+hints:
+  - "`let`으로 만든 변수에 다시 대입하는 것과, 문자열 **안의 글자 한 칸**에 대입하는 것은 같은 일일까요?"
+  - 문자열은 한번 만들면 글자를 바꿀 수 없어요. ProgInOne은 코드를 엄격 모드로 실행해요.
+  - 문법(괄호·따옴표)은 모두 맞아요. 값을 할 수 없는 방식으로 다루려 할 때 나는 오류의 종류를 떠올려 보세요.
+explanation: |
+  정답은 **오류가 난다, `TypeError`**예요.
+
+  문자열은 바꿀 수 없는 값이에요. 2번 줄은 문자열의 0번 칸에 대입하려 해서, 엄격 모드에서 `TypeError: Cannot assign to read only property '0' of string 'photo.png'`("읽기만 할 수 있는 칸에 대입할 수 없어요")가 나요. 3번 줄은 실행되지 않아요.
+
+  - 오류가 나지 않는다고 생각했다면: `let`은 변수에 **다른 값을 다시 대입**할 수 있다는 뜻이지, 문자열 안의 글자를 바꿀 수 있다는 뜻이 아니에요. 참고로 엄격 모드가 아닌 옛날 방식에서는 오류 없이 조용히 무시되고 `photo.png`가 그대로 출력돼요. 어느 쪽이든 `Photo.png`로 바뀌지는 않아요.
+  - `SyntaxError`라고 생각했다면: 대괄호와 대입의 모양은 문법에 맞아요. 실행해 보아야 알 수 있는 문제라 `TypeError`예요.
+
+  첫 글자를 바꾸려면 새 문자열을 만들어 대입해요. 다음 단원에서 배울 `slice`를 쓰면 `fileName = "P" + fileName.slice(1);`처럼 쓸 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
