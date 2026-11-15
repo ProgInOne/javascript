@@ -45,5 +45,6 @@ explanation: |
   - "case에는 문자열만 쓸 수 있다"를 고른 경우: case에는 숫자, 문자열 등 어떤 값이든 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

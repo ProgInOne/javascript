@@ -49,5 +49,6 @@ explanation: |
   `hasHomework`가 `false`라서 3번 줄만 건너뛰고, 4번과 5번 줄은 실행돼요. 들여쓰기 때문에 4번 줄도 조건에 묶인 것처럼 보여서 착각하기 쉬워요. 그래서 한 줄이라도 항상 중괄호를 쓰는 습관을 들여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -60,7 +60,7 @@ misconceptions: [js.mc.var-hoists-value]
 hints:
   - 출력하는 줄을 선언하는 줄보다 **위에** 써야 해요. 이 순서가 실험의 핵심이에요.
   - "`let`으로 선언하면 첫 줄에서 어떤 일이 생길까요? 이 실험에는 반드시 `var`가 필요해요."
-  - "첫 줄은 `\"선언 전:\"`과 `luckyNumber`를 쉼표로 나눠 출력하고, 둘째 줄은 `var luckyNumber = 7;`이에요."
+  - 출력하는 줄은 `"선언 전:"` 같은 글자와 변수를 쉼표로 나눠 console.log에 넣어요. 선언하는 줄은 `let` 자리에 `var`를 쓰는 것 말고는 평소와 같아요.
 explanation: |
   예시 정답은 다음과 같아요.
 
@@ -77,5 +77,6 @@ explanation: |
   이 동작을 알아 두면 오래된 코드를 읽을 때 도움이 돼요. 하지만 새 코드에서는 변수를 항상 쓰기 전에 선언하고, `let`과 `const`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

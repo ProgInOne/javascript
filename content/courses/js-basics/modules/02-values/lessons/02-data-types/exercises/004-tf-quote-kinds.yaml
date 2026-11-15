@@ -1,6 +1,6 @@
 id: js-basics.values.data-types.tf-quote-kinds
 type: true_false
-difficulty: 2
+difficulty: 1
 concepts:
   - { id: js.types.string, weight: 1 }
 tags: [string, quotes]
@@ -36,5 +36,6 @@ explanation: |
   두 따옴표는 글자 안에 다른 따옴표를 넣고 싶을 때 골라 써요. `'그가 "안녕"이라고 했어요'`처럼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

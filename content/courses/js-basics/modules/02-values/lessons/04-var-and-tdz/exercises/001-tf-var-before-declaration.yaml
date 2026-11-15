@@ -26,5 +26,6 @@ explanation: |
   "끌어올림(호이스팅)"은 **이름**에만 해당하고, 값은 선언 줄이 실행될 때 들어가요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: js-basics.values.data-types.impl-type-table
 type: implement_function
-difficulty: 4
+difficulty: 3
 concepts:
   - { id: js.types.typeof, weight: 1 }
   - { id: js.types.primitives, weight: 0.5 }
@@ -109,5 +109,6 @@ explanation: |
   결과를 직접 적은 `console.log("c: object");`도 출력은 같지만, typeof를 쓰면 값을 바꿔도 표가 저절로 맞게 나와요. 값이 이상하게 동작할 때 이런 표를 출력해 보는 것이 실무에서도 쓰는 디버깅 방법이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

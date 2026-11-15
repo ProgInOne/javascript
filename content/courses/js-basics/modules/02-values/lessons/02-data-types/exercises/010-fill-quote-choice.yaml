@@ -59,5 +59,6 @@ explanation: |
   백틱(`` ` ``)으로 감싸도 두 줄 모두 출력은 같아요. 백틱의 특별한 기능은 모듈 7에서 배워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

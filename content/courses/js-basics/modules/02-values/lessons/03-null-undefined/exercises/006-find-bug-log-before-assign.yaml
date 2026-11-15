@@ -55,5 +55,6 @@ explanation: |
   - "오류가 나서 지워졌다"를 고른 경우: 오류 메시지가 없었어요. `undefined`는 오류가 아니라 값이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -85,5 +85,6 @@ explanation: |
   `console.log("수학: 통과")`처럼 결과를 직접 써도 이 점수에서는 출력이 같지만, 그러면 점수가 바뀌었을 때 맞지 않아요. 시작 코드의 점수를 바꿔 실행해 보며 조건문이 제대로 판단하는지 확인해 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

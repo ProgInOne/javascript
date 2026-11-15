@@ -41,5 +41,6 @@ explanation: |
   `let scienceScore;`처럼 값 없이 만들어 `undefined`로 두는 방법도 있지만, "일부러 비워 두었다"는 뜻을 분명히 하려면 `null`을 직접 넣는 것이 관례예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

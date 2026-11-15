@@ -55,5 +55,6 @@ explanation: |
   `else` 뒤에는 조건을 쓰지 않아요. "앞의 조건이 거짓이면"이 곧 `else`의 뜻이에요. 키워드는 소문자로 써야 해요. `If`, `ELSE`처럼 쓰면 `SyntaxError`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

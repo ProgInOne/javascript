@@ -11,7 +11,7 @@ prompt: |
 spec:
   statement: "`let answer = \"부산\";`일 때 `if (answer = \"서울\") { ... }`는 `answer`가 `\"서울\"`인지 비교하므로, if 블록은 실행되지 않는다."
   answer: false
-  misconceptionIfWrong: js.mc.assign-in-condition
+  misconceptionIfWrong: js.mc.assign-as-compare
   requireReason: true
   reasons:
     - id: r1
@@ -19,7 +19,7 @@ spec:
       correct: true
     - id: r2
       text: "조건 안의 `=`는 비교로 바뀌어 동작하므로 \"부산\"과 \"서울\"이 다르다고 판단한다"
-      misconception: js.mc.assign-in-condition
+      misconception: js.mc.assign-as-compare
     - id: r3
       text: 조건 자리에 =를 쓰면 SyntaxError가 나서 프로그램이 실행되지 않는다
 hints:
@@ -43,5 +43,6 @@ explanation: |
   - "SyntaxError가 난다"를 고른 경우: 문법상 허용되는 코드라서 오류 없이 실행돼요. 그래서 더 찾기 어려운 버그예요. (`answer`를 `const`로 만들었다면 실행 중에 `TypeError`가 나요.)
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

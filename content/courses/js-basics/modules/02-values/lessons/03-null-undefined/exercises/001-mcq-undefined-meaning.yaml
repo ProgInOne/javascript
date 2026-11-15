@@ -27,7 +27,7 @@ spec:
       misconception: js.mc.empty-value-is-zero
       rationale: 값을 넣지 않은 변수에 0이 자동으로 들어가지는 않아요. 0이 들어 있다면 0이 출력돼요.
   correct: a
-misconceptions: [js.mc.undefined-is-error, js.mc.not-defined-is-undefined]
+misconceptions: [js.mc.undefined-is-error, js.mc.not-defined-is-undefined, js.mc.empty-value-is-zero]
 hints:
   - 1번 줄에서 `winner`를 만들 때 값을 넣었나요?
   - 출력에 `ReferenceError` 같은 오류 종류가 붙어 있나요?
@@ -42,5 +42,6 @@ explanation: |
   - "0이 들어 있다"를 고른 경우: 0이 자동으로 들어가지 않아요. `0`과 "값 없음"은 다른 것이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

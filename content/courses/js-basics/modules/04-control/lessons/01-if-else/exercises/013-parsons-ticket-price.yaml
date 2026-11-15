@@ -53,5 +53,6 @@ explanation: |
   `age`를 3, 30, 70으로 바꿔 실행해 보며 갈래마다 한 줄씩만 나오는지 확인해 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

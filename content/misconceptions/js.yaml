@@ -508,11 +508,12 @@
 - id: js.mc.assign-as-compare
   concept: js.ops.strict-equality
   title: 비교하려고 =를 씀
-  statement: 두 값이 같은지 알아보려고 score = 100처럼 =를 쓴다.
-  reality: =는 대입이라 score에 100을 넣고, 그 값 100이 식의 결과가 된다. 같은지 비교하려면 ===를 쓴다.
+  statement: 두 값이 같은지 알아보려고 score = 100처럼 =를 쓴다. if (password = "1234")처럼 조건 괄호 안에 쓰면 =도 비교로 동작한다고 생각하기도 한다.
+  reality: =는 어디에 쓰든 대입이라 score에 100을 넣고, 그 값 100이 식의 결과가 된다. 조건 자리에서도 원래 값을 덮어쓰고, 대입한 값의 참·거짓으로 판단하므로 빈 문자열이 아닌 문자열이나 0이 아닌 숫자를 대입하면 if 블록이 늘 실행된다. 같은지 비교하려면 ===를 쓴다.
+  diagnosticHint: 비교하려던 자리(조건 괄호 안 등)에 = 가 하나만 있는지 확인한다.
   remediation:
     lessonSection: js-basics.operators.comparison#pitfalls
-    exercises: [js-basics.operators.comparison.tf-assign-not-compare, js-basics.operators.comparison.fill-strict-operators]
+    exercises: [js-basics.operators.comparison.tf-assign-not-compare, js-basics.operators.comparison.fill-strict-operators, js-basics.control.if-else.tf-assign-in-condition, js-basics.control.if-else.fix-password-check]
 
 - id: js.mc.loose-equals-like-strict
   concept: js.ops.loose-equality
@@ -755,16 +756,6 @@
   remediation:
     lessonSection: js-basics.control.if-else#pitfalls
     exercises: [js-basics.control.if-else.mcq-false-condition-continues, js-basics.control.if-else.predict-if-else-coins]
-
-- id: js.mc.assign-in-condition
-  concept: js.control.if
-  title: if 조건에 =를 써도 비교된다고 생각함
-  statement: if (password = "1234")처럼 조건에 = 하나를 쓰면 password가 "1234"인지 비교한다고 생각한다.
-  reality: =는 대입이다. 조건 자리에서도 password에 "1234"를 넣어 버리고, 대입한 값("1234")으로 참·거짓을 판단한다. 빈 문자열이 아닌 문자열이나 0이 아닌 숫자를 대입하면 항상 참이 되어 if 블록이 늘 실행된다. 비교는 ===로 한다.
-  diagnosticHint: 조건 안에 = 가 하나만 있는지 확인한다.
-  remediation:
-    lessonSection: js-basics.control.if-else#pitfalls
-    exercises: [js-basics.control.if-else.tf-assign-in-condition, js-basics.control.if-else.fix-password-check]
 
 - id: js.mc.else-has-condition
   concept: js.control.if

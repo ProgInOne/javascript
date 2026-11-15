@@ -43,5 +43,6 @@ explanation: |
   다만 한 변수에 여러 자료형을 번갈아 넣으면 읽는 사람이 헷갈려요. 보통은 한 변수에 한 가지 자료형만 담아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

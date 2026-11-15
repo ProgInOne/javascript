@@ -48,5 +48,6 @@ explanation: |
   break가 없으면 **다음 break나 switch의 끝까지** 흘러가요. 끝까지 모두 실행되는 것도, 맞는 case만 실행되는 것도 아니에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

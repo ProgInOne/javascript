@@ -83,5 +83,6 @@ explanation: |
   - `let`과 `const`는 어느 것을 써도 정답이에요. 바뀌지 않을 이름은 `const`, 나중에 바뀔 포인트는 `let`처럼 골라 써 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

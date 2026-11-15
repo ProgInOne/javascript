@@ -41,5 +41,6 @@ explanation: |
   6번 줄을 `number`라고 답했다면 출력 모양이 같으니 자료형도 같다고 생각한 거예요. 출력 모양만으로는 자료형을 알 수 없어요. 4번 줄을 `"900"`이라고 따옴표까지 적었다면, 콘솔은 문자열의 따옴표를 보여 주지 않는다는 점을 기억해 두세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

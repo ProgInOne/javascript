@@ -120,5 +120,6 @@ explanation: |
   출력이 아니라 **대입**이라서 fall-through가 눈에 보이지 않고, 마지막 값만 남는 모양으로 나타났어요. 값이 엉뚱하게 "가장 아래 case의 값"이 된다면 break가 빠졌는지 의심해 보세요. `case "L":`은 마지막이라 break가 없어도 결과는 같지만, 나중에 case를 추가할 때를 대비해 함께 붙여 두면 좋아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

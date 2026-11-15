@@ -80,5 +80,6 @@ explanation: |
   `let`으로 만들어도 정답이에요. 백틱(`` ` ``)으로 감싸도 세 문장 모두 담을 수 있는데, 백틱은 모듈 7에서 자세히 배워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

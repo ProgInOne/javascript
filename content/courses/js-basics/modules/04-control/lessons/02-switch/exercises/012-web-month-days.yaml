@@ -229,5 +229,6 @@ explanation: |
   - `month`는 시작 코드에서 `Number(...)`로 숫자로 바꿔 두었으니 case도 숫자로 써요. `case "8":`처럼 문자열로 쓰면 `===` 비교에서 맞지 않아 0일이 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -71,5 +71,6 @@ explanation: |
   3번 줄을 `stock = 15;`로 바꿔도 출력은 맞지만, 재고가 문자열인 한 다음 입고 때 같은 버그가 또 생겨요. 계산할 값은 처음부터 숫자로 담아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

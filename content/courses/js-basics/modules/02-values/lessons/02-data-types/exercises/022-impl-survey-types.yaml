@@ -99,5 +99,6 @@ explanation: |
   지금은 숫자와 불리언을 직접 다시 썼지만, 실제 프로그램에서는 값을 미리 알 수 없어요. 문자열을 숫자나 불리언으로 바꾸는 방법은 모듈 3 "명시적 형 변환"에서 배워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: js-basics.control.if-else.predict-first-true-only
 type: predict_output
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.control.else-if, weight: 1 }
 tags: [else-if, chain, predict]
@@ -48,5 +48,6 @@ explanation: |
   조건을 큰 기준(1000)부터 적었기 때문에, 각 갈래가 정확한 범위를 맡게 돼요. 예를 들어 `실버` 갈래에 도착했다면 이미 1000 미만이라는 뜻이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

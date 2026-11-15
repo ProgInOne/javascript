@@ -78,5 +78,6 @@ explanation: |
   첫 번째는 **오류**(`is not defined`, 변수가 없음)이고, 두세 번째는 오류가 아닌 **값** `undefined`(변수는 있는데 값이 없음)예요. 예상하지 못한 `undefined`가 보이면 "값을 넣는 대입이 출력보다 먼저, 그리고 같은 이름으로 실행됐나?"를 확인해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

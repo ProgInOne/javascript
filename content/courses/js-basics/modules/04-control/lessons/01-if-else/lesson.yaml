@@ -6,7 +6,7 @@ importance: core
 estimatedMinutes: { read: 15, practice: 30 }
 concepts:
   primary: [js.control.if, js.control.else-if, js.control.block]
-  practiced: [js.values.assignment]
+  practiced: [js.values.assignment, js.ops.relational, js.ops.strict-equality]
   reviewed: [js.types.boolean, js.basics.statements, js.errors.error-types]
 objectives:
   - if·else 문에서 조건의 참·거짓에 따라 어느 블록이 실행되고, 그다음 어디로 이어지는지 예측할 수 있다.

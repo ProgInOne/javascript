@@ -1,6 +1,6 @@
 id: js-basics.control.ternary.fix-ternary-discarded
 type: fix_bug
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.control.ternary, weight: 1 }
   - { id: js.values.assignment, weight: 0.3 }
@@ -79,5 +79,6 @@ explanation: |
   `let status = "확인 중";`처럼 미리 만든 변수가 있으니 `let`을 다시 붙이지 않고 대입만 해요. `let status = ...`라고 쓰면 같은 이름을 다시 선언해서 `SyntaxError`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

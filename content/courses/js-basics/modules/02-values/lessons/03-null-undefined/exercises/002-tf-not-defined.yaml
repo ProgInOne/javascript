@@ -42,5 +42,6 @@ explanation: |
   둘 다 "defined"가 들어가서 헷갈리지만, 하나는 **값**이고 하나는 **오류**예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

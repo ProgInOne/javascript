@@ -113,5 +113,6 @@ explanation: |
   모듈 5에서 반복문을 배우면, 같은 switch를 두 번 쓰지 않고 여러 주문을 차례로 처리할 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

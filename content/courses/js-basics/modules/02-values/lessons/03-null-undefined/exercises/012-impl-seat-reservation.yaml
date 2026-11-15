@@ -86,5 +86,6 @@ explanation: |
   - `typeof null`은 설계 실수 때문에 `"object"`라서 마지막 줄은 `object`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

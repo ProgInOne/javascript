@@ -6,6 +6,7 @@ importance: standard
 estimatedMinutes: { read: 10, practice: 18 }
 concepts:
   primary: [js.control.switch, js.control.fallthrough]
+  practiced: [js.ops.strict-equality]
   reviewed: [js.control.else-if, js.types.string, js.types.number]
 objectives:
   - switch가 값과 ===로 같은 case를 찾아 실행한다는 것을 알고, 어느 case가 실행될지 예측할 수 있다.

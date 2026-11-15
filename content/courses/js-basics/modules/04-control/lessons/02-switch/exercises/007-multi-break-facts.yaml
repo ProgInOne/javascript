@@ -40,5 +40,6 @@ explanation: |
   - e (오답): 맞는 case를 찾는 일은 switch가 값을 비교해서 해요. break와 관계없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

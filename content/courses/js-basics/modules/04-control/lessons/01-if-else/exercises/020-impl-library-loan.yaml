@@ -102,5 +102,6 @@ explanation: |
   모듈 3에서 배운 `&&`로 `if (doyunHasCard && doyunLateDays === 0) { ... } else if (doyunHasCard) { ... } else { ... }`처럼 써도 같은 결과예요. 이 문제는 중첩을 연습하려고 중첩으로 쓰게 했어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

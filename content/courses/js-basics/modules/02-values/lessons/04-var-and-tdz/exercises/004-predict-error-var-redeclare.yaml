@@ -31,5 +31,6 @@ explanation: |
   `SyntaxError`라고 답했다면 `let`의 규칙을 `var`에도 적용한 거예요. 같은 코드를 `let`으로 쓰면 `SyntaxError: Identifier 'coins' has already been declared`가 나서 실행 전에 실수를 알려 줘요. `var`는 이렇게 실수를 숨기기 때문에 새 코드에서는 쓰지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

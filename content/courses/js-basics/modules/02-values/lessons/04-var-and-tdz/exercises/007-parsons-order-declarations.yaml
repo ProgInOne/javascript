@@ -55,5 +55,6 @@ explanation: |
   - `total = price * count;`는 선언 없이 대입만 해서, 엄격 모드에서는 `ReferenceError: total is not defined`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

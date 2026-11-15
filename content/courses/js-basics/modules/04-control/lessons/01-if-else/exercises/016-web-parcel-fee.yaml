@@ -203,5 +203,6 @@ explanation: |
   반대로 큰 기준부터(`weight > 20`, `weight > 5`, `weight > 2` …) 검사해도 같은 결과를 낼 수 있어요. 어느 쪽이든 체인 안에서 기준이 한 방향으로 차례로 놓이게 쓰는 것이 핵심이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

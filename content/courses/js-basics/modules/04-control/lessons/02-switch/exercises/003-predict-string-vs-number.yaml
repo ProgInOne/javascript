@@ -51,5 +51,6 @@ explanation: |
   이 버그를 고치려면 case를 문자열로 맞추거나(`case "2":`), switch 앞에서 `Number(pressed)`로 숫자로 바꿔요. 한 switch 안에서 숫자 case와 문자열 case를 섞어 쓰면 이런 실수가 생기기 쉬우니 자료형을 하나로 맞춰요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

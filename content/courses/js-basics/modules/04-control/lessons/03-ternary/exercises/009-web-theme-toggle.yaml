@@ -135,5 +135,6 @@ explanation: |
   - `isDark = !isDark;`는 모듈 3에서 배운 `!`로 true와 false를 뒤집어요. 그래서 누를 때마다 두 상태가 번갈아 나타나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

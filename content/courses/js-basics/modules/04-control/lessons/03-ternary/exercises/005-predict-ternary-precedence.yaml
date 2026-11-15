@@ -41,5 +41,6 @@ explanation: |
   조건 연산자를 다른 식 안에 쓸 때는 **항상 괄호로 감싸요.** 오류 메시지 없이 엉뚱한 결과가 나오는 버그라서 미리 막는 습관이 중요해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

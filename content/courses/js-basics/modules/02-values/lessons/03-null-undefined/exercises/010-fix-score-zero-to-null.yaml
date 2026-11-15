@@ -74,5 +74,6 @@ explanation: |
   - `let scienceScore;`로 두면 `undefined`가 출력돼요. `undefined`는 "아직 아무도 값을 넣지 않음"이라는 뜻이라, "점수가 없다고 일부러 표시함"을 나타내려면 `null`이 알맞아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

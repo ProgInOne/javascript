@@ -40,5 +40,6 @@ explanation: |
   - `"42"`, `"3.14"`는 따옴표로 감쌌으니 안의 글자가 숫자처럼 생겼어도 문자열(string)이에요. `typeof "42"`는 `"string"`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

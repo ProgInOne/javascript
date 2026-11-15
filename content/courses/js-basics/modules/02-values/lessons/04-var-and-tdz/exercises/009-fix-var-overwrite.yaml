@@ -85,5 +85,6 @@ explanation: |
   예시 정답처럼 `var`를 `const`로 바꾸면 좋아요. 처음 코드를 `const`로만 바꿔도 3번 줄에서 `SyntaxError: Identifier 'price' has already been declared`가 나서, 같은 이름을 두 번 쓴 실수를 실행 전에 알려 줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

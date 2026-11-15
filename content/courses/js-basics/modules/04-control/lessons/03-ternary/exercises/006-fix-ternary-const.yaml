@@ -61,5 +61,6 @@ explanation: |
   이렇게 쓰면 `item`을 처음부터 `const`로 만들 수 있다는 것도 조건 연산자의 장점이에요. if-else로 쓰려면 `let item;`을 먼저 만들고 두 블록에서 각각 대입해야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

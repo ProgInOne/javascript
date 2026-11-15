@@ -139,5 +139,6 @@ explanation: |
   "갈래 중 하나만 고르는 규칙"과 "조건마다 따로 확인하는 규칙"을 구별하는 것이 요구사항을 조건문으로 옮기는 핵심이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

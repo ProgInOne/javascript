@@ -87,5 +87,6 @@ explanation: |
   5번 줄의 `"회원 적립: " + total / 100 + "점"`은 `/`가 `+`보다 먼저라서 `450`이 이어 붙여져요. 조건 연산자 안쪽의 식은 조건 연산자보다 먼저 계산되므로 괄호가 없어도 괜찮아요. 헷갈리면 `isMember ? ("회원 적립: " + total / 100 + "점") : ...`처럼 괄호를 쳐도 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -70,5 +70,6 @@ explanation: |
   예상하지 못한 `undefined`가 보이면 "이 변수에 값을 넣는 대입이 실제로 실행됐나?"를 먼저 확인해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

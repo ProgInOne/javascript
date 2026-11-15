@@ -41,5 +41,6 @@ explanation: |
   - `"열림"`: 상태를 설명하는 문자열이에요. 예/아니요로 답하는 상태는 불리언으로 담아야 나중에 조건문에서 바로 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: js-basics.values.data-types.impl-weekly-pay
 type: implement_function
-difficulty: 3
+difficulty: 4
 concepts:
   - { id: js.types.number, weight: 1 }
   - { id: js.values.assignment, weight: 0.3 }
@@ -95,5 +95,6 @@ explanation: |
   `"10030"`처럼 따옴표로 감싸면 문자열이 되어 첫 번째 요구사항을 통과하지 못해요. 계산할 값은 숫자로 담아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

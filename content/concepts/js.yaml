@@ -316,8 +316,8 @@
   title: if와 else
   importance: core
   summary: if (조건) { ... }은 조건이 참일 때만 블록을 실행하고, else { ... }는 조건이 거짓일 때 실행해요. 어느 쪽을 실행하든 조건문이 끝나면 다음 문장으로 넘어가요.
-  prerequisites: [js.types.boolean]
-  misconceptions: [js.mc.false-if-stops-program, js.mc.assign-in-condition, js.mc.else-has-condition]
+  prerequisites: [js.types.boolean, js.ops.strict-equality, js.ops.relational, { id: js.ops.logical-and-or-not, strength: helpful }, { id: js.conv.truthy-falsy, strength: helpful }]
+  misconceptions: [js.mc.false-if-stops-program, js.mc.else-has-condition]
   mdn: Web/JavaScript/Reference/Statements/if...else
 
 - id: js.control.else-if
@@ -342,7 +342,7 @@
   title: switch 문
   importance: standard
   summary: switch (값)은 값과 ===로 같은 case를 찾아 그 자리부터 실행해요. 같은 case가 없으면 default를 실행해요. 한 값을 여러 후보와 비교할 때 else if 체인보다 읽기 쉬워요.
-  prerequisites: [js.control.else-if]
+  prerequisites: [js.control.else-if, js.ops.strict-equality]
   misconceptions: [js.mc.switch-loose-compare, js.mc.switch-case-condition]
   mdn: Web/JavaScript/Reference/Statements/switch
 
@@ -360,6 +360,6 @@
   title: 조건 연산자(삼항 연산자)
   importance: standard
   summary: '조건 ? 값1 : 값2는 조건이 참이면 값1, 거짓이면 값2가 되는 식이에요. 두 값 중 하나를 골라 변수에 넣거나 바로 쓸 때 if-else보다 짧게 쓸 수 있어요.'
-  prerequisites: [js.control.if]
+  prerequisites: [js.control.if, { id: js.ops.precedence, strength: helpful }, { id: js.conv.plus-concat, strength: helpful }]
   misconceptions: [js.mc.ternary-as-statement, js.mc.ternary-result-discarded, js.mc.ternary-precedence]
   mdn: Web/JavaScript/Reference/Operators/Conditional_operator

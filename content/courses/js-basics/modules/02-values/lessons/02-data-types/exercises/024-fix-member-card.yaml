@@ -77,5 +77,6 @@ explanation: |
   세 번째 버그는 오류 메시지가 없어서 가장 찾기 어려워요. 결과가 이상하면 `console.log(typeof level)`처럼 자료형부터 확인하는 습관을 들여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -40,5 +40,6 @@ explanation: |
   if 블록과 else 블록 중 **정확히 하나만** 실행되고, 조건문 뒤의 문장은 항상 실행돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

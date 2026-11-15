@@ -26,7 +26,6 @@ spec:
       rationale: undefined가 들어 있는 변수는 오류 없이 출력돼요. 이 오류는 아예 쓸 수 없는 구간에서 썼다는 뜻이에요.
     - id: d
       text: "`score`를 `const`로 만들어서 값을 바꿀 수 없다"
-      misconception: js.mc.const-can-reassign
       rationale: const에 다시 대입하면 TypeError(Assignment to constant variable.)가 나요. 메시지가 달라요.
   correct: a
 misconceptions: [js.mc.tdz-means-misspelled, js.mc.let-before-declaration-undefined]
@@ -44,5 +43,6 @@ explanation: |
   - "`const`라서 바꿀 수 없다"를 고른 경우: 그 오류는 `TypeError: Assignment to constant variable.`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

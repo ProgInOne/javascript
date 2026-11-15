@@ -41,5 +41,6 @@ explanation: |
   - "else가 없으면 실행되지 않는다"를 고른 경우: `else`는 선택이에요. 조건이 참이면 `else`가 없어도 if 블록은 실행돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

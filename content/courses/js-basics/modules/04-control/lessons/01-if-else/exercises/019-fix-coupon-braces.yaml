@@ -94,5 +94,6 @@ explanation: |
   서준이 쪽은 조건이 참이라 지금도 결과는 맞지만, 같은 버그가 숨어 있으니 함께 묶어야 해요. 한 줄짜리라도 항상 중괄호를 쓰면 나중에 줄을 추가할 때 이런 버그가 생기지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

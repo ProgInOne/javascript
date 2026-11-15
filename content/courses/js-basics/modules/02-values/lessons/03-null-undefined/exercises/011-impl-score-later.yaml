@@ -71,5 +71,6 @@ explanation: |
   - `const`로는 값 없이 만들 수 없어요. 나중에 값을 넣어야 하는 변수는 `let`으로 만들어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -89,5 +89,6 @@ explanation: |
   세 값을 바꿔 가며 실행해서 문구가 모두 제대로 바뀌는지 확인해 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

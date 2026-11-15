@@ -41,5 +41,6 @@ explanation: |
   - e (오답): 문법은 맞지만 고른 값을 받는 곳이 없어 아무 일도 일어나지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

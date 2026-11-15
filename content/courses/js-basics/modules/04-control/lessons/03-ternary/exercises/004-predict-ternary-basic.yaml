@@ -34,5 +34,6 @@ explanation: |
   조건 연산자는 값을 고르는 식이라서, 4번 줄처럼 `console.log` 안에 바로 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

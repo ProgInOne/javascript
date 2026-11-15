@@ -48,5 +48,6 @@ explanation: |
   - 맨 위 case를 실행하거나 모든 case를 실행하는 일은 없어요. 실행은 값이 같은 case(없으면 default)에서만 시작돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

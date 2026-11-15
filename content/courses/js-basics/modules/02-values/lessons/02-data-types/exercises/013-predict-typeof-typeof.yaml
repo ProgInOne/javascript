@@ -40,5 +40,6 @@ explanation: |
   3번 줄을 `number`라고 답했다면 typeof의 결과가 문자열이라는 점을 놓친 거예요. 4번 줄을 `null`이라고 답했다면 typeof null의 예외를 기억해 두세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

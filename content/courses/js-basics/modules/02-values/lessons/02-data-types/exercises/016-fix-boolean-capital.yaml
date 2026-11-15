@@ -73,5 +73,6 @@ explanation: |
   `"true"`, `"false"`처럼 따옴표를 붙여도 출력 모양은 같지만, 그러면 불리언이 아니라 문자열이 들어가서 두 번째 요구사항을 통과하지 못해요. Python 같은 다른 언어에서는 `True`, `False`라고 써서 헷갈리기 쉬워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

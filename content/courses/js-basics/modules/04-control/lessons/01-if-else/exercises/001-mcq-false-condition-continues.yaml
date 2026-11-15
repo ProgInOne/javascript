@@ -42,5 +42,6 @@ explanation: |
   "아무것도 나오지 않는다"를 골랐다면 조건이 거짓일 때 프로그램이 멈춘다고 생각한 거예요. 조건은 if 블록을 실행할지만 정하고, 조건문 바깥의 문장에는 영향을 주지 않아요. 조건식의 값(`false`)이 출력되지도 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

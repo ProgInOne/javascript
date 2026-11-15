@@ -71,5 +71,6 @@ explanation: |
   1번 줄 위에 `const goal = 10000;`을 하나 더 넣으면 이번에는 `SyntaxError: Identifier 'goal' has already been declared`가 나요. 같은 이름은 한 번만 선언해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

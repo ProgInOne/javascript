@@ -121,5 +121,6 @@ explanation: |
   - `console.log("박스: 월요일")`처럼 글자로 직접 써도 되지만, `firstItem + ": 월요일"`처럼 변수를 쓰면 품목이 바뀌어도 그대로 맞아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

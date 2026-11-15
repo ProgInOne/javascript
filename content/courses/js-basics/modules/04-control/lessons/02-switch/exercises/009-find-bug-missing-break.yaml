@@ -66,5 +66,6 @@ explanation: |
   - c3: 실행이 시작된 뒤에는 아래 case의 값을 다시 비교하지 않아요. 비교했다면 `"비" === "눈"`은 거짓이라 건너뛰었을 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

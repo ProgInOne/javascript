@@ -44,5 +44,6 @@ explanation: |
   - "SyntaxError가 난다"를 고른 경우: 문법상 허용되는 코드라 오류 없이 실행돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

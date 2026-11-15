@@ -73,7 +73,7 @@ misconceptions: [js.mc.null-undefined-same, js.mc.empty-value-is-zero, js.mc.typ
 hints:
   - 줄마다 두 번째 단어는 값, 세 번째 단어는 typeof 결과예요. 자료형부터 보면 어떤 값인지 좁힐 수 있어요.
   - typeof 결과가 `object`인데 값이 `null`로 보인다면? 그리고 `nickname` 줄은 값이 보이지 않는데 자료형은 `string`이에요. 글자가 하나도 없는 문자열을 떠올려 보세요.
-  - "`phone`은 값을 넣지 않고 만든 변수, `withdrawnAt`은 일부러 비워 둔 값, `points`는 숫자 0, `nickname`은 빈 문자열이에요. 변수는 출력 코드보다 위에서 만들어야 해요."
+  - "`phone`처럼 값과 자료형이 모두 `undefined`라면 변수를 만들 때 무엇을 빼면 될까요? 네 변수 모두 출력 코드보다 위에서 만들어야 해요."
 explanation: |
   예시 정답은 다음과 같아요.
 
@@ -97,5 +97,6 @@ explanation: |
   - 변수를 출력 코드 아래에 만들면 `ReferenceError: Cannot access 'phone' before initialization`이 나요. 그 이유는 다음 단원에서 배워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

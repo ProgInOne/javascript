@@ -42,5 +42,6 @@ explanation: |
   - `typeof 42`는 `"number"`, `typeof false`는 `"boolean"`이에요. 따옴표가 없어서 문자열이 아니에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

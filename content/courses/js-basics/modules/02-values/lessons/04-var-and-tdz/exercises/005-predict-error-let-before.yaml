@@ -35,5 +35,6 @@ explanation: |
   "오류가 나지 않는다"고 답했다면 `let`도 `var`처럼 선언 전에 `undefined`라고 생각한 거예요. `var`였다면 `장바구니: undefined`가 나왔겠지만, `let`과 `const`는 선언 전에 아예 쓸 수 없어요. 선언 줄을 위로 옮기면 고쳐져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

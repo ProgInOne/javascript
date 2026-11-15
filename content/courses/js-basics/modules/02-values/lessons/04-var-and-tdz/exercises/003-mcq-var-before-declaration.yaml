@@ -25,7 +25,6 @@ spec:
       rationale: 이 오류는 let과 const 변수를 선언 전에 쓸 때 나요. var는 오류를 내지 않아요.
     - id: d
       text: "`ReferenceError: timeLeft is not defined`"
-      misconception: js.mc.not-defined-is-undefined
       rationale: var 선언이 아래에 있어서 이름은 이미 등록되어 있어요. 이름이 아예 없을 때만 이 오류가 나요.
   correct: a
 misconceptions: [js.mc.var-hoists-value]
@@ -43,5 +42,6 @@ explanation: |
   - `is not defined`를 고른 경우: 아래에 `var` 선언이 있으니 이름은 이미 등록되어 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

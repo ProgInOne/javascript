@@ -66,5 +66,6 @@ explanation: |
   `"18,000"`처럼 따옴표로 감싸면 오류는 사라지지만 문자열이 되어 `chickenPrice * 2`를 제대로 계산할 수 없어요. 가격은 숫자로 둬요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

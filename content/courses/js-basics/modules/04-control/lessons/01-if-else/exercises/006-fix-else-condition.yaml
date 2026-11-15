@@ -74,5 +74,6 @@ explanation: |
   고친 뒤에는 `5 >= 25`가 거짓, `5 < 10`이 참이라서 `두꺼운 외투를 입어요`만 나와요. 마지막 `else`는 앞의 두 조건이 모두 거짓일 때(10도 이상 25도 미만) 실행돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

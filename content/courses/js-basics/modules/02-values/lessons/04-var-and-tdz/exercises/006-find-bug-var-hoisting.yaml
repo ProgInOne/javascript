@@ -30,7 +30,7 @@ spec:
       text: guestName이 선언되지 않아서 JavaScript가 값을 찾지 못했다
       misconception: js.mc.not-defined-is-undefined
     - id: c3
-      text: var 선언은 값까지 끌어올려지는데, 1번 줄의 쉼표 때문에 값이 출력되지 않았다
+      text: var 선언은 값까지 끌어올려지므로 2번 줄은 문제가 없고, 1번 줄의 console.log 쓰는 법이 잘못되었다
       misconception: js.mc.var-hoists-value
 misconceptions: [js.mc.var-hoists-value]
 hints:
@@ -50,8 +50,9 @@ explanation: |
   옮기는 김에 `var` 대신 `const`로 바꾸면, 다음에 또 선언보다 먼저 쓰는 실수를 했을 때 조용한 `undefined` 대신 오류로 바로 알 수 있어요.
 
   - "선언되지 않았다"를 고른 경우: 선언이 없었다면 `ReferenceError: guestName is not defined`가 났을 거예요.
-  - "값까지 끌어올려진다"를 고른 경우: 끌어올려지는 것은 이름과 `undefined`뿐이에요. 쉼표는 값을 나눌 뿐 아무 문제가 없어요.
+  - "값까지 끌어올려진다"를 고른 경우: 끌어올려지는 것은 이름과 `undefined`뿐이에요. 1번 줄의 console.log는 3번 줄과 같은 모양으로 바르게 썼어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

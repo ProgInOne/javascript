@@ -115,5 +115,6 @@ explanation: |
   `switch (Number(button))`처럼 버튼 값을 숫자로 바꿔 비교하는 방법도 있지만, 이 문제에서는 case를 입력값의 자료형에 맞추는 방법으로 고쳤어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

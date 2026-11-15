@@ -56,5 +56,6 @@ explanation: |
   1. "없음"을 일부러 표시할 때는 프로그래머가 `null`을 직접 넣는 것이 관례예요. `undefined`는 "아직 아무도 값을 넣지 않음"을 뜻하도록 JavaScript에 맡겨 둬요. `0`이나 `""`는 값이 있는 숫자와 문자열이라 "없음"과 달라요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

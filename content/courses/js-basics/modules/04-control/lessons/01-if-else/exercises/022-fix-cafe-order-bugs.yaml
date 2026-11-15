@@ -97,7 +97,7 @@ spec:
           price: { equals: 4000 }
         noError: true
       misconceptionIfFail: js.mc.semicolon-after-if
-misconceptions: [js.mc.else-has-condition, js.mc.assign-in-condition, js.mc.semicolon-after-if]
+misconceptions: [js.mc.else-has-condition, js.mc.assign-as-compare, js.mc.semicolon-after-if]
 hints:
   - "처음 오류는 `SyntaxError: Unexpected token '{'`예요. 오류가 난 줄에서 `else` 뒤에 무엇이 있는지 보세요."
   - "다음 오류는 `TypeError: Assignment to constant variable.`이에요. 상수 `size`에 값을 넣으려는 곳이 어디인가요? 조건 안의 `=` 하나를 의심해 보세요."
@@ -112,5 +112,6 @@ explanation: |
   세 번째 버그처럼 오류 메시지가 없는 버그는 출력과 기대값을 비교해서 찾아야 해요. "조건이 거짓인데 블록이 실행됐다"는 증상을 보면 세미콜론과 중괄호부터 확인해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

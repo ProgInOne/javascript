@@ -36,5 +36,6 @@ explanation: |
   "오류가 나지 않는다"고 답했다면 3번 줄도 `undefined`가 출력될 거라고 생각했을 수 있어요. `undefined`는 "변수는 있는데 값이 없음", `is not defined`는 "그런 변수가 아예 없음"이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
