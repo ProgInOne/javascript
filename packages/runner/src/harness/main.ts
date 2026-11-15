@@ -68,6 +68,10 @@ declare const importScripts: ((...urls: string[]) => void) | undefined;
 
 type Fn = (...args: unknown[]) => unknown;
 
+/** Grading runs: a form submission no handler cancelled (detectUncancelledSubmit). */
+const SUBMIT_NAVIGATION_MESSAGE =
+  '실행 중에는 다른 페이지로 이동하거나 폼을 전송할 수 없습니다. submit 이벤트 처리기에서 event.preventDefault()로 폼 전송을 막았는지 확인하세요.';
+
 const cfg = (G as unknown as Record<string, HarnessConfig | undefined>)[HARNESS_CONFIG_GLOBAL];
 try {
   Reflect.deleteProperty(G, HARNESS_CONFIG_GLOBAL);
@@ -716,6 +720,8 @@ function start(config: HarnessConfig) {
       if (steps.length === 0) await settle(MathMax(50, deadline - now()));
       send({ type: 'settled' });
       for (let i = 0; i < steps.length; i++) {
+        // A navigation attempt ends the run early (detectUncancelledSubmit, pagehide).
+        if (finished) return;
         const step = steps[i];
         if (!step) continue;
         const left = deadline - now();
@@ -847,6 +853,64 @@ function start(config: HarnessConfig) {
     addListener('submit', onNavigation, true);
   }
 
+  // ---- grading: un-cancelled form submission ------------------------------------------------
+  /**
+   * `dom` (grading) runs only. A form submission that no handler cancelled navigates the learner
+   * document; the shell CSP (`form-action 'none'`) blocks it and the browser swaps in an error
+   * page, which `pagehide` reports — but only once the navigation task runs, so later steps
+   * sometimes finished first and the same answer passed or failed at random. Decide at once
+   * instead: a capture listener (window, registered before any learner code) remembers every
+   * trusted `submit`; a microtask queued from it runs after the whole dispatch (every learner
+   * handler) and before the navigation task, reads the event's real `defaultPrevented` with the
+   * captured getter, and if nothing cancelled a submission that leaves the document, records
+   * `NavigationError` and finishes the run. The sandbox is unchanged (the navigation is still
+   * blocked by the CSP); this only reports it deterministically.
+   *
+   * Not leaving: untrusted `submit` events (a script's `dispatchEvent(new Event('submit'))`
+   * submits nothing), `method="dialog"`, and a target other than the document itself (the
+   * sandbox has no `allow-popups`/`allow-top-navigation`). `form.submit()` and `location`
+   * changes fire no event and are still caught by `pagehide`.
+   */
+  function detectUncancelledSubmit() {
+    const EventProto = Event.prototype;
+    const defaultPrevented = getOwnPropertyDescriptor(EventProto, 'defaultPrevented')?.get as
+      Fn | undefined;
+    const submitterOf = getOwnPropertyDescriptor(G.SubmitEvent.prototype, 'submitter')?.get as
+      Fn | undefined;
+    const getAttribute = G.Element.prototype.getAttribute as Fn;
+    const ElementCtor = G.Element;
+    const microtask = G.queueMicrotask.bind(G);
+    const attr = (el: unknown, name: string) =>
+      el instanceof ElementCtor ? (apply(getAttribute, el, [name]) as string | null) : null;
+
+    const leaves = (ev: Event): boolean => {
+      const form = ev.target;
+      // `isTrusted` is an unforgeable own property.
+      if (!(form instanceof ElementCtor) || !ev.isTrusted) return false;
+      const submitter = submitterOf ? (apply(submitterOf, ev, []) as Element | null) : null;
+      const method = attr(submitter, 'formmethod') ?? attr(form, 'method') ?? '';
+      if (reExec(/^\s*dialog\s*$/i, method)) return false;
+      const target = attr(submitter, 'formtarget') ?? attr(form, 'target') ?? '';
+      return reExec(/^\s*(_self)?\s*$/i, target) !== null;
+    };
+
+    addListener(
+      'submit',
+      ((ev: Event) => {
+        if (finished || !defaultPrevented || !leaves(ev)) return;
+        microtask(() => {
+          if (finished || (apply(defaultPrevented, ev, []) as boolean)) return;
+          record('runtime', {
+            name: 'NavigationError',
+            message: SUBMIT_NAVIGATION_MESSAGE,
+          });
+          finish();
+        });
+      }) as EventListener,
+      true,
+    );
+  }
+
   // ---- start ---------------------------------------------------------------------------------
   if (isWorker) {
     // Firefox does not apply the inherited connect-src to EventSource in workers (PoC S5-w), and
@@ -900,6 +964,7 @@ function start(config: HarnessConfig) {
     );
     parentWindow.postMessage({ type: 'pg-harness-hello' }, '*');
     if (config.interceptNavigation) interceptNavigation(parentWindow);
+    else detectUncancelledSubmit();
     addListener('load', () => {
       void afterScripts();
     });

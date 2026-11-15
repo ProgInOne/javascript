@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import type { ObservationStep } from '../../packages/shared/src/run-protocol.ts';
 import {
   blockedRequests,
   consoleText,
@@ -16,7 +17,7 @@ import {
 
 /**
  * Runner sandbox through the production build (docs/design/code-execution-sandbox.md#보안-테스트-스위트).
- * Scenario numbers (S1–S48) refer to that table. Every attack checks both that it was blocked
+ * Scenario numbers (S1–S49) refer to that table. Every attack checks both that it was blocked
  * and that nothing reached a server: the probe server (a stand-in for another local service)
  * and the app server (all page requests are recorded).
  */
@@ -649,7 +650,12 @@ report();
         page,
         html(`<!doctype html>${code.replace('APP', appOrigin)}<p>x</p>`),
       );
-      if (name.includes('S13')) expect(consoleText(result)).toContain('submit handler ran');
+      if (name.includes('S13')) {
+        expect(consoleText(result)).toContain('submit handler ran');
+        // An uncancelled submission is decided right after its dispatch (S49).
+        expect(result.status).toBe('error');
+        expect(result.errors.map((e) => e.name)).toEqual(['NavigationError']);
+      }
       // Either the browser drops the navigation, or it swaps in an error page, which the
       // harness reports as a NavigationError right away.
       if (result.status !== 'completed') {
@@ -660,6 +666,82 @@ report();
       await expectNoLeaks();
     });
   }
+
+  test('grading fails an uncancelled form submission at once, the same way every run (S49)', async ({
+    page,
+  }) => {
+    const { expectNoLeaks } = await setup(page);
+    // A form whose submit handler forgets preventDefault(), then steps that would pass if the
+    // run went on: before S49 the navigation sometimes landed after them (random pass/fail).
+    const SUBMIT_STEPS: ObservationStep[] = [
+      { op: 'dispatch', id: 'ev#s0', selector: '#f', event: 'submit' },
+      { op: 'domQuery', id: 'ev#e0', selector: '#list li', read: ['count'] },
+    ];
+    const doc = (
+      handler: string,
+      form = '<form id="f"><input id="q"><button id="go">추가</button></form>',
+      steps = SUBMIT_STEPS,
+    ) =>
+      html(
+        `<!doctype html>${form}<ul id="list"></ul><script>
+const f = document.getElementById('f');
+f.addEventListener('submit', (e) => { ${handler} document.getElementById('list').append(document.createElement('li')); });
+</script>`,
+        { steps },
+      );
+    for (let i = 0; i < 5; i++) {
+      const r = await run(page, doc(''));
+      expect(r.status, `run ${String(i)}`).toBe('error');
+      expect(r.errors).toEqual([
+        expect.objectContaining({
+          phase: 'runtime',
+          name: 'NavigationError',
+          message: expect.stringContaining('event.preventDefault()'),
+        }),
+      ]);
+      // Nothing after the submission is observed: the same observations every run.
+      expect(r.observations).toEqual([]);
+    }
+    // Clicking the submit button submits too.
+    const click = await run(
+      page,
+      doc('', undefined, [{ op: 'dispatch', id: 'ev#s0', selector: '#go', event: 'click' }]),
+    );
+    expect(click.errors.map((e) => e.name)).toEqual(['NavigationError']);
+
+    // Cancelled (preventDefault, an inline `return false`), untrusted, dialog and other-target
+    // submissions do not leave the document, so the run completes and every step is observed.
+    // (A script's untrusted `submit` event is checked below.)
+    for (const [name, plan] of [
+      ['preventDefault', doc('e.preventDefault();')],
+      [
+        'return false',
+        doc('', '<form id="f" onsubmit="return false"><input id="q"><button>추가</button></form>'),
+      ],
+      ['dialog', doc('', '<form id="f" method="dialog"><button>닫기</button></form>')],
+      ['target', doc('', '<form id="f" target="_blank"><button>새 창</button></form>')],
+    ] as const) {
+      const r = await run(page, plan);
+      expect(r.status, name).toBe('completed');
+      expect(
+        r.observations.map((o) => o.status),
+        name,
+      ).toEqual(['ok', 'ok']);
+    }
+    const untrusted = await run(
+      page,
+      html(
+        `<form id="f"></form><script>
+const f = document.getElementById('f');
+f.addEventListener('submit', () => console.log('script submit'));
+f.dispatchEvent(new Event('submit', { cancelable: true }));
+</script>`,
+      ),
+    );
+    expect(untrusted.status).toBe('completed');
+    expect(consoleText(untrusted)).toEqual(['script submit']);
+    await expectNoLeaks();
+  });
 
   test('cannot reach the app document, storage, top window, popups or downloads (S14–S19, S21–S23)', async ({
     page,

@@ -136,4 +136,67 @@ test.describe('runner ↔ exercise-kit grading contract', () => {
       reason: 'MISMATCH',
     });
   });
+
+  test('web_task: a submit handler without preventDefault() fails the same way every time', async ({
+    page,
+  }) => {
+    await openRunner(page);
+    const formTask = {
+      focus: 'dom',
+      starter: { files: [{ path: 'index.html', content: '<!doctype html>' }] },
+      solution: { files: [{ path: 'index.html', content: '<!doctype html>' }] },
+      checks: [
+        {
+          kind: 'event',
+          id: 'add',
+          steps: [
+            { action: 'type', selector: '#q', value: '우유' },
+            { action: 'submit', selector: '#f' },
+          ],
+          expect: [{ selector: '#list li', count: 1 }],
+        },
+        {
+          kind: 'event',
+          id: 'again',
+          steps: [
+            { action: 'type', selector: '#q', value: '빵' },
+            { action: 'submit', selector: '#f' },
+          ],
+          expect: [{ selector: '#list li', count: 2 }],
+        },
+      ],
+    };
+    const page$ = (handler: string) => `<!doctype html>
+<form id="f"><input id="q"><button>추가</button></form><ul id="list"></ul>
+<script>
+document.getElementById('f').addEventListener('submit', (event) => {
+  ${handler}
+  const li = document.createElement('li');
+  li.textContent = document.getElementById('q').value;
+  document.getElementById('list').append(li);
+});
+</script>`;
+    const grade = async (content: string) => {
+      const answer = { files: [{ path: 'index.html', content }] };
+      const plan = buildRunPlan({ typeId: 'web_task', spec: formTask, answer, purpose: 'grading' });
+      const result = await run(page, plan);
+      return gradeSubmission({ typeId: 'web_task', spec: formTask, answer, run: result });
+    };
+
+    for (let i = 0; i < 3; i++) {
+      expect(await grade(page$('event.preventDefault();'))).toMatchObject({
+        outcome: 'correct',
+        score: 1,
+      });
+      const missing = await grade(page$(''));
+      expect(missing.outcome, `run ${String(i)}`).toBe('error');
+      expect(missing.correct).toBe(false);
+      expect(missing.feedback[0]).toMatchObject({
+        code: 'RUN_RUNTIME_ERROR',
+        message: expect.stringContaining('NavigationError'),
+      });
+      expect(missing.feedback[0]?.message).toContain('event.preventDefault()');
+      expect(missing.checkResults?.every((r) => !r.passed)).toBe(true);
+    }
+  });
 });

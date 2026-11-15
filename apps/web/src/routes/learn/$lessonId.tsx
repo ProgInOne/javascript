@@ -7,6 +7,7 @@ import { useCallback, useEffect, type ReactNode } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
 import {
   createPracticeSet,
+  lessonPrerequisitesQuery,
   lessonQuery,
   practiceSetQuery,
   recordLessonProgress,
@@ -26,6 +27,7 @@ import { TutorButton, TutorLayout } from '../../features/tutor/TutorLayout.tsx';
 import { QueryState } from '../../app/QueryState.tsx';
 import { ConceptImportanceBadge, LessonBody } from '../../features/lesson-reader/LessonBody.tsx';
 import { LessonPractice } from '../../features/practice/LessonPractice.tsx';
+import { PrerequisiteWarning } from '../../features/lesson-reader/PrerequisiteWarning.tsx';
 import { SECTION_LABELS } from '../../features/lesson-reader/sections.ts';
 import { useActiveSection } from '../../features/lesson-reader/useActiveSection.ts';
 import { useReadingProgress } from '../../features/lesson-reader/useReadingProgress.ts';
@@ -349,6 +351,8 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
       : undefined;
   const own = lesson.concepts.filter((c) => c.role !== 'linked');
   const predictFirst = useSettings().data?.['lesson.predictFirst'] ?? 'recommended';
+  // Learner state: a failure only hides the mastery and the warning, never the lesson.
+  const prerequisites = useQuery(lessonPrerequisitesQuery(lesson.id)).data;
   return (
     <div className="min-h-screen bg-canvas">
       <LearnHeader lesson={lesson} mode="read" />
@@ -363,6 +367,7 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
               읽기 약 {formatMinutes(lesson.readMinutes)} · 전체 약{' '}
               {formatMinutes(lesson.estimatedMinutes)}
             </p>
+            {prerequisites && <PrerequisiteWarning data={prerequisites} />}
             {resume && (
               <p className="lesson-resume" role="note">
                 지난번에 ‘{resume.title ?? SECTION_LABELS[resume.kind] ?? resume.kind}’까지
@@ -378,6 +383,7 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
               body={lesson.body}
               concepts={lesson.concepts}
               predictFirst={predictFirst}
+              prerequisites={prerequisites?.prerequisites}
             />
 
             {(lesson.previous ?? lesson.next) && (

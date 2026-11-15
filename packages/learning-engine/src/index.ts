@@ -129,6 +129,7 @@ export type {
   WorkedExample,
 } from './remediation/detect.ts';
 export {
+  assessPrerequisite,
   detectRemediation,
   inspectPrerequisites,
   remediationTrigger,

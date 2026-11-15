@@ -14,7 +14,7 @@ import type { AppEnv } from '../env.ts';
 import { contentIdParam, jsonBody, limitBody } from './input.ts';
 
 /**
- * Reading progress, review queue, activity heartbeat, the dashboard summary, goals, the concept
+ * Reading progress, lesson prerequisites, review queue, activity heartbeat, the dashboard summary, goals, the concept
  * detail, the learner profile, the mistake notes and mastery changes
  * (docs/design/system-architecture.md#api-규약).
  */
@@ -48,6 +48,9 @@ export function learningRoutes(services: PracticeServices) {
       const query = conceptDetailQuerySchema.parse(c.req.query());
       return c.json(services.concepts.get(id, query.evidenceLimit));
     })
+    .get('/lessons/:id/prerequisites', (c) =>
+      c.json(services.concepts.lessonPrerequisites(contentIdParam(c.req.param('id')))),
+    )
     .get('/mastery', (c) => c.json(services.mastery.get()))
     .get('/mastery-changes', (c) =>
       c.json(services.masteryChanges.get(masteryChangesQuerySchema.parse(c.req.query()))),

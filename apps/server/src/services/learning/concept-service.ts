@@ -1,4 +1,5 @@
 import {
+  assessPrerequisite,
   conceptReport,
   effectiveMastery,
   endOfLocalDay,
@@ -7,7 +8,12 @@ import {
   misconceptionStatusAt,
   type EngineDeps,
 } from '@proginone/learning-engine';
-import type { ConceptDetail, MasteryEvidenceView } from '@proginone/shared';
+import type {
+  ConceptDetail,
+  LessonPrerequisite,
+  LessonPrerequisites,
+  MasteryEvidenceView,
+} from '@proginone/shared';
 import type { UserDb } from '../../db/user/connection.ts';
 import { listEvidence, loadConceptStates, recentReviews } from '../../db/user/learning-state.ts';
 import { listObservationsForConcepts } from '../../db/user/misconceptions.ts';
@@ -193,6 +199,64 @@ export class ConceptService {
         };
       }),
       lessons: concept.lessons,
+    };
+  }
+
+  /**
+   * `GET /lessons/:id/prerequisites` (FR-CUR-02, FR-CUR-05): the direct prerequisites of the
+   * concepts the lesson introduces (`required` first, then `helpful`), then the concepts the lesson
+   * reviews, minus what the lesson itself introduces — each with the learner's mastery. A weak
+   * `required` prerequisite (the relearning rule: `effective < 60` or below `practicing`) is a
+   * warning; the screen never locks (learning-engine.md#재학습-규칙).
+   */
+  lessonPrerequisites(lessonId: string): LessonPrerequisites {
+    const repo = this.#content.repo;
+    const lesson = repo.getLessonPlan(lessonId);
+    if (!lesson || !repo.getLesson(lessonId)) {
+      throw new AppError('NOT_FOUND', 404, '단원을 찾을 수 없습니다.', {
+        details: { id: lessonId },
+      });
+    }
+    const own = new Set(lesson.introduces);
+    const entries = new Map<string, LessonPrerequisite['strength']>();
+    const edges = repo.listPrerequisites().filter((e) => own.has(e.conceptId));
+    for (const strength of ['required', 'helpful'] as const) {
+      for (const e of edges) {
+        if (e.strength !== strength || own.has(e.prerequisiteId)) continue;
+        if (!entries.has(e.prerequisiteId)) entries.set(e.prerequisiteId, strength);
+      }
+    }
+    for (const id of lesson.reviews) {
+      if (!own.has(id) && !entries.has(id)) entries.set(id, 'reviewed');
+    }
+    const ids = [...entries.keys()];
+    const concepts = repo.getConceptsWithLesson(ids);
+    const now = this.#now();
+    const { learnerId } = learnerContext(this.#userDb);
+    const states = loadConceptStates(this.#userDb.orm, learnerId, ids, this.#engine.fsrs);
+    const prerequisites = ids.flatMap((id): LessonPrerequisite[] => {
+      const concept = concepts.get(id);
+      if (!concept) return [];
+      const state = states.get(id);
+      const readiness = assessPrerequisite(this.#engine, state ?? initialConceptState(id), now);
+      return [
+        {
+          concept: { id, title: concept.title, summary: concept.summary },
+          strength: entries.get(id) ?? 'reviewed',
+          stage: readiness.stage,
+          effective: readiness.effective,
+          weak: readiness.weak,
+          practiced: state !== undefined && state.mastery.lastAttemptAt !== null,
+          lesson: concept.lesson && concept.lesson.id !== lessonId ? concept.lesson : null,
+        },
+      ];
+    });
+    return {
+      lessonId,
+      prerequisites,
+      warnings: prerequisites
+        .filter((p) => p.strength === 'required' && p.weak)
+        .map((p) => p.concept.id),
     };
   }
 }

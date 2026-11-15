@@ -38,6 +38,7 @@ import {
   goalStatusSchema,
   learnerProfileSchema,
   conceptDetailSchema,
+  lessonPrerequisitesSchema,
   masteryOverviewSchema,
   weakConceptsSchema,
   masteryChangesSchema,
@@ -165,6 +166,18 @@ export const lessonQuery = (id: string) =>
     queryFn: ({ signal }) =>
       api(`/lessons/${encodeURIComponent(id)}`, { schema: lessonDetailSchema, signal }),
     staleTime: Infinity,
+  });
+
+/** The lesson's prerequisites with the learner's mastery (FR-CUR-02, FR-CUR-05). */
+export const lessonPrerequisitesQuery = (id: string) =>
+  queryOptions({
+    queryKey: ['lesson-prerequisites', id],
+    queryFn: ({ signal }) =>
+      api(`/lessons/${encodeURIComponent(id)}/prerequisites`, {
+        schema: lessonPrerequisitesSchema,
+        signal,
+      }),
+    staleTime: 30_000,
   });
 
 // ── Practice (docs/design/system-architecture.md#api-규약) ──

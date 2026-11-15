@@ -2,10 +2,11 @@ import {
   conceptDetailSchema,
   dailyPlanSchema,
   goalStatusSchema,
+  lessonPrerequisitesSchema,
   type DailyPlanView,
 } from '@proginone/shared';
 import { describe, expect, it } from 'vitest';
-import { EX } from '../../test/content-fixture.ts';
+import { EX, PROJECT } from '../../test/content-fixture.ts';
 import { count, DAY, MINUTE, practiceApp } from '../../test/practice-app.ts';
 import {
   answerAll,
@@ -281,5 +282,63 @@ describe('GET /concepts/:id', () => {
     expect((await ctx.call('GET', '/concepts/js.basics.statement?evidenceLimit=0')).status).toBe(
       400,
     );
+  });
+});
+
+describe('GET /lessons/:id/prerequisites (FR-CUR-02, FR-CUR-05)', () => {
+  const prerequisites = async (ctx: Ctx, id: string) =>
+    lessonPrerequisitesSchema.parse((await ctx.call('GET', `/lessons/${id}/prerequisites`)).json);
+
+  it('lists the direct prerequisites with mastery and warns about a weak required one', async () => {
+    const ctx = await practiceApp();
+    expect(await prerequisites(ctx, LESSON)).toEqual({
+      lessonId: LESSON,
+      prerequisites: [
+        {
+          concept: {
+            id: 'js.basics.comment',
+            title: 'js.basics.comment',
+            summary: 's',
+          },
+          strength: 'required',
+          stage: 'not_started',
+          effective: 0,
+          weak: true,
+          practiced: false,
+          lesson: { id: 'js-basics.start.reading-errors', title: '단원 1' },
+        },
+      ],
+      warnings: ['js.basics.comment'],
+    });
+  });
+
+  it('stops warning once the prerequisite is practised', async () => {
+    const ctx = await practiceApp();
+    ctx.userDb.sqlite
+      .prepare(
+        `INSERT INTO concept_mastery (learner_id, concept_id, score, stage, evidence_weight_sum,
+           last_attempt_at, stage_changed_at, updated_at, engine_version)
+         VALUES ('01JD3Z8Q6V2K9M4T7R1X5W0BNC', 'js.basics.comment', 80, 'proficient', 6, ?, ?, ?, 'test')`,
+      )
+      .run(ctx.clock.now, ctx.clock.now, ctx.clock.now);
+    const result = await prerequisites(ctx, LESSON);
+    expect(result.prerequisites[0]).toMatchObject({
+      stage: 'proficient',
+      weak: false,
+      practiced: true,
+    });
+    expect(result.prerequisites[0]?.effective).toBeGreaterThanOrEqual(60);
+    expect(result.warnings).toEqual([]);
+  });
+
+  it('shows reviewed concepts without warning, and 404 for an unknown lesson', async () => {
+    const ctx = await practiceApp();
+    // The project introduces nothing and reviews `js.basics.comment`.
+    const result = await prerequisites(ctx, PROJECT);
+    expect(result.prerequisites.map((p) => [p.concept.id, p.strength, p.weak])).toEqual([
+      ['js.basics.comment', 'reviewed', true],
+    ]);
+    expect(result.warnings).toEqual([]);
+    expect((await ctx.call('GET', '/lessons/js-basics.nope/prerequisites')).status).toBe(404);
   });
 });

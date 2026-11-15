@@ -505,6 +505,43 @@ export class ContentRepository {
   }
 
   /**
+   * Concepts with their summary and the lesson that introduces them (`introduced_in_lesson_id`),
+   * for the lesson prerequisite list (FR-CUR-02).
+   */
+  getConceptsWithLesson(
+    ids: readonly string[],
+  ): Map<string, { id: string; title: string; summary: string; lesson: { id: string; title: string } | null }> {
+    const out = new Map<
+      string,
+      { id: string; title: string; summary: string; lesson: { id: string; title: string } | null }
+    >();
+    if (ids.length === 0) return out;
+    for (const row of this.#db
+      .select({
+        id: t.concepts.id,
+        title: t.concepts.title,
+        summary: t.concepts.summary,
+        lessonId: t.lessons.id,
+        lessonTitle: t.lessons.title,
+      })
+      .from(t.concepts)
+      .leftJoin(t.lessons, eq(t.concepts.introducedInLessonId, t.lessons.id))
+      .where(inArray(t.concepts.id, [...new Set(ids)]))
+      .all()) {
+      out.set(row.id, {
+        id: row.id,
+        title: row.title,
+        summary: row.summary,
+        lesson:
+          row.lessonId !== null && row.lessonTitle !== null
+            ? { id: row.lessonId, title: row.lessonTitle }
+            : null,
+      });
+    }
+    return out;
+  }
+
+  /**
    * Lessons of a course in reading order with their time estimates (pace and today's plan).
    * By default only `kind: lesson` units: the pace leaves assessments and projects out
    * (learning-engine.md#목표-페이스-계산-computepace); today's plan also takes projects.

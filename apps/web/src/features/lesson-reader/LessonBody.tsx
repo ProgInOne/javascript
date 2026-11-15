@@ -1,4 +1,4 @@
-import type { LessonConcept, Settings } from '@proginone/shared';
+import type { LessonConcept, LessonPrerequisite, Settings } from '@proginone/shared';
 import { Badge } from '@proginone/ui';
 import { Link } from '@tanstack/react-router';
 import {
@@ -11,6 +11,7 @@ import {
   Telescope,
 } from 'lucide-react';
 import { createContext, useContext, type ReactNode } from 'react';
+import { MasteryIcon, STAGE_NAMES } from '../mastery/MasteryIcon.tsx';
 import { InlineExerciseSlot } from './InlineExerciseSlot.tsx';
 import { LessonDiagram } from './LessonDiagram.tsx';
 import { RunnableExampleBlock } from './RunnableExampleBlock.tsx';
@@ -30,6 +31,8 @@ interface LessonContextValue {
   concepts: ReadonlyMap<string, LessonConcept>;
   /** `lesson.predictFirst` (설정 > 학습 방식): `required` hides "예측 건너뛰기". */
   predictFirst: Settings['lesson.predictFirst'];
+  /** `GET /lessons/:id/prerequisites`; undefined while loading or when it failed. */
+  prerequisites: readonly LessonPrerequisite[] | undefined;
 }
 const LessonContext = createContext<LessonContextValue | null>(null);
 const useLesson = () => {
@@ -243,17 +246,49 @@ function splitCells(nodes: Node[]): Node[][] {
   return cells;
 }
 
-/** Auto-generated from data (content MDX leaves these sections empty). */
+/**
+ * Auto-generated from data (content MDX leaves these sections empty): the lesson's prerequisite
+ * concepts with the learner's mastery (FR-CUR-02, content-and-exercises.md 선수 개념 확인). Until
+ * the mastery arrives (or if it fails) the reviewed concepts are listed without it.
+ */
 function PrerequisitesSection() {
-  const { concepts } = useLesson();
-  const reviewed = [...concepts.values()].filter((c) => c.role === 'reviews');
-  if (reviewed.length === 0)
+  const { concepts, prerequisites } = useLesson();
+  if (prerequisites === undefined) {
+    const reviewed = [...concepts.values()].filter((c) => c.role === 'reviews');
+    if (reviewed.length === 0)
+      return <p>이 단원은 따로 알아야 할 선수 개념 없이 시작할 수 있어요.</p>;
+    return (
+      <ul>
+        {reviewed.map((c) => (
+          <li key={c.id}>
+            <strong>{c.title}</strong>: {c.summary}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+  if (prerequisites.length === 0)
     return <p>이 단원은 따로 알아야 할 선수 개념 없이 시작할 수 있어요.</p>;
   return (
-    <ul>
-      {reviewed.map((c) => (
-        <li key={c.id}>
-          <strong>{c.title}</strong>: {c.summary}
+    <ul className="lesson-prereq-list" aria-label="선수 개념과 내 숙련도">
+      {prerequisites.map((p) => (
+        <li key={p.concept.id} className="lesson-prereq-list__item">
+          <MasteryIcon stage={p.stage} decorative />
+          <div>
+            <Link
+              to="/concepts/$conceptId"
+              params={{ conceptId: p.concept.id }}
+              className="lesson-link font-semibold"
+            >
+              {p.concept.title}
+            </Link>{' '}
+            <span className="lesson-prereq-list__stage">
+              {STAGE_NAMES[p.stage]}
+              {p.practiced ? ` · 숙련도 ${String(Math.round(p.effective))}` : ''}
+              {p.strength === 'required' && p.weak ? ' · 먼저 확인하면 좋아요' : ''}
+            </span>
+            <p className="m-0">{p.concept.summary}</p>
+          </div>
         </li>
       ))}
     </ul>
@@ -438,18 +473,21 @@ export function LessonBody({
   body,
   concepts,
   predictFirst = 'recommended',
+  prerequisites,
 }: {
   lessonId: string;
   kind?: LessonContextValue['kind'];
   body: readonly unknown[];
   concepts: readonly LessonConcept[];
   predictFirst?: LessonContextValue['predictFirst'];
+  prerequisites?: readonly LessonPrerequisite[] | undefined;
 }) {
   const value = {
     lessonId,
     kind,
     concepts: new Map(concepts.map((c) => [c.id, c])),
     predictFirst,
+    prerequisites,
   };
   return (
     <LessonContext.Provider value={value}>

@@ -169,6 +169,26 @@ function stageIndex(stage: MasteryStage): number {
 }
 
 /**
+ * How ready a prerequisite is: its effective mastery now, its stage, and whether it is weak
+ * (`effective < weakPrerequisiteBelow` or a stage below `practicing`). The same rule serves the
+ * relearning search and the prerequisite warning when a lesson opens (FR-CUR-05).
+ */
+export function assessPrerequisite(
+  deps: EngineDeps,
+  state: ConceptState,
+  now: number,
+): { effective: number; stage: MasteryStage; weak: boolean } {
+  const { effective } = effectiveMastery(deps, state.mastery.score, state.memory, now);
+  return {
+    effective,
+    stage: state.mastery.stage,
+    weak:
+      effective < deps.config.remediation.weakPrerequisiteBelow ||
+      stageIndex(state.mastery.stage) < stageIndex('practicing'),
+  };
+}
+
+/**
  * Breadth-first search over `required` edges up to `prerequisiteDepth`. A prerequisite is weak
  * when `effective < 60` or its stage is below `practicing`.
  */
@@ -200,15 +220,10 @@ export function inspectPrerequisites(
         seen.add(edge.prerequisiteId);
         next.push(edge.prerequisiteId);
         const state = states.get(edge.prerequisiteId) ?? initialConceptState(edge.prerequisiteId);
-        const { effective } = effectiveMastery(deps, state.mastery.score, state.memory, now);
         out.push({
           conceptId: edge.prerequisiteId,
           depth,
-          effective,
-          stage: state.mastery.stage,
-          weak:
-            effective < r.weakPrerequisiteBelow ||
-            stageIndex(state.mastery.stage) < stageIndex('practicing'),
+          ...assessPrerequisite(deps, state, now),
           recentlyChecked: checkedRecently.has(edge.prerequisiteId),
         });
       }

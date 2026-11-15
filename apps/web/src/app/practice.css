@@ -333,6 +333,68 @@
     color: var(--color-text-secondary);
     font: var(--text-ui);
   }
+  /* FR-CUR-05: non-blocking prerequisite warning (amber, never red: nothing is wrong yet). */
+  .lesson-prereq-warning {
+    display: flex;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-8);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-warning-bg);
+    border: 1px solid var(--color-warning-border);
+    color: var(--color-text-primary);
+    font: var(--text-ui);
+  }
+  .lesson-prereq-warning__icon {
+    flex: none;
+    margin-top: 2px;
+    color: var(--color-warning-fg);
+  }
+  .lesson-prereq-warning__title {
+    margin: 0 0 var(--space-1);
+    font: var(--text-ui);
+    font-weight: 600;
+    color: var(--color-warning-fg);
+  }
+  .lesson-prereq-warning__list {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .lesson-prereq-warning__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+  }
+  .lesson-prereq-warning__actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .lesson-prereq-list {
+    display: grid;
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+  }
+  .lesson-prereq-list__item {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+  }
+  .lesson-prereq-list__item > svg {
+    flex: none;
+    margin-top: 0.3em;
+  }
+  .lesson-prereq-list__stage {
+    color: var(--color-text-secondary);
+    font: var(--text-small);
+  }
   .lesson-inline-check {
     display: grid;
     gap: var(--space-4);

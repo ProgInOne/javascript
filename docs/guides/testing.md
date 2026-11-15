@@ -48,10 +48,11 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 | `tests/flows.spec.ts` | 핵심 흐름: 내비게이션·포커스, 테마 유지, 백업 생성·복원, 로컬 서버 보안(토큰·Host) |
 | `tests/a11y.spec.ts` | 화면 × 라이트/다크에서 axe-core WCAG 2.2 AA 위반 0건(실제 브라우저라 색 대비 포함) |
 | `tests/visual.spec.ts` | 화면 × 테마 × 1280/1440 전체 페이지 스크린샷 비교(`@visual`) |
-| `tests/sandbox.spec.ts` | 코드 실행 샌드박스: 실행·관측값, 보안 스위트(S1~S48 중 브라우저 항목), 셸 교체·대체 경로 |
-| `tests/sandbox-grading.spec.ts` | 러너 ↔ 채점기 계약: `exercise-kit`이 만든 실행 계획을 실제 러너로 돌려 채점 |
+| `tests/sandbox.spec.ts` | 코드 실행 샌드박스: 실행·관측값, 보안 스위트(S1~S49 중 브라우저 항목), 셸 교체·대체 경로 |
+| `tests/sandbox-grading.spec.ts` | 러너 ↔ 채점기 계약: `exercise-kit`이 만든 실행 계획을 실제 러너로 돌려 채점(`preventDefault()` 없는 폼 제출이 매번 같은 결과인지 포함) |
 | `tests/practice.spec.ts` | 실습 흐름: 레슨 → 연습 세트의 모든 유형 풀이(코드는 실제 러너로 채점) → 힌트 → 단원 통과 |
 | `tests/reading.spec.ts` | 읽기 모드: 본문 확인 문제, 읽기 위치 이어 읽기, 활동 하트비트(`page.clock`) |
+| `tests/prerequisites.spec.ts` | 설정 > 데이터 전용 서버에서 초기화한 학습자로 단원 선수 개념 경고(막지 않음, 개념·앞 단원 링크, 읽기만 했을 때와 한 번 푼 뒤의 약점 연습)와 선수 개념 숙련도, axe |
 | `tests/review.spec.ts` | 대시보드와 다음 날 복습: 테스트 시계를 하루 넘겨 복습 세트를 풀고 끝냄 |
 | `tests/ai-unavailable.spec.ts` | AI 비가용 상태: 실패한 답변의 오류 표시(모의 제공자의 `[mock:error:AI_*]`), 연결 해제 시 AI 진입점 비활성·서버 거부·오답 설명 대체, 다시 연결 |
 | `tests/journey.spec.ts` | 첫 실행 전용 서버에서 새 학습자의 흐름: 온보딩 → 대시보드, 온보딩 목표 단계 시각 회귀 |

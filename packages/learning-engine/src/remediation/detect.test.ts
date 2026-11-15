@@ -8,7 +8,7 @@ import { attempt, deps, exercise, Learner, SEOUL, T0 } from '../test/fixtures.ts
 import type { ConceptState } from '../types.ts';
 import { DAY_MS } from '../util/time.ts';
 import type { RemediationContext, RemediationHistoryEntry, SetItemOutcome } from './detect.ts';
-import { detectRemediation, inspectPrerequisites } from './detect.ts';
+import { assessPrerequisite, detectRemediation, inspectPrerequisites } from './detect.ts';
 
 /**
  * `c.main` requires `p.strong` and `p.weak` (depth 1); `p.weak` requires `p.deep` (depth 2).
@@ -326,5 +326,30 @@ describe('inspectPrerequisites', () => {
       now: T0,
     };
     expect(detectRemediation(deps, input)).toEqual(detectRemediation(deps, input));
+  });
+});
+
+describe('assessPrerequisite (FR-CUR-05 lesson warning, same rule as relearning)', () => {
+  it('calls an unstarted concept weak', () => {
+    const result = assessPrerequisite(deps, initialConceptState('p.none'), T0);
+    expect(result).toEqual({ effective: 0, stage: 'not_started', weak: true });
+  });
+
+  it('calls a well-practised concept ready and a barely practised one weak', () => {
+    expect(assessPrerequisite(deps, strong, T0).weak).toBe(false);
+    expect(assessPrerequisite(deps, weak, T0).weak).toBe(true);
+  });
+
+  it('agrees with the relearning search', () => {
+    const checked = inspectPrerequisites(deps, {
+      conceptId: 'c.main',
+      context: context(),
+      now: T0,
+    });
+    for (const p of checked) {
+      const state = [strong, weak, deep].find((s) => s.mastery.conceptId === p.conceptId);
+      if (!state) continue;
+      expect(assessPrerequisite(deps, state, T0).weak).toBe(p.weak);
+    }
   });
 });

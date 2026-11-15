@@ -283,6 +283,38 @@ export const conceptDetailSchema = z.object({
 });
 export type ConceptDetail = z.infer<typeof conceptDetailSchema>;
 
+/**
+ * `GET /lessons/:id/prerequisites` (FR-CUR-02, FR-CUR-05): the lesson's prerequisite concepts with
+ * the learner's mastery, for the "선수 개념 확인" section and the non-blocking warning when the
+ * lesson opens. Prerequisites are the direct `concept_prerequisites` of the concepts the lesson
+ * introduces (`required` before `helpful`), then the concepts `lesson.yaml` lists as reviewed
+ * (`reviewed`), minus the concepts the lesson introduces. Only `required` ones can warn.
+ */
+export const lessonPrerequisiteSchema = z.object({
+  concept: conceptRefSchema.extend({ summary: z.string() }),
+  strength: z.enum(['required', 'helpful', 'reviewed']),
+  stage: masteryStageSchema,
+  effective: z.number(),
+  /** `effective < 60` or below `practicing` (the relearning rule, learning-engine.md#재학습-규칙). */
+  weak: z.boolean(),
+  /**
+   * The learner has answered an exercise of it (`last_attempt_at`): weakness practice can target
+   * it (a concept only read about is not practised yet, learning-engine.md#약점-집중-세트).
+   */
+  practiced: z.boolean(),
+  /** The first lesson (course order) that introduces the concept; null if none. */
+  lesson: z.object({ id: z.string(), title: z.string() }).nullable(),
+});
+export type LessonPrerequisite = z.infer<typeof lessonPrerequisiteSchema>;
+
+export const lessonPrerequisitesSchema = z.object({
+  lessonId: z.string(),
+  prerequisites: z.array(lessonPrerequisiteSchema),
+  /** Concept ids of the weak `required` prerequisites: non-empty means "show the warning". */
+  warnings: z.array(z.string()),
+});
+export type LessonPrerequisites = z.infer<typeof lessonPrerequisitesSchema>;
+
 /** `GET /concepts/:id?evidenceLimit=`. */
 export const conceptDetailQuerySchema = z
   .object({ evidenceLimit: z.coerce.number().int().min(1).max(200).optional() })
