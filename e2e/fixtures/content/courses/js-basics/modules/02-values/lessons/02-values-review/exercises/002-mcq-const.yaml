@@ -1,0 +1,30 @@
+id: js-basics.values.values-review.mcq-const
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.basics.const, weight: 1 }
+estimatedSeconds: 40
+usage: assessment
+prompt: |
+  `const price = 100;` 다음에 `price = 200;`을 실행하면 어떻게 되나요?
+spec:
+  options:
+    - id: a
+      text: '`TypeError`가 난다'
+    - id: b
+      text: '`price`가 200이 된다'
+      rationale: const 변수에는 다시 대입할 수 없어요.
+    - id: c
+      text: '`console.log`'
+      rationale: console.log는 값을 출력할 뿐이에요.
+  correct: a
+hints:
+  - 평가 힌트 1단계예요.
+  - 평가 힌트 2단계예요.
+  - 평가 힌트 3단계예요.
+explanation: |
+  평가 해설: `const` 변수에 다시 대입하면 `TypeError`가 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

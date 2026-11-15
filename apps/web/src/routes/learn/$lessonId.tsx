@@ -1,9 +1,22 @@
-import type { LessonDetail } from '@proginone/shared';
-import { useQuery } from '@tanstack/react-query';
+import type { LessonDetail, PracticeSetView } from '@proginone/shared';
+import { ErrorState, Skeleton } from '@proginone/ui';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, ArrowRight, ChevronLeft } from 'lucide-react';
-import { useCallback, useEffect } from 'react';
-import { lessonQuery, recordLessonProgress } from '../../api/queries.ts';
+import { useCallback, useEffect, type ReactNode } from 'react';
+import { ApiRequestError } from '../../api/client.ts';
+import {
+  createPracticeSet,
+  lessonQuery,
+  practiceSetQuery,
+  recordLessonProgress,
+} from '../../api/queries.ts';
+import {
+  AssessmentResultView,
+  AssessmentStart,
+  LockedTutorButton,
+} from '../../features/assessment/Assessment.tsx';
+import { PracticeSession } from '../../features/practice/PracticeSession.tsx';
 import { AIStatusIndicator } from '../../features/ai/AIStatusIndicator.tsx';
 import { SELECTABLE_ATTR } from '../../features/tutor/selection.ts';
 import { TutorProvider, useTutorScope } from '../../features/tutor/TutorContext.tsx';
@@ -44,19 +57,134 @@ function LearnPage() {
   const search = Route.useSearch();
   const query = useQuery(lessonQuery(lessonId));
   return (
-    <TutorProvider>
-      <QueryState query={query} notFoundTitle="단원을 찾을 수 없어요">
-        {(lesson) => (
-          <>
+    <QueryState query={query} notFoundTitle="단원을 찾을 수 없어요">
+      {(lesson) =>
+        search.mode === 'practice' && lesson.kind === 'assessment' ? (
+          <AssessmentMode lesson={lesson} search={search} />
+        ) : (
+          <TutorProvider>
             <LessonTutorScope lesson={lesson} />
             {search.mode === 'practice' ? (
               <PracticeMode lesson={lesson} search={search} />
             ) : (
               <LessonReader lesson={lesson} />
             )}
-          </>
-        )}
-      </QueryState>
+          </TutorProvider>
+        )
+      }
+    </QueryState>
+  );
+}
+
+/**
+ * Practice mode of a unit assessment (learning-engine.md#단원-평가-세트): the start screen with the
+ * rules, the assessment in progress, and the end screen. While it runs there is no tutor at all
+ * (no drawer, no ⌘J, no "ask about the selection"); the header shows the tutor button locked.
+ */
+function AssessmentMode({ lesson, search }: { lesson: LessonDetail; search: LearnSearch }) {
+  const navigate = useNavigate();
+  const client = useQueryClient();
+  const go = useCallback(
+    (next: { set: string; i?: number }, replace = false) => {
+      void navigate({
+        to: '/learn/$lessonId',
+        params: { lessonId: lesson.id },
+        search: { mode: 'practice', ...next },
+        replace,
+      });
+    },
+    [lesson.id, navigate],
+  );
+  const setQuery = useQuery({ ...practiceSetQuery(search.set ?? ''), enabled: !!search.set });
+  const set = search.set ? setQuery.data : undefined;
+  const inProgress = set?.kind === 'assessment' && set.status === 'active';
+  const openSet = (next: PracticeSetView, replace = false) => {
+    const i = next.items.findIndex((it) => it.id === next.nextItemId);
+    go({ set: next.id, ...(i >= 0 ? { i: i + 1 } : {}) }, replace);
+  };
+
+  let body: ReactNode;
+  if (!search.set) {
+    body = (
+      <AssessmentStart
+        lesson={lesson}
+        onStarted={(next) => {
+          openSet(next, true);
+        }}
+      />
+    );
+  } else if (setQuery.isPending) {
+    body = <Skeleton variant="card" height={360} />;
+  } else if (setQuery.isError || set?.kind !== 'assessment') {
+    const e = setQuery.error instanceof ApiRequestError ? setQuery.error : null;
+    body = (
+      <ErrorState
+        variant="page"
+        headingLevel={1}
+        title={
+          e?.code === 'NOT_FOUND' || set ? '평가를 찾을 수 없어요' : '평가를 불러오지 못했어요'
+        }
+        description={e?.message ?? '처음 화면에서 다시 시작해 주세요.'}
+        code={e?.code ?? 'NOT_FOUND'}
+        action={
+          <Link
+            to="/learn/$lessonId"
+            params={{ lessonId: lesson.id }}
+            search={{ mode: 'practice' }}
+          >
+            평가 처음으로
+          </Link>
+        }
+      />
+    );
+  } else if (inProgress) {
+    const index =
+      search.i !== undefined && search.i >= 1 && search.i <= set.items.length ? search.i - 1 : null;
+    body = (
+      <PracticeSession
+        set={set}
+        index={index}
+        onIndexChange={(i) => {
+          go({ set: set.id, ...(i === null ? {} : { i: i + 1 }) });
+        }}
+        heading={lesson.title}
+        lessonTitle={lesson.title}
+        summaryActions={() => null}
+      />
+    );
+  } else {
+    body = (
+      <AssessmentResultView
+        lesson={lesson}
+        set={set}
+        onRetake={async () => {
+          const next = await createPracticeSet({ kind: 'assessment', lessonId: lesson.id });
+          client.setQueryData(practiceSetQuery(next.id).queryKey, next);
+          openSet(next);
+        }}
+      />
+    );
+  }
+
+  if (inProgress) {
+    return (
+      <div className="min-h-screen bg-canvas">
+        <LearnHeader lesson={lesson} mode="practice" tutor={<LockedTutorButton />} />
+        <div className="practice-page" data-f6-region="">
+          {body}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <TutorProvider>
+      <LessonTutorScope lesson={lesson} />
+      <div className="min-h-screen bg-canvas">
+        <LearnHeader lesson={lesson} mode="practice" />
+        <TutorLayout top={48}>
+          <div className="practice-page">{body}</div>
+        </TutorLayout>
+      </div>
     </TutorProvider>
   );
 }
@@ -122,7 +250,16 @@ function PracticeMode({ lesson, search }: { lesson: LessonDetail; search: LearnS
 const segment =
   'inline-flex h-8 items-center whitespace-nowrap rounded-md px-3 font-medium text-fg-secondary aria-[current=page]:bg-surface aria-[current=page]:text-heading aria-[current=page]:shadow-1';
 
-function LearnHeader({ lesson, mode }: { lesson: LessonDetail; mode: 'read' | 'practice' }) {
+function LearnHeader({
+  lesson,
+  mode,
+  tutor,
+}: {
+  lesson: LessonDetail;
+  mode: 'read' | 'practice';
+  /** Replaces the tutor button (the locked one during an assessment). */
+  tutor?: ReactNode;
+}) {
   useModeShortcuts(lesson.id);
   return (
     <header
@@ -172,11 +309,11 @@ function LearnHeader({ lesson, mode }: { lesson: LessonDetail; mode: 'read' | 'p
           aria-current={mode === 'practice' ? 'page' : undefined}
           aria-keyshortcuts="Meta+2 Control+2"
         >
-          실습
+          {lesson.kind === 'assessment' ? '평가' : '실습'}
         </Link>
       </nav>
       <AIStatusIndicator />
-      <TutorButton />
+      {tutor ?? <TutorButton />}
     </header>
   );
 }
@@ -212,7 +349,12 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
                 </a>
               </p>
             )}
-            <LessonBody lessonId={lesson.id} body={lesson.body} concepts={lesson.concepts} />
+            <LessonBody
+              lessonId={lesson.id}
+              kind={lesson.kind}
+              body={lesson.body}
+              concepts={lesson.concepts}
+            />
 
             {(lesson.previous ?? lesson.next) && (
               <nav

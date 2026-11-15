@@ -1,0 +1,11 @@
+id: js-basics.values.values-review
+title: 값과 변수 단원 평가
+summary: 모듈 2에서 배운 let, const, 재대입을 확인합니다.
+kind: assessment
+estimatedMinutes: { read: 1, practice: 5 }
+concepts:
+  reviewed: [js.basics.let, js.basics.const, js.basics.reassign]
+objectives:
+  - let과 const의 차이를 설명할 수 있다.
+assessment:
+  passRatio: 0.8

@@ -63,6 +63,9 @@ function CourseDetail() {
                               </span>
                               <span>{lesson.title}</span>
                               {lesson.importance === 'core' && <Badge variant="brand">핵심</Badge>}
+                              {lesson.kind === 'assessment' && (
+                                <Badge variant="neutral">단원 평가</Badge>
+                              )}
                               <span className="ml-auto text-fg-tertiary tabular-nums type-small">
                                 {formatMinutes(lesson.estimatedMinutes)} · {lesson.exerciseCount}
                                 문제

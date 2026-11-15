@@ -13,19 +13,22 @@ import {
   type RenderableExercise,
   type RenderableTypeId,
 } from '@proginone/exercise-ui';
-import type {
-  AttemptResponse,
-  ExerciseView,
-  OpenedHint,
-  PracticeItemView,
-  PracticeSetView,
-  Remediation,
-  RunResult,
-  SolutionResponse,
+import {
+  isWithheldAttempt,
+  type AssessmentAttemptResponse,
+  type AttemptResponse,
+  type ExerciseView,
+  type OpenedHint,
+  type PracticeItemView,
+  type PracticeSetView,
+  type Remediation,
+  type RunResult,
+  type SolutionResponse,
+  type SubmitAttemptResponse,
 } from '@proginone/shared';
 import { Badge, Button, ErrorState, Skeleton } from '@proginone/ui';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, ArrowRight, RotateCcw, SkipForward } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Lock, RotateCcw, SkipForward } from 'lucide-react';
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
 import {
@@ -72,7 +75,8 @@ export interface PracticeItemProps {
   autoFocus?: boolean;
   /** Ask for confidence on submission (setting, default on). */
   askConfidence?: boolean;
-  onAnswered: (res: AttemptResponse) => void;
+  /** Assessment items answer with the withheld shape (no outcome until the set ends). */
+  onAnswered: (res: SubmitAttemptResponse) => void;
   onNavigate: (index: number) => void;
   /** Next pending item after this one, or null when every other item is answered. */
   nextPending: number | null;
@@ -157,6 +161,10 @@ function ItemWorkspace({
   });
   const [saved, setSaved] = useState<number | null>(null);
   const [result, setResult] = useState<AttemptResponse | null>(null);
+  // An assessment in progress: hints, the solution and the tutor are locked, each item takes one
+  // submission and its result is withheld until the end (learning-engine.md#단원-평가-세트).
+  const assessment = set.kind === 'assessment' && set.status === 'active';
+  const [submitted, setSubmitted] = useState<AssessmentAttemptResponse | null>(null);
   const [confidence, setConfidence] = useState<Confidence | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -184,19 +192,23 @@ function ItemWorkspace({
       work.current.run,
       work.current.result ? feedbackResultOf(work.current.result).checkResults : null,
     );
-  useTutorScope({
-    scopeType: 'exercise',
-    scopeId: view.id,
-    title: `${contextTitle ?? '연습'} · 문제 ${index + 1}`,
-    lessonId: view.lessonId ?? undefined,
-    exerciseId: view.id,
-    practiceSetItemId: item.id,
-    getCode: tutorCode,
-    getRun: tutorRun,
-    hasCode: isCode,
-    hasRun: run !== null,
-    lastIncorrect: result !== null && result.attempt.outcome !== 'correct',
-  });
+  useTutorScope(
+    assessment
+      ? null
+      : {
+          scopeType: 'exercise',
+          scopeId: view.id,
+          title: `${contextTitle ?? '연습'} · 문제 ${index + 1}`,
+          lessonId: view.lessonId ?? undefined,
+          exerciseId: view.id,
+          practiceSetItemId: item.id,
+          getCode: tutorCode,
+          getRun: tutorRun,
+          hasCode: isCode,
+          hasRun: run !== null,
+          lastIncorrect: result !== null && result.attempt.outcome !== 'correct',
+        },
+  );
 
   // Problem change: focus the prompt heading (ui-ux.md 포커스 관리).
   useEffect(() => {
@@ -206,8 +218,10 @@ function ItemWorkspace({
   const [skipping, setSkipping] = useState(false);
   const added = addedItemLabel(item.reason);
 
-  const graded = result !== null;
-  const setOpen = (result?.set.status ?? set.status) === 'active';
+  const graded = result !== null || submitted !== null;
+  const setOpen = (result?.set.status ?? submitted?.set.status ?? set.status) === 'active';
+  /** Revisiting an assessment item answered earlier: nothing to show or resubmit. */
+  const alreadySubmitted = assessment && submitted === null && item.status !== 'pending';
   const ready = isAnswerReady(exercise, answer);
   // Test-graded exercises ask for confidence on the first submission only.
   const ask = askConfidence && !(isCode && attemptsHere > 0);
@@ -258,10 +272,16 @@ function ItemWorkspace({
         startedAt: timing.startedAt,
         activeMs: timing.readActiveMs(),
       });
-      setResult(res);
-      setConfidence(choice);
       setAttemptsHere(res.item.attempts);
       if (res.attempt.engineApplied) clearDraft(draftKey);
+      if (isWithheldAttempt(res)) {
+        if (res.attempt.engineApplied) setSubmitted(res);
+        else setError('실행 환경 문제로 이번 제출은 기록하지 않았어요. 다시 제출해 주세요.');
+        onAnswered(res);
+        return;
+      }
+      setResult(res);
+      setConfidence(choice);
       onAnswered(res);
       if (exercise.typeId === 'web_task') void runInteractive();
     } catch (e) {
@@ -279,7 +299,7 @@ function ItemWorkspace({
   };
 
   const revealHint = async () => {
-    if (hintPending || hints.length >= view.hintCount) return;
+    if (assessment || hintPending || hints.length >= view.hintCount) return;
     setHintPending(true);
     try {
       const res = await openHint(view.id, item.id);
@@ -302,6 +322,7 @@ function ItemWorkspace({
   });
 
   const revealSolution = async () => {
+    if (assessment) return;
     try {
       setSolution(await viewSolution(view.id, item.id));
     } catch (e) {
@@ -324,19 +345,20 @@ function ItemWorkspace({
       : undefined;
 
   useExerciseShortcuts({
-    ...(graded ? {} : { onSubmit: () => void submit(ask ? 'sure' : null) }),
+    ...(graded || alreadySubmitted ? {} : { onSubmit: () => void submit(ask ? 'sure' : null) }),
     ...(view.requiresRun && isCode ? { onRun: () => void runInteractive() } : {}),
-    onNextHint: () => void revealHint(),
+    ...(assessment ? {} : { onNextHint: () => void revealHint() }),
   });
 
-  const conceptShown = !hideConceptUntilGraded || graded;
+  // An assessment does not name the concept of an item until the end (it would be a hint).
+  const conceptShown = !assessment && (!hideConceptUntilGraded || result !== null);
   const goNext = () => {
     if (nextPending === null) onShowSummary();
     else onNavigate(nextPending);
   };
   const setDone = !setOpen;
 
-  const actions: ReactNode = graded && (
+  const actions: ReactNode = result !== null && (
     <>
       {result.attempt.outcome !== 'correct' && setOpen && (
         <Button icon={<RotateCcw size={16} aria-hidden="true" />} onClick={retry}>
@@ -445,7 +467,31 @@ function ItemWorkspace({
           </Button>
         </div>
       )}
-      {!graded && set.status === 'active' && (
+      {submitted && (
+        <div className="assessment-submitted" role="status">
+          <p className="m-0">제출했어요. 정답과 해설은 평가가 끝나면 한꺼번에 보여 줘요.</p>
+          {setOpen && nextPending !== null ? (
+            <Button
+              variant="primary"
+              icon={<ArrowRight size={16} aria-hidden="true" />}
+              onClick={goNext}
+            >
+              다음 문제
+            </Button>
+          ) : (
+            <Button variant="primary" onClick={onShowSummary}>
+              평가 결과 보기
+            </Button>
+          )}
+        </div>
+      )}
+      {alreadySubmitted && (
+        <p className="assessment-submitted m-0" role="note">
+          <Lock size={14} aria-hidden="true" />
+          이미 제출한 문항이에요. 답과 결과는 평가가 끝나면 볼 수 있어요.
+        </p>
+      )}
+      {!graded && !alreadySubmitted && set.status === 'active' && (
         <ConfidencePicker
           onSubmit={(c) => void submit(c)}
           askConfidence={ask}
@@ -482,8 +528,9 @@ function ItemWorkspace({
           실행 환경 문제로 이번 제출은 기록에 반영하지 않았어요. 다시 제출해 주세요.
         </p>
       )}
-      {view.hintCount > 0 && (
+      {view.hintCount > 0 && !alreadySubmitted && (
         <HintLadder
+          locked={assessment}
           hints={Array.from({ length: view.hintCount }, (_, i) => hints[i]?.text ?? '')}
           revealed={hints.length}
           onReveal={() => void revealHint()}
@@ -499,22 +546,24 @@ function ItemWorkspace({
           }
           pending={hintPending}
           afterHints={
-            <AiHint
-              exerciseId={view.id}
-              level={hints.length}
-              request={() => {
-                const code = tutorCode();
-                const lastRun = tutorRun();
-                return {
-                  practiceSetItemId: item.id,
-                  ...(code ? { currentCode: code } : {}),
-                  ...(lastRun ? { lastRunResult: lastRun } : {}),
-                  ...(!isCode && work.current.answer !== null
-                    ? { lastAnswer: JSON.stringify(work.current.answer).slice(0, 2_000) }
-                    : {}),
-                };
-              }}
-            />
+            !assessment && (
+              <AiHint
+                exerciseId={view.id}
+                level={hints.length}
+                request={() => {
+                  const code = tutorCode();
+                  const lastRun = tutorRun();
+                  return {
+                    practiceSetItemId: item.id,
+                    ...(code ? { currentCode: code } : {}),
+                    ...(lastRun ? { lastRunResult: lastRun } : {}),
+                    ...(!isCode && work.current.answer !== null
+                      ? { lastAnswer: JSON.stringify(work.current.answer).slice(0, 2_000) }
+                      : {}),
+                  };
+                }}
+              />
+            )
           }
         />
       )}
@@ -572,6 +621,15 @@ function ItemWorkspace({
       </footer>
     </div>
   );
+
+  if (alreadySubmitted) {
+    return (
+      <div className="practice-layout practice-layout--single" data-exercise-id={view.id}>
+        {problem}
+        {response}
+      </div>
+    );
+  }
 
   if (isCode) {
     return (

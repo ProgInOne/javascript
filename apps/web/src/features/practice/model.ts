@@ -1,9 +1,10 @@
-import type {
-  AttemptResponse,
-  MasteryChange,
-  MasteryStage,
-  PracticeItemView,
-  PracticeSetView,
+import {
+  isWithheldAttempt,
+  type MasteryChange,
+  type MasteryStage,
+  type PracticeItemView,
+  type PracticeSetView,
+  type SubmitAttemptResponse,
 } from '@proginone/shared';
 
 /** Stage names from the glossary (ui-ux.md 마이크로카피 원칙 6). */
@@ -31,18 +32,21 @@ export const TYPE_LABELS: Readonly<Record<string, string>> = {
 /** Types worked on in the editor (two-column layout, confidence on the first submission only). */
 export const CODE_TYPES = new Set(['implement_function', 'fix_bug', 'web_task']);
 
-export type ItemState = 'pending' | 'correct' | 'retried' | 'wrong' | 'skipped';
+/** `submitted`: answered in an assessment in progress (the outcome is withheld). */
+export type ItemState = 'pending' | 'submitted' | 'correct' | 'retried' | 'wrong' | 'skipped';
 
 /** SetProgress state of an item (ui-ux.md 학습 특화 컴포넌트). */
 export function itemState(item: PracticeItemView): ItemState {
   if (item.status === 'skipped') return 'skipped';
-  if (item.status === 'pending' || item.lastOutcome === null) return 'pending';
+  if (item.status === 'pending') return 'pending';
+  if (item.lastOutcome === null) return 'submitted';
   if (item.lastOutcome === 'correct') return item.attempts > 1 ? 'retried' : 'correct';
   return 'wrong';
 }
 
 export const ITEM_STATE_LABELS: Readonly<Record<ItemState, string>> = {
   pending: '아직 풀지 않음',
+  submitted: '제출함',
   correct: '정답',
   retried: '다시 풀어 정답',
   wrong: '정답 아님',
@@ -50,7 +54,11 @@ export const ITEM_STATE_LABELS: Readonly<Record<ItemState, string>> = {
 };
 
 /** Folds an attempt response into the cached set view. */
-export function applyAttemptToSet(set: PracticeSetView, res: AttemptResponse): PracticeSetView {
+export function applyAttemptToSet(
+  set: PracticeSetView,
+  res: SubmitAttemptResponse,
+): PracticeSetView {
+  const outcome = isWithheldAttempt(res) ? null : res.attempt.outcome;
   return {
     ...set,
     status: res.set.status,
@@ -64,7 +72,7 @@ export function applyAttemptToSet(set: PracticeSetView, res: AttemptResponse): P
             ...item,
             status: res.item.status,
             attempts: res.item.attempts,
-            lastOutcome: res.attempt.engineApplied ? res.attempt.outcome : item.lastOutcome,
+            lastOutcome: res.attempt.engineApplied ? outcome : item.lastOutcome,
           }
         : item,
     ),

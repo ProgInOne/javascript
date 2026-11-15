@@ -1,8 +1,9 @@
-import type {
-  AttemptResponse,
-  MasteryChange,
-  PracticeSetView,
-  Remediation,
+import {
+  isWithheldAttempt,
+  type MasteryChange,
+  type PracticeSetView,
+  type Remediation,
+  type SubmitAttemptResponse,
 } from '@proginone/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
@@ -62,10 +63,16 @@ export function PracticeSession({
   /** The set with the items the engine added or replaced (fetched again when it changed). */
   const refreshSet = () => client.query({ ...practiceSetQuery(set.id), staleTime: 0 });
 
-  const onAnswered = (res: AttemptResponse) => {
+  const onAnswered = (res: SubmitAttemptResponse) => {
     client.setQueryData(practiceSetQuery(set.id).queryKey, (old) =>
       old ? applyAttemptToSet(old, res) : old,
     );
+    if (isWithheldAttempt(res)) {
+      if (res.set.status === 'completed') {
+        for (const queryKey of LEARNING_STATE_KEYS) void client.invalidateQueries({ queryKey });
+      }
+      return;
+    }
     if (res.adaptations.length > 0) void refreshSet();
     if (res.remediation) {
       const r = res.remediation;

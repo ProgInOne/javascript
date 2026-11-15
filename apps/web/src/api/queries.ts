@@ -1,5 +1,4 @@
 import {
-  attemptResponseSchema,
   dashboardSchema,
   reviewQueueSchema,
   exerciseViewSchema,
@@ -11,6 +10,7 @@ import {
   reportResponseSchema,
   runPlanSchema,
   skipItemResponseSchema,
+  submitAttemptResponseSchema,
   solutionResponseSchema,
   type AttemptRequest,
   type CreatePracticeSetRequest,
@@ -147,8 +147,9 @@ export const fetchRunPlan = (exerciseId: string, request: RunPlanRequest) =>
     schema: runPlanSchema,
   });
 
+/** `POST /attempts`. Items of an assessment in progress answer with the withheld shape. */
 export const submitAttempt = (request: AttemptRequest) =>
-  api('/attempts', { method: 'POST', body: request, schema: attemptResponseSchema });
+  api('/attempts', { method: 'POST', body: request, schema: submitAttemptResponseSchema });
 
 /** `POST /practice-sets/:id/items/:itemId/skip` (a follow-up of another type is appended). */
 export const skipItem = (setId: string, itemId: string) =>

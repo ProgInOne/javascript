@@ -164,6 +164,23 @@ async function answer(page: Page, exerciseId: string, firstSet: boolean) {
       }
       await main.getByRole('button', { name: /확실해요|^제출/ }).click();
       break;
+    // Module 2 concepts: other specs on the shared server (assessment.spec.ts) practise them, so
+    // they can come up in a later review set.
+    case 'js-basics.values.variables.mcq-let':
+      await main.locator('label', { hasText: 'let' }).click();
+      await submitSure();
+      break;
+    case 'js-basics.values.variables.mcq-const':
+      await main.locator('label', { hasText: '오류가 난다' }).click();
+      await submitSure();
+      break;
+    case 'js-basics.values.variables.mcq-reassign':
+      await main
+        .locator('label')
+        .filter({ has: page.getByRole('radio', { name: '2', exact: true }) })
+        .click();
+      await submitSure();
+      break;
     default:
       throw new Error(`unexpected exercise ${exerciseId}`);
   }

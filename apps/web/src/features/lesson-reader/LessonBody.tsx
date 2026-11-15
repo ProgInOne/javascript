@@ -25,6 +25,7 @@ type Node = Record<string, unknown> & { type?: unknown; children?: unknown };
 
 interface LessonContextValue {
   lessonId: string;
+  kind: 'lesson' | 'assessment' | 'project';
   concepts: ReadonlyMap<string, LessonConcept>;
 }
 const LessonContext = createContext<LessonContextValue | null>(null);
@@ -267,10 +268,14 @@ function PrerequisitesSection() {
 
 /** "직접 풀어 보기": the way into practice mode (ui-ux.md 읽기 모드, 연습 시작). */
 function PracticeSection() {
-  const { lessonId } = useLesson();
+  const { lessonId, kind } = useLesson();
   return (
     <div className="lesson-practice-cta">
-      <p className="m-0">본문을 다 읽었어요. 이제 직접 풀어볼까요?</p>
+      <p className="m-0">
+        {kind === 'assessment'
+          ? '준비가 되면 단원 평가를 시작하세요. 시작 전에 규칙을 안내해요.'
+          : '본문을 다 읽었어요. 이제 직접 풀어볼까요?'}
+      </p>
       <Link
         to="/learn/$lessonId"
         params={{ lessonId }}
@@ -278,7 +283,7 @@ function PracticeSection() {
         className="pi-button pi-button--primary pi-button--md no-underline"
       >
         <PencilLine size={16} aria-hidden="true" />
-        연습 시작
+        {kind === 'assessment' ? '단원 평가 보기' : '연습 시작'}
       </Link>
     </div>
   );
@@ -416,14 +421,16 @@ function NodeView({ node }: { node: Node }): ReactNode {
 
 export function LessonBody({
   lessonId,
+  kind = 'lesson',
   body,
   concepts,
 }: {
   lessonId: string;
+  kind?: LessonContextValue['kind'];
   body: readonly unknown[];
   concepts: readonly LessonConcept[];
 }) {
-  const value = { lessonId, concepts: new Map(concepts.map((c) => [c.id, c])) };
+  const value = { lessonId, kind, concepts: new Map(concepts.map((c) => [c.id, c])) };
   return (
     <LessonContext.Provider value={value}>
       <div className="lesson-prose">

@@ -1,0 +1,30 @@
+id: js-basics.values.values-review.mcq-reassign
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.basics.reassign, weight: 1 }
+estimatedSeconds: 40
+usage: assessment
+prompt: |
+  `let n = 1; n = n + 1;` 뒤에 `n`의 값은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`2`'
+    - id: b
+      text: '`1`'
+      rationale: 대입하면 값이 바뀌어요.
+    - id: c
+      text: '`console.log`'
+      rationale: console.log는 값을 출력할 뿐이에요.
+  correct: a
+hints:
+  - 평가 힌트 1단계예요.
+  - 평가 힌트 2단계예요.
+  - 평가 힌트 3단계예요.
+explanation: |
+  평가 해설: 다시 대입한 값 `2`가 들어 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

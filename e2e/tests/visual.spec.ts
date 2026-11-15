@@ -206,3 +206,110 @@ for (const viewport of VIEWPORTS) {
     });
   }
 }
+
+// Unit assessment (learning-engine.md#단원-평가-세트): the rules screen, and the end screen with a
+// fixed finished set (item order and option shuffling depend on the random set ID otherwise).
+const REVIEW_URL = '/learn/js-basics.values.values-review?mode=practice';
+const REVIEW_SET = '01JD3Z8Q6V2K9M4T7R1X5W0ASM';
+const R = 'js-basics.values.values-review.';
+const letConcept = { id: 'js.basics.let', title: 'let으로 변수 선언하기' };
+const reassignConcept = { id: 'js.basics.reassign', title: '다시 대입하기' };
+const resultItem = (
+  n: number,
+  slug: string,
+  concept: typeof letConcept,
+  correct: boolean,
+  text: { prompt: string; answer: string; explanation: string },
+) => ({
+  itemId: `01JD3Z8Q6V2K9M4T7R1X5W0AI${String(n)}`,
+  position: n,
+  exerciseId: `${R}${slug}`,
+  type: 'mcq_single',
+  difficulty: 2,
+  prompt: text.prompt,
+  concept,
+  status: 'answered',
+  outcome: correct ? 'correct' : 'incorrect',
+  correct,
+  misconceptions: [],
+  explanation: text.explanation,
+  solution: { kind: 'choice', choiceId: 'a', text: text.answer },
+});
+const FINISHED_ASSESSMENT = {
+  id: REVIEW_SET,
+  kind: 'assessment',
+  status: 'completed',
+  lessonId: 'js-basics.values.values-review',
+  items: [0, 1].map((n) => ({
+    id: `01JD3Z8Q6V2K9M4T7R1X5W0AI${String(n)}`,
+    position: n,
+    exerciseId: `${R}${n === 0 ? 'mcq-let' : 'mcq-reassign'}`,
+    type: 'mcq_single',
+    difficulty: 2,
+    status: 'answered',
+    reason: 'assessment',
+    targetConcept: n === 0 ? letConcept : reassignConcept,
+    attempts: 1,
+    lastOutcome: n === 0 ? 'correct' : 'incorrect',
+  })),
+  progress: { total: 2, answered: 2, skipped: 0, pending: 0 },
+  nextItemId: null,
+  passRule: null,
+  result: {
+    total: 2,
+    answered: 2,
+    skipped: 0,
+    correct: 1,
+    pass: null,
+    assessment: {
+      correct: 1,
+      total: 2,
+      ratio: 0.5,
+      passRatio: 0.8,
+      passed: false,
+      items: [
+        resultItem(0, 'mcq-let', letConcept, true, {
+          prompt: '값을 나중에 바꿀 변수의 키워드는?',
+          answer: '`let`',
+          explanation: '`let` 변수는 다시 대입할 수 있어요.',
+        }),
+        resultItem(1, 'mcq-reassign', reassignConcept, false, {
+          prompt: '`let n = 1; n = n + 1;` 뒤의 `n`은?',
+          answer: '`2`',
+          explanation: '다시 대입한 값 `2`가 들어 있어요.',
+        }),
+      ],
+      concepts: [
+        { concept: letConcept, total: 1, correct: 1 },
+        { concept: reassignConcept, total: 1, correct: 0 },
+      ],
+      missedConcepts: [reassignConcept],
+      weaknessConceptIds: [reassignConcept.id],
+    },
+  },
+  createdAt: 1,
+  completedAt: 2,
+};
+
+for (const viewport of VIEWPORTS) {
+  for (const scheme of ['light', 'dark'] as const) {
+    test(`assessment-start-${scheme}-${viewport.width} @visual`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await openScreen(page, REVIEW_URL, '값과 변수 단원 평가', scheme);
+      await expect(page).toHaveScreenshot(`assessment-start-${scheme}-${viewport.width}.png`, {
+        fullPage: true,
+      });
+    });
+
+    test(`assessment-result-${scheme}-${viewport.width} @visual`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.route(`**/api/v1/practice-sets/${REVIEW_SET}`, (route) =>
+        route.fulfill({ json: FINISHED_ASSESSMENT }),
+      );
+      await openScreen(page, `${REVIEW_URL}&set=${REVIEW_SET}`, '단원 평가를 마쳤어요', scheme);
+      await expect(page).toHaveScreenshot(`assessment-result-${scheme}-${viewport.width}.png`, {
+        fullPage: true,
+      });
+    });
+  }
+}

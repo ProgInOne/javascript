@@ -1,9 +1,10 @@
 import type { PracticeSetView } from '@proginone/shared';
-import { Check, Minus, RotateCw, X } from 'lucide-react';
+import { Check, Dot, Minus, RotateCw, X } from 'lucide-react';
 import { ITEM_STATE_LABELS, itemState, type ItemState } from './model.ts';
 import { addedItemLabel } from './Relearning.tsx';
 
 const ICONS: Partial<Record<ItemState, typeof Check>> = {
+  submitted: Dot,
   correct: Check,
   retried: RotateCw,
   wrong: X,
@@ -26,7 +27,10 @@ export function SetProgress({
 }) {
   const done = set.progress.answered + set.progress.skipped;
   return (
-    <nav className="set-progress" aria-label="연습 진행">
+    <nav
+      className="set-progress"
+      aria-label={set.kind === 'assessment' ? '평가 진행' : '연습 진행'}
+    >
       <ol className="set-progress__list">
         {set.items.map((item, i) => {
           const state = itemState(item);

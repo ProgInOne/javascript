@@ -1,0 +1,30 @@
+id: js-basics.values.values-review.mcq-let
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.basics.let, weight: 1 }
+estimatedSeconds: 40
+usage: assessment
+prompt: |
+  값을 나중에 바꿀 변수를 선언하는 키워드는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`let`'
+    - id: b
+      text: '`const`'
+      rationale: const 변수에는 다시 대입할 수 없어요.
+    - id: c
+      text: '`console.log`'
+      rationale: console.log는 값을 출력할 뿐이에요.
+  correct: a
+hints:
+  - 평가 힌트 1단계예요.
+  - 평가 힌트 2단계예요.
+  - 평가 힌트 3단계예요.
+explanation: |
+  평가 해설: `let` 변수는 다시 대입할 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
