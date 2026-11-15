@@ -38,5 +38,6 @@ explanation: |
   - 5번 줄은 `` `${team}팀: ` ``이 먼저 문자열 `"A팀: "`이 되고, 그 뒤 `+`가 왼쪽부터 계산돼요. `"A팀: " + 7`은 `"A팀: 7"`, 여기에 `+ 3`을 하면 `"A팀: 73"`이에요. 모듈 3에서 배운 대로 문자열과 `+`를 만나면 숫자도 이어 붙여져요. 덧셈을 먼저 하려면 4번 줄처럼 `${}` 안에 식을 넣는 편이 안전해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

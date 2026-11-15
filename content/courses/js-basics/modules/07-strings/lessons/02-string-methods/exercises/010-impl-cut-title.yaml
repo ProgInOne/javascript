@@ -75,5 +75,6 @@ explanation: |
   - `"오늘의 날씨는 맑음"`의 앞 5글자는 공백을 포함한 `오늘의 날`이에요. 공백도 한 글자로 세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -92,5 +92,6 @@ explanation: |
   - `"Apple pie"`에서 `p`는 1, 2, 6번으로 3개예요. 대문자 `A`는 `a`와 다른 글자예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

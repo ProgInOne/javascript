@@ -51,5 +51,6 @@ explanation: |
   - 메타 태그는 미디어 쿼리가 없어도 효과가 있어요. 그리는 너비가 375px이 되니 데스크톱과 똑같이 보이지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -55,5 +55,6 @@ explanation: |
   - `발사!` 붙이기와 출력은 반복이 끝난 뒤에 한 번씩만 해요. 반복 안에 두면 줄이 여러 개 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

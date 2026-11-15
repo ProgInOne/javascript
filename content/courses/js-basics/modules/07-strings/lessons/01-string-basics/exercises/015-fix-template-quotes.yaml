@@ -58,5 +58,6 @@ explanation: |
   `+`로 이어 붙여 `name + "님, 택배가 오후 " + hour + "시에 도착해요."`라고 써도 같은 결과지만, 템플릿 리터럴이 따옴표와 공백 실수가 적어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

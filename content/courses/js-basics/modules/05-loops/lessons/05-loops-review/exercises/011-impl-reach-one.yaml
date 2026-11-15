@@ -99,5 +99,6 @@ explanation: |
   - 출력을 반복 안에 두면 줄이 여러 개 나와요. 다 모은 뒤 반복 밖에서 한 번씩 출력해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

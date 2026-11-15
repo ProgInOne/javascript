@@ -306,5 +306,6 @@ explanation: |
   `max-width: 719px` 미디어 쿼리로 좁은 화면을 덮어쓰는 데스크톱 우선 방식도 결과는 같아서 채점을 통과해요. 하지만 이 문제가 요구한 방식은 기본 규칙이 좁은 화면용인 모바일 우선이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

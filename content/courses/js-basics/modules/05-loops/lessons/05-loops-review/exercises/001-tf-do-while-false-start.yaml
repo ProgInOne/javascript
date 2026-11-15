@@ -47,5 +47,6 @@ explanation: |
   - "`입장 안내`가 끝없이 출력된다"도 틀렸어요. `tickets`가 줄어들수록 `tickets > 0`은 더 확실히 거짓이 되므로, 첫 검사에서 바로 끝나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

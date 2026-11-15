@@ -23,5 +23,6 @@ explanation: |
   `let`과 `const`의 차이는 변수에 **다시 대입**할 수 있느냐예요. `let`이면 `word = "A" + word[1];`처럼 새 문자열을 만들어 다시 대입할 수 있고, `const`면 그것도 안 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

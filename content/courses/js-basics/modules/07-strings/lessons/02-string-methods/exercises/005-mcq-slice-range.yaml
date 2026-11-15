@@ -43,5 +43,6 @@ explanation: |
   - `"bcd"`: 첫 글자를 1번으로 세면 이렇게 돼요. 인덱스는 0부터예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

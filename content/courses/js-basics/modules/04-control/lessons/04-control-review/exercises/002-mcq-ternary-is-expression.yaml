@@ -37,5 +37,6 @@ explanation: |
   - "우선순위가 아주 높다": 반대예요. 우선순위가 아주 낮아서 `"결과: " + ok ? "예" : "아니요"`는 `"결과: " + ok`가 먼저 계산돼요. 그래서 다른 식 안에서는 괄호로 감싸요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

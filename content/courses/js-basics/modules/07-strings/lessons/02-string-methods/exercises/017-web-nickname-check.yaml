@@ -168,6 +168,15 @@ spec:
       expect:
         - { selector: "#result", text: { equals: "닉네임에 공백을 넣을 수 없어요" } }
     - kind: event
+      id: space-before-admin
+      description: 가운데 공백과 admin이 함께 있으면, 규칙 순서대로 공백 메시지가 먼저 보여야 합니다.
+      requirement: 규칙 순서
+      steps:
+        - { action: type, selector: "#nick", value: "my admin" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "닉네임에 공백을 넣을 수 없어요" } }
+    - kind: event
       id: admin-mixed-case
       description: 대소문자와 관계없이 admin이 들어 있으면 쓸 수 없다고 알려야 합니다.
       requirement: 금지 단어 검사
@@ -205,5 +214,6 @@ explanation: |
   - **대소문자 무시**: `includes`는 대소문자를 구별하므로 `"SuperAdmin".includes("admin")`은 `false`예요. 소문자로 맞춘 뒤 찾아요. 이때 화면에 보여 줄 닉네임은 바꾸지 않도록 검사할 때만 `toLowerCase()`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

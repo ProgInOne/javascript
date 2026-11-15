@@ -89,5 +89,6 @@ explanation: |
   - `return`을 만나면 함수가 바로 끝나므로, `else if` 대신 `if`를 세 번 써도 같은 결과예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

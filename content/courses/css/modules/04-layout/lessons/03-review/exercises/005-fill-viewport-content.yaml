@@ -31,5 +31,6 @@ explanation: |
   `width=980px`처럼 숫자를 쓰면 그 너비로 고정되어 축소 문제가 그대로 남아요. 이 태그는 그리는 너비만 정할 뿐, 배치를 바꾸는 일은 미디어 쿼리가 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -38,5 +38,6 @@ explanation: |
   - `main`은 이 페이지의 핵심 내용 하나를 감싸는 요소예요. 저작권 안내는 핵심 내용이 아니고, 이미 본문을 main으로 감쌌다면 main이 두 개가 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

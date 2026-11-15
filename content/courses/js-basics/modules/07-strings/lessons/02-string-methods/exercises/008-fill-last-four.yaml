@@ -47,5 +47,6 @@ explanation: |
   - `cardNumber.slice(cardNumber.length - 4)`처럼 길이로 계산해도 같은 결과예요. 음수를 쓰면 더 짧게 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

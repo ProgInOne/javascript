@@ -45,5 +45,6 @@ explanation: |
   `break`는 반복만 끝내고 프로그램은 이어서 실행돼요. 그래서 반복 아래의 `통과한 상자: 2개`가 출력돼요. 마지막 줄이 나오지 않는다고 생각했다면 `break`가 프로그램 전체를 끝낸다고 본 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

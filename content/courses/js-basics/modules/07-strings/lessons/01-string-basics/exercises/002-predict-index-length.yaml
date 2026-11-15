@@ -43,5 +43,6 @@ explanation: |
   - `code[5]`: 인덱스는 4까지라 범위 밖이에요. 오류가 나지 않고 `undefined`가 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

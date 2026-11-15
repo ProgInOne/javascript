@@ -42,5 +42,6 @@ explanation: |
   - `{name}`으로 쓴 코드: `$`가 없어서 `{name}`이 글자 그대로 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

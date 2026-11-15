@@ -11,7 +11,6 @@ spec:
   options:
     - id: a
       text: "`msg.length`는 5다"
-      missedMisconception: js.mc.last-index-is-length
     - id: b
       text: "`msg[0]`은 공백 한 글자인 `\" \"`이다"
       missedMisconception: js.mc.index-starts-at-one
@@ -47,5 +46,6 @@ explanation: |
   - `msg[msg.length]`: `msg[5]`는 마지막 칸 다음이라 `undefined`예요. `!`는 `msg[3]`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

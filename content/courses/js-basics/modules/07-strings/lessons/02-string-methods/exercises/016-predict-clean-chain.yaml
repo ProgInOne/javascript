@@ -58,5 +58,6 @@ explanation: |
   조각마다 공백까지 정리하려면 각 조각에 `trim()`을 써야 해요. 배열의 조각을 한꺼번에 다루는 방법은 모듈 8에서 배워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

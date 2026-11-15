@@ -83,5 +83,6 @@ explanation: |
   조건 연산자가 만든 값을 `const`로 받아야 나중에 출력할 수 있어요. 값을 받지 않고 `seatsA > 0 ? … : "매진";`만 쓰면 만든 값이 바로 버려져요. `console.log("A 공연:", statusA)`처럼 쉼표로 넘기면 사이에 공백이 하나 들어가요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

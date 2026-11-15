@@ -44,5 +44,6 @@ explanation: |
   - `1`: `split`은 문자열 하나를 돌려주는 것이 아니라 조각 여러 개를 담은 목록을 만들어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

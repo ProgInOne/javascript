@@ -60,5 +60,6 @@ explanation: |
   - `"@"`는 찾을 글자를 문자열로 넘기는 올바른 방법이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -47,5 +47,6 @@ explanation: |
   - "반복이 끝난다": 반복을 끝내는 것은 `break`예요. `continue` 뒤에도 7과 9는 출력돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -51,5 +51,6 @@ explanation: |
   - `tags.join(" #")`은 `html #css #js`를 만들고, 맨 앞에 `#`를 하나 더 붙여요. `tags.join()`은 쉼표로 이어서 `#html,css,js`가 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

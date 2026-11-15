@@ -1,13 +1,13 @@
 id: js-basics.strings.string-methods.impl-format-name
 type: implement_function
-difficulty: 5
+difficulty: 4
 concepts:
   - { id: js.str.split-join, weight: 1 }
   - { id: js.str.case-trim, weight: 0.5 }
   - { id: js.str.slice, weight: 0.5 }
   - { id: js.str.index-length, weight: 0.3 }
   - { id: js.str.template-literal, weight: 0.3 }
-tags: [split, trim, case, slice, capitalize, chaining, function, write-code, challenge]
+tags: [split, trim, case, slice, capitalize, chaining, function, write-code]
 estimatedSeconds: 720
 prompt: |
   해외 학회 이름표를 만들어요. 참가 신청서에는 영어 이름이 `"성 이름"` 순서로, 대소문자가 제멋대로 적혀 있어요. 이름표에는 `"이름 성"` 순서로, 각 부분의 **첫 글자만 대문자**이고 나머지는 소문자로 적어야 해요. 이렇게 바꾸는 함수 `formatName(fullName)`을 완성하세요.
@@ -116,5 +116,6 @@ explanation: |
   - 한 글자 단어도 `slice(1)`이 빈 문자열이라 문제없이 `"J"`, `"O"`가 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -93,5 +93,6 @@ explanation: |
   `gap: 20px`만 쓰면 태그 사이가 20px이 되고 가장자리 여백은 여전히 0이에요. `padding: 10px`로 사이 간격을 만들려고 하면 상자 가장자리에만 여백이 생기고 태그끼리는 붙어 있어요. 빈칸 두 곳은 어느 쪽에 어느 선언을 써도 같은 규칙 안이라 결과가 같아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

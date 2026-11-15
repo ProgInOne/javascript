@@ -80,5 +80,6 @@ explanation: |
   - 2, 3번째 줄을 함수 안처럼 들여쓰면 줄 앞에 공백이 들어가서 체크에 실패해요. 그래서 예시 정답은 줄 앞을 비워 뒀어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -41,5 +41,6 @@ explanation: |
   - `word[-1]`: 대괄호 안의 음수는 뒤에서부터 세는 뜻이 아니에요. `undefined`가 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

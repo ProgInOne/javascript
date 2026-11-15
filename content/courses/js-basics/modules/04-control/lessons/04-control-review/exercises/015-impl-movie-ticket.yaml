@@ -1,6 +1,6 @@
 id: js-basics.control.control-review.impl-movie-ticket
 type: implement_function
-difficulty: 5
+difficulty: 4
 concepts:
   - { id: js.control.switch, weight: 1 }
   - { id: js.control.fallthrough, weight: 0.5 }
@@ -155,5 +155,6 @@ explanation: |
   나이 할인을 `if (dayA !== "화" && ageA < 13)`처럼 `&&`로 묶어 써도, 출력과 결제 금액 변수가 맞으면 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

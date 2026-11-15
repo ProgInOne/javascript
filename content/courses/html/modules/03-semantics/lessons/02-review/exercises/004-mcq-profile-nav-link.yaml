@@ -10,7 +10,7 @@ usage: assessment
 prompt: |
   프로필 페이지의 주요 메뉴(`nav`)에 링크를 하나 더 넣으려고 해요. 화면에는 **작품 모음**이라는 글자가 보이고, 누르면 같은 폴더의 `works.html`로 이동해야 해요.
 
-  빈 자리(`<!-- 여기 -->`)에 넣을 코드로 알맞은 것은 무엇인가요?
+  코드에서 `여기`라고 적힌 주석 자리에 넣을 코드로 알맞은 것은 무엇인가요?
 code: |
   <nav>
     <ul>
@@ -49,5 +49,6 @@ explanation: |
   - `<a href="works.html"></a>작품 모음`: 링크 요소 안이 비어 있어 누를 글자가 없어요. "작품 모음"은 링크 밖에 있는 그냥 글자예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

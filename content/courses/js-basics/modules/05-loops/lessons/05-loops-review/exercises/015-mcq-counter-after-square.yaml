@@ -52,5 +52,6 @@ explanation: |
   - `ReferenceError`: `side`는 반복 바깥에서 `let`으로 만들었으므로 반복 뒤에도 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

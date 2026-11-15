@@ -36,5 +36,6 @@ explanation: |
   `stock`이 `0`이라 `stock > 0`은 두 번 모두 거짓이에요. 첫 번째 조건만 보고 `바로 구매`를 고르면 안 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

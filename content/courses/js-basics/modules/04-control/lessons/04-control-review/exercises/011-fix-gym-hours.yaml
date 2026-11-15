@@ -105,5 +105,6 @@ explanation: |
   `break`만 고치면 `06:00~23:00`만 나오고, 괄호만 고치면 `오늘 운영: 06:00~22:00`이 나와요. 두 군데를 모두 고쳐야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

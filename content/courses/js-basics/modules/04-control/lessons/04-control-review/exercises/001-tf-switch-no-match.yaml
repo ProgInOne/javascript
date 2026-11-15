@@ -35,5 +35,6 @@ explanation: |
   - "default가 없는 switch는 문법 오류다": `default`는 선택이에요. 없어도 오류가 나지 않아요. 다만 예상하지 못한 값을 알려 주도록 써 두는 편이 좋아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

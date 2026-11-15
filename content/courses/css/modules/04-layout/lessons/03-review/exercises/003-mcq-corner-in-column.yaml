@@ -64,5 +64,6 @@ explanation: |
   - `text-align: right`는 블록 안의 글자를 정렬하는 속성이라, 플렉스 아이템인 버튼의 위치는 바뀌지 않아요. 버튼은 왼쪽 아래에 머물러요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

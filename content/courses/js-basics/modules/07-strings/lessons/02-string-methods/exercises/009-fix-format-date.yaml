@@ -66,5 +66,6 @@ explanation: |
   일은 마지막 부분이라 `date.slice(6)`처럼 끝을 생략해도 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

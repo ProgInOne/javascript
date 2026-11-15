@@ -94,5 +94,6 @@ explanation: |
   - 앞에서부터 보면서 `result = text[i] + result;`처럼 글자를 **앞에** 붙여도 같은 결과예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

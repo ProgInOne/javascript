@@ -86,5 +86,6 @@ explanation: |
   - `trim`은 앞뒤 공백만 지우므로 `"ad min"`은 그대로 `"ad min"`이라 관리자가 아니에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -39,5 +39,6 @@ explanation: |
   - `alt="seoyun.jpg"`: alt는 있지만 파일 이름이라 사진에 무엇이 담겼는지 알 수 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

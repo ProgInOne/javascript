@@ -110,5 +110,6 @@ explanation: |
   - 출력을 안쪽 반복 안에 두면 "아직 나누어떨어지는 수를 못 찾았다"는 것만으로 출력해 버려서, 9처럼 2로는 안 나누어떨어지지만 3으로 나누어떨어지는 수까지 출력돼요. 그래서 안쪽 반복이 끝난 뒤 결과를 보고 출력해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

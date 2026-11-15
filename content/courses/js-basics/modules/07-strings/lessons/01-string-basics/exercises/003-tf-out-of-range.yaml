@@ -37,5 +37,6 @@ explanation: |
   - 마지막 글자가 나온다는 이유: 범위를 넘었다고 가장 가까운 글자를 대신 주지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

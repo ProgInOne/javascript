@@ -54,5 +54,6 @@ explanation: |
   - "line을 바깥 반복 안에서 만들어서 기록이 지워졌다"도 틀렸어요. 날마다 새 줄을 시작해야 하므로 `line`은 바깥 반복 안에서 만드는 것이 맞아요. 바깥에 두면 전날 기록이 이어 붙어 줄이 점점 길어져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -133,5 +133,6 @@ explanation: |
   조건이 거짓인 `if`는 그 블록만 건너뛰고 다음 문장으로 넘어가요. 그래서 세 `if`가 차례로 모두 검사돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

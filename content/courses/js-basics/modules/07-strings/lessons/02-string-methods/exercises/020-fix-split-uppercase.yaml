@@ -72,5 +72,6 @@ explanation: |
   - `words`를 그대로 돌려주면 문자열이 아니라 목록이라서 체크에 실패해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

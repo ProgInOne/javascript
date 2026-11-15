@@ -64,5 +64,6 @@ explanation: |
   - "`false`라서 오류가 난다": 조건이 거짓인 것은 오류가 아니에요. 블록을 건너뛰고 계속 실행할 뿐이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

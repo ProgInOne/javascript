@@ -68,5 +68,6 @@ explanation: |
   - "종이 시계 제작기"의 `<article>`: 따로 옮겨 실어도 뜻이 통하는 독립된 글이라 맞아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

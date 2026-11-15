@@ -67,5 +67,6 @@ explanation: |
   - `` `#${tag.trim().toLowerCase()}` ``처럼 템플릿 리터럴로 써도 같아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

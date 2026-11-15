@@ -131,5 +131,6 @@ explanation: |
   switch는 `===`로 값 하나와 비교하므로, `case`에 `||`나 비교식처럼 "조건"을 쓰면 생각한 대로 동작하지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

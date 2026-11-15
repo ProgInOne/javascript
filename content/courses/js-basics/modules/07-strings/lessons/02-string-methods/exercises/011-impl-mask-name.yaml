@@ -104,5 +104,6 @@ explanation: |
   - `slice(1, -1)`은 "첫 글자와 마지막 글자를 뺀 가운데"예요. 가운데 글자를 실제로 잘라 그 길이(`name.slice(1, -1).length`)만큼 별표를 만들어도 같은 결과예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

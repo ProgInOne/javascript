@@ -62,5 +62,6 @@ explanation: |
   - `<h2>자기소개</h2>`와 `<h2>작품 모음</h2>`는 같은 단계의 장이라 둘 다 h2가 맞아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -54,5 +54,6 @@ explanation: |
   - `$qty인분`도 중괄호가 없어서 `떡볶이 $qty인분`이 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

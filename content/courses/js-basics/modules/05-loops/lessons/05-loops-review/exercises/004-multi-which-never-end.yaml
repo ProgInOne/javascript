@@ -50,5 +50,6 @@ explanation: |
   JavaScript는 끝나지 않는 반복을 오류로 알려 주지 않으므로, 반복을 쓸 때마다 "조건의 변수가 본문에서 끝나는 쪽으로 바뀌는가"를 직접 확인해야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

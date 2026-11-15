@@ -47,5 +47,6 @@ explanation: |
   `day < 4`가 거짓이 되기 전에 `stock > 0`이 먼저 거짓이 되어 멈췄어요. `-2`가 출력되지 않는다고 생각했다면, 조건이 본문 중간에도 계속 검사된다고 본 거예요. 재고가 음수가 되지 않게 하려면 조건을 `stock >= 4`처럼 "이번에 팔 만큼 남았는가"로 바꿔야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

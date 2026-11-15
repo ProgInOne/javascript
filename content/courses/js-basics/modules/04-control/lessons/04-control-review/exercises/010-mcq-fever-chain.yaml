@@ -73,5 +73,6 @@ explanation: |
   - `>`를 쓴 체인: 38.0도는 `38 > 38`이 거짓이라 `미열`, 37.5도는 `정상`이 나와요. "이상"은 그 값을 포함하므로 `>=`를 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

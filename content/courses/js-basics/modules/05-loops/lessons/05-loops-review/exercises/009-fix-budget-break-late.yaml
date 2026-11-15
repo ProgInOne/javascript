@@ -90,5 +90,6 @@ explanation: |
   `break`한 뒤에 `total -= price; count--;`로 되돌려도 결과는 같아요. 다만 "담고 나서 빼기"보다 "담기 전에 검사"가 이유를 읽기 쉬워요. 조건만 `total >= budget`으로 바꾸는 것은 고친 것이 아니에요. 여전히 4권째를 담은 뒤에 검사하기 때문이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

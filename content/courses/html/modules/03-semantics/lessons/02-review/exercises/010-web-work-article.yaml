@@ -11,12 +11,12 @@ tags: [semantic, article, header, footer, img, a, profile, web-task]
 estimatedSeconds: 600
 usage: assessment
 prompt: |
-  서윤이의 프로필 페이지 "작품 모음" 구역에 새 작품 소개 글을 **직접 써서** 넣으세요. 이 글은 따로 옮겨 실어도 뜻이 통하는 글 한 편이에요. `<!-- 여기에 작품 소개 글을 쓰세요 -->` 주석 자리에 쓰면 돼요.
+  서윤이의 프로필 페이지 "작품 모음" 구역에 새 작품 소개 글을 **직접 써서** 넣으세요. 이 글은 따로 옮겨 실어도 뜻이 통하는 글 한 편이에요. 시작 코드의 "여기에 작품 소개 글을 쓰세요" 주석 자리에 쓰면 돼요.
 
   글 한 편에는 다음이 들어가야 해요.
 
   - **글의 머리말**: 작품 이름 "종이 배"(목차에서 "작품 모음" 바로 아래 단계의 제목)와, 그 아래 문단 "만든 날: 2026년 9월 14일"
-  - **사진**: 같은 폴더의 `boat.jpg`. 사진의 내용을 설명하는 글을 붙이세요. (이 미리보기에는 그림 파일이 없어서 깨진 그림으로 보여요.)
+  - **사진**: 같은 폴더의 `boat.jpg`. 사진의 내용을 설명하는 글을 붙이세요. 무엇을 찍은 사진인지 알 수 있게 `배`라는 낱말이 들어가야 해요. (이 미리보기에는 그림 파일이 없어서 깨진 그림으로 보여요.)
   - **설명 문단**: 작품을 소개하는 문단 하나(내용은 자유)
   - **글의 꼬리말**: "자세히 보기"라는 글자의 링크. 누르면 `works` 폴더 안의 `boat.html`로 이동해야 해요.
 
@@ -129,6 +129,14 @@ spec:
         attr: { name: alt, notEmpty: true }
       misconceptionIfFail: html.mc.alt-optional
     - kind: dom
+      id: photo-alt-describes
+      description: alt는 파일 이름이 아니라, 무엇을 찍은 사진인지(배) 알 수 있는 설명이어야 합니다.
+      requirement: 사진
+      visible: true
+      selector: 'article img[alt*="배"]:not([alt$=".jpg" i])'
+      expect:
+        count: 1
+    - kind: dom
       id: description
       description: 글의 머리말·꼬리말 밖에 작품을 소개하는 문단이 하나 이상 있어야 합니다.
       requirement: 설명 문단
@@ -189,9 +197,10 @@ explanation: |
   - **`article`**: 작품 소개 한 편은 따로 옮겨 실어도 뜻이 통하는 독립된 글이라 article이에요. `section`은 "작품 모음"처럼 소제목이 붙는 주제별 구역이고, 이미 바깥에 있어요.
   - **글 안의 `header`·`footer`**: article 안에 쓰면 페이지 전체가 아니라 그 글 한 편의 머리말·꼬리말이에요. 그래서 페이지에 header·footer가 이미 있어도 써도 돼요.
   - **`h3`**: "작품 모음"이 h2이니 그 아래 단계의 작품 이름은 h3이에요.
-  - **`alt`**: 사진은 뜻이 있는 그림이라 내용을 설명해요. 채점은 alt가 비어 있지 않은지만 보지만, 사진에 담긴 모습을 쓰는 것이 좋아요.
+  - **`alt`**: 사진은 뜻이 있는 그림이라 내용을 설명해요. 채점은 alt가 비어 있지 않은지, 파일 이름이 아닌지, 무엇을 찍었는지(배)가 들어 있는지를 봐요. 색이나 놓인 곳처럼 사진에 담긴 모습까지 쓰면 더 좋은 설명이에요.
   - **`href="works/boat.html"`**: 이동할 주소는 href에, 링크 글자 "자세히 보기"는 태그 사이에 써요. `boat.html`은 지금 문서와 같은 폴더의 `works` 폴더 안에 있으니 `works/boat.html`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

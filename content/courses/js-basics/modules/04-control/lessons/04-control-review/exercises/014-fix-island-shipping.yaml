@@ -87,5 +87,6 @@ explanation: |
   두 군데를 고치면 `3000 + 4000`으로 `배송비: 7000`이 나와요. 숨김 체크는 `fee`가 3000인지 확인하므로, 마지막 줄에서 2000을 빼서 금액만 맞추는 답은 통과하지 못해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

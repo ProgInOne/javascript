@@ -49,5 +49,6 @@ explanation: |
   참인 조건이 여러 개라고 해서 그 블록이 모두 실행되지는 않아요. 그렇게 동작하게 하려면 `else` 없이 `if`를 따로따로 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

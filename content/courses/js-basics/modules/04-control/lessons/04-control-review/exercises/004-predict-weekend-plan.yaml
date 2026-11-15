@@ -46,5 +46,6 @@ explanation: |
   - `영화`만 답했다면 `"금"` 갈래만 실행된다고 본 거예요. 실행은 같은 case(`"토"`)에서 시작하고, 그 앞의 `plan = "늦잠";`도 지나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

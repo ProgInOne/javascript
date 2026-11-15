@@ -166,5 +166,6 @@ explanation: |
   - `limit` 대신 20을 직접 써도 동작은 같지만, 나중에 제한이 바뀌면 여러 곳을 고쳐야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

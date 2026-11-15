@@ -43,5 +43,6 @@ explanation: |
   - 이름과 주요 메뉴를 담은 머리말: 페이지의 큰 구역인 **머리말**이라 `header`가 맞아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

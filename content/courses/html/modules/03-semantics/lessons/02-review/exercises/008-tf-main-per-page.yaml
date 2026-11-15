@@ -34,5 +34,6 @@ explanation: |
   - "사이트 전체에 하나뿐인데 검사하지 않아서 괜찮다"는 이유도 틀렸어요. 규칙의 범위가 처음부터 페이지 하나이고, 두 번째 파일의 main은 규칙을 어긴 것이 아니에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

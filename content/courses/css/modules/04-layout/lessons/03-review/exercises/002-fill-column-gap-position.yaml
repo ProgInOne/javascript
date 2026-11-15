@@ -67,5 +67,6 @@ explanation: |
   - 0px은 `justify-content`가 가로 정렬이라서 세로 위치는 위쪽 그대로라고 생각한 값이에요. column에서는 `justify-content`가 세로 위치를 정해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

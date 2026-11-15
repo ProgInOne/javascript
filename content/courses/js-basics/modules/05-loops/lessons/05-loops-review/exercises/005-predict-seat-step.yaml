@@ -41,5 +41,6 @@ explanation: |
   15는 조건을 거짓으로 만든 값이라 출력되지 않아요. 15까지 나온다고 생각했다면 조건 검사가 본문보다 늦다고 본 거예요. 또 갱신식은 본문 **뒤에** 실행되므로 첫 회차는 7이 아니라 3이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -53,5 +53,6 @@ explanation: |
   - `1`이나 `4`처럼 숫자를 직접 쓰면 그 길이의 단어에서만 맞아요. 길이가 다른 단어가 섞여 있어서 `length`로 계산해야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

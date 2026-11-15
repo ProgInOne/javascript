@@ -196,5 +196,6 @@ explanation: |
   - 버튼에 `margin-left: auto`를 주는 방법은 배우지 않았지만, 결과가 같으면 채점을 통과해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

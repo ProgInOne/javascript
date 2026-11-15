@@ -66,5 +66,6 @@ explanation: |
   - "`isVip`에는 `false`가 들어 있다": 두 번째 if의 조건에서 `true`가 대입되었으므로 끝난 뒤 `isVip`는 `true`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

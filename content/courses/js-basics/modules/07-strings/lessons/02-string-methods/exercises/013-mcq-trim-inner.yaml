@@ -3,39 +3,48 @@ type: mcq_single
 difficulty: 1
 concepts:
   - { id: js.str.case-trim, weight: 1 }
-tags: [trim, space]
-estimatedSeconds: 45
+tags: [trim, space, length]
+estimatedSeconds: 60
 prompt: |
-  `"  ice   cream  ".trim()`의 결과는 무엇인가요? (앞에 공백 2개, 가운데 3개, 뒤에 2개가 있어요.)
+  문자열 `text`는 앞에 공백 2개, `ice`, 공백 3개, `cream`, 뒤에 공백 2개로 이루어져 있어요(모두 15글자).
+
+  ```js
+  const text = "  ice   cream  ";
+  console.log(text.trim().length);
+  ```
+
+  출력되는 숫자는 무엇인가요?
 spec:
   options:
     - id: a
-      text: '`"ice   cream"` (가운데 공백 3개는 그대로)'
+      text: "`11`"
     - id: b
-      text: '`"icecream"`'
+      text: "`8`"
       misconception: js.mc.trim-removes-all-spaces
-      rationale: "`trim`은 앞과 뒤의 공백만 지워요. 글자 사이의 공백은 남아요."
+      rationale: "`trim`은 앞과 뒤의 공백만 지워요. `ice`와 `cream` 사이의 공백 3개는 남아요."
     - id: c
-      text: '`"ice cream"` (가운데 공백 1개)'
+      text: "`9`"
       misconception: js.mc.trim-removes-all-spaces
-      rationale: "`trim`은 가운데 공백을 줄이지도 않아요. 가운데는 원래대로 3개예요."
+      rationale: "`trim`은 가운데 공백을 하나로 줄이지도 않아요. 가운데는 원래대로 3개예요."
     - id: d
-      text: '`"ice   cream  "` (뒤 공백은 그대로)'
-      rationale: "`trim`은 앞과 뒤를 모두 정리해요."
+      text: "`13`"
+      rationale: "`trim`은 앞 공백만이 아니라 뒤 공백도 함께 지워요."
   correct: a
 misconceptions: [js.mc.trim-removes-all-spaces]
 hints:
-  - "`trim`은 \"가장자리를 다듬다\"라는 뜻이에요."
-  - 문자열의 가장자리는 어디와 어디일까요?
+  - "`trim`은 \"가장자리를 다듬다\"라는 뜻이에요. 문자열의 가장자리는 어디와 어디일까요?"
   - 글자 사이에 있는 공백은 가장자리일까요?
+  - "`trim()`이 돌려준 문자열에 남는 글자를 `ice`, 가운데 공백, `cream`으로 나눠 세어 보세요."
 explanation: |
-  정답은 `"ice   cream"`이에요.
+  정답은 `11`이에요.
 
-  `trim`은 문자열의 **앞과 뒤**에 있는 공백만 지워요. `ice`와 `cream` 사이의 공백 3개는 가장자리가 아니라서 그대로 남아요.
+  `trim`은 문자열의 **앞과 뒤**에 있는 공백만 지워요. `text.trim()`은 앞 공백 2개와 뒤 공백 2개가 빠진 `ice` + 공백 3개 + `cream`이라, 길이는 3 + 3 + 5 = 11이에요. `ice`와 `cream` 사이의 공백은 가장자리가 아니라서 그대로 남아요.
 
-  - 공백을 모두 지운 `"icecream"`이나 가운데를 하나로 줄인 `"ice cream"`은 `trim`이 하지 않는 일이에요.
-  - 뒤 공백만 남는 일도 없어요. 앞과 뒤를 함께 정리해요.
+  - `8`: 공백을 모두 지운 `icecream`의 길이예요. `trim`은 가운데 공백을 지우지 않아요.
+  - `9`: 가운데 공백을 하나로 줄인 `ice cream`의 길이예요. `trim`은 가운데를 건드리지 않아요.
+  - `13`: 앞 공백만 지운 길이예요. `trim`은 앞과 뒤를 함께 정리해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

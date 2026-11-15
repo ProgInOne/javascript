@@ -44,7 +44,7 @@ misconceptions: [css.mc.max-width-means-above]
 hints:
   - 두 미디어 쿼리가 각각 어느 너비 범위에서 적용되는지 따로 적어 보세요. 경계값이 들어가는지도 확인해요.
   - 두 범위가 겹치는 너비가 있어요. 겹치는 곳에서는 두 규칙의 명시도가 같으니 무엇으로 승자가 정해질까요?
-  - "`max-width: 900px`는 900px 이하예요. 600px부터 900px까지는 두 조건이 모두 맞고, 뒤에 쓴 규칙이 이겨요."
+  - "`max-width: 900px`는 900px **이하**예요. 두 조건이 모두 맞는 너비 구간을 먼저 찾고, 그 구간에서는 코드에서 어느 규칙이 나중에 나오는지 확인해 보세요."
 explanation: |
   정답은 "화면 너비가 901px 이상일 때만"이에요.
 
@@ -60,5 +60,6 @@ explanation: |
   - "900px 이상일 때"는 경계값을 놓친 답이에요. 정확히 900px은 "900px 이하"에 들어가서 `column`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

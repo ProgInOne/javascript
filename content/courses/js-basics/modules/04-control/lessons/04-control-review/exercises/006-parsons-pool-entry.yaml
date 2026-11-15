@@ -39,7 +39,7 @@ spec:
 hints:
   - 바깥 뼈대는 `if (수영모) { … } else { … }`예요. 나이를 확인하는 체인은 어느 쪽 블록 안에 들어가야 할까요?
   - "`age < 7`과 `age < 13`은 범위가 겹쳐요. 5세 아이라면 두 조건이 모두 참이에요. 체인은 처음으로 참인 갈래 하나만 실행해요."
-  - "`else` 뒤에는 조건을 쓸 수 없고, `if (조건)` 바로 뒤에 세미콜론이 붙으면 블록이 조건과 상관없이 실행돼요. 쓰지 않을 조각이 두 개 있어요."
+  - "조각마다 문법을 확인해 보세요. `else` 뒤에 조건을 붙일 수 있었나요? `if (조건)` 바로 뒤에 세미콜론이 붙으면 그 뒤의 블록은 어떻게 되었나요?"
 explanation: |
   완성한 코드예요.
 
@@ -67,5 +67,6 @@ explanation: |
   `const` 두 줄은 순서를 바꿔도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

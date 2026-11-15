@@ -50,5 +50,6 @@ explanation: |
   - `slice(7)`: `W`는 일곱 번째 글자지만 인덱스는 6이에요. 7부터면 `orld`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -64,5 +64,6 @@ explanation: |
   - `seat = "D-7";`처럼 통째로 써도 이 출력은 맞지만, 좌석 번호가 바뀌면 쓸 수 없어요. 원래 값에서 새 값을 만드는 연습이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

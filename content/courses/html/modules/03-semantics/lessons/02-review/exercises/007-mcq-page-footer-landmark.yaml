@@ -57,5 +57,6 @@ explanation: |
   - 나중 footer만 쓰이고 앞의 것은 안 보인다: 두 footer 모두 코드 순서대로 화면에 보여요. 시맨틱 요소는 뜻만 나타내고 보이는 방식을 바꾸지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

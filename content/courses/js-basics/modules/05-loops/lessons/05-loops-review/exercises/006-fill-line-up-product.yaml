@@ -62,5 +62,6 @@ explanation: |
   - 누적 변수 `ways`는 반복 바깥에서 한 번만 만들어요. 그래서 회차마다 앞의 곱에 새 사람 수를 곱해 1 → 2 → 6 → 24 → 120으로 커져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

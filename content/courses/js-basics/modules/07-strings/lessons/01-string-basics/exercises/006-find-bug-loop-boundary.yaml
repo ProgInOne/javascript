@@ -52,5 +52,6 @@ explanation: |
   - `console.log`는 받은 값만 출력해요. `undefined`는 `password[4]`의 값이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

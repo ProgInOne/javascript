@@ -33,5 +33,6 @@ explanation: |
   첫 글자를 바꾸려면 새 문자열을 만들어 대입해요. 다음 단원에서 배울 `slice`를 쓰면 `fileName = "P" + fileName.slice(1);`처럼 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

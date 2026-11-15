@@ -88,5 +88,6 @@ explanation: |
   - 한 단어 제목은 조각이 하나라서 `join("-")`을 해도 하이픈이 붙지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

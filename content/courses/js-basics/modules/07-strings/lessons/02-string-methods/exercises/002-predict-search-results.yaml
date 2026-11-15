@@ -41,5 +41,6 @@ explanation: |
   대소문자와 관계없이 확인하려면 `fileName.toLowerCase().endsWith(".pdf")`처럼 먼저 맞춰요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
