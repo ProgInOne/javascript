@@ -38,5 +38,6 @@ explanation: |
   - `id="price"`: 선택자 문자열이 아니라 대입식이에요. 엄격 모드에서는 선언하지 않은 `id`에 대입해서 `ReferenceError`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

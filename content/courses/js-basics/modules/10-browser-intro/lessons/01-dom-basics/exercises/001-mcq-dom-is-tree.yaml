@@ -40,5 +40,6 @@ explanation: |
   - `document`는 우리가 만든 변수가 아니라 브라우저가 미리 준비해 둔 문서 객체예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

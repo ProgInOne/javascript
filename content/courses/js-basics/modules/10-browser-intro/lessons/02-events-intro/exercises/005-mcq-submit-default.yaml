@@ -30,7 +30,7 @@ spec:
       misconception: js.mc.form-submit-no-default
       rationale: 함수가 끝나면 브라우저가 폼 제출의 기본 동작(페이지 새로 열기)을 해요. 새 페이지에는 함수가 바꾼 글자가 없어요.
     - id: c
-      text: 버튼에 click 이벤트를 등록하지 않았으므로 아무 일도 일어나지 않는다
+      text: 버튼에 `click` 이벤트를 등록하지 않았으므로 아무 일도 일어나지 않는다
       rationale: 폼 안의 버튼을 누르면 폼에서 `submit` 이벤트가 일어나요. 함수는 실행돼요.
     - id: d
       text: 이벤트 함수에 매개변수가 없어서 오류가 난다
@@ -53,5 +53,6 @@ explanation: |
   ProgInOne의 미리보기는 페이지 이동을 막고 "미리보기에서는 링크 이동과 폼 제출이 실제로 일어나지 않아요." 안내를 보여 줘요. 그래서 미리보기에서는 인사말이 남아 보이지만, 실제 웹 페이지에서는 사라져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

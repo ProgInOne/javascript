@@ -150,5 +150,6 @@ explanation: |
   - 두 버그 모두 오류 메시지가 나지 않아요. "열자마자 한 번 실행됨"은 괄호를, "눌러도 아무 일 없음"은 이벤트 이름과 괄호를 먼저 의심해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

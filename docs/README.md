@@ -70,6 +70,7 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 | [JS 기초 모듈 7과 단원 평가 4개 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-strings-and-assessments-review.md) | 레슨 2개, 문제 40개 (`js-basics.strings`), 평가 문항 50개 (`control-review`, `loops-review`, `html.semantics.review`, `css.layout.review`) |
 | [JS 기초 모듈 8 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-js-module-8-review.md) | 레슨 5개, 문제 110개 (`js-basics.arrays`) |
 | [JS 기초 모듈 9 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-js-module-9-review.md) | 레슨 5개, 문제 108개 (`js-basics.objects`) |
+| [JS 기초 모듈 10 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-js-module-10-review.md) | 레슨 3개, 문제 46개 (`js-basics.browser-intro`, 최종 프로젝트 포함) |
 
 ## 예정 문서
 

@@ -51,5 +51,6 @@ explanation: |
   - 숫자를 먼저 늘리고 나서 화면에 써야 누른 횟수가 바로 보여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: js-basics.browser-intro.dom-basics.predict-script-in-head
 type: predict_output
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.dom.document-tree, weight: 1 }
   - { id: js.dom.query-selector, weight: 0.5 }
@@ -41,5 +41,6 @@ explanation: |
   선택자에는 문제가 없어요. 스크립트를 `body`의 맨 끝(`</body>` 바로 앞)으로 옮기면, 그때는 `h1`이 이미 트리에 있어서 제목이 `환영해요`로 바뀌어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

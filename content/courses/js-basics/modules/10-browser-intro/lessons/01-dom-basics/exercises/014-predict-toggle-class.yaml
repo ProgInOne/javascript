@@ -47,5 +47,6 @@ explanation: |
   - `className`은 `class` 속성의 문자열 전체, `classList.length`는 클래스 개수예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

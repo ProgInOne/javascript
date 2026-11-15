@@ -192,5 +192,6 @@ explanation: |
   - `menu.textContent += "<li>...</li>"`처럼 문자열로 태그를 넣으면 꺾쇠까지 글자로 보여요. 요소는 `createElement`로 만들어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -13,15 +13,15 @@ spec:
     - id: a
       text: '페이지가 열릴 때 `document.querySelectorAll(".delete")`로 찾아 이벤트를 등록하면, 나중에 추가한 할 일의 삭제 버튼에는 이벤트가 없다'
     - id: b
-      text: 할 일을 만드는 함수 안에서, 방금 만든 삭제 버튼에 바로 addEventListener를 하면 나중에 추가한 할 일도 삭제할 수 있다
+      text: 할 일을 만드는 함수 안에서, 방금 만든 삭제 버튼에 바로 `addEventListener`를 하면 나중에 추가한 할 일도 삭제할 수 있다
     - id: c
       text: 할 일을 지운 뒤에는 남은 개수를 다시 계산해 화면에 써야 한다
     - id: d
-      text: querySelectorAll로 찾은 목록은 나중에 요소를 추가하면 저절로 늘어난다
-      rationale: querySelectorAll의 결과는 찾은 순간의 목록이에요. 나중에 붙인 요소는 다시 찾아야 들어가요.
+      text: "`querySelectorAll`로 찾은 목록은 나중에 요소를 추가하면 저절로 늘어난다"
+      rationale: "`querySelectorAll`의 결과는 찾은 순간의 목록이에요. 나중에 붙인 요소는 다시 찾아야 들어가요."
     - id: e
       text: '`#todo-count`의 글자를 `남은 할 일 3개`로 한 번 써 두면, 할 일 수가 바뀔 때 숫자도 저절로 바뀐다'
-      rationale: textContent는 대입한 그 문자열일 뿐이에요. 목록과 연결되어 있지 않으니 바뀔 때마다 다시 써야 해요.
+      rationale: "`textContent`는 대입한 그 문자열일 뿐이에요. 목록과 연결되어 있지 않으니 바뀔 때마다 다시 써야 해요."
   correct: [a, b, c]
 hints:
   - 페이지가 열리는 순간 목록에 삭제 버튼이 몇 개 있을까요?
@@ -36,5 +36,6 @@ explanation: |
   - 화면의 글자는 목록과 연결되어 있지 않아요. 추가·완료·삭제할 때마다 개수를 다시 세어 대입해야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

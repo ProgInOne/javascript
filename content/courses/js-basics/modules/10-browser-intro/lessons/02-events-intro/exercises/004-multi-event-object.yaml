@@ -24,7 +24,7 @@ spec:
     - id: d
       text: "`event.preventDefault()`가 실행되면 함수가 그 자리에서 끝나서 `보냈어요`는 보이지 않는다"
       misconception: js.mc.preventdefault-stops-handler
-      rationale: preventDefault는 브라우저의 기본 동작만 취소해요. 함수의 나머지 줄은 그대로 실행돼서 `보냈어요`가 보여요.
+      rationale: "`preventDefault`는 브라우저의 기본 동작만 취소해요. 함수의 나머지 줄은 그대로 실행돼서 `보냈어요`가 보여요."
     - id: e
       text: "`event`라는 이름으로 써야만 이벤트 객체가 들어오고, `e`처럼 다른 이름을 쓰면 들어오지 않는다"
       rationale: 매개변수 이름은 자유예요. 브라우저는 첫 번째 인수로 이벤트 객체를 넘기므로 `e`라고 이름 붙여도 똑같이 들어와요.
@@ -32,8 +32,8 @@ spec:
 misconceptions: [js.mc.preventdefault-stops-handler, js.mc.form-submit-no-default]
 hints:
   - "`event`는 매개변수예요. 이 함수를 부르는 쪽은 누구이고, 무엇을 인수로 넘길까요?"
-  - preventDefault의 "default"는 "기본 동작"이에요. 폼 제출의 기본 동작은 무엇이었나요?
-  - 함수를 그 자리에서 끝내는 문장은 `return`이에요. preventDefault가 같은 일을 할까요?
+  - "`preventDefault`의 default는 '기본 동작'이에요. 폼 제출의 기본 동작은 무엇이었나요?"
+  - "함수를 그 자리에서 끝내는 문장은 `return`이에요. `preventDefault`가 같은 일을 할까요?"
 explanation: |
   정답은 "이벤트 객체다", "기본 동작을 막는다", "`target`은 이벤트가 일어난 요소다" 세 가지예요.
 
@@ -44,5 +44,6 @@ explanation: |
   - 매개변수 이름은 `event`, `e`, `evt` 무엇이든 돼요. 들어오는 값은 같아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

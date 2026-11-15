@@ -57,7 +57,7 @@ button.addEventListener("click", (event) => {
 
 이 단원에서 쓸 것은 세 가지예요.
 
-- `event.target`: 이벤트가 일어난 요소예요. 버튼 여러 개가 함수 하나를 함께 쓸 때, 어느 버튼을 눌렀는지 알 수 있어요.
+- `event.target`: 이벤트가 일어난 요소예요. 버튼 여러 개가 함수 하나를 함께 쓸 때, 어느 버튼을 눌렀는지 알 수 있어요. 버튼 안에 `<span>` 같은 다른 요소가 있으면 실제로 누른 그 안쪽 요소가 `target`이 될 수 있어요. 이벤트를 **등록한** 요소는 `event.currentTarget`이에요. 이 단원의 예제처럼 버튼 안에 글자만 있으면 둘은 같아요.
 - `event.key`: `keydown`에서 누른 키의 이름이에요. Enter 키는 `"Enter"`, A 키는 `"a"`예요.
 - `event.preventDefault()`: 브라우저의 **기본 동작**을 막아요.
 
@@ -76,8 +76,10 @@ form.addEventListener("submit", (event) => {
 
 `preventDefault()`는 기본 동작만 막아요. 함수를 끝내지는 않아서, 다음 줄은 그대로 실행돼요. 함수를 끝내려면 `return`을 써요.
 
-<Callout kind="note" title="ProgInOne 미리보기에서는">
+<Callout kind="note" title="ProgInOne 미리보기와 채점에서는">
 미리보기는 링크 이동과 폼 제출을 실제로 일어나지 않게 막고, "미리보기에서는 링크 이동과 폼 제출이 실제로 일어나지 않아요."라는 안내를 보여 줘요. `preventDefault()`를 부른 폼에서는 이 안내가 나오지 않아요. 안내가 보이면 `preventDefault()`를 빠뜨리지 않았는지 확인해요. 실제 웹 페이지에서는 이 안내 대신 페이지가 새로 열려요.
+
+채점할 때는 막아 주지 않아요. 실습 문제에서 `preventDefault()`를 빠뜨리면 실제 브라우저처럼 페이지를 떠나려다 "실행 중에는 다른 페이지로 이동하거나 폼을 전송할 수 없습니다."라는 오류로 실행이 끝나고, 체크가 실패할 수 있어요. 이 오류가 보이면 `submit` 함수의 첫 줄부터 확인해요. 페이지를 떠나는 시점에 따라 오류 없이 체크가 통과할 때도 있지만, 실제 웹 페이지에서는 화면이 사라지니 `preventDefault()`는 꼭 넣어요.
 </Callout>
 
 ### 입력창의 value는 문자열이에요
@@ -185,7 +187,7 @@ form.addEventListener("submit", (event) => {
 string
 ```
 
-- `type="number"`여도 `value`는 문자열 `"3"`, `"5"`예요. 9번 줄이 `string`을 보여 줘요.
+- `type="number"`여도 `value`는 문자열 `"3"`, `"5"`예요. 8번 줄이 `string`을 보여 줘요.
 - 6번 줄은 문자열끼리의 `+`라 이어 붙여서 `35`예요.
 - 7번 줄처럼 `Number`로 바꾼 뒤 더해야 `8`이에요.
 </Section>

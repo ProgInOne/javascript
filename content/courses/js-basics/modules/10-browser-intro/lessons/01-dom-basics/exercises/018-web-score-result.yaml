@@ -197,5 +197,6 @@ explanation: |
   - `grade.className = "pass"`처럼 대입하면 원래의 `grade` 클래스까지 지워져 큰 글씨 스타일이 사라져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -165,5 +165,6 @@ explanation: |
   - **개수 세기**: `let count = 0;`을 두고 추가할 때마다 1씩 늘려도 돼요. 이 풀이는 목록의 자식 수를 다시 세서, 빈 메모처럼 추가하지 않은 경우에도 숫자가 틀어지지 않게 했어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

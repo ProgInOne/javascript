@@ -28,7 +28,7 @@ spec:
   correct: [a, b, c]
 misconceptions: [js.mc.classlist-dot-prefix, js.mc.style-hyphen-name]
 hints:
-  - classList에는 선택자가 아니라 클래스 **이름**을 넣어요. 이름에 점이 들어 있나요?
+  - "`classList`에는 선택자가 아니라 클래스 **이름**을 넣어요. 이름에 점이 들어 있나요?"
   - "`toggle`은 전등 스위치처럼 동작해요."
   - JavaScript에서 `-` 기호는 어떤 연산자인가요? 이름 안에 쓸 수 있을까요?
 explanation: |
@@ -41,5 +41,6 @@ explanation: |
   - `box.style.font-size`는 `box.style.font - size`라는 빼기로 읽혀서 대입할 수 없는 자리가 되고, 실행 전에 `SyntaxError`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

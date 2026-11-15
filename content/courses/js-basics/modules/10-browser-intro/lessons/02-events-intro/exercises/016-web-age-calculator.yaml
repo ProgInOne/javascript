@@ -191,5 +191,6 @@ explanation: |
   - 잘못된 입력이면 안내를 쓰고 `return`으로 함수를 끝내서, 아래의 계산 줄이 실행되지 않게 했어요. `else`로 나눠도 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

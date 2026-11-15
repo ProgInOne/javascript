@@ -126,5 +126,6 @@ explanation: |
   - 두 버그 모두 오류가 나지 않아서 찾기 어려워요. 화면이 그대로일 때는 `console.log`로 실제로 들어간 값을 확인하는 습관이 도움이 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

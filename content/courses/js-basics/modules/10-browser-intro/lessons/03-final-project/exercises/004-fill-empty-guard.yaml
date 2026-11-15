@@ -85,5 +85,6 @@ explanation: |
   - 빈 문자열과 비교해 비어 있으면 `return`으로 함수를 끝내요. 그러면 아래의 추가 코드가 실행되지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

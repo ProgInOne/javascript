@@ -114,5 +114,6 @@ explanation: |
   - `message.textContent = nameInput.value + "님, 반가워요!";`처럼 한 줄로 써도 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

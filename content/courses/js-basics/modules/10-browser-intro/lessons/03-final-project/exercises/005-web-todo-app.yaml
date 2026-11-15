@@ -33,6 +33,10 @@ prompt: |
   | 5. 삭제 | **삭제** 버튼을 누르면 그 할 일을 지워요. 남은 개수도 바뀌어요. |
   | 6. 빈 목록 안내 | 할 일이 하나도 없을 때만 `#empty-message`가 보여요. 숨길 때는 `hidden` 클래스를 넣어요(CSS에 `.hidden { display: none; }`이 있어요). |
 
+  체크는 한 페이지에서 **차례로 이어서** 실행돼요. 1단계 체크가 추가한 할 일 위에서 3단계가 개수를 세고, 4단계에서 완료한 할 일을 5단계가 지우고, 5단계의 삭제 기능으로 남은 할 일을 모두 지운 뒤 6단계를 확인해요. 그래서 앞 단계가 실패하면 뒤 단계도 함께 실패할 수 있어요. 여러 단계가 실패하면 **가장 앞의 실패한 단계**부터 고치세요. 2단계의 공백 체크는 맨 마지막에 실행되어 다른 단계에 영향을 주지 않아요.
+
+  채점은 실제 브라우저처럼 폼을 제출해요. 여러 체크가 "결과를 확인하지 못했어요"로 실패하고 "NavigationError: 실행 중에는 다른 페이지로 이동하거나 폼을 전송할 수 없습니다." 오류가 보이면, `submit` 함수에서 `event.preventDefault()`를 빠뜨렸거나 폼의 `submit`이 아닌 다른 곳에 등록한 거예요.
+
   도움이 되는 것들:
 
   - 요소를 지울 때는 `요소.remove()`를 써요.
@@ -201,7 +205,7 @@ spec:
         - { selector: "#todo-list li.todo:nth-child(2) .todo-text", text: { equals: "운동하기" } }
     - kind: event
       id: clear-input
-      description: 할 일을 추가하면 입력창이 비어야 합니다.
+      description: "\"책 읽기\"를 추가하면 세 번째 항목으로 붙고 입력창이 비어야 합니다."
       requirement: 입력 다듬기
       visible: true
       steps:
@@ -211,30 +215,13 @@ spec:
         - { selector: "#todo-list li.todo", count: 3 }
         - { selector: "#todo-input", value: "" }
     - kind: event
-      id: ignore-blank
-      description: 공백만 쓰고 제출하면 추가되지 않아야 합니다.
-      requirement: 입력 다듬기
-      steps:
-        - { action: type, selector: "#todo-input", value: "   " }
-        - { action: submit, selector: "#todo-form" }
-      expect:
-        - { selector: "#todo-list li.todo", count: 3 }
-    - kind: event
-      id: trim
-      description: "앞뒤 공백이 있는 \"  물 마시기 \"는 공백을 지운 \"물 마시기\"로 추가되어야 합니다."
-      requirement: 입력 다듬기
-      steps:
-        - { action: type, selector: "#todo-input", value: "  물 마시기 " }
-        - { action: submit, selector: "#todo-form" }
-      expect:
-        - { selector: "#todo-list li.todo", count: 4 }
-        - { selector: "#todo-list li.todo:nth-child(4) .todo-text", text: { equals: "물 마시기" } }
-    - kind: event
       id: count-after-add
-      description: "다섯 번째 할 일을 추가하면 \"남은 할 일 5개\"가 보여야 합니다."
+      description: "\"물 마시기\"와 \"산책하기\"까지 추가해 할 일이 5개가 되면 \"남은 할 일 5개\"가 보여야 합니다."
       requirement: 남은 개수
       visible: true
       steps:
+        - { action: type, selector: "#todo-input", value: "물 마시기" }
+        - { action: submit, selector: "#todo-form" }
         - { action: type, selector: "#todo-input", value: "산책하기" }
         - { action: submit, selector: "#todo-form" }
       expect:
@@ -242,7 +229,7 @@ spec:
         - { selector: "#todo-count", text: { equals: "남은 할 일 5개" } }
     - kind: event
       id: toggle-done
-      description: "두 번째 할 일의 글자를 누르면 그 항목에 done 클래스가 생기고 \"남은 할 일 4개\"가 되어야 합니다."
+      description: "두 번째 할 일(운동하기)의 글자를 누르면 그 항목에 done 클래스가 생기고 \"남은 할 일 4개\"가 되어야 합니다."
       requirement: 완료 표시
       visible: true
       steps:
@@ -272,7 +259,7 @@ spec:
         - { selector: "#todo-count", text: { equals: "남은 할 일 4개" } }
     - kind: event
       id: delete-undone
-      description: "세 번째 할 일(책 읽기)을 삭제하면 항목이 4개가 되고, 그 자리에 다음 항목이 오며, \"남은 할 일 3개\"가 되어야 합니다."
+      description: "세 번째 할 일(책 읽기)을 삭제하면 항목이 4개가 되고, 그 자리에 다음 항목(물 마시기)이 오며, \"남은 할 일 3개\"가 되어야 합니다."
       requirement: 삭제
       visible: true
       steps:
@@ -283,7 +270,7 @@ spec:
         - { selector: "#todo-count", text: { equals: "남은 할 일 3개" } }
     - kind: event
       id: delete-done
-      description: 완료한 항목을 삭제하면 남은 개수는 그대로(3개)여야 합니다.
+      description: 완료한 첫 번째 항목을 삭제하면 남은 개수는 그대로(3개)여야 합니다.
       requirement: 삭제
       steps:
         - { action: click, selector: "#todo-list li.todo:nth-child(1) .delete" }
@@ -302,7 +289,7 @@ spec:
         - { selector: "#empty-message.hidden", count: 1 }
     - kind: event
       id: empty-shown
-      description: "할 일을 모두 삭제하면 #empty-message가 다시 보이고(hidden 없음) \"남은 할 일 0개\"여야 합니다."
+      description: "남은 할 일을 모두 삭제하면 #empty-message가 다시 보이고(hidden 없음) \"남은 할 일 0개\"여야 합니다."
       requirement: 빈 목록 안내
       visible: true
       steps:
@@ -315,7 +302,7 @@ spec:
         - { selector: "#todo-count", text: { equals: "남은 할 일 0개" } }
     - kind: event
       id: empty-hidden-again
-      description: '빈 목록에 다시 추가하면 #empty-message가 숨겨지고 "남은 할 일 1개"여야 합니다.'
+      description: '빈 목록에 "새 할 일"을 추가하면 #empty-message가 숨겨지고 "남은 할 일 1개"여야 합니다.'
       requirement: 빈 목록 안내
       steps:
         - { action: type, selector: "#todo-input", value: "새 할 일" }
@@ -323,6 +310,24 @@ spec:
       expect:
         - { selector: "#empty-message.hidden", count: 1 }
         - { selector: "#todo-count", text: { equals: "남은 할 일 1개" } }
+    - kind: event
+      id: ignore-blank
+      description: 공백만 쓰고 제출하면 추가되지 않아야 합니다. 목록의 마지막 항목은 바로 앞에 추가한 할 일 그대로여야 합니다.
+      requirement: 입력 다듬기
+      steps:
+        - { action: type, selector: "#todo-input", value: "   " }
+        - { action: submit, selector: "#todo-form" }
+      expect:
+        - { selector: "#todo-list li.todo:last-child .todo-text", text: { equals: "새 할 일" } }
+    - kind: event
+      id: trim
+      description: "앞뒤 공백이 있는 \"  물 마시기 \"는 공백을 지운 \"물 마시기\"로 목록 끝에 추가되어야 합니다."
+      requirement: 입력 다듬기
+      steps:
+        - { action: type, selector: "#todo-input", value: "  물 마시기 " }
+        - { action: submit, selector: "#todo-form" }
+      expect:
+        - { selector: "#todo-list li.todo:last-child .todo-text", text: { equals: "물 마시기", trim: false } }
   milestones:
     - { id: m1, title: 할 일 추가하기, checks: [add-first, add-second] }
     - { id: m2, title: 입력 다듬기, checks: [clear-input, ignore-blank, trim] }
@@ -402,5 +407,6 @@ explanation: |
   - 이벤트 위임(`#todo-list`에 하나만 등록하고 `event.target`으로 무엇을 눌렀는지 구별하기)으로 풀어도 체크는 똑같이 통과해요. 브라우저 JavaScript 과정에서 자세히 배워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

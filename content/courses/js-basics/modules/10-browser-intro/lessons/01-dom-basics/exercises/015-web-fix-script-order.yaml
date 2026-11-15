@@ -95,5 +95,6 @@ explanation: |
   - 스크립트를 `head`에 두고 싶다면 다른 방법도 있지만(이벤트를 배운 뒤 만날 `DOMContentLoaded` 등), 입문 단계에서는 `body` 끝에 두는 습관이 가장 간단하고 안전해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

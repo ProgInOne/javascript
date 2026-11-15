@@ -139,5 +139,6 @@ explanation: |
   - `trim()`은 그대로 두어야 공백만 쓴 경우를 빈 이름으로 판단할 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

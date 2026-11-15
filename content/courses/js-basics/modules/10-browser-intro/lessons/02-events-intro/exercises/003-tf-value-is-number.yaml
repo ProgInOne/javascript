@@ -23,5 +23,6 @@ explanation: |
   그래서 두 입력창의 값을 그대로 더하면 `"3" + "5"`가 되어 `"35"`가 나와요. 계산하기 전에 `Number(input.value)`로 숫자로 바꿔요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

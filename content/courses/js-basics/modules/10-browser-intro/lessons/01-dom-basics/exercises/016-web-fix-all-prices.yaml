@@ -129,5 +129,6 @@ explanation: |
   - 반복을 쓰면 메뉴가 열 개로 늘어도 코드를 고칠 필요가 없어요. 모듈 8에서 배운 `for...of`로 써도 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

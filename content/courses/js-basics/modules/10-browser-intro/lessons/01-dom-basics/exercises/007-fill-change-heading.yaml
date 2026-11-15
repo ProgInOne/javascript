@@ -62,5 +62,6 @@ explanation: |
   - `textContent`에 문자열을 대입하면 요소 안의 글자가 그 문자열로 바뀌어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

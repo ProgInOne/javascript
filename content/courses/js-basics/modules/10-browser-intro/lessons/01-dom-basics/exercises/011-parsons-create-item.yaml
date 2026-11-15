@@ -45,5 +45,6 @@ explanation: |
   - `textContent`에 `"<li>...</li>"`를 넣으면 꺾쇠까지 글자로 보여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

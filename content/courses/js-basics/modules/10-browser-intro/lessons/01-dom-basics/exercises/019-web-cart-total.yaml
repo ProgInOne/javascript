@@ -207,5 +207,6 @@ explanation: |
   - 개수는 `.item`을 따로 세어도 되고, 가격 목록의 `length`를 써도 같아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

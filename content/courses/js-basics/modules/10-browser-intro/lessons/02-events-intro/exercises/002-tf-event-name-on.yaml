@@ -23,5 +23,6 @@ explanation: |
   `"oninput"`이라는 이벤트는 일어나지 않으므로, 오류는 나지 않지만 `update`도 불리지 않아요. 이런 버그는 조용해서 찾기 어려워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -270,5 +270,6 @@ explanation: |
   오류가 나는 1번을 고쳐도 2번 때문에 여전히 추가되지 않고, 2번을 고쳐야 비로소 3번이 드러나요. 이렇게 버그가 다른 버그를 가리는 일은 흔해요. 하나 고칠 때마다 다시 실행해 보는 습관이 중요해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

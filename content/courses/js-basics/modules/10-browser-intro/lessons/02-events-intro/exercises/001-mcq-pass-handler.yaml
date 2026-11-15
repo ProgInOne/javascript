@@ -39,5 +39,6 @@ explanation: |
   - 인수 순서는 (이벤트 이름, 함수)예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

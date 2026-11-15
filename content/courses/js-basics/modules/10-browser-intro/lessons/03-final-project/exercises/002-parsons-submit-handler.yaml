@@ -57,5 +57,6 @@ explanation: |
   - 이벤트 이름은 `"submit"`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

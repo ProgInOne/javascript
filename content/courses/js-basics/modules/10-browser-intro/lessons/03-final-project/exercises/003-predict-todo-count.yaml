@@ -24,11 +24,11 @@ spec:
       console.log(itemsAtStart.length);
       console.log(document.querySelectorAll("#list li").length);
       item.remove();
-      console.log(list.children.length);
+      console.log(list.querySelectorAll("li").length);
     </script>
   answerKind: console
   misconceptionByAnswer:
-    "2\n2\n2\n1": js.mc.created-element-auto-shown
+    "2\n1\n2\n1": js.mc.created-element-auto-shown
 hints:
   - 첫 번째 출력은 `append` 전이에요. 만들기만 한 요소는 트리에 있나요?
   - "`itemsAtStart`는 언제 찾은 목록인가요? 그 뒤에 붙인 요소가 이 목록에 저절로 들어갈까요?"
@@ -46,10 +46,11 @@ explanation: |
   - 첫 줄: `createElement`로 만들고 글자를 넣었지만 아직 `append`하지 않았어요. 트리에는 처음 항목 하나뿐이에요.
   - 둘째 줄: `itemsAtStart`는 **찾은 순간의 목록**이에요. 나중에 붙인 항목은 저절로 들어가지 않아서 여전히 1이에요.
   - 셋째 줄: 지금 다시 찾으면 붙인 항목까지 2개예요.
-  - 넷째 줄: `remove()`로 떼어 내서 자식이 1개 남았어요.
+  - 넷째 줄: `remove()`로 떼어 내서 목록 안의 `li`가 1개 남았어요.
 
-  할 일 목록에서 개수를 셀 때 페이지가 열릴 때 찾아 둔 목록을 쓰면 틀려요. 셀 때마다 다시 찾거나 `children.length`를 읽어야 해요.
+  할 일 목록에서 개수를 셀 때 페이지가 열릴 때 찾아 둔 목록을 쓰면 틀려요. 셀 때마다 `querySelectorAll`로 다시 찾아야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

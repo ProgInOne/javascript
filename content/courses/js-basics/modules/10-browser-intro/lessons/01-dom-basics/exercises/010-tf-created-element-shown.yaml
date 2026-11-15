@@ -14,15 +14,15 @@ spec:
   requireReason: true
   reasons:
     - id: r1
-      text: 만든 요소는 아직 트리의 어디에도 붙지 않았다. 부모 요소에 append해야 화면에 나타난다
+      text: 만든 요소는 아직 트리의 어디에도 붙지 않았다. 부모 요소에 `append`해야 화면에 나타난다
       correct: true
     - id: r2
-      text: li는 ul 안에서만 만들 수 있어서 createElement("li")가 오류를 낸다
+      text: '`li`는 `ul` 안에서만 만들 수 있어서 `createElement("li")`가 오류를 낸다'
     - id: r3
-      text: textContent를 넣으면 브라우저가 맞는 목록을 찾아 자동으로 붙인다
+      text: "`textContent`를 넣으면 브라우저가 맞는 목록을 찾아 자동으로 붙인다"
       misconception: js.mc.created-element-auto-shown
     - id: r4
-      text: createElement로 만든 요소에는 textContent를 쓸 수 없다
+      text: "`createElement`로 만든 요소에는 `textContent`를 쓸 수 없다"
 hints:
   - "`createElement`는 요소를 \"만들기만\" 하는지, 어딘가에 \"붙이기까지\" 하는지 생각해 보세요."
   - 브라우저는 DOM 트리에 있는 것만 화면에 그려요. 이 요소는 트리의 어디에 있을까요?
@@ -43,5 +43,6 @@ explanation: |
   - 만든 요소에도 `textContent`, `classList`를 그대로 쓸 수 있어요. 트리에 붙이기 전에 준비해 두는 경우가 많아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -325,7 +325,7 @@
       }
     },
     "js-basics.browser-intro.final-project.predict-todo-count": {
-      "inputHash": "5493272961d405218ac98b25fd325fd5ddc6ae888b93bcb64fc60fa3901d725b",
+      "inputHash": "b89b4600346a9f509e33b0193174e9872ccedeb7997cfc0b0676c20c9e785ee1",
       "expected": {
         "kind": "console",
         "lines": [

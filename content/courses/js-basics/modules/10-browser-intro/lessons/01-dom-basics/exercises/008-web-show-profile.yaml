@@ -137,5 +137,6 @@ explanation: |
   - `textContent`에 대입하면 요소 안의 내용 전체가 바뀌어요. 그래서 `.row` 문단에 대입하면 `레벨:` 글자까지 사라져요. 바꿀 부분만 `span`으로 감싸 두고 그 `span`을 찾는 것이 이 카드의 설계예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

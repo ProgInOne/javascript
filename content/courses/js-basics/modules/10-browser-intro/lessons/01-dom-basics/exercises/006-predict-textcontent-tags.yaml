@@ -40,5 +40,6 @@ explanation: |
   굵은 글자처럼 새 요소가 필요하면 `document.createElement("b")`로 요소를 만들어 붙여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

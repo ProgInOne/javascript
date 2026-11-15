@@ -41,5 +41,6 @@ explanation: |
   - `querySelector("notice")`에는 점이 없어서 `<notice>` 태그를 찾아요. 그런 요소는 없으니 `null`이에요. 오류는 나지 않지만, 이 결과에 `.textContent`를 쓰면 그때 `TypeError`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -79,5 +79,6 @@ explanation: |
   - `parseInt`를 써도 이 문제의 점수에서는 같은 결과지만, `"87.5"` 같은 소수점 점수는 `87`로 잘려요. `Number`가 더 안전해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -75,5 +75,6 @@ explanation: |
   - 함수는 괄호 없이 `pick`으로 넘겨요. `pick()`으로 쓰면 등록하는 순간 `event` 없이 불려서 `event.target`을 읽다가 `TypeError`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

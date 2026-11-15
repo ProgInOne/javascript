@@ -44,5 +44,6 @@ explanation: |
   글자를 덧붙이고 싶다면 `status.textContent = status.textContent + " (5분)";`처럼 원래 글자를 읽어 이어 붙인 문자열을 대입해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

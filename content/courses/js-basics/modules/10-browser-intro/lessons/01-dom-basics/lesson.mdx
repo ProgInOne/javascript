@@ -83,6 +83,10 @@ status.textContent = "배송 중";   // 글자를 바꾸기
 
 `textContent`는 이름 그대로 **글자만** 다뤄요. `"<b>중요</b>"`를 넣으면 굵은 글씨가 아니라 꺾쇠까지 그대로 글자로 보여요. 그리고 `textContent`는 숫자를 넣어도 읽을 때는 항상 문자열이에요.
 
+<Callout kind="note" title="innerHTML은요?">
+다른 자료에서 문자열을 태그로 해석해 넣는 `innerHTML`을 보게 될 거예요. 사용자가 입력한 글자를 `innerHTML`에 넣으면 그 속의 태그가 진짜 요소가 되고, 누군가 심어 둔 코드가 실행될 수도 있어서 위험해요. 이 과정에서는 글자는 `textContent`로 넣고, 요소가 필요하면 아래에서 배울 `createElement`로 만들어요. `innerHTML`의 위험은 브라우저 JavaScript 과정의 보안 단원에서 자세히 다뤄요.
+</Callout>
+
 ### classList와 style로 모양을 바꿔요
 
 모양을 바꾸는 방법은 두 가지예요.

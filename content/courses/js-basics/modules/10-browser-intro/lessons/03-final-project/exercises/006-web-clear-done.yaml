@@ -290,5 +290,6 @@ explanation: |
   - 다 지운 뒤 `updateStatus()`가 남은 개수와 빈 목록 안내를 맞춰요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

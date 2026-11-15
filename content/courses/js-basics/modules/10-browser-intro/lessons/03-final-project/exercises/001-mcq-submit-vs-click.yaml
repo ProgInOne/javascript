@@ -38,5 +38,6 @@ explanation: |
   - `addTodo()`처럼 괄호를 붙이면 함수 자체가 아니라 실행 결과가 넘어가요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

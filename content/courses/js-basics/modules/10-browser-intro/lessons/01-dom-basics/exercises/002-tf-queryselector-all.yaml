@@ -23,5 +23,6 @@ explanation: |
   모두 찾으려면 `document.querySelectorAll(".item")`을 써요. 결과는 요소들의 목록이라서 `length`로 개수를 알고, `[0]`, `[1]`처럼 인덱스로 하나씩 꺼내요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

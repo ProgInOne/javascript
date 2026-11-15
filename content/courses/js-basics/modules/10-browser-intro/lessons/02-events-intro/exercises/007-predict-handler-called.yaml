@@ -1,6 +1,6 @@
 id: js-basics.browser-intro.events-intro.predict-handler-called
 type: predict_output
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.dom.add-event-listener, weight: 1 }
   - { id: js.fn.undefined-return, weight: 0.3 }
@@ -47,5 +47,6 @@ explanation: |
   클릭할 때마다 인사하려면 `button.addEventListener("click", sayHi);`처럼 괄호 없이 함수 자체를 넘겨요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

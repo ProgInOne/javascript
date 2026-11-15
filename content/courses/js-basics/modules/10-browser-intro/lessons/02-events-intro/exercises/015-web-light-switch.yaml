@@ -149,5 +149,6 @@ explanation: |
   - 함수는 괄호 없이 넘겨야 해요(여기서는 화살표 함수를 바로 넘겼어요).
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
