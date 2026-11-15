@@ -1,6 +1,6 @@
 import { fromJson, parsonsPublicId } from '@proginone/exercise-kit';
 import { runPlanSchema, type RunPlan, type RunResult } from '@proginone/shared';
-import { EX, REMEDIAL } from './content-fixture.ts';
+import { EX, PROJECT_PREP, REMEDIAL } from './content-fixture.ts';
 
 // Learner answers and sandbox results for the fixture exercises (content-fixture.ts).
 
@@ -27,6 +27,7 @@ export const CORRECT: Record<string, unknown> = {
   [EX.fixBug]: shoutFile("s.toUpperCase() + '!'"),
   [EX.web]: { files: [{ path: 'index.html', content: '<main><ul class="cards"></ul></main>' }] },
   ...Object.fromEntries(Object.values(REMEDIAL).map((id) => [id, { optionId: 'b' }])),
+  [PROJECT_PREP]: { optionId: 'b' },
 };
 
 /** Wrong answers by exercise id. */
@@ -48,6 +49,7 @@ export const WRONG: Record<string, unknown> = {
   [EX.fixBug]: shoutFile("s + '!'"),
   [EX.web]: { files: [{ path: 'index.html', content: '<main></main>' }] },
   ...Object.fromEntries(Object.values(REMEDIAL).map((id) => [id, { optionId: 'a' }])),
+  [PROJECT_PREP]: { optionId: 'a' },
 };
 
 /** What a correct (or wrong) program observes for each fixture check step. */
@@ -68,6 +70,15 @@ const OBSERVED: Record<string, { right: object; wrong: object }> = {
     right: { op: 'domQuery', count: 1, items: [{ tagName: 'UL' }] },
     wrong: { op: 'domQuery', count: 0, items: [] },
   },
+  ...Object.fromEntries(
+    ['p-title', 'p-list', 'p-note'].map((id) => [
+      `${id}#q`,
+      {
+        right: { op: 'domQuery', count: 1, items: [{ tagName: 'DIV' }] },
+        wrong: { op: 'domQuery', count: 0, items: [] },
+      },
+    ]),
+  ),
   'hidden-items#q': {
     right: { op: 'domQuery', count: 0, items: [] },
     wrong: { op: 'domQuery', count: 0, items: [] },
@@ -77,7 +88,12 @@ const OBSERVED: Record<string, { right: object; wrong: object }> = {
 /** A sandbox result for a run plan, as the runner would report it. */
 export function runFor(
   rawPlan: unknown,
-  options: { correct?: boolean; status?: RunResult['status'] } = {},
+  options: {
+    correct?: boolean;
+    status?: RunResult['status'];
+    /** Check ids whose steps observe the right value (overrides `correct` per check). */
+    passing?: readonly string[];
+  } = {},
 ): RunResult {
   const plan: RunPlan = runPlanSchema.parse(rawPlan);
   const correct = options.correct ?? true;
@@ -97,7 +113,10 @@ export function runFor(
         : (plan.checks.steps.map((step) => {
             const known = OBSERVED[step.id];
             if (!known) throw new Error(`no fixture observation for ${step.id}`);
-            return { id: step.id, status: 'ok', ...(correct ? known.right : known.wrong) };
+            const right = options.passing
+              ? step.id === 'settle' || options.passing.includes(step.id.split('#')[0] ?? '')
+              : correct;
+            return { id: step.id, status: 'ok', ...(right ? known.right : known.wrong) };
           }) as RunResult['observations']),
     pendingAtEnd: { timers: 0, intervals: 0 },
   };

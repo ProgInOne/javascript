@@ -10,6 +10,7 @@ import { SettingsService } from '../../services/settings/service.ts';
 import {
   ASSESSMENT,
   ASSESSMENT_EXERCISES,
+  PROJECT,
   FIXTURE_EXERCISES,
   writeContentDb,
 } from '../../test/content-fixture.ts';
@@ -42,7 +43,7 @@ describe('curriculum routes', () => {
     const list = courseListSchema.parse(await (await get('/courses')).json());
     expect(list.packVersion).toBe('2026.11.14.1');
     expect(list.tracks[0]?.courses.map((c) => c.id)).toEqual(['js-basics']);
-    expect(list.tracks[0]?.courses[0]?.lessonCount).toBe(3);
+    expect(list.tracks[0]?.courses[0]?.lessonCount).toBe(4);
   });
 
   it('returns a course with modules, lessons, and practice counts', async () => {
@@ -52,6 +53,7 @@ describe('curriculum routes', () => {
       ['js-basics.start.first-program', FIXTURE_EXERCISES.length],
       ['js-basics.start.reading-errors', 0],
       [ASSESSMENT, ASSESSMENT_EXERCISES.length],
+      [PROJECT, 2],
     ]);
     expect((await get('/courses/secret')).status).toBe(404);
   });

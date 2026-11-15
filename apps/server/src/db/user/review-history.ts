@@ -30,7 +30,9 @@ export interface GradedAttemptRow {
 
 /**
  * Every graded attempt of the learner (sandbox errors excluded), newest first, optionally for
- * one exercise. The `attempts_learner_submitted` index serves the scan.
+ * one exercise. Attempts the engine did not count (`engine_applied = 0`: sandbox failures and a
+ * project's unfinished or repeated runs, D-048) are left out too: they are not wrong answers.
+ * The `attempts_learner_submitted` index serves the scan.
  */
 export function listGradedAttempts(
   orm: Orm,
@@ -57,6 +59,7 @@ export function listGradedAttempts(
       and(
         eq(attempts.learnerId, learnerId),
         ne(attempts.outcome, 'error'),
+        eq(attempts.engineApplied, true),
         exerciseId === undefined ? undefined : eq(attempts.exerciseId, exerciseId),
       ),
     )

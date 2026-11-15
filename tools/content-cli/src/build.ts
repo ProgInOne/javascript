@@ -9,7 +9,7 @@ import {
 } from '@proginone/content-schema';
 import { CONTENT_DB_SCHEMA_VERSION, CONTENT_DDL } from '@proginone/content-schema/db';
 import Database from 'better-sqlite3';
-import { checkContent, type SpecValidator } from './check.ts';
+import { checkContent, projectExerciseOf, type SpecValidator } from './check.ts';
 import type { Diagnostics } from './diagnostics.ts';
 import { canonical, sha256 } from './hash.ts';
 
@@ -180,6 +180,8 @@ export function buildContent(root: string, outFile: string, options: BuildOption
             summary: m.summary,
             order_index: mi,
             assessment_id: assessmentId,
+            project_id:
+              mod.lessons.find((l) => l.meta.data.kind === 'project')?.meta.data.id ?? null,
           });
           mod.lessons.forEach((lesson, li) => {
             const l = lesson.meta.data;
@@ -247,6 +249,9 @@ export function buildContent(root: string, outFile: string, options: BuildOption
             insert('lesson_concepts', { lesson_id: l.id, concept_id, role });
 
           const assessmentItems: string[] = [];
+          // A project unit's milestone web_task is stored as `usage: project` even when the YAML
+          // leaves it implicit (content-and-exercises.md#프로젝트-단원-kind-project).
+          const projectId = projectExerciseOf(lesson)?.exercise.id;
           for (const { data: ex } of lesson.exercises) {
             const isDraft = ex.review.status !== 'approved';
             if (isDraft && !includeDrafts) {
@@ -259,7 +264,7 @@ export function buildContent(root: string, outFile: string, options: BuildOption
               type: ex.type,
               difficulty: ex.difficulty,
               lesson_id: l.id,
-              usage: ex.usage,
+              usage: ex.id === projectId ? 'project' : ex.usage,
               worked_example_stage: ex.workedExampleStage,
               variant_group: ex.variantGroup,
               prompt: ex.prompt,

@@ -149,3 +149,66 @@ export function withAssessment(files: Record<string, unknown>): void {
     review: { status: 'approved', draftedBy: 'ai:claude', reviewedBy: 'ai:reviewer' },
   };
 }
+
+export const PROJECT = 'js-basics.start.mini-project';
+export const PROJECT_YAML =
+  'courses/js-basics/modules/01-start/lessons/02-mini-project/lesson.yaml';
+export const PROJECT_EXERCISE_YAML =
+  'courses/js-basics/modules/01-start/lessons/02-mini-project/exercises/001-project.yaml';
+
+/** Adds a `kind: project` unit with one milestone `web_task` to the fixture module. */
+export function withProject(files: Record<string, unknown>): void {
+  const mod = files[MODULE_YAML] as Record<string, unknown>;
+  mod['lessons'] = ['first-program', 'mini-project'];
+  files[PROJECT_YAML] = {
+    id: PROJECT,
+    title: '미니 프로젝트',
+    summary: '배운 내용으로 화면을 만듭니다',
+    kind: 'project',
+    estimatedMinutes: { read: 3, practice: 40 },
+    concepts: { practiced: ['js.basics.console-log'], reviewed: ['js.basics.statement'] },
+    objectives: ['출력을 조합해 화면을 만들 수 있다'],
+  };
+  files['courses/js-basics/modules/01-start/lessons/02-mini-project/lesson.mdx'] = [
+    'objectives',
+    'practice',
+    'summary',
+    'next',
+  ]
+    .map((k) => `<Section kind="${k}">\n${k}.\n</Section>`)
+    .join('\n\n');
+  const check = (id: string, selector: string) => ({
+    kind: 'dom',
+    id,
+    selector,
+    expect: { exists: true },
+  });
+  files[PROJECT_EXERCISE_YAML] = {
+    id: `${PROJECT}.build`,
+    type: 'web_task',
+    difficulty: 4,
+    concepts: [
+      { id: 'js.basics.console-log', weight: 1 },
+      { id: 'js.basics.statement', weight: 0.5 },
+    ],
+    estimatedSeconds: 2400,
+    usage: 'project',
+    prompt: '목록 화면을 단계별로 만드세요.',
+    spec: {
+      focus: 'project',
+      starter: { files: [{ path: 'index.html', content: '<main></main>' }] },
+      solution: {
+        files: [{ path: 'index.html', content: '<main><h1></h1><ul></ul><p></p></main>' }],
+      },
+      checks: [check('has-title', 'h1'), check('has-list', 'ul'), check('has-note', 'p')],
+      milestones: [
+        { id: 'm1', title: '제목 만들기', checks: ['has-title'] },
+        { id: 'm2', title: '목록 만들기', checks: ['has-list'] },
+        { id: 'm3', title: '안내 문장 넣기', checks: ['has-note'] },
+      ],
+    },
+    hints: ['a', 'b', 'c'],
+    explanation: '단계별로 요소를 더합니다.',
+    review: { status: 'approved', draftedBy: 'ai:claude', reviewedBy: 'ai:reviewer' },
+  };
+}

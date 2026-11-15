@@ -17,6 +17,7 @@ import { ReviewService } from '../review/review-service.ts';
 import { AttemptService } from './attempt-service.ts';
 import { ExerciseService } from './exercise-service.ts';
 import { PracticeSetService } from './practice-set-service.ts';
+import { ProjectService } from './project-service.ts';
 import { WeaknessService } from './weakness.ts';
 
 export interface PracticeDeps {
@@ -34,6 +35,7 @@ export interface PracticeServices {
   exercises: ExerciseService;
   sets: PracticeSetService;
   attempts: AttemptService;
+  projects: ProjectService;
   lessons: LessonProgressService;
   review: ReviewService;
   activity: ActivityService;
@@ -56,6 +58,7 @@ export function createPracticeServices(deps: PracticeDeps): PracticeServices {
     exercises: new ExerciseService(deps),
     sets: new PracticeSetService({ ...deps, review, weakness }),
     attempts: new AttemptService(deps),
+    projects: new ProjectService(deps),
     lessons: new LessonProgressService(deps),
     review,
     activity: new ActivityService(deps),

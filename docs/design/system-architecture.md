@@ -299,6 +299,7 @@ sequenceDiagram
 - 오류 코드는 영역 접두사를 씁니다: `VALIDATION_*`, `NOT_FOUND`, `CONTENT_*`, `EXERCISE_*`(문제·힌트·정답 열람), `PRACTICE_*`(연습 세트·시도), `RUNNER_*`, `AI_*`, `BACKUP_*`(백업·백업 위치), `RESTORE_FAILED`, `RESET_FAILED`, `MAINTENANCE`, `INTERNAL`.
 - 단원 평가(v0.3): 평가 중인 문항의 힌트·정답·본문 확인 시도는 `403 EXERCISE_LOCKED_IN_ASSESSMENT`, 튜터·AI 힌트·오답 분석은 `403 AI_LOCKED_IN_ASSESSMENT`, 같은 문항의 두 번째 제출은 `409 PRACTICE_ITEM_DONE`, 단원 종류와 맞지 않는 세트 요청은 `409 PRACTICE_KIND_MISMATCH`입니다([학습 엔진 설계 구현 메모 (v0.3)](/docs/design/learning-engine.md#구현-메모-v03)).
 - 힌트 정책 "먼저 풀어 보기"(`settings.hints.policy = 'after-attempt'`)에서 그 문항에 제출하기 전 첫 힌트 요청은 `409 EXERCISE_TRY_FIRST`입니다(D-047).
+- 프로젝트(v0.3): 프로젝트 단원에 연습 세트를 요청하거나 다른 단원에 프로젝트 API를 부르면 `409 PRACTICE_KIND_MISMATCH`(`details.expected`에 단원 종류), 프로젝트의 문제가 아닌 `exerciseId`는 `400 PRACTICE_ITEM_MISMATCH`입니다.
 - 서버는 예상하지 못한 예외를 `INTERNAL`로 감싸고, 스택은 로그에만 남깁니다.
 - 백업 복원이나 데이터 재계산 중에는 서버가 유지보수 모드가 되어 `/api` 요청에 `503`과 `MAINTENANCE`를 반환합니다. 웹은 전체 화면 안내를 표시합니다.
 - AI 관련 오류 코드(`AI_*`)의 전체 목록은 [AI 시스템 설계](/docs/design/ai-system.md)가 원천입니다.
@@ -309,6 +310,7 @@ sequenceDiagram
 |---|---|
 | 커리큘럼 | `GET /courses`, `GET /lessons/:lessonId` |
 | 연습 | `POST /practice-sets` (단원·복습·약점 집중·단원 평가 `kind: 'assessment'`·오답 노트의 "다시 풀기" `kind: 'extra'`(v0.3). 평가 중 시도 응답은 결과를 감춘 `withheld` 형태이고 마지막 제출이 전체 결과를 돌려줌, v0.3), `POST /practice-sets/:id/items/:itemId/skip` (건너뛰기), `GET /weak-concepts` (약점 개념과 이유), `GET /exercises/:id` (공개 스펙), `POST /exercises/:id/run-plan` (샌드박스 실행 계획), `POST /attempts` (채점 결과와 해설), `POST /exercises/:id/inline-attempts` (레슨 본문 확인 문제: 연습 세트 밖 시도. 실행 없이 채점하는 유형만, 숙련도는 반영하고 FSRS 일정은 바꾸지 않음) |
+| 프로젝트 | `GET /lessons/:id/project` (`kind: project` 단원의 마일스톤별 통과·채점 횟수·이어 할 코드), `POST /lessons/:id/project/attempts` (연습 세트 밖 채점. 응답은 채점 결과·이번에 새로 통과한 마일스톤·완료 여부·갱신된 진행 상태, 해설은 완성한 뒤에만), v0.3 |
 | 힌트·정답 | `POST /exercises/:id/hints` (다음 단계 요청), `POST /exercises/:id/solution` |
 | 학습 상태 | `GET /mastery` (과정 진도와 개념 지도), `GET /concepts/:id`, `GET /review-queue`, `GET /daily-plan` |
 | 복습 화면 | `GET /mistakes` (오답 노트: 과정·모듈·개념·상태 필터, 확신 오답 우선 정렬, 필터 선택지), `GET /mistakes/:exerciseId` (내 답·피드백·해설, 본 적 있는 정답만), `GET /mastery-changes` (숙련 단계 상승·하락과 주별 요약). v0.3, [D-044](/docs/decisions.md) |

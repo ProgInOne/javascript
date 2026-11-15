@@ -100,5 +100,19 @@ export const lessonDetailSchema = z.object({
     })
     .nullable()
     .optional(),
+  /**
+   * `kind: project` only: the milestone `web_task` and what the project card announces
+   * (content-and-exercises.md#프로젝트-단원-kind-project). Progress: `GET /lessons/:id/project`.
+   */
+  project: z
+    .object({
+      exerciseId: z.string(),
+      milestoneCount: z.number().int().min(0),
+      /** Preparation practice items: `POST /practice-sets {kind:'lesson'}` builds their set. */
+      practiceCount: z.number().int().min(0),
+      estimatedMinutes: z.number().int().min(0),
+    })
+    .nullable()
+    .optional(),
 });
 export type LessonDetail = z.infer<typeof lessonDetailSchema>;

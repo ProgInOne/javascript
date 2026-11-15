@@ -10,6 +10,8 @@ export const EXERCISE_USAGES = [
   'diagnostic',
   'remedial',
   'worked_example',
+  /** The milestone `web_task` of a `kind: project` unit (only served on the project screen). */
+  'project',
 ] as const;
 
 /**

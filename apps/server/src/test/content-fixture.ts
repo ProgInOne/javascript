@@ -103,6 +103,15 @@ export function writeContentDb(meta: Record<string, string> = {}): string {
     ASSESSMENT,
     'js-basics.start',
   );
+  // The module's project (kind: project; content-and-exercises.md#프로젝트-단원-kind-project).
+  ins('lessons', {
+    ...lesson(PROJECT, 3),
+    title: '미니 프로젝트',
+    kind: 'project',
+    estimated_minutes: 50,
+    read_minutes: 5,
+  });
+  db.prepare('UPDATE modules SET project_id = ? WHERE id = ?').run(PROJECT, 'js-basics.start');
   const concept = (id: string, lessonId: string) => ({
     id,
     course_id: 'js-basics',
@@ -135,6 +144,12 @@ export function writeContentDb(meta: Record<string, string> = {}): string {
   for (const role of ['js.basics.statement', 'js.basics.comment']) {
     ins('lesson_concepts', { lesson_id: ASSESSMENT, concept_id: role, role: 'reviews' });
   }
+  ins('lesson_concepts', {
+    lesson_id: PROJECT,
+    concept_id: 'js.basics.statement',
+    role: 'practices',
+  });
+  ins('lesson_concepts', { lesson_id: PROJECT, concept_id: 'js.basics.comment', role: 'reviews' });
   ins('assessments', {
     id: ASSESSMENT,
     scope_type: 'module',
@@ -148,7 +163,12 @@ export function writeContentDb(meta: Record<string, string> = {}): string {
     }),
     pass_ratio: 0.8,
   });
-  for (const ex of [...FIXTURE_EXERCISES, ...REMEDIAL_EXERCISES, ...ASSESSMENT_EXERCISES]) {
+  for (const ex of [
+    ...FIXTURE_EXERCISES,
+    ...REMEDIAL_EXERCISES,
+    ...ASSESSMENT_EXERCISES,
+    ...PROJECT_EXERCISES,
+  ]) {
     ins('exercises', {
       id: ex.id,
       type: ex.type,
@@ -246,7 +266,7 @@ interface FixtureExercise {
   id: string;
   type: string;
   difficulty: number;
-  usage?: 'practice' | 'remedial' | 'assessment';
+  usage?: 'practice' | 'remedial' | 'assessment' | 'project';
   spec: unknown;
   code?: string;
   lessonId?: string;
@@ -524,4 +544,58 @@ export const ASSESSMENT_EXERCISES: FixtureExercise[] = [
   assessmentItem(ASSESS.statementL4, 4, 'js.basics.statement'),
   assessmentItem(ASSESS.commentL2, 2, 'js.basics.comment'),
   assessmentItem(ASSESS.commentL3, 3, 'js.basics.comment', 'true_false'),
+];
+
+// ── Project: one milestone web_task (usage `project`), served only on the project screen ──
+
+export const PROJECT = 'js-basics.start.mini-project';
+export const PROJECT_EXERCISE = `${PROJECT}.build`;
+/** Check ids of the project's three milestones, in order. */
+export const PROJECT_CHECKS = ['p-title', 'p-list', 'p-note'] as const;
+
+/** The project's preparation practice (answer `b` is correct), served only in its own set. */
+export const PROJECT_PREP = `${PROJECT}.mcq-prep`;
+
+export const PROJECT_EXERCISES: FixtureExercise[] = [
+  {
+    id: PROJECT_PREP,
+    type: 'mcq_single',
+    difficulty: 2,
+    lessonId: PROJECT,
+    spec: choice,
+    concepts: [{ id: 'js.basics.statement', weight: 1 }],
+  },
+  {
+    id: PROJECT_EXERCISE,
+    type: 'web_task',
+    difficulty: 4,
+    usage: 'project',
+    lessonId: PROJECT,
+    spec: {
+      focus: 'project',
+      starter: { files: [{ path: 'index.html', content: '<main></main>' }] },
+      solution: {
+        files: [
+          {
+            path: 'index.html',
+            content: '<main><h1>목록</h1><ul></ul><p>끝</p><!-- SOLUTION-MARK --></main>',
+          },
+        ],
+      },
+      checks: [
+        { kind: 'dom', id: 'p-title', visible: true, selector: 'h1', expect: { exists: true } },
+        { kind: 'dom', id: 'p-list', visible: true, selector: 'ul', expect: { exists: true } },
+        { kind: 'dom', id: 'p-note', visible: true, selector: 'p', expect: { exists: true } },
+      ],
+      milestones: [
+        { id: 'm1', title: '제목 만들기', checks: ['p-title'] },
+        { id: 'm2', title: '목록 만들기', checks: ['p-list'] },
+        { id: 'm3', title: '안내 문장 넣기', checks: ['p-note'] },
+      ],
+    },
+    concepts: [
+      { id: 'js.basics.statement', weight: 1 },
+      { id: 'js.basics.comment', weight: 0.5 },
+    ],
+  },
 ];

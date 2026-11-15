@@ -153,7 +153,7 @@ interface EnginePlan {
 }
 
 /** Misconception updates with the stored rows they apply to. */
-interface Signals {
+export interface Signals {
   updates: readonly MisconceptionUpdate[];
   stored: Map<string, StoredObservation>;
 }
@@ -1211,7 +1211,7 @@ function adaptationsOf(repo: ContentRepository, plan: EnginePlan | null): SetAda
 }
 
 /** Writes misconception observations (insert for new rows, update in place otherwise). */
-function writeSignals(orm: UserDb['orm'], learnerId: string, signals: Signals): void {
+export function writeSignals(orm: UserDb['orm'], learnerId: string, signals: Signals): void {
   for (const update of signals.updates) {
     const rowId =
       update.before === null ? null : (signals.stored.get(update.misconceptionId)?.rowId ?? null);
@@ -1230,7 +1230,7 @@ function toPassJson(pass: PassResult): NonNullable<PracticeResultJson['pass']> {
   };
 }
 
-function gradingOf(grade: GradeResult, run: RunResult | null): GradingJson {
+export function gradingOf(grade: GradeResult, run: RunResult | null): GradingJson {
   return {
     v: 1,
     graderVersion: grade.graderVersion,

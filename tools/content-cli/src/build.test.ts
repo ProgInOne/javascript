@@ -10,8 +10,11 @@ import {
   EXERCISE,
   EXERCISE_YAML,
   LESSON,
+  PROJECT,
+  PROJECT_EXERCISE_YAML,
   REVIEW,
   withAssessment,
+  withProject,
   writeContent,
 } from './test/fixture.ts';
 
@@ -68,7 +71,7 @@ describe('buildContent', () => {
     );
     expect(meta).toMatchObject({
       pack_version: '2026.11.14.1',
-      schema_version: '2',
+      schema_version: '3',
       built_at: '2026-11-14T00:00:00.000Z',
     });
     expect(meta['content_hash']).toMatch(/^[0-9a-f]{64}$/);
@@ -162,6 +165,33 @@ describe('buildContent', () => {
     expect(db.prepare('SELECT kind FROM lessons WHERE id = ?').get(REVIEW)).toEqual({
       kind: 'assessment',
     });
+    db.close();
+  });
+
+  it('writes a project unit, its usage: project exercise and the module link', () => {
+    const { out, result } = build(withProject);
+    expect(result.written).toBe(true);
+    const db = new Database(out, { readonly: true });
+    expect(db.prepare('SELECT project_id FROM modules').get()).toEqual({ project_id: PROJECT });
+    expect(db.prepare('SELECT kind FROM lessons WHERE id = ?').get(PROJECT)).toEqual({
+      kind: 'project',
+    });
+    expect(
+      db.prepare('SELECT id, type, usage FROM exercises WHERE lesson_id = ?').all(PROJECT),
+    ).toEqual([{ id: `${PROJECT}.build`, type: 'web_task', usage: 'project' }]);
+    db.close();
+  });
+
+  it('builds an unmarked milestone web_task of a project unit as usage: project', () => {
+    const { out, result } = build((f) => {
+      withProject(f);
+      delete (f[PROJECT_EXERCISE_YAML] as Record<string, unknown>)['usage'];
+    });
+    expect(result.written).toBe(true);
+    const db = new Database(out, { readonly: true });
+    expect(db.prepare('SELECT usage FROM exercises WHERE lesson_id = ?').all(PROJECT)).toEqual([
+      { usage: 'project' },
+    ]);
     db.close();
   });
 

@@ -209,6 +209,7 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
       if (ex.review.status === 'approved') approved++;
     }
     checkAssessmentUnit(lesson, diag);
+    checkProjectUnit(lesson, diag);
     const drafts = lesson.exercises.length - approved;
     if (drafts > 0) diag.warn(file, `검토되지 않은 문제 ${drafts}개는 빌드에서 제외됩니다`);
     const target = data.practice?.targetCount;
@@ -220,6 +221,12 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
   for (const course of source.courses) {
     for (const mod of course.modules) {
       const { file, data } = mod.meta;
+      const projects = mod.lessons.filter((l) => l.meta.data.kind === 'project');
+      if (projects.length > 1)
+        diag.error(
+          file,
+          `프로젝트 단원은 모듈에 하나만 둘 수 있습니다: ${projects.map((l) => l.meta.data.id).join(', ')}`,
+        );
       const units = mod.lessons.filter((l) => l.meta.data.kind === 'assessment');
       if (units.length > 1)
         diag.error(
@@ -368,6 +375,133 @@ function checkAssessmentUnit(lesson: LessonNodeSource, diag: Diagnostics): void 
         `assessment.itemCount ${itemCount}로는 평가할 개념 ${assessed.size}개를 모두 다룰 수 없습니다`,
       );
   }
+}
+
+/** Recommended milestone count of a project (content-and-exercises.md#프로젝트-단원-kind-project). */
+export const PROJECT_MILESTONE_RANGE = { min: 3, max: 10 } as const;
+
+/** Whether an exercise spec groups its checks into milestones (a project `web_task`). */
+const hasMilestones = (spec: Record<string, unknown>) =>
+  Array.isArray(spec['milestones']) && spec['milestones'].length > 0;
+
+/**
+ * The project exercise of a `kind: project` unit: the one marked `usage: project`, or else the
+ * unit's only `web_task` with `milestones` (`inferred`: built as `usage: project`). Null when there
+ * is none or the choice is ambiguous (`checkProjectUnit` reports why).
+ */
+export function projectExerciseOf(
+  lesson: LessonNodeSource,
+): { exercise: ExerciseSource; inferred: boolean } | null {
+  if (lesson.meta.data.kind !== 'project') return null;
+  const marked = lesson.exercises.filter((x) => x.data.usage === 'project');
+  if (marked.length > 0) {
+    const only = marked.length === 1 ? marked[0] : undefined;
+    return only ? { exercise: only.data, inferred: false } : null;
+  }
+  const candidates = lesson.exercises.filter(
+    (x) => x.data.type === 'web_task' && x.data.usage === 'practice' && hasMilestones(x.data.spec),
+  );
+  const only = candidates.length === 1 ? candidates[0] : undefined;
+  return only ? { exercise: only.data, inferred: true } : null;
+}
+
+/**
+ * Rules of a `kind: project` unit (content-and-exercises.md#프로젝트-단원-kind-project): it
+ * introduces nothing, applies the concepts in `concepts.practiced`/`reviewed`, and holds one
+ * project exercise — a `web_task` whose checks are grouped into `milestones`, marked
+ * `usage: project` (or the unit's only milestone `web_task`). Other exercises of the unit are its
+ * preparation practice (`usage: practice`, primary concept among the applied ones), served only in
+ * the unit's own practice set. Units of other kinds may not hold project exercises.
+ */
+function checkProjectUnit(lesson: LessonNodeSource, diag: Diagnostics): void {
+  const { file, data } = lesson.meta;
+  if (data.kind !== 'project') {
+    for (const { file: exFile, data: ex } of lesson.exercises) {
+      if (ex.usage === 'project')
+        diag.error(exFile, 'usage: project 문제는 프로젝트(kind: project) 단원에만 둡니다');
+    }
+    return;
+  }
+  if (data.concepts.primary.length > 0)
+    diag.error(
+      file,
+      '프로젝트는 새 개념을 소개하지 않습니다. 적용할 개념은 concepts.practiced나 reviewed에 두세요',
+    );
+  const applied = new Set([...data.concepts.practiced, ...data.concepts.reviewed]);
+  if (applied.size === 0)
+    diag.error(file, '프로젝트에는 적용할 개념(concepts.practiced 또는 reviewed)이 있어야 합니다');
+  if (data.practice?.passRule)
+    diag.error(file, '프로젝트는 practice.passRule을 쓰지 않습니다(모든 마일스톤 통과 = 완료)');
+
+  const marked = lesson.exercises.filter((x) => x.data.usage === 'project');
+  const project = projectExerciseOf(lesson);
+  if (marked.length > 1) {
+    diag.error(file, `usage: project 문제는 하나만 둘 수 있습니다(지금 ${marked.length}개)`);
+  } else if (!project) {
+    diag.error(
+      file,
+      '프로젝트 문제가 없습니다. 마일스톤(spec.milestones)이 있는 web_task 하나를 usage: project로 두세요',
+    );
+  } else if (project.inferred) {
+    diag.warn(
+      file,
+      `마일스톤 웹 실습 ${project.exercise.id}을(를) 프로젝트 문제로 씁니다. usage: project로 표시하세요`,
+    );
+  }
+
+  for (const { file: exFile, data: ex } of lesson.exercises) {
+    if (ex.id === project?.exercise.id) continue;
+    if (ex.usage === 'project') continue; // reported above (more than one)
+    if (ex.usage !== 'practice') {
+      diag.error(
+        exFile,
+        `프로젝트 단원의 준비 연습 문제는 usage: practice여야 합니다(지금: ${ex.usage})`,
+      );
+      continue;
+    }
+    const primary = ex.concepts.find((c) => c.weight === 1)?.id;
+    if (primary !== undefined && !applied.has(primary))
+      diag.error(
+        exFile,
+        `주 개념 ${primary}이(가) 이 프로젝트의 concepts.practiced·reviewed에 없습니다`,
+      );
+  }
+
+  if (!project) return;
+  const { exercise: ex } = project;
+  const exFile = lesson.exercises.find((x) => x.data.id === ex.id)?.file ?? file;
+  if (ex.type !== 'web_task') {
+    diag.error(exFile, `프로젝트 문제는 web_task여야 합니다(지금: ${ex.type})`);
+    return;
+  }
+  for (const c of ex.concepts) {
+    if (!applied.has(c.id))
+      diag.error(exFile, `개념 ${c.id}이(가) 이 프로젝트의 concepts.practiced·reviewed에 없습니다`);
+  }
+  const spec = ex.spec as {
+    focus?: unknown;
+    checks?: { id?: unknown }[];
+    milestones?: { checks?: unknown[] }[];
+  };
+  const milestones = Array.isArray(spec.milestones) ? spec.milestones : [];
+  if (milestones.length === 0) {
+    diag.error(exFile, '프로젝트 문제에는 spec.milestones(마일스톤)가 있어야 합니다');
+    return;
+  }
+  const { min, max } = PROJECT_MILESTONE_RANGE;
+  if (milestones.length < min || milestones.length > max)
+    diag.warn(exFile, `마일스톤은 ${min}~${max}개를 권장합니다(지금 ${milestones.length}개)`);
+  if (spec.focus !== 'project')
+    diag.warn(exFile, 'spec.focus는 project를 권장합니다(프로젝트 화면의 체크 기본값)');
+  const grouped = new Set(milestones.flatMap((m) => (Array.isArray(m.checks) ? m.checks : [])));
+  const loose = (Array.isArray(spec.checks) ? spec.checks : [])
+    .map((c) => c.id)
+    .filter((id): id is string => typeof id === 'string' && !grouped.has(id));
+  if (loose.length > 0)
+    diag.warn(
+      exFile,
+      `마일스톤에 속하지 않은 체크가 있습니다: ${loose.join(', ')} (완료 조건에는 들어가지만 진행 표시에 보이지 않습니다)`,
+    );
 }
 
 /** Returns each prerequisite cycle once (as a closed path). */

@@ -113,6 +113,16 @@ export class PracticeSetService {
         { details: { exerciseIds: locked } },
       );
     }
+    // A project's web_task is worked on its project screen only (D-048).
+    const projects = exerciseIds.filter((id) => found.get(id)?.usage === 'project');
+    if (projects.length > 0) {
+      throw new AppError(
+        'PRACTICE_KIND_MISMATCH',
+        409,
+        '프로젝트 과제는 프로젝트 화면에서 풉니다.',
+        { details: { exerciseIds: projects, expected: 'project' } },
+      );
+    }
     const excluded = excludedExerciseIds(orm, learnerId);
     const candidates = exerciseIds.flatMap((id) => {
       const exercise = found.get(id);
@@ -196,7 +206,7 @@ export class PracticeSetService {
     const assessment = repo.getAssessment(lessonId);
     if (!assessment) {
       throw new AppError('PRACTICE_KIND_MISMATCH', 409, '이 단원은 단원 평가가 아닙니다.', {
-        details: { lessonId, expected: 'lesson' },
+        details: { lessonId, expected: lesson.kind },
       });
     }
     const { learnerId } = learnerContext(this.#userDb);
@@ -390,6 +400,17 @@ export class PracticeSetService {
         details: { id: lessonId },
       });
     }
+    // A project unit's set is its preparation practice; the project itself is worked on the
+    // project screen. Without preparation items there is no set (D-048).
+    const project = lesson.kind === 'project';
+    if (project && repo.countPracticeExercises(lessonId) === 0) {
+      throw new AppError(
+        'PRACTICE_KIND_MISMATCH',
+        409,
+        '프로젝트는 연습 세트 없이 프로젝트 화면에서 풉니다(kind: project).',
+        { details: { lessonId, expected: 'project' } },
+      );
+    }
     if (repo.getAssessment(lessonId)) {
       throw new AppError(
         'PRACTICE_KIND_MISMATCH',
@@ -405,13 +426,17 @@ export class PracticeSetService {
       if (active?.row.status === 'active') return this.#view(active);
     }
 
+    // A project introduces nothing: its preparation set covers the concepts it applies, with the
+    // unit's own items only (no interleaved review items from other units, D-048).
+    const covered = project ? lesson.practices : lesson.introduces;
+    const reviews = project ? [] : lesson.reviews;
     const excluded = excludedExerciseIds(orm, learnerId);
     const candidates = repo
-      .listPracticeExercises(lessonId, lesson.reviews)
+      .listPracticeExercises(lessonId, reviews)
       .filter((e) => !excluded.has(e.id))
       .map(candidateOf)
       .filter((c) => c !== null);
-    const conceptIds = [...new Set([...lesson.introduces, ...lesson.reviews])];
+    const conceptIds = [...new Set([...covered, ...reviews])];
     const concepts = repo.getConcepts(conceptIds);
     const states = loadConceptStates(orm, learnerId, conceptIds, this.#engine.fsrs);
     const setConcepts: LessonSetConcept[] = conceptIds.flatMap((id) => {
@@ -427,8 +452,8 @@ export class PracticeSetService {
       lesson: {
         id: lesson.id,
         importance: lesson.importance,
-        introduces: lesson.introduces,
-        reviews: lesson.reviews,
+        introduces: covered,
+        reviews,
         passRule: passRuleOverrides(lesson.passRule),
       },
       concepts: setConcepts,
@@ -458,10 +483,11 @@ export class PracticeSetService {
           scope: {
             v: 1,
             lessonId,
-            conceptIds: lesson.introduces,
+            conceptIds: covered,
             rationale: { ...plan.rationale },
           },
-          passRule: { v: 1, ...plan.passRule },
+          // Passing preparation practice does not complete a project (its milestones do).
+          passRule: project ? null : { v: 1, ...plan.passRule },
           engineVersion: ENGINE_VERSION,
           createdAt: new Date(now),
           completedAt: null,

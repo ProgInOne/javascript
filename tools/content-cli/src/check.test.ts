@@ -6,9 +6,13 @@ import {
   LESSON_YAML,
   lessonMdx,
   MODULE_YAML,
+  PROJECT,
+  PROJECT_EXERCISE_YAML,
+  PROJECT_YAML,
   REVIEW_EXERCISE_YAML,
   REVIEW_YAML,
   withAssessment,
+  withProject,
   writeContent,
 } from './test/fixture.ts';
 
@@ -299,5 +303,166 @@ describe('checkContent: unit assessments', () => {
         '단원 평가 단원을 assessment: start-review로 선언하세요(지금은 자동으로 연결합니다)',
       ]),
     );
+  });
+});
+
+describe('checkContent: project units', () => {
+  const errorsOf = (patch: (f: Files) => void) =>
+    checkContent(
+      writeContent((f) => {
+        withProject(f);
+        patch(f);
+      }),
+    )
+      .diagnostics.items.filter((d) => d.level === 'error')
+      .map((d) => d.message)
+      .join('\n');
+  const spec = (f: Files) => obj(obj(f, PROJECT_EXERCISE_YAML), 'spec');
+  const PREP_YAML = PROJECT_EXERCISE_YAML.replace('001-project', '002-prep');
+  const prep = () => ({
+    id: `${PROJECT}.mcq-prep`,
+    type: 'mcq_single',
+    difficulty: 2,
+    concepts: [{ id: 'js.basics.console-log', weight: 1 }],
+    estimatedSeconds: 40,
+    prompt: '무엇을 출력하나요?',
+    spec: { options: [] },
+    hints: ['a', 'b', 'c'],
+    explanation: '출력합니다.',
+    review: { status: 'approved', draftedBy: 'ai:claude', reviewedBy: 'ai:reviewer' },
+  });
+
+  it('accepts a project unit with one milestone web_task and preparation practice', () => {
+    const { diagnostics } = checkContent(
+      writeContent((f) => {
+        withProject(f);
+        f[PREP_YAML] = prep();
+      }),
+    );
+    expect(diagnostics.items).toEqual([]);
+  });
+
+  it('takes the only milestone web_task as the project exercise when it is not marked', () => {
+    const { diagnostics } = checkContent(
+      writeContent((f) => {
+        withProject(f);
+        delete obj(f, PROJECT_EXERCISE_YAML)['usage'];
+        f[PREP_YAML] = prep();
+      }),
+    );
+    expect(diagnostics.items.map((d) => `${d.level} ${d.message}`)).toEqual([
+      `warning 마일스톤 웹 실습 ${PROJECT}.build을(를) 프로젝트 문제로 씁니다. usage: project로 표시하세요`,
+    ]);
+  });
+
+  it.each<[string, (f: Files) => void, string]>([
+    [
+      'introduced concepts',
+      (f) => {
+        obj(f, PROJECT_YAML)['concepts'] = { primary: ['js.basics.statement'] };
+        obj(f, LESSON_YAML)['concepts'] = { primary: ['js.basics.console-log'] };
+      },
+      '프로젝트는 새 개념을 소개하지 않습니다',
+    ],
+    [
+      'no applied concepts',
+      (f) => {
+        obj(f, PROJECT_YAML)['concepts'] = {};
+      },
+      '적용할 개념(concepts.practiced 또는 reviewed)',
+    ],
+    [
+      'a pass rule',
+      (f) => {
+        obj(f, PROJECT_YAML)['practice'] = { targetCount: 1, passRule: { minCorrect: 0.5 } };
+      },
+      'practice.passRule을 쓰지 않습니다',
+    ],
+    [
+      'two project exercises',
+      (f) => {
+        f[PREP_YAML] = { ...obj(f, PROJECT_EXERCISE_YAML), id: `${PROJECT}.build-2` };
+      },
+      'usage: project 문제는 하나만',
+    ],
+    [
+      'two unmarked milestone web_tasks',
+      (f) => {
+        obj(f, PROJECT_EXERCISE_YAML)['usage'] = 'practice';
+        f[PREP_YAML] = { ...obj(f, PROJECT_EXERCISE_YAML), id: `${PROJECT}.build-2` };
+      },
+      '프로젝트 문제가 없습니다',
+    ],
+    [
+      'a preparation item of another usage',
+      (f) => {
+        f[PREP_YAML] = { ...prep(), usage: 'remedial' };
+      },
+      '준비 연습 문제는 usage: practice여야 합니다',
+    ],
+    [
+      'a preparation item outside the applied concepts',
+      (f) => {
+        obj(f, PROJECT_YAML)['concepts'] = { practiced: ['js.basics.console-log'] };
+        obj(f, PROJECT_EXERCISE_YAML)['concepts'] = [{ id: 'js.basics.console-log', weight: 1 }];
+        f[PREP_YAML] = { ...prep(), concepts: [{ id: 'js.basics.statement', weight: 1 }] };
+      },
+      '주 개념 js.basics.statement이(가) 이 프로젝트의 concepts.practiced·reviewed에 없습니다',
+    ],
+    [
+      'another type',
+      (f) => {
+        obj(f, PROJECT_EXERCISE_YAML)['type'] = 'implement_function';
+      },
+      '프로젝트 문제는 web_task여야 합니다',
+    ],
+    [
+      'no milestones',
+      (f) => {
+        delete spec(f)['milestones'];
+      },
+      'spec.milestones(마일스톤)가 있어야 합니다',
+    ],
+    [
+      'a concept outside the unit',
+      (f) => {
+        obj(f, PROJECT_YAML)['concepts'] = { practiced: ['js.basics.console-log'] };
+      },
+      '개념 js.basics.statement이(가) 이 프로젝트의 concepts.practiced·reviewed에 없습니다',
+    ],
+    [
+      'a project item in a regular lesson',
+      (f) => {
+        obj(f, EXERCISE_YAML)['usage'] = 'project';
+      },
+      '프로젝트(kind: project) 단원에만',
+    ],
+    [
+      'two projects in a module',
+      (f) => {
+        obj(f, LESSON_YAML)['kind'] = 'project';
+      },
+      '프로젝트 단원은 모듈에 하나만',
+    ],
+  ])('reports %s', (_, patch, expected) => {
+    expect(errorsOf(patch)).toContain(expected);
+  });
+
+  it('warns about the milestone count, the focus and checks outside milestones', () => {
+    const warnings = checkContent(
+      writeContent((f) => {
+        withProject(f);
+        const s = spec(f);
+        s['focus'] = 'html';
+        s['milestones'] = [{ id: 'm1', title: '제목', checks: ['has-title'] }];
+      }),
+    )
+      .diagnostics.items.filter((d) => d.level === 'warning')
+      .map((d) => d.message);
+    expect(warnings).toEqual([
+      '마일스톤은 3~10개를 권장합니다(지금 1개)',
+      'spec.focus는 project를 권장합니다(프로젝트 화면의 체크 기본값)',
+      '마일스톤에 속하지 않은 체크가 있습니다: has-list, has-note (완료 조건에는 들어가지만 진행 표시에 보이지 않습니다)',
+    ]);
   });
 });

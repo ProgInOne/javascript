@@ -38,9 +38,12 @@ export interface MisconceptionDetail {
   correction: string;
 }
 
+export type LessonKind = (typeof t.lessons.$inferSelect)['kind'];
+
 export interface CourseLessonEstimate {
   id: string;
   title: string;
+  kind: LessonKind;
   courseId: string;
   estimatedMinutes: number;
   readMinutes: number;
@@ -59,10 +62,13 @@ export interface ConceptDetailRow {
 export interface LessonPlan {
   id: string;
   title: string;
+  kind: LessonKind;
   importance: 'core' | 'standard' | 'minor';
   /** `lesson.yaml` `practice.passRule` overrides (unvalidated numbers). */
   passRule: Record<string, number>;
   introduces: string[];
+  /** `concepts.practiced` (a project unit's applied concepts). */
+  practices: string[];
   reviews: string[];
   contentHash: string;
 }
@@ -122,6 +128,7 @@ export class ContentRepository {
   readonly packVersion: string;
   readonly #close: () => void;
   #prerequisites: ConceptPrerequisiteRow[] | undefined;
+  #projectLessons: Set<string> | undefined;
   #targets: Map<string, Set<string>> | undefined;
 
   constructor(path: string) {
@@ -150,12 +157,34 @@ export class ContentRepository {
     this.#close();
   }
 
+  /**
+   * `kind: project` units. Their exercises (preparation practice) are served only in the unit's
+   * own practice set, never in other units', review or weakness sets (D-048).
+   */
+  #projects(): Set<string> {
+    this.#projectLessons ??= new Set(
+      this.#db
+        .select({ id: t.lessons.id })
+        .from(t.lessons)
+        .where(eq(t.lessons.kind, 'project'))
+        .all()
+        .map((r) => r.id),
+    );
+    return this.#projectLessons;
+  }
+
+  /** Whether an exercise belongs to another unit's project (kept out of shared candidates). */
+  #inProject(lessonId: string | null): boolean {
+    return lessonId !== null && this.#projects().has(lessonId);
+  }
+
   #lessonCounts() {
     const rows = this.#db
       .select({ lessonId: t.exercises.lessonId, n: count() })
       .from(t.exercises)
-      // Practice items, and the items of assessment units (only they hold `usage: assessment`).
-      .where(inArray(t.exercises.usage, ['practice', 'assessment']))
+      // Practice items, and the items of assessment and project units (only they hold
+      // `usage: assessment` / `usage: project`).
+      .where(inArray(t.exercises.usage, ['practice', 'assessment', 'project']))
       .groupBy(t.exercises.lessonId)
       .all();
     return new Map(rows.map((r) => [r.lessonId, r.n]));
@@ -344,7 +373,9 @@ export class ContentRepository {
         ),
       )
       .orderBy(asc(t.exercises.id))
-      .all();
+      .all()
+      // Interleaved items of other units, but never another project unit's preparation items.
+      .filter((r) => r.lessonId === lessonId || !this.#inProject(r.lessonId));
     const concepts = this.#exerciseConcepts(rows.map((r) => r.id));
     return rows.map((r) => this.#toExercise(r, concepts.get(r.id) ?? []));
   }
@@ -380,7 +411,8 @@ export class ContentRepository {
       .from(t.exercises)
       .where(and(inArray(t.exercises.usage, [...usages]), inArray(t.exercises.id, ids)))
       .orderBy(asc(t.exercises.id))
-      .all();
+      .all()
+      .filter((r) => !this.#inProject(r.lessonId));
     const concepts = this.#exerciseConcepts(rows.map((r) => r.id));
     return rows.map((r) => this.#toExercise(r, concepts.get(r.id) ?? []));
   }
@@ -400,6 +432,32 @@ export class ContentRepository {
     };
   }
 
+  /**
+   * The milestone `web_task` of a `kind: project` unit (its only `usage: project` exercise), or
+   * null for other lessons.
+   */
+  getProjectExercise(lessonId: string): ContentExercise | null {
+    const row = this.#db
+      .select()
+      .from(t.exercises)
+      .where(and(eq(t.exercises.lessonId, lessonId), eq(t.exercises.usage, 'project')))
+      .orderBy(asc(t.exercises.id))
+      .get();
+    if (!row) return null;
+    return this.#toExercise(row, this.#exerciseConcepts([row.id]).get(row.id) ?? []);
+  }
+
+  /** `usage: practice` exercises of a lesson (a project unit's preparation practice). */
+  countPracticeExercises(lessonId: string): number {
+    return (
+      this.#db
+        .select({ n: count() })
+        .from(t.exercises)
+        .where(and(eq(t.exercises.lessonId, lessonId), eq(t.exercises.usage, 'practice')))
+        .get()?.n ?? 0
+    );
+  }
+
   /** What the practice set builder needs about a lesson. */
   getLessonPlan(id: string): LessonPlan | null {
     const lesson = this.#db.select().from(t.lessons).where(eq(t.lessons.id, id)).get();
@@ -414,9 +472,11 @@ export class ContentRepository {
     return {
       id: lesson.id,
       title: lesson.title,
+      kind: lesson.kind,
       importance: lesson.importance,
       passRule: lesson.passRule ?? {},
       introduces: roles.filter((r) => r.role === 'introduces').map((r) => r.conceptId),
+      practices: roles.filter((r) => r.role === 'practices').map((r) => r.conceptId),
       reviews: roles.filter((r) => r.role === 'reviews').map((r) => r.conceptId),
       contentHash: lesson.contentHash,
     };
@@ -446,9 +506,13 @@ export class ContentRepository {
 
   /**
    * Lessons of a course in reading order with their time estimates (pace and today's plan).
-   * Only `kind: lesson` units count; assessments and projects are planned elsewhere.
+   * By default only `kind: lesson` units: the pace leaves assessments and projects out
+   * (learning-engine.md#목표-페이스-계산-computepace); today's plan also takes projects.
    */
-  listCourseLessons(courseId: string): CourseLessonEstimate[] {
+  listCourseLessons(
+    courseId: string,
+    kinds: readonly LessonKind[] = ['lesson'],
+  ): CourseLessonEstimate[] {
     return this.#db
       .select({
         id: t.lessons.id,
@@ -462,8 +526,8 @@ export class ContentRepository {
       .where(eq(t.modules.courseId, courseId))
       .orderBy(asc(t.modules.orderIndex), asc(t.lessons.orderIndex))
       .all()
-      .filter((l) => l.kind === 'lesson')
-      .map(({ kind: _kind, ...l }) => ({ ...l, courseId }));
+      .filter((l) => kinds.includes(l.kind))
+      .map((l) => ({ ...l, courseId }));
   }
 
   /** Course of a lesson, or null. */
@@ -701,6 +765,7 @@ export class ContentRepository {
     const order = this.#courseLessonOrder(course.id);
     const i = order.findIndex((l) => l.id === id);
     const assessment = lesson.kind === 'assessment' ? this.getAssessment(lesson.id) : null;
+    const project = lesson.kind === 'project' ? this.getProjectExercise(lesson.id) : null;
     return {
       id: lesson.id,
       title: lesson.title,
@@ -728,8 +793,28 @@ export class ContentRepository {
         conceptCount: assessment.conceptIds.length,
         estimatedMinutes: lesson.estimatedMinutes - lesson.readMinutes,
       },
+      project: project && {
+        exerciseId: project.id,
+        milestoneCount: projectMilestones(project.spec).length,
+        practiceCount: this.countPracticeExercises(lesson.id),
+        estimatedMinutes: lesson.estimatedMinutes - lesson.readMinutes,
+      },
     };
   }
+}
+
+/** Milestones of a project `web_task` spec (exercise-kit validated it at build time). */
+export function projectMilestones(
+  spec: Record<string, unknown>,
+): { id: string; title: string; checks: string[] }[] {
+  const raw = spec['milestones'];
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((m: unknown) => {
+    if (!m || typeof m !== 'object') return [];
+    const { id, title, checks } = m as { id?: unknown; title?: unknown; checks?: unknown };
+    if (typeof id !== 'string' || typeof title !== 'string' || !Array.isArray(checks)) return [];
+    return [{ id, title, checks: checks.filter((c): c is string => typeof c === 'string') }];
+  });
 }
 
 /** Concept ids referenced by <ConceptLink to> and <RunnableExample concepts> in a lesson tree. */

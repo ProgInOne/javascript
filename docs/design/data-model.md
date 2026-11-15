@@ -162,7 +162,7 @@ flowchart LR
 `content-cli build`가 매번 새로 만드는 파일입니다. 마이그레이션이 없습니다(전체 재생성).
 스키마는 `packages/content-schema/src/db/`에 DDL(`ddl.ts`)과 읽기용 Drizzle 테이블(`schema.ts`)로 정의하고, 빌드 도구와 서버가 공유합니다(두 정의가 같은지 테스트로 확인). 빌드 도구(`tools/`)가 앱(`apps/`)에 의존하지 않도록 서버 대신 패키지에 둡니다.
 
-M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons.read_minutes`·`objectives_json`, `exercises.prompt`·`code`·`misconception_ids_json`·`tags_json`, `misconceptions.diagnostic_hint`·`remedial_lesson_anchor`. `lessons.body_compiled`에는 검증된 MDX JSON 트리를 저장합니다([콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#mdx-컴포넌트)). `projects`, `exercise_templates`는 해당 콘텐츠가 생길 때 추가합니다. M6에서 `assessments`를 추가했습니다(content.db 스키마 버전 2, 아래 [assessments, projects](#assessments-projects) 참고).
+M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons.read_minutes`·`objectives_json`, `exercises.prompt`·`code`·`misconception_ids_json`·`tags_json`, `misconceptions.diagnostic_hint`·`remedial_lesson_anchor`. `lessons.body_compiled`에는 검증된 MDX JSON 트리를 저장합니다([콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#mdx-컴포넌트)). `projects`, `exercise_templates`는 해당 콘텐츠가 생길 때 추가합니다. M6에서 `assessments`를 추가했습니다(content.db 스키마 버전 2, 아래 [assessments, projects](#assessments-projects) 참고). 프로젝트는 테이블 대신 `exercises.usage = 'project'`로 표현합니다(스키마 버전 3).
 
 #### content_meta
 
@@ -308,6 +308,8 @@ M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons
 | | `steps_json` | TEXT | N | 단계별 요구사항·체크·관련 개념 |
 
 M6 구현(D-041): 평가 ID는 `kind: assessment` 단원의 ID이며 `assessments.id`가 `lessons.id`를 참조합니다. `selection_rule_json`은 `{ v: 1, itemCount: number | null, conceptIds: string[] }`(`itemCount` NULL = 문항 전부, 최대 20)이고 `pass_ratio`는 콘텐츠 값 또는 기본 0.8입니다. `modules.assessment_id`는 빌드 순서 때문에 DB 외래 키 대신 `content-cli check`로 검증합니다.
+
+M6 구현(D-048): `projects` 테이블은 만들지 않습니다. 프로젝트는 `kind: project` 단원과 그 단원의 `usage: project` 문제(마일스톤이 있는 `web_task`) 하나로 표현하고, 단계(`steps_json`)는 문제 스펙의 `milestones`입니다. `modules.project_id`에는 그 모듈의 프로젝트 단원 ID를 넣습니다(외래 키 대신 `content-cli check`가 모듈당 하나인지 검증). `exercises.usage`에 `project`를 더해 content.db 스키마 버전이 3이 되었습니다. user.db는 바뀌지 않습니다: 프로젝트 채점은 `practice_set_item_id`가 NULL인 `attempts`이고, 숙련도에 반영한 완료 채점만 `engine_applied = 1`입니다([학습 엔진 설계 구현 메모 (v0.3)](/docs/design/learning-engine.md#구현-메모-v03)).
 
 #### content_id_aliases, content_search
 

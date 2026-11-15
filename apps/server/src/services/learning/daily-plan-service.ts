@@ -60,29 +60,35 @@ export class DailyPlanService {
 
     // Continue: the most recently active lesson being read, or practised with a set still open.
     // A lesson whose last set ended without passing is not in progress: the plan moves on to the
-    // next lesson and weakness practice instead of repeating it every day (D-033).
+    // next lesson and weakness practice instead of repeating it every day (D-033). A project has
+    // no set: it is in progress until every milestone passed (D-048).
     const active =
       [...progress]
         .filter(
-          (p) => p.status === 'reading' || (p.status === 'practicing' && p.practiceSetId !== null),
+          (p) =>
+            p.status === 'reading' ||
+            (p.status === 'practicing' &&
+              (p.practiceSetId !== null || repo.getLessonPlan(p.lessonId)?.kind === 'project')),
         )
         .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0] ?? null;
     const activeCourse = active ? repo.courseOfLesson(active.lessonId) : null;
     const activeLesson =
       active && activeCourse
-        ? repo.listCourseLessons(activeCourse).find((l) => l.id === active.lessonId)
+        ? repo.listCourseLessons(activeCourse, PLAN_KINDS).find((l) => l.id === active.lessonId)
         : undefined;
     const continueLesson =
-      active && activeLesson ? lessonEstimate(orm, activeLesson, active) : null;
+      active && activeLesson
+        ? lessonEstimate(orm, activeLesson, active, { repo, learnerId })
+        : null;
 
-    // Next: the first untouched lesson of the target course (else the current course, else the
-    // first course of the catalog).
+    // Next: the first untouched lesson or project of the target course (else the current course,
+    // else the first course of the catalog). Assessments are taken from the course screen.
     const courseId =
       goal.targetCourseId ?? activeCourse ?? lastCourse(repo, progress) ?? repo.listCourseIds()[0];
     const next =
       courseId === undefined
         ? undefined
-        : courseLessonEstimates(repo, orm, learnerId, courseId).find(
+        : courseLessonEstimates(repo, orm, learnerId, courseId, PLAN_KINDS).find(
             (l) => (l.progress?.status ?? 'not_started') === 'not_started',
           );
 
@@ -142,6 +148,9 @@ export class DailyPlanService {
     };
   }
 }
+
+/** Units today's plan continues and starts (the pace counts lessons only). */
+const PLAN_KINDS = ['lesson', 'project'] as const;
 
 /** Course of the most recently updated lesson progress, if any. */
 function lastCourse(

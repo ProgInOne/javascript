@@ -123,6 +123,7 @@ practice:
 
 - `concepts.primary`는 이 단원이 **처음 소개하는** 개념입니다. 한 개념은 한 단원에서만 소개합니다.
 - `concepts.practiced`, `concepts.reviewed`는 연습·복습하는 개념입니다.
+- 단원 평가(`kind: assessment`)와 응용 프로젝트(`kind: project`)의 형식은 설계 문서의 [단원 평가 단원](/docs/design/content-and-exercises.md#단원-평가-단원-kind-assessment)과 [프로젝트 단원](/docs/design/content-and-exercises.md#프로젝트-단원-kind-project)에 있습니다. 프로젝트 단원은 `concepts.primary` 없이 `practiced`·`reviewed`만 쓰고, 프로젝트 문제는 `usage: project`인 `web_task` 하나(마일스톤 `milestones` 필수, 3~10개 권장)이고, 나머지 문제는 그 단원에서만 나오는 준비 연습(`usage: practice`, 주 개념은 `practiced`·`reviewed` 안)입니다. 모든 마일스톤을 통과하면 단원 완료입니다.
 
 ### 개념과 오개념
 

@@ -625,6 +625,60 @@ practice:
 - content.db: `assessments` 행(ID는 평가 단원 ID, `scope_type: module`, 빌드에 포함된 평가 문항 목록, `selection_rule_json: { v, itemCount, conceptIds }`, `pass_ratio`)과 `modules.assessment_id`. content.db 스키마 버전 2.
 - 문항 선택(개념 포함 → 난이도 분포 → 쉬운 순서, 처음 보는 문항 우선)은 [학습 엔진 설계](/docs/design/learning-engine.md#구현-메모-v03)를 따릅니다.
 
+#### 프로젝트 단원 (`kind: project`)
+
+구현 메모 (M6, [D-048](/docs/decisions.md)): 응용 프로젝트는 `kind: project` 단원 하나와 그 단원의 프로젝트 웹 실습(`usage: project` `web_task`) 하나, 그리고 선택으로 준비 연습 문제(`usage: practice`)로 만듭니다. 별도 `projects` 테이블이나 `steps` 형식은 두지 않고, 단계는 `web_task`의 `milestones`로 표현합니다(위 "JavaScript 기초의 최종 프로젝트도 `web_task`의 마일스톤 기능으로 구현" 결정과 같음).
+
+```yaml
+# courses/js-basics/modules/10-browser-intro/module.yaml
+lessons: [dom-select, dom-events, final-project]   # 프로젝트 단원도 lessons에 순서대로 둠(선언 필드 없음)
+
+# .../lessons/08-final-project/lesson.yaml
+id: js-basics.browser-intro.final-project
+title: '최종 프로젝트: 할 일 목록'           # 콜론+공백이 있으면 따옴표로 감쌈
+summary: 지금까지 배운 배열·객체·함수와 DOM으로 할 일 목록 앱을 단계별로 만듭니다.
+kind: project
+estimatedMinutes: { read: 5, practice: 90 }   # practice = 프로젝트 예상 시간(화면 안내, 오늘의 학습)
+concepts:
+  practiced: [js.arr.push, js.fn.declaration, ...]   # 이 프로젝트에서 주로 쓰는 개념. primary는 비워 둠
+  reviewed: [js.str.trim, ...]                         # 함께 쓰는 이전 개념(선택)
+objectives:
+  - 입력값을 읽어 목록에 항목을 추가하는 화면을 만들 수 있다.
+# practice.passRule·assessment는 쓰지 않음. practice.targetCount는 선택(프로젝트 문제와 준비 연습을 합친 수)
+
+# .../lessons/08-final-project/exercises/001-todo-app.yaml
+id: js-basics.browser-intro.final-project.todo-app
+type: web_task
+usage: project                          # 생략하면 단원의 유일한 마일스톤 web_task를 프로젝트 문제로 씀(경고)
+difficulty: 5
+estimatedSeconds: 3600                  # 상한 3600
+concepts:                               # 모두 위 practiced·reviewed 안에서. 주 개념(weight 1)은 1개
+  - { id: js.arr.push, weight: 1 }
+  - { id: js.fn.declaration, weight: 0.5 }
+prompt: |                               # 프로젝트 화면 위쪽의 과제 설명(브리프). 마일스톤별 설명은 체크 description
+  ...
+spec:
+  focus: project
+  starter: { files: [{ path: index.html, content: "..." }] }   # P0: index.html 하나(<style>·<script> 포함)
+  solution: { files: [{ path: index.html, content: "..." }] }
+  checks: [ ... ]                       # dom·css·event·console·program·a11y·static 등(call 체크는 불가)
+  milestones:                           # 필수. 3~10개 권장(최종 프로젝트 5~8개)
+    - { id: m1, title: 할 일 입력창 만들기, checks: [has-input, has-button] }
+    - { id: m2, title: 추가 버튼으로 목록에 항목 넣기, checks: [add-item] }
+hints: [ ..., ..., ... ]                # 프로젝트 전체에 대한 3단계 힌트
+explanation: |                          # 완성한 뒤에만 보여 줌
+  ...
+```
+
+- 학습자는 프로젝트 화면에서 같은 `index.html`을 고쳐 가며 몇 번이고 채점합니다. 채점할 때마다 마일스톤별 통과를 보여 주고, **모든 마일스톤(과 필수 체크)이 통과하면 단원 완료**입니다. 마일스톤은 포함된 필수 체크가 모두 통과하면 통과입니다([체크 구현 규칙](#체크-구현-규칙-v01)).
+- `event` 체크는 작성 순서대로 같은 문서에서 이어서 실행되므로, 뒤 마일스톤의 체크는 앞 마일스톤의 결과 위에서 동작한다는 점을 고려해 씁니다. 마일스톤에 속하지 않은 체크도 완료 조건에는 들어가지만 진행 표시에는 보이지 않습니다.
+- 본문(`lesson.mdx`)은 `objectives`, `practice`, `summary`, `next` 섹션만 필수입니다. 완성 화면 예시, 단계별 요구 사항처럼 학습자가 먼저 읽을 내용을 `intro`·`principle` 등에 자유롭게 둡니다. 화면의 "프로젝트" 탭이 작업 공간입니다.
+- **준비 연습**: 프로젝트 문제 외의 문제(`usage: practice`, 주 개념은 단원의 `practiced`·`reviewed` 안)는 그 단원의 연습 세트(`POST /practice-sets {kind:'lesson'}`, 단원의 `practiced` 개념별로 그 단원 문제만으로 구성, 통과 기준 없음)에만 나오고, 다른 단원의 연습·복습·약점·재학습 세트에는 나오지 않습니다. 준비 연습을 끝내도 단원은 완료되지 않습니다(완료는 마일스톤).
+- **진행 표시**: 앞 마일스톤이 실패하면 뒤 마일스톤 중 `event` 체크가 있는 것은 "실패" 대신 "앞 단계 먼저"(`blocked`)로 보여 줍니다. `event` 체크는 같은 문서에서 차례로 실행되어 앞 단계가 안 되면 닿지 못하기 때문입니다.
+- `content-cli check` 규칙: 오류 — `concepts.primary`가 있음, `practiced`·`reviewed`가 모두 비어 있음, `practice.passRule`을 씀, 프로젝트 문제가 없거나 정할 수 없음(`usage: project`도 없고 마일스톤 `web_task`가 하나가 아님), `usage: project` 문제가 둘 이상, `practice`·`project`가 아닌 `usage`, 주 개념이 `practiced`·`reviewed` 밖인 준비 연습, `web_task`가 아닌 프로젝트 문제, `milestones`가 없음, 프로젝트 문제가 단원의 `practiced`·`reviewed`에 없는 개념을 태그함, 다른 단원의 `usage: project` 문제, 한 모듈에 프로젝트 단원이 둘 이상. 경고 — `usage: project` 표시 없이 추론함, 마일스톤이 3~10개 밖, `focus`가 `project`가 아님, 마일스톤에 속하지 않은 체크. 체크·마일스톤 형식(알 수 없는 체크 ID 등)은 exercise-kit 스펙 검증이 봅니다.
+- content.db: 프로젝트 문제는 `exercises.usage = 'project'`(추론한 경우도 빌드가 이렇게 저장, 모든 세트 후보에서 빠짐), `modules.project_id`. content.db 스키마 버전 3.
+- 진도·증거 규칙은 [학습 엔진 설계 구현 메모 (v0.3)](/docs/design/learning-engine.md#구현-메모-v03)의 "프로젝트 단원"을 따릅니다.
+
 ### lesson.mdx 발췌
 
 ```mdx

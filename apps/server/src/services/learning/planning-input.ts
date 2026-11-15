@@ -7,10 +7,16 @@ import {
   type LessonEstimate,
 } from '@proginone/learning-engine';
 import type { GoalView } from '@proginone/shared';
-import type { ContentRepository, CourseLessonEstimate } from '../../db/content/repository.ts';
+import {
+  projectMilestones,
+  type ContentRepository,
+  type CourseLessonEstimate,
+  type LessonKind,
+} from '../../db/content/repository.ts';
 import type { Orm } from '../../db/user/connection.ts';
 import { currentGoal, goalHistory, type GoalRow } from '../../db/user/goals.ts';
 import { listItems } from '../../db/user/practice-sets.ts';
+import { latestGradedRun } from '../../db/user/project-attempts.ts';
 import { listLessonProgress, type LessonProgressRow } from '../../db/user/progress.ts';
 import { progressOf } from '../practice/views.ts';
 
@@ -72,14 +78,39 @@ export function goalOnDate(
   };
 }
 
-/** Engine lesson estimate from the content estimate and the learner's progress. */
+/**
+ * Share of a project's milestones passed by the latest graded run (0 before the first run). A
+ * project has no practice set; its practice progress is its milestones.
+ */
+export function projectProgress(
+  repo: ContentRepository,
+  orm: Orm,
+  learnerId: string,
+  lessonId: string,
+): number {
+  const exercise = repo.getProjectExercise(lessonId);
+  if (!exercise) return 0;
+  const total = projectMilestones(exercise.spec).length;
+  const passed =
+    latestGradedRun(orm, learnerId, exercise.id)?.grading.milestones?.filter((m) => m.passed)
+      .length ?? 0;
+  return total === 0 ? 0 : Math.min(1, passed / total);
+}
+
+/**
+ * Engine lesson estimate from the content estimate and the learner's progress. `project` is the
+ * repository and learner to read a project's milestone progress with.
+ */
 export function lessonEstimate(
   orm: Orm,
   lesson: CourseLessonEstimate,
   progress: LessonProgressRow | undefined,
+  project?: { repo: ContentRepository; learnerId: string },
 ): LessonEstimate {
   let practiceProgress = 0;
-  if (progress?.status === 'practicing' && progress.practiceSetId) {
+  if (lesson.kind === 'project' && progress?.status === 'practicing' && project) {
+    practiceProgress = projectProgress(project.repo, orm, project.learnerId, lesson.id);
+  } else if (progress?.status === 'practicing' && progress.practiceSetId) {
     const p = progressOf(listItems(orm, progress.practiceSetId));
     practiceProgress = p.total === 0 ? 0 : (p.answered + p.skipped) / p.total;
   }
@@ -93,14 +124,18 @@ export function lessonEstimate(
   };
 }
 
-/** Every lesson of a course with the learner's progress, in reading order. */
+/**
+ * Every lesson of a course with the learner's progress, in reading order. `kinds` as in
+ * `listCourseLessons` (lessons only by default: the pace).
+ */
 export function courseLessonEstimates(
   repo: ContentRepository,
   orm: Orm,
   learnerId: string,
   courseId: string,
+  kinds?: readonly LessonKind[],
 ) {
-  const lessons = repo.listCourseLessons(courseId);
+  const lessons = repo.listCourseLessons(courseId, kinds);
   const progress = new Map(
     listLessonProgress(
       orm,
@@ -111,6 +146,6 @@ export function courseLessonEstimates(
   return lessons.map((lesson) => ({
     lesson,
     progress: progress.get(lesson.id),
-    estimate: lessonEstimate(orm, lesson, progress.get(lesson.id)),
+    estimate: lessonEstimate(orm, lesson, progress.get(lesson.id), { repo, learnerId }),
   }));
 }

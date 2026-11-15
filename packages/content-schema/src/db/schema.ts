@@ -125,7 +125,7 @@ export const exercises = sqliteTable('exercises', {
   difficulty: integer('difficulty').notNull(),
   lessonId: text('lesson_id'),
   usage: text('usage', {
-    enum: ['practice', 'assessment', 'diagnostic', 'remedial', 'worked_example'],
+    enum: ['practice', 'assessment', 'diagnostic', 'remedial', 'worked_example', 'project'],
   }).notNull(),
   workedExampleStage: integer('worked_example_stage'),
   variantGroup: text('variant_group'),
