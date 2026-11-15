@@ -1,0 +1,53 @@
+id: js-basics.control.if-else.mcq-no-braces
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.control.block, weight: 1 }
+tags: [block, braces]
+estimatedSeconds: 60
+prompt: |
+  중괄호 없이 쓴 조건문이에요. 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  const hasHomework = false;
+  if (hasHomework)
+    console.log("숙제를 먼저 해요");
+    console.log("게임은 나중에 해요");
+  console.log("오늘 할 일 정리 끝");
+spec:
+  options:
+    - id: a
+      text: "`게임은 나중에 해요`, `오늘 할 일 정리 끝` 두 줄"
+    - id: b
+      text: "`오늘 할 일 정리 끝` 한 줄"
+      misconception: js.mc.indent-makes-block
+      rationale: 중괄호가 없으면 if 바로 다음 한 문장만 조건에 딸려요. 4번 줄은 들여 써도 항상 실행돼요.
+    - id: c
+      text: 세 줄 모두
+      rationale: "`hasHomework`가 false라서 3번 줄은 실행되지 않아요."
+    - id: d
+      text: 중괄호가 없어서 SyntaxError가 난다
+      rationale: 중괄호 없이 한 문장만 쓰는 것은 문법상 허용돼요.
+  correct: a
+misconceptions: [js.mc.indent-makes-block]
+hints:
+  - 중괄호가 없을 때 `if`에 딸리는 문장은 몇 개인가요?
+  - JavaScript는 들여쓰기를 보지 않아요. 4번 줄이 들여 쓰여 있어도 if와 관계가 있을까요?
+  - if에 딸린 것은 3번 줄 하나뿐이에요. 조건이 거짓이니 3번 줄만 건너뛰어요.
+explanation: |
+  정답은 **`게임은 나중에 해요`, `오늘 할 일 정리 끝` 두 줄**이에요.
+
+  중괄호가 없으면 `if`에 딸리는 것은 **바로 다음 한 문장**(3번 줄)뿐이에요. JavaScript는 들여쓰기를 보지 않아서, 이 코드는 실제로 이렇게 읽혀요.
+
+  ```js
+  if (hasHomework) {
+    console.log("숙제를 먼저 해요");
+  }
+  console.log("게임은 나중에 해요");
+  console.log("오늘 할 일 정리 끝");
+  ```
+
+  `hasHomework`가 `false`라서 3번 줄만 건너뛰고, 4번과 5번 줄은 실행돼요. 들여쓰기 때문에 4번 줄도 조건에 묶인 것처럼 보여서 착각하기 쉬워요. 그래서 한 줄이라도 항상 중괄호를 쓰는 습관을 들여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

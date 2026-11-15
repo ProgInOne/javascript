@@ -1,0 +1,207 @@
+id: js-basics.control.if-else.web-parcel-fee
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.control.else-if, weight: 1 }
+  - { id: js.control.if, weight: 0.5 }
+tags: [else-if, boundary, web]
+estimatedSeconds: 480
+prompt: |
+  택배 요금 계산기를 완성하세요. 무게(kg)를 입력하고 **요금 확인** 버튼을 누르면 아래 표대로 안내가 나와야 해요.
+
+  | 무게 | 안내 |
+  |---|---|
+  | 0 이하 | `무게를 다시 입력해 주세요` |
+  | 2kg 이하 | `4000원` |
+  | 5kg 이하 | `5500원` |
+  | 20kg 이하 | `8000원` |
+  | 20kg 초과 | `20kg이 넘으면 보낼 수 없어요` |
+
+  - 시작 코드에서 버튼을 누를 때마다 `{ }` 안의 코드가 실행되도록 이미 연결해 두었어요(화면을 다루는 방법은 모듈 10에서 배워요). 입력한 무게는 숫자로 바뀌어 `weight`에 들어 있어요.
+  - 표시한 자리에 `if … else if … else` 체인을 써서 `message`에 알맞은 안내를 넣으세요. 나머지 코드는 그대로 두세요.
+  - 미리보기에서 여러 무게를 직접 넣어 보며 확인하세요. 특히 2, 5, 20처럼 **기준값과 같은 무게**를 꼭 넣어 보세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>택배 요금 계산기</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                input { width: 80px; }
+                #result { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>택배 요금 계산기</h1>
+              <label>무게(kg) <input id="weight" type="number" /></label>
+              <button id="check" type="button">요금 확인</button>
+              <p id="result"></p>
+              <script>
+                const weightInput = document.querySelector("#weight");
+                const result = document.querySelector("#result");
+
+                // 버튼을 누를 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                document.querySelector("#check").addEventListener("click", () => {
+                  const weight = Number(weightInput.value);
+                  let message = "";
+
+                  // 여기에 조건문을 써서 message에 알맞은 안내를 넣으세요.
+
+                  result.textContent = message;
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>택배 요금 계산기</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                input { width: 80px; }
+                #result { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>택배 요금 계산기</h1>
+              <label>무게(kg) <input id="weight" type="number" /></label>
+              <button id="check" type="button">요금 확인</button>
+              <p id="result"></p>
+              <script>
+                const weightInput = document.querySelector("#weight");
+                const result = document.querySelector("#result");
+
+                // 버튼을 누를 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                document.querySelector("#check").addEventListener("click", () => {
+                  const weight = Number(weightInput.value);
+                  let message = "";
+
+                  // 여기에 조건문을 써서 message에 알맞은 안내를 넣으세요.
+                  if (weight <= 0) {
+                    message = "무게를 다시 입력해 주세요";
+                  } else if (weight <= 2) {
+                    message = "4000원";
+                  } else if (weight <= 5) {
+                    message = "5500원";
+                  } else if (weight <= 20) {
+                    message = "8000원";
+                  } else {
+                    message = "20kg이 넘으면 보낼 수 없어요";
+                  }
+
+                  result.textContent = message;
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: light
+      description: 1.5kg을 넣고 버튼을 누르면 "4000원"이 보여야 합니다.
+      requirement: 무게별 요금
+      visible: true
+      steps:
+        - { action: type, selector: "#weight", value: "1.5" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "4000원" } }
+    - kind: event
+      id: middle
+      description: 12kg을 넣고 버튼을 누르면 "8000원"이 보여야 합니다.
+      requirement: 무게별 요금
+      visible: true
+      steps:
+        - { action: type, selector: "#weight", value: "12" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "8000원" } }
+    - kind: event
+      id: boundary-2
+      description: 딱 2kg이면 2kg 이하 요금이 보여야 합니다.
+      requirement: 기준값 포함
+      steps:
+        - { action: type, selector: "#weight", value: "2" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "4000원" } }
+    - kind: event
+      id: boundary-5
+      description: 딱 5kg이면 5kg 이하 요금이 보여야 합니다.
+      requirement: 기준값 포함
+      steps:
+        - { action: type, selector: "#weight", value: "5" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "5500원" } }
+    - kind: event
+      id: boundary-20
+      description: 딱 20kg이면 보낼 수 있고 20kg 이하 요금이 보여야 합니다.
+      requirement: 기준값 포함
+      steps:
+        - { action: type, selector: "#weight", value: "20" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "8000원" } }
+    - kind: event
+      id: too-heavy
+      description: 20kg을 넘으면 보낼 수 없다는 안내가 보여야 합니다.
+      requirement: 범위 밖 무게
+      steps:
+        - { action: type, selector: "#weight", value: "25" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "20kg이 넘으면 보낼 수 없어요" } }
+      misconceptionIfFail: js.mc.else-if-order-irrelevant
+    - kind: event
+      id: zero
+      description: 0kg이면 다시 입력하라는 안내가 보여야 합니다.
+      requirement: 범위 밖 무게
+      steps:
+        - { action: type, selector: "#weight", value: "0" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "무게를 다시 입력해 주세요" } }
+      misconceptionIfFail: js.mc.else-if-order-irrelevant
+misconceptions: [js.mc.else-if-order-irrelevant]
+hints:
+  - 갈래가 다섯 개이고 그중 하나만 골라야 해요. 어떤 모양의 조건문이 알맞을까요? 각 갈래에서는 `message = "..."`처럼 대입만 하면 돼요.
+  - "\"이하\"는 기준값을 포함하니 `<=`를 써요. 작은 기준부터 차례로 검사하면 `weight <= 5` 갈래에 왔을 때 이미 2kg보다 무겁다는 뜻이에요."
+  - "0 이하를 가장 먼저 검사하세요. 그다음 `weight <= 2`, `weight <= 5`, `weight <= 20` 순서로 쓰고, 마지막 `else`가 20kg 초과를 맡아요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  if (weight <= 0) {
+    message = "무게를 다시 입력해 주세요";
+  } else if (weight <= 2) {
+    message = "4000원";
+  } else if (weight <= 5) {
+    message = "5500원";
+  } else if (weight <= 20) {
+    message = "8000원";
+  } else {
+    message = "20kg이 넘으면 보낼 수 없어요";
+  }
+  ```
+
+  - **순서**: `<=`로 비교할 때는 작은 기준부터 검사해요. 체인은 처음 참인 갈래만 실행하니, `weight <= 5` 갈래에 도착했다면 이미 2kg보다 무거운 거예요. `weight <= 20`을 맨 앞에 두면 1.5kg도 8000원이 돼요.
+  - **0 이하를 먼저**: 0은 `weight <= 2`도 참이라서, 이 검사를 뒤에 두면 0kg에 4000원이 나와요. 잘못된 입력은 체인 맨 앞에서 걸러요.
+  - **기준값**: "이하"는 기준값을 포함해서 `<=`예요. `< 2`로 쓰면 딱 2kg이 5500원이 돼요.
+  - **나머지는 else**: 20kg을 넘는 경우는 앞의 조건이 모두 거짓일 때라서 조건 없이 `else`로 받아요.
+
+  반대로 큰 기준부터(`weight > 20`, `weight > 5`, `weight > 2` …) 검사해도 같은 결과를 낼 수 있어요. 어느 쪽이든 체인 안에서 기준이 한 방향으로 차례로 놓이게 쓰는 것이 핵심이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

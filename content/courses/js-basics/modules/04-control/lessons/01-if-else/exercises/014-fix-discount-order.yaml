@@ -1,0 +1,94 @@
+id: js-basics.control.if-else.fix-discount-order
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.control.else-if, weight: 1 }
+tags: [else-if, order, debugging]
+estimatedSeconds: 180
+prompt: |
+  온라인 서점의 할인 규칙이에요.
+
+  - 주문 금액이 **50000원 이상**이면 7000원 할인
+  - **30000원 이상**이면 3000원 할인
+  - 그보다 적으면 할인 없음
+
+  60000원어치를 주문했는데 3000원만 할인돼요. 할인 금액은 그대로 두고 조건문을 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  할인: 7000
+  결제 금액: 53000
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const total = 60000;
+          let discount = 0;
+
+          if (total >= 30000) {
+            discount = 3000;
+          } else if (total >= 50000) {
+            discount = 7000;
+          }
+
+          console.log("할인:", discount);
+          console.log("결제 금액:", total - discount);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const total = 60000;
+          let discount = 0;
+
+          if (total >= 50000) {
+            discount = 7000;
+          } else if (total >= 30000) {
+            discount = 3000;
+          }
+
+          console.log("할인:", discount);
+          console.log("결제 금액:", total - discount);
+  bugDescription: 60000원을 주문했는데 7000원이 아니라 3000원만 할인돼요. 50000원 이상인 어떤 금액을 넣어도 마찬가지예요.
+  bugMisconception: js.mc.else-if-order-irrelevant
+  checks:
+    - kind: console
+      id: output
+      description: 60000원 주문의 할인 금액 7000과 결제 금액 53000이 출력되어야 합니다.
+      requirement: 할인 결과 출력
+      expect:
+        lines: ["할인: 7000", "결제 금액: 53000"]
+    - kind: program
+      id: discount-value
+      description: discount에 7000이 들어 있어야 합니다.
+      requirement: 할인 금액
+      expect:
+        globals:
+          discount: { equals: 7000 }
+        noError: true
+      misconceptionIfFail: js.mc.else-if-order-irrelevant
+misconceptions: [js.mc.else-if-order-irrelevant]
+hints:
+  - 60000원일 때 첫 번째 조건 `total >= 30000`은 참인가요, 거짓인가요? 참이면 두 번째 조건은 검사할까요?
+  - 50000원 이상인 금액은 모두 `total >= 30000`도 참이에요. 그래서 두 번째 갈래에는 영영 도착하지 못해요.
+  - 범위가 겹치는 조건은 좁은 범위부터 검사해야 해요. 두 갈래의 순서를 바꿔 보세요.
+explanation: |
+  원인은 **조건의 순서**예요. 체인은 처음으로 참인 갈래 하나만 실행하는데, 60000원은 첫 조건 `total >= 30000`에서 이미 참이라 3000원 할인으로 끝나요. 50000원 이상인 금액은 모두 30000원 이상이기도 해서, 7000원 할인 갈래는 절대 실행되지 않아요.
+
+  좁은 범위(50000원 이상)부터 검사하도록 두 갈래를 바꿔요.
+
+  ```js
+  if (total >= 50000) {
+    discount = 7000;
+  } else if (total >= 30000) {
+    discount = 3000;
+  }
+  ```
+
+  두 번째 갈래에 도착했다는 것은 50000원 미만이라는 뜻이라, `total >= 30000`만 써도 "30000원 이상 50000원 미만"이 돼요.
+
+  첫 갈래의 `3000`을 `7000`으로 바꿔도 60000원 주문의 출력은 같아지지만, 그러면 35000원 주문도 7000원 할인을 받는 새 버그가 생겨요. `total`을 35000, 20000으로 바꿔 실행해서 세 경우가 모두 맞는지 확인해 보세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

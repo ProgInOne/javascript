@@ -1,0 +1,45 @@
+id: js-basics.control.ternary.predict-ternary-precedence
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.control.ternary, weight: 1 }
+tags: [ternary, precedence, predict]
+estimatedSeconds: 150
+prompt: |
+  주차 요금 안내문을 출력하는 코드예요. 두 줄은 괄호 한 쌍만 달라요. 실행하면 콘솔에 무엇이 나올까요? 나오는 줄을 모두 순서대로 쓰세요.
+spec:
+  lang: js
+  code: |
+    const minutes = 20;
+    console.log("요금: " + minutes <= 30 ? "무료" : "2000원");
+    console.log("요금: " + (minutes <= 30 ? "무료" : "2000원"));
+  answerKind: console
+  misconceptionByAnswer:
+    "요금: 무료\n요금: 무료": js.mc.ternary-precedence
+    "요금: 2000원\n요금: 무료": js.mc.ternary-precedence
+misconceptions: [js.mc.ternary-precedence]
+hints:
+  - 2번 줄에서 `+`, `<=`, `? :` 중 무엇이 가장 먼저 계산될까요? 조건 연산자는 우선순위가 아주 낮아요.
+  - "2번 줄의 조건은 `minutes <= 30`이 아니라 `\"요금: \" + minutes <= 30`이에요. `\"요금: 20\" <= 30`은 어떻게 비교될까요?"
+  - "`\"요금: 20\"`을 숫자로 바꾸면 NaN이고, NaN과의 비교는 언제나 false예요. 그러면 2번 줄 식 전체의 값은 무엇일까요?"
+explanation: |
+  ```text
+  2000원
+  요금: 무료
+  ```
+
+  **2번 줄**: 조건 연산자는 우선순위가 아주 낮아서 `+`와 `<=`가 먼저 계산돼요.
+
+  1. `"요금: " + minutes` → `"요금: 20"`
+  1. `"요금: 20" <= 30` → 문자열을 숫자로 바꾸면 `NaN`이라 `false`
+  1. `false ? "무료" : "2000원"` → `"2000원"`
+
+  그래서 `"요금: "`이라는 글자는 조건을 만드는 데 쓰이고 사라졌고, 20분인데도 `2000원`이 나왔어요.
+
+  **3번 줄**: 괄호 안의 `minutes <= 30 ? "무료" : "2000원"`이 먼저 `"무료"`가 되고, `"요금: "` 뒤에 이어 붙여져요.
+
+  조건 연산자를 다른 식 안에 쓸 때는 **항상 괄호로 감싸요.** 오류 메시지 없이 엉뚱한 결과가 나오는 버그라서 미리 막는 습관이 중요해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

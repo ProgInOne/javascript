@@ -1,0 +1,48 @@
+id: js-basics.control.ternary.tf-ternary-discarded
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.control.ternary, weight: 1 }
+tags: [ternary, expression]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`let status = \"\";` 다음 줄에 `seats > 0 ? \"예약 가능\" : \"매진\";` 한 줄만 쓰면, 고른 값이 `status`에 들어간다."
+  answer: false
+  misconceptionIfWrong: js.mc.ternary-result-discarded
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 조건 연산자는 값을 만들기만 하므로, 그 값을 status에 대입하지 않으면 바로 버려진다
+      correct: true
+    - id: r2
+      text: 조건 연산자는 바로 위에서 만든 변수에 결과를 자동으로 넣어 준다
+      misconception: js.mc.ternary-result-discarded
+    - id: r3
+      text: 조건 연산자는 결과를 받을 변수 없이 쓰면 SyntaxError가 난다
+hints:
+  - 조건 연산자는 문일까요, 식일까요? 식은 무엇을 만들어 내나요?
+  - "`3 + 4;`라고만 쓴 줄을 떠올려 보세요. 계산 결과 7은 어디에 저장되나요?"
+  - 값을 변수에 넣으려면 `=`로 대입해야 해요. 이 줄에는 대입이 있나요?
+explanation: |
+  정답은 **거짓**, 이유는 **조건 연산자는 값을 만들기만 하므로, 그 값을 status에 대입하지 않으면 바로 버려진다**예요.
+
+  ```js
+  let status = "";
+  seats > 0 ? "예약 가능" : "매진"; // 값이 만들어졌다가 버려져요
+  console.log(status); // 빈 문자열 그대로예요
+  ```
+
+  `3 + 4;`라고만 쓴 줄처럼, 계산은 되지만 결과를 받는 곳이 없어요. 오류도 나지 않아서 찾기 어려운 버그예요. 이렇게 고쳐요.
+
+  ```js
+  status = seats > 0 ? "예약 가능" : "매진";
+  ```
+
+  - "자동으로 넣어 준다"를 고른 경우: JavaScript는 어떤 변수에도 값을 저절로 넣지 않아요. 항상 `=`로 대입해야 해요.
+  - "SyntaxError가 난다"를 고른 경우: 문법상 허용되는 코드라 오류 없이 실행돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

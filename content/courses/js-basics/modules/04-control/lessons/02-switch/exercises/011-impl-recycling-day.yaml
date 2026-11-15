@@ -1,0 +1,125 @@
+id: js-basics.control.switch.impl-recycling-day
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.control.fallthrough, weight: 1 }
+  - { id: js.control.switch, weight: 0.5 }
+tags: [switch, fallthrough, grouping, write-code]
+estimatedSeconds: 300
+prompt: |
+  아파트 분리수거 요일을 알려 주는 프로그램을 작성하세요.
+
+  | 품목 | 수거 요일 |
+  |---|---|
+  | `"종이"`, `"박스"` | `월요일` |
+  | `"플라스틱"`, `"비닐"` | `수요일` |
+  | `"캔"`, `"유리병"` | `금요일` |
+  | 그 밖의 품목 | `일반 쓰레기로 버려요` |
+
+  - 두 품목에 대해 `switch`를 하나씩 쓰세요. 같은 요일인 품목은 **case를 묶어서** 요일을 한 번만 쓰세요.
+  - 시작 코드의 두 줄은 그대로 두세요. 품목이 `"박스"`, `"비닐"`이면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  박스: 월요일
+  비닐: 수요일
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const firstItem = "박스";
+          const secondItem = "비닐";
+
+          // 첫 번째 품목의 수거 요일을 출력하세요.
+
+          // 두 번째 품목의 수거 요일을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const firstItem = "박스";
+          const secondItem = "비닐";
+
+          // 첫 번째 품목의 수거 요일을 출력하세요.
+          switch (firstItem) {
+            case "종이":
+            case "박스":
+              console.log(firstItem + ": 월요일");
+              break;
+            case "플라스틱":
+            case "비닐":
+              console.log(firstItem + ": 수요일");
+              break;
+            case "캔":
+            case "유리병":
+              console.log(firstItem + ": 금요일");
+              break;
+            default:
+              console.log(firstItem + ": 일반 쓰레기로 버려요");
+          }
+          // 두 번째 품목의 수거 요일을 출력하세요.
+          switch (secondItem) {
+            case "종이":
+            case "박스":
+              console.log(secondItem + ": 월요일");
+              break;
+            case "플라스틱":
+            case "비닐":
+              console.log(secondItem + ": 수요일");
+              break;
+            case "캔":
+            case "유리병":
+              console.log(secondItem + ": 금요일");
+              break;
+            default:
+              console.log(secondItem + ": 일반 쓰레기로 버려요");
+          }
+  checks:
+    - kind: console
+      id: output
+      description: 박스는 월요일, 비닐은 수요일이 한 줄씩 차례로 출력되어야 합니다.
+      requirement: 수거 요일 출력
+      expect:
+        lines: ["박스: 월요일", "비닐: 수요일"]
+      misconceptionIfFail: js.mc.switch-no-break-stops
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+misconceptions: [js.mc.switch-no-break-stops]
+hints:
+  - 같은 요일인 두 품목은 `case "종이":` 바로 아래에 `case "박스":`를 붙여 써서 묶을 수 있어요. 첫 번째 case에는 코드를 쓰지 않아요.
+  - 묶음의 마지막 case 아래에 출력문을 쓰고, 그다음에는 무엇을 넣어야 다음 묶음으로 흘러가지 않을까요?
+  - "한 묶음은 `case \"종이\":` → `case \"박스\":` → `console.log(...)` → `break;` 모양이에요. 표에 없는 품목은 `default:`가 받아요."
+explanation: |
+  한 품목의 switch는 이렇게 써요.
+
+  ```js
+  switch (firstItem) {
+    case "종이":
+    case "박스":
+      console.log(firstItem + ": 월요일");
+      break;
+    case "플라스틱":
+    case "비닐":
+      console.log(firstItem + ": 수요일");
+      break;
+    case "캔":
+    case "유리병":
+      console.log(firstItem + ": 금요일");
+      break;
+    default:
+      console.log(firstItem + ": 일반 쓰레기로 버려요");
+  }
+  ```
+
+  - `case "종이":` 아래에는 코드가 없어서, `"종이"`이면 그 자리를 지나 `case "박스":` 아래 코드까지 흘러가요. 이렇게 break를 일부러 빼서 "종이이거나 박스이면"을 표현해요.
+  - 묶음의 끝에는 반드시 `break;`를 둬요. 빠뜨리면 `"박스"`일 때 수요일·금요일 안내까지 나와요.
+  - `console.log("박스: 월요일")`처럼 글자로 직접 써도 되지만, `firstItem + ": 월요일"`처럼 변수를 쓰면 품목이 바뀌어도 그대로 맞아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

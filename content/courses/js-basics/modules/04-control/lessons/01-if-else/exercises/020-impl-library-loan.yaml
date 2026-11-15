@@ -1,0 +1,106 @@
+id: js-basics.control.if-else.impl-library-loan
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.control.block, weight: 1 }
+  - { id: js.control.if, weight: 0.5 }
+tags: [block, nested-if, write-code]
+estimatedSeconds: 300
+prompt: |
+  도서관 책 대출 안내 프로그램을 작성하세요. 규칙은 이래요.
+
+  - 회원증이 없으면: `회원증을 먼저 만들어 주세요`
+  - 회원증이 있고 연체한 날이 0일이면: `대출할 수 있어요`
+  - 회원증이 있지만 연체한 날이 있으면: `연체 중이라 대출할 수 없어요`
+
+  회원증이 있는지를 먼저 확인하고, **그 블록 안에서** 연체일을 확인하는 중첩 조건문으로 쓰세요. 두 사람에 대해 하나씩 써요. 시작 코드의 네 줄은 그대로 두세요.
+
+  ```text
+  민서: 회원증을 먼저 만들어 주세요
+  도윤: 연체 중이라 대출할 수 없어요
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const minseoHasCard = false;
+          const minseoLateDays = 0;
+          const doyunHasCard = true;
+          const doyunLateDays = 2;
+
+          // 민서의 대출 안내를 출력하세요.
+
+          // 도윤의 대출 안내를 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const minseoHasCard = false;
+          const minseoLateDays = 0;
+          const doyunHasCard = true;
+          const doyunLateDays = 2;
+
+          // 민서의 대출 안내를 출력하세요.
+          if (minseoHasCard) {
+            if (minseoLateDays === 0) {
+              console.log("민서: 대출할 수 있어요");
+            } else {
+              console.log("민서: 연체 중이라 대출할 수 없어요");
+            }
+          } else {
+            console.log("민서: 회원증을 먼저 만들어 주세요");
+          }
+          // 도윤의 대출 안내를 출력하세요.
+          if (doyunHasCard) {
+            if (doyunLateDays === 0) {
+              console.log("도윤: 대출할 수 있어요");
+            } else {
+              console.log("도윤: 연체 중이라 대출할 수 없어요");
+            }
+          } else {
+            console.log("도윤: 회원증을 먼저 만들어 주세요");
+          }
+  checks:
+    - kind: console
+      id: output
+      description: 회원증이 없는 민서와 연체 중인 도윤의 안내가 한 줄씩 차례로 출력되어야 합니다.
+      requirement: 대출 안내 출력
+      expect:
+        lines: ["민서: 회원증을 먼저 만들어 주세요", "도윤: 연체 중이라 대출할 수 없어요"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+hints:
+  - 한 사람에 대해 바깥 조건 하나, 안쪽 조건 하나가 필요해요. 바깥 조건은 회원증, 안쪽 조건은 연체일이에요.
+  - "`minseoHasCard`는 이미 true/false라서 `if (minseoHasCard)`처럼 그대로 조건에 쓸 수 있어요. 안쪽에서는 연체일이 0인지 `===`로 비교해요."
+  - "`if (회원증) { if (연체일 === 0) { ... } else { ... } } else { ... }` 모양이에요. 안쪽 if 전체가 바깥 if 블록 안에 들어가요."
+explanation: |
+  한 사람의 중첩 조건문은 이렇게 써요.
+
+  ```js
+  if (doyunHasCard) {
+    if (doyunLateDays === 0) {
+      console.log("도윤: 대출할 수 있어요");
+    } else {
+      console.log("도윤: 연체 중이라 대출할 수 없어요");
+    }
+  } else {
+    console.log("도윤: 회원증을 먼저 만들어 주세요");
+  }
+  ```
+
+  - 바깥 조건이 거짓(민서)이면 안쪽 조건은 검사하지도 않고 바깥 `else`로 가요.
+  - 바깥 조건이 참(도윤)이면 블록 안으로 들어가 연체일을 검사해요. `2 === 0`은 거짓이라 안쪽 `else`가 실행돼요.
+  - 블록마다 한 단계씩 들여 쓰면 어느 `else`가 어느 `if`의 짝인지 보여요. 들여쓰기는 실행에 영향이 없지만, 중괄호의 짝이 맞는지 확인하는 데 큰 도움이 돼요.
+
+  `minseoHasCard`와 `doyunLateDays`를 바꿔 가며 세 가지 안내가 모두 나오는지 확인해 보세요.
+
+  모듈 3에서 배운 `&&`로 `if (doyunHasCard && doyunLateDays === 0) { ... } else if (doyunHasCard) { ... } else { ... }`처럼 써도 같은 결과예요. 이 문제는 중첩을 연습하려고 중첩으로 쓰게 했어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

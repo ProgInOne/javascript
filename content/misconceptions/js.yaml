@@ -744,3 +744,137 @@
   remediation:
     lessonSection: js-basics.operators.implicit-coercion#pitfalls
     exercises: [js-basics.operators.implicit-coercion.mcq-null-loose-equals, js-basics.operators.implicit-coercion.multi-loose-rules]
+
+# ── if-else ──
+
+- id: js.mc.false-if-stops-program
+  concept: js.control.if
+  title: 조건이 거짓이면 뒤의 코드도 실행되지 않는다고 생각함
+  statement: if의 조건이 거짓이면 프로그램이 거기서 멈춰서, 조건문 아래에 있는 문장도 실행되지 않는다고 생각한다.
+  reality: 조건이 거짓이면 if 블록만 건너뛴다. 조건문이 끝나면 프로그램은 다음 문장으로 넘어가서 계속 실행된다. else가 있으면 else 블록을 실행한 뒤 넘어간다.
+  remediation:
+    lessonSection: js-basics.control.if-else#pitfalls
+    exercises: [js-basics.control.if-else.mcq-false-condition-continues, js-basics.control.if-else.predict-if-else-coins]
+
+- id: js.mc.assign-in-condition
+  concept: js.control.if
+  title: if 조건에 =를 써도 비교된다고 생각함
+  statement: if (password = "1234")처럼 조건에 = 하나를 쓰면 password가 "1234"인지 비교한다고 생각한다.
+  reality: =는 대입이다. 조건 자리에서도 password에 "1234"를 넣어 버리고, 대입한 값("1234")으로 참·거짓을 판단한다. 빈 문자열이 아닌 문자열이나 0이 아닌 숫자를 대입하면 항상 참이 되어 if 블록이 늘 실행된다. 비교는 ===로 한다.
+  diagnosticHint: 조건 안에 = 가 하나만 있는지 확인한다.
+  remediation:
+    lessonSection: js-basics.control.if-else#pitfalls
+    exercises: [js-basics.control.if-else.tf-assign-in-condition, js-basics.control.if-else.fix-password-check]
+
+- id: js.mc.else-has-condition
+  concept: js.control.if
+  title: else 뒤에도 조건을 쓸 수 있다고 생각함
+  statement: else (temperature < 10) { ... }처럼 else 뒤에 괄호로 조건을 붙이면 그 조건일 때만 실행된다고 생각한다.
+  reality: else는 "앞의 조건이 모두 거짓일 때"라는 뜻이라 조건을 받지 않는다. else 뒤에 조건을 쓰면 SyntaxError(Unexpected token '{')가 난다. 조건이 하나 더 필요하면 else if (조건)을 쓴다.
+  remediation:
+    lessonSection: js-basics.control.if-else#pitfalls
+    exercises: [js-basics.control.if-else.fix-else-condition, js-basics.control.if-else.parsons-ticket-price]
+
+- id: js.mc.else-if-runs-all
+  concept: js.control.else-if
+  title: else if 체인에서 참인 블록이 모두 실행된다고 생각함
+  statement: if … else if … else 체인에서 조건이 참인 갈래가 여러 개면, 그 블록들이 모두 차례로 실행된다고 생각한다.
+  reality: 체인은 위에서부터 검사하다가 처음으로 참인 조건의 블록 하나만 실행하고, 나머지 조건은 검사하지도 않고 체인을 빠져나간다. 한 체인에서는 많아야 한 블록만 실행된다.
+  remediation:
+    lessonSection: js-basics.control.if-else#pitfalls
+    exercises: [js-basics.control.if-else.predict-first-true-only, js-basics.control.if-else.multi-else-if-facts]
+
+- id: js.mc.else-if-order-irrelevant
+  concept: js.control.else-if
+  title: else if 조건의 순서는 결과와 상관없다고 생각함
+  statement: else if 체인의 조건은 어떤 순서로 적어도 결과가 같다고 생각한다.
+  reality: 처음으로 참인 조건 하나만 실행되므로, score >= 60처럼 넓은 조건을 score >= 90보다 먼저 두면 90점 이상도 앞 조건에 걸려서 뒤 갈래는 절대 실행되지 않는다. 범위가 겹치는 조건은 좁은(엄격한) 조건부터 적는다.
+  remediation:
+    lessonSection: js-basics.control.if-else#pitfalls
+    exercises: [js-basics.control.if-else.mcq-unreachable-branch, js-basics.control.if-else.fix-discount-order]
+
+- id: js.mc.separate-ifs-like-chain
+  concept: js.control.else-if
+  title: if를 여러 개 이어 쓰면 하나만 실행된다고 생각함
+  statement: else 없이 if 문을 여러 개 연달아 쓰면 else if 체인처럼 처음 맞는 하나만 실행된다고 생각한다.
+  reality: 따로 쓴 if 문은 서로 독립된 문장이라 하나씩 모두 검사된다. 조건이 참인 if가 여러 개면 그 블록이 모두 실행된다. 하나만 고르려면 else if로 이어야 한다.
+  remediation:
+    lessonSection: js-basics.control.if-else#pitfalls
+    exercises: [js-basics.control.if-else.tf-separate-ifs, js-basics.control.if-else.predict-separate-ifs]
+
+- id: js.mc.indent-makes-block
+  concept: js.control.block
+  title: 들여쓰기만 해도 if에 묶인다고 생각함
+  statement: 중괄호 없이 if 아래 두 줄을 들여 쓰면 두 줄 모두 조건에 따라 실행된다고 생각한다.
+  reality: 중괄호가 없으면 if 바로 다음의 한 문장만 조건에 딸린다. 두 번째 줄은 들여 써도 if와 관계없이 항상 실행된다. JavaScript는 들여쓰기를 보지 않으므로, 여러 문장을 묶으려면 중괄호로 블록을 만든다.
+  remediation:
+    lessonSection: js-basics.control.if-else#pitfalls
+    exercises: [js-basics.control.if-else.mcq-no-braces, js-basics.control.if-else.fix-coupon-braces]
+
+- id: js.mc.semicolon-after-if
+  concept: js.control.block
+  title: if (조건) 뒤에 세미콜론을 붙여도 된다고 생각함
+  statement: 문장 끝에 세미콜론을 붙이는 습관대로 if (조건); { ... }라고 써도 블록이 조건에 따라 실행된다고 생각한다.
+  reality: if (조건) 바로 뒤의 세미콜론은 "아무것도 하지 않는 빈 문장"이 되어, 조건에 딸린 문장이 그 빈 문장이 된다. 뒤의 { ... } 블록은 if와 관계없는 별개의 블록이라 조건과 상관없이 항상 실행된다. 오류도 나지 않아 찾기 어렵다.
+  diagnosticHint: if (조건)과 { 사이에 ; 가 있는지 확인한다.
+  remediation:
+    lessonSection: js-basics.control.if-else#pitfalls
+    exercises: [js-basics.control.if-else.find-bug-semicolon-if, js-basics.control.if-else.fix-cafe-order-bugs]
+
+# ── switch ──
+
+- id: js.mc.switch-loose-compare
+  concept: js.control.switch
+  title: switch가 자료형이 달라도 같은 값으로 본다고 생각함
+  statement: switch ("2")에서 case 2:가 실행되는 것처럼, switch가 ==처럼 자료형을 바꿔 가며 비교한다고 생각한다.
+  reality: switch는 ===로 비교한다. 문자열 "2"와 숫자 2는 자료형이 달라 같은 case가 아니므로, 맞는 case가 없어 default로 간다. 입력값이 문자열이면 case도 문자열로 쓰거나 값을 숫자로 바꾼 뒤 비교한다.
+  remediation:
+    lessonSection: js-basics.control.switch#pitfalls
+    exercises: [js-basics.control.switch.tf-switch-strict, js-basics.control.switch.predict-string-vs-number]
+
+- id: js.mc.switch-case-condition
+  concept: js.control.switch
+  title: case에 조건식을 쓰면 그 조건으로 검사한다고 생각함
+  statement: 'switch (score) { case score >= 90: ... }처럼 case에 조건식을 쓰면 score가 90 이상일 때 그 case가 실행된다고 생각한다.'
+  reality: case 옆의 식은 먼저 계산되어 값이 된다. score >= 90은 true나 false가 되고, switch는 score(숫자)와 그 불리언을 ===로 비교하므로 절대 같지 않다. 범위를 나눌 때는 else if 체인을 쓴다.
+  remediation:
+    lessonSection: js-basics.control.switch#pitfalls
+    exercises: [js-basics.control.switch.fix-case-condition, js-basics.control.switch.fix-vending-machine]
+
+- id: js.mc.switch-no-break-stops
+  concept: js.control.fallthrough
+  title: break 없이도 맞는 case만 실행된다고 생각함
+  statement: switch에서 break를 쓰지 않아도 맞는 case의 코드만 실행되고 switch가 끝난다고 생각한다.
+  reality: switch는 맞는 case에서 시작해 break(또는 switch의 끝)를 만날 때까지 아래 case와 default의 코드까지 계속 실행한다(fall-through). 아래 case의 값은 다시 비교하지 않는다. 한 case만 실행하려면 case마다 break를 쓴다.
+  remediation:
+    lessonSection: js-basics.control.switch#pitfalls
+    exercises: [js-basics.control.switch.predict-missing-break, js-basics.control.switch.find-bug-missing-break, js-basics.control.switch.fix-coffee-size]
+
+# ── ternary ──
+
+- id: js.mc.ternary-as-statement
+  concept: js.control.ternary
+  title: 조건 연산자의 각 자리에 문장을 넣을 수 있다고 생각함
+  statement: '조건 연산자를 if-else의 줄임말로 보고, isRaining ? const item = "우산" : const item = "모자";처럼 각 자리에 변수 선언 같은 문장을 넣을 수 있다고 생각한다.'
+  reality: '조건 연산자는 값을 만들어 내는 식이라서 ?와 : 뒤에는 값(식)만 올 수 있다. const·let 선언이나 if 같은 문장을 넣으면 SyntaxError가 난다. 값을 골라 const item = isRaining ? "우산" : "모자";처럼 받는다. 실행할 일을 고르는 것이 목적이면 if-else가 더 알맞다.'
+  remediation:
+    lessonSection: js-basics.control.ternary#pitfalls
+    exercises: [js-basics.control.ternary.fix-ternary-const, js-basics.control.ternary.multi-valid-ternary]
+
+- id: js.mc.ternary-result-discarded
+  concept: js.control.ternary
+  title: 조건 연산자만 써도 결과가 어딘가에 저장된다고 생각함
+  statement: 'stock > 0 ? "판매 중" : "품절"; 한 줄만 쓰면 고른 값이 변수에 들어가거나 화면에 보인다고 생각한다.'
+  reality: 조건 연산자는 값을 만들기만 한다. 그 값을 변수에 대입하거나 console.log에 넘기지 않으면 만들어진 값은 바로 버려지고 아무 일도 일어나지 않는다.
+  remediation:
+    lessonSection: js-basics.control.ternary#pitfalls
+    exercises: [js-basics.control.ternary.tf-ternary-discarded, js-basics.control.ternary.fix-ternary-discarded]
+
+- id: js.mc.ternary-precedence
+  concept: js.control.ternary
+  title: 조건 연산자가 앞의 +보다 먼저 계산된다고 생각함
+  statement: '"결과: " + score >= 60 ? "합격" : "불합격"이 "결과: " 뒤에 "합격"이나 "불합격"을 붙인다고 생각한다.'
+  reality: '조건 연산자는 우선순위가 아주 낮아서 +와 >=가 먼저 계산된다. "결과: " + score가 먼저 이어 붙여지고, 그 문자열 전체로 비교한 결과가 조건이 된다. 조건 연산자를 다른 식 안에 쓸 때는 (score >= 60 ? "합격" : "불합격")처럼 괄호로 감싼다.'
+  remediation:
+    lessonSection: js-basics.control.ternary#pitfalls
+    exercises: [js-basics.control.ternary.predict-ternary-precedence, js-basics.control.ternary.fix-receipt-labels]

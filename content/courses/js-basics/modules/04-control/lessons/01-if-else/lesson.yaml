@@ -1,0 +1,17 @@
+id: js-basics.control.if-else
+title: if와 else
+summary: 조건이 참일 때와 거짓일 때 다른 코드를 실행하는 if·else와, 여러 갈래 중 하나를 고르는 else if 체인, 문장을 묶는 블록을 배웁니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 15, practice: 30 }
+concepts:
+  primary: [js.control.if, js.control.else-if, js.control.block]
+  practiced: [js.values.assignment]
+  reviewed: [js.types.boolean, js.basics.statements, js.errors.error-types]
+objectives:
+  - if·else 문에서 조건의 참·거짓에 따라 어느 블록이 실행되고, 그다음 어디로 이어지는지 예측할 수 있다.
+  - else if 체인이 처음으로 참인 갈래 하나만 실행한다는 점을 이용해 조건을 알맞은 순서로 쓸 수 있다.
+  - 중괄호로 블록을 만들어 여러 문장을 조건에 묶고, 블록 안에 조건문을 겹쳐 쓸 수 있다.
+  - 조건에 쓴 =, else 뒤의 조건, if 뒤의 세미콜론처럼 조건문에서 자주 나는 버그를 찾아 고칠 수 있다.
+practice:
+  targetCount: 22

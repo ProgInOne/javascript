@@ -1,0 +1,105 @@
+id: js-basics.control.if-else.impl-grade-two-students
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.control.else-if, weight: 1 }
+tags: [else-if, chain, boundary, write-code]
+estimatedSeconds: 300
+prompt: |
+  두 학생의 점수로 등급을 출력하는 프로그램을 작성하세요.
+
+  | 점수 | 등급 |
+  |---|---|
+  | 90점 이상 | A |
+  | 80점 이상 90점 미만 | B |
+  | 70점 이상 80점 미만 | C |
+  | 70점 미만 | F |
+
+  - 학생마다 `if … else if … else` 체인을 하나씩 써서 등급을 정하세요. 시작 코드의 두 줄은 그대로 두세요.
+  - 점수가 90점, 79점이면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  지우: A
+  하준: C
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const jiwooScore = 90;
+          const hajunScore = 79;
+
+          // 지우의 등급을 출력하세요.
+
+          // 하준의 등급을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const jiwooScore = 90;
+          const hajunScore = 79;
+
+          // 지우의 등급을 출력하세요.
+          if (jiwooScore >= 90) {
+            console.log("지우: A");
+          } else if (jiwooScore >= 80) {
+            console.log("지우: B");
+          } else if (jiwooScore >= 70) {
+            console.log("지우: C");
+          } else {
+            console.log("지우: F");
+          }
+          // 하준의 등급을 출력하세요.
+          if (hajunScore >= 90) {
+            console.log("하준: A");
+          } else if (hajunScore >= 80) {
+            console.log("하준: B");
+          } else if (hajunScore >= 70) {
+            console.log("하준: C");
+          } else {
+            console.log("하준: F");
+          }
+  checks:
+    - kind: console
+      id: output
+      description: 90점인 지우는 A, 79점인 하준은 C가 차례로 출력되어야 합니다. 학생마다 한 줄씩만 나와야 합니다.
+      requirement: 학생별 등급 출력
+      expect:
+        lines: ["지우: A", "하준: C"]
+      misconceptionIfFail: js.mc.else-if-runs-all
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+misconceptions: [js.mc.else-if-runs-all, js.mc.else-if-order-irrelevant]
+hints:
+  - 한 학생의 체인부터 완성하세요. 네 갈래 중 하나만 실행되어야 하니 `if`를 따로 쓰지 말고 `else if`로 이어요.
+  - 가장 높은 기준(90)부터 검사하면, 아래 갈래에서는 "~ 미만" 조건을 따로 쓰지 않아도 돼요. 90점은 A일까요, B일까요?
+  - "`if (jiwooScore >= 90) { ... } else if (jiwooScore >= 80) { ... } else if (jiwooScore >= 70) { ... } else { ... }` 모양이에요. 같은 모양으로 하준도 써요."
+explanation: |
+  학생 한 명의 체인은 이렇게 써요.
+
+  ```js
+  if (jiwooScore >= 90) {
+    console.log("지우: A");
+  } else if (jiwooScore >= 80) {
+    console.log("지우: B");
+  } else if (jiwooScore >= 70) {
+    console.log("지우: C");
+  } else {
+    console.log("지우: F");
+  }
+  ```
+
+  - **높은 기준부터** 검사해요. 두 번째 갈래에 왔다면 이미 90 미만이니 `jiwooScore >= 80`만 써도 "80 이상 90 미만"이 돼요. `>= 70`을 먼저 쓰면 90점도 C가 돼요.
+  - **기준값을 포함**해요. 90점은 "90점 이상"이라 A예요. `> 90`으로 쓰면 90점이 B가 돼요.
+  - `if`를 네 개 따로 쓰면 79점에서 `>= 70` 하나만 참이라 우연히 맞지만, 90점에서는 A·B·C가 모두 나와요. 갈래를 하나만 고르려면 `else if`로 이어요.
+
+  두 학생의 점수를 85, 69처럼 바꿔 실행해 보며 네 등급이 모두 제대로 나오는지 확인해 보세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

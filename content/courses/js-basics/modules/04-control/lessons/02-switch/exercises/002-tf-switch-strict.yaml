@@ -1,0 +1,49 @@
+id: js-basics.control.switch.tf-switch-strict
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.control.switch, weight: 1 }
+tags: [switch, strict-equality]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`const floor = \"3\";`일 때 `switch (floor)` 안의 `case 3:`은 실행된다."
+  answer: false
+  misconceptionIfWrong: js.mc.switch-loose-compare
+  requireReason: true
+  reasons:
+    - id: r1
+      text: switch는 ===로 비교하므로 문자열 "3"과 숫자 3은 같은 case가 아니다
+      correct: true
+    - id: r2
+      text: switch는 ==처럼 자료형을 맞춘 뒤 비교하므로 "3"과 3이 같다고 본다
+      misconception: js.mc.switch-loose-compare
+    - id: r3
+      text: case에는 숫자를 쓸 수 없고 문자열만 쓸 수 있다
+hints:
+  - "`floor`의 값은 숫자인가요, 문자열인가요? 따옴표를 보세요."
+  - switch가 값과 case를 비교할 때 `==`와 `===` 중 어느 쪽처럼 비교하나요?
+  - "`\"3\" === 3`은 true일까요, false일까요?"
+explanation: |
+  정답은 **거짓**, 이유는 **switch는 ===로 비교하므로 문자열 "3"과 숫자 3은 같은 case가 아니다**예요.
+
+  ```js
+  const floor = "3";
+  switch (floor) {
+    case 3:
+      console.log("3층"); // 실행되지 않아요
+      break;
+    default:
+      console.log("층을 찾을 수 없어요"); // 이것이 실행돼요
+  }
+  ```
+
+  `"3" === 3`은 자료형이 달라 `false`예요. 화면 입력처럼 문자열로 들어온 값을 비교할 때 자주 생기는 버그예요. `case "3":`처럼 자료형을 맞추거나 `Number(floor)`로 바꾼 뒤 비교해요.
+
+  - "==처럼 비교한다"를 고른 경우: switch는 자료형을 바꾸지 않아요.
+  - "case에는 문자열만 쓸 수 있다"를 고른 경우: case에는 숫자, 문자열 등 어떤 값이든 쓸 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

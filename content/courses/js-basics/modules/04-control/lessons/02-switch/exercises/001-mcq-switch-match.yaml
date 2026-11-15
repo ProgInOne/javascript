@@ -1,0 +1,52 @@
+id: js-basics.control.switch.mcq-switch-match
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.control.switch, weight: 1 }
+tags: [switch, default]
+estimatedSeconds: 45
+prompt: |
+  다음 코드를 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  const drink = "녹차";
+  switch (drink) {
+    case "커피":
+      console.log("2500원");
+      break;
+    case "주스":
+      console.log("3000원");
+      break;
+    default:
+      console.log("메뉴에 없어요");
+  }
+spec:
+  options:
+    - id: a
+      text: "`메뉴에 없어요`"
+    - id: b
+      text: 아무것도 나오지 않는다
+      rationale: 맞는 case가 없으면 default의 코드를 실행해요.
+    - id: c
+      text: "`2500원`"
+      rationale: switch는 맨 위 case를 무조건 실행하지 않아요. drink와 같은 값을 가진 case를 찾아요.
+    - id: d
+      text: "`2500원`, `3000원`, `메뉴에 없어요`가 모두 나온다"
+      misconception: js.mc.switch-no-break-stops
+      rationale: 같은 case가 없으니 어떤 case에서도 실행이 시작되지 않아요. default만 실행돼요.
+  correct: a
+misconceptions: [js.mc.switch-no-break-stops]
+hints:
+  - switch는 괄호 안의 값과 같은 `case`를 찾아요. `"녹차"`와 같은 case가 있나요?
+  - 같은 case가 하나도 없으면 어디로 가나요?
+  - "`default:`는 else 체인의 마지막 else와 같은 역할이에요."
+explanation: |
+  정답은 **`메뉴에 없어요`**예요.
+
+  switch는 `drink`의 값 `"녹차"`를 `case "커피"`, `case "주스"`와 차례로 `===` 비교해요. 같은 case가 없으니 `default:` 뒤의 코드를 실행해요.
+
+  - `default`가 없었다면 아무것도 나오지 않았을 거예요.
+  - 맨 위 case를 실행하거나 모든 case를 실행하는 일은 없어요. 실행은 값이 같은 case(없으면 default)에서만 시작돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

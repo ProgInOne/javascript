@@ -1,0 +1,78 @@
+id: js-basics.control.if-else.fix-else-condition
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.control.if, weight: 1 }
+  - { id: js.errors.error-messages, weight: 0.3 }
+tags: [if, else, syntax-error, debugging]
+estimatedSeconds: 150
+prompt: |
+  기온에 따라 옷차림을 알려 주는 프로그램이에요.
+
+  - 25도 이상이면 `반팔을 입어요`
+  - 10도 미만이면 `두꺼운 외투를 입어요`
+  - 둘 다 아니면 `가벼운 겉옷을 챙겨요`
+
+  실행하면 오류가 나요. 오류를 고쳐서 지금 기온(5도)에 맞는 안내가 나오게 하세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const temperature = 5;
+
+          if (temperature >= 25) {
+            console.log("반팔을 입어요");
+          } else (temperature < 10) {
+            console.log("두꺼운 외투를 입어요");
+          } else {
+            console.log("가벼운 겉옷을 챙겨요");
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const temperature = 5;
+
+          if (temperature >= 25) {
+            console.log("반팔을 입어요");
+          } else if (temperature < 10) {
+            console.log("두꺼운 외투를 입어요");
+          } else {
+            console.log("가벼운 겉옷을 챙겨요");
+          }
+  bugDescription: "실행하면 아무것도 출력되지 않고 SyntaxError: Unexpected token '{' 오류가 나요."
+  bugMisconception: js.mc.else-has-condition
+  maxEditDistance: 3
+  checks:
+    - kind: console
+      id: output
+      description: 기온이 5도이므로 "두꺼운 외투를 입어요" 한 줄만 출력되어야 합니다.
+      requirement: 옷차림 안내
+      expect:
+        lines: ["두꺼운 외투를 입어요"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+misconceptions: [js.mc.else-has-condition]
+hints:
+  - 오류 메시지가 가리키는 줄 번호를 보세요. 그 줄의 `{` 앞에 무엇이 있나요?
+  - "`else`는 \"앞의 조건이 모두 거짓이면\"이라는 뜻이라 조건을 받지 않아요. 그런데 5번 줄의 else 뒤에는 조건이 있어요."
+  - 조건이 하나 더 필요한 갈래는 `else` 뒤에 키워드 하나를 더 써서 만들어요.
+explanation: |
+  원인은 5번 줄의 `else (temperature < 10) {`예요. `else`는 조건을 받지 않기 때문에, JavaScript는 `else` 뒤의 `(temperature < 10)`을 else에 딸린 한 문장으로 읽어요. 그런데 그 뒤에 바로 `{`가 와서 문장이 끝나지 않으니 `SyntaxError: Unexpected token '{'`가 나요. 문법 오류라서 프로그램 전체가 실행되지 않았어요.
+
+  조건이 하나 더 필요한 갈래는 `else if`로 써요.
+
+  ```js
+  } else if (temperature < 10) {
+  ```
+
+  고친 뒤에는 `5 >= 25`가 거짓, `5 < 10`이 참이라서 `두꺼운 외투를 입어요`만 나와요. 마지막 `else`는 앞의 두 조건이 모두 거짓일 때(10도 이상 25도 미만) 실행돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

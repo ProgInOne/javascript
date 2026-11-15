@@ -1,0 +1,233 @@
+id: js-basics.control.switch.web-month-days
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.control.fallthrough, weight: 1 }
+  - { id: js.control.switch, weight: 0.5 }
+tags: [switch, fallthrough, grouping, web]
+estimatedSeconds: 480
+prompt: |
+  달력 앱의 "이번 달은 며칠까지?" 기능을 완성하세요. 목록에서 달을 고르면 그달의 날 수가 나와야 해요.
+
+  | 달 | 날 수 |
+  |---|---|
+  | 1, 3, 5, 7, 8, 10, 12월 | 31일 |
+  | 4, 6, 9, 11월 | 30일 |
+  | 2월 | 28일 (윤년은 생각하지 않아요) |
+
+  - 시작 코드에서 달을 고를 때마다 `{ }` 안의 코드가 실행되도록 이미 연결해 두었어요(화면을 다루는 방법은 모듈 10에서 배워요). 고른 달은 숫자로 바뀌어 `month`에 들어 있어요.
+  - 표시한 자리에 `switch`를 써서 `days`에 날 수를 넣으세요. 같은 날 수인 달은 **case를 묶어서** 쓰세요.
+  - 화면에는 `3월은 31일까지 있어요`처럼 나와요. 나머지 코드는 그대로 두세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>이번 달은 며칠까지?</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #result { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>이번 달은 며칠까지?</h1>
+              <label>
+                달 고르기
+                <select id="month">
+                  <option value="1">1월</option>
+                  <option value="2">2월</option>
+                  <option value="3">3월</option>
+                  <option value="4">4월</option>
+                  <option value="5">5월</option>
+                  <option value="6">6월</option>
+                  <option value="7">7월</option>
+                  <option value="8">8월</option>
+                  <option value="9">9월</option>
+                  <option value="10">10월</option>
+                  <option value="11">11월</option>
+                  <option value="12">12월</option>
+                </select>
+              </label>
+              <p id="result"></p>
+              <script>
+                const monthSelect = document.querySelector("#month");
+                const result = document.querySelector("#result");
+
+                // 달을 고를 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                monthSelect.addEventListener("change", () => {
+                  const month = Number(monthSelect.value);
+                  let days = 0;
+
+                  // 여기에 switch를 써서 days에 날 수를 넣으세요.
+
+                  result.textContent = month + "월은 " + days + "일까지 있어요";
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>이번 달은 며칠까지?</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #result { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>이번 달은 며칠까지?</h1>
+              <label>
+                달 고르기
+                <select id="month">
+                  <option value="1">1월</option>
+                  <option value="2">2월</option>
+                  <option value="3">3월</option>
+                  <option value="4">4월</option>
+                  <option value="5">5월</option>
+                  <option value="6">6월</option>
+                  <option value="7">7월</option>
+                  <option value="8">8월</option>
+                  <option value="9">9월</option>
+                  <option value="10">10월</option>
+                  <option value="11">11월</option>
+                  <option value="12">12월</option>
+                </select>
+              </label>
+              <p id="result"></p>
+              <script>
+                const monthSelect = document.querySelector("#month");
+                const result = document.querySelector("#result");
+
+                // 달을 고를 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                monthSelect.addEventListener("change", () => {
+                  const month = Number(monthSelect.value);
+                  let days = 0;
+
+                  // 여기에 switch를 써서 days에 날 수를 넣으세요.
+                  switch (month) {
+                    case 1:
+                    case 3:
+                    case 5:
+                    case 7:
+                    case 8:
+                    case 10:
+                    case 12:
+                      days = 31;
+                      break;
+                    case 4:
+                    case 6:
+                    case 9:
+                    case 11:
+                      days = 30;
+                      break;
+                    case 2:
+                      days = 28;
+                      break;
+                  }
+
+                  result.textContent = month + "월은 " + days + "일까지 있어요";
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: march
+      description: 3월을 고르면 "3월은 31일까지 있어요"가 보여야 합니다.
+      requirement: 달별 날 수
+      visible: true
+      steps:
+        - { action: change, selector: "#month", value: "3" }
+      expect:
+        - { selector: "#result", text: { equals: "3월은 31일까지 있어요" } }
+    - kind: event
+      id: june
+      description: 6월을 고르면 "6월은 30일까지 있어요"가 보여야 합니다.
+      requirement: 달별 날 수
+      visible: true
+      steps:
+        - { action: change, selector: "#month", value: "6" }
+      expect:
+        - { selector: "#result", text: { equals: "6월은 30일까지 있어요" } }
+    - kind: event
+      id: february
+      description: 2월을 고르면 28일까지라고 보여야 합니다.
+      requirement: 2월
+      steps:
+        - { action: change, selector: "#month", value: "2" }
+      expect:
+        - { selector: "#result", text: { equals: "2월은 28일까지 있어요" } }
+    - kind: event
+      id: thirty-one-group
+      description: 31일까지 있는 다른 달(8월, 12월)도 31일로 보여야 합니다.
+      requirement: 묶은 달 모두 처리
+      steps:
+        - { action: change, selector: "#month", value: "8" }
+      expect:
+        - { selector: "#result", text: { equals: "8월은 31일까지 있어요" } }
+      misconceptionIfFail: js.mc.switch-no-break-stops
+    - kind: event
+      id: december
+      description: 12월은 31일로 보여야 합니다.
+      requirement: 묶은 달 모두 처리
+      steps:
+        - { action: change, selector: "#month", value: "12" }
+      expect:
+        - { selector: "#result", text: { equals: "12월은 31일까지 있어요" } }
+    - kind: event
+      id: thirty-group
+      description: 30일까지 있는 다른 달(11월)도 30일로 보여야 합니다.
+      requirement: 묶은 달 모두 처리
+      steps:
+        - { action: change, selector: "#month", value: "11" }
+      expect:
+        - { selector: "#result", text: { equals: "11월은 30일까지 있어요" } }
+      misconceptionIfFail: js.mc.switch-no-break-stops
+misconceptions: [js.mc.switch-no-break-stops]
+hints:
+  - 날 수가 같은 달끼리 묶어 보세요. 묶음은 31일, 30일, 28일 세 개예요.
+  - "`case 1:` `case 3:` …처럼 case를 줄줄이 쓰고, 묶음의 마지막 case 아래에 `days = 31;`을 한 번만 써요. 묶음 끝에는 무엇이 필요할까요?"
+  - "31일 묶음은 1, 3, 5, 7, 8, 10, 12월이에요. 묶음마다 `days = ...;` 다음에 `break;`를 넣어 다음 묶음으로 흘러가지 않게 하세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  switch (month) {
+    case 1:
+    case 3:
+    case 5:
+    case 7:
+    case 8:
+    case 10:
+    case 12:
+      days = 31;
+      break;
+    case 4:
+    case 6:
+    case 9:
+    case 11:
+      days = 30;
+      break;
+    case 2:
+      days = 28;
+      break;
+  }
+  ```
+
+  - 같은 날 수인 달은 case를 줄줄이 쓰고 대입은 한 번만 해요. 예를 들어 8월이면 `case 8:`에서 시작해 `case 10:`, `case 12:`를 지나 `days = 31`까지 흘러가요.
+  - 묶음 끝의 `break`가 빠지면 다음 묶음의 대입까지 실행돼요. 31일 묶음 끝의 break를 빼면 31일인 달이 모두 30일이 돼요.
+  - `month`는 시작 코드에서 `Number(...)`로 숫자로 바꿔 두었으니 case도 숫자로 써요. `case "8":`처럼 문자열로 쓰면 `===` 비교에서 맞지 않아 0일이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

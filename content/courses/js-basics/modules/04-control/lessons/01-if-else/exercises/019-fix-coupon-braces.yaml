@@ -1,0 +1,98 @@
+id: js-basics.control.if-else.fix-coupon-braces
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.control.block, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [block, braces, debugging]
+estimatedSeconds: 200
+prompt: |
+  포인트 500점으로 쿠폰을 바꿔 주는 프로그램이에요. 포인트가 500점 이상인 회원만 쿠폰을 받고 포인트가 줄어야 해요.
+
+  지금은 포인트가 부족한 하은이의 포인트까지 줄어들어요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  서준: 쿠폰 발급
+  서준 남은 포인트: 300
+  하은 남은 포인트: 300
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const couponCost = 500;
+          let seojunPoints = 800;
+          let haeunPoints = 300;
+
+          if (seojunPoints >= couponCost)
+            console.log("서준: 쿠폰 발급");
+            seojunPoints = seojunPoints - couponCost;
+
+          if (haeunPoints >= couponCost)
+            console.log("하은: 쿠폰 발급");
+            haeunPoints = haeunPoints - couponCost;
+
+          console.log("서준 남은 포인트:", seojunPoints);
+          console.log("하은 남은 포인트:", haeunPoints);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const couponCost = 500;
+          let seojunPoints = 800;
+          let haeunPoints = 300;
+
+          if (seojunPoints >= couponCost) {
+            console.log("서준: 쿠폰 발급");
+            seojunPoints = seojunPoints - couponCost;
+          }
+
+          if (haeunPoints >= couponCost) {
+            console.log("하은: 쿠폰 발급");
+            haeunPoints = haeunPoints - couponCost;
+          }
+
+          console.log("서준 남은 포인트:", seojunPoints);
+          console.log("하은 남은 포인트:", haeunPoints);
+  bugDescription: 포인트가 300점인 하은이는 쿠폰을 받지 못했는데 포인트가 -200으로 줄어들어요.
+  bugMisconception: js.mc.indent-makes-block
+  checks:
+    - kind: console
+      id: output
+      description: 서준만 쿠폰을 받고, 두 사람의 남은 포인트가 300으로 출력되어야 합니다.
+      requirement: 쿠폰 결과 출력
+      expect:
+        lines: ["서준: 쿠폰 발급", "서준 남은 포인트: 300", "하은 남은 포인트: 300"]
+    - kind: program
+      id: points
+      description: 쿠폰을 받은 서준만 포인트가 줄고, 하은이의 포인트는 그대로여야 합니다.
+      requirement: 포인트 차감
+      expect:
+        globals:
+          seojunPoints: { equals: 300 }
+          haeunPoints: { equals: 300 }
+        noError: true
+      misconceptionIfFail: js.mc.indent-makes-block
+misconceptions: [js.mc.indent-makes-block]
+hints:
+  - 하은이의 조건 `300 >= 500`은 거짓이에요. 그런데도 포인트가 줄었다면, 포인트를 빼는 줄은 조건에 묶여 있지 않은 거예요.
+  - 중괄호가 없을 때 if에 딸리는 문장은 몇 개인가요? 들여쓰기는 JavaScript가 보지 않아요.
+  - 조건이 참일 때 함께 실행해야 하는 두 줄을 중괄호 `{ }`로 묶으세요. 서준이 쪽도 똑같이요.
+explanation: |
+  원인은 **중괄호가 없는 if**예요. 중괄호가 없으면 if에 딸리는 것은 바로 다음 한 문장(`console.log`)뿐이고, 포인트를 빼는 줄은 들여 썼어도 if와 관계없이 항상 실행돼요. 그래서 조건이 거짓인 하은이도 포인트가 500점 줄어 -200이 됐어요.
+
+  조건이 참일 때 함께 실행할 두 줄을 블록으로 묶어요.
+
+  ```js
+  if (haeunPoints >= couponCost) {
+    console.log("하은: 쿠폰 발급");
+    haeunPoints = haeunPoints - couponCost;
+  }
+  ```
+
+  서준이 쪽은 조건이 참이라 지금도 결과는 맞지만, 같은 버그가 숨어 있으니 함께 묶어야 해요. 한 줄짜리라도 항상 중괄호를 쓰면 나중에 줄을 추가할 때 이런 버그가 생기지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

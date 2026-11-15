@@ -1,0 +1,46 @@
+id: js-basics.control.if-else.mcq-false-condition-continues
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.control.if, weight: 1 }
+tags: [if, flow]
+estimatedSeconds: 45
+prompt: |
+  다음 코드를 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  const temperature = 18;
+  if (temperature >= 30) {
+    console.log("에어컨을 켜요");
+  }
+  console.log("확인 끝");
+spec:
+  options:
+    - id: a
+      text: "`확인 끝` 한 줄만 나온다"
+    - id: b
+      text: 아무것도 나오지 않는다
+      misconception: js.mc.false-if-stops-program
+      rationale: 조건이 거짓이면 if 블록만 건너뛰고, 조건문 다음 문장은 실행돼요.
+    - id: c
+      text: "`에어컨을 켜요`와 `확인 끝`이 차례로 나온다"
+      rationale: "`18 >= 30`은 false라서 if 블록은 실행되지 않아요."
+    - id: d
+      text: "`false`와 `확인 끝`이 차례로 나온다"
+      rationale: if는 조건의 결과를 출력하지 않아요. 조건은 실행할지 말지를 정하는 데만 쓰여요.
+  correct: a
+misconceptions: [js.mc.false-if-stops-program]
+hints:
+  - 2번 줄의 조건 `temperature >= 30`을 먼저 계산해 보세요.
+  - 조건이 거짓이면 if 블록(3번 줄)은 어떻게 되나요? 그다음에는 어느 줄로 가나요?
+  - 조건문이 끝나면 프로그램은 멈추지 않고 다음 문장으로 이어져요.
+explanation: |
+  정답은 **`확인 끝` 한 줄만 나온다**예요.
+
+  - 2번 줄: `18 >= 30`은 `false`라서 if 블록(3번 줄)을 건너뛰어요.
+  - 5번 줄: 조건문이 끝났으니 다음 문장을 실행해 `확인 끝`이 나와요.
+
+  "아무것도 나오지 않는다"를 골랐다면 조건이 거짓일 때 프로그램이 멈춘다고 생각한 거예요. 조건은 if 블록을 실행할지만 정하고, 조건문 바깥의 문장에는 영향을 주지 않아요. 조건식의 값(`false`)이 출력되지도 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

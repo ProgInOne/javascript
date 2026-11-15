@@ -1,0 +1,139 @@
+id: js-basics.control.ternary.web-theme-toggle
+type: web_task
+difficulty: 3
+concepts:
+  - { id: js.control.ternary, weight: 1 }
+tags: [ternary, web]
+estimatedSeconds: 360
+prompt: |
+  밝은 모드와 어두운 모드를 오가는 버튼을 완성하세요. 버튼을 누를 때마다 `isDark`가 `true`와 `false`로 번갈아 바뀌도록 이미 만들어 두었어요.
+
+  | `isDark` | 버튼 글자 | 상태 문구 | 카드의 `class` |
+  |---|---|---|---|
+  | `true` | `밝은 모드로` | `지금은 어두운 모드예요` | `card dark` |
+  | `false` | `어두운 모드로` | `지금은 밝은 모드예요` | `card` |
+
+  - 시작 코드에서 버튼을 누를 때마다 `{ }` 안의 코드가 실행돼요(화면을 다루는 방법은 모듈 10에서 배워요).
+  - `{ }` 안의 세 줄에서 `=` 오른쪽의 `""`를 **조건 연산자**로 바꿔, `isDark`에 따라 표의 값이 들어가게 하세요. 나머지 코드는 그대로 두세요.
+  - 미리보기에서 버튼을 여러 번 눌러 보며 확인하세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>화면 모드</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                .card { padding: 16px; border: 1px solid #ccc; border-radius: 8px; background: #fff; color: #222; }
+                .card.dark { background: #222; color: #eee; }
+              </style>
+            </head>
+            <body>
+              <div id="card" class="card">
+                <p id="status">지금은 밝은 모드예요</p>
+                <button id="toggle" type="button">어두운 모드로</button>
+              </div>
+              <script>
+                const card = document.querySelector("#card");
+                const statusText = document.querySelector("#status");
+                const button = document.querySelector("#toggle");
+                let isDark = false;
+
+                // 버튼을 누를 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                button.addEventListener("click", () => {
+                  isDark = !isDark;
+
+                  // 아래 세 줄의 "" 를 조건 연산자로 바꾸세요.
+                  button.textContent = "";
+                  statusText.textContent = "";
+                  card.className = "";
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>화면 모드</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                .card { padding: 16px; border: 1px solid #ccc; border-radius: 8px; background: #fff; color: #222; }
+                .card.dark { background: #222; color: #eee; }
+              </style>
+            </head>
+            <body>
+              <div id="card" class="card">
+                <p id="status">지금은 밝은 모드예요</p>
+                <button id="toggle" type="button">어두운 모드로</button>
+              </div>
+              <script>
+                const card = document.querySelector("#card");
+                const statusText = document.querySelector("#status");
+                const button = document.querySelector("#toggle");
+                let isDark = false;
+
+                // 버튼을 누를 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                button.addEventListener("click", () => {
+                  isDark = !isDark;
+
+                  // 아래 세 줄의 "" 를 조건 연산자로 바꾸세요.
+                  button.textContent = isDark ? "밝은 모드로" : "어두운 모드로";
+                  statusText.textContent = isDark ? "지금은 어두운 모드예요" : "지금은 밝은 모드예요";
+                  card.className = isDark ? "card dark" : "card";
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: to-dark
+      description: 버튼을 한 번 누르면 어두운 모드의 버튼 글자, 상태 문구, 카드 class가 보여야 합니다.
+      requirement: 어두운 모드로 바꾸기
+      visible: true
+      steps:
+        - { action: click, selector: "#toggle" }
+      expect:
+        - { selector: "#toggle", text: { equals: "밝은 모드로" } }
+        - { selector: "#status", text: { equals: "지금은 어두운 모드예요" } }
+        - { selector: "#card", attr: { name: class, equals: "card dark" } }
+    - kind: event
+      id: back-to-light
+      description: 버튼을 한 번 더 누르면 밝은 모드의 버튼 글자, 상태 문구, 카드 class로 돌아와야 합니다.
+      requirement: 밝은 모드로 돌아오기
+      visible: true
+      steps:
+        - { action: click, selector: "#toggle" }
+      expect:
+        - { selector: "#toggle", text: { equals: "어두운 모드로" } }
+        - { selector: "#status", text: { equals: "지금은 밝은 모드예요" } }
+        - { selector: "#card", attr: { name: class, equals: "card" } }
+hints:
+  - 세 줄 모두 "isDark면 이 값, 아니면 저 값"을 고르는 일이에요. 조건 자리에는 무엇을 쓰면 될까요?
+  - "`isDark`는 이미 true/false라서 그대로 조건으로 쓸 수 있어요. `isDark ? 참일 때의 값 : 거짓일 때의 값` 모양이에요."
+  - "첫 줄은 `button.textContent = isDark ? \"밝은 모드로\" : \"어두운 모드로\";`예요. 표를 보며 나머지 두 줄도 같은 모양으로 쓰세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  button.textContent = isDark ? "밝은 모드로" : "어두운 모드로";
+  statusText.textContent = isDark ? "지금은 어두운 모드예요" : "지금은 밝은 모드예요";
+  card.className = isDark ? "card dark" : "card";
+  ```
+
+  - 세 줄 모두 "값 하나를 골라 넣기"라서 조건 연산자가 잘 맞아요. if-else로 쓰면 if 블록과 else 블록에 각각 세 줄씩 대입해야 해요.
+  - 버튼 글자는 "누르면 바뀔 모드"를 알려 주므로, 어두운 모드일 때 `밝은 모드로`가 보여야 해요. 표를 잘 보고 참·거짓 자리를 맞춰요.
+  - `isDark = !isDark;`는 모듈 3에서 배운 `!`로 true와 false를 뒤집어요. 그래서 누를 때마다 두 상태가 번갈아 나타나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

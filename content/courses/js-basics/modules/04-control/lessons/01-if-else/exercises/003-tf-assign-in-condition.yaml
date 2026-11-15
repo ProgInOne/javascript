@@ -1,0 +1,47 @@
+id: js-basics.control.if-else.tf-assign-in-condition
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.control.if, weight: 1 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [if, assignment, condition]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`let answer = \"부산\";`일 때 `if (answer = \"서울\") { ... }`는 `answer`가 `\"서울\"`인지 비교하므로, if 블록은 실행되지 않는다."
+  answer: false
+  misconceptionIfWrong: js.mc.assign-in-condition
+  requireReason: true
+  reasons:
+    - id: r1
+      text: "`=`는 대입이라 answer에 \"서울\"을 넣고, 넣은 값 \"서울\"이 참으로 판단되어 if 블록이 실행된다"
+      correct: true
+    - id: r2
+      text: "조건 안의 `=`는 비교로 바뀌어 동작하므로 \"부산\"과 \"서울\"이 다르다고 판단한다"
+      misconception: js.mc.assign-in-condition
+    - id: r3
+      text: 조건 자리에 =를 쓰면 SyntaxError가 나서 프로그램이 실행되지 않는다
+hints:
+  - "`=`는 비교인가요, 대입인가요? 조건 괄호 안에서도 뜻이 같아요."
+  - "`answer = \"서울\"`을 실행하면 answer에는 무엇이 들어가나요? 그리고 이 식 전체의 값은 무엇인가요?"
+  - 대입식의 값은 대입한 값이에요. 비어 있지 않은 문자열은 조건에서 참으로 판단돼요.
+explanation: |
+  정답은 **거짓**, 이유는 **`=`는 대입이라 answer에 "서울"을 넣고, 넣은 값이 참으로 판단되어 if 블록이 실행된다**예요.
+
+  ```js
+  let answer = "부산";
+  if (answer = "서울") {
+    console.log("정답!"); // 실행돼요
+  }
+  console.log(answer); // 서울
+  ```
+
+  조건 괄호 안에서도 `=`는 대입이에요. `answer`에 `"서울"`이 들어가고, 대입식의 값 `"서울"`은 비어 있지 않은 문자열이라 참으로 판단돼요. 그래서 원래 답이 무엇이든 "정답!"이 나오고, `answer`의 원래 값까지 사라져요.
+
+  - "비교로 바뀌어 동작한다"를 고른 경우: JavaScript는 조건 자리라고 `=`의 뜻을 바꾸지 않아요. 비교는 `===`로 해요.
+  - "SyntaxError가 난다"를 고른 경우: 문법상 허용되는 코드라서 오류 없이 실행돼요. 그래서 더 찾기 어려운 버그예요. (`answer`를 `const`로 만들었다면 실행 중에 `TypeError`가 나요.)
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

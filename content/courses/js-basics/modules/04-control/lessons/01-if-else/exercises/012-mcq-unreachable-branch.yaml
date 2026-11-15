@@ -1,0 +1,59 @@
+id: js-basics.control.if-else.mcq-unreachable-branch
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: js.control.else-if, weight: 1 }
+tags: [else-if, order]
+estimatedSeconds: 90
+prompt: |
+  나이에 따라 버스 요금을 안내하는 코드예요. `age`에 어떤 값을 넣어야 `성인 요금`이 출력될까요?
+code: |
+  if (age >= 13) {
+    console.log("청소년 요금");
+  } else if (age >= 19) {
+    console.log("성인 요금");
+  } else {
+    console.log("어린이 요금");
+  }
+spec:
+  options:
+    - id: a
+      text: 19 이상인 값
+      misconception: js.mc.else-if-order-irrelevant
+      rationale: 19 이상은 첫 조건 `age >= 13`도 참이라서 먼저 `청소년 요금`이 나오고 체인을 빠져나가요.
+    - id: b
+      text: 13 이상 19 미만인 값
+      rationale: 이 범위는 첫 조건에서 `청소년 요금`이 나와요.
+    - id: c
+      text: 어떤 값을 넣어도 `성인 요금`은 출력되지 않는다
+    - id: d
+      text: 13 미만인 값
+      rationale: 13 미만이면 두 조건이 모두 거짓이라 else의 `어린이 요금`이 나와요.
+  correct: c
+misconceptions: [js.mc.else-if-order-irrelevant]
+hints:
+  - 두 번째 조건 `age >= 19`를 검사하러 내려왔다면, 첫 번째 조건은 어땠다는 뜻인가요?
+  - 두 번째 갈래에 도착하려면 `age >= 13`이 거짓이어야 해요. 즉 age는 13보다 작아요.
+  - 13보다 작으면서 동시에 19 이상인 수가 있을까요?
+explanation: |
+  정답은 **어떤 값을 넣어도 `성인 요금`은 출력되지 않는다**예요.
+
+  else if 체인은 위에서부터 검사해 처음으로 참인 갈래 하나만 실행해요. 두 번째 조건(`age >= 19`)을 검사한다는 것은 첫 조건(`age >= 13`)이 거짓, 즉 `age`가 13보다 작다는 뜻이에요. 13보다 작은 수는 19 이상일 수 없으니 두 번째 갈래는 절대 실행되지 않아요.
+
+  - 19 이상(a): 첫 조건 `age >= 13`도 참이라 `청소년 요금`이 먼저 나와요. 그래서 성인도 청소년 요금을 내게 되는 버그예요.
+
+  범위가 겹치는 조건은 **좁은 범위부터** 써야 해요. `age >= 19`를 먼저, `age >= 13`을 그다음에 검사하면 각 갈래가 제 범위를 맡아요.
+
+  ```js
+  if (age >= 19) {
+    console.log("성인 요금");
+  } else if (age >= 13) {
+    console.log("청소년 요금");
+  } else {
+    console.log("어린이 요금");
+  }
+  ```
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

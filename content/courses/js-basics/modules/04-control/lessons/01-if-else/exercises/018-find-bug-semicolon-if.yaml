@@ -1,0 +1,64 @@
+id: js-basics.control.if-else.find-bug-semicolon-if
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.control.block, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [block, semicolon, debugging]
+estimatedSeconds: 120
+prompt: |
+  교통카드 결제 프로그램이에요. 오류 메시지는 없는데 결과가 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    let balance = 1000;
+    const fare = 1500;
+    console.log("잔액:", balance);
+    if (balance >= fare); {
+      balance = balance - fare;
+      console.log("결제 완료");
+    }
+    console.log("남은 잔액:", balance);
+  bugLines: [4]
+  symptom: 잔액이 요금보다 적은데도 `결제 완료`가 나오고, 남은 잔액이 `-500`이 돼요.
+  symptomCheck:
+    console: ["잔액: 1000", "결제 완료", "남은 잔액: -500"]
+  fixedCode: |-
+    let balance = 1000;
+    const fare = 1500;
+    console.log("잔액:", balance);
+    if (balance >= fare) {
+      balance = balance - fare;
+      console.log("결제 완료");
+    }
+    console.log("남은 잔액:", balance);
+  causeOptions:
+    - id: c1
+      text: 조건 뒤의 세미콜론이 빈 문장이 되어 if에 딸리고, 아래 블록은 조건과 상관없이 항상 실행된다
+      correct: true
+    - id: c2
+      text: "`balance >= fare`는 잔액이 요금보다 적을 때 참이 되는 조건이다"
+    - id: c3
+      text: 블록 안의 문장은 들여쓰기가 되어 있으면 조건과 상관없이 실행된다
+      misconception: js.mc.indent-makes-block
+misconceptions: [js.mc.semicolon-after-if]
+hints:
+  - 조건 `1000 >= 1500`은 참인가요, 거짓인가요? 거짓인데도 블록이 실행됐다면 블록이 조건에 묶여 있지 않은 거예요.
+  - "`if (조건)`과 `{` 사이를 자세히 보세요. 다른 if 문과 다른 점이 있나요?"
+  - "`;` 하나도 문장이에요. 아무 일도 하지 않는 빈 문장이 if에 딸리면, 뒤의 블록은 누구의 블록일까요?"
+explanation: |
+  원인은 **4번 줄** `if (balance >= fare);`의 세미콜론이에요.
+
+  `if (조건)` 바로 뒤의 `;`은 아무 일도 하지 않는 **빈 문장**이에요. 그래서 if에 딸린 문장은 그 빈 문장이 되고, 5~7번 줄의 `{ ... }` 블록은 if와 관계없는 별개의 블록이 돼요. 조건 `1000 >= 1500`은 거짓이라 빈 문장을 건너뛰었지만, 블록은 조건과 상관없이 실행되어 잔액이 `-500`이 됐어요.
+
+  ```js
+  if (balance >= fare) { // ; 을 지워요
+  ```
+
+  - c2: `balance >= fare`는 잔액이 요금 **이상**일 때 참이에요. 조건식 자체는 맞게 썼어요.
+  - c3: 블록이 if에 제대로 붙어 있으면 들여쓰기와 상관없이 조건을 따라요. 들여쓰기는 실행에 영향이 없어요.
+
+  세미콜론은 블록 안의 각 문장 끝에만 붙이고, `if (조건)` 뒤나 블록을 닫는 `}` 뒤에는 붙이지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

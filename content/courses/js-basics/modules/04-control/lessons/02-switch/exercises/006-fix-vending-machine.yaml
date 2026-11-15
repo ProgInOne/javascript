@@ -1,0 +1,119 @@
+id: js-basics.control.switch.fix-vending-machine
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.control.switch, weight: 1 }
+  - { id: js.control.fallthrough, weight: 0.5 }
+tags: [switch, strict-equality, break, debugging]
+estimatedSeconds: 420
+prompt: |
+  음료 자판기 프로그램이에요. 버튼 `"1"`은 생수(800원), `"2"`는 콜라(1200원), `"3"`은 커피(1500원)예요. 자판기 버튼 값은 화면에서 문자열로 들어오니 `button`은 **문자열 그대로** 두세요.
+
+  1500원을 넣고 2번 버튼을 눌렀어요. 버그가 두 개 있고, 하나를 고치면 다른 문제가 드러나요. 아래처럼 나오게 고치세요.
+
+  ```text
+  콜라 1200원
+  거스름돈: 300
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const button = "2";
+          const coins = 1500;
+          let item = "";
+          let price = 0;
+
+          switch (button) {
+            case 1:
+              item = "생수";
+              price = 800;
+              break;
+            case 2:
+              item = "콜라";
+              price = 1200;
+            case 3:
+              item = "커피";
+              price = 1500;
+              break;
+            default:
+              item = "없는 버튼";
+          }
+
+          if (coins >= price) {
+            console.log(item, price + "원");
+            console.log("거스름돈:", coins - price);
+          } else {
+            console.log("동전이 부족해요");
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const button = "2";
+          const coins = 1500;
+          let item = "";
+          let price = 0;
+
+          switch (button) {
+            case "1":
+              item = "생수";
+              price = 800;
+              break;
+            case "2":
+              item = "콜라";
+              price = 1200;
+              break;
+            case "3":
+              item = "커피";
+              price = 1500;
+              break;
+            default:
+              item = "없는 버튼";
+          }
+
+          if (coins >= price) {
+            console.log(item, price + "원");
+            console.log("거스름돈:", coins - price);
+          } else {
+            console.log("동전이 부족해요");
+          }
+  bugDescription: 2번 버튼을 눌렀는데 "없는 버튼 0원"이 나와요. 그 문제를 고치면 이번에는 콜라 대신 커피가 나오고 거스름돈이 0원이에요.
+  bugMisconception: js.mc.switch-loose-compare
+  maxEditDistance: 8
+  checks:
+    - kind: console
+      id: output
+      description: 콜라와 가격 1200원, 거스름돈 300이 차례로 출력되어야 합니다.
+      requirement: 판매 결과 출력
+      expect:
+        lines: ["콜라 1200원", "거스름돈: 300"]
+    - kind: program
+      id: values
+      description: 버튼 값은 문자열 "2" 그대로이고, item은 "콜라", price는 1200이어야 합니다.
+      requirement: 선택한 음료
+      expect:
+        globals:
+          button: { equals: "2" }
+          item: { equals: "콜라" }
+          price: { equals: 1200 }
+        noError: true
+misconceptions: [js.mc.switch-loose-compare, js.mc.switch-no-break-stops]
+hints:
+  - 처음에는 `없는 버튼`이 나와요. `button`의 값과 각 case의 값은 자료형이 같은가요?
+  - switch는 `===`로 비교해서 `"2"`와 `2`를 다르게 봐요. button을 그대로 두라고 했으니 case 쪽을 맞춰야 해요.
+  - 다음으로 콜라 대신 커피가 나오는 이유를 찾아보세요. 콜라 case의 끝에 무엇이 빠져 있나요?
+explanation: |
+  버그 두 개가 차례로 드러나요.
+
+  1. **`없는 버튼 0원`**: `button`은 문자열 `"2"`인데 case는 숫자 `1`, `2`, `3`이에요. switch는 `===`로 비교하므로 `"2" === 2`는 거짓이고, 맞는 case가 없어 default로 갔어요. 버튼 값은 그대로 두라고 했으니 case를 `case "1":`, `case "2":`, `case "3":`처럼 문자열로 고쳐요.
+  1. **콜라 대신 커피**: 콜라 case 끝에 `break`가 없어서, `item = "콜라"`, `price = 1200`을 실행한 뒤 커피 case의 코드까지 흘러가 `"커피"`, `1500`으로 덮어썼어요. `price = 1200;` 다음에 `break;`를 넣어요.
+
+  두 번째 버그는 첫 번째 버그를 고치기 전에는 보이지 않았어요. 고칠 때마다 다시 실행해서 증상이 어떻게 바뀌는지 확인하는 습관이 중요해요.
+
+  `switch (Number(button))`처럼 버튼 값을 숫자로 바꿔 비교하는 방법도 있지만, 이 문제에서는 case를 입력값의 자료형에 맞추는 방법으로 고쳤어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

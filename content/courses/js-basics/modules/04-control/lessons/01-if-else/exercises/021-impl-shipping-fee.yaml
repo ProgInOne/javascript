@@ -1,0 +1,143 @@
+id: js-basics.control.if-else.impl-shipping-fee
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.control.block, weight: 1 }
+  - { id: js.control.else-if, weight: 0.5 }
+  - { id: js.control.if, weight: 0.5 }
+tags: [block, nested-if, requirements, write-code]
+estimatedSeconds: 480
+prompt: |
+  온라인 쇼핑몰의 배송비 규칙이에요.
+
+  1. **회원**은 주문 금액과 상관없이 기본 배송비가 0원이에요.
+  1. **비회원**은 주문 금액이 30000원 이상이면 기본 배송비 0원, 그보다 적으면 3000원이에요.
+  1. 받는 곳이 **제주**면 1~2번으로 정한 기본 배송비에 3000원이 **더** 붙어요. 회원이어도 붙어요.
+
+  두 손님의 배송비를 계산해 `jiminFee`, `yunaFee`에 넣고 출력하세요. 시작 코드의 변수 선언은 그대로 두고, 값은 조건문으로 **계산**해서 대입하세요.
+
+  ```text
+  지민 배송비: 6000
+  유나 배송비: 3000
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 지민: 비회원, 25000원 주문, 제주
+          const jiminIsMember = false;
+          const jiminTotal = 25000;
+          const jiminIsJeju = true;
+          // 유나: 회원, 12000원 주문, 제주
+          const yunaIsMember = true;
+          const yunaTotal = 12000;
+          const yunaIsJeju = true;
+
+          let jiminFee = 0;
+          let yunaFee = 0;
+
+          // 여기에 두 손님의 배송비를 계산하세요.
+
+          console.log("지민 배송비:", jiminFee);
+          console.log("유나 배송비:", yunaFee);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 지민: 비회원, 25000원 주문, 제주
+          const jiminIsMember = false;
+          const jiminTotal = 25000;
+          const jiminIsJeju = true;
+          // 유나: 회원, 12000원 주문, 제주
+          const yunaIsMember = true;
+          const yunaTotal = 12000;
+          const yunaIsJeju = true;
+
+          let jiminFee = 0;
+          let yunaFee = 0;
+
+          // 여기에 두 손님의 배송비를 계산하세요.
+          if (jiminIsMember) {
+            jiminFee = 0;
+          } else {
+            if (jiminTotal >= 30000) {
+              jiminFee = 0;
+            } else {
+              jiminFee = 3000;
+            }
+          }
+          if (jiminIsJeju) {
+            jiminFee = jiminFee + 3000;
+          }
+
+          if (yunaIsMember) {
+            yunaFee = 0;
+          } else {
+            if (yunaTotal >= 30000) {
+              yunaFee = 0;
+            } else {
+              yunaFee = 3000;
+            }
+          }
+          if (yunaIsJeju) {
+            yunaFee = yunaFee + 3000;
+          }
+
+          console.log("지민 배송비:", jiminFee);
+          console.log("유나 배송비:", yunaFee);
+  checks:
+    - kind: console
+      id: output
+      description: 두 손님의 배송비가 정해진 형식으로 차례로 출력되어야 합니다.
+      requirement: 배송비 출력
+      expect:
+        lines: ["지민 배송비: 6000", "유나 배송비: 3000"]
+    - kind: program
+      id: jimin-fee
+      description: 비회원이고 30000원 미만을 주문한 제주 손님 지민의 배송비는 기본 배송비에 제주 추가 배송비를 더한 값이어야 합니다.
+      requirement: 비회원 배송비
+      expect:
+        globals:
+          jiminFee: { equals: 6000 }
+        noError: true
+    - kind: program
+      id: yuna-fee
+      description: 회원인 제주 손님 유나는 기본 배송비가 0원이고, 제주 추가 배송비만 붙어야 합니다.
+      requirement: 회원 배송비
+      expect:
+        globals:
+          yunaFee: { equals: 3000 }
+hints:
+  - 규칙을 두 단계로 나눠 보세요. 먼저 1~2번으로 기본 배송비를 정하고, 그다음 3번(제주)을 따로 확인해요.
+  - 기본 배송비는 "회원인가?"로 먼저 나누고, 비회원 블록 안에서 주문 금액을 다시 확인해요. 제주 추가 배송비는 기본 배송비와 상관없이 **따로** 더하니 별도의 if예요.
+  - "제주 확인은 `if (jiminIsJeju) { jiminFee = jiminFee + 3000; }`처럼 원래 값에 더해요. 기본 배송비를 정하는 조건문과 `else if`로 잇지 않아요."
+explanation: |
+  한 손님의 계산은 두 단계예요.
+
+  ```js
+  // 1~2단계: 기본 배송비 (갈래 중 하나만)
+  if (jiminIsMember) {
+    jiminFee = 0;
+  } else {
+    if (jiminTotal >= 30000) {
+      jiminFee = 0;
+    } else {
+      jiminFee = 3000;
+    }
+  }
+  // 3단계: 제주 추가 배송비 (기본 배송비와 따로)
+  if (jiminIsJeju) {
+    jiminFee = jiminFee + 3000;
+  }
+  ```
+
+  - **기본 배송비**는 세 갈래(회원 / 비회원·3만 원 이상 / 비회원·3만 원 미만) 중 하나만 고르는 일이에요. 회원 여부로 먼저 나누고, 비회원 블록 안에서 주문 금액을 확인하는 중첩 조건문으로 썼어요. `else if (jiminTotal >= 30000)`처럼 체인으로 써도 같아요.
+  - **제주 추가 배송비**는 기본 배송비가 무엇이든 따로 더하는 규칙이에요. 그래서 앞의 조건문과 이어지지 않는 **별도의 if**로 써요. `... } else if (yunaIsJeju) {`처럼 체인에 붙이면, 회원인 유나는 첫 갈래에서 체인을 빠져나가 제주 추가 배송비가 붙지 않아요(0원).
+  - 추가 배송비는 `jiminFee = 3000`이 아니라 `jiminFee = jiminFee + 3000`처럼 원래 값에 더해야 해요.
+
+  "갈래 중 하나만 고르는 규칙"과 "조건마다 따로 확인하는 규칙"을 구별하는 것이 요구사항을 조건문으로 옮기는 핵심이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

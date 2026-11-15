@@ -1,0 +1,93 @@
+id: js-basics.control.ternary.impl-weather-labels
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.control.ternary, weight: 1 }
+tags: [ternary, write-code]
+estimatedSeconds: 300
+prompt: |
+  날씨 앱의 안내 문구 세 개를 조건 연산자로 만드는 프로그램을 작성하세요.
+
+  | 변수 | 규칙 |
+  |---|---|
+  | `outfit` | 기온이 25도 이상이면 `"반팔"`, 아니면 `"긴팔"` |
+  | `umbrella` | 비 올 확률이 60% 이상이면 `"우산 필요"`, 아니면 `"우산 없이 외출"` |
+  | `dust` | 미세먼지가 80 이상이면 `"나쁨"`, 30 이상이면 `"보통"`, 그보다 낮으면 `"좋음"` |
+
+  - 세 변수는 **각각 조건 연산자 하나**로 값을 정해 `const`로 만드세요. `dust`는 조건 연산자를 이어 써서 세 갈래로 나눠요.
+  - 시작 코드의 세 줄과 출력 코드는 그대로 두세요. 기온 28도, 비 올 확률 40%, 미세먼지 45면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  옷차림: 반팔
+  우산: 우산 없이 외출
+  미세먼지: 보통
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const temperature = 28;
+          const rainChance = 40;
+          const fineDust = 45;
+
+          // 여기에 outfit, umbrella, dust를 조건 연산자로 만드세요.
+
+          console.log("옷차림:", outfit);
+          console.log("우산:", umbrella);
+          console.log("미세먼지:", dust);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const temperature = 28;
+          const rainChance = 40;
+          const fineDust = 45;
+
+          // 여기에 outfit, umbrella, dust를 조건 연산자로 만드세요.
+          const outfit = temperature >= 25 ? "반팔" : "긴팔";
+          const umbrella = rainChance >= 60 ? "우산 필요" : "우산 없이 외출";
+          const dust = fineDust >= 80 ? "나쁨" : fineDust >= 30 ? "보통" : "좋음";
+
+          console.log("옷차림:", outfit);
+          console.log("우산:", umbrella);
+          console.log("미세먼지:", dust);
+  checks:
+    - kind: console
+      id: output
+      description: 세 안내 문구가 정해진 형식과 순서로 출력되어야 합니다.
+      requirement: 안내 문구 출력
+      expect:
+        lines: ["옷차림: 반팔", "우산: 우산 없이 외출", "미세먼지: 보통"]
+    - kind: program
+      id: values
+      description: outfit, umbrella, dust에 각각 "반팔", "우산 없이 외출", "보통"이 들어 있어야 합니다.
+      requirement: 안내 값 저장
+      expect:
+        globals:
+          outfit: { equals: "반팔" }
+          umbrella: { equals: "우산 없이 외출" }
+          dust: { equals: "보통" }
+        noError: true
+hints:
+  - "`const outfit = 조건 ? 참일 때의 값 : 거짓일 때의 값;` 모양으로 하나씩 만들어 보세요. 조건은 `temperature >= 25`예요."
+  - "`dust`는 세 갈래예요. 거짓일 때의 값 자리에 조건 연산자를 하나 더 쓰면 돼요. 가장 높은 기준(80)부터 검사해요."
+  - "`dust`는 `fineDust >= 80 ? \"나쁨\" : (두 번째 조건 연산자)` 모양이에요. 두 번째 조건 연산자는 30을 기준으로 \"보통\"과 \"좋음\"을 골라요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const outfit = temperature >= 25 ? "반팔" : "긴팔";
+  const umbrella = rainChance >= 60 ? "우산 필요" : "우산 없이 외출";
+  const dust = fineDust >= 80 ? "나쁨" : fineDust >= 30 ? "보통" : "좋음";
+  ```
+
+  - 조건 연산자는 고른 값을 바로 `const`로 받을 수 있어요. if-else라면 `let`으로 먼저 만들고 블록마다 대입해야 해요.
+  - `dust`는 `:` 뒤에 조건 연산자를 하나 더 써서 세 갈래로 나눴어요. `fineDust >= 80 ? "나쁨" : (fineDust >= 30 ? "보통" : "좋음")`으로 읽혀요. else if 체인처럼 높은 기준부터 검사해야 해요. `fineDust >= 30`을 먼저 쓰면 90도 "보통"이 돼요.
+  - 갈래가 셋을 넘으면 조건 연산자를 이어 쓰기보다 else if 체인이 읽기 쉬워요.
+
+  세 값을 바꿔 가며 실행해서 문구가 모두 제대로 바뀌는지 확인해 보세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

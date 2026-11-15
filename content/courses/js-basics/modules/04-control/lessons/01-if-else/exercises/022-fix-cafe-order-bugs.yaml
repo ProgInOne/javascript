@@ -1,0 +1,116 @@
+id: js-basics.control.if-else.fix-cafe-order-bugs
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.control.block, weight: 1 }
+  - { id: js.control.if, weight: 0.5 }
+  - { id: js.errors.error-messages, weight: 0.3 }
+tags: [block, if, else, debugging]
+estimatedSeconds: 480
+prompt: |
+  카페 주문 금액을 계산하는 프로그램이에요. 규칙은 이래요.
+
+  - 아메리카노 3000원, 라떼 3500원, 그 밖의 메뉴 4000원
+  - L 사이즈는 500원 추가
+  - 포인트가 1000점 이상이면 1000점을 써서 1000원 할인
+
+  라떼 L 사이즈를 주문했고 포인트는 800점이에요. 버그가 여러 개 있고, 하나를 고치면 다음 문제가 드러나요. 실행 → 원인 찾기 → 고치기를 반복해서 아래처럼 나오게 하세요.
+
+  ```text
+  결제 금액: 4000
+  남은 포인트: 800
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const menu = "라떼";
+          const size = "L";
+          let points = 800;
+          let price = 0;
+
+          if (menu === "아메리카노") {
+            price = 3000;
+          } else (menu === "라떼") {
+            price = 3500;
+          } else {
+            price = 4000;
+          }
+
+          if (size = "L") {
+            price = price + 500;
+          }
+
+          if (points >= 1000); {
+            price = price - 1000;
+            points = points - 1000;
+          }
+
+          console.log("결제 금액:", price);
+          console.log("남은 포인트:", points);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const menu = "라떼";
+          const size = "L";
+          let points = 800;
+          let price = 0;
+
+          if (menu === "아메리카노") {
+            price = 3000;
+          } else if (menu === "라떼") {
+            price = 3500;
+          } else {
+            price = 4000;
+          }
+
+          if (size === "L") {
+            price = price + 500;
+          }
+
+          if (points >= 1000) {
+            price = price - 1000;
+            points = points - 1000;
+          }
+
+          console.log("결제 금액:", price);
+          console.log("남은 포인트:", points);
+  bugDescription: "실행하면 SyntaxError가 나요. 그 오류를 고치면 TypeError가 나고, 그것도 고치면 포인트가 800점뿐인데 1000원이 할인되고 포인트가 -200이 돼요."
+  bugMisconception: js.mc.semicolon-after-if
+  maxEditDistance: 8
+  checks:
+    - kind: console
+      id: output
+      description: 라떼 L 사이즈의 결제 금액 4000과 남은 포인트 800이 출력되어야 합니다.
+      requirement: 주문 결과 출력
+      expect:
+        lines: ["결제 금액: 4000", "남은 포인트: 800"]
+    - kind: program
+      id: points-kept
+      description: 포인트가 1000점보다 적으므로 포인트를 쓰지 않아야 합니다.
+      requirement: 포인트 사용 조건
+      expect:
+        globals:
+          points: { equals: 800 }
+          price: { equals: 4000 }
+        noError: true
+      misconceptionIfFail: js.mc.semicolon-after-if
+misconceptions: [js.mc.else-has-condition, js.mc.assign-in-condition, js.mc.semicolon-after-if]
+hints:
+  - "처음 오류는 `SyntaxError: Unexpected token '{'`예요. 오류가 난 줄에서 `else` 뒤에 무엇이 있는지 보세요."
+  - "다음 오류는 `TypeError: Assignment to constant variable.`이에요. 상수 `size`에 값을 넣으려는 곳이 어디인가요? 조건 안의 `=` 하나를 의심해 보세요."
+  - 마지막 버그는 오류 메시지가 없어요. 포인트 조건이 거짓인데도 블록이 실행됐다면, `if (조건)`과 `{` 사이에 무엇이 끼어 있지 않은지 보세요.
+explanation: |
+  버그 세 개가 차례로 드러나요.
+
+  1. **`SyntaxError: Unexpected token '{'` (8번 줄)**: `else`는 조건을 받지 않아요. 조건이 필요한 갈래는 `else if (menu === "라떼")`로 써요. 문법 오류라 처음에는 아무 줄도 실행되지 않았어요.
+  1. **`TypeError: Assignment to constant variable.` (14번 줄)**: `size = "L"`은 비교가 아니라 대입이에요. `size`가 `const`라서 오류가 났어요. `let`이었다면 오류 없이 항상 참이 되어 어떤 사이즈든 500원이 붙었을 거예요. `size === "L"`로 고쳐요.
+  1. **포인트가 -200 (18번 줄)**: `if (points >= 1000);`의 세미콜론이 빈 문장이 되어 if에 딸리고, 아래 블록은 조건과 상관없이 실행됐어요. 세미콜론을 지워요.
+
+  세 번째 버그처럼 오류 메시지가 없는 버그는 출력과 기대값을 비교해서 찾아야 해요. "조건이 거짓인데 블록이 실행됐다"는 증상을 보면 세미콜론과 중괄호부터 확인해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

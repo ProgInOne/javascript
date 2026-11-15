@@ -1,0 +1,49 @@
+id: js-basics.control.ternary.mcq-ternary-value
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.control.ternary, weight: 1 }
+tags: [ternary]
+estimatedSeconds: 40
+prompt: |
+  다음 코드를 실행한 뒤 `ticket`에 들어 있는 값은 무엇인가요?
+code: |
+  const age = 10;
+  const ticket = age >= 13 ? "청소년권" : "어린이권";
+spec:
+  options:
+    - id: a
+      text: "`\"어린이권\"`"
+    - id: b
+      text: "`\"청소년권\"`"
+      rationale: "`10 >= 13`은 false예요. 조건이 거짓이면 : 뒤의 값이 돼요."
+    - id: c
+      text: "`false`"
+      rationale: 조건의 결과가 아니라, 조건에 따라 고른 값이 식 전체의 값이 돼요.
+    - id: d
+      text: "`\"청소년권\"`과 `\"어린이권\"` 두 값이 모두 들어 있다"
+      rationale: 조건 연산자는 둘 중 하나만 골라요.
+  correct: a
+hints:
+  - 먼저 `?` 앞의 조건 `age >= 13`을 계산해 보세요.
+  - 조건이 참이면 `?`와 `:` 사이의 값, 거짓이면 `:` 뒤의 값이 돼요.
+  - "`10 >= 13`은 false예요. 그러면 어느 쪽 값을 고를까요?"
+explanation: |
+  정답은 **`"어린이권"`**이에요.
+
+  조건 `10 >= 13`이 `false`라서 `:` 뒤의 `"어린이권"`이 식 전체의 값이 되고, 그 값이 `ticket`에 들어가요. 조건의 결과(`false`)가 들어가는 것이 아니라, 조건에 따라 **고른 값**이 들어가요.
+
+  같은 일을 if-else로 쓰면 이래요.
+
+  ```js
+  let ticket;
+  if (age >= 13) {
+    ticket = "청소년권";
+  } else {
+    ticket = "어린이권";
+  }
+  ```
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

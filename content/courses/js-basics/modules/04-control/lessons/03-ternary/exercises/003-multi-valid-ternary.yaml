@@ -1,0 +1,45 @@
+id: js-basics.control.ternary.multi-valid-ternary
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.control.ternary, weight: 1 }
+tags: [ternary, syntax]
+estimatedSeconds: 90
+prompt: |
+  `isOpen`은 불리언 변수예요. 다음 중 **오류 없이 실행되고**, 고른 값을 실제로 쓰는 코드를 모두 고르세요.
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: 'const sign = isOpen ? "영업 중" : "준비 중";'
+    - id: b
+      text: 'console.log(isOpen ? "어서 오세요" : "내일 만나요");'
+    - id: c
+      text: 'isOpen ? const sign = "영업 중" : const sign = "준비 중";'
+      misconception: js.mc.ternary-as-statement
+      rationale: '?와 : 뒤에는 값만 올 수 있어요. 변수 선언을 넣으면 SyntaxError예요.'
+    - id: d
+      text: 'const sign = isOpen ? "영업 중";'
+      rationale: '조건 연산자에는 : 뒤의 값(거짓일 때의 값)이 반드시 있어야 해요. 빠지면 SyntaxError예요.'
+    - id: e
+      text: 'isOpen ? "영업 중" : "준비 중";'
+      misconception: js.mc.ternary-result-discarded
+      rationale: 오류는 없지만 고른 값을 아무 데도 쓰지 않아 바로 버려져요.
+  correct: [a, b]
+misconceptions: [js.mc.ternary-as-statement, js.mc.ternary-result-discarded]
+hints:
+  - 조건 연산자는 세 부분(조건, 참일 때의 값, 거짓일 때의 값)이 모두 있어야 해요. 빠진 부분이 있는 선택지가 있나요?
+  - "`?`와 `:` 뒤에 값이 아니라 문장(변수 선언)이 들어간 선택지를 찾아보세요."
+  - 오류가 없더라도 결과를 변수에 넣거나 출력하지 않으면 값은 버려져요.
+explanation: |
+  정답은 **a, b**예요.
+
+  - a: 고른 값을 `sign`에 넣어요. 조건 연산자의 가장 흔한 쓰임이에요.
+  - b: 고른 값을 바로 `console.log`에 넘겨요. 식이라서 값이 들어갈 자리에 그대로 쓸 수 있어요.
+  - c (오답): `?`와 `:` 뒤에는 값(식)만 올 수 있어요. `const` 선언은 문장이라 `SyntaxError`예요. a처럼 값을 고른 뒤 한 번에 받아요.
+  - d (오답): `:`와 거짓일 때의 값이 빠졌어요. 조건 연산자는 두 값이 모두 있어야 해서 `SyntaxError`예요.
+  - e (오답): 문법은 맞지만 고른 값을 받는 곳이 없어 아무 일도 일어나지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

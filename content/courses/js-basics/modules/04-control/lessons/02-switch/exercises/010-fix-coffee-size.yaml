@@ -1,0 +1,124 @@
+id: js-basics.control.switch.fix-coffee-size
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.control.fallthrough, weight: 1 }
+tags: [switch, break, fallthrough, debugging]
+estimatedSeconds: 200
+prompt: |
+  커피 사이즈에 따라 가격을 정하는 프로그램이에요. S는 3000원, M은 3500원, L은 4000원이에요.
+
+  두 손님이 각각 S와 M을 주문했는데, 둘 다 4000원이 나와요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  첫 번째 손님: 3000원
+  두 번째 손님: 3500원
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const firstSize = "S";
+          const secondSize = "M";
+          let firstPrice = 0;
+          let secondPrice = 0;
+
+          switch (firstSize) {
+            case "S":
+              firstPrice = 3000;
+            case "M":
+              firstPrice = 3500;
+            case "L":
+              firstPrice = 4000;
+          }
+
+          switch (secondSize) {
+            case "S":
+              secondPrice = 3000;
+            case "M":
+              secondPrice = 3500;
+            case "L":
+              secondPrice = 4000;
+          }
+
+          console.log("첫 번째 손님:", firstPrice + "원");
+          console.log("두 번째 손님:", secondPrice + "원");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const firstSize = "S";
+          const secondSize = "M";
+          let firstPrice = 0;
+          let secondPrice = 0;
+
+          switch (firstSize) {
+            case "S":
+              firstPrice = 3000;
+              break;
+            case "M":
+              firstPrice = 3500;
+              break;
+            case "L":
+              firstPrice = 4000;
+              break;
+          }
+
+          switch (secondSize) {
+            case "S":
+              secondPrice = 3000;
+              break;
+            case "M":
+              secondPrice = 3500;
+              break;
+            case "L":
+              secondPrice = 4000;
+              break;
+          }
+
+          console.log("첫 번째 손님:", firstPrice + "원");
+          console.log("두 번째 손님:", secondPrice + "원");
+  bugDescription: S 사이즈와 M 사이즈를 주문했는데 두 손님 모두 L 사이즈 가격인 4000원이 나와요.
+  bugMisconception: js.mc.switch-no-break-stops
+  checks:
+    - kind: console
+      id: output
+      description: S 사이즈 3000원, M 사이즈 3500원이 차례로 출력되어야 합니다.
+      requirement: 사이즈별 가격 출력
+      expect:
+        lines: ["첫 번째 손님: 3000원", "두 번째 손님: 3500원"]
+    - kind: program
+      id: prices
+      description: firstPrice는 3000, secondPrice는 3500이어야 합니다.
+      requirement: 가격 저장
+      expect:
+        globals:
+          firstPrice: { equals: 3000 }
+          secondPrice: { equals: 3500 }
+        noError: true
+      misconceptionIfFail: js.mc.switch-no-break-stops
+misconceptions: [js.mc.switch-no-break-stops]
+hints:
+  - 첫 번째 손님은 `case "S":`에서 시작해요. 거기서 `firstPrice`에 3000을 넣은 뒤 어디로 가나요?
+  - break가 없으면 아래 case의 대입문까지 차례로 실행돼서, 마지막 대입(4000)이 앞의 값을 덮어써요.
+  - 각 case의 대입문 다음에 `break;`를 넣으세요. 두 switch 모두요.
+explanation: |
+  원인은 **case마다 break가 없는 것**이에요. 첫 번째 손님은 `case "S":`에서 시작해 `firstPrice = 3000`을 실행하지만, break가 없어서 아래 `firstPrice = 3500`, `firstPrice = 4000`까지 차례로 실행돼요. 마지막 대입이 앞의 값을 덮어써서 4000이 남았어요. 두 번째 손님도 `case "M":`부터 흘러내려 4000이 됐어요.
+
+  각 case의 대입문 다음에 `break;`를 넣어요.
+
+  ```js
+  case "S":
+    firstPrice = 3000;
+    break;
+  case "M":
+    firstPrice = 3500;
+    break;
+  ```
+
+  출력이 아니라 **대입**이라서 fall-through가 눈에 보이지 않고, 마지막 값만 남는 모양으로 나타났어요. 값이 엉뚱하게 "가장 아래 case의 값"이 된다면 break가 빠졌는지 의심해 보세요. `case "L":`은 마지막이라 break가 없어도 결과는 같지만, 나중에 case를 추가할 때를 대비해 함께 붙여 두면 좋아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

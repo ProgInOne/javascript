@@ -1,0 +1,279 @@
+<Section kind="objectives">
+- `switch`가 값과 `===`로 같은 `case`를 찾아 실행한다는 것을 알고, 어느 `case`가 실행될지 예측할 수 있어요.
+- `case`마다 `break`를 써서 한 갈래만 실행하고, `break`가 빠져 생긴 버그를 찾아 고칠 수 있어요.
+- 같은 일을 하는 여러 `case`를 `break` 없이 묶어 쓸 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+학교 급식 안내 프로그램을 `else if` 체인으로 만들었어요.
+
+```js
+if (day === "월") {
+  console.log("카레라이스");
+} else if (day === "화") {
+  console.log("비빔밥");
+} else if (day === "수") {
+  console.log("짜장면");
+} else {
+  console.log("메뉴 준비 중");
+}
+```
+
+잘 동작하지만 `day ===`가 줄마다 반복돼요. 요일이 일곱 개가 되면 같은 비교를 일곱 번 써야 하고, 중간에 하나를 `day == "목"`이나 `dya === "목"`처럼 잘못 써도 눈에 잘 띄지 않아요.
+
+이처럼 **한 값을 여러 후보와 하나씩 비교**할 때는 `switch` 문이 더 읽기 쉬워요. 비교할 값을 맨 위에 한 번만 쓰고, 후보를 `case`로 나열하거든요.
+</Section>
+
+<Section kind="principle">
+### switch의 모양
+
+```js
+switch (day) {
+  case "월":
+    console.log("카레라이스");
+    break;
+  case "화":
+    console.log("비빔밥");
+    break;
+  default:
+    console.log("메뉴 준비 중");
+}
+```
+
+`switch`는 이렇게 동작해요.
+
+1. 괄호 안의 값(`day`)을 한 번 계산해요.
+1. 위에서부터 `case` 옆의 값과 **`===`로** 비교해 같은 `case`를 찾아요.
+1. 찾은 `case`의 콜론(`:`) 뒤부터 코드를 실행해요.
+1. `break`를 만나면 `switch` 전체를 빠져나가요.
+1. 같은 `case`가 없으면 `default:` 뒤의 코드를 실행해요. `default`가 없으면 아무것도 실행하지 않아요.
+
+`default`는 `else` 체인의 마지막 `else`와 같은 역할이에요. 꼭 써야 하는 것은 아니지만, 예상하지 못한 값이 들어왔을 때 알려 주도록 쓰는 편이 좋아요.
+
+### === 로 비교해요
+
+`switch`는 `===`처럼 **자료형까지** 같아야 같은 `case`로 봐요. 그래서 `switch ("2")`는 `case 2:`와 맞지 않아요. 문자열 `"2"`와 숫자 `2`는 자료형이 다르니까요. 화면 입력처럼 문자열로 들어오는 값을 비교할 때는 `case`도 문자열로 써요.
+
+`case`에는 비교할 **값**을 써요. `case score >= 90:`처럼 조건식을 쓰면 그 식이 먼저 `true`나 `false`로 계산되고, `switch`는 `score`와 그 불리언을 비교해요. 숫자와 불리언은 절대 `===`로 같지 않으니 그 `case`는 실행되지 않아요. 범위로 나누는 일은 `else if` 체인이 맡아요.
+
+| 이럴 때 | 쓰는 것 |
+|---|---|
+| 한 값이 정해진 후보 중 무엇과 **같은지** (요일, 메뉴 이름, 신호등 색) | `switch` |
+| 값이 어느 **범위**에 드는지 (점수 등급, 요금 구간), 여러 값을 섞은 조건 | `else if` 체인 |
+
+### break와 fall-through
+
+`switch`에서 가장 조심할 것은 `break`예요. `case`는 "여기서부터 실행"이라는 **입구 표시**일 뿐, 블록이 아니에요. 그래서 `break`가 없으면 아래 `case`의 값은 다시 비교하지 않고, 그 아래 코드까지 계속 실행해요. 이것을 **fall-through**(아래로 흘러내림)라고 해요.
+
+```js
+const size = "M";
+switch (size) {
+  case "S":
+    console.log("작은 컵");
+  case "M":
+    console.log("중간 컵"); // 여기서 시작
+  case "L":
+    console.log("큰 컵"); // break가 없어서 이것도 실행
+}
+```
+
+이 코드는 `중간 컵`과 `큰 컵`을 둘 다 출력해요. 한 `case`만 실행하려면 `case`마다 끝에 `break;`를 써요. 마지막 `case`나 `default`는 뒤에 실행할 코드가 없어 `break`가 없어도 되지만, 나중에 `case`를 추가할 때 실수하지 않도록 붙이는 습관도 좋아요.
+
+### 일부러 break를 빼서 case 묶기
+
+fall-through가 쓸모 있을 때도 있어요. 여러 값이 **같은 일**을 해야 할 때 `case`를 줄줄이 쓰고 코드는 마지막에 한 번만 써요.
+
+```js
+switch (day) {
+  case "토":
+  case "일":
+    console.log("주말이에요");
+    break;
+  default:
+    console.log("평일이에요");
+}
+```
+
+`day`가 `"토"`면 `case "토":`에서 시작해, 비어 있는 그 자리를 지나 `case "일":` 아래의 `console.log`까지 흘러가요. `"일"`이면 바로 거기서 시작해요. 두 경우 모두 `주말이에요`가 나와요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 신호등 색에 따라 안내를 출력해요. 무엇이 나올까요?
+
+<RunnableExample id="traffic-light" lang="js" predict predictKind="console" concepts={["js.control.switch"]}>
+```js
+const light = "노랑";
+switch (light) {
+  case "초록":
+    console.log("건너세요");
+    break;
+  case "노랑":
+    console.log("곧 바뀌어요");
+    break;
+  case "빨강":
+    console.log("멈추세요");
+    break;
+  default:
+    console.log("신호등을 확인해 주세요");
+}
+console.log("안전 운전");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+곧 바뀌어요
+안전 운전
+```
+
+| 순서 | 비교 | 결과 |
+|---|---|---|
+| 1 | `"노랑" === "초록"` | `false` → 다음 `case`로 |
+| 2 | `"노랑" === "노랑"` | `true` → 7번 줄부터 실행 |
+| 3 | 8번 줄 `break` | `switch`를 빠져나가 15번 줄로 |
+
+`light`를 `"파랑"`처럼 어떤 `case`와도 같지 않은 값으로 바꾸면 `default`의 `신호등을 확인해 주세요`가 나와요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 `break`를 빠뜨린 코드예요. 쿠폰 등급이 `"실버"`일 때 몇 줄이 나올까요?
+
+<RunnableExample id="missing-break" lang="js" predict predictKind="console" concepts={["js.control.fallthrough"]}>
+```js
+const level = "실버";
+switch (level) {
+  case "골드":
+    console.log("10% 할인 쿠폰");
+  case "실버":
+    console.log("5% 할인 쿠폰");
+  case "브론즈":
+    console.log("무료 배송 쿠폰");
+  default:
+    console.log("가입 축하 쿠폰");
+}
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+5% 할인 쿠폰
+무료 배송 쿠폰
+가입 축하 쿠폰
+```
+
+- `case "실버":`에서 실행을 **시작**해요. `골드`는 출력되지 않아요.
+- `break`가 없어서 7번 줄 `case "브론즈":`의 값은 비교하지 않고 그 아래 코드를 실행해요. `default` 아래 코드도 마찬가지예요.
+- `switch`의 끝(`}`)에 도착해서야 멈춰요.
+
+`case`는 입구일 뿐 출구가 아니에요. 실버 회원에게 5% 쿠폰 하나만 주려면 각 `case` 끝에 `break;`를 써야 해요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 일부러 `break`를 빼서 `case`를 묶은 코드예요. `month`를 바꿔 가며 실행해 보세요.
+
+<RunnableExample id="season-group" lang="js" concepts={["js.control.fallthrough"]}>
+```js
+const month = 4;
+switch (month) {
+  case 12:
+  case 1:
+  case 2:
+    console.log("겨울");
+    break;
+  case 3:
+  case 4:
+  case 5:
+    console.log("봄");
+    break;
+  default:
+    console.log("여름 또는 가을");
+}
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+봄
+```
+
+`month`가 4라서 `case 4:`에서 시작해요. 그 자리에는 코드가 없으니 `case 5:`를 지나 `console.log("봄")`을 실행하고, `break`로 빠져나가요.
+
+`case 3: case 4: case 5:`는 "3이거나 4이거나 5이면"이라는 뜻으로 읽을 수 있어요. 묶음의 끝에는 반드시 `break`를 둬서 다음 묶음으로 흘러가지 않게 해요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.switch-no-break-stops">
+<Wrong>`break`를 쓰지 않아도 맞는 `case`의 코드만 실행되고 `switch`가 끝난다.</Wrong>
+<Actual>두 번째 예제처럼 `break`가 없으면 맞는 `case`부터 `switch`의 끝까지(또는 `break`를 만날 때까지) 아래 코드가 모두 실행돼요. 아래 `case`의 값은 다시 비교하지 않아요.</Actual>
+<Right>`case`는 실행을 시작하는 입구 표시예요. 한 갈래만 실행하려면 `case`마다 끝에 `break;`를 써요. 여러 값을 묶을 때만 일부러 빼요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.switch-loose-compare">
+<Wrong>`switch ("2")`에서도 `case 2:`가 실행된다. 겉보기 값이 같으니까.</Wrong>
+<Actual>`switch`는 `===`로 비교해요. 문자열 `"2"`와 숫자 `2`는 자료형이 달라서 맞는 `case`가 없고, `default`가 실행돼요.</Actual>
+<Right>비교할 값과 `case`의 자료형을 맞춰요. 입력값이 문자열이면 `case "2":`처럼 문자열로 쓰거나, 값을 숫자로 바꾼 뒤 비교해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.switch-case-condition">
+<Wrong>`switch (score) { case score >= 90: ... }`처럼 `case`에 조건식을 쓰면 90점 이상일 때 그 `case`가 실행된다.</Wrong>
+<Actual>`score >= 90`은 먼저 `true`나 `false`로 계산되고, `switch`는 `score`(숫자)와 그 불리언을 `===`로 비교해요. 숫자와 불리언은 같을 수 없으니 그 `case`는 실행되지 않고 `default`로 가요. 오류는 나지 않아요.</Actual>
+<Right>`case`에는 비교할 값을 써요. 범위로 나눌 때는 `if … else if` 체인을 써요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+웹 서비스에서는 정해진 값 몇 가지 중 하나로 갈래를 나눌 때 `switch`를 자주 써요. 예를 들어 주문 상태 코드에 따라 화면에 보여 줄 안내문을 정해요.
+
+```js
+const status = "shipping";
+let message = "";
+
+switch (status) {
+  case "paid":
+    message = "결제가 완료되었어요";
+    break;
+  case "shipping":
+    message = "배송 중이에요";
+    break;
+  case "delivered":
+    message = "배송이 완료되었어요";
+    break;
+  default:
+    message = "주문 상태를 확인할 수 없어요";
+}
+console.log(message);
+```
+
+- 서버가 보내 주는 상태 값(`"paid"`, `"shipping"` …)은 종류가 정해져 있어서 `switch`와 잘 맞아요.
+- `default`에서 예상하지 못한 값을 알려 주면, 서버에 새 상태가 추가됐을 때 화면이 조용히 비어 있는 대신 문제를 바로 알 수 있어요.
+- 각 `case`에서는 `message`에 대입만 하고, 출력은 `switch` 뒤에서 한 번만 해요. 이렇게 하면 출력 형식을 바꿀 때 한 곳만 고치면 돼요.
+</Section>
+
+<Section kind="check">
+`switch`가 값을 어떻게 비교하는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.control.switch.tf-switch-strict" />
+
+`break`의 역할을 정리해 보세요.
+
+<InlineExercise ref="js-basics.control.switch.multi-break-facts" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `switch (값)`은 값을 위에서부터 `case`와 `===`로 비교해, 같은 `case`의 자리부터 실행해요.
+- 같은 `case`가 없으면 `default`를 실행해요. `default`는 체인의 마지막 `else`와 같은 역할이에요.
+- `case`는 실행을 시작하는 입구일 뿐이라, `break`가 없으면 아래 `case`의 코드까지 이어서 실행돼요(fall-through).
+- 한 갈래만 실행하려면 `case`마다 `break;`를 써요. 같은 일을 하는 여러 값은 `break` 없이 `case`를 줄줄이 써서 묶어요.
+- `switch`는 정해진 값과 **같은지** 비교할 때, `else if` 체인은 **범위**나 복잡한 조건을 나눌 때 써요.
+</Section>
+
+<Section kind="next">
+다음 단원 "조건 연산자"에서는 두 값 중 하나를 골라 변수에 넣는 일을 한 줄로 쓰는 `조건 ? 값1 : 값2`를 배워요. `break`는 모듈 5 "반복문"에서 반복을 중간에 멈출 때 다시 만나요. <MdnLink path="Web/JavaScript/Reference/Statements/switch" />
+</Section>

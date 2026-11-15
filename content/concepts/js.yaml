@@ -309,3 +309,57 @@
   prerequisites: [js.ops.loose-equality, js.conv.to-number]
   misconceptions: [js.mc.null-loose-equals-zero, js.mc.loose-equality-uses-truthiness]
   mdn: Web/JavaScript/Reference/Operators/Equality
+
+# ── 모듈 4. 조건문: if-else ──
+
+- id: js.control.if
+  title: if와 else
+  importance: core
+  summary: if (조건) { ... }은 조건이 참일 때만 블록을 실행하고, else { ... }는 조건이 거짓일 때 실행해요. 어느 쪽을 실행하든 조건문이 끝나면 다음 문장으로 넘어가요.
+  prerequisites: [js.types.boolean]
+  misconceptions: [js.mc.false-if-stops-program, js.mc.assign-in-condition, js.mc.else-has-condition]
+  mdn: Web/JavaScript/Reference/Statements/if...else
+
+- id: js.control.else-if
+  title: else if로 여러 갈래 나누기
+  importance: core
+  summary: if … else if … else 체인은 위에서부터 조건을 차례로 검사해, 처음으로 참인 블록 하나만 실행해요. 그래서 조건을 적는 순서가 결과를 바꿔요.
+  prerequisites: [js.control.if]
+  misconceptions: [js.mc.else-if-runs-all, js.mc.else-if-order-irrelevant, js.mc.separate-ifs-like-chain]
+  mdn: Web/JavaScript/Reference/Statements/if...else
+
+- id: js.control.block
+  title: 블록과 중첩 조건문
+  importance: standard
+  summary: 중괄호 { }로 묶은 블록은 여러 문장을 하나로 묶어 조건에 딸리게 해요. 블록 안에 다른 if를 넣어 조건을 겹겹이 검사할 수도 있어요. 들여쓰기는 사람을 위한 표시일 뿐이에요.
+  prerequisites: [js.control.if]
+  misconceptions: [js.mc.indent-makes-block, js.mc.semicolon-after-if]
+  mdn: Web/JavaScript/Reference/Statements/block
+
+# ── 모듈 4. 조건문: switch ──
+
+- id: js.control.switch
+  title: switch 문
+  importance: standard
+  summary: switch (값)은 값과 ===로 같은 case를 찾아 그 자리부터 실행해요. 같은 case가 없으면 default를 실행해요. 한 값을 여러 후보와 비교할 때 else if 체인보다 읽기 쉬워요.
+  prerequisites: [js.control.else-if]
+  misconceptions: [js.mc.switch-loose-compare, js.mc.switch-case-condition]
+  mdn: Web/JavaScript/Reference/Statements/switch
+
+- id: js.control.fallthrough
+  title: break와 fall-through
+  importance: standard
+  summary: switch는 맞는 case에서 시작해 break를 만날 때까지 아래 case의 코드도 계속 실행해요(fall-through). 그래서 case마다 break를 쓰고, 여러 case가 같은 일을 할 때만 일부러 break를 빼요.
+  prerequisites: [js.control.switch]
+  misconceptions: [js.mc.switch-no-break-stops]
+  mdn: Web/JavaScript/Reference/Statements/switch
+
+# ── 모듈 4. 조건문: ternary ──
+
+- id: js.control.ternary
+  title: 조건 연산자(삼항 연산자)
+  importance: standard
+  summary: '조건 ? 값1 : 값2는 조건이 참이면 값1, 거짓이면 값2가 되는 식이에요. 두 값 중 하나를 골라 변수에 넣거나 바로 쓸 때 if-else보다 짧게 쓸 수 있어요.'
+  prerequisites: [js.control.if]
+  misconceptions: [js.mc.ternary-as-statement, js.mc.ternary-result-discarded, js.mc.ternary-precedence]
+  mdn: Web/JavaScript/Reference/Operators/Conditional_operator

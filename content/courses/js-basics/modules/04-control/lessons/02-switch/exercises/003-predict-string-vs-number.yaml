@@ -1,0 +1,55 @@
+id: js-basics.control.switch.predict-string-vs-number
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.control.switch, weight: 1 }
+  - { id: js.types.string, weight: 0.3 }
+tags: [switch, strict-equality, predict]
+estimatedSeconds: 90
+prompt: |
+  엘리베이터 버튼으로 층 안내를 하는 코드예요. 입력값 `"2"`는 화면에서 들어온 값이라 문자열이에요. 실행하면 콘솔에 무엇이 나올까요?
+spec:
+  lang: js
+  code: |
+    const pressed = "2";
+    switch (pressed) {
+      case 1:
+        console.log("1층: 로비");
+        break;
+      case 2:
+        console.log("2층: 식당");
+        break;
+      case "3":
+        console.log("3층: 도서관");
+        break;
+      default:
+        console.log("없는 층이에요");
+    }
+  answerKind: console
+  misconceptionByAnswer:
+    "2층: 식당": js.mc.switch-loose-compare
+    "2층: 식당\n3층: 도서관\n없는 층이에요": js.mc.switch-no-break-stops
+misconceptions: [js.mc.switch-loose-compare]
+hints:
+  - "`pressed`는 문자열 `\"2\"`예요. 각 case의 값은 숫자인가요, 문자열인가요?"
+  - switch는 `===`로 비교해요. `"2" === 2`는 true인가요?
+  - 같은 case가 하나도 없으면 default로 가요. `case "3"`은 문자열이지만 값이 달라요.
+explanation: |
+  ```text
+  없는 층이에요
+  ```
+
+  | case | 비교 | 결과 |
+  |---|---|---|
+  | `case 1:` | `"2" === 1` | `false` |
+  | `case 2:` | `"2" === 2` | `false` (자료형이 달라요) |
+  | `case "3":` | `"2" === "3"` | `false` |
+  | `default:` | | 실행 |
+
+  `"2"`와 `2`는 겉보기 값이 같아도 자료형이 달라서, `===`로 비교하는 switch는 같은 case로 보지 않아요. 그래서 맞는 case가 없어 default가 실행돼요.
+
+  이 버그를 고치려면 case를 문자열로 맞추거나(`case "2":`), switch 앞에서 `Number(pressed)`로 숫자로 바꿔요. 한 switch 안에서 숫자 case와 문자열 case를 섞어 쓰면 이런 실수가 생기기 쉬우니 자료형을 하나로 맞춰요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

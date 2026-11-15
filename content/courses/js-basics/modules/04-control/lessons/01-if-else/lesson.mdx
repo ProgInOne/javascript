@@ -1,0 +1,456 @@
+<Section kind="objectives">
+- `if`·`else` 문에서 조건의 참·거짓에 따라 어느 블록이 실행되고, 그다음 어디로 이어지는지 예측할 수 있어요.
+- `else if` 체인이 처음으로 참인 갈래 하나만 실행한다는 점을 이용해 조건을 알맞은 순서로 쓸 수 있어요.
+- 중괄호로 블록을 만들어 여러 문장을 조건에 묶고, 블록 안에 조건문을 겹쳐 쓸 수 있어요.
+- 조건에 쓴 `=`, `else` 뒤의 조건, `if` 뒤의 세미콜론처럼 조건문에서 자주 나는 버그를 찾아 고칠 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+편의점 키오스크에서 음료를 고르는 장면을 떠올려 보세요. 재고가 있으면 "결제를 진행할게요"가, 재고가 없으면 "품절이에요"가 나와야 해요.
+
+지금까지 배운 프로그램은 위에서 아래로 **모든 문장을 빠짐없이** 실행했어요. 그래서 아래처럼 쓰면 두 문장이 모두 출력돼요.
+
+```js
+const stock = 0;
+console.log("결제를 진행할게요");
+console.log("품절이에요");
+```
+
+재고가 0개인데 결제를 진행한다고 하면 안 되겠죠. 필요한 것은 **상황에 따라 실행할 문장을 고르는** 방법이에요. "재고가 0보다 크면 이것, 아니면 저것"처럼요.
+
+이렇게 조건에 따라 실행할 코드를 고르는 문장을 **조건문**이라고 해요. 로그인했는지에 따라 다른 메뉴를 보여 주고, 점수에 따라 등급을 매기고, 잔액이 부족하면 결제를 막는 일이 모두 조건문으로 이루어져요. 이 단원에서는 가장 기본이 되는 조건문인 `if`와 `else`를 배워요.
+</Section>
+
+<Section kind="principle">
+### if: 조건이 참일 때만 실행해요
+
+`if` 문은 이렇게 생겼어요.
+
+```js
+if (조건) {
+  // 조건이 참(true)일 때만 실행할 문장들
+}
+```
+
+- `if` 뒤의 괄호 `( )` 안에 **조건**을 써요. 조건은 `true`나 `false`가 되는 식이에요. 모듈 3에서 배운 비교식(`stock > 0`, `age >= 19`, `answer === "서울"`)과 논리식(`isMember && total >= 30000`)이 대표적이에요.
+- 중괄호 `{ }`로 묶은 부분을 **블록**이라고 해요. 조건이 참이면 블록 안의 문장을 실행하고, 거짓이면 블록 전체를 건너뛰어요.
+- 블록 안의 문장은 공백 2칸으로 들여 써요. 들여쓰기는 사람이 읽기 쉽게 하는 표시일 뿐, 실행에는 영향이 없어요.
+
+<Callout kind="note" title="조건 자리에 불리언이 아닌 값이 오면">
+`if (count)`처럼 조건 자리에 숫자나 문자열을 쓰면, 모듈 3에서 배운 truthy·falsy 규칙으로 참·거짓을 정해요. `0`, `""`, `null`, `undefined`, `NaN`은 거짓으로, 나머지는 참으로 봐요. 처음에는 `count > 0`처럼 비교식을 쓰는 편이 뜻이 분명해요.
+</Callout>
+
+### else: 조건이 거짓일 때 실행해요
+
+조건이 거짓일 때 할 일이 따로 있으면 `else` 블록을 붙여요.
+
+```js
+if (stock > 0) {
+  console.log("결제를 진행할게요");
+} else {
+  console.log("품절이에요");
+}
+```
+
+`if` 블록과 `else` 블록 중 **정확히 하나만** 실행돼요. 둘 다 실행되거나 둘 다 건너뛰는 일은 없어요. `else`에는 조건을 쓰지 않아요. "앞의 조건이 거짓이면"이 곧 `else`의 뜻이기 때문이에요.
+
+### 두 가지 관점으로 보기
+
+**갈림길 관점: 조건문은 길이 갈라졌다가 다시 만나는 곳이에요.** 프로그램의 실행 흐름을 한 줄기 길이라고 생각해 보세요. `if`에서 길이 둘로 갈라지고, 조건에 따라 한쪽 길로만 가요. 어느 길로 가든 조건문이 끝나는 곳에서 다시 만나 다음 문장으로 이어져요.
+
+```text
+조건 검사
+ ├─ 참이면   → if 블록 실행
+ └─ 거짓이면 → else 블록 실행 (else가 없으면 그냥 지나감)
+ ↓
+조건문 다음 문장 실행 (어느 쪽으로 갔든 항상)
+```
+
+조건이 거짓이라고 프로그램이 멈추지 않아요. `else`가 없으면 아무 블록도 실행하지 않고 그냥 지나갈 뿐이에요.
+
+**실행 추적 관점: 조건은 그 순간의 값으로 한 번 계산돼요.** 실행이 `if` 줄에 도착하면 조건식을 계산해 `true`나 `false` 하나를 얻고, 그 값으로 갈 길을 정해요. 아래 코드를 `stock`이 `0`일 때 줄 단위로 따라가 보면 이래요.
+
+```js
+const stock = 0;
+if (stock > 0) {
+  console.log("결제를 진행할게요");
+} else {
+  console.log("품절이에요");
+}
+console.log("감사합니다");
+```
+
+| 줄 | 코드 | 일어나는 일 |
+|---|---|---|
+| 1 | `const stock = 0;` | `stock`에 0을 넣어요 |
+| 2 | `if (stock > 0) {` | `0 > 0`은 `false` → if 블록을 건너뛰어요 |
+| 3 | `console.log("결제를 진행할게요");` | 실행하지 않아요 |
+| 4 | `} else {` | 조건이 거짓이었으니 else 블록으로 들어가요 |
+| 5 | `console.log("품절이에요");` | `품절이에요` 출력 |
+| 6 | `}` | 조건문 끝 |
+| 7 | `console.log("감사합니다");` | `감사합니다` 출력 (조건과 상관없이 실행) |
+
+### else if: 여러 갈래 중 하나를 골라요
+
+갈래가 셋 이상이면 `else if`로 조건을 이어 붙여요. 이렇게 이어 붙인 것을 **else if 체인**이라고 불러요.
+
+```js
+if (score >= 90) {
+  console.log("A");
+} else if (score >= 80) {
+  console.log("B");
+} else if (score >= 70) {
+  console.log("C");
+} else {
+  console.log("다시 도전");
+}
+```
+
+체인은 이렇게 동작해요.
+
+1. **위에서부터 차례로** 조건을 검사해요.
+1. **처음으로 참인 조건**을 만나면 그 블록 하나만 실행하고, 체인 전체를 빠져나가요. 그 아래 조건은 검사하지도 않아요.
+1. 모든 조건이 거짓이면 마지막 `else` 블록을 실행해요. `else`가 없으면 아무것도 실행하지 않아요.
+
+`score`가 95면 `score >= 80`도 참이지만, 이미 첫 조건에서 `A`를 출력하고 빠져나갔으니 `B`는 나오지 않아요. 그래서 **조건의 순서가 중요해요.** 범위가 겹치는 조건은 좁은 범위(더 엄격한 조건)부터 써요.
+
+### 블록: 여러 문장을 하나로 묶어요
+
+중괄호 블록은 여러 문장을 묶어서 "조건이 참이면 이 문장들을 모두 실행"하게 해요.
+
+중괄호를 빼고 `if (조건) console.log("...");`처럼 쓸 수도 있지만, 이때 조건에 딸리는 것은 **바로 다음 한 문장뿐**이에요. 두 번째 줄을 들여 써도 JavaScript는 들여쓰기를 보지 않아서 그 줄은 항상 실행돼요. 그래서 이 과정에서는 **한 줄이라도 항상 중괄호를 써요.**
+
+블록 안에는 어떤 문장이든 넣을 수 있어요. 다른 `if` 문도요. 조건문 안에 조건문을 넣는 것을 **중첩**이라고 해요.
+
+```js
+if (hasTicket) {
+  if (height >= 120) {
+    console.log("탑승하세요");
+  } else {
+    console.log("키가 120cm 이상이어야 해요");
+  }
+} else {
+  console.log("먼저 이용권을 사 주세요");
+}
+```
+
+바깥 조건이 참일 때만 안쪽 조건을 검사해요. 중첩이 깊어지면 읽기 어려우니 두세 단계까지만 쓰는 것이 좋아요.
+
+<Reveal title="블록 안에서 만든 변수는 블록 밖에서 쓸 수 없어요">
+블록 안에서 `let`이나 `const`로 만든 변수는 그 블록 안에서만 쓸 수 있어요. 블록이 끝난 뒤에 쓰면 `ReferenceError: ... is not defined`가 나요. 그래서 조건에 따라 값을 정해 블록 밖에서 쓰려면, 변수를 **블록 바깥(위)에서 먼저 만들고** 블록 안에서는 대입만 해요. 이 규칙(블록 스코프)은 모듈 6 "스코프 기초"에서 자세히 배워요.
+
+```js
+let message = "";
+if (stock > 0) {
+  message = "구매 가능";
+} else {
+  message = "품절";
+}
+console.log(message);
+```
+</Reveal>
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. `if`만 있고 `else`는 없어요. 출력을 예측해 보세요.
+
+<RunnableExample id="if-only" lang="js" predict predictKind="console" concepts={["js.control.if"]}>
+```js
+const temperature = 25;
+if (temperature >= 30) {
+  console.log("폭염 주의! 물을 챙기세요");
+}
+console.log("외출 준비 끝");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+외출 준비 끝
+```
+
+- 2번 줄: `25 >= 30`은 `false`예요. 그래서 2~4번 줄의 블록 전체를 건너뛰어요.
+- 5번 줄: 조건문이 끝났으니 다음 문장을 실행해요. 조건이 거짓이어도 프로그램은 멈추지 않아요.
+
+1번 줄의 `25`를 `33`으로 바꿔 다시 실행해 보세요. 이번에는 `폭염 주의! 물을 챙기세요`와 `외출 준비 끝` 두 줄이 나와요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 `if`와 `else`예요. 몇 줄이 출력될까요?
+
+<RunnableExample id="if-else-ticket" lang="js" predict predictKind="console" concepts={["js.control.if"]}>
+```js
+const age = 15;
+if (age >= 19) {
+  console.log("성인 요금: 12000원");
+} else {
+  console.log("청소년 요금: 8000원");
+}
+console.log("즐거운 관람 되세요");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+청소년 요금: 8000원
+즐거운 관람 되세요
+```
+
+- 2번 줄: `15 >= 19`는 `false`라서 if 블록(3번 줄)을 건너뛰어요.
+- 4~5번 줄: 조건이 거짓이었으니 else 블록을 실행해요.
+- 7번 줄: 조건문 다음 문장이라 항상 실행돼요.
+
+if 블록과 else 블록 중 정확히 하나만 실행됐어요. `age`를 `19`로 바꾸면 `19 >= 19`가 `true`라서 성인 요금이 나와요. `>=`는 기준값과 같을 때도 참이라는 점을 기억해요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `else if` 체인이에요. `score`가 85일 때 몇 줄이 출력될까요?
+
+<RunnableExample id="grade-chain" lang="js" predict predictKind="console" concepts={["js.control.else-if"]}>
+```js
+const score = 85;
+if (score >= 90) {
+  console.log("A");
+} else if (score >= 80) {
+  console.log("B");
+} else if (score >= 70) {
+  console.log("C");
+} else {
+  console.log("다시 도전");
+}
+console.log("채점 끝");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+B
+채점 끝
+```
+
+| 순서 | 검사한 조건 | 결과 | 일어나는 일 |
+|---|---|---|---|
+| 1 | `85 >= 90` | `false` | 다음 조건으로 |
+| 2 | `85 >= 80` | `true` | `B` 출력, 체인을 빠져나감 |
+| 3 | `85 >= 70` | 검사 안 함 | 참이었겠지만 이미 빠져나왔어요 |
+| 4 | `else` | 실행 안 함 | |
+
+`85 >= 70`도 참이지만 `C`는 나오지 않아요. 체인은 **처음으로 참인 갈래 하나만** 실행하기 때문이에요. 덕분에 두 번째 조건을 `score >= 80 && score < 90`처럼 길게 쓰지 않아도 돼요. 이 줄에 왔다면 이미 90 미만이라는 뜻이니까요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 세 번째 예제와 조건이 같지만 `else`를 지우고 `if`를 따로따로 썼어요. 출력이 어떻게 달라질까요?
+
+<RunnableExample id="separate-ifs" lang="js" predict predictKind="console" concepts={["js.control.else-if"]}>
+```js
+const score = 85;
+if (score >= 90) {
+  console.log("A");
+}
+if (score >= 80) {
+  console.log("B");
+}
+if (score >= 70) {
+  console.log("C");
+}
+console.log("채점 끝");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+B
+C
+채점 끝
+```
+
+따로 쓴 `if` 문 세 개는 서로 관계없는 **독립된 문장**이에요. 그래서 세 조건을 모두 검사하고, 참인 것은 모두 실행해요. `85 >= 80`과 `85 >= 70`이 모두 참이라 `B`와 `C`가 둘 다 나왔어요.
+
+| 원하는 동작 | 쓰는 모양 |
+|---|---|
+| 여러 갈래 중 **하나만** 고르기 (등급, 요금제) | `if … else if … else` 체인 |
+| 조건마다 **각각** 따로 확인하기 (해당하는 알림을 모두 보내기) | `if` 문 여러 개 |
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 중첩 조건문이에요. `hasTicket`과 `height` 값을 바꿔 가며 세 가지 메시지를 모두 출력해 보세요.
+
+<RunnableExample id="nested-ride" lang="js" concepts={["js.control.block"]}>
+```js
+const hasTicket = true;
+const height = 115;
+
+if (hasTicket) {
+  if (height >= 120) {
+    console.log("탑승하세요");
+  } else {
+    console.log("키가 120cm 이상이어야 해요");
+  }
+} else {
+  console.log("먼저 이용권을 사 주세요");
+}
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+키가 120cm 이상이어야 해요
+```
+
+- 4번 줄: `hasTicket`이 `true`라서 바깥 if 블록(5~9번 줄)으로 들어가요.
+- 5번 줄: 안쪽 조건 `115 >= 120`은 `false`라서 안쪽 else 블록(8번 줄)을 실행해요.
+- 10~12번 줄: 바깥 조건이 참이었으니 바깥 else 블록은 건너뛰어요.
+
+| `hasTicket` | `height` | 출력 |
+|---|---|---|
+| `true` | `130` | 탑승하세요 |
+| `true` | `115` | 키가 120cm 이상이어야 해요 |
+| `false` | (상관없음) | 먼저 이용권을 사 주세요 |
+
+`hasTicket`이 `false`면 안쪽 조건은 검사하지도 않아요. 블록마다 들여쓰기를 한 단계씩 더하면 어느 `else`가 어느 `if`의 짝인지 한눈에 보여요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.false-if-stops-program">
+<Wrong>`if`의 조건이 거짓이면 프로그램이 거기서 멈춘다. 그래서 조건문 아래의 문장도 실행되지 않는다.</Wrong>
+<Actual>조건이 거짓이면 if 블록만 건너뛰어요. 첫 번째 예제처럼 조건문 다음의 `console.log("외출 준비 끝");`은 그대로 실행돼요.</Actual>
+<Right>조건문은 갈라졌다가 다시 만나는 길이에요. 어느 쪽으로 가든(또는 아무 블록도 실행하지 않든) 조건문이 끝나면 다음 문장으로 이어져요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.assign-in-condition">
+<Wrong>`if (password = "1234")`라고 쓰면 `password`가 `"1234"`인지 비교한다.</Wrong>
+<Actual>`=`는 대입이에요. 조건 자리에서도 `password`에 `"1234"`를 넣어 버리고, 넣은 값 `"1234"`로 참·거짓을 정해요. 비어 있지 않은 문자열은 참이라서 비밀번호가 무엇이든 if 블록이 실행돼요. `password`를 `const`로 만들었다면 `TypeError: Assignment to constant variable.`이 나요.</Actual>
+<Right>
+
+비교는 `===`로 해요. 조건 안에 `=`가 하나만 있으면 버그를 의심해요.
+
+```js
+if (password === "1234") {
+  console.log("로그인 성공");
+}
+```
+</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.else-has-condition">
+<Wrong>`else (temperature < 10) { ... }`처럼 `else` 뒤에 조건을 붙이면 그 조건일 때만 실행된다.</Wrong>
+<Actual>`else`는 조건을 받지 않아요. 괄호 뒤에 `{`가 오는 순간 `SyntaxError: Unexpected token '{'`가 나고, 문법 오류라서 프로그램 전체가 실행되지 않아요.</Actual>
+<Right>조건이 하나 더 필요하면 `else if (temperature < 10) { ... }`라고 써요. 조건 없는 `else`는 "앞의 조건이 모두 거짓이면"이라는 뜻이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.else-if-runs-all">
+<Wrong>`else if` 체인에서 참인 조건이 여러 개면 그 블록이 모두 실행된다.</Wrong>
+<Actual>세 번째 예제에서 `85 >= 80`과 `85 >= 70`이 모두 참이었지만 `B`만 나왔어요. 처음으로 참인 갈래를 실행하면 체인을 빠져나가요.</Actual>
+<Right>한 체인에서는 많아야 한 블록만 실행돼요. 참인 조건을 모두 실행하고 싶다면 체인 대신 `if` 문을 따로따로 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.else-if-order-irrelevant">
+<Wrong>`else if` 조건은 어떤 순서로 적어도 결과가 같다.</Wrong>
+<Actual>
+
+넓은 조건을 먼저 쓰면 뒤 갈래는 절대 실행되지 않아요. 아래 코드는 95점이어도 `통과`가 나오고, `우수`는 어떤 점수에서도 나오지 않아요.
+
+```js
+if (score >= 60) {
+  console.log("통과");
+} else if (score >= 90) {
+  console.log("우수"); // 90점 이상은 이미 위에서 걸려요
+}
+```
+</Actual>
+<Right>범위가 겹치는 조건은 좁은 범위(더 엄격한 조건)부터 써요. `score >= 90`을 먼저, `score >= 60`을 나중에 검사해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.separate-ifs-like-chain">
+<Wrong>`if` 문을 여러 개 이어 쓰면 `else if` 체인처럼 처음 맞는 하나만 실행된다.</Wrong>
+<Actual>네 번째 예제에서 `B`와 `C`가 둘 다 나왔어요. 따로 쓴 `if`는 독립된 문장이라 모두 검사돼요.</Actual>
+<Right>하나만 골라야 하면 `else if`로 이어요. 각각 확인해야 하면 `if`를 따로 써요. 두 모양은 뜻이 달라요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.indent-makes-block">
+<Wrong>중괄호 없이 `if` 아래 두 줄을 들여 쓰면 두 줄 모두 조건에 묶인다.</Wrong>
+<Actual>
+
+아래 코드는 비가 오지 않는데도 `장화 신기`가 출력돼요. 중괄호가 없으면 `if` 바로 다음 한 문장만 조건에 딸려요.
+
+```js
+const isRaining = false;
+if (isRaining)
+  console.log("우산 챙기기");
+  console.log("장화 신기"); // 들여 썼지만 항상 실행돼요
+```
+</Actual>
+<Right>JavaScript는 들여쓰기를 보지 않아요. 조건에 묶을 문장은 한 줄이라도 중괄호 `{ }` 블록 안에 넣어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.semicolon-after-if">
+<Wrong>문장 끝에는 세미콜론을 붙이니까 `if (balance >= price); { ... }`처럼 써도 된다.</Wrong>
+<Actual>`if (조건)` 바로 뒤의 `;`은 아무 일도 하지 않는 빈 문장이에요. 조건에는 그 빈 문장이 딸리고, 뒤의 `{ ... }` 블록은 if와 관계없는 별개의 블록이 되어 **항상** 실행돼요. 오류 메시지도 나지 않아요.</Actual>
+<Right>`if (조건)`과 `{` 사이에는 아무것도 쓰지 않아요. 세미콜론은 블록 안의 각 문장 끝에만 붙여요. 블록을 닫는 `}` 뒤에도 붙이지 않아요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+웹 서비스의 화면은 조건문으로 가득해요. 쇼핑몰 장바구니 화면의 배송비 안내를 예로 들어 볼게요.
+
+```js
+const total = 27000; // 장바구니 금액
+const freeShippingLine = 30000;
+
+let shippingFee = 0;
+if (total >= freeShippingLine) {
+  shippingFee = 0;
+  console.log("무료 배송이에요");
+} else {
+  shippingFee = 3000;
+  console.log((freeShippingLine - total) + "원 더 담으면 무료 배송이에요");
+}
+console.log("배송비:", shippingFee);
+```
+
+- `shippingFee`를 조건문 **위에서** 만들고, 블록 안에서는 대입만 해요. 그래야 조건문이 끝난 뒤에도 그 값을 쓸 수 있어요.
+- 기준 금액을 `30000`처럼 코드 곳곳에 직접 쓰지 않고 `freeShippingLine` 상수로 두면, 기준이 바뀌어도 한 곳만 고치면 돼요.
+
+실제 서비스에서는 로그인 여부에 따라 "로그인"·"로그아웃" 버튼을 바꾸고, 입력값이 비었으면 "이름을 입력해 주세요"를 보여 주고, 권한이 없으면 관리자 메뉴를 숨기는 일이 모두 이런 `if … else`로 이루어져요. 화면을 바꾸는 방법은 모듈 10에서 배워요.
+</Section>
+
+<Section kind="check">
+조건이 거짓일 때 무슨 일이 일어나는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.control.if-else.mcq-false-condition-continues" />
+
+조건 자리에 쓴 `=`가 어떻게 동작하는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.control.if-else.tf-assign-in-condition" />
+
+`else if` 체인의 규칙을 정리해 보세요.
+
+<InlineExercise ref="js-basics.control.if-else.multi-else-if-facts" />
+
+마지막으로 중괄호가 없을 때를 확인해 보세요.
+
+<InlineExercise ref="js-basics.control.if-else.mcq-no-braces" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `if (조건) { ... }`은 조건이 참일 때만 블록을 실행해요. 조건이 거짓이면 블록을 건너뛸 뿐, 프로그램은 다음 문장으로 계속 이어져요.
+- `else { ... }`는 조건이 거짓일 때 실행해요. if 블록과 else 블록 중 정확히 하나만 실행되고, `else`에는 조건을 쓰지 않아요.
+- `else if` 체인은 위에서부터 검사해 처음으로 참인 갈래 하나만 실행해요. 범위가 겹치는 조건은 좁은 범위부터 써요.
+- 따로 쓴 `if` 문들은 서로 독립이라 참인 것이 모두 실행돼요.
+- 조건에서 비교는 `===`로 해요. `=` 하나는 대입이에요.
+- 조건에 묶을 문장은 한 줄이라도 중괄호 블록에 넣어요. 들여쓰기는 실행에 영향이 없고, `if (조건)` 뒤에 세미콜론을 붙이면 블록이 항상 실행돼요.
+- 블록 안에 다른 조건문을 넣어 겹겹이 검사할 수 있어요(중첩).
+</Section>
+
+<Section kind="next">
+다음 단원 "switch 문"에서는 한 값을 여러 후보와 하나하나 비교할 때 `else if` 체인보다 읽기 쉬운 `switch`를 배워요. 그다음 "조건 연산자"에서는 두 값 중 하나를 고르는 일을 한 줄로 쓰는 방법을 배워요. 조건문은 모듈 5 "반복문"에서 "언제까지 반복할지"를 정할 때 다시 만나요. <MdnLink path="Web/JavaScript/Reference/Statements/if...else" />
+</Section>

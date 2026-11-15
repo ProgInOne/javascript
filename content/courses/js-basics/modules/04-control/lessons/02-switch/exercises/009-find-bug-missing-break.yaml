@@ -1,0 +1,70 @@
+id: js-basics.control.switch.find-bug-missing-break
+type: find_bug_line
+difficulty: 2
+concepts:
+  - { id: js.control.fallthrough, weight: 1 }
+tags: [switch, break, debugging]
+estimatedSeconds: 100
+prompt: |
+  날씨에 맞는 준비물을 알려 주는 프로그램이에요. 오류는 없는데 결과가 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const weather = "비";
+    switch (weather) {
+      case "맑음":
+        console.log("선크림을 챙겨요");
+        break;
+      case "비":
+        console.log("우산을 챙겨요");
+      case "눈":
+        console.log("장갑을 챙겨요");
+        break;
+      default:
+        console.log("날씨를 확인해 주세요");
+    }
+  bugLines: [7]
+  acceptLines: [8]
+  symptom: 비가 오는 날인데 `우산을 챙겨요` 다음에 `장갑을 챙겨요`까지 나와요.
+  symptomCheck:
+    console: ["우산을 챙겨요", "장갑을 챙겨요"]
+  fixedCode: |-
+    const weather = "비";
+    switch (weather) {
+      case "맑음":
+        console.log("선크림을 챙겨요");
+        break;
+      case "비":
+        console.log("우산을 챙겨요");
+        break;
+      case "눈":
+        console.log("장갑을 챙겨요");
+        break;
+      default:
+        console.log("날씨를 확인해 주세요");
+    }
+  causeOptions:
+    - id: c1
+      text: "\"비\" case의 코드 뒤에 break가 없어서 아래 \"눈\" case의 코드까지 이어서 실행되었다"
+      correct: true
+    - id: c2
+      text: "switch가 \"비\"와 \"눈\"을 비슷한 값으로 보고 두 case를 모두 실행했다"
+      misconception: js.mc.switch-loose-compare
+    - id: c3
+      text: "\"눈\" case는 값을 다시 비교했지만 문자열 비교라서 참이 되었다"
+      misconception: js.mc.switch-no-break-stops
+misconceptions: [js.mc.switch-no-break-stops]
+hints:
+  - 실행은 어느 case에서 시작했나요? 거기서부터 어떤 줄들이 실행됐는지 따라가 보세요.
+  - "`우산을 챙겨요`를 출력한 뒤 switch를 빠져나가려면 무엇이 있어야 하나요?"
+  - 맑음 case와 비 case의 끝을 비교해 보세요. 한쪽에만 있는 줄이 있어요.
+explanation: |
+  원인은 **7번 줄** 다음에 `break`가 없는 것이에요. `"비"` case에서 시작해 `우산을 챙겨요`를 출력한 뒤, break가 없어서 8번 줄 `case "눈":`의 값은 비교하지 않고 그 아래 `장갑을 챙겨요`까지 실행됐어요. 10번 줄의 break에서야 빠져나갔어요.
+
+  7번 줄 다음에 `break;`를 넣으면 비 오는 날에는 우산 안내만 나와요. (빠진 break를 넣을 자리인 8번 줄을 골라도 정답으로 인정해요.)
+
+  - c2: switch는 `===`로 비교해서 `"비"`와 `"눈"`은 완전히 다른 값이에요. 비슷한 값이라는 개념은 없어요.
+  - c3: 실행이 시작된 뒤에는 아래 case의 값을 다시 비교하지 않아요. 비교했다면 `"비" === "눈"`은 거짓이라 건너뛰었을 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

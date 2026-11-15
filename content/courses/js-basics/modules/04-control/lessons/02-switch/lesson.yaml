@@ -1,0 +1,15 @@
+id: js-basics.control.switch
+title: switch 문
+summary: 한 값을 여러 후보와 비교해 갈래를 나누는 switch와, break가 없을 때 아래 case까지 이어서 실행되는 fall-through를 배웁니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 10, practice: 18 }
+concepts:
+  primary: [js.control.switch, js.control.fallthrough]
+  reviewed: [js.control.else-if, js.types.string, js.types.number]
+objectives:
+  - switch가 값과 ===로 같은 case를 찾아 실행한다는 것을 알고, 어느 case가 실행될지 예측할 수 있다.
+  - case마다 break를 써서 한 갈래만 실행하고, break가 빠져 생긴 버그를 찾아 고칠 수 있다.
+  - 같은 일을 하는 여러 case를 break 없이 묶어 쓸 수 있다.
+practice:
+  targetCount: 12

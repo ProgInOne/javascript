@@ -1,0 +1,95 @@
+id: js-basics.control.switch.fix-case-condition
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.control.switch, weight: 1 }
+  - { id: js.control.else-if, weight: 0.5 }
+tags: [switch, else-if, range, debugging]
+estimatedSeconds: 240
+prompt: |
+  걸음 수에 따라 오늘의 활동 배지를 주는 프로그램이에요.
+
+  - 10000걸음 이상: `금 배지`
+  - 5000걸음 이상: `은 배지`
+  - 그보다 적으면: `조금 더 걸어 봐요`
+
+  12000걸음을 걸었는데 `조금 더 걸어 봐요`가 나와요. 범위로 나누는 일에 알맞은 조건문으로 고쳐서 `금 배지`가 나오게 하세요. 결과는 `badge`에 넣고 출력해요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const steps = 12000;
+          let badge = "";
+
+          switch (steps) {
+            case steps >= 10000:
+              badge = "금 배지";
+              break;
+            case steps >= 5000:
+              badge = "은 배지";
+              break;
+            default:
+              badge = "조금 더 걸어 봐요";
+          }
+
+          console.log(badge);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const steps = 12000;
+          let badge = "";
+
+          if (steps >= 10000) {
+            badge = "금 배지";
+          } else if (steps >= 5000) {
+            badge = "은 배지";
+          } else {
+            badge = "조금 더 걸어 봐요";
+          }
+
+          console.log(badge);
+  bugDescription: 12000걸음인데 "금 배지" 대신 "조금 더 걸어 봐요"가 나와요. 걸음 수를 얼마로 바꿔도 항상 같아요.
+  bugMisconception: js.mc.switch-case-condition
+  checks:
+    - kind: console
+      id: output
+      description: 12000걸음이므로 "금 배지"가 출력되어야 합니다.
+      requirement: 배지 출력
+      expect:
+        lines: ["금 배지"]
+    - kind: program
+      id: badge-value
+      description: badge에 "금 배지"가 들어 있어야 합니다.
+      requirement: 배지 저장
+      expect:
+        globals:
+          badge: { equals: "금 배지" }
+        noError: true
+      misconceptionIfFail: js.mc.switch-case-condition
+misconceptions: [js.mc.switch-case-condition]
+hints:
+  - "`case steps >= 10000:`에서 `steps >= 10000`은 먼저 어떤 값으로 계산되나요?"
+  - switch는 `steps`(12000)와 case의 값(`true`)을 `===`로 비교해요. `12000 === true`일까요?
+  - 값이 "어느 범위에 드는지"로 나눌 때는 switch 대신 `if … else if … else` 체인을 써요.
+explanation: |
+  원인은 **case에 쓴 조건식**이에요. `case steps >= 10000:`에서 `steps >= 10000`은 먼저 `true`로 계산되고, switch는 `steps`와 그 값을 비교해요. `12000 === true`는 `false`라서(숫자와 불리언은 자료형이 달라요) 어느 case에도 맞지 않고 default가 실행됐어요. 걸음 수가 무엇이든 마찬가지예요.
+
+  switch는 "정해진 값과 같은지"를 비교하는 도구예요. 범위로 나누는 일은 else if 체인으로 바꿔요.
+
+  ```js
+  if (steps >= 10000) {
+    badge = "금 배지";
+  } else if (steps >= 5000) {
+    badge = "은 배지";
+  } else {
+    badge = "조금 더 걸어 봐요";
+  }
+  ```
+
+  case만 고쳐서 switch로 범위를 나누는 방법(`switch (true)`)을 쓰는 코드도 가끔 보이지만, 읽는 사람이 헷갈리기 쉬워요. 범위에는 else if 체인을 쓰는 것이 가장 분명해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,15 @@
+id: js-basics.control.ternary
+title: 조건 연산자
+summary: '조건에 따라 두 값 중 하나를 고르는 식인 조건 연산자(조건 ? 값1 : 값2)를 배우고, if-else와 언제 나눠 쓰는지 익힙니다.'
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 10, practice: 15 }
+concepts:
+  primary: [js.control.ternary]
+  reviewed: [js.control.if, js.values.assignment]
+objectives:
+  - "조건 ? 값1 : 값2가 만드는 값을 예측하고, 그 값을 변수에 넣거나 바로 출력할 수 있다."
+  - if-else로 값을 고르는 코드를 조건 연산자 한 줄로 바꿔 쓸 수 있다.
+  - 조건 연산자를 문장처럼 쓰거나 결과를 버리는 버그, 괄호가 없어 생기는 우선순위 버그를 고칠 수 있다.
+practice:
+  targetCount: 10

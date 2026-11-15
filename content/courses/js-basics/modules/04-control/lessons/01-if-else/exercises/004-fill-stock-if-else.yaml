@@ -1,0 +1,59 @@
+id: js-basics.control.if-else.fill-stock-if-else
+type: fill_blank
+difficulty: 1
+concepts:
+  - { id: js.control.if, weight: 1 }
+tags: [if, else, fill]
+estimatedSeconds: 60
+prompt: |
+  재고(`stock`)가 0보다 크면 `구매할 수 있어요`, 아니면 `품절이에요`를 출력하는 프로그램이에요. 빈칸을 채워 완성하세요.
+
+  지금은 재고가 0개라서 실행하면 `품절이에요`가 나와야 해요.
+spec:
+  mode: code
+  lang: js
+  template: |
+    const stock = 0;
+    {{blank:kw1}} (stock > 0) {
+      console.log("구매할 수 있어요");
+    } {{blank:kw2}} {
+      console.log("품절이에요");
+    }
+  blanks:
+    - id: kw1
+      accept: ["if"]
+      width: 6
+    - id: kw2
+      accept: ["else"]
+      width: 6
+  checks:
+    - kind: console
+      id: output
+      description: 재고가 0개이므로 "품절이에요" 한 줄만 출력되어야 합니다.
+      requirement: 품절 안내
+      expect:
+        lines: ["품절이에요"]
+hints:
+  - 첫 번째 빈칸은 "만약 ~라면"이라는 뜻의 키워드예요.
+  - 두 번째 빈칸은 "그렇지 않으면"이라는 뜻이고, 뒤에 조건을 쓰지 않아요.
+  - 조건문의 두 키워드는 영어 소문자로 써요. "만약"은 if예요.
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const stock = 0;
+  if (stock > 0) {
+    console.log("구매할 수 있어요");
+  } else {
+    console.log("품절이에요");
+  }
+  ```
+
+  - `if (조건) { ... }`: 조건이 참일 때 실행할 블록이에요. `0 > 0`은 `false`라서 건너뛰어요.
+  - `else { ... }`: 조건이 거짓일 때 실행할 블록이에요. 그래서 `품절이에요`가 나와요.
+
+  `else` 뒤에는 조건을 쓰지 않아요. "앞의 조건이 거짓이면"이 곧 `else`의 뜻이에요. 키워드는 소문자로 써야 해요. `If`, `ELSE`처럼 쓰면 `SyntaxError`가 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

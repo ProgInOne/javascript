@@ -1,0 +1,45 @@
+id: js-basics.control.if-else.tf-separate-ifs
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.control.else-if, weight: 1 }
+tags: [if, else-if, chain]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`else` 없이 `if` 문을 세 개 연달아 쓰면, `else if` 체인처럼 조건이 처음으로 참인 `if`의 블록 하나만 실행된다."
+  answer: false
+  misconceptionIfWrong: js.mc.separate-ifs-like-chain
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 따로 쓴 if 문은 서로 독립된 문장이라 세 조건을 모두 검사하고, 참인 블록은 모두 실행한다
+      correct: true
+    - id: r2
+      text: 연달아 쓴 if 문은 자동으로 하나의 체인으로 묶이기 때문에 처음 참인 것만 실행된다
+      misconception: js.mc.separate-ifs-like-chain
+    - id: r3
+      text: else가 없으면 조건이 참이어도 if 블록이 실행되지 않는다
+hints:
+  - 레슨의 네 번째 예제에서 `score`가 85일 때 몇 줄이 나왔는지 떠올려 보세요.
+  - 따로 쓴 `if` 문들은 서로를 알고 있을까요? 각 `if`는 자기 조건만 봐요.
+  - 하나만 고르게 만드는 것은 `else`예요. `else`가 없으면 각각 따로 검사해요.
+explanation: |
+  정답은 **거짓**, 이유는 **따로 쓴 if 문은 서로 독립된 문장이라 세 조건을 모두 검사하고, 참인 블록은 모두 실행한다**예요.
+
+  ```js
+  const score = 85;
+  if (score >= 90) { console.log("A"); }
+  if (score >= 80) { console.log("B"); } // 실행
+  if (score >= 70) { console.log("C"); } // 실행
+  ```
+
+  이 코드는 `B`와 `C`를 둘 다 출력해요. 각 `if`는 앞의 `if`가 실행됐는지와 상관없이 자기 조건만 검사하기 때문이에요. 하나만 고르게 하는 것은 `else`예요. `else if`로 이어야 "앞의 조건이 거짓일 때만 다음 조건을 검사"하게 돼요.
+
+  - "자동으로 체인으로 묶인다"를 고른 경우: JavaScript는 연달아 쓴 `if`를 묶지 않아요.
+  - "else가 없으면 실행되지 않는다"를 고른 경우: `else`는 선택이에요. 조건이 참이면 `else`가 없어도 if 블록은 실행돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

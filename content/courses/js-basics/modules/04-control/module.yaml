@@ -1,0 +1,5 @@
+id: js-basics.control
+title: 조건문
+summary: 조건에 따라 서로 다른 코드를 실행하는 if·else, switch, 조건 연산자를 배우고, 어느 갈래가 실행될지 예측하는 법을 익힙니다.
+# 단원 평가(control-review)는 평가 세트가 준비되는 M6에 추가합니다.
+lessons: [if-else, switch, ternary]

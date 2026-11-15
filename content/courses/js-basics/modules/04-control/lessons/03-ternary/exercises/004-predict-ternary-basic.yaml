@@ -1,0 +1,38 @@
+id: js-basics.control.ternary.predict-ternary-basic
+type: predict_output
+difficulty: 1
+concepts:
+  - { id: js.control.ternary, weight: 1 }
+tags: [ternary, predict]
+estimatedSeconds: 60
+prompt: |
+  다음 코드를 실행하면 콘솔에 무엇이 나올까요? 나오는 줄을 모두 순서대로 쓰세요.
+spec:
+  lang: js
+  code: |
+    const stock = 3;
+    const label = stock > 0 ? "구매하기" : "품절";
+    console.log(label);
+    console.log(stock > 5 ? "넉넉해요" : "얼마 남지 않았어요");
+  answerKind: console
+  misconceptionByAnswer:
+    "true\nfalse": js.mc.ternary-result-discarded
+misconceptions: [js.mc.ternary-result-discarded]
+hints:
+  - 2번 줄의 조건 `stock > 0`과 4번 줄의 조건 `stock > 5`를 각각 계산해 보세요.
+  - 조건이 참이면 `?`와 `:` 사이의 값, 거짓이면 `:` 뒤의 값이 식의 결과예요.
+  - 출력되는 것은 조건의 결과(true/false)가 아니라 고른 값이에요.
+explanation: |
+  ```text
+  구매하기
+  얼마 남지 않았어요
+  ```
+
+  - 2번 줄: `3 > 0`은 `true`라서 `"구매하기"`가 `label`에 들어가요.
+  - 4번 줄: `3 > 5`는 `false`라서 `"얼마 남지 않았어요"`가 식의 값이 되고, 그 값이 바로 출력돼요.
+
+  조건 연산자는 값을 고르는 식이라서, 4번 줄처럼 `console.log` 안에 바로 쓸 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
