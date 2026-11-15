@@ -1,0 +1,96 @@
+id: js-basics.project.mini-project.profile-card
+type: web_task
+difficulty: 3
+usage: project
+concepts:
+  - { id: js.basics.statement, weight: 1 }
+  - { id: js.basics.const, weight: 0.5 }
+estimatedSeconds: 1800
+prompt: |
+  자기소개 카드를 단계별로 만드세요. 각 단계를 만들 때마다 **채점하기**로 확인하세요.
+
+  1. `h1` 제목에 이름을 넣으세요.
+  2. `ul` 목록에 좋아하는 것을 세 개(`li`) 넣으세요.
+  3. `id="hello"` 버튼을 누르면 `p#message`에 `안녕하세요!`가 나오게 하세요.
+spec:
+  focus: project
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>자기소개</title>
+            </head>
+            <body>
+              <main>
+              </main>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>자기소개</title>
+            </head>
+            <body>
+              <main>
+                <h1>김코딩</h1>
+                <ul>
+                  <li>산책</li>
+                  <li>음악</li>
+                  <li>요리</li>
+                </ul>
+                <button id="hello" type="button">인사하기</button>
+                <p id="message"></p>
+              </main>
+              <script>
+                const button = document.querySelector('#hello');
+                const message = document.querySelector('#message');
+                button.addEventListener('click', () => {
+                  message.textContent = '안녕하세요!';
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: has-title
+      description: 이름이 들어간 h1 제목이 있어야 합니다.
+      visible: true
+      selector: main h1
+      expect: { exists: true }
+    - kind: dom
+      id: three-items
+      description: 목록에 항목이 세 개 있어야 합니다.
+      visible: true
+      selector: main ul > li
+      expect: { count: 3 }
+    - kind: event
+      id: says-hello
+      description: 인사 버튼을 누르면 안녕하세요!가 나와야 합니다.
+      visible: true
+      steps:
+        - { action: click, selector: '#hello' }
+      expect:
+        - { selector: '#message', text: { equals: 안녕하세요! } }
+  milestones:
+    - { id: m1, title: 이름 제목 만들기, checks: [has-title] }
+    - { id: m2, title: 좋아하는 것 목록 만들기, checks: [three-items] }
+    - { id: m3, title: 인사 버튼 동작시키기, checks: [says-hello] }
+hints:
+  - 단계마다 하나씩 요소를 더하고 채점해 보세요.
+  - '목록은 `<ul>` 안에 `<li>`를 세 개 넣어요. 버튼 동작은 `addEventListener`로 붙여요.'
+  - "`button.addEventListener('click', () => { message.textContent = '안녕하세요!'; });`처럼 써요."
+explanation: |
+  제목과 목록은 HTML만으로 만들고, 버튼은 `click` 이벤트에서 `#message`의 글자를 바꿔요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

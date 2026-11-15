@@ -309,7 +309,7 @@ describe('projects in planning', () => {
     parsedRun(await run(ctx, 1));
     const plan = dailyPlanSchema.parse((await ctx.call('GET', '/daily-plan')).json);
     const block = [...plan.blocks, ...plan.later].find((b) => b.kind === 'continue');
-    expect(block?.lesson).toMatchObject({ id: PROJECT, status: 'practicing' });
+    expect(block?.lesson).toMatchObject({ id: PROJECT, status: 'practicing', kind: 'project' });
     // 45 practice minutes, a third of the milestones done.
     expect(block?.minutes).toBe(30);
   });

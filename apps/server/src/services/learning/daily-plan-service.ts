@@ -5,6 +5,7 @@ import {
   type EngineDeps,
 } from '@proginone/learning-engine';
 import type { DailyPlanBlockView, DailyPlanView } from '@proginone/shared';
+import type { LessonKind } from '../../db/content/repository.ts';
 import type { UserDb } from '../../db/user/connection.ts';
 import { listMasteryConceptIds } from '../../db/user/learning-state.ts';
 import {
@@ -109,8 +110,9 @@ export class DailyPlanService {
     const conceptTitles = repo.getConcepts(
       [...plan.blocks, ...plan.later].flatMap((b) => [...b.conceptIds]),
     );
-    const lessonTitles = new Map<string, string>();
-    for (const l of [activeLesson, next?.lesson]) if (l) lessonTitles.set(l.id, l.title);
+    const planLessons = new Map<string, { title: string; kind: LessonKind }>();
+    for (const l of [activeLesson, next?.lesson])
+      if (l) planLessons.set(l.id, { title: l.title, kind: l.kind });
     const view = (b: DailyPlanBlock): DailyPlanBlockView => {
       const lessonProgress: LessonProgressRow | undefined =
         b.lessonId === null ? undefined : progressById.get(b.lessonId);
@@ -127,9 +129,10 @@ export class DailyPlanService {
             ? null
             : {
                 id: b.lessonId,
-                title: lessonTitles.get(b.lessonId) ?? b.lessonId,
+                title: planLessons.get(b.lessonId)?.title ?? b.lessonId,
                 status: lessonProgress?.status ?? 'not_started',
                 practiceSetId: lessonProgress?.practiceSetId ?? null,
+                kind: planLessons.get(b.lessonId)?.kind ?? 'lesson',
               },
         partial: b.partial,
       };

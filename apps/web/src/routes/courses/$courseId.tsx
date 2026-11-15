@@ -66,9 +66,14 @@ function CourseDetail() {
                               {lesson.kind === 'assessment' && (
                                 <Badge variant="neutral">단원 평가</Badge>
                               )}
+                              {lesson.kind === 'project' && (
+                                <Badge variant="neutral">응용 프로젝트</Badge>
+                              )}
                               <span className="ml-auto text-fg-tertiary tabular-nums type-small">
-                                {formatMinutes(lesson.estimatedMinutes)} · {lesson.exerciseCount}
-                                문제
+                                {formatMinutes(lesson.estimatedMinutes)} ·{' '}
+                                {lesson.kind === 'project'
+                                  ? '프로젝트'
+                                  : `${String(lesson.exerciseCount)}문제`}
                               </span>
                             </Link>
                           </li>

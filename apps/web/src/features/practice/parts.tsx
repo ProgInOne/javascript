@@ -16,7 +16,10 @@ import { reportExercise } from '../../api/queries.ts';
 import { STAGE_LABELS } from './model.ts';
 
 /** The grading part of an attempt response, in the shape FeedbackBanner takes. */
-export function feedbackResultOf(res: Pick<AttemptResponse, 'attempt' | 'grade'>): FeedbackResult {
+export function feedbackResultOf(res: {
+  attempt: Pick<AttemptResponse['attempt'], 'outcome' | 'score'>;
+  grade: AttemptResponse['grade'];
+}): FeedbackResult {
   return {
     outcome: res.attempt.outcome,
     score: res.attempt.score,

@@ -1,0 +1,24 @@
+id: js-basics.project.mini-project.mcq-prep
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.basics.statement, weight: 1 }
+estimatedSeconds: 40
+prompt: |
+  버튼을 누르면 글자가 바뀌게 하려면, 글자를 바꾸는 문장은 언제 실행되어야 하나요?
+spec:
+  options:
+    - { id: a, text: 버튼을 누를 때 }
+    - { id: b, text: 페이지를 열자마자 }
+    - { id: c, text: 버튼을 만들기 전에 }
+  correct: a
+hints:
+  - 누르기 전에 바뀌면 안 돼요.
+  - 이벤트가 일어날 때 실행되는 함수 안에 둬요.
+  - 정답은 "버튼을 누를 때"예요.
+explanation: |
+  클릭 이벤트가 일어날 때 실행되는 함수 안에서 글자를 바꿔요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

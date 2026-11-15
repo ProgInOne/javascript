@@ -268,7 +268,9 @@ function PracticeSection() {
       <p className="m-0">
         {kind === 'assessment'
           ? '준비가 되면 단원 평가를 시작하세요. 시작 전에 규칙을 안내해요.'
-          : '본문을 다 읽었어요. 이제 직접 풀어볼까요?'}
+          : kind === 'project'
+            ? '요구 사항을 읽었으면 프로젝트를 만들어 볼까요? 마일스톤을 하나씩 통과하면 완성이에요.'
+            : '본문을 다 읽었어요. 이제 직접 풀어볼까요?'}
       </p>
       <Link
         to="/learn/$lessonId"
@@ -277,7 +279,11 @@ function PracticeSection() {
         className="pi-button pi-button--primary pi-button--md no-underline"
       >
         <PencilLine size={16} aria-hidden="true" />
-        {kind === 'assessment' ? '단원 평가 보기' : '연습 시작'}
+        {kind === 'assessment'
+          ? '단원 평가 보기'
+          : kind === 'project'
+            ? '프로젝트 열기'
+            : '연습 시작'}
       </Link>
     </div>
   );

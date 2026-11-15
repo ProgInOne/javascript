@@ -602,4 +602,137 @@
     font-weight: 600;
     color: var(--color-text-secondary);
   }
+
+  /* Project units (content-and-exercises.md#프로젝트-단원-kind-project, ui-ux.md 프로젝트 화면). */
+  .project-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .project-title > svg {
+    color: var(--color-text-brand);
+  }
+  .project-resume {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-subtle);
+    color: var(--color-text-secondary);
+    font: var(--text-small);
+  }
+  .project-milestones {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5) var(--space-6);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-surface);
+  }
+  .project-milestones__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .project-milestones__title {
+    font: var(--text-ui);
+    font-weight: 600;
+    color: var(--color-text-heading);
+  }
+  .project-milestones__bar {
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-bg-muted);
+    overflow: hidden;
+  }
+  .project-milestones__bar > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-action-primary);
+    transition: width var(--duration-base) ease;
+  }
+  .project-milestones__list {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .project-milestone {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    font: var(--text-ui);
+  }
+  .project-milestone[aria-current='step'] {
+    background: var(--color-bg-subtle);
+  }
+  .project-milestone__icon {
+    color: var(--color-text-secondary);
+  }
+  .project-milestone[data-state='passed'] .project-milestone__icon,
+  .project-milestone[data-state='passed'] .project-milestone__state {
+    color: var(--color-feedback-correct-fg);
+  }
+  .project-milestone__title {
+    overflow-wrap: anywhere;
+    color: var(--color-text-primary);
+  }
+  .project-milestone__state {
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+  .project-complete {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5) var(--space-6);
+    border: 1px solid var(--color-feedback-correct-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-feedback-correct-bg);
+  }
+  .project-complete__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    font: var(--text-h3);
+    color: var(--color-feedback-correct-fg);
+  }
+  .project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .project-newly {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-feedback-correct-fg);
+    font: var(--text-ui);
+    font-weight: 600;
+  }
+  .project-milestone[data-state='blocked'] .project-milestone__title {
+    color: var(--color-text-secondary);
+  }
+  .project-prep {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-6);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-surface);
+  }
+  .project-prep h2 {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
 }

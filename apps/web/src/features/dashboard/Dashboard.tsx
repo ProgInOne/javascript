@@ -400,12 +400,14 @@ function BlockAction({
   const size = primary ? 'md' : 'sm';
   const lesson = block.lesson;
   if ((block.kind === 'continue' || block.kind === 'new_lesson') && lesson) {
-    const setId = lesson.status === 'practicing' ? lesson.practiceSetId : null;
+    // A project in progress continues on the project screen (its preparation set aside).
+    const project = lesson.kind === 'project' && lesson.status === 'practicing';
+    const setId = lesson.status === 'practicing' && !project ? lesson.practiceSetId : null;
     return (
       <Link
         to="/learn/$lessonId"
         params={{ lessonId: lesson.id }}
-        search={setId ? { mode: 'practice', set: setId } : {}}
+        search={setId ? { mode: 'practice', set: setId } : project ? { mode: 'practice' } : {}}
         className={`${buttonLink} pi-button--${variant} pi-button--${size}`}
       >
         {block.kind === 'continue' ? '이어서 학습' : '단원 시작'}

@@ -134,6 +134,8 @@ export const dailyPlanBlockSchema = z.object({
       title: z.string(),
       status: z.enum(LESSON_PROGRESS_STATUSES),
       practiceSetId: z.string().nullable(),
+      /** `project`: continue on the project screen (no practice set). Absent from older servers. */
+      kind: z.enum(['lesson', 'assessment', 'project']).optional(),
     })
     .nullable(),
   /** Only part of the lesson fits today's budget. */

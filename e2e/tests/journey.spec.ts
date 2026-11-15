@@ -190,7 +190,7 @@ test('new learner: first lesson read and practised on day one', async ({ page, r
   await expect(map.getByText(/학습하면 여기가 채워져요/)).toHaveCount(0);
   await expect(
     page.getByRole('region', { name: '과정 진도' }).getByRole('progressbar'),
-  ).toHaveAttribute('aria-valuenow', '33'); // 1 of 3 units (the values module ends with an assessment)
+  ).toHaveAttribute('aria-valuenow', '25'); // 1 of 4 units (values ends with an assessment, then a project)
   await expectNoA11yViolations(page);
 });
 dashboardShots('new');

@@ -175,6 +175,9 @@ export function CodeEditor({
 
   const ariaAttrs = (): Extension =>
     EditorView.contentAttributes.of({
+      // Explicitly focusable, also when read-only: keyboard users scroll long code from here
+      // (axe scrollable-region-focusable on .cm-scroller does not count contenteditable).
+      tabindex: '0',
       'aria-label': label,
       'aria-describedby': describedBy ? `${helpId} ${describedBy}` : helpId,
     });

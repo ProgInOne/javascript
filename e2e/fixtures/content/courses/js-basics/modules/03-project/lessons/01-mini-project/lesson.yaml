@@ -1,0 +1,10 @@
+id: js-basics.project.mini-project
+title: '미니 프로젝트: 자기소개 카드'
+summary: 제목, 목록, 인사 버튼이 있는 자기소개 카드를 단계별로 만듭니다.
+kind: project
+estimatedMinutes: { read: 3, practice: 30 }
+concepts:
+  practiced: [js.basics.statement]
+  reviewed: [js.basics.const]
+objectives:
+  - 요구 사항을 단계로 나눠 화면을 하나씩 완성할 수 있다.

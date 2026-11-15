@@ -7,6 +7,8 @@ import {
   inlineAttemptResponseSchema,
   lessonProgressSchema,
   practiceSetViewSchema,
+  projectAttemptResponseSchema,
+  projectViewSchema,
   reportResponseSchema,
   runPlanSchema,
   skipItemResponseSchema,
@@ -17,6 +19,7 @@ import {
   type HeartbeatRequest,
   type InlineAttemptRequest,
   type LessonProgressRequest,
+  type ProjectAttemptRequest,
   type ReportRequest,
   type RunPlanRequest,
   backupListSchema,
@@ -237,6 +240,26 @@ export const submitInlineAttempt = (exerciseId: string, request: InlineAttemptRe
     method: 'POST',
     body: request,
     schema: inlineAttemptResponseSchema,
+  });
+
+// ── Project units (content-and-exercises.md#프로젝트-단원-kind-project) ──
+
+export const projectQuery = (lessonId: string) =>
+  queryOptions({
+    queryKey: ['projects', lessonId],
+    queryFn: ({ signal }) =>
+      api(`/lessons/${encodeURIComponent(lessonId)}/project`, {
+        schema: projectViewSchema,
+        signal,
+      }),
+  });
+
+/** `POST /lessons/:id/project/attempts`: a grading run of the project (no practice set). */
+export const submitProjectAttempt = (lessonId: string, request: ProjectAttemptRequest) =>
+  api(`/lessons/${encodeURIComponent(lessonId)}/project/attempts`, {
+    method: 'POST',
+    body: request,
+    schema: projectAttemptResponseSchema,
   });
 
 // ── Reading progress and activity ──

@@ -158,7 +158,13 @@ describe('GET /daily-plan', () => {
         minutes: 25,
         reason: { code: 'new_lesson', why: 'first_lesson' },
         concepts: [],
-        lesson: { id: LESSON, title: '단원 0', status: 'not_started', practiceSetId: null },
+        lesson: {
+          id: LESSON,
+          title: '단원 0',
+          status: 'not_started',
+          practiceSetId: null,
+          kind: 'lesson',
+        },
         partial: false,
       },
     ]);

@@ -123,8 +123,33 @@ function LessonSet({ lesson, setId, item, navigate }: LessonPracticeProps & { se
     }
   };
 
+  const project = lesson.kind === 'project';
   const summaryActions = (done: PracticeSetView) => {
     const passed = done.result?.pass?.passed === true;
+    if (project) {
+      // A project's preparation practice leads back to the project (its milestones complete it).
+      return (
+        <>
+          <Button
+            variant="secondary"
+            icon={<RotateCcw size={16} aria-hidden="true" />}
+            loading={restarting}
+            onClick={() => void again()}
+          >
+            한 번 더 연습
+          </Button>
+          <Link
+            to="/learn/$lessonId"
+            params={{ lessonId: lesson.id }}
+            search={{ mode: 'practice' }}
+            className="pi-button pi-button--primary pi-button--md no-underline"
+          >
+            프로젝트로 돌아가기
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </>
+      );
+    }
     return (
       <>
         <Link
@@ -170,7 +195,7 @@ function LessonSet({ lesson, setId, item, navigate }: LessonPracticeProps & { se
       onIndexChange={(i) => {
         navigate({ set: set.id, ...(i === null ? {} : { i: i + 1 }) });
       }}
-      heading={`${lesson.title} 연습`}
+      heading={project ? `${lesson.title} 준비 연습` : `${lesson.title} 연습`}
       lessonTitle={lesson.title}
       summaryActions={summaryActions}
     />

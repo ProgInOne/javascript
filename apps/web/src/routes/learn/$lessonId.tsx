@@ -18,6 +18,7 @@ import {
   LockedTutorButton,
 } from '../../features/assessment/Assessment.tsx';
 import { PracticeSession } from '../../features/practice/PracticeSession.tsx';
+import { ProjectScreen } from '../../features/project/Project.tsx';
 import { AIStatusIndicator } from '../../features/ai/AIStatusIndicator.tsx';
 import { SELECTABLE_ATTR } from '../../features/tutor/selection.ts';
 import { TutorProvider, useTutorScope } from '../../features/tutor/TutorContext.tsx';
@@ -65,7 +66,9 @@ function LearnPage() {
         ) : (
           <TutorProvider>
             <LessonTutorScope lesson={lesson} />
-            {search.mode === 'practice' ? (
+            {search.mode === 'practice' && lesson.kind === 'project' && !search.set ? (
+              <ProjectMode lesson={lesson} />
+            ) : search.mode === 'practice' ? (
               <PracticeMode lesson={lesson} search={search} />
             ) : (
               <LessonReader lesson={lesson} />
@@ -223,6 +226,24 @@ function useModeShortcuts(lessonId: string) {
   }, [lessonId, navigate]);
 }
 
+/**
+ * Practice mode of a project unit (content-and-exercises.md#프로젝트-단원-kind-project): no
+ * practice set; the workspace grades the milestone web_task directly. The tutor stays available.
+ * With `?set=` the unit's preparation practice runs as a regular lesson set instead.
+ */
+function ProjectMode({ lesson }: { lesson: LessonDetail }) {
+  return (
+    <div className="min-h-screen bg-canvas">
+      <LearnHeader lesson={lesson} mode="practice" />
+      <TutorLayout top={48}>
+        <div className="practice-page">
+          <ProjectScreen lesson={lesson} />
+        </div>
+      </TutorLayout>
+    </div>
+  );
+}
+
 function PracticeMode({ lesson, search }: { lesson: LessonDetail; search: LearnSearch }) {
   const navigate = useNavigate();
   const go = useCallback(
@@ -310,7 +331,7 @@ function LearnHeader({
           aria-current={mode === 'practice' ? 'page' : undefined}
           aria-keyshortcuts="Meta+2 Control+2"
         >
-          {lesson.kind === 'assessment' ? '평가' : '실습'}
+          {lesson.kind === 'assessment' ? '평가' : lesson.kind === 'project' ? '프로젝트' : '실습'}
         </Link>
       </nav>
       <AIStatusIndicator />
