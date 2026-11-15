@@ -204,6 +204,21 @@ export const createPracticeSetRequestSchema = z.discriminatedUnion('kind', [
    * active attempt is returned as-is; a finished one is not reused (asking again is a retake).
    */
   z.object({ kind: z.literal('assessment'), lessonId: contentId }).strict(),
+  /**
+   * "다시 풀기" from the mistake notes (ui-ux.md 오답 노트): exactly these exercises, in this
+   * order. An active extra set with the same exercises is resumed. Assessment-only exercises,
+   * reported ones and those of an assessment in progress are refused.
+   */
+  z
+    .object({
+      kind: z.literal('extra'),
+      exerciseIds: z
+        .array(contentId)
+        .min(1)
+        .max(10)
+        .refine((ids) => new Set(ids).size === ids.length, '같은 문제를 두 번 넣을 수 없습니다.'),
+    })
+    .strict(),
 ]);
 export type CreatePracticeSetRequest = z.infer<typeof createPracticeSetRequestSchema>;
 

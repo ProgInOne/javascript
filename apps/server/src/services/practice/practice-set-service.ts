@@ -13,9 +13,12 @@ import { newId } from '../../db/user/learners.ts';
 import { loadConceptStates } from '../../db/user/learning-state.ts';
 import {
   findActiveSet,
+  findActiveSets,
   getSet,
+  inActiveAssessment,
   insertSet,
   lastSeenAtByGroup,
+  listItems,
   type PracticeSet,
 } from '../../db/user/practice-sets.ts';
 import { getLessonProgress, upsertLessonProgress } from '../../db/user/progress.ts';
@@ -27,6 +30,9 @@ import type { WeaknessService } from './weakness.ts';
 import { candidateOf, learnerContext, passRuleOverrides } from './engine.ts';
 import { activeMisconceptionsByConcept, misconceptionTargetIds } from './signals.ts';
 import { buildSetView } from './views.ts';
+
+/** Item reason of a "다시 풀기" item (an `extra` set from the mistake notes). */
+export const MISTAKE_RETRY_REASON = 'mistake_retry';
 
 export interface PracticeSetServiceDeps {
   userDb: UserDb;
@@ -73,7 +79,103 @@ export class PracticeSetService {
         return this.#createWeaknessSet(request.conceptIds);
       case 'assessment':
         return this.#createAssessmentSet(request.lessonId);
+      case 'extra':
+        return this.#createExtraSet(request.exerciseIds);
     }
+  }
+
+  /**
+   * "다시 풀기" from the mistake notes: an `extra` set of exactly these exercises (no pass rule;
+   * the usual adaptation and relearning apply). The latest active extra set with the same
+   * exercises is resumed. Exercises that cannot be retried outside their context are refused:
+   * assessment-only items (a retake must stay unseen), items of an assessment in progress,
+   * reported ones and types this version cannot grade.
+   */
+  #createExtraSet(exerciseIds: readonly string[]): PracticeSetView {
+    const repo = this.#content.repo;
+    const orm = this.#userDb.orm;
+    const { learnerId } = learnerContext(this.#userDb);
+    const found = new Map(repo.getExercises(exerciseIds).map((e) => [e.id, e]));
+    const missing = exerciseIds.filter((id) => !found.has(id));
+    if (missing.length > 0) {
+      throw new AppError('NOT_FOUND', 404, '문제를 찾을 수 없습니다.', {
+        details: { exerciseIds: missing },
+      });
+    }
+    const locked = exerciseIds.filter(
+      (id) => found.get(id)?.usage === 'assessment' || inActiveAssessment(orm, learnerId, id),
+    );
+    if (locked.length > 0) {
+      throw new AppError(
+        'EXERCISE_LOCKED_IN_ASSESSMENT',
+        403,
+        '단원 평가 문항은 평가 안에서만 풀 수 있습니다.',
+        { details: { exerciseIds: locked } },
+      );
+    }
+    const excluded = excludedExerciseIds(orm, learnerId);
+    const candidates = exerciseIds.flatMap((id) => {
+      const exercise = found.get(id);
+      const candidate = exercise && !excluded.has(id) ? candidateOf(exercise) : null;
+      return candidate ? [candidate] : [];
+    });
+    if (candidates.length < exerciseIds.length) {
+      throw new AppError('PRACTICE_NO_EXERCISES', 409, '다시 풀 수 없는 문제가 있습니다.', {
+        details: {
+          exerciseIds: exerciseIds.filter((id) => !candidates.some((c) => c.id === id)),
+        },
+      });
+    }
+
+    const key = [...exerciseIds].sort().join('\n');
+    for (const id of findActiveSets(orm, learnerId, 'extra')) {
+      const active = getSet(orm, learnerId, id);
+      const ids = active ? listItems(orm, active.row.id).map((i) => i.exerciseId) : [];
+      // Compare the exercises the set started with (adaptation may append follow-ups).
+      if (active && [...ids.slice(0, exerciseIds.length)].sort().join('\n') === key) {
+        return this.#view(active);
+      }
+    }
+
+    const setId = newId();
+    const now = this.#now();
+    const items = candidates.map((c, position) => ({
+      id: newId(),
+      learnerId,
+      practiceSetId: setId,
+      position,
+      exerciseId: c.id,
+      exerciseOrigin: c.origin,
+      reason: MISTAKE_RETRY_REASON,
+      targetConceptId: c.concepts.find((x) => x.isPrimary)?.conceptId ?? null,
+      status: 'pending' as const,
+      finalAttemptId: null,
+    }));
+    orm.transaction(() => {
+      insertSet(
+        orm,
+        {
+          id: setId,
+          learnerId,
+          kind: 'extra',
+          status: 'active',
+          scope: {
+            v: 1,
+            lessonId: null,
+            conceptIds: [
+              ...new Set(items.flatMap((i) => (i.targetConceptId ? [i.targetConceptId] : []))),
+            ],
+            rationale: { source: 'mistake_notes', exerciseIds: [...exerciseIds] },
+          },
+          passRule: null,
+          engineVersion: ENGINE_VERSION,
+          createdAt: new Date(now),
+          completedAt: null,
+        },
+        items,
+      );
+    });
+    return this.get(setId);
   }
 
   /**

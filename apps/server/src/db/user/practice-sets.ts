@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, isNull, max } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, isNull, max } from 'drizzle-orm';
 import type { Orm } from './connection.ts';
 import {
   passRuleJson,
@@ -84,6 +84,23 @@ export function findActiveSet(orm: Orm, learnerId: string, kind: PracticeSetRow[
       .all()
       .at(-1)?.id ?? null
   );
+}
+
+/** Active sets of a kind, newest first. */
+export function findActiveSets(orm: Orm, learnerId: string, kind: PracticeSetRow['kind']) {
+  return orm
+    .select({ id: practiceSets.id })
+    .from(practiceSets)
+    .where(
+      and(
+        eq(practiceSets.learnerId, learnerId),
+        eq(practiceSets.kind, kind),
+        eq(practiceSets.status, 'active'),
+      ),
+    )
+    .orderBy(desc(practiceSets.createdAt))
+    .all()
+    .map((r) => r.id);
 }
 
 export function listItems(orm: Orm, setId: string): PracticeItemRow[] {

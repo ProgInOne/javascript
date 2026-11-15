@@ -4,6 +4,8 @@ import {
   heartbeatRequestSchema,
   learnerPatchSchema,
   lessonProgressRequestSchema,
+  masteryChangesQuerySchema,
+  mistakeListQuerySchema,
   reviewQueueQuerySchema,
 } from '@proginone/shared';
 import { Hono } from 'hono';
@@ -13,7 +15,7 @@ import { contentIdParam, jsonBody, limitBody } from './input.ts';
 
 /**
  * Reading progress, review queue, activity heartbeat, the dashboard summary, goals, the concept
- * detail and the learner profile
+ * detail, the learner profile, the mistake notes and mastery changes
  * (docs/design/system-architecture.md#api-규약).
  */
 export function learningRoutes(services: PracticeServices) {
@@ -47,6 +49,15 @@ export function learningRoutes(services: PracticeServices) {
       return c.json(services.concepts.get(id, query.evidenceLimit));
     })
     .get('/mastery', (c) => c.json(services.mastery.get()))
+    .get('/mastery-changes', (c) =>
+      c.json(services.masteryChanges.get(masteryChangesQuerySchema.parse(c.req.query()))),
+    )
+    .get('/mistakes', (c) =>
+      c.json(services.mistakes.list(mistakeListQuerySchema.parse(c.req.query()))),
+    )
+    .get('/mistakes/:exerciseId', (c) =>
+      c.json(services.mistakes.get(contentIdParam(c.req.param('exerciseId')))),
+    )
     .get('/learner', (c) => c.json(services.learner.get()))
     .patch('/learner', small, async (c) => {
       const patch = learnerPatchSchema.parse(await jsonBody(c));

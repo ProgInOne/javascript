@@ -307,9 +307,10 @@ sequenceDiagram
 | 리소스 | 예시 |
 |---|---|
 | 커리큘럼 | `GET /courses`, `GET /lessons/:lessonId` |
-| 연습 | `POST /practice-sets` (단원·복습·약점 집중·단원 평가 `kind: 'assessment'`. 평가 중 시도 응답은 결과를 감춘 `withheld` 형태이고 마지막 제출이 전체 결과를 돌려줌, v0.3), `POST /practice-sets/:id/items/:itemId/skip` (건너뛰기), `GET /weak-concepts` (약점 개념과 이유), `GET /exercises/:id` (공개 스펙), `POST /exercises/:id/run-plan` (샌드박스 실행 계획), `POST /attempts` (채점 결과와 해설), `POST /exercises/:id/inline-attempts` (레슨 본문 확인 문제: 연습 세트 밖 시도. 실행 없이 채점하는 유형만, 숙련도는 반영하고 FSRS 일정은 바꾸지 않음) |
+| 연습 | `POST /practice-sets` (단원·복습·약점 집중·단원 평가 `kind: 'assessment'`·오답 노트의 "다시 풀기" `kind: 'extra'`(v0.3). 평가 중 시도 응답은 결과를 감춘 `withheld` 형태이고 마지막 제출이 전체 결과를 돌려줌, v0.3), `POST /practice-sets/:id/items/:itemId/skip` (건너뛰기), `GET /weak-concepts` (약점 개념과 이유), `GET /exercises/:id` (공개 스펙), `POST /exercises/:id/run-plan` (샌드박스 실행 계획), `POST /attempts` (채점 결과와 해설), `POST /exercises/:id/inline-attempts` (레슨 본문 확인 문제: 연습 세트 밖 시도. 실행 없이 채점하는 유형만, 숙련도는 반영하고 FSRS 일정은 바꾸지 않음) |
 | 힌트·정답 | `POST /exercises/:id/hints` (다음 단계 요청), `POST /exercises/:id/solution` |
 | 학습 상태 | `GET /mastery` (과정 진도와 개념 지도), `GET /concepts/:id`, `GET /review-queue`, `GET /daily-plan` |
+| 복습 화면 | `GET /mistakes` (오답 노트: 과정·모듈·개념·상태 필터, 확신 오답 우선 정렬, 필터 선택지), `GET /mistakes/:exerciseId` (내 답·피드백·해설, 본 적 있는 정답만), `GET /mastery-changes` (숙련 단계 상승·하락과 주별 요약). v0.3, [D-044](/docs/decisions.md) |
 | 활동 | `POST /activity/heartbeat` (30초 간격, 학습 시간 측정) |
 | 목표 | `GET/PUT /goals` |
 | 학습자 | `GET/PATCH /learner` (온보딩: 경험 수준, 완료 시각, 온보딩 필요 여부) |

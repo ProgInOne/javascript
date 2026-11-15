@@ -953,10 +953,13 @@ erDiagram
 | 개념 지도 | `concept_mastery WHERE learner_id=?` (전체, 수백 행) + content.db 개념 목록 | PK |
 | 이어서 학습 | `lesson_progress WHERE learner_id=? AND status IN ('reading','practicing')` ORDER BY 최근 | `(learner_id, status)` |
 | 오답 노트 | `attempts WHERE learner_id=? AND outcome IN ('incorrect','partial')` ORDER BY `submitted_at DESC` | `(learner_id, outcome, submitted_at)` |
+| 숙련도 변화 | `mastery_evidence WHERE learner_id=? AND stage_before<>stage_after AND created_at>=?` ORDER BY `created_at DESC` | `(learner_id, concept_id, created_at)` |
 | 과거 풀이 비교 | `attempts JOIN submissions WHERE exercise_id=?` | `(learner_id, exercise_id, submitted_at)` |
 | 주간 목표 | `daily_activity WHERE date BETWEEN ? AND ?` | PK `(learner_id, date)` |
 | 튜터 컨텍스트: 과거 요약 | `session_summary_concepts WHERE concept_id IN (...)` → 최신 3개 | `(concept_id)` |
 | 문제 선택: 최근 본 문제 | `exercise_stats WHERE exercise_id IN (...)` | PK |
+
+구현 메모 (v0.3, [D-044](/docs/decisions.md)): 오답 노트와 숙련도 변화는 따로 저장하지 않고 기존 기록에서 파생하므로 마이그레이션이 없습니다. 오답 노트는 `attempts`(+ 세트 종류·상태를 위한 `practice_set_items`·`practice_sets` 조인, 내 답은 `submissions.answer_json`, 정답을 본 적은 `hint_events.kind = 'solution'`), 숙련도 변화는 `mastery_evidence`의 `stage_before`·`stage_after`입니다. 진행 중인 단원 평가의 시도·근거는 두 화면 모두에서 뺍니다. 학습자 한 명의 시도 수는 수천 건 수준이라 노트는 서버가 메모리에서 묶고 거릅니다.
 
 ### 트랜잭션 경계
 
