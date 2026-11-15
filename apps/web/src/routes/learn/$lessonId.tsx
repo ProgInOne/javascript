@@ -120,7 +120,7 @@ function PracticeMode({ lesson, search }: { lesson: LessonDetail; search: LearnS
 }
 
 const segment =
-  'inline-flex h-8 items-center rounded-md px-3 font-medium text-fg-secondary aria-[current=page]:bg-surface aria-[current=page]:text-heading aria-[current=page]:shadow-1';
+  'inline-flex h-8 items-center whitespace-nowrap rounded-md px-3 font-medium text-fg-secondary aria-[current=page]:bg-surface aria-[current=page]:text-heading aria-[current=page]:shadow-1';
 
 function LearnHeader({ lesson, mode }: { lesson: LessonDetail; mode: 'read' | 'practice' }) {
   useModeShortcuts(lesson.id);
@@ -148,7 +148,10 @@ function LearnHeader({ lesson, mode }: { lesson: LessonDetail; mode: 'read' | 'p
           </li>
         </ol>
       </nav>
-      <nav aria-label="학습 모드" className="ml-auto flex gap-1 rounded-lg bg-muted p-1 type-small">
+      <nav
+        aria-label="학습 모드"
+        className="ml-auto flex shrink-0 gap-1 rounded-lg bg-muted p-1 type-small"
+      >
         <Link
           to="/learn/$lessonId"
           params={{ lessonId: lesson.id }}
@@ -190,7 +193,7 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
     <div className="min-h-screen bg-canvas">
       <LearnHeader lesson={lesson} mode="read" />
       <TutorLayout top={48}>
-        <div className="mx-auto grid max-w-[1120px] gap-10 px-5 py-10 lg:grid-cols-[minmax(0,680px)_240px] lg:justify-center">
+        <div className="mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)] gap-10 px-5 py-10 lg:grid-cols-[minmax(0,680px)_240px] lg:justify-center">
           <article aria-labelledby="lesson-title" {...{ [SELECTABLE_ATTR]: '' }}>
             <p className="text-fg-tertiary type-small">{lesson.module.title}</p>
             <h1 id="lesson-title" className="mt-1 type-h1 text-heading">

@@ -86,6 +86,7 @@ const base = {
   difficulty: 2,
   lessonId: LESSON_ID,
   code: null,
+  codeLanguage: null,
   estimatedSeconds: 40,
   hintCount: 3,
   openedHints: [],

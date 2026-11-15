@@ -97,6 +97,8 @@ export const exerciseViewSchema = z.object({
   lessonId: z.string().nullable(),
   prompt: z.string(),
   code: z.string().nullable(),
+  /** Language of the exercise's course: labels `code` (null outside a course lesson). */
+  codeLanguage: z.enum(['html', 'css', 'javascript']).nullable(),
   publicSpec: z.record(z.string(), z.unknown()),
   estimatedSeconds: z.int(),
   /** True when grading needs a sandbox `RunResult` (fetch a run plan first). */

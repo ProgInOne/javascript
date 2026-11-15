@@ -39,7 +39,13 @@ import { examplePlan, statusMessage } from '../runner/runner.ts';
 import { clearDraft, loadDraft, saveDraft, useActiveTime, useExerciseRunner } from './hooks.ts';
 import { Markdown } from './Markdown.tsx';
 import { CODE_TYPES, TYPE_LABELS } from './model.ts';
-import { feedbackResultOf, MasteryChangeList, ReportButton, SolutionContent } from './parts.tsx';
+import {
+  ExerciseCode,
+  feedbackResultOf,
+  MasteryChangeList,
+  ReportButton,
+  SolutionContent,
+} from './parts.tsx';
 import {
   adaptationNote,
   addedItemLabel,
@@ -391,9 +397,7 @@ function ItemWorkspace({
       <div className="practice-problem__prompt">
         <Markdown text={view.prompt} />
       </div>
-      {view.code !== null && !CODE_IN_SPEC.has(exercise.typeId) && (
-        <Markdown text={'```\n' + view.code.replace(/\n$/, '') + '\n```'} />
-      )}
+      {!CODE_IN_SPEC.has(exercise.typeId) && <ExerciseCode view={view} />}
     </div>
   );
 

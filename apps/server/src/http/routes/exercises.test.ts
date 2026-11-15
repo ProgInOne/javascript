@@ -61,6 +61,12 @@ describe('GET /exercises/:id', () => {
     expect((await view(EX.implement)).category).toBe('production');
   });
 
+  it('labels the code with the language of the exercise course', async () => {
+    const { call } = await practiceApp();
+    const view = exerciseViewSchema.parse((await call('GET', `/exercises/${EX.mcq}`)).json);
+    expect(view.codeLanguage).toBe('javascript');
+  });
+
   it('answers 404 for unknown or malformed ids and items', async () => {
     const { call } = await practiceApp();
     expect((await call('GET', '/exercises/nope.nope.nope.nope')).status).toBe(404);

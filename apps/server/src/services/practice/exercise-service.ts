@@ -91,6 +91,10 @@ export class ExerciseService {
       lessonId: exercise.lessonId,
       prompt: exercise.prompt,
       code: exercise.code,
+      codeLanguage:
+        exercise.lessonId === null
+          ? null
+          : this.#content.repo.courseLanguageOfLesson(exercise.lessonId),
       publicSpec,
       estimatedSeconds: exercise.estimatedSeconds,
       requiresRun: def.requiresRun(spec),

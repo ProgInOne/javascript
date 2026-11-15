@@ -4,6 +4,7 @@ import { CodeBlock, InlineText } from '@proginone/exercise-ui';
 import {
   REPORT_REASONS,
   type AttemptResponse,
+  type ExerciseView,
   type MasteryChange,
   type SolutionView,
 } from '@proginone/shared';
@@ -24,6 +25,35 @@ export function feedbackResultOf(res: Pick<AttemptResponse, 'attempt' | 'grade'>
     ...(res.grade.failedRequirements ? { failedRequirements: res.grade.failedRequirements } : {}),
     ...(res.grade.milestones ? { milestones: res.grade.milestones } : {}),
   };
+}
+
+/**
+ * The read-only snippet an exercise prompt refers to (`ExerciseView.code`), labelled with the
+ * course language. HTML course snippets without markup (folder trees) are plain "코드".
+ */
+export function ExerciseCode({ view }: { view: Pick<ExerciseView, 'code' | 'codeLanguage'> }) {
+  if (view.code === null) return null;
+  const language = codeLanguageKey(view.codeLanguage, view.code);
+  return (
+    <CodeBlock
+      code={view.code}
+      lineNumbers={language !== null}
+      {...(language ? { language } : {})}
+    />
+  );
+}
+
+function codeLanguageKey(course: ExerciseView['codeLanguage'], code: string): string | null {
+  switch (course) {
+    case 'javascript':
+      return 'js';
+    case 'css':
+      return 'css';
+    case 'html':
+      return /<[a-z!/]/i.test(code) ? 'html' : null;
+    case null:
+      return null;
+  }
 }
 
 /** Stage changes of this attempt ("개념 변화"). Score-only changes are not shown (ui-ux.md). */

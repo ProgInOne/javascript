@@ -5,6 +5,12 @@
   .tutor-ask .pi-ex-kbd kbd {
     opacity: 1;
   }
+  /* Phone widths have no keyboard shortcut room in the header (aria-keyshortcuts stays). */
+  @media (width < 640px) {
+    .tutor-trigger .pi-ex-kbd {
+      display: none;
+    }
+  }
 
   .tutor-layout {
     display: flex;

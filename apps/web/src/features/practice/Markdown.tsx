@@ -116,14 +116,9 @@ function blocks(text: string, ai: boolean): ReactNode[] {
         const known = CODE_LANGS.has(block.lang);
         const lang = block.lang === 'javascript' ? 'js' : block.lang;
         const code = block.lines.join('\n');
-        const view = (
-          <CodeBlock
-            key={index}
-            code={code}
-            lineNumbers={known}
-            language={known ? lang : ai ? lang || '코드' : '출력'}
-          />
-        );
+        // Authored content marks program output as ```text; any other unlabelled block is code.
+        const label = known ? lang : !ai && lang === 'text' ? '출력' : lang || '코드';
+        const view = <CodeBlock key={index} code={code} lineNumbers={known} language={label} />;
         return ai ? (
           <CopyableCode key={index} code={code}>
             {view}

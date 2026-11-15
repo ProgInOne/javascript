@@ -447,6 +447,19 @@ export class ContentRepository {
     );
   }
 
+  /** Language of a lesson's course (`html`, `css`, `javascript`), or null. */
+  courseLanguageOfLesson(lessonId: string): (typeof t.courses.$inferSelect)['language'] | null {
+    return (
+      this.#db
+        .select({ language: t.courses.language })
+        .from(t.lessons)
+        .innerJoin(t.modules, eq(t.lessons.moduleId, t.modules.id))
+        .innerJoin(t.courses, eq(t.modules.courseId, t.courses.id))
+        .where(eq(t.lessons.id, lessonId))
+        .get()?.language ?? null
+    );
+  }
+
   /** Published/preview courses in catalog order (the first one starts a new learner). */
   listCourseIds(): string[] {
     return this.#db

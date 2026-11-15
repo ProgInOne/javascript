@@ -20,6 +20,16 @@
   .ai-indicator__label {
     font-weight: 500;
   }
+  /* Phone widths: the dot and "AI" stay; the state label is only read out (no page overflow). */
+  @media (width < 640px) {
+    .ai-indicator__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+  }
   .ai-dot,
   .ai-indicator__dot {
     flex: none;

@@ -21,7 +21,7 @@ import { ApiRequestError } from '../../api/client.ts';
 import { exerciseQuery, submitInlineAttempt } from '../../api/queries.ts';
 import { useActiveTime } from '../practice/hooks.ts';
 import { Markdown } from '../practice/Markdown.tsx';
-import { feedbackResultOf, MasteryChangeList } from '../practice/parts.tsx';
+import { ExerciseCode, feedbackResultOf, MasteryChangeList } from '../practice/parts.tsx';
 
 /** Short types answered in the body (ui-ux.md 읽기 모드: 객관식·빈칸 등 짧은 유형만). */
 const INLINE_TYPES = new Set([
@@ -102,9 +102,7 @@ function InlineCheck({ view, exercise }: { view: ExerciseView; exercise: Rendera
         <p className="lesson-inline-check__label">확인 문제</p>
         <Markdown text={view.prompt} />
       </div>
-      {view.code !== null && exercise.typeId !== 'predict_output' && (
-        <Markdown text={'```\n' + view.code.replace(/\n$/, '') + '\n```'} />
-      )}
+      {exercise.typeId !== 'predict_output' && <ExerciseCode view={view} />}
       <ExerciseRenderer
         exercise={exercise}
         value={answer}
