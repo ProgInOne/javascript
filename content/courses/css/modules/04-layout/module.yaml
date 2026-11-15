@@ -1,5 +1,5 @@
 id: css.layout
 title: 레이아웃 기초
 summary: Flexbox로 요소를 가로·세로로 배치하고, 미디어 쿼리로 화면 너비에 맞게 배치를 바꿉니다.
-# 단원 평가(review)는 M6 평가 세트에서 추가합니다.
-lessons: [flex-basics, responsive]
+lessons: [flex-basics, responsive, review]
+assessment: review

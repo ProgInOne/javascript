@@ -1,0 +1,54 @@
+id: js-basics.loops.loops-review.multi-which-never-end
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.loops.infinite, weight: 1 }
+  - { id: js.loops.for, weight: 0.3 }
+  - { id: js.loops.continue, weight: 0.3 }
+tags: [infinite-loop, for, continue, trace, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  다음 반복 중 **끝나지 않는** 것(무한 반복)을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`for (let i = 10; i > 0; i++) { }`"
+    - id: b
+      text: "`for (let i = 0; i < 10; i + 2) { }`"
+    - id: c
+      text: "`let k = 0; while (k < 3) { if (k === 1) { continue; } k++; }`"
+      missedMisconception: js.mc.continue-while-update
+    - id: d
+      text: "`for (let i = 1; i <= 50; i *= 2) { }`"
+      rationale: i가 1, 2, 4, 8, 16, 32로 커지다가 64에서 `i <= 50`이 거짓이 되어 끝나요.
+    - id: e
+      text: "`for (let i = 0; i !== 9; i += 3) { }`"
+      rationale: i가 0, 3, 6, 9로 늘어요. 9에서 정확히 멈추므로 `i !== 9`가 거짓이 되어 끝나요.
+    - id: f
+      text: "`for (let i = 20; i >= 0; i -= 6) { }`"
+      rationale: i가 20, 14, 8, 2로 줄다가 -4에서 `i >= 0`이 거짓이 되어 끝나요. 0을 정확히 지나지 않아도 돼요.
+  correct: [a, b, c]
+misconceptions: [js.mc.continue-while-update]
+hints:
+  - 반복마다 조건에 쓴 변수가 어떻게 바뀌는지 처음 몇 회차만 적어 보세요.
+  - 변수가 조건을 거짓으로 만드는 쪽으로 바뀌나요? 그리고 갱신 자리에 쓴 식이 정말 변수에 새 값을 넣나요?
+  - "`while` 안의 `continue`는 그 아래 줄을 건너뛰고 곧바로 조건을 검사해요. 건너뛴 줄 중에 변수를 바꾸는 줄이 있는지 보세요."
+explanation: |
+  끝나지 않는 반복은 "`for (let i = 10; i > 0; i++) { }`", "`for (let i = 0; i < 10; i + 2) { }`", "`let k = 0; while (k < 3) { ... }`" 세 개예요.
+
+  - `i = 10`에서 `i++`: `i`가 11, 12, 13, …으로 커져서 `i > 0`이 영원히 참이에요. 변수를 끝나는 반대 방향으로 바꿨어요.
+  - `i + 2`: 값을 계산만 하고 `i`에 다시 넣지 않아요. `i`는 계속 0이라 `i < 10`이 영원히 참이에요. `i += 2`로 써야 해요.
+  - `while`과 `continue`: `k`가 1이 되면 `continue`가 `k++`를 건너뛰고 바로 조건을 검사해요. `k`는 영원히 1에 머물러요. `for`의 갱신식과 달리, `while` 본문 끝의 `k++`는 `continue`가 있으면 실행되지 않아요.
+
+  끝나는 반복:
+
+  - `i *= 2`로 50까지: 1, 2, 4, 8, 16, 32, 64. 64에서 조건이 거짓이에요.
+  - `i !== 9`에 `i += 3`: 0, 3, 6, 9. 목표값 9를 정확히 지나가므로 끝나요(2씩 늘렸다면 9를 건너뛰어 끝나지 않았을 거예요).
+  - `i >= 0`에 `i -= 6`: 20, 14, 8, 2, -4. -4에서 조건이 거짓이에요.
+
+  JavaScript는 끝나지 않는 반복을 오류로 알려 주지 않으므로, 반복을 쓸 때마다 "조건의 변수가 본문에서 끝나는 쪽으로 바뀌는가"를 직접 확인해야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

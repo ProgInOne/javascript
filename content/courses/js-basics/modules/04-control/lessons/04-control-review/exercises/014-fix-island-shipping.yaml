@@ -1,0 +1,91 @@
+id: js-basics.control.control-review.fix-island-shipping
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.control.block, weight: 1 }
+  - { id: js.control.if, weight: 0.5 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [block, block-scope, semicolon, debugging]
+estimatedSeconds: 360
+usage: assessment
+prompt: |
+  택배 배송비를 계산하는 프로그램이에요. 규칙은 이래요.
+
+  - 기본 배송비는 3000원
+  - 무게가 5kg을 넘으면 2000원 추가
+  - 받는 곳이 섬이면 4000원 추가
+
+  지금 상자는 3kg이고 섬으로 가요. 버그가 두 개 있고, 하나를 고치면 다른 문제가 드러나요. 규칙은 그대로 두고 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  배송비: 7000
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const weight = 3;
+          const isIsland = true;
+          let fee = 3000;
+
+          if (weight > 5); {
+            fee = fee + 2000;
+          }
+
+          if (isIsland) {
+            const extra = 4000;
+          }
+
+          console.log("배송비:", fee + extra);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const weight = 3;
+          const isIsland = true;
+          let fee = 3000;
+
+          if (weight > 5) {
+            fee = fee + 2000;
+          }
+
+          let extra = 0;
+          if (isIsland) {
+            extra = 4000;
+          }
+
+          console.log("배송비:", fee + extra);
+  bugDescription: 실행하면 ReferenceError가 나요.
+  maxEditDistance: 40
+  checks:
+    - kind: console
+      id: output
+      description: 3kg 상자를 섬으로 보내는 배송비가 출력되어야 합니다.
+      requirement: 배송비 출력
+      expect:
+        lines: ["배송비: 7000"]
+    - kind: program
+      id: fee-value
+      visible: false
+      description: 무게 추가 요금이 붙지 않아 fee는 기본 배송비 그대로여야 하고, 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 배송비 출력
+      expect:
+        globals:
+          fee: { equals: 3000 }
+        noError: true
+hints:
+  - 먼저 오류 메시지를 읽어 보세요. 어떤 이름을 찾지 못했다고 하나요? 그 이름은 어디에서 만들어졌나요?
+  - 블록 안에서 `const`로 만든 변수는 블록이 끝나면 쓸 수 없어요. 오류를 고친 뒤 나오는 금액이 7000이 아니라면, 3kg 상자에 붙으면 안 되는 금액이 붙은 거예요.
+  - 블록 밖에서도 쓸 변수는 블록 바깥(위)에서 먼저 만들고 블록 안에서는 대입만 해요. 그리고 `if (조건)`과 `{` 사이를 잘 보세요.
+explanation: |
+  버그는 두 개예요.
+
+  1. **블록 안에서 만든 변수를 블록 밖에서 썼어요.** `const extra = 4000;`은 `if (isIsland) { … }` 블록 안에서 만들어서 그 블록 안에서만 쓸 수 있어요. 마지막 줄에서 `extra`를 쓰면 `ReferenceError: extra is not defined`가 나요. 블록 위에서 `let extra = 0;`으로 먼저 만들고, 블록 안에서는 `extra = 4000;`으로 대입만 해요. (섬이 아니면 `extra`는 0으로 남아요.)
+  1. **`if (weight > 5)` 뒤에 세미콜론이 있어요.** 첫 번째 버그를 고치면 `배송비: 9000`이 나와요. `if (weight > 5);`의 세미콜론은 빈 문장이 되어 조건에 딸리고, 뒤의 `{ fee = fee + 2000; }`은 if와 관계없는 별개의 블록이라 무게와 상관없이 항상 실행돼요. 세미콜론을 지우면 3kg 상자에는 2000원이 붙지 않아요.
+
+  두 군데를 고치면 `3000 + 4000`으로 `배송비: 7000`이 나와요. 숨김 체크는 `fee`가 3000인지 확인하므로, 마지막 줄에서 2000을 빼서 금액만 맞추는 답은 통과하지 못해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

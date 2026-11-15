@@ -1,0 +1,35 @@
+id: css.layout.review.fill-viewport-content
+type: fill_blank
+difficulty: 1
+concepts:
+  - { id: css.responsive.viewport-meta, weight: 1 }
+tags: [viewport, meta, responsive]
+estimatedSeconds: 45
+usage: assessment
+prompt: |
+  휴대폰 브라우저가 페이지를 약 980px 너비로 그린 뒤 축소하지 않고, **기기의 실제 너비 그대로** 그리게 하려고 해요. 아래 뷰포트 메타 태그의 빈칸을 채우세요.
+spec:
+  mode: text
+  template: |
+    <meta name="viewport" content="{{blank:width}}, initial-scale=1" />
+  blanks:
+    - id: width
+      accept: ["width=device-width"]
+      acceptRegex: "width ?= ?device-width"
+      caseSensitive: false
+      width: 20
+hints:
+  - 빈칸에는 "페이지를 그릴 너비"를 정하는 설정이 들어가요. `이름=값` 모양이에요.
+  - 설정 이름은 너비를 뜻하는 영어 단어예요. 값은 숫자가 아니라 "기기의 너비"를 뜻하는 낱말이에요.
+  - 값 자리에는 숫자 대신 "기기마다 다른 실제 너비"를 가리키는 키워드가 들어가요. 반응형 기초 레슨에서 본 메타 태그를 떠올려 보세요.
+explanation: |
+  정답은 `width=device-width`예요. 완성한 태그는 `<meta name="viewport" content="width=device-width, initial-scale=1" />`예요.
+
+  - `width=device-width`: 페이지를 그릴 너비를 기기의 실제 너비로 정해요. 이 설정이 없으면 휴대폰 브라우저는 약 980px 너비로 그린 뒤 화면에 맞게 축소해요.
+  - `initial-scale=1`: 처음 배율을 1배로 둬요.
+
+  `width=980px`처럼 숫자를 쓰면 그 너비로 고정되어 축소 문제가 그대로 남아요. 이 태그는 그리는 너비만 정할 뿐, 배치를 바꾸는 일은 미디어 쿼리가 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

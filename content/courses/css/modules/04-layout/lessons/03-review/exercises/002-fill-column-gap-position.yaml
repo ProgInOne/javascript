@@ -1,0 +1,71 @@
+id: css.layout.review.fill-column-gap-position
+type: fill_blank
+difficulty: 3
+concepts:
+  - { id: css.flex.axes, weight: 1 }
+  - { id: css.flex.gap, weight: 0.5 }
+  - { id: css.flex.justify-align, weight: 0.5 }
+tags: [flexbox, flex-direction, gap, justify-content]
+estimatedSeconds: 120
+usage: assessment
+prompt: |
+  높이가 `300px`인 알림 상자(`.alerts`) 안에 높이 `50px`짜리 알림 세 개가 있어요. 상자에는 padding과 테두리가 없고, 알림에도 margin이 없어요.
+
+  아래 CSS를 적용했을 때 두 값을 px 단위로 구하세요. 숫자만 써도 돼요.
+code: |
+  .alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+    height: 300px;
+  }
+  .alert {
+    height: 50px;
+  }
+spec:
+  mode: text
+  template: |
+    첫 번째 알림의 위쪽 끝부터 세 번째 알림의 아래쪽 끝까지의 거리: {{blank:block}}
+    상자의 위쪽 끝부터 첫 번째 알림의 위쪽 끝까지의 거리: {{blank:top}}
+  blanks:
+    - id: block
+      accept: ["174px", "174"]
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "50px": css.mc.column-means-columns
+        "50": css.mc.column-means-columns
+        "198px": css.mc.gap-adds-outer-edges
+        "198": css.mc.gap-adds-outer-edges
+    - id: top
+      accept: ["63px", "63"]
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "125px": css.mc.column-means-columns
+        "125": css.mc.column-means-columns
+        "0px": css.mc.justify-is-horizontal
+        "0": css.mc.justify-is-horizontal
+misconceptions: [css.mc.column-means-columns, css.mc.gap-adds-outer-edges, css.mc.justify-is-horizontal]
+hints:
+  - "`flex-direction: column`에서 주축은 어느 방향인가요? 알림 세 개는 그 방향으로 늘어서요."
+  - gap은 주축 방향으로, 아이템과 아이템 사이에만 생겨요. 알림이 세 개면 gap은 몇 군데일까요? 그리고 column에서 `justify-content`는 어느 방향의 위치를 정할까요?
+  - 먼저 알림 세 개와 그 사이 간격을 합친 덩어리의 높이를 구하고, 상자 높이에서 그 덩어리를 뺀 남는 공간이 위아래로 어떻게 나뉘는지 생각해 보세요.
+explanation: |
+  정답은 **174px**, **63px**이에요.
+
+  `column`이라 주축이 세로예요. 알림 세 개는 위에서 아래로 한 줄로 쌓이고, `gap: 12px`는 세로 방향으로 알림 **사이 두 군데**에만 생겨요.
+
+  - 덩어리 높이: 50 + 12 + 50 + 12 + 50 = **174px**
+  - column에서 `justify-content`는 주축인 세로 방향 정렬이에요. `center`이므로 남는 공간 300 − 174 = 126px을 위아래로 똑같이 나눠요. 위쪽 거리는 126 ÷ 2 = **63px**이에요.
+
+  자주 나오는 오답:
+
+  - 50px과 125px은 알림들이 가로로 나란히 놓인다고 생각한 값이에요. column은 세로 단을 여러 개 만드는 게 아니라 아이템을 위아래로 쌓아요.
+  - 198px은 gap이 위아래 가장자리에도 생긴다고 생각해 12px을 두 번 더 더한 값이에요. gap은 아이템 사이에만 생겨요.
+  - 0px은 `justify-content`가 가로 정렬이라서 세로 위치는 위쪽 그대로라고 생각한 값이에요. column에서는 `justify-content`가 세로 위치를 정해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

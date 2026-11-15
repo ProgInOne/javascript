@@ -1,0 +1,23 @@
+id: js-basics.control.control-review
+title: 조건문 단원 평가
+summary: 모듈 4에서 배운 if·else, else if 체인, 블록, switch와 fall-through, 조건 연산자를 섞어 풀며 이해도를 확인합니다.
+kind: assessment
+importance: standard
+estimatedMinutes: { read: 2, practice: 30 }
+concepts:
+  reviewed:
+    - js.control.if
+    - js.control.else-if
+    - js.control.block
+    - js.control.switch
+    - js.control.fallthrough
+    - js.control.ternary
+objectives:
+  - 조건문 코드를 읽고 어느 갈래가 실행될지, 실행 뒤 변수에 어떤 값이 남을지 예측할 수 있다.
+  - 조건의 순서, 빠진 중괄호·break, 대입과 비교의 혼동 때문에 생긴 버그를 찾아 고칠 수 있다.
+  - 요구사항을 읽고 if·else if·switch·조건 연산자 중 알맞은 것을 골라 프로그램을 작성할 수 있다.
+assessment:
+  itemCount: 15
+  passRatio: 0.8
+practice:
+  targetCount: 15

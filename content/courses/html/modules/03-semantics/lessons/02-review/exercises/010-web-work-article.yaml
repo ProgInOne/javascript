@@ -1,0 +1,197 @@
+id: html.semantics.review.web-work-article
+type: web_task
+difficulty: 4
+concepts:
+  - { id: html.semantics.sectioning, weight: 1 }
+  - { id: html.semantics.page-landmarks, weight: 0.5 }
+  - { id: html.content.images, weight: 0.3 }
+  - { id: html.content.links, weight: 0.3 }
+  - { id: html.text.headings, weight: 0.3 }
+tags: [semantic, article, header, footer, img, a, profile, web-task]
+estimatedSeconds: 600
+usage: assessment
+prompt: |
+  서윤이의 프로필 페이지 "작품 모음" 구역에 새 작품 소개 글을 **직접 써서** 넣으세요. 이 글은 따로 옮겨 실어도 뜻이 통하는 글 한 편이에요. `<!-- 여기에 작품 소개 글을 쓰세요 -->` 주석 자리에 쓰면 돼요.
+
+  글 한 편에는 다음이 들어가야 해요.
+
+  - **글의 머리말**: 작품 이름 "종이 배"(목차에서 "작품 모음" 바로 아래 단계의 제목)와, 그 아래 문단 "만든 날: 2026년 9월 14일"
+  - **사진**: 같은 폴더의 `boat.jpg`. 사진의 내용을 설명하는 글을 붙이세요. (이 미리보기에는 그림 파일이 없어서 깨진 그림으로 보여요.)
+  - **설명 문단**: 작품을 소개하는 문단 하나(내용은 자유)
+  - **글의 꼬리말**: "자세히 보기"라는 글자의 링크. 누르면 `works` 폴더 안의 `boat.html`로 이동해야 해요.
+
+  글의 머리말과 꼬리말은 페이지 전체가 아니라 **이 글 한 편의** 머리말·꼬리말이에요. 이미 있는 코드는 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>한서윤의 작품 모음</title>
+            </head>
+            <body>
+              <header>
+                <h1>한서윤</h1>
+              </header>
+              <main>
+                <section>
+                  <h2>작품 모음</h2>
+                  <!-- 여기에 작품 소개 글을 쓰세요 -->
+                </section>
+              </main>
+              <footer>
+                <p>© 2026 한서윤</p>
+              </footer>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>한서윤의 작품 모음</title>
+            </head>
+            <body>
+              <header>
+                <h1>한서윤</h1>
+              </header>
+              <main>
+                <section>
+                  <h2>작품 모음</h2>
+                  <article>
+                    <header>
+                      <h3>종이 배</h3>
+                      <p>만든 날: 2026년 9월 14일</p>
+                    </header>
+                    <img src="boat.jpg" alt="색종이로 접은 빨간 종이 배가 물 위에 떠 있는 사진" />
+                    <p>색종이 한 장으로 접은 배예요. 물에 띄워도 한참 동안 가라앉지 않아요.</p>
+                    <footer>
+                      <a href="works/boat.html">자세히 보기</a>
+                    </footer>
+                  </article>
+                </section>
+              </main>
+              <footer>
+                <p>© 2026 한서윤</p>
+              </footer>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: article
+      description: "\"작품 모음\" 구역 안에 독립된 글을 뜻하는 요소가 하나 있어야 합니다."
+      requirement: 글 한 편
+      visible: true
+      selector: main > section > article
+      expect:
+        count: 1
+      misconceptionIfFail: html.mc.section-article-same
+    - kind: dom
+      id: article-heading
+      description: 글의 머리말 요소 안에 "작품 모음"(h2) 바로 아래 단계의 제목 "종이 배"가 있어야 합니다.
+      requirement: 글의 머리말
+      visible: true
+      selector: article > header > h3
+      expect:
+        count: 1
+        text: { equals: 종이 배 }
+    - kind: dom
+      id: article-date
+      description: '글의 머리말 안에 "만든 날: 2026년 9월 14일" 문단이 있어야 합니다.'
+      requirement: 글의 머리말
+      visible: true
+      selector: article > header > p
+      expect:
+        text: { includes: "2026년 9월 14일" }
+    - kind: dom
+      id: photo-src
+      description: 글 안에 src가 boat.jpg인 그림이 하나 있어야 합니다.
+      requirement: 사진
+      visible: true
+      selector: article img
+      expect:
+        count: 1
+        attr: { name: src, equals: boat.jpg }
+    - kind: dom
+      id: photo-alt
+      description: 그림에 내용을 설명하는 alt가 있어야 합니다(비어 있으면 안 됩니다).
+      requirement: 사진
+      visible: true
+      selector: article img
+      expect:
+        attr: { name: alt, notEmpty: true }
+      misconceptionIfFail: html.mc.alt-optional
+    - kind: dom
+      id: description
+      description: 글의 머리말·꼬리말 밖에 작품을 소개하는 문단이 하나 이상 있어야 합니다.
+      requirement: 설명 문단
+      visible: true
+      selector: article > p
+      expect:
+        count: { min: 1 }
+    - kind: dom
+      id: footer-link
+      description: 글의 꼬리말 요소 안에 "자세히 보기" 링크가 있고, works 폴더 안의 boat.html로 이동해야 합니다.
+      requirement: 글의 꼬리말
+      visible: true
+      selector: 'article > footer a[href="works/boat.html"], article > footer a[href="./works/boat.html"]'
+      expect:
+        count: 1
+        text: { equals: 자세히 보기 }
+      misconceptionIfFail: html.mc.link-text-is-address
+    - kind: dom
+      id: page-landmarks-kept
+      description: 페이지 전체의 머리말·핵심 내용·꼬리말은 각각 하나씩 그대로 있어야 합니다.
+      requirement: 이미 있는 코드 유지
+      selector: body > header, body > main, body > footer
+      expect:
+        count: 3
+    - kind: dom
+      id: page-footer-text
+      description: 페이지 전체의 꼬리말에는 저작권 문구만 그대로 있어야 합니다.
+      requirement: 이미 있는 코드 유지
+      selector: body > footer
+      expect:
+        count: 1
+        text: { equals: © 2026 한서윤 }
+misconceptions: [html.mc.section-article-same, html.mc.alt-optional, html.mc.link-text-is-address]
+hints:
+  - 먼저 글 한 편을 감쌀 요소를 정하고, 그 안을 "머리말 → 사진 → 설명 문단 → 꼬리말" 순서로 채워 보세요.
+  - 따로 옮겨도 뜻이 통하는 글은 `article`이에요. article 안에서도 그 글의 머리말·꼬리말에 `header`·`footer`를 쓸 수 있어요. 제목 단계는 h2 바로 아래예요.
+  - "사진은 `img`에 `src`와 내용을 설명하는 속성을, 링크는 `a`에 이동할 주소 속성을 써요. 하위 폴더의 파일은 `폴더 이름/파일 이름` 모양의 상대 경로로 가리켜요."
+explanation: |
+  예시 정답은 이래요.
+
+  ```html
+  <section>
+    <h2>작품 모음</h2>
+    <article>
+      <header>
+        <h3>종이 배</h3>
+        <p>만든 날: 2026년 9월 14일</p>
+      </header>
+      <img src="boat.jpg" alt="색종이로 접은 빨간 종이 배가 물 위에 떠 있는 사진" />
+      <p>색종이 한 장으로 접은 배예요. ...</p>
+      <footer>
+        <a href="works/boat.html">자세히 보기</a>
+      </footer>
+    </article>
+  </section>
+  ```
+
+  - **`article`**: 작품 소개 한 편은 따로 옮겨 실어도 뜻이 통하는 독립된 글이라 article이에요. `section`은 "작품 모음"처럼 소제목이 붙는 주제별 구역이고, 이미 바깥에 있어요.
+  - **글 안의 `header`·`footer`**: article 안에 쓰면 페이지 전체가 아니라 그 글 한 편의 머리말·꼬리말이에요. 그래서 페이지에 header·footer가 이미 있어도 써도 돼요.
+  - **`h3`**: "작품 모음"이 h2이니 그 아래 단계의 작품 이름은 h3이에요.
+  - **`alt`**: 사진은 뜻이 있는 그림이라 내용을 설명해요. 채점은 alt가 비어 있지 않은지만 보지만, 사진에 담긴 모습을 쓰는 것이 좋아요.
+  - **`href="works/boat.html"`**: 이동할 주소는 href에, 링크 글자 "자세히 보기"는 태그 사이에 써요. `boat.html`은 지금 문서와 같은 폴더의 `works` 폴더 안에 있으니 `works/boat.html`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

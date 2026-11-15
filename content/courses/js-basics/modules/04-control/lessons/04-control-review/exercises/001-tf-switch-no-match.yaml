@@ -1,0 +1,39 @@
+id: js-basics.control.control-review.tf-switch-no-match
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.control.switch, weight: 1 }
+tags: [switch, default]
+estimatedSeconds: 50
+usage: assessment
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`switch`에서 값과 같은 `case`가 하나도 없고 `default`도 없으면, 오류 없이 switch 안의 코드를 하나도 실행하지 않고 switch 다음 문장으로 넘어간다."
+  answer: true
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 같은 case가 없으면 default를 실행하는데, default가 없으면 실행할 코드가 없으므로 그냥 다음 문장으로 넘어간다
+      correct: true
+    - id: r2
+      text: 같은 case가 없으면 값이 가장 비슷한 case를 골라 실행한다
+      misconception: js.mc.switch-loose-compare
+    - id: r3
+      text: 같은 case가 없으면 첫 번째 case부터 break까지 실행한다
+    - id: r4
+      text: default가 없는 switch는 문법 오류라서 실행되지 않는다
+hints:
+  - switch가 실행할 자리를 찾는 순서를 떠올려 보세요. 같은 case를 찾지 못하면 어디로 가나요?
+  - "`default`는 else 체인의 마지막 `else`와 같은 역할이에요. `else` 없이 쓴 `if`의 조건이 거짓이면 어떻게 되나요?"
+  - "`default`는 꼭 써야 하는 것이 아니에요. 써 두지 않았다면 갈 곳이 없을 뿐이에요."
+explanation: |
+  **맞아요.** `switch`는 값과 `===`로 같은 `case`를 찾고, 없으면 `default:` 뒤의 코드를 실행해요. `default`도 없으면 실행할 코드가 없으니 아무것도 하지 않고 switch 다음 문장으로 넘어가요. `else` 없이 쓴 `if`의 조건이 거짓일 때와 같아요.
+
+  - "값이 가장 비슷한 case를 골라 실행한다": switch에는 "비슷한 값"이 없어요. `===`로 완전히 같은 case만 찾아요.
+  - "첫 번째 case부터 break까지 실행한다": 실행은 같은 case를 찾았을 때만 그 자리에서 시작해요. 같은 case가 없는데 첫 case부터 실행하지는 않아요.
+  - "default가 없는 switch는 문법 오류다": `default`는 선택이에요. 없어도 오류가 나지 않아요. 다만 예상하지 못한 값을 알려 주도록 써 두는 편이 좋아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

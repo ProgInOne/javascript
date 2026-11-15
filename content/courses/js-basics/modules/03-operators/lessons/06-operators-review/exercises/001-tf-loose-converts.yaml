@@ -10,7 +10,7 @@ usage: assessment
 prompt: |
   다음 설명이 맞는지 고르세요.
 spec:
-  statement: '`==`와 `===`는 자료형이 **같은** 두 값을 비교할 때는 결과가 같다. 결과가 달라질 수 있는 것은 두 값의 자료형이 다를 때뿐이다.'
+  statement: '`==`와 `===`는 자료형이 같은 두 값을 비교할 때는 결과가 같다. 결과가 달라질 수 있는 것은 두 값의 자료형이 다를 때뿐이다.'
   answer: true
 misconceptions: [js.mc.loose-equals-like-strict]
 hints:

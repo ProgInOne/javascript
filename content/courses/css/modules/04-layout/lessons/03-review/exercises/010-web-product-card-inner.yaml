@@ -1,0 +1,200 @@
+id: css.layout.review.web-product-card-inner
+type: web_task
+difficulty: 4
+concepts:
+  - { id: css.flex.container, weight: 1 }
+  - { id: css.flex.justify-align, weight: 0.5 }
+  - { id: css.flex.axes, weight: 0.5 }
+tags: [flexbox, flex-container, justify-content, align-items, web-task]
+estimatedSeconds: 480
+usage: assessment
+prompt: |
+  장보기 앱의 상품 카드 하나를 다듬어요. 카드(`.product`)의 높이는 `220px`로 정해져 있어요. HTML은 그대로 두고, CSS를 더해서 아래 조건을 모두 만족시키세요.
+
+  1. 상품 이름(`.name`)은 카드 안쪽의 **위쪽 끝**에, 구매 줄(`.buy`)은 카드 안쪽의 **아래쪽 끝**에 놓여요.
+  1. 구매 줄 안에서 가격(`.price`)은 **왼쪽 끝**, "담기" 버튼(`.add`)은 **오른쪽 끝**에 같은 줄로 놓여요.
+  1. 가격 표시와 버튼은 높이가 달라요. 둘의 **세로 가운데**가 맞게 놓여요.
+
+  요소들의 크기(`width`, `height`, `padding`)는 바꾸지 말고, 배치에 필요한 선언만 더해요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>상품 카드</title>
+              <style>
+                .product {
+                  width: 280px;
+                  height: 220px;
+                  padding: 16px;
+                  border: 2px solid #cbd5e1;
+                  background: white;
+                }
+                .name {
+                  margin: 0;
+                  font-size: 18px;
+                }
+                .price {
+                  height: 28px;
+                  line-height: 28px;
+                  padding: 0 8px;
+                  background: #fef3c7;
+                }
+                .add {
+                  height: 44px;
+                  padding: 0 16px;
+                }
+                /* 여기부터 배치를 써 주세요 */
+              </style>
+            </head>
+            <body>
+              <div class="product">
+                <h2 class="name">유기농 사과 1kg</h2>
+                <div class="buy">
+                  <span class="price">12,000원</span>
+                  <button class="add">담기</button>
+                </div>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>상품 카드</title>
+              <style>
+                .product {
+                  width: 280px;
+                  height: 220px;
+                  padding: 16px;
+                  border: 2px solid #cbd5e1;
+                  background: white;
+                }
+                .name {
+                  margin: 0;
+                  font-size: 18px;
+                }
+                .price {
+                  height: 28px;
+                  line-height: 28px;
+                  padding: 0 8px;
+                  background: #fef3c7;
+                }
+                .add {
+                  height: 44px;
+                  padding: 0 16px;
+                }
+                .product {
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                }
+                .buy {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="product">
+                <h2 class="name">유기농 사과 1kg</h2>
+                <div class="buy">
+                  <span class="price">12,000원</span>
+                  <button class="add">담기</button>
+                </div>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: layout
+      id: buy-bottom
+      description: 이름은 카드 안쪽의 위쪽 끝, 구매 줄은 아래쪽 끝에 붙어서 둘 사이의 세로 공간이 가장 커야 합니다.
+      requirement: 이름은 위, 구매 줄은 아래
+      visible: true
+      a: .name
+      b: .buy
+      gap: { axis: y, min: 140 }
+      tolerancePx: 1
+    - kind: layout
+      id: buy-inside
+      description: 구매 줄이 카드 밖으로 넘치지 않고 카드 안에 있어야 합니다.
+      requirement: 이름은 위, 구매 줄은 아래
+      visible: true
+      a: .buy
+      b: .product
+      relation: inside
+      tolerancePx: 1
+    - kind: layout
+      id: add-same-row
+      description: 담기 버튼이 가격과 같은 줄에 있어야 합니다.
+      requirement: 가격은 왼쪽 끝, 버튼은 오른쪽 끝
+      visible: true
+      a: .add
+      b: .price
+      relation: same-row
+      tolerancePx: 1
+    - kind: layout
+      id: add-far-right
+      description: 담기 버튼이 가격보다 오른쪽에 있고, 둘 사이가 가로로 100px 이상 떨어져 있어야 합니다(양 끝에 놓임).
+      requirement: 가격은 왼쪽 끝, 버튼은 오른쪽 끝
+      visible: true
+      a: .price
+      b: .add
+      gap: { axis: x, min: 100 }
+      misconceptionIfFail: css.mc.flex-affects-grandchildren
+    - kind: layout
+      id: price-centered
+      description: 가격 표시가 구매 줄 안에서 세로 가운데에 있어야 합니다.
+      requirement: 세로 가운데 맞춤
+      visible: true
+      a: .price
+      container: .buy
+      relation: centered-vertically
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.justify-align-swap
+misconceptions: [css.mc.flex-affects-grandchildren, css.mc.justify-align-swap]
+hints:
+  - 이 카드에는 배치가 두 겹이에요. 카드 안에서 이름과 구매 줄을 위아래로 벌리는 배치, 구매 줄 안에서 가격과 버튼을 양옆으로 벌리는 배치예요. 각각 어느 요소가 컨테이너가 되어야 할까요?
+  - 플렉스 아이템이 되는 것은 컨테이너의 바로 아래 자식뿐이에요. `.product`만 플렉스 컨테이너로 만들면 가격과 버튼은 아이템이 아니에요.
+  - "카드는 주축을 세로로 두고 주축 방향으로 양 끝에 벌려요. 구매 줄은 주축(가로) 방향으로 양 끝에 벌리고, 교차축 방향으로 가운데를 맞춰요."
+explanation: |
+  예시 정답은 카드와 구매 줄을 **각각** 플렉스 컨테이너로 만드는 거예요.
+
+  ```css
+  .product {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .buy {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  ```
+
+  - `.product`의 바로 아래 자식은 이름(`.name`)과 구매 줄(`.buy`) 두 개예요. 주축을 세로(`column`)로 두면 `justify-content`가 세로 방향을 맡고, `space-between`이 이름을 위쪽 끝, 구매 줄을 아래쪽 끝에 붙여요.
+  - 가격과 버튼은 `.product`의 손자 요소라서 `.product`의 플렉스 배치를 받지 않아요. 그래서 `.buy`도 플렉스 컨테이너로 만들어요. 주축이 가로(기본값 `row`)이니 `justify-content: space-between`이 둘을 양 끝에, 교차축 정렬 `align-items: center`가 세로 가운데를 맞춰요.
+
+  자주 하는 실수:
+
+  - `.product`에만 `display: flex`를 주면 가격과 버튼은 플렉스 아이템이 아니라 양 끝으로 벌어지지 않아요.
+  - 카드에 `justify-content: flex-end`를 쓰면 이름까지 아래로 내려가요. `space-around`나 `space-evenly`는 이름 위에도 공간을 남겨 위쪽 끝에 붙지 않아요.
+  - 구매 줄에서 세로 가운데를 `justify-content: center`로 맞추려고 하면 row에서는 가로 정렬이라, 둘이 가로 가운데에 모이고 세로는 그대로예요.
+  - 버튼에 `margin-left: auto`를 주는 방법은 배우지 않았지만, 결과가 같으면 채점을 통과해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

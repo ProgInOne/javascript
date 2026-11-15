@@ -2,3 +2,4 @@ id: js-basics.operators
 title: 연산자와 형 변환
 summary: 값을 계산하고 비교하고 조합하는 연산자를 배우고, 그 과정에서 자료형이 바뀌는 규칙을 익힙니다.
 lessons: [arithmetic, comparison, logical, explicit-conversion, implicit-coercion, operators-review]
+assessment: operators-review

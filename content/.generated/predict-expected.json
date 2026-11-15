@@ -1,6 +1,35 @@
 {
   "v": 1,
   "entries": {
+    "js-basics.control.control-review.predict-chained-ternary-stock": {
+      "inputHash": "51924478a782574848648d2b368a3bfa31868a3df904175919c5b9264b2320d2",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "대기 2명",
+          "재고 없음"
+        ]
+      }
+    },
+    "js-basics.control.control-review.predict-ride-height": {
+      "inputHash": "58c52de6ca29d24ddab8d97e960502ae8862557d0c80d8c30d319f0df21cc080",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "보호자와 함께 탈 수 있어요",
+          "안전바를 확인하세요"
+        ]
+      }
+    },
+    "js-basics.control.control-review.predict-weekend-plan": {
+      "inputHash": "e3a05bd38481c908f5814fd861bc68f4ae56f165abd628ff13acf05f65607129",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "늦잠 영화"
+        ]
+      }
+    },
     "js-basics.control.if-else.predict-first-true-only": {
       "inputHash": "b62491746a0717fa11db9309309e595d2597c8f24da14845e8717f7bdc22d64e",
       "expected": {
@@ -335,6 +364,40 @@
           "1일째 저금통: 1000원",
           "2일째 저금통: 1000원",
           "3일째 저금통: 1000원"
+        ]
+      }
+    },
+    "js-basics.loops.loops-review.predict-break-box-check": {
+      "inputHash": "ad771494cbdf648d7c332ee0de3257ae5493271193c68f626bc2592150f1f4ae",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "10번 상자 통과",
+          "15번 상자 통과",
+          "통과한 상자: 2개"
+        ]
+      }
+    },
+    "js-basics.loops.loops-review.predict-seat-step": {
+      "inputHash": "78d7a1d368e8ef450feb843d03ce1c3f44b5a5416de1917b5a82cb5463e59284",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3번 좌석 안내",
+          "7번 좌석 안내",
+          "11번 좌석 안내"
+        ]
+      }
+    },
+    "js-basics.loops.loops-review.predict-stock-two-conditions": {
+      "inputHash": "0e0cbcb654cd89f7db39689d6a52df1085810457965442c69eb1cad827b2b203",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1일째 남은 재고: 6",
+          "2일째 남은 재고: 2",
+          "3일째 남은 재고: -2",
+          "판매 중단: 3일째"
         ]
       }
     },

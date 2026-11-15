@@ -1,0 +1,53 @@
+id: html.semantics.review.mcq-profile-nav-link
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: html.content.links, weight: 1 }
+  - { id: html.semantics.page-landmarks, weight: 0.3 }
+tags: [a, href, nav, profile]
+estimatedSeconds: 60
+usage: assessment
+prompt: |
+  프로필 페이지의 주요 메뉴(`nav`)에 링크를 하나 더 넣으려고 해요. 화면에는 **작품 모음**이라는 글자가 보이고, 누르면 같은 폴더의 `works.html`로 이동해야 해요.
+
+  빈 자리(`<!-- 여기 -->`)에 넣을 코드로 알맞은 것은 무엇인가요?
+code: |
+  <nav>
+    <ul>
+      <li><a href="index.html">자기소개</a></li>
+      <li><!-- 여기 --></li>
+    </ul>
+  </nav>
+spec:
+  options:
+    - id: a
+      text: '`<a href="works.html">작품 모음</a>`'
+    - id: b
+      text: '`<a href="작품 모음">works.html</a>`'
+      misconception: html.mc.link-text-is-address
+      rationale: 주소와 링크 글자의 자리가 바뀌었어요. 화면에는 works.html이 보이고, 누르면 "작품 모음"이라는 없는 주소로 가요.
+    - id: c
+      text: "`<a>works.html</a>`"
+      misconception: html.mc.link-text-is-address
+      rationale: 태그 사이의 글자는 주소가 아니라 화면에 보이는 글자예요. href가 없으면 눌러도 아무 데도 가지 않아요.
+    - id: d
+      text: '`<a href="works.html"></a>작품 모음`'
+      rationale: a 요소 안이 비어 있어서 누를 수 있는 링크 글자가 없어요. "작품 모음"은 링크 밖의 그냥 글자예요.
+  correct: a
+misconceptions: [html.mc.link-text-is-address]
+hints:
+  - 링크에는 "이동할 주소"와 "화면에 보이는 글자" 두 가지가 필요해요. 각각 어디에 쓰는지 떠올려 보세요.
+  - 이동할 주소는 속성에 써요.
+  - 화면에 보이는 링크 글자는 여는 태그와 닫는 태그 사이에 들어가야 눌러져요.
+explanation: |
+  정답은 **`<a href="works.html">작품 모음</a>`**이에요.
+
+  이동할 주소는 `href` 속성에, 화면에 보이는 링크 글자는 `<a>`와 `</a>` 사이에 써요. `works.html`은 같은 폴더에 있으니 파일 이름만 쓰면 돼요.
+
+  - `<a href="작품 모음">works.html</a>`: 두 자리가 바뀌었어요. 화면에는 `works.html`이 보이고, 누르면 "작품 모음"이라는 없는 주소로 가요.
+  - `<a>works.html</a>`: 태그 사이의 글자는 주소가 아니에요. `href`가 없으니 눌러도 이동하지 않아요.
+  - `<a href="works.html"></a>작품 모음`: 링크 요소 안이 비어 있어 누를 글자가 없어요. "작품 모음"은 링크 밖에 있는 그냥 글자예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

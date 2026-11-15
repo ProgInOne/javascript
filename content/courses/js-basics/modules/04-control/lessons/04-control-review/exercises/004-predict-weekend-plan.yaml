@@ -1,0 +1,50 @@
+id: js-basics.control.control-review.predict-weekend-plan
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.control.fallthrough, weight: 1 }
+  - { id: js.control.switch, weight: 0.5 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [switch, fallthrough, state]
+estimatedSeconds: 120
+usage: assessment
+prompt: |
+  요일에 따라 계획을 정하는 코드예요. `break`가 일부러 빠진 곳과 실수로 빠진 곳이 섞여 있어요. 실행하면 콘솔에 무엇이 나올까요?
+spec:
+  lang: js
+  code: |
+    const day = "토";
+    let plan = "";
+    switch (day) {
+      case "토":
+      case "일":
+        plan = "늦잠";
+      case "금":
+        plan = plan + " 영화";
+        break;
+      default:
+        plan = "출근";
+    }
+    console.log(plan);
+  answerKind: console
+  misconceptionByAnswer:
+    "늦잠": js.mc.switch-no-break-stops
+hints:
+  - 어느 `case`에서 실행이 시작되나요? `case "토":` 바로 아래에는 코드가 없어요.
+  - 실행이 시작된 뒤 `break`를 만나기 전까지, 아래 `case`의 값을 다시 비교할까요?
+  - "`plan`의 값이 줄마다 어떻게 바뀌는지 차례로 적어 보세요. `plan + \" 영화\"`에서 `plan`에는 그 순간 무엇이 들어 있나요?"
+explanation: |
+  콘솔에는 `늦잠 영화`가 나와요.
+
+  1. `day`는 `"토"`라서 `case "토":`에서 실행이 시작돼요. 그 아래에 코드가 없으니 바로 다음 줄로 이어져요(`"토"`와 `"일"`이 같은 일을 하도록 일부러 `break`를 뺀 모양).
+  1. `plan = "늦잠";` → `plan`은 `"늦잠"`.
+  1. 여기에도 `break`가 없어서 `case "금":`의 값은 **비교하지 않고** 그 아래 코드로 이어져요(fall-through).
+  1. `plan = plan + " 영화";` → `"늦잠" + " 영화"`라서 `plan`은 `"늦잠 영화"`.
+  1. `break`를 만나 switch를 빠져나가요. `default`는 실행되지 않아요.
+
+  - `늦잠`이라고 답했다면 `break` 없이도 맞는 case만 실행된다고 본 거예요. 실행은 `break`를 만날 때까지 이어져요.
+  - `영화`만 답했다면 `"금"` 갈래만 실행된다고 본 거예요. 실행은 같은 case(`"토"`)에서 시작하고, 그 앞의 `plan = "늦잠";`도 지나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

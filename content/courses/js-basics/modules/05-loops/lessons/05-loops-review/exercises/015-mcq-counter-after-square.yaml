@@ -1,0 +1,56 @@
+id: js-basics.loops.loops-review.mcq-counter-after-square
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.loops.loop-variable, weight: 1 }
+  - { id: js.loops.while, weight: 0.3 }
+tags: [loop-variable, final-value, while, assessment]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  정사각형 모양으로 화분을 놓으려고 해요. 한 변에 놓는 화분 수를 1씩 늘려 가며, 전체 화분 수(한 변 × 한 변)가 30개 이상이 되는 첫 크기를 찾아요. 마지막 줄에서 무엇이 출력되나요?
+code: |
+  let side = 0;
+  while (side * side < 30) {
+    side++;
+  }
+  console.log(side);
+spec:
+  options:
+    - id: a
+      text: "`6`"
+    - id: b
+      text: "`5`"
+      misconception: js.mc.loop-var-final-value
+      rationale: side가 5일 때 25 < 30이 참이라 본문이 한 번 더 실행돼요. 반복이 끝난 뒤의 값은 조건을 거짓으로 만든 값이에요.
+    - id: c
+      text: "`36`"
+      rationale: 36은 side * side의 값이에요. 출력하는 것은 side 자체예요.
+    - id: d
+      text: "`ReferenceError`가 난다"
+      misconception: js.mc.loop-var-outside-for
+      rationale: side는 반복 바깥에서 let으로 만든 변수라 반복이 끝난 뒤에도 쓸 수 있어요. 반복 밖에서 쓸 수 없는 것은 for 괄호 안에서 만든 변수예요.
+  correct: a
+misconceptions: [js.mc.loop-var-final-value, js.mc.loop-var-outside-for]
+hints:
+  - 회차마다 조건을 검사하는 순간의 `side`와 `side * side`를 적어 보세요.
+  - "`side`가 5일 때 `5 * 5 < 30`은 참인가요, 거짓인가요?"
+  - 반복이 끝나는 것은 조건이 거짓이 되었을 때예요. 그때의 `side`가 그대로 남아요.
+explanation: |
+  정답은 `6`이에요.
+
+  조건을 검사할 때마다의 값은 이래요.
+
+  - `side` 0, 1, 2, 3, 4: 제곱이 0, 1, 4, 9, 16으로 30보다 작아 본문 실행
+  - `side` 5: `25 < 30` 참 → 본문 실행, `side`는 6
+  - `side` 6: `36 < 30` 거짓 → 반복 끝
+
+  반복이 끝난 뒤 `side`에는 조건을 거짓으로 만든 값 6이 남아요. 6 × 6 = 36개로 처음 30개 이상이 되는 크기라, 프로그램의 목적에도 맞아요.
+
+  - `5`: 마지막으로 본문을 실행하기 **전**의 값이에요. 5에서도 조건이 참이라 한 번 더 늘어났어요.
+  - `36`: `side * side`의 값이지 `side`가 아니에요.
+  - `ReferenceError`: `side`는 반복 바깥에서 `let`으로 만들었으므로 반복 뒤에도 쓸 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

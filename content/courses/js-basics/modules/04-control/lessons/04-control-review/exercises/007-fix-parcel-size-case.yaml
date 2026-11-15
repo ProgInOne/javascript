@@ -1,0 +1,135 @@
+id: js-basics.control.control-review.fix-parcel-size-case
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.control.switch, weight: 1 }
+  - { id: js.ops.short-circuit, weight: 0.5 }
+  - { id: js.control.fallthrough, weight: 0.3 }
+tags: [switch, case, logical, debugging]
+estimatedSeconds: 240
+usage: assessment
+prompt: |
+  편의점 택배 접수 프로그램이에요. 상자 크기별 요금은 이래요.
+
+  - `"S"` 또는 `"M"`: 3000원
+  - `"L"`: 5000원
+  - 그 밖의 크기: 접수할 수 없음(요금 `-1`)
+
+  두 상자의 크기가 `"M"`과 `"S"`라서 둘 다 3000원이어야 하는데, 결과가 이상해요. 요금은 `feeA`, `feeB`에 들어 있어야 해요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  첫 번째 상자: 3000
+  두 번째 상자: 3000
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const sizeA = "M";
+          const sizeB = "S";
+          let feeA = 0;
+          let feeB = 0;
+
+          switch (sizeA) {
+            case "S" || "M":
+              feeA = 3000;
+              break;
+            case "L":
+              feeA = 5000;
+              break;
+            default:
+              feeA = -1;
+          }
+
+          switch (sizeB) {
+            case "S" || "M":
+              feeB = 3000;
+              break;
+            case "L":
+              feeB = 5000;
+              break;
+            default:
+              feeB = -1;
+          }
+
+          console.log("첫 번째 상자:", feeA);
+          console.log("두 번째 상자:", feeB);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const sizeA = "M";
+          const sizeB = "S";
+          let feeA = 0;
+          let feeB = 0;
+
+          switch (sizeA) {
+            case "S":
+            case "M":
+              feeA = 3000;
+              break;
+            case "L":
+              feeA = 5000;
+              break;
+            default:
+              feeA = -1;
+          }
+
+          switch (sizeB) {
+            case "S":
+            case "M":
+              feeB = 3000;
+              break;
+            case "L":
+              feeB = 5000;
+              break;
+            default:
+              feeB = -1;
+          }
+
+          console.log("첫 번째 상자:", feeA);
+          console.log("두 번째 상자:", feeB);
+  bugDescription: 크기가 "M"인 상자의 요금이 3000원이 아니라 -1로 나와요.
+  bugMisconception: js.mc.switch-case-condition
+  maxEditDistance: 40
+  checks:
+    - kind: console
+      id: output
+      description: 두 상자의 요금이 차례로 출력되어야 합니다.
+      requirement: 두 상자 요금 출력
+      expect:
+        lines: ["첫 번째 상자: 3000", "두 번째 상자: 3000"]
+    - kind: program
+      id: fees
+      visible: false
+      description: 두 상자의 요금 변수(feeA, feeB)에 크기에 맞는 요금이 들어 있어야 합니다.
+      requirement: 두 상자 요금 출력
+      expect:
+        globals:
+          feeA: { equals: 3000 }
+          feeB: { equals: 3000 }
+        noError: true
+hints:
+  - 두 상자 중 어느 쪽이 틀리게 나오나요? 맞게 나오는 쪽과 무엇이 다른지 비교해 보세요.
+  - "`case` 옆의 식은 먼저 계산되어 값 하나가 돼요. 모듈 3에서 배운 대로 `\"S\" || \"M\"`을 계산하면 무엇이 되나요?"
+  - 여러 값이 같은 일을 하게 하려면 `break`를 빼고 `case`를 연달아 쓰는 방법을 배웠어요.
+explanation: |
+  `case` 옆의 식은 먼저 계산되어 값 하나가 돼요. `"S" || "M"`은 왼쪽 `"S"`가 truthy라서 `"S"` 그 자체가 되므로, 버그 코드의 `case "S" || "M":`은 사실 `case "S":`와 같아요. 그래서 `"S"` 상자는 3000원이 나오지만, `"M"` 상자는 `"M" === "S"`가 거짓이라 맞는 case가 없어 `default`의 `-1`이 들어가요.
+
+  `"S"`와 `"M"`이 같은 일을 하게 하려면 case를 두 개 연달아 쓰고, 첫 번째 case에는 일부러 `break`를 쓰지 않아요.
+
+  ```js
+  case "S":
+  case "M":
+    feeA = 3000;
+    break;
+  ```
+
+  `"M"`이면 `case "M":`에서 실행이 시작되고, `"S"`면 `case "S":`에서 시작해 fall-through로 같은 줄에 도착해요. 두 switch를 모두 고쳐야 해요. `case "M" || "S":`로 순서만 바꾸면 이번에는 `"S"` 상자가 `-1`이 되어 실패해요.
+
+  switch는 `===`로 값 하나와 비교하므로, `case`에 `||`나 비교식처럼 "조건"을 쓰면 생각한 대로 동작하지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

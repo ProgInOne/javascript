@@ -1,0 +1,49 @@
+id: js-basics.loops.loops-review.predict-break-box-check
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.loops.break, weight: 1 }
+  - { id: js.ops.remainder, weight: 0.3 }
+tags: [break, trace, remainder, assessment]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  컨베이어 벨트에서 상자를 검사하는 프로그램이에요. 상자 번호가 4로 나누어떨어지면 불량이라 벨트를 멈춰요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    let passed = 0;
+    for (let box = 10; box <= 30; box += 5) {
+      if (box % 4 === 0) {
+        break;
+      }
+      passed++;
+      console.log(box + "번 상자 통과");
+    }
+    console.log("통과한 상자: " + passed + "개");
+  answerKind: console
+  misconceptionByAnswer:
+    "10번 상자 통과\n15번 상자 통과": js.mc.break-ends-program
+misconceptions: [js.mc.break-ends-program]
+hints:
+  - "`box`는 10, 15, 20, …처럼 5씩 늘어요. 회차마다 `box % 4`를 계산해 보세요."
+  - 4로 나누어떨어지는 첫 상자 번호는 무엇인가요? 그 회차에서 `break` 아래 줄은 실행될까요?
+  - "`break`는 반복만 끝내요. 반복 아래에 있는 문장은 어떻게 될까요?"
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  10번 상자 통과
+  15번 상자 통과
+  통과한 상자: 2개
+  ```
+
+  - `box` 10: `10 % 4`는 2 → 통과, `passed` 1
+  - `box` 15: `15 % 4`는 3 → 통과, `passed` 2
+  - `box` 20: `20 % 4`는 0 → `break`. 이 회차의 `passed++`와 출력은 실행되지 않고, 25와 30은 검사하지 않아요.
+
+  `break`는 반복만 끝내고 프로그램은 이어서 실행돼요. 그래서 반복 아래의 `통과한 상자: 2개`가 출력돼요. 마지막 줄이 나오지 않는다고 생각했다면 `break`가 프로그램 전체를 끝낸다고 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

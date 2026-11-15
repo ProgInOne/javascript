@@ -1,0 +1,66 @@
+id: js-basics.loops.loops-review.fill-line-up-product
+type: fill_blank
+difficulty: 3
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+  - { id: js.ops.compound-assignment, weight: 0.3 }
+  - { id: js.loops.loop-variable, weight: 0.3 }
+tags: [accumulator, product, for, assessment]
+estimatedSeconds: 140
+usage: assessment
+prompt: |
+  사람을 한 줄로 세우는 방법의 수는 1부터 사람 수까지를 모두 **곱한** 값이에요. 예를 들어 3명이면 1 × 2 × 3 = 6가지예요.
+
+  빈칸 두 개를 채워, 1명부터 5명까지 한 줄로 세우는 방법의 수가 아래처럼 출력되게 하세요.
+
+  ```text
+  1명: 1가지
+  2명: 2가지
+  3명: 6가지
+  4명: 24가지
+  5명: 120가지
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    let ways = {{blank:start}};
+    for (let people = 1; people <= 5; people++) {
+      ways {{blank:op}} people;
+      console.log(people + "명: " + ways + "가지");
+    }
+  blanks:
+    - id: start
+      accept: ["1"]
+      width: 6
+    - id: op
+      accept: ["*="]
+      width: 6
+  checks:
+    - kind: console
+      id: output
+      description: 1명부터 5명까지 한 줄로 세우는 방법의 수가 차례로 출력되어야 합니다.
+      requirement: 곱셈 누적
+      expect:
+        lines: ["1명: 1가지", "2명: 2가지", "3명: 6가지", "4명: 24가지", "5명: 120가지"]
+    - kind: program
+      id: final
+      description: 반복이 끝난 뒤 ways에 5명을 세우는 방법의 수가 남아 있어야 합니다.
+      requirement: 곱셈 누적
+      expect:
+        globals: { ways: { equals: 120 } }
+        noError: true
+hints:
+  - 합계를 모을 때는 `+=`를 써요. 곱한 값을 모으려면 어떤 복합 대입 연산자가 필요할까요?
+  - 누적 변수의 시작값은 "아직 아무것도 모으지 않았을 때"의 값이에요. 더하기라면 0이에요. 곱하기에서 0으로 시작하면 무엇을 곱해도 결과가 어떻게 될까요?
+  - 시작값은 곱해도 상대를 바꾸지 않는 수여야 해요.
+explanation: |
+  예시 정답은 `let ways = 1;`과 `ways *= people;`이에요.
+
+  - 곱한 값을 모으므로 `ways = ways * people`을 줄인 `*=`를 써요. `+=`를 쓰면 1, 3, 6, 10, 15처럼 합계가 나와요.
+  - 시작값은 **1**이에요. 0으로 시작하면 `0 × 1 = 0`, `0 × 2 = 0`처럼 무엇을 곱해도 계속 0이에요. 더하기의 시작값이 0인 것처럼, 곱하기의 시작값은 곱해도 값이 그대로인 1이에요.
+  - 누적 변수 `ways`는 반복 바깥에서 한 번만 만들어요. 그래서 회차마다 앞의 곱에 새 사람 수를 곱해 1 → 2 → 6 → 24 → 120으로 커져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

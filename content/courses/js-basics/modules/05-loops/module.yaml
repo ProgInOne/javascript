@@ -1,5 +1,5 @@
 id: js-basics.loops
 title: 반복문
 summary: 같은 일을 여러 번 실행하는 while·for 반복과, 반복을 중간에 끝내거나 건너뛰는 break·continue, 반복 안의 반복을 배우고, 반복 횟수와 변수 값의 변화를 추적하는 법을 익힙니다.
-# 단원 평가(loops-review)는 평가 세트가 준비되는 M6에 추가합니다.
-lessons: [while, for, break-continue, nested-loops]
+lessons: [while, for, break-continue, nested-loops, loops-review]
+assessment: loops-review

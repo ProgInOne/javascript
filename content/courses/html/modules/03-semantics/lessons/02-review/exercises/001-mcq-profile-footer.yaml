@@ -1,0 +1,42 @@
+id: html.semantics.review.mcq-profile-footer
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: html.semantics.page-landmarks, weight: 1 }
+tags: [semantic, footer, profile]
+estimatedSeconds: 40
+usage: assessment
+prompt: |
+  서윤이의 프로필 페이지 맨 아래에 "© 2026 한서윤 · 이메일로 연락 주세요"라는 저작권과 연락 안내가 있어요. 이 부분을 감쌀 요소로 가장 알맞은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`footer`"
+    - id: b
+      text: "`header`"
+      rationale: header는 사이트 이름이나 로고가 있는 머리말이에요.
+    - id: c
+      text: "`nav`"
+      rationale: nav는 사이트의 다른 페이지로 가는 주요 링크 묶음이에요.
+    - id: d
+      text: "`main`"
+      misconception: html.mc.many-mains
+      rationale: main은 이 페이지의 핵심 내용 하나를 감싸요. 저작권 안내는 핵심 내용이 아니에요.
+  correct: a
+misconceptions: [html.mc.many-mains]
+hints:
+  - 저작권과 연락처는 페이지의 어느 부분에 들어가는 정보인가요?
+  - 페이지의 머리말, 주요 메뉴, 핵심 내용, 꼬리말 중 하나를 골라 보세요.
+  - 머리말(header)의 짝이 되는 요소예요.
+explanation: |
+  정답은 **`footer`**예요.
+
+  저작권과 연락처는 페이지의 **꼬리말**에 들어가는 대표적인 정보예요. 그래서 `footer`로 감싸요.
+
+  - `header`는 사이트 이름이나 로고가 있는 머리말이라 맞지 않아요.
+  - `nav`는 사이트의 다른 페이지로 가는 주요 링크 묶음이에요. 저작권 안내는 링크 묶음이 아니에요.
+  - `main`은 이 페이지의 핵심 내용 하나를 감싸는 요소예요. 저작권 안내는 핵심 내용이 아니고, 이미 본문을 main으로 감쌌다면 main이 두 개가 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

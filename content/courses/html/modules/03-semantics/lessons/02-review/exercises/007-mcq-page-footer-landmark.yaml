@@ -1,0 +1,61 @@
+id: html.semantics.review.mcq-page-footer-landmark
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: html.semantics.page-landmarks, weight: 1 }
+  - { id: html.semantics.sectioning, weight: 0.5 }
+tags: [semantic, footer, article, profile]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  서윤이의 프로필 페이지에는 `footer`가 두 개 있어요. 화면 낭독기가 **페이지 전체의 꼬리말**(랜드마크)로 알려 주는 것은 어느 것인가요?
+code: |
+  <body>
+    <header>
+      <h1>한서윤</h1>
+    </header>
+    <main>
+      <article>
+        <h2>종이 시계 제작기</h2>
+        <p>달력 종이를 접어서 숫자판을 만들었어요.</p>
+        <footer>
+          <p>글쓴이: 한서윤 · 2026년 10월 2일</p>
+        </footer>
+      </article>
+    </main>
+    <footer>
+      <p>© 2026 한서윤</p>
+    </footer>
+  </body>
+spec:
+  options:
+    - id: a
+      text: "`© 2026 한서윤`이 들어 있는 footer"
+    - id: b
+      text: "`글쓴이: 한서윤 · 2026년 10월 2일`이 들어 있는 footer"
+      rationale: article 안의 footer는 그 글 한 편의 꼬리말이에요.
+    - id: c
+      text: 두 footer 모두
+      rationale: article 안의 footer는 페이지 전체가 아니라 그 글 한 편의 꼬리말이라 둘 다는 아니에요.
+    - id: d
+      text: 코드에 더 나중에 나오는 footer만 쓰이고, 앞의 footer는 화면에 보이지 않는다
+      misconception: html.mc.semantic-is-style
+      rationale: 두 footer 모두 화면에 보여요. 시맨틱 요소는 보이는 방식을 바꾸지 않아요.
+  correct: a
+misconceptions: [html.mc.semantic-is-style]
+hints:
+  - 두 footer가 각각 무엇 안에 들어 있는지 살펴보세요.
+  - article 안에 있는 header나 footer는 누구의 머리말·꼬리말이었나요?
+  - 페이지 전체의 꼬리말은 다른 구역 안이 아니라 페이지의 큰 구역으로 놓여 있어요.
+explanation: |
+  정답은 **`© 2026 한서윤`이 들어 있는 footer**예요.
+
+  이 footer는 `body` 바로 아래, `main` 다음에 놓인 페이지의 큰 구역이에요. 그래서 페이지 전체의 꼬리말 랜드마크예요.
+
+  - "글쓴이: 한서윤 · 2026년 10월 2일" footer: `article` 안에 있어서 그 **글 한 편의 꼬리말**이에요. 글쓴이와 날짜처럼 그 글에 대한 정보를 담아요. 페이지 전체의 꼬리말은 아니에요.
+  - 두 footer 모두: 위 이유로 article 안의 footer는 페이지 전체의 꼬리말이 아니에요.
+  - 나중 footer만 쓰이고 앞의 것은 안 보인다: 두 footer 모두 코드 순서대로 화면에 보여요. 시맨틱 요소는 뜻만 나타내고 보이는 방식을 바꾸지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

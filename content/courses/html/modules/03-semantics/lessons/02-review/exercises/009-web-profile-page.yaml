@@ -1,0 +1,293 @@
+id: html.semantics.review.web-profile-page
+type: web_task
+difficulty: 4
+concepts:
+  - { id: html.semantics.page-landmarks, weight: 1 }
+  - { id: html.semantics.sectioning, weight: 0.5 }
+  - { id: html.semantics.div-vs-semantic, weight: 0.5 }
+  - { id: html.text.headings, weight: 0.3 }
+  - { id: html.content.images, weight: 0.3 }
+tags: [semantic, header, nav, main, section, article, footer, profile, web-task]
+estimatedSeconds: 600
+usage: assessment
+prompt: |
+  서윤이의 프로필 페이지가 모두 `div`로만 나뉘어 있고, 몇 군데 실수도 있어요. 아래 요구사항에 맞게 고치세요.
+
+  - **페이지의 큰 구역**: `class="top"`은 페이지의 머리말, 그 안의 `class="menu"`는 사이트의 주요 메뉴, `class="content"`는 이 페이지의 핵심 내용, `class="bottom"`은 페이지의 꼬리말이에요. 뜻에 맞는 시맨틱 요소로 바꾸세요.
+  - **본문 안의 구역**: `class="about"`과 `class="works"`는 각각 소제목이 붙는 주제별 구역이에요. `class="work"` 두 개는 각각 따로 옮겨 실어도 뜻이 통하는 작품 소개 글이에요. `class="work-row"`는 작품 소개 두 개를 CSS로 가로로 나란히 놓으려고 감싼 상자예요. 뜻에 맞게 고르세요(뜻이 없는 묶음은 그대로 두세요).
+  - **제목 단계**: 목차는 "한서윤 → 자기소개, 작품 모음 → 각 작품 이름" 순서예요. 단계를 건너뛴 제목을 고치세요.
+  - **사진 설명**: 얼굴 사진(`seoyun.jpg`)에 사진의 내용을 설명하는 글을 붙이세요. (이 미리보기에는 그림 파일이 없어서 깨진 그림으로 보여요.)
+
+  `class` 속성은 모두 그대로 두세요(CSS가 class로 모양을 정하고 있어요). 글자 내용과 구역의 순서도 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>한서윤의 프로필</title>
+              <style>
+                .work-row {
+                  display: flex;
+                  gap: 12px;
+                }
+                .work {
+                  border: 1px solid #9ca3af;
+                  padding: 8px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="top">
+                <h1>한서윤</h1>
+                <div class="menu">
+                  <ul>
+                    <li><a href="index.html">자기소개</a></li>
+                    <li><a href="works.html">작품 모음</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="content">
+                <div class="about">
+                  <h2>자기소개</h2>
+                  <img src="seoyun.jpg" />
+                  <p>종이로 작은 물건을 만드는 걸 좋아해요.</p>
+                </div>
+                <div class="works">
+                  <h2>작품 모음</h2>
+                  <div class="work-row">
+                    <div class="work">
+                      <h4>종이 시계</h4>
+                      <p>달력 종이로 만든 벽시계예요.</p>
+                    </div>
+                    <div class="work">
+                      <h4>한지 등</h4>
+                      <p>한지를 겹쳐 붙여 만든 작은 등이에요.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="bottom">
+                <p>© 2026 한서윤</p>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>한서윤의 프로필</title>
+              <style>
+                .work-row {
+                  display: flex;
+                  gap: 12px;
+                }
+                .work {
+                  border: 1px solid #9ca3af;
+                  padding: 8px;
+                }
+              </style>
+            </head>
+            <body>
+              <header class="top">
+                <h1>한서윤</h1>
+                <nav class="menu">
+                  <ul>
+                    <li><a href="index.html">자기소개</a></li>
+                    <li><a href="works.html">작품 모음</a></li>
+                  </ul>
+                </nav>
+              </header>
+              <main class="content">
+                <section class="about">
+                  <h2>자기소개</h2>
+                  <img src="seoyun.jpg" alt="종이 시계를 들고 웃고 있는 한서윤의 얼굴 사진" />
+                  <p>종이로 작은 물건을 만드는 걸 좋아해요.</p>
+                </section>
+                <section class="works">
+                  <h2>작품 모음</h2>
+                  <div class="work-row">
+                    <article class="work">
+                      <h3>종이 시계</h3>
+                      <p>달력 종이로 만든 벽시계예요.</p>
+                    </article>
+                    <article class="work">
+                      <h3>한지 등</h3>
+                      <p>한지를 겹쳐 붙여 만든 작은 등이에요.</p>
+                    </article>
+                  </div>
+                </section>
+              </main>
+              <footer class="bottom">
+                <p>© 2026 한서윤</p>
+              </footer>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: header
+      description: 페이지의 머리말(class="top")이 body 바로 안의 머리말 요소이고, 안에 h1 "한서윤"이 있어야 합니다.
+      requirement: 페이지의 큰 구역
+      visible: true
+      selector: body > header.top > h1
+      expect:
+        count: 1
+        text: { equals: 한서윤 }
+    - kind: dom
+      id: nav
+      description: 주요 메뉴(class="menu")가 머리말 안의 탐색 요소이고, 메뉴 링크 두 개가 그 안에 있어야 합니다.
+      requirement: 페이지의 큰 구역
+      visible: true
+      selector: header nav.menu a
+      expect:
+        count: 2
+    - kind: dom
+      id: main
+      description: 핵심 내용(class="content")이 main 요소이고, 페이지에 main은 하나뿐이어야 합니다.
+      requirement: 페이지의 큰 구역
+      visible: true
+      selector: main
+      expect:
+        count: 1
+      misconceptionIfFail: html.mc.many-mains
+    - kind: dom
+      id: main-is-content
+      description: main 요소는 class="content"인 묶음이어야 합니다.
+      requirement: 페이지의 큰 구역
+      selector: body > main.content
+      expect:
+        count: 1
+    - kind: dom
+      id: footer
+      description: 페이지의 꼬리말(class="bottom")이 body 바로 안의 꼬리말 요소여야 합니다.
+      requirement: 페이지의 큰 구역
+      visible: true
+      selector: body > footer.bottom
+      expect:
+        count: 1
+        text: { includes: "2026 한서윤" }
+    - kind: dom
+      id: order
+      description: 큰 구역은 머리말 → 핵심 내용 → 꼬리말 순서여야 합니다.
+      requirement: 페이지의 큰 구역
+      selector: body
+      expect:
+        order: [header, main, footer]
+    - kind: dom
+      id: sections
+      description: 자기소개(class="about")와 작품 모음(class="works")이 main 안의 주제별 구역 요소여야 합니다.
+      requirement: 본문 안의 구역
+      visible: true
+      selector: main > section.about, main > section.works
+      expect:
+        count: 2
+      misconceptionIfFail: html.mc.section-article-same
+    - kind: dom
+      id: works-article
+      description: 작품 소개 두 개(class="work")가 각각 독립된 글을 뜻하는 요소여야 합니다.
+      requirement: 본문 안의 구역
+      visible: true
+      selector: article.work
+      expect:
+        count: 2
+      misconceptionIfFail: html.mc.section-article-same
+    - kind: dom
+      id: row-div
+      description: 배치만을 위한 상자(class="work-row")는 뜻이 없는 묶음 요소 그대로이고, 작품 소개 두 개를 감싸고 있어야 합니다.
+      requirement: 본문 안의 구역
+      visible: true
+      selector: section.works > div.work-row > article.work
+      expect:
+        count: 2
+      misconceptionIfFail: html.mc.div-is-wrong
+    - kind: dom
+      id: work-headings
+      description: 작품 이름은 "작품 모음"(h2) 바로 아래 단계의 제목 요소여야 합니다.
+      requirement: 제목 단계
+      visible: true
+      selector: article.work > h3
+      expect:
+        count: 2
+      misconceptionIfFail: html.mc.heading-skip-levels
+    - kind: dom
+      id: no-skipped-heading
+      description: 단계를 건너뛴 제목(h4)이 남아 있지 않아야 합니다.
+      requirement: 제목 단계
+      selector: h4
+      expect:
+        count: 0
+      misconceptionIfFail: html.mc.heading-skip-levels
+    - kind: dom
+      id: photo-alt
+      description: 얼굴 사진에 내용을 설명하는 alt가 있어야 합니다(비어 있으면 안 됩니다).
+      requirement: 사진 설명
+      visible: true
+      selector: section.about img
+      expect:
+        attr: { name: alt, notEmpty: true }
+      misconceptionIfFail: html.mc.alt-optional
+    - kind: dom
+      id: photo-src
+      description: 사진의 src는 seoyun.jpg 그대로여야 합니다.
+      requirement: 사진 설명
+      selector: section.about img
+      expect:
+        count: 1
+        attr: { name: src, equals: seoyun.jpg }
+    - kind: layout
+      id: still-side-by-side
+      description: 두 작품 소개는 여전히 가로로 나란히 놓여 있어야 합니다.
+      requirement: 본문 안의 구역
+      a: ".work:nth-child(2)"
+      b: ".work:nth-child(1)"
+      relation: right-of
+      tolerancePx: 1
+misconceptions: [html.mc.many-mains, html.mc.section-article-same, html.mc.div-is-wrong, html.mc.heading-skip-levels, html.mc.alt-optional]
+hints:
+  - 묶음마다 "이 묶음에 붙일 뜻(머리말, 주요 메뉴, 핵심 내용, 꼬리말, 주제별 구역, 독립된 글)이 있는가?"를 먼저 정하고, 뜻이 없으면 div로 두세요. 그다음 제목 단계와 사진을 보세요.
+  - 큰 구역 네 개는 header·nav·main·footer예요. 소제목이 붙는 구역과 따로 옮겨도 뜻이 통하는 글은 서로 다른 요소예요. 가로 배치용 상자에는 뜻이 없어요.
+  - 여는 태그에서는 `div`라는 이름만 바꾸고 `class`는 남겨요. 닫는 `</div>`도 짝에 맞게 바꿨는지 들여쓰기로 확인하세요. h2 바로 아래 단계는 몇 번인지, 그림 설명을 담는 속성이 무엇인지도 떠올려 보세요.
+explanation: |
+  예시 정답의 구조는 이래요.
+
+  ```html
+  <header class="top">
+    <h1>한서윤</h1>
+    <nav class="menu">...메뉴 링크 두 개...</nav>
+  </header>
+  <main class="content">
+    <section class="about">
+      <h2>자기소개</h2>
+      <img src="seoyun.jpg" alt="종이 시계를 들고 웃고 있는 한서윤의 얼굴 사진" />
+      <p>...</p>
+    </section>
+    <section class="works">
+      <h2>작품 모음</h2>
+      <div class="work-row">
+        <article class="work"><h3>종이 시계</h3>...</article>
+        <article class="work"><h3>한지 등</h3>...</article>
+      </div>
+    </section>
+  </main>
+  <footer class="bottom">...</footer>
+  ```
+
+  - **큰 구역**: 머리말은 `header`, 그 안의 주요 메뉴는 `nav`, 핵심 내용은 `main`(한 페이지에 하나), 꼬리말은 `footer`예요.
+  - **본문 안의 구역**: "자기소개"와 "작품 모음"은 소제목이 붙는 주제별 구역이라 `section`이에요. 작품 소개 한 편은 따로 옮겨도 뜻이 통하니 `article`이에요. section과 article을 바꿔 쓰면 뜻이 달라져요.
+  - **배치용 상자**: `work-row`는 가로로 놓으려고 감싼 상자일 뿐이라 `div` 그대로예요. 이 상자를 section이나 article로 바꾸면 있지도 않은 구역이나 글이 생겨요.
+  - **제목 단계**: 작품 이름은 "작품 모음"(h2) 바로 아래 단계라 `h4`가 아니라 `h3`이에요. 크기가 마음에 들지 않으면 CSS로 바꿔요.
+  - **사진 설명**: 얼굴 사진은 뜻이 있는 그림이라 내용을 설명하는 `alt`가 필요해요. 채점은 alt가 비어 있지 않은지만 보지만, "사진", 파일 이름처럼 내용을 알 수 없는 설명이 아니라 사진에 담긴 모습을 쓰는 것이 좋아요.
+
+  `class`를 그대로 두었으니 CSS도 그대로 적용되어, 작품 소개 두 개는 여전히 가로로 나란히 보여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

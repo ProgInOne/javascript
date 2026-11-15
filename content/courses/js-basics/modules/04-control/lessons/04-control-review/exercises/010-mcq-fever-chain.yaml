@@ -1,0 +1,77 @@
+id: js-basics.control.control-review.mcq-fever-chain
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: js.control.else-if, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [else-if, order, boundary]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  보건실 체온계가 체온(`temp`)에 따라 안내를 한 줄 출력해요. 규칙은 이래요.
+
+  - 38.0도 이상: `고열`
+  - 37.5도 이상 38.0도 미만: `미열`
+  - 37.5도 미만: `정상`
+
+  `temp`가 어떤 값이든 규칙대로 **정확히 한 줄**을 출력하는 코드는 무엇인가요?
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: |
+        if (temp >= 38) {
+          console.log("고열");
+        } else if (temp >= 37.5) {
+          console.log("미열");
+        } else {
+          console.log("정상");
+        }
+    - id: b
+      text: |
+        if (temp >= 37.5) {
+          console.log("미열");
+        } else if (temp >= 38) {
+          console.log("고열");
+        } else {
+          console.log("정상");
+        }
+      misconception: js.mc.else-if-order-irrelevant
+      rationale: 38도 이상도 먼저 나온 temp >= 37.5에 걸려서 고열 갈래는 절대 실행되지 않아요.
+    - id: c
+      text: |
+        if (temp >= 38) {
+          console.log("고열");
+        }
+        if (temp >= 37.5) {
+          console.log("미열");
+        } else {
+          console.log("정상");
+        }
+      misconception: js.mc.separate-ifs-like-chain
+      rationale: 따로 쓴 if는 둘 다 검사해서, 38도 이상이면 고열과 미열이 모두 나와요.
+    - id: d
+      text: |
+        if (temp > 38) {
+          console.log("고열");
+        } else if (temp > 37.5) {
+          console.log("미열");
+        } else {
+          console.log("정상");
+        }
+      rationale: 경계값 38.0과 37.5가 한 단계 아래 안내로 가요.
+  correct: a
+hints:
+  - 선택지마다 체온 38.5, 38.0, 37.5, 36.5를 넣어 보고 몇 줄이 나오는지, 무엇이 나오는지 확인해 보세요.
+  - 체인은 처음으로 참인 갈래 하나만 실행해요. 범위가 겹치는 두 조건 중 어느 것을 먼저 써야 할까요?
+  - 규칙의 "이상"은 그 값을 포함해요. `>`와 `>=` 중 어느 것이 경계값을 포함하나요?
+explanation: |
+  정답은 `temp >= 38`을 먼저 검사하고 `else if (temp >= 37.5)`, `else`로 이어지는 체인이에요. 체인은 처음으로 참인 갈래 하나만 실행하므로 언제나 정확히 한 줄이 나오고, 두 번째 갈래에 왔다면 이미 38 미만이라 "37.5 이상 38.0 미만"을 따로 쓰지 않아도 돼요.
+
+  - `temp >= 37.5`를 먼저 검사하는 체인: 38.5도도 첫 조건에 걸려 `미열`이 나와요. 고열 갈래에는 영원히 도착하지 못해요. 범위가 겹치는 조건은 좁은 조건(38 이상)부터 적어야 해요.
+  - `if (temp >= 38)`과 `if (temp >= 37.5) … else`를 따로 쓴 코드: 두 if는 서로 독립이라, 38.5도면 `고열`과 `미열` 두 줄이 나와요.
+  - `>`를 쓴 체인: 38.0도는 `38 > 38`이 거짓이라 `미열`, 37.5도는 `정상`이 나와요. "이상"은 그 값을 포함하므로 `>=`를 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

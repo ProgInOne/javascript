@@ -1,0 +1,59 @@
+id: css.layout.review.mcq-flex-on-cards
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.flex.container, weight: 1 }
+tags: [flexbox, flex-container, flex-item]
+estimatedSeconds: 60
+usage: assessment
+prompt: |
+  메뉴판 페이지에서 음식 카드들을 가로로 나란히 놓으려고 아래 CSS를 썼어요. 브라우저에서는 어떻게 보일까요?
+code: |
+  <style>
+    .dish {
+      display: flex;
+    }
+  </style>
+  <div class="menu-board">
+    <div class="dish">
+      <h3>비빔밥</h3>
+      <p>9000원</p>
+    </div>
+    <div class="dish">
+      <h3>냉면</h3>
+      <p>8000원</p>
+    </div>
+  </div>
+spec:
+  options:
+    - id: a
+      text: 카드 두 장은 위아래로 쌓이고, 각 카드 안에서 음식 이름과 가격이 가로로 나란히 놓인다
+    - id: b
+      text: 카드 두 장이 가로로 나란히 놓이고, 각 카드 안의 이름과 가격은 위아래로 쌓인다
+      misconception: css.mc.flex-on-children
+      rationale: display flex를 받은 .dish의 자식(이름과 가격)이 플렉스 아이템이 돼요. 카드끼리 나란히 놓으려면 부모 .menu-board에 줘야 해요.
+    - id: c
+      text: 카드 두 장과 그 안의 이름·가격 네 개가 모두 한 줄로 가로로 늘어선다
+      misconception: css.mc.flex-affects-grandchildren
+      rationale: 플렉스 아이템은 컨테이너의 바로 아래 자식뿐이에요. 카드끼리는 여전히 일반 흐름대로 위아래로 쌓여요.
+    - id: d
+      text: display flex를 준 요소에 자식이 둘 이상이라 규칙이 무시되고, 처음 모습 그대로 보인다
+      rationale: 자식이 몇 개이든 display flex는 적용돼요. 바로 아래 자식들이 한 줄로 놓여요.
+  correct: a
+misconceptions: [css.mc.flex-on-children, css.mc.flex-affects-grandchildren]
+hints:
+  - "`display: flex`를 받은 요소가 플렉스 컨테이너예요. 이 코드에서 컨테이너는 어느 요소인가요?"
+  - 플렉스 아이템이 되는 것은 컨테이너의 바로 아래 자식뿐이에요. `.dish`의 바로 아래 자식은 무엇인가요?
+  - 카드(`.dish`) 두 장을 감싼 `.menu-board`에는 아무 규칙도 없어요. 그렇다면 카드끼리는 어떤 흐름으로 놓일까요?
+explanation: |
+  정답은 "카드 두 장은 위아래로 쌓이고, 각 카드 안에서 음식 이름과 가격이 가로로 나란히 놓인다"예요.
+
+  `display: flex`를 받은 `.dish`가 플렉스 컨테이너가 되고, 그 **바로 아래 자식**인 `h3`와 `p`가 플렉스 아이템이 되어 카드 안에서 가로로 놓여요. 카드들을 감싼 `.menu-board`에는 규칙이 없으니, 블록 요소인 카드 두 장은 일반 흐름대로 위아래로 쌓여요.
+
+  - "카드 두 장이 가로로 나란히 놓인다"는 컨테이너를 거꾸로 생각한 답이에요. 카드끼리 나란히 놓으려면 카드들을 감싼 부모 `.menu-board`에 `display: flex`를 줘야 해요.
+  - "네 개가 모두 한 줄로 늘어선다"는 손자 요소까지 아이템이 된다고 생각한 답이에요. 아이템은 바로 아래 자식뿐이에요.
+  - 자식이 여러 개여도 `display: flex`는 무시되지 않아요. 오히려 아이템이 여러 개일 때 쓰는 속성이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

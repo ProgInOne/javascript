@@ -1,0 +1,137 @@
+id: js-basics.control.control-review.impl-signup-checks
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.control.if, weight: 1 }
+  - { id: js.control.else-if, weight: 0.5 }
+  - { id: js.ops.logical-and-or-not, weight: 0.3 }
+tags: [if, separate-ifs, write-code]
+estimatedSeconds: 420
+usage: assessment
+prompt: |
+  동아리 앱의 가입 신청을 확인하는 프로그램을 작성하세요. 확인할 항목은 세 가지예요.
+
+  - 닉네임이 빈 문자열(`""`)이면: `닉네임을 입력하세요`
+  - 나이가 14세 미만이면: `14세 이상만 가입할 수 있어요`
+  - 약관에 동의하지 않았으면(`false`): `약관에 동의해 주세요`
+
+  문제가 있는 항목은 하나만이 아니라 **모두** 알려 줘야 해요. 세 항목에 모두 문제가 없을 때만 `가입 완료`를 출력해요. 줄 앞에는 신청자 이름(`A: `, `B: `)을 붙여요.
+
+  시작 코드의 변수 선언은 그대로 두세요. 지금 값이면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  A: 닉네임을 입력하세요
+  A: 14세 이상만 가입할 수 있어요
+  B: 가입 완료
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const nicknameA = "";
+          const ageA = 12;
+          const agreedA = true;
+
+          const nicknameB = "하늘";
+          const ageB = 15;
+          const agreedB = true;
+
+          // A의 신청을 확인하세요.
+
+          // B의 신청을 확인하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const nicknameA = "";
+          const ageA = 12;
+          const agreedA = true;
+
+          const nicknameB = "하늘";
+          const ageB = 15;
+          const agreedB = true;
+
+          // A의 신청을 확인하세요.
+          let okA = true;
+          if (nicknameA === "") {
+            console.log("A: 닉네임을 입력하세요");
+            okA = false;
+          }
+          if (ageA < 14) {
+            console.log("A: 14세 이상만 가입할 수 있어요");
+            okA = false;
+          }
+          if (!agreedA) {
+            console.log("A: 약관에 동의해 주세요");
+            okA = false;
+          }
+          if (okA) {
+            console.log("A: 가입 완료");
+          }
+
+          // B의 신청을 확인하세요.
+          let okB = true;
+          if (nicknameB === "") {
+            console.log("B: 닉네임을 입력하세요");
+            okB = false;
+          }
+          if (ageB < 14) {
+            console.log("B: 14세 이상만 가입할 수 있어요");
+            okB = false;
+          }
+          if (!agreedB) {
+            console.log("B: 약관에 동의해 주세요");
+            okB = false;
+          }
+          if (okB) {
+            console.log("B: 가입 완료");
+          }
+  checks:
+    - kind: console
+      id: output
+      description: A는 문제가 있는 두 항목이 모두, B는 가입 완료가 차례로 출력되어야 합니다.
+      requirement: 가입 확인 결과 출력
+      expect:
+        lines: ["A: 닉네임을 입력하세요", "A: 14세 이상만 가입할 수 있어요", "B: 가입 완료"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+hints:
+  - 한 신청자에게 메시지가 여러 줄 나올 수 있어요. `if … else if` 체인과 따로 쓴 `if` 문 중 어느 쪽이 참인 블록을 모두 실행하나요?
+  - "`가입 완료`는 세 항목이 모두 괜찮을 때만 나와야 해요. 마지막 항목의 `else`에 두면, 앞의 항목에 문제가 있어도 나올 수 있어요."
+  - "`let okA = true;`처럼 \"아직 문제 없음\"을 기억하는 변수를 두고, 문제가 있는 항목의 블록에서 `false`로 바꾼 뒤 마지막에 그 변수로 확인하는 방법이 있어요."
+explanation: |
+  한 신청자의 확인은 이렇게 쓸 수 있어요.
+
+  ```js
+  let okA = true;
+  if (nicknameA === "") {
+    console.log("A: 닉네임을 입력하세요");
+    okA = false;
+  }
+  if (ageA < 14) {
+    console.log("A: 14세 이상만 가입할 수 있어요");
+    okA = false;
+  }
+  if (!agreedA) {
+    console.log("A: 약관에 동의해 주세요");
+    okA = false;
+  }
+  if (okA) {
+    console.log("A: 가입 완료");
+  }
+  ```
+
+  - **따로 쓴 `if`**: 세 항목은 서로 관계없이 각각 확인해야 하므로 `else` 없이 `if`를 따로 써요. `if … else if` 체인으로 이으면 처음으로 참인 갈래 하나만 실행되어, A는 `닉네임을 입력하세요`만 나오고 나이 문제는 빠져요.
+  - **가입 완료**: 마지막 항목의 `else`에 `가입 완료`를 두면, A처럼 약관에는 동의했지만 다른 항목에 문제가 있는 신청자에게도 `가입 완료`가 나와요. 그래서 `okA` 같은 변수로 "문제가 하나라도 있었는지"를 기억해 두고 마지막에 확인해요.
+  - `if (nicknameA !== "" && ageA >= 14 && agreedA)`처럼 세 조건을 `&&`로 묶어 `가입 완료`를 확인해도 같은 결과예요.
+
+  조건이 거짓인 `if`는 그 블록만 건너뛰고 다음 문장으로 넘어가요. 그래서 세 `if`가 차례로 모두 검사돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

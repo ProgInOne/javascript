@@ -1,0 +1,72 @@
+id: html.semantics.review.mcq-wrong-wrapper
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: html.semantics.div-vs-semantic, weight: 1 }
+  - { id: html.semantics.sectioning, weight: 0.5 }
+  - { id: html.semantics.page-landmarks, weight: 0.3 }
+tags: [semantic, div, article, profile]
+estimatedSeconds: 100
+usage: assessment
+prompt: |
+  서윤이가 프로필 페이지의 본문을 아래처럼 나눴어요. `<style>`의 CSS는 모양만 정하고, 각 묶음에 붙인 주석은 그 묶음이 무엇인지 설명해요.
+
+  이 코드에서 **요소를 잘못 고른 묶음**은 어느 것인가요?
+code: |
+  <style>
+    .badge-row {
+      display: flex;
+      gap: 8px;
+    }
+  </style>
+  <main>
+    <!-- 이 페이지의 핵심 내용 전체 -->
+    <section>
+      <!-- "좋아하는 재료"라는 소제목이 붙는 주제별 구역 -->
+      <h2>좋아하는 재료</h2>
+      <article class="badge-row">
+        <!-- 재료 이름표 세 개를 가로로 나란히 놓으려고 감싼 상자 -->
+        <p>색종이</p>
+        <p>한지</p>
+        <p>골판지</p>
+      </article>
+    </section>
+    <article>
+      <!-- 따로 옮겨 실어도 뜻이 통하는 제작기 한 편 -->
+      <h2>종이 시계 제작기</h2>
+      <p>달력 종이를 접어서 시계 숫자판을 만들었어요.</p>
+    </article>
+  </main>
+spec:
+  options:
+    - id: a
+      text: '재료 이름표 세 개를 감싼 `<article class="badge-row">`'
+    - id: b
+      text: 핵심 내용 전체를 감싼 `<main>`
+      rationale: 이 페이지의 핵심 내용 하나를 감쌌으니 main이 맞아요.
+    - id: c
+      text: "\"좋아하는 재료\" 구역을 감싼 `<section>`"
+      misconception: html.mc.section-article-same
+      rationale: 소제목이 붙는 주제별 구역이라 section이 맞아요.
+    - id: d
+      text: "\"종이 시계 제작기\"를 감싼 `<article>`"
+      misconception: html.mc.section-article-same
+      rationale: 따로 옮겨 실어도 뜻이 통하는 글 한 편이라 article이 맞아요.
+  correct: a
+misconceptions: [html.mc.div-is-wrong]
+hints:
+  - 주석을 보고, 묶음마다 "이 묶음에 붙일 뜻이 있는가?"를 물어보세요.
+  - 뜻 없이 모양이나 배치만을 위해 감싼 묶음에는 어떤 요소가 맞았나요?
+  - 이름표 세 개는 혼자서 뜻이 통하는 글 한 편일까요, 가로로 놓으려고 묶은 것뿐일까요?
+explanation: |
+  정답은 **재료 이름표 세 개를 감싼 `<article class="badge-row">`**예요.
+
+  이 상자는 이름표를 CSS로 가로로 나란히 놓으려고 감싼 **배치용 묶음**이에요. 뜻이 없으니 `div`로 감싸야 해요. `article`로 두면 화면 낭독기가 있지도 않은 "글 한 편"이 있다고 알려요. `div class="badge-row"`로 바꿔도 CSS는 class로 고르니 화면은 그대로예요.
+
+  - `<main>`: 이 페이지의 핵심 내용 하나를 감쌌으니 맞아요.
+  - "좋아하는 재료"의 `<section>`: 소제목이 붙는 주제별 구역이라 맞아요.
+  - "종이 시계 제작기"의 `<article>`: 따로 옮겨 실어도 뜻이 통하는 독립된 글이라 맞아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,68 @@
+id: css.layout.review.mcq-corner-in-column
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: css.flex.justify-align, weight: 1 }
+  - { id: css.flex.axes, weight: 0.5 }
+tags: [flexbox, justify-content, align-items, flex-direction]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  너비 `400px`, 높이 `300px`인 채팅 창(`.chat`) 안에 너비 `120px`인 "보내기" 버튼 하나가 있어요. 지금은 버튼이 창의 **왼쪽 위**에 있어요.
+
+  `flex-direction: column`은 그대로 둔 채, 버튼을 창의 **오른쪽 아래 모서리**로 옮기려면 `.chat`에 어떤 선언을 추가해야 할까요?
+code: |
+  .chat {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height: 300px;
+  }
+  .send {
+    width: 120px;
+  }
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: |
+        justify-content: flex-end;
+        align-items: flex-end;
+    - id: b
+      text: |
+        justify-content: flex-end;
+      misconception: css.mc.justify-is-horizontal
+      rationale: column에서 justify-content는 세로 방향을 맡아요. 버튼은 아래로만 내려가고 왼쪽에 남아요.
+    - id: c
+      text: |
+        align-items: flex-end;
+      misconception: css.mc.justify-align-swap
+      rationale: column에서 align-items는 교차축인 가로 방향을 맡아요. 버튼은 오른쪽으로만 가고 위쪽에 남아요.
+    - id: d
+      text: |
+        justify-content: flex-end;
+        text-align: right;
+      rationale: text-align은 글자 같은 인라인 내용을 정렬할 뿐, 플렉스 아이템의 가로 위치를 바꾸지 못해요.
+  correct: a
+misconceptions: [css.mc.justify-is-horizontal, css.mc.justify-align-swap]
+hints:
+  - 먼저 `column`에서 주축과 교차축이 각각 어느 방향인지 정해 보세요.
+  - 버튼은 가로로도, 세로로도 옮겨야 해요. 한 방향마다 맡는 속성이 하나씩 있어요.
+  - column에서 세로는 주축, 가로는 교차축이에요. 주축 정렬과 교차축 정렬을 맡는 속성을 각각 떠올려 보세요.
+explanation: |
+  정답은 `justify-content: flex-end;`와 `align-items: flex-end;`를 함께 쓰는 거예요.
+
+  `column`에서는 주축이 세로, 교차축이 가로예요.
+
+  - 아래쪽 끝으로 옮기는 것은 주축(세로) 정렬이라 `justify-content: flex-end`가 맡아요.
+  - 오른쪽 끝으로 옮기는 것은 교차축(가로) 정렬이라 `align-items: flex-end`가 맡아요.
+
+  오답 풀이:
+
+  - `justify-content: flex-end;`만 쓰면 버튼이 아래로 내려가지만 왼쪽에 그대로 있어요. `justify-content`가 항상 가로 정렬이라고 생각하면 이 답을 고르게 돼요.
+  - `align-items: flex-end;`만 쓰면 버튼이 오른쪽으로 가지만 위쪽에 남아요. 두 속성의 방향을 반대로 기억하면 이 답을 고르게 돼요.
+  - `text-align: right`는 블록 안의 글자를 정렬하는 속성이라, 플렉스 아이템인 버튼의 위치는 바뀌지 않아요. 버튼은 왼쪽 아래에 머물러요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

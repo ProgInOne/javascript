@@ -1,0 +1,109 @@
+id: js-basics.control.control-review.fix-gym-hours
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.control.fallthrough, weight: 1 }
+  - { id: js.control.ternary, weight: 0.5 }
+  - { id: js.control.switch, weight: 0.3 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [switch, fallthrough, ternary, precedence, debugging]
+estimatedSeconds: 360
+usage: assessment
+prompt: |
+  헬스장 앱이 요일별 운영 시간을 안내해요. 운영 시간은 이래요.
+
+  - 월·수·금: `06:00~23:00`
+  - 화·목: `06:00~22:00`
+  - 토: `08:00~18:00`
+  - 일: 쉬는 날
+
+  오늘은 수요일인데 결과가 이상해요. 버그가 두 개 있고, 하나를 고치면 다른 문제가 드러나요. 운영 시간은 `hours`에 들어 있어야 해요. 아래처럼 나오게 고치세요.
+
+  ```text
+  오늘 운영: 06:00~23:00
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const day = "수";
+          let hours = "";
+
+          switch (day) {
+            case "월":
+            case "수":
+            case "금":
+              hours = "06:00~23:00";
+            case "화":
+            case "목":
+              hours = "06:00~22:00";
+              break;
+            case "토":
+              hours = "08:00~18:00";
+              break;
+            default:
+              hours = "휴무";
+          }
+
+          const isOpen = hours !== "휴무";
+          console.log("오늘 운영: " + isOpen ? hours : "쉬는 날");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const day = "수";
+          let hours = "";
+
+          switch (day) {
+            case "월":
+            case "수":
+            case "금":
+              hours = "06:00~23:00";
+              break;
+            case "화":
+            case "목":
+              hours = "06:00~22:00";
+              break;
+            case "토":
+              hours = "08:00~18:00";
+              break;
+            default:
+              hours = "휴무";
+          }
+
+          const isOpen = hours !== "휴무";
+          console.log("오늘 운영: " + (isOpen ? hours : "쉬는 날"));
+  bugDescription: 수요일인데 안내 앞부분이 빠지고 운영 시간도 화·목요일 시간으로 나와요.
+  maxEditDistance: 30
+  checks:
+    - kind: console
+      id: output
+      description: 수요일 운영 시간 안내가 한 줄로 출력되어야 합니다.
+      requirement: 운영 시간 안내 출력
+      expect:
+        lines: ["오늘 운영: 06:00~23:00"]
+    - kind: program
+      id: hours-value
+      visible: false
+      description: switch로 정한 hours 변수에 수요일 운영 시간이 들어 있어야 합니다.
+      requirement: 운영 시간 안내 출력
+      expect:
+        globals:
+          hours: { equals: "06:00~23:00" }
+        noError: true
+hints:
+  - 지금 출력된 줄과 기대하는 줄을 비교하면 다른 곳이 두 군데예요. 하나는 시간, 하나는 앞부분의 글자예요.
+  - "`case \"수\":`에서 시작한 실행은 어디에서 멈추나요? 그리고 `\"오늘 운영: \" + isOpen ? …`에서 `+`와 `?` 중 무엇이 먼저 계산되나요?"
+  - 월·수·금 갈래의 끝에 무엇이 빠졌는지, 조건 연산자를 다른 식 안에 쓸 때 무엇으로 감싸야 하는지 떠올려 보세요.
+explanation: |
+  버그는 두 개예요.
+
+  1. **월·수·금 갈래 끝의 `break`가 빠졌어요.** `case "수":`에서 실행이 시작되어 `hours = "06:00~23:00";`을 실행한 뒤, `break`가 없어서 `case "화":`, `case "목":`의 값은 비교하지 않고 아래 `hours = "06:00~22:00";`까지 실행해요(fall-through). 그래서 `hours`가 화·목요일 시간으로 덮어써졌어요. `hours = "06:00~23:00";` 다음 줄에 `break;`를 넣어요. 월·수·금 세 case 사이와 화·목 두 case 사이에는 같은 일을 하도록 일부러 `break`를 쓰지 않은 것이니 그대로 둬요.
+  1. **조건 연산자를 괄호로 감싸지 않았어요.** 조건 연산자는 우선순위가 아주 낮아서 `"오늘 운영: " + isOpen`이 먼저 계산되어 `"오늘 운영: true"`라는 문자열이 조건이 돼요. 빈 문자열이 아닌 문자열은 truthy라서 항상 `hours`만 출력되고 앞부분이 사라졌어요. `"오늘 운영: " + (isOpen ? hours : "쉬는 날")`처럼 괄호로 감싸요.
+
+  `break`만 고치면 `06:00~23:00`만 나오고, 괄호만 고치면 `오늘 운영: 06:00~22:00`이 나와요. 두 군데를 모두 고쳐야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

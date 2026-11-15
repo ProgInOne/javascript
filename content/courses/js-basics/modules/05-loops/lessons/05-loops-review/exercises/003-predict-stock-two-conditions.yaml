@@ -1,0 +1,51 @@
+id: js-basics.loops.loops-review.predict-stock-two-conditions
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.loops.while, weight: 1 }
+  - { id: js.ops.logical-and-or-not, weight: 0.3 }
+tags: [while, trace, condition, assessment]
+estimatedSeconds: 100
+usage: assessment
+prompt: |
+  빵집에서 하루에 빵을 4개씩 파는 프로그램이에요. 재고가 남아 있고 4일이 지나지 않은 동안 판매해요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    let stock = 10;
+    let day = 0;
+    while (stock > 0 && day < 4) {
+      day++;
+      stock -= 4;
+      console.log(day + "일째 남은 재고: " + stock);
+    }
+    console.log("판매 중단: " + day + "일째");
+  answerKind: console
+  misconceptionByAnswer:
+    "1일째 남은 재고: 6\n2일째 남은 재고: 2\n판매 중단: 2일째": js.mc.while-checks-mid-body
+    "1일째 남은 재고: 6\n2일째 남은 재고: 2\n판매 중단: 3일째": js.mc.while-checks-mid-body
+misconceptions: [js.mc.while-checks-mid-body]
+hints:
+  - 회차마다 본문이 끝난 시점의 `day`와 `stock`을 적어 보세요.
+  - 조건은 본문을 시작하기 전에만 검사해요. 본문 도중에 `stock`이 0 아래로 내려가도 그 회차의 남은 줄은 실행돼요.
+  - 3번째 회차를 시작할 때 `stock`은 2예요. 이때 조건은 참인가요? 그 회차가 끝나면 `stock`은 얼마가 되나요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  1일째 남은 재고: 6
+  2일째 남은 재고: 2
+  3일째 남은 재고: -2
+  판매 중단: 3일째
+  ```
+
+  - 1회차 시작: `10 > 0 && 0 < 4` 참 → `day` 1, `stock` 6
+  - 2회차 시작: `6 > 0 && 1 < 4` 참 → `day` 2, `stock` 2
+  - 3회차 시작: `2 > 0 && 2 < 4` 참 → `day` 3, `stock` -2. `stock -= 4`에서 재고가 음수가 되지만, 조건은 본문 도중에 검사하지 않으므로 `console.log`까지 실행돼요.
+  - 4회차 시작: `-2 > 0`이 거짓이라 `&&` 전체가 거짓 → 반복 끝
+
+  `day < 4`가 거짓이 되기 전에 `stock > 0`이 먼저 거짓이 되어 멈췄어요. `-2`가 출력되지 않는다고 생각했다면, 조건이 본문 중간에도 계속 검사된다고 본 거예요. 재고가 음수가 되지 않게 하려면 조건을 `stock >= 4`처럼 "이번에 팔 만큼 남았는가"로 바꿔야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

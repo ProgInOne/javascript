@@ -1,0 +1,58 @@
+id: js-basics.loops.loops-review.find-bug-wrong-loop-var
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.loops.loop-variable, weight: 1 }
+  - { id: js.loops.nested, weight: 0.5 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [loop-variable, nested, debugging, assessment]
+estimatedSeconds: 130
+usage: assessment
+prompt: |
+  3일 동안 하루에 운동을 2세트씩 하는 계획표를 출력하는 프로그램이에요. 날마다 `1일차: 1세트 2세트`처럼 그날의 세트 번호가 나와야 해요. 오류는 없는데 결과가 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    for (let day = 1; day <= 3; day++) {
+      let line = day + "일차:";
+      for (let set = 1; set <= 2; set++) {
+        line += " " + day + "세트";
+      }
+      console.log(line);
+    }
+  bugLines: [4]
+  symptom: "`1일차: 1세트 1세트`, `2일차: 2세트 2세트`, `3일차: 3세트 3세트`가 나와요. 세트 번호가 1, 2로 바뀌지 않아요."
+  symptomCheck:
+    console: ["1일차: 1세트 1세트", "2일차: 2세트 2세트", "3일차: 3세트 3세트"]
+  fixedCode: |-
+    for (let day = 1; day <= 3; day++) {
+      let line = day + "일차:";
+      for (let set = 1; set <= 2; set++) {
+        line += " " + set + "세트";
+      }
+      console.log(line);
+    }
+  causeOptions:
+    - id: c1
+      text: 안쪽 반복에서 회차마다 바뀌는 set 대신, 그 안쪽 반복 동안 바뀌지 않는 바깥 반복 변수 day를 이어 붙였다
+      correct: true
+    - id: c2
+      text: 안쪽 반복이 바깥 회차마다 처음부터 다시 돌지 않아서 set이 1에 머물렀다
+      misconception: js.mc.inner-var-not-reset
+    - id: c3
+      text: line을 바깥 반복 안에서 만들어서 날마다 앞의 세트 기록이 지워졌다
+misconceptions: [js.mc.inner-var-not-reset]
+hints:
+  - 세트 번호 자리에 찍힌 숫자가 무엇과 같은지 보세요. 날짜와 같나요?
+  - 안쪽 반복이 한 번 도는 동안 `day`는 바뀌나요? 그 동안 1, 2로 바뀌는 변수는 무엇인가요?
+  - 세트 번호를 이어 붙이는 줄에 어떤 변수를 썼는지 확인하세요.
+explanation: |
+  원인은 **4번 줄**이에요. 세트 번호 자리에 `day`를 이어 붙였어요.
+
+  안쪽 반복이 도는 동안 바뀌는 반복 변수는 `set`(1, 2)이고, `day`는 그 동안 그대로예요. 그래서 1일차에는 `1세트`가 두 번, 2일차에는 `2세트`가 두 번 붙었어요. `line += " " + set + "세트";`로 고치면 날마다 `1세트 2세트`가 나와요.
+
+  - "안쪽 반복이 처음부터 다시 돌지 않았다"는 틀렸어요. 날마다 세트 기록이 정확히 두 개씩 붙은 것을 보면 안쪽 반복은 회차마다 두 번씩 돌았어요. 숫자만 잘못 골랐을 뿐이에요.
+  - "line을 바깥 반복 안에서 만들어서 기록이 지워졌다"도 틀렸어요. 날마다 새 줄을 시작해야 하므로 `line`은 바깥 반복 안에서 만드는 것이 맞아요. 바깥에 두면 전날 기록이 이어 붙어 줄이 점점 길어져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

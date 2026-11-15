@@ -1,0 +1,66 @@
+id: html.semantics.review.multi-profile-headings
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: html.text.headings, weight: 1 }
+  - { id: html.semantics.sectioning, weight: 0.3 }
+tags: [headings, outline, profile]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  서윤이의 프로필 페이지 코드예요. 목차는 "한서윤(페이지 전체의 제목) → 자기소개, 작품 모음(장) → 종이 시계('작품 모음' 안의 글 한 편)" 순서예요.
+
+  제목 요소 가운데 **고쳐야 하는 줄**을 모두 고르세요.
+code: |
+  <header>
+    <h1>한서윤</h1>
+  </header>
+  <main>
+    <section>
+      <h2>자기소개</h2>
+      <p>종이로 작은 물건을 만드는 걸 좋아해요.</p>
+    </section>
+    <section>
+      <h2>작품 모음</h2>
+      <article>
+        <h4>종이 시계</h4>
+        <p>달력 종이로 만든 벽시계예요.</p>
+      </article>
+    </section>
+  </main>
+  <footer>
+    <h3>연락은 이메일로 주세요.</h3>
+  </footer>
+spec:
+  options:
+    - id: a
+      text: "`<h4>종이 시계</h4>`"
+    - id: b
+      text: "`<h3>연락은 이메일로 주세요.</h3>`"
+      missedMisconception: html.mc.heading-for-size
+    - id: c
+      text: "`<h1>한서윤</h1>`"
+      rationale: 페이지 전체의 제목이라 h1이 맞아요.
+    - id: d
+      text: "`<h2>자기소개</h2>`"
+      rationale: 페이지 제목 바로 아래 단계의 장이라 h2가 맞아요.
+    - id: e
+      text: "`<h2>작품 모음</h2>`"
+      rationale: 자기소개와 같은 단계의 장이라 똑같이 h2가 맞아요.
+  correct: [a, b]
+misconceptions: [html.mc.heading-skip-levels, html.mc.heading-for-size]
+hints:
+  - 목차의 단계마다 몇 번 제목을 써야 하는지 먼저 정해 보세요. 그리고 목차에 들어가지 않는 글자가 제목 요소로 감싸여 있지 않은지도 보세요.
+  - "\"작품 모음\"(h2) 바로 아래 단계의 제목은 몇 번이어야 할까요?"
+  - 고칠 곳은 두 군데예요. 하나는 단계를 건너뛰었고, 다른 하나는 제목이 아닌데 제목 요소를 썼어요.
+explanation: |
+  고쳐야 하는 줄은 **`<h4>종이 시계</h4>`**와 **`<h3>연락은 이메일로 주세요.</h3>`**예요.
+
+  - "종이 시계"는 "작품 모음"(h2) 바로 아래 단계의 제목이라 `h3`이어야 해요. `h4`를 쓰면 h3 단계를 건너뛰어서, 화면 낭독기로 목차를 훑는 사람은 빠진 단계가 있다고 오해해요.
+  - "연락은 이메일로 주세요."는 목차에 들어갈 제목이 아니라 안내 문장이에요. 크게 보이게 하려고 제목 요소를 쓰면 안 되고, `p`로 쓰고 크기는 CSS로 바꿔요.
+  - `<h1>한서윤</h1>`은 페이지 전체의 제목이라 맞아요.
+  - `<h2>자기소개</h2>`와 `<h2>작품 모음</h2>`는 같은 단계의 장이라 둘 다 h2가 맞아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

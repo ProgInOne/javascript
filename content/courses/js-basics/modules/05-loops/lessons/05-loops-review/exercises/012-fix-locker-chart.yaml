@@ -1,0 +1,78 @@
+id: js-basics.loops.loops-review.fix-locker-chart
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.loops.nested, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.5 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [nested, accumulator, off-by-one, debugging, assessment]
+estimatedSeconds: 300
+usage: assessment
+prompt: |
+  3층짜리 사물함 배치표를 출력하는 프로그램이에요. 층마다 사물함이 4칸 있고, 한 줄에 한 층씩 `층-칸` 번호를 보여 줘야 해요. 그런데 결과가 이상해요. 버그를 **모두** 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  1층: 1-1 1-2 1-3 1-4
+  2층: 2-1 2-2 2-3 2-4
+  3층: 3-1 3-2 3-3 3-4
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          let line = "";
+          for (let row = 1; row <= 3; row++) {
+            line += row + "층:";
+            for (let col = 1; col < 4; col++) {
+              line += " " + row + "-" + col;
+            }
+            console.log(line);
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          for (let row = 1; row <= 3; row++) {
+            let line = row + "층:";
+            for (let col = 1; col <= 4; col++) {
+              line += " " + row + "-" + col;
+            }
+            console.log(line);
+          }
+  bugDescription: 칸이 층마다 3개만 나오고, 아래층으로 갈수록 줄 앞에 위층의 번호가 계속 붙어서 줄이 길어져요.
+  checks:
+    - kind: console
+      id: output
+      description: 세 층의 배치표가 한 줄에 한 층씩, 층마다 네 칸으로 출력되어야 합니다.
+      requirement: 층별 배치표
+      expect:
+        lines: ["1층: 1-1 1-2 1-3 1-4", "2층: 2-1 2-2 2-3 2-4", "3층: 3-1 3-2 3-3 3-4"]
+misconceptions: [js.mc.accumulator-reset-in-loop, js.mc.for-off-by-one]
+hints:
+  - 버그는 두 개예요. 하나는 칸 수, 하나는 줄이 점점 길어지는 문제예요.
+  - "`col`이 1부터 시작할 때 `col < 4`면 몇 칸이 나오나요?"
+  - 줄을 모으는 변수는 "층마다 새로" 시작해야 해요. 그 변수를 언제, 몇 번 빈 글자로 만들고 있는지 보세요.
+explanation: |
+  버그는 두 개예요.
+
+  1. **칸 수**: `col < 4`는 `col`이 1, 2, 3일 때만 참이라 칸이 3개였어요. 4칸이 나오려면 `col <= 4`예요.
+  1. **줄이 계속 길어짐**: `let line = "";`이 바깥 반복보다 앞에 있어서 프로그램 전체에서 한 번만 빈 글자가 됐어요. 2층을 시작할 때도 `line`에는 1층 내용이 남아 있어, 그 뒤에 `2층:`이 이어 붙었어요.
+
+  예시 정답이에요.
+
+  ```js
+  for (let row = 1; row <= 3; row++) {
+    let line = row + "층:";
+    for (let col = 1; col <= 4; col++) {
+      line += " " + row + "-" + col;
+    }
+    console.log(line);
+  }
+  ```
+
+  이번에는 누적 변수가 반복 **안**에 있어야 해요. 한 층의 줄은 그 층 안에서만 모으고, 다음 층에서는 새로 시작해야 하기 때문이에요. 바깥 반복은 층마다 한 번, 안쪽 반복은 층마다 처음부터 4번 돌아서 모두 3 × 4 = 12칸이 나와요. `let line`을 바깥에 그대로 두고 `line += row + "층:"`을 `line = row + "층:"`으로 바꿔도 층마다 새로 시작하므로 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

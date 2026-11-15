@@ -1,0 +1,47 @@
+id: html.semantics.review.multi-profile-sections
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: html.semantics.sectioning, weight: 1 }
+  - { id: html.semantics.div-vs-semantic, weight: 0.5 }
+  - { id: html.semantics.page-landmarks, weight: 0.3 }
+tags: [semantic, section, article, profile]
+estimatedSeconds: 100
+usage: assessment
+prompt: |
+  서윤이의 프로필 페이지에 아래 묶음들이 있어요. 이 중 **`section`으로 감싸기에 알맞은 것**을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: 본문 안에서 "자기소개"라는 소제목 아래 소개 문단 두 개를 담은 구역
+    - id: b
+      text: 본문 안에서 "작품 모음"이라는 소제목 아래 작품 카드들을 담은 구역
+    - id: c
+      text: 작품 카드 하나 (작품 이름, 사진, 설명이 있어서 이것만 다른 사이트에 옮겨 실어도 뜻이 통함)
+      misconception: html.mc.section-article-same
+      rationale: 따로 떼어 내도 뜻이 통하는 독립된 글이라 article이 맞아요.
+    - id: d
+      text: 작품 카드 세 장을 CSS로 가로로 나란히 놓으려고 한꺼번에 감싼 상자 (소제목 없음)
+      misconception: html.mc.div-is-wrong
+      rationale: 뜻 없이 배치만을 위한 묶음이라 div가 맞아요.
+    - id: e
+      text: 페이지 맨 위에서 이름과 주요 메뉴를 담은 머리말
+      rationale: 페이지의 머리말이라 header가 맞아요.
+  correct: [a, b]
+misconceptions: [html.mc.section-article-same, html.mc.div-is-wrong]
+hints:
+  - 묶음마다 "소제목이 붙는 주제별 구역인가, 혼자서도 뜻이 통하는 글인가, 배치만을 위한 상자인가, 페이지의 큰 구역인가"를 물어보세요.
+  - section은 한 문서 안에서 소제목이 붙는 주제별 구역이에요. 독립된 글과 배치용 상자에는 각각 다른 요소가 있어요.
+  - 정답은 하나가 아니에요. 소제목이 붙어 있는 묶음을 다시 살펴보세요.
+explanation: |
+  정답은 **"자기소개" 구역**과 **"작품 모음" 구역** 두 개예요.
+
+  둘 다 프로필 페이지 본문 안에서 소제목이 붙는 **주제별 구역**이에요. 따로 떼어 내면 누구의 소개인지, 누구의 작품인지 알 수 없으니 독립된 글이 아니에요.
+
+  - 작품 카드 하나: 이것만 옮겨 실어도 뜻이 통하는 **독립된 글**이라 `article`이 맞아요. section과 article은 같은 요소가 아니에요.
+  - 카드를 가로로 놓으려고 감싼 상자: 소제목도 뜻도 없는 **배치용 묶음**이라 `div`가 맞아요. 시맨틱 요소가 있다고 모든 묶음을 바꿔야 하는 것은 아니에요.
+  - 이름과 주요 메뉴를 담은 머리말: 페이지의 큰 구역인 **머리말**이라 `header`가 맞아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

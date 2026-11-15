@@ -1,0 +1,71 @@
+id: js-basics.control.control-review.parsons-pool-entry
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.control.else-if, weight: 1 }
+  - { id: js.control.block, weight: 0.5 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [else-if, nested-if, order]
+estimatedSeconds: 180
+usage: assessment
+prompt: |
+  수영장 입장 안내 프로그램이에요. 규칙은 이래요.
+
+  - 수영모가 없으면 나이와 상관없이 `수영모를 빌려 오세요`
+  - 수영모가 있으면 나이로 풀을 정해요. 7세 미만은 `유아 풀로 가요`, 13세 미만은 `어린이 풀로 가요`, 그 밖은 `성인 풀로 가요`
+
+  수영모가 있는지 먼저 확인하고, **그 블록 안에** 나이를 확인하는 `if … else if … else` 체인을 넣으세요. 들여쓰기도 맞춰야 해요. 어떤 나이를 넣어도 규칙대로 동작하는 순서여야 해요. 지금 값(수영모 있음, 10세)으로 실행하면 `어린이 풀로 가요` 한 줄만 나와야 해요.
+spec:
+  lines:
+    - { id: l1, code: "const hasCap = true;" }
+    - { id: l2, code: "const age = 10;" }
+    - { id: l3, code: "if (hasCap) {" }
+    - { id: l4, code: "if (age < 7) {", indent: 1 }
+    - { id: l5, code: 'console.log("유아 풀로 가요");', indent: 2 }
+    - { id: l6, code: "} else if (age < 13) {", indent: 1 }
+    - { id: l7, code: 'console.log("어린이 풀로 가요");', indent: 2 }
+    - { id: l8, code: "} else {", indent: 1 }
+    - { id: l9, code: 'console.log("성인 풀로 가요");', indent: 2 }
+    - { id: l10, code: "}", indent: 1 }
+    - { id: l11, code: "} else {" }
+    - { id: l12, code: 'console.log("수영모를 빌려 오세요");', indent: 1 }
+    - { id: l13, code: "}" }
+  distractors:
+    - { id: d1, code: "} else (age < 13) {", misconception: js.mc.else-has-condition }
+    - { id: d2, code: "if (hasCap); {", misconception: js.mc.semicolon-after-if }
+  gradeIndent: true
+  alternatives:
+    - [l2, l1, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13]
+hints:
+  - 바깥 뼈대는 `if (수영모) { … } else { … }`예요. 나이를 확인하는 체인은 어느 쪽 블록 안에 들어가야 할까요?
+  - "`age < 7`과 `age < 13`은 범위가 겹쳐요. 5세 아이라면 두 조건이 모두 참이에요. 체인은 처음으로 참인 갈래 하나만 실행해요."
+  - "`else` 뒤에는 조건을 쓸 수 없고, `if (조건)` 바로 뒤에 세미콜론이 붙으면 블록이 조건과 상관없이 실행돼요. 쓰지 않을 조각이 두 개 있어요."
+explanation: |
+  완성한 코드예요.
+
+  ```js
+  const hasCap = true;
+  const age = 10;
+  if (hasCap) {
+    if (age < 7) {
+      console.log("유아 풀로 가요");
+    } else if (age < 13) {
+      console.log("어린이 풀로 가요");
+    } else {
+      console.log("성인 풀로 가요");
+    }
+  } else {
+    console.log("수영모를 빌려 오세요");
+  }
+  ```
+
+  - **조건 순서**: `age < 7`을 `age < 13`보다 먼저 써야 해요. 순서를 바꾸면 5세도 `age < 13`에 먼저 걸려 `어린이 풀로 가요`가 나오고, 유아 풀 갈래는 절대 실행되지 않아요. 범위가 겹치면 좁은 조건부터 적어요.
+  - **블록**: 나이 체인 전체가 `if (hasCap) {` 블록 안에 들어가고, 바깥 `} else {`는 수영모가 없을 때의 갈래예요. 들여쓰기 한 단계가 블록 한 겹이에요.
+  - `} else (age < 13) {`는 `else`에 조건을 붙인 것이라 `SyntaxError`가 나요. 조건이 더 필요하면 `else if`를 써요.
+  - `if (hasCap); {`는 세미콜론이 빈 문장이 되어, 뒤의 블록이 수영모와 상관없이 실행돼요. 게다가 그 뒤의 `} else {`가 짝이 될 `if`를 잃어 `SyntaxError`가 나요.
+
+  `const` 두 줄은 순서를 바꿔도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

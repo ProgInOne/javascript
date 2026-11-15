@@ -1,0 +1,64 @@
+id: css.layout.review.mcq-breakpoint-order
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: css.responsive.mobile-first, weight: 1 }
+  - { id: css.responsive.media-queries, weight: 0.5 }
+  - { id: css.cascade.order, weight: 0.5 }
+tags: [mobile-first, media-query, min-width, cascade]
+estimatedSeconds: 100
+usage: assessment
+prompt: |
+  모바일 우선으로 상품 카드의 너비를 정하려고 해요. 계획은 이래요.
+
+  - 기본(좁은 화면): 너비 `100%`
+  - 화면 너비 `600px` 이상: 너비 `45%`
+  - 화면 너비 `1024px` 이상: 너비 `30%`
+
+  그런데 아래처럼 미디어 쿼리 두 개의 순서를 바꿔 썼어요. 너비 `1280px`인 화면에서 `.product`의 너비는 몇 %가 될까요?
+code: |
+  .product {
+    width: 100%;
+  }
+  @media (min-width: 1024px) {
+    .product {
+      width: 30%;
+    }
+  }
+  @media (min-width: 600px) {
+    .product {
+      width: 45%;
+    }
+  }
+spec:
+  options:
+    - id: a
+      text: "`45%`"
+    - id: b
+      text: "`30%`"
+      rationale: 조건 값이 더 크다고 우선하지 않아요. 1280px에서는 두 조건이 모두 맞고, 뒤에 쓴 45% 규칙이 이겨요.
+    - id: c
+      text: "`100%`"
+      rationale: 1280px은 두 min-width 조건을 모두 만족하므로 미디어 쿼리 안의 규칙이 기본 규칙을 덮어써요.
+    - id: d
+      text: "`75%`"
+      rationale: 같은 속성의 값은 더해지지 않아요. 여러 규칙 중 캐스케이드에서 이긴 값 하나만 적용돼요.
+  correct: a
+hints:
+  - 너비 1280px 화면에서 두 미디어 쿼리 조건은 각각 맞나요, 맞지 않나요?
+  - 조건이 맞는 규칙이 여러 개이고 선택자와 명시도가 모두 같으면, 무엇으로 승자가 정해질까요?
+  - 미디어 쿼리 조건의 숫자 크기는 승자를 정하는 데 쓰이지 않아요. 두 미디어 쿼리 중 어느 것이 코드에서 아래에 있는지 보세요.
+explanation: |
+  정답은 `45%`예요.
+
+  너비 1280px 화면은 `min-width: 1024px`(1024px 이상)과 `min-width: 600px`(600px 이상)을 **모두** 만족해요. 세 규칙 모두 선택자가 `.product`라 명시도가 같으니, 캐스케이드에 따라 **가장 뒤에 쓴** `min-width: 600px` 규칙의 `45%`가 이겨요. 결국 30% 규칙은 어떤 화면에서도 적용되지 않아요.
+
+  그래서 모바일 우선 CSS에서는 `min-width` 미디어 쿼리를 **작은 경계부터 큰 경계 순서로** 써요. 600px 규칙 다음에 1024px 규칙을 쓰면, 1024px 이상에서는 뒤의 30%가 이겨서 계획대로 동작해요.
+
+  - `30%`는 조건 숫자가 큰 미디어 쿼리가 더 구체적이라 이긴다고 생각한 답이에요. 미디어 쿼리는 명시도를 바꾸지 않아요.
+  - `100%`는 기본 규칙이 그대로 남는다고 본 답이에요. 조건이 맞는 미디어 쿼리 규칙이 뒤에 있으니 기본값을 덮어써요.
+  - `75%`처럼 값이 합쳐지는 일은 없어요. 이긴 선언 하나만 적용돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

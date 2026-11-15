@@ -1,0 +1,45 @@
+id: js-basics.loops.loops-review.predict-seat-step
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.loops.for, weight: 1 }
+  - { id: js.ops.compound-assignment, weight: 0.3 }
+tags: [for, trace, step, assessment]
+estimatedSeconds: 80
+usage: assessment
+prompt: |
+  공연장에서 거리 두기를 위해 4칸마다 한 좌석만 안내하는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    for (let seat = 3; seat < 12; seat += 4) {
+      console.log(seat + "번 좌석 안내");
+    }
+  answerKind: console
+  misconceptionByAnswer:
+    "3번 좌석 안내\n7번 좌석 안내\n11번 좌석 안내\n15번 좌석 안내": js.mc.for-off-by-one
+    "7번 좌석 안내\n11번 좌석 안내": js.mc.for-update-before-body
+misconceptions: [js.mc.for-off-by-one, js.mc.for-update-before-body]
+hints:
+  - 첫 회차의 `seat`은 초기화에서 정한 값이에요. 갱신식은 본문이 끝난 뒤에 실행돼요.
+  - 회차마다 `seat`이 4씩 늘어요. 3 다음은 7이에요.
+  - 조건 `seat < 12`를 검사할 때 `seat`이 15라면 본문이 실행될까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  3번 좌석 안내
+  7번 좌석 안내
+  11번 좌석 안내
+  ```
+
+  - 초기화: `seat`은 3. `3 < 12` 참 → 출력 → `seat += 4`로 7
+  - `7 < 12` 참 → 출력 → 11
+  - `11 < 12` 참 → 출력 → 15
+  - `15 < 12` 거짓 → 반복 끝
+
+  15는 조건을 거짓으로 만든 값이라 출력되지 않아요. 15까지 나온다고 생각했다면 조건 검사가 본문보다 늦다고 본 거예요. 또 갱신식은 본문 **뒤에** 실행되므로 첫 회차는 7이 아니라 3이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

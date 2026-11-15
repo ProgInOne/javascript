@@ -1,0 +1,55 @@
+id: css.layout.review.mcq-meta-fixed-width
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.responsive.viewport-meta, weight: 1 }
+  - { id: css.units.length, weight: 0.3 }
+tags: [viewport, meta, responsive]
+estimatedSeconds: 60
+usage: assessment
+prompt: |
+  사진 갤러리 페이지의 `head`에 뷰포트 메타 태그를 넣었어요. 미디어 쿼리는 하나도 없고, 사진 묶음은 아래처럼 너비를 고정했어요.
+
+  이 페이지를 너비 `375px`인 휴대폰에서 열면 사진 묶음은 어떻게 보일까요?
+code: |
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      .gallery {
+        width: 720px;
+      }
+    </style>
+  </head>
+spec:
+  options:
+    - id: a
+      text: 페이지가 375px 너비로 그려져, 720px인 사진 묶음이 화면 밖으로 넘치고 옆으로 밀어야 나머지가 보인다
+    - id: b
+      text: 메타 태그가 화면 너비를 알려 주므로, 브라우저가 사진 묶음의 너비를 375px에 맞게 자동으로 줄인다
+      misconception: css.mc.viewport-meta-makes-responsive
+      rationale: 메타 태그는 그리는 너비만 정해요. CSS에 적힌 width 720px은 그대로라 상자가 줄어들지 않아요.
+    - id: c
+      text: 브라우저가 페이지 전체를 약 980px 너비로 그린 뒤 화면에 맞게 축소해서, 사진 묶음이 한 화면에 작게 다 보인다
+      rationale: 이것은 메타 태그가 없을 때의 동작이에요. 이 페이지는 메타 태그로 축소를 껐어요.
+    - id: d
+      text: 미디어 쿼리가 없으면 메타 태그는 아무 효과가 없어서, 데스크톱 화면과 똑같은 크기로 보인다
+      rationale: 메타 태그는 미디어 쿼리와 상관없이 휴대폰이 기기 너비로 그리게 해요.
+  correct: a
+misconceptions: [css.mc.viewport-meta-makes-responsive]
+hints:
+  - 뷰포트 메타 태그가 하는 일은 딱 하나예요. 무엇을 정하는 태그였나요?
+  - 메타 태그를 넣으면 휴대폰은 페이지를 몇 px 너비로 그릴까요? 그 너비 안에 720px 상자가 들어가나요?
+  - "CSS에 적힌 `width: 720px`을 바꾸는 규칙이 이 페이지에 있는지 확인해 보세요."
+explanation: |
+  정답은 "페이지가 375px 너비로 그려져, 720px인 사진 묶음이 화면 밖으로 넘치고 옆으로 밀어야 나머지가 보인다"예요.
+
+  뷰포트 메타 태그는 휴대폰 브라우저가 페이지를 축소하지 않고 **기기 너비(375px) 그대로** 그리게 해요. 하지만 배치를 바꾸지는 않아요. `.gallery`의 `width: 720px`은 그대로라서 375px 화면을 넘쳐요. 좁은 화면에서 너비를 바꾸려면 미디어 쿼리나 `%` 같은 유연한 단위를 직접 써야 해요.
+
+  - "자동으로 줄인다"는 메타 태그만 넣으면 반응형이 된다고 생각한 답이에요. 고정 너비 상자는 줄어들지 않아요.
+  - "약 980px로 그린 뒤 축소한다"는 메타 태그가 **없을** 때의 모습이에요.
+  - 메타 태그는 미디어 쿼리가 없어도 효과가 있어요. 그리는 너비가 375px이 되니 데스크톱과 똑같이 보이지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

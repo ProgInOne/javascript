@@ -1,0 +1,24 @@
+id: css.layout.review
+title: "단원 평가: 카드 목록 레이아웃"
+summary: Flexbox와 미디어 쿼리를 함께 써서 화면 너비에 맞게 배치가 바뀌는 카드 목록을 만들고, 레이아웃 기초 모듈의 이해도를 확인합니다.
+kind: assessment
+importance: standard
+estimatedMinutes: { read: 2, practice: 25 }
+concepts:
+  reviewed:
+    - css.flex.container
+    - css.flex.axes
+    - css.flex.justify-align
+    - css.flex.gap
+    - css.responsive.viewport-meta
+    - css.responsive.media-queries
+    - css.responsive.mobile-first
+objectives:
+  - 플렉스 컨테이너와 아이템, 주축과 교차축을 구분해 요소가 놓일 위치를 예측할 수 있다.
+  - justify-content, align-items, gap으로 원하는 정렬과 간격을 만들 수 있다.
+  - 미디어 쿼리가 어떤 화면 너비에서 적용되는지 판단하고, 모바일 우선 방식으로 카드 목록 레이아웃을 만들 수 있다.
+assessment:
+  itemCount: 10
+  passRatio: 0.8
+practice:
+  targetCount: 10

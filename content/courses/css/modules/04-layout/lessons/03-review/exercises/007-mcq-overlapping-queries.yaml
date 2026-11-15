@@ -1,0 +1,64 @@
+id: css.layout.review.mcq-overlapping-queries
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: css.responsive.media-queries, weight: 1 }
+  - { id: css.cascade.order, weight: 0.5 }
+  - { id: css.flex.axes, weight: 0.3 }
+tags: [media-query, min-width, max-width, cascade]
+estimatedSeconds: 100
+usage: assessment
+prompt: |
+  쇼핑몰의 분류 메뉴(`.category`)에 아래 CSS를 적용했어요. 메뉴가 **가로로** 놓이는 화면 너비는 언제일까요?
+code: |
+  .category {
+    display: flex;
+    flex-direction: column;
+  }
+  @media (min-width: 600px) {
+    .category {
+      flex-direction: row;
+    }
+  }
+  @media (max-width: 900px) {
+    .category {
+      flex-direction: column;
+    }
+  }
+spec:
+  options:
+    - id: a
+      text: 화면 너비가 901px 이상일 때만
+    - id: b
+      text: 화면 너비가 600px 이상 900px 이하일 때만
+      misconception: css.mc.max-width-means-above
+      rationale: max-width 900px은 "900px 이하"예요. 900px보다 넓은 화면이 아니라 좁은 화면에서 column을 적용해요.
+    - id: c
+      text: 화면 너비가 600px 이상일 때
+      rationale: 600px~900px에서는 두 미디어 쿼리가 모두 맞고, 뒤에 쓴 max-width 쪽 column이 이겨요.
+    - id: d
+      text: 화면 너비가 900px 이상일 때
+      rationale: 900px도 "900px 이하"에 들어가서, 정확히 900px에서는 column이 적용돼요.
+  correct: a
+misconceptions: [css.mc.max-width-means-above]
+hints:
+  - 두 미디어 쿼리가 각각 어느 너비 범위에서 적용되는지 따로 적어 보세요. 경계값이 들어가는지도 확인해요.
+  - 두 범위가 겹치는 너비가 있어요. 겹치는 곳에서는 두 규칙의 명시도가 같으니 무엇으로 승자가 정해질까요?
+  - "`max-width: 900px`는 900px 이하예요. 600px부터 900px까지는 두 조건이 모두 맞고, 뒤에 쓴 규칙이 이겨요."
+explanation: |
+  정답은 "화면 너비가 901px 이상일 때만"이에요.
+
+  두 미디어 쿼리의 범위를 나눠 보면 이래요.
+
+  - `min-width: 600px`: 600px **이상**에서 `row`
+  - `max-width: 900px`: 900px **이하**에서 `column`
+
+  600px부터 900px까지는 두 조건이 **모두** 맞아요. 명시도가 같은 `.category` 규칙끼리라 캐스케이드에 따라 **뒤에 쓴** `max-width` 쪽 `column`이 이겨요. 그래서 `row`가 실제로 적용되는 것은 `max-width` 조건이 맞지 않는 901px 이상뿐이에요. 600px보다 좁은 화면은 기본 규칙과 `max-width` 규칙 모두 `column`이에요.
+
+  - "600px 이상 900px 이하일 때만"은 `max-width: 900px`를 "900px보다 넓을 때"로 반대로 읽은 답이에요.
+  - "600px 이상일 때"는 겹치는 구간에서 뒤에 쓴 규칙이 이긴다는 점을 놓친 답이에요.
+  - "900px 이상일 때"는 경계값을 놓친 답이에요. 정확히 900px은 "900px 이하"에 들어가서 `column`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

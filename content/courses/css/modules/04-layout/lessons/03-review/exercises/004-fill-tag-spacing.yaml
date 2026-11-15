@@ -1,0 +1,97 @@
+id: css.layout.review.fill-tag-spacing
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.flex.gap, weight: 1 }
+  - { id: css.box.spacing, weight: 0.3 }
+tags: [flexbox, gap, padding]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  글에 붙은 태그 세 개를 상자(`.tags`) 안에 가로로 놓았어요. 빈칸 두 곳에 선언을 하나씩 채워 아래 두 조건을 만족시키세요.
+
+  1. 태그와 태그 **사이**는 가로로 정확히 `10px`이에요.
+  1. 상자의 왼쪽 테두리와 첫 태그 사이, 마지막 태그와 상자의 오른쪽 테두리 사이는 각각 `20px`이에요(위아래 여백은 자유예요).
+spec:
+  mode: code
+  lang: html
+  template: |
+    <style>
+      .tags {
+        display: flex;
+        width: 400px;
+        border: 2px solid #94a3b8;
+        {{blank:between}}
+        {{blank:edge}}
+      }
+      .tag {
+        width: 100px;
+        background: #e0f2fe;
+      }
+    </style>
+    <div class="tags">
+      <span class="tag" id="t1">여행</span>
+      <span class="tag" id="t2">사진</span>
+      <span class="tag" id="t3">맛집</span>
+    </div>
+  blanks:
+    - id: between
+      accept: ["gap: 10px;"]
+      width: 22
+    - id: edge
+      accept: ["padding: 0 20px;"]
+      width: 22
+  checks:
+    - kind: layout
+      id: gap-1-2
+      description: 첫 번째와 두 번째 태그 사이가 가로로 10px이어야 합니다.
+      requirement: 태그 사이 10px
+      visible: true
+      a: "#t1"
+      b: "#t2"
+      gap: { axis: x, min: 10, max: 10 }
+      tolerancePx: 1
+    - kind: layout
+      id: gap-2-3
+      description: 두 번째와 세 번째 태그 사이가 가로로 10px이어야 합니다.
+      requirement: 태그 사이 10px
+      visible: true
+      a: "#t2"
+      b: "#t3"
+      gap: { axis: x, min: 10, max: 10 }
+      tolerancePx: 1
+    - kind: layout
+      id: same-row
+      description: 세 태그가 같은 줄에 있어야 합니다.
+      requirement: 태그 사이 10px
+      a: "#t3"
+      b: "#t1"
+      relation: same-row
+      tolerancePx: 1
+    - kind: css
+      id: edge-space
+      description: 상자의 왼쪽·오른쪽 안쪽 여백이 20px이어야 합니다.
+      requirement: 가장자리 20px
+      visible: true
+      selector: .tags
+      expect:
+        computed:
+          padding-left: { px: { value: 20 } }
+          padding-right: { px: { value: 20 } }
+      misconceptionIfFail: css.mc.gap-adds-outer-edges
+misconceptions: [css.mc.gap-adds-outer-edges]
+hints:
+  - 아이템 사이 간격과 상자 가장자리의 여백은 서로 다른 속성이 맡아요.
+  - 플렉스 아이템 사이에만 간격을 만드는 속성이 있어요. 이 속성은 상자 가장자리에는 간격을 만들지 않아요.
+  - 가장자리 여백은 상자 테두리 안쪽의 공간이에요. 박스 모델에서 테두리 안쪽 여백을 맡는 속성을 떠올려 보세요.
+explanation: |
+  예시 정답은 `gap: 10px;`와 `padding: 0 20px;`예요.
+
+  - `gap: 10px`는 플렉스 아이템과 아이템 **사이**에만 10px을 만들어요. 태그가 세 개라 간격은 두 군데예요.
+  - gap은 상자 가장자리에는 간격을 만들지 않아요. 테두리와 첫·마지막 태그 사이의 20px은 상자의 안쪽 여백인 `padding`으로 줘요. `padding: 20px`처럼 위아래까지 20px을 줘도 조건을 만족해요.
+
+  `gap: 20px`만 쓰면 태그 사이가 20px이 되고 가장자리 여백은 여전히 0이에요. `padding: 10px`로 사이 간격을 만들려고 하면 상자 가장자리에만 여백이 생기고 태그끼리는 붙어 있어요. 빈칸 두 곳은 어느 쪽에 어느 선언을 써도 같은 규칙 안이라 결과가 같아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

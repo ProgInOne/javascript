@@ -1,0 +1,68 @@
+id: js-basics.control.control-review.find-bug-first-order-coupon
+type: find_bug_line
+difficulty: 2
+concepts:
+  - { id: js.control.block, weight: 1 }
+  - { id: js.control.if, weight: 0.5 }
+tags: [block, nested-if, debugging]
+estimatedSeconds: 120
+usage: assessment
+prompt: |
+  배달 앱의 쿠폰 규칙은 "주문 금액이 20000원 이상**이면서** 첫 주문이면 3000원 쿠폰"이에요. 오류는 없는데 결과가 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const total = 25000;
+    const isFirstOrder = false;
+    let coupon = 0;
+    if (total >= 20000) {
+      if (isFirstOrder) {
+        console.log("첫 주문 쿠폰 지급");
+      }
+      coupon = 3000;
+    }
+    console.log("쿠폰:", coupon);
+  bugLines: [8]
+  acceptLines: [7]
+  symptom: "첫 주문이 아닌데도 `쿠폰: 3000`이 나와요."
+  symptomCheck:
+    console: ["쿠폰: 3000"]
+  fixedCode: |-
+    const total = 25000;
+    const isFirstOrder = false;
+    let coupon = 0;
+    if (total >= 20000) {
+      if (isFirstOrder) {
+        console.log("첫 주문 쿠폰 지급");
+        coupon = 3000;
+      }
+    }
+    console.log("쿠폰:", coupon);
+  causeOptions:
+    - id: c1
+      text: 쿠폰 금액을 넣는 줄이 안쪽 if 블록이 닫힌 뒤에 있어서, 첫 주문인지와 상관없이 금액만 맞으면 실행된다
+      correct: true
+    - id: c2
+      text: 안쪽 if의 조건이 거짓이면 바깥 if 블록 전체가 처음부터 다시 실행된다
+    - id: c3
+      text: 쿠폰 금액을 넣는 줄은 안쪽 if와 같은 깊이로 들여 써져 있어서 안쪽 if에 딸린다
+      misconception: js.mc.indent-makes-block
+    - id: c4
+      text: "`isFirstOrder`가 `false`라서 안쪽 if에서 오류가 나고, 그 뒤 줄이 대신 실행된다"
+      misconception: js.mc.false-if-stops-program
+misconceptions: [js.mc.indent-makes-block]
+hints:
+  - "`isFirstOrder`가 `false`일 때 실행되는 줄을 위에서부터 차례로 짚어 보세요."
+  - 각 `{`와 짝이 되는 `}`를 찾아, 어떤 줄이 어느 블록 안에 들어 있는지 표시해 보세요.
+  - 쿠폰 금액은 두 조건이 **모두** 참일 때만 정해져야 해요. 그 줄은 지금 몇 개의 조건에 딸려 있나요?
+explanation: |
+  원인은 **8번 줄** `coupon = 3000;`이 있는 자리예요. 7번 줄의 `}`가 안쪽 if 블록을 닫기 때문에, 8번 줄은 안쪽 if 밖·바깥 if 안에 있어요. 그래서 금액 조건(`25000 >= 20000`)만 참이면 첫 주문이 아니어도 실행돼요.
+
+  8번 줄을 안쪽 if 블록 안(6번 줄 아래)으로 옮기면, 두 조건이 모두 참일 때만 쿠폰이 정해져요. (안쪽 블록을 닫는 7번 줄을 골라도 정답으로 인정해요.)
+
+  - "안쪽 if가 거짓이면 바깥 블록이 다시 실행된다": 조건문은 다시 실행되지 않아요. 안쪽 if가 거짓이면 그 블록만 건너뛰고 바로 다음 줄(8번)로 가요.
+  - "같은 깊이로 들여 써져 있어서 안쪽 if에 딸린다": 8번 줄은 실제로 안쪽 `if`와 같은 깊이예요. 그래서 안쪽 if의 **블록 안**이 아니라 바깥 if 블록 안의 다음 문장이에요. 어느 블록에 속하는지는 들여쓰기가 아니라 중괄호가 정해요.
+  - "`false`라서 오류가 난다": 조건이 거짓인 것은 오류가 아니에요. 블록을 건너뛰고 계속 실행할 뿐이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
