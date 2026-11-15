@@ -1,0 +1,73 @@
+id: js-basics.operators.comparison.fix-point-type
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.ops.loose-equality, weight: 1 }
+  - { id: js.ops.strict-equality, weight: 0.5 }
+tags: [loose-equality, strict-equality, debugging]
+estimatedSeconds: 150
+prompt: |
+  출석 이벤트에서 받은 포인트가 **숫자 100**인지 검사하는 프로그램이에요. 포인트가 문자열 `"100"`으로 저장되면 잘못 저장된 것이라 "정상"이 `false`여야 해요.
+
+  두 포인트 값(`pointA`, `pointB`)은 바꾸지 말고, 검사하는 부분만 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  A 정상: true
+  B 정상: false
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const pointA = 100;
+          const pointB = "100";
+          const isValidA = pointA == 100;
+          const isValidB = pointB == 100;
+          console.log("A 정상:", isValidA);
+          console.log("B 정상:", isValidB);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const pointA = 100;
+          const pointB = "100";
+          const isValidA = pointA === 100;
+          const isValidB = pointB === 100;
+          console.log("A 정상:", isValidA);
+          console.log("B 정상:", isValidB);
+  bugDescription: 문자열로 잘못 저장된 B 포인트도 "정상"이 true로 나와요.
+  bugMisconception: js.mc.loose-equals-like-strict
+  checks:
+    - kind: console
+      id: output
+      description: A는 정상(true), B는 비정상(false)으로 출력되어야 합니다.
+      requirement: 검사 결과 출력
+      expect:
+        lines: ["A 정상: true", "B 정상: false"]
+    - kind: program
+      id: values
+      description: 포인트 값은 처음 그대로(A는 숫자 100, B는 문자열 "100")이고, 검사 결과는 isValidA가 true, isValidB가 false여야 합니다.
+      requirement: 포인트 값 유지
+      expect:
+        globals:
+          pointA: { equals: 100 }
+          pointB: { equals: "100" }
+          isValidA: { equals: true }
+          isValidB: { equals: false }
+        noError: true
+misconceptions: [js.mc.loose-equals-like-strict]
+hints:
+  - B는 문자열인데 왜 숫자 100과 같다고 나왔을까요? 비교에 쓴 연산자를 보세요.
+  - "`==`는 자료형이 다르면 값을 바꿔서 비교해요. 자료형까지 확인하려면?"
+  - 3번 줄과 4번 줄의 연산자를 자료형을 바꾸지 않는 연산자로 바꿔 보세요.
+explanation: |
+  `==`는 자료형이 다르면 문자열 `"100"`을 숫자 100으로 바꿔서 비교해요. 그래서 `pointB == 100`도 `true`가 됐어요.
+
+  3·4번 줄의 `==`를 `===`로 고치면 자료형까지 비교해서, 숫자 100인 A는 `true`, 문자열인 B는 `false`가 나와요.
+
+  4번 줄만 고쳐도 출력은 맞지만, 같은 검사는 같은 연산자로 쓰는 게 좋아요. `pointB`를 숫자로 바꾸면 "잘못 저장된 값을 찾아내는" 검사의 의미가 사라지니, 값은 그대로 두는 것이 맞아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

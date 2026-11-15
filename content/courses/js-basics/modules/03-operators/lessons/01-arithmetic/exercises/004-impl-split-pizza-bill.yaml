@@ -1,0 +1,92 @@
+id: js-basics.operators.arithmetic.impl-split-pizza-bill
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.ops.arithmetic, weight: 1 }
+  - { id: js.ops.precedence, weight: 0.5 }
+  - { id: js.ops.remainder, weight: 0.3 }
+tags: [arithmetic, percent, write-code]
+estimatedSeconds: 300
+prompt: |
+  친구 5명이 피자 3판과 콜라 2병을 시켰어요. 가격 상수는 시작 코드에 있어요.
+
+  - 음식값 = 피자 3판 + 콜라 2병
+  - 배달 팁은 **음식값의 10%**예요.
+  - `total`: 음식값 + 배달 팁
+  - `perPerson`: `total`을 5명이 똑같이 나눈 금액
+
+  `total`과 `perPerson`을 만들어 계산하고, 아래처럼 출력하세요.
+
+  ```text
+  총액: 67430
+  1인당: 13486
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const pizzaPrice = 18900;
+          const colaPrice = 2300;
+          const people = 5;
+
+          // total(배달 팁 포함 총액)과 perPerson(1인당 금액)을 계산해 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const pizzaPrice = 18900;
+          const colaPrice = 2300;
+          const people = 5;
+
+          const food = pizzaPrice * 3 + colaPrice * 2;
+          const tip = food * 10 / 100;
+          const total = food + tip;
+          const perPerson = total / people;
+          console.log("총액:", total);
+          console.log("1인당:", perPerson);
+  checks:
+    - kind: console
+      id: output
+      description: 총액과 1인당 금액이 차례로 출력되어야 합니다.
+      requirement: 금액 출력
+      expect:
+        lines: ["총액: 67430", "1인당: 13486"]
+    - kind: program
+      id: total
+      description: total에 배달 팁(음식값의 10%)까지 더한 총액이 들어 있어야 합니다.
+      requirement: 총액 계산
+      misconceptionIfFail: js.mc.remainder-is-percent
+      expect:
+        globals: { total: { closeTo: { value: 67430, epsilon: 0.000001 } } }
+        noError: true
+    - kind: program
+      id: per-person
+      description: perPerson에 총액을 5명이 나눈 금액이 들어 있어야 합니다.
+      requirement: 1인당 금액
+      expect:
+        globals: { perPerson: { closeTo: { value: 13486, epsilon: 0.000001 } } }
+misconceptions: [js.mc.remainder-is-percent]
+hints:
+  - 음식값, 배달 팁, 총액, 1인당 금액을 한 줄에 하나씩 차례로 계산해 보세요. 중간값에 이름을 붙이면 헷갈리지 않아요.
+  - "10%는 `%` 연산자가 아니에요. 어떤 값의 10%는 그 값에 10을 곱하고 100으로 나눈 값이에요."
+  - "음식값은 피자 가격 × 3 더하기 콜라 가격 × 2예요. `*`가 `+`보다 먼저 계산되니 이 식에는 괄호가 필요 없어요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const food = pizzaPrice * 3 + colaPrice * 2;   // 56700 + 4600 = 61300
+  const tip = food * 10 / 100;                    // 6130
+  const total = food + tip;                       // 67430
+  const perPerson = total / people;               // 13486
+  ```
+
+  - `food`: `*`가 `+`보다 먼저라서 괄호 없이도 "피자값 + 콜라값"이 돼요.
+  - `tip`: 10%는 `food * 10 / 100`(또는 `food * 0.1`)이에요. `food % 10`은 61300을 10으로 나눈 **나머지** 0이라서 팁이 0원이 돼요. `%`는 퍼센트가 아니에요.
+  - `perPerson`: 5로 나누는 대상은 총액 전체예요. `food + tip / people`처럼 쓰면 팁만 나눠지니, 따로 계산했거나 괄호로 `(food + tip) / people`이라고 써요.
+
+  중간값 이름(`food`, `tip`)은 자유롭게 지어도 돼요. 채점은 출력과 `total`, `perPerson`의 값으로 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

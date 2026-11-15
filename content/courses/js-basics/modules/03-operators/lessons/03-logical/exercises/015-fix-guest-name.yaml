@@ -1,0 +1,74 @@
+id: js-basics.operators.logical.fix-guest-name
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+tags: [short-circuit, default-value, debugging]
+estimatedSeconds: 180
+prompt: |
+  채팅방에 들어온 사람의 이름을 보여 주는 프로그램이에요. 이름을 입력하지 않은 사람(빈 문자열)은 `"손님"`으로, 입력한 사람은 입력한 이름으로 보여야 해요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  손님 님이 들어왔어요
+  민지 님이 들어왔어요
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const inputA = "";
+          const inputB = "민지";
+          const nameA = inputA && "손님";
+          const nameB = inputB && "손님";
+          console.log(nameA, "님이 들어왔어요");
+          console.log(nameB, "님이 들어왔어요");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const inputA = "";
+          const inputB = "민지";
+          const nameA = inputA || "손님";
+          const nameB = inputB || "손님";
+          console.log(nameA, "님이 들어왔어요");
+          console.log(nameB, "님이 들어왔어요");
+  bugDescription: 이름을 입력하지 않은 사람은 이름 없이 " 님이 들어왔어요"로, "민지"는 "손님"으로 나와요.
+  maxEditDistance: 4
+  checks:
+    - kind: console
+      id: output
+      description: 이름이 빈 사람은 "손님", 입력한 사람은 입력한 이름으로 출력되어야 합니다.
+      requirement: 이름 출력
+      expect:
+        lines: ["손님 님이 들어왔어요", "민지 님이 들어왔어요"]
+    - kind: program
+      id: names
+      description: nameA는 "손님", nameB는 "민지"여야 합니다.
+      requirement: 이름 기본값
+      expect:
+        globals:
+          nameA: { equals: "손님" }
+          nameB: { equals: "민지" }
+        noError: true
+hints:
+  - "`inputA && \"손님\"`과 `inputB && \"손님\"`이 각각 어떤 값을 돌려주는지 계산해 보세요."
+  - "`&&`는 왼쪽이 truthy일 때 오른쪽을 돌려줘요. 그래서 이름이 있는 사람이 오히려 \"손님\"이 됐어요."
+  - "\"왼쪽이 있으면 왼쪽, 비어 있으면 오른쪽\"을 고르는 연산자로 바꿔 보세요."
+explanation: |
+  3·4번 줄의 `&&`를 `||`로 바꾸면 돼요.
+
+  | 식 | 왼쪽 | 결과 |
+  |---|---|---|
+  | `inputA && "손님"` (버그) | `""` falsy | 왼쪽 `""` |
+  | `inputB && "손님"` (버그) | `"민지"` truthy | 오른쪽 `"손님"` |
+  | `inputA \|\| "손님"` (수정) | `""` falsy | 오른쪽 `"손님"` |
+  | `inputB \|\| "손님"` (수정) | `"민지"` truthy | 왼쪽 `"민지"` |
+
+  `||`는 왼쪽이 truthy이면 왼쪽, falsy이면 오른쪽을 돌려줘요. 그래서 "값이 비어 있으면 기본값"을 만들 때 써요. `&&`는 정반대로 왼쪽이 truthy일 때 오른쪽을 돌려줘요.
+
+  여기서는 빈 문자열도 "이름 없음"으로 봐야 하므로 `??`가 아니라 `||`가 맞아요. `??`는 `""`를 그대로 두기 때문이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

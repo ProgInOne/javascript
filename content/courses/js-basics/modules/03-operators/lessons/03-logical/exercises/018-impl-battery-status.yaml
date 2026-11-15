@@ -1,0 +1,117 @@
+id: js-basics.operators.logical.impl-battery-status
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+  - { id: js.ops.logical-and-or-not, weight: 0.5 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [short-circuit, logical-and, logical-not, write-code]
+estimatedSeconds: 420
+prompt: |
+  휴대폰 세 대의 배터리 상태 문구를 만드는 프로그램을 작성하세요.
+
+  - 배터리(`level`)가 20 미만**이면서** 충전 중(`isCharging`)이 **아니면** 경고 대상이에요.
+  - 경고 대상이면 상태 문구는 `"배터리를 충전하세요"`, 아니면 `"배터리 정상"`이에요.
+  - 세 휴대폰의 상태 문구를 `statusA`, `statusB`, `statusC`에 넣고 출력하세요.
+
+  아직 `if`는 배우지 않았어요. 이 단원에서 배운 `&&`와 `||`가 값을 그대로 돌려준다는 점을 이용해 보세요.
+
+  ```text
+  A: 배터리를 충전하세요
+  B: 배터리 정상
+  C: 배터리 정상
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const levelA = 15;
+          const isChargingA = false;
+          const levelB = 10;
+          const isChargingB = true;
+          const levelC = 80;
+          const isChargingC = false;
+
+          // 여기에 statusA, statusB, statusC를 만들고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const levelA = 15;
+          const isChargingA = false;
+          const levelB = 10;
+          const isChargingB = true;
+          const levelC = 80;
+          const isChargingC = false;
+
+          const warnA = levelA < 20 && !isChargingA;
+          const warnB = levelB < 20 && !isChargingB;
+          const warnC = levelC < 20 && !isChargingC;
+          const statusA = (warnA && "배터리를 충전하세요") || "배터리 정상";
+          const statusB = (warnB && "배터리를 충전하세요") || "배터리 정상";
+          const statusC = (warnC && "배터리를 충전하세요") || "배터리 정상";
+          console.log("A:", statusA);
+          console.log("B:", statusB);
+          console.log("C:", statusC);
+  checks:
+    - kind: console
+      id: output
+      description: 세 휴대폰의 상태 문구가 A, B, C 순서로 출력되어야 합니다.
+      requirement: 상태 출력
+      expect:
+        lines: ["A: 배터리를 충전하세요", "B: 배터리 정상", "C: 배터리 정상"]
+    - kind: program
+      id: low-not-charging
+      description: 배터리가 20 미만이고 충전 중이 아닌 A는 경고 문구여야 합니다.
+      requirement: 경고 조건
+      expect:
+        globals:
+          statusA: { equals: "배터리를 충전하세요" }
+    - kind: program
+      id: low-charging
+      description: 배터리가 낮아도 충전 중인 B는 정상 문구여야 합니다.
+      requirement: 충전 중이면 경고 없음
+      expect:
+        globals:
+          statusB: { equals: "배터리 정상" }
+      misconceptionIfFail: js.mc.not-applies-to-whole
+    - kind: program
+      id: high
+      description: 배터리가 충분한 C는 정상 문구여야 하고, 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 정상 상태
+      expect:
+        globals:
+          statusC: { equals: "배터리 정상" }
+        noError: true
+      misconceptionIfFail: js.mc.logical-returns-boolean
+misconceptions: [js.mc.logical-returns-boolean]
+hints:
+  - 먼저 휴대폰마다 "경고 대상인가?"를 true/false로 계산해 두면 문제가 둘로 나뉘어요. "20 미만"과 "충전 중이 아님"을 어떻게 묶을까요?
+  - "`true && \"글자\"`는 \"글자\"를, `false && \"글자\"`는 false를 돌려줘요. 그 결과가 falsy일 때 다른 글자로 바꾸려면 어떤 연산자를 뒤에 붙일까요?"
+  - "경고 여부를 `warnA`처럼 만든 뒤, `warnA`와 경고 문구를 `&&`로 묶고, 그 결과가 falsy일 때를 위해 정상 문구를 `||`로 이어 보세요."
+explanation: |
+  예시 정답이에요(휴대폰 A).
+
+  ```js
+  const warnA = levelA < 20 && !isChargingA;
+  const statusA = (warnA && "배터리를 충전하세요") || "배터리 정상";
+  ```
+
+  1. `warnA`: "20 미만"과 "충전 중이 아님"이 모두 맞아야 하므로 `&&`로 묶어요. 충전 중이 아님은 `!isChargingA`예요.
+  1. `warnA && "배터리를 충전하세요"`: `warnA`가 `true`이면 오른쪽 글자를, `false`이면 `false`를 돌려줘요.
+  1. `… || "배터리 정상"`: 앞의 결과가 `false`(falsy)일 때만 정상 문구로 바꿔요.
+
+  | 휴대폰 | `warn` | `warn && 경고` | 최종 |
+  |---|---|---|---|
+  | A (15, 충전 안 함) | true | "배터리를 충전하세요" | "배터리를 충전하세요" |
+  | B (10, 충전 중) | false | false | "배터리 정상" |
+  | C (80) | false | false | "배터리 정상" |
+
+  `&&`가 `||`보다 먼저라 괄호를 빼도 같지만, 괄호가 있으면 읽기 쉬워요. 이 방법은 가운데 값(경고 문구)이 truthy일 때만 안전해요. 모듈 4에서 배울 `if`와 조건 연산자(`? :`)를 쓰면 같은 일을 더 분명하게 쓸 수 있어요.
+
+  B에서 경고가 나왔다면 "충전 중이 아님" 부분을 빠뜨렸거나 `!` 위치가 틀렸을 가능성이 커요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

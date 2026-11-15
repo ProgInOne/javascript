@@ -1,0 +1,79 @@
+id: js-basics.operators.explicit-conversion.fix-shipping-weight
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.conv.nan, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.5 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+tags: [nan, parsefloat, parseint, debugging]
+estimatedSeconds: 240
+prompt: |
+  택배 배송비를 계산하는 프로그램이에요. 기본요금 3000원에 1kg마다 1000원이 붙고, 섬 지역이면 추가 요금이 더해져요. 무게와 추가 요금은 `"1.5kg"`, `"500원"`처럼 단위까지 붙은 글자로 들어와요. 버그가 **두 개** 있어요. 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  무게: 1.5
+  추가 요금: 500
+  배송비: 5000
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const weightText = "1.5kg";
+          const extraText = "500원";
+          const weight = Number(weightText);
+          const extra = Number(extraText);
+          const fee = 3000 + weight * 1000 + extra;
+          console.log("무게:", weight);
+          console.log("추가 요금:", extra);
+          console.log("배송비:", fee);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const weightText = "1.5kg";
+          const extraText = "500원";
+          const weight = parseFloat(weightText);
+          const extra = parseInt(extraText);
+          const fee = 3000 + weight * 1000 + extra;
+          console.log("무게:", weight);
+          console.log("추가 요금:", extra);
+          console.log("배송비:", fee);
+  bugDescription: 무게, 추가 요금, 배송비가 모두 NaN으로 나와요. 오류 메시지는 없어요.
+  maxEditDistance: 6
+  checks:
+    - kind: console
+      id: output
+      description: 무게 1.5, 추가 요금 500, 배송비 5000이 차례로 출력되어야 합니다.
+      requirement: 배송비 출력
+      expect:
+        lines: ["무게: 1.5", "추가 요금: 500", "배송비: 5000"]
+    - kind: program
+      id: values
+      description: weight는 숫자 1.5, extra는 숫자 500, fee는 5000이어야 합니다.
+      requirement: 변수 값
+      expect:
+        globals:
+          weight: { equals: 1.5 }
+          extra: { equals: 500 }
+          fee: { equals: 5000 }
+        noError: true
+misconceptions: [js.mc.number-parses-prefix, js.mc.failed-conversion-throws]
+hints:
+  - 오류 없이 NaN만 나와요. 배송비를 계산하는 데 쓰인 값 중 어느 것이 이미 NaN이었는지 위로 거슬러 올라가 보세요.
+  - Number는 글자 전체를 읽어요. "1.5kg"와 "500원"을 Number로 바꾸면 각각 무엇이 될까요?
+  - 하나만 고치면 배송비는 여전히 NaN이에요. 무게는 소수까지, 추가 요금은 정수만 읽으면 돼요.
+explanation: |
+  버그는 3번 줄과 4번 줄, 두 개예요.
+
+  1. **3번 줄**: `Number("1.5kg")`는 `kg` 때문에 `NaN`이에요. 소수까지 읽어야 하니 `parseFloat(weightText)`로 고쳐요.
+  1. **4번 줄**: `Number("500원")`도 `원` 때문에 `NaN`이에요. `parseInt(extraText)`로 고쳐요(`parseFloat`도 같은 결과예요).
+
+  배송비는 3000 + 1.5 × 1000 + 500 = 5000이에요.
+
+  둘 중 하나만 고치면 배송비는 여전히 `NaN`이에요. `NaN`은 오류 없이 퍼지고, 계산에 `NaN`이 하나라도 섞이면 결과가 `NaN`이 되기 때문이에요. 이럴 때는 계산에 쓰인 값을 하나씩 출력해 처음 `NaN`이 생긴 곳을 찾아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

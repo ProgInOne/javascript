@@ -1,0 +1,26 @@
+id: js-basics.operators.implicit-coercion.tf-string-zero
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.conv.truthy-falsy, weight: 1 }
+tags: [truthy, falsy]
+estimatedSeconds: 30
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: 문자열 `"0"`은 숫자 0을 뜻하므로 falsy다.
+  answer: false
+  misconceptionIfWrong: js.mc.string-zero-falsy
+misconceptions: [js.mc.string-zero-falsy]
+hints:
+  - falsy 값 목록에 문자열은 몇 개 있었나요?
+  - 문자열이 falsy가 되는 경우는 글자가 하나도 없을 때뿐이에요.
+  - "`\"0\"`에는 글자 `0`이 하나 들어 있어요."
+explanation: |
+  **거짓**이에요. 문자열 중 falsy인 것은 빈 문자열 `""` 하나뿐이에요. `"0"`은 글자 `0`이 들어 있는 문자열이라 truthy예요. 그래서 `!!"0"`은 `true`예요.
+
+  JavaScript는 문자열의 뜻을 읽지 않아요. 숫자 `0`은 falsy지만, 따옴표로 감싼 `"0"`은 숫자가 아니라 글자라는 점을 구분하세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

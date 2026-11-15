@@ -1,0 +1,16 @@
+id: js-basics.operators.logical
+title: 논리 연산
+summary: "&&, ||, !로 조건을 조합하고, 왼쪽만 보고 결과를 정하는 단락 평가와 기본값을 정하는 ??를 배웁니다."
+kind: lesson
+importance: core
+estimatedMinutes: { read: 15, practice: 25 }
+concepts:
+  primary: [js.ops.logical-and-or-not, js.ops.short-circuit, js.ops.nullish]
+  reviewed: [js.ops.relational, js.ops.strict-equality]
+objectives:
+  - "&&, ||, !로 비교식을 조합해 \"그리고\", \"또는\", \"아니다\" 조건을 만들 수 있다."
+  - "! → && → || 우선순위를 고려해 섞어 쓴 논리식의 결과를 예측할 수 있다."
+  - "&&와 ||가 돌려주는 값과, 오른쪽이 실행되지 않는 경우를 예측할 수 있다."
+  - "||와 ??의 차이를 알고, 0이나 빈 문자열을 지켜야 할 때 ??로 기본값을 정할 수 있다."
+practice:
+  targetCount: 24

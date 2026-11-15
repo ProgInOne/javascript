@@ -1,0 +1,80 @@
+id: js-basics.operators.comparison.impl-loose-strict-pair
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.ops.loose-equality, weight: 1 }
+  - { id: js.ops.strict-equality, weight: 0.5 }
+tags: [loose-equality, strict-equality, write-code]
+estimatedSeconds: 180
+prompt: |
+  문자열 `"7"`과 숫자 `7`을 두 가지 연산자로 비교해 결과를 나란히 보려고 해요.
+
+  - `looseResult`: `textNumber`와 `realNumber`를 `==`로 비교한 결과
+  - `strictResult`: 같은 두 값을 `===`로 비교한 결과
+  - 위의 두 줄은 그대로 두세요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  == 결과: true
+  === 결과: false
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const textNumber = "7";
+          const realNumber = 7;
+
+          // 여기에 looseResult와 strictResult를 만들고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const textNumber = "7";
+          const realNumber = 7;
+
+          const looseResult = textNumber == realNumber;
+          const strictResult = textNumber === realNumber;
+          console.log("== 결과:", looseResult);
+          console.log("=== 결과:", strictResult);
+  checks:
+    - kind: console
+      id: output
+      description: 두 비교 결과가 정해진 형식으로 차례로 출력되어야 합니다.
+      requirement: 비교 결과 출력
+      expect:
+        lines: ["== 결과: true", "=== 결과: false"]
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, looseResult는 true, strictResult는 false여야 합니다.
+      requirement: 비교 결과 저장
+      expect:
+        globals:
+          looseResult: { equals: true }
+          strictResult: { equals: false }
+        noError: true
+      misconceptionIfFail: js.mc.loose-equals-like-strict
+hints:
+  - 두 변수는 같은 두 값을 비교하고, 연산자만 달라요.
+  - "`==`는 자료형이 다르면 값을 바꿔서 비교하고, `===`는 바꾸지 않아요."
+  - "`const looseResult = textNumber == realNumber;`처럼 비교식을 변수에 넣은 다음, `strictResult`도 같은 모양으로 만들고 console.log로 출력하세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const looseResult = textNumber == realNumber;
+  const strictResult = textNumber === realNumber;
+  console.log("== 결과:", looseResult);
+  console.log("=== 결과:", strictResult);
+  ```
+
+  - `==`는 문자열 `"7"`을 숫자 `7`로 바꿔서 비교하므로 `true`예요.
+  - `===`는 자료형을 바꾸지 않으니, 문자열과 숫자는 다르다고 보고 `false`예요.
+
+  같은 두 값인데 연산자에 따라 결과가 달라져요. 의도하지 않은 변환을 막으려면 `===`를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

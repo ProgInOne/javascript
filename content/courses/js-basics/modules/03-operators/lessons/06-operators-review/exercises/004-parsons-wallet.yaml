@@ -1,0 +1,56 @@
+id: js-basics.operators.operators-review.parsons-wallet
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.ops.compound-assignment, weight: 1 }
+  - { id: js.ops.precedence, weight: 0.3 }
+tags: [compound-assignment, review]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  지갑에 10000원이 있어요. 2500원짜리 간식을 3개 사고 남은 돈을 출력한 뒤, 용돈 5000원을 받고 다시 출력하는 프로그램을 만들도록 코드 조각을 배열하세요.
+
+  ```text
+  2500
+  7500
+  ```
+spec:
+  lines:
+    - { id: start, code: "let money = 10000;" }
+    - { id: spend, code: "money -= 2500 * 3;" }
+    - { id: log1, code: "console.log(money);" }
+    - { id: earn, code: "money += 5000;" }
+    - { id: log2, code: "console.log(money);" }
+  distractors:
+    - { id: earn-wrong, code: "money =+ 5000;", misconception: js.mc.compound-operator-reversed, replaces: earn }
+    - { id: spend-wrong, code: "money = 2500 * 3;", replaces: spend }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 간식을 산 뒤 2500, 용돈을 받은 뒤 7500이 차례로 출력되어야 합니다.
+      expect:
+        lines: ["2500", "7500"]
+misconceptions: [js.mc.compound-operator-reversed]
+hints:
+  - 돈이 줄어드는 줄과 늘어나는 줄은 각각 어떤 복합 대입 연산자를 쓸까요?
+  - "`money -= 2500 * 3`은 오른쪽 `2500 * 3`을 먼저 계산한 뒤 money에서 빼요."
+  - "연산 기호는 `=` 앞에 붙어요. `=+`는 `+=`와 다르게 동작해요."
+explanation: |
+  정답 순서는 다음과 같아요.
+
+  ```js
+  let money = 10000;
+  money -= 2500 * 3;    // money = money - (2500 * 3) → 2500
+  console.log(money);
+  money += 5000;        // money = money + 5000 → 7500
+  console.log(money);
+  ```
+
+  - `money =+ 5000;`은 `money = +5000;`으로 읽혀서 money에 5000이 **들어갈 뿐** 더해지지 않아요. 오류도 나지 않으니 특히 조심해야 해요.
+  - `money = 2500 * 3;`은 산 금액 7500을 money에 넣어 버려요. 빼려면 `-=`를 써요.
+  - 복합 대입은 오른쪽 전체(`2500 * 3`)를 먼저 계산한 뒤 연산해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

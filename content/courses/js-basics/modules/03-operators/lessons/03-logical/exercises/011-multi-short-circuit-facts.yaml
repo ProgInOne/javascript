@@ -1,0 +1,47 @@
+id: js-basics.operators.logical.multi-short-circuit-facts
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+tags: [short-circuit, logical-and, logical-or]
+estimatedSeconds: 90
+prompt: |
+  `&&`와 `||`에 대한 설명으로 맞는 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`\"사과\" || \"배\"`의 결과는 `\"사과\"`다"
+    - id: b
+      text: "`false && console.log(\"A\")`를 실행하면 아무것도 출력되지 않는다"
+      missedMisconception: js.mc.right-side-always-runs
+    - id: c
+      text: "`0 && \"배\"`의 결과는 `false`다"
+      misconception: js.mc.logical-returns-boolean
+      rationale: 왼쪽 0이 falsy라서 &&는 왼쪽 값 0을 그대로 돌려줘요. false가 아니라 0이에요.
+    - id: d
+      text: "`true || console.log(\"B\")`를 실행하면 B가 출력된다"
+      misconception: js.mc.right-side-always-runs
+      rationale: 왼쪽이 true라 ||의 결과가 이미 정해졌어요. 오른쪽의 console.log는 실행되지 않아요.
+    - id: e
+      text: "`null || \"기본값\"`의 결과는 `\"기본값\"`이다"
+  correct: [a, b, e]
+misconceptions: [js.mc.logical-returns-boolean, js.mc.right-side-always-runs]
+hints:
+  - 정답이 하나가 아닐 수 있어요. 선택지마다 왼쪽 값이 truthy인지 falsy인지부터 정해 보세요.
+  - "`&&`는 왼쪽이 falsy이면, `||`는 왼쪽이 truthy이면 그 자리에서 왼쪽 값을 돌려주고 끝나요."
+  - 결과가 정해진 뒤의 오른쪽은 실행되지 않아요. 그리고 돌려주는 값은 true/false가 아니라 양쪽 값 중 하나예요.
+explanation: |
+  정답은 **a, b, e**예요.
+
+  - a: 왼쪽 `"사과"`가 truthy라서 `||`는 왼쪽 값 `"사과"`를 돌려줘요.
+  - b: 왼쪽이 `false`라서 `&&`의 결과는 이미 `false`예요. 오른쪽의 `console.log`는 실행되지 않아요.
+  - e: `null`은 falsy라서 `||`는 오른쪽 `"기본값"`을 돌려줘요.
+
+  틀린 설명:
+
+  - c: `0`은 falsy라서 `&&`는 **왼쪽 값 `0`**을 돌려줘요. `false`가 아니에요.
+  - d: 왼쪽이 `true`라 `||`는 오른쪽을 보지 않아요. 그래서 B는 출력되지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

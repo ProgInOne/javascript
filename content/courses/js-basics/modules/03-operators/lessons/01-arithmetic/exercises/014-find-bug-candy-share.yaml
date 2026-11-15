@@ -1,0 +1,53 @@
+id: js-basics.operators.arithmetic.find-bug-candy-share
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.ops.remainder, weight: 1 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+tags: [remainder, debugging]
+estimatedSeconds: 120
+prompt: |
+  사탕 38개를 아이 5명에게 똑같이 나눠 주고, 남는 사탕 수를 출력하려는 프로그램이에요. 한 명당 7개, 남는 사탕 3개가 나와야 하는데 결과가 이상해요. 원인이 되는 줄을 고르세요.
+spec:
+  code: |-
+    const candies = 38;
+    const kids = 5;
+    const each = (candies - candies % kids) / kids;
+    const left = candies / kids;
+    console.log("한 명당", each, "개, 남는 사탕", left, "개");
+  bugLines: [4]
+  symptom: 남는 사탕이 `3`이 아니라 `7.6`으로 출력돼요.
+  symptomCheck:
+    console: ["한 명당 7 개, 남는 사탕 7.6 개"]
+  fixedCode: |-
+    const candies = 38;
+    const kids = 5;
+    const each = (candies - candies % kids) / kids;
+    const left = candies % kids;
+    console.log("한 명당", each, "개, 남는 사탕", left, "개");
+  causeOptions:
+    - id: c1
+      text: 남는 수는 나머지인데, 나머지(%) 대신 나눗셈(/)을 썼다
+      correct: true
+    - id: c2
+      text: 3번 줄의 %가 몫을 구해서 each가 틀렸다
+      misconception: js.mc.remainder-is-quotient
+    - id: c3
+      text: /가 소수점을 버리지 않아서 3번 줄의 계산이 틀렸다
+      misconception: js.mc.division-truncates
+misconceptions: [js.mc.remainder-is-quotient]
+hints:
+  - 한 명당 7개는 맞게 나왔어요. 틀린 값은 무엇이고, 그 값은 어느 줄에서 만들어지나요?
+  - "7.6은 38 ÷ 5의 결과예요. \"남는 사탕\"은 나눗셈의 어떤 값이어야 하나요?"
+  - 남는 수를 구하는 연산자와 그 줄에 쓰인 연산자를 비교해 보세요.
+explanation: |
+  원인은 **4번 줄**이에요.
+
+  남는 사탕은 38을 5로 나눈 **나머지**(38 = 5 × 7 + 3)라서 `candies % kids`여야 해요. 4번 줄은 `/`를 써서 38 ÷ 5 = 7.6을 계산했어요.
+
+  - 3번 줄은 맞아요. `candies % kids`(3)를 빼서 35를 만든 뒤 5로 나누니 나누어떨어져 7이 돼요. `%`는 몫이 아니라 나머지예요.
+  - `/`가 소수까지 계산하는 것은 맞지만, 3번 줄은 나누어떨어지는 35를 나누므로 문제가 없어요. 증상은 4번 줄에서 생겼어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

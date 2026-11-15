@@ -1,0 +1,27 @@
+id: js-basics.operators.logical.tf-nullish-rule
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.ops.nullish, weight: 1 }
+tags: [nullish]
+estimatedSeconds: 30
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: "`a ?? b`는 `a`가 `null`이나 `undefined`일 때만 `b`가 되고, `a`가 `0`이나 빈 문자열이면 `a` 그대로다."
+  answer: true
+  misconceptionIfWrong: js.mc.nullish-same-as-or
+hints:
+  - "`??`의 이름 \"null 병합\"에서 힌트를 얻어 보세요."
+  - "`0 ?? 10`의 결과를 떠올려 보세요."
+  - "`??`가 반응하는 값은 두 가지뿐이에요."
+explanation: |
+  **참**이에요.
+
+  `??`는 왼쪽이 `null`이나 `undefined`일 때만 오른쪽을 골라요. `0`, `""`, `false`처럼 falsy이지만 값이 있는 경우에는 왼쪽을 그대로 둬요.
+
+  "거짓"이라고 골랐다면 `??`를 `||`와 같은 연산자로 생각했을 수 있어요. `0 || 10`은 `10`이지만 `0 ?? 10`은 `0`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,46 @@
+id: js-basics.operators.arithmetic.tf-expression-changes-variable
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.ops.arithmetic, weight: 1 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [arithmetic, assignment]
+estimatedSeconds: 45
+prompt: |
+  `let score = 50;` 다음에 아래 줄을 실행했어요. 다음 설명이 맞는지 고르세요.
+
+  ```js
+  console.log(score + 10);
+  ```
+spec:
+  statement: 이 줄을 실행하면 60이 출력되고, score에 들어 있는 값도 60으로 바뀐다.
+  answer: false
+  misconceptionIfWrong: js.mc.expression-changes-variable
+  requireReason: true
+  reasons:
+    - id: r1
+      text: score + 10은 새 값 60을 만들 뿐이고, 대입이 없어서 score는 50 그대로다
+      correct: true
+    - id: r2
+      text: console.log는 변수를 출력만 할 수 있고 계산은 할 수 없어서 60이 출력되지 않는다
+      misconception: js.mc.log-is-return
+    - id: r3
+      text: score + 10을 계산하면 그 결과가 자동으로 score에 저장된다
+      misconception: js.mc.expression-changes-variable
+hints:
+  - 변수의 값을 바꾸는 방법은 무엇이었나요?
+  - 이 줄에 `=`가 있나요?
+  - 60은 출력되지만, 계산 결과를 score에 넣는 대입은 없어요.
+explanation: |
+  **거짓**이에요.
+
+  `score + 10`은 지금 `score`의 값 50에 10을 더한 **새 값** 60을 만들어요. `console.log`가 그 값을 출력하지만, 대입(`=`)이 없으니 `score`는 50 그대로예요. 다음 줄에서 `console.log(score)`를 하면 50이 나와요.
+
+  `score`를 바꾸려면 `score = score + 10;`이나 `score += 10;`처럼 대입해야 해요.
+
+  - "console.log는 계산할 수 없다": 괄호 안의 식은 먼저 계산되고, 그 결과가 출력돼요. 60은 출력돼요.
+  - "결과가 자동으로 저장된다": 계산식은 변수를 바꾸지 않아요. 바꾸는 것은 대입뿐이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

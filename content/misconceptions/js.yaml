@@ -391,3 +391,356 @@
   remediation:
     lessonSection: js-basics.values.var-and-tdz#pitfalls
     exercises: [js-basics.values.var-and-tdz.mcq-tdz-message]
+
+# ── 모듈 3. arithmetic ──
+
+- id: js.mc.division-truncates
+  concept: js.ops.arithmetic
+  title: 나눗셈이 소수점을 버린다고 생각함
+  statement: 7 / 2의 결과가 몫만 남은 3이라고 생각한다.
+  reality: JavaScript의 /는 소수까지 계산해서 7 / 2는 3.5다. 나머지는 %로 따로 구한다.
+  remediation:
+    lessonSection: js-basics.operators.arithmetic#pitfalls
+    exercises: [js-basics.operators.arithmetic.mcq-division-result, js-basics.operators.arithmetic.predict-power-and-division]
+
+- id: js.mc.caret-is-power
+  concept: js.ops.arithmetic
+  title: ^를 거듭제곱으로 생각함
+  statement: 2 ^ 3이 2의 3제곱인 8이라고 생각한다.
+  reality: 거듭제곱 연산자는 **다. ^는 전혀 다른 연산(비트 XOR)이라 2 ^ 3은 1이 된다. 오류가 나지 않아서 알아차리기 어렵다.
+  remediation:
+    lessonSection: js-basics.operators.arithmetic#pitfalls
+    exercises: [js-basics.operators.arithmetic.predict-power-and-division, js-basics.operators.arithmetic.fix-game-score]
+
+- id: js.mc.expression-changes-variable
+  concept: js.ops.arithmetic
+  title: 계산식만 써도 변수가 바뀐다고 생각함
+  statement: score + 10;이나 console.log(score + 10)을 실행하면 score에 10이 더해진다고 생각한다.
+  reality: 계산식은 새 값을 만들 뿐 변수를 바꾸지 않는다. 변수를 바꾸려면 score = score + 10;처럼 대입해야 한다.
+  diagnosticHint: 대입(=, +=, ++)이 없는 줄은 변수의 값을 바꾸지 않는다.
+  remediation:
+    lessonSection: js-basics.operators.arithmetic#pitfalls
+    exercises: [js-basics.operators.arithmetic.tf-expression-changes-variable, js-basics.operators.arithmetic.fix-game-score]
+
+- id: js.mc.always-left-to-right
+  concept: js.ops.precedence
+  title: 계산식을 항상 왼쪽부터 계산한다고 생각함
+  statement: 2 + 3 * 4를 왼쪽부터 계산해 20이라고 생각한다.
+  reality: 곱셈·나눗셈·나머지가 덧셈·뺄셈보다 먼저라서 2 + 3 * 4는 14다. 먼저 더하고 싶으면 (2 + 3) * 4처럼 괄호를 쓴다.
+  remediation:
+    lessonSection: js-basics.operators.arithmetic#pitfalls
+    exercises: [js-basics.operators.arithmetic.impl-topping-total, js-basics.operators.arithmetic.multi-precedence-eighteen]
+
+- id: js.mc.multiply-before-divide
+  concept: js.ops.precedence
+  title: 곱셈이 나눗셈보다 먼저라고 생각함
+  statement: 12 / 2 * 3을 2 * 3부터 계산해 2라고 생각한다.
+  reality: "*와 /는 우선순위가 같아서 왼쪽부터 계산한다. 12 / 2 * 3은 6 * 3 = 18이다."
+  remediation:
+    lessonSection: js-basics.operators.arithmetic#pitfalls
+    exercises: [js-basics.operators.arithmetic.multi-precedence-eighteen, js-basics.operators.arithmetic.predict-precedence-steps]
+
+- id: js.mc.remainder-is-percent
+  concept: js.ops.remainder
+  title: "%를 백분율로 생각함"
+  statement: 50 % 10을 "50의 10퍼센트"인 5라고 생각한다.
+  reality: "%는 나눗셈의 나머지를 구하는 연산자다. 50 % 10은 50을 10으로 나눈 나머지 0이다. 백분율은 50 * 10 / 100처럼 직접 계산한다."
+  remediation:
+    lessonSection: js-basics.operators.arithmetic#pitfalls
+    exercises: [js-basics.operators.arithmetic.mcq-remainder-meaning, js-basics.operators.arithmetic.impl-split-pizza-bill]
+
+- id: js.mc.remainder-is-quotient
+  concept: js.ops.remainder
+  title: "%가 몫을 구한다고 생각함"
+  statement: 17 % 5가 몫인 3이라고 생각한다.
+  reality: 17을 5로 나누면 몫은 3, 나머지는 2다. %는 나머지 2를 돌려준다.
+  remediation:
+    lessonSection: js-basics.operators.arithmetic#pitfalls
+    exercises: [js-basics.operators.arithmetic.mcq-remainder-meaning, js-basics.operators.arithmetic.impl-leftover-eggs]
+
+- id: js.mc.compound-operator-reversed
+  concept: js.ops.compound-assignment
+  title: "+=를 =+로 씀"
+  statement: x =+ 5;가 x += 5;와 같다고 생각한다.
+  reality: x =+ 5는 x = +5로 읽혀서 x에 5가 들어갈 뿐 더해지지 않는다. 오류도 나지 않는다. 연산 기호를 = 앞에 붙여 +=로 쓴다.
+  remediation:
+    lessonSection: js-basics.operators.arithmetic#pitfalls
+    exercises: [js-basics.operators.arithmetic.fill-compound-operators, js-basics.operators.arithmetic.tf-compound-right-side]
+
+- id: js.mc.compound-right-side-split
+  concept: js.ops.compound-assignment
+  title: 복합 대입의 오른쪽을 나눠 계산함
+  statement: x *= 2 + 3;을 x = x * 2 + 3;으로 생각한다.
+  reality: 복합 대입은 오른쪽 전체를 먼저 계산한다. x *= 2 + 3은 x = x * (2 + 3)이다.
+  remediation:
+    lessonSection: js-basics.operators.arithmetic#pitfalls
+    exercises: [js-basics.operators.arithmetic.tf-compound-right-side, js-basics.operators.arithmetic.predict-compound-chain]
+
+- id: js.mc.postfix-prefix-same
+  concept: js.ops.increment
+  title: "i++와 ++i의 값이 같다고 생각함"
+  statement: let b = a++;와 let b = ++a;에서 b에 들어가는 값이 같다고 생각한다.
+  reality: 둘 다 a를 1 늘리지만 식의 값이 다르다. a++는 늘리기 전 값, ++a는 늘린 뒤 값이다. 헷갈리면 a++;를 따로 한 줄에 쓴다.
+  remediation:
+    lessonSection: js-basics.operators.arithmetic#pitfalls
+    exercises: [js-basics.operators.arithmetic.mcq-postfix-prefix, js-basics.operators.arithmetic.fix-ticket-number]
+
+# ── 모듈 3. comparison ──
+
+- id: js.mc.strict-equality-ignores-type
+  concept: js.ops.strict-equality
+  title: "===가 자료형을 무시한다고 생각함"
+  statement: '"5" === 5가 true라고 생각한다.'
+  reality: ===는 자료형도 비교한다. 문자열 "5"와 숫자 5는 자료형이 달라서 false다.
+  remediation:
+    lessonSection: js-basics.operators.comparison#pitfalls
+    exercises: [js-basics.operators.comparison.mcq-strict-type, js-basics.operators.comparison.multi-strict-true]
+
+- id: js.mc.nan-equals-nan
+  concept: js.ops.strict-equality
+  title: "NaN === NaN이 true라고 생각함"
+  statement: NaN === NaN이 true라고 생각하고, x === NaN으로 NaN인지 확인한다.
+  reality: NaN은 자기 자신을 포함해 어떤 값과도 같지 않아서 NaN === NaN은 false다. NaN인지는 Number.isNaN(x)로 확인한다.
+  remediation:
+    lessonSection: js-basics.operators.comparison#pitfalls
+    exercises: [js-basics.operators.comparison.predict-nan-compare, js-basics.operators.comparison.find-bug-nan-check]
+
+- id: js.mc.assign-as-compare
+  concept: js.ops.strict-equality
+  title: 비교하려고 =를 씀
+  statement: 두 값이 같은지 알아보려고 score = 100처럼 =를 쓴다.
+  reality: =는 대입이라 score에 100을 넣고, 그 값 100이 식의 결과가 된다. 같은지 비교하려면 ===를 쓴다.
+  remediation:
+    lessonSection: js-basics.operators.comparison#pitfalls
+    exercises: [js-basics.operators.comparison.tf-assign-not-compare, js-basics.operators.comparison.fill-strict-operators]
+
+- id: js.mc.loose-equals-like-strict
+  concept: js.ops.loose-equality
+  title: "==도 자료형까지 비교한다고 생각함"
+  statement: '==와 ===가 같은 연산자라서 "5" == 5도 false라고 생각한다.'
+  reality: ==는 자료형이 다르면 값을 바꿔서 비교한다. "5" == 5는 true다. 이런 변환을 피하려고 보통 ===를 쓴다.
+  remediation:
+    lessonSection: js-basics.operators.comparison#pitfalls
+    exercises: [js-basics.operators.comparison.mcq-loose-vs-strict, js-basics.operators.comparison.multi-loose-true]
+
+- id: js.mc.string-compare-numeric
+  concept: js.ops.relational
+  title: 숫자 문자열끼리도 숫자 크기로 비교한다고 생각함
+  statement: '"10" < "9"가 false라고 생각한다.'
+  reality: 문자열끼리는 사전 순서로 첫 글자부터 비교한다. "1"이 "9"보다 앞이라 "10" < "9"는 true다. 숫자로 비교하려면 먼저 숫자로 바꾼다.
+  remediation:
+    lessonSection: js-basics.operators.comparison#pitfalls
+    exercises: [js-basics.operators.comparison.mcq-string-compare, js-basics.operators.comparison.predict-mixed-compare]
+
+- id: js.mc.chained-comparison
+  concept: js.ops.relational
+  title: 비교를 수학처럼 이어 쓸 수 있다고 생각함
+  statement: 3 > 2 > 1이 "3이 2보다 크고 2가 1보다 크다"라서 true라고 생각한다.
+  reality: 왼쪽부터 3 > 2를 먼저 계산해 true가 되고, true > 1은 1 > 1로 바뀌어 false다. 두 비교는 &&로 잇는다.
+  remediation:
+    lessonSection: js-basics.operators.comparison#pitfalls
+    exercises: [js-basics.operators.comparison.tf-chained-comparison, js-basics.operators.comparison.fix-chained-temp]
+
+- id: js.mc.mixed-compare-as-string
+  concept: js.ops.relational
+  title: 문자열과 숫자의 대소 비교도 사전 순서라고 생각함
+  statement: '"10" > 9도 문자열끼리처럼 첫 글자 "1"과 "9"를 비교해 false라고 생각한다.'
+  reality: 한쪽이 숫자면 문자열을 숫자로 바꿔 비교한다. "10" > 9는 10 > 9라서 true다.
+  remediation:
+    lessonSection: js-basics.operators.comparison#pitfalls
+    exercises: [js-basics.operators.comparison.predict-mixed-compare]
+
+# ── 모듈 3. logical ──
+
+- id: js.mc.or-is-exclusive
+  concept: js.ops.logical-and-or-not
+  title: "||를 \"둘 중 하나만\"으로 생각함"
+  statement: true || true가 "둘 중 하나만 참"이 아니라서 false라고 생각한다.
+  reality: "||는 하나 이상 참이면 참이다. 둘 다 참이어도 true다."
+  remediation:
+    lessonSection: js-basics.operators.logical#pitfalls
+    exercises: [js-basics.operators.logical.tf-or-both-true]
+
+- id: js.mc.and-or-same-precedence
+  concept: js.ops.logical-and-or-not
+  title: "&&와 ||를 왼쪽부터 계산한다고 생각함"
+  statement: true || false && false를 왼쪽부터 (true || false) && false로 계산해 false라고 생각한다.
+  reality: "&&가 ||보다 먼저 계산된다. true || (false && false)라서 true다. 섞어 쓸 때는 괄호로 의도를 드러낸다."
+  remediation:
+    lessonSection: js-basics.operators.logical#pitfalls
+    exercises: [js-basics.operators.logical.parsons-ride-rule, js-basics.operators.logical.predict-and-or-precedence]
+
+- id: js.mc.not-applies-to-whole
+  concept: js.ops.logical-and-or-not
+  title: "!가 뒤의 식 전체에 붙는다고 생각함"
+  statement: "!a === b가 !(a === b)라고 생각한다."
+  reality: "!는 바로 뒤의 값 하나에 먼저 붙어서 (!a) === b로 계산된다. 식 전체를 뒤집으려면 괄호로 감싸거나 !==를 쓴다."
+  remediation:
+    lessonSection: js-basics.operators.logical#pitfalls
+    exercises: [js-basics.operators.logical.predict-and-or-precedence, js-basics.operators.logical.fix-not-precedence]
+
+- id: js.mc.logical-returns-boolean
+  concept: js.ops.short-circuit
+  title: "&&·||가 항상 true/false를 돌려준다고 생각함"
+  statement: '"사과" || "배"의 결과가 true라고 생각한다.'
+  reality: '&&와 ||는 왼쪽이나 오른쪽 값 그 자체를 돌려준다. "사과" || "배"는 "사과", 0 && "배"는 0이다.'
+  remediation:
+    lessonSection: js-basics.operators.logical#pitfalls
+    exercises: [js-basics.operators.logical.mcq-or-returns-value, js-basics.operators.logical.mcq-count-or-default]
+
+- id: js.mc.right-side-always-runs
+  concept: js.ops.short-circuit
+  title: "&&·||의 오른쪽도 항상 실행된다고 생각함"
+  statement: false && console.log("실행")에서도 오른쪽의 console.log가 실행된다고 생각한다.
+  reality: 왼쪽만으로 결과가 정해지면 오른쪽은 계산하지 않는다. false && …와 true || …의 오른쪽은 실행되지 않는다.
+  remediation:
+    lessonSection: js-basics.operators.logical#pitfalls
+    exercises: [js-basics.operators.logical.multi-short-circuit-facts, js-basics.operators.logical.predict-skip-right]
+
+- id: js.mc.or-default-keeps-zero
+  concept: js.ops.short-circuit
+  title: "||로 기본값을 줄 때 0과 빈 문자열이 유지된다고 생각함"
+  statement: let count = 0;일 때 count || 10이 0이라고 생각한다.
+  reality: '||는 왼쪽이 falsy면 오른쪽을 고른다. 0과 ""도 falsy라서 count || 10은 10이 된다. 0을 지키려면 ??를 쓴다.'
+  remediation:
+    lessonSection: js-basics.operators.logical#pitfalls
+    exercises: [js-basics.operators.logical.mcq-count-or-default, js-basics.operators.logical.fix-volume-zero]
+
+- id: js.mc.nullish-same-as-or
+  concept: js.ops.nullish
+  title: "??와 ||가 같다고 생각함"
+  statement: 0 ?? 10과 0 || 10이 둘 다 10이라고 생각한다.
+  reality: "??는 왼쪽이 null이나 undefined일 때만 오른쪽을 고른다. 0 ?? 10은 0, 0 || 10은 10이다."
+  remediation:
+    lessonSection: js-basics.operators.logical#pitfalls
+    exercises: [js-basics.operators.logical.tf-nullish-rule, js-basics.operators.logical.mcq-nullish-volume]
+
+# ── 모듈 3. explicit-conversion ──
+
+- id: js.mc.number-parses-prefix
+  concept: js.conv.to-number
+  title: "Number(\"12px\")가 12라고 생각함"
+  statement: Number("12px")가 parseInt처럼 앞의 숫자만 읽어서 12라고 생각한다.
+  reality: Number는 문자열 전체가 숫자여야 바꿀 수 있어서 Number("12px")는 NaN이다. 앞부분만 읽으려면 parseInt("12px")나 parseFloat를 쓴다.
+  remediation:
+    lessonSection: js-basics.operators.explicit-conversion#pitfalls
+    exercises: [js-basics.operators.explicit-conversion.mcq-number-12px, js-basics.operators.explicit-conversion.predict-number-vs-parseint]
+
+- id: js.mc.empty-string-to-nan
+  concept: js.conv.to-number
+  title: 빈 문자열을 숫자로 바꾸면 NaN이라고 생각함
+  statement: Number("")나 Number("  ")가 NaN이라고 생각한다.
+  reality: 빈 문자열과 공백만 있는 문자열은 0이 된다. 입력이 비었는지는 숫자로 바꾸기 전에 따로 확인해야 한다.
+  remediation:
+    lessonSection: js-basics.operators.explicit-conversion#pitfalls
+    exercises: [js-basics.operators.explicit-conversion.tf-empty-string-zero, js-basics.operators.explicit-conversion.impl-order-form]
+
+- id: js.mc.string-of-null-empty
+  concept: js.conv.to-string
+  title: "String(null)이 빈 문자열이라고 생각함"
+  statement: String(null)이나 String(undefined)가 빈 문자열 ""이라고 생각한다.
+  reality: String은 값을 보이는 그대로 글자로 바꾼다. String(null)은 "null", String(undefined)는 "undefined"다.
+  remediation:
+    lessonSection: js-basics.operators.explicit-conversion#pitfalls
+    exercises: [js-basics.operators.explicit-conversion.mcq-string-null, js-basics.operators.explicit-conversion.predict-string-of-null]
+
+- id: js.mc.boolean-reads-string-content
+  concept: js.conv.to-boolean
+  title: "Boolean(\"false\")가 false라고 생각함"
+  statement: 문자열 "false"나 "0"을 Boolean으로 바꾸면 글자의 뜻대로 false가 된다고 생각한다.
+  reality: Boolean은 글자의 내용을 읽지 않는다. 빈 문자열 ""만 false이고, 글자가 하나라도 있으면 "false"도 true다.
+  remediation:
+    lessonSection: js-basics.operators.explicit-conversion#pitfalls
+    exercises: [js-basics.operators.explicit-conversion.tf-boolean-false-string, js-basics.operators.explicit-conversion.fix-boolean-string]
+
+- id: js.mc.nan-type-not-number
+  concept: js.conv.nan
+  title: NaN의 자료형이 number가 아니라고 생각함
+  statement: typeof NaN이 "NaN"이나 "undefined"라고 생각한다.
+  reality: NaN은 "숫자 계산이 실패했다"를 나타내는 숫자 자료형의 특별한 값이라 typeof NaN은 "number"다.
+  remediation:
+    lessonSection: js-basics.operators.explicit-conversion#pitfalls
+    exercises: [js-basics.operators.explicit-conversion.multi-nan-facts, js-basics.operators.explicit-conversion.impl-nan-detect]
+
+- id: js.mc.failed-conversion-throws
+  concept: js.conv.nan
+  title: 숫자로 바꿀 수 없으면 오류가 난다고 생각함
+  statement: Number("abc")나 "abc" * 2를 실행하면 오류가 나고 프로그램이 멈춘다고 생각한다.
+  reality: 오류 없이 NaN이 나오고, NaN과 계산한 결과도 계속 NaN이 된다. 그래서 어디서 NaN이 생겼는지 거슬러 올라가 찾아야 한다.
+  remediation:
+    lessonSection: js-basics.operators.explicit-conversion#pitfalls
+    exercises: [js-basics.operators.explicit-conversion.multi-nan-facts, js-basics.operators.explicit-conversion.find-bug-nan-source]
+
+# ── 모듈 3. implicit-coercion ──
+
+- id: js.mc.string-zero-falsy
+  concept: js.conv.truthy-falsy
+  title: "문자열 \"0\"이 falsy라고 생각함"
+  statement: '"0"이나 "false" 같은 문자열이 falsy라고 생각한다.'
+  reality: 문자열은 빈 문자열 ""만 falsy다. "0"과 "false"는 글자가 있어서 truthy다.
+  remediation:
+    lessonSection: js-basics.operators.implicit-coercion#pitfalls
+    exercises: [js-basics.operators.implicit-coercion.tf-string-zero, js-basics.operators.implicit-coercion.multi-falsy-values]
+
+- id: js.mc.empty-array-falsy
+  concept: js.conv.truthy-falsy
+  title: 빈 배열이 falsy라고 생각함
+  statement: 빈 목록(빈 배열 [])은 아무것도 없으니 falsy라고 생각한다.
+  reality: falsy 값은 정해진 몇 개뿐이고, 배열과 객체는 비어 있어도 truthy다. 비었는지는 길이(모듈 8에서 배움)로 확인한다.
+  remediation:
+    lessonSection: js-basics.operators.implicit-coercion#pitfalls
+    exercises: [js-basics.operators.implicit-coercion.mcq-empty-list, js-basics.operators.implicit-coercion.multi-falsy-values]
+
+- id: js.mc.space-string-falsy
+  concept: js.conv.truthy-falsy
+  title: 공백 문자열이 falsy라고 생각함
+  statement: '" "처럼 공백만 있는 문자열은 비어 있으니 falsy라고 생각한다.'
+  reality: 공백도 글자라서 " "는 truthy다. falsy인 문자열은 길이가 0인 ""뿐이다.
+  remediation:
+    lessonSection: js-basics.operators.implicit-coercion#pitfalls
+    exercises: [js-basics.operators.implicit-coercion.mcq-space-string, js-basics.operators.implicit-coercion.predict-double-not]
+
+- id: js.mc.plus-string-adds
+  concept: js.conv.plus-concat
+  title: "\"3\" + 1이 4라고 생각함"
+  statement: 숫자처럼 보이는 문자열에 +로 숫자를 더하면 덧셈이 된다고 생각한다.
+  reality: +는 한쪽이라도 문자열이면 이어 붙인다. "3" + 1은 "31"이다. 더하려면 먼저 Number로 바꾼다.
+  remediation:
+    lessonSection: js-basics.operators.implicit-coercion#pitfalls
+    exercises: [js-basics.operators.implicit-coercion.mcq-string-plus-number, js-basics.operators.implicit-coercion.predict-left-to-right]
+
+- id: js.mc.concat-whole-expression
+  concept: js.conv.plus-concat
+  title: 문자열이 하나라도 있으면 식 전체가 이어 붙여진다고 생각함
+  statement: 1 + 2 + "3"이 "123"이라고 생각한다.
+  reality: +는 왼쪽부터 하나씩 계산한다. 1 + 2는 숫자 덧셈 3이고, 그다음 3 + "3"이 "33"이 된다.
+  remediation:
+    lessonSection: js-basics.operators.implicit-coercion#pitfalls
+    exercises: [js-basics.operators.implicit-coercion.predict-left-to-right, js-basics.operators.implicit-coercion.parsons-receipt]
+
+- id: js.mc.minus-string-fails
+  concept: js.conv.plus-concat
+  title: "-·*·/도 문자열을 이어 붙이거나 실패한다고 생각함"
+  statement: '"10" - 3이 오류나 NaN, 또는 이상한 글자가 된다고 생각한다.'
+  reality: 이어 붙이기는 +만 한다. - * / %는 문자열을 숫자로 바꿔 계산해서 "10" - 3은 7이다. 숫자로 읽을 수 없는 글자일 때만 NaN이다.
+  remediation:
+    lessonSection: js-basics.operators.implicit-coercion#pitfalls
+    exercises: [js-basics.operators.implicit-coercion.mcq-string-plus-number, js-basics.operators.implicit-coercion.tf-minus-string]
+
+- id: js.mc.null-loose-equals-zero
+  concept: js.conv.equality-coercion
+  title: "null == 0이 true라고 생각함"
+  statement: null은 "없음"이니 null == 0이나 null == false가 true라고 생각한다.
+  reality: ==에서 null은 undefined와만 같다. null == 0과 null == false는 false다.
+  remediation:
+    lessonSection: js-basics.operators.implicit-coercion#pitfalls
+    exercises: [js-basics.operators.implicit-coercion.mcq-null-loose-equals, js-basics.operators.implicit-coercion.multi-loose-rules]
+
+- id: js.mc.loose-equality-uses-truthiness
+  concept: js.conv.equality-coercion
+  title: "==가 truthy·falsy로 비교한다고 생각함"
+  statement: '"0"은 truthy이니 "0" == false가 false라고 생각한다.'
+  reality: ==는 truthy·falsy를 보지 않고 숫자로 바꿔 비교한다. "0"은 0, false도 0이 되어 "0" == false는 true다. 그래서 ==보다 ===를 쓴다.
+  remediation:
+    lessonSection: js-basics.operators.implicit-coercion#pitfalls
+    exercises: [js-basics.operators.implicit-coercion.mcq-null-loose-equals, js-basics.operators.implicit-coercion.multi-loose-rules]

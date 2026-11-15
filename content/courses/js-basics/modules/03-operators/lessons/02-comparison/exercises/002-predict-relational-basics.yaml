@@ -1,0 +1,33 @@
+id: js-basics.operators.comparison.predict-relational-basics
+type: predict_output
+difficulty: 1
+concepts:
+  - { id: js.ops.relational, weight: 1 }
+tags: [relational, boundary]
+estimatedSeconds: 45
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const age = 13;
+    console.log(age >= 13);
+    console.log(age > 13);
+    console.log(age <= 12);
+  answerKind: console
+hints:
+  - 비교식은 true나 false를 출력해요.
+  - "`>=`는 \"크거나 같다\", `>`는 \"크다\"예요. 13과 13은 같아요."
+  - 2번 줄은 같아도 참, 3번 줄은 같으면 거짓이에요. 4번 줄은 13이 12 이하인지 물어요.
+explanation: |
+  정답은 차례로 **`true`, `false`, `false`**예요.
+
+  - `age >= 13`: 13은 13보다 크거나 **같으므로** `true`예요(이상).
+  - `age > 13`: 13은 13보다 크지 않아요. 같은 값은 "초과"가 아니라서 `false`예요.
+  - `age <= 12`: 13은 12보다 작거나 같지 않아서 `false`예요.
+
+  `>=`와 `>`는 기준값과 딱 같을 때 결과가 갈려요. 2번 줄도 `true`라고 답했다면 `>`와 `>=`를 같게 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

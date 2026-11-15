@@ -1,0 +1,44 @@
+id: js-basics.operators.comparison.fill-strict-operators
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.ops.strict-equality, weight: 1 }
+tags: [strict-equality]
+estimatedSeconds: 60
+prompt: |
+  퀴즈 채점 코드예요. 주석의 설명에 맞게, 자료형까지 비교하는 연산자로 빈칸을 채우세요.
+spec:
+  mode: text
+  template: |
+    const answer = "B";
+    const choice = "C";
+    const isCorrect = choice {{blank:same}} answer;   // 같으면 true
+    const isWrong = choice {{blank:diff}} answer;     // 다르면 true
+    console.log(isCorrect, isWrong);
+  blanks:
+    - id: same
+      accept: ["==="]
+      width: 4
+      misconceptionMap:
+        "=": js.mc.assign-as-compare
+        "==": js.mc.loose-equals-like-strict
+    - id: diff
+      accept: ["!=="]
+      width: 4
+      misconceptionMap:
+        "!=": js.mc.loose-equals-like-strict
+hints:
+  - 같은지 묻는 연산자와 다른지 묻는 연산자가 하나씩 필요해요.
+  - "`=` 하나는 대입이라 비교가 아니에요. 자료형까지 비교하는 쪽은 기호가 세 개예요."
+  - 다른지 묻는 연산자는 같은지 묻는 연산자의 첫 기호를 느낌표로 바꾼 모양이에요.
+explanation: |
+  정답은 `===`와 `!==`예요. 실행하면 `false true`가 출력돼요.
+
+  - `===`는 자료형과 값이 모두 같으면 `true`예요. 고른 답 `"C"`는 정답 `"B"`와 달라서 `isCorrect`는 `false`예요.
+  - `!==`는 `===`의 반대라 다르면 `true`예요. 그래서 `isWrong`은 `true`예요.
+
+  `=`를 쓰면 비교가 아니라 대입이 되어 오류가 나요(`isCorrect = choice = answer`에서 const인 choice에 다시 대입하므로 TypeError). `==`, `!=`는 자료형을 바꿔서 비교하는 연산자라서, 문제의 조건(자료형까지 비교)에 맞지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

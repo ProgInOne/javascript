@@ -1,0 +1,350 @@
+<Section kind="objectives">
+- `===`와 `!==`로 두 값이 같은지 비교하고, 자료형이 다르면 `false`가 되는 이유를 설명할 수 있어요.
+- `==`가 자료형을 바꿔서 비교한다는 점을 알고, `===`를 골라 쓸 수 있어요.
+- `<` `>` `<=` `>=`의 결과를 예측하고, 문자열끼리는 사전 순서로 비교된다는 점을 고려할 수 있어요.
+- 비교 결과(`true`/`false`)를 변수에 저장하고, 수학식처럼 이어 쓴 비교의 버그를 고칠 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+쇼핑몰 프로그램을 만든다고 해 봐요. 이런 일을 해야 해요.
+
+- 장바구니 금액이 30000원 **이상**이면 배송비를 받지 않아요.
+- 로그인할 때 입력한 비밀번호가 저장된 비밀번호와 **같은지** 확인해요.
+- 남은 재고가 주문 수량**보다 적으면** 주문을 막아요.
+
+지금까지 배운 산술 연산은 새 숫자를 **계산**할 뿐이에요. 하지만 위의 일은 모두 "같은가?", "더 큰가?"를 **판단**해야 해요. 이 판단을 하는 것이 **비교 연산자**예요. 비교 연산자는 질문에 "예" 또는 "아니요"로 답하듯이 `true`나 `false`를 돌려줘요. 다음 모듈에서 배울 조건문은 이 답을 보고 실행할 코드를 고르기 때문에, 비교는 프로그램이 스스로 판단하게 만드는 첫걸음이에요.
+</Section>
+
+<Section kind="principle">
+### 비교의 결과는 true 또는 false
+
+비교식은 항상 **불리언** 값 `true`(참)나 `false`(거짓)를 만들어요. 자료형 단원에서 배운 그 값이에요. 숫자 계산 결과처럼 변수에 저장할 수도, 출력할 수도 있어요.
+
+```js
+const total = 32000;
+const isFreeShipping = total >= 30000;   // 비교 결과 true가 저장돼요
+console.log(isFreeShipping);             // true
+```
+
+비교 결과를 담는 변수 이름은 `isFreeShipping`, `hasStock`처럼 `is`나 `has`로 시작하면 "예/아니요 값"이라는 것이 잘 드러나요.
+
+### 같은지 비교하기: === 와 !==
+
+`a === b`는 a와 b가 **같으면** `true`, 다르면 `false`예요. `a !== b`는 그 반대로, **다르면** `true`예요.
+
+| 식 | 결과 | 이유 |
+|---|---|---|
+| `7 === 7` | `true` | 자료형(숫자)도 값도 같아요 |
+| `7 === 8` | `false` | 값이 달라요 |
+| `"7" === 7` | `false` | 문자열과 숫자, 자료형이 달라요 |
+| `"hi" === "Hi"` | `false` | 문자열은 대소문자까지 한 글자씩 같아야 해요 |
+| `7 !== 8` | `true` | 다르니까 참이에요 |
+
+### 두 가지 관점으로 보기
+
+**질문 관점**: 비교식은 프로그램에게 하는 질문이에요. `score === 100`은 "score가 100이야?"라는 질문이고, 답이 `true`나 `false`로 돌아와요. 질문을 했을 뿐이라 `score`의 값은 바뀌지 않아요.
+
+**두 단계 검사 관점**: `===`는 두 가지를 차례로 확인해요.
+
+1. 두 값의 **자료형**이 같은가? 다르면 바로 `false`예요.
+1. 자료형이 같다면 **값**이 같은가?
+
+그래서 `===`를 **일치 연산자**라고 불러요. 화면에 똑같이 `5`로 보여도 하나는 문자열 `"5"`, 하나는 숫자 `5`라면 1단계에서 `false`가 돼요.
+
+### =, ==, === 는 서로 다른 연산자예요
+
+<CompareTable columns={["=", "==", "==="]}>
+<Row label="하는 일">대입 (오른쪽 값을 왼쪽에 넣기) | 자료형을 바꿔 가며 비교 | 자료형과 값을 그대로 비교</Row>
+<Row label="결과">넣은 값 | true 또는 false | true 또는 false</Row>
+<Row label="문자열 5와 숫자 5">(비교가 아님) | true | false</Row>
+<Row label="쓰는 곳">변수에 값 넣기 | 거의 쓰지 않아요 | 같은지 확인할 때 항상</Row>
+</CompareTable>
+
+`=`는 "변수와 상수" 단원에서 배운 대입이에요. 같은지 확인하려고 `=`를 쓰면 비교 대신 대입이 일어나요.
+
+### ==는 자료형을 바꿔서 비교해요
+
+`==`(**동등 연산자**)는 두 값의 자료형이 다르면 한쪽을 바꿔서 비교해요. 그래서 `"5" == 5`는 `true`예요. 문자열 `"5"`를 숫자 `5`로 바꾼 다음 비교하기 때문이에요. `!=`는 `==`의 반대예요.
+
+| 식 | `==` 결과 | `===` 결과 |
+|---|---|---|
+| `"5"`와 `5` | `true` | `false` |
+| `null`과 `undefined` | `true` | `false` |
+| `5`와 `5` | `true` | `true` |
+
+`==`가 언제 무엇을 바꾸는지는 규칙이 복잡해서 예상 밖의 결과가 자주 나와요(자세한 규칙은 "암묵적 형 변환" 단원에서 배워요). 그래서 실무에서는 **같은지 비교할 때 `===`와 `!==`를 써요.** `==`를 일부러 쓰는 거의 유일한 경우는 `value == null`처럼 "`null`이거나 `undefined`인가"를 한 번에 확인할 때예요.
+
+### NaN은 자기 자신과도 같지 않아요
+
+`"사과" * 2`처럼 숫자 계산이 실패하면 **`NaN`**이라는 값이 나와요. NaN은 "Not a Number(숫자가 아님)"의 줄임말로, 숫자 계산이 실패했을 때 나오는 특별한 숫자 값이에요. 어떻게 생기는지는 "명시적 형 변환" 단원에서 자세히 배워요.
+
+NaN은 **어떤 값과도 같지 않아요. 자기 자신과도요.** 그래서 `NaN === NaN`은 `false`이고, `x === NaN`으로는 NaN인지 알 수 없어요. NaN인지 확인할 때는 `Number.isNaN(x)`를 써요. x가 NaN이면 `true`예요.
+
+### 크기 비교하기: `<` `>` `<=` `>=`
+
+| 연산자 | 뜻 | 우리말로 | `10`과 비교한 예 |
+|---|---|---|---|
+| `a > b` | a가 b보다 크다 | 초과 | `11 > 10` → `true` |
+| `a >= b` | a가 b보다 크거나 같다 | 이상 | `10 >= 10` → `true` |
+| `a < b` | a가 b보다 작다 | 미만 | `10 < 10` → `false` |
+| `a <= b` | a가 b보다 작거나 같다 | 이하 | `9 <= 10` → `true` |
+
+"이상"과 "이하"는 기준값을 **포함**하고, "초과"와 "미만"은 포함하지 않아요. 요구사항에 "30000원 이상"이라고 쓰여 있으면 `>=`예요. `>=`와 `<=`는 `=`를 **뒤에** 써요. `=>`, `=<`라고 쓰면 다른 뜻이 되거나 문법 오류가 나요.
+
+### 무엇과 무엇을 비교하느냐에 따라 방법이 달라요
+
+| 비교하는 두 값 | 비교 방법 | 예 |
+|---|---|---|
+| 숫자와 숫자 | 수의 크기 | `10 > 9` → `true` |
+| 문자열과 문자열 | **사전 순서**로 첫 글자부터 한 글자씩 | `"10" > "9"` → `false` |
+| 문자열과 숫자 | 문자열을 숫자로 바꿔서 수의 크기 | `"10" > 9` → `true` |
+
+문자열끼리는 사전에서 단어를 찾듯이 **첫 글자부터** 비교해요. `"10"`과 `"9"`는 첫 글자 `"1"`과 `"9"`를 비교하는데, `"1"`이 앞이라 `"10"`이 더 "작아요". 글자 순서는 컴퓨터의 문자 번호를 따르는데, 숫자 → 대문자 → 소문자 순서예요. 그래서 `"B" < "a"`도 `true`예요.
+
+### 비교는 하나씩만 해요
+
+수학에서는 `18 ≤ 온도 ≤ 24`처럼 비교를 이어 쓰지만, JavaScript는 연산자를 **왼쪽부터 하나씩** 계산해요. `18 <= temp <= 24`는 먼저 `18 <= temp`가 `true`나 `false`가 되고, 그 불리언을 `24`와 비교해요. 결과가 의도와 달라지므로, 지금은 비교를 하나씩 따로 변수에 저장해요. 두 비교를 하나로 묶는 `&&`는 다음 단원 "논리 연산"에서 배워요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 화면에는 모두 7처럼 보이는 값들을 `===`와 `!==`로 비교해요. 결과를 예측해 보세요.
+
+<RunnableExample id="strict-basics" lang="js" predict predictKind="console" concepts={["js.ops.strict-equality"]}>
+```js
+console.log(7 === 7);
+console.log("7" === 7);
+console.log("7" !== 7);
+console.log(3 + 4 === 7);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+true
+false
+true
+true
+```
+
+- 1번 줄: 숫자 7과 숫자 7이라 자료형도 값도 같아요.
+- 2번 줄: 왼쪽은 문자열 `"7"`, 오른쪽은 숫자 `7`이에요. 자료형이 달라서 `false`예요.
+- 3번 줄: `!==`는 "다른가?"예요. 자료형이 다르니 다르고, 답은 `true`예요.
+- 4번 줄: 산술 연산자가 비교 연산자보다 먼저 계산돼요. `3 + 4`가 먼저 `7`이 되고, 그다음 `7 === 7`을 비교해요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 비교 결과를 변수에 저장해요. 놀이기구의 키 제한이 "130cm 이상"일 때, 세 변수에 무엇이 들어갈지 예측해 보세요.
+
+<RunnableExample id="store-result" lang="js" predict predictKind="console" concepts={["js.ops.relational"]}>
+```js
+const limit = 130;
+const height = 130;
+const canRide = height >= limit;
+const isTaller = height > limit;
+const isShorter = height < limit;
+console.log(canRide, isTaller, isShorter);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+true false false
+```
+
+| 변수 | 비교식 | 계산 | 결과 |
+|---|---|---|---|
+| `canRide` | `height >= limit` | `130 >= 130` (이상: 같아도 참) | `true` |
+| `isTaller` | `height > limit` | `130 > 130` (초과: 같으면 거짓) | `false` |
+| `isShorter` | `height < limit` | `130 < 130` (미만: 같으면 거짓) | `false` |
+
+키가 기준과 **딱 같은** 경계값에서 `>=`와 `>`의 결과가 갈려요. 요구사항이 "이상"이면 `>=`를 써야 130cm인 사람도 탈 수 있어요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 문자열 비교예요. 2번 줄과 3번 줄은 숫자 10과 9를 비교하는 것처럼 보이는데, 결과가 같을까요?
+
+<RunnableExample id="string-compare" lang="js" predict predictKind="console" concepts={["js.ops.relational"]}>
+```js
+console.log(10 < 9);
+console.log("10" < "9");
+console.log("10" < 9);
+console.log("apple" < "banana");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+false
+true
+false
+true
+```
+
+- 1번 줄: 숫자끼리라 수의 크기로 비교해요. 10은 9보다 작지 않아요.
+- 2번 줄: **문자열끼리**라 사전 순서로 비교해요. 첫 글자 `"1"`과 `"9"`를 비교하면 `"1"`이 앞이라서, 뒤의 글자는 보지도 않고 `"10"`이 더 작다고 판단해요.
+- 3번 줄: 한쪽이 숫자라 `"10"`을 숫자 10으로 바꿔서 비교해요. 그래서 1번 줄과 같은 `false`예요.
+- 4번 줄: `"a"`가 `"b"`보다 앞이라 `true`예요. 단어를 가나다순(알파벳순)으로 정렬할 때 이 성질을 써요.
+
+숫자를 문자열로 저장해 두면 2번 줄 같은 버그가 생겨요. **숫자로 비교할 값은 숫자로 저장해요.**
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 `==`와 `===`를 나란히 비교해요. 같은 두 값인데 결과가 달라지는 줄을 찾아보세요.
+
+<RunnableExample id="loose-vs-strict" lang="js" concepts={["js.ops.loose-equality"]}>
+```js
+console.log("5" == 5, "5" === 5);
+console.log(null == undefined, null === undefined);
+console.log("5" != 5, "5" !== 5);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+true false
+true false
+false true
+```
+
+- 1번 줄: `==`는 문자열 `"5"`를 숫자 5로 바꿔서 비교하므로 `true`, `===`는 자료형이 달라서 `false`예요.
+- 2번 줄: `null`과 `undefined`는 둘 다 "비어 있음"을 뜻해서 `==`는 같다고 봐요. 하지만 서로 다른 값이라 `===`는 `false`예요.
+- 3번 줄: `!=`는 `==`의 반대라서 `false`, `!==`는 `===`의 반대라서 `true`예요.
+
+`==`는 값을 몰래 바꿔서 결과를 예측하기 어려워요. 같은지 비교할 때는 `===`를 써요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 NaN이에요. 계산이 실패했는지 `===`로 확인하려고 했어요. 2번 줄과 3번 줄의 결과가 같을까요?
+
+<RunnableExample id="nan-check" lang="js" concepts={["js.ops.strict-equality"]}>
+```js
+const price = "만원" * 2;
+console.log(price);
+console.log(price === NaN);
+console.log(Number.isNaN(price));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+NaN
+false
+true
+```
+
+- 1번 줄: `"만원"`은 숫자로 바꿀 수 없어서 계산이 실패하고, `price`에 `NaN`이 들어가요. 오류는 나지 않아요.
+- 3번 줄: `price`는 분명히 NaN인데 `price === NaN`은 `false`예요. NaN은 자기 자신과도 같지 않기 때문이에요.
+- 4번 줄: NaN인지는 `Number.isNaN(price)`로 확인해야 정확하게 `true`가 나와요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.strict-equality-ignores-type">
+<Wrong>`"5"`와 `5`는 화면에 똑같이 보이니 `"5" === 5`는 `true`다.</Wrong>
+<Actual>`false`예요. `===`는 자료형부터 비교하는데, 하나는 문자열이고 하나는 숫자예요.</Actual>
+<Right>`===`는 자료형과 값이 **모두** 같아야 `true`예요. 비교할 값을 같은 자료형으로 저장해 두는 것이 좋아요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.nan-equals-nan">
+<Wrong>계산이 실패했는지 `result === NaN`으로 확인할 수 있다.</Wrong>
+<Actual>`result`가 NaN이어도 `result === NaN`은 항상 `false`예요. NaN은 자기 자신을 포함해 어떤 값과도 같지 않아요.</Actual>
+<Right>NaN인지는 `Number.isNaN(result)`로 확인해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.assign-as-compare">
+<Wrong>점수가 100인지 확인하려고 `const isPerfect = score = 100;`이라고 쓴다.</Wrong>
+<Actual>`score = 100`은 비교가 아니라 대입이에요. `score`에 100이 들어가 원래 점수가 사라지고, `isPerfect`에는 `true`/`false` 대신 `100`이 들어가요. `score`가 `const`였다면 `TypeError: Assignment to constant variable.`이 나요.</Actual>
+<Right>같은지 비교할 때는 `===`를 써요: `const isPerfect = score === 100;`</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.loose-equals-like-strict">
+<Wrong>`==`와 `===`는 같은 연산자를 다르게 쓴 것이라 `"5" == 5`도 `false`다.</Wrong>
+<Actual>`"5" == 5`는 `true`예요. `==`는 자료형이 다르면 값을 바꿔서 비교해요.</Actual>
+<Right>`==`는 자료형을 바꿔 비교하고, `===`는 그대로 비교해요. 예상 밖의 변환을 피하려면 `===`와 `!==`를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.string-compare-numeric">
+<Wrong>`"10" < "9"`는 10이 9보다 크니까 `false`다.</Wrong>
+<Actual>`true`예요. 문자열끼리는 첫 글자부터 사전 순서로 비교해서, `"1"`이 `"9"`보다 앞에 와요.</Actual>
+<Right>수의 크기로 비교해야 하는 값은 따옴표 없이 숫자로 저장해요. (문자열을 숫자로 바꾸는 방법은 "명시적 형 변환" 단원에서 배워요.)</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.mixed-compare-as-string">
+<Wrong>`"10" > 9`도 문자열이 섞여 있으니 첫 글자 `"1"`과 `"9"`를 비교해서 `false`다.</Wrong>
+<Actual>`true`예요. 한쪽이 숫자면 문자열을 숫자로 바꿔서 `10 > 9`를 계산해요.</Actual>
+<Right>사전 순서 비교는 **두 값이 모두 문자열일 때만** 일어나요. 하나라도 숫자면 수의 크기로 비교해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.chained-comparison">
+<Wrong>`3 > 2 > 1`은 "3이 2보다 크고, 2가 1보다 크다"라서 `true`다.</Wrong>
+<Actual>`false`예요. 먼저 `3 > 2`가 `true`가 되고, 그다음 `true > 1`을 계산해요. `true`는 숫자로 1이라서 `1 > 1`, 결과는 `false`예요.</Actual>
+<Right>비교는 두 값씩 하나만 써요. 두 조건이 필요하면 지금은 `const warmEnough = temp >= 18;`, `const notTooHot = temp <= 24;`처럼 따로 저장하고, 다음 단원에서 배울 `&&`로 묶어요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+실제 서비스에서 비교 연산자는 "판단"이 필요한 거의 모든 곳에 쓰여요. 쇼핑몰 주문 화면이라면 이런 판단을 해요.
+
+```js
+const freeShippingLine = 30000;   // 무료 배송 기준 (이상)
+const cartTotal = 28500;
+const stock = 2;
+const orderCount = 3;
+const savedCoupon = "WELCOME";
+const typedCoupon = "welcome";
+
+const isFreeShipping = cartTotal >= freeShippingLine;
+const isOutOfStock = stock < orderCount;
+const isCouponValid = typedCoupon === savedCoupon;
+
+console.log("무료 배송:", isFreeShipping);   // false
+console.log("재고 부족:", isOutOfStock);     // true
+console.log("쿠폰 사용:", isCouponValid);    // false (대소문자가 달라요)
+```
+
+- 요구사항의 "이상·이하·초과·미만"을 정확한 연산자로 옮겨요. 경계값(딱 30000원)에서 결과가 달라지기 때문이에요.
+- 비밀번호·쿠폰 코드처럼 정확히 같아야 하는 값은 `===`로 비교해요. 문자열은 대소문자까지 같아야 해요.
+- 금액·수량은 숫자로 저장해야 크기 비교가 맞게 동작해요.
+
+다음 모듈의 조건문을 배우면 이 `true`/`false`를 보고 "무료 배송이면 배송비 0원" 같은 동작을 실행할 수 있어요.
+</Section>
+
+<Section kind="check">
+`===`가 무엇을 비교하는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.comparison.mcq-strict-type" />
+
+`==`와 `===`의 차이를 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.comparison.mcq-loose-vs-strict" />
+
+문자열끼리 비교하면 어떻게 되는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.comparison.mcq-string-compare" />
+
+마지막으로 비교를 이어 쓰면 어떻게 되는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.comparison.tf-chained-comparison" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 비교 연산자의 결과는 항상 `true` 또는 `false`이고, 변수에 저장할 수 있어요.
+- `===`는 자료형과 값이 모두 같을 때 `true`, `!==`는 그 반대예요. 같은지 비교할 때는 이 둘을 써요.
+- `=`는 대입이라 비교에 쓰면 값이 바뀌어요. `==`는 자료형을 바꿔서 비교해서 `"5" == 5`가 `true`예요.
+- NaN은 자기 자신과도 같지 않아서, NaN인지는 `Number.isNaN`으로 확인해요.
+- `>=`는 "이상", `>`는 "초과"처럼 경계값을 포함하는지가 달라요.
+- 문자열끼리는 사전 순서로 비교하고(`"10" < "9"`는 `true`), 한쪽이 숫자면 숫자로 바꿔 비교해요.
+- `3 > 2 > 1`처럼 비교를 이어 쓰면 왼쪽부터 하나씩 계산되어 의도와 달라져요.
+</Section>
+
+<Section kind="next">
+비교 하나로는 "18도 이상이고 24도 이하"처럼 조건 두 개를 함께 판단할 수 없었어요. 다음 단원 "논리 연산"에서 `&&`, `||`, `!`로 비교 결과를 조합하는 법을 배워요. `==`가 값을 어떻게 바꾸는지는 "암묵적 형 변환" 단원에서, NaN이 생기는 이유는 "명시적 형 변환" 단원에서 다시 만나요. <MdnLink path="Web/JavaScript/Reference/Operators/Strict_equality" />
+</Section>

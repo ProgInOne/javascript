@@ -1,0 +1,47 @@
+id: js-basics.operators.arithmetic.predict-precedence-steps
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.ops.precedence, weight: 1 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+tags: [precedence, trace]
+estimatedSeconds: 120
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    console.log(20 - 4 * 3 + 2);
+    console.log(100 / 10 * 2);
+    console.log(2 * (3 + 1) ** 2);
+  answerKind: console
+  misconceptionByAnswer:
+    "50\n20\n32": js.mc.always-left-to-right
+    "10\n5\n32": js.mc.multiply-before-divide
+    "10\n20\n64": js.mc.always-left-to-right
+hints:
+  - 줄마다 가장 먼저 계산할 부분을 찾아 값으로 바꿔 쓰고, 다시 다음 부분을 찾는 식으로 한 단계씩 줄여 보세요.
+  - 첫 줄은 `4 * 3`부터, 둘째 줄은 같은 순서인 `/`와 `*` 중 왼쪽부터예요.
+  - 셋째 줄은 괄호 → `**` → `*` 순서예요. `(3 + 1) ** 2`를 먼저 계산한 뒤 2를 곱해요.
+explanation: |
+  정답은 다음과 같아요.
+
+  ```text
+  10
+  20
+  32
+  ```
+
+  | 줄 | 단계별 계산 |
+  |---|---|
+  | `20 - 4 * 3 + 2` | `20 - 12 + 2` → `8 + 2` → `10` |
+  | `100 / 10 * 2` | `10 * 2` → `20` |
+  | `2 * (3 + 1) ** 2` | `2 * 4 ** 2` → `2 * 16` → `32` |
+
+  - 첫 줄을 50이라고 했다면 왼쪽부터 `(20 - 4) * 3 + 2`로 계산한 거예요. `*`가 먼저예요.
+  - 둘째 줄을 5라고 했다면 곱셈을 먼저 해 `100 / 20`으로 계산한 거예요. `/`와 `*`는 같은 순서라 왼쪽부터예요.
+  - 셋째 줄을 64라고 했다면 `(2 * 4) ** 2`로 계산한 거예요. `**`는 `*`보다 먼저예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

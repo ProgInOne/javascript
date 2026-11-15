@@ -1,0 +1,338 @@
+<Section kind="objectives">
+- 어떤 값이 falsy이고 어떤 값이 truthy인지 구분하고, 논리 연산의 결과를 예측할 수 있어요.
+- `+`가 덧셈과 이어 붙이기 중 무엇을 할지 왼쪽부터 따라가며 예측하고, 입력값을 `Number`로 바꿔 버그를 고칠 수 있어요.
+- `==`가 값을 바꿔 비교하는 규칙으로 결과를 설명하고, `===`로 바꿔 쓸 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+계산기 화면에 3과 4를 입력하고 "더하기"를 눌렀더니 `7`이 아니라 `34`가 나왔다고 해 봐요. 코드에는 분명히 `a + b`라고 썼는데 말이에요.
+
+```js
+const a = "3";   // 화면의 입력칸에서 읽은 값은 항상 문자열이에요
+const b = "4";
+console.log(a + b);
+```
+
+지난 단원에서는 `Number(값)`처럼 **직접** 자료형을 바꿨어요. 그런데 JavaScript는 우리가 시키지 않아도 연산자에 맞춰 값을 **알아서** 바꾸기도 해요. 이것을 **암묵적 형 변환**이라고 해요. 위 코드에서는 `+`가 문자열을 보고 "글자를 이어 붙이라는 뜻이구나" 하고 판단한 거예요.
+
+암묵적 형 변환은 오류를 내지 않아요. 프로그램은 조용히 엉뚱한 값을 만들고 계속 실행돼요. 그래서 규칙을 모르면 버그의 원인을 찾기가 아주 어려워요. 이 단원에서는 세 가지 장면의 규칙을 익혀요.
+
+1. 참·거짓이 필요한 곳에서 값이 바뀌는 규칙: **truthy와 falsy**
+1. `+`가 덧셈을 할지 이어 붙이기를 할지 정하는 규칙
+1. `==`가 비교하기 전에 값을 바꾸는 규칙
+</Section>
+
+<Section kind="principle">
+### truthy와 falsy: 참·거짓이 필요한 자리
+
+`!`, `&&`, `||`처럼 참·거짓이 필요한 연산자에 숫자나 문자열을 주면, JavaScript는 그 값을 잠깐 `true`나 `false`로 바꿔서 판단해요. <ConceptLink to="js.conv.to-boolean">Boolean(값)</ConceptLink>으로 바꾼 결과와 같아요.
+
+외울 것은 **거짓으로 바뀌는 값(falsy)** 목록뿐이에요. 이 목록에 없는 값은 **모두** 참(truthy)이에요.
+
+| falsy 값 | 설명 |
+|---|---|
+| `false` | 거짓 그 자체 |
+| `0` | 숫자 0 (`-0`도 포함) |
+| `""` | 빈 문자열 (글자가 하나도 없음) |
+| `null` | 일부러 비워 둔 값 |
+| `undefined` | 아직 값이 없음 |
+| `NaN` | 숫자 계산 실패 |
+
+그래서 다음 값들은 헷갈리기 쉽지만 모두 **truthy**예요.
+
+- `"0"`, `"false"`: 글자가 들어 있는 문자열이에요. 글자의 뜻은 보지 않아요.
+- `" "`: 공백도 글자예요. 길이가 0인 `""`만 falsy예요.
+- 빈 목록 `[]`: 뒤에서 배울 배열(모듈 8)은 비어 있어도 truthy예요.
+
+<Reveal title="falsy 값이 하나 더 있어요">
+아주 큰 정수를 다루는 BigInt 자료형의 `0n`도 falsy예요. 이 과정에서는 쓰지 않으니 위 여섯 개만 기억해도 충분해요.
+</Reveal>
+
+`!!값`은 `!`를 두 번 써서 값을 같은 뜻의 `true`/`false`로 바꾸는 짧은 표현이에요. 첫 `!`가 truthy·falsy를 뒤집고, 두 번째 `!`가 다시 뒤집어요. <ConceptLink to="js.ops.short-circuit">단락 평가</ConceptLink>에서 배운 `||`와 `&&`도 바로 이 truthy·falsy로 왼쪽 값을 판단해요.
+
+### + 연산자: 문자열이 있으면 이어 붙이기
+
+`+`는 두 가지 일을 하는 연산자예요.
+
+- 양쪽이 모두 숫자면 **더하기**: `3 + 4` → `7`
+- 한쪽이라도 문자열이면 다른 쪽도 문자열로 바꿔서 **이어 붙이기**: `"3" + 4` → `"34"`
+
+계산식에 `+`가 여러 개면 **왼쪽부터 하나씩** 계산하고, 그때마다 위 규칙을 다시 적용해요.
+
+| 식 | 1단계 | 2단계 | 결과 |
+|---|---|---|---|
+| `1 + 2 + "3"` | `1 + 2` → `3` (숫자끼리 더하기) | `3 + "3"` → `"33"` | `"33"` |
+| `"1" + 2 + 3` | `"1" + 2` → `"12"` (이어 붙이기) | `"12" + 3` → `"123"` | `"123"` |
+| `"총 " + (2 + 3)` | 괄호 먼저 `2 + 3` → `5` | `"총 " + 5` → `"총 5"` | `"총 5"` |
+
+반대로 `-`, `*`, `/`, `%`는 이어 붙이는 기능이 없어요. 그래서 문자열을 <ConceptLink to="js.conv.to-number">숫자로 바꿔서</ConceptLink> 계산해요. `"10" - 3`은 `7`, `"10" * "2"`는 `20`이에요. 숫자로 읽을 수 없는 글자라면 `"abc" - 1`처럼 `NaN`이 돼요.
+
+<CompareTable columns={["+", "- * / %"]}>
+<Row label="문자열이 있으면">이어 붙여요 | 숫자로 바꿔 계산해요</Row>
+<Row label='"10"과 3'>`"10" + 3` → `"103"` | `"10" - 3` → `7`</Row>
+<Row label="숫자로 못 읽는 글자">그래도 이어 붙여요 (`"a" + 1` → `"a1"`) | `NaN`</Row>
+</CompareTable>
+
+### ==: 비교하기 전에 값을 바꿔요
+
+<ConceptLink to="js.ops.loose-equality">동등 연산자 ==</ConceptLink>는 양쪽의 자료형이 다르면 값을 바꾼 뒤 비교해요. 규칙은 다음과 같아요.
+
+1. 문자열과 숫자를 비교하면 문자열을 **숫자로** 바꿔요. `"5" == 5` → `5 == 5` → `true`. 빈 문자열이나 공백 문자열은 0이 되므로 `"" == 0`도 `true`예요.
+1. 한쪽이 불리언이면 불리언을 **숫자로** 바꿔요(`true` → 1, `false` → 0). `"0" == false` → `"0" == 0` → `0 == 0` → `true`.
+1. `null`은 `undefined`와만 같아요. `null == 0`, `null == false`는 모두 `false`예요.
+1. `NaN`은 무엇과도 같지 않아요. `NaN == NaN`도 `false`예요.
+
+여기서 중요한 점: `==`는 **truthy·falsy를 보지 않아요.** `"0"`은 truthy인데도 `"0" == false`는 `true`예요. 반대로 `null`은 falsy인데도 `null == false`는 `false`예요. 이렇게 직관과 어긋나는 결과가 많아서, 실무에서는 `==` 대신 변환이 없는 `===`를 써요.
+
+### 두 가지 관점으로 보기
+
+**규칙표 관점**: 연산자마다 "어떤 자료형을 원하는지"가 정해져 있어요. `!`·`&&`·`||`는 불리언을, `-`·`*`·`/`는 숫자를 원해요. `+`는 문자열이 있으면 문자열을, 없으면 숫자를 원해요. 원하는 자료형이 아닌 값이 오면 그 자료형으로 바꿔요.
+
+**한 단계씩 관점**: 식을 계산 순서대로 한 단계씩 쪼개고, 단계마다 "양쪽 자료형이 무엇인지"를 적어요. 위의 표처럼 적어 가면 `1 + 2 + "3"` 같은 식도 실수 없이 계산할 수 있어요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 각 값이 truthy인지 falsy인지 예측해 보세요. `!!`는 값을 같은 뜻의 `true`/`false`로 바꿔요.
+
+<RunnableExample id="truthy-falsy-list" lang="js" predict predictKind="console" concepts={["js.conv.truthy-falsy"]}>
+```js
+console.log(!!0, !!"0");
+console.log(!!"", !!" ");
+console.log(!!null, !!NaN);
+console.log(!!"false", !!-5);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+false true
+false true
+false false
+true true
+```
+
+- 1번 줄: 숫자 `0`은 falsy지만, 문자열 `"0"`은 글자가 들어 있어서 truthy예요.
+- 2번 줄: 빈 문자열 `""`은 falsy, 공백 하나가 있는 `" "`는 truthy예요. 공백도 글자예요.
+- 3번 줄: `null`과 `NaN`은 falsy 목록에 있어요.
+- 4번 줄: `"false"`는 글자의 뜻과 관계없이 truthy예요. `-5`처럼 0이 아닌 숫자는 음수여도 truthy예요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 `+`가 여러 개 있는 식이에요. `typeof`로 결과의 자료형도 함께 출력해요. 각 줄의 값과 자료형을 예측해 보세요.
+
+<RunnableExample id="plus-left-to-right" lang="js" predict predictKind="console" concepts={["js.conv.plus-concat"]}>
+```js
+const first = 1 + 2 + "3";
+const second = "1" + 2 + 3;
+console.log(first, typeof first);
+console.log(second, typeof second);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+33 string
+123 string
+```
+
+콘솔은 문자열을 따옴표 없이 보여 주기 때문에 `33`만 보면 숫자인지 문자열인지 알 수 없어요. 그래서 `typeof`를 함께 출력했어요.
+
+| 식 | 1단계 | 2단계 |
+|---|---|---|
+| `1 + 2 + "3"` | `1 + 2` → 숫자 `3` | `3 + "3"` → 문자열 `"33"` |
+| `"1" + 2 + 3` | `"1" + 2` → 문자열 `"12"` | `"12" + 3` → 문자열 `"123"` |
+
+첫 번째 식은 처음 두 값이 숫자라서 먼저 더해진 뒤에 이어 붙여졌어요. 두 번째 식은 첫 단계부터 문자열이 있어서 끝까지 이어 붙이기만 했어요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `+`가 아닌 산술 연산자예요. 문자열을 이어 붙일까요, 숫자로 바꿔 계산할까요?
+
+<RunnableExample id="minus-converts" lang="js" concepts={["js.conv.plus-concat"]}>
+```js
+console.log("10" - 3);
+console.log("10" * "2");
+console.log("10" + 3);
+console.log("사과" - 1);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+7
+20
+103
+NaN
+```
+
+- `"10" - 3`: `-`는 이어 붙이는 기능이 없으니 `"10"`을 숫자 10으로 바꿔 `7`을 계산해요. 오류가 나지 않아요.
+- `"10" * "2"`: 양쪽 모두 숫자로 바뀌어 `20`이에요.
+- `"10" + 3`: `+`만 문자열이 있으면 이어 붙여요. 결과는 문자열 `"103"`이에요.
+- `"사과" - 1`: `"사과"`는 숫자로 읽을 수 없어서 `NaN`이 돼요. 이때도 오류는 나지 않아요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 `==`의 변환 규칙이에요. 각 비교의 결과를 예측해 보세요.
+
+<RunnableExample id="loose-equality-rules" lang="js" predict predictKind="console" concepts={["js.conv.equality-coercion"]}>
+```js
+console.log("" == 0);
+console.log("0" == false);
+console.log(null == 0);
+console.log(null == undefined);
+console.log(NaN == NaN);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+true
+true
+false
+true
+false
+```
+
+| 비교 | 바꾸는 과정 | 결과 |
+|---|---|---|
+| `"" == 0` | 문자열 → 숫자: `""`은 0 → `0 == 0` | `true` |
+| `"0" == false` | 불리언 → 숫자: `"0" == 0`, 문자열 → 숫자: `0 == 0` | `true` |
+| `null == 0` | `null`은 `undefined`와만 같아요 | `false` |
+| `null == undefined` | 특별 규칙으로 서로만 같아요 | `true` |
+| `NaN == NaN` | `NaN`은 무엇과도 같지 않아요 | `false` |
+
+두 번째 줄을 보세요. `"0"`은 truthy인데 `false`와 같다고 나와요. `==`는 truthy·falsy가 아니라 **숫자로 바꿔서** 비교하기 때문이에요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 소개에서 본 계산기 버그를 고친 버전이에요. 두 출력을 비교해 보세요.
+
+<RunnableExample id="input-to-number" lang="js" concepts={["js.conv.plus-concat", "js.conv.to-number"]}>
+```js
+const a = "3";
+const b = "4";
+console.log(a + b);
+console.log(Number(a) + Number(b));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+34
+7
+```
+
+3번 줄은 문자열끼리 `+`라서 이어 붙여 `"34"`가 됐어요. 4번 줄은 `Number`로 먼저 숫자로 바꿨기 때문에 양쪽이 숫자가 되어 `7`을 더했어요. **입력값처럼 문자열로 들어오는 값은 `+`로 계산하기 전에 숫자로 바꾸는 습관**을 들여요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.string-zero-falsy">
+<Wrong>`"0"`이나 `"false"`는 0이나 거짓을 뜻하니 falsy다.</Wrong>
+<Actual>`!!"0"`과 `!!"false"`는 모두 `true`예요.</Actual>
+<Right>문자열은 빈 문자열 `""`만 falsy예요. 글자가 하나라도 있으면 뜻과 관계없이 truthy예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.space-string-falsy">
+<Wrong>공백만 있는 `" "`는 비어 있으니 falsy다.</Wrong>
+<Actual>`!!" "`는 `true`예요. 공백도 글자 하나예요.</Actual>
+<Right>falsy인 문자열은 길이가 0인 `""` 하나뿐이에요. 사용자가 공백만 입력했는지 확인하는 방법은 "문자열 메서드" 단원에서 배워요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.empty-array-falsy">
+<Wrong>빈 목록(배열 `[]`)은 아무것도 없으니 falsy다.</Wrong>
+<Actual>`!![]`는 `true`예요.</Actual>
+<Right>falsy 값은 `false`, `0`, `""`, `null`, `undefined`, `NaN`처럼 정해진 몇 개뿐이에요. 배열은 비어 있어도 truthy예요. 배열이 비었는지는 길이로 확인하는데, 모듈 8에서 배워요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.plus-string-adds">
+<Wrong>`"3" + 1`은 3에 1을 더해 `4`다.</Wrong>
+<Actual>결과는 문자열 `"31"`이에요.</Actual>
+<Right>`+`는 한쪽이라도 문자열이면 이어 붙여요. 더하려면 `Number("3") + 1`처럼 먼저 숫자로 바꿔요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.concat-whole-expression">
+<Wrong>식에 문자열이 하나라도 있으면 전체가 이어 붙여져서 `1 + 2 + "3"`은 `"123"`이다.</Wrong>
+<Actual>결과는 `"33"`이에요. 앞의 `1 + 2`는 숫자끼리라서 먼저 더해져요.</Actual>
+<Right>`+`는 왼쪽부터 한 번에 두 값씩 계산해요. 단계마다 양쪽의 자료형을 확인해요. `"총 " + 2 + 3`처럼 글자 뒤에 계산을 붙일 때는 `"총 " + (2 + 3)`처럼 괄호로 감싸요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.minus-string-fails">
+<Wrong>`"10" - 3`은 오류가 나거나, 이어 붙이기처럼 이상한 글자가 된다.</Wrong>
+<Actual>결과는 숫자 `7`이에요.</Actual>
+<Right>이어 붙이기는 `+`만 해요. `-`, `*`, `/`, `%`는 문자열을 숫자로 바꿔 계산해요. 숫자로 읽을 수 없는 글자일 때만 `NaN`이 돼요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.null-loose-equals-zero">
+<Wrong>`null`은 "없음"이니까 `null == 0`이나 `null == false`는 `true`다.</Wrong>
+<Actual>둘 다 `false`예요.</Actual>
+<Right>`==`에서 `null`은 `undefined`와만 같아요. 값이 `null`인지 확인하려면 `x === null`이라고 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.loose-equality-uses-truthiness">
+<Wrong>`"0"`은 truthy니까 `"0" == false`는 `false`다.</Wrong>
+<Actual>`"0" == false`는 `true`예요.</Actual>
+<Right>`==`는 truthy·falsy를 보지 않고 양쪽을 숫자로 바꿔 비교해요(`"0"` → 0, `false` → 0). 이런 함정을 피하려면 `===`를 쓰고, 빈 문자열인지 확인할 때는 `text === ""`처럼 비교할 값을 정확히 써요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+웹 페이지의 입력칸에서 읽은 값은 숫자를 입력해도 **항상 문자열**이에요. 그래서 실무에서 가장 흔한 형 변환 버그는 입력값을 그대로 `+`로 더하는 실수예요.
+
+```js
+// 입력칸에서 읽은 값이라고 생각해 보세요 (모듈 10에서 실제로 읽는 법을 배워요)
+const priceText = "12000";
+const countText = "2";
+const couponText = "";
+
+const price = Number(priceText);
+const count = Number(countText);
+const coupon = Number(couponText);   // 빈 문자열은 0이 돼요
+
+const total = price * count - coupon;
+console.log("결제 금액: " + total + "원");
+```
+
+- 계산에 쓰기 전에 `Number`로 한 번만 바꿔 두면, 그 뒤로는 `+`를 써도 안전해요.
+- 출력할 문장은 일부러 `+`로 이어 붙여요. 이때 계산 부분은 미리 변수에 담거나 괄호로 감싸요.
+- 같은지 비교할 때는 `===`를 써요. 많은 팀이 코드 검사 도구로 `==` 사용을 막아 둬요.
+</Section>
+
+<Section kind="check">
+문자열 `"0"`이 truthy인지 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.implicit-coercion.tf-string-zero" />
+
+`+`가 문자열을 만나면 어떻게 되는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.implicit-coercion.mcq-string-plus-number" />
+
+`+`가 여러 개인 식을 계산해 보세요.
+
+<InlineExercise ref="js-basics.operators.implicit-coercion.predict-left-to-right" />
+
+마지막으로 `==`의 `null` 규칙을 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.implicit-coercion.mcq-null-loose-equals" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- falsy 값은 `false`, `0`, `""`, `null`, `undefined`, `NaN`뿐이고, 나머지는 `"0"`, `" "`, 빈 배열까지 모두 truthy예요.
+- `!`, `&&`, `||`는 값을 truthy·falsy로 판단해요. `!!값`은 같은 뜻의 불리언을 만들어요.
+- `+`는 한쪽이라도 문자열이면 이어 붙이고, 왼쪽부터 한 단계씩 계산해요. `1 + 2 + "3"`은 `"33"`이에요.
+- `-`, `*`, `/`, `%`는 문자열을 숫자로 바꿔 계산해요. 읽을 수 없으면 `NaN`이에요.
+- `==`는 문자열과 불리언을 숫자로 바꿔 비교하고, `null`은 `undefined`와만 같아요. truthy·falsy와는 다른 규칙이라 `===`를 써요.
+- 입력값처럼 문자열로 들어온 값은 계산하기 전에 `Number`로 바꿔요.
+</Section>
+
+<Section kind="next">
+다음은 이 모듈의 단원 평가예요. 산술·비교·논리 연산과 형 변환을 섞은 문제로 이해도를 확인해요. truthy·falsy는 모듈 4 "조건문"에서 `if (값)`의 조건으로 다시 만나요. <MdnLink path="Web/JavaScript/Reference/Operators/Addition" />
+</Section>

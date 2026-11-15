@@ -1,0 +1,51 @@
+id: js-basics.operators.comparison.find-bug-nan-check
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.ops.strict-equality, weight: 1 }
+tags: [strict-equality, nan, debugging]
+estimatedSeconds: 100
+prompt: |
+  주문 수량을 잘못 입력하면 계산 오류를 알려 주려고 했어요. 그런데 오류를 알아채지 못해요. 원인이 되는 줄을 찾고, 그 이유도 고르세요.
+spec:
+  code: |-
+    const quantity = "두 개";
+    const total = quantity * 3000;
+    const isError = total === NaN;
+    console.log("합계:", total);
+    console.log("계산 오류:", isError);
+  bugLines: [3]
+  symptom: 합계가 `NaN`으로 나와서 계산이 실패한 게 분명한데, 계산 오류는 `false`로 나와요.
+  symptomCheck:
+    console: ["합계: NaN", "계산 오류: false"]
+  fixedCode: |-
+    const quantity = "두 개";
+    const total = quantity * 3000;
+    const isError = Number.isNaN(total);
+    console.log("합계:", total);
+    console.log("계산 오류:", isError);
+  causeOptions:
+    - id: c1
+      text: NaN은 자기 자신과도 같지 않아서 `=== NaN`은 항상 false다
+      correct: true
+    - id: c2
+      text: "`total`이 NaN이 아니라 0이라서 false가 나왔다"
+    - id: c3
+      text: NaN끼리 비교하려면 `===` 대신 `==`를 써야 한다
+      misconception: js.mc.nan-equals-nan
+misconceptions: [js.mc.nan-equals-nan]
+hints:
+  - 합계가 NaN이라는 것은 2번 줄까지는 예상대로 실패했다는 뜻이에요. 오류를 "알아채는" 줄은 어디인가요?
+  - NaN을 다른 값과 비교하면 어떤 결과가 나오나요?
+  - NaN인지 확인하는 전용 방법이 따로 있어요.
+explanation: |
+  원인은 **3번 줄**이에요. NaN은 자기 자신과도 같지 않아서 `total === NaN`은 `total`이 NaN이어도 항상 `false`예요.
+
+  `const isError = Number.isNaN(total);`로 고치면 `계산 오류: true`가 나와요.
+
+  - 1·2번 줄은 일부러 잘못된 입력을 넣은 부분이라, 합계가 NaN이 되는 것은 의도한 상황이에요. 문제는 그 상황을 알아채지 못하는 3번 줄이에요.
+  - `==`로 바꿔도 `NaN == NaN`은 `false`예요. NaN은 어떤 비교로도 같다고 나오지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

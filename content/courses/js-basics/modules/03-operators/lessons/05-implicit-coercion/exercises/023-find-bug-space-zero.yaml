@@ -1,0 +1,58 @@
+id: js-basics.operators.implicit-coercion.find-bug-space-zero
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.conv.equality-coercion, weight: 1 }
+  - { id: js.ops.loose-equality, weight: 0.3 }
+tags: [loose-equality, coercion, input]
+estimatedSeconds: 90
+prompt: |
+  쇼핑몰 관리 화면이에요. 재고 칸에 `0`을 입력했을 때만 품절로 표시해야 하는데, 직원이 실수로 공백만 입력했더니 품절로 표시됐어요. 원인이 되는 줄과 그 이유를 고르세요.
+spec:
+  code: |-
+    const stockInput = " ";
+    const isSoldOut = stockInput == 0;
+    console.log("재고 칸:", "[" + stockInput + "]");
+    console.log("품절인가요?", isSoldOut);
+  bugLines: [2]
+  symptom: 재고 칸에 공백만 있는데 `품절인가요? true`가 출력돼요.
+  symptomCheck:
+    console: ['재고 칸: [ ]', '품절인가요? true']
+  fixedCode: |-
+    const stockInput = " ";
+    const isSoldOut = stockInput === "0";
+    console.log("재고 칸:", "[" + stockInput + "]");
+    console.log("품절인가요?", isSoldOut);
+  causeOptions:
+    - id: c1
+      text: ==가 공백 문자열을 숫자 0으로 바꿔 비교했다
+      correct: true
+    - id: c2
+      text: 공백 문자열은 falsy라서 0과 같다고 판단됐다
+      misconception: js.mc.loose-equality-uses-truthiness
+    - id: c3
+      text: 3번 줄에서 이어 붙이면서 stockInput이 0으로 바뀌었다
+      misconception: js.mc.expression-changes-variable
+    - id: c4
+      text: ==는 문자열과 숫자를 비교하면 항상 true를 돌려준다
+misconceptions: [js.mc.loose-equality-uses-truthiness]
+hints:
+  - "`isSoldOut`의 값을 정하는 줄은 어디인가요?"
+  - "`==`는 문자열과 숫자를 비교할 때 문자열을 무엇으로 바꾸나요? `Number(\" \")`의 결과를 떠올려 보세요."
+  - 공백 문자열은 truthy예요. 그런데도 0과 같다고 나온 이유는 truthy·falsy가 아니라 숫자 변환 때문이에요.
+explanation: |
+  원인은 **2번 줄**이에요. `stockInput == 0`은 문자열과 숫자를 비교하므로 `==`가 `" "`을 숫자로 바꿔요. 공백만 있는 문자열은 숫자로 바꾸면 `0`이라서 `0 == 0` → `true`가 됐어요.
+
+  `0`을 입력했을 때만 품절이라면, 입력값 그대로 `===`로 비교해요.
+
+  ```js
+  const isSoldOut = stockInput === "0";
+  ```
+
+  - 공백 문자열은 falsy가 아니라 truthy예요. 그리고 `==`는 truthy·falsy로 판단하지도 않아요.
+  - 3번 줄은 새 문자열을 만들어 출력할 뿐 `stockInput`을 바꾸지 않아요.
+  - `==`가 항상 `true`인 것은 아니에요. `"5" == 0`은 `false`예요. 문자열이 숫자로 바뀐 값에 따라 달라져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

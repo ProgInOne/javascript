@@ -1,0 +1,39 @@
+id: js-basics.operators.explicit-conversion.tf-boolean-false-string
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.conv.to-boolean, weight: 1 }
+tags: [boolean, conversion]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그 이유도 고르세요.
+spec:
+  statement: '`Boolean("false")`의 결과는 `false`다.'
+  answer: false
+  misconceptionIfWrong: js.mc.boolean-reads-string-content
+  requireReason: true
+  reasons:
+    - id: r1
+      text: Boolean은 글자의 내용을 읽지 않고, 빈 문자열만 false로 바꾼다
+      correct: true
+    - id: r2
+      text: Boolean은 글자의 뜻을 읽어서 "false"는 false, "true"는 true로 바꾼다
+      misconception: js.mc.boolean-reads-string-content
+    - id: r3
+      text: 문자열은 Boolean으로 바꿀 수 없어서 항상 오류가 난다
+misconceptions: [js.mc.boolean-reads-string-content]
+hints:
+  - "`\"false\"`는 불리언 값 false가 아니라 다섯 글자로 된 문자열이에요."
+  - 문자열을 Boolean으로 바꿀 때 false가 되는 문자열은 딱 하나예요.
+  - 길이가 0인 문자열만 false예요. "false"는 길이가 0인가요?
+explanation: |
+  **거짓**이에요. `Boolean("false")`는 `true`예요.
+
+  `Boolean`은 글자의 내용이나 뜻을 읽지 않아요. 문자열 중에서는 빈 문자열 `""`만 `false`이고, 글자가 하나라도 있으면 `true`예요. 그래서 `"false"`, `"0"`, `" "`도 모두 `true`예요.
+
+  - 글자의 뜻을 읽는다는 이유를 골랐다면: Boolean은 글자 모양을 해석하지 않아요. `"true"`/`"false"` 글자를 불리언으로 바꾸려면 `text === "true"`처럼 비교해야 해요.
+  - 오류가 난다는 이유를 골랐다면: Boolean은 어떤 값이든 오류 없이 true나 false로 바꿔요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

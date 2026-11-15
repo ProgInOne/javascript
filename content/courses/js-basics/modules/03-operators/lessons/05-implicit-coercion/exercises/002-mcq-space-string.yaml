@@ -1,0 +1,41 @@
+id: js-basics.operators.implicit-coercion.mcq-space-string
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.conv.truthy-falsy, weight: 1 }
+tags: [truthy, falsy, string]
+estimatedSeconds: 40
+prompt: |
+  `!!" "`(따옴표 안에 공백 한 칸)의 결과는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`true`"
+    - id: b
+      text: "`false`"
+      misconception: js.mc.space-string-falsy
+      rationale: 공백도 글자 하나예요. 글자가 있는 문자열은 truthy예요.
+    - id: c
+      text: "`\" \"`"
+      rationale: "`!`는 항상 불리언을 돌려줘요. `!!`도 마찬가지로 true나 false예요."
+    - id: d
+      text: 오류가 난다
+      rationale: "`!`는 어떤 값에나 쓸 수 있어요. 값을 truthy·falsy로 판단할 뿐 오류를 내지 않아요."
+  correct: a
+misconceptions: [js.mc.space-string-falsy]
+hints:
+  - "`!!값`은 값이 truthy면 true, falsy면 false예요."
+  - falsy인 문자열은 어떤 문자열이었나요?
+  - 빈 문자열 `""`과 공백 한 칸 `" "`의 길이를 비교해 보세요.
+explanation: |
+  정답은 **`true`**예요.
+
+  falsy인 문자열은 길이가 0인 빈 문자열 `""`뿐이에요. `" "`에는 공백이라는 글자가 하나 들어 있어서 truthy이고, `!!`로 바꾸면 `true`가 돼요.
+
+  - `false`를 골랐다면: 눈에 보이지 않아도 공백은 글자예요.
+  - `" "`를 골랐다면: `!`는 값을 뒤집어 불리언을 만들어요. `!!`의 결과도 항상 `true`나 `false`예요. (값 그대로 돌려주는 것은 `&&`와 `||`예요.)
+  - 오류를 골랐다면: `!`는 숫자, 문자열 등 어떤 값에도 쓸 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

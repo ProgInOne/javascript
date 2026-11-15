@@ -1,0 +1,57 @@
+id: js-basics.operators.logical.find-bug-order-message
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [short-circuit, debugging]
+estimatedSeconds: 120
+prompt: |
+  주문할 수 있을 때만 "주문 완료"를 출력하려고 만든 프로그램이에요. 그런데 결과가 이상해요. 원인이 되는 줄을 찾고, 원인도 고르세요.
+spec:
+  code: |-
+    const stock = 0;
+    const orderCount = 2;
+    const canOrder = stock >= orderCount;
+    canOrder || console.log("주문 완료");
+    console.log("남은 재고:", stock);
+  bugLines: [4]
+  symptom: 재고가 0개라 주문할 수 없는데 "주문 완료"가 출력돼요.
+  symptomCheck:
+    console: ["주문 완료", "남은 재고: 0"]
+  fixedCode: |-
+    const stock = 0;
+    const orderCount = 2;
+    const canOrder = stock >= orderCount;
+    canOrder && console.log("주문 완료");
+    console.log("남은 재고:", stock);
+  causeOptions:
+    - id: c1
+      text: "`||`는 왼쪽이 false일 때 오른쪽을 실행하므로, 주문할 수 없을 때 출력된다"
+      correct: true
+    - id: c2
+      text: console.log는 어디에 있든 항상 실행된다
+      misconception: js.mc.right-side-always-runs
+    - id: c3
+      text: "`stock >= orderCount`가 true로 계산된다"
+    - id: c4
+      text: "`canOrder`가 const라서 값을 바꿀 수 없다"
+misconceptions: [js.mc.right-side-always-runs]
+hints:
+  - 3번 줄의 `canOrder`는 true일까요, false일까요? 값을 넣어 계산해 보세요.
+  - "`canOrder`가 false일 때, 4번 줄의 `||`는 오른쪽을 실행할까요?"
+  - "\"왼쪽이 참일 때만 오른쪽을 실행\"하는 연산자와 \"왼쪽이 거짓일 때만 오른쪽을 실행\"하는 연산자를 구분해 보세요."
+explanation: |
+  원인은 **4번 줄**이에요. `||`를 `&&`로 써야 했어요.
+
+  3번 줄에서 `canOrder`는 `0 >= 2`라서 `false`예요. 4번 줄의 `false || console.log(...)`는 왼쪽이 거짓이라 결과를 정하려고 오른쪽을 실행해요. 그래서 주문할 수 **없을 때** "주문 완료"가 나왔어요.
+
+  `canOrder && console.log("주문 완료")`로 바꾸면 왼쪽이 `false`일 때 오른쪽을 건너뛰어요.
+
+  - console.log가 항상 실행되는 건 아니에요. `&&`, `||`의 오른쪽에 있으면 실행되지 않을 수도 있어요.
+  - 3번 줄의 비교는 올바르게 `false`를 만들어요.
+  - `canOrder`를 다시 대입하는 줄이 없으니 `const`는 문제가 없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

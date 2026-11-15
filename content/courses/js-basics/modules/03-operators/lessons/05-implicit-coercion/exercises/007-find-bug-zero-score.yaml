@@ -1,0 +1,55 @@
+id: js-basics.operators.implicit-coercion.find-bug-zero-score
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.conv.truthy-falsy, weight: 1 }
+  - { id: js.ops.short-circuit, weight: 0.5 }
+  - { id: js.ops.nullish, weight: 0.3 }
+tags: [truthy, falsy, default-value]
+estimatedSeconds: 90
+prompt: |
+  게임 결과 화면이에요. 점수가 없을 때(`null`)만 "기록 없음"을 보여 주려고 했는데, 결과가 이상해요. 원인이 되는 줄과 그 이유를 고르세요.
+spec:
+  code: |-
+    const playerName = "코코";
+    const score = 0;
+    const shownScore = score || "기록 없음";
+    console.log(playerName + "의 점수:", shownScore);
+  bugLines: [3]
+  symptom: '0점을 받았는데 `코코의 점수: 기록 없음`이 출력돼요.'
+  symptomCheck:
+    console: ['코코의 점수: 기록 없음']
+  fixedCode: |-
+    const playerName = "코코";
+    const score = 0;
+    const shownScore = score ?? "기록 없음";
+    console.log(playerName + "의 점수:", shownScore);
+  causeOptions:
+    - id: c1
+      text: 0은 falsy라서 ||가 오른쪽의 "기록 없음"을 골랐다
+      correct: true
+    - id: c2
+      text: "||는 왼쪽 값과 관계없이 항상 오른쪽 값을 돌려준다"
+      misconception: js.mc.logical-returns-boolean
+    - id: c3
+      text: 문자열과 이어 붙이는 과정에서 숫자 0이 사라졌다
+      misconception: js.mc.concat-whole-expression
+    - id: c4
+      text: score를 const로 만들어서 값이 지워졌다
+misconceptions: [js.mc.or-default-keeps-zero]
+hints:
+  - 출력된 "기록 없음"은 어느 줄에서 만들어졌을까요?
+  - "`||`는 왼쪽 값이 falsy면 오른쪽 값을 골라요. `0`은 truthy인가요, falsy인가요?"
+  - 0점도 "점수가 있는" 경우예요. null이나 undefined일 때만 오른쪽을 고르는 연산자를 떠올려 보세요.
+explanation: |
+  원인은 **3번 줄**이에요. `score || "기록 없음"`에서 `||`는 왼쪽 값을 truthy·falsy로 판단해요. `0`은 falsy라서 `||`가 오른쪽의 "기록 없음"을 골랐어요.
+
+  "점수가 없을 때(`null`)만" 기본값을 쓰려면 `??`를 써요. `score ?? "기록 없음"`은 `score`가 `null`이나 `undefined`일 때만 오른쪽을 고르므로 0점은 그대로 `0`이 출력돼요.
+
+  - `||`는 항상 오른쪽을 돌려주지 않아요. 왼쪽이 truthy면 왼쪽 값을 돌려줘요(예: 점수가 50이면 50).
+  - 4번 줄은 `console.log`에 값 두 개를 쉼표로 넘겨요. 이어 붙이는 것은 `playerName + "의 점수:"`뿐이고, `shownScore`는 이미 3번 줄에서 정해졌어요.
+  - `const`는 다시 대입을 막을 뿐 값을 지우지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,69 @@
+id: js-basics.operators.arithmetic.fix-ticket-number
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.ops.increment, weight: 1 }
+tags: [increment, postfix, debugging]
+estimatedSeconds: 150
+prompt: |
+  은행 번호표 기계예요. 마지막으로 뽑은 번호가 41번이에요. 새 손님이 오면 번호를 1 늘리고, **늘린 번호**를 손님에게 줘야 해요. 아래처럼 출력되게 고치세요.
+
+  ```text
+  내 번호: 42
+  마지막 번호: 42
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          let lastTicket = 41;
+          const myTicket = lastTicket++;
+          console.log("내 번호:", myTicket);
+          console.log("마지막 번호:", lastTicket);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let lastTicket = 41;
+          const myTicket = ++lastTicket;
+          console.log("내 번호:", myTicket);
+          console.log("마지막 번호:", lastTicket);
+  bugDescription: 손님이 받은 번호가 42가 아니라 41로 나와요. 마지막 번호는 42예요.
+  bugMisconception: js.mc.postfix-prefix-same
+  checks:
+    - kind: console
+      id: output
+      description: 손님 번호와 마지막 번호가 모두 42로 출력되어야 합니다.
+      requirement: 번호 출력
+      expect:
+        lines: ["내 번호: 42", "마지막 번호: 42"]
+    - kind: program
+      id: values
+      description: 끝났을 때 myTicket과 lastTicket이 모두 42여야 합니다.
+      requirement: 번호 값
+      expect:
+        globals:
+          myTicket: { equals: 42 }
+          lastTicket: { equals: 42 }
+        noError: true
+misconceptions: [js.mc.postfix-prefix-same]
+hints:
+  - "`lastTicket`은 42로 잘 늘어났어요. 그런데 `myTicket`에는 어떤 값이 들어갔나요?"
+  - "`++`를 변수 뒤에 붙이면 식의 값은 늘리기 전일까요, 늘린 뒤일까요?"
+  - 늘린 뒤의 값을 쓰려면 `++`를 붙이는 위치를 바꾸거나, 늘리는 줄과 대입하는 줄을 나눠요.
+explanation: |
+  2번 줄의 `lastTicket++`는 `lastTicket`을 42로 늘리지만, 식의 값은 **늘리기 전** 값 41이에요. 그래서 `myTicket`에 41이 들어갔어요.
+
+  늘린 뒤의 값을 주려면 `++`를 앞에 붙여 `const myTicket = ++lastTicket;`으로 고쳐요. 두 줄로 나눠 써도 돼요.
+
+  ```js
+  lastTicket++;
+  const myTicket = lastTicket;
+  ```
+
+  두 줄로 쓰면 앞뒤 차이를 고민하지 않아도 돼서 읽기 쉬워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

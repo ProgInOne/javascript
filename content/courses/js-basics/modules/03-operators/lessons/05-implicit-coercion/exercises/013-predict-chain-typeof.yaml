@@ -1,0 +1,52 @@
+id: js-basics.operators.implicit-coercion.predict-chain-typeof
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.conv.plus-concat, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.5 }
+  - { id: js.ops.precedence, weight: 0.3 }
+tags: [plus, minus, concat, typeof]
+estimatedSeconds: 120
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 각 줄에는 값과 그 자료형이 함께 출력돼요.
+spec:
+  lang: js
+  code: |
+    const a = "4" * "2";
+    const b = a + 1 + "1";
+    const c = "8" - 2 + "2";
+    console.log(a, typeof a);
+    console.log(b, typeof b);
+    console.log(c, typeof c);
+  answerKind: console
+  misconceptionByAnswer:
+    "42 string\n4211 string\n62 string": js.mc.minus-string-fails
+    "8 number\n811 string\n62 string": js.mc.concat-whole-expression
+    "8 number\n10 number\n8 number": js.mc.plus-string-adds
+misconceptions: [js.mc.minus-string-fails, js.mc.concat-whole-expression]
+hints:
+  - 줄마다 한 단계씩 계산하고, 단계마다 양쪽의 자료형을 적어 보세요.
+  - "`*`와 `-`는 문자열을 숫자로 바꿔 계산해요. `+`만 문자열이 있으면 이어 붙여요."
+  - "`b`는 숫자 `a`에 먼저 숫자 1을 더한 뒤 문자열을 만나요. `c`는 `\"8\" - 2`가 먼저예요."
+explanation: |
+  정답은 다음 세 줄이에요.
+
+  ```text
+  8 number
+  91 string
+  62 string
+  ```
+
+  | 변수 | 1단계 | 2단계 | 결과 |
+  |---|---|---|---|
+  | `a` | `"4" * "2"` → 둘 다 숫자로 바꿔 `8` | | 숫자 `8` |
+  | `b` | `8 + 1` → 숫자 `9` | `9 + "1"` → `"91"` | 문자열 `"91"` |
+  | `c` | `"8" - 2` → 숫자 `6` | `6 + "2"` → `"62"` | 문자열 `"62"` |
+
+  - `a`를 `"42"`라고 생각했다면 `*`도 이어 붙인다고 본 거예요. 이어 붙이기는 `+`만 해요.
+  - `b`를 `"811"`이라고 생각했다면 문자열이 있으면 처음부터 전부 이어 붙인다고 본 거예요. `+`는 왼쪽부터 두 값씩 계산하므로 `8 + 1`이 먼저 더해져요.
+  - `c`를 숫자 `8`처럼 계산했다면 마지막 `+ "2"`를 덧셈으로 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

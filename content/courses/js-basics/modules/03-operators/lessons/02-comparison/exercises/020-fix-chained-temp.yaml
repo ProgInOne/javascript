@@ -1,0 +1,70 @@
+id: js-basics.operators.comparison.fix-chained-temp
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.ops.relational, weight: 1 }
+tags: [relational, chained, debugging]
+estimatedSeconds: 150
+prompt: |
+  실내 온도가 적당한지(18도 이상, 24도 이하) 두 조건을 따로 확인하는 프로그램이에요. 지금 온도는 30도라서 "24도 이하"는 `false`여야 하는데 `true`가 나와요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  18도 이상: true
+  24도 이하: false
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const temp = 30;
+          const warmEnough = 18 <= temp;
+          const notTooHot = 18 <= temp <= 24;
+          console.log("18도 이상:", warmEnough);
+          console.log("24도 이하:", notTooHot);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const temp = 30;
+          const warmEnough = 18 <= temp;
+          const notTooHot = temp <= 24;
+          console.log("18도 이상:", warmEnough);
+          console.log("24도 이하:", notTooHot);
+  bugDescription: 30도인데 "24도 이하"가 true로 나와요.
+  bugMisconception: js.mc.chained-comparison
+  checks:
+    - kind: console
+      id: output
+      description: 30도일 때 "18도 이상"은 true, "24도 이하"는 false로 출력되어야 합니다.
+      requirement: 온도 조건 출력
+      expect:
+        lines: ["18도 이상: true", "24도 이하: false"]
+    - kind: program
+      id: values
+      description: 온도는 30 그대로이고, warmEnough는 true, notTooHot은 false여야 합니다.
+      requirement: 조건 값
+      expect:
+        globals:
+          temp: { equals: 30 }
+          warmEnough: { equals: true }
+          notTooHot: { equals: false }
+        noError: true
+misconceptions: [js.mc.chained-comparison]
+hints:
+  - "\"24도 이하\"를 계산하는 줄은 몇 번 줄이고, 비교 연산자가 몇 개 있나요?"
+  - "`18 <= temp <= 24`를 왼쪽부터 하나씩 계산해 보세요. `18 <= temp`의 결과는 숫자가 아니에요."
+  - "\"24도 이하\"는 temp와 24만 비교하면 돼요. 18 이상인지는 이미 2번 줄에서 확인했어요."
+explanation: |
+  3번 줄의 `18 <= temp <= 24`가 버그예요. 왼쪽부터 계산하면 다음과 같아요.
+
+  1. `18 <= 30` → `true`
+  1. `true <= 24` → `true`를 1로 바꿔서 `1 <= 24` → `true`
+
+  그래서 30도인데도 `true`가 나왔어요. 수학처럼 이어 쓴 비교는 이렇게 엉뚱한 결과를 내고, 오류도 나지 않아요.
+
+  "24도 이하"는 `const notTooHot = temp <= 24;`로 고쳐요. 두 조건을 하나로 묶는 방법(`&&`)은 다음 단원에서 배워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

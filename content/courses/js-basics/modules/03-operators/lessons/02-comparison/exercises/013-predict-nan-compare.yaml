@@ -1,0 +1,38 @@
+id: js-basics.operators.comparison.predict-nan-compare
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.ops.strict-equality, weight: 1 }
+tags: [strict-equality, nan]
+estimatedSeconds: 90
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const result = "사과" * 2;
+    console.log(result);
+    console.log(result === NaN);
+    console.log(result !== result);
+    console.log(Number.isNaN(result));
+  answerKind: console
+  misconceptionByAnswer:
+    "NaN\ntrue\nfalse\ntrue": js.mc.nan-equals-nan
+misconceptions: [js.mc.nan-equals-nan]
+hints:
+  - "`\"사과\"`는 숫자로 바꿀 수 없어요. 숫자 계산이 실패하면 어떤 값이 나오나요?"
+  - NaN은 어떤 값과도 같지 않아요. 자기 자신과도요.
+  - 자기 자신과 같지 않다면, "자기 자신과 다른가?"(`!==`)의 답은 무엇일까요? NaN인지 정확히 묻는 방법은 마지막 줄이에요.
+explanation: |
+  정답은 차례로 **`NaN`, `false`, `true`, `true`**예요.
+
+  - `"사과" * 2`는 계산이 실패해 `NaN`이 돼요. 오류는 나지 않아요.
+  - `result === NaN`: NaN은 어떤 값과도 같지 않아서 `false`예요. `result`가 NaN인데도요.
+  - `result !== result`: 같은 변수끼리 비교해도 NaN은 자기 자신과 다르다고 나와요. 그래서 `true`예요.
+  - `Number.isNaN(result)`: NaN인지 확인하는 올바른 방법이라 `true`예요.
+
+  3번째 줄을 `true`라고 했다면 NaN끼리는 같다고 생각한 거예요. NaN은 `===`로 확인할 수 없고 `Number.isNaN`을 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

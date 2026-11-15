@@ -1,0 +1,97 @@
+id: js-basics.operators.implicit-coercion.fix-empty-check
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.conv.equality-coercion, weight: 1 }
+  - { id: js.conv.truthy-falsy, weight: 0.5 }
+  - { id: js.ops.strict-equality, weight: 0.3 }
+tags: [loose-equality, coercion, input]
+estimatedSeconds: 300
+prompt: |
+  설문 화면에서 답을 비워 둔 칸을 찾는 프로그램이에요. 칸의 값은 문자열이고, **빈 문자열 `""`일 때만** 비어 있는 거예요.
+
+  "가족 수" 칸에 `0`이라고 답했는데 비어 있다고 나와요. 비어 있는 칸만 `true`가 되도록 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  가족 수 비어 있음: false
+  반려동물 비어 있음: true
+  키 비어 있음: false
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const familyAnswer = "0";
+          const petAnswer = "";
+          const heightAnswer = "170";
+
+          const familyEmpty = familyAnswer == false;
+          const petEmpty = petAnswer == false;
+          const heightEmpty = heightAnswer == false;
+
+          console.log("가족 수 비어 있음:", familyEmpty);
+          console.log("반려동물 비어 있음:", petEmpty);
+          console.log("키 비어 있음:", heightEmpty);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const familyAnswer = "0";
+          const petAnswer = "";
+          const heightAnswer = "170";
+
+          const familyEmpty = familyAnswer === "";
+          const petEmpty = petAnswer === "";
+          const heightEmpty = heightAnswer === "";
+
+          console.log("가족 수 비어 있음:", familyEmpty);
+          console.log("반려동물 비어 있음:", petEmpty);
+          console.log("키 비어 있음:", heightEmpty);
+  bugDescription: '가족 수에 0이라고 답했는데 "가족 수 비어 있음: true"가 나와요.'
+  bugMisconception: js.mc.loose-equality-uses-truthiness
+  checks:
+    - kind: console
+      id: output
+      description: 비어 있는 칸(반려동물)만 true, 나머지는 false로 출력되어야 합니다.
+      requirement: 빈 칸 출력
+      expect:
+        lines:
+          - "가족 수 비어 있음: false"
+          - "반려동물 비어 있음: true"
+          - "키 비어 있음: false"
+    - kind: program
+      id: flags
+      description: familyEmpty와 heightEmpty는 false, petEmpty는 true여야 하고, 답은 바꾸지 않아야 합니다.
+      requirement: 빈 칸 값
+      expect:
+        globals:
+          familyEmpty: { equals: false }
+          petEmpty: { equals: true }
+          heightEmpty: { equals: false }
+          familyAnswer: { equals: "0" }
+        noError: true
+misconceptions: [js.mc.loose-equality-uses-truthiness]
+hints:
+  - '`"0" == false`를 `==`의 규칙대로 한 단계씩 바꿔 보세요. 불리언은 무엇으로, 문자열은 무엇으로 바뀌나요?'
+  - "`== false`는 \"falsy인가?\"를 묻는 식이 아니에요. 그래서 truthy인 `\"0\"`도 `true`가 나왔어요."
+  - 비어 있다는 뜻은 "빈 문자열과 똑같다"예요. 형 변환 없이 그 값과 직접 비교하는 연산자를 쓰세요.
+explanation: |
+  `familyAnswer == false`는 `==`의 규칙에 따라 이렇게 바뀌어요.
+
+  1. 불리언 `false` → 숫자 `0`: `"0" == 0`
+  1. 문자열 `"0"` → 숫자 `0`: `0 == 0` → `true`
+
+  `== false`는 "falsy인가?"가 아니라 "숫자로 바꾸면 0인가?"를 묻는 식이에요. 그래서 truthy인 `"0"`도 비어 있다고 판단됐어요(공백만 있는 `" "`도 마찬가지예요).
+
+  빈 문자열인지 직접 비교하면 돼요.
+
+  ```js
+  const familyEmpty = familyAnswer === "";
+  ```
+
+  세 줄을 모두 같은 방식으로 고쳐요. `!familyAnswer`처럼 falsy로 판단해도 이 문제의 값들에서는 정답이에요. 빈 문자열만 falsy인 문자열이기 때문이에요. 하지만 "무엇과 비교하는지"가 드러나는 `=== ""`가 읽기 쉬워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

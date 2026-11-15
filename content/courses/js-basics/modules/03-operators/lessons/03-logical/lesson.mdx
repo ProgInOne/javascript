@@ -1,0 +1,376 @@
+<Section kind="objectives">
+- `&&`, `||`, `!`로 비교식을 조합해 "그리고", "또는", "아니다" 조건을 만들 수 있어요.
+- `!` → `&&` → `||` 우선순위를 고려해 섞어 쓴 논리식의 결과를 예측할 수 있어요.
+- `&&`와 `||`가 돌려주는 값과, 오른쪽이 실행되지 않는 경우를 예측할 수 있어요.
+- `||`와 `??`의 차이를 알고, `0`이나 빈 문자열을 지켜야 할 때 `??`로 기본값을 정할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+놀이공원의 롤러코스터 입장 규칙이 이렇다고 해 봐요.
+
+- 키가 120cm 이상**이고** 표가 있어야 탈 수 있어요.
+- 어린이는 12세 이하**이거나** 보호자와 함께 온 경우에만 들어갈 수 있어요.
+
+지난 단원에서 배운 비교 연산으로는 `height >= 120`처럼 조건을 **하나씩**만 확인할 수 있어요. 하지만 실제 규칙은 "이고", "이거나", "아니면"으로 여러 조건을 묶어요. 조건이 두 개면 결과를 두 번 출력해서 눈으로 합칠 수도 있겠지만, 프로그램이 스스로 "탈 수 있다/없다"를 하나의 값으로 결정하게 하려면 조건을 **조합하는 연산자**가 필요해요.
+
+이 단원에서는 조건을 조합하는 논리 연산자 `&&`, `||`, `!`와, 값이 비어 있을 때 기본값을 정하는 `??`를 배워요.
+</Section>
+
+<Section kind="principle">
+### 세 가지 논리 연산자
+
+| 연산자 | 읽는 법 | 결과가 참인 경우 |
+|---|---|---|
+| `a && b` | a **그리고** b | 둘 다 참일 때 |
+| `a \|\| b` | a **또는** b | 하나라도 참일 때 (둘 다 참이어도 참) |
+| `!a` | a가 **아니다** | a가 거짓일 때 |
+
+`&&`는 앰퍼샌드(`&`) 두 개, `||`는 세로 막대(`|`, 보통 <Key>Shift</Key>와 <Key>₩</Key>를 함께 눌러요) 두 개예요. 하나만 쓰면 전혀 다른 연산이 되니 꼭 두 개를 붙여 써요.
+
+```js
+const height = 130;
+const hasTicket = true;
+const canRide = height >= 120 && hasTicket;   // true && true → true
+const isNotTall = !(height >= 120);           // !true → false
+```
+
+### 관점 1: 진리표로 보기
+
+`true`와 `false`의 모든 조합을 표로 정리하면 이래요. 이 표를 **진리표**라고 해요.
+
+| `a` | `b` | `a && b` | `a \|\| b` |
+|---|---|---|---|
+| true | true | true | true |
+| true | false | false | true |
+| false | true | false | true |
+| false | false | false | false |
+
+- `&&`는 **하나라도 거짓이면** 거짓이에요. 엄격한 문지기예요.
+- `||`는 **하나라도 참이면** 참이에요. 둘 다 참이어도 참이에요. 일상에서 "커피 또는 차"는 둘 중 하나만 고르라는 뜻일 때가 많지만, `||`는 둘 다여도 괜찮아요.
+- `!true`는 `false`, `!false`는 `true`예요.
+
+### 우선순위: `!` → `&&` → `||`
+
+곱셈이 덧셈보다 먼저인 것처럼, 논리 연산자에도 순서가 있어요.
+
+1. `!`가 가장 먼저예요. 그리고 **바로 뒤의 값 하나**에만 붙어요.
+1. 그다음 `&&`를 계산해요.
+1. 마지막으로 `||`를 계산해요.
+
+비교 연산자(`>=`, `===` 등)는 `&&`, `||`보다 먼저 계산되므로 `age >= 13 && hasTicket`은 괄호 없이도 `(age >= 13) && hasTicket`으로 읽혀요. 하지만 `!`는 비교보다도 먼저라서 `!age >= 19`는 `(!age) >= 19`가 돼요. 비교 전체를 뒤집으려면 `!(age >= 19)`처럼 괄호로 감싸요.
+
+`&&`와 `||`를 섞을 때는 우선순위를 외우기보다 **괄호로 의도를 드러내는 습관**이 좋아요.
+
+```js
+true || false && false     // && 먼저: true || (false && false) → true
+(true || false) && false   // 괄호 먼저: true && false → false
+```
+
+### 관점 2: 값을 고르는 연산자로 보기
+
+지금까지는 `true`/`false`만 넣었지만, `&&`와 `||`에는 어떤 값이든 넣을 수 있어요. 이때 결과는 `true`/`false`가 아니라 **양쪽 값 중 하나 그대로**예요.
+
+그러려면 먼저 "참으로 취급되는 값"과 "거짓으로 취급되는 값"을 알아야 해요. JavaScript는 참·거짓이 필요한 자리에서 다음 값들을 **거짓처럼(falsy)** 취급해요.
+
+`false`, `0`, `""`(빈 문자열), `null`, `undefined`, `NaN`
+
+이 밖의 값은 모두 **참처럼(truthy)** 취급해요. `"0"`이나 `"false"` 같은 글자도 참이에요. 자세한 규칙은 "암묵적 형 변환" 단원에서 다시 배워요. (`null`과 `undefined`는 "비어 있는 값" 단원에서 배운, 값이 없음을 뜻하는 값이에요.)
+
+이제 `&&`와 `||`는 이렇게 동작해요.
+
+| 식 | 왼쪽이 truthy이면 | 왼쪽이 falsy이면 |
+|---|---|---|
+| `a \|\| b` | **a**를 돌려줘요 (오른쪽은 보지 않아요) | **b**를 돌려줘요 |
+| `a && b` | **b**를 돌려줘요 | **a**를 돌려줘요 (오른쪽은 보지 않아요) |
+
+```js
+console.log("사과" || "배");   // 사과  (왼쪽이 truthy → 왼쪽)
+console.log("" || "손님");     // 손님  (왼쪽이 falsy → 오른쪽)
+console.log(0 && "배");        // 0     (왼쪽이 falsy → 왼쪽)
+console.log("사과" && "배");   // 배    (왼쪽이 truthy → 오른쪽)
+```
+
+`true`/`false`만 넣으면 이 규칙이 진리표와 똑같은 결과를 내요. 두 관점은 같은 동작을 다르게 설명할 뿐이에요.
+
+### 단락 평가: 오른쪽을 아예 계산하지 않아요
+
+`false && 무엇`은 무엇이 오든 거짓이고, `true || 무엇`은 무엇이 오든 참이에요. 그래서 JavaScript는 왼쪽만 보고 결과가 정해지면 **오른쪽을 계산하지 않아요.** 이것을 **단락 평가**(short-circuit evaluation)라고 해요. 전기 회로가 짧게 끊겨 뒤쪽으로 전류가 흐르지 않는 것과 비슷해요.
+
+```js
+false && console.log("A");   // 아무것도 출력되지 않아요
+true || console.log("B");    // 아무것도 출력되지 않아요
+true && console.log("C");    // C
+```
+
+### ??: null과 undefined일 때만 기본값
+
+`||`는 기본값을 정할 때 자주 써요. `nickname || "손님"`은 별명이 비어 있으면 `"손님"`이 돼요. 그런데 `||`는 `0`과 `""`도 falsy로 보고 바꿔 버려요. 음량을 일부러 `0`으로 저장했는데 `savedVolume || 50`을 쓰면 `50`이 되는 거예요.
+
+**null 병합 연산자** `??`는 왼쪽이 **`null`이나 `undefined`일 때만** 오른쪽을 골라요.
+
+<CompareTable columns={["a || 기본값", "a ?? 기본값"]}>
+<Row label="a가 null, undefined">기본값 | 기본값</Row>
+<Row label='a가 0, "", false'>기본값 | a 그대로</Row>
+<Row label="a가 그 밖의 값">a 그대로 | a 그대로</Row>
+<Row label="이럴 때 써요">빈 값도 "없음"으로 보고 싶을 때 | 0이나 빈 문자열도 올바른 값일 때</Row>
+</CompareTable>
+
+`??`도 단락 평가를 해서, 왼쪽이 `null`·`undefined`가 아니면 오른쪽을 계산하지 않아요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 롤러코스터 규칙을 코드로 옮겼어요. 각 줄의 출력을 예측해 보세요.
+
+<RunnableExample id="ride-rules" lang="js" predict predictKind="console" concepts={["js.ops.logical-and-or-not"]}>
+```js
+const height = 115;
+const hasTicket = true;
+const age = 10;
+const withParent = false;
+console.log(height >= 120 && hasTicket);
+console.log(age <= 12 || withParent);
+console.log(!hasTicket);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+false
+true
+false
+```
+
+- 5번 줄: `height >= 120`은 `115 >= 120`이라 `false`예요. `&&`는 하나라도 거짓이면 거짓이라 결과는 `false`예요. 표가 있어도 키가 모자라면 탈 수 없어요.
+- 6번 줄: `age <= 12`가 `true`예요. `||`는 하나라도 참이면 참이라, 보호자가 없어도 `true`예요.
+- 7번 줄: `hasTicket`이 `true`이므로 `!hasTicket`은 `false`예요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 `&&`와 `||`를 섞어요. 괄호가 있는 줄과 없는 줄의 결과가 같을지 예측해 보세요.
+
+<RunnableExample id="and-or-precedence" lang="js" predict predictKind="console" concepts={["js.ops.logical-and-or-not"]}>
+```js
+const isVip = true;
+const hasCoupon = false;
+const isWeekend = false;
+console.log(isVip || hasCoupon && isWeekend);
+console.log((isVip || hasCoupon) && isWeekend);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+true
+false
+```
+
+| 줄 | 계산 순서 | 결과 |
+|---|---|---|
+| 4번 | `&&` 먼저: `hasCoupon && isWeekend` → `false`, 그다음 `isVip \|\| false` → `true` | true |
+| 5번 | 괄호 먼저: `isVip \|\| hasCoupon` → `true`, 그다음 `true && isWeekend` → `false` | false |
+
+괄호가 없으면 `&&`가 먼저 묶여요. 4번 줄을 왼쪽부터 읽어 `false`라고 예측했다면 우선순위를 다시 확인해 보세요. 의도가 "VIP이거나 쿠폰이 있고, 주말이어야 한다"라면 5번 줄처럼 괄호가 꼭 필요해요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `true`/`false`가 아닌 값을 넣어요. 결과가 `true`/`false`일지, 아니면 다른 값일지 예측해 보세요.
+
+<RunnableExample id="logical-values" lang="js" predict predictKind="console" concepts={["js.ops.short-circuit"]}>
+```js
+const nickname = "";
+const realName = "김하늘";
+const stock = 0;
+console.log(nickname || realName);
+console.log(realName || "손님");
+console.log(stock && "재고 있음");
+console.log(realName && "실명 있음");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+김하늘
+김하늘
+0
+실명 있음
+```
+
+| 줄 | 왼쪽 값 | truthy? | 돌려주는 값 |
+|---|---|---|---|
+| `nickname \|\| realName` | `""` | 아니요 | 오른쪽 `"김하늘"` |
+| `realName \|\| "손님"` | `"김하늘"` | 예 | 왼쪽 `"김하늘"` |
+| `stock && "재고 있음"` | `0` | 아니요 | 왼쪽 `0` |
+| `realName && "실명 있음"` | `"김하늘"` | 예 | 오른쪽 `"실명 있음"` |
+
+어느 줄도 `true`나 `false`를 출력하지 않아요. `||`와 `&&`는 **양쪽 값 중 하나를 그대로 골라** 돌려줘요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 오른쪽에 `console.log`를 넣어서, 오른쪽이 실행되는지 직접 확인해요. 어떤 글자가 출력될까요?
+
+<RunnableExample id="short-circuit-log" lang="js" predict predictKind="console" concepts={["js.ops.short-circuit"]}>
+```js
+const isLoggedIn = false;
+isLoggedIn && console.log("환영해요!");
+isLoggedIn || console.log("로그인해 주세요.");
+console.log("끝");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+로그인해 주세요.
+끝
+```
+
+- 2번 줄: 왼쪽 `isLoggedIn`이 `false`라 `&&`의 결과는 이미 정해졌어요. 오른쪽의 `console.log("환영해요!")`는 **실행되지 않아요.**
+- 3번 줄: 왼쪽이 `false`라 `||`는 오른쪽을 봐야 해요. 그래서 `console.log("로그인해 주세요.")`가 실행돼요.
+
+이 예제는 단락 평가를 눈으로 보려고 일부러 이렇게 썼어요. "조건이 맞을 때만 실행하기"는 보통 다음 모듈에서 배울 `if`로 써요. 하지만 오른쪽에 계산이 들어 있을 때 "실행될 수도, 안 될 수도 있다"는 점은 꼭 기억해 두세요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 `||`와 `??`로 기본값을 정해요. 음량을 일부러 0으로 저장해 둔 상황이에요.
+
+<RunnableExample id="nullish-vs-or" lang="js" predict predictKind="console" concepts={["js.ops.nullish"]}>
+```js
+const savedVolume = 0;
+const savedTheme = null;
+console.log(savedVolume || 50);
+console.log(savedVolume ?? 50);
+console.log(savedTheme ?? "light");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+50
+0
+light
+```
+
+- 3번 줄: `0`은 falsy라서 `||`가 기본값 `50`을 골랐어요. 사용자가 고른 음량 0이 사라졌어요.
+- 4번 줄: `0`은 `null`도 `undefined`도 아니라서 `??`는 `0`을 그대로 둬요.
+- 5번 줄: `savedTheme`가 `null`이라 `??`가 기본값 `"light"`를 골랐어요.
+
+0, 빈 문자열, `false`도 의미 있는 값이라면 `??`를 써요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.or-is-exclusive">
+<Wrong>`||`는 "둘 중 하나만"이라서 `true || true`는 `false`다.</Wrong>
+<Actual>`true || true`는 `true`예요.</Actual>
+<Right>`||`는 **하나 이상** 참이면 참이에요. 일상어의 "또는"과 달리 둘 다 참이어도 괜찮아요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.and-or-same-precedence">
+<Wrong>`true || false && false`는 왼쪽부터 `(true || false) && false`로 계산해서 `false`다.</Wrong>
+<Actual>`&&`가 먼저 계산되어 `true || (false && false)`, 즉 `true`예요.</Actual>
+<Right>우선순위는 `!` → `&&` → `||`예요. 섞어 쓸 때는 읽는 사람이 헷갈리지 않게 괄호를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.not-applies-to-whole">
+<Wrong>`!age >= 19`는 "19세 이상이 아니다"라는 뜻이다.</Wrong>
+<Actual>`!`가 `age`에 먼저 붙어 `(!age) >= 19`가 돼요. `age`가 15면 `!15`는 `false`, `false >= 19`는 `false`예요. 미성년자인데도 `false`가 나와요.</Actual>
+<Right>식 전체를 뒤집으려면 `!(age >= 19)`처럼 괄호로 감싸요. 더 간단하게 `age < 19`라고 쓸 수도 있어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.logical-returns-boolean">
+<Wrong>`"사과" || "배"`의 결과는 `true`다. 논리 연산자의 결과는 항상 `true`나 `false`다.</Wrong>
+<Actual>결과는 `"사과"`예요. `0 && "배"`의 결과도 `false`가 아니라 `0`이에요.</Actual>
+<Right>`&&`와 `||`는 양쪽 값 중 하나를 **그대로** 돌려줘요. `true`/`false`가 나오는 건 양쪽에 `true`/`false`를 넣었을 때뿐이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.right-side-always-runs">
+<Wrong>`false && console.log("실행")`에서도 오른쪽의 `console.log`는 실행된다.</Wrong>
+<Actual>아무것도 출력되지 않아요. 왼쪽이 `false`라 결과가 이미 정해졌기 때문이에요.</Actual>
+<Right>`&&`는 왼쪽이 falsy이면, `||`는 왼쪽이 truthy이면 오른쪽을 **계산하지 않아요.** 오른쪽에 꼭 실행해야 하는 코드를 넣으면 안 돼요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.or-default-keeps-zero">
+<Wrong>`let count = 0;`일 때 `count || 10`은 `count`가 있으니 `0`이다.</Wrong>
+<Actual>`0`은 falsy라서 `count || 10`은 `10`이에요. 빈 문자열 `""`도 마찬가지로 기본값으로 바뀌어요.</Actual>
+<Right>`0`이나 `""`도 올바른 값이라면 `||` 대신 `count ?? 10`을 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.nullish-same-as-or">
+<Wrong>`??`와 `||`는 같은 연산자라서 `0 ?? 10`도 `10`이다.</Wrong>
+<Actual>`0 ?? 10`은 `0`, `0 || 10`은 `10`이에요.</Actual>
+<Right>`??`는 왼쪽이 `null`이나 `undefined`일 때만 오른쪽을 골라요. `||`는 falsy 값 전부에 대해 오른쪽을 골라요.</Right>
+</Pitfall>
+
+`??`를 `||`나 `&&`와 괄호 없이 섞어 쓰면 실행 전에 `SyntaxError`가 나요. 어느 쪽을 먼저 계산할지 헷갈리기 쉬워서 JavaScript가 아예 막아 둔 거예요.
+
+```js
+const name = savedName ?? "익명" || "손님";
+// SyntaxError: Unexpected token '||'
+```
+
+정말 섞어야 한다면 `(savedName ?? "익명") || "손님"`처럼 괄호로 순서를 정해요. 보통은 둘 중 하나만 쓰면 충분해요.
+</Section>
+
+<Section kind="in-practice">
+회원 가입 화면이나 설정 화면의 코드에는 논리 연산자가 아주 많이 나와요.
+
+```js
+const age = 17;
+const agreedToTerms = true;
+const hasParentConsent = true;
+const savedFontSize = 0;        // 사용자가 고른 값이 없으면 null
+const nickname = "";
+
+// 약관에 동의했고, 성인이거나 보호자 동의가 있어야 가입할 수 있어요
+const canSignUp = agreedToTerms && (age >= 19 || hasParentConsent);
+
+// 별명을 비워 두면 "손님"으로 보여요 (빈 문자열도 "없음"으로 봄 → ||)
+const displayName = nickname || "손님";
+
+// 글자 크기는 저장한 값이 없을 때만 16 (0도 저장한 값으로 봄 → ??)
+const fontSize = savedFontSize ?? 16;
+
+console.log(canSignUp, displayName, fontSize);
+```
+
+- 조건이 셋 이상이면 `agreedToTerms && (age >= 19 || hasParentConsent)`처럼 괄호로 묶어 규칙을 그대로 옮겨요.
+- 기본값을 정할 때는 "빈 문자열이나 0도 없는 것으로 볼까?"를 먼저 생각해서 `||`와 `??` 중 하나를 골라요. 실무에서는 숫자 설정값에 `??`를 쓰는 경우가 많아요.
+</Section>
+
+<Section kind="check">
+`&&`의 뜻을 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.logical.mcq-and-meaning" />
+
+`||`가 무엇을 돌려주는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.logical.mcq-or-returns-value" />
+
+`||`로 기본값을 정할 때의 함정을 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.logical.mcq-count-or-default" />
+
+마지막으로 `??`를 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.logical.mcq-nullish-volume" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `&&`는 둘 다 참일 때, `||`는 하나라도 참일 때 참이에요. `!`는 참과 거짓을 뒤집어요.
+- 우선순위는 `!` → `&&` → `||`예요. `!`는 바로 뒤의 값 하나에 붙으니, 비교 전체를 뒤집을 때는 괄호로 감싸요.
+- `false`, `0`, `""`, `null`, `undefined`, `NaN`은 falsy, 나머지는 truthy예요.
+- `&&`와 `||`는 `true`/`false`가 아니라 양쪽 값 중 하나를 그대로 돌려줘요.
+- 왼쪽만으로 결과가 정해지면 오른쪽은 계산하지 않아요(단락 평가).
+- `a ?? b`는 `a`가 `null`이나 `undefined`일 때만 `b`예요. `0`이나 `""`를 지켜야 하는 기본값에는 `??`를 써요.
+</Section>
+
+<Section kind="next">
+다음 단원 "명시적 형 변환"에서는 `Number`, `String`, `Boolean`으로 값의 자료형을 직접 바꿔요. 이 단원에서 맛본 truthy·falsy는 "암묵적 형 변환" 단원에서 자세히 정리하고, 모듈 4 "조건문"에서는 여기서 만든 조건식을 `if`에 넣어 실행할 코드를 고르게 돼요. <MdnLink path="Web/JavaScript/Reference/Operators/Logical_AND" />
+</Section>

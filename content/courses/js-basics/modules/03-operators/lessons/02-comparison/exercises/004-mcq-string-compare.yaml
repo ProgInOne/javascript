@@ -1,0 +1,43 @@
+id: js-basics.operators.comparison.mcq-string-compare
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.ops.relational, weight: 1 }
+tags: [relational, string]
+estimatedSeconds: 45
+prompt: |
+  다음 코드를 실행하면 콘솔에 무엇이 출력되나요?
+code: |
+  console.log("10" < "9");
+spec:
+  options:
+    - id: a
+      text: "`true`"
+    - id: b
+      text: "`false`"
+      misconception: js.mc.string-compare-numeric
+      rationale: 두 값이 모두 문자열이라 수의 크기가 아니라 사전 순서로 비교해요.
+    - id: c
+      text: "`NaN`"
+      rationale: 비교식의 결과는 항상 true나 false예요. NaN은 숫자 계산이 실패했을 때 나오는 값이에요.
+    - id: d
+      text: 문자열은 크기를 비교할 수 없어서 오류가 난다
+      rationale: 문자열도 크기(순서)를 비교할 수 있어요. 사전 순서를 써요.
+  correct: a
+misconceptions: [js.mc.string-compare-numeric]
+hints:
+  - 두 값 모두 따옴표가 있어요. 자료형이 무엇인가요?
+  - 문자열끼리는 사전에서 단어를 찾듯이 첫 글자부터 비교해요.
+  - 첫 글자 `"1"`과 `"9"` 중 사전에서 앞에 오는 것은 어느 쪽일까요?
+explanation: |
+  정답은 **`true`**예요.
+
+  두 값이 모두 문자열이라 사전 순서로 비교해요. 첫 글자 `"1"`과 `"9"`를 비교하면 `"1"`이 앞이라서, 나머지 글자는 보지 않고 `"10"`이 더 작다고 판단해요.
+
+  - `false`를 고른 경우: 숫자 10과 9로 생각했어요. 따옴표로 감싸면 문자열이라 수의 크기로 비교하지 않아요. 수로 비교하려면 숫자로 저장해야 해요.
+  - `NaN`을 고른 경우: 비교 연산의 결과는 `true`나 `false`예요.
+  - 오류를 고른 경우: 문자열도 사전 순서로 비교할 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

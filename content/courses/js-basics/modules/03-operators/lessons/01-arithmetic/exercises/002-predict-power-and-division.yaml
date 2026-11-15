@@ -1,0 +1,42 @@
+id: js-basics.operators.arithmetic.predict-power-and-division
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.ops.arithmetic, weight: 1 }
+tags: [arithmetic, power, division]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    console.log(10 / 4);
+    console.log(3 ** 2);
+    console.log(3 ^ 2);
+  answerKind: console
+  misconceptionByAnswer:
+    "2\n9\n1": js.mc.division-truncates
+    "2.5\n9\n9": js.mc.caret-is-power
+    "2\n9\n9": js.mc.caret-is-power
+hints:
+  - 세 줄의 연산자 `/`, `**`, `^`가 각각 무엇을 하는지 떠올려 보세요.
+  - "`/`는 소수까지 계산하고, `**`는 거듭제곱이에요."
+  - "`^`는 거듭제곱이 아니에요. 오류 없이 엉뚱한 숫자가 나와요. 3은 이진수로 11, 2는 10인데, 두 수에서 한쪽만 1인 자리만 남기는 연산이에요."
+explanation: |
+  정답은 다음과 같아요.
+
+  ```text
+  2.5
+  9
+  1
+  ```
+
+  - `10 / 4`: `/`는 소수까지 계산해서 `2.5`예요. 몫 2가 아니에요.
+  - `3 ** 2`: 3의 2제곱이라 `9`예요.
+  - `3 ^ 2`: `^`는 거듭제곱이 아니라 비트 연산(XOR)이에요. 결과는 `1`이에요. 이 연산은 이 과정에서 쓰지 않으니 "`^`는 거듭제곱이 아니다"만 기억하면 돼요.
+
+  세 번째 줄을 `9`라고 답했다면 계산기나 문서의 `3^2` 표기를 떠올린 거예요. JavaScript에서 거듭제곱은 꼭 `**`로 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

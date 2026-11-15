@@ -1,0 +1,47 @@
+id: js-basics.operators.comparison.multi-loose-true
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.ops.loose-equality, weight: 1 }
+tags: [loose-equality]
+estimatedSeconds: 75
+prompt: |
+  다음 식 중 결과가 `true`인 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`\"5\" == 5`"
+      missedMisconception: js.mc.loose-equals-like-strict
+    - id: b
+      text: "`null == undefined`"
+    - id: c
+      text: "`\"5\" === 5`"
+      misconception: js.mc.strict-equality-ignores-type
+      rationale: ===는 자료형을 바꾸지 않아요. 문자열과 숫자라 false예요.
+    - id: d
+      text: "`null === undefined`"
+      rationale: null과 undefined는 서로 다른 값이에요. ===는 둘을 같게 보지 않아요.
+    - id: e
+      text: "`1 != \"1\"`"
+      misconception: js.mc.loose-equals-like-strict
+      rationale: "!=는 ==의 반대예요. ==로는 1과 \"1\"이 같으니 !=는 false예요."
+  correct: [a, b]
+misconceptions: [js.mc.loose-equals-like-strict]
+hints:
+  - "`==`·`!=`와 `===`·`!==`를 나눠서 생각해 보세요. 자료형을 바꿔 주는 쪽은 어느 것인가요?"
+  - "`==`는 `\"5\"`를 숫자로 바꿔서 비교하고, `null`과 `undefined`는 둘 다 \"비어 있음\"이라 같게 봐요."
+  - "`!=`는 `==`의 결과를 뒤집은 거예요. 먼저 `1 == \"1\"`의 결과를 구해 보세요."
+explanation: |
+  정답은 **`"5" == 5`, `null == undefined`**예요.
+
+  - `"5" == 5`: `==`는 문자열 `"5"`를 숫자로 바꿔서 비교하므로 `true`.
+  - `null == undefined`: `==`는 둘을 같은 "비어 있음"으로 봐서 `true`.
+  - `"5" === 5`: `===`는 자료형이 달라서 `false`.
+  - `null === undefined`: 서로 다른 값이라 `false`.
+  - `1 != "1"`: `1 == "1"`이 `true`이므로, 반대인 `!=`는 `false`.
+
+  `==`와 `!=`는 자료형을 바꿔 가며 비교해서 `===`와 결과가 달라질 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

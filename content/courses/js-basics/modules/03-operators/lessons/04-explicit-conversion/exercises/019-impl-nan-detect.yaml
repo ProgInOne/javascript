@@ -1,0 +1,78 @@
+id: js-basics.operators.explicit-conversion.impl-nan-detect
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.conv.nan, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.5 }
+tags: [nan, number-isnan, write-code]
+estimatedSeconds: 210
+prompt: |
+  수량 칸에 숫자 대신 `세 개`라는 글자가 입력됐어요. 다음 프로그램을 작성하세요.
+
+  1. `quantityText`를 `Number`로 바꿔 `quantity`에 넣어요.
+  1. `quantity`가 변환에 실패한 값인지를 `isInvalid`에 참·거짓으로 넣어요.
+  1. 아래처럼 `quantity`, `quantity`의 자료형(`typeof`), `isInvalid`를 차례로 출력해요.
+
+  ```text
+  NaN
+  number
+  true
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const quantityText = "세 개";
+          // 여기에 작성하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const quantityText = "세 개";
+          const quantity = Number(quantityText);
+          const isInvalid = Number.isNaN(quantity);
+          console.log(quantity);
+          console.log(typeof quantity);
+          console.log(isInvalid);
+  checks:
+    - kind: console
+      id: output
+      description: NaN, number, true가 한 줄씩 출력되어야 합니다.
+      requirement: 출력
+      expect:
+        lines: ["NaN", "number", "true"]
+      misconceptionIfFail: js.mc.nan-type-not-number
+    - kind: program
+      id: values
+      description: quantity에는 NaN, isInvalid에는 불리언 true가 들어 있어야 합니다.
+      requirement: 변수 값
+      expect:
+        globals:
+          quantity: { equalsLiteral: "NaN" }
+          isInvalid: { equals: true }
+        noError: true
+      misconceptionIfFail: js.mc.nan-equals-nan
+misconceptions: [js.mc.nan-type-not-number, js.mc.nan-equals-nan]
+hints:
+  - "`Number(\"세 개\")`는 오류를 낼까요, 아니면 특별한 값을 돌려줄까요?"
+  - "`typeof NaN`은 \"NaN\"이 아니에요. NaN은 어떤 자료형의 값이었나요? 그리고 NaN인지는 ===로 확인할 수 없어요."
+  - 변환 결과를 Number.isNaN에 넣으면 실패 여부가 true/false로 나와요. console.log를 세 번 써서 차례로 출력하세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const quantity = Number(quantityText);
+  const isInvalid = Number.isNaN(quantity);
+  console.log(quantity);
+  console.log(typeof quantity);
+  console.log(isInvalid);
+  ```
+
+  - `Number("세 개")`는 오류를 내지 않고 `NaN`을 돌려줘요.
+  - `NaN`은 숫자 자료형의 특별한 값이라 `typeof quantity`는 `number`예요.
+  - `quantity === NaN`은 항상 `false`라서 `isInvalid`가 틀린 값이 돼요. `Number.isNaN(quantity)`를 써야 `true`가 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

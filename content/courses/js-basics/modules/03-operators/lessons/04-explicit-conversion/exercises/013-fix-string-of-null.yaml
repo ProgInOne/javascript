@@ -1,0 +1,69 @@
+id: js-basics.operators.explicit-conversion.fix-string-of-null
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.conv.to-string, weight: 1 }
+  - { id: js.ops.nullish, weight: 0.5 }
+tags: [string, null-value, nullish, debugging]
+estimatedSeconds: 150
+prompt: |
+  배달 앱의 주문 확인 화면에 보여 줄 글자를 만드는 프로그램이에요. 요청 메모(`memo`)가 없으면 메모 글자는 빈 문자열이어야 하는데, 화면에 `null`이라는 글자가 찍혀요. `memo` 값(`null`)은 그대로 두고, `memoText`를 만드는 줄을 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  주문 번호: 1024
+  요청 메모:
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const orderNumber = 1024;
+          const memo = null;
+          const orderText = String(orderNumber);
+          const memoText = String(memo);
+          console.log("주문 번호:", orderText);
+          console.log("요청 메모:", memoText);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const orderNumber = 1024;
+          const memo = null;
+          const orderText = String(orderNumber);
+          const memoText = String(memo ?? "");
+          console.log("주문 번호:", orderText);
+          console.log("요청 메모:", memoText);
+  bugDescription: '메모가 없는데 "요청 메모: null"이 출력돼요.'
+  bugMisconception: js.mc.string-of-null-empty
+  maxEditDistance: 4
+  checks:
+    - kind: console
+      id: output
+      description: 주문 번호와 빈 요청 메모가 차례로 출력되어야 합니다.
+      expect:
+        lines: ["주문 번호: 1024", "요청 메모:"]
+    - kind: program
+      id: texts
+      description: orderText는 문자열 "1024", memoText는 빈 문자열이어야 하고, memo는 null 그대로여야 합니다.
+      expect:
+        globals:
+          orderText: { equals: "1024" }
+          memoText: { equals: "" }
+          memo: { equals: null }
+        noError: true
+misconceptions: [js.mc.string-of-null-empty]
+hints:
+  - "`String(null)`의 결과는 빈 문자열일까요, 아니면 다른 글자일까요?"
+  - String은 null을 보이는 그대로 글자 "null"로 바꿔요. 그러니 String에 넘기기 전에 null을 다른 값으로 바꿔야 해요.
+  - 논리 연산 단원에서 배운, 왼쪽이 null이나 undefined일 때만 오른쪽 값을 고르는 연산자를 떠올려 보세요.
+explanation: |
+  4번 줄을 `const memoText = String(memo ?? "");`로 고쳐요.
+
+  `String(null)`은 빈 문자열이 아니라 `"null"`이라는 글자예요. 그래서 먼저 `memo ?? ""`로 "null이면 빈 문자열"이라는 기본값을 정한 뒤 String으로 바꿔요. `memo`에 메모가 들어 있으면 그 메모가 그대로 쓰여요.
+
+  `memo || ""`도 이 문제에서는 같은 결과지만, 메모로 `0` 같은 값이 들어올 수 있다면 `??`가 더 안전해요. `String(orderNumber)`는 `"1024"`가 되어 그대로 두면 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

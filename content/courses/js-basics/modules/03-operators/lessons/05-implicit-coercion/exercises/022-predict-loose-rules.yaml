@@ -1,0 +1,55 @@
+id: js-basics.operators.implicit-coercion.predict-loose-rules
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.conv.equality-coercion, weight: 1 }
+  - { id: js.conv.truthy-falsy, weight: 0.3 }
+  - { id: js.ops.loose-equality, weight: 0.3 }
+tags: [loose-equality, coercion, "null"]
+estimatedSeconds: 120
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 비교 결과가 하나씩 출력돼요.
+spec:
+  lang: js
+  code: |
+    console.log(" " == 0);
+    console.log("1" == true);
+    console.log("2" == true);
+    console.log(null == false);
+    console.log(undefined == null);
+  answerKind: console
+  misconceptionByAnswer:
+    "false\ntrue\ntrue\nfalse\ntrue": js.mc.loose-equality-uses-truthiness
+    "true\ntrue\nfalse\ntrue\ntrue": js.mc.null-loose-equals-zero
+    "false\ntrue\ntrue\ntrue\ntrue": js.mc.loose-equality-uses-truthiness
+misconceptions: [js.mc.loose-equality-uses-truthiness, js.mc.null-loose-equals-zero]
+hints:
+  - 줄마다 "누구를 무엇으로 바꾸는지" 적어 보세요. `==`는 truthy·falsy로 판단하지 않아요.
+  - 불리언은 숫자(true → 1)로, 문자열은 숫자로 바꿔요. 공백만 있는 문자열은 숫자로 바꾸면 0이에요.
+  - "`null`은 숫자로 바뀌지 않고, 오직 `undefined`와만 같아요."
+explanation: |
+  정답은 다음 다섯 줄이에요.
+
+  ```text
+  true
+  true
+  false
+  false
+  true
+  ```
+
+  | 비교 | 바꾸는 과정 | 결과 |
+  |---|---|---|
+  | `" " == 0` | 공백 문자열 → 숫자 0 → `0 == 0` | `true` |
+  | `"1" == true` | `true` → 1, `"1"` → 1 → `1 == 1` | `true` |
+  | `"2" == true` | `true` → 1, `"2"` → 2 → `2 == 1` | `false` |
+  | `null == false` | `null`은 `undefined`와만 같아요 | `false` |
+  | `undefined == null` | 서로만 같은 특별 규칙 | `true` |
+
+  - `"2" == true`를 `true`라고 했다면 `"2"`가 truthy이니 `true`와 같다고 본 거예요. `==`는 truthy·falsy가 아니라 숫자로 바꿔 비교해서 2와 1을 비교해요.
+  - `" " == 0`을 `false`라고 했다면 공백을 글자로만 본 거예요. 숫자로 바꾸면 공백은 무시되어 0이 돼요. (truthy·falsy로는 `" "`가 truthy라는 점과 비교해 보세요.)
+  - `null == false`를 `true`라고 했다면 falsy끼리 같다고 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

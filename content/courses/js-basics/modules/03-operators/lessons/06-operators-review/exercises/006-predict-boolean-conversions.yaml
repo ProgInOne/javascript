@@ -1,0 +1,44 @@
+id: js-basics.operators.operators-review.predict-boolean-conversions
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.conv.to-boolean, weight: 1 }
+  - { id: js.ops.logical-and-or-not, weight: 0.3 }
+tags: [to-boolean, review]
+estimatedSeconds: 70
+usage: assessment
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요?
+spec:
+  lang: js
+  code: |
+    console.log(Boolean("false"), Boolean(""));
+    console.log(!!"0", !!0);
+  answerKind: console
+  misconceptionByAnswer:
+    "false false\nfalse false": js.mc.boolean-reads-string-content
+    "false false\ntrue false": js.mc.boolean-reads-string-content
+    "true false\nfalse false": js.mc.string-zero-falsy
+misconceptions: [js.mc.boolean-reads-string-content, js.mc.string-zero-falsy]
+hints:
+  - Boolean은 글자의 **뜻**을 읽을까요, 글자가 **있는지**만 볼까요?
+  - "문자열 중에서 false가 되는 것은 글자가 하나도 없는 `\"\"` 하나뿐이에요. `!!값`은 `Boolean(값)`과 같아요."
+  - '`"false"`와 `"0"`은 글자가 있는 문자열이고, `0`은 숫자예요.'
+explanation: |
+  정답은 아래 두 줄이에요.
+
+  ```text
+  true false
+  true false
+  ```
+
+  - `Boolean("false")`: 글자 `false`가 들어 있는 **문자열**이에요. Boolean은 글자의 뜻을 읽지 않으므로 `true`예요.
+  - `Boolean("")`: 글자가 하나도 없는 빈 문자열이라 `false`예요.
+  - `!!"0"`: `!`를 두 번 쓰면 `Boolean(값)`과 같아요. `"0"`은 글자가 있는 문자열이라 `true`예요.
+  - `!!0`: 숫자 `0`은 false로 취급되는 값이라 `false`예요.
+
+  숫자 `0`과 문자열 `"0"`을 구별하는 것이 핵심이에요. 입력창에서 읽은 값은 문자열이라, `"0"`을 입력해도 true가 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

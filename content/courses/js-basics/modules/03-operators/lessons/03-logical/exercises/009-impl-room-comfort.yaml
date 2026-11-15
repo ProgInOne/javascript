@@ -1,0 +1,80 @@
+id: js-basics.operators.logical.impl-room-comfort
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.ops.logical-and-or-not, weight: 1 }
+  - { id: js.ops.relational, weight: 0.5 }
+tags: [logical-and, logical-not, range, write-code]
+estimatedSeconds: 240
+prompt: |
+  실내 환경을 확인하는 프로그램을 작성하세요.
+
+  - 온도(`temperature`)가 18 이상 26 이하**이고** 습도(`humidity`)가 60 이하이면 쾌적해요. 이 판정을 `isComfortable`에 넣으세요.
+  - 쾌적하지 **않으면** 조치가 필요해요. 이 판정을 `needsAction`에 넣으세요.
+  - 두 값을 아래처럼 출력하세요.
+
+  지금 값(29도, 습도 55)으로 실행하면 이렇게 나와야 해요.
+
+  ```text
+  쾌적해요? false
+  조치 필요? true
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const temperature = 29;
+          const humidity = 55;
+
+          // 여기에 isComfortable과 needsAction을 만들고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const temperature = 29;
+          const humidity = 55;
+
+          const isComfortable = temperature >= 18 && temperature <= 26 && humidity <= 60;
+          const needsAction = !isComfortable;
+          console.log("쾌적해요?", isComfortable);
+          console.log("조치 필요?", needsAction);
+  checks:
+    - kind: console
+      id: output
+      description: 쾌적 여부와 조치 필요 여부가 차례로 출력되어야 합니다.
+      requirement: 출력
+      expect:
+        lines: ["쾌적해요? false", "조치 필요? true"]
+    - kind: program
+      id: values
+      description: 29도는 범위를 벗어나므로 isComfortable은 false, needsAction은 true여야 합니다.
+      requirement: 범위 판정
+      expect:
+        globals:
+          isComfortable: { equals: false }
+          needsAction: { equals: true }
+        noError: true
+      misconceptionIfFail: js.mc.chained-comparison
+misconceptions: [js.mc.chained-comparison]
+hints:
+  - "\"18 이상 26 이하\"는 비교 두 개(`>= 18`, `<= 26`)가 모두 맞아야 한다는 뜻이에요."
+  - "`18 <= temperature <= 26`처럼 수학식으로 이어 쓰면 왼쪽부터 계산되어 엉뚱한 값이 나와요. 비교는 하나씩 쓰고 연산자로 이어야 해요."
+  - 쾌적 조건은 비교 세 개를 모두 만족해야 하고, `needsAction`은 `isComfortable`을 뒤집으면 돼요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const isComfortable = temperature >= 18 && temperature <= 26 && humidity <= 60;
+  const needsAction = !isComfortable;
+  ```
+
+  - "18 이상 26 이하"는 `temperature >= 18 && temperature <= 26`처럼 비교 두 개를 `&&`로 이어요. 습도 조건까지 `&&`로 붙이면 세 조건이 모두 맞아야 `true`예요.
+  - 29도는 `temperature <= 26`이 `false`라서 전체가 `false`예요.
+  - `needsAction`은 쾌적하지 않음, 즉 `!isComfortable`이에요.
+
+  `18 <= temperature <= 26`이라고 쓰면 오류는 나지 않지만, `18 <= 29`가 `true`가 된 뒤 `true <= 26`(1 <= 26)을 계산해서 29도에도 `true`가 나와요. 범위는 꼭 `&&`로 나눠 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

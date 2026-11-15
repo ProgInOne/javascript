@@ -1,0 +1,79 @@
+id: js-basics.operators.implicit-coercion.impl-next-level
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.conv.plus-concat, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.5 }
+tags: [plus, concat, write-code]
+estimatedSeconds: 240
+prompt: |
+  게임 저장 파일에서 읽은 레벨(`levelText`)과 경험치(`expText`)는 문자열이에요. 시작 코드 아래에 다음 변수를 만들고 출력하세요.
+
+  1. `nextLevel`: 지금 레벨보다 1 큰 레벨(숫자)
+  1. `needExp`: 다음 레벨까지 남은 경험치(숫자). 다음 레벨이 되려면 경험치가 `nextLevel * 100` 필요해요.
+  1. `message`: `"레벨 10까지 경험치 250 남았어요"` 형태의 문자열
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  레벨 10까지 경험치 250 남았어요
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const levelText = "9";
+          const expText = "750";
+
+          // nextLevel, needExp, message를 만들고 message를 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const levelText = "9";
+          const expText = "750";
+
+          const nextLevel = Number(levelText) + 1;
+          const needExp = nextLevel * 100 - Number(expText);
+          const message = "레벨 " + nextLevel + "까지 경험치 " + needExp + " 남았어요";
+          console.log(message);
+  checks:
+    - kind: console
+      id: output
+      description: 다음 레벨과 남은 경험치가 들어간 문장이 출력되어야 합니다.
+      requirement: 문장 출력
+      expect:
+        lines: ["레벨 10까지 경험치 250 남았어요"]
+      misconceptionIfFail: js.mc.plus-string-adds
+    - kind: program
+      id: values
+      description: nextLevel은 숫자 10, needExp는 숫자 250, message는 출력한 문장과 같은 문자열이어야 합니다.
+      requirement: 계산한 값
+      expect:
+        globals:
+          nextLevel: { equals: 10 }
+          needExp: { equals: 250 }
+          message: { equals: "레벨 10까지 경험치 250 남았어요" }
+        noError: true
+misconceptions: [js.mc.plus-string-adds]
+hints:
+  - "`levelText + 1`을 계산하면 무엇이 될지 먼저 생각해 보세요."
+  - 계산에 쓰기 전에 문자열을 숫자로 바꿔야 해요. `-`와 `*`는 알아서 숫자로 바꾸지만, `+`는 그렇지 않아요.
+  - "`message`는 글자와 계산이 끝난 변수를 `+`로 이어 붙여 만들어요. 계산은 앞의 변수에서 미리 끝내 두세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const nextLevel = Number(levelText) + 1;
+  const needExp = nextLevel * 100 - Number(expText);
+  const message = "레벨 " + nextLevel + "까지 경험치 " + needExp + " 남았어요";
+  ```
+
+  - `levelText + 1`이라고 쓰면 `"9" + 1` → `"91"`이 되어 레벨 91이 돼요. `+`는 문자열이 있으면 이어 붙이기 때문에 먼저 `Number`로 바꿔야 해요.
+  - `nextLevel * 100 - expText`는 `-`가 `expText`를 숫자로 바꿔 주므로 결과는 같아요. 하지만 어떤 연산자가 바꿔 주는지 매번 따지기보다, 계산에 쓰는 값은 미리 `Number`로 바꾸는 편이 안전해요.
+  - `message`에서는 일부러 이어 붙이기를 써요. `nextLevel`과 `needExp`는 이미 계산이 끝난 숫자라서 글자에 그대로 붙어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

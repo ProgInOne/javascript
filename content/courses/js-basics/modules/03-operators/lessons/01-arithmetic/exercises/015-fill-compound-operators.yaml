@@ -1,0 +1,50 @@
+id: js-basics.operators.arithmetic.fill-compound-operators
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.ops.compound-assignment, weight: 1 }
+tags: [compound-assignment]
+estimatedSeconds: 75
+prompt: |
+  주석에 적힌 대로 `coins`가 바뀌도록 빈칸에 알맞은 복합 대입 연산자를 쓰세요.
+spec:
+  mode: text
+  template: |
+    let coins = 10;
+    coins {{blank:add}} 5;   // 5 늘려요 → 15
+    coins {{blank:mul}} 2;   // 2배로 → 30
+    coins {{blank:sub}} 8;   // 8 줄여요 → 22
+  blanks:
+    - id: add
+      accept: ["+="]
+      width: 4
+      misconceptionMap:
+        "=+": js.mc.compound-operator-reversed
+    - id: mul
+      accept: ["*="]
+      width: 4
+      misconceptionMap:
+        "=*": js.mc.compound-operator-reversed
+    - id: sub
+      accept: ["-="]
+      width: 4
+      misconceptionMap:
+        "=-": js.mc.compound-operator-reversed
+hints:
+  - "`coins = coins + 5`를 더 짧게 쓰는 방법이에요."
+  - 연산 기호 하나와 `=`를 붙여 써요. 순서가 중요해요.
+  - 연산 기호가 `=` 앞에 와요. "더해서(+) 넣는다(=)" 순서예요.
+explanation: |
+  정답은 `+=`, `*=`, `-=`예요.
+
+  | 줄 | 같은 뜻 | `coins` |
+  |---|---|---|
+  | `coins += 5;` | `coins = coins + 5` | 15 |
+  | `coins *= 2;` | `coins = coins * 2` | 30 |
+  | `coins -= 8;` | `coins = coins - 8` | 22 |
+
+  기호 순서를 바꿔 `=+`라고 쓰면 `coins = +5`로 읽혀서 5가 **들어갈** 뿐 더해지지 않아요. `=-`는 `coins = -8`이 되고, `=*`는 문법 오류예요. 연산 기호는 항상 `=` 앞에 붙여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

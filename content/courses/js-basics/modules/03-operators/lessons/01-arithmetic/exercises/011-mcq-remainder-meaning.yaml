@@ -1,0 +1,42 @@
+id: js-basics.operators.arithmetic.mcq-remainder-meaning
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.ops.remainder, weight: 1 }
+tags: [remainder]
+estimatedSeconds: 40
+prompt: |
+  `console.log(17 % 5);`를 실행하면 콘솔에 무엇이 나오나요?
+spec:
+  options:
+    - id: a
+      text: "`2`"
+    - id: b
+      text: "`3`"
+      misconception: js.mc.remainder-is-quotient
+      rationale: 3은 17을 5로 나눈 몫이에요. %는 나머지를 구해요.
+    - id: c
+      text: "`0.85`"
+      misconception: js.mc.remainder-is-percent
+      rationale: "0.85는 5의 17%예요. %는 백분율이 아니라 나머지 연산자예요."
+    - id: d
+      text: "`3.4`"
+      misconception: js.mc.division-truncates
+      rationale: 3.4는 17 / 5의 결과예요. %는 나누기가 아니라 나누고 남은 수를 구해요.
+  correct: a
+hints:
+  - "`%`는 퍼센트 기호처럼 생겼지만 JavaScript에서는 다른 뜻이에요."
+  - "`%`는 나눗셈을 하고 남은 수를 구하는 연산자예요."
+  - 17 = 5 × 3 + ?에서 물음표를 구해 보세요.
+explanation: |
+  정답은 **`2`**예요.
+
+  `%`는 나머지 연산자예요. 17을 5로 나누면 17 = 5 × 3 + 2라서 몫은 3, 나머지는 2예요. `%`는 나머지 2를 줘요.
+
+  - `3`: 몫이에요. 몫과 나머지를 헷갈린 경우예요.
+  - `0.85`: "5의 17%"로 계산한 경우예요. `%`는 백분율이 아니에요.
+  - `3.4`: `17 / 5`의 결과예요. `/`와 `%`는 다른 연산자예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,32 @@
+id: js-basics.operators.operators-review
+title: 연산자와 형 변환 단원 평가
+summary: 모듈 3에서 배운 산술·비교·논리 연산과 형 변환을 섞어 풀며 이해도를 확인합니다.
+kind: assessment
+importance: standard
+estimatedMinutes: { read: 2, practice: 30 }
+concepts:
+  reviewed:
+    - js.ops.arithmetic
+    - js.ops.precedence
+    - js.ops.remainder
+    - js.ops.compound-assignment
+    - js.ops.increment
+    - js.ops.strict-equality
+    - js.ops.loose-equality
+    - js.ops.relational
+    - js.ops.logical-and-or-not
+    - js.ops.short-circuit
+    - js.ops.nullish
+    - js.conv.to-number
+    - js.conv.to-string
+    - js.conv.to-boolean
+    - js.conv.nan
+    - js.conv.truthy-falsy
+    - js.conv.plus-concat
+    - js.conv.equality-coercion
+objectives:
+  - 산술·비교·논리 연산자를 섞은 식을 우선순위와 형 변환 규칙에 따라 계산할 수 있다.
+  - 연산자와 형 변환 때문에 생긴 버그의 원인을 찾아 고칠 수 있다.
+  - 요구사항을 읽고 계산·비교·기본값 처리가 들어간 프로그램을 작성할 수 있다.
+practice:
+  targetCount: 18

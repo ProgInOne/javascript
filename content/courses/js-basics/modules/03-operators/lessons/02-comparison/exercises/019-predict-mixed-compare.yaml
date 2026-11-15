@@ -1,0 +1,41 @@
+id: js-basics.operators.comparison.predict-mixed-compare
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.ops.relational, weight: 1 }
+tags: [relational, string, coercion]
+estimatedSeconds: 100
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    console.log("10" > "9");
+    console.log("10" > 9);
+    console.log("2" > "12");
+    console.log(2 > "12");
+  answerKind: console
+  misconceptionByAnswer:
+    "true\ntrue\nfalse\nfalse": js.mc.string-compare-numeric
+    "false\nfalse\ntrue\ntrue": js.mc.mixed-compare-as-string
+misconceptions: [js.mc.string-compare-numeric, js.mc.mixed-compare-as-string]
+hints:
+  - 줄마다 두 값의 자료형을 먼저 확인하세요. 둘 다 문자열인가요, 하나만 문자열인가요?
+  - 둘 다 문자열이면 첫 글자부터 사전 순서로, 하나라도 숫자면 숫자로 바꿔서 비교해요.
+  - "1번과 3번 줄은 첫 글자(`\"1\"`과 `\"9\"`, `\"2\"`와 `\"1\"`)만 비교하면 답이 나와요."
+explanation: |
+  정답은 차례로 **`false`, `true`, `true`, `false`**예요.
+
+  | 줄 | 자료형 | 비교 방법 | 결과 |
+  |---|---|---|---|
+  | `"10" > "9"` | 문자열, 문자열 | 첫 글자 `"1"` > `"9"`? | `false` |
+  | `"10" > 9` | 문자열, 숫자 | 10 > 9 | `true` |
+  | `"2" > "12"` | 문자열, 문자열 | 첫 글자 `"2"` > `"1"`? | `true` |
+  | `2 > "12"` | 숫자, 문자열 | 2 > 12 | `false` |
+
+  - 모두 수의 크기로 답했다면(`true true false false`) 문자열끼리도 숫자처럼 비교된다고 생각한 거예요. 문자열끼리는 사전 순서예요.
+  - 모두 사전 순서로 답했다면(`false false true true`) 숫자가 섞여도 문자열 비교가 된다고 생각한 거예요. 하나라도 숫자면 숫자로 바꿔서 비교해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

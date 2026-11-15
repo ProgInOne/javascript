@@ -1,0 +1,41 @@
+id: js-basics.operators.implicit-coercion.tf-minus-string
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.conv.plus-concat, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.3 }
+tags: [minus, string, coercion]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: '`"10" - 3`은 문자열에 빼기를 할 수 없으므로 NaN이 된다.'
+  answer: false
+  misconceptionIfWrong: js.mc.minus-string-fails
+  requireReason: true
+  reasons:
+    - id: r1
+      text: "-는 이어 붙이는 기능이 없어서 \"10\"을 숫자 10으로 바꿔 계산한다"
+      correct: true
+    - id: r2
+      text: "-도 +처럼 문자열이 있으면 글자를 이어 붙인다"
+      misconception: js.mc.minus-string-fails
+    - id: r3
+      text: 숫자로 읽을 수 있는 문자열이라도 계산에 쓰면 항상 NaN이 된다
+      misconception: js.mc.failed-conversion-throws
+misconceptions: [js.mc.minus-string-fails]
+hints:
+  - 이어 붙이기를 하는 연산자는 무엇 하나뿐이었나요?
+  - "`-`가 문자열을 만나면 계산하기 위해 무엇으로 바꿀까요?"
+  - "`\"10\"`은 숫자로 읽을 수 있는 글자예요. NaN은 숫자로 읽을 수 없을 때만 생겨요."
+explanation: |
+  **거짓**이에요. 이유는 "`-`는 이어 붙이는 기능이 없어서 `"10"`을 숫자 10으로 바꿔 계산한다"예요.
+
+  `-`, `*`, `/`, `%`는 숫자 계산만 해요. 그래서 문자열을 숫자로 바꾼 뒤 계산하고, `"10" - 3`은 `7`이에요. 오류도, NaN도 아니에요.
+
+  - 이어 붙이기를 하는 연산자는 `+`뿐이에요. `-`가 이어 붙인다면 결과가 무엇인지조차 정할 수 없어요.
+  - NaN은 `"사과" - 1`처럼 숫자로 읽을 수 없는 글자일 때만 생겨요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

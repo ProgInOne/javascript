@@ -1,0 +1,42 @@
+id: js-basics.operators.implicit-coercion.mcq-null-loose-equals
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.conv.equality-coercion, weight: 1 }
+tags: [loose-equality, "null"]
+estimatedSeconds: 40
+prompt: |
+  `==`로 비교했을 때 `null`과 같다고(`true`) 나오는 값은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`undefined`"
+    - id: b
+      text: "`0`"
+      misconception: js.mc.null-loose-equals-zero
+      rationale: "null == 0은 false예요. ==에서 null은 숫자로 바뀌지 않아요."
+    - id: c
+      text: "`false`"
+      misconception: js.mc.null-loose-equals-zero
+      rationale: "null == false도 false예요. null이 falsy라는 것과 ==의 결과는 별개예요."
+    - id: d
+      text: "`\"\"` (빈 문자열)"
+      misconception: js.mc.loose-equality-uses-truthiness
+      rationale: 둘 다 falsy지만 ==는 truthy·falsy로 비교하지 않아요. null == ""는 false예요.
+  correct: a
+misconceptions: [js.mc.null-loose-equals-zero]
+hints:
+  - "`==`의 변환 규칙 중 `null`에 대한 특별한 규칙을 떠올려 보세요."
+  - "`null`은 `==`에서 숫자로 바뀌지 않아요."
+  - "`null`과 짝을 이루는 \"비어 있는 값\"은 무엇이었나요?"
+explanation: |
+  정답은 **`undefined`**예요. `==`에서 `null`은 `undefined`하고만 같고, 그 밖의 어떤 값과도 같지 않아요.
+
+  - `0`, `false`: `null`은 falsy지만 `null == 0`과 `null == false`는 모두 `false`예요. "없음"이라는 느낌이 비슷해도 같은 값으로 보지 않아요.
+  - `""`: `null`과 `""`은 둘 다 falsy지만, `==`는 truthy·falsy로 비교하지 않으므로 `false`예요.
+
+  값이 `null`인지 정확히 확인하려면 `x === null`이라고 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,50 @@
+id: js-basics.operators.arithmetic.multi-precedence-eighteen
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.ops.precedence, weight: 1 }
+tags: [precedence]
+estimatedSeconds: 90
+prompt: |
+  JavaScript에서 계산 결과가 **18**인 식을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`12 / 2 * 3`"
+      missedMisconception: js.mc.multiply-before-divide
+    - id: b
+      text: "`3 + 3 * 5`"
+      missedMisconception: js.mc.always-left-to-right
+    - id: c
+      text: "`(1 + 2) * 6`"
+    - id: d
+      text: "`2 + 4 * 3`"
+      misconception: js.mc.always-left-to-right
+      rationale: "*가 먼저라서 2 + 12 = 14예요. 왼쪽부터 계산해야 18이 나와요."
+    - id: e
+      text: "`108 / 2 * 3`"
+      misconception: js.mc.multiply-before-divide
+      rationale: "/와 *는 같은 순서라 왼쪽부터 계산해요. 54 * 3 = 162예요."
+  correct: [a, b, c]
+hints:
+  - 다섯 개의 식을 하나씩 "가장 먼저 계산할 부분"부터 값으로 바꿔 보세요.
+  - "`* / %`가 `+ -`보다 먼저예요. 그리고 `*`와 `/`끼리는 누가 먼저일까요?"
+  - "`*`와 `/`는 같은 순서라서 왼쪽에 있는 것부터 계산해요. 괄호는 언제나 가장 먼저예요."
+explanation: |
+  정답은 **a, b, c**예요.
+
+  | 식 | 계산 과정 | 결과 |
+  |---|---|---|
+  | `12 / 2 * 3` | 같은 순서라 왼쪽부터: `6 * 3` | 18 |
+  | `3 + 3 * 5` | `*` 먼저: `3 + 15` | 18 |
+  | `(1 + 2) * 6` | 괄호 먼저: `3 * 6` | 18 |
+  | `2 + 4 * 3` | `*` 먼저: `2 + 12` | 14 |
+  | `108 / 2 * 3` | 왼쪽부터: `54 * 3` | 162 |
+
+  - d를 골랐다면 왼쪽부터 `(2 + 4) * 3`으로 계산한 거예요. `*`가 `+`보다 먼저예요.
+  - e를 골랐다면 곱셈을 먼저 해 `108 / 6`으로 계산한 거예요. `*`와 `/`는 같은 순서라서 왼쪽부터예요.
+  - a를 놓쳤다면 `12 / (2 * 3)`으로 계산했을 수 있어요. b를 놓쳤다면 `(3 + 3) * 5`로 계산했을 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

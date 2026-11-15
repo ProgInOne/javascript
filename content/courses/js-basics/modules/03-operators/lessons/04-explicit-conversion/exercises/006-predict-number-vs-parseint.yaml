@@ -1,0 +1,40 @@
+id: js-basics.operators.explicit-conversion.predict-number-vs-parseint
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.conv.to-number, weight: 1 }
+  - { id: js.conv.nan, weight: 0.3 }
+tags: [number, parseint, parsefloat]
+estimatedSeconds: 90
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 값 네 개가 공백으로 나뉘어 출력돼요.
+spec:
+  lang: js
+  code: |
+    const text = "3.9kg";
+    console.log(Number(text), parseInt(text), parseFloat(text), parseInt("kg3"));
+  answerKind: console
+  misconceptionByAnswer:
+    "3.9 3 3.9 NaN": js.mc.number-parses-prefix
+    "3 3 3.9 NaN": js.mc.number-parses-prefix
+    "NaN 4 3.9 NaN": js.mc.number-parses-prefix
+hints:
+  - 네 값을 하나씩 따로 계산해 보세요. Number와 parse로 시작하는 두 함수는 읽는 범위가 달라요.
+  - Number는 문자열 전체, parseInt·parseFloat는 앞에서부터 숫자가 끝나는 곳까지 읽어요.
+  - parseInt는 정수만 읽어서 소수점에서 멈추고 반올림하지 않아요. 맨 앞이 숫자가 아니면 읽은 것이 없어요.
+explanation: |
+  정답은 **`NaN 3 3.9 NaN`**이에요.
+
+  | 식 | 결과 | 이유 |
+  |---|---|---|
+  | `Number("3.9kg")` | `NaN` | 전체를 읽는데 `kg`는 숫자가 아니에요 |
+  | `parseInt("3.9kg")` | `3` | 정수만 읽어서 `.`에서 멈춰요(반올림하지 않아요) |
+  | `parseFloat("3.9kg")` | `3.9` | 소수점까지 읽고 `k`에서 멈춰요 |
+  | `parseInt("kg3")` | `NaN` | 맨 앞부터 숫자가 아니라 읽은 숫자가 없어요 |
+
+  - 첫 값을 `3.9`나 `3`으로 답했다면: Number도 앞부분만 읽는다고 생각한 거예요. Number는 전체가 숫자여야 해요.
+  - 둘째 값을 `4`로 답했다면: parseInt는 반올림하지 않고 소수점 앞에서 그냥 멈춰요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

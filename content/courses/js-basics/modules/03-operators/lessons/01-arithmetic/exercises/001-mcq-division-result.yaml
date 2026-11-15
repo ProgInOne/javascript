@@ -1,0 +1,41 @@
+id: js-basics.operators.arithmetic.mcq-division-result
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.ops.arithmetic, weight: 1 }
+tags: [arithmetic, division]
+estimatedSeconds: 40
+prompt: |
+  `console.log(9 / 2);`를 실행하면 콘솔에 무엇이 나오나요?
+spec:
+  options:
+    - id: a
+      text: "`4.5`"
+    - id: b
+      text: "`4`"
+      misconception: js.mc.division-truncates
+      rationale: JavaScript의 /는 나머지를 버리지 않고 소수까지 계산해요.
+    - id: c
+      text: "`1`"
+      misconception: js.mc.remainder-is-quotient
+      rationale: 1은 9를 2로 나눈 나머지예요. 나머지는 % 연산자로 구해요.
+    - id: d
+      text: "`4 ... 1`"
+      rationale: /는 몫과 나머지를 함께 보여 주지 않고, 나눈 결과 하나(소수)를 만들어요.
+  correct: a
+hints:
+  - "`/`는 어떤 나눗셈을 할까요? 몫만 남기는 나눗셈일까요?"
+  - 이 단원의 산술 연산자 표에서 `7 / 2`의 결과를 다시 확인해 보세요.
+  - 9를 2로 나누면 나누어떨어지지 않아요. JavaScript는 이때 소수를 그대로 보여 줘요.
+explanation: |
+  정답은 **`4.5`**예요.
+
+  JavaScript의 `/`는 수학의 "몫과 나머지" 나눗셈이 아니라, 소수까지 계산하는 나눗셈이에요. 9 ÷ 2 = 4.5예요.
+
+  - `4`: 소수점을 버린다고 생각한 경우예요. `/`는 버리지 않아요.
+  - `1`: 9를 2로 나눈 **나머지**예요. 나머지를 원하면 `9 % 2`라고 써요.
+  - `4 ... 1`: 이런 형태로 보여 주는 연산자는 없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

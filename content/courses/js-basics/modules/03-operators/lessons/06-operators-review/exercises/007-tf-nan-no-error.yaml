@@ -1,0 +1,41 @@
+id: js-basics.operators.operators-review.tf-nan-no-error
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.conv.nan, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.3 }
+tags: [nan, review]
+estimatedSeconds: 50
+usage: assessment
+prompt: |
+  다음 설명이 맞는지 고르고, 그 이유도 고르세요.
+spec:
+  statement: '`const price = Number("만 원");`을 실행하면 숫자로 바꿀 수 없어서 오류가 나고, 프로그램이 그 줄에서 멈춘다.'
+  answer: false
+  misconceptionIfWrong: js.mc.failed-conversion-throws
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 오류 없이 price에 NaN이 들어가고, 다음 줄도 계속 실행된다
+      correct: true
+    - id: r2
+      text: 오류 없이 price에 0이 들어간다
+    - id: r3
+      text: Number가 앞에서부터 읽을 수 있는 숫자만 골라 price에 넣는다
+      misconception: js.mc.number-parses-prefix
+misconceptions: [js.mc.failed-conversion-throws]
+hints:
+  - 숫자로 바꾸기에 실패하면 JavaScript는 어떤 값을 돌려줬나요?
+  - NaN은 "숫자가 아님"을 뜻하는 숫자 자료형의 값이에요. 오류가 아니라 **값**이에요.
+  - 값이 만들어졌다면 프로그램은 멈출 이유가 없어요.
+explanation: |
+  **틀린 설명이에요.** 이유는 "오류 없이 price에 NaN이 들어가고, 다음 줄도 계속 실행된다"예요.
+
+  `Number("만 원")`처럼 숫자로 읽을 수 없는 값을 바꾸면 오류 대신 `NaN`(Not a Number)이 나와요. 프로그램은 멈추지 않고, 이후에 `price * 2`처럼 계산하면 결과도 계속 `NaN`이 돼요. 그래서 NaN은 오류보다 알아차리기 어려워요. 변환이 실패했는지는 `Number.isNaN(price)`로 확인해요.
+
+  - 0을 고른 경우: `Number("")`와 `Number("  ")`가 0이에요. 글자가 있는데 숫자가 아니면 NaN이에요.
+  - 앞의 숫자만 읽는다고 고른 경우: 그건 `parseInt`·`parseFloat`의 동작이에요. 게다가 `"만 원"`은 숫자로 시작하지도 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

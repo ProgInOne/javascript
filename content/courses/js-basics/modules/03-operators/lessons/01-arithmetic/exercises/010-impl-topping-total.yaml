@@ -1,0 +1,64 @@
+id: js-basics.operators.arithmetic.impl-topping-total
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.ops.precedence, weight: 1 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+tags: [precedence, parentheses, write-code]
+estimatedSeconds: 150
+prompt: |
+  붕어빵 한 개는 1800원이고, 슈크림 토핑을 추가하면 한 개에 500원이 더 붙어요. 토핑을 추가한 붕어빵 4개의 값을 `total`에 계산해 넣고, 아래처럼 출력하세요.
+
+  ```text
+  합계: 9200
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const price = 1800;
+          const toppingPrice = 500;
+          const count = 4;
+
+          // 토핑을 추가한 붕어빵 count개의 값을 total에 넣고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const price = 1800;
+          const toppingPrice = 500;
+          const count = 4;
+
+          const total = (price + toppingPrice) * count;
+          console.log("합계:", total);
+  checks:
+    - kind: console
+      id: output
+      description: 토핑을 추가한 붕어빵 4개의 값이 출력되어야 합니다.
+      requirement: 합계 출력
+      expect:
+        lines: ["합계: 9200"]
+    - kind: program
+      id: total
+      description: total에 (한 개 가격 + 토핑 가격) × 개수가 들어 있어야 합니다.
+      requirement: 합계 계산
+      misconceptionIfFail: js.mc.always-left-to-right
+      expect:
+        globals: { total: { equals: 9200 } }
+        noError: true
+misconceptions: [js.mc.always-left-to-right]
+hints:
+  - 토핑을 추가한 붕어빵 **한 개**의 값을 먼저 생각해 보세요.
+  - "`price + toppingPrice * count`라고 쓰면 무엇이 먼저 계산될까요? 이 단원의 우선순위 표를 떠올려 보세요."
+  - 한 개 값(가격 + 토핑)을 먼저 계산하도록 괄호로 묶은 뒤 개수를 곱해요.
+explanation: |
+  예시 정답은 `const total = (price + toppingPrice) * count;`예요. (1800 + 500) × 4 = 9200이에요.
+
+  괄호 없이 `price + toppingPrice * count`라고 쓰면 `*`가 먼저라서 1800 + 2000 = 3800이 돼요. 토핑 값만 4번 곱해지고 붕어빵 값은 한 번만 더해진 거예요.
+
+  `price * count + toppingPrice * count`처럼 나눠 써도 결과가 같으니 정답이에요. 괄호를 쓰면 "한 개 값 × 개수"라는 뜻이 더 잘 보여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

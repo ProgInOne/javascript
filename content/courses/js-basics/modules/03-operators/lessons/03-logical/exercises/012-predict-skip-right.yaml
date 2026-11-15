@@ -1,0 +1,50 @@
+id: js-basics.operators.logical.predict-skip-right
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+tags: [short-circuit, logical-and, logical-or]
+estimatedSeconds: 90
+prompt: |
+  계산대 프로그램이에요. 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const isMember = false;
+    const hasCoupon = true;
+    isMember && console.log("회원 할인 적용");
+    hasCoupon && console.log("쿠폰 할인 적용");
+    isMember || console.log("회원 가입 안내");
+    hasCoupon || console.log("쿠폰 발급 안내");
+    console.log("계산 끝");
+  answerKind: console
+  misconceptionByAnswer:
+    "회원 할인 적용\n쿠폰 할인 적용\n회원 가입 안내\n쿠폰 발급 안내\n계산 끝": js.mc.right-side-always-runs
+misconceptions: [js.mc.right-side-always-runs]
+hints:
+  - 3~6번 줄마다 왼쪽 값만 보고 결과가 정해지는지 따져 보세요.
+  - "`&&`는 왼쪽이 false이면 오른쪽을 건너뛰고, `||`는 왼쪽이 true이면 오른쪽을 건너뛰어요."
+  - 3~6번 줄 중 두 줄만 오른쪽의 console.log가 실행돼요. 마지막 줄은 항상 실행돼요.
+explanation: |
+  정답은 세 줄이에요.
+
+  ```text
+  쿠폰 할인 적용
+  회원 가입 안내
+  계산 끝
+  ```
+
+  | 줄 | 왼쪽 | 오른쪽 실행? | 이유 |
+  |---|---|---|---|
+  | `isMember && …` | false | 아니요 | `&&`는 왼쪽이 거짓이면 이미 거짓 |
+  | `hasCoupon && …` | true | 예 | 결과를 정하려면 오른쪽을 봐야 함 |
+  | `isMember \|\| …` | false | 예 | 결과를 정하려면 오른쪽을 봐야 함 |
+  | `hasCoupon \|\| …` | true | 아니요 | `\|\|`는 왼쪽이 참이면 이미 참 |
+
+  다섯 줄을 모두 적었다면 오른쪽이 항상 실행된다고 생각한 거예요. 왼쪽만으로 결과가 정해지면 JavaScript는 오른쪽을 아예 계산하지 않아요(단락 평가).
+
+  이 코드는 단락 평가를 보여 주려고 이렇게 썼어요. "조건이 맞을 때만 실행"은 보통 모듈 4에서 배울 `if`로 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

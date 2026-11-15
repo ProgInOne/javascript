@@ -1,0 +1,46 @@
+id: js-basics.operators.operators-review.predict-increment-values
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.ops.increment, weight: 1 }
+tags: [increment, trace, review]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요?
+spec:
+  lang: js
+  code: |
+    let tickets = 5;
+    const first = tickets++;
+    const second = ++tickets;
+    console.log(first, second, tickets);
+  answerKind: console
+  misconceptionByAnswer:
+    "6 7 7": js.mc.postfix-prefix-same
+    "5 6 7": js.mc.postfix-prefix-same
+    "6 6 6": js.mc.postfix-prefix-same
+misconceptions: [js.mc.postfix-prefix-same]
+hints:
+  - "\"이름 → 값\" 표를 그려 `tickets`, `first`, `second`를 한 줄씩 따라가 보세요."
+  - "`tickets++`는 늘리기 **전** 값이 식의 값이고, `++tickets`는 늘린 **뒤** 값이 식의 값이에요."
+  - "2번 줄이 끝나면 tickets는 6이에요. 3번 줄은 그 6에서 시작해요."
+explanation: |
+  정답은 **`5 7 7`**이에요.
+
+  | 실행한 줄 | 식의 값 | `tickets` | `first` | `second` |
+  |---|---|---|---|---|
+  | `let tickets = 5;` | | 5 | | |
+  | `const first = tickets++;` | 5 (늘리기 전) | 6 | 5 | |
+  | `const second = ++tickets;` | 7 (늘린 뒤) | 7 | 5 | 7 |
+
+  `++`와 `--`는 위치와 상관없이 변수를 1씩 바꿔요. 다른 점은 **식의 값**이에요. 뒤에 붙인 `tickets++`는 바꾸기 전 값(5)을, 앞에 붙인 `++tickets`는 바꾼 뒤 값(7)을 돌려줘요.
+
+  - `6 7 7`: `tickets++`도 늘린 뒤 값을 돌려준다고 생각했어요.
+  - `5 6 7`: 3번 줄이 처음 값 5에서 시작한다고 봤어요. 2번 줄에서 tickets는 이미 6이 됐어요.
+
+  두 가지를 한 줄에 섞으면 읽기 어려워서, 실무에서는 `tickets++;`처럼 따로 한 줄에 쓰는 경우가 많아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

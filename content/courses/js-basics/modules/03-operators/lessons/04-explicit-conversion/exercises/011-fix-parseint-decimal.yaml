@@ -1,0 +1,64 @@
+id: js-basics.operators.explicit-conversion.fix-parseint-decimal
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.conv.to-number, weight: 1 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+tags: [parsefloat, parseint, debugging]
+estimatedSeconds: 150
+prompt: |
+  과일 가게 저울에서 받은 무게 `"2.5kg"`으로 사과 값을 계산하는 프로그램이에요. 1kg에 4000원이니 10000원이 나와야 하는데, 값이 적게 나와요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  무게: 2.5
+  가격: 10000
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const weightText = "2.5kg";
+          const pricePerKg = 4000;
+          const weight = parseInt(weightText);
+          const price = weight * pricePerKg;
+          console.log("무게:", weight);
+          console.log("가격:", price);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const weightText = "2.5kg";
+          const pricePerKg = 4000;
+          const weight = parseFloat(weightText);
+          const price = weight * pricePerKg;
+          console.log("무게:", weight);
+          console.log("가격:", price);
+  bugDescription: 가격이 10000원이 아니라 8000원으로 나오고, 무게도 2로 출력돼요.
+  maxEditDistance: 3
+  checks:
+    - kind: console
+      id: output
+      description: 무게 2.5와 가격 10000이 차례로 출력되어야 합니다.
+      expect:
+        lines: ["무게: 2.5", "가격: 10000"]
+    - kind: program
+      id: weight-value
+      description: weight에 숫자 2.5가 들어 있어야 합니다.
+      expect:
+        globals: { weight: { equals: 2.5 } }
+        noError: true
+hints:
+  - 무게가 2로 출력돼요. 2.5가 어디서 2가 되었을까요?
+  - parseInt는 정수만 읽어서 소수점에서 멈춰요.
+  - 단위가 붙은 글자에서 소수까지 읽는 함수가 따로 있어요. `Number`는 `kg` 때문에 쓸 수 없어요.
+explanation: |
+  3번 줄을 `const weight = parseFloat(weightText);`로 고쳐요.
+
+  `parseInt("2.5kg")`는 정수만 읽어서 소수점 앞에서 멈추므로 `2`예요. 그래서 2 × 4000 = 8000이 나왔어요. `parseFloat`는 소수점까지 읽고 `k`에서 멈춰서 `2.5`를 돌려줘요.
+
+  `Number(weightText)`로 바꾸면 `kg` 때문에 `NaN`이 되어 가격도 `NaN`이에요. 단위가 붙은 글자에서 숫자를 꺼낼 때는 `parseInt`(정수)와 `parseFloat`(소수) 중 알맞은 쪽을 골라요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

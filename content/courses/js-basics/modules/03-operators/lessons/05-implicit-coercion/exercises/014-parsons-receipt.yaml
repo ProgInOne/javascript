@@ -1,0 +1,68 @@
+id: js-basics.operators.implicit-coercion.parsons-receipt
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.conv.plus-concat, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.5 }
+tags: [plus, concat, to-number]
+estimatedSeconds: 120
+prompt: |
+  입력칸에서 읽은 가격과 수량은 문자열이에요. 코드 조각을 배열해서 합계를 계산해 아래처럼 출력하는 프로그램을 만드세요.
+
+  ```text
+  합계: 13500원
+  ```
+spec:
+  lines:
+    - { id: l1, code: 'const priceText = "4500";' }
+    - { id: l2, code: 'const countText = "3";' }
+    - { id: l3, code: 'const price = Number(priceText);' }
+    - { id: l4, code: 'const count = Number(countText);' }
+    - { id: l5, code: 'const total = price * count;' }
+    - { id: l6, code: 'console.log("합계: " + total + "원");' }
+  distractors:
+    - id: d1
+      code: 'const total = priceText + countText;'
+      replaces: l5
+      misconception: js.mc.plus-string-adds
+    - id: d2
+      code: 'console.log("합계: " + price + count + "원");'
+      replaces: l6
+      misconception: js.mc.concat-whole-expression
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: '가격과 수량을 곱한 합계가 "합계: 13500원" 형태로 출력되어야 합니다.'
+      expect:
+        lines: ["합계: 13500원"]
+    - kind: program
+      id: total-number
+      description: total에는 숫자 13500이 들어 있어야 합니다.
+      expect:
+        globals:
+          total: { equals: 13500 }
+        noError: true
+misconceptions: [js.mc.plus-string-adds, js.mc.concat-whole-expression]
+hints:
+  - 변수는 쓰기 전에 먼저 만들어야 해요. 어떤 변수가 어떤 변수를 쓰는지 화살표로 이어 보세요.
+  - 문자열 그대로 `+`를 하면 어떻게 되는지 떠올려 보세요. 필요 없는 조각이 있어요.
+  - '출력 줄에서 `"합계: " + price + count`는 왼쪽부터 이어 붙여져요. 계산을 미리 끝낸 변수를 이어 붙이는 조각을 고르세요.'
+explanation: |
+  예시 순서예요(3·4번 줄은 서로 바꿔도 돼요).
+
+  ```js
+  const priceText = "4500";
+  const countText = "3";
+  const price = Number(priceText);
+  const count = Number(countText);
+  const total = price * count;
+  console.log("합계: " + total + "원");
+  ```
+
+  - `const total = priceText + countText;`는 문자열끼리 `+`라서 `"45003"`이 돼요. 먼저 `Number`로 바꾼 값을 써야 해요.
+  - `"합계: " + price + count + "원"`은 왼쪽부터 계산해서 `"합계: 4500"`에 `3`이 이어 붙어 `합계: 45003원`이 돼요. 계산은 `total`에서 미리 끝내고 이어 붙여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,67 @@
+id: js-basics.operators.explicit-conversion.impl-input-flags
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.conv.to-boolean, weight: 1 }
+tags: [boolean, write-code]
+estimatedSeconds: 150
+prompt: |
+  회원 가입 폼에서 닉네임 칸은 비어 있고(`""`), 전화번호 칸에는 `"010"`까지 입력됐어요. 각 칸에 **무언가 입력되었는지**를 불리언으로 바꿔 `hasNickname`, `hasPhone` 변수에 넣고, 아래처럼 출력하세요.
+
+  ```text
+  닉네임 입력: false
+  전화번호 입력: true
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const nickname = "";
+          const phone = "010";
+          // 여기에 hasNickname과 hasPhone을 만들고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const nickname = "";
+          const phone = "010";
+          const hasNickname = Boolean(nickname);
+          const hasPhone = Boolean(phone);
+          console.log("닉네임 입력:", hasNickname);
+          console.log("전화번호 입력:", hasPhone);
+  checks:
+    - kind: console
+      id: output
+      description: 닉네임 입력 여부 false와 전화번호 입력 여부 true가 차례로 출력되어야 합니다.
+      expect:
+        lines: ["닉네임 입력: false", "전화번호 입력: true"]
+    - kind: program
+      id: flags
+      description: hasNickname은 불리언 false, hasPhone은 불리언 true여야 합니다.
+      expect:
+        globals:
+          hasNickname: { equals: false }
+          hasPhone: { equals: true }
+        noError: true
+hints:
+  - 문자열을 참·거짓으로 바꾸면 어떤 문자열만 false가 될까요?
+  - Boolean(값)이나 !!값으로 불리언을 만들 수 있어요.
+  - 빈 문자열만 false, 글자가 하나라도 있으면 true예요. 두 칸을 각각 Boolean으로 바꿔 출력하세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const hasNickname = Boolean(nickname);
+  const hasPhone = Boolean(phone);
+  console.log("닉네임 입력:", hasNickname);
+  console.log("전화번호 입력:", hasPhone);
+  ```
+
+  문자열을 Boolean으로 바꾸면 빈 문자열 `""`만 `false`이고, 글자가 하나라도 있으면 `true`예요. `!!nickname`, `!!phone`으로 써도 같은 결과예요.
+
+  `Boolean(Number(phone))`처럼 숫자로 먼저 바꾸면 안 돼요. `"0"`이 입력된 칸은 숫자 `0`이 되어 "입력 안 함"으로 처리돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

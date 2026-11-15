@@ -1,0 +1,43 @@
+id: js-basics.operators.comparison.tf-assign-not-compare
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.ops.strict-equality, weight: 1 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [strict-equality, assignment]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그 이유도 고르세요.
+code: |
+  let score = 80;
+  console.log(score = 100);
+spec:
+  statement: 2번 줄은 score가 100인지 비교해서, 그 결과인 false를 출력한다.
+  answer: false
+  misconceptionIfWrong: js.mc.assign-as-compare
+  requireReason: true
+  reasons:
+    - id: r1
+      text: "=는 대입이라 score에 100을 넣고, 넣은 값 100을 출력한다"
+      correct: true
+    - id: r2
+      text: "=와 ===는 같은 비교 연산자라서 둘 중 아무거나 써도 된다"
+      misconception: js.mc.assign-as-compare
+    - id: r3
+      text: console.log 안에서는 비교를 할 수 없어서 오류가 난다
+misconceptions: [js.mc.assign-as-compare]
+hints:
+  - "`=` 하나는 \"변수와 상수\" 단원에서 무엇이라고 배웠나요?"
+  - "`score = 100`을 실행하면 score에는 무엇이 들어갈까요?"
+  - 대입식도 값을 가져요. 그 값은 방금 넣은 값이에요.
+explanation: |
+  정답은 **거짓**이에요. 이유는 "`=`는 대입이라 score에 100을 넣고, 넣은 값 100을 출력한다"예요.
+
+  `=`는 비교가 아니라 대입이에요. `score = 100`은 score에 100을 넣고, 식 전체의 값도 100이 돼요. 그래서 콘솔에는 `100`이 나오고, 원래 점수 80은 사라져요. 같은지 비교하려면 `score === 100`이라고 써야 해요.
+
+  - "`=`와 `===`는 같은 비교 연산자"라는 이유는 틀렸어요. 하나는 값을 넣고, 하나는 비교해요.
+  - console.log 안에서도 비교식이나 대입식을 쓸 수 있어요. 오류는 나지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

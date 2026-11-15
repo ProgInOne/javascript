@@ -1,0 +1,85 @@
+id: js-basics.operators.arithmetic.fix-average-and-rate
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.ops.precedence, weight: 1 }
+  - { id: js.ops.remainder, weight: 0.5 }
+tags: [precedence, remainder, percent, debugging]
+estimatedSeconds: 240
+prompt: |
+  세 과목의 평균 점수와 쪽지 시험 정답률(%)을 계산하는 프로그램이에요. 오류는 없는데 두 값이 모두 이상해요. 아래처럼 출력되게 고치세요.
+
+  ```text
+  평균: 83
+  정답률: 90
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const korean = 80;
+          const math = 95;
+          const english = 74;
+          const average = korean + math + english / 3;
+          console.log("평균:", average);
+
+          const correct = 18;
+          const questions = 20;
+          const rate = correct % questions * 100; // 정답률(%)
+          console.log("정답률:", rate);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const korean = 80;
+          const math = 95;
+          const english = 74;
+          const average = (korean + math + english) / 3;
+          console.log("평균:", average);
+
+          const correct = 18;
+          const questions = 20;
+          const rate = correct / questions * 100; // 정답률(%)
+          console.log("정답률:", rate);
+  bugDescription: 평균이 200 가까이 나오고, 정답률이 1800이 나와요.
+  bugMisconception: js.mc.always-left-to-right
+  maxEditDistance: 6
+  checks:
+    - kind: console
+      id: output
+      description: 평균 83과 정답률 90이 차례로 출력되어야 합니다.
+      requirement: 평균과 정답률
+      expect:
+        lines: ["평균: 83", "정답률: 90"]
+    - kind: program
+      id: average
+      description: average에 세 점수의 평균이 들어 있어야 합니다.
+      requirement: 평균
+      misconceptionIfFail: js.mc.always-left-to-right
+      expect:
+        globals: { average: { equals: 83 } }
+        noError: true
+    - kind: program
+      id: rate
+      description: rate에 정답 수를 문제 수로 나눈 비율의 백분율이 들어 있어야 합니다.
+      requirement: 정답률
+      misconceptionIfFail: js.mc.remainder-is-percent
+      expect:
+        globals: { rate: { closeTo: { value: 90, epsilon: 0.000001 } } }
+misconceptions: [js.mc.always-left-to-right, js.mc.remainder-is-percent]
+hints:
+  - 4번 줄에서 3으로 나누는 것은 무엇인가요? 세 점수의 합인가요, 영어 점수 하나인가요?
+  - "`/`가 `+`보다 먼저 계산돼요. 합을 먼저 구하게 하려면 무엇이 필요할까요? 9번 줄의 `%`는 이 단원에서 배운 대로 무엇을 구하는 연산자인가요?"
+  - "합계 부분을 괄호로 묶어 보세요. 정답률은 \"맞힌 수 ÷ 문제 수 × 100\"이에요."
+explanation: |
+  버그가 두 개예요.
+
+  1. **4번 줄**: `/`가 `+`보다 먼저라서 `korean + math + (english / 3)`, 즉 80 + 95 + 24.666…이 계산됐어요. 합을 먼저 구하도록 `(korean + math + english) / 3`처럼 괄호로 묶어요. 249 ÷ 3 = 83이에요.
+  1. **9번 줄**: `%`는 퍼센트가 아니라 나머지예요. `18 % 20`은 18이라서 `18 * 100 = 1800`이 됐어요. 비율은 `correct / questions`(0.9)이고, 백분율로 바꾸려면 100을 곱해요. 0.9 × 100 = 90이에요.
+
+  `correct * 100 / questions`처럼 순서를 바꿔 써도 결과가 같으면 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

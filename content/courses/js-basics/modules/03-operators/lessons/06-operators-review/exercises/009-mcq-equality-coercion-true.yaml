@@ -1,0 +1,44 @@
+id: js-basics.operators.operators-review.mcq-equality-coercion-true
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: js.conv.equality-coercion, weight: 1 }
+  - { id: js.ops.loose-equality, weight: 0.3 }
+tags: [equality-coercion, review]
+estimatedSeconds: 75
+usage: assessment
+prompt: |
+  다음 중 결과가 `true`인 식은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`"0" == false`'
+    - id: b
+      text: "`null == 0`"
+      misconception: js.mc.null-loose-equals-zero
+      rationale: ==에서 null은 undefined와만 같아요. 숫자 0과는 같지 않아요.
+    - id: c
+      text: "`NaN == NaN`"
+      misconception: js.mc.nan-equals-nan
+      rationale: NaN은 자기 자신과도 같지 않아요. ==도 마찬가지예요.
+    - id: d
+      text: '`"" == null`'
+      misconception: js.mc.null-loose-equals-zero
+      rationale: null은 undefined와만 같아요. 빈 문자열은 null과 같지 않아요.
+  correct: a
+misconceptions: [js.mc.loose-equality-uses-truthiness, js.mc.null-loose-equals-zero]
+hints:
+  - "`==`는 truthy·falsy를 보지 않고, 주로 **숫자로 바꿔서** 비교해요."
+  - null과 NaN에는 특별한 규칙이 있어요. null은 무엇과만 같았나요? NaN은요?
+  - '`"0"`을 숫자로 바꾸면 무엇이고, `false`를 숫자로 바꾸면 무엇인가요?'
+explanation: |
+  정답은 **`"0" == false`**예요.
+
+  `==`는 문자열과 불리언을 숫자로 바꿔 비교해요. `"0"`은 0, `false`도 0이 되어 `0 == 0`, 즉 `true`예요. `"0"`은 truthy인데 `false`와 같다니 이상하죠? `==`는 truthy·falsy로 비교하지 않기 때문이에요. 이런 혼란 때문에 `===`를 써요.
+
+  - `null == 0`, `"" == null`: `==`에서 `null`은 `undefined`와만 같아요. 0이나 빈 문자열과는 같지 않아요.
+  - `NaN == NaN`: NaN은 어떤 비교에서도 자기 자신과 같지 않아요. NaN인지는 `Number.isNaN`으로 확인해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,46 @@
+id: js-basics.operators.implicit-coercion.multi-loose-rules
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.conv.equality-coercion, weight: 1 }
+  - { id: js.ops.loose-equality, weight: 0.3 }
+tags: [loose-equality, coercion]
+estimatedSeconds: 75
+prompt: |
+  `==`가 자료형이 다른 두 값을 비교하는 방식에 대한 설명으로 맞는 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: 문자열과 숫자를 비교하면 문자열을 숫자로 바꿔 비교한다
+    - id: b
+      text: 한쪽이 불리언이면 불리언을 숫자(true는 1, false는 0)로 바꿔 비교한다
+    - id: c
+      text: "`NaN`은 `NaN`을 포함해 어떤 값과도 같지 않다"
+    - id: d
+      text: 값이 truthy인지 falsy인지를 기준으로 같은지 판단한다
+      misconception: js.mc.loose-equality-uses-truthiness
+      rationale: '==는 숫자로 바꿔 비교해요. "0"은 truthy인데도 "0" == false는 true예요.'
+    - id: e
+      text: "`null`은 falsy이므로 `0`, `false`와 같다"
+      misconception: js.mc.null-loose-equals-zero
+      rationale: null은 undefined와만 같아요. null == 0은 false예요.
+  correct: [a, b, c]
+misconceptions: [js.mc.loose-equality-uses-truthiness, js.mc.null-loose-equals-zero]
+hints:
+  - 정답이 하나가 아닐 수 있어요. 각 설명을 실제 예로 바꿔 확인해 보세요.
+  - '`"0" == false`의 결과를 떠올려 보세요. `"0"`은 truthy인데 결과는 무엇이었나요?'
+  - "`==`는 주로 \"숫자로 바꿔서\" 비교하고, `null`과 `NaN`에는 특별한 규칙이 있어요."
+explanation: |
+  정답은 **a, b, c**예요.
+
+  - a: `"5" == 5` → `5 == 5` → `true`.
+  - b: `"1" == true` → `"1" == 1` → `1 == 1` → `true`.
+  - c: `NaN == NaN`도 `false`예요.
+  - d가 틀린 이유: `==`는 truthy·falsy를 보지 않아요. `"0"`은 truthy지만 `"0" == false`는 `false`를 0으로, `"0"`을 0으로 바꿔 `true`가 돼요.
+  - e가 틀린 이유: `null`은 `undefined`와만 같아요. falsy라는 사실은 `==`와 관계없어요.
+
+  이렇게 규칙이 복잡하기 때문에 실무에서는 `===`를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

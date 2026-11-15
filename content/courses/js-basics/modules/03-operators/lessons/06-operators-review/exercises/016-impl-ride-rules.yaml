@@ -1,0 +1,114 @@
+id: js-basics.operators.operators-review.impl-ride-rules
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.ops.logical-and-or-not, weight: 1 }
+  - { id: js.ops.relational, weight: 0.5 }
+  - { id: js.ops.precedence, weight: 0.3 }
+tags: [logical, relational, write-code, review]
+estimatedSeconds: 360
+usage: assessment
+prompt: |
+  놀이기구 탑승 규칙은 이래요.
+
+  - 키가 **120cm 이상**이고 나이가 **7세 이상**이면 탈 수 있어요.
+  - 또는 키가 **110cm 이상**이고 **보호자와 함께** 왔다면 나이와 상관없이 탈 수 있어요.
+
+  손님 네 명의 정보가 변수로 주어져 있어요. 손님마다 탈 수 있는지(`true`/`false`)를 **비교 연산자와 논리 연산자로 계산해서** `canRideA`~`canRideD` 변수에 넣고 출력하세요. 규칙이 바뀌어도 그대로 쓸 수 있게, 손님 정보 변수로 계산해 주세요.
+
+  ```text
+  A: true
+  B: false
+  C: true
+  D: true
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const heightA = 125;
+          const ageA = 8;
+          const withGuardianA = false;
+          const heightB = 115;
+          const ageB = 9;
+          const withGuardianB = false;
+          const heightC = 112;
+          const ageC = 5;
+          const withGuardianC = true;
+          const heightD = 120;
+          const ageD = 7;
+          const withGuardianD = false;
+
+          // 여기에 canRideA, canRideB, canRideC, canRideD를 만들고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const heightA = 125;
+          const ageA = 8;
+          const withGuardianA = false;
+          const heightB = 115;
+          const ageB = 9;
+          const withGuardianB = false;
+          const heightC = 112;
+          const ageC = 5;
+          const withGuardianC = true;
+          const heightD = 120;
+          const ageD = 7;
+          const withGuardianD = false;
+
+          const canRideA = (heightA >= 120 && ageA >= 7) || (heightA >= 110 && withGuardianA);
+          const canRideB = (heightB >= 120 && ageB >= 7) || (heightB >= 110 && withGuardianB);
+          const canRideC = (heightC >= 120 && ageC >= 7) || (heightC >= 110 && withGuardianC);
+          const canRideD = (heightD >= 120 && ageD >= 7) || (heightD >= 110 && withGuardianD);
+          console.log("A:", canRideA);
+          console.log("B:", canRideB);
+          console.log("C:", canRideC);
+          console.log("D:", canRideD);
+  checks:
+    - kind: console
+      id: output
+      description: 네 손님의 탑승 가능 여부가 A부터 D까지 차례로 출력되어야 합니다.
+      requirement: 결과 출력
+      expect:
+        lines: ["A: true", "B: false", "C: true", "D: true"]
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, canRideA~canRideD에 true 또는 false가 들어 있어야 합니다.
+      requirement: 탑승 규칙 계산
+      expect:
+        globals:
+          canRideA: { equals: true }
+          canRideB: { equals: false }
+          canRideC: { equals: true }
+          canRideD: { equals: true }
+        noError: true
+      misconceptionIfFail: js.mc.and-or-same-precedence
+misconceptions: [js.mc.and-or-same-precedence, js.mc.or-is-exclusive]
+hints:
+  - 규칙 두 개는 "또는"으로, 규칙 하나 안의 조건 두 개는 "그리고"로 이어져 있어요. 각각 어떤 연산자인가요?
+  - "\"이상\"은 그 값을 포함해요. D 손님(키 120, 나이 7)이 탈 수 있으려면 `>`와 `>=` 중 무엇을 써야 할까요?"
+  - "`(키 조건 && 나이 조건) || (키 조건 && 보호자)` 모양으로 먼저 A 손님 한 명을 완성하고, 나머지는 변수 이름만 바꿔 보세요."
+explanation: |
+  손님 A의 예시 정답이에요. B~D는 변수 이름만 바꿔요.
+
+  ```js
+  const canRideA = (heightA >= 120 && ageA >= 7) || (heightA >= 110 && withGuardianA);
+  ```
+
+  | 손님 | 첫 번째 규칙 | 두 번째 규칙 | 결과 |
+  |---|---|---|---|
+  | A (125, 8, 보호자 없음) | true | false | true |
+  | B (115, 9, 보호자 없음) | false (키 부족) | false (보호자 없음) | false |
+  | C (112, 5, 보호자 있음) | false | true | true |
+  | D (120, 7, 보호자 없음) | true (120 이상, 7 이상) | false | true |
+
+  - "이상"은 `>=`예요. `>`를 쓰면 D 손님이 false가 돼요.
+  - `&&`가 `||`보다 먼저 계산되므로 괄호가 없어도 결과는 같지만, 괄호를 쓰면 규칙이 두 덩어리라는 것이 잘 보여요.
+  - `||`는 둘 중 하나**만**이 아니라 하나 **이상** 참이면 참이에요. 두 규칙을 모두 만족해도 탈 수 있어요.
+  - `const canRideA = true;`처럼 결과를 직접 써도 출력은 같지만, 손님 정보가 바뀌면 틀린 답이 돼요. 이 문제의 목표는 규칙을 식으로 옮기는 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

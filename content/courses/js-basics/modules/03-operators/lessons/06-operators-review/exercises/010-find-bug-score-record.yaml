@@ -1,0 +1,53 @@
+id: js-basics.operators.operators-review.find-bug-score-record
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.ops.relational, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.3 }
+tags: [relational, string-compare, review]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  게임 기록판이에요. 입력창에서 읽은 점수는 문자열이에요. 결과가 이상한 원인이 되는 줄을 찾고, 이유도 고르세요.
+spec:
+  code: |-
+    const myScore = "9";
+    const bestScore = "10";
+    const isNewRecord = myScore > bestScore;
+    console.log("새 기록:", isNewRecord);
+  bugLines: [3]
+  symptom: "9점은 최고 기록 10점보다 낮은데 `새 기록: true`가 출력돼요."
+  symptomCheck:
+    console: ["새 기록: true"]
+  fixedCode: |-
+    const myScore = "9";
+    const bestScore = "10";
+    const isNewRecord = Number(myScore) > Number(bestScore);
+    console.log("새 기록:", isNewRecord);
+  causeOptions:
+    - id: c1
+      text: 문자열끼리 비교해서 숫자 크기가 아니라 사전 순서(첫 글자 "9"와 "1")로 비교했다
+      correct: true
+    - id: c2
+      text: ">는 문자열을 비교할 수 없어서 항상 true를 돌려준다"
+    - id: c3
+      text: 숫자처럼 보이는 문자열은 자동으로 숫자로 바뀌어 비교되는데, 그 과정에서 값이 바뀌었다
+      misconception: js.mc.string-compare-numeric
+misconceptions: [js.mc.string-compare-numeric]
+hints:
+  - 비교하는 두 값의 자료형은 무엇인가요?
+  - 문자열끼리 크기를 비교하면 사전에서 단어를 찾는 순서처럼 첫 글자부터 비교해요.
+  - 첫 글자 `"9"`와 `"1"` 중 사전 순서로 뒤에 오는 것은 무엇일까요? 숫자로 비교하려면 비교하기 전에 무엇을 해야 할까요?
+explanation: |
+  원인은 **3번 줄**이고, 이유는 **문자열끼리 사전 순서로 비교했기 때문**이에요.
+
+  `myScore`와 `bestScore`가 둘 다 문자열이라 `>`는 숫자 크기가 아니라 첫 글자부터 사전 순서로 비교해요. 첫 글자 `"9"`가 `"1"`보다 뒤에 오므로 `"9" > "10"`은 `true`예요. 고치려면 3번 줄에서 `Number(myScore) > Number(bestScore)`처럼 숫자로 바꾼 뒤 비교해요.
+
+  - ">는 문자열을 비교할 수 없다": 비교할 수 있어요. 다만 사전 순서로 비교할 뿐이에요.
+  - "자동으로 숫자로 바뀐다": 한쪽이 숫자일 때만 문자열을 숫자로 바꿔요. 둘 다 문자열이면 바꾸지 않아요.
+
+  1·2번 줄의 값은 입력창에서 읽은 그대로라 문자열인 것이 정상이에요. 문제는 그 값을 **숫자로 바꾸지 않고 비교한 3번 줄**이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,49 @@
+id: js-basics.operators.implicit-coercion.predict-double-not
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.conv.truthy-falsy, weight: 1 }
+  - { id: js.conv.to-boolean, weight: 0.3 }
+tags: [truthy, falsy, not]
+estimatedSeconds: 75
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 값 두 개가 공백으로 나뉘어 출력돼요.
+spec:
+  lang: js
+  code: |
+    const score = 0;
+    const answer = "0";
+    const memo = "";
+    const nickname = " ";
+    console.log(!!score, !!answer);
+    console.log(!!memo, !!nickname);
+  answerKind: console
+  misconceptionByAnswer:
+    "false false\nfalse true": js.mc.string-zero-falsy
+    "false true\nfalse false": js.mc.space-string-falsy
+    "false false\nfalse false": js.mc.string-zero-falsy
+misconceptions: [js.mc.string-zero-falsy, js.mc.space-string-falsy]
+hints:
+  - "`!!값`은 값이 truthy면 `true`, falsy면 `false`예요."
+  - 네 변수 중 숫자는 하나이고 나머지는 문자열이에요. 문자열은 글자가 있는지만 보세요.
+  - 숫자 `0`과 빈 문자열은 falsy예요. `"0"`과 `" "`에는 글자가 있어요.
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  false true
+  false true
+  ```
+
+  | 변수 | 값 | truthy/falsy |
+  |---|---|---|
+  | `score` | 숫자 `0` | falsy → `false` |
+  | `answer` | 문자열 `"0"` | 글자가 있음 → `true` |
+  | `memo` | 빈 문자열 `""` | falsy → `false` |
+  | `nickname` | 공백 한 칸 `" "` | 공백도 글자 → `true` |
+
+  `answer`를 `false`로 답했다면 문자열 `"0"`을 숫자 0처럼 봤어요. `nickname`을 `false`로 답했다면 공백을 "빈 것"으로 봤어요. 문자열은 길이가 0일 때만 falsy예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

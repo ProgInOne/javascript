@@ -1,0 +1,79 @@
+id: js-basics.operators.arithmetic.fix-game-score
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.ops.arithmetic, weight: 1 }
+  - { id: js.values.assignment, weight: 0.5 }
+tags: [arithmetic, power, assignment, debugging]
+estimatedSeconds: 300
+prompt: |
+  게임 점수 프로그램이에요. 규칙은 이래요.
+
+  - 코인을 먹으면 점수가 100점 늘어나요.
+  - 콤보 보너스는 **2의 `combo`제곱**이고, 보너스 1마다 10점을 더 받아요.
+
+  `combo`가 3이면 보너스는 8, 최종 점수는 100 + 80 = 180이어야 해요. 그런데 실행해도 오류 없이 엉뚱한 점수가 나와요. 버그를 모두 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  점수: 180
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          let score = 0;
+          score + 100;            // 코인 먹기
+
+          const combo = 3;
+          const bonus = 2 ^ combo; // 2의 combo제곱
+          score = score + bonus * 10;
+          console.log("점수:", score);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let score = 0;
+          score += 100;            // 코인 먹기
+
+          const combo = 3;
+          const bonus = 2 ** combo; // 2의 combo제곱
+          score = score + bonus * 10;
+          console.log("점수:", score);
+  bugDescription: 점수가 180이어야 하는데 오류 없이 다른 숫자가 나와요.
+  bugMisconception: js.mc.expression-changes-variable
+  maxEditDistance: 6
+  checks:
+    - kind: console
+      id: output
+      description: 최종 점수 180이 출력되어야 합니다.
+      requirement: 점수 출력
+      expect:
+        lines: ["점수: 180"]
+    - kind: program
+      id: values
+      description: 끝났을 때 bonus는 8(2의 3제곱), score는 180이어야 합니다.
+      requirement: 변수 값
+      expect:
+        globals:
+          bonus: { equals: 8 }
+          score: { equals: 180 }
+        noError: true
+misconceptions: [js.mc.expression-changes-variable, js.mc.caret-is-power]
+hints:
+  - 오류가 없으니 값을 하나씩 확인해 보세요. 2번 줄 다음과 5번 줄 다음에 `console.log(score)`, `console.log(bonus)`를 잠깐 넣어 보면 어디서 틀어지는지 보여요.
+  - 2번 줄은 계산만 하고 결과를 어디에도 넣지 않아요. 5번 줄의 `^`는 이 단원에서 배운 거듭제곱 연산자가 맞나요?
+  - "변수를 바꾸려면 대입(`=`이나 `+=`)이 필요하고, 거듭제곱은 별표 두 개로 써요."
+explanation: |
+  버그가 두 개예요. 둘 다 오류를 내지 않아서 출력만 보고 찾아야 해요.
+
+  1. **2번 줄 `score + 100;`**: 계산식은 새 값을 만들 뿐 `score`를 바꾸지 않아요. `score += 100;`(또는 `score = score + 100;`)으로 고쳐요.
+  1. **5번 줄 `2 ^ combo`**: `^`는 거듭제곱이 아니라서 `2 ^ 3`은 `1`이에요. `2 ** combo`로 고치면 8이 돼요.
+
+  고치기 전에는 `score`가 0, `bonus`가 1이라 `0 + 1 * 10`, 즉 `점수: 10`이 나왔어요. 고친 뒤에는 `100 + 8 * 10 = 180`이에요. 6번 줄은 `*`가 `+`보다 먼저라서 괄호 없이도 맞아요.
+
+  오류 없이 결과만 틀릴 때는 중간 값을 `console.log`로 찍어 보며 범위를 좁히는 것이 가장 빠른 방법이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

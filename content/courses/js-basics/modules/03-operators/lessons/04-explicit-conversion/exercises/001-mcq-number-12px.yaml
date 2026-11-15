@@ -1,0 +1,42 @@
+id: js-basics.operators.explicit-conversion.mcq-number-12px
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.conv.to-number, weight: 1 }
+tags: [number, conversion]
+estimatedSeconds: 40
+prompt: |
+  `Number("12px")`의 결과는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`NaN`"
+    - id: b
+      text: "`12`"
+      misconception: js.mc.number-parses-prefix
+      rationale: 앞부분만 읽는 것은 parseInt예요. Number는 문자열 전체를 읽어요.
+    - id: c
+      text: "`0`"
+      rationale: 0이 되는 것은 빈 문자열이에요. "12px"에는 글자가 있어요.
+    - id: d
+      text: 오류가 나서 프로그램이 멈춘다
+      misconception: js.mc.failed-conversion-throws
+      rationale: 숫자로 바꿀 수 없어도 오류는 나지 않아요. 대신 특별한 값이 나와요.
+  correct: a
+misconceptions: [js.mc.number-parses-prefix]
+hints:
+  - Number는 문자열의 어느 범위를 숫자로 읽나요? 앞부분만인가요, 전체인가요?
+  - "`px`라는 글자도 숫자로 읽을 수 있을까요?"
+  - 전체를 숫자로 읽을 수 없을 때 Number가 돌려주는 "숫자가 아님" 값을 떠올려 보세요.
+explanation: |
+  정답은 **`NaN`**이에요.
+
+  `Number`는 문자열 **전체**를 숫자로 읽어요. `"12px"`에는 숫자로 읽을 수 없는 `px`가 있어서, 변환에 실패했다는 뜻의 `NaN`이 돼요.
+
+  - `12`를 골랐다면: 앞에서부터 읽을 수 있는 데까지만 읽는 것은 `parseInt("12px")`예요. 그 결과가 `12`예요.
+  - `0`을 골랐다면: `0`이 되는 것은 빈 문자열 `""`이에요.
+  - 오류를 골랐다면: 변환에 실패해도 오류는 나지 않고 `NaN`이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

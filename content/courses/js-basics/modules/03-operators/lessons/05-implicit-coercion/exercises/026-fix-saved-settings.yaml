@@ -1,0 +1,125 @@
+id: js-basics.operators.implicit-coercion.fix-saved-settings
+type: fix_bug
+difficulty: 5
+concepts:
+  - { id: js.conv.truthy-falsy, weight: 1 }
+  - { id: js.ops.short-circuit, weight: 0.5 }
+  - { id: js.conv.plus-concat, weight: 0.5 }
+  - { id: js.conv.to-boolean, weight: 0.5 }
+tags: [truthy, falsy, default-value, debugging]
+estimatedSeconds: 480
+prompt: |
+  앱을 다시 켰을 때 저장해 둔 설정을 불러오는 프로그램이에요. 저장된 값의 규칙은 다음과 같아요.
+
+  - `savedVolume`: 음량 숫자. `0`은 음소거라는 뜻이고, 값이 아예 없을 때(`null`)만 기본 음량 50을 써요.
+  - `savedName`: 별명 문자열. 빈 문자열이면 "손님"이라고 불러요.
+  - `savedBonus`: 보너스 포인트. 문자열로 저장되어 있어요. 기본 포인트 1000에 더해요.
+  - `savedAlarm`: 알림 설정. 문자열 `"true"` 또는 `"false"`로 저장되어 있어요.
+
+  버그가 **여러 개** 있어요. 출력을 하나씩 확인하며 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  음량: 0
+  별명: 손님
+  포인트: 1500
+  알림: false
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const savedVolume = 0;
+          const savedName = "";
+          const savedBonus = "500";
+          const savedAlarm = "false";
+
+          const volume = savedVolume || 50;
+          const nickname = savedName || "손님";
+          const points = 1000 + savedBonus;
+          const alarmOn = Boolean(savedAlarm);
+
+          console.log("음량:", volume);
+          console.log("별명:", nickname);
+          console.log("포인트:", points);
+          console.log("알림:", alarmOn);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const savedVolume = 0;
+          const savedName = "";
+          const savedBonus = "500";
+          const savedAlarm = "false";
+
+          const volume = savedVolume ?? 50;
+          const nickname = savedName || "손님";
+          const points = 1000 + Number(savedBonus);
+          const alarmOn = savedAlarm === "true";
+
+          console.log("음량:", volume);
+          console.log("별명:", nickname);
+          console.log("포인트:", points);
+          console.log("알림:", alarmOn);
+  bugDescription: 음량이 0이 아니라 50, 포인트가 1500이 아니라 1000500, 알림이 false가 아니라 true로 나와요.
+  bugMisconception: js.mc.or-default-keeps-zero
+  maxEditDistance: 14
+  checks:
+    - kind: console
+      id: output
+      description: 저장된 설정이 규칙대로 해석되어 네 줄로 출력되어야 합니다.
+      requirement: 설정 출력
+      expect:
+        lines: ["음량: 0", "별명: 손님", "포인트: 1500", "알림: false"]
+    - kind: program
+      id: volume
+      description: 저장된 음량 0(음소거)이 그대로 유지되어야 합니다.
+      requirement: 음량
+      expect:
+        globals:
+          volume: { equals: 0 }
+      misconceptionIfFail: js.mc.or-default-keeps-zero
+    - kind: program
+      id: points
+      description: points는 기본 포인트와 보너스를 더한 숫자 1500이어야 합니다.
+      requirement: 포인트
+      expect:
+        globals:
+          points: { equals: 1500 }
+      misconceptionIfFail: js.mc.plus-string-adds
+    - kind: program
+      id: alarm
+      description: 문자열 "false"로 저장된 알림 설정은 불리언 false가 되어야 합니다.
+      requirement: 알림
+      expect:
+        globals:
+          alarmOn: { equals: false }
+      misconceptionIfFail: js.mc.boolean-reads-string-content
+    - kind: program
+      id: nickname
+      description: 별명이 비어 있으면 "손님"이 되어야 하고, 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 별명
+      expect:
+        globals:
+          nickname: { equals: "손님" }
+        noError: true
+misconceptions:
+  - js.mc.or-default-keeps-zero
+  - js.mc.plus-string-adds
+  - js.mc.boolean-reads-string-content
+hints:
+  - 출력 네 줄을 기대 출력과 비교해서 틀린 줄을 먼저 찾으세요. 맞게 나오는 줄은 고치지 않아도 돼요.
+  - "음량: `0`은 falsy라서 `||`가 오른쪽을 골라요. 포인트: 문자열과 `+`를 하면 어떻게 되나요? 알림: `Boolean`은 글자의 뜻을 읽나요?"
+  - "음량은 `null`·`undefined`일 때만 기본값을 쓰는 연산자로, 포인트는 더하기 전에 숫자로 바꿔서, 알림은 저장된 글자가 `\"true\"`와 같은지 비교해서 고쳐 보세요."
+explanation: |
+  버그는 세 개이고, 별명 줄은 처음부터 맞아요.
+
+  1. **음량 (`savedVolume || 50`)**: `0`은 falsy라서 `||`가 오른쪽의 50을 골랐어요. 0도 의미 있는 값이니 `null`·`undefined`일 때만 기본값을 쓰는 `??`로 바꿔요: `savedVolume ?? 50`.
+  1. **포인트 (`1000 + savedBonus`)**: `savedBonus`가 문자열 `"500"`이라 `+`가 이어 붙여 `"1000500"`이 됐어요. `1000 + Number(savedBonus)`로 바꿔요.
+  1. **알림 (`Boolean(savedAlarm)`)**: `Boolean`은 글자의 뜻을 읽지 않아요. `"false"`는 글자가 있는 문자열이라 truthy → `true`가 됐어요. 저장된 글자가 `"true"`인지 비교해요: `savedAlarm === "true"`.
+
+  별명 줄의 `savedName || "손님"`은 맞아요. 규칙이 "빈 문자열이면 손님"이고, 빈 문자열은 falsy라서 `||`가 "손님"을 골라요. 여기서 `??`로 바꾸면 빈 문자열이 그대로 남아서 오히려 틀려요. **기본값을 정할 때는 "어떤 값을 비어 있다고 볼지"에 따라 `||`와 `??`를 골라요.**
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

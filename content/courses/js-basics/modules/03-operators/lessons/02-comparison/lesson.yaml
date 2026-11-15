@@ -1,0 +1,16 @@
+id: js-basics.operators.comparison
+title: 비교 연산
+summary: ===와 ==로 두 값이 같은지, < > <= >=로 크기를 비교하고, 문자열 비교와 NaN 같은 함정을 익힙니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 15, practice: 25 }
+concepts:
+  primary: [js.ops.strict-equality, js.ops.loose-equality, js.ops.relational]
+  reviewed: [js.values.assignment, js.ops.arithmetic]
+objectives:
+  - "===와 !==로 두 값이 같은지 비교하고, 자료형이 다르면 false가 되는 이유를 설명할 수 있다."
+  - "==가 자료형을 바꿔 비교한다는 점을 알고, ===를 골라 쓸 수 있다."
+  - "< > <= >=의 결과를 예측하고, 문자열끼리는 사전 순서로 비교된다는 점을 고려할 수 있다."
+  - 비교 결과(true/false)를 변수에 저장하고, 수학식처럼 이어 쓴 비교의 버그를 고칠 수 있다.
+practice:
+  targetCount: 24

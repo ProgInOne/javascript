@@ -1,0 +1,44 @@
+id: js-basics.operators.comparison.mcq-loose-vs-strict
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.ops.loose-equality, weight: 1 }
+  - { id: js.ops.strict-equality, weight: 0.5 }
+tags: [loose-equality, strict-equality]
+estimatedSeconds: 45
+prompt: |
+  다음 코드를 실행하면 콘솔에 무엇이 출력되나요?
+code: |
+  console.log("5" == 5, "5" === 5);
+spec:
+  options:
+    - id: a
+      text: "`true false`"
+    - id: b
+      text: "`false false`"
+      misconception: js.mc.loose-equals-like-strict
+      rationale: ==는 자료형이 다르면 값을 바꿔서 비교해요. "5"를 5로 바꾸면 같아요.
+    - id: c
+      text: "`true true`"
+      misconception: js.mc.strict-equality-ignores-type
+      rationale: ===는 자료형을 바꾸지 않아요. 문자열과 숫자는 자료형이 달라 false예요.
+    - id: d
+      text: "`false true`"
+      rationale: 두 연산자의 역할을 거꾸로 생각했어요. 자료형까지 엄격하게 보는 쪽은 ===예요.
+  correct: a
+misconceptions: [js.mc.loose-equals-like-strict]
+hints:
+  - "`==`와 `===` 중 자료형이 다를 때 값을 바꿔 보는 쪽은 어느 것일까요?"
+  - "`==`는 `\"5\"`를 숫자로 바꾼 뒤 비교해요."
+  - "`===`는 아무것도 바꾸지 않고, 자료형이 다르면 그대로 false예요."
+explanation: |
+  정답은 **`true false`**예요.
+
+  - `"5" == 5`: `==`는 자료형이 다르면 한쪽을 바꿔서 비교해요. 문자열 `"5"`를 숫자 `5`로 바꾸면 같으므로 `true`예요.
+  - `"5" === 5`: `===`는 자료형을 바꾸지 않아요. 문자열과 숫자라서 `false`예요.
+
+  `false false`를 골랐다면 `==`도 자료형까지 비교한다고 생각한 거예요. `true true`라면 반대로 `===`도 값을 바꾼다고 본 거예요. 이렇게 헷갈리기 쉬워서 실무에서는 바꾸지 않는 `===`를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

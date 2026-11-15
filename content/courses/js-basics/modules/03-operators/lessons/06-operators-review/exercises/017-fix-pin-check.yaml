@@ -1,0 +1,99 @@
+id: js-basics.operators.operators-review.fix-pin-check
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.ops.strict-equality, weight: 1 }
+  - { id: js.conv.equality-coercion, weight: 0.5 }
+  - { id: js.conv.to-string, weight: 0.5 }
+  - { id: js.conv.to-number, weight: 0.3 }
+tags: [strict-equality, conversion, debugging, review]
+estimatedSeconds: 420
+usage: assessment
+prompt: |
+  저장된 비밀번호·쿠폰 번호(숫자)와 사용자가 입력창에 쓴 값(문자열)을 비교하는 프로그램이에요. 입력창에서 읽은 값은 항상 문자열이고, 아무것도 쓰지 않으면 빈 문자열 `""`이에요.
+
+  버그를 고쳐서 아래처럼 출력되게 하세요. 쿠폰 번호 칸은 비어 있으니 **일치하지 않아야** 해요.
+
+  ```text
+  비밀번호 일치: true
+  쿠폰 번호 일치: false
+  ```
+
+  1~4번 줄의 값은 바꾸지 마세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const savedPin = 1234;
+          const inputPin = "1234";
+          const savedCode = 0;
+          const inputCode = "";
+
+          const pinMatches = inputPin = savedPin;
+          const codeMatches = inputCode == savedCode;
+          console.log("비밀번호 일치:", pinMatches);
+          console.log("쿠폰 번호 일치:", codeMatches);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const savedPin = 1234;
+          const inputPin = "1234";
+          const savedCode = 0;
+          const inputCode = "";
+
+          const pinMatches = inputPin === String(savedPin);
+          const codeMatches = inputCode === String(savedCode);
+          console.log("비밀번호 일치:", pinMatches);
+          console.log("쿠폰 번호 일치:", codeMatches);
+  bugDescription: "실행하면 6번 줄에서 `TypeError: Assignment to constant variable.`이 나요. 그걸 고쳐도 비교 결과가 기대와 달라요."
+  bugMisconception: js.mc.assign-as-compare
+  checks:
+    - kind: console
+      id: output
+      description: 비밀번호는 일치(true), 비어 있는 쿠폰 번호는 불일치(false)로 출력되어야 합니다.
+      requirement: 비교 결과 출력
+      expect:
+        lines: ["비밀번호 일치: true", "쿠폰 번호 일치: false"]
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, pinMatches는 true, codeMatches는 false여야 하며, 처음 네 변수의 값은 그대로여야 합니다.
+      requirement: 비교 결과 변수
+      expect:
+        globals:
+          pinMatches: { equals: true }
+          codeMatches: { equals: false }
+          savedPin: { equals: 1234 }
+          inputPin: { equals: "1234" }
+          savedCode: { equals: 0 }
+          inputCode: { equals: "" }
+        noError: true
+      misconceptionIfFail: js.mc.loose-equality-uses-truthiness
+misconceptions:
+  - js.mc.assign-as-compare
+  - js.mc.strict-equality-ignores-type
+  - js.mc.loose-equality-uses-truthiness
+hints:
+  - "첫 오류는 6번 줄의 `=` 때문이에요. 같은지 **비교**하려면 어떤 연산자를 써야 하나요?"
+  - '`===`로 바꾸면 `"1234" === 1234`는 자료형이 달라서 false예요. 두 값의 자료형을 맞춰야 해요. 그런데 숫자로 맞추면 `Number("")`가 0이 되어 빈 쿠폰 칸이 0과 같아져요.'
+  - 입력값을 숫자로 바꾸는 대신, 저장된 숫자를 **문자열로 바꿔서** 비교해 보세요. 빈 문자열은 어떤 숫자를 바꾼 글자와도 같지 않아요.
+explanation: |
+  예시 정답은 저장된 숫자를 문자열로 바꿔 `===`로 비교하는 거예요.
+
+  ```js
+  const pinMatches = inputPin === String(savedPin);     // "1234" === "1234" → true
+  const codeMatches = inputCode === String(savedCode);  // "" === "0" → false
+  ```
+
+  버그를 하나씩 따라가 볼게요.
+
+  1. **`=`는 대입이에요.** `inputPin = savedPin`은 비교가 아니라 `const` 변수 inputPin에 다시 대입하려는 문장이라 `TypeError`가 났어요. 비교는 `===`로 해요.
+  1. **`===`는 자료형도 비교해요.** `"1234" === 1234`는 문자열과 숫자라서 false예요. 자료형을 맞춰야 해요.
+  1. **`==`는 숫자로 바꿔 비교해요.** `"" == 0`에서 빈 문자열이 0으로 바뀌어 true가 됐어요. 아무것도 입력하지 않았는데 쿠폰 번호 0과 일치한다고 판단한 거예요.
+
+  `Number(inputCode) === savedCode`도 같은 이유로 틀려요. `Number("")`는 0이기 때문이에요. 그래서 입력 쪽을 숫자로 바꾸지 않고, 저장된 숫자를 `String`으로 바꿔 **문자열끼리** 비교하면 두 경우 모두 맞아요. `"" === String(savedCode)`처럼 다른 순서로 써도 결과가 같으면 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

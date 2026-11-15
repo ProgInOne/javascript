@@ -1,0 +1,43 @@
+id: js-basics.operators.comparison.mcq-strict-type
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.ops.strict-equality, weight: 1 }
+tags: [strict-equality, type]
+estimatedSeconds: 40
+prompt: |
+  다음 코드를 실행하면 콘솔에 무엇이 출력되나요?
+code: |
+  console.log("5" === 5);
+spec:
+  options:
+    - id: a
+      text: "`false`"
+    - id: b
+      text: "`true`"
+      misconception: js.mc.strict-equality-ignores-type
+      rationale: 화면에 똑같이 5로 보여도 하나는 문자열, 하나는 숫자예요. ===는 자료형도 비교해요.
+    - id: c
+      text: "`5`"
+      rationale: 비교식의 결과는 비교한 값이 아니라 true나 false예요.
+    - id: d
+      text: 자료형이 달라서 오류가 난다
+      rationale: 자료형이 달라도 비교할 수 있어요. 오류 대신 false가 나와요.
+  correct: a
+misconceptions: [js.mc.strict-equality-ignores-type]
+hints:
+  - "`===`는 두 값의 무엇과 무엇을 비교하나요?"
+  - 따옴표가 있는 `"5"`와 따옴표가 없는 `5`의 자료형을 각각 떠올려 보세요.
+  - "`===`는 자료형이 다르면 값을 보기 전에 결과가 정해져요."
+explanation: |
+  정답은 **`false`**예요.
+
+  `===`는 먼저 자료형이 같은지 확인해요. `"5"`는 문자열, `5`는 숫자라서 자료형이 달라 바로 `false`가 돼요.
+
+  - `true`를 고른 경우: `===`는 화면에 보이는 모양이 아니라 자료형과 값이 모두 같은지 비교해요.
+  - `5`를 고른 경우: 비교식의 결과는 항상 `true` 또는 `false`예요.
+  - 오류를 고른 경우: 자료형이 다른 값도 비교할 수 있고, 결과가 `false`일 뿐이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

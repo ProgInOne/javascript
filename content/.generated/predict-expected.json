@@ -1,6 +1,210 @@
 {
   "v": 1,
   "entries": {
+    "js-basics.operators.arithmetic.predict-compound-chain": {
+      "inputHash": "6aa67c462d0122270567bce8bb68fff01b579659224a176b30db54a490f08d7b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "2"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.predict-power-and-division": {
+      "inputHash": "977b1bdd8d7251ed368cb6cec637779890ea0f026a1254fabb11f2ef7dbdf135",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "2.5",
+          "9",
+          "1"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.predict-precedence-steps": {
+      "inputHash": "06c0cd23777231fc75dc60c4cda68348785894e3bb5f1e8ae169e54ffeaa8cd1",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "10",
+          "20",
+          "32"
+        ]
+      }
+    },
+    "js-basics.operators.comparison.predict-mixed-compare": {
+      "inputHash": "5284717119963d6af82e88e01a5367895212494ccaac05723d4561d885cd0247",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "false",
+          "true",
+          "true",
+          "false"
+        ]
+      }
+    },
+    "js-basics.operators.comparison.predict-nan-compare": {
+      "inputHash": "3935e37aca29b59e6c49d486d7d6954e91d2aee1429f090985075a5ef673f7dd",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "NaN",
+          "false",
+          "true",
+          "true"
+        ]
+      }
+    },
+    "js-basics.operators.comparison.predict-relational-basics": {
+      "inputHash": "dd1a5faab89d5fe803ef3dc5e9c96d96e070e2b22d87bea20cc9d912e5e6efc5",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "true",
+          "false",
+          "false"
+        ]
+      }
+    },
+    "js-basics.operators.explicit-conversion.predict-number-vs-parseint": {
+      "inputHash": "9303dd768839e905164ef57f072c1baa89020859c1b76d73e6e96f15c5708f01",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "NaN 3 3.9 NaN"
+        ]
+      }
+    },
+    "js-basics.operators.explicit-conversion.predict-string-of-null": {
+      "inputHash": "6ebadac4069b27fded27093e8e168e3efe2c2cbfab9ff7730b61c0ab7fd48cc3",
+      "expected": {
+        "kind": "value",
+        "value": {
+          "t": "string",
+          "v": "null"
+        }
+      }
+    },
+    "js-basics.operators.implicit-coercion.predict-chain-typeof": {
+      "inputHash": "9cc46321b95893f0f2e2cadc84c49b8793b5bd69f6663dde2a9eb090f2afab10",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "8 number",
+          "91 string",
+          "62 string"
+        ]
+      }
+    },
+    "js-basics.operators.implicit-coercion.predict-double-not": {
+      "inputHash": "730a876138b1dffd90231bb0c37adf589c599b72c1aa1b73a2b3a5369f2cc705",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "false true",
+          "false true"
+        ]
+      }
+    },
+    "js-basics.operators.implicit-coercion.predict-left-to-right": {
+      "inputHash": "f56b949445a86e40fd05a57486d5217d6fdc31e87630fd2a08bb44f8119ceb0b",
+      "expected": {
+        "kind": "value",
+        "value": {
+          "t": "string",
+          "v": "33"
+        }
+      }
+    },
+    "js-basics.operators.implicit-coercion.predict-loose-rules": {
+      "inputHash": "7ab38a97d2591c932d26c1bdb9a3a7042c63af40ed43fb6ff2992563573dd8f5",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "true",
+          "true",
+          "false",
+          "false",
+          "true"
+        ]
+      }
+    },
+    "js-basics.operators.logical.predict-and-or-precedence": {
+      "inputHash": "b92843672586693f069327cdaf3d909edf5a916b2dc294fcc44f0a82dac371c7",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "true",
+          "false",
+          "false",
+          "true"
+        ]
+      }
+    },
+    "js-basics.operators.logical.predict-and-returns-zero": {
+      "inputHash": "f71d143aa567b11db919552c5b61eabc676ad55f0fe129c78eddaff689c9fb76",
+      "expected": {
+        "kind": "value",
+        "value": {
+          "t": "number",
+          "v": 0
+        }
+      }
+    },
+    "js-basics.operators.logical.predict-nullish-mix": {
+      "inputHash": "0436b1b79df7dd0d9b4989b725a10b7006c90d8fea4debb3703b7eb7d3b21887",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "0",
+          "5",
+          "이름 없음",
+          "파랑",
+          "0"
+        ]
+      }
+    },
+    "js-basics.operators.logical.predict-skip-right": {
+      "inputHash": "9ea4d5bf625c74a5477685ff8543acd70a24a8f5c6968edc16bb988d25643dd3",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "쿠폰 할인 적용",
+          "회원 가입 안내",
+          "계산 끝"
+        ]
+      }
+    },
+    "js-basics.operators.operators-review.predict-boolean-conversions": {
+      "inputHash": "3a307e7230cf2d1fc106f55ed3709887c1d1fa683c9a48cb79f1b43a19757ab3",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "true false",
+          "true false"
+        ]
+      }
+    },
+    "js-basics.operators.operators-review.predict-increment-values": {
+      "inputHash": "1384adba0318eab157d0eebc32e5764c69ed7a58de3a116e45ed8d417bd18083",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "5 7 7"
+        ]
+      }
+    },
+    "js-basics.operators.operators-review.predict-precedence-mix": {
+      "inputHash": "a588e8f7c3f8870f67268fdbf7b9df091eb9e9527073aec8c92d0515e1f06d41",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "4",
+          "9"
+        ]
+      }
+    },
     "js-basics.start.first-program.predict-comment-one-line": {
       "inputHash": "3511b8b8df112bf3ad5067f9c9f68f004769d5151b48012e7c373e9b1d0abc2c",
       "expected": {

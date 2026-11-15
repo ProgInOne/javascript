@@ -1,0 +1,47 @@
+id: js-basics.operators.implicit-coercion.mcq-empty-list
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.conv.truthy-falsy, weight: 1 }
+  - { id: js.ops.short-circuit, weight: 0.3 }
+tags: [truthy, falsy, array]
+estimatedSeconds: 50
+prompt: |
+  `[]`는 값이 하나도 없는 빈 목록(배열)이에요. 배열은 모듈 8에서 자세히 배우지만, truthy·falsy 규칙은 지금 확인할 수 있어요.
+
+  다음 코드는 무엇을 출력하나요?
+code: |
+  const items = [];
+  console.log(!!items);
+spec:
+  options:
+    - id: a
+      text: "`true`"
+    - id: b
+      text: "`false`"
+      misconception: js.mc.empty-array-falsy
+      rationale: falsy 값은 정해진 몇 개뿐이고 배열은 그 목록에 없어요. 비어 있어도 truthy예요.
+    - id: c
+      text: "`0`"
+      rationale: "`!!`는 불리언을 만들어요. 목록의 길이를 알려 주지 않아요."
+    - id: d
+      text: "`undefined`"
+      rationale: "`items`에는 빈 배열이 들어 있어요. 값이 없는 것이 아니에요."
+  correct: a
+misconceptions: [js.mc.empty-array-falsy]
+hints:
+  - falsy 값 여섯 개를 떠올려 보세요.
+  - "`false`, `0`, `\"\"`, `null`, `undefined`, `NaN` 중에 배열이 있나요?"
+  - 목록에 없는 값은 비어 보여도 모두 truthy예요.
+explanation: |
+  정답은 **`true`**예요.
+
+  falsy 값은 `false`, `0`, `""`, `null`, `undefined`, `NaN`뿐이에요. 배열은 이 목록에 없으므로, 안에 아무것도 없어도 truthy예요. 그래서 `!!items`는 `true`예요.
+
+  - `false`를 골랐다면: "비어 있다"와 "falsy"는 달라요. 빈 문자열 `""`은 falsy지만 빈 배열은 truthy예요. 배열이 비었는지는 길이로 확인하는데, 모듈 8에서 배워요.
+  - `0`을 골랐다면: `!!`는 개수가 아니라 참·거짓을 만들어요.
+  - `undefined`를 골랐다면: `items`에는 빈 배열이라는 값이 들어 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

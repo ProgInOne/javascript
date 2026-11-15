@@ -1,0 +1,143 @@
+id: js-basics.operators.arithmetic.web-cart-total
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.ops.arithmetic, weight: 1 }
+  - { id: js.ops.precedence, weight: 0.5 }
+tags: [arithmetic, percent, web]
+estimatedSeconds: 420
+prompt: |
+  장바구니 화면의 상품 수와 결제 금액을 계산하세요. 시작 코드의 `<script>` 안에 가격과 수량 상수가 있어요.
+
+  - `itemCount`: 담은 상품의 개수 합계(티셔츠 2개 + 양말 3개)
+  - `total`: 상품 금액에서 **10% 할인**한 뒤 배송비를 더한 결제 금액. 배송비는 할인하지 않아요.
+
+  `<script>` 맨 아래 두 줄은 계산한 값을 화면에 보여 주는 코드예요(화면을 다루는 방법은 모듈 10에서 배워요). 그대로 두고, 두 변수의 값만 올바르게 계산하면 미리보기에 결과가 나타나요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>장바구니</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                .line { margin: 4px 0; }
+                .sum { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>장바구니</h1>
+              <p class="line">티셔츠 15000원 × 2개</p>
+              <p class="line">양말 3000원 × 3개</p>
+              <p class="line">상품 금액 10% 할인 · 배송비 2500원</p>
+              <p class="sum">상품 수: <span id="count"></span>개</p>
+              <p class="sum">결제 금액: <span id="total"></span>원</p>
+              <script>
+                const shirtPrice = 15000;
+                const shirtCount = 2;
+                const sockPrice = 3000;
+                const sockCount = 3;
+                const discountRate = 10; // 상품 금액에서 10% 할인
+                const shippingFee = 2500; // 배송비는 할인하지 않아요
+
+                // 1) 상품 개수 합계를 계산하세요.
+                let itemCount = 0;
+                // 2) 할인과 배송비를 반영한 결제 금액을 계산하세요.
+                let total = 0;
+
+                // 아래 두 줄은 계산한 값을 화면에 보여 주는 코드예요(모듈 10에서 배워요). 그대로 두세요.
+                document.querySelector("#count").textContent = itemCount;
+                document.querySelector("#total").textContent = total;
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>장바구니</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                .line { margin: 4px 0; }
+                .sum { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>장바구니</h1>
+              <p class="line">티셔츠 15000원 × 2개</p>
+              <p class="line">양말 3000원 × 3개</p>
+              <p class="line">상품 금액 10% 할인 · 배송비 2500원</p>
+              <p class="sum">상품 수: <span id="count"></span>개</p>
+              <p class="sum">결제 금액: <span id="total"></span>원</p>
+              <script>
+                const shirtPrice = 15000;
+                const shirtCount = 2;
+                const sockPrice = 3000;
+                const sockCount = 3;
+                const discountRate = 10; // 상품 금액에서 10% 할인
+                const shippingFee = 2500; // 배송비는 할인하지 않아요
+
+                // 1) 상품 개수 합계를 계산하세요.
+                let itemCount = shirtCount + sockCount;
+                // 2) 할인과 배송비를 반영한 결제 금액을 계산하세요.
+                let total = shirtPrice * shirtCount + sockPrice * sockCount;
+                total -= total * discountRate / 100;
+                total += shippingFee;
+
+                // 아래 두 줄은 계산한 값을 화면에 보여 주는 코드예요(모듈 10에서 배워요). 그대로 두세요.
+                document.querySelector("#count").textContent = itemCount;
+                document.querySelector("#total").textContent = total;
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: count
+      description: 화면의 상품 수가 티셔츠와 양말 개수의 합이어야 합니다.
+      requirement: 상품 수
+      visible: true
+      selector: "#count"
+      expect:
+        text: { equals: "5" }
+    - kind: dom
+      id: total
+      description: 화면의 결제 금액이 상품 금액을 10% 할인한 뒤 배송비를 더한 값이어야 합니다.
+      requirement: 결제 금액
+      visible: true
+      selector: "#total"
+      misconceptionIfFail: js.mc.remainder-is-percent
+      expect:
+        text: { equals: "37600" }
+misconceptions: [js.mc.remainder-is-percent, js.mc.always-left-to-right]
+hints:
+  - 상품 금액(할인 전), 할인한 금액, 배송비를 더한 금액을 차례로 계산해 보세요. 한 번에 한 식으로 쓰지 않아도 돼요.
+  - "10% 할인은 상품 금액에서 \"상품 금액 × 10 ÷ 100\"을 빼는 거예요. `%` 연산자는 나머지라서 여기에 쓸 수 없어요."
+  - "할인 대상은 상품 금액뿐이에요. 배송비를 더한 뒤에 할인하면 배송비까지 깎여요. 상품 금액은 39000원이에요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  let itemCount = shirtCount + sockCount;                          // 2 + 3 = 5
+  let total = shirtPrice * shirtCount + sockPrice * sockCount;     // 30000 + 9000 = 39000
+  total -= total * discountRate / 100;                             // 39000 - 3900 = 35100
+  total += shippingFee;                                            // 37600
+  ```
+
+  - 상품 금액은 `*`가 `+`보다 먼저라서 괄호 없이 계산돼요.
+  - 10% 할인은 `total * discountRate / 100`(3900원)을 빼는 거예요. `total % 10`은 나머지(0)라서 할인이 안 돼요.
+  - **순서**가 요구사항이에요. 배송비를 먼저 더하고 할인하면 `(39000 + 2500)`의 10%를 빼서 37350원이 돼요. 배송비는 할인 뒤에 더해요.
+
+  `total * 0.9 + shippingFee`처럼 한 줄로 써도 결과가 같으면 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

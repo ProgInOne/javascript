@@ -1,0 +1,84 @@
+id: js-basics.operators.implicit-coercion.fix-entered-zero
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.conv.truthy-falsy, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.3 }
+  - { id: js.conv.to-boolean, weight: 0.3 }
+tags: [truthy, falsy, input]
+estimatedSeconds: 180
+prompt: |
+  회원 가입 화면에서 칸을 채웠는지 확인하는 프로그램이에요. 입력칸의 값은 항상 문자열이고, **빈 문자열 `""`일 때만** 입력하지 않은 거예요.
+
+  아기의 나이로 `0`을 입력했는데 입력하지 않은 것으로 나와요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  나이 입력: true
+  메모 입력: false
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const ageText = "0";
+          const memoText = "";
+
+          const ageEntered = Boolean(Number(ageText));
+          const memoEntered = Boolean(memoText);
+
+          console.log("나이 입력:", ageEntered);
+          console.log("메모 입력:", memoEntered);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const ageText = "0";
+          const memoText = "";
+
+          const ageEntered = Boolean(ageText);
+          const memoEntered = Boolean(memoText);
+
+          console.log("나이 입력:", ageEntered);
+          console.log("메모 입력:", memoEntered);
+  bugDescription: '나이 칸에 0을 입력했는데 "나이 입력: false"가 나와요.'
+  bugMisconception: js.mc.string-zero-falsy
+  maxEditDistance: 6
+  checks:
+    - kind: console
+      id: output
+      description: 나이는 입력함(true), 메모는 입력하지 않음(false)으로 출력되어야 합니다.
+      requirement: 입력 여부 출력
+      expect:
+        lines: ["나이 입력: true", "메모 입력: false"]
+    - kind: program
+      id: flags
+      description: ageEntered는 true, memoEntered는 false여야 하고, 입력값은 바꾸지 않아야 합니다.
+      requirement: 입력 여부 값
+      expect:
+        globals:
+          ageEntered: { equals: true }
+          memoEntered: { equals: false }
+          ageText: { equals: "0" }
+        noError: true
+misconceptions: [js.mc.string-zero-falsy]
+hints:
+  - "4번 줄을 안쪽부터 계산해 보세요. `Number(ageText)`는 무엇이 되나요?"
+  - 숫자 `0`은 falsy예요. 그런데 문자열 `"0"`은 truthy인가요, falsy인가요?
+  - 숫자로 바꾸는 단계 때문에 "글자가 있다"는 정보가 사라졌어요. 메모 줄과 같은 방식으로 확인해 보세요.
+explanation: |
+  4번 줄은 `Boolean(Number("0"))` → `Boolean(0)` → `false`로 계산돼요. 숫자로 바꾸는 순간 "글자 0이 입력되어 있다"는 정보가 사라지고, 숫자 0은 falsy라서 `false`가 됐어요.
+
+  입력했는지는 문자열 그대로 판단하면 돼요. 빈 문자열 `""`만 falsy이고, `"0"`은 글자가 있어서 truthy예요.
+
+  ```js
+  const ageEntered = Boolean(ageText);   // "0" → true
+  ```
+
+  `ageText !== ""`라고 써도 정답이에요. "빈 문자열이 아니면 입력함"이라는 뜻이 더 분명하게 드러나요.
+
+  나이 값을 계산에 써야 한다면 그때 `Number(ageText)`로 바꾸면 돼요. **입력했는지 확인**과 **숫자로 계산**은 다른 단계예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

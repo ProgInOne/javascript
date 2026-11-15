@@ -1,0 +1,62 @@
+id: js-basics.operators.logical.fill-join-condition
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.ops.logical-and-or-not, weight: 1 }
+tags: [logical-or, logical-not]
+estimatedSeconds: 90
+prompt: |
+  동아리 가입 규칙이에요.
+
+  - 19세 미만이면 보호자 동의가 필요해요(`needsConsent`).
+  - 성인**이거나** 보호자가 동의했으면 가입할 수 있어요(`canJoin`).
+
+  빈칸에 알맞은 연산자를 써서 규칙대로 계산되게 하세요. 실행하면 `true true`가 출력되어야 해요.
+spec:
+  mode: code
+  lang: js
+  template: |
+    const age = 16;
+    const hasGuardianConsent = true;
+    const isAdult = age >= 19;
+    const needsConsent = {{blank:not}}isAdult;
+    const canJoin = isAdult {{blank:op}} hasGuardianConsent;
+    console.log(needsConsent, canJoin);
+  blanks:
+    - id: not
+      accept: ["!"]
+      width: 3
+    - id: op
+      accept: ["||"]
+      width: 4
+  checks:
+    - kind: program
+      id: needs-consent
+      description: 16세이므로 needsConsent는 true여야 합니다.
+      requirement: 보호자 동의 필요 여부
+      expect:
+        globals:
+          needsConsent: { equals: true }
+    - kind: program
+      id: can-join
+      description: 보호자가 동의했으므로 canJoin은 true여야 하고, 오류 없이 끝나야 합니다.
+      requirement: 가입 가능 여부
+      expect:
+        globals:
+          canJoin: { equals: true }
+        noError: true
+hints:
+  - "\"성인이 아니다\"를 만들려면 `isAdult`를 뒤집어야 해요."
+  - 참과 거짓을 뒤집는 연산자, "또는"을 뜻하는 연산자를 떠올려 보세요.
+  - 첫 빈칸에는 기호 하나, 두 번째 빈칸에는 같은 기호 두 개가 들어가요.
+explanation: |
+  정답은 `!`와 `||`예요.
+
+  - `needsConsent = !isAdult`: `isAdult`는 `16 >= 19`라서 `false`이고, `!false`는 `true`예요. 19세 미만이니 동의가 필요해요.
+  - `canJoin = isAdult || hasGuardianConsent`: `false || true`라서 `true`예요. "이거나"는 하나라도 참이면 참인 `||`예요.
+
+  두 번째 빈칸에 `&&`를 쓰면 `false && true`라서 `false`가 돼요. 그러면 "성인이면서 동시에 보호자 동의도 있어야" 가입할 수 있다는 다른 규칙이 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

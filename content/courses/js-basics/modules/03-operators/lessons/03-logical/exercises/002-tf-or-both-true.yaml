@@ -1,0 +1,37 @@
+id: js-basics.operators.logical.tf-or-both-true
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.ops.logical-and-or-not, weight: 1 }
+tags: [logical-or, truth-table]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`||`는 \"둘 중 하나만\"이라는 뜻이라서, `true || true`의 결과는 `false`다."
+  answer: false
+  misconceptionIfWrong: js.mc.or-is-exclusive
+  requireReason: true
+  reasons:
+    - id: r1
+      text: "`||`는 하나 이상 참이면 참이라서, 둘 다 참이어도 결과는 true다"
+      correct: true
+    - id: r2
+      text: "`||`는 왼쪽 값만 보고 오른쪽은 항상 무시하기 때문이다"
+    - id: r3
+      text: 같은 값 두 개를 비교하면 언제나 true가 되기 때문이다
+hints:
+  - 진리표에서 `a`와 `b`가 모두 `true`인 줄을 떠올려 보세요.
+  - 일상어의 "또는"과 JavaScript의 `||`는 뜻이 조금 달라요.
+  - "`||`가 거짓이 되는 경우는 양쪽이 모두 거짓일 때 하나뿐이에요."
+explanation: |
+  설명은 **거짓**이에요. `true || true`는 `true`예요.
+
+  `||`는 "하나 **이상** 참이면 참"이에요. 결과가 `false`가 되는 경우는 양쪽이 모두 `false`일 때 하나뿐이에요. "커피 또는 차"처럼 일상에서는 하나만 고르라는 뜻으로 쓰기도 하지만, `||`는 둘 다 참이어도 괜찮아요.
+
+  - "왼쪽만 보고 오른쪽은 항상 무시한다"는 틀렸어요. 왼쪽이 거짓이면 `||`는 오른쪽을 봐요. 왼쪽이 참일 때만 오른쪽을 건너뛰어요.
+  - `||`는 두 값을 비교하는 연산자가 아니에요. `false || false`는 같은 값 두 개지만 `false`예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

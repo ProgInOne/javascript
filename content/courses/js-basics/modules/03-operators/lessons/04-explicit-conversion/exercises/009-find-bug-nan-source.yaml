@@ -1,0 +1,56 @@
+id: js-basics.operators.explicit-conversion.find-bug-nan-source
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.conv.nan, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.5 }
+tags: [nan, debugging]
+estimatedSeconds: 90
+prompt: |
+  사진 크기를 입력받아 넓이를 계산하는 프로그램이에요. 오류는 나지 않는데 결과가 이상해요. 원인이 되는 줄을 찾고, 그 이유도 고르세요.
+spec:
+  code: |-
+    const widthText = "120px";
+    const heightText = "80";
+    const width = Number(widthText);
+    const height = Number(heightText);
+    const area = width * height;
+    console.log("넓이:", area);
+  bugLines: [3]
+  symptom: '콘솔에 `넓이: NaN`이 출력돼요.'
+  symptomCheck:
+    console: ["넓이: NaN"]
+  fixedCode: |-
+    const widthText = "120px";
+    const heightText = "80";
+    const width = parseInt(widthText);
+    const height = Number(heightText);
+    const area = width * height;
+    console.log("넓이:", area);
+  causeOptions:
+    - id: c1
+      text: '"120px"를 Number로 바꾸면 px 때문에 NaN이 되고, 그 NaN이 곱셈 결과까지 퍼졌다'
+      correct: true
+    - id: c2
+      text: 곱셈 결과가 너무 커서 숫자로 나타낼 수 없게 되었다
+    - id: c3
+      text: Number는 "120px"의 앞부분 120을 읽지만, 80은 문자열이라 곱할 수 없다
+      misconception: js.mc.number-parses-prefix
+misconceptions: [js.mc.failed-conversion-throws, js.mc.number-parses-prefix]
+hints:
+  - NaN은 오류 없이 퍼져요. 마지막 줄부터 거슬러 올라가며 각 변수의 값을 따져 보세요.
+  - "`area`가 NaN이라면 `width`와 `height` 중 하나가 이미 NaN이었다는 뜻이에요."
+  - 두 문자열 중 Number가 전체를 숫자로 읽을 수 없는 쪽은 어느 것일까요?
+explanation: |
+  원인은 **3번 줄**이에요.
+
+  `Number("120px")`는 `px` 때문에 `NaN`이에요. 변환에 실패해도 오류는 나지 않으니 프로그램은 계속 실행되고, 5번 줄에서 `NaN * 80`도 `NaN`이 되어 마지막에 `넓이: NaN`이 출력돼요. `height`는 `Number("80")`이라 정상적인 80이에요.
+
+  단위가 붙은 글자는 `parseInt(widthText)`로 바꾸면 `120`을 읽을 수 있어요(넓이 9600).
+
+  - 숫자가 너무 커서라는 이유: 120 × 80은 작은 수예요. 너무 큰 수는 `NaN`이 아니라 `Infinity`가 돼요.
+  - Number가 앞부분을 읽는다는 이유: 앞부분만 읽는 건 parseInt예요. 또 `height`는 이미 Number로 바꾼 숫자예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

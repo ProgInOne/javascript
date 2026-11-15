@@ -1,0 +1,64 @@
+id: js-basics.operators.operators-review.fix-width-px
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.conv.to-number, weight: 1 }
+  - { id: js.conv.nan, weight: 0.3 }
+tags: [to-number, parseInt, review]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  화면에 있는 상자의 너비를 글자로 읽어 왔어요(`"120px"`). 너비를 두 배로 늘린 값을 계산하려고 하는데 결과가 이상해요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  원래 너비: 120
+  두 배 너비: 240
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const widthText = "120px";
+          const width = Number(widthText);
+          console.log("원래 너비:", width);
+          console.log("두 배 너비:", width * 2);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const widthText = "120px";
+          const width = parseInt(widthText);
+          console.log("원래 너비:", width);
+          console.log("두 배 너비:", width * 2);
+  bugDescription: "너비가 숫자 대신 `NaN`으로 출력돼요."
+  bugMisconception: js.mc.number-parses-prefix
+  maxEditDistance: 4
+  checks:
+    - kind: console
+      id: output
+      description: 원래 너비 120과 두 배 너비 240이 출력되어야 합니다.
+      expect:
+        lines: ["원래 너비: 120", "두 배 너비: 240"]
+    - kind: program
+      id: width-number
+      description: width에는 숫자 120이 들어 있어야 합니다.
+      expect:
+        globals:
+          width: { equals: 120 }
+        noError: true
+misconceptions: [js.mc.number-parses-prefix]
+hints:
+  - "`Number(\"120px\")`의 결과를 따로 출력해 보세요. 무엇이 나오나요?"
+  - Number는 문자열 **전체**가 숫자여야 바꿀 수 있어요. `px`가 붙어 있으면 실패해요.
+  - 앞에서부터 읽을 수 있는 데까지만 숫자로 읽는 함수를 배웠어요.
+explanation: |
+  2번 줄을 `parseInt(widthText)`로 바꾸면 돼요.
+
+  `Number("120px")`는 문자열 전체를 숫자로 읽으려다 `px`에서 실패해 `NaN`이 돼요. NaN에 2를 곱해도 NaN이라 두 줄 모두 NaN이 출력됐어요. `parseInt`는 앞에서부터 읽을 수 있는 숫자(`120`)까지만 읽고 나머지(`px`)는 버려요.
+
+  `parseFloat(widthText)`도 같은 결과(120)라서 정답이에요. 너비가 `"12.5px"`처럼 소수일 수 있다면 `parseFloat`가 더 알맞아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

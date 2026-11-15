@@ -1,0 +1,40 @@
+id: js-basics.operators.arithmetic.predict-compound-chain
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.ops.compound-assignment, weight: 1 }
+  - { id: js.ops.remainder, weight: 0.3 }
+tags: [compound-assignment, trace]
+estimatedSeconds: 100
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요?
+spec:
+  lang: js
+  code: |
+    let x = 4;
+    x *= 2 + 3;
+    x -= 6 / 2;
+    x %= 5;
+    console.log(x);
+  answerKind: console
+  misconceptionByAnswer:
+    "3": js.mc.compound-right-side-split
+hints:
+  - 줄마다 `x = x ○ (오른쪽)` 꼴로 바꿔 쓰고, "이름 → 값" 표로 따라가 보세요.
+  - 복합 대입은 오른쪽 전체를 먼저 계산해요. `x *= 2 + 3`의 오른쪽은 얼마인가요?
+  - "x는 4 → 4 × 5 → (그 값) − 3 → 5로 나눈 나머지 순서로 바뀌어요."
+explanation: |
+  정답은 **2**예요.
+
+  | 실행한 줄 | 같은 뜻 | 대입 후 `x` |
+  |---|---|---|
+  | `let x = 4;` | | 4 |
+  | `x *= 2 + 3;` | `x = x * (2 + 3)` | 20 |
+  | `x -= 6 / 2;` | `x = x - (6 / 2)` | 17 |
+  | `x %= 5;` | `x = x % 5` | 2 |
+
+  `3`이라고 답했다면 `x *= 2 + 3`을 `x = x * 2 + 3`으로 계산한 거예요(4 → 11 → 8 → 3). 복합 대입은 오른쪽 전체를 먼저 계산한 뒤 연산해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

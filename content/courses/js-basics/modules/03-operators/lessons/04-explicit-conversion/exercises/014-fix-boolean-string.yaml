@@ -1,0 +1,60 @@
+id: js-basics.operators.explicit-conversion.fix-boolean-string
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.conv.to-boolean, weight: 1 }
+  - { id: js.ops.strict-equality, weight: 0.5 }
+tags: [boolean, string, debugging]
+estimatedSeconds: 150
+prompt: |
+  저장해 둔 화면 설정을 읽어 오는 프로그램이에요. 저장소에서 꺼낸 값은 항상 문자열이라 다크 모드 설정은 `"false"`라는 글자로 들어 있어요. 그런데 다크 모드가 켜진 것으로 나와요. `darkMode`를 만드는 줄을 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  다크 모드: false
+  ```
+
+  `savedDarkMode`가 `"true"`였다면 `true`가 나와야 해요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const savedDarkMode = "false";
+          const darkMode = Boolean(savedDarkMode);
+          console.log("다크 모드:", darkMode);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const savedDarkMode = "false";
+          const darkMode = savedDarkMode === "true";
+          console.log("다크 모드:", darkMode);
+  bugDescription: 저장된 설정은 "false"인데 다크 모드가 true로 나와요.
+  bugMisconception: js.mc.boolean-reads-string-content
+  checks:
+    - kind: console
+      id: output
+      description: '"다크 모드: false"가 출력되어야 합니다.'
+      expect:
+        lines: ["다크 모드: false"]
+    - kind: program
+      id: dark-mode
+      description: darkMode에 불리언 false가 들어 있어야 합니다.
+      expect:
+        globals: { darkMode: { equals: false } }
+        noError: true
+misconceptions: [js.mc.boolean-reads-string-content]
+hints:
+  - "`Boolean(\"false\")`의 결과를 떠올려 보세요. 문자열 중 false가 되는 것은 무엇뿐이었나요?"
+  - Boolean은 글자의 뜻을 읽지 않아요. "false"라는 글자의 뜻을 반영하려면 다른 방법이 필요해요.
+  - 저장된 글자가 정확히 "true"인지 비교하면, 그 결과가 바로 원하는 true/false예요.
+explanation: |
+  2번 줄을 `const darkMode = savedDarkMode === "true";`로 고쳐요.
+
+  `Boolean("false")`는 `true`예요. Boolean은 글자의 내용을 읽지 않고, 빈 문자열만 `false`로 바꾸기 때문이에요. 글자 `"true"`/`"false"`를 불리언으로 바꾸려면 "글자가 정확히 `"true"`인가?"를 비교해요. 비교 결과 자체가 `true`나 `false`예요.
+
+  `savedDarkMode === "false"`로 쓰면 결과가 반대(`true`)가 되고, `!Boolean(savedDarkMode)`는 `"true"`가 저장되어 있을 때도 `false`가 되어 틀려요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

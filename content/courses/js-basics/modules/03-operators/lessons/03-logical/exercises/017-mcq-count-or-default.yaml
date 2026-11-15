@@ -1,0 +1,46 @@
+id: js-basics.operators.logical.mcq-count-or-default
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+tags: [short-circuit, default-value]
+estimatedSeconds: 45
+prompt: |
+  다음 코드를 실행한 뒤 `shown`에 들어 있는 값은 무엇인가요?
+
+  ```js
+  let count = 0;
+  const shown = count || 10;
+  ```
+spec:
+  options:
+    - id: a
+      text: "`10`"
+    - id: b
+      text: "`0`"
+      misconception: js.mc.or-default-keeps-zero
+      rationale: 0은 falsy라서 ||는 오른쪽 기본값 10을 골라요.
+    - id: c
+      text: "`true`"
+      misconception: js.mc.logical-returns-boolean
+      rationale: "||는 true/false가 아니라 양쪽 값 중 하나를 그대로 돌려줘요."
+    - id: d
+      text: "`false`"
+      misconception: js.mc.logical-returns-boolean
+      rationale: "||의 결과는 0이나 10 중 하나예요. false가 새로 생기지 않아요."
+  correct: a
+hints:
+  - "`count`에 들어 있는 0은 truthy일까요, falsy일까요?"
+  - falsy 값은 `false`, `0`, `""`, `null`, `undefined`, `NaN`이에요.
+  - "`||`는 왼쪽이 falsy이면 오른쪽 값을 돌려줘요."
+explanation: |
+  정답은 **`10`**이에요.
+
+  `0`은 falsy라서 `count || 10`은 오른쪽 값 `10`을 돌려줘요. `count`에 값이 "있다"고 해서 `||`가 왼쪽을 고르는 게 아니라, 왼쪽이 **truthy인지**만 봐요.
+
+  - `0`을 골랐다면: `||`로 기본값을 정하면 0도 "없음"으로 취급돼요. 0을 지켜야 한다면 `count ?? 10`을 써요(결과 `0`).
+  - `true`·`false`를 골랐다면: `||`는 양쪽 값 중 하나를 그대로 돌려줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

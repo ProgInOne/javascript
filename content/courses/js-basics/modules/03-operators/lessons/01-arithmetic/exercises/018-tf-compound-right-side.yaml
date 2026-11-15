@@ -1,0 +1,40 @@
+id: js-basics.operators.arithmetic.tf-compound-right-side
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.ops.compound-assignment, weight: 1 }
+  - { id: js.ops.precedence, weight: 0.3 }
+tags: [compound-assignment, precedence]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: "`x *= 2 + 3;`은 `x = x * 2 + 3;`과 같은 뜻이다."
+  answer: false
+  misconceptionIfWrong: js.mc.compound-right-side-split
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 복합 대입은 오른쪽 전체(2 + 3)를 먼저 계산한 뒤 x에 곱한다
+      correct: true
+    - id: r2
+      text: 곱셈이 덧셈보다 먼저라서 x * 2를 먼저 계산한 뒤 3을 더한다
+      misconception: js.mc.compound-right-side-split
+    - id: r3
+      text: "*=는 x에 2 + 3의 결과인 5를 그냥 넣는 대입이다"
+      misconception: js.mc.compound-operator-reversed
+hints:
+  - "`x *= 값`은 `x = x * 값`의 줄임말이에요. 여기서 \"값\"은 어디까지일까요?"
+  - x가 4라고 하고 두 식을 각각 계산해 보세요.
+  - "`x *= 2 + 3`은 `x = x * (2 + 3)`이에요. `x = x * 2 + 3`과 결과가 같은지 비교해 보세요."
+explanation: |
+  **거짓**이에요.
+
+  복합 대입은 **오른쪽 전체를 먼저 계산**해요. `x *= 2 + 3`은 `x = x * (2 + 3)`이에요. x가 4라면 4 × 5 = 20이에요. 반면 `x = x * 2 + 3`은 4 × 2 + 3 = 11이에요.
+
+  - "곱셈이 먼저"를 고른 경우: 우선순위 규칙은 한 식 안에서 적용돼요. 복합 대입에서는 오른쪽 `2 + 3`이 하나의 값으로 먼저 계산돼요.
+  - "5를 그냥 넣는다"를 고른 경우: 그건 `x = 5`예요. `*=`는 지금 x에 오른쪽 값을 곱해서 다시 넣어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

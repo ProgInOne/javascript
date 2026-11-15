@@ -1,0 +1,46 @@
+id: js-basics.operators.logical.mcq-nullish-volume
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.ops.nullish, weight: 1 }
+tags: [nullish, default-value]
+estimatedSeconds: 50
+prompt: |
+  사용자가 음량을 0으로 저장해 두었어요. 다음 코드를 실행한 뒤 `volume`에 들어 있는 값은 무엇인가요?
+
+  ```js
+  const savedVolume = 0;
+  const volume = savedVolume ?? 50;
+  ```
+spec:
+  options:
+    - id: a
+      text: "`0`"
+    - id: b
+      text: "`50`"
+      misconception: js.mc.nullish-same-as-or
+      rationale: "??는 왼쪽이 null이나 undefined일 때만 오른쪽을 골라요. 0은 둘 다 아니에요."
+    - id: c
+      text: "`true`"
+      misconception: js.mc.logical-returns-boolean
+      rationale: "??도 양쪽 값 중 하나를 그대로 돌려줘요."
+    - id: d
+      text: "`null`"
+      rationale: 0은 null이 아니에요. ??는 null을 새로 만들지 않아요.
+  correct: a
+hints:
+  - "`??`가 오른쪽 값을 고르는 경우는 언제였나요?"
+  - "`||`와 달리 `??`는 falsy 값 전부가 아니라 두 가지 값에만 반응해요."
+  - "`0`은 `null`도 `undefined`도 아니에요."
+explanation: |
+  정답은 **`0`**이에요.
+
+  `??`는 왼쪽이 `null`이나 `undefined`일 때만 오른쪽 기본값을 골라요. `0`은 falsy이긴 하지만 `null`도 `undefined`도 아니라서, `??`는 `0`을 그대로 둬요. 사용자가 고른 음량 0이 지켜졌어요.
+
+  - `50`: `savedVolume || 50`이었다면 정답이에요. `||`는 falsy인 0을 기본값으로 바꾸지만, `??`는 아니에요.
+  - `true`: `??`도 `&&`, `||`처럼 양쪽 값 중 하나를 그대로 돌려줘요.
+  - `null`: `??`는 `null`을 만들지 않아요. `null`을 **기본값으로 바꾸는** 연산자예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,49 @@
+id: js-basics.operators.arithmetic.mcq-postfix-prefix
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.ops.increment, weight: 1 }
+tags: [increment, postfix, prefix]
+estimatedSeconds: 75
+prompt: |
+  다음 코드를 실행한 뒤 `a`, `b`, `c`에 들어 있는 값은 무엇인가요?
+code: |
+  let a = 5;
+  let b = a++;
+  let c = ++a;
+spec:
+  options:
+    - id: x1
+      text: "`a`는 7, `b`는 5, `c`는 7"
+    - id: x2
+      text: "`a`는 7, `b`는 6, `c`는 7"
+      misconception: js.mc.postfix-prefix-same
+      rationale: a++의 값은 늘리기 전의 5예요. 늘린 뒤의 값을 주는 것은 ++a예요.
+    - id: x3
+      text: "`a`는 5, `b`는 6, `c`는 6"
+      misconception: js.mc.expression-changes-variable
+      rationale: ++는 계산만 하는 게 아니라 a 자체를 1 늘려요. 두 번 썼으니 a는 7이 돼요.
+    - id: x4
+      text: "`a`는 6, `b`는 5, `c`는 6"
+      rationale: 두 줄 모두 a를 1씩 늘려요. a는 두 번 늘어나 7이 되고, c에는 늘린 뒤 값 7이 들어가요.
+  correct: x1
+hints:
+  - "`a++`와 `++a`는 모두 `a`를 1 늘려요. 그렇다면 `a`는 몇 번 늘어나나요?"
+  - 차이는 식의 값이에요. 뒤에 붙이면 늘리기 전 값, 앞에 붙이면 늘린 뒤 값이에요.
+  - "\"이름 → 값\" 표를 그려 2번 줄 다음과 3번 줄 다음의 a, b, c를 적어 보세요."
+explanation: |
+  정답은 **`a`는 7, `b`는 5, `c`는 7**이에요.
+
+  | 실행한 줄 | 일어나는 일 | `a` | `b` | `c` |
+  |---|---|---|---|---|
+  | `let a = 5;` | | 5 | | |
+  | `let b = a++;` | 늘리기 전 값 5를 b에 넣고 a는 6 | 6 | 5 | |
+  | `let c = ++a;` | a를 7로 늘린 뒤 그 값 7을 c에 넣음 | 7 | 5 | 7 |
+
+  - b를 6이라고 했다면 `a++`와 `++a`의 값이 같다고 생각한 거예요. 뒤에 붙인 `a++`는 늘리기 **전** 값이에요.
+  - a를 5라고 했다면 `++`가 a를 바꾸지 않는다고 생각한 거예요. `++`는 a 자체를 1 늘리는 대입이에요.
+  - a를 6이라고 했다면 늘어나는 횟수를 한 번 놓친 거예요. 두 줄 모두 a를 늘려요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

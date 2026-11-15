@@ -1,0 +1,76 @@
+id: js-basics.operators.arithmetic.fix-reversed-compound
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.ops.compound-assignment, weight: 1 }
+tags: [compound-assignment, debugging]
+estimatedSeconds: 180
+prompt: |
+  분식집 계산 프로그램이에요. 김밥 3000원, 라면 4500원, 음료 1200원을 더하고, 10000원을 냈을 때 거스름돈을 계산해요. 오류는 없는데 금액이 이상해요. 아래처럼 출력되게 고치세요.
+
+  ```text
+  합계: 8700
+  거스름돈: 1300
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          let total = 0;
+          total += 3000;   // 김밥
+          total =+ 4500;   // 라면
+          total =+ 1200;   // 음료
+
+          let money = 10000;
+          money =- total;  // 거스름돈
+          console.log("합계:", total);
+          console.log("거스름돈:", money);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let total = 0;
+          total += 3000;   // 김밥
+          total += 4500;   // 라면
+          total += 1200;   // 음료
+
+          let money = 10000;
+          money -= total;  // 거스름돈
+          console.log("합계:", total);
+          console.log("거스름돈:", money);
+  bugDescription: 합계가 1200, 거스름돈이 -1200으로 나와요.
+  bugMisconception: js.mc.compound-operator-reversed
+  maxEditDistance: 6
+  checks:
+    - kind: console
+      id: output
+      description: 합계 8700과 거스름돈 1300이 출력되어야 합니다.
+      requirement: 금액 출력
+      expect:
+        lines: ["합계: 8700", "거스름돈: 1300"]
+    - kind: program
+      id: values
+      description: 끝났을 때 total은 8700, money는 1300이어야 합니다.
+      requirement: 변수 값
+      expect:
+        globals:
+          total: { equals: 8700 }
+          money: { equals: 1300 }
+        noError: true
+misconceptions: [js.mc.compound-operator-reversed]
+hints:
+  - 합계가 마지막 음료 값 1200과 같아요. 4번 줄이 무엇을 했는지 생각해 보세요.
+  - 2번 줄과 3·4번 줄의 연산자를 글자 순서까지 비교해 보세요.
+  - "`=+ 1200`은 `= +1200`, 즉 1200을 넣는 대입으로 읽혀요. 7번 줄도 같은 모양이에요."
+explanation: |
+  3번, 4번, 7번 줄의 연산자 순서가 뒤집혀 있어요.
+
+  - `total =+ 4500`은 `total = +4500`으로 읽혀서 4500을 **넣어요**. 4번 줄에서 다시 1200을 넣어서 합계가 1200이 됐어요.
+  - `money =- total`은 `money = -total`이라서 -1200이 됐어요.
+
+  연산 기호를 `=` 앞에 붙여 `+=`, `-=`로 고치면 합계 3000 + 4500 + 1200 = 8700, 거스름돈 10000 − 8700 = 1300이 나와요. `=+`, `=-`는 문법상 올바른 식이라 오류가 나지 않아요. 그래서 결과를 보고 찾아야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

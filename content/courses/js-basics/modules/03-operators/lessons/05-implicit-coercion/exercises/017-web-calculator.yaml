@@ -1,0 +1,142 @@
+id: js-basics.operators.implicit-coercion.web-calculator
+type: web_task
+difficulty: 3
+concepts:
+  - { id: js.conv.plus-concat, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.5 }
+tags: [plus, concat, to-number, dom]
+estimatedSeconds: 240
+prompt: |
+  화면에 더하기 계산기가 두 개 있어요. 그런데 3 + 4의 결과가 `7`이 아니라 `34`로 보여요.
+
+  `<script>` 안의 계산 줄을 고쳐서 두 계산기가 모두 올바른 합계를 보여 주게 하세요.
+
+  - 위 계산기: 3 + 4 → `7`
+  - 아래 계산기: 2.5 + 1.5 → `4`
+
+  입력칸에서 값을 읽는 줄과 결과를 화면에 쓰는 줄은 모듈 10에서 배울 코드예요. 그대로 두고 **계산하는 줄만** 고치면 돼요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>더하기 계산기</title>
+            </head>
+            <body>
+              <h1>더하기 계산기</h1>
+              <p>
+                <input id="a" value="3" aria-label="첫 번째 수" /> +
+                <input id="b" value="4" aria-label="두 번째 수" /> =
+                <strong id="result"></strong>
+              </p>
+              <p>
+                <input id="c" value="2.5" aria-label="세 번째 수" /> +
+                <input id="d" value="1.5" aria-label="네 번째 수" /> =
+                <strong id="result2"></strong>
+              </p>
+              <script>
+                // 입력칸에서 값을 읽어 와요(모듈 10에서 배워요).
+                // 입력칸의 값(.value)은 숫자를 입력해도 항상 문자열이에요.
+                const a = document.querySelector("#a").value;
+                const b = document.querySelector("#b").value;
+                const c = document.querySelector("#c").value;
+                const d = document.querySelector("#d").value;
+
+                // 여기부터 계산하는 줄이에요.
+                const sum = a + b;
+                const sum2 = c + d;
+
+                // 계산 결과를 화면에 보여 줘요(모듈 10에서 배워요).
+                document.querySelector("#result").textContent = sum;
+                document.querySelector("#result2").textContent = sum2;
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>더하기 계산기</title>
+            </head>
+            <body>
+              <h1>더하기 계산기</h1>
+              <p>
+                <input id="a" value="3" aria-label="첫 번째 수" /> +
+                <input id="b" value="4" aria-label="두 번째 수" /> =
+                <strong id="result"></strong>
+              </p>
+              <p>
+                <input id="c" value="2.5" aria-label="세 번째 수" /> +
+                <input id="d" value="1.5" aria-label="네 번째 수" /> =
+                <strong id="result2"></strong>
+              </p>
+              <script>
+                // 입력칸에서 값을 읽어 와요(모듈 10에서 배워요).
+                // 입력칸의 값(.value)은 숫자를 입력해도 항상 문자열이에요.
+                const a = document.querySelector("#a").value;
+                const b = document.querySelector("#b").value;
+                const c = document.querySelector("#c").value;
+                const d = document.querySelector("#d").value;
+
+                // 여기부터 계산하는 줄이에요.
+                const sum = Number(a) + Number(b);
+                const sum2 = Number(c) + Number(d);
+
+                // 계산 결과를 화면에 보여 줘요(모듈 10에서 배워요).
+                document.querySelector("#result").textContent = sum;
+                document.querySelector("#result2").textContent = sum2;
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: first-sum
+      description: 위 계산기의 결과 칸에 3 + 4의 합계 7이 보여야 합니다.
+      requirement: 합계 계산
+      visible: true
+      selector: "#result"
+      expect:
+        text: { equals: "7" }
+      misconceptionIfFail: js.mc.plus-string-adds
+    - kind: dom
+      id: second-sum
+      description: 아래 계산기의 결과 칸에 2.5 + 1.5의 합계 4가 보여야 합니다.
+      requirement: 합계 계산
+      visible: true
+      selector: "#result2"
+      expect:
+        text: { equals: "4" }
+      misconceptionIfFail: js.mc.plus-string-adds
+misconceptions: [js.mc.plus-string-adds]
+hints:
+  - "`a`와 `b`에는 어떤 자료형의 값이 들어 있나요? 주석을 읽어 보세요."
+  - 문자열끼리 `+`를 하면 이어 붙여요. `"3" + "4"`는 무엇이 될까요?
+  - 더하기 전에 두 값을 모두 숫자로 바꿔야 해요. 소수도 있으니 소수까지 읽는 변환 방법을 쓰세요.
+explanation: |
+  입력칸의 값(`.value`)은 숫자를 입력해도 항상 문자열이에요. 그래서 `a + b`는 `"3" + "4"`가 되어 `"34"`로 이어 붙여졌어요.
+
+  더하기 전에 숫자로 바꿔요.
+
+  ```js
+  const sum = Number(a) + Number(b);
+  const sum2 = Number(c) + Number(d);
+  ```
+
+  - `parseInt`로 바꾸면 아래 계산기가 `2 + 1 = 3`이 되어 틀려요. `parseInt`는 소수점 아래를 버려요. `Number`나 `parseFloat`를 써요.
+  - 한쪽만 바꾸면(`Number(a) + b`) 여전히 숫자 + 문자열이라 이어 붙여져요.
+  - 값을 읽는 줄에서 `Number(document.querySelector("#a").value)`처럼 바로 바꿔도 정답이에요.
+
+  실제 웹 페이지의 입력값 버그 가운데 가장 흔한 것이 이 문제예요. 모듈 10에서 입력칸을 직접 다룰 때 다시 만나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

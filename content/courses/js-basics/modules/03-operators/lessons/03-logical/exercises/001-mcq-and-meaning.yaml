@@ -1,0 +1,45 @@
+id: js-basics.operators.logical.mcq-and-meaning
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.ops.logical-and-or-not, weight: 1 }
+tags: [logical-and]
+estimatedSeconds: 45
+prompt: |
+  영화관 입장 규칙을 코드로 옮겼어요.
+
+  ```js
+  const canEnter = age >= 13 && hasTicket;
+  ```
+
+  `canEnter`가 `true`가 되는 경우는 어느 것인가요?
+spec:
+  options:
+    - id: a
+      text: "`age`가 15이고 `hasTicket`이 `true`일 때"
+    - id: b
+      text: "`age`가 15이고 `hasTicket`이 `false`일 때"
+      rationale: 나이 조건만 맞고 표가 없어요. 하나라도 거짓이면 &&의 결과는 false예요.
+    - id: c
+      text: "`age`가 10이고 `hasTicket`이 `true`일 때"
+      rationale: 표는 있지만 13세 이상이라는 조건이 거짓이에요. &&는 둘 다 참이어야 해요.
+    - id: d
+      text: "`age`가 10이고 `hasTicket`이 `false`일 때"
+      rationale: 두 조건이 모두 거짓이에요. 거짓 두 개를 합쳐도 참이 되지 않아요.
+  correct: a
+hints:
+  - "`&&`는 \"그리고\"라고 읽어요."
+  - 두 조건 `age >= 13`과 `hasTicket`을 선택지마다 따로 true/false로 바꿔 보세요.
+  - "`&&`는 양쪽이 모두 참일 때만 참이에요."
+explanation: |
+  정답은 **`age`가 15이고 `hasTicket`이 `true`일 때**예요.
+
+  `&&`는 "그리고"라서 `age >= 13`과 `hasTicket`이 **둘 다** `true`여야 `true`예요.
+
+  - 15세지만 표가 없는 경우: `true && false` → `false`. "하나만 맞아도 된다"는 `||`의 규칙이에요.
+  - 10세이고 표가 있는 경우: `false && true` → `false`.
+  - 10세이고 표도 없는 경우: `false && false` → `false`.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

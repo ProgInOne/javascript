@@ -155,3 +155,157 @@
   prerequisites: [js.values.const, js.values.var]
   misconceptions: [js.mc.let-before-declaration-undefined, js.mc.tdz-means-misspelled]
   mdn: Web/JavaScript/Reference/Statements/let
+
+# ── 모듈 3. 연산자와 형 변환: arithmetic ──
+
+- id: js.ops.arithmetic
+  title: 산술 연산자
+  importance: core
+  summary: "+ - * / **로 숫자를 계산해요. 계산식은 새 값을 만들 뿐 변수를 바꾸지 않고, /는 나머지를 버리지 않고 소수까지 계산해요."
+  prerequisites: [js.types.number, js.values.let]
+  misconceptions: [js.mc.division-truncates, js.mc.caret-is-power, js.mc.expression-changes-variable]
+  mdn: Web/JavaScript/Guide/Expressions_and_operators
+
+- id: js.ops.precedence
+  title: 연산자 우선순위
+  importance: standard
+  summary: "** 다음에 * / %, 그다음 + -를 계산해요. 우선순위가 같으면 왼쪽부터(** 만 오른쪽부터) 계산하고, 괄호 안을 가장 먼저 계산해요."
+  prerequisites: [js.ops.arithmetic]
+  misconceptions: [js.mc.always-left-to-right, js.mc.multiply-before-divide]
+  mdn: Web/JavaScript/Reference/Operators/Operator_precedence
+
+- id: js.ops.remainder
+  title: 나머지 연산자
+  importance: standard
+  summary: "a % b는 a를 b로 나눈 나머지예요. 짝수·홀수 판단이나 묶고 남는 개수를 구할 때 써요."
+  prerequisites: [js.ops.arithmetic]
+  misconceptions: [js.mc.remainder-is-percent, js.mc.remainder-is-quotient]
+  mdn: Web/JavaScript/Reference/Operators/Remainder
+
+- id: js.ops.compound-assignment
+  title: 복합 대입 연산자
+  importance: standard
+  summary: "x += 5는 x = x + 5의 줄임말이에요. -=, *=, /=, %=, **=도 같은 방식으로, 오른쪽 전체를 먼저 계산한 뒤 연산해서 다시 넣어요."
+  prerequisites: [js.ops.arithmetic, js.values.assignment]
+  misconceptions: [js.mc.compound-operator-reversed, js.mc.compound-right-side-split]
+  mdn: Web/JavaScript/Reference/Operators/Addition_assignment
+
+- id: js.ops.increment
+  title: 증가·감소 연산자
+  importance: standard
+  summary: "count++와 ++count는 모두 count를 1 늘려요. 식의 값은 다른데, count++는 늘리기 전 값, ++count는 늘린 뒤 값이에요."
+  prerequisites: [js.ops.compound-assignment]
+  misconceptions: [js.mc.postfix-prefix-same]
+  mdn: Web/JavaScript/Reference/Operators/Increment
+
+# ── 모듈 3. 연산자와 형 변환: comparison ──
+
+- id: js.ops.strict-equality
+  title: 일치 연산자 (===, !==)
+  importance: core
+  summary: "a === b는 자료형과 값이 모두 같으면 true, 아니면 false예요. !==는 그 반대예요. 비교 결과는 항상 true나 false예요."
+  prerequisites: [js.types.boolean, js.types.primitives]
+  misconceptions: [js.mc.strict-equality-ignores-type, js.mc.nan-equals-nan, js.mc.assign-as-compare]
+  mdn: Web/JavaScript/Reference/Operators/Strict_equality
+
+- id: js.ops.loose-equality
+  title: 동등 연산자 (==, !=)
+  importance: standard
+  summary: "==는 자료형이 다르면 한쪽을 바꿔서 비교해요. 그래서 \"5\" == 5가 true예요. 결과를 예측하기 어려워서 보통 ===를 써요."
+  prerequisites: [js.ops.strict-equality]
+  misconceptions: [js.mc.loose-equals-like-strict]
+  mdn: Web/JavaScript/Reference/Operators/Equality
+
+- id: js.ops.relational
+  title: 대소 비교 연산자
+  importance: core
+  summary: "< > <= >=로 크기를 비교해요. 숫자와 문자열을 비교하면 숫자로 바꿔 비교하지만, 문자열끼리는 사전 순서(글자 하나씩)로 비교해요."
+  prerequisites: [js.ops.strict-equality, js.types.string]
+  misconceptions: [js.mc.string-compare-numeric, js.mc.chained-comparison, js.mc.mixed-compare-as-string]
+  mdn: Web/JavaScript/Reference/Operators/Less_than
+
+# ── 모듈 3. 연산자와 형 변환: logical ──
+
+- id: js.ops.logical-and-or-not
+  title: 논리 연산자 (&&, ||, !)
+  importance: core
+  summary: "&&는 둘 다 참일 때, ||는 하나라도 참일 때 참이에요. !는 참과 거짓을 뒤집어요. 우선순위는 ! → && → || 순서예요."
+  prerequisites: [js.ops.relational]
+  misconceptions: [js.mc.or-is-exclusive, js.mc.and-or-same-precedence, js.mc.not-applies-to-whole]
+  mdn: Web/JavaScript/Reference/Operators/Logical_AND
+
+- id: js.ops.short-circuit
+  title: 단락 평가
+  importance: core
+  summary: "&&와 ||는 왼쪽만 보고 결과가 정해지면 오른쪽을 계산하지 않아요. 결과도 true/false가 아니라 왼쪽이나 오른쪽 값 그 자체예요."
+  prerequisites: [js.ops.logical-and-or-not]
+  misconceptions: [js.mc.logical-returns-boolean, js.mc.right-side-always-runs, js.mc.or-default-keeps-zero]
+  mdn: Web/JavaScript/Reference/Operators/Logical_OR
+
+- id: js.ops.nullish
+  title: null 병합 연산자 (??)
+  importance: standard
+  summary: "a ?? b는 a가 null이나 undefined일 때만 b예요. 0이나 빈 문자열은 그대로 두므로, 기본값을 정할 때 ||보다 안전해요."
+  prerequisites: [js.ops.short-circuit, js.types.null]
+  misconceptions: [js.mc.nullish-same-as-or]
+  mdn: Web/JavaScript/Reference/Operators/Nullish_coalescing
+
+# ── 모듈 3. 연산자와 형 변환: explicit-conversion ──
+
+- id: js.conv.to-number
+  title: 숫자로 바꾸기
+  importance: standard
+  summary: "Number(값)은 값 전체를 숫자로 바꾸고, 숫자로 읽을 수 없으면 NaN이에요. parseInt·parseFloat는 앞에서부터 읽을 수 있는 데까지만 숫자로 읽어요."
+  prerequisites: [js.ops.arithmetic, js.types.string]
+  misconceptions: [js.mc.number-parses-prefix, js.mc.empty-string-to-nan]
+  mdn: Web/JavaScript/Reference/Global_Objects/Number/Number
+
+- id: js.conv.to-string
+  title: 문자열로 바꾸기
+  importance: minor
+  summary: "String(값)은 어떤 값이든 글자로 바꿔요. null은 \"null\", true는 \"true\"처럼 보이는 그대로 글자가 돼요."
+  prerequisites: [js.types.string]
+  misconceptions: [js.mc.string-of-null-empty]
+  mdn: Web/JavaScript/Reference/Global_Objects/String/String
+
+- id: js.conv.to-boolean
+  title: 불리언으로 바꾸기
+  importance: minor
+  summary: "Boolean(값)이나 !!값은 값을 true나 false로 바꿔요. 글자의 내용은 보지 않으므로 \"false\"라는 글자도 true가 돼요."
+  prerequisites: [js.ops.logical-and-or-not, js.types.boolean]
+  misconceptions: [js.mc.boolean-reads-string-content]
+  mdn: Web/JavaScript/Reference/Global_Objects/Boolean/Boolean
+
+- id: js.conv.nan
+  title: NaN
+  importance: standard
+  summary: "NaN은 \"숫자가 아님\"을 뜻하는 숫자 자료형의 값이에요. 변환이나 계산이 실패하면 오류 대신 NaN이 나오고, 확인은 Number.isNaN으로 해요."
+  prerequisites: [js.conv.to-number]
+  misconceptions: [js.mc.nan-type-not-number, js.mc.failed-conversion-throws]
+  mdn: Web/JavaScript/Reference/Global_Objects/NaN
+
+# ── 모듈 3. 연산자와 형 변환: implicit-coercion ──
+
+- id: js.conv.truthy-falsy
+  title: truthy와 falsy
+  importance: core
+  summary: "false, 0, \"\", null, undefined, NaN은 참·거짓이 필요한 곳에서 거짓(falsy)으로 취급돼요. 나머지 값은 \"0\"이나 \" \"까지 모두 참(truthy)이에요."
+  prerequisites: [js.conv.to-boolean]
+  misconceptions: [js.mc.string-zero-falsy, js.mc.empty-array-falsy, js.mc.space-string-falsy]
+  mdn: Web/JavaScript/Reference/Global_Objects/Boolean
+
+- id: js.conv.plus-concat
+  title: + 연산자와 문자열 이어 붙이기
+  importance: core
+  summary: "+는 한쪽이라도 문자열이면 글자를 이어 붙여요. 왼쪽부터 하나씩 계산하므로 1 + 2 + \"3\"은 \"33\"이에요. - * /는 문자열을 숫자로 바꿔 계산해요."
+  prerequisites: [js.ops.arithmetic, js.conv.to-number]
+  misconceptions: [js.mc.plus-string-adds, js.mc.concat-whole-expression, js.mc.minus-string-fails]
+  mdn: Web/JavaScript/Reference/Operators/Addition
+
+- id: js.conv.equality-coercion
+  title: ==의 형 변환 규칙
+  importance: standard
+  summary: "==는 문자열과 불리언을 숫자로 바꿔 비교해요. null은 undefined와만 같고, NaN은 무엇과도 같지 않아요."
+  prerequisites: [js.ops.loose-equality, js.conv.to-number]
+  misconceptions: [js.mc.null-loose-equals-zero, js.mc.loose-equality-uses-truthiness]
+  mdn: Web/JavaScript/Reference/Operators/Equality

@@ -1,0 +1,48 @@
+id: js-basics.operators.comparison.find-bug-loose-pin
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.ops.loose-equality, weight: 1 }
+tags: [loose-equality, debugging]
+estimatedSeconds: 100
+prompt: |
+  저장된 비밀번호는 `"0420"`이에요. 그런데 `420`을 입력해도 비밀번호가 맞다고 나와요. 원인이 되는 줄을 찾고, 그 이유도 고르세요.
+spec:
+  code: |-
+    const savedPin = "0420";
+    const typedPin = 420;
+    const isCorrect = savedPin == typedPin;
+    console.log("비밀번호 일치:", isCorrect);
+  bugLines: [3]
+  symptom: "비밀번호 앞자리 0을 빼고 입력했는데 `비밀번호 일치: true`가 나와요."
+  symptomCheck:
+    console: ["비밀번호 일치: true"]
+  fixedCode: |-
+    const savedPin = "0420";
+    const typedPin = 420;
+    const isCorrect = savedPin === typedPin;
+    console.log("비밀번호 일치:", isCorrect);
+  causeOptions:
+    - id: c1
+      text: "`==`가 문자열 \"0420\"을 숫자 420으로 바꿔서 비교했다"
+      correct: true
+    - id: c2
+      text: "`==`는 자료형까지 비교하므로 3번 줄은 문제가 없고, console.log가 결과를 잘못 보여 줬다"
+      misconception: js.mc.loose-equals-like-strict
+    - id: c3
+      text: 숫자와 문자열은 원래 비교할 수 없어서 항상 true가 나온다
+hints:
+  - 저장된 값과 입력한 값을 비교하는 줄은 어디인가요?
+  - "`\"0420\"`은 문자열, `420`은 숫자예요. `==`는 자료형이 다르면 어떻게 하나요?"
+  - 문자열 `"0420"`을 숫자로 바꾸면 앞의 0이 사라져요. 자료형을 바꾸지 않는 연산자가 필요해요.
+explanation: |
+  원인은 **3번 줄**의 `==`예요. `==`는 자료형이 다르면 문자열 `"0420"`을 숫자로 바꿔서 비교하는데, 숫자로 바꾸면 앞의 0이 사라져 `420 == 420`이 되므로 `true`가 나와요.
+
+  `===`로 고치면 문자열과 숫자는 자료형이 달라서 `false`가 나와요. 비밀번호처럼 **정확히 같아야 하는 값**은 반드시 `===`로 비교해요.
+
+  - `==`가 자료형까지 비교한다는 생각은 틀렸어요. 그게 `===`예요.
+  - 숫자와 문자열도 비교할 수 있어요. 결과는 연산자에 따라 달라요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

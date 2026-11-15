@@ -1,0 +1,49 @@
+id: js-basics.operators.logical.predict-nullish-mix
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.ops.nullish, weight: 1 }
+  - { id: js.ops.short-circuit, weight: 0.5 }
+tags: [nullish, logical-or, default-value]
+estimatedSeconds: 150
+prompt: |
+  설정 화면에서 저장된 값과 기본값을 고르는 코드예요. 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const savedCount = 0;
+    const savedName = "";
+    const savedColor = null;
+    console.log(savedCount ?? 5);
+    console.log(savedCount || 5);
+    console.log(savedName || "이름 없음");
+    console.log(savedColor ?? "파랑");
+    console.log(savedColor ?? savedCount ?? 7);
+  answerKind: console
+  misconceptionByAnswer:
+    "5\n5\n이름 없음\n파랑\n7": js.mc.nullish-same-as-or
+    "5\n5\n이름 없음\n파랑\n5": js.mc.nullish-same-as-or
+    "0\n0\n이름 없음\n파랑\n0": js.mc.or-default-keeps-zero
+misconceptions: [js.mc.nullish-same-as-or, js.mc.or-default-keeps-zero]
+hints:
+  - "`??`는 `null`·`undefined`에만, `||`는 falsy 값 전부에 반응해서 오른쪽을 골라요."
+  - "`0`과 `\"\"`는 falsy지만 `null`도 `undefined`도 아니에요."
+  - 마지막 줄은 왼쪽부터 `??`를 하나씩 계산해요. `savedColor ?? savedCount`의 결과를 먼저 구한 뒤 `?? 7`을 적용해 보세요.
+explanation: |
+  정답은 차례로 **0, 5, 이름 없음, 파랑, 0**이에요.
+
+  | 줄 | 왼쪽 값 | 연산자의 반응 | 결과 |
+  |---|---|---|---|
+  | `savedCount ?? 5` | `0` | null·undefined 아님 → 왼쪽 | 0 |
+  | `savedCount \|\| 5` | `0` | falsy → 오른쪽 | 5 |
+  | `savedName \|\| "이름 없음"` | `""` | falsy → 오른쪽 | 이름 없음 |
+  | `savedColor ?? "파랑"` | `null` | null → 오른쪽 | 파랑 |
+  | `savedColor ?? savedCount ?? 7` | `null` → `0` | `null ?? 0` → `0`, `0 ?? 7` → `0` | 0 |
+
+  - 첫 줄을 `5`라고 답했다면 `??`를 `||`처럼 계산한 거예요. `??`는 0을 지켜요.
+  - 둘째 줄을 `0`이라고 답했다면 `||`가 0을 지킨다고 본 거예요. `||`는 0도 기본값으로 바꿔요.
+  - 마지막 줄은 `??`를 이어 쓴 것이에요. `null`이 아닌 첫 값 `0`에서 멈춰요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

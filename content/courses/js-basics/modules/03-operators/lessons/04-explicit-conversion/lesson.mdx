@@ -1,0 +1,275 @@
+<Section kind="objectives">
+- `Number`와 `parseInt`·`parseFloat`로 문자열을 숫자로 바꾸고, 두 방법의 결과 차이를 예측할 수 있어요.
+- `String`과 `Boolean`으로 값을 글자나 참·거짓으로 바꾼 결과를 예측할 수 있어요.
+- `NaN`이 생기는 상황을 설명하고, `Number.isNaN`으로 변환이 실패했는지 확인할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+쇼핑몰 주문서에서 사용자가 수량 칸에 `3`을 입력했다고 해 봐요. 웹 페이지의 입력 칸에서 꺼낸 값은 숫자처럼 보여도 **항상 글자(문자열)**예요. 그래서 계산하기 전에 숫자로 바꿔야 해요.
+
+```js
+const quantityText = "3";              // 입력 칸에서 꺼낸 값은 문자열이에요
+const quantity = Number(quantityText); // 숫자 3으로 바꿔요
+console.log(quantity * 12000);         // 36000
+```
+
+반대로 숫자를 글자로 바꾸거나, 어떤 값이 "있는지 없는지"를 참·거짓으로 바꿔야 할 때도 있어요. 이렇게 **코드에 직접 써서 자료형을 바꾸는 것**을 명시적 형 변환이라고 해요. 이 단원에서는 숫자·문자열·불리언으로 바꾸는 방법과, 바꾸기에 실패했을 때 나오는 특별한 값 `NaN`을 배워요.
+</Section>
+
+<Section kind="principle">
+### 숫자로 바꾸기: Number
+
+`Number(값)`은 값 **전체**를 숫자로 읽어요. 전체가 숫자로 읽히지 않으면 "숫자가 아님"을 뜻하는 `NaN`(Not a Number)이 돼요.
+
+| 식 | 결과 | 이유 |
+|---|---|---|
+| `Number("42")` | `42` | 전체가 숫자예요 |
+| `Number(" 12 ")` | `12` | 앞뒤 공백은 무시해요 |
+| `Number("12px")` | `NaN` | `px`까지 숫자로 읽을 수 없어요 |
+| `Number("1,500")` | `NaN` | 쉼표도 숫자가 아니에요 |
+| `Number("")` | `0` | 빈 문자열은 0이 돼요 |
+| `Number(true)`, `Number(false)` | `1`, `0` | 참은 1, 거짓은 0이에요 |
+| `Number(null)` | `0` | |
+| `Number(undefined)` | `NaN` | |
+
+값 앞에 `+`를 붙인 `+"42"`도 `Number("42")`와 같은 일을 해요. 짧지만 눈에 잘 띄지 않아서, 처음에는 `Number`를 쓰는 편이 읽기 쉬워요.
+
+### 앞에서부터 읽기: parseInt와 parseFloat
+
+`parseInt(문자열)`과 `parseFloat(문자열)`은 문자열을 **앞에서부터** 읽다가 숫자가 아닌 글자를 만나면 멈추고, 거기까지 읽은 숫자를 돌려줘요.
+
+- `parseInt`는 **정수**만 읽어요. `parseInt("12px")`는 `12`, `parseInt("3.9")`는 소수점에서 멈춰 `3`이에요(반올림이 아니에요).
+- `parseFloat`는 **소수**까지 읽어요. `parseFloat("3.5kg")`는 `3.5`예요.
+- 맨 앞부터 숫자가 아니면 읽을 것이 없어서 `NaN`이에요. `parseInt("가격 500")`, `parseInt("")`는 모두 `NaN`이에요.
+
+<CompareTable columns={["Number", "parseInt / parseFloat"]}>
+<Row label="읽는 범위">문자열 전체 | 앞에서부터 숫자가 끝나는 곳까지</Row>
+<Row label="단위가 붙은 12px">NaN | 12</Row>
+<Row label="빈 문자열">0 | NaN</Row>
+<Row label="이럴 때 써요">값 전체가 숫자여야 할 때 | 단위가 붙은 글자에서 숫자만 꺼낼 때</Row>
+</CompareTable>
+
+### 문자열로 바꾸기: String
+
+`String(값)`은 어떤 값이든 **보이는 그대로** 글자로 바꿔요. `String(404)`는 `"404"`, `String(true)`는 `"true"`예요. `null`과 `undefined`도 빈 글자가 되지 않고 `"null"`, `"undefined"`라는 글자가 돼요.
+
+### 불리언으로 바꾸기: Boolean
+
+`Boolean(값)`은 값을 `true`나 `false`로 바꿔요. 논리 연산에서 배운 `!`를 두 번 쓴 `!!값`도 같은 결과예요. 처음 `!`가 값을 뒤집은 불리언으로 바꾸고, 두 번째 `!`가 다시 뒤집기 때문이에요.
+
+`false`가 되는 값은 정해져 있어요: `false`, `0`, 빈 문자열 `""`, `null`, `undefined`, `NaN`. 나머지는 모두 `true`예요. 특히 Boolean은 **글자의 내용을 읽지 않아요.** 문자열 중에서는 길이가 0인 `""`만 `false`이고, `"false"`, `"0"`, `" "`처럼 글자가 하나라도 있으면 `true`예요. 이 규칙은 "암묵적 형 변환" 단원에서 더 자세히 다뤄요.
+
+### NaN: 계산이 실패했다는 표시
+
+`NaN`은 숫자로 바꾸거나 계산하는 데 실패했다는 표시예요. 세 가지를 기억해요.
+
+1. **오류가 나지 않아요.** `Number("abc")`나 `"abc" * 2`는 프로그램을 멈추지 않고 조용히 `NaN`을 만들어요.
+1. **퍼져요.** `NaN`과 계산한 결과는 계속 `NaN`이에요(`NaN * 2 + 1000`도 `NaN`). 그래서 마지막 출력에서 `NaN`을 봤다면 처음 `NaN`이 생긴 곳까지 거슬러 올라가 찾아야 해요.
+1. **자료형은 숫자예요.** `typeof`(자료형 단원에서 배운 자료형 확인 연산자)로 보면 `typeof NaN`은 `"number"`예요. "숫자 계산의 결과인데 쓸 수 있는 숫자가 아니다"라는 뜻이에요.
+
+비교 연산 단원에서 봤듯이 `NaN`은 자기 자신과도 같지 않아서 `x === NaN`은 언제나 `false`예요. `NaN`인지 확인할 때는 `Number.isNaN(x)`를 써요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 각 값이 `Number`로 어떻게 바뀔지 예측해 보세요.
+
+<RunnableExample id="number-basics" lang="js" predict predictKind="console" concepts={["js.conv.to-number"]}>
+```js
+console.log(Number("42"));
+console.log(Number(" 12 "));
+console.log(Number("12px"));
+console.log(Number(""));
+console.log(Number(true));
+console.log(Number(undefined));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+42
+12
+NaN
+0
+1
+NaN
+```
+
+- `"42"`와 `" 12 "`는 전체가 숫자로 읽혀요. 앞뒤 공백은 무시해요.
+- `"12px"`는 `px` 때문에 전체를 숫자로 읽을 수 없어서 `NaN`이에요.
+- 빈 문자열 `""`는 `NaN`이 아니라 `0`이에요. 입력이 비었는지는 숫자로 바꾸기 **전에** 따로 확인해야 하는 이유예요.
+- `true`는 `1`, `undefined`는 `NaN`이 돼요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 `parseInt`와 `parseFloat`예요. 앞에서부터 어디까지 읽는지 생각해 보세요.
+
+<RunnableExample id="parse-prefix" lang="js" predict predictKind="console" concepts={["js.conv.to-number"]}>
+```js
+console.log(parseInt("12px"));
+console.log(parseFloat("3.5kg"));
+console.log(parseInt("3.9"));
+console.log(parseInt("가격 500"));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+12
+3.5
+3
+NaN
+```
+
+- `parseInt("12px")`: `1`, `2`까지 읽고 `p`에서 멈춰서 `12`예요.
+- `parseFloat("3.5kg")`: 소수점까지 읽고 `k`에서 멈춰서 `3.5`예요.
+- `parseInt("3.9")`: 정수만 읽으므로 `.`에서 멈춰서 `3`이에요. 반올림한 4가 아니에요.
+- `parseInt("가격 500")`: 첫 글자부터 숫자가 아니라 읽은 숫자가 없어서 `NaN`이에요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 문자열과 불리언으로 바꿔요. 특히 `"false"`와 `"0"`이 어떻게 될지 예측해 보세요.
+
+<RunnableExample id="string-boolean" lang="js" predict predictKind="console" concepts={["js.conv.to-string", "js.conv.to-boolean"]}>
+```js
+console.log(String(null), String(undefined));
+console.log(typeof String(404));
+console.log(Boolean("false"), Boolean("0"), Boolean(""));
+console.log(Boolean(0), !!"안녕");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+null undefined
+string
+true true false
+false true
+```
+
+- `String(null)`과 `String(undefined)`는 빈 글자가 아니라 `"null"`, `"undefined"`라는 글자예요. 콘솔은 문자열을 따옴표 없이 보여 줘서 `null undefined`로 보여요.
+- `String(404)`의 결과는 글자 `"404"`라서 `typeof`가 `string`이에요.
+- `Boolean`은 글자의 뜻을 읽지 않아요. `"false"`와 `"0"`은 글자가 있으니 `true`, 빈 문자열만 `false`예요.
+- 숫자 `0`은 `false`, 글자가 있는 `"안녕"`에 `!!`를 붙이면 `true`예요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 `NaN`이 퍼지는 모습이에요. 오류가 날지, 무엇이 출력될지 예측해 보세요.
+
+<RunnableExample id="nan-flow" lang="js" predict predictKind="console" concepts={["js.conv.nan"]}>
+```js
+const price = Number("1,500");
+const total = price * 2 + 1000;
+console.log(total);
+console.log(typeof total);
+console.log(total === NaN);
+console.log(Number.isNaN(total));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+NaN
+number
+false
+true
+```
+
+| 실행한 줄 | 값 |
+|---|---|
+| `const price = Number("1,500");` | `price`는 `NaN` (쉼표 때문에 변환 실패) |
+| `const total = price * 2 + 1000;` | `NaN * 2`는 `NaN`, `NaN + 1000`도 `NaN` |
+
+- 오류는 한 번도 나지 않았어요. 변환이 실패해도 프로그램은 계속 실행되고 `NaN`만 퍼져요.
+- `typeof total`은 `number`예요. `NaN`도 숫자 자료형의 값이에요.
+- `total === NaN`은 `false`예요. `NaN`은 자기 자신과도 같지 않으니까요. 확인은 `Number.isNaN(total)`로 해요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.number-parses-prefix">
+<Wrong>`Number("12px")`는 앞의 숫자만 읽어서 `12`다.</Wrong>
+<Actual>`Number`는 문자열 전체를 읽어서, 숫자가 아닌 글자가 하나라도 있으면 `NaN`이에요.</Actual>
+<Right>단위가 붙은 글자에서 숫자만 꺼낼 때는 `parseInt("12px")`(정수)나 `parseFloat("3.5kg")`(소수)를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.empty-string-to-nan">
+<Wrong>빈 입력 `""`을 `Number`로 바꾸면 `NaN`이 되니, `NaN`인지만 확인하면 빈 입력도 걸러진다.</Wrong>
+<Actual>`Number("")`와 `Number("   ")`는 `0`이에요. 빈 입력이 조용히 0으로 계산돼요.</Actual>
+<Right>빈 입력은 숫자로 바꾸기 전에 `text === ""`처럼 따로 확인해요. 참고로 `parseInt("")`는 `NaN`이라, 두 방법의 결과가 달라요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.string-of-null-empty">
+<Wrong>`String(null)`이나 `String(undefined)`는 빈 문자열 `""`이다.</Wrong>
+<Actual>보이는 그대로 `"null"`, `"undefined"`라는 글자가 돼요. 화면에 `null`이 그대로 찍히는 버그의 흔한 원인이에요.</Actual>
+<Right>값이 없을 때 빈 글자를 보여 주고 싶으면 `String(memo ?? "")`처럼 먼저 기본값을 정한 뒤 바꿔요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.boolean-reads-string-content">
+<Wrong>`Boolean("false")`와 `Boolean("0")`은 글자의 뜻대로 `false`다.</Wrong>
+<Actual>둘 다 `true`예요. Boolean은 글자의 내용을 읽지 않고, 빈 문자열 `""`만 `false`로 바꿔요.</Actual>
+<Right>`"true"`/`"false"`라는 글자를 불리언으로 바꾸려면 `text === "true"`처럼 비교해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.nan-type-not-number">
+<Wrong>`typeof NaN`은 `"NaN"`이나 `"undefined"`다.</Wrong>
+<Actual>`typeof NaN`은 `"number"`예요.</Actual>
+<Right>`NaN`은 "숫자 계산이 실패했다"를 나타내는 숫자 자료형의 특별한 값이에요. 그래서 `typeof`로는 `NaN`을 골라낼 수 없고, `Number.isNaN`을 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.failed-conversion-throws">
+<Wrong>`Number("abc")`나 `"abc" * 2`처럼 숫자로 바꿀 수 없으면 오류가 나고 프로그램이 멈춘다.</Wrong>
+<Actual>오류 없이 `NaN`이 나오고, 그 값으로 계산한 결과도 계속 `NaN`이에요.</Actual>
+<Right>출력에서 `NaN`을 보면 처음 `NaN`이 생긴 줄을 거슬러 올라가 찾아요. 변환한 직후에 `Number.isNaN`으로 확인하면 원인을 빨리 찾을 수 있어요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+웹 페이지의 입력 칸, 주소창의 값, 저장해 둔 설정은 모두 문자열로 들어와요. 계산하기 전에 알맞은 방법으로 바꾸는 것이 실무의 기본이에요.
+
+```js
+const quantityText = "3개";      // 사용자가 단위까지 입력했어요
+const priceText = "12000";
+const couponText = "";           // 쿠폰 칸은 비어 있어요
+
+const quantity = parseInt(quantityText);  // 단위가 붙었으니 parseInt → 3
+const price = Number(priceText);          // 전체가 숫자여야 하니 Number → 12000
+const coupon = Number(couponText);        // 빈 칸은 0원 할인으로 → 0
+
+const total = price * quantity - coupon;
+console.log("결제 금액:", total);                        // 결제 금액: 36000
+console.log("수량을 읽지 못함:", Number.isNaN(quantity)); // 수량을 읽지 못함: false
+```
+
+- 단위가 붙을 수 있는 입력은 `parseInt`·`parseFloat`, 숫자만 와야 하는 값은 `Number`로 바꿔요.
+- 빈 칸을 `parseInt`로 바꾸면 `NaN`, `Number`로 바꾸면 `0`이에요. 의도에 맞는 쪽을 골라요.
+- 변환한 직후 `Number.isNaN`으로 확인해 두면, 엉뚱한 입력이 계산 끝까지 퍼지기 전에 알아챌 수 있어요(조건에 따라 다르게 처리하는 방법은 다음 모듈 "조건문"에서 배워요).
+</Section>
+
+<Section kind="check">
+`Number`가 문자열을 어떻게 읽는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.explicit-conversion.mcq-number-12px" />
+
+`Boolean`이 글자를 어떻게 바꾸는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.operators.explicit-conversion.tf-boolean-false-string" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `Number(값)`은 값 전체를 숫자로 읽고, 읽을 수 없으면 `NaN`이에요. 빈 문자열은 `0`이에요.
+- `parseInt`·`parseFloat`는 앞에서부터 읽을 수 있는 데까지만 숫자로 읽어요. `parseInt`는 소수점에서 멈춰요.
+- `String(값)`은 보이는 그대로 글자로 바꿔요. `null`은 `"null"`이 돼요.
+- `Boolean(값)`과 `!!값`은 참·거짓으로 바꿔요. 문자열은 `""`만 `false`이고, `"false"`도 `true`예요.
+- `NaN`은 숫자 자료형의 "계산 실패" 값이에요. 오류 없이 퍼지고, 자기 자신과도 같지 않아서 `Number.isNaN`으로 확인해요.
+</Section>
+
+<Section kind="next">
+이 단원에서는 코드에 직접 써서 자료형을 바꿨어요. 다음 단원 "암묵적 형 변환"에서는 `+`, `==`, `&&`처럼 연산자가 **알아서** 자료형을 바꾸는 규칙과 truthy·falsy를 배워요. <MdnLink path="Web/JavaScript/Reference/Global_Objects/Number/Number" />
+</Section>

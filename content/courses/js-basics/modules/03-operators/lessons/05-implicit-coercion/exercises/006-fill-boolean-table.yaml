@@ -1,0 +1,49 @@
+id: js-basics.operators.implicit-coercion.fill-boolean-table
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.conv.truthy-falsy, weight: 1 }
+  - { id: js.conv.to-boolean, weight: 0.3 }
+tags: [truthy, falsy, boolean]
+estimatedSeconds: 75
+prompt: |
+  각 값을 `Boolean`으로 바꾼 결과를 빈칸에 `true` 또는 `false`로 쓰세요.
+spec:
+  mode: text
+  template: |
+    Boolean(-1)       → {{blank:b1}}
+    Boolean(NaN)      → {{blank:b2}}
+    Boolean("false")  → {{blank:b3}}
+    Boolean(null)     → {{blank:b4}}
+  blanks:
+    - id: b1
+      accept: ["true"]
+      width: 6
+    - id: b2
+      accept: ["false"]
+      width: 6
+    - id: b3
+      accept: ["true"]
+      width: 6
+      misconceptionMap:
+        "false": js.mc.boolean-reads-string-content
+    - id: b4
+      accept: ["false"]
+      width: 6
+hints:
+  - falsy 값 목록에 있으면 `false`, 없으면 `true`예요.
+  - 숫자 중 falsy는 `0`과 `NaN`뿐이에요. 음수는 어떨까요?
+  - 문자열은 뜻을 보지 않고 글자가 있는지만 봐요.
+explanation: |
+  정답은 차례로 `true`, `false`, `true`, `false`예요.
+
+  - `Boolean(-1)`: 0이 아닌 숫자는 음수여도 truthy예요.
+  - `Boolean(NaN)`: `NaN`은 falsy 목록에 있어요.
+  - `Boolean("false")`: 글자 다섯 개가 들어 있는 문자열이라 truthy예요. 글자의 뜻은 보지 않아요.
+  - `Boolean(null)`: `null`은 falsy예요.
+
+  `Boolean(값)`의 결과는 `!!값`과 같아요. 둘 다 falsy 목록으로 판단해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

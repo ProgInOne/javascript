@@ -1,0 +1,51 @@
+id: js-basics.operators.comparison.parsons-pass-line
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.ops.relational, weight: 1 }
+tags: [relational, boundary]
+estimatedSeconds: 90
+prompt: |
+  시험은 **60점 이상**이면 합격이에요. 점수가 딱 60점인 학생의 합격 여부를 출력하도록 코드 조각을 배열하세요.
+
+  ```text
+  합격 여부: true
+  ```
+spec:
+  lines:
+    - { id: l1, code: "const passLine = 60;" }
+    - { id: l2, code: "const score = 60;" }
+    - { id: l3, code: "const isPass = score >= passLine;" }
+    - { id: l4, code: 'console.log("합격 여부:", isPass);' }
+  distractors:
+    - { id: d1, code: "const isPass = score > passLine;", replaces: l3 }
+    - { id: d2, code: "const isPass = score === 61;", replaces: l3 }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 60점인 학생이 합격(true)으로 출력되어야 합니다.
+      expect:
+        lines: ["합격 여부: true"]
+hints:
+  - 변수를 쓰기 전에 먼저 만들어야 해요. 출력은 맨 마지막이에요.
+  - "\"이상\"은 기준값을 포함해요. 60점도 합격이어야 해요."
+  - "`>`는 \"초과\"라서 60점이면 false가 돼요. 같아도 참인 연산자를 고르세요."
+explanation: |
+  예시 순서예요.
+
+  ```js
+  const passLine = 60;
+  const score = 60;
+  const isPass = score >= passLine;
+  console.log("합격 여부:", isPass);
+  ```
+
+  `passLine`과 `score`는 어느 쪽을 먼저 만들어도 괜찮아요. 둘 다 `isPass`를 계산하기 전에만 있으면 돼요.
+
+  - `score > passLine`은 "초과"라서 딱 60점이면 `false`가 나와요. "이상"은 `>=`예요.
+  - `score === 61`은 합격선과 상관없이 61점인지만 묻는 식이라 요구사항과 달라요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

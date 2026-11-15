@@ -1,0 +1,94 @@
+id: js-basics.operators.logical.impl-display-name
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+tags: [short-circuit, default-value, write-code]
+estimatedSeconds: 240
+prompt: |
+  커뮤니티 사이트에서 글쓴이 이름을 보여 주는 규칙이에요.
+
+  1. 별명(`nickname`)이 있으면 별명을 보여 줘요.
+  1. 별명이 비어 있으면(빈 문자열) 실명(`realName`)을 보여 줘요.
+  1. 둘 다 비어 있으면 `"익명"`을 보여 줘요.
+
+  세 사람의 표시 이름을 `displayA`, `displayB`, `displayC`에 넣고 출력하세요. 글자를 직접 쓰지 말고 변수와 연산자로 골라 보세요(`"익명"`만 직접 써요).
+
+  ```text
+  별빛
+  김하늘
+  익명
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const nicknameA = "별빛";
+          const realNameA = "이도윤";
+          const nicknameB = "";
+          const realNameB = "김하늘";
+          const nicknameC = "";
+          const realNameC = "";
+
+          // 여기에 displayA, displayB, displayC를 만들고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const nicknameA = "별빛";
+          const realNameA = "이도윤";
+          const nicknameB = "";
+          const realNameB = "김하늘";
+          const nicknameC = "";
+          const realNameC = "";
+
+          const displayA = nicknameA || realNameA || "익명";
+          const displayB = nicknameB || realNameB || "익명";
+          const displayC = nicknameC || realNameC || "익명";
+          console.log(displayA);
+          console.log(displayB);
+          console.log(displayC);
+  checks:
+    - kind: console
+      id: output
+      description: 세 사람의 표시 이름이 차례로 출력되어야 합니다.
+      requirement: 표시 이름 출력
+      expect:
+        lines: ["별빛", "김하늘", "익명"]
+    - kind: program
+      id: values
+      description: displayA는 "별빛", displayB는 "김하늘", displayC는 "익명"이어야 합니다.
+      requirement: 표시 이름 고르기
+      expect:
+        globals:
+          displayA: { equals: "별빛" }
+          displayB: { equals: "김하늘" }
+          displayC: { equals: "익명" }
+        noError: true
+      misconceptionIfFail: js.mc.logical-returns-boolean
+misconceptions: [js.mc.logical-returns-boolean]
+hints:
+  - "\"있으면 이것, 비어 있으면 저것\"을 고르는 연산자는 무엇이었나요? 빈 문자열은 falsy예요."
+  - "`||`는 여러 개를 이어 쓸 수 있어요. 왼쪽부터 보다가 처음 나오는 truthy 값을 돌려줘요."
+  - "별명 → 실명 → \"익명\" 순서로 후보를 늘어놓고, 그 사이를 같은 연산자로 이어 보세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const displayA = nicknameA || realNameA || "익명";
+  ```
+
+  `||`를 이어 쓰면 왼쪽부터 차례로 보다가 **처음 나오는 truthy 값**을 돌려줘요. 모두 falsy이면 마지막 값을 돌려줘요.
+
+  - A: `"별빛"`이 truthy → `"별빛"` (뒤는 보지 않음)
+  - B: `""` falsy → `"김하늘"` truthy → `"김하늘"`
+  - C: `""` → `""` → 마지막 `"익명"`
+
+  `&&`를 쓰면 반대로 첫 falsy 값을 고르게 되어 B와 C가 빈 문자열이 돼요. 또 `||`의 결과가 `true`/`false`라고 생각하면 이 문제를 풀 수 없어요. `||`는 후보 값 중 하나를 그대로 돌려줘요.
+
+  `"김하늘"`처럼 글자를 직접 써도 이 체크는 통과하지만, 이름이 바뀌면 프로그램도 고쳐야 해요. 연산자로 고르면 어떤 이름이 와도 규칙대로 동작해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

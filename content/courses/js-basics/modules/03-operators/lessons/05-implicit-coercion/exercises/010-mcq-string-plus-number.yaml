@@ -1,0 +1,42 @@
+id: js-basics.operators.implicit-coercion.mcq-string-plus-number
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.conv.plus-concat, weight: 1 }
+tags: [plus, concat, string]
+estimatedSeconds: 40
+prompt: |
+  `const result = "3" + 1;`을 실행하면 `result`에는 무엇이 들어 있나요?
+spec:
+  options:
+    - id: a
+      text: 문자열 `"31"`
+    - id: b
+      text: 숫자 `4`
+      misconception: js.mc.plus-string-adds
+      rationale: "`+`는 한쪽이라도 문자열이면 더하지 않고 이어 붙여요."
+    - id: c
+      text: 숫자 `31`
+      rationale: 이어 붙인 결과는 숫자가 아니라 문자열이에요.
+    - id: d
+      text: "`NaN`"
+      misconception: js.mc.minus-string-fails
+      rationale: "`+`는 숫자로 바꾸지 않고 이어 붙이므로 NaN이 생기지 않아요."
+  correct: a
+misconceptions: [js.mc.plus-string-adds]
+hints:
+  - "`\"3\"`과 `1`의 자료형은 각각 무엇인가요?"
+  - "`+`는 양쪽이 모두 숫자일 때만 더해요."
+  - 한쪽이 문자열이면 다른 쪽도 문자열로 바꿔서 붙여요. 결과의 자료형도 생각해 보세요.
+explanation: |
+  정답은 **문자열 `"31"`**이에요.
+
+  `"3"`은 따옴표가 있는 문자열이에요. `+`는 한쪽이라도 문자열이면 다른 쪽(`1`)도 문자열 `"1"`로 바꿔서 이어 붙여요. 그래서 `"3" + "1"` → `"31"`이 돼요.
+
+  - 숫자 `4`: 숫자처럼 보여도 문자열은 문자열이에요. 더하려면 `Number("3") + 1`처럼 먼저 바꿔야 해요.
+  - 숫자 `31`: 이어 붙인 결과는 문자열이에요. `typeof result`는 `"string"`이에요.
+  - `NaN`: `+`는 숫자로 바꾸는 일을 하지 않으므로 NaN이 생길 이유가 없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

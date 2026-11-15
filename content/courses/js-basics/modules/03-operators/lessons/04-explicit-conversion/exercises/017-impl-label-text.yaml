@@ -1,0 +1,66 @@
+id: js-basics.operators.explicit-conversion.impl-label-text
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.conv.to-string, weight: 1 }
+tags: [string, write-code]
+estimatedSeconds: 150
+prompt: |
+  시험 결과를 화면의 글자 칸에 넣으려면 값을 문자열로 바꿔야 해요. 숫자 `score`와 불리언 `passed`를 **문자열로 바꿔** `scoreText`, `passedText` 변수에 넣으세요. 맨 아래 줄은 그대로 두고, 실행하면 아래처럼 나와야 해요.
+
+  ```text
+  string string
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const score = 95;
+          const passed = true;
+          // 여기에 scoreText와 passedText를 만드세요.
+
+          console.log(typeof scoreText, typeof passedText);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const score = 95;
+          const passed = true;
+          const scoreText = String(score);
+          const passedText = String(passed);
+
+          console.log(typeof scoreText, typeof passedText);
+  checks:
+    - kind: console
+      id: output
+      description: 두 변수의 자료형이 모두 string으로 출력되어야 합니다.
+      expect:
+        lines: ["string string"]
+    - kind: program
+      id: texts
+      description: scoreText에는 "95", passedText에는 "true"라는 문자열이 들어 있어야 합니다.
+      expect:
+        globals:
+          scoreText: { equals: "95" }
+          passedText: { equals: "true" }
+        noError: true
+hints:
+  - 어떤 값이든 글자로 바꿔 주는 변환 방법이 있어요.
+  - String(값)은 값을 보이는 그대로 글자로 바꿔요.
+  - "`const scoreText = String(score);`처럼 passed도 같은 방법으로 바꾸세요. 글자를 직접 써서 \"95\"라고 넣으면 score가 바뀌었을 때 따라가지 못해요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const scoreText = String(score);
+  const passedText = String(passed);
+  ```
+
+  `String(95)`는 `"95"`, `String(true)`는 `"true"`예요. 결과가 문자열이라 `typeof`가 `string`이에요.
+
+  `const scoreText = "95";`처럼 글자를 직접 써도 이 문제의 체크는 통과하지만, 점수가 바뀌면 글자도 손으로 고쳐야 해요. 변환은 값이 무엇이든 따라가도록 변수에서 바로 만드는 것이 목표예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

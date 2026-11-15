@@ -1,0 +1,41 @@
+id: js-basics.operators.logical.predict-and-returns-zero
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+tags: [short-circuit, logical-and, logical-or]
+estimatedSeconds: 100
+prompt: |
+  다음 프로그램이 끝났을 때 `label`에 들어 있는 값은 무엇인가요?
+
+  자료형까지 정확히 답하세요. 문자열이면 따옴표를 붙이고(예: `"안녕"`), 숫자나 `true`/`false`는 따옴표 없이 쓰세요.
+spec:
+  lang: js
+  code: |
+    const stock = 0;
+    const soldOut = stock === 0;
+    const label = stock && "재고 있음";
+  answerKind: value
+  expression: label
+  misconceptionByAnswer:
+    "false": js.mc.logical-returns-boolean
+    "true": js.mc.logical-returns-boolean
+misconceptions: [js.mc.logical-returns-boolean]
+hints:
+  - "`label`을 만드는 3번 줄만 보면 돼요. 2번 줄의 `soldOut`은 `label`과 상관없어요."
+  - "`stock`의 값 0은 truthy일까요, falsy일까요?"
+  - "`&&`는 왼쪽이 falsy이면 오른쪽을 보지 않고 왼쪽 값을 그대로 돌려줘요. 그 값의 자료형까지 생각해 보세요."
+explanation: |
+  정답은 숫자 **`0`**이에요.
+
+  `stock && "재고 있음"`에서 왼쪽 `stock`은 `0`이고, `0`은 falsy예요. `&&`는 왼쪽이 falsy이면 결과가 정해졌으니 오른쪽을 보지 않고 **왼쪽 값 `0`을 그대로** 돌려줘요.
+
+  - `false`라고 답했다면: 논리 연산자의 결과가 항상 `true`/`false`라고 생각한 거예요. `&&`는 양쪽 값 중 하나를 그대로 돌려줘요. 그래서 `false`가 아니라 `0`이에요.
+  - `"재고 있음"`이라고 답했다면: `&&`가 언제 오른쪽을 고르는지 헷갈린 거예요. `&&`가 오른쪽 값을 돌려주는 건 왼쪽이 truthy일 때예요.
+  - 2번 줄은 함정이에요. `soldOut`(`true`)은 3번 줄에서 쓰지 않아요.
+
+  `&&`로 "있을 때만 글자"를 만들면 없을 때 `0` 같은 의외의 값이 남을 수 있어요. 화면에 `0`이 그대로 찍히는 버그는 실무에서도 자주 생겨요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

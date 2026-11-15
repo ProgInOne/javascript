@@ -1,0 +1,60 @@
+id: js-basics.operators.arithmetic.parsons-visitor-count
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.ops.increment, weight: 1 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+tags: [increment, decrement, parsons]
+estimatedSeconds: 120
+prompt: |
+  전시관 입구의 방문자 수 세기 프로그램이에요. 두 사람이 들어오고 한 사람이 나가요. 조각을 배열해 아래처럼 출력되게 하세요.
+
+  ```text
+  입장: 1
+  입장: 2
+  퇴장: 1
+  ```
+spec:
+  lines:
+    - { id: l1, code: "let visitors = 0;" }
+    - { id: l2, code: "visitors++;" }
+    - { id: l3, code: 'console.log("입장:", visitors);' }
+    - { id: l4, code: "visitors++;" }
+    - { id: l5, code: 'console.log("입장:", visitors);' }
+    - { id: l6, code: "visitors--;" }
+    - { id: l7, code: 'console.log("퇴장:", visitors);' }
+  distractors:
+    - { id: d1, code: "visitors + 1;", replaces: l2, misconception: js.mc.expression-changes-variable }
+    - { id: d2, code: "let visitors = visitors - 1;", replaces: l6 }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 입장 두 번과 퇴장 한 번의 방문자 수가 차례로 출력되어야 합니다.
+      expect:
+        lines: ["입장: 1", "입장: 2", "퇴장: 1"]
+misconceptions: [js.mc.expression-changes-variable]
+hints:
+  - 변수를 만드는 줄이 가장 먼저 와야 해요. 그다음은 "바꾸고 → 출력" 순서가 세 번 반복돼요.
+  - "`visitors + 1;`은 계산만 하고 결과를 버려요. 변수를 실제로 바꾸는 조각을 고르세요."
+  - "같은 이름으로 `let`을 다시 쓰면 SyntaxError예요. 1을 줄이는 조각은 `visitors--;`예요."
+explanation: |
+  정답 순서예요.
+
+  ```js
+  let visitors = 0;
+  visitors++;
+  console.log("입장:", visitors);
+  visitors++;
+  console.log("입장:", visitors);
+  visitors--;
+  console.log("퇴장:", visitors);
+  ```
+
+  - `visitors++;`는 `visitors += 1`, `visitors--;`는 `visitors -= 1`과 같아요. 한 줄에 따로 쓰면 앞에 붙이든 뒤에 붙이든 결과가 같아요.
+  - `visitors + 1;`은 새 값을 만들 뿐 `visitors`를 바꾸지 않아요.
+  - `let visitors = visitors - 1;`은 이미 만든 이름을 다시 만들어서 `SyntaxError`예요. 값을 바꿀 때는 `let`을 쓰지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
