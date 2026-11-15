@@ -5,16 +5,18 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-15
+
+v0.2 알파(M5). 문제 유형 10종, 재학습·약점·오개념·목표·페이스, 대화 요약, HTML/CSS 핵심과 JS 기초 모듈 1~5(35단원, 문제 485개, 전부 AI 교차 검토 승인). 단원 평가 단원은 v0.3에서 추가합니다(D-040).
+
 ### Added
 
-- 단원 평가 API(M6, D-042): `POST /practice-sets {kind:'assessment', lessonId}`(진행 중이면 이어서, 끝났으면 재응시), 평가 중 힌트·정답 보기·본문 확인 시도(`EXERCISE_LOCKED_IN_ASSESSMENT`)와 튜터·AI 힌트·오답 분석(`AI_LOCKED_IN_ASSESSMENT`)을 서버에서 잠금, 문항당 한 번 제출(`PRACTICE_ITEM_DONE`), 평가 중에는 정오·해설·숙련도 변화를 감추고 마지막 제출에서 문항별 결과·해설·정답·틀린 개념·약점 집중 대상을 공개, 통과하면 평가 단원 완료. `GET /lessons/:id`에 평가 안내(`assessment`: 문항 수·통과 비율·개념 수·예상 시간). 단원 종류와 맞지 않는 세트 요청은 `PRACTICE_KIND_MISMATCH`. 과정의 단원 문제 수에 평가 문항을 셈
-- 단원 평가 콘텐츠와 문항 선택(M6, D-041): `kind: assessment` 단원의 `assessment: { itemCount, passRatio }` 설정과 `content-cli check` 규칙(평가 개념은 `concepts.reviewed`, 문항은 `usage: assessment`, 개념당 최소 1문항, 10~20문항 권장, `module.yaml` `assessment` 검증), content.db `assessments` 테이블(스키마 버전 2, `pnpm content:build`로 다시 만들어야 함). 학습 엔진 `buildAssessmentSet`(개념 포함 → 난이도 분포 → 쉬운 순서, 처음 보는 문항 우선)과 `evaluateAssessment`(통과 비율 기본 0.8, 틀린 개념 목록). 학습 엔진 `1.2.0`
-- JS 기초 모듈 3 "연산자와 형 변환" 초안(검토 전): 산술·비교·논리 연산, 명시적·암묵적 형 변환 레슨 5개와 단원 평가, 문제 134개(P0 유형 10종), 개념 18개·오개념 38개
+- (M6 미리 포함, 화면은 다음 버전) 단원 평가 API(M6, D-042): `POST /practice-sets {kind:'assessment', lessonId}`(진행 중이면 이어서, 끝났으면 재응시), 평가 중 힌트·정답 보기·본문 확인 시도(`EXERCISE_LOCKED_IN_ASSESSMENT`)와 튜터·AI 힌트·오답 분석(`AI_LOCKED_IN_ASSESSMENT`)을 서버에서 잠금, 문항당 한 번 제출(`PRACTICE_ITEM_DONE`), 평가 중에는 정오·해설·숙련도 변화를 감추고 마지막 제출에서 문항별 결과·해설·정답·틀린 개념·약점 집중 대상을 공개, 통과하면 평가 단원 완료. `GET /lessons/:id`에 평가 안내(`assessment`: 문항 수·통과 비율·개념 수·예상 시간). 단원 종류와 맞지 않는 세트 요청은 `PRACTICE_KIND_MISMATCH`. 과정의 단원 문제 수에 평가 문항을 셈
+- (M6 미리 포함, 화면은 다음 버전) 단원 평가 콘텐츠와 문항 선택(M6, D-041): `kind: assessment` 단원의 `assessment: { itemCount, passRatio }` 설정과 `content-cli check` 규칙(평가 개념은 `concepts.reviewed`, 문항은 `usage: assessment`, 개념당 최소 1문항, 10~20문항 권장, `module.yaml` `assessment` 검증), content.db `assessments` 테이블(스키마 버전 2, `pnpm content:build`로 다시 만들어야 함). 학습 엔진 `buildAssessmentSet`(개념 포함 → 난이도 분포 → 쉬운 순서, 처음 보는 문항 우선)과 `evaluateAssessment`(통과 비율 기본 0.8, 틀린 개념 목록). 학습 엔진 `1.2.0`
 - 시각 회귀 기준 이미지를 CI와 같은 컨테이너에서 다시 만드는 수동 실행 워크플로 `visual-baselines` (로컬 Docker를 쓸 수 없을 때)
 - JS 기초 모듈 5 "반복문"(while 반복, for 반복, 반복 제어, 중첩 반복): 레슨 4개와 문제 70개, 개념 9개·오개념 19개. AI 교차 검토로 전부 승인([검토 기록](docs/reviews/2026-11-15-m5-js-module-5-review.md)): 핵심 단원 `for`에 요구사항 해석형 L4 문제 보강(다시 쓴 2개, 새 문제 1개), 난이도 6개 정정, 힌트 3단계 완화 12개, 오개념 연결 정정, 직접 쓴 답이 통하지 않는 숨김 체크 설계(`impl-multiples-of-three`). 단원 평가는 M6에서 추가
 - JS 기초 모듈 2 "값과 변수"의 나머지 단원(자료형, 비어 있는 값, var와 선언 전 사용)과 모듈 4 "조건문"(if와 else, switch 문, 조건 연산자): 레슨 6개와 문제 94개를 AI 교차 검토(D-027) 후 승인. 오개념 `assign-in-condition`을 `assign-as-compare`로 합치고, 조건문 개념에 비교·논리·형 변환 선수 개념 추가
 - JS 기초 모듈 3 "연산자와 형 변환": 산술·비교·논리 연산, 명시적·암묵적 형 변환 레슨 5개와 단원 평가, 문제 134개(P0 유형 10종), 개념 18개·오개념 38개. AI 교차 검토로 전부 승인([검토 기록](docs/reviews/2026-11-15-m5-js-module-3-review.md)): 형 변환 규칙 정밀화, 단원 평가의 중복 문제 14개 재작성, 난이도 정정
-
 - HTML 핵심 과정 AI 교차 검토(M5, D-027): 레슨 7개와 문제 61개를 독립 AI 검토자가 전수 검토해 모두 승인(`reviewedBy: ai:reviewer`). 미리보기의 링크·폼 동작에 기대던 문구, 접근성 설명(이름 없는 `section`, `footer` 랜드마크, 표 제목 칸 읽기), 정답을 그대로 주던 힌트 3단계, 과대 표시된 난이도 6개를 고치고, 겹치는 선택형 6개를 빈칸 문제로 바꿈. [검토 기록](docs/reviews/2026-11-15-m5-html-core-review.md)
 - CSS 핵심 과정 8개 단원의 레슨과 문제 70개를 AI 교차 검토(D-027) 후 승인([검토 기록](docs/reviews/2026-11-15-m5-css-core-review.md)): 웹 실습 9개의 채점을 의도한 방법만 통과하도록 보강(`!important`, px 제목 크기, px 줄 높이, 경계를 어긋낸 미디어 쿼리 등이 실패), 해설의 계산 오류와 YAML 주석으로 잘린 체크 설명 수정, 표와 선택지 문자 참조를 학습 화면에 맞게 정리, 난이도 14문제 정정
 - CSS 핵심 과정 완성(M5, 검토 전 초안): 박스 모델에 더해 8개 단원(CSS 연결과 규칙 구조, 선택자, 캐스케이드와 명시도, display와 흐름, 단위와 색, 글꼴과 텍스트, Flexbox 기초, 반응형 기초), 개념 24개·오개념 36개 추가, 문제 70개(웹 실습 21개, 반응형 실습은 375px·1280px 두 너비에서 채점). 단원 평가는 M6에서 추가
@@ -26,6 +28,7 @@
 - AI 진단과 디버깅 가이드(M5): `GET /ai/calls`(작업·프롬프트 버전·모델·상태·오류 코드·지연·토큰, 프롬프트 없음), [디버깅 가이드](docs/guides/debugging.md)(로그, 데이터 위치, AI·Codex 상태별 진단, 샌드박스·러너, DB·백업·마이그레이션, 자주 보는 오류 코드). 모의 제공자는 질문에 `[mock:error:AI_*]`가 있으면 그 오류로 실패(E2E용). AI 비가용 상태 E2E. Codex 프로토콜 계약 테스트를 실제 `codex app-server` 녹화 재생으로 바꾸고, 겹친 사용량 조회가 응답을 받지 못하던 문제를 고침
 - AI 오답 분석과 오개념 제안(M5, D-036): 실습에서 틀린 뒤 "AI에게 왜 틀렸는지 묻기"(`POST /attempts/:id/explanation`, `evaluator.explainMistake`). 채점 결과와 학습자가 이미 본 피드백만으로 어긋난 지점을 설명하고, 힌트 기록만큼만 문제를 보여 주며 정답 누설 검사를 거칩니다. AI를 쓸 수 없으면 저작된 오개념 설명을 이유와 함께 보여 줍니다. 같은 개념에서 최근 오답이 쌓이면 백그라운드에서 `misconception.propose`가 근거 시도와 함께 오개념 후보를 제안하고, 앱이 근거를 확인한 것만 "의심"으로 기록합니다(AI만으로는 확정되지 않음). 오류 코드 `ATTEMPT_CORRECT`
 - AI 튜터의 장기 학습 기억(M5, D-035): user.db 마이그레이션 0005(`session_summaries`, `session_summary_concepts`). `session.summarize`가 튜터 대화를 구조화 요약(다룬 개념·질문·잘 이해한 점·어려워한 점과 근거 메시지·오개념 신호·남은 질문)으로 남기고, 마지막 메시지 30분 뒤(Codex가 연결되어 있고 사용량 80% 미만일 때) 이전 요약에 더해 갱신합니다. `GET`·`POST /tutor/threads/:id/summary`. 튜터 답변이 직계 선수 개념의 숙련도와 활성 오개념을 매 턴 참고하고, 앱 재시작 등으로 대화를 다시 시작할 때 스레드 요약·최근 메시지·관련된 지난 대화 요약으로 맥락을 복원합니다
+
 ### Fixed
 
 - 문제 지문·해설과 AI 답변의 마크다운이 GFM 파이프 표(`| a | b |` + `|---|---|`)를 문단으로 보여 주던 문제. 열 머리(`<th scope="col">`), 정렬 콜론, 칸 안 인라인 서식, `\|` 이스케이프, 칸 수가 다른 행을 지원하고, 레슨 표와 같은 모양으로 상자 안에서 가로 스크롤(390px에서도 페이지는 넓어지지 않음). 스트리밍 중 덜 온 표는 문단으로 보이고, AI 출력의 HTML 해석 금지·제목 미생성 보장은 그대로
