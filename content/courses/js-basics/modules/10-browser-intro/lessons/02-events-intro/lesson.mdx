@@ -1,0 +1,354 @@
+<Section kind="objectives">
+- `addEventListener`에 이벤트 이름과 함수 자체(괄호 없이)를 넘겨, 이벤트가 일어날 때마다 코드가 실행되게 할 수 있어요.
+- 이벤트 객체의 `target`과 `key`를 읽고, `preventDefault`로 폼 제출 같은 기본 동작을 막을 수 있어요.
+- 입력창의 `value`를 이벤트가 일어난 때에 읽고, 문자열인 `value`를 숫자로 바꿔 계산할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+앞 단원에서는 페이지가 열릴 때 스크립트가 한 번 실행되어 화면을 바꿨어요. 하지만 웹 페이지는 대부분 **사용자가 무언가 했을 때** 반응해요. 좋아요 버튼을 누르면 숫자가 늘고, 검색창에 글자를 치면 결과가 바뀌고, 회원 가입 폼을 제출하면 닉네임을 검사해요.
+
+사용자가 누르기 전에는 언제 누를지 알 수 없어요. 그래서 "버튼을 누르면 이 함수를 불러 줘"라고 브라우저에 **함수를 맡겨 두는** 방법이 필요해요. 이것이 이벤트 처리예요. 모듈 6에서 배운 콜백(다른 함수에 넘겨서 나중에 대신 불리는 함수)을 브라우저에 넘기는 것이라고 보면 돼요.
+
+이 단원에서는 함수를 맡기는 `addEventListener`, 무슨 일이 일어났는지 알려 주는 **이벤트 객체**, 그리고 사용자가 입력한 글자를 읽는 `value`를 배워요.
+</Section>
+
+<Section kind="principle">
+### addEventListener로 함수를 맡겨 둬요
+
+```js
+const button = document.querySelector("#like");
+button.addEventListener("click", () => {
+  console.log("눌렀어요");
+});
+```
+
+`요소.addEventListener(이벤트 이름, 함수)`는 "이 요소에서 이 이벤트가 일어날 때마다 이 함수를 불러 줘"라는 뜻이에요.
+
+- 등록하는 줄에서는 함수가 실행되지 **않아요**. 맡겨 두기만 해요.
+- 이벤트가 일어날 때마다 브라우저가 함수를 불러요. 열 번 누르면 열 번 불려요.
+- 함수는 화살표 함수로 바로 써도 되고, 이름 있는 함수를 넘겨도 돼요. 이름을 넘길 때는 **괄호 없이** `addEventListener("click", addLike)`처럼 함수 자체를 넘겨요. <ConceptLink to="js.fn.callback">콜백</ConceptLink>을 넘길 때와 같은 규칙이에요.
+
+<Callout kind="warning" title="괄호를 붙이면 지금 실행돼요">
+`button.addEventListener("click", addLike())`라고 쓰면 등록하는 순간 `addLike`가 한 번 실행되고, 그 **반환값**이 넘어가요. `return`이 없는 함수라면 `undefined`가 넘어가서, 정작 버튼을 누르면 아무 일도 일어나지 않아요. 오류도 나지 않아요.
+</Callout>
+
+### 자주 쓰는 이벤트
+
+이벤트 이름은 `on` 없이 써요(`"onclick"`이 아니라 `"click"`).
+
+| 이벤트 이름 | 언제 일어나나요 | 주로 등록하는 요소 |
+|---|---|---|
+| `"click"` | 요소를 눌렀을 때 | 버튼, 목록 항목 |
+| `"input"` | 입력창의 글자가 바뀔 때마다 | 입력창 |
+| `"submit"` | 폼이 제출될 때(버튼 클릭, 입력창에서 Enter 키) | 폼 |
+| `"keydown"` | 키를 누를 때 | 입력창, `document` |
+
+### 이벤트 객체: 무슨 일이 일어났나요
+
+브라우저는 함수를 부를 때 무슨 일이 일어났는지 담은 **이벤트 객체**를 첫 번째 인수로 넘겨요. 받으려면 함수에 매개변수를 하나 두면 돼요. 이름은 보통 `event`나 `e`라고 붙여요.
+
+```js
+button.addEventListener("click", (event) => {
+  console.log(event.target); // 이벤트가 일어난 요소
+});
+```
+
+이 단원에서 쓸 것은 세 가지예요.
+
+- `event.target`: 이벤트가 일어난 요소예요. 버튼 여러 개가 함수 하나를 함께 쓸 때, 어느 버튼을 눌렀는지 알 수 있어요.
+- `event.key`: `keydown`에서 누른 키의 이름이에요. Enter 키는 `"Enter"`, A 키는 `"a"`예요.
+- `event.preventDefault()`: 브라우저의 **기본 동작**을 막아요.
+
+### 폼 제출과 preventDefault
+
+어떤 이벤트에는 브라우저가 원래 하는 일(기본 동작)이 있어요. 링크를 누르면 다른 페이지로 이동하고, **폼을 제출하면 입력값을 보내며 페이지를 새로 열어요**(`action`이 없으면 같은 주소를 다시 열어요).
+
+폼 제출을 JavaScript로 처리할 때 이 기본 동작을 막지 않으면, 함수가 바꾼 화면이 새로 열린 페이지와 함께 사라져요. 그래서 `submit` 함수의 첫 줄에서 `event.preventDefault()`를 불러요.
+
+```js
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  // 여기서 입력값을 검사하고 화면을 바꿔요
+});
+```
+
+`preventDefault()`는 기본 동작만 막아요. 함수를 끝내지는 않아서, 다음 줄은 그대로 실행돼요. 함수를 끝내려면 `return`을 써요.
+
+<Callout kind="note" title="ProgInOne 미리보기에서는">
+미리보기는 링크 이동과 폼 제출을 실제로 일어나지 않게 막고, "미리보기에서는 링크 이동과 폼 제출이 실제로 일어나지 않아요."라는 안내를 보여 줘요. `preventDefault()`를 부른 폼에서는 이 안내가 나오지 않아요. 안내가 보이면 `preventDefault()`를 빠뜨리지 않았는지 확인해요. 실제 웹 페이지에서는 이 안내 대신 페이지가 새로 열려요.
+</Callout>
+
+### 입력창의 value는 문자열이에요
+
+입력창(`input`)에 들어 있는 글자는 `입력창.value`로 읽어요. 두 가지를 꼭 기억해요.
+
+1. **value는 항상 문자열이에요.** `type="number"` 입력창이어도 `"3"`이에요. `"3" + "5"`는 `"35"`가 되니, 계산하기 전에 <ConceptLink to="js.conv.to-number">`Number`</ConceptLink>로 바꿔요. 빈 입력창의 `value`는 `""`이고 `Number("")`는 `0`이라는 점도 조심해요.
+1. **value는 읽는 순간의 글자예요.** 입력창과 이어진 끈이 아니라, 읽은 그 순간의 글자를 복사해 온 문자열이에요. 사용자가 입력한 값을 쓰려면 **이벤트 함수 안에서** 읽어요.
+
+`value`에 대입하면 입력창의 글자가 바뀌어요. `input.value = ""`는 입력창을 비워요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 누를 때마다 숫자가 늘어나는 버튼이에요. 실행한 뒤 미리보기의 버튼을 몇 번 눌러 보세요.
+
+<RunnableExample id="click-counter" lang="web" concepts={["js.dom.add-event-listener"]}>
+```html
+<p>좋아요 <span id="count">0</span></p>
+<button id="like">♥ 좋아요</button>
+<script>
+  const likeButton = document.querySelector("#like");
+  const countText = document.querySelector("#count");
+  let count = 0;
+  console.log("등록합니다");
+  likeButton.addEventListener("click", () => {
+    count++;
+    countText.textContent = count;
+    console.log("눌렀어요: " + count);
+  });
+  console.log("등록했어요");
+</script>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+실행하자마자 콘솔에는 두 줄만 나와요.
+
+```text
+등록합니다
+등록했어요
+```
+
+- 8번 줄의 `addEventListener`는 화살표 함수를 맡겨 두기만 해요. 그래서 `눌렀어요`는 아직 나오지 않아요.
+- 버튼을 누를 때마다 맡겨 둔 함수가 실행돼요. `count`가 1씩 늘고, 화면의 숫자와 콘솔이 함께 바뀌어요.
+- `count`는 함수 밖에 있는 변수라서 누를 때마다 같은 변수가 늘어요. 함수 안에서 `let count = 0;`을 만들면 누를 때마다 0부터 다시 시작해서 늘 1이 나와요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 함수 이름 뒤에 괄호를 붙여 등록한 코드예요. `button.click()`은 코드로 버튼을 한 번 누르는 메서드예요. 실행하기 전에 콘솔에 나올 줄을 예측해 보세요.
+
+<RunnableExample id="handler-called" lang="web" predict predictKind="console" concepts={["js.dom.add-event-listener"]}>
+```html
+<button id="hi">인사</button>
+<script>
+  function sayHi() {
+    console.log("안녕하세요");
+  }
+  const button = document.querySelector("#hi");
+  button.addEventListener("click", sayHi());
+  console.log("등록 끝");
+  button.click();
+  console.log("눌렀어요");
+</script>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+안녕하세요
+등록 끝
+눌렀어요
+```
+
+- 7번 줄의 `sayHi()`는 등록하는 그 순간 함수를 불러요. 그래서 `안녕하세요`가 맨 먼저 나와요.
+- `sayHi`에는 `return`이 없으니 `sayHi()`의 값은 `undefined`예요. `addEventListener`는 함수 대신 `undefined`를 받고, 오류 없이 아무것도 등록하지 않아요.
+- 9번 줄에서 버튼을 눌러도 아무 일도 일어나지 않아요.
+
+`button.addEventListener("click", sayHi);`로 괄호를 빼면 `등록 끝`, `안녕하세요`, `눌렀어요` 순서가 돼요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 입력창의 `value`를 읽어 더하는 코드예요. 입력창에는 처음부터 `3`과 `5`가 들어 있어요(`value` 속성). 세 줄을 예측해 보세요.
+
+<RunnableExample id="value-string" lang="web" predict predictKind="console" concepts={["js.dom.input-value"]}>
+```html
+<input id="a" type="number" value="3" />
+<input id="b" type="number" value="5" />
+<script>
+  const a = document.querySelector("#a").value;
+  const b = document.querySelector("#b").value;
+  console.log(a + b);
+  console.log(Number(a) + Number(b));
+  console.log(typeof a);
+</script>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+35
+8
+string
+```
+
+- `type="number"`여도 `value`는 문자열 `"3"`, `"5"`예요. 9번 줄이 `string`을 보여 줘요.
+- 6번 줄은 문자열끼리의 `+`라 이어 붙여서 `35`예요.
+- 7번 줄처럼 `Number`로 바꾼 뒤 더해야 `8`이에요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 이벤트 객체를 쓰는 코드예요. 버튼 세 개가 함수 `pick` 하나를 함께 쓰고, 입력창에서는 누른 키를 보여 줘요. 실행한 뒤 버튼을 누르고, 입력창에 글자를 쳐 보세요.
+
+<RunnableExample id="event-object" lang="web" concepts={["js.dom.event-object"]}>
+```html
+<button class="size">작게</button>
+<button class="size">보통</button>
+<button class="size">크게</button>
+<p id="picked">고른 크기: -</p>
+<input id="key-input" placeholder="여기에 키를 눌러 보세요" />
+<p id="last-key">마지막 키: -</p>
+<script>
+  const picked = document.querySelector("#picked");
+  const lastKey = document.querySelector("#last-key");
+  const sizeButtons = document.querySelectorAll(".size");
+
+  function pick(event) {
+    picked.textContent = "고른 크기: " + event.target.textContent;
+  }
+  for (let i = 0; i < sizeButtons.length; i++) {
+    sizeButtons[i].addEventListener("click", pick);
+  }
+
+  document.querySelector("#key-input").addEventListener("keydown", (event) => {
+    lastKey.textContent = "마지막 키: " + event.key;
+  });
+</script>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- 세 버튼 모두에 같은 함수 `pick`을 괄호 없이 등록했어요.
+- 어느 버튼을 누르든 브라우저가 `pick`을 부르면서 이벤트 객체를 넘겨요. `event.target`이 **누른 그 버튼**이라서, 함수 하나로 세 버튼을 구별할 수 있어요.
+- 입력창에서 키를 누르면 `event.key`에 키 이름이 들어와요. Enter 키는 `Enter`, 스페이스바는 공백 한 칸(`" "`)으로 보여요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 폼 제출을 처리하는 코드예요. 이름을 쓰고 **보내기**를 누르거나, 입력창에서 Enter 키를 눌러 보세요. 그다음 `event.preventDefault();` 줄을 지우고 다시 실행해 제출해 보세요.
+
+<RunnableExample id="form-submit" lang="web" concepts={["js.dom.event-object", "js.dom.input-value"]}>
+```html
+<form id="hello-form">
+  <input id="name" placeholder="이름" />
+  <button>보내기</button>
+</form>
+<p id="message"></p>
+<script>
+  const form = document.querySelector("#hello-form");
+  const nameInput = document.querySelector("#name");
+  const message = document.querySelector("#message");
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const name = nameInput.value.trim();
+    if (name === "") {
+      message.textContent = "이름을 써 주세요";
+      return;
+    }
+    message.textContent = `${name}님, 안녕하세요!`;
+    nameInput.value = "";
+  });
+</script>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- 버튼을 누르든 Enter 키를 누르든 폼에서 `submit`이 일어나요. 그래서 제출할 때 할 일은 폼의 `submit`에 등록해요.
+- 12번 줄이 페이지를 새로 여는 기본 동작을 막아요. 그 아래 줄도 그대로 실행돼요.
+- 이름은 13번 줄에서, 제출한 **그 순간** 읽어요. `trim()`으로 앞뒤 공백을 지우고, 비어 있으면 안내만 쓰고 `return`으로 끝내요.
+- 마지막 줄은 `value`에 `""`를 대입해 입력창을 비워요.
+- 12번 줄을 지우고 제출하면 미리보기에 "미리보기에서는 링크 이동과 폼 제출이 실제로 일어나지 않아요." 안내가 나와요. 실제 웹 페이지였다면 페이지가 새로 열려 인사말이 사라졌을 거예요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.listener-handler-called">
+<Wrong>`button.addEventListener("click", sayHi())`처럼 괄호를 붙여야 누를 때 `sayHi`가 실행된다.</Wrong>
+<Actual>두 번째 예제에서 `안녕하세요`는 등록할 때 한 번 나왔고, 버튼을 눌러도 아무 일도 없었어요.</Actual>
+<Right>함수 자체를 넘겨요. `addEventListener("click", sayHi)`처럼 괄호 없이 쓰거나, 화살표 함수 `() => { ... }`를 바로 넘겨요. "열자마자 한 번 실행되고 클릭하면 아무 일도 없음"은 괄호를 의심하는 신호예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.event-name-on-prefix">
+<Wrong>HTML의 `onclick` 속성처럼 `addEventListener("onclick", ...)`이라고 쓴다.</Wrong>
+<Actual>`"onclick"`이라는 이벤트는 일어나지 않아요. 오류 없이 등록되지만 함수는 한 번도 불리지 않아요.</Actual>
+<Right>이벤트 이름은 `on`을 뺀 `"click"`, `"input"`, `"submit"`, `"keydown"`이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.form-submit-no-default">
+<Wrong>`submit` 함수에서 화면을 바꾸면 제출한 뒤에도 그대로 남는다.</Wrong>
+<Actual>실제 웹 페이지에서는 함수가 끝난 뒤 브라우저가 폼을 제출하며 페이지를 새로 열어요. 바뀐 화면은 사라져요.</Actual>
+<Right>`submit` 함수에서 이벤트 객체를 받아 `event.preventDefault()`를 불러요. 다섯 번째 예제처럼 함수의 첫 줄에 두는 습관을 들여요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.preventdefault-stops-handler">
+<Wrong>`event.preventDefault()`를 부르면 `return`처럼 그 아래 줄이 실행되지 않는다.</Wrong>
+<Actual>다섯 번째 예제에서 `preventDefault()` 다음 줄들이 모두 실행되어 인사말이 나왔어요.</Actual>
+<Right>`preventDefault()`는 브라우저의 기본 동작만 취소해요. 함수를 끝내려면 `return`을 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.input-value-is-number">
+<Wrong>`type="number"` 입력창의 `value`는 숫자라서 `+`로 바로 더할 수 있다.</Wrong>
+<Actual>세 번째 예제에서 `a + b`는 `35`였고, `typeof a`는 `string`이었어요.</Actual>
+<Right>`value`는 항상 문자열이에요. 계산하기 전에 `Number(input.value)`로 바꿔요. 빈칸은 `Number("")`가 `0`이 되니 따로 확인해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.input-value-read-once">
+<Wrong>스크립트 맨 위에서 `const name = nameInput.value;`로 읽어 두면, 나중에 입력한 이름이 `name`에 들어 있다.</Wrong>
+<Actual>그 줄은 페이지가 열릴 때 한 번 실행돼요. 그때 입력창은 비어 있어서 `name`은 `""`이고, 그 뒤에 입력해도 바뀌지 않아요.</Actual>
+<Right>사용자가 입력한 값은 이벤트 함수 **안에서** 읽어요. 다섯 번째 예제의 13번 줄처럼요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+검색창이 있는 페이지는 보통 글자를 칠 때마다(`input` 이벤트) 결과를 다시 보여 줘요. 이 단원에서 배운 것과 앞 단원의 `classList`를 합치면 간단한 목록 거르기를 만들 수 있어요.
+
+```js
+const searchInput = document.querySelector("#search");
+const items = document.querySelectorAll("#product-list li");
+
+searchInput.addEventListener("input", () => {
+  const keyword = searchInput.value.trim();
+  for (let i = 0; i < items.length; i++) {
+    const matches = items[i].textContent.includes(keyword);
+    items[i].classList.toggle("hidden", !matches);
+  }
+});
+```
+
+- 검색어는 글자가 바뀔 때마다 함수 안에서 새로 읽어요.
+- 모듈 7의 `includes`로 상품 이름에 검색어가 들어 있는지 확인해요.
+- 맞지 않는 항목에만 `hidden` 클래스를 넣어요(CSS에 `.hidden { display: none; }`).
+- 여기서는 목록을 페이지가 열릴 때 한 번 찾아도 괜찮아요. 상품이 나중에 늘어나지 않기 때문이에요. 항목이 늘어나는 할 일 목록이라면 어떻게 해야 할지 최종 프로젝트에서 다뤄요.
+</Section>
+
+<Section kind="check">
+함수를 맡기는 문법을 확인해 보세요.
+
+<InlineExercise ref="js-basics.browser-intro.events-intro.mcq-pass-handler" />
+
+입력창의 `value`가 어떤 자료형인지 확인해 보세요.
+
+<InlineExercise ref="js-basics.browser-intro.events-intro.tf-value-is-number" />
+
+이벤트 객체에 대해 확인해 보세요.
+
+<InlineExercise ref="js-basics.browser-intro.events-intro.multi-event-object" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `요소.addEventListener("이벤트", 함수)`는 이벤트가 일어날 때마다 함수를 불러 달라고 맡겨 두는 일이에요. 등록하는 줄에서는 함수가 실행되지 않아요.
+- 함수는 괄호 없이 함수 자체를 넘기고, 이벤트 이름은 `on` 없이 `"click"`, `"input"`, `"submit"`, `"keydown"`처럼 써요.
+- 브라우저는 함수에 이벤트 객체를 넘겨요. `event.target`은 이벤트가 일어난 요소, `event.key`는 누른 키예요.
+- 폼 제출은 폼의 `submit`에서 처리하고 `event.preventDefault()`로 페이지가 새로 열리는 것을 막아요. 함수의 나머지 줄은 그대로 실행돼요.
+- 입력창의 `value`는 항상 문자열이고, 읽는 순간의 글자예요. 이벤트 함수 안에서 읽고, 계산할 때는 `Number`로 바꿔요.
+</Section>
+
+<Section kind="next">
+다음 단원 "최종 프로젝트: 할 일 목록"에서는 DOM과 이벤트, 지금까지 배운 함수·조건문·문자열을 모두 합쳐 할 일을 추가하고 완료하고 지우는 앱을 단계별로 만들어요. 이벤트는 브라우저 JavaScript 과정에서 이벤트 위임과 비동기 처리로 다시 만나요. <MdnLink path="Web/API/EventTarget/addEventListener" />
+</Section>

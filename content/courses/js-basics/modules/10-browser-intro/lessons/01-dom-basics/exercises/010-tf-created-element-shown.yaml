@@ -1,0 +1,47 @@
+id: js-basics.browser-intro.dom-basics.tf-created-element-shown
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.dom.document-tree, weight: 1 }
+tags: [createelement, append]
+estimatedSeconds: 70
+prompt: |
+  다음 설명이 맞는지 고르고, 그 이유도 고르세요.
+spec:
+  statement: '`const item = document.createElement("li");` 다음에 `item.textContent = "우유";`까지 실행하면, 화면의 목록에 `우유` 항목이 나타난다.'
+  answer: false
+  misconceptionIfWrong: js.mc.created-element-auto-shown
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 만든 요소는 아직 트리의 어디에도 붙지 않았다. 부모 요소에 append해야 화면에 나타난다
+      correct: true
+    - id: r2
+      text: li는 ul 안에서만 만들 수 있어서 createElement("li")가 오류를 낸다
+    - id: r3
+      text: textContent를 넣으면 브라우저가 맞는 목록을 찾아 자동으로 붙인다
+      misconception: js.mc.created-element-auto-shown
+    - id: r4
+      text: createElement로 만든 요소에는 textContent를 쓸 수 없다
+hints:
+  - "`createElement`는 요소를 \"만들기만\" 하는지, 어딘가에 \"붙이기까지\" 하는지 생각해 보세요."
+  - 브라우저는 DOM 트리에 있는 것만 화면에 그려요. 이 요소는 트리의 어디에 있을까요?
+  - 이 코드에는 목록(`ul`)을 가리키는 부분이 전혀 없어요. 브라우저가 어느 목록에 붙여야 할지 알 수 있을까요?
+explanation: |
+  정답은 **거짓**이에요.
+
+  `document.createElement("li")`는 **아직 트리에 붙지 않은** 새 요소를 만들어요. 글자를 넣어도 마찬가지예요. 브라우저는 트리에 있는 요소만 그리므로 화면에는 아무것도 생기지 않아요.
+
+  ```js
+  const list = document.querySelector("#list");
+  const item = document.createElement("li");
+  item.textContent = "우유";
+  list.append(item); // 이 줄이 있어야 목록 끝에 나타나요
+  ```
+
+  - `createElement("li")`는 오류를 내지 않아요. 요소는 어디서든 만들 수 있고, 어디에 붙일지는 나중에 정해요.
+  - 만든 요소에도 `textContent`, `classList`를 그대로 쓸 수 있어요. 트리에 붙이기 전에 준비해 두는 경우가 많아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,294 @@
+id: js-basics.browser-intro.final-project.web-clear-done
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.dom.query-selector, weight: 1 }
+  - { id: js.dom.add-event-listener, weight: 0.5 }
+  - { id: js.loops.for, weight: 0.5 }
+  - { id: js.dom.text-content, weight: 0.3 }
+tags: [project, queryselectorall, remove, loop, web]
+estimatedSeconds: 600
+prompt: |
+  완성된 할 일 목록에 **완료한 일 지우기** 버튼(`#clear-done`)의 기능을 더하세요. 할 일 추가, 완료 표시, 삭제, 남은 개수(`updateStatus()`)는 이미 동작해요. 맨 아래 주석 자리에 코드를 쓰세요.
+
+  1. 버튼을 누르면 완료한 할 일(`done` 클래스가 있는 `li.todo`)을 **모두** 지워요.
+  1. `#notice`에 `완료한 일 2개를 지웠어요`처럼 지운 개수를 보여 주고, 남은 개수도 다시 써요(`updateStatus()`를 부르면 돼요).
+  1. 완료한 할 일이 하나도 없으면 아무것도 지우지 않고 `#notice`에 `지울 항목이 없어요`를 보여 줘요.
+
+  위의 코드는 고치지 마세요.
+spec:
+  focus: project
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>할 일 목록</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; max-width: 420px; }
+                #todo-form { display: flex; gap: 8px; }
+                #todo-input { flex: 1; font-size: 16px; padding: 4px 6px; }
+                #todo-list { padding-left: 0; list-style: none; }
+                .todo { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb; }
+                .todo-text { cursor: pointer; }
+                .done .todo-text { text-decoration: line-through; color: #9ca3af; }
+                .delete { font-size: 12px; }
+                .hidden { display: none; }
+              </style>
+            </head>
+            <body>
+              <h1>할 일 목록</h1>
+              <form id="todo-form">
+                <input id="todo-input" type="text" placeholder="할 일을 쓰세요" />
+                <button type="submit">추가</button>
+              </form>
+              <p id="todo-count">남은 할 일 0개</p>
+              <p id="empty-message">할 일이 없어요</p>
+              <ul id="todo-list"></ul>
+              <p><button id="clear-done">완료한 일 지우기</button></p>
+              <p id="notice"></p>
+              <script>
+                const form = document.querySelector("#todo-form");
+                const input = document.querySelector("#todo-input");
+                const list = document.querySelector("#todo-list");
+                const countText = document.querySelector("#todo-count");
+                const emptyMessage = document.querySelector("#empty-message");
+                const clearButton = document.querySelector("#clear-done");
+                const notice = document.querySelector("#notice");
+
+                function updateStatus() {
+                  const total = list.querySelectorAll(".todo").length;
+                  const done = list.querySelectorAll(".todo.done").length;
+                  countText.textContent = `남은 할 일 ${total - done}개`;
+                  if (total === 0) {
+                    emptyMessage.classList.remove("hidden");
+                  } else {
+                    emptyMessage.classList.add("hidden");
+                  }
+                }
+
+                function addTodo(text) {
+                  const item = document.createElement("li");
+                  item.classList.add("todo");
+
+                  const textSpan = document.createElement("span");
+                  textSpan.classList.add("todo-text");
+                  textSpan.textContent = text;
+                  textSpan.addEventListener("click", () => {
+                    item.classList.toggle("done");
+                    updateStatus();
+                  });
+
+                  const deleteButton = document.createElement("button");
+                  deleteButton.classList.add("delete");
+                  deleteButton.textContent = "삭제";
+                  deleteButton.addEventListener("click", () => {
+                    item.remove();
+                    updateStatus();
+                  });
+
+                  item.append(textSpan);
+                  item.append(deleteButton);
+                  list.append(item);
+                }
+
+                form.addEventListener("submit", (event) => {
+                  event.preventDefault();
+                  const text = input.value.trim();
+                  if (text === "") {
+                    return;
+                  }
+                  addTodo(text);
+                  input.value = "";
+                  updateStatus();
+                });
+
+                updateStatus();
+
+                // 여기에 "완료한 일 지우기" 기능을 쓰세요.
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>할 일 목록</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; max-width: 420px; }
+                #todo-form { display: flex; gap: 8px; }
+                #todo-input { flex: 1; font-size: 16px; padding: 4px 6px; }
+                #todo-list { padding-left: 0; list-style: none; }
+                .todo { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb; }
+                .todo-text { cursor: pointer; }
+                .done .todo-text { text-decoration: line-through; color: #9ca3af; }
+                .delete { font-size: 12px; }
+                .hidden { display: none; }
+              </style>
+            </head>
+            <body>
+              <h1>할 일 목록</h1>
+              <form id="todo-form">
+                <input id="todo-input" type="text" placeholder="할 일을 쓰세요" />
+                <button type="submit">추가</button>
+              </form>
+              <p id="todo-count">남은 할 일 0개</p>
+              <p id="empty-message">할 일이 없어요</p>
+              <ul id="todo-list"></ul>
+              <p><button id="clear-done">완료한 일 지우기</button></p>
+              <p id="notice"></p>
+              <script>
+                const form = document.querySelector("#todo-form");
+                const input = document.querySelector("#todo-input");
+                const list = document.querySelector("#todo-list");
+                const countText = document.querySelector("#todo-count");
+                const emptyMessage = document.querySelector("#empty-message");
+                const clearButton = document.querySelector("#clear-done");
+                const notice = document.querySelector("#notice");
+
+                function updateStatus() {
+                  const total = list.querySelectorAll(".todo").length;
+                  const done = list.querySelectorAll(".todo.done").length;
+                  countText.textContent = `남은 할 일 ${total - done}개`;
+                  if (total === 0) {
+                    emptyMessage.classList.remove("hidden");
+                  } else {
+                    emptyMessage.classList.add("hidden");
+                  }
+                }
+
+                function addTodo(text) {
+                  const item = document.createElement("li");
+                  item.classList.add("todo");
+
+                  const textSpan = document.createElement("span");
+                  textSpan.classList.add("todo-text");
+                  textSpan.textContent = text;
+                  textSpan.addEventListener("click", () => {
+                    item.classList.toggle("done");
+                    updateStatus();
+                  });
+
+                  const deleteButton = document.createElement("button");
+                  deleteButton.classList.add("delete");
+                  deleteButton.textContent = "삭제";
+                  deleteButton.addEventListener("click", () => {
+                    item.remove();
+                    updateStatus();
+                  });
+
+                  item.append(textSpan);
+                  item.append(deleteButton);
+                  list.append(item);
+                }
+
+                form.addEventListener("submit", (event) => {
+                  event.preventDefault();
+                  const text = input.value.trim();
+                  if (text === "") {
+                    return;
+                  }
+                  addTodo(text);
+                  input.value = "";
+                  updateStatus();
+                });
+
+                updateStatus();
+
+                // 여기에 "완료한 일 지우기" 기능을 쓰세요.
+                clearButton.addEventListener("click", () => {
+                  const doneItems = list.querySelectorAll(".todo.done");
+                  if (doneItems.length === 0) {
+                    notice.textContent = "지울 항목이 없어요";
+                    return;
+                  }
+                  for (let i = 0; i < doneItems.length; i++) {
+                    doneItems[i].remove();
+                  }
+                  notice.textContent = `완료한 일 ${doneItems.length}개를 지웠어요`;
+                  updateStatus();
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: clear-two
+      description: 세 개 중 첫째와 셋째를 완료하고 누르면, 그 둘이 지워지고 "완료한 일 2개를 지웠어요"와 "남은 할 일 1개"가 보여야 합니다.
+      requirement: 완료한 일 모두 지우기
+      visible: true
+      steps:
+        - { action: type, selector: "#todo-input", value: "장보기" }
+        - { action: submit, selector: "#todo-form" }
+        - { action: type, selector: "#todo-input", value: "빨래하기" }
+        - { action: submit, selector: "#todo-form" }
+        - { action: type, selector: "#todo-input", value: "청소하기" }
+        - { action: submit, selector: "#todo-form" }
+        - { action: click, selector: "#todo-list li.todo:nth-child(1) .todo-text" }
+        - { action: click, selector: "#todo-list li.todo:nth-child(3) .todo-text" }
+        - { action: click, selector: "#clear-done" }
+      expect:
+        - { selector: "#todo-list li.todo", count: 1 }
+        - { selector: "#todo-list li.todo .todo-text", text: { equals: "빨래하기" } }
+        - { selector: "#notice", text: { equals: "완료한 일 2개를 지웠어요" } }
+        - { selector: "#todo-count", text: { equals: "남은 할 일 1개" } }
+    - kind: event
+      id: nothing-done
+      description: 완료한 일이 없을 때 누르면 아무것도 지우지 않고 "지울 항목이 없어요"가 보여야 합니다.
+      requirement: 지울 것이 없을 때
+      visible: true
+      steps:
+        - { action: click, selector: "#clear-done" }
+      expect:
+        - { selector: "#todo-list li.todo", count: 1 }
+        - { selector: "#notice", text: { equals: "지울 항목이 없어요" } }
+    - kind: event
+      id: clear-last
+      description: 남은 하나를 완료하고 누르면 목록이 비고, "완료한 일 1개를 지웠어요"와 빈 목록 안내가 보여야 합니다.
+      requirement: 완료한 일 모두 지우기
+      steps:
+        - { action: click, selector: "#todo-list li.todo:nth-child(1) .todo-text" }
+        - { action: click, selector: "#clear-done" }
+      expect:
+        - { selector: "#todo-list li", count: 0 }
+        - { selector: "#notice", text: { equals: "완료한 일 1개를 지웠어요" } }
+        - { selector: "#todo-count", text: { equals: "남은 할 일 0개" } }
+        - { selector: "#empty-message.hidden", count: 0 }
+misconceptions: [js.mc.queryselector-returns-all, js.mc.listener-handler-called]
+hints:
+  - 버튼에 `click` 함수를 등록하고, 그 안에서 완료한 할 일을 **모두** 찾아요. 선택자는 클래스 두 개를 붙여 쓸 수 있어요(`.todo.done`).
+  - 찾은 목록의 `length`가 0이면 안내만 쓰고 끝내요. 아니면 반복으로 하나씩 `remove()`해요.
+  - 지운 개수는 지우기 전에 찾은 목록의 `length`와 같아요. 다 지운 뒤 `updateStatus()`를 불러 남은 개수와 안내를 다시 쓰세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  clearButton.addEventListener("click", () => {
+    const doneItems = list.querySelectorAll(".todo.done");
+    if (doneItems.length === 0) {
+      notice.textContent = "지울 항목이 없어요";
+      return;
+    }
+    for (let i = 0; i < doneItems.length; i++) {
+      doneItems[i].remove();
+    }
+    notice.textContent = `완료한 일 ${doneItems.length}개를 지웠어요`;
+    updateStatus();
+  });
+  ```
+
+  - **모두 찾기**: `querySelector(".todo.done")`는 첫 번째 하나만 돌려줘서 한 번에 하나씩만 지워져요. `querySelectorAll`로 모두 찾아요.
+  - **찾는 시점**: 함수 안에서 찾아야 누른 순간의 완료 항목이 들어와요. 페이지가 열릴 때 찾아 두면 그때는 항목이 하나도 없어요.
+  - **지우면서 반복하기**: `querySelectorAll`의 결과는 찾은 순간의 목록이라, 반복하며 `remove()`해도 목록의 길이가 줄지 않아요. 그래서 `doneItems.length`를 지운 개수로 그대로 쓸 수 있어요.
+  - 다 지운 뒤 `updateStatus()`가 남은 개수와 빈 목록 안내를 맞춰요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

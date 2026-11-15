@@ -959,3 +959,63 @@
   prerequisites: [js.errors.try-catch]
   misconceptions: [js.mc.finally-only-on-error]
   mdn: Web/JavaScript/Reference/Statements/try...catch
+
+# ── 모듈 10. 브라우저 JS 입문: dom-basics ──
+
+- id: js.dom.document-tree
+  title: document와 DOM 트리 다루기
+  importance: standard
+  summary: 브라우저는 HTML을 읽어 DOM 트리를 만들고, JavaScript는 document를 통해 이 트리를 읽고 바꿔요. 파일이 아니라 트리가 바뀌므로 화면이 바로 달라져요. 스크립트는 위에서부터 읽힌 만큼의 트리만 볼 수 있어서 보통 body 끝에 두고, createElement로 만든 요소는 append로 트리에 붙여야 화면에 나타나요.
+  prerequisites: [html.doc.dom-tree, js.basics.statements]
+  misconceptions: [js.mc.script-before-element, js.mc.created-element-auto-shown]
+  mdn: Web/API/Document_Object_Model/Introduction
+
+- id: js.dom.query-selector
+  title: querySelector로 요소 찾기
+  importance: standard
+  summary: 'document.querySelector(선택자)는 CSS 선택자에 맞는 첫 번째 요소 하나를, 없으면 null을 돌려줘요. 맞는 요소를 모두 얻으려면 querySelectorAll을 쓰고, 결과는 length와 인덱스로 하나씩 꺼내요. 선택자는 CSS와 같아서 id는 #, 클래스는 .을 붙여요.'
+  prerequisites: [js.dom.document-tree, css.selectors.basic, js.fn.call, js.types.null, { id: js.arr.literal-index, strength: helpful }]
+  misconceptions: [js.mc.queryselector-returns-all, js.mc.selector-missing-prefix]
+  mdn: Web/API/Document/querySelector
+
+- id: js.dom.text-content
+  title: textContent로 글자 읽고 바꾸기
+  importance: standard
+  summary: 요소.textContent는 요소 안의 글자를 문자열로 읽어요. 여기에 대입하면 안의 내용 전체가 그 글자로 바뀌어요(덧붙지 않아요). 대입한 문자열 속 태그도 그냥 글자로 보여요.
+  prerequisites: [js.dom.query-selector, js.types.string, js.obj.dot-bracket]
+  misconceptions: [js.mc.textcontent-parses-html, js.mc.textcontent-appends]
+  mdn: Web/API/Node/textContent
+
+- id: js.dom.class-style
+  title: classList와 style로 모양 바꾸기
+  importance: standard
+  summary: classList.add·remove·toggle·contains로 요소의 클래스를 넣고 빼서 CSS 규칙이 적용되게 해요. 클래스 이름에는 점을 붙이지 않아요. 요소.style.속성으로 스타일을 직접 바꿀 수도 있는데, background-color처럼 하이픈이 있는 속성은 backgroundColor처럼 낙타 표기로 써요.
+  prerequisites: [js.dom.query-selector, css.selectors.basic, js.fn.call, js.obj.methods-intro]
+  misconceptions: [js.mc.classlist-dot-prefix, js.mc.style-hyphen-name]
+  mdn: Web/API/Element/classList
+
+# ── 모듈 10. 브라우저 JS 입문: events-intro ──
+
+- id: js.dom.add-event-listener
+  title: addEventListener로 이벤트에 반응하기
+  importance: standard
+  summary: 요소.addEventListener("click", 함수)는 그 요소에서 이벤트가 일어날 때마다 함수를 불러 달라고 맡겨 두는 일이에요. 함수는 괄호 없이 함수 자체를 넘기고, 이벤트 이름은 on 없이 click·input·submit처럼 써요.
+  prerequisites: [js.dom.query-selector, js.fn.callback]
+  misconceptions: [js.mc.listener-handler-called, js.mc.event-name-on-prefix]
+  mdn: Web/API/EventTarget/addEventListener
+
+- id: js.dom.event-object
+  title: 이벤트 객체
+  importance: standard
+  summary: 브라우저는 이벤트 함수를 부를 때 무슨 일이 일어났는지 담은 이벤트 객체를 첫 번째 인수로 넘겨요. event.target은 이벤트가 일어난 요소, event.key는 누른 키예요. event.preventDefault()는 폼 제출 때 페이지를 새로 여는 것 같은 브라우저의 기본 동작만 막고, 함수의 나머지 코드는 계속 실행돼요.
+  prerequisites: [js.dom.add-event-listener, js.fn.params-args, html.forms.form]
+  misconceptions: [js.mc.form-submit-no-default, js.mc.preventdefault-stops-handler]
+  mdn: Web/API/Event
+
+- id: js.dom.input-value
+  title: 입력창의 value 읽기
+  importance: standard
+  summary: 입력창.value는 지금 입력창에 들어 있는 글자예요. type="number"여도 value는 항상 문자열이라 계산하려면 Number로 바꿔요. value는 읽는 순간의 값이라서, 사용자가 입력한 값을 쓰려면 이벤트 함수 안에서 읽어요.
+  prerequisites: [js.dom.add-event-listener, html.forms.inputs, js.conv.to-number]
+  misconceptions: [js.mc.input-value-is-number, js.mc.input-value-read-once]
+  mdn: Web/API/HTMLInputElement/value

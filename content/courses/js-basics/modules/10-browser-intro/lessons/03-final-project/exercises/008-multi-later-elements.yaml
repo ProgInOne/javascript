@@ -1,0 +1,40 @@
+id: js-basics.browser-intro.final-project.multi-later-elements
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.dom.add-event-listener, weight: 1 }
+  - { id: js.dom.document-tree, weight: 0.5 }
+tags: [project, later-elements, addeventlistener, review]
+estimatedSeconds: 140
+prompt: |
+  할 일 목록은 처음에 비어 있고, 할 일은 사용자가 추가할 때 만들어져요. 이 할 일 목록에 대해 맞는 설명을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: '페이지가 열릴 때 `document.querySelectorAll(".delete")`로 찾아 이벤트를 등록하면, 나중에 추가한 할 일의 삭제 버튼에는 이벤트가 없다'
+    - id: b
+      text: 할 일을 만드는 함수 안에서, 방금 만든 삭제 버튼에 바로 addEventListener를 하면 나중에 추가한 할 일도 삭제할 수 있다
+    - id: c
+      text: 할 일을 지운 뒤에는 남은 개수를 다시 계산해 화면에 써야 한다
+    - id: d
+      text: querySelectorAll로 찾은 목록은 나중에 요소를 추가하면 저절로 늘어난다
+      rationale: querySelectorAll의 결과는 찾은 순간의 목록이에요. 나중에 붙인 요소는 다시 찾아야 들어가요.
+    - id: e
+      text: '`#todo-count`의 글자를 `남은 할 일 3개`로 한 번 써 두면, 할 일 수가 바뀔 때 숫자도 저절로 바뀐다'
+      rationale: textContent는 대입한 그 문자열일 뿐이에요. 목록과 연결되어 있지 않으니 바뀔 때마다 다시 써야 해요.
+  correct: [a, b, c]
+hints:
+  - 페이지가 열리는 순간 목록에 삭제 버튼이 몇 개 있을까요?
+  - 이벤트는 요소에 직접 붙어요. 아직 없는 요소에 미리 붙여 둘 수 있을까요?
+  - 화면의 글자는 변수처럼 다른 값과 이어져 있지 않아요. 대입하기 전까지 그대로예요.
+explanation: |
+  정답은 "열릴 때 찾아 등록하면 나중 버튼에는 없다", "만드는 함수 안에서 바로 등록한다", "지운 뒤 개수를 다시 쓴다" 세 가지예요.
+
+  - 페이지가 열릴 때는 할 일이 하나도 없어서 `querySelectorAll(".delete")`의 결과가 비어 있어요. 반복으로 등록해도 아무 버튼에도 등록되지 않아요.
+  - 그래서 할 일을 **만드는 자리**에서, 방금 만든 버튼에 바로 이벤트를 등록해요. 그러면 몇 번째로 추가한 할 일이든 자기 삭제 버튼을 가져요.
+  - `querySelectorAll`의 결과는 찾은 순간의 목록이에요. 저절로 늘지 않아요.
+  - 화면의 글자는 목록과 연결되어 있지 않아요. 추가·완료·삭제할 때마다 개수를 다시 세어 대입해야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

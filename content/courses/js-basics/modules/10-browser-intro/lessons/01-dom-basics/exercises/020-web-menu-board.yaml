@@ -1,0 +1,196 @@
+id: js-basics.browser-intro.dom-basics.web-menu-board
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.dom.document-tree, weight: 1 }
+  - { id: js.str.split-join, weight: 0.5 }
+  - { id: js.dom.text-content, weight: 0.5 }
+  - { id: js.dom.class-style, weight: 0.3 }
+tags: [createelement, append, split, loop, web]
+estimatedSeconds: 540
+prompt: |
+  카페 메뉴판을 그리는 `renderMenu(menuText)`의 본문을 완성하세요. `menuText`는 `"아메리카노,카페라테,바닐라라테,녹차"`처럼 메뉴 이름을 쉼표로 이어 쓴 문자열이에요.
+
+  1. 메뉴 이름마다 `li`를 만들어 글자를 넣고, `menu-item` 클래스를 붙여 `#menu`에 차례로 붙이세요.
+  1. **첫 번째** 메뉴의 `li`에는 `best` 클래스도 붙이세요(추천 표시).
+  1. `#count`에 `메뉴 4가지`처럼 메뉴 수를 보여 주세요.
+
+  **계절 메뉴로 바꾸기** 버튼은 `renderMenu("딸기라테,레몬에이드")`를 다시 불러요. 그때 메뉴판에는 계절 메뉴 **두 개만** 있어야 해요. `renderMenu` 밖의 코드는 고치지 마세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>카페 메뉴판</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #menu { padding-left: 20px; }
+                .menu-item { margin: 4px 0; }
+                .best { color: #b45309; font-weight: bold; }
+                .best::after { content: " ★추천"; }
+              </style>
+            </head>
+            <body>
+              <h1>오늘의 메뉴</h1>
+              <p id="count">메뉴 0가지</p>
+              <ul id="menu"></ul>
+              <button id="season">계절 메뉴로 바꾸기</button>
+              <script>
+                const menu = document.querySelector("#menu");
+                const count = document.querySelector("#count");
+
+                // 쉼표로 이어 쓴 메뉴 이름(menuText)으로 메뉴판을 새로 그리는 함수예요. 본문을 완성하세요.
+                function renderMenu(menuText) {
+                }
+
+                renderMenu("아메리카노,카페라테,바닐라라테,녹차");
+
+                // 버튼을 누르면 계절 메뉴로 다시 그려요. (이벤트는 다음 단원에서 배워요. 고치지 마세요.)
+                document.querySelector("#season").addEventListener("click", () => {
+                  renderMenu("딸기라테,레몬에이드");
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>카페 메뉴판</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #menu { padding-left: 20px; }
+                .menu-item { margin: 4px 0; }
+                .best { color: #b45309; font-weight: bold; }
+                .best::after { content: " ★추천"; }
+              </style>
+            </head>
+            <body>
+              <h1>오늘의 메뉴</h1>
+              <p id="count">메뉴 0가지</p>
+              <ul id="menu"></ul>
+              <button id="season">계절 메뉴로 바꾸기</button>
+              <script>
+                const menu = document.querySelector("#menu");
+                const count = document.querySelector("#count");
+
+                // 쉼표로 이어 쓴 메뉴 이름(menuText)으로 메뉴판을 새로 그리는 함수예요. 본문을 완성하세요.
+                function renderMenu(menuText) {
+                  menu.textContent = "";
+                  const names = menuText.split(",");
+                  for (let i = 0; i < names.length; i++) {
+                    const item = document.createElement("li");
+                    item.textContent = names[i];
+                    item.classList.add("menu-item");
+                    if (i === 0) {
+                      item.classList.add("best");
+                    }
+                    menu.append(item);
+                  }
+                  count.textContent = `메뉴 ${names.length}가지`;
+                }
+
+                renderMenu("아메리카노,카페라테,바닐라라테,녹차");
+
+                // 버튼을 누르면 계절 메뉴로 다시 그려요. (이벤트는 다음 단원에서 배워요. 고치지 마세요.)
+                document.querySelector("#season").addEventListener("click", () => {
+                  renderMenu("딸기라테,레몬에이드");
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: items
+      description: 처음에는 메뉴 4개가 li로 붙어 있어야 합니다.
+      requirement: 메뉴 그리기
+      visible: true
+      selector: "#menu li.menu-item"
+      expect:
+        count: 4
+    - kind: dom
+      id: order
+      description: "첫 번째 메뉴는 \"아메리카노\"여야 합니다(쉼표로 나눈 순서대로)."
+      requirement: 메뉴 그리기
+      selector: "#menu li:nth-child(1)"
+      expect:
+        text: { equals: "아메리카노" }
+    - kind: dom
+      id: last
+      description: "마지막 메뉴는 \"녹차\"여야 합니다."
+      requirement: 메뉴 그리기
+      selector: "#menu li:nth-child(4)"
+      expect:
+        text: { equals: "녹차" }
+    - kind: dom
+      id: best-first
+      description: 첫 번째 메뉴 하나에만 best 클래스가 있어야 합니다.
+      requirement: 추천 표시
+      visible: true
+      selector: "#menu li.best"
+      expect:
+        count: 1
+        text: { equals: "아메리카노" }
+    - kind: dom
+      id: count
+      description: "\"메뉴 4가지\"가 보여야 합니다."
+      requirement: 메뉴 수
+      visible: true
+      selector: "#count"
+      expect:
+        text: { equals: "메뉴 4가지" }
+    - kind: event
+      id: season
+      description: 계절 메뉴로 바꾸면 이전 메뉴는 사라지고 "딸기라테", "레몬에이드" 두 개만 남아야 하며, 첫 메뉴가 추천이고 "메뉴 2가지"가 보여야 합니다.
+      requirement: 다시 그리기
+      visible: true
+      steps:
+        - { action: click, selector: "#season" }
+      expect:
+        - { selector: "#menu li", count: 2 }
+        - { selector: "#menu li:nth-child(1)", text: { equals: "딸기라테" } }
+        - { selector: "#menu li.best", count: 1 }
+        - { selector: "#menu li.best", text: { equals: "딸기라테" } }
+        - { selector: "#count", text: { equals: "메뉴 2가지" } }
+misconceptions: [js.mc.created-element-auto-shown, js.mc.textcontent-parses-html]
+hints:
+  - 먼저 `menuText`를 쉼표로 나눠 이름 목록을 만드세요(모듈 7의 `split`). 목록의 `length`가 메뉴 수예요.
+  - 이름마다 "`createElement`로 만들기 → 글자·클래스 넣기 → `#menu`에 `append`"를 반복해요. 첫 번째인지는 반복 변수로 알 수 있어요.
+  - 계절 메뉴로 바꿀 때 메뉴가 6개가 된다면, 다시 그리기 전에 이전 항목을 지우지 않은 거예요. `textContent`에 대입하면 요소 안의 내용이 어떻게 되는지 떠올려 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function renderMenu(menuText) {
+    menu.textContent = "";
+    const names = menuText.split(",");
+    for (let i = 0; i < names.length; i++) {
+      const item = document.createElement("li");
+      item.textContent = names[i];
+      item.classList.add("menu-item");
+      if (i === 0) {
+        item.classList.add("best");
+      }
+      menu.append(item);
+    }
+    count.textContent = `메뉴 ${names.length}가지`;
+  }
+  ```
+
+  - **다시 그리기**: `textContent`에 대입하면 요소 안의 내용 전체가 바뀌어요. 그래서 `menu.textContent = ""`는 안에 있던 `li`를 모두 지워요. 이 줄이 없으면 계절 메뉴가 기존 4개 뒤에 붙어 6개가 돼요.
+  - **만들고 붙이기**: `createElement`로 만든 `li`는 `append`해야 화면에 나타나요. 반복 안에서 매번 새 `li`를 만들어야 해요. 반복 밖에서 하나만 만들면 같은 요소를 계속 옮겨 붙이는 셈이라 마지막 메뉴 하나만 남아요.
+  - **첫 번째 표시**: 반복 변수 `i`가 0일 때만 `best`를 붙여요.
+  - `menu.textContent += "<li>...</li>"`처럼 문자열로 태그를 넣으면 꺾쇠까지 글자로 보여요. 요소는 `createElement`로 만들어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

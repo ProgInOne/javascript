@@ -1,0 +1,169 @@
+id: js-basics.browser-intro.events-intro.web-enter-memo
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.dom.event-object, weight: 1 }
+  - { id: js.dom.input-value, weight: 0.5 }
+  - { id: js.dom.document-tree, weight: 0.5 }
+  - { id: js.dom.text-content, weight: 0.3 }
+tags: [keydown, event-key, createelement, append, web]
+estimatedSeconds: 600
+prompt: |
+  입력창에 메모를 쓰고 Enter 키를 누르면 아래 목록에 붙는 **빠른 메모**를 만드세요. 폼은 쓰지 않고, 입력창의 `keydown` 이벤트로 만들어요.
+
+  1. 입력창에서 Enter 키를 눌렀을 때만 메모를 추가해요. 다른 키를 누를 때는 아무 일도 없어야 해요.
+  1. 메모는 앞뒤 공백을 뺀 글자로 `li`를 만들어 `#memo-list` 끝에 붙여요. 공백만 있으면 추가하지 않아요.
+  1. 추가한 뒤에는 입력창을 비우고, `#memo-count`에 `메모 2개`처럼 지금 메모 수를 보여 줘요.
+
+  누른 키의 이름은 이벤트 객체의 `key`에 들어 있어요(Enter 키는 `"Enter"`). 요소 안의 자식 요소 수는 `요소.children.length`로 셀 수 있어요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>빠른 메모</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #memo-input { font-size: 16px; padding: 4px; width: 240px; }
+                #memo-list li { margin: 4px 0; }
+              </style>
+            </head>
+            <body>
+              <h1>빠른 메모</h1>
+              <input id="memo-input" type="text" placeholder="메모를 쓰고 Enter" />
+              <p id="memo-count">메모 0개</p>
+              <ul id="memo-list"></ul>
+              <script>
+                const memoInput = document.querySelector("#memo-input");
+                const memoList = document.querySelector("#memo-list");
+                const memoCount = document.querySelector("#memo-count");
+
+                // 여기에 코드를 쓰세요.
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>빠른 메모</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #memo-input { font-size: 16px; padding: 4px; width: 240px; }
+                #memo-list li { margin: 4px 0; }
+              </style>
+            </head>
+            <body>
+              <h1>빠른 메모</h1>
+              <input id="memo-input" type="text" placeholder="메모를 쓰고 Enter" />
+              <p id="memo-count">메모 0개</p>
+              <ul id="memo-list"></ul>
+              <script>
+                const memoInput = document.querySelector("#memo-input");
+                const memoList = document.querySelector("#memo-list");
+                const memoCount = document.querySelector("#memo-count");
+
+                // 여기에 코드를 쓰세요.
+                memoInput.addEventListener("keydown", (event) => {
+                  if (event.key !== "Enter") {
+                    return;
+                  }
+                  const text = memoInput.value.trim();
+                  if (text === "") {
+                    return;
+                  }
+                  const item = document.createElement("li");
+                  item.textContent = text;
+                  memoList.append(item);
+                  memoInput.value = "";
+                  memoCount.textContent = `메모 ${memoList.children.length}개`;
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: other-key
+      description: 글자를 쓰고 Enter가 아닌 키를 누르면 메모가 추가되지 않아야 합니다.
+      requirement: Enter일 때만 추가
+      visible: true
+      steps:
+        - { action: type, selector: "#memo-input", value: "우유 사기" }
+        - { action: keydown, selector: "#memo-input", key: "a" }
+      expect:
+        - { selector: "#memo-list li", count: 0 }
+    - kind: event
+      id: enter-adds
+      description: "Enter를 누르면 \"우유 사기\" 메모가 추가되고, 입력창이 비고, \"메모 1개\"가 보여야 합니다."
+      requirement: 메모 추가
+      visible: true
+      steps:
+        - { action: keydown, selector: "#memo-input", key: "Enter" }
+      expect:
+        - { selector: "#memo-list li", count: 1 }
+        - { selector: "#memo-list li", text: { equals: "우유 사기" } }
+        - { selector: "#memo-input", value: "" }
+        - { selector: "#memo-count", text: { equals: "메모 1개" } }
+    - kind: event
+      id: blank-ignored
+      description: 공백만 쓰고 Enter를 누르면 추가되지 않아야 합니다.
+      requirement: 빈 메모 무시
+      steps:
+        - { action: type, selector: "#memo-input", value: "   " }
+        - { action: keydown, selector: "#memo-input", key: "Enter" }
+      expect:
+        - { selector: "#memo-list li", count: 1 }
+        - { selector: "#memo-count", text: { equals: "메모 1개" } }
+    - kind: event
+      id: second
+      description: "앞뒤 공백이 있는 \" 운동하기 \"를 추가하면 \"운동하기\"가 두 번째로 붙고 \"메모 2개\"가 보여야 합니다."
+      requirement: 메모 추가
+      steps:
+        - { action: type, selector: "#memo-input", value: " 운동하기 " }
+        - { action: keydown, selector: "#memo-input", key: "Enter" }
+      expect:
+        - { selector: "#memo-list li", count: 2 }
+        - { selector: "#memo-list li:nth-child(2)", text: { equals: "운동하기" } }
+        - { selector: "#memo-count", text: { equals: "메모 2개" } }
+misconceptions: [js.mc.created-element-auto-shown, js.mc.input-value-read-once]
+hints:
+  - 입력창에 `keydown` 함수를 등록하고, 이벤트 객체를 매개변수로 받으세요. 키는 `event.key`로 확인해요.
+  - "Enter가 아니면 바로 `return`하고, 그다음 공백을 지운 글자가 비었는지도 확인해 보세요."
+  - 추가는 "`li` 만들기 → 글자 넣기 → 목록에 `append`" 순서예요. 개수는 추가한 **뒤에** 목록의 자식 수로 다시 세면 틀릴 일이 없어요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  memoInput.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") {
+      return;
+    }
+    const text = memoInput.value.trim();
+    if (text === "") {
+      return;
+    }
+    const item = document.createElement("li");
+    item.textContent = text;
+    memoList.append(item);
+    memoInput.value = "";
+    memoCount.textContent = `메모 ${memoList.children.length}개`;
+  });
+  ```
+
+  - **`event.key`**: `keydown`은 어떤 키를 눌러도 일어나요. 그래서 `event.key`가 `"Enter"`인지 확인해야 해요. 이 확인이 없으면 글자를 하나 칠 때마다 메모가 추가돼요.
+  - **값은 함수 안에서**: 입력창의 글자는 Enter를 누른 그 순간 읽어요.
+  - **만들고 붙이기**: `createElement`로 만든 `li`는 `append`해야 화면에 보여요.
+  - **개수 세기**: `let count = 0;`을 두고 추가할 때마다 1씩 늘려도 돼요. 이 풀이는 목록의 자식 수를 다시 세서, 빈 메모처럼 추가하지 않은 경우에도 숫자가 틀어지지 않게 했어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

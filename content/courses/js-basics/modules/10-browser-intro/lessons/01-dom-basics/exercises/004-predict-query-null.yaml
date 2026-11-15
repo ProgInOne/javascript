@@ -1,0 +1,45 @@
+id: js-basics.browser-intro.dom-basics.predict-query-null
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.dom.query-selector, weight: 1 }
+  - { id: js.types.null, weight: 0.3 }
+tags: [queryselector, "null", selector]
+estimatedSeconds: 90
+prompt: |
+  다음 문서를 열면 콘솔에 무엇이 출력될까요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: web
+  code: |
+    <p class="notice">오늘은 휴관일이에요</p>
+    <p class="notice">내일 다시 문을 열어요</p>
+    <script>
+      const first = document.querySelector(".notice");
+      console.log(first.textContent);
+      console.log(document.querySelectorAll(".notice").length);
+      console.log(document.querySelector("notice"));
+    </script>
+  answerKind: console
+  misconceptionByAnswer:
+    "오늘은 휴관일이에요\n2\n오늘은 휴관일이에요": js.mc.selector-missing-prefix
+    "오늘은 휴관일이에요 내일 다시 문을 열어요\n2\nnull": js.mc.queryselector-returns-all
+hints:
+  - 맞는 요소가 두 개일 때 `querySelector`는 몇 개를 돌려주나요?
+  - "`querySelectorAll`의 결과는 목록이에요. `length`는 무엇을 셀까요?"
+  - 마지막 줄의 선택자 앞에는 점이 있나요? 점이 없으면 무엇을 찾는 선택자일까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  오늘은 휴관일이에요
+  2
+  null
+  ```
+
+  - `querySelector(".notice")`는 맞는 요소 중 **첫 번째 하나**만 돌려줘요. 그래서 첫 문단의 글자만 나와요.
+  - `querySelectorAll(".notice")`는 맞는 요소를 모두 담은 목록이라 `length`가 2예요.
+  - `querySelector("notice")`에는 점이 없어서 `<notice>` 태그를 찾아요. 그런 요소는 없으니 `null`이에요. 오류는 나지 않지만, 이 결과에 `.textContent`를 쓰면 그때 `TypeError`가 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

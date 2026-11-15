@@ -1,0 +1,83 @@
+id: js-basics.browser-intro.events-intro.fix-average-score
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.dom.input-value, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.5 }
+tags: [input, value, number, debugging]
+estimatedSeconds: 150
+prompt: |
+  성적 계산 페이지에서 쓰는 `average` 함수예요. 두 입력창의 `value`를 그대로 받아 평균을 돌려줘야 해요. 그런데 80점과 90점을 넣으면 평균이 85가 아니라 4045가 나와요. 함수를 고치세요.
+
+  - 함수는 `average("80", "90")`처럼 **문자열** 두 개를 받아요(입력창의 `value`이기 때문이에요).
+  - 평균은 숫자로 돌려주세요. `average("80", "90")`은 `85`예요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function average(firstText, secondText) {
+            const sum = firstText + secondText;
+            return sum / 2;
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function average(firstText, secondText) {
+            const sum = Number(firstText) + Number(secondText);
+            return sum / 2;
+          }
+  entry: average
+  bugDescription: 80점과 90점을 넣으면 평균이 85가 아니라 4045가 나와요.
+  bugMisconception: js.mc.input-value-is-number
+  checks:
+    - kind: call
+      id: basic
+      description: 'average("80", "90")은 85여야 합니다.'
+      requirement: 평균 계산
+      args: ["80", "90"]
+      expect: { equals: 85 }
+    - kind: call
+      id: half
+      description: 'average("100", "75")는 87.5여야 합니다.'
+      requirement: 평균 계산
+      args: ["100", "75"]
+      expect: { equals: 87.5 }
+    - kind: call
+      id: small
+      description: '한 자리 점수도 계산되어야 합니다: average("7", "8")은 7.5입니다.'
+      requirement: 평균 계산
+      visible: false
+      args: ["7", "8"]
+      expect: { equals: 7.5 }
+    - kind: call
+      id: returns-number
+      description: '돌려주는 값은 숫자여야 합니다: average("60", "60")은 60입니다.'
+      requirement: 숫자로 돌려주기
+      visible: false
+      args: ["60", "60"]
+      expect: { strictEquals: 60 }
+misconceptions: [js.mc.input-value-is-number]
+hints:
+  - 80과 90의 평균이 4045가 되려면 `sum`이 얼마여야 할까요? `sum`을 `console.log`로 찍어 보세요.
+  - 매개변수로 들어오는 값은 문자열이에요. 문자열끼리 `+`를 하면 어떻게 되나요?
+  - 더하기 전에 두 값을 각각 숫자로 바꾸는 함수를 떠올려 보세요(모듈 3).
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function average(firstText, secondText) {
+    const sum = Number(firstText) + Number(secondText);
+    return sum / 2;
+  }
+  ```
+
+  - 입력창의 `value`는 문자열이라 `"80" + "90"`은 `"8090"`이에요. 그다음 `"8090" / 2`는 나누기라서 숫자로 바꿔 계산해 `4045`가 나왔어요.
+  - 두 값을 **더하기 전에** `Number`로 바꾸면 `80 + 90 = 170`, 평균 `85`가 돼요.
+  - `Number(firstText + secondText)`처럼 이어 붙인 뒤에 바꾸면 `Number("8090")`이라 여전히 틀려요.
+  - `parseInt`를 써도 이 문제의 점수에서는 같은 결과지만, `"87.5"` 같은 소수점 점수는 `87`로 잘려요. `Number`가 더 안전해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

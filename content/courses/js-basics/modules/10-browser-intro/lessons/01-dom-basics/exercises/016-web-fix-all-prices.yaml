@@ -1,0 +1,133 @@
+id: js-basics.browser-intro.dom-basics.web-fix-all-prices
+type: web_task
+difficulty: 3
+concepts:
+  - { id: js.dom.query-selector, weight: 1 }
+  - { id: js.loops.for, weight: 0.5 }
+  - { id: js.dom.text-content, weight: 0.3 }
+tags: [queryselectorall, loop, debugging, web]
+estimatedSeconds: 300
+prompt: |
+  메뉴판의 가격은 HTML에 숫자만 적혀 있어요. 스크립트가 **모든 가격** 뒤에 `원`을 붙여야 하는데, 첫 번째 메뉴의 가격에만 `원`이 붙어요.
+
+  | 메뉴 | 지금 | 기대 |
+  |---|---|---|
+  | 김밥 | `4500원` | `4500원` |
+  | 라면 | `5000` | `5000원` |
+  | 떡볶이 | `3000` | `3000원` |
+
+  메뉴가 늘어나도 모든 가격에 `원`이 붙도록 스크립트를 고치세요. HTML은 고치지 마세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>메뉴판</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #menu li { margin: 4px 0; }
+                .price { font-weight: bold; margin-left: 8px; }
+              </style>
+            </head>
+            <body>
+              <h1>코딩 분식</h1>
+              <ul id="menu">
+                <li>김밥<span class="price">4500</span></li>
+                <li>라면<span class="price">5000</span></li>
+                <li>떡볶이<span class="price">3000</span></li>
+              </ul>
+              <script>
+                const price = document.querySelector(".price");
+                price.textContent = price.textContent + "원";
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>메뉴판</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #menu li { margin: 4px 0; }
+                .price { font-weight: bold; margin-left: 8px; }
+              </style>
+            </head>
+            <body>
+              <h1>코딩 분식</h1>
+              <ul id="menu">
+                <li>김밥<span class="price">4500</span></li>
+                <li>라면<span class="price">5000</span></li>
+                <li>떡볶이<span class="price">3000</span></li>
+              </ul>
+              <script>
+                const prices = document.querySelectorAll(".price");
+                for (let i = 0; i < prices.length; i++) {
+                  prices[i].textContent = prices[i].textContent + "원";
+                }
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: first
+      description: "김밥 가격은 \"4500원\"이어야 합니다(원이 두 번 붙으면 안 됩니다)."
+      requirement: 모든 가격에 원
+      visible: true
+      selector: "#menu li:nth-child(1) .price"
+      expect:
+        text: { equals: "4500원" }
+    - kind: dom
+      id: second
+      description: "라면 가격은 \"5000원\"이어야 합니다."
+      requirement: 모든 가격에 원
+      visible: true
+      selector: "#menu li:nth-child(2) .price"
+      expect:
+        text: { equals: "5000원" }
+    - kind: dom
+      id: third
+      description: "떡볶이 가격은 \"3000원\"이어야 합니다."
+      requirement: 모든 가격에 원
+      selector: "#menu li:nth-child(3) .price"
+      expect:
+        text: { equals: "3000원" }
+    - kind: dom
+      id: names-kept
+      description: 메뉴 이름과 가격 칸은 그대로 남아 있어야 합니다.
+      requirement: 메뉴 그대로
+      selector: "#menu .price"
+      expect:
+        count: 3
+misconceptions: [js.mc.queryselector-returns-all]
+hints:
+  - "`querySelector`는 맞는 요소를 몇 개 돌려주나요?"
+  - 맞는 요소를 모두 얻는 메서드는 이름 끝에 `All`이 붙어요. 결과는 목록이라 `length`와 `[i]`로 다뤄요.
+  - 목록의 요소마다 같은 일을 해야 해요. 모듈 5에서 배운 `for` 반복으로 `i`를 0부터 목록의 길이 바로 앞까지 움직여 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const prices = document.querySelectorAll(".price");
+  for (let i = 0; i < prices.length; i++) {
+    prices[i].textContent = prices[i].textContent + "원";
+  }
+  ```
+
+  - `querySelector(".price")`는 맞는 요소 중 **첫 번째 하나**만 돌려줘요. 그래서 김밥 가격만 바뀌었어요.
+  - `querySelectorAll(".price")`는 맞는 요소를 모두 담은 목록이에요. 문자열처럼 `length`와 인덱스로 하나씩 꺼낼 수 있어요.
+  - 반복 조건은 `i < prices.length`예요. `<=`로 쓰면 마지막에 `prices[3]`이 `undefined`라서 `TypeError`가 나요.
+  - 반복을 쓰면 메뉴가 열 개로 늘어도 코드를 고칠 필요가 없어요. 모듈 8에서 배운 `for...of`로 써도 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,27 @@
+id: js-basics.browser-intro.dom-basics.tf-queryselector-all
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.dom.query-selector, weight: 1 }
+tags: [queryselector, queryselectorall]
+estimatedSeconds: 40
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: "`document.querySelector(\".item\")`은 클래스가 `item`인 요소를 모두 찾아서 돌려준다."
+  answer: false
+  misconceptionIfWrong: js.mc.queryselector-returns-all
+hints:
+  - 메서드 이름에 `All`이 붙은 것과 붙지 않은 것이 따로 있어요.
+  - "`querySelector`의 결과에 `.textContent`를 바로 쓸 수 있었어요. 요소 하나일까요, 여러 개일까요?"
+  - 맞는 요소가 세 개 있을 때 `querySelector`는 그중 어느 것을 돌려줄까요?
+explanation: |
+  정답은 **거짓**이에요.
+
+  `querySelector`는 선택자에 맞는 요소 중 **문서에서 가장 먼저 나오는 하나**만 돌려줘요. 맞는 요소가 없으면 `null`이에요.
+
+  모두 찾으려면 `document.querySelectorAll(".item")`을 써요. 결과는 요소들의 목록이라서 `length`로 개수를 알고, `[0]`, `[1]`처럼 인덱스로 하나씩 꺼내요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

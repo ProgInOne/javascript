@@ -1,0 +1,79 @@
+id: js-basics.browser-intro.events-intro.fill-menu-target
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.dom.event-object, weight: 1 }
+  - { id: js.dom.add-event-listener, weight: 0.5 }
+tags: [event-object, target, addeventlistener, fill]
+estimatedSeconds: 120
+prompt: |
+  음료 버튼 세 개가 함수 `pick` 하나를 함께 써요. 누른 버튼의 글자를 읽어 `라떼 선택`처럼 보여 주려고 해요. 빈칸을 채우세요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <p>마실 것을 고르세요</p>
+    <button class="drink">아메리카노</button>
+    <button class="drink">라떼</button>
+    <button class="drink">녹차</button>
+    <p id="choice">아직 고르지 않았어요</p>
+    <script>
+      const choice = document.querySelector("#choice");
+      const buttons = document.querySelectorAll(".drink");
+      function pick(event) {
+        choice.textContent = `${event.{{blank:target}}.textContent} 선택`;
+      }
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("{{blank:type}}", {{blank:fn}});
+      }
+    </script>
+  blanks:
+    - id: target
+      accept: ["target", "currentTarget"]
+      width: 12
+    - id: type
+      accept: ["click"]
+      width: 8
+    - id: fn
+      accept: ["pick"]
+      width: 8
+  checks:
+    - kind: event
+      id: latte
+      description: "\"라떼\" 버튼을 누르면 \"라떼 선택\"이 보여야 합니다."
+      requirement: 누른 버튼 보여 주기
+      visible: true
+      steps:
+        - { action: click, selector: ".drink:nth-of-type(2)" }
+      expect:
+        - { selector: "#choice", text: { equals: "라떼 선택" } }
+    - kind: event
+      id: tea
+      description: "이어서 \"녹차\" 버튼을 누르면 \"녹차 선택\"으로 바뀌어야 합니다."
+      requirement: 누른 버튼 보여 주기
+      visible: true
+      steps:
+        - { action: click, selector: ".drink:nth-of-type(3)" }
+      expect:
+        - { selector: "#choice", text: { equals: "녹차 선택" } }
+misconceptions: [js.mc.listener-handler-called, js.mc.event-name-on-prefix]
+hints:
+  - 이벤트 객체에는 "이벤트가 일어난 요소"를 가리키는 속성이 있어요. 레슨에서 배운 이름을 떠올려 보세요.
+  - 두 번째 빈칸은 버튼을 누를 때 일어나는 이벤트의 이름이에요. `on`은 붙이지 않아요.
+  - 세 번째 빈칸에는 누를 때마다 부를 함수를 넘겨요. 지금 부르는 것이 아니라 맡겨 두는 것이니 괄호를 붙일까요?
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  choice.textContent = `${event.target.textContent} 선택`;
+  // ...
+  buttons[i].addEventListener("click", pick);
+  ```
+
+  - `event.target`은 이벤트가 일어난 요소, 즉 **누른 버튼**이에요. 그래서 함수 하나로 세 버튼을 모두 처리할 수 있어요. 이 코드에서는 이벤트를 등록한 요소를 뜻하는 `event.currentTarget`도 같은 버튼이에요.
+  - 이벤트 이름은 `"click"`이에요.
+  - 함수는 괄호 없이 `pick`으로 넘겨요. `pick()`으로 쓰면 등록하는 순간 `event` 없이 불려서 `event.target`을 읽다가 `TypeError`가 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

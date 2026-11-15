@@ -1,0 +1,48 @@
+id: js-basics.browser-intro.dom-basics.mcq-textcontent-replace
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.dom.text-content, weight: 1 }
+tags: [textcontent, assignment]
+estimatedSeconds: 50
+prompt: |
+  문서에 `<p id="status">대기 중</p>`이 있고 아래 코드가 실행됐어요. 실행이 끝난 뒤 문단에는 어떤 글자가 보이나요?
+code: |
+  const status = document.querySelector("#status");
+  status.textContent = "주문 접수";
+  status.textContent = "조리 중";
+spec:
+  options:
+    - id: a
+      text: "`조리 중`"
+    - id: b
+      text: "`대기 중주문 접수조리 중`"
+      misconception: js.mc.textcontent-appends
+      rationale: "`textContent`에 대입하면 요소 안의 글자 전체가 새 글자로 바뀌어요. 덧붙지 않아요."
+    - id: c
+      text: "`주문 접수조리 중`"
+      misconception: js.mc.textcontent-appends
+      rationale: 첫 대입이 `대기 중`을 바꾼 것처럼, 두 번째 대입도 `주문 접수`를 통째로 바꿔요.
+    - id: d
+      text: "`주문 접수`"
+      rationale: 문장은 위에서 아래로 차례로 실행돼요. 두 번째 대입이 나중에 실행되어 최종 글자를 정해요.
+  correct: a
+misconceptions: [js.mc.textcontent-appends]
+hints:
+  - 변수에 두 번 대입하면 어떤 값이 남는지 떠올려 보세요.
+  - "`textContent`에 대입하는 것도 대입이에요. 원래 글자는 어떻게 될까요?"
+  - 마지막에 실행되는 대입이 무엇인지 보세요.
+explanation: |
+  정답은 `조리 중`이에요.
+
+  `textContent`에 대입하면 요소 안의 내용 **전체가 새 글자로 바뀌어요**. 변수에 다시 대입하면 이전 값이 사라지는 것과 같아요.
+
+  1. 처음: `대기 중`
+  1. 첫 대입 뒤: `주문 접수` (`대기 중`은 사라짐)
+  1. 두 번째 대입 뒤: `조리 중`
+
+  글자를 덧붙이고 싶다면 `status.textContent = status.textContent + " (5분)";`처럼 원래 글자를 읽어 이어 붙인 문자열을 대입해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

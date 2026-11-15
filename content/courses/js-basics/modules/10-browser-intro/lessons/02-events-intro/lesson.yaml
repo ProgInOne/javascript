@@ -1,0 +1,16 @@
+id: js-basics.browser-intro.events-intro
+title: 이벤트 입문
+summary: 클릭·입력·제출 같은 사용자의 행동에 반응하는 코드를 써요. addEventListener로 함수를 맡기고, 이벤트 객체로 무슨 일이 일어났는지 알아내고, 입력창의 value를 읽어 문자열을 숫자로 바꿔 써요.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 15, practice: 30 }
+concepts:
+  primary: [js.dom.add-event-listener, js.dom.event-object, js.dom.input-value]
+  practiced: [js.dom.query-selector, js.dom.text-content, js.dom.class-style]
+  reviewed: [js.fn.callback, js.fn.arrow, js.conv.to-number, js.conv.plus-concat, js.str.case-trim, html.forms.form, html.forms.inputs]
+objectives:
+  - addEventListener에 이벤트 이름과 함수 자체(괄호 없이)를 넘겨, 이벤트가 일어날 때마다 코드가 실행되게 할 수 있다.
+  - 이벤트 객체의 target과 key를 읽고, preventDefault로 폼 제출 같은 기본 동작을 막을 수 있다.
+  - 입력창의 value를 이벤트가 일어난 때에 읽고, 문자열인 value를 숫자로 바꿔 계산할 수 있다.
+practice:
+  targetCount: 18

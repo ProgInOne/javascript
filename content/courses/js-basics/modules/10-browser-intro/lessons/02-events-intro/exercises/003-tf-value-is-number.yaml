@@ -1,0 +1,27 @@
+id: js-basics.browser-intro.events-intro.tf-value-is-number
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.dom.input-value, weight: 1 }
+tags: [input, value, string]
+estimatedSeconds: 40
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: '`<input type="number">`에 `3`을 입력하면 그 입력창의 `value`는 숫자 `3`이다.'
+  answer: false
+  misconceptionIfWrong: js.mc.input-value-is-number
+hints:
+  - 입력창에 들어 있는 것은 사용자가 친 글자예요.
+  - "`type=\"number\"`는 입력할 수 있는 글자와 입력창의 모양을 정해요. `value`의 자료형도 바꿀까요?"
+  - "`typeof input.value`를 찍으면 무엇이 나올지 생각해 보세요."
+explanation: |
+  정답은 **거짓**이에요.
+
+  입력창의 `value`는 `type`과 상관없이 **항상 문자열**이에요. `type="number"`는 숫자만 입력하기 쉽게 해 줄 뿐, `value`는 `"3"`이에요.
+
+  그래서 두 입력창의 값을 그대로 더하면 `"3" + "5"`가 되어 `"35"`가 나와요. 계산하기 전에 `Number(input.value)`로 숫자로 바꿔요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

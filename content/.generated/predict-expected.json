@@ -214,6 +214,82 @@
         ]
       }
     },
+    "js-basics.browser-intro.dom-basics.predict-query-null": {
+      "inputHash": "d2f803c1f0236484d46490c38a3f16231684cfcd62a1cd75669ee08188be901c",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "오늘은 휴관일이에요",
+          "2",
+          "null"
+        ]
+      }
+    },
+    "js-basics.browser-intro.dom-basics.predict-script-in-head": {
+      "inputHash": "e4c656ee9bb31c92eb53f7972ca5674a97adf4e5b178b9d624714b3940e42514",
+      "expected": {
+        "kind": "error",
+        "thrown": true,
+        "name": "TypeError"
+      }
+    },
+    "js-basics.browser-intro.dom-basics.predict-textcontent-tags": {
+      "inputHash": "3c56931f431f71e2dfba1c609df8e0f76fe99916a85e474287fbcbab6693bf73",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "<b>중요</b> 회의",
+          "0"
+        ]
+      }
+    },
+    "js-basics.browser-intro.dom-basics.predict-toggle-class": {
+      "inputHash": "5f40a51281cf331fc16624130c1152d7f08ef95aafefb724643f33eaec1c5eed",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "false",
+          "big on",
+          "2"
+        ]
+      }
+    },
+    "js-basics.browser-intro.events-intro.predict-click-count": {
+      "inputHash": "f820a1ee0500f5ff4cd0e5733c858a7a47dd8c1e362ae91928b0ecf649657c0c",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "시작: 0",
+          "등록 뒤: 0",
+          "클릭 1",
+          "클릭 2",
+          "끝: 2"
+        ]
+      }
+    },
+    "js-basics.browser-intro.events-intro.predict-handler-called": {
+      "inputHash": "b1d92962f0ea3cb7249726fbb77c674640c9a9f29f33db074db826dfb128c264",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "안녕하세요",
+          "등록 끝",
+          "두 번 눌렀어요"
+        ]
+      }
+    },
+    "js-basics.browser-intro.final-project.predict-todo-count": {
+      "inputHash": "5493272961d405218ac98b25fd325fd5ddc6ae888b93bcb64fc60fa3901d725b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1",
+          "1",
+          "2",
+          "1"
+        ]
+      }
+    },
     "js-basics.control.control-review.predict-chained-ternary-stock": {
       "inputHash": "51924478a782574848648d2b368a3bfa31868a3df904175919c5b9264b2320d2",
       "expected": {

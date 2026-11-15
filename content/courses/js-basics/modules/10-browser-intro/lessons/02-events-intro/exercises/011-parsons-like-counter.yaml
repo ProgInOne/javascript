@@ -1,0 +1,55 @@
+id: js-basics.browser-intro.events-intro.parsons-like-counter
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.dom.add-event-listener, weight: 1 }
+  - { id: js.dom.text-content, weight: 0.3 }
+tags: [addeventlistener, counter, parsons]
+estimatedSeconds: 140
+prompt: |
+  좋아요 버튼(`#like`)을 누를 때마다 숫자(`#like-count`)가 1씩 늘어나는 코드를 만들려고 해요. 코드 조각을 순서대로 배열하고 들여쓰기도 맞추세요.
+spec:
+  lines:
+    - { id: l1, code: 'const likeButton = document.querySelector("#like");' }
+    - { id: l2, code: 'const likeCount = document.querySelector("#like-count");' }
+    - { id: l3, code: 'let count = 0;' }
+    - { id: l4, code: 'likeButton.addEventListener("click", () => {' }
+    - { id: l5, code: 'count++;', indent: 1 }
+    - { id: l6, code: 'likeCount.textContent = count;', indent: 1 }
+    - { id: l7, code: '});' }
+  distractors:
+    - { id: d1, code: 'likeButton.addEventListener("onclick", () => {', misconception: js.mc.event-name-on-prefix }
+    - { id: d2, code: 'const count = 0;' }
+  gradeIndent: true
+  alternatives:
+    - [l1, l3, l2, l4, l5, l6, l7]
+    - [l2, l1, l3, l4, l5, l6, l7]
+    - [l2, l3, l1, l4, l5, l6, l7]
+    - [l3, l1, l2, l4, l5, l6, l7]
+    - [l3, l2, l1, l4, l5, l6, l7]
+misconceptions: [js.mc.event-name-on-prefix]
+hints:
+  - 먼저 쓸 요소들과 숫자를 세는 변수를 준비하고, 그다음 이벤트를 등록해요.
+  - 화살표 함수의 본문(두 줄)은 들여써요. 누를 때마다 "숫자 늘리기 → 화면에 쓰기" 순서예요.
+  - 이벤트 이름에는 `on`이 붙지 않아요. 그리고 `count`는 나중에 값이 바뀌는 변수예요.
+explanation: |
+  정답 순서의 한 예는 다음과 같아요.
+
+  ```js
+  const likeButton = document.querySelector("#like");
+  const likeCount = document.querySelector("#like-count");
+  let count = 0;
+  likeButton.addEventListener("click", () => {
+    count++;
+    likeCount.textContent = count;
+  });
+  ```
+
+  - 위의 세 줄(요소 두 개 찾기, 변수 만들기)은 등록보다 앞이기만 하면 순서가 바뀌어도 돼요.
+  - `count`는 누를 때마다 바뀌므로 `let`이에요. `const`로 만들면 `count++`에서 `TypeError: Assignment to constant variable.`이 나요.
+  - 이벤트 이름은 `"click"`이에요. `"onclick"`으로 등록하면 눌러도 아무 일도 일어나지 않아요.
+  - 숫자를 먼저 늘리고 나서 화면에 써야 누른 횟수가 바로 보여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

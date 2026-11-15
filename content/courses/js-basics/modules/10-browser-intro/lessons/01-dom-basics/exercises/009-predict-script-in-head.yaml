@@ -1,0 +1,45 @@
+id: js-basics.browser-intro.dom-basics.predict-script-in-head
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.dom.document-tree, weight: 1 }
+  - { id: js.dom.query-selector, weight: 0.5 }
+  - { id: js.types.null, weight: 0.3 }
+tags: [script-position, "null", type-error]
+estimatedSeconds: 100
+prompt: |
+  다음 문서를 열면 오류가 날까요? 난다면 어떤 종류의 오류일까요?
+spec:
+  lang: web
+  code: |
+    <!doctype html>
+    <html lang="ko">
+      <head>
+        <script>
+          const title = document.querySelector("#title");
+          title.textContent = "환영해요";
+        </script>
+      </head>
+      <body>
+        <h1 id="title">제목</h1>
+      </body>
+    </html>
+  answerKind: error
+  misconceptionByAnswer:
+    none: js.mc.script-before-element
+hints:
+  - 브라우저는 HTML을 위에서부터 읽다가 `<script>`를 만나면 그 자리에서 바로 실행해요.
+  - 스크립트가 실행되는 순간, `<h1 id="title">`은 이미 트리에 있을까요?
+  - "`querySelector`가 요소를 찾지 못하면 무엇을 돌려주나요? 그 값에 `.textContent`를 대입하면 어떻게 될까요?"
+explanation: |
+  `TypeError`가 나요. 콘솔에는 `TypeError: Cannot set properties of null (setting 'textContent')`처럼 보여요.
+
+  1. 브라우저는 문서를 위에서부터 읽어요. `head` 안의 `<script>`를 만나면 **그 자리에서 바로** 실행해요.
+  1. 이때 `body`는 아직 읽지 않았으니 `#title` 요소가 트리에 없어요. `querySelector`는 `null`을 돌려줘요.
+  1. `null`에는 속성이 없어서 `title.textContent = ...`에서 `TypeError`가 나요.
+
+  선택자에는 문제가 없어요. 스크립트를 `body`의 맨 끝(`</body>` 바로 앞)으로 옮기면, 그때는 `h1`이 이미 트리에 있어서 제목이 `환영해요`로 바뀌어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

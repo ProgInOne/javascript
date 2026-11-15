@@ -1,0 +1,17 @@
+id: js-basics.browser-intro.dom-basics
+title: DOM 다루기 기초
+summary: 브라우저가 만든 DOM 트리를 document로 다루는 법을 배워요. querySelector로 요소를 찾고, textContent로 글자를 바꾸고, classList와 style로 모양을 바꾸고, 새 요소를 만들어 붙여요.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 16, practice: 30 }
+concepts:
+  primary: [js.dom.document-tree, js.dom.query-selector, js.dom.text-content, js.dom.class-style]
+  practiced: [js.loops.for, js.str.template-literal]
+  reviewed: [html.doc.dom-tree, css.selectors.basic, js.types.null, js.conv.to-number]
+objectives:
+  - 브라우저가 HTML을 DOM 트리로 만들고, JavaScript는 파일이 아니라 이 트리를 바꾼다는 것을 설명할 수 있다.
+  - querySelector와 querySelectorAll로 CSS 선택자에 맞는 요소를 찾고, 찾지 못하면 null이 된다는 것을 알고 스크립트 위치를 바르게 정할 수 있다.
+  - textContent로 요소의 글자를 읽고 바꿀 수 있다.
+  - classList와 style로 요소의 모양을 바꾸고, createElement와 append로 새 요소를 만들어 화면에 붙일 수 있다.
+practice:
+  targetCount: 20

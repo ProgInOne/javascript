@@ -1,0 +1,42 @@
+id: js-basics.browser-intro.final-project.mcq-submit-vs-click
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.dom.event-object, weight: 1 }
+  - { id: js.dom.add-event-listener, weight: 0.5 }
+tags: [project, submit, preventdefault, planning]
+estimatedSeconds: 80
+prompt: |
+  할 일 목록의 입력 부분을 `<form id="todo-form">` 안에 입력창과 **추가** 버튼으로 만들었어요. "할 일 추가" 코드를 어디에 어떻게 등록하는 것이 가장 알맞을까요?
+spec:
+  options:
+    - id: a
+      text: 폼에 `submit` 이벤트로 등록하고, 함수 안에서 `event.preventDefault()`를 부른다
+    - id: b
+      text: 폼에 `submit` 이벤트로 등록한다. `submit` 이벤트 함수가 있으면 브라우저가 페이지를 새로 열지 않으므로 `preventDefault()`는 필요 없다
+      misconception: js.mc.form-submit-no-default
+      rationale: 함수를 등록해도 폼 제출의 기본 동작(페이지 새로 열기)은 그대로 일어나요. 막으려면 `event.preventDefault()`를 직접 불러야 해요.
+    - id: c
+      text: 입력창에 `input` 이벤트로 등록한다. 글자를 칠 때마다 할 일이 추가되게 한다
+      rationale: "`input` 이벤트는 글자가 바뀔 때마다 일어나요. `우유`를 치는 동안 `우`, `우유`처럼 여러 번 추가돼요."
+    - id: d
+      text: 폼에 `addEventListener("submit", addTodo())`로 등록한다
+      misconception: js.mc.listener-handler-called
+      rationale: "`addTodo()`는 등록하는 순간 한 번 실행되고 반환값을 넘겨요. 제출할 때 부를 함수가 등록되지 않아요."
+  correct: a
+misconceptions: [js.mc.form-submit-no-default, js.mc.listener-handler-called]
+hints:
+  - 할 일을 추가하는 순간은 "사용자가 다 쓰고 제출할 때"예요. 그 순간에 일어나는 이벤트는 무엇인가요?
+  - 폼이 제출되면 브라우저는 기본으로 무엇을 하나요? 그 일은 함수를 등록하는 것만으로 멈출까요?
+  - 함수를 맡겨 둘 때 괄호를 붙이는지도 확인해 보세요.
+explanation: |
+  정답은 "폼에 `submit`으로 등록하고 `event.preventDefault()`를 부른다"예요.
+
+  - 버튼을 누르든 입력창에서 Enter 키를 누르든, 폼이 제출되면 폼에서 `submit` 이벤트가 한 번 일어나요. 그래서 "추가"는 `submit` 한곳에서 처리하면 돼요.
+  - 폼 제출의 기본 동작은 페이지를 새로 여는 것이에요. 함수를 등록해도 이 동작은 그대로라서, `event.preventDefault()`로 막지 않으면 추가한 항목이 새 페이지와 함께 사라져요.
+  - `input` 이벤트는 글자가 하나 바뀔 때마다 일어나서 추가 시점으로 맞지 않아요.
+  - `addTodo()`처럼 괄호를 붙이면 함수 자체가 아니라 실행 결과가 넘어가요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

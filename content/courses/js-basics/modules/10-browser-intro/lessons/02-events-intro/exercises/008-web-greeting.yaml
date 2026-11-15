@@ -1,0 +1,118 @@
+id: js-basics.browser-intro.events-intro.web-greeting
+type: web_task
+difficulty: 2
+concepts:
+  - { id: js.dom.input-value, weight: 1 }
+  - { id: js.dom.text-content, weight: 0.3 }
+tags: [input, value, click, web]
+estimatedSeconds: 200
+prompt: |
+  이름을 쓰고 **인사하기**를 누르면 `민지님, 반가워요!`처럼 인사말을 보여 주는 페이지예요. 버튼을 누를 때 실행될 함수는 이미 등록해 두었어요. 그 함수 안에 코드를 써서 완성하세요.
+
+  - 버튼을 누를 때마다 **그때** 입력창에 들어 있는 이름으로 인사해야 해요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>인사하기</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #message { font-size: 20px; color: #4338ca; }
+              </style>
+            </head>
+            <body>
+              <label for="name">이름</label>
+              <input id="name" type="text" />
+              <button id="greet">인사하기</button>
+              <p id="message">이름을 쓰고 버튼을 눌러 보세요</p>
+              <script>
+                const nameInput = document.querySelector("#name");
+                const greetButton = document.querySelector("#greet");
+                const message = document.querySelector("#message");
+
+                greetButton.addEventListener("click", () => {
+                  // 여기에 코드를 쓰세요.
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>인사하기</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #message { font-size: 20px; color: #4338ca; }
+              </style>
+            </head>
+            <body>
+              <label for="name">이름</label>
+              <input id="name" type="text" />
+              <button id="greet">인사하기</button>
+              <p id="message">이름을 쓰고 버튼을 눌러 보세요</p>
+              <script>
+                const nameInput = document.querySelector("#name");
+                const greetButton = document.querySelector("#greet");
+                const message = document.querySelector("#message");
+
+                greetButton.addEventListener("click", () => {
+                  // 여기에 코드를 쓰세요.
+                  const name = nameInput.value;
+                  message.textContent = `${name}님, 반가워요!`;
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: minji
+      description: "\"민지\"를 쓰고 누르면 \"민지님, 반가워요!\"가 보여야 합니다."
+      requirement: 인사말
+      visible: true
+      steps:
+        - { action: type, selector: "#name", value: "민지" }
+        - { action: click, selector: "#greet" }
+      expect:
+        - { selector: "#message", text: { equals: "민지님, 반가워요!" } }
+    - kind: event
+      id: changed
+      description: 이름을 바꿔 다시 누르면 바뀐 이름으로 인사해야 합니다.
+      requirement: 누를 때의 이름
+      steps:
+        - { action: type, selector: "#name", value: "철수" }
+        - { action: click, selector: "#greet" }
+      expect:
+        - { selector: "#message", text: { equals: "철수님, 반가워요!" } }
+misconceptions: [js.mc.input-value-read-once]
+hints:
+  - 입력창에 들어 있는 글자는 입력창 요소의 어떤 속성으로 읽나요?
+  - 이름은 버튼을 누를 때마다 달라질 수 있어요. 그래서 값을 읽는 코드는 함수 **안**에 있어야 해요.
+  - 읽은 이름으로 인사말 문자열을 만들어 `message`의 글자로 넣으세요. 템플릿 리터럴을 쓰면 편해요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  greetButton.addEventListener("click", () => {
+    const name = nameInput.value;
+    message.textContent = `${name}님, 반가워요!`;
+  });
+  ```
+
+  - `nameInput.value`는 **읽는 순간** 입력창에 들어 있는 글자예요. 함수 안에서 읽으니 누를 때마다 새로 읽어요.
+  - `const name`을 함수 밖(맨 위)에 두면 페이지가 열릴 때 한 번만 읽혀 빈 문자열이 들어가고, 이름을 써도 바뀌지 않아요.
+  - `message.textContent = nameInput.value + "님, 반가워요!";`처럼 한 줄로 써도 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

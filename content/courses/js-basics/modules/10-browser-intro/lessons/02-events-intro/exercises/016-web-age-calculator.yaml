@@ -1,0 +1,195 @@
+id: js-basics.browser-intro.events-intro.web-age-calculator
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.dom.input-value, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.5 }
+  - { id: js.conv.nan, weight: 0.5 }
+  - { id: js.dom.add-event-listener, weight: 0.3 }
+tags: [input, value, number, nan, validation, web]
+estimatedSeconds: 540
+prompt: |
+  지금 나이와 몇 년 뒤인지를 넣고 **계산하기**를 누르면 그때의 나이를 알려 주는 페이지를 완성하세요. 요소는 이미 찾아 두었어요. 이벤트 등록부터 직접 쓰세요.
+
+  | 입력 (지금 나이, 몇 년 뒤) | `#result`에 보일 글자 |
+  |---|---|
+  | `15`, `10` | `10년 뒤에는 25살이에요` |
+  | ` 20 `, `1` (앞뒤 공백) | `1년 뒤에는 21살이에요` |
+  | 둘 중 하나라도 비어 있음 | `숫자를 입력해 주세요` |
+  | 둘 중 하나라도 숫자가 아님 (예: `열다섯`) | `숫자를 입력해 주세요` |
+
+  입력창의 `value`는 문자열이라는 점, 그리고 `Number("")`가 무엇이 되는지 꼭 생각해 보세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>몇 년 뒤 내 나이</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                label { display: block; margin-top: 8px; }
+                #result { font-size: 20px; margin-top: 12px; }
+              </style>
+            </head>
+            <body>
+              <h1>몇 년 뒤 내 나이</h1>
+              <label for="age">지금 나이</label>
+              <input id="age" type="text" inputmode="numeric" />
+              <label for="years">몇 년 뒤</label>
+              <input id="years" type="text" inputmode="numeric" />
+              <p><button id="calc">계산하기</button></p>
+              <p id="result"></p>
+              <script>
+                const ageInput = document.querySelector("#age");
+                const yearsInput = document.querySelector("#years");
+                const calcButton = document.querySelector("#calc");
+                const result = document.querySelector("#result");
+
+                // 여기에 코드를 쓰세요.
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>몇 년 뒤 내 나이</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                label { display: block; margin-top: 8px; }
+                #result { font-size: 20px; margin-top: 12px; }
+              </style>
+            </head>
+            <body>
+              <h1>몇 년 뒤 내 나이</h1>
+              <label for="age">지금 나이</label>
+              <input id="age" type="text" inputmode="numeric" />
+              <label for="years">몇 년 뒤</label>
+              <input id="years" type="text" inputmode="numeric" />
+              <p><button id="calc">계산하기</button></p>
+              <p id="result"></p>
+              <script>
+                const ageInput = document.querySelector("#age");
+                const yearsInput = document.querySelector("#years");
+                const calcButton = document.querySelector("#calc");
+                const result = document.querySelector("#result");
+
+                // 여기에 코드를 쓰세요.
+                calcButton.addEventListener("click", () => {
+                  const ageText = ageInput.value.trim();
+                  const yearsText = yearsInput.value.trim();
+                  const age = Number(ageText);
+                  const years = Number(yearsText);
+                  if (ageText === "" || yearsText === "" || Number.isNaN(age) || Number.isNaN(years)) {
+                    result.textContent = "숫자를 입력해 주세요";
+                    return;
+                  }
+                  result.textContent = `${years}년 뒤에는 ${age + years}살이에요`;
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: basic
+      description: "15와 10을 넣고 누르면 \"10년 뒤에는 25살이에요\"가 보여야 합니다."
+      requirement: 나이 계산
+      visible: true
+      steps:
+        - { action: type, selector: "#age", value: "15" }
+        - { action: type, selector: "#years", value: "10" }
+        - { action: click, selector: "#calc" }
+      expect:
+        - { selector: "#result", text: { equals: "10년 뒤에는 25살이에요" } }
+    - kind: event
+      id: single-digits
+      description: 한 자리 수끼리도 더해서 계산해야 합니다(9와 3이면 12살).
+      requirement: 나이 계산
+      steps:
+        - { action: type, selector: "#age", value: "9" }
+        - { action: type, selector: "#years", value: "3" }
+        - { action: click, selector: "#calc" }
+      expect:
+        - { selector: "#result", text: { equals: "3년 뒤에는 12살이에요" } }
+    - kind: event
+      id: spaces
+      description: 앞뒤에 공백이 있어도 숫자로 계산해야 합니다.
+      requirement: 나이 계산
+      steps:
+        - { action: type, selector: "#age", value: " 20 " }
+        - { action: type, selector: "#years", value: "1" }
+        - { action: click, selector: "#calc" }
+      expect:
+        - { selector: "#result", text: { equals: "1년 뒤에는 21살이에요" } }
+    - kind: event
+      id: empty
+      description: 지금 나이가 비어 있으면 "숫자를 입력해 주세요"가 보여야 합니다(빈칸을 0살로 계산하면 안 됩니다).
+      requirement: 잘못된 입력 안내
+      visible: true
+      steps:
+        - { action: type, selector: "#age", value: "" }
+        - { action: type, selector: "#years", value: "5" }
+        - { action: click, selector: "#calc" }
+      expect:
+        - { selector: "#result", text: { equals: "숫자를 입력해 주세요" } }
+    - kind: event
+      id: empty-years
+      description: 몇 년 뒤가 공백뿐이어도 "숫자를 입력해 주세요"가 보여야 합니다.
+      requirement: 잘못된 입력 안내
+      steps:
+        - { action: type, selector: "#age", value: "12" }
+        - { action: type, selector: "#years", value: "  " }
+        - { action: click, selector: "#calc" }
+      expect:
+        - { selector: "#result", text: { equals: "숫자를 입력해 주세요" } }
+    - kind: event
+      id: not-number
+      description: 숫자가 아닌 글자를 넣으면 "숫자를 입력해 주세요"가 보여야 합니다.
+      requirement: 잘못된 입력 안내
+      visible: true
+      steps:
+        - { action: type, selector: "#age", value: "열다섯" }
+        - { action: type, selector: "#years", value: "2" }
+        - { action: click, selector: "#calc" }
+      expect:
+        - { selector: "#result", text: { equals: "숫자를 입력해 주세요" } }
+misconceptions: [js.mc.input-value-is-number, js.mc.input-value-read-once]
+hints:
+  - 계산하기 버튼에 `click` 함수를 등록하고, 두 입력창의 `value`는 그 함수 안에서 읽으세요.
+  - 두 값을 그대로 `+` 하면 `"9" + "3"`이 돼요. 숫자로 바꾼 뒤 더하세요. 숫자가 아닌 글자를 `Number`로 바꾸면 무엇이 나오는지(모듈 3)도 떠올려 보세요.
+  - "`Number(\"\")`와 `Number(\"  \")`는 둘 다 `0`이라 숫자처럼 보여요. 그래서 빈칸인지는 숫자로 바꾸기 전에, 앞뒤 공백을 지운 글자로 따로 확인해야 해요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  calcButton.addEventListener("click", () => {
+    const ageText = ageInput.value.trim();
+    const yearsText = yearsInput.value.trim();
+    const age = Number(ageText);
+    const years = Number(yearsText);
+    if (ageText === "" || yearsText === "" || Number.isNaN(age) || Number.isNaN(years)) {
+      result.textContent = "숫자를 입력해 주세요";
+      return;
+    }
+    result.textContent = `${years}년 뒤에는 ${age + years}살이에요`;
+  });
+  ```
+
+  - **문자열 더하기**: `value`는 문자열이라 `"9" + "3"`은 `"93"`이에요. `Number`로 바꾼 뒤 더해야 12가 나와요.
+  - **숫자가 아닌 글자**: `Number("열다섯")`은 `NaN`이에요. `Number.isNaN`으로 확인해요. `age === NaN`은 항상 `false`라서 쓸 수 없어요.
+  - **빈칸의 함정**: `Number("")`와 `Number("  ")`는 `NaN`이 아니라 `0`이에요. 그래서 `NaN` 검사만 하면 빈칸이 0살로 계산돼 `5년 뒤에는 5살이에요`가 나와요. `trim()`한 글자가 `""`인지 따로 확인해요.
+  - **공백**: `Number(" 20 ")`은 앞뒤 공백을 무시하고 20이 돼요. 여기서는 빈칸 확인을 위해 먼저 `trim()`했어요.
+  - 잘못된 입력이면 안내를 쓰고 `return`으로 함수를 끝내서, 아래의 계산 줄이 실행되지 않게 했어요. `else`로 나눠도 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

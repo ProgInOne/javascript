@@ -1,0 +1,49 @@
+id: js-basics.browser-intro.dom-basics.parsons-create-item
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.dom.document-tree, weight: 1 }
+  - { id: js.dom.text-content, weight: 0.3 }
+tags: [createelement, append, parsons]
+estimatedSeconds: 120
+prompt: |
+  장바구니 목록 `<ul id="cart">`의 맨 끝에 `우유 1개`라는 새 항목(`li`)을 붙이려고 해요. 코드 조각을 순서대로 배열하세요.
+spec:
+  lines:
+    - { id: l1, code: 'const cart = document.querySelector("#cart");' }
+    - { id: l2, code: 'const item = document.createElement("li");' }
+    - { id: l3, code: 'item.textContent = "우유 1개";' }
+    - { id: l4, code: 'cart.append(item);' }
+  distractors:
+    - { id: d1, code: 'const item = document.querySelector("li");' }
+    - { id: d2, code: 'cart.textContent = "우유 1개";', misconception: js.mc.textcontent-appends }
+    - { id: d3, code: 'item.textContent = "<li>우유 1개</li>";', misconception: js.mc.textcontent-parses-html }
+  gradeIndent: false
+  alternatives:
+    - [l2, l1, l3, l4]
+    - [l2, l3, l1, l4]
+    - [l1, l2, l4, l3]
+    - [l2, l1, l4, l3]
+misconceptions: [js.mc.created-element-auto-shown, js.mc.textcontent-appends]
+hints:
+  - 할 일은 네 가지예요. 목록 찾기, 새 항목 만들기, 항목에 글자 넣기, 목록에 붙이기.
+  - 새 요소는 `createElement`로 만들어요. `querySelector`는 이미 있는 요소를 찾을 뿐이에요.
+  - 목록에 직접 `textContent`를 대입하면 기존 항목은 어떻게 될까요?
+explanation: |
+  정답 순서의 한 예는 다음과 같아요.
+
+  ```js
+  const cart = document.querySelector("#cart");
+  const item = document.createElement("li");
+  item.textContent = "우유 1개";
+  cart.append(item);
+  ```
+
+  - `item`은 만든 다음에 써야 하고, `cart`는 붙이기 전에 찾아 두면 돼요. 그래서 `cart`를 찾는 줄의 위치나, 글자를 붙이기 전·후에 넣는 순서는 바뀌어도 정답이에요.
+  - `document.querySelector("li")`는 이미 있는 첫 번째 `li`를 찾아요. 새 항목을 만들지 않아요.
+  - `cart.textContent = "우유 1개"`는 목록 안의 기존 항목을 모두 지우고 글자 하나로 바꿔요.
+  - `textContent`에 `"<li>...</li>"`를 넣으면 꺾쇠까지 글자로 보여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

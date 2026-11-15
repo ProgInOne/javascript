@@ -1,0 +1,201 @@
+id: js-basics.browser-intro.dom-basics.web-score-result
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.dom.text-content, weight: 1 }
+  - { id: js.dom.class-style, weight: 0.5 }
+  - { id: js.control.else-if, weight: 0.5 }
+  - { id: js.str.template-literal, weight: 0.3 }
+tags: [textcontent, classlist, else-if, boundary, state, web]
+estimatedSeconds: 480
+prompt: |
+  점수를 넣고 **결과 보기**를 누르면 결과를 보여 주는 화면이에요. 버튼을 누를 때마다 입력한 점수(숫자)로 `showResult(score)`가 불리도록 이미 연결해 두었어요(이벤트는 다음 단원에서 배워요). `showResult`의 본문을 완성하세요.
+
+  | 점수 | `#score-text` | `#grade` 글자 | `#grade`의 클래스 |
+  |---|---|---|---|
+  | 90 이상 | 예: `95점` | `우수` | `pass` |
+  | 60 이상 90 미만 | 예: `72점` | `합격` | `pass` |
+  | 60 미만 | 예: `41점` | `불합격` | `fail` |
+
+  - 버튼은 여러 번 누를 수 있어요. 결과가 바뀌면 `#grade`에는 `pass`와 `fail` 중 **지금 결과에 맞는 클래스 하나만** 있어야 해요.
+  - `#grade`가 원래 가진 `grade` 클래스는 그대로 두세요.
+  - `showResult` 밖의 코드는 고치지 마세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>시험 결과</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                .grade { font-size: 24px; font-weight: bold; color: #6b7280; }
+                .pass { color: #15803d; }
+                .fail { color: #b91c1c; }
+              </style>
+            </head>
+            <body>
+              <label for="score">점수</label>
+              <input id="score" type="number" />
+              <button id="check">결과 보기</button>
+              <p>점수: <span id="score-text">-</span></p>
+              <p id="grade" class="grade">-</p>
+              <script>
+                const scoreInput = document.querySelector("#score");
+                const checkButton = document.querySelector("#check");
+                const scoreText = document.querySelector("#score-text");
+                const grade = document.querySelector("#grade");
+
+                // 결과를 화면에 보여 주는 함수예요. 본문을 완성하세요.
+                function showResult(score) {
+                }
+
+                // 버튼을 누를 때마다 입력한 점수(숫자)로 showResult를 불러요. 다음 단원에서 배워요.
+                checkButton.addEventListener("click", () => {
+                  showResult(Number(scoreInput.value));
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>시험 결과</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                .grade { font-size: 24px; font-weight: bold; color: #6b7280; }
+                .pass { color: #15803d; }
+                .fail { color: #b91c1c; }
+              </style>
+            </head>
+            <body>
+              <label for="score">점수</label>
+              <input id="score" type="number" />
+              <button id="check">결과 보기</button>
+              <p>점수: <span id="score-text">-</span></p>
+              <p id="grade" class="grade">-</p>
+              <script>
+                const scoreInput = document.querySelector("#score");
+                const checkButton = document.querySelector("#check");
+                const scoreText = document.querySelector("#score-text");
+                const grade = document.querySelector("#grade");
+
+                // 결과를 화면에 보여 주는 함수예요. 본문을 완성하세요.
+                function showResult(score) {
+                  scoreText.textContent = `${score}점`;
+                  grade.classList.remove("pass", "fail");
+                  if (score >= 90) {
+                    grade.textContent = "우수";
+                    grade.classList.add("pass");
+                  } else if (score >= 60) {
+                    grade.textContent = "합격";
+                    grade.classList.add("pass");
+                  } else {
+                    grade.textContent = "불합격";
+                    grade.classList.add("fail");
+                  }
+                }
+
+                // 버튼을 누를 때마다 입력한 점수(숫자)로 showResult를 불러요. 다음 단원에서 배워요.
+                checkButton.addEventListener("click", () => {
+                  showResult(Number(scoreInput.value));
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: excellent
+      description: "95를 넣고 누르면 \"95점\", \"우수\"가 보이고 #grade에 pass 클래스가 있어야 합니다."
+      requirement: 점수별 결과
+      visible: true
+      steps:
+        - { action: type, selector: "#score", value: "95" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#score-text", text: { equals: "95점" } }
+        - { selector: "#grade", text: { equals: "우수" } }
+        - { selector: "#grade.pass", count: 1 }
+    - kind: event
+      id: pass-boundary
+      description: 정확히 60점이면 "합격"이어야 합니다.
+      requirement: 점수 경계
+      steps:
+        - { action: type, selector: "#score", value: "60" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#score-text", text: { equals: "60점" } }
+        - { selector: "#grade", text: { equals: "합격" } }
+        - { selector: "#grade.pass", count: 1 }
+    - kind: event
+      id: fail-switch
+      description: '합격 뒤에 59를 넣고 누르면 "불합격"이 보이고, #grade에는 fail만 있고 pass는 없어야 합니다.'
+      requirement: 클래스 하나만
+      visible: true
+      steps:
+        - { action: type, selector: "#score", value: "59" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#grade", text: { equals: "불합격" } }
+        - { selector: "#grade.fail", count: 1 }
+        - { selector: "#grade.pass", count: 0 }
+    - kind: event
+      id: back-to-excellent
+      description: 불합격 뒤에 정확히 90점을 넣으면 "우수"가 보이고, fail은 빠져야 합니다.
+      requirement: 클래스 하나만
+      steps:
+        - { action: type, selector: "#score", value: "90" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#grade", text: { equals: "우수" } }
+        - { selector: "#grade.pass", count: 1 }
+        - { selector: "#grade.fail", count: 0 }
+    - kind: dom
+      id: keep-grade-class
+      description: "#grade의 원래 클래스(grade)는 그대로 있어야 합니다."
+      requirement: 원래 클래스 유지
+      selector: "#grade.grade"
+      expect:
+        count: 1
+misconceptions: [js.mc.textcontent-appends, js.mc.classlist-dot-prefix]
+hints:
+  - 점수 글자는 경우와 상관없이 같은 모양이에요. 등급은 세 경우로 나뉘니 `if`·`else if`·`else`를 써요. 90점과 60점은 각각 어느 쪽에 들어가야 하나요?
+  - 버튼을 두 번째로 누를 때를 생각해 보세요. 처음에 넣은 `pass`는 그대로 남아 있을까요? 새 클래스를 넣기 전에 해야 할 일이 있어요.
+  - "`classList.remove`는 없는 클래스를 빼라고 해도 오류가 나지 않아요. `className`에 바로 대입하면 `grade` 클래스까지 사라진다는 점도 기억하세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function showResult(score) {
+    scoreText.textContent = `${score}점`;
+    grade.classList.remove("pass", "fail");
+    if (score >= 90) {
+      grade.textContent = "우수";
+      grade.classList.add("pass");
+    } else if (score >= 60) {
+      grade.textContent = "합격";
+      grade.classList.add("pass");
+    } else {
+      grade.textContent = "불합격";
+      grade.classList.add("fail");
+    }
+  }
+  ```
+
+  - **경계**: 90점은 `우수`, 60점은 `합격`이에요. 조건을 `score > 90`처럼 쓰면 경계 점수가 한 단계 아래로 떨어져요.
+  - **쌓이는 클래스**: 합격 뒤에 불합격이 나오면, `add("fail")`만 해서는 `pass`가 그대로 남아 `class="grade pass fail"`이 돼요. 화면 색도 CSS 순서에 따라 엉뚱하게 보여요. 그래서 새 클래스를 넣기 전에 `remove("pass", "fail")`로 둘 다 빼요. `remove`는 여러 이름을 한 번에 받을 수 있고, 없는 클래스를 빼도 괜찮아요.
+  - `toggle`은 지금 상태에 따라 넣거나 빼서, 같은 결과가 두 번 나오면 오히려 클래스가 빠져요. 결과에 맞는 클래스 하나만 두려면 "모두 빼고 하나 넣기"가 확실해요.
+  - `grade.className = "pass"`처럼 대입하면 원래의 `grade` 클래스까지 지워져 큰 글씨 스타일이 사라져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,51 @@
+id: js-basics.browser-intro.dom-basics.predict-toggle-class
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.dom.class-style, weight: 1 }
+tags: [classlist, toggle, trace]
+estimatedSeconds: 120
+prompt: |
+  다음 문서를 열면 콘솔에 무엇이 출력될까요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: web
+  code: |
+    <button id="star" class="btn on">★</button>
+    <script>
+      const star = document.querySelector("#star");
+      star.classList.toggle("on");
+      console.log(star.classList.contains("on"));
+      star.classList.add("big");
+      star.classList.toggle("on");
+      star.classList.remove("btn");
+      console.log(star.className);
+      console.log(star.classList.length);
+    </script>
+  answerKind: console
+hints:
+  - 줄마다 `class` 속성에 무엇이 들어 있는지 적어 가며 따라가 보세요. 처음은 `btn on`이에요.
+  - "`toggle`은 이미 있으면 빼고, 없으면 넣어요. 첫 번째 `toggle`이 실행될 때 `on`은 있나요?"
+  - "`add`로 넣은 클래스는 끝에 붙어요. 두 번째 `toggle`에서 `on`은 어디에 붙을까요?"
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  false
+  big on
+  2
+  ```
+
+  | 줄 | 실행한 코드 | `class` 속성 |
+  |---|---|---|
+  | 시작 | | `btn on` |
+  | 4 | `toggle("on")` | `btn` (있어서 뺌) |
+  | 6 | `add("big")` | `btn big` |
+  | 7 | `toggle("on")` | `btn big on` (없어서 넣음) |
+  | 8 | `remove("btn")` | `big on` |
+
+  - 5번 줄은 `on`을 막 뺀 뒤라 `contains("on")`이 `false`예요.
+  - `className`은 `class` 속성의 문자열 전체, `classList.length`는 클래스 개수예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

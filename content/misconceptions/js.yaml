@@ -2240,3 +2240,135 @@
   remediation:
     lessonSection: js-basics.objects.error-handling#pitfalls
     exercises: [js-basics.objects.error-handling.mcq-finally-when, js-basics.objects.error-handling.predict-finally-return, js-basics.objects.error-handling.fix-orders-loop]
+
+# ── 모듈 10. dom-basics ──
+
+- id: js.mc.script-before-element
+  concept: js.dom.document-tree
+  title: 스크립트가 아래쪽 요소도 찾을 수 있다고 생각함
+  statement: head 안이나 요소보다 위에 둔 script에서도 document.querySelector로 문서 아래쪽의 요소를 찾을 수 있다고 생각한다.
+  reality: 브라우저는 HTML을 위에서부터 읽다가 script를 만나면 그 자리에서 바로 실행한다. 그때는 아래쪽 요소가 아직 트리에 없어서 querySelector가 null을 돌려주고, null.textContent에 대입하면 TypeError가 난다. 스크립트는 body의 맨 끝에 둔다.
+  diagnosticHint: "`Cannot set properties of null` 오류는 찾은 요소가 null이라는 뜻이다. 선택자 오타와 스크립트 위치를 먼저 확인한다."
+  remediation:
+    lessonSection: js-basics.browser-intro.dom-basics#pitfalls
+    exercises: [js-basics.browser-intro.dom-basics.predict-script-in-head, js-basics.browser-intro.dom-basics.web-fix-script-order]
+
+- id: js.mc.created-element-auto-shown
+  concept: js.dom.document-tree
+  title: createElement만 하면 화면에 나타난다고 생각함
+  statement: document.createElement("li")로 요소를 만들고 textContent를 넣으면 그 요소가 바로 화면에 나타난다고 생각한다.
+  reality: createElement는 아직 트리 어디에도 붙지 않은 요소를 만들 뿐이다. 부모.append(요소)로 트리에 붙여야 화면에 나타난다.
+  remediation:
+    lessonSection: js-basics.browser-intro.dom-basics#pitfalls
+    exercises: [js-basics.browser-intro.dom-basics.tf-created-element-shown, js-basics.browser-intro.dom-basics.parsons-create-item]
+
+- id: js.mc.queryselector-returns-all
+  concept: js.dom.query-selector
+  title: querySelector가 맞는 요소를 모두 돌려준다고 생각함
+  statement: document.querySelector(".price")가 클래스가 price인 요소를 모두 찾아서, 결과를 바꾸면 모든 요소가 바뀐다고 생각한다.
+  reality: querySelector는 문서 순서로 첫 번째로 맞는 요소 하나만 돌려준다. 모두 얻으려면 querySelectorAll을 쓰고, 반복으로 하나씩 바꾼다.
+  remediation:
+    lessonSection: js-basics.browser-intro.dom-basics#pitfalls
+    exercises: [js-basics.browser-intro.dom-basics.tf-queryselector-all, js-basics.browser-intro.dom-basics.web-fix-all-prices]
+
+- id: js.mc.selector-missing-prefix
+  concept: js.dom.query-selector
+  title: '선택자에 #이나 .을 빼고 이름만 씀'
+  statement: id가 price인 요소를 document.querySelector("price")처럼 이름만 써서 찾을 수 있다고 생각한다.
+  reality: querySelector의 인수는 CSS 선택자다. "price"는 price라는 태그를 찾는 선택자라서 결과는 null이다. id는 "#price", 클래스는 ".price"로 쓴다.
+  remediation:
+    lessonSection: js-basics.browser-intro.dom-basics#pitfalls
+    exercises: [js-basics.browser-intro.dom-basics.mcq-id-selector, js-basics.browser-intro.dom-basics.predict-query-null]
+
+- id: js.mc.textcontent-parses-html
+  concept: js.dom.text-content
+  title: textContent에 넣은 태그가 요소가 된다고 생각함
+  statement: 요소.textContent = "<b>굵게</b>"라고 쓰면 굵은 글자가 화면에 나온다고 생각한다.
+  reality: textContent는 글자만 다룬다. 넣은 문자열은 태그까지 그대로 글자로 보이고, b 요소는 생기지 않는다. 새 요소가 필요하면 createElement로 만든다.
+  remediation:
+    lessonSection: js-basics.browser-intro.dom-basics#pitfalls
+    exercises: [js-basics.browser-intro.dom-basics.predict-textcontent-tags]
+
+- id: js.mc.textcontent-appends
+  concept: js.dom.text-content
+  title: textContent에 대입하면 글자가 덧붙는다고 생각함
+  statement: textContent에 여러 번 대입하면 console.log처럼 글자가 차례로 쌓인다고 생각한다.
+  reality: 대입할 때마다 요소 안의 내용 전체가 새 글자로 바뀐다. 마지막에 대입한 글자만 남는다. 덧붙이려면 el.textContent = el.textContent + "추가"처럼 원래 글자를 읽어 이어 붙인다.
+  remediation:
+    lessonSection: js-basics.browser-intro.dom-basics#pitfalls
+    exercises: [js-basics.browser-intro.dom-basics.mcq-textcontent-replace]
+
+- id: js.mc.classlist-dot-prefix
+  concept: js.dom.class-style
+  title: classList에 클래스 이름 앞에 점을 붙임
+  statement: CSS에서 .done으로 쓰니까 classList.add(".done")처럼 점을 붙여야 한다고 생각한다.
+  reality: 점은 선택자에서 "클래스"를 뜻하는 기호일 뿐 클래스 이름이 아니다. classList.add(".done")은 오류 없이 이름이 ".done"인 클래스를 넣어서 .done 규칙이 적용되지 않는다. classList에는 "done"처럼 이름만 쓴다.
+  remediation:
+    lessonSection: js-basics.browser-intro.dom-basics#pitfalls
+    exercises: [js-basics.browser-intro.dom-basics.multi-classlist-style, js-basics.browser-intro.dom-basics.web-fix-done-style]
+
+- id: js.mc.style-hyphen-name
+  concept: js.dom.class-style
+  title: style에 CSS 속성 이름을 하이픈 그대로 씀
+  statement: el.style.background-color = "yellow"처럼 CSS에서 쓰는 이름을 그대로 써서 스타일을 바꿀 수 있다고 생각한다.
+  reality: JavaScript에서 -는 빼기라서 el.style.background - color로 읽혀 SyntaxError가 난다. style의 속성 이름은 backgroundColor, fontSize처럼 하이픈을 빼고 다음 글자를 대문자로 쓴다. 대소문자가 틀린 이름(fontsize)은 오류 없이 무시된다.
+  remediation:
+    lessonSection: js-basics.browser-intro.dom-basics#pitfalls
+    exercises: [js-basics.browser-intro.dom-basics.multi-classlist-style, js-basics.browser-intro.dom-basics.web-fix-done-style]
+
+# ── 모듈 10. events-intro ──
+
+- id: js.mc.listener-handler-called
+  concept: js.dom.add-event-listener
+  title: 이벤트 함수에 괄호를 붙여 넘김
+  statement: btn.addEventListener("click", showMessage())처럼 함수 이름 뒤에 괄호를 붙여야 클릭할 때 함수가 실행된다고 생각한다.
+  reality: showMessage()는 그 줄이 실행될 때 함수를 한 번 부르고, 그 반환값(대개 undefined)을 넘긴다. 클릭할 때 부를 함수가 없으므로 클릭해도 아무 일도 일어나지 않는다. 함수 자체를 넘기려면 괄호 없이 showMessage로 쓴다.
+  diagnosticHint: 페이지를 열자마자 한 번 실행되고 클릭하면 아무 일도 없다면 괄호를 의심한다.
+  remediation:
+    lessonSection: js-basics.browser-intro.events-intro#pitfalls
+    exercises: [js-basics.browser-intro.events-intro.mcq-pass-handler, js-basics.browser-intro.events-intro.predict-handler-called, js-basics.browser-intro.events-intro.web-fix-like-reset]
+
+- id: js.mc.event-name-on-prefix
+  concept: js.dom.add-event-listener
+  title: addEventListener의 이벤트 이름에 on을 붙임
+  statement: HTML의 onclick 속성처럼 addEventListener("onclick", 함수)라고 써야 한다고 생각한다.
+  reality: addEventListener의 이벤트 이름은 on을 뺀 "click", "input", "submit"이다. "onclick"이라는 이벤트는 없어서 오류 없이 아무 일도 일어나지 않는다.
+  remediation:
+    lessonSection: js-basics.browser-intro.events-intro#pitfalls
+    exercises: [js-basics.browser-intro.events-intro.tf-event-name-on, js-basics.browser-intro.events-intro.parsons-like-counter, js-basics.browser-intro.events-intro.web-fix-like-reset]
+
+- id: js.mc.form-submit-no-default
+  concept: js.dom.event-object
+  title: 폼을 제출해도 페이지가 그대로라고 생각함
+  statement: 폼의 submit 이벤트 함수에서 화면을 바꾸면, 제출한 뒤에도 바뀐 화면이 그대로 남는다고 생각한다.
+  reality: 폼 제출의 기본 동작은 입력값을 보내며 페이지를 새로 여는 것이다. 막지 않으면 함수가 바꾼 화면이 새 페이지로 사라진다. 함수 안에서 event.preventDefault()를 불러 기본 동작을 막는다.
+  remediation:
+    lessonSection: js-basics.browser-intro.events-intro#pitfalls
+    exercises: [js-basics.browser-intro.events-intro.mcq-submit-default, js-basics.browser-intro.events-intro.web-signup-form]
+
+- id: js.mc.preventdefault-stops-handler
+  concept: js.dom.event-object
+  title: preventDefault가 함수 실행을 멈춘다고 생각함
+  statement: event.preventDefault()를 부르면 return처럼 그 아래 코드가 실행되지 않는다고 생각한다.
+  reality: preventDefault는 브라우저의 기본 동작(페이지 이동, 폼 제출)만 취소하고 함수의 나머지 코드는 그대로 실행된다. 함수를 끝내려면 return을 쓴다.
+  remediation:
+    lessonSection: js-basics.browser-intro.events-intro#pitfalls
+    exercises: [js-basics.browser-intro.events-intro.multi-event-object]
+
+- id: js.mc.input-value-is-number
+  concept: js.dom.input-value
+  title: 입력창의 value가 숫자라고 생각함
+  statement: type="number" 입력창에 3을 넣으면 value가 숫자 3이라서 + 로 바로 더할 수 있다고 생각한다.
+  reality: 입력창의 value는 type과 상관없이 항상 문자열이다. "3" + "5"는 "35"가 된다. 계산하기 전에 Number(입력창.value)로 숫자로 바꾼다.
+  remediation:
+    lessonSection: js-basics.browser-intro.events-intro#pitfalls
+    exercises: [js-basics.browser-intro.events-intro.tf-value-is-number, js-basics.browser-intro.events-intro.find-bug-saving-total, js-basics.browser-intro.events-intro.fix-average-score]
+
+- id: js.mc.input-value-read-once
+  concept: js.dom.input-value
+  title: 처음에 읽어 둔 value가 입력에 따라 바뀐다고 생각함
+  statement: 스크립트 맨 위에서 const name = input.value;로 읽어 두면, 나중에 사용자가 입력한 글자가 name에 들어 있다고 생각한다.
+  reality: value는 읽는 순간의 글자를 복사해 올 뿐이다. 페이지가 열릴 때 읽으면 빈 문자열이고, 그 뒤에 입력해도 변수는 바뀌지 않는다. 사용자가 입력한 값은 이벤트 함수 안에서 읽는다.
+  remediation:
+    lessonSection: js-basics.browser-intro.events-intro#pitfalls
+    exercises: [js-basics.browser-intro.events-intro.web-fix-read-once]

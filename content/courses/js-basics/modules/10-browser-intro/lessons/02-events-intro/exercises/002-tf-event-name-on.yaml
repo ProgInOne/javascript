@@ -1,0 +1,27 @@
+id: js-basics.browser-intro.events-intro.tf-event-name-on
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.dom.add-event-listener, weight: 1 }
+tags: [addeventlistener, event-name]
+estimatedSeconds: 40
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: '`input.addEventListener("oninput", update)`처럼 이벤트 이름 앞에 `on`을 붙여야 입력할 때마다 `update`가 불린다.'
+  answer: false
+  misconceptionIfWrong: js.mc.event-name-on-prefix
+hints:
+  - 레슨의 예제에서 클릭 이벤트의 이름을 어떻게 썼는지 떠올려 보세요.
+  - "`on`이 붙는 것은 HTML의 `onclick=\"...\"` 같은 속성 이름이에요."
+  - "`\"oninput\"`이라는 이름의 이벤트가 실제로 일어날까요?"
+explanation: |
+  정답은 **거짓**이에요.
+
+  `addEventListener`의 이벤트 이름은 `on`을 뺀 `"click"`, `"input"`, `"submit"`, `"keydown"`이에요. `on`은 HTML 속성(`oninput="..."`)이나 요소의 속성(`input.oninput`)에 붙는 말이에요.
+
+  `"oninput"`이라는 이벤트는 일어나지 않으므로, 오류는 나지 않지만 `update`도 불리지 않아요. 이런 버그는 조용해서 찾기 어려워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

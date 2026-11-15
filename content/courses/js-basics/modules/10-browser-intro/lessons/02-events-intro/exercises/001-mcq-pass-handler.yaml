@@ -1,0 +1,43 @@
+id: js-basics.browser-intro.events-intro.mcq-pass-handler
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.dom.add-event-listener, weight: 1 }
+  - { id: js.fn.callback, weight: 0.3 }
+tags: [addeventlistener, callback, click]
+estimatedSeconds: 50
+prompt: |
+  `showMenu`라는 함수가 있어요. 버튼 `btn`을 **누를 때마다** `showMenu`가 실행되게 하는 코드는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`btn.addEventListener("click", showMenu);`'
+    - id: b
+      text: '`btn.addEventListener("click", showMenu());`'
+      misconception: js.mc.listener-handler-called
+      rationale: "`showMenu()`는 이 줄이 실행될 때 함수를 바로 한 번 부르고, 그 반환값을 넘겨요. 클릭할 때 부를 함수가 넘어가지 않아요."
+    - id: c
+      text: '`btn.addEventListener("onclick", showMenu);`'
+      misconception: js.mc.event-name-on-prefix
+      rationale: 이벤트 이름은 `on`을 뺀 `"click"`이에요. `"onclick"`이라는 이벤트는 일어나지 않아서 함수가 불리지 않아요.
+    - id: d
+      text: '`btn.addEventListener(showMenu, "click");`'
+      rationale: 첫 번째 인수는 이벤트 이름, 두 번째 인수가 부를 함수예요. 순서를 바꾸면 동작하지 않아요.
+  correct: a
+misconceptions: [js.mc.listener-handler-called, js.mc.event-name-on-prefix]
+hints:
+  - 모듈 6에서 콜백을 넘길 때 괄호를 붙였는지 떠올려 보세요.
+  - 함수 이름 뒤에 `()`를 붙이면 그 자리에서 무슨 일이 일어나나요?
+  - 이벤트 이름은 HTML 속성 이름과 같을까요? `addEventListener`에는 `on`을 붙이지 않아요.
+explanation: |
+  정답은 `btn.addEventListener("click", showMenu);`예요.
+
+  `addEventListener`는 "이 이벤트가 일어나면 이 함수를 불러 줘"라고 **함수를 맡겨 두는** 일이에요. 그래서 함수를 부르지 않고 함수 자체를 넘겨요. 모듈 6의 콜백과 같은 원리예요.
+
+  - `showMenu()`: 등록하는 순간 함수가 한 번 실행되고, 반환값(여기서는 `undefined`)이 넘어가요. 클릭해도 아무 일도 없어요.
+  - `"onclick"`: `on`은 HTML 속성 이름(`onclick="..."`)에 붙는 말이에요. 이벤트 이름은 `"click"`이에요.
+  - 인수 순서는 (이벤트 이름, 함수)예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

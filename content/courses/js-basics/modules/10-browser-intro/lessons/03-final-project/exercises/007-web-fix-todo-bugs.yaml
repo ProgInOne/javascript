@@ -1,0 +1,274 @@
+id: js-basics.browser-intro.final-project.web-fix-todo-bugs
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.dom.input-value, weight: 1 }
+  - { id: js.dom.query-selector, weight: 0.5 }
+  - { id: js.dom.class-style, weight: 0.5 }
+  - { id: js.dom.add-event-listener, weight: 0.3 }
+tags: [project, debugging, value-timing, queryselector, classlist, web]
+estimatedSeconds: 600
+prompt: |
+  친구가 만든 할 일 목록에 버그가 **세 개** 있어요. 하나를 고치면 다음 버그가 드러나니, 고칠 때마다 실행해 보며 차례로 찾으세요.
+
+  기대하는 동작은 다음과 같아요.
+
+  - 할 일을 쓰고 제출하면 목록에 추가되고 입력창이 비어요(공백뿐이면 추가하지 않아요).
+  - `#todo-count`에 완료하지 않은 할 일 수가 `남은 할 일 2개`처럼 보여요.
+  - 할 일 글자를 누르면 줄이 그어지고(`done` 클래스) 남은 개수가 줄어요.
+
+  HTML과 CSS에는 문제가 없어요. 스크립트만 고치세요.
+spec:
+  focus: project
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>할 일 목록</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; max-width: 420px; }
+                #todo-form { display: flex; gap: 8px; }
+                #todo-input { flex: 1; font-size: 16px; padding: 4px 6px; }
+                #todo-list { padding-left: 0; list-style: none; }
+                .todo { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb; }
+                .todo-text { cursor: pointer; }
+                .done .todo-text { text-decoration: line-through; color: #9ca3af; }
+                .delete { font-size: 12px; }
+                .hidden { display: none; }
+              </style>
+            </head>
+            <body>
+              <h1>할 일 목록</h1>
+              <form id="todo-form">
+                <input id="todo-input" type="text" placeholder="할 일을 쓰세요" />
+                <button type="submit">추가</button>
+              </form>
+              <p id="todo-count">남은 할 일 0개</p>
+              <p id="empty-message">할 일이 없어요</p>
+              <ul id="todo-list"></ul>
+              <script>
+                const form = document.querySelector("#todo-form");
+                const input = document.querySelector("#todo-input");
+                const list = document.querySelector("#todo-list");
+                const countText = document.querySelector("#todo-count");
+                const emptyMessage = document.querySelector("#empty-message");
+
+                function updateStatus() {
+                  const total = list.querySelectorAll(".todo").length;
+                  const done = list.querySelector(".todo.done").length;
+                  countText.textContent = `남은 할 일 ${total - done}개`;
+                  if (total === 0) {
+                    emptyMessage.classList.remove("hidden");
+                  } else {
+                    emptyMessage.classList.add("hidden");
+                  }
+                }
+
+                function addTodo(text) {
+                  const item = document.createElement("li");
+                  item.classList.add("todo");
+
+                  const textSpan = document.createElement("span");
+                  textSpan.classList.add("todo-text");
+                  textSpan.textContent = text;
+                  textSpan.addEventListener("click", () => {
+                    item.classList.toggle(".done");
+                    updateStatus();
+                  });
+
+                  const deleteButton = document.createElement("button");
+                  deleteButton.classList.add("delete");
+                  deleteButton.textContent = "삭제";
+                  deleteButton.addEventListener("click", () => {
+                    item.remove();
+                    updateStatus();
+                  });
+
+                  item.append(textSpan);
+                  item.append(deleteButton);
+                  list.append(item);
+                }
+
+                const text = input.value.trim();
+
+                form.addEventListener("submit", (event) => {
+                  event.preventDefault();
+                  if (text === "") {
+                    return;
+                  }
+                  addTodo(text);
+                  input.value = "";
+                  updateStatus();
+                });
+
+                updateStatus();
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>할 일 목록</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; max-width: 420px; }
+                #todo-form { display: flex; gap: 8px; }
+                #todo-input { flex: 1; font-size: 16px; padding: 4px 6px; }
+                #todo-list { padding-left: 0; list-style: none; }
+                .todo { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb; }
+                .todo-text { cursor: pointer; }
+                .done .todo-text { text-decoration: line-through; color: #9ca3af; }
+                .delete { font-size: 12px; }
+                .hidden { display: none; }
+              </style>
+            </head>
+            <body>
+              <h1>할 일 목록</h1>
+              <form id="todo-form">
+                <input id="todo-input" type="text" placeholder="할 일을 쓰세요" />
+                <button type="submit">추가</button>
+              </form>
+              <p id="todo-count">남은 할 일 0개</p>
+              <p id="empty-message">할 일이 없어요</p>
+              <ul id="todo-list"></ul>
+              <script>
+                const form = document.querySelector("#todo-form");
+                const input = document.querySelector("#todo-input");
+                const list = document.querySelector("#todo-list");
+                const countText = document.querySelector("#todo-count");
+                const emptyMessage = document.querySelector("#empty-message");
+
+                function updateStatus() {
+                  const total = list.querySelectorAll(".todo").length;
+                  const done = list.querySelectorAll(".todo.done").length;
+                  countText.textContent = `남은 할 일 ${total - done}개`;
+                  if (total === 0) {
+                    emptyMessage.classList.remove("hidden");
+                  } else {
+                    emptyMessage.classList.add("hidden");
+                  }
+                }
+
+                function addTodo(text) {
+                  const item = document.createElement("li");
+                  item.classList.add("todo");
+
+                  const textSpan = document.createElement("span");
+                  textSpan.classList.add("todo-text");
+                  textSpan.textContent = text;
+                  textSpan.addEventListener("click", () => {
+                    item.classList.toggle("done");
+                    updateStatus();
+                  });
+
+                  const deleteButton = document.createElement("button");
+                  deleteButton.classList.add("delete");
+                  deleteButton.textContent = "삭제";
+                  deleteButton.addEventListener("click", () => {
+                    item.remove();
+                    updateStatus();
+                  });
+
+                  item.append(textSpan);
+                  item.append(deleteButton);
+                  list.append(item);
+                }
+
+                form.addEventListener("submit", (event) => {
+                  event.preventDefault();
+                  const text = input.value.trim();
+                  if (text === "") {
+                    return;
+                  }
+                  addTodo(text);
+                  input.value = "";
+                  updateStatus();
+                });
+
+                updateStatus();
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: add
+      description: "\"우유 사기\"를 제출하면 목록에 추가되고 입력창이 비어야 합니다."
+      requirement: 할 일 추가
+      visible: true
+      steps:
+        - { action: type, selector: "#todo-input", value: "우유 사기" }
+        - { action: submit, selector: "#todo-form" }
+      expect:
+        - { selector: "#todo-list li.todo", count: 1 }
+        - { selector: "#todo-list li.todo .todo-text", text: { equals: "우유 사기" } }
+        - { selector: "#todo-input", value: "" }
+    - kind: event
+      id: count
+      description: "두 번째 할 일을 추가하면 \"남은 할 일 2개\"가 보여야 합니다."
+      requirement: 남은 개수
+      visible: true
+      steps:
+        - { action: type, selector: "#todo-input", value: "운동하기" }
+        - { action: submit, selector: "#todo-form" }
+      expect:
+        - { selector: "#todo-list li.todo", count: 2 }
+        - { selector: "#todo-count", text: { equals: "남은 할 일 2개" } }
+    - kind: event
+      id: done
+      description: "첫 번째 할 일의 글자를 누르면 그 항목에 done 클래스가 생기고 \"남은 할 일 1개\"가 되어야 합니다."
+      requirement: 완료 표시
+      visible: true
+      steps:
+        - { action: click, selector: "#todo-list li.todo:nth-child(1) .todo-text" }
+      expect:
+        - { selector: "#todo-list li.todo:nth-child(1).done", count: 1 }
+        - { selector: "#todo-count", text: { equals: "남은 할 일 1개" } }
+    - kind: event
+      id: blank
+      description: 공백만 쓰고 제출하면 추가되지 않아야 합니다.
+      requirement: 할 일 추가
+      steps:
+        - { action: type, selector: "#todo-input", value: "  " }
+        - { action: submit, selector: "#todo-form" }
+      expect:
+        - { selector: "#todo-list li.todo", count: 2 }
+misconceptions: [js.mc.input-value-read-once, js.mc.queryselector-returns-all, js.mc.classlist-dot-prefix]
+hints:
+  - 실행하자마자 콘솔에 오류가 나요. 오류 메시지가 가리키는 줄에서 `.length`를 읽으려는 값이 목록인지, 요소 하나(또는 `null`)인지 보세요.
+  - 오류를 없앤 뒤에도 할 일이 추가되지 않으면, 제출 함수 안에서 `text`에 무엇이 들어 있는지 `console.log`로 찍어 보세요. 그 줄은 언제 실행되나요?
+  - 마지막 버그는 오류 없이 줄이 그어지지 않는 거예요. `classList`에 넣는 것이 클래스의 이름인지 선택자인지 확인하세요.
+explanation: |
+  버그는 세 곳이에요.
+
+  ```js
+  // 1. updateStatus: querySelector → querySelectorAll
+  const done = list.querySelectorAll(".todo.done").length;
+
+  // 2. 제출 함수 밖에서 읽던 값을 함수 안에서 읽기
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const text = input.value.trim();
+    // ...
+  });
+
+  // 3. addTodo: 클래스 이름에서 점 빼기
+  item.classList.toggle("done");
+  ```
+
+  1. **하나 vs 모두**: `querySelector(".todo.done")`는 요소 하나(없으면 `null`)를 돌려줘요. 페이지가 열릴 때 부르는 `updateStatus()`에서는 완료한 항목이 없으니 `null.length`를 읽다가 `TypeError: Cannot read properties of null`이 나요. 개수를 세려면 `querySelectorAll`을 써요.
+  1. **값을 읽는 시점**: `const text = input.value.trim();`이 함수 밖에 있어서 페이지가 열릴 때 한 번만 읽혀요. `text`는 늘 `""`라 제출할 때마다 `return`했어요. 함수 안으로 옮겨요.
+  1. **클래스 이름**: `toggle(".done")`은 이름이 `.done`인 클래스를 넣어요. CSS의 `.done` 규칙도, 개수를 세는 `.todo.done` 선택자도 이 이름을 찾지 못해요. 점을 빼요.
+
+  오류가 나는 1번을 고쳐도 2번 때문에 여전히 추가되지 않고, 2번을 고쳐야 비로소 3번이 드러나요. 이렇게 버그가 다른 버그를 가리는 일은 흔해요. 하나 고칠 때마다 다시 실행해 보는 습관이 중요해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

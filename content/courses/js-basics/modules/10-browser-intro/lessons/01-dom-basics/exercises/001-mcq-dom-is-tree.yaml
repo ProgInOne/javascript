@@ -1,0 +1,44 @@
+id: js-basics.browser-intro.dom-basics.mcq-dom-is-tree
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.dom.document-tree, weight: 1 }
+  - { id: html.doc.dom-tree, weight: 0.3 }
+tags: [dom, document, tree]
+estimatedSeconds: 50
+prompt: |
+  `index.html`에 `<h1 id="title">안녕</h1>`이 있고, 아래 코드가 실행됐어요. 이 코드가 바꾸는 것은 무엇인가요?
+code: |
+  document.querySelector("#title").textContent = "반가워요";
+spec:
+  options:
+    - id: a
+      text: 브라우저가 HTML을 읽어 만든 DOM 트리 속 `h1` 요소의 글자
+    - id: b
+      text: 컴퓨터에 저장된 `index.html` 파일 안의 `안녕`이라는 글자
+      misconception: html.mc.dom-is-source
+      rationale: JavaScript는 파일을 고치지 않아요. 파일은 그대로이고, 브라우저가 만든 트리만 바뀌어요. 그래서 새로 고침하면 다시 `안녕`이 보여요.
+    - id: c
+      text: 화면에 그려진 그림만 바뀌고, 문서 구조는 그대로
+      rationale: 화면은 DOM 트리를 보고 다시 그려진 결과예요. 바뀐 것은 트리 속 요소의 글자이고, 그래서 화면도 달라져요.
+    - id: d
+      text: "`document`라는 변수에 `반가워요`가 새로 저장된다"
+      rationale: "`document`는 브라우저가 미리 만들어 둔 문서 전체를 가리켜요. 코드는 그 안에서 `#title` 요소를 찾아 글자를 바꿔요."
+  correct: a
+misconceptions: [html.mc.dom-is-source]
+hints:
+  - HTML 과정에서 브라우저가 HTML을 읽어 무엇을 만든다고 배웠는지 떠올려 보세요.
+  - "`document`는 그 결과물 전체를 가리켜요. 파일을 가리키는 것이 아니에요."
+  - 페이지를 새로 고침하면 어떤 글자가 보일지 생각해 보세요. 파일이 바뀌었다면 새로 고침해도 바뀐 글자가 보여야 해요.
+explanation: |
+  정답은 "DOM 트리 속 `h1` 요소의 글자"예요.
+
+  브라우저는 HTML 파일을 읽어 요소들이 부모·자식으로 이어진 **DOM 트리**를 만들고, 그 트리를 보고 화면을 그려요. JavaScript의 `document`는 이 트리 전체를 가리켜요. 코드는 트리에서 `#title` 요소를 찾아 글자를 바꾸고, 브라우저가 바뀐 트리를 다시 그려서 화면에 `반가워요`가 보여요.
+
+  - 파일은 바뀌지 않아요. 페이지를 새로 고침하면 파일을 다시 읽어 트리를 새로 만들기 때문에 `안녕`으로 돌아가요.
+  - 화면만 바뀌는 것이 아니라 트리 자체가 바뀌어요. 바뀐 뒤 `textContent`를 다시 읽으면 `반가워요`가 나와요.
+  - `document`는 우리가 만든 변수가 아니라 브라우저가 미리 준비해 둔 문서 객체예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

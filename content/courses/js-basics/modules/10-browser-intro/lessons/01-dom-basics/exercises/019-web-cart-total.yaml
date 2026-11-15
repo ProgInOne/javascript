@@ -1,0 +1,211 @@
+id: js-basics.browser-intro.dom-basics.web-cart-total
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.dom.query-selector, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.5 }
+  - { id: js.conv.to-number, weight: 0.5 }
+  - { id: js.dom.class-style, weight: 0.3 }
+tags: [queryselectorall, accumulator, number, classlist, web]
+estimatedSeconds: 540
+prompt: |
+  장바구니 화면의 `updateSummary()` 본문을 완성하세요. 이 함수는 페이지가 열릴 때 한 번, 그리고 **식혜 추가** 버튼으로 상품이 늘어날 때마다 다시 불려요.
+
+  1. `#summary`에 상품 개수와 가격 합계를 `3개, 합계 16000원` 모양으로 보여 주세요.
+  1. 가격이 **5000원 이상**인 상품의 `li`(클래스 `item`)에 `expensive` 클래스를 넣으세요.
+
+  - 상품의 가격은 각 `li` 안의 `.price`에 숫자로 적혀 있어요.
+  - 상품이 늘어나도 맞게 동작해야 하니, 숫자를 직접 적지 말고 화면에서 읽어 계산하세요. 식혜를 추가하면 `4개, 합계 18000원`이 되어야 해요.
+  - `updateSummary` 밖의 코드는 고치지 마세요.
+
+  `.price` 요소에서 그 상품의 `li`로 가려면 `요소.parentElement`(부모 요소)를 쓸 수 있어요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>장바구니</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #cart li { margin: 4px 0; }
+                .price { margin-left: 8px; }
+                .expensive { background: #fef3c7; font-weight: bold; }
+                #summary { font-size: 18px; }
+              </style>
+            </head>
+            <body>
+              <h1>장바구니</h1>
+              <ul id="cart">
+                <li class="item"><span class="name">김밥</span><span class="price">3500</span>원</li>
+                <li class="item"><span class="name">라면</span><span class="price">4500</span>원</li>
+                <li class="item"><span class="name">돈가스</span><span class="price">8000</span>원</li>
+              </ul>
+              <p id="summary">-</p>
+              <button id="add-dessert">식혜 추가</button>
+              <script>
+                // 장바구니를 보고 요약과 표시를 다시 쓰는 함수예요. 본문을 완성하세요.
+                function updateSummary() {
+                }
+
+                updateSummary();
+
+                // 버튼을 누르면 장바구니 끝에 "식혜 2000원"을 붙이고 updateSummary()를 다시 불러요.
+                // (이벤트는 다음 단원에서 배워요. 이 부분은 고치지 마세요.)
+                document.querySelector("#add-dessert").addEventListener("click", () => {
+                  const item = document.createElement("li");
+                  item.className = "item";
+                  const name = document.createElement("span");
+                  name.className = "name";
+                  name.textContent = "식혜";
+                  const price = document.createElement("span");
+                  price.className = "price";
+                  price.textContent = "2000";
+                  item.append(name, price, "원");
+                  document.querySelector("#cart").append(item);
+                  updateSummary();
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>장바구니</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #cart li { margin: 4px 0; }
+                .price { margin-left: 8px; }
+                .expensive { background: #fef3c7; font-weight: bold; }
+                #summary { font-size: 18px; }
+              </style>
+            </head>
+            <body>
+              <h1>장바구니</h1>
+              <ul id="cart">
+                <li class="item"><span class="name">김밥</span><span class="price">3500</span>원</li>
+                <li class="item"><span class="name">라면</span><span class="price">4500</span>원</li>
+                <li class="item"><span class="name">돈가스</span><span class="price">8000</span>원</li>
+              </ul>
+              <p id="summary">-</p>
+              <button id="add-dessert">식혜 추가</button>
+              <script>
+                // 장바구니를 보고 요약과 표시를 다시 쓰는 함수예요. 본문을 완성하세요.
+                function updateSummary() {
+                  const prices = document.querySelectorAll(".price");
+                  let total = 0;
+                  for (let i = 0; i < prices.length; i++) {
+                    const price = Number(prices[i].textContent);
+                    total += price;
+                    if (price >= 5000) {
+                      prices[i].parentElement.classList.add("expensive");
+                    }
+                  }
+                  document.querySelector("#summary").textContent = `${prices.length}개, 합계 ${total}원`;
+                }
+
+                updateSummary();
+
+                // 버튼을 누르면 장바구니 끝에 "식혜 2000원"을 붙이고 updateSummary()를 다시 불러요.
+                // (이벤트는 다음 단원에서 배워요. 이 부분은 고치지 마세요.)
+                document.querySelector("#add-dessert").addEventListener("click", () => {
+                  const item = document.createElement("li");
+                  item.className = "item";
+                  const name = document.createElement("span");
+                  name.className = "name";
+                  name.textContent = "식혜";
+                  const price = document.createElement("span");
+                  price.className = "price";
+                  price.textContent = "2000";
+                  item.append(name, price, "원");
+                  document.querySelector("#cart").append(item);
+                  updateSummary();
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: summary
+      description: "처음에는 \"3개, 합계 16000원\"이 보여야 합니다."
+      requirement: 개수와 합계
+      visible: true
+      selector: "#summary"
+      expect:
+        text: { equals: "3개, 합계 16000원" }
+    - kind: dom
+      id: expensive-count
+      description: 5000원 이상인 상품(돈가스) 하나에만 expensive 클래스가 있어야 합니다.
+      requirement: 비싼 상품 표시
+      visible: true
+      selector: "#cart li.expensive"
+      expect:
+        count: 1
+    - kind: dom
+      id: expensive-which
+      description: expensive 클래스는 돈가스의 li에 있어야 합니다.
+      requirement: 비싼 상품 표시
+      selector: "#cart li.expensive .name"
+      expect:
+        text: { equals: "돈가스" }
+    - kind: event
+      id: after-add
+      description: "식혜를 추가하면 \"4개, 합계 18000원\"으로 바뀌고, 식혜에는 expensive가 없어야 합니다."
+      requirement: 상품이 늘어날 때
+      visible: true
+      steps:
+        - { action: click, selector: "#add-dessert" }
+      expect:
+        - { selector: "#summary", text: { equals: "4개, 합계 18000원" } }
+        - { selector: "#cart li.item", count: 4 }
+        - { selector: "#cart li.expensive", count: 1 }
+    - kind: event
+      id: after-add-twice
+      description: "한 번 더 추가하면 \"5개, 합계 20000원\"이어야 합니다."
+      requirement: 상품이 늘어날 때
+      steps:
+        - { action: click, selector: "#add-dessert" }
+      expect:
+        - { selector: "#summary", text: { equals: "5개, 합계 20000원" } }
+        - { selector: "#cart li.expensive", count: 1 }
+misconceptions: [js.mc.queryselector-returns-all, js.mc.classlist-dot-prefix]
+hints:
+  - 할 일은 "가격 요소를 모두 찾기 → 하나씩 보며 더하기 → 결과 쓰기"예요. 모두 찾을 때는 `querySelectorAll`을 써요.
+  - "`textContent`는 항상 문자열이에요. `0 + \"3500\"`은 무엇이 될까요? 더하기 전에 숫자로 바꿔야 해요."
+  - 개수는 찾은 목록의 `length`로 알 수 있어요. 5000원 이상인지 확인하는 `if`는 반복 안에서, 그 가격의 `parentElement`에 클래스를 넣어요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function updateSummary() {
+    const prices = document.querySelectorAll(".price");
+    let total = 0;
+    for (let i = 0; i < prices.length; i++) {
+      const price = Number(prices[i].textContent);
+      total += price;
+      if (price >= 5000) {
+        prices[i].parentElement.classList.add("expensive");
+      }
+    }
+    document.querySelector("#summary").textContent = `${prices.length}개, 합계 ${total}원`;
+  }
+  ```
+
+  - **함수 안에서 찾기**: `querySelectorAll`은 부르는 순간의 요소를 찾아요. 함수 밖에서 한 번만 찾아 두면, 나중에 추가된 식혜는 목록에 없어서 합계가 그대로예요.
+  - **숫자로 바꾸기**: `textContent`는 문자열이라, 바꾸지 않고 더하면 `"0350045008000"`처럼 이어 붙여져요. `Number(...)`로 바꾼 뒤 더해요.
+  - **누적 패턴**: 반복 전에 `total = 0`으로 시작하고, 반복할 때마다 더해요. 함수가 다시 불릴 때마다 0부터 새로 세므로 합계가 두 번 더해지지 않아요.
+  - **경계**: 조건은 `>= 5000`이에요. 함수가 여러 번 불려 같은 요소에 `add("expensive")`를 다시 해도 클래스는 하나만 있어요.
+  - 개수는 `.item`을 따로 세어도 되고, 가격 목록의 `length`를 써도 같아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

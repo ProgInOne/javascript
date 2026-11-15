@@ -1,0 +1,153 @@
+id: js-basics.browser-intro.events-intro.web-light-switch
+type: web_task
+difficulty: 3
+concepts:
+  - { id: js.dom.add-event-listener, weight: 1 }
+  - { id: js.dom.class-style, weight: 0.5 }
+  - { id: js.dom.text-content, weight: 0.3 }
+tags: [addeventlistener, classlist, toggle, web]
+estimatedSeconds: 360
+prompt: |
+  밤에 글을 읽기 편하게 **독서 모드** 버튼을 만드세요. CSS에는 `body.dark` 규칙(어두운 배경)이 이미 있어요. `<script>` 안에 코드를 처음부터 쓰세요.
+
+  버튼(`#switch`)을 누를 때마다 밝은 화면과 어두운 화면이 번갈아 바뀌어야 해요.
+
+  | 상태 | `body`의 클래스 | `#status` | 버튼 글자 |
+  |---|---|---|---|
+  | 밝은 화면 (처음) | `dark` 없음 | `지금: 밝은 화면` | `어둡게` |
+  | 어두운 화면 | `dark` 있음 | `지금: 어두운 화면` | `밝게` |
+
+  `body` 요소는 `document.body`로 바로 쓸 수 있어요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>독서 모드</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; background: white; color: #111827; }
+                body.dark { background: #111827; color: #f9fafb; }
+                #switch { font-size: 16px; padding: 6px 12px; }
+              </style>
+            </head>
+            <body>
+              <h1>독서 모드</h1>
+              <p id="status">지금: 밝은 화면</p>
+              <button id="switch">어둡게</button>
+              <script>
+                // 여기에 코드를 쓰세요.
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>독서 모드</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; background: white; color: #111827; }
+                body.dark { background: #111827; color: #f9fafb; }
+                #switch { font-size: 16px; padding: 6px 12px; }
+              </style>
+            </head>
+            <body>
+              <h1>독서 모드</h1>
+              <p id="status">지금: 밝은 화면</p>
+              <button id="switch">어둡게</button>
+              <script>
+                // 여기에 코드를 쓰세요.
+                const switchButton = document.querySelector("#switch");
+                const status = document.querySelector("#status");
+
+                switchButton.addEventListener("click", () => {
+                  document.body.classList.toggle("dark");
+                  if (document.body.classList.contains("dark")) {
+                    status.textContent = "지금: 어두운 화면";
+                    switchButton.textContent = "밝게";
+                  } else {
+                    status.textContent = "지금: 밝은 화면";
+                    switchButton.textContent = "어둡게";
+                  }
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: starts-light
+      description: 처음에는 body에 dark 클래스가 없어야 합니다.
+      requirement: 처음 상태
+      selector: "body.dark"
+      expect:
+        count: 0
+    - kind: event
+      id: to-dark
+      description: "한 번 누르면 body에 dark가 생기고, \"지금: 어두운 화면\"과 버튼 글자 \"밝게\"가 보여야 합니다."
+      requirement: 어둡게 바꾸기
+      visible: true
+      steps:
+        - { action: click, selector: "#switch" }
+      expect:
+        - { selector: "body.dark", count: 1 }
+        - { selector: "#status", text: { equals: "지금: 어두운 화면" } }
+        - { selector: "#switch", text: { equals: "밝게" } }
+    - kind: event
+      id: to-light
+      description: "한 번 더 누르면 dark가 빠지고, \"지금: 밝은 화면\"과 버튼 글자 \"어둡게\"로 돌아와야 합니다."
+      requirement: 밝게 되돌리기
+      visible: true
+      steps:
+        - { action: click, selector: "#switch" }
+      expect:
+        - { selector: "body.dark", count: 0 }
+        - { selector: "#status", text: { equals: "지금: 밝은 화면" } }
+        - { selector: "#switch", text: { equals: "어둡게" } }
+    - kind: event
+      id: third-click
+      description: 세 번째로 누르면 다시 어두운 화면이어야 합니다.
+      requirement: 어둡게 바꾸기
+      steps:
+        - { action: click, selector: "#switch" }
+      expect:
+        - { selector: "body.dark", count: 1 }
+        - { selector: "#switch", text: { equals: "밝게" } }
+misconceptions: [js.mc.listener-handler-called, js.mc.classlist-dot-prefix]
+hints:
+  - 버튼을 찾고, 그 버튼에 `click` 이벤트로 함수를 등록하는 데서 시작하세요.
+  - 켰다 껐다 하는 클래스에는 `classList.toggle`이 잘 맞아요. 바꾼 뒤 지금이 어느 상태인지는 `classList.contains`로 알 수 있어요.
+  - 상태에 따라 글자 두 개(`#status`, 버튼)를 다르게 써야 하니, `contains`의 결과로 `if`·`else`를 나눠 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const switchButton = document.querySelector("#switch");
+  const status = document.querySelector("#status");
+
+  switchButton.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    if (document.body.classList.contains("dark")) {
+      status.textContent = "지금: 어두운 화면";
+      switchButton.textContent = "밝게";
+    } else {
+      status.textContent = "지금: 밝은 화면";
+      switchButton.textContent = "어둡게";
+    }
+  });
+  ```
+
+  - `toggle("dark")`는 없으면 넣고 있으면 빼요. 누를 때마다 상태가 번갈아 바뀌어요.
+  - 바꾼 **뒤의** 상태를 `contains`로 확인해 글자를 정해요. `let isDark = false;` 같은 변수를 두고 누를 때마다 `isDark = !isDark`로 뒤집어도 돼요.
+  - 함수는 괄호 없이 넘겨야 해요(여기서는 화살표 함수를 바로 넘겼어요).
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

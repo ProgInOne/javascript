@@ -1,0 +1,99 @@
+id: js-basics.browser-intro.dom-basics.web-fix-script-order
+type: web_task
+difficulty: 3
+concepts:
+  - { id: js.dom.document-tree, weight: 1 }
+  - { id: js.dom.query-selector, weight: 0.3 }
+tags: [script-position, "null", debugging, web]
+estimatedSeconds: 240
+prompt: |
+  회원 전용 페이지예요. 페이지를 열면 인사말이 `어서 오세요, 민지님!`으로 바뀌고 `NEW` 배지(`#badge`)에 `new` 클래스가 붙어야 해요. 그런데 열어 보면 아무것도 바뀌지 않고 콘솔에 오류가 나요.
+
+  스크립트 안의 코드 내용(선택자, 글자, 클래스 이름)은 맞게 썼어요. 페이지가 의도대로 동작하게 고치세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>회원 전용</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #e5e7eb; }
+                #badge.new { background: #f97316; color: white; }
+              </style>
+              <script>
+                const greeting = document.querySelector("#greeting");
+                greeting.textContent = "어서 오세요, 민지님!";
+                document.querySelector("#badge").classList.add("new");
+              </script>
+            </head>
+            <body>
+              <h1 id="greeting">어서 오세요</h1>
+              <p>새 소식 <span id="badge">NEW</span></p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>회원 전용</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #e5e7eb; }
+                #badge.new { background: #f97316; color: white; }
+              </style>
+            </head>
+            <body>
+              <h1 id="greeting">어서 오세요</h1>
+              <p>새 소식 <span id="badge">NEW</span></p>
+              <script>
+                const greeting = document.querySelector("#greeting");
+                greeting.textContent = "어서 오세요, 민지님!";
+                document.querySelector("#badge").classList.add("new");
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: greeting
+      description: "인사말이 \"어서 오세요, 민지님!\"으로 바뀌어야 합니다."
+      requirement: 인사말 바꾸기
+      visible: true
+      selector: "#greeting"
+      expect:
+        text: { equals: "어서 오세요, 민지님!" }
+    - kind: dom
+      id: badge
+      description: "배지(#badge)에 new 클래스가 붙어야 합니다."
+      requirement: 배지 표시
+      visible: true
+      selector: "#badge.new"
+      expect:
+        count: 1
+misconceptions: [js.mc.script-before-element]
+hints:
+  - 콘솔의 오류 메시지를 읽어 보세요. 무엇이 `null`이라고 하나요?
+  - "`querySelector`가 `null`을 돌려주는 경우는 선택자가 틀렸거나, 그 요소가 아직 없을 때예요. 선택자는 맞게 썼다고 했어요."
+  - 브라우저는 문서를 위에서부터 읽으며 스크립트를 만나는 즉시 실행해요. 스크립트가 실행되는 순간 `h1`은 이미 읽혔나요?
+explanation: |
+  원인은 스크립트의 **위치**예요.
+
+  `<script>`가 `head` 안에 있어서, 브라우저가 `body`를 읽기 전에 실행돼요. 그 순간 `#greeting`은 트리에 없으니 `querySelector`가 `null`을 돌려주고, `greeting.textContent = ...`에서 `TypeError: Cannot set properties of null`이 나요. 오류가 나면 스크립트가 멈추므로 배지 줄도 실행되지 않아요.
+
+  `<script>`를 `body`의 맨 끝, `</body>` 바로 앞으로 옮기면 돼요. 그때는 위의 요소가 모두 트리에 있어요.
+
+  - 코드 내용은 그대로 두고 위치만 옮기는 것이 이 문제의 핵심이에요.
+  - 스크립트를 `head`에 두고 싶다면 다른 방법도 있지만(이벤트를 배운 뒤 만날 `DOMContentLoaded` 등), 입문 단계에서는 `body` 끝에 두는 습관이 가장 간단하고 안전해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

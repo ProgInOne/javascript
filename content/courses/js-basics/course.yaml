@@ -16,6 +16,6 @@ objectives:
   - 문자열의 글자를 인덱스로 읽고, 문자열 메서드로 찾기·자르기·다듬기·나누기를 해서 원하는 모양으로 바꿀 수 있다.
   - 배열에 값을 담아 읽고 바꾸며, 반복과 map·filter·reduce 같은 고차 함수로 목록을 변환·검색·정렬할 수 있다.
   - 객체로 관련된 값을 묶어 읽고 바꾸며, 참조와 복사의 차이를 예측하고, 구조 분해·전개 구문과 try...catch로 데이터와 오류를 다룰 수 있다.
-# 지금 있는 모듈만 나열합니다. 전체 목록: start, values, operators, control, loops,
-# functions, strings, arrays, objects, browser-intro
-modules: [start, values, operators, control, loops, functions, strings, arrays, objects]
+  - DOM에서 요소를 찾아 글자·클래스·스타일을 바꾸고, 클릭·입력·제출 이벤트에 반응해 할 일 목록 같은 간단한 인터랙티브 페이지를 만들 수 있다.
+# 전체 모듈: start, values, operators, control, loops, functions, strings, arrays, objects, browser-intro
+modules: [start, values, operators, control, loops, functions, strings, arrays, objects, browser-intro]

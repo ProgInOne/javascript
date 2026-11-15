@@ -1,0 +1,141 @@
+id: js-basics.browser-intro.dom-basics.web-show-profile
+type: web_task
+difficulty: 2
+concepts:
+  - { id: js.dom.text-content, weight: 1 }
+  - { id: js.dom.query-selector, weight: 0.5 }
+  - { id: js.str.template-literal, weight: 0.3 }
+tags: [textcontent, queryselector, template-literal, web]
+estimatedSeconds: 240
+prompt: |
+  게임 프로필 카드에 플레이어 정보를 채우세요. 스크립트 맨 위의 변수 `nickname`, `level`, `wins`를 써서 아래처럼 보이게 하면 돼요.
+
+  | 요소 | 보여 줄 글자 |
+  |---|---|
+  | `#nickname` | `코딩곰` |
+  | `#level` | `Lv. 7` |
+  | `#wins` | `12승` |
+
+  - 변수에 든 값을 쓰세요. 변수 값을 바꾸면 카드도 따라 바뀌어야 해요.
+  - HTML은 고치지 말고 `<script>` 안에만 코드를 쓰세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>프로필 카드</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                .card { width: 220px; padding: 16px; border: 2px solid #6366f1; border-radius: 12px; }
+                #nickname { margin: 0 0 8px; }
+                .row { margin: 4px 0; color: #374151; }
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <h2 id="nickname">닉네임</h2>
+                <p class="row">레벨: <span id="level">?</span></p>
+                <p class="row">전적: <span id="wins">?</span></p>
+              </div>
+              <script>
+                const nickname = "코딩곰";
+                const level = 7;
+                const wins = 12;
+
+                // 여기에 코드를 써서 카드에 정보를 채우세요.
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>프로필 카드</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                .card { width: 220px; padding: 16px; border: 2px solid #6366f1; border-radius: 12px; }
+                #nickname { margin: 0 0 8px; }
+                .row { margin: 4px 0; color: #374151; }
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <h2 id="nickname">닉네임</h2>
+                <p class="row">레벨: <span id="level">?</span></p>
+                <p class="row">전적: <span id="wins">?</span></p>
+              </div>
+              <script>
+                const nickname = "코딩곰";
+                const level = 7;
+                const wins = 12;
+
+                // 여기에 코드를 써서 카드에 정보를 채우세요.
+                document.querySelector("#nickname").textContent = nickname;
+                document.querySelector("#level").textContent = `Lv. ${level}`;
+                document.querySelector("#wins").textContent = `${wins}승`;
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: nickname
+      description: "제목에 닉네임 \"코딩곰\"이 보여야 합니다."
+      requirement: 닉네임
+      visible: true
+      selector: "#nickname"
+      expect:
+        text: { equals: "코딩곰" }
+    - kind: dom
+      id: level
+      description: "레벨 칸에 \"Lv. 7\"이 보여야 합니다."
+      requirement: 레벨
+      visible: true
+      selector: "#level"
+      expect:
+        text: { equals: "Lv. 7" }
+    - kind: dom
+      id: wins
+      description: "전적 칸에 \"12승\"이 보여야 합니다."
+      requirement: 전적
+      visible: true
+      selector: "#wins"
+      expect:
+        text: { equals: "12승" }
+    - kind: dom
+      id: labels-kept
+      description: "\"레벨:\", \"전적:\" 같은 안내 글자는 그대로 남아 있어야 합니다."
+      requirement: 안내 글자 유지
+      selector: ".row"
+      expect:
+        count: 2
+        text: { includes: ":", all: true }
+misconceptions: [js.mc.textcontent-appends, js.mc.selector-missing-prefix]
+hints:
+  - 요소마다 "찾기 → 글자 바꾸기" 두 단계예요. 찾을 때는 `document.querySelector`를 써요.
+  - "`Lv. 7`처럼 글자와 변수를 섞을 때는 템플릿 리터럴(백틱과 `${}`)이 편해요."
+  - "`.row` 문단 전체가 아니라 그 안의 `span`(`#level`, `#wins`)만 바꿔야 \"레벨:\" 글자가 남아요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  document.querySelector("#nickname").textContent = nickname;
+  document.querySelector("#level").textContent = `Lv. ${level}`;
+  document.querySelector("#wins").textContent = `${wins}승`;
+  ```
+
+  - `querySelector`가 돌려준 요소에 바로 `.textContent`를 이어 써도 되고, `const levelEl = ...`처럼 변수에 담아 써도 돼요.
+  - `"Lv. " + level`처럼 `+`로 이어 붙여도 결과는 같아요.
+  - `textContent`에 대입하면 요소 안의 내용 전체가 바뀌어요. 그래서 `.row` 문단에 대입하면 `레벨:` 글자까지 사라져요. 바꿀 부분만 `span`으로 감싸 두고 그 `span`을 찾는 것이 이 카드의 설계예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,66 @@
+id: js-basics.browser-intro.dom-basics.fill-change-heading
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.dom.text-content, weight: 1 }
+  - { id: js.dom.query-selector, weight: 0.5 }
+tags: [textcontent, queryselector, fill]
+estimatedSeconds: 90
+prompt: |
+  분식집 소개 페이지예요. 빈칸을 채워서 제목은 `코딩 분식`, 영업 시간 문단은 `매일 11시~21시`로 바뀌게 하세요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <h1 id="shop-name">가게 이름</h1>
+    <p id="open-time">영업 시간</p>
+    <script>
+      const shopName = document.querySelector("#shop-name");
+      const openTime = document.querySelector({{blank:sel}});
+      shopName.{{blank:prop}} = "코딩 분식";
+      openTime.textContent = "매일 11시~21시";
+    </script>
+  blanks:
+    - id: sel
+      accept: ['"#open-time"', "'#open-time'"]
+      width: 16
+    - id: prop
+      accept: ["textContent"]
+      width: 14
+  checks:
+    - kind: dom
+      id: heading
+      description: 제목이 "코딩 분식"으로 바뀌어야 합니다.
+      requirement: 제목 바꾸기
+      visible: true
+      selector: "#shop-name"
+      expect:
+        text: { equals: "코딩 분식" }
+    - kind: dom
+      id: hours
+      description: 영업 시간 문단이 "매일 11시~21시"로 바뀌어야 합니다.
+      requirement: 영업 시간 바꾸기
+      visible: true
+      selector: "#open-time"
+      expect:
+        text: { equals: "매일 11시~21시" }
+misconceptions: [js.mc.selector-missing-prefix]
+hints:
+  - 첫 번째 빈칸은 `querySelector`에 넘길 선택자예요. 바로 윗줄을 참고하세요.
+  - 선택자는 문자열이라 따옴표로 감싸고, id 앞에는 `#`를 붙여요.
+  - 두 번째 빈칸은 요소의 글자를 뜻하는 속성 이름이에요. 마지막 줄에 같은 일을 하는 코드가 있어요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const openTime = document.querySelector("#open-time");
+  shopName.textContent = "코딩 분식";
+  ```
+
+  - 선택자는 **문자열**이라 따옴표가 필요해요. 따옴표 없이 `#open-time`이라고 쓰면 JavaScript 문법 오류가 나요.
+  - id가 `open-time`이니 `#`를 붙여요. `"open-time"`만 쓰면 `<open-time>` 태그를 찾아서 `null`이 되고, 다음 줄에서 `TypeError`가 나요.
+  - `textContent`에 문자열을 대입하면 요소 안의 글자가 그 문자열로 바뀌어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

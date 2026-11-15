@@ -1,0 +1,51 @@
+id: js-basics.browser-intro.events-intro.predict-handler-called
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.dom.add-event-listener, weight: 1 }
+  - { id: js.fn.undefined-return, weight: 0.3 }
+tags: [addeventlistener, handler-call, trace]
+estimatedSeconds: 120
+prompt: |
+  다음 문서를 열면 콘솔에 무엇이 출력될까요? 한 줄에 하나씩 쓰세요. `button.click()`은 코드로 버튼을 한 번 누르는 메서드예요.
+spec:
+  lang: web
+  code: |
+    <button id="hi">인사</button>
+    <script>
+      function sayHi() {
+        console.log("안녕하세요");
+      }
+      const button = document.querySelector("#hi");
+      button.addEventListener("click", sayHi());
+      console.log("등록 끝");
+      button.click();
+      button.click();
+      console.log("두 번 눌렀어요");
+    </script>
+  answerKind: console
+  misconceptionByAnswer:
+    "등록 끝\n안녕하세요\n안녕하세요\n두 번 눌렀어요": js.mc.listener-handler-called
+    "안녕하세요\n등록 끝\n안녕하세요\n안녕하세요\n두 번 눌렀어요": js.mc.listener-handler-called
+hints:
+  - 7번 줄의 `sayHi()`에는 괄호가 있어요. 괄호가 붙은 함수 이름은 그 자리에서 무슨 일을 하나요?
+  - "`sayHi`에는 `return`이 없어요. 그러면 `sayHi()`의 값은 무엇이고, `addEventListener`는 무엇을 받게 될까요?"
+  - 클릭할 때 부를 함수를 받지 못했다면, `button.click()`을 할 때 무엇이 실행될까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  안녕하세요
+  등록 끝
+  두 번 눌렀어요
+  ```
+
+  - 7번 줄의 `sayHi()`는 등록하는 **그 순간** 함수를 한 번 불러요. 그래서 `안녕하세요`가 맨 처음에 나와요.
+  - `sayHi`에는 `return`이 없으니 `sayHi()`의 값은 `undefined`예요. `addEventListener`는 함수 대신 `undefined`를 받아요. 브라우저는 오류를 내지 않고, 그냥 아무것도 등록하지 않아요.
+  - 그래서 버튼을 두 번 눌러도 아무 일도 일어나지 않아요.
+
+  클릭할 때마다 인사하려면 `button.addEventListener("click", sayHi);`처럼 괄호 없이 함수 자체를 넘겨요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

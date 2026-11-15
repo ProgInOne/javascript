@@ -1,0 +1,42 @@
+id: js-basics.browser-intro.dom-basics.mcq-id-selector
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.dom.query-selector, weight: 1 }
+  - { id: css.selectors.basic, weight: 0.3 }
+tags: [queryselector, selector, id]
+estimatedSeconds: 50
+prompt: |
+  문서에 `<p id="price">4500원</p>`이 있어요. 이 문단을 찾는 코드는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`document.querySelector("#price")`'
+    - id: b
+      text: '`document.querySelector("price")`'
+      misconception: js.mc.selector-missing-prefix
+      rationale: 인수는 CSS 선택자예요. `"price"`는 `<price>`라는 태그를 찾는 선택자라서 결과가 `null`이에요.
+    - id: c
+      text: '`document.querySelector(".price")`'
+      rationale: 점(`.`)은 클래스를 찾는 선택자예요. 이 문단에는 `class`가 없고 `id`가 있어요.
+    - id: d
+      text: '`document.querySelector(id="price")`'
+      rationale: 괄호 안에는 선택자 문자열 하나를 넣어요. `id="price"`는 JavaScript에서 `id`라는 변수에 대입하는 식이에요(엄격 모드에서는 `ReferenceError`).
+  correct: a
+misconceptions: [js.mc.selector-missing-prefix]
+hints:
+  - CSS에서 id가 `price`인 요소에 스타일을 줄 때 선택자를 어떻게 썼나요?
+  - "`querySelector`의 괄호 안에는 CSS 선택자를 문자열로 넣어요."
+  - id 선택자와 클래스 선택자는 앞에 붙는 기호가 달라요.
+explanation: |
+  정답은 `document.querySelector("#price")`예요.
+
+  `querySelector`는 **CSS 선택자**로 요소를 찾아요. CSS에서 `#price { ... }`로 id가 `price`인 요소를 고르듯, 여기서도 `"#price"`를 써요.
+
+  - `"price"`: 태그 이름 선택자예요. `<price>` 태그는 없으니 `null`이 나와요.
+  - `".price"`: 클래스가 `price`인 요소를 찾는 선택자예요. 이 문단은 `id`만 있어요.
+  - `id="price"`: 선택자 문자열이 아니라 대입식이에요. 엄격 모드에서는 선언하지 않은 `id`에 대입해서 `ReferenceError`가 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

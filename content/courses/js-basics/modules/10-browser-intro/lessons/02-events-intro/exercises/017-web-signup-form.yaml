@@ -1,0 +1,184 @@
+id: js-basics.browser-intro.events-intro.web-signup-form
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.dom.event-object, weight: 1 }
+  - { id: js.dom.input-value, weight: 0.5 }
+  - { id: js.str.case-trim, weight: 0.5 }
+  - { id: js.dom.class-style, weight: 0.3 }
+tags: [submit, preventdefault, validation, trim, classlist, web]
+estimatedSeconds: 600
+prompt: |
+  회원 가입 폼의 닉네임 검사를 완성하세요. 폼(`#signup`)이 제출될 때 검사하도록 `submit` 이벤트를 쓰세요. 그러면 버튼을 눌러도, 입력창에서 Enter 키를 눌러도 똑같이 동작해요.
+
+  1. 폼 제출의 기본 동작(페이지 새로 열기)을 막으세요.
+  1. 닉네임은 **앞뒤 공백을 뺀** 글자 수가 2~10글자여야 해요.
+  1. 규칙에 맞지 않으면: `#feedback`에 `닉네임은 2~10글자로 써 주세요`를 보여 주고, 입력창에 `invalid` 클래스를 넣으세요.
+  1. 규칙에 맞으면: `#feedback`에 `코딩곰님, 가입을 환영해요!`처럼 보여 주고, 입력창의 `invalid` 클래스를 빼고, 입력창을 비우세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>회원 가입</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #nickname { font-size: 16px; padding: 4px; border: 2px solid #9ca3af; }
+                #nickname.invalid { border-color: #dc2626; }
+                #feedback { min-height: 1.5em; }
+              </style>
+            </head>
+            <body>
+              <h1>회원 가입</h1>
+              <form id="signup">
+                <label for="nickname">닉네임 (2~10글자)</label>
+                <input id="nickname" type="text" />
+                <button type="submit">가입하기</button>
+              </form>
+              <p id="feedback"></p>
+              <script>
+                const form = document.querySelector("#signup");
+                const nicknameInput = document.querySelector("#nickname");
+                const feedback = document.querySelector("#feedback");
+
+                // 여기에 코드를 쓰세요.
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>회원 가입</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #nickname { font-size: 16px; padding: 4px; border: 2px solid #9ca3af; }
+                #nickname.invalid { border-color: #dc2626; }
+                #feedback { min-height: 1.5em; }
+              </style>
+            </head>
+            <body>
+              <h1>회원 가입</h1>
+              <form id="signup">
+                <label for="nickname">닉네임 (2~10글자)</label>
+                <input id="nickname" type="text" />
+                <button type="submit">가입하기</button>
+              </form>
+              <p id="feedback"></p>
+              <script>
+                const form = document.querySelector("#signup");
+                const nicknameInput = document.querySelector("#nickname");
+                const feedback = document.querySelector("#feedback");
+
+                // 여기에 코드를 쓰세요.
+                form.addEventListener("submit", (event) => {
+                  event.preventDefault();
+                  const nickname = nicknameInput.value.trim();
+                  if (nickname.length < 2 || nickname.length > 10) {
+                    feedback.textContent = "닉네임은 2~10글자로 써 주세요";
+                    nicknameInput.classList.add("invalid");
+                    return;
+                  }
+                  feedback.textContent = `${nickname}님, 가입을 환영해요!`;
+                  nicknameInput.classList.remove("invalid");
+                  nicknameInput.value = "";
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: empty
+      description: 빈 닉네임으로 제출하면 안내 문구가 보이고 입력창에 invalid가 생겨야 합니다.
+      requirement: 규칙에 맞지 않을 때
+      visible: true
+      steps:
+        - { action: type, selector: "#nickname", value: "" }
+        - { action: submit, selector: "#signup" }
+      expect:
+        - { selector: "#feedback", text: { equals: "닉네임은 2~10글자로 써 주세요" } }
+        - { selector: "#nickname.invalid", count: 1 }
+    - kind: event
+      id: one-char-with-spaces
+      description: 공백을 빼면 1글자인 닉네임(" a ")도 규칙에 맞지 않습니다.
+      requirement: 규칙에 맞지 않을 때
+      steps:
+        - { action: type, selector: "#nickname", value: " a " }
+        - { action: submit, selector: "#signup" }
+      expect:
+        - { selector: "#feedback", text: { equals: "닉네임은 2~10글자로 써 주세요" } }
+        - { selector: "#nickname.invalid", count: 1 }
+    - kind: event
+      id: welcome
+      description: "\"코딩곰\"으로 제출하면 환영 문구가 보이고, invalid가 빠지고, 입력창이 비어야 합니다."
+      requirement: 규칙에 맞을 때
+      visible: true
+      steps:
+        - { action: type, selector: "#nickname", value: "코딩곰" }
+        - { action: submit, selector: "#signup" }
+      expect:
+        - { selector: "#feedback", text: { equals: "코딩곰님, 가입을 환영해요!" } }
+        - { selector: "#nickname.invalid", count: 0 }
+        - { selector: "#nickname", value: "" }
+    - kind: event
+      id: too-long
+      description: 11글자 닉네임은 규칙에 맞지 않습니다.
+      requirement: 규칙에 맞지 않을 때
+      steps:
+        - { action: type, selector: "#nickname", value: "abcdefghijk" }
+        - { action: submit, selector: "#signup" }
+      expect:
+        - { selector: "#feedback", text: { equals: "닉네임은 2~10글자로 써 주세요" } }
+        - { selector: "#nickname.invalid", count: 1 }
+    - kind: event
+      id: exactly-ten-trimmed
+      description: 앞뒤 공백을 빼고 정확히 10글자이면 가입되고, 환영 문구에는 공백을 뺀 닉네임이 보여야 합니다.
+      requirement: 규칙에 맞을 때
+      steps:
+        - { action: type, selector: "#nickname", value: "  가나다라마바사아자차 " }
+        - { action: submit, selector: "#signup" }
+      expect:
+        - { selector: "#feedback", text: { equals: "가나다라마바사아자차님, 가입을 환영해요!" } }
+        - { selector: "#nickname.invalid", count: 0 }
+        - { selector: "#nickname", value: "" }
+misconceptions: [js.mc.form-submit-no-default, js.mc.input-value-read-once]
+hints:
+  - "`submit` 이벤트는 폼 요소에 등록해요. 함수의 매개변수로 이벤트 객체를 받아 기본 동작부터 막으세요."
+  - 닉네임은 함수 안에서 읽고, 공백을 지운 뒤 `length`로 글자 수를 재요. 2글자와 10글자는 규칙에 맞는 쪽이에요.
+  - 규칙에 맞지 않는 경우를 먼저 처리하고 `return`으로 끝내면, 그 아래에는 맞는 경우만 남아요. 맞는 경우에는 할 일이 세 가지(문구, 클래스 빼기, 입력창 비우기)예요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const nickname = nicknameInput.value.trim();
+    if (nickname.length < 2 || nickname.length > 10) {
+      feedback.textContent = "닉네임은 2~10글자로 써 주세요";
+      nicknameInput.classList.add("invalid");
+      return;
+    }
+    feedback.textContent = `${nickname}님, 가입을 환영해요!`;
+    nicknameInput.classList.remove("invalid");
+    nicknameInput.value = "";
+  });
+  ```
+
+  - **기본 동작 막기**: `event.preventDefault()`가 없으면 실제 웹 페이지에서는 제출할 때 페이지가 새로 열려, 안내 문구가 보이자마자 사라져요. ProgInOne의 채점과 미리보기는 페이지 이동을 막아 두어서 이 줄이 없어도 체크는 통과할 수 있지만, 미리보기에서 제출하면 "미리보기에서는 링크 이동과 폼 제출이 실제로 일어나지 않아요." 안내가 나와요. 그 안내가 보이면 `preventDefault`를 빠뜨린 거예요.
+  - **`submit`에 등록하는 이유**: 폼을 제출하는 방법은 버튼 누르기, 입력창에서 Enter 키 누르기처럼 여러 가지지만, 어떤 방법이든 폼에서 `submit` 이벤트가 한 번 일어나요. "제출할 때 할 일"은 폼의 `submit`에 등록하면 한곳에서 처리할 수 있어요.
+  - **공백 빼고 세기**: `" a "`는 그대로 세면 3글자라 통과해 버려요. `trim()`한 뒤 세요. 환영 문구에도 공백을 뺀 닉네임을 써요.
+  - **경계**: 조건은 `< 2 || > 10`이에요. 2글자, 10글자는 가입돼요.
+  - **값 비우기**: `value`에 `""`를 대입하면 입력창이 비어요. `value`는 읽기도 쓰기도 할 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

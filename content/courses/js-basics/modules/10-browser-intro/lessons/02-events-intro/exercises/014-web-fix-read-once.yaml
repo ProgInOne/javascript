@@ -1,0 +1,143 @@
+id: js-basics.browser-intro.events-intro.web-fix-read-once
+type: web_task
+difficulty: 3
+concepts:
+  - { id: js.dom.input-value, weight: 1 }
+  - { id: js.str.case-trim, weight: 0.3 }
+tags: [input, value, timing, debugging, web]
+estimatedSeconds: 300
+prompt: |
+  도시락 주문 페이지예요. 이름을 쓰고 **주문하기**를 누르면 `민지님, 주문이 접수됐어요`가 보여야 해요. 이름이 비어 있거나 공백뿐이면 `이름을 입력해 주세요`가 보여야 하고요.
+
+  그런데 이름을 써서 눌러도 항상 `이름을 입력해 주세요`만 나와요. 오류 메시지는 없어요. 버그를 고치세요.
+
+  - 이름 앞뒤의 공백은 빼고 보여 주세요(` 민지 ` → `민지님, ...`).
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>도시락 주문</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #message { font-size: 18px; }
+              </style>
+            </head>
+            <body>
+              <h1>도시락 주문</h1>
+              <label for="name">주문자 이름</label>
+              <input id="name" type="text" />
+              <button id="order">주문하기</button>
+              <p id="message"></p>
+              <script>
+                const nameInput = document.querySelector("#name");
+                const orderButton = document.querySelector("#order");
+                const message = document.querySelector("#message");
+                const name = nameInput.value.trim();
+
+                orderButton.addEventListener("click", () => {
+                  if (name === "") {
+                    message.textContent = "이름을 입력해 주세요";
+                  } else {
+                    message.textContent = `${name}님, 주문이 접수됐어요`;
+                  }
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>도시락 주문</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #message { font-size: 18px; }
+              </style>
+            </head>
+            <body>
+              <h1>도시락 주문</h1>
+              <label for="name">주문자 이름</label>
+              <input id="name" type="text" />
+              <button id="order">주문하기</button>
+              <p id="message"></p>
+              <script>
+                const nameInput = document.querySelector("#name");
+                const orderButton = document.querySelector("#order");
+                const message = document.querySelector("#message");
+
+                orderButton.addEventListener("click", () => {
+                  const name = nameInput.value.trim();
+                  if (name === "") {
+                    message.textContent = "이름을 입력해 주세요";
+                  } else {
+                    message.textContent = `${name}님, 주문이 접수됐어요`;
+                  }
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: order
+      description: "\"민지\"를 쓰고 누르면 \"민지님, 주문이 접수됐어요\"가 보여야 합니다."
+      requirement: 주문 접수
+      visible: true
+      steps:
+        - { action: type, selector: "#name", value: "민지" }
+        - { action: click, selector: "#order" }
+      expect:
+        - { selector: "#message", text: { equals: "민지님, 주문이 접수됐어요" } }
+    - kind: event
+      id: blank
+      description: 공백만 쓰고 누르면 "이름을 입력해 주세요"가 보여야 합니다.
+      requirement: 빈 이름 안내
+      visible: true
+      steps:
+        - { action: type, selector: "#name", value: "   " }
+        - { action: click, selector: "#order" }
+      expect:
+        - { selector: "#message", text: { equals: "이름을 입력해 주세요" } }
+    - kind: event
+      id: trimmed
+      description: 이름 앞뒤의 공백은 빼고 보여야 합니다.
+      requirement: 주문 접수
+      steps:
+        - { action: type, selector: "#name", value: "  철수 " }
+        - { action: click, selector: "#order" }
+      expect:
+        - { selector: "#message", text: { equals: "철수님, 주문이 접수됐어요" } }
+misconceptions: [js.mc.input-value-read-once]
+hints:
+  - "`name`에 실제로 무엇이 들어 있는지 버튼 함수 안에서 `console.log(name)`으로 찍어 보세요."
+  - "`const name = nameInput.value.trim();`은 언제 실행되나요? 그때 입력창에는 무엇이 들어 있었을까요?"
+  - "`value`는 읽는 순간의 글자를 가져올 뿐, 나중의 입력을 따라 바뀌지 않아요. 값을 읽는 시점을 바꿔 보세요."
+explanation: |
+  원인은 `value`를 **읽는 시점**이에요.
+
+  `const name = nameInput.value.trim();`이 함수 밖에 있어서 페이지가 열릴 때 딱 한 번 실행돼요. 그때 입력창은 비어 있으니 `name`은 `""`이에요. 그 뒤에 이름을 써도 `name`은 바뀌지 않아서, 누를 때마다 `""`로 판단했어요.
+
+  그 줄을 버튼 함수 **안**으로 옮기면 누를 때마다 지금 입력창의 글자를 새로 읽어요.
+
+  ```js
+  orderButton.addEventListener("click", () => {
+    const name = nameInput.value.trim();
+    // 나머지는 그대로
+  });
+  ```
+
+  - `value`는 입력창과 연결된 끈이 아니라, 읽는 순간의 글자를 복사해 온 문자열이에요.
+  - `trim()`은 그대로 두어야 공백만 쓴 경우를 빈 이름으로 판단할 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

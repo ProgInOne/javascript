@@ -1,0 +1,152 @@
+id: js-basics.browser-intro.dom-basics.web-mark-sale
+type: web_task
+difficulty: 2
+concepts:
+  - { id: js.dom.class-style, weight: 1 }
+  - { id: js.dom.query-selector, weight: 0.3 }
+tags: [classlist, style, web]
+estimatedSeconds: 240
+prompt: |
+  문구점 진열대 화면을 오늘 상황에 맞게 바꾸세요. CSS에는 이미 `.sale`(빨간 테두리)과 `.sold-out`(흐리게) 규칙이 있어요.
+
+  1. `공책`(`#item-2`)은 오늘 할인 상품이에요. `sale` 클래스를 넣으세요.
+  1. `지우개`(`#item-3`)가 다시 들어왔어요. `sold-out` 클래스를 빼세요.
+  1. 배너(`#banner`)의 배경색을 `style`로 `#fde68a`(노란색)로 바꾸세요.
+
+  HTML과 CSS는 고치지 말고 `<script>` 안에만 코드를 쓰세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>문구점 진열대</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                .banner { padding: 8px 12px; background: #e5e7eb; border-radius: 8px; }
+                .products { display: flex; gap: 12px; }
+                .product { width: 100px; padding: 12px; border: 3px solid #d1d5db; border-radius: 8px; }
+                .sale { border-color: #dc2626; }
+                .sold-out { opacity: 0.4; }
+              </style>
+            </head>
+            <body>
+              <p id="banner" class="banner">오늘의 소식</p>
+              <div class="products">
+                <div id="item-1" class="product">연필</div>
+                <div id="item-2" class="product">공책</div>
+                <div id="item-3" class="product sold-out">지우개</div>
+              </div>
+              <script>
+                // 여기에 코드를 쓰세요.
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>문구점 진열대</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                .banner { padding: 8px 12px; background: #e5e7eb; border-radius: 8px; }
+                .products { display: flex; gap: 12px; }
+                .product { width: 100px; padding: 12px; border: 3px solid #d1d5db; border-radius: 8px; }
+                .sale { border-color: #dc2626; }
+                .sold-out { opacity: 0.4; }
+              </style>
+            </head>
+            <body>
+              <p id="banner" class="banner">오늘의 소식</p>
+              <div class="products">
+                <div id="item-1" class="product">연필</div>
+                <div id="item-2" class="product">공책</div>
+                <div id="item-3" class="product sold-out">지우개</div>
+              </div>
+              <script>
+                // 여기에 코드를 쓰세요.
+                document.querySelector("#item-2").classList.add("sale");
+                document.querySelector("#item-3").classList.remove("sold-out");
+                document.querySelector("#banner").style.backgroundColor = "#fde68a";
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: sale-class
+      description: "공책(#item-2)에 sale 클래스가 있어야 합니다."
+      requirement: 할인 표시
+      visible: true
+      selector: "#item-2.sale"
+      expect:
+        count: 1
+    - kind: css
+      id: sale-border
+      description: 공책의 테두리가 빨간색으로 보여야 합니다.
+      requirement: 할인 표시
+      selector: "#item-2"
+      expect:
+        computed:
+          border-top-color: { color: "#dc2626" }
+    - kind: dom
+      id: restocked
+      description: "지우개(#item-3)에서 sold-out 클래스가 빠져야 합니다."
+      requirement: 재입고 표시
+      visible: true
+      selector: "#item-3.sold-out"
+      expect:
+        count: 0
+    - kind: css
+      id: restocked-opacity
+      description: 지우개가 더 이상 흐리게 보이지 않아야 합니다.
+      requirement: 재입고 표시
+      selector: "#item-3"
+      expect:
+        computed:
+          opacity: { numeric: { min: 0.99 } }
+    - kind: css
+      id: banner-color
+      description: 배너의 배경색이 노란색(#fde68a)이어야 합니다.
+      requirement: 배너 색
+      visible: true
+      selector: "#banner"
+      expect:
+        computed:
+          background-color: { color: "#fde68a" }
+    - kind: dom
+      id: others-kept
+      description: 연필(#item-1)과 상품 상자들은 원래 클래스를 그대로 가져야 합니다.
+      requirement: 다른 상품 그대로
+      selector: ".product"
+      expect:
+        count: 3
+misconceptions: [js.mc.classlist-dot-prefix, js.mc.style-hyphen-name]
+hints:
+  - 세 줄이면 돼요. 줄마다 "요소 찾기 → 바꾸기"예요.
+  - 클래스는 `classList`의 `add`와 `remove`로 넣고 빼요. 클래스 이름 앞에는 점을 붙이지 않아요.
+  - "`background-color`를 `style`에서 쓸 때는 하이픈을 빼고 그다음 글자를 대문자로 써요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  document.querySelector("#item-2").classList.add("sale");
+  document.querySelector("#item-3").classList.remove("sold-out");
+  document.querySelector("#banner").style.backgroundColor = "#fde68a";
+  ```
+
+  - `classList.add("sale")`는 `class="product"`를 `class="product sale"`로 만들어요. 원래 있던 `product`는 그대로라서 기본 모양도 유지돼요.
+  - `remove("sold-out")`는 그 클래스만 빼요. `.sold-out`의 `opacity: 0.4`가 더 이상 적용되지 않아요.
+  - `style.backgroundColor`는 요소에 직접 스타일을 줘요. CSS 이름 `background-color`를 그대로 쓰면 `-`가 빼기로 읽혀 `SyntaxError`가 나요.
+  - `classList.add(".sale")`처럼 점을 붙이면 오류 없이 이름이 `.sale`인 클래스가 들어가서 빨간 테두리가 생기지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

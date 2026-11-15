@@ -1,0 +1,57 @@
+id: js-basics.browser-intro.events-intro.mcq-submit-default
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.dom.event-object, weight: 1 }
+  - { id: html.forms.form, weight: 0.3 }
+tags: [submit, preventdefault, form]
+estimatedSeconds: 80
+prompt: |
+  보통의 웹 페이지에서 아래 폼에 이름을 쓰고 **보내기**를 눌렀어요. 어떤 일이 일어날까요?
+code: |
+  <form id="hello-form">
+    <input id="name" />
+    <button>보내기</button>
+  </form>
+  <p id="message"></p>
+  <script>
+    const form = document.querySelector("#hello-form");
+    form.addEventListener("submit", () => {
+      const name = document.querySelector("#name").value;
+      document.querySelector("#message").textContent = `${name}님 안녕하세요`;
+    });
+  </script>
+spec:
+  options:
+    - id: a
+      text: 인사말이 잠깐 바뀌지만, 폼이 제출되며 페이지가 새로 열려 인사말이 사라진다
+    - id: b
+      text: 인사말이 바뀌고 그대로 화면에 남는다
+      misconception: js.mc.form-submit-no-default
+      rationale: 함수가 끝나면 브라우저가 폼 제출의 기본 동작(페이지 새로 열기)을 해요. 새 페이지에는 함수가 바꾼 글자가 없어요.
+    - id: c
+      text: 버튼에 click 이벤트를 등록하지 않았으므로 아무 일도 일어나지 않는다
+      rationale: 폼 안의 버튼을 누르면 폼에서 `submit` 이벤트가 일어나요. 함수는 실행돼요.
+    - id: d
+      text: 이벤트 함수에 매개변수가 없어서 오류가 난다
+      rationale: 매개변수를 쓰지 않으면 이벤트 객체를 받지 않을 뿐, 오류는 나지 않아요.
+  correct: a
+misconceptions: [js.mc.form-submit-no-default]
+hints:
+  - 폼 안의 버튼을 누르면 어떤 이벤트가 일어나나요? 함수는 실행될까요?
+  - 함수가 끝난 뒤 브라우저는 폼 제출의 "기본 동작"을 해요. 그 기본 동작이 무엇인지 HTML 과정에서 배운 폼의 역할을 떠올려 보세요.
+  - 이 코드에는 기본 동작을 막는 줄이 있나요?
+explanation: |
+  정답은 "인사말이 잠깐 바뀌지만 페이지가 새로 열려 사라진다"예요.
+
+  1. 버튼을 누르면 폼에서 `submit` 이벤트가 일어나 함수가 실행되고, 인사말이 바뀌어요.
+  1. 함수가 끝나면 브라우저는 폼 제출의 **기본 동작**을 해요. 입력값을 보내며 페이지를 새로 여는 것이에요(`action`이 없으면 같은 주소를 다시 열어요).
+  1. 새로 열린 페이지에는 바뀐 인사말이 없으니 금방 사라진 것처럼 보여요.
+
+  화면을 JavaScript로 바꾸는 폼이라면 함수의 매개변수로 이벤트 객체를 받아 `event.preventDefault()`를 불러 기본 동작을 막아요.
+
+  ProgInOne의 미리보기는 페이지 이동을 막고 "미리보기에서는 링크 이동과 폼 제출이 실제로 일어나지 않아요." 안내를 보여 줘요. 그래서 미리보기에서는 인사말이 남아 보이지만, 실제 웹 페이지에서는 사라져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
