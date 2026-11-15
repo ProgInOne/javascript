@@ -102,7 +102,8 @@ export class EvaluatorService {
     }
     if (row.practiceSetItemId) {
       const found = findItem(orm, learner.id, row.practiceSetItemId);
-      if (found?.setKind === 'assessment') {
+      // Results are withheld until the assessment ends (learning-engine.md#단원-평가-세트).
+      if (found?.setKind === 'assessment' && found.setStatus === 'active') {
         throw aiAppError(new AIError('AI_LOCKED_IN_ASSESSMENT'));
       }
     }

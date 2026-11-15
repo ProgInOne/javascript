@@ -44,12 +44,19 @@ export const ERROR_CODES = [
   'EXERCISE_HINTS_EXHAUSTED',
   'EXERCISE_SOLUTION_LOCKED',
   'EXERCISE_HINT_REQUIRED',
+  /**
+   * Hints, the solution or an inline attempt on an exercise of an assessment in progress
+   * (learning-engine.md#단원-평가-세트: locked until the assessment ends).
+   */
+  'EXERCISE_LOCKED_IN_ASSESSMENT',
   'PRACTICE_NO_EXERCISES',
   'PRACTICE_NOTHING_DUE',
   'PRACTICE_SET_CLOSED',
   'PRACTICE_ITEM_MISMATCH',
   'PRACTICE_ITEM_DONE',
   'PRACTICE_NOTHING_WEAK',
+  /** `kind: 'lesson'` for an assessment unit, or `kind: 'assessment'` for a regular lesson. */
+  'PRACTICE_KIND_MISMATCH',
   /** `POST /attempts/:id/explanation` on a correct attempt (nothing to explain). */
   'ATTEMPT_CORRECT',
   'BACKUP_FAILED',

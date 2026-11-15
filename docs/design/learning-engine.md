@@ -967,6 +967,18 @@ v0.3(M6)에서 단원 평가 세트를 구현하면서 구체화한 점입니다
 | 약점 제안 | 오답·건너뜀 문항의 주 개념(`missedConceptIds`, 처음 나온 순서) |
 | 증거 | 평가 맥락은 `applyAttempt`의 `setKind: 'assessment'`로만 표현합니다. 정답 `W_ctx = 1.2`, 정답·첫 시도·도움 없음이면 `mastered` 게이트의 독립 응용 증거입니다(v0.1부터 구현). FSRS는 다른 세트와 같은 규칙(개념의 항목이 끝나면 보류 등급 적용)입니다 |
 
+**평가 맥락 규칙의 서버 적용** (`practice-set-service.ts`, `attempt-service.ts`, [D-042](/docs/decisions.md)):
+
+| 항목 | 구현 |
+|---|---|
+| 세트 만들기 | `POST /practice-sets {kind:'assessment', lessonId}`. 진행 중인 평가가 있으면 그대로 돌려주고, 끝난 평가는 다시 쓰지 않습니다(재응시). 평가 단원에 `kind:'lesson'`, 일반 단원에 `kind:'assessment'`는 `409 PRACTICE_KIND_MISMATCH` |
+| 잠금 | 평가가 **진행 중인 동안** 그 문항의 힌트·정답 보기는 `403 EXERCISE_LOCKED_IN_ASSESSMENT`, 튜터(문제·평가 단원 스레드)·AI 힌트·오답 분석은 `403 AI_LOCKED_IN_ASSESSMENT`. 요청에 항목을 넣지 않아도 "진행 중인 평가의 문항"이면 잠급니다. `usage: assessment` 문항의 본문 확인 시도(`inline-attempts`)는 항상 거절합니다(결과와 해설을 돌려주므로). 평가가 끝나면 풀립니다 |
+| 한 번만 제출 | 평가 문항은 `pending`일 때만 제출할 수 있고 두 번째는 `409 PRACTICE_ITEM_DONE`. 샌드박스 실패(`engine_applied = 0`)는 제출로 세지 않아 다시 낼 수 있습니다 |
+| 결과 감추기 | 평가 중 `POST /attempts`는 `{ withheld: true, attempt: { id, engineApplied, … }, item, set }`만 돌려줍니다(정오·점수·피드백·해설·숙련도 변화 없음). `GET /practice-sets/:id`의 `lastOutcome`은 `null`, 개념 상세의 문항별 근거도 평가가 끝날 때까지 빼고 보여 줍니다. 숙련도·FSRS는 제출 때 바로 반영합니다(점수 합계는 바뀔 수 있음) |
+| 종료 결과 | 마지막 제출(또는 건너뛰기)과 끝난 세트 조회의 `result.assessment`: 정답 수·비율·통과 여부, 문항별 결과·선택한 오개념·해설·정답(`SolutionView`), 개념별 정답 수, 틀린 개념, 약점 집중 대상(`weaknessConceptIds`, 최대 5개) |
+| 단원 완료 | 통과하면 그 평가 단원의 `lesson_progress`가 `completed`(학습 활동의 완료 단원 수에도 셈). 통과하지 못해도 다음 단원을 막지 않습니다 |
+| 건너뛰기 | 허용합니다. 후속 문항을 붙이지 않고 오답으로 셉니다 |
+
 ## 검토한 대안
 
 ### 숙련도 모델

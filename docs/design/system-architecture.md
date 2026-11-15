@@ -297,6 +297,7 @@ sequenceDiagram
 
 - `code`는 대문자 스네이크 케이스의 안정적 식별자입니다. 웹은 `code`로 분기하고 `message`는 표시용입니다.
 - 오류 코드는 영역 접두사를 씁니다: `VALIDATION_*`, `NOT_FOUND`, `CONTENT_*`, `EXERCISE_*`(문제·힌트·정답 열람), `PRACTICE_*`(연습 세트·시도), `RUNNER_*`, `AI_*`, `BACKUP_*`, `MAINTENANCE`, `INTERNAL`.
+- 단원 평가(v0.3): 평가 중인 문항의 힌트·정답·본문 확인 시도는 `403 EXERCISE_LOCKED_IN_ASSESSMENT`, 튜터·AI 힌트·오답 분석은 `403 AI_LOCKED_IN_ASSESSMENT`, 같은 문항의 두 번째 제출은 `409 PRACTICE_ITEM_DONE`, 단원 종류와 맞지 않는 세트 요청은 `409 PRACTICE_KIND_MISMATCH`입니다([학습 엔진 설계 구현 메모 (v0.3)](/docs/design/learning-engine.md#구현-메모-v03)).
 - 서버는 예상하지 못한 예외를 `INTERNAL`로 감싸고, 스택은 로그에만 남깁니다.
 - 백업 복원이나 데이터 재계산 중에는 서버가 유지보수 모드가 되어 `/api` 요청에 `503`과 `MAINTENANCE`를 반환합니다. 웹은 전체 화면 안내를 표시합니다.
 - AI 관련 오류 코드(`AI_*`)의 전체 목록은 [AI 시스템 설계](/docs/design/ai-system.md)가 원천입니다.
@@ -306,7 +307,7 @@ sequenceDiagram
 | 리소스 | 예시 |
 |---|---|
 | 커리큘럼 | `GET /courses`, `GET /lessons/:lessonId` |
-| 연습 | `POST /practice-sets` (단원·복습·약점 집중), `POST /practice-sets/:id/items/:itemId/skip` (건너뛰기), `GET /weak-concepts` (약점 개념과 이유), `GET /exercises/:id` (공개 스펙), `POST /exercises/:id/run-plan` (샌드박스 실행 계획), `POST /attempts` (채점 결과와 해설), `POST /exercises/:id/inline-attempts` (레슨 본문 확인 문제: 연습 세트 밖 시도. 실행 없이 채점하는 유형만, 숙련도는 반영하고 FSRS 일정은 바꾸지 않음) |
+| 연습 | `POST /practice-sets` (단원·복습·약점 집중·단원 평가 `kind: 'assessment'`. 평가 중 시도 응답은 결과를 감춘 `withheld` 형태이고 마지막 제출이 전체 결과를 돌려줌, v0.3), `POST /practice-sets/:id/items/:itemId/skip` (건너뛰기), `GET /weak-concepts` (약점 개념과 이유), `GET /exercises/:id` (공개 스펙), `POST /exercises/:id/run-plan` (샌드박스 실행 계획), `POST /attempts` (채점 결과와 해설), `POST /exercises/:id/inline-attempts` (레슨 본문 확인 문제: 연습 세트 밖 시도. 실행 없이 채점하는 유형만, 숙련도는 반영하고 FSRS 일정은 바꾸지 않음) |
 | 힌트·정답 | `POST /exercises/:id/hints` (다음 단계 요청), `POST /exercises/:id/solution` |
 | 학습 상태 | `GET /mastery` (과정 진도와 개념 지도), `GET /concepts/:id`, `GET /review-queue`, `GET /daily-plan` |
 | 활동 | `POST /activity/heartbeat` (30초 간격, 학습 시간 측정) |

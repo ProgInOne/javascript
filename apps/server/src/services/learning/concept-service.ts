@@ -11,6 +11,7 @@ import type { ConceptDetail, MasteryEvidenceView } from '@proginone/shared';
 import type { UserDb } from '../../db/user/connection.ts';
 import { listEvidence, loadConceptStates, recentReviews } from '../../db/user/learning-state.ts';
 import { listObservationsForConcepts } from '../../db/user/misconceptions.ts';
+import { activeAssessmentAttemptIds } from '../../db/user/practice-sets.ts';
 import { AppError } from '../../http/errors.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
@@ -97,7 +98,12 @@ export class ConceptService {
     const report = conceptReport(engine, state, now, dayBoundary);
     const m = state.mastery;
     const memory = state.memory;
-    const evidence = listEvidence(orm, learnerId, id, evidenceLimit);
+    const listed = listEvidence(orm, learnerId, id, evidenceLimit);
+    // Per-attempt evidence of an assessment in progress would reveal its results early
+    // (learning-engine.md#단원-평가-세트); it appears once the assessment ends.
+    const withheld = activeAssessmentAttemptIds(orm, learnerId);
+    const shown = listed.rows.filter((r) => r.attemptId === null || !withheld.has(r.attemptId));
+    const evidence = { rows: shown, total: listed.total - (listed.rows.length - shown.length) };
     const titles = repo.getConcepts(edges.map((e) => e.prerequisiteId));
     const observations = listObservationsForConcepts(orm, learnerId, [id]);
     const mcTitles = repo.getMisconceptions(observations.map((o) => o.state.misconceptionId));

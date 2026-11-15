@@ -87,5 +87,18 @@ export const lessonDetailSchema = z.object({
   previous: lessonRefSchema,
   next: lessonRefSchema,
   contentHash: z.string(),
+  /**
+   * `kind: assessment` only: what the start screen announces (learning-engine.md#단원-평가-세트).
+   * `itemCount` is the number of items a new attempt asks.
+   */
+  assessment: z
+    .object({
+      itemCount: z.number().int().min(0),
+      passRatio: z.number().min(0).max(1),
+      conceptCount: z.number().int().min(0),
+      estimatedMinutes: z.number().int().min(0),
+    })
+    .nullable()
+    .optional(),
 });
 export type LessonDetail = z.infer<typeof lessonDetailSchema>;

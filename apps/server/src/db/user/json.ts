@@ -22,6 +22,8 @@ export const practiceScopeJson = z.object({
   conceptIds: z.array(id).max(500),
   /** Engine rationale (sizes, quotas, shortages); shown as "why these exercises". */
   rationale: jsonRecord.optional(),
+  /** Assessment sets: the pass ratio when the set was built (content may change later). */
+  passRatio: z.number().min(0).max(1).optional(),
 });
 export type PracticeScopeJson = z.infer<typeof practiceScopeJson>;
 
@@ -60,6 +62,20 @@ export const practiceResultJson = z.object({
   pass: passResultJson.nullable(),
   /** Concepts whose pending ratings were applied to FSRS when the set ended. */
   reviewedConceptIds: z.array(id),
+  /** Assessment sets only: the engine's `evaluateAssessment` result. */
+  assessment: z
+    .object({
+      correct: z.int().min(0),
+      total: z.int().min(0),
+      ratio: z.number().min(0).max(1),
+      passRatio: z.number().min(0).max(1),
+      passed: z.boolean(),
+      concepts: z.array(
+        z.object({ conceptId: id, total: z.int().min(0), correct: z.int().min(0) }),
+      ),
+      missedConceptIds: z.array(id),
+    })
+    .optional(),
 });
 export type PracticeResultJson = z.infer<typeof practiceResultJson>;
 

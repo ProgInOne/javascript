@@ -55,6 +55,8 @@ export type AssessmentSettings = z.infer<typeof assessmentSettingsSchema>;
 
 /** Pass ratio of an assessment without `assessment.passRatio`. */
 export const DEFAULT_ASSESSMENT_PASS_RATIO = 0.8;
+/** Most items one assessment asks (the learning engine's `assessment.maxItems`). */
+export const ASSESSMENT_MAX_ITEMS = 20;
 
 /** .../lessons/<nn-lesson>/lesson.yaml */
 export const lessonSchema = z.strictObject({

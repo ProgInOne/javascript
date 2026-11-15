@@ -199,6 +199,11 @@ export const createPracticeSetRequestSchema = z.discriminatedUnion('kind', [
       conceptIds: z.array(contentId).min(1).max(5).optional(),
     })
     .strict(),
+  /**
+   * The unit assessment of a `kind: assessment` lesson (learning-engine.md#단원-평가-세트). The
+   * active attempt is returned as-is; a finished one is not reused (asking again is a retake).
+   */
+  z.object({ kind: z.literal('assessment'), lessonId: contentId }).strict(),
 ]);
 export type CreatePracticeSetRequest = z.infer<typeof createPracticeSetRequestSchema>;
 
@@ -217,6 +222,7 @@ export const practiceItemViewSchema = z.object({
   targetConcept: conceptRefSchema.nullable(),
   /** Attempts recorded for the item (sandbox failures excluded). */
   attempts: z.int().min(0),
+  /** Always `null` while an assessment is in progress (results are withheld until it ends). */
   lastOutcome: z.enum(ATTEMPT_OUTCOMES).nullable(),
 });
 export type PracticeItemView = z.infer<typeof practiceItemViewSchema>;
@@ -252,6 +258,45 @@ export const passResultSchema = z.object({
 });
 export type PassResultView = z.infer<typeof passResultSchema>;
 
+/** One item of a finished assessment, with what was withheld during it. */
+export const assessmentResultItemSchema = z.object({
+  itemId: z.string(),
+  position: z.int().min(0),
+  exerciseId: z.string(),
+  type: z.string(),
+  difficulty: z.int().min(1).max(5),
+  /** Exercise prompt (Markdown) so the learner can recall the question. */
+  prompt: z.string(),
+  concept: conceptRefSchema.nullable(),
+  status: z.enum(PRACTICE_ITEM_STATUSES),
+  /** `null` when skipped. */
+  outcome: z.enum(ATTEMPT_OUTCOMES).nullable(),
+  correct: z.boolean(),
+  /** Misconceptions the answer suggested. */
+  misconceptions: z.array(z.object({ id: z.string(), title: z.string() })),
+  explanation: z.string(),
+  solution: solutionViewSchema,
+});
+export type AssessmentResultItem = z.infer<typeof assessmentResultItemSchema>;
+
+/** Result of a finished assessment (learning-engine.md#단원-평가-세트). */
+export const assessmentResultSchema = z.object({
+  correct: z.int().min(0),
+  total: z.int().min(0),
+  ratio: z.number().min(0).max(1),
+  passRatio: z.number().min(0).max(1),
+  passed: z.boolean(),
+  items: z.array(assessmentResultItemSchema),
+  concepts: z.array(
+    z.object({ concept: conceptRefSchema, total: z.int().min(0), correct: z.int().min(0) }),
+  ),
+  /** Concepts with a wrong or skipped item, in order of appearance. */
+  missedConcepts: z.array(conceptRefSchema),
+  /** Up to 5 missed concepts for "약점 집중" (`POST /practice-sets {kind:'weakness', conceptIds}`). */
+  weaknessConceptIds: z.array(z.string()).max(5),
+});
+export type AssessmentResult = z.infer<typeof assessmentResultSchema>;
+
 export const practiceSetResultSchema = z.object({
   total: z.int(),
   answered: z.int(),
@@ -260,6 +305,8 @@ export const practiceSetResultSchema = z.object({
   correct: z.int(),
   /** Lesson sets only. */
   pass: passResultSchema.nullable(),
+  /** Assessment sets only: score, every item's answer and explanation, missed concepts. */
+  assessment: assessmentResultSchema.optional(),
 });
 export type PracticeSetResult = z.infer<typeof practiceSetResultSchema>;
 
@@ -462,6 +509,39 @@ export const attemptResponseSchema = z.object({
   }),
 });
 export type AttemptResponse = z.infer<typeof attemptResponseSchema>;
+
+/**
+ * `POST /attempts` for an item of an assessment in progress: the answer is recorded and counted,
+ * but the outcome, feedback, explanation and mastery changes are withheld until the assessment
+ * ends (learning-engine.md#단원-평가-세트). The submission that finishes the set carries the full
+ * result in `set.result.assessment`. `engineApplied: false` (sandbox failure) means "submit
+ * again": the item stays pending.
+ */
+export const assessmentAttemptResponseSchema = z.object({
+  withheld: z.literal(true),
+  attempt: attemptResponseSchema.shape.attempt.pick({
+    id: true,
+    engineApplied: true,
+    attemptNo: true,
+    attemptInItem: true,
+  }),
+  item: attemptResponseSchema.shape.item,
+  set: attemptResponseSchema.shape.set,
+});
+export type AssessmentAttemptResponse = z.infer<typeof assessmentAttemptResponseSchema>;
+
+/** Either response of `POST /attempts` (assessments answer with the withheld shape). */
+export const submitAttemptResponseSchema = z.union([
+  assessmentAttemptResponseSchema,
+  attemptResponseSchema,
+]);
+export type SubmitAttemptResponse = z.infer<typeof submitAttemptResponseSchema>;
+
+export function isWithheldAttempt(
+  response: SubmitAttemptResponse,
+): response is AssessmentAttemptResponse {
+  return 'withheld' in response;
+}
 
 /**
  * `POST /practice-sets/:id/items/:itemId/skip`: the learner skips a pending item. A follow-up of

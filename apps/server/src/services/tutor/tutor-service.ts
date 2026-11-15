@@ -30,6 +30,8 @@ import type { ContentExercise } from '../../db/content/repository.ts';
 import type { UserDb } from '../../db/user/connection.ts';
 import { findItem, insertHintEvent } from '../../db/user/exercise-records.ts';
 import { ensureLearner, newId, type Learner } from '../../db/user/learners.ts';
+import { getSet, inActiveAssessment } from '../../db/user/practice-sets.ts';
+import { getLessonProgress } from '../../db/user/progress.ts';
 import {
   findMessage,
   findOpenThread,
@@ -134,7 +136,11 @@ export class TutorService {
     });
   }
 
-  /** Validates the exercise and practice item; refuses assessment contexts (D-023). */
+  /**
+   * Validates the exercise and practice item; refuses assessments in progress (D-023), by the
+   * item or by the exercise itself so a request without the item cannot get around the lock.
+   * After the assessment ends its items may be discussed.
+   */
   #exerciseTarget(learnerId: string, exerciseId: string, itemId: string | null): ExerciseTarget {
     const exercise = this.#deps.content.repo.getExercise(exerciseId);
     if (!exercise) {
@@ -149,9 +155,22 @@ export class TutorService {
           details: { practiceSetItemId: itemId },
         });
       }
-      if (found.setKind === 'assessment') throw aiAppError(new AIError('AI_LOCKED_IN_ASSESSMENT'));
+      if (found.setKind === 'assessment' && found.setStatus === 'active') {
+        throw aiAppError(new AIError('AI_LOCKED_IN_ASSESSMENT'));
+      }
+    }
+    if (inActiveAssessment(this.#deps.userDb.orm, learnerId, exerciseId)) {
+      throw aiAppError(new AIError('AI_LOCKED_IN_ASSESSMENT'));
     }
     return { exercise, itemId };
+  }
+
+  /** Whether the lesson is an assessment unit whose current attempt is still in progress. */
+  #assessmentInProgress(learnerId: string, lessonId: string): boolean {
+    const orm = this.#deps.userDb.orm;
+    const setId = getLessonProgress(orm, learnerId, lessonId)?.practiceSetId ?? null;
+    const set = setId === null ? null : getSet(orm, learnerId, setId);
+    return set?.row.kind === 'assessment' && set.row.status === 'active';
   }
 
   // ── Threads ─────────────────────────────────────────────────────────────────
@@ -228,6 +247,9 @@ export class TutorService {
       throw new AppError('NOT_FOUND', 404, '단원을 찾을 수 없습니다.', {
         details: { id: lessonId },
       });
+    }
+    if (lessonId && this.#assessmentInProgress(learner.id, lessonId)) {
+      throw aiAppError(new AIError('AI_LOCKED_IN_ASSESSMENT'));
     }
     await this.#deps.ai.ensureReady();
 

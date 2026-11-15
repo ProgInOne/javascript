@@ -7,6 +7,7 @@
 
 ### Added
 
+- 단원 평가 API(M6, D-042): `POST /practice-sets {kind:'assessment', lessonId}`(진행 중이면 이어서, 끝났으면 재응시), 평가 중 힌트·정답 보기·본문 확인 시도(`EXERCISE_LOCKED_IN_ASSESSMENT`)와 튜터·AI 힌트·오답 분석(`AI_LOCKED_IN_ASSESSMENT`)을 서버에서 잠금, 문항당 한 번 제출(`PRACTICE_ITEM_DONE`), 평가 중에는 정오·해설·숙련도 변화를 감추고 마지막 제출에서 문항별 결과·해설·정답·틀린 개념·약점 집중 대상을 공개, 통과하면 평가 단원 완료. `GET /lessons/:id`에 평가 안내(`assessment`: 문항 수·통과 비율·개념 수·예상 시간). 단원 종류와 맞지 않는 세트 요청은 `PRACTICE_KIND_MISMATCH`. 과정의 단원 문제 수에 평가 문항을 셈
 - 단원 평가 콘텐츠와 문항 선택(M6, D-041): `kind: assessment` 단원의 `assessment: { itemCount, passRatio }` 설정과 `content-cli check` 규칙(평가 개념은 `concepts.reviewed`, 문항은 `usage: assessment`, 개념당 최소 1문항, 10~20문항 권장, `module.yaml` `assessment` 검증), content.db `assessments` 테이블(스키마 버전 2, `pnpm content:build`로 다시 만들어야 함). 학습 엔진 `buildAssessmentSet`(개념 포함 → 난이도 분포 → 쉬운 순서, 처음 보는 문항 우선)과 `evaluateAssessment`(통과 비율 기본 0.8, 틀린 개념 목록). 학습 엔진 `1.2.0`
 - JS 기초 모듈 3 "연산자와 형 변환" 초안(검토 전): 산술·비교·논리 연산, 명시적·암묵적 형 변환 레슨 5개와 단원 평가, 문제 134개(P0 유형 10종), 개념 18개·오개념 38개
 - 시각 회귀 기준 이미지를 CI와 같은 컨테이너에서 다시 만드는 수동 실행 워크플로 `visual-baselines` (로컬 Docker를 쓸 수 없을 때)

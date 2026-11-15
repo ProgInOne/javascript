@@ -225,3 +225,44 @@ export function lastSeenAtByGroup(orm: Orm, learnerId: string): Record<string, n
   }
   return out;
 }
+
+/**
+ * Whether the exercise is an item of one of the learner's assessments in progress. Hints, the
+ * solution, the tutor and inline attempts are locked for it until the assessment ends, whatever
+ * context a request names (learning-engine.md#단원-평가-세트).
+ */
+export function inActiveAssessment(orm: Orm, learnerId: string, exerciseId: string): boolean {
+  return (
+    orm
+      .select({ id: practiceSetItems.id })
+      .from(practiceSetItems)
+      .innerJoin(practiceSets, eq(practiceSetItems.practiceSetId, practiceSets.id))
+      .where(
+        and(
+          eq(practiceSetItems.learnerId, learnerId),
+          eq(practiceSetItems.exerciseId, exerciseId),
+          eq(practiceSets.kind, 'assessment'),
+          eq(practiceSets.status, 'active'),
+        ),
+      )
+      .get() !== undefined
+  );
+}
+
+/** Attempts the learner made in assessments still in progress (their results are withheld). */
+export function activeAssessmentAttemptIds(orm: Orm, learnerId: string): Set<string> {
+  const rows = orm
+    .select({ id: attempts.id })
+    .from(attempts)
+    .innerJoin(practiceSetItems, eq(attempts.practiceSetItemId, practiceSetItems.id))
+    .innerJoin(practiceSets, eq(practiceSetItems.practiceSetId, practiceSets.id))
+    .where(
+      and(
+        eq(attempts.learnerId, learnerId),
+        eq(practiceSets.kind, 'assessment'),
+        eq(practiceSets.status, 'active'),
+      ),
+    )
+    .all();
+  return new Set(rows.map((r) => r.id));
+}

@@ -21,6 +21,7 @@ import {
   type HintScope,
 } from '../../db/user/exercise-records.ts';
 import { ensureLearner, newId } from '../../db/user/learners.ts';
+import { inActiveAssessment } from '../../db/user/practice-sets.ts';
 import { AppError } from '../../http/errors.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
@@ -70,6 +71,31 @@ export class ExerciseService {
       }
     }
     return { learnerId, exerciseId, itemId };
+  }
+
+  /**
+   * Refuses help on an item of an assessment in progress (learning-engine.md#단원-평가-세트), by
+   * the context item or by the exercise itself (a request without context must not get around
+   * the lock).
+   */
+  #assertNotInAssessment(scope: HintScope, what: 'hints' | 'solution'): void {
+    const orm = this.#userDb.orm;
+    const byItem =
+      scope.itemId !== null &&
+      (() => {
+        const found = findItem(orm, scope.learnerId, scope.itemId);
+        return found?.setKind === 'assessment' && found.setStatus === 'active';
+      })();
+    if (byItem || inActiveAssessment(orm, scope.learnerId, scope.exerciseId)) {
+      throw new AppError(
+        'EXERCISE_LOCKED_IN_ASSESSMENT',
+        403,
+        what === 'hints'
+          ? '단원 평가 중에는 힌트를 볼 수 없습니다. 평가가 끝나면 열려요.'
+          : '단원 평가 중에는 정답을 볼 수 없습니다. 평가가 끝나면 열려요.',
+        { details: { exerciseId: scope.exerciseId } },
+      );
+    }
   }
 
   view(id: string, ctx: PracticeContext): ExerciseView {
@@ -130,6 +156,7 @@ export class ExerciseService {
   openHint(id: string, ctx: PracticeContext): HintResponse {
     const exercise = this.#exercise(id);
     const scope = this.#scope(id, ctx);
+    this.#assertNotInAssessment(scope, 'hints');
     const levels = exercise.hints.levels.slice(0, HINT_LEVELS);
     const orm = this.#userDb.orm;
     return orm.transaction(() => {
@@ -166,6 +193,7 @@ export class ExerciseService {
     const exercise = this.#exercise(id);
     const { spec } = loadSpec(exercise);
     const scope = this.#scope(id, ctx);
+    this.#assertNotInAssessment(scope, 'solution');
     const required = Math.min(HINT_LEVELS, exercise.hints.levels.length);
     const orm = this.#userDb.orm;
     orm.transaction(() => {

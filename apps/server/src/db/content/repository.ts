@@ -1,3 +1,4 @@
+import { ASSESSMENT_MAX_ITEMS } from '@proginone/content-schema';
 import { CONTENT_DB_SCHEMA_VERSION, contentTables as t } from '@proginone/content-schema/db';
 import type {
   CourseDetail,
@@ -64,6 +65,20 @@ export interface LessonPlan {
   introduces: string[];
   reviews: string[];
   contentHash: string;
+}
+
+/** An `assessments` row (the ID is the `kind: assessment` lesson's ID). */
+export interface ContentAssessment {
+  id: string;
+  title: string;
+  /** Module the assessment closes. */
+  scopeId: string;
+  exerciseIds: string[];
+  /** Assessed concepts in content order. */
+  conceptIds: string[];
+  /** `null` = every item (up to the engine's maximum). */
+  itemCount: number | null;
+  passRatio: number;
 }
 
 export interface ContentConcept {
@@ -139,7 +154,8 @@ export class ContentRepository {
     const rows = this.#db
       .select({ lessonId: t.exercises.lessonId, n: count() })
       .from(t.exercises)
-      .where(eq(t.exercises.usage, 'practice'))
+      // Practice items, and the items of assessment units (only they hold `usage: assessment`).
+      .where(inArray(t.exercises.usage, ['practice', 'assessment']))
       .groupBy(t.exercises.lessonId)
       .all();
     return new Map(rows.map((r) => [r.lessonId, r.n]));
@@ -367,6 +383,21 @@ export class ContentRepository {
       .all();
     const concepts = this.#exerciseConcepts(rows.map((r) => r.id));
     return rows.map((r) => this.#toExercise(r, concepts.get(r.id) ?? []));
+  }
+
+  /** The unit assessment whose ID is `lessonId`, or null for other lessons. */
+  getAssessment(lessonId: string): ContentAssessment | null {
+    const row = this.#db.select().from(t.assessments).where(eq(t.assessments.id, lessonId)).get();
+    if (!row) return null;
+    return {
+      id: row.id,
+      title: row.title,
+      scopeId: row.scopeId,
+      exerciseIds: row.exerciseIds,
+      conceptIds: row.selectionRule?.conceptIds ?? [],
+      itemCount: row.selectionRule?.itemCount ?? null,
+      passRatio: row.passRatio,
+    };
   }
 
   /** What the practice set builder needs about a lesson. */
@@ -669,6 +700,7 @@ export class ContentRepository {
 
     const order = this.#courseLessonOrder(course.id);
     const i = order.findIndex((l) => l.id === id);
+    const assessment = lesson.kind === 'assessment' ? this.getAssessment(lesson.id) : null;
     return {
       id: lesson.id,
       title: lesson.title,
@@ -686,6 +718,16 @@ export class ContentRepository {
       previous: order[i - 1] ?? null,
       next: order[i + 1] ?? null,
       contentHash: lesson.contentHash,
+      assessment: assessment && {
+        itemCount: Math.min(
+          assessment.itemCount ?? assessment.exerciseIds.length,
+          assessment.exerciseIds.length,
+          ASSESSMENT_MAX_ITEMS,
+        ),
+        passRatio: assessment.passRatio,
+        conceptCount: assessment.conceptIds.length,
+        estimatedMinutes: lesson.estimatedMinutes - lesson.readMinutes,
+      },
     };
   }
 }

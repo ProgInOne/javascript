@@ -9,6 +9,7 @@ import {
 import {
   applyAttempt,
   conceptsReadyToFlush,
+  evaluateAssessment,
   isUnassisted,
   nextAdaptiveStep,
   REMEDIAL_REASONS,
@@ -38,6 +39,7 @@ import {
   parseRunResult,
   type AttemptRequest,
   type AttemptResponse,
+  type SubmitAttemptResponse,
   type InlineAttemptRequest,
   type InlineAttemptResponse,
   type RunResult,
@@ -84,6 +86,7 @@ import {
   appliedItemAttempts,
   completeSet,
   getSet,
+  inActiveAssessment,
   insertItems,
   insertPendingRating,
   lastSeenAtByGroup,
@@ -192,7 +195,7 @@ export class AttemptService {
     this.#now = deps.now;
   }
 
-  submit(request: AttemptRequest): AttemptResponse {
+  submit(request: AttemptRequest): SubmitAttemptResponse {
     const now = this.#now();
     const orm = this.#userDb.orm;
     const repo = this.#content.repo;
@@ -216,6 +219,15 @@ export class AttemptService {
       throw new AppError('PRACTICE_SET_CLOSED', 409, '이미 끝난 연습 세트입니다.', {
         details: { practiceSetId: set.row.id },
       });
+    }
+    // Assessments take one submission per item (learning-engine.md#단원-평가-세트).
+    if (set.row.kind === 'assessment' && item.status !== 'pending') {
+      throw new AppError(
+        'PRACTICE_ITEM_DONE',
+        409,
+        '단원 평가의 문항은 한 번만 제출할 수 있습니다.',
+        { details: { itemId: item.id, status: item.status } },
+      );
     }
     const exercise = repo.getExercise(item.exerciseId);
     if (!exercise) {
@@ -334,16 +346,8 @@ export class AttemptService {
       }
     });
 
-    return this.#response({
-      set,
-      item,
-      exercise,
-      grade,
-      plan,
-      attemptId,
-      attemptNo,
-      attemptInItem,
-    });
+    const outcome = { set, item, exercise, grade, plan, attemptId, attemptNo, attemptInItem };
+    return set.row.kind === 'assessment' ? this.#withheld(outcome) : this.#response(outcome);
   }
 
   /**
@@ -363,6 +367,16 @@ export class AttemptService {
       throw new AppError('NOT_FOUND', 404, '문제를 찾을 수 없습니다.', {
         details: { id: exerciseId },
       });
+    }
+    // Assessment items are graded only inside their assessment; an inline attempt would reveal
+    // the result and the explanation (learning-engine.md#단원-평가-세트).
+    if (exercise.usage === 'assessment' || inActiveAssessment(orm, learnerId, exercise.id)) {
+      throw new AppError(
+        'EXERCISE_LOCKED_IN_ASSESSMENT',
+        403,
+        '단원 평가 문항은 평가 안에서만 풀 수 있습니다.',
+        { details: { exerciseId: exercise.id } },
+      );
     }
     const candidate = candidateOf(exercise);
     if (!candidate) {
@@ -559,7 +573,7 @@ export class AttemptService {
         status: plan.setFinished ? 'completed' : set.row.status,
         progress: progressOf(plan.items),
         nextItemId: plan.setFinished ? null : nextItemIdOf(plan.items),
-        result: plan.result ? resultView(plan.result, repo) : null,
+        result: plan.result ? resultView(plan.result, repo, { orm, setId: set.row.id }) : null,
       },
     };
   }
@@ -777,18 +791,42 @@ export class AttemptService {
             )
           : null;
       const progress = progressOf(items);
+      const lastOutcome = (itemId: string) =>
+        attempts.filter((a) => a.itemId === itemId).at(-1)?.outcome;
+      const assessment =
+        set.row.kind === 'assessment'
+          ? evaluateAssessment(engine, {
+              passRatio: set.scope.passRatio ?? null,
+              items: items.map((i) => ({
+                status: i.status,
+                conceptId: i.targetConceptId,
+                correct: lastOutcome(i.id) === 'correct',
+              })),
+            })
+          : null;
       result = {
         v: 1,
         total: progress.total,
         answered: progress.answered,
         skipped: progress.skipped,
-        correct: items.filter(
-          (i) => attempts.filter((a) => a.itemId === i.id).at(-1)?.outcome === 'correct',
-        ).length,
+        correct: items.filter((i) => lastOutcome(i.id) === 'correct').length,
         pass: pass === null ? null : toPassJson(pass),
         reviewedConceptIds: [...appliedConcepts].sort(),
+        ...(assessment
+          ? {
+              assessment: {
+                correct: assessment.correct,
+                total: assessment.total,
+                ratio: assessment.ratio,
+                passRatio: assessment.passRatio,
+                passed: assessment.passed,
+                concepts: assessment.concepts.map((c) => ({ ...c })),
+                missedConceptIds: [...assessment.missedConceptIds],
+              },
+            }
+          : {}),
       };
-      if (pass?.passed && set.scope.lessonId !== null) {
+      if ((pass?.passed || assessment?.passed) && set.scope.lessonId !== null) {
         const progressRow = getLessonProgress(orm, learnerId, set.scope.lessonId);
         lessonCompletedNow = progressRow?.status !== 'completed';
       }
@@ -1011,9 +1049,9 @@ export class AttemptService {
     if (plan.result) completeSet(orm, set.row.id, plan.result, now);
 
     const lessonId = set.scope.lessonId;
-    if (set.row.kind === 'lesson' && lessonId !== null) {
+    if ((set.row.kind === 'lesson' || set.row.kind === 'assessment') && lessonId !== null) {
       const progress = getLessonProgress(orm, learnerId, lessonId);
-      const passed = plan.result?.pass?.passed === true;
+      const passed = plan.result?.pass?.passed === true || plan.result?.assessment?.passed === true;
       upsertLessonProgress(orm, {
         learnerId,
         lessonId,
@@ -1047,6 +1085,7 @@ export class AttemptService {
   }): AttemptResponse {
     const { set, item, grade, plan, attemptId, attemptNo, attemptInItem } = input;
     const repo = this.#content.repo;
+    const orm = this.#userDb.orm;
     const titles = repo.getConcepts(plan?.mastery.map((m) => m.conceptId) ?? []);
     const misconceptions = repo.getMisconceptions(grade.misconceptionIds);
     const items = plan?.items ?? listItems(this.#userDb.orm, set.row.id);
@@ -1097,7 +1136,49 @@ export class AttemptService {
         status: plan?.setFinished ? 'completed' : set.row.status,
         progress: progressOf(items),
         nextItemId: plan?.setFinished ? null : nextItemIdOf(items),
-        result: plan?.result ? resultView(plan.result, repo) : null,
+        result: plan?.result ? resultView(plan.result, repo, { orm, setId: set.row.id }) : null,
+      },
+    };
+  }
+
+  /**
+   * The answer of an assessment item is recorded and counted, but its outcome, feedback,
+   * explanation and mastery changes stay hidden until the set ends; the finishing submission
+   * returns the whole result (learning-engine.md#단원-평가-세트).
+   */
+  #withheld(input: {
+    set: PracticeSet;
+    item: PracticeItemRow;
+    plan: EnginePlan | null;
+    attemptId: string;
+    attemptNo: number;
+    attemptInItem: number;
+  }): SubmitAttemptResponse {
+    const { set, item, plan, attemptId, attemptNo, attemptInItem } = input;
+    const orm = this.#userDb.orm;
+    const items = plan?.items ?? listItems(orm, set.row.id);
+    const applied = plan !== null;
+    return {
+      withheld: true,
+      attempt: {
+        id: attemptId,
+        engineApplied: applied,
+        attemptNo,
+        attemptInItem: applied ? attemptInItem : attemptInItem - 1,
+      },
+      item: {
+        id: item.id,
+        status: applied ? 'answered' : item.status,
+        attempts: applied ? attemptInItem : attemptInItem - 1,
+      },
+      set: {
+        id: set.row.id,
+        status: plan?.setFinished ? 'completed' : set.row.status,
+        progress: progressOf(items),
+        nextItemId: plan?.setFinished ? null : nextItemIdOf(items),
+        result: plan?.result
+          ? resultView(plan.result, this.#content.repo, { orm, setId: set.row.id })
+          : null,
       },
     };
   }

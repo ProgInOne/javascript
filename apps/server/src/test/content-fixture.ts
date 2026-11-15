@@ -93,6 +93,16 @@ export function writeContentDb(meta: Record<string, string> = {}): string {
   });
   ins('lessons', lesson('js-basics.start.first-program', 0));
   ins('lessons', lesson('js-basics.start.reading-errors', 1));
+  // The module's unit assessment (kind: assessment; learning-engine.md#단원-평가-세트).
+  ins('lessons', {
+    ...lesson(ASSESSMENT, 2),
+    title: '시작하기 단원 평가',
+    kind: 'assessment',
+  });
+  db.prepare('UPDATE modules SET assessment_id = ? WHERE id = ?').run(
+    ASSESSMENT,
+    'js-basics.start',
+  );
   const concept = (id: string, lessonId: string) => ({
     id,
     course_id: 'js-basics',
@@ -122,7 +132,23 @@ export function writeContentDb(meta: Record<string, string> = {}): string {
     correction: 'console.log는 값을 화면에 보여 줄 뿐 돌려주지 않습니다.',
     remedial_exercise_ids_json: '[]',
   });
-  for (const ex of [...FIXTURE_EXERCISES, ...REMEDIAL_EXERCISES]) {
+  for (const role of ['js.basics.statement', 'js.basics.comment']) {
+    ins('lesson_concepts', { lesson_id: ASSESSMENT, concept_id: role, role: 'reviews' });
+  }
+  ins('assessments', {
+    id: ASSESSMENT,
+    scope_type: 'module',
+    scope_id: 'js-basics.start',
+    title: '시작하기 단원 평가',
+    exercise_ids_json: JSON.stringify(ASSESSMENT_EXERCISES.map((e) => e.id)),
+    selection_rule_json: JSON.stringify({
+      v: 1,
+      itemCount: null,
+      conceptIds: ['js.basics.statement', 'js.basics.comment'],
+    }),
+    pass_ratio: 0.8,
+  });
+  for (const ex of [...FIXTURE_EXERCISES, ...REMEDIAL_EXERCISES, ...ASSESSMENT_EXERCISES]) {
     ins('exercises', {
       id: ex.id,
       type: ex.type,
@@ -220,7 +246,7 @@ interface FixtureExercise {
   id: string;
   type: string;
   difficulty: number;
-  usage?: 'practice' | 'remedial';
+  usage?: 'practice' | 'remedial' | 'assessment';
   spec: unknown;
   code?: string;
   lessonId?: string;
@@ -455,4 +481,47 @@ export const REMEDIAL_EXERCISES: FixtureExercise[] = [
   remedial(REMEDIAL.commentL1a, 1, 'js.basics.comment'),
   remedial(REMEDIAL.commentL1b, 1, 'js.basics.comment'),
   remedial(REMEDIAL.commentL2, 2, 'js.basics.comment'),
+];
+
+// ── Unit assessment: usage `assessment`, only served by assessment sets ──
+
+export const ASSESSMENT = 'js-basics.start.start-review';
+
+/** Assessment items (answer `b` is correct). Easy → hard: statement L2, comment L2, … */
+export const ASSESS = {
+  statementL2: `${ASSESSMENT}.mcq-statement-l2`,
+  statementL3: `${ASSESSMENT}.mcq-statement-l3`,
+  statementL4: `${ASSESSMENT}.mcq-statement-l4`,
+  commentL2: `${ASSESSMENT}.mcq-comment-l2`,
+  commentL3: `${ASSESSMENT}.tf-comment-l3`,
+} as const;
+
+const assessmentItem = (
+  id: string,
+  difficulty: number,
+  concept: string,
+  type = 'mcq_single',
+): FixtureExercise => ({
+  id,
+  type,
+  difficulty,
+  usage: 'assessment',
+  lessonId: ASSESSMENT,
+  spec:
+    type === 'true_false'
+      ? {
+          statement: '주석은 실행된다.',
+          answer: false,
+          misconceptionIfWrong: 'js.mc.log-is-return',
+        }
+      : { ...choice, options: choice.options.map((o) => ({ ...o, rationale: 'RATIONALE-MARK' })) },
+  concepts: [{ id: concept, weight: 1 }],
+});
+
+export const ASSESSMENT_EXERCISES: FixtureExercise[] = [
+  assessmentItem(ASSESS.statementL2, 2, 'js.basics.statement'),
+  assessmentItem(ASSESS.statementL3, 3, 'js.basics.statement'),
+  assessmentItem(ASSESS.statementL4, 4, 'js.basics.statement'),
+  assessmentItem(ASSESS.commentL2, 2, 'js.basics.comment'),
+  assessmentItem(ASSESS.commentL3, 3, 'js.basics.comment', 'true_false'),
 ];

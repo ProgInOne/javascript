@@ -237,7 +237,10 @@ describe('GET /concepts/:id', () => {
         },
       ],
       misconceptions: [],
-      lessons: [{ id: LESSON, title: '단원 0', role: 'introduces' }],
+      lessons: [
+        { id: LESSON, title: '단원 0', role: 'introduces' },
+        { id: 'js-basics.start.start-review', title: '시작하기 단원 평가', role: 'reviews' },
+      ],
     });
     expect((await ctx.call('GET', '/concepts/js.nope')).status).toBe(404);
   });

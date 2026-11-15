@@ -7,7 +7,12 @@ import {
 import { describe, expect, it } from 'vitest';
 import { ContentAccess } from '../../services/curriculum/content-access.ts';
 import { SettingsService } from '../../services/settings/service.ts';
-import { FIXTURE_EXERCISES, writeContentDb } from '../../test/content-fixture.ts';
+import {
+  ASSESSMENT,
+  ASSESSMENT_EXERCISES,
+  FIXTURE_EXERCISES,
+  writeContentDb,
+} from '../../test/content-fixture.ts';
 import { setupDb, silentLog } from '../../test/helpers.ts';
 import type { PracticeServices } from '../../services/practice/index.ts';
 import { createApp } from '../app.ts';
@@ -37,7 +42,7 @@ describe('curriculum routes', () => {
     const list = courseListSchema.parse(await (await get('/courses')).json());
     expect(list.packVersion).toBe('2026.11.14.1');
     expect(list.tracks[0]?.courses.map((c) => c.id)).toEqual(['js-basics']);
-    expect(list.tracks[0]?.courses[0]?.lessonCount).toBe(2);
+    expect(list.tracks[0]?.courses[0]?.lessonCount).toBe(3);
   });
 
   it('returns a course with modules, lessons, and practice counts', async () => {
@@ -46,6 +51,7 @@ describe('curriculum routes', () => {
     expect(course.modules[0]?.lessons.map((l) => [l.id, l.exerciseCount])).toEqual([
       ['js-basics.start.first-program', FIXTURE_EXERCISES.length],
       ['js-basics.start.reading-errors', 0],
+      [ASSESSMENT, ASSESSMENT_EXERCISES.length],
     ]);
     expect((await get('/courses/secret')).status).toBe(404);
   });

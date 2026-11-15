@@ -1,4 +1,5 @@
 import {
+  buildAssessmentSet,
   buildLessonPracticeSet,
   ENGINE_VERSION,
   type EngineDeps,
@@ -70,7 +71,106 @@ export class PracticeSetService {
         return this.#createReviewSet();
       case 'weakness':
         return this.#createWeaknessSet(request.conceptIds);
+      case 'assessment':
+        return this.#createAssessmentSet(request.lessonId);
     }
+  }
+
+  /**
+   * The active attempt of a unit assessment, or a new one (`buildAssessmentSet`). Candidates are
+   * the assessment's own items minus reported and ungradable ones; no adaptation, no pass rule
+   * (the pass ratio is kept in the scope). A finished attempt is not reused: asking again is a
+   * retake, which prefers items the learner has not seen.
+   */
+  #createAssessmentSet(lessonId: string): PracticeSetView {
+    const repo = this.#content.repo;
+    const orm = this.#userDb.orm;
+    const lesson = repo.getLessonPlan(lessonId);
+    if (!lesson) {
+      throw new AppError('NOT_FOUND', 404, '단원을 찾을 수 없습니다.', {
+        details: { id: lessonId },
+      });
+    }
+    const assessment = repo.getAssessment(lessonId);
+    if (!assessment) {
+      throw new AppError('PRACTICE_KIND_MISMATCH', 409, '이 단원은 단원 평가가 아닙니다.', {
+        details: { lessonId, expected: 'lesson' },
+      });
+    }
+    const { learnerId } = learnerContext(this.#userDb);
+    const progress = getLessonProgress(orm, learnerId, lessonId);
+    if (progress?.practiceSetId) {
+      const active = getSet(orm, learnerId, progress.practiceSetId);
+      if (active?.row.status === 'active' && active.row.kind === 'assessment') {
+        return this.#view(active);
+      }
+    }
+
+    const excluded = excludedExerciseIds(orm, learnerId);
+    const candidates = repo
+      .getExercises(assessment.exerciseIds)
+      .filter((e) => e.usage === 'assessment' && !excluded.has(e.id))
+      .map(candidateOf)
+      .filter((c) => c !== null);
+    const concepts = repo.getConcepts(assessment.conceptIds);
+    const setId = newId();
+    const now = this.#now();
+    const plan = buildAssessmentSet(this.#engine, {
+      assessment: {
+        id: assessment.id,
+        concepts: assessment.conceptIds.flatMap((id) => {
+          const concept = concepts.get(id);
+          return concept ? [{ conceptId: id, importance: concept.importance }] : [];
+        }),
+        itemCount: assessment.itemCount,
+      },
+      candidates,
+      lastSeenAtByGroup: lastSeenAtByGroup(orm, learnerId),
+      seed: setId,
+      now,
+    });
+    if (plan.items.length === 0) {
+      throw new AppError('PRACTICE_NO_EXERCISES', 409, '이 단원 평가에는 아직 문항이 없습니다.', {
+        details: { lessonId },
+      });
+    }
+
+    orm.transaction(() => {
+      insertSet(
+        orm,
+        {
+          id: setId,
+          learnerId,
+          kind: 'assessment',
+          status: 'active',
+          scope: {
+            v: 1,
+            lessonId,
+            conceptIds: assessment.conceptIds,
+            rationale: { ...plan.rationale },
+            passRatio: assessment.passRatio,
+          },
+          passRule: null,
+          engineVersion: ENGINE_VERSION,
+          createdAt: new Date(now),
+          completedAt: null,
+        },
+        itemRows(setId, learnerId, plan.items),
+      );
+      upsertLessonProgress(orm, {
+        learnerId,
+        lessonId,
+        status: progress?.status === 'completed' ? 'completed' : 'practicing',
+        lastSectionId: progress?.lastSectionId ?? null,
+        readProgress: progress?.readProgress ?? 0,
+        practiceSetId: setId,
+        startedAt: progress?.startedAt ?? new Date(now),
+        completedAt: progress?.completedAt ?? null,
+        contentHashSeen: progress?.contentHashSeen ?? null,
+        updatedAt: new Date(now),
+      });
+    });
+    return this.get(setId);
   }
 
   /**
@@ -187,6 +287,14 @@ export class PracticeSetService {
       throw new AppError('NOT_FOUND', 404, '단원을 찾을 수 없습니다.', {
         details: { id: lessonId },
       });
+    }
+    if (repo.getAssessment(lessonId)) {
+      throw new AppError(
+        'PRACTICE_KIND_MISMATCH',
+        409,
+        '단원 평가는 평가 세트로 풉니다(kind: assessment).',
+        { details: { lessonId, expected: 'assessment' } },
+      );
     }
     const { learnerId } = learnerContext(this.#userDb);
     const progress = getLessonProgress(orm, learnerId, lessonId);

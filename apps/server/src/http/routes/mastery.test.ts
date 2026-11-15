@@ -24,14 +24,14 @@ describe('GET /mastery', () => {
     const course = o.courses[0];
     expect(course).toMatchObject({
       id: 'js-basics',
-      lessons: { total: 2, completed: 0 },
+      lessons: { total: 3, completed: 0 },
       stageCounts: { not_started: 2, introduced: 0, practicing: 0, proficient: 0, mastered: 0 },
     });
     expect(course?.modules).toEqual([
       {
         id: 'js-basics.start',
         title: expect.any(String) as string,
-        lessons: { total: 2, completed: 0 },
+        lessons: { total: 3, completed: 0 },
         concepts: [
           expect.objectContaining({
             id: 'js.basics.statement',
@@ -51,7 +51,7 @@ describe('GET /mastery', () => {
     const ctx = await practiceApp();
     await answerAll(ctx, await lessonSet(ctx));
     const after = await overview(ctx);
-    expect(after.courses[0]?.lessons).toEqual({ total: 2, completed: 1 });
+    expect(after.courses[0]?.lessons).toEqual({ total: 3, completed: 1 });
     const statement = tile(after, 'js.basics.statement');
     expect(statement?.stage).not.toBe('not_started');
     expect(statement?.effective).toBeGreaterThan(0);
