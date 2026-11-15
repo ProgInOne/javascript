@@ -1,6 +1,6 @@
 id: js-basics.operators.comparison.find-bug-nan-check
 type: find_bug_line
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.ops.strict-equality, weight: 1 }
 tags: [strict-equality, nan, debugging]
@@ -44,8 +44,10 @@ explanation: |
   `const isError = Number.isNaN(total);`로 고치면 `계산 오류: true`가 나와요.
 
   - 1·2번 줄은 일부러 잘못된 입력을 넣은 부분이라, 합계가 NaN이 되는 것은 의도한 상황이에요. 문제는 그 상황을 알아채지 못하는 3번 줄이에요.
+  - 합계가 `NaN`으로 출력되었으니 `total`은 0이 아니라 NaN이에요. 그런데도 비교 결과가 `false`인 것이 단서예요.
   - `==`로 바꿔도 `NaN == NaN`은 `false`예요. NaN은 어떤 비교로도 같다고 나오지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

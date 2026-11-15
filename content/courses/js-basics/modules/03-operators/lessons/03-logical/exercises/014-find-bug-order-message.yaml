@@ -53,5 +53,6 @@ explanation: |
   - `canOrder`를 다시 대입하는 줄이 없으니 `const`는 문제가 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

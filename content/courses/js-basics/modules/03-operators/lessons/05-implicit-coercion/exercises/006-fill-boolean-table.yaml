@@ -45,5 +45,6 @@ explanation: |
   `Boolean(값)`의 결과는 `!!값`과 같아요. 둘 다 falsy 목록으로 판단해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

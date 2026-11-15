@@ -1,6 +1,6 @@
 id: js-basics.operators.logical.tf-or-both-true
 type: true_false
-difficulty: 2
+difficulty: 1
 concepts:
   - { id: js.ops.logical-and-or-not, weight: 1 }
 tags: [logical-or, truth-table]
@@ -33,5 +33,6 @@ explanation: |
   - `||`는 두 값을 비교하는 연산자가 아니에요. `false || false`는 같은 값 두 개지만 `false`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

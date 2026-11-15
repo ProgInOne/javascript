@@ -39,5 +39,6 @@ explanation: |
   - 오류를 고른 경우: 문자열도 사전 순서로 비교할 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

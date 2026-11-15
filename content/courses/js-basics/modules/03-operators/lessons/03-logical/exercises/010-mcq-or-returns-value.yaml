@@ -35,10 +35,11 @@ explanation: |
 
   `||`는 왼쪽 값이 truthy이면 **왼쪽 값 그대로**, falsy이면 오른쪽 값을 돌려줘요. `"사과"`는 빈 문자열이 아니라 truthy이므로 결과는 `"사과"`이고, 오른쪽 `"배"`는 보지도 않아요.
 
-  - `true`: 논리 연산자의 결과가 항상 `true`/`false`라고 생각하면 고르기 쉬워요. 양쪽에 `true`/`false`를 넣었을 때만 결과가 `true`/`false`예요.
+  - `true`: 논리 연산자의 결과가 항상 `true`/`false`라고 생각하면 고르기 쉬워요. 결과가 `true`/`false`인 건 고른 쪽의 값이 원래 `true`/`false`였을 때예요.
   - `배`: 오른쪽을 고르는 건 왼쪽이 falsy일 때예요(예: `"" || "배"`).
   - `사과배`: 글자를 이어 붙이는 건 `+`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

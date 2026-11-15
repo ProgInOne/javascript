@@ -726,13 +726,13 @@
   reality: 이어 붙이기는 +만 한다. - * / %는 문자열을 숫자로 바꿔 계산해서 "10" - 3은 7이다. 숫자로 읽을 수 없는 글자일 때만 NaN이다.
   remediation:
     lessonSection: js-basics.operators.implicit-coercion#pitfalls
-    exercises: [js-basics.operators.implicit-coercion.mcq-string-plus-number, js-basics.operators.implicit-coercion.tf-minus-string]
+    exercises: [js-basics.operators.implicit-coercion.tf-minus-string, js-basics.operators.implicit-coercion.predict-chain-typeof]
 
 - id: js.mc.null-loose-equals-zero
   concept: js.conv.equality-coercion
   title: "null == 0이 true라고 생각함"
   statement: null은 "없음"이니 null == 0이나 null == false가 true라고 생각한다.
-  reality: ==에서 null은 undefined와만 같다. null == 0과 null == false는 false다.
+  reality: ==에서 null은 숫자로 바뀌지 않고 null·undefined와만 같다. null == 0과 null == false는 false다.
   remediation:
     lessonSection: js-basics.operators.implicit-coercion#pitfalls
     exercises: [js-basics.operators.implicit-coercion.mcq-null-loose-equals, js-basics.operators.implicit-coercion.multi-loose-rules]
@@ -744,7 +744,7 @@
   reality: ==는 truthy·falsy를 보지 않고 숫자로 바꿔 비교한다. "0"은 0, false도 0이 되어 "0" == false는 true다. 그래서 ==보다 ===를 쓴다.
   remediation:
     lessonSection: js-basics.operators.implicit-coercion#pitfalls
-    exercises: [js-basics.operators.implicit-coercion.mcq-null-loose-equals, js-basics.operators.implicit-coercion.multi-loose-rules]
+    exercises: [js-basics.operators.implicit-coercion.multi-loose-rules, js-basics.operators.implicit-coercion.fix-empty-check]
 
 # ── if-else ──
 

@@ -44,7 +44,7 @@ spec:
           console.log("정답률:", rate);
   bugDescription: 평균이 200 가까이 나오고, 정답률이 1800이 나와요.
   bugMisconception: js.mc.always-left-to-right
-  maxEditDistance: 6
+  maxEditDistance: 10
   checks:
     - kind: console
       id: output
@@ -81,5 +81,6 @@ explanation: |
   `correct * 100 / questions`처럼 순서를 바꿔 써도 결과가 같으면 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

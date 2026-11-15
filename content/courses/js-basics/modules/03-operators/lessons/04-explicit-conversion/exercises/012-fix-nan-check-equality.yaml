@@ -1,6 +1,6 @@
 id: js-basics.operators.explicit-conversion.fix-nan-check-equality
 type: fix_bug
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.conv.nan, weight: 1 }
   - { id: js.ops.strict-equality, weight: 0.3 }
@@ -57,5 +57,6 @@ explanation: |
   `Number("스물")`은 `NaN`이에요. 그런데 `NaN`은 자기 자신을 포함해 어떤 값과도 같지 않아서 `age === NaN`은 `age`가 무엇이든 항상 `false`예요. `NaN`인지는 `Number.isNaN(age)`로 확인해야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

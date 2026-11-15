@@ -3,70 +3,87 @@ type: fill_blank
 difficulty: 3
 concepts:
   - { id: js.ops.nullish, weight: 1 }
-  - { id: js.ops.short-circuit, weight: 0.3 }
+  - { id: js.ops.short-circuit, weight: 0.5 }
+  - { id: js.conv.truthy-falsy, weight: 0.3 }
 tags: [nullish, default-value, review]
-estimatedSeconds: 90
+estimatedSeconds: 100
 usage: assessment
 prompt: |
-  저장된 설정이 없을 때만 기본값을 쓰려고 해요. 사용자가 음량을 일부러 `0`으로 저장해 둔 경우에는 `0`을 그대로 써야 해요. 두 빈칸에 알맞은 **연산자**를 쓰세요.
+  배달 주문서의 저장된 값으로 기본값을 정하려고 해요. 규칙은 이래요.
+
+  - 배달 팁: 사용자가 **0원을 직접 골랐다면 0원을 그대로** 써요. 저장된 값이 없을 때(`null`·`undefined`)만 기본 팁 3000원이에요.
+  - 요청 사항: 칸을 **비워 두었다면(빈 문자열)** `요청 없음`으로 보여 줘요.
+
+  두 빈칸에 알맞은 **연산자**를 하나씩 쓰세요. 두 빈칸의 답이 같을 수도, 다를 수도 있어요.
 
   ```text
-  음량: 0
-  속도: 1
+  요청: 요청 없음
+  결제 금액: 12000
   ```
 spec:
   mode: code
   lang: js
   template: |
-    const savedVolume = 0;      // 사용자가 0으로 저장함
-    const savedSpeed = null;    // 저장한 적 없음
+    const savedTip = 0;        // 팁 0원을 직접 골랐음
+    const savedRequest = "";   // 요청 사항 칸을 비워 둠
 
-    const volume = savedVolume {{blank:op1}} 50;
-    const speed = savedSpeed {{blank:op2}} 1;
-    console.log("음량:", volume);
-    console.log("속도:", speed);
+    const tip = savedTip {{blank:op1}} 3000;
+    const request = savedRequest {{blank:op2}} "요청 없음";
+    const total = 12000 + tip;
+    console.log("요청:", request);
+    console.log("결제 금액:", total);
   blanks:
     - id: op1
       accept: ["??"]
       width: 4
       misconceptionMap:
-        "||": js.mc.nullish-same-as-or
+        "||": js.mc.or-default-keeps-zero
     - id: op2
-      accept: ["??"]
+      accept: ["||"]
       width: 4
+      misconceptionMap:
+        "??": js.mc.nullish-same-as-or
   checks:
     - kind: console
       id: output
-      description: 음량은 저장된 0, 속도는 기본값 1이 출력되어야 합니다.
+      description: 요청 사항은 기본 문구, 결제 금액은 팁 0원을 더한 12000이 출력되어야 합니다.
       expect:
-        lines: ["음량: 0", "속도: 1"]
+        lines: ["요청: 요청 없음", "결제 금액: 12000"]
     - kind: program
       id: values
-      description: volume에는 0, speed에는 1이 들어 있어야 합니다.
+      description: tip에는 사용자가 고른 0, request에는 "요청 없음"이 들어 있어야 합니다.
       expect:
         globals:
-          volume: { equals: 0 }
-          speed: { equals: 1 }
+          tip: { equals: 0 }
+          request: { equals: "요청 없음" }
         noError: true
       misconceptionIfFail: js.mc.nullish-same-as-or
 misconceptions: [js.mc.nullish-same-as-or, js.mc.or-default-keeps-zero]
 hints:
-  - "기본값을 정하는 연산자로 `||`와 `??`를 배웠어요. 두 연산자는 언제 오른쪽 값을 고르나요?"
-  - "`||`는 왼쪽이 falsy이면 오른쪽을 골라요. 0도 falsy예요."
-  - 왼쪽이 null이나 undefined일 때만 오른쪽을 고르는 연산자가 필요해요.
+  - "기본값을 정하는 연산자로 `||`와 `??`를 배웠어요. 두 연산자는 각각 왼쪽이 어떤 값일 때 오른쪽을 고르나요?"
+  - "`||`는 왼쪽이 falsy이면 오른쪽을 골라요. `??`는 왼쪽이 `null`이나 `undefined`일 때만 오른쪽을 골라요. 0과 빈 문자열은 둘 다 falsy지만 null은 아니에요."
+  - 팁 0원은 지켜야 하는 값이고, 빈 요청 사항은 기본 문구로 바꿔야 하는 값이에요. 줄마다 어느 연산자가 그 일을 하는지 골라 보세요.
 explanation: |
-  두 빈칸 모두 **`??`**예요.
+  첫 번째 빈칸은 **`??`**, 두 번째 빈칸은 **`||`**예요.
 
   ```js
-  const volume = savedVolume ?? 50;   // 0은 null/undefined가 아니므로 0
-  const speed = savedSpeed ?? 1;      // null이므로 기본값 1
+  const tip = savedTip ?? 3000;                 // 0은 null/undefined가 아니므로 0
+  const request = savedRequest || "요청 없음";   // ""은 falsy이므로 "요청 없음"
   ```
 
-  `??`는 왼쪽이 `null`이나 `undefined`일 때만 오른쪽 값을 골라요. 그래서 사용자가 일부러 저장한 0은 그대로 남아요.
+  | 식 | 결과 | 이유 |
+  |---|---|---|
+  | `0 ?? 3000` | `0` | 왼쪽이 `null`·`undefined`가 아니라서 왼쪽 |
+  | `0 \|\| 3000` | `3000` | 0은 falsy라서 오른쪽 |
+  | `"" \|\| "요청 없음"` | `"요청 없음"` | 빈 문자열은 falsy라서 오른쪽 |
+  | `"" ?? "요청 없음"` | `""` | 빈 문자열은 `null`·`undefined`가 아니라서 왼쪽 |
 
-  - `||`를 쓰면: 0은 falsy라서 `savedVolume || 50`이 50이 돼요. 사용자가 저장한 음량 0이 사라져요.
-  - `&&`를 쓰면: 왼쪽이 falsy이면 왼쪽을 그대로 돌려주므로 `savedSpeed && 1`은 `null`이 돼요. 기본값이 적용되지 않아요.
+  - 첫 칸에 `||`를 쓰면 사용자가 고른 0원이 사라지고 팁 3000원이 붙어 결제 금액이 15000이 돼요.
+  - 두 번째 칸에 `??`를 쓰면 빈 문자열이 그대로 남아 `요청:` 뒤가 비어 버려요.
+
+  `??`와 `||`는 같은 연산자가 아니에요. "값이 아예 없을 때만"이면 `??`, "비어 있거나 0인 것도 없는 것으로 볼 때"면 `||`를 골라요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

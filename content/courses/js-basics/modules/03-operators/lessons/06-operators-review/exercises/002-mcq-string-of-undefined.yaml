@@ -1,42 +1,49 @@
 id: js-basics.operators.operators-review.mcq-string-of-undefined
 type: mcq_single
-difficulty: 1
+difficulty: 2
 concepts:
   - { id: js.conv.to-string, weight: 1 }
-tags: [to-string, review]
-estimatedSeconds: 35
+  - { id: js.conv.plus-concat, weight: 0.5 }
+tags: [to-string, plus-concat, review]
+estimatedSeconds: 50
 usage: assessment
 prompt: |
-  `String(undefined)`의 결과는 무엇인가요?
+  다음 네 식 중 결과가 **문자열이 아닌** 것은 무엇인가요?
 spec:
   options:
     - id: a
-      text: '글자 `"undefined"` (문자열)'
+      text: "`String(42)`"
+      rationale: String(값)의 결과는 언제나 문자열이에요. 결과는 "42"예요.
     - id: b
-      text: '빈 문자열 `""`'
-      misconception: js.mc.string-of-null-empty
-      rationale: String은 값을 비우지 않고, 보이는 그대로 글자로 바꿔요.
+      text: '`42 + ""`'
+      misconception: js.mc.plus-string-adds
+      rationale: "+는 한쪽이 문자열이면 이어 붙여요. 빈 문자열과 이어 붙여도 결과는 문자열 \"42\"예요."
     - id: c
-      text: "`undefined` 값 그대로 (문자열이 아님)"
-      rationale: String(값)의 결과는 언제나 문자열이에요.
+      text: '`"42" * 1`'
     - id: d
-      text: 오류가 나서 프로그램이 멈춘다
-      rationale: String은 어떤 값이든 오류 없이 글자로 바꿔요.
-  correct: a
-misconceptions: [js.mc.string-of-null-empty]
+      text: "`String(undefined)`"
+      rationale: 값이 없는 undefined도 String은 오류 없이 글자 "undefined"로 바꿔요.
+  correct: c
+misconceptions: [js.mc.plus-string-adds, js.mc.minus-string-fails]
 hints:
-  - String(값)의 결과는 항상 어떤 자료형인가요?
-  - String은 값이 없다고 해서 글자를 비워 두지 않아요.
-  - "`String(true)`가 `\"true\"`인 것과 같은 방식이에요."
+  - "`String(값)`의 결과는 어떤 자료형이었나요? 연산자 `+`와 `*`는 문자열을 만나면 각각 무엇을 하나요?"
+  - "`+`는 한쪽이 문자열이면 이어 붙이고, `- * /`는 문자열을 숫자로 바꿔서 계산해요."
+  - "`*` 쪽 식을 계산하면 `42 * 1`과 같아요. 결과의 자료형을 생각해 보세요."
 explanation: |
-  정답은 **글자 `"undefined"`**예요.
+  정답은 **`"42" * 1`**이에요. 결과는 숫자 `42`예요.
 
-  `String(값)`은 어떤 값이든 화면에 보이는 그대로 글자(문자열)로 바꿔요. `String(true)`는 `"true"`, `String(null)`은 `"null"`, `String(undefined)`는 `"undefined"`예요.
+  | 식 | 결과 | 자료형 |
+  |---|---|---|
+  | `String(42)` | `"42"` | 문자열 |
+  | `42 + ""` | `"42"` | 문자열 |
+  | `"42" * 1` | `42` | 숫자 |
+  | `String(undefined)` | `"undefined"` | 문자열 |
 
-  - 빈 문자열을 골랐다면: "값이 없음"이 "글자가 없음"이 된다고 생각한 거예요. String은 값을 비우지 않아요.
-  - `undefined` 그대로를 골랐다면: String의 결과는 언제나 문자열이에요.
-  - 오류를 골랐다면: String은 변환에 실패하는 경우가 없어요.
+  - `String(값)`은 어떤 값이든 오류 없이 글자로 바꿔요. `undefined`도 글자 `"undefined"`가 돼요.
+  - `+`는 한쪽이 문자열이면 다른 쪽도 글자로 바꿔 이어 붙여요. 그래서 `42 + ""`는 숫자에서 문자열을 만드는 짧은 방법이에요.
+  - `*`는 이어 붙이기를 하지 않아요. 문자열 `"42"`를 숫자로 바꿔 `42 * 1`을 계산하므로 결과는 숫자예요. `*`가 문자열을 이어 붙이거나 실패한다고 생각했다면 이 차이를 다시 확인해 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

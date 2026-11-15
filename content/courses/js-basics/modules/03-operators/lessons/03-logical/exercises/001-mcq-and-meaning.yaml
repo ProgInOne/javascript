@@ -41,5 +41,6 @@ explanation: |
   - 10세이고 표도 없는 경우: `false && false` → `false`.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

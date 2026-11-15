@@ -52,5 +52,6 @@ explanation: |
   - 복합 대입은 오른쪽 전체(`2500 * 3`)를 먼저 계산한 뒤 연산해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

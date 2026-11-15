@@ -58,5 +58,6 @@ explanation: |
   두 번째 빈칸에 `&&`를 쓰면 `false && true`라서 `false`가 돼요. 그러면 "성인이면서 동시에 보호자 동의도 있어야" 가입할 수 있다는 다른 규칙이 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

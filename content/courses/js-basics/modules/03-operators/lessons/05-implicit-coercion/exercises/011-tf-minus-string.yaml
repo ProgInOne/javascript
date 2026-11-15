@@ -22,7 +22,7 @@ spec:
       misconception: js.mc.minus-string-fails
     - id: r3
       text: 숫자로 읽을 수 있는 문자열이라도 계산에 쓰면 항상 NaN이 된다
-      misconception: js.mc.failed-conversion-throws
+      misconception: js.mc.minus-string-fails
 misconceptions: [js.mc.minus-string-fails]
 hints:
   - 이어 붙이기를 하는 연산자는 무엇 하나뿐이었나요?
@@ -37,5 +37,6 @@ explanation: |
   - NaN은 `"사과" - 1`처럼 숫자로 읽을 수 없는 글자일 때만 생겨요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -22,5 +22,6 @@ explanation: |
   그래서 빈 입력 칸을 `Number`로 바꾸면 조용히 0으로 계산돼요. 입력이 비었는지는 숫자로 바꾸기 **전에** 따로 확인해야 해요. 참고로 `parseInt("")`는 `NaN`이라서, 두 방법의 결과가 달라요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

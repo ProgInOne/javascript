@@ -98,5 +98,6 @@ explanation: |
   입력창에서 읽은 값은 계산하기 전에 **처음부터 Number로 바꿔 두는 습관**이 가장 안전해요. 예를 들어 `const wrap = Number(wrapText);`처럼 숫자 변수를 따로 만들어도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

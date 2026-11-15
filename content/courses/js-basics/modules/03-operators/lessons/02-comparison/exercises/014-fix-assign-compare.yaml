@@ -1,6 +1,6 @@
 id: js-basics.operators.comparison.fix-assign-compare
 type: fix_bug
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.ops.strict-equality, weight: 1 }
   - { id: js.values.assignment, weight: 0.3 }
@@ -62,5 +62,6 @@ explanation: |
   `==`로 고쳐도 이 문제에서는 같은 결과가 나오지만, 자료형까지 비교하는 `===`를 쓰는 습관을 들여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

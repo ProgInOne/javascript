@@ -105,5 +105,6 @@ explanation: |
   기본값을 정할 때마다 "0이나 빈 문자열이 올바른 값인가?"를 묻는 습관이 이 문제의 핵심이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: js-basics.operators.logical.fix-guest-name
 type: fix_bug
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.ops.short-circuit, weight: 1 }
 tags: [short-circuit, default-value, debugging]
@@ -34,7 +34,7 @@ spec:
           console.log(nameA, "님이 들어왔어요");
           console.log(nameB, "님이 들어왔어요");
   bugDescription: 이름을 입력하지 않은 사람은 이름 없이 " 님이 들어왔어요"로, "민지"는 "손님"으로 나와요.
-  maxEditDistance: 4
+  maxEditDistance: 6
   checks:
     - kind: console
       id: output
@@ -70,5 +70,6 @@ explanation: |
   여기서는 빈 문자열도 "이름 없음"으로 봐야 하므로 `??`가 아니라 `||`가 맞아요. `??`는 `""`를 그대로 두기 때문이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

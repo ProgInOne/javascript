@@ -28,7 +28,6 @@ spec:
     - id: d2
       code: 'console.log("합계: " + price + count + "원");'
       replaces: l6
-      misconception: js.mc.concat-whole-expression
   gradeIndent: false
   checks:
     - kind: console
@@ -43,7 +42,7 @@ spec:
         globals:
           total: { equals: 13500 }
         noError: true
-misconceptions: [js.mc.plus-string-adds, js.mc.concat-whole-expression]
+misconceptions: [js.mc.plus-string-adds]
 hints:
   - 변수는 쓰기 전에 먼저 만들어야 해요. 어떤 변수가 어떤 변수를 쓰는지 화살표로 이어 보세요.
   - 문자열 그대로 `+`를 하면 어떻게 되는지 떠올려 보세요. 필요 없는 조각이 있어요.
@@ -64,5 +63,6 @@ explanation: |
   - `"합계: " + price + count + "원"`은 왼쪽부터 계산해서 `"합계: 4500"`에 `3`이 이어 붙어 `합계: 45003원`이 돼요. 계산은 `total`에서 미리 끝내고 이어 붙여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

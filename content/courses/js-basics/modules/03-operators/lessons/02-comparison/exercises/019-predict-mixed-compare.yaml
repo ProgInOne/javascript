@@ -37,5 +37,6 @@ explanation: |
   - 모두 사전 순서로 답했다면(`false false true true`) 숫자가 섞여도 문자열 비교가 된다고 생각한 거예요. 하나라도 숫자면 숫자로 바꿔서 비교해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -36,5 +36,6 @@ explanation: |
   `3`이라고 답했다면 `x *= 2 + 3`을 `x = x * 2 + 3`으로 계산한 거예요(4 → 11 → 8 → 3). 복합 대입은 오른쪽 전체를 먼저 계산한 뒤 연산해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

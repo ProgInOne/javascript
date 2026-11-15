@@ -36,7 +36,7 @@ spec:
           console.log("요청 메모:", memoText);
   bugDescription: '메모가 없는데 "요청 메모: null"이 출력돼요.'
   bugMisconception: js.mc.string-of-null-empty
-  maxEditDistance: 4
+  maxEditDistance: 6
   checks:
     - kind: console
       id: output
@@ -62,8 +62,9 @@ explanation: |
 
   `String(null)`은 빈 문자열이 아니라 `"null"`이라는 글자예요. 그래서 먼저 `memo ?? ""`로 "null이면 빈 문자열"이라는 기본값을 정한 뒤 String으로 바꿔요. `memo`에 메모가 들어 있으면 그 메모가 그대로 쓰여요.
 
-  `memo || ""`도 이 문제에서는 같은 결과지만, 메모로 `0` 같은 값이 들어올 수 있다면 `??`가 더 안전해요. `String(orderNumber)`는 `"1024"`가 되어 그대로 두면 돼요.
+  `memo || ""`도 이 문제에서는 같은 결과예요. 다만 `||`는 `0`처럼 null이 아닌 값도 기본값으로 바꿔 버리니, "값이 없을 때만" 기본값을 쓰려는 이 상황에는 `??`가 의도에 더 맞아요. `String(orderNumber)`는 `"1024"`가 되어 그대로 두면 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

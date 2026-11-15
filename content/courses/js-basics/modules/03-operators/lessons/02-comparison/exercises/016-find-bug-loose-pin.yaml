@@ -44,5 +44,6 @@ explanation: |
   - 숫자와 문자열도 비교할 수 있어요. 결과는 연산자에 따라 달라요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

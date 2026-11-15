@@ -30,5 +30,6 @@ explanation: |
   - 따옴표 없이 `null`이라고 답했다면: 그건 바뀌기 전의 값 null이에요. String의 결과는 항상 문자열이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

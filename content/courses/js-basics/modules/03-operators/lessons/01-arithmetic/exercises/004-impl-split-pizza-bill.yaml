@@ -82,11 +82,12 @@ explanation: |
   ```
 
   - `food`: `*`가 `+`보다 먼저라서 괄호 없이도 "피자값 + 콜라값"이 돼요.
-  - `tip`: 10%는 `food * 10 / 100`(또는 `food * 0.1`)이에요. `food % 10`은 61300을 10으로 나눈 **나머지** 0이라서 팁이 0원이 돼요. `%`는 퍼센트가 아니에요.
+  - `tip`: 10%는 `food * 10 / 100`(또는 `food * 0.1`, `food / 10`)이에요. `food % 10`은 61300을 10으로 나눈 **나머지** 0이라서 팁이 0원이 돼요. `%`는 퍼센트가 아니에요.
   - `perPerson`: 5로 나누는 대상은 총액 전체예요. `food + tip / people`처럼 쓰면 팁만 나눠지니, 따로 계산했거나 괄호로 `(food + tip) / people`이라고 써요.
 
   중간값 이름(`food`, `tip`)은 자유롭게 지어도 돼요. 채점은 출력과 `total`, `perPerson`의 값으로 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: js-basics.operators.arithmetic.multi-precedence-eighteen
 type: mcq_multi
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.ops.precedence, weight: 1 }
 tags: [precedence]
@@ -20,7 +20,7 @@ spec:
     - id: d
       text: "`2 + 4 * 3`"
       misconception: js.mc.always-left-to-right
-      rationale: "*가 먼저라서 2 + 12 = 14예요. 왼쪽부터 계산해야 18이 나와요."
+      rationale: "*가 먼저라서 2 + 12 = 14예요. 18은 왼쪽부터 (2 + 4) * 3으로 계산했을 때 나오는 값이에요."
     - id: e
       text: "`108 / 2 * 3`"
       misconception: js.mc.multiply-before-divide
@@ -46,5 +46,6 @@ explanation: |
   - a를 놓쳤다면 `12 / (2 * 3)`으로 계산했을 수 있어요. b를 놓쳤다면 `(3 + 3) * 5`로 계산했을 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

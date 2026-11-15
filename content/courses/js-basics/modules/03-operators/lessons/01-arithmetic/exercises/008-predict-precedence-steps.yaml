@@ -43,5 +43,6 @@ explanation: |
   - 셋째 줄을 64라고 했다면 `(2 * 4) ** 2`로 계산한 거예요. `**`는 `*`보다 먼저예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

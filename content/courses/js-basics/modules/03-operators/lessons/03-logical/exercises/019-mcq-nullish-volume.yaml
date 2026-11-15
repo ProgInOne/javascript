@@ -1,6 +1,6 @@
 id: js-basics.operators.logical.mcq-nullish-volume
 type: mcq_single
-difficulty: 2
+difficulty: 1
 concepts:
   - { id: js.ops.nullish, weight: 1 }
 tags: [nullish, default-value]
@@ -42,5 +42,6 @@ explanation: |
   - `null`: `??`는 `null`을 만들지 않아요. `null`을 **기본값으로 바꾸는** 연산자예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

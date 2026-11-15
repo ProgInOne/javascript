@@ -4,38 +4,43 @@ difficulty: 2
 concepts:
   - { id: js.conv.nan, weight: 1 }
   - { id: js.conv.to-number, weight: 0.3 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
 tags: [nan, review]
-estimatedSeconds: 50
+estimatedSeconds: 60
 usage: assessment
 prompt: |
   다음 설명이 맞는지 고르고, 그 이유도 고르세요.
 spec:
-  statement: '`const price = Number("만 원");`을 실행하면 숫자로 바꿀 수 없어서 오류가 나고, 프로그램이 그 줄에서 멈춘다.'
+  statement: '`const total = Number("만 원") * 2 + 500;`을 실행하면 오류 없이 `total`에 `500`이 들어간다.'
   answer: false
-  misconceptionIfWrong: js.mc.failed-conversion-throws
   requireReason: true
   reasons:
     - id: r1
-      text: 오류 없이 price에 NaN이 들어가고, 다음 줄도 계속 실행된다
+      text: 변환에 실패한 NaN이 계산을 따라 퍼져서 total에는 NaN이 들어간다
       correct: true
     - id: r2
-      text: 오류 없이 price에 0이 들어간다
+      text: 숫자로 바꿀 수 없는 글자는 Number가 오류를 내서 이 줄에서 프로그램이 멈춘다
+      misconception: js.mc.failed-conversion-throws
     - id: r3
-      text: Number가 앞에서부터 읽을 수 있는 숫자만 골라 price에 넣는다
-      misconception: js.mc.number-parses-prefix
+      text: '"만 원"은 숫자가 아니라서 0으로 바뀌고 0 * 2 + 500을 계산하므로 500이 맞다'
 misconceptions: [js.mc.failed-conversion-throws]
 hints:
-  - 숫자로 바꾸기에 실패하면 JavaScript는 어떤 값을 돌려줬나요?
-  - NaN은 "숫자가 아님"을 뜻하는 숫자 자료형의 값이에요. 오류가 아니라 **값**이에요.
-  - 값이 만들어졌다면 프로그램은 멈출 이유가 없어요.
+  - '`Number("만 원")`의 결과부터 생각해 보세요. 숫자로 바꾸기에 실패하면 어떤 값이 나왔나요?'
+  - NaN은 오류가 아니라 숫자 자료형의 값이에요. 그래서 프로그램은 멈추지 않아요.
+  - NaN에 2를 곱하거나 500을 더하면 결과가 다시 무엇이 될까요?
 explanation: |
-  **틀린 설명이에요.** 이유는 "오류 없이 price에 NaN이 들어가고, 다음 줄도 계속 실행된다"예요.
+  **틀린 설명이에요.** 이유는 "변환에 실패한 NaN이 계산을 따라 퍼져서 total에는 NaN이 들어간다"예요.
 
-  `Number("만 원")`처럼 숫자로 읽을 수 없는 값을 바꾸면 오류 대신 `NaN`(Not a Number)이 나와요. 프로그램은 멈추지 않고, 이후에 `price * 2`처럼 계산하면 결과도 계속 `NaN`이 돼요. 그래서 NaN은 오류보다 알아차리기 어려워요. 변환이 실패했는지는 `Number.isNaN(price)`로 확인해요.
+  1. `Number("만 원")`은 글자 전체를 숫자로 읽을 수 없어서 오류 대신 `NaN`이 돼요.
+  1. `NaN * 2`는 `NaN`이에요.
+  1. `NaN + 500`도 `NaN`이에요.
 
-  - 0을 고른 경우: `Number("")`와 `Number("  ")`가 0이에요. 글자가 있는데 숫자가 아니면 NaN이에요.
-  - 앞의 숫자만 읽는다고 고른 경우: 그건 `parseInt`·`parseFloat`의 동작이에요. 게다가 `"만 원"`은 숫자로 시작하지도 않아요.
+  NaN은 한 번 생기면 이어지는 계산의 결과를 모두 NaN으로 만들어요. 오류 메시지가 없어서 알아차리기 어려우니, 변환한 직후에 `Number.isNaN(값)`으로 확인하는 습관이 좋아요.
+
+  - 오류가 나서 멈춘다고 골랐다면: 변환 실패는 오류가 아니라 `NaN`이라는 **값**을 만들어요. 다음 줄도 계속 실행돼요.
+  - 0으로 바뀐다고 골랐다면: `0`이 되는 것은 `Number("")`처럼 빈 문자열(또는 공백만 있는 문자열)일 때예요. 글자가 있는데 숫자가 아니면 `NaN`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

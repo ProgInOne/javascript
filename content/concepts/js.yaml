@@ -169,7 +169,7 @@
 - id: js.ops.precedence
   title: 연산자 우선순위
   importance: standard
-  summary: "** 다음에 * / %, 그다음 + -를 계산해요. 우선순위가 같으면 왼쪽부터(** 만 오른쪽부터) 계산하고, 괄호 안을 가장 먼저 계산해요."
+  summary: "괄호 안을 가장 먼저, 그다음 거듭제곱(**), 곱셈·나눗셈·나머지(* / %), 덧셈·뺄셈(+ -) 순서로 계산해요. 순서가 같으면 왼쪽부터 계산해요(거듭제곱끼리만 오른쪽부터)."
   prerequisites: [js.ops.arithmetic]
   misconceptions: [js.mc.always-left-to-right, js.mc.multiply-before-divide]
   mdn: Web/JavaScript/Reference/Operators/Operator_precedence
@@ -305,7 +305,7 @@
 - id: js.conv.equality-coercion
   title: ==의 형 변환 규칙
   importance: standard
-  summary: "==는 문자열과 불리언을 숫자로 바꿔 비교해요. null은 undefined와만 같고, NaN은 무엇과도 같지 않아요."
+  summary: "==는 문자열과 불리언을 숫자로 바꿔 비교해요. null은 null·undefined와만 같고, NaN은 무엇과도 같지 않아요."
   prerequisites: [js.ops.loose-equality, js.conv.to-number]
   misconceptions: [js.mc.null-loose-equals-zero, js.mc.loose-equality-uses-truthiness]
   mdn: Web/JavaScript/Reference/Operators/Equality

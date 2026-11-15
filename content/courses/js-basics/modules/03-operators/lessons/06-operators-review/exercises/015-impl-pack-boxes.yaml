@@ -3,20 +3,23 @@ type: implement_function
 difficulty: 3
 concepts:
   - { id: js.ops.remainder, weight: 1 }
-  - { id: js.ops.arithmetic, weight: 0.5 }
-tags: [remainder, write-code, review]
-estimatedSeconds: 240
+  - { id: js.conv.to-number, weight: 0.5 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [remainder, to-number, write-code, review]
+estimatedSeconds: 300
 usage: assessment
 prompt: |
-  쿠키 23개를 한 상자에 5개씩 담으려고 해요. 꽉 찬 상자가 몇 개이고 몇 개가 남는지 계산하는 프로그램을 작성하세요.
+  쿠키 가게예요. 오늘 구운 쿠키 수(`bakedText`)는 입력창에서 읽은 값이라 **문자열**이고, 어제 남은 쿠키 수(`yesterday`)는 숫자예요. 두 쿠키를 합쳐 한 상자에 6개씩 담으려고 해요. 시작 코드 아래에 다음 변수를 만들어 출력하세요.
 
-  - `leftover`: 상자에 담고 남는 쿠키 수
+  - `cookies`: 전체 쿠키 수 (오늘 구운 쿠키 + 어제 남은 쿠키)
+  - `leftover`: 상자를 꽉 채우고 남는 쿠키 수
   - `boxes`: 꽉 찬 상자 수
-  - 쿠키 수와 상자 크기는 `cookies`, `perBox` 변수로 계산하세요(숫자 23과 5를 계산식에 직접 쓰지 않기).
 
   실행하면 콘솔에 아래처럼 나와야 해요.
 
   ```text
+  전체 쿠키: 27
   상자: 4
   남은 쿠키: 3
   ```
@@ -25,57 +28,72 @@ spec:
     files:
       - path: main.js
         content: |
-          const cookies = 23;
-          const perBox = 5;
+          const bakedText = "23";   // 오늘 구운 쿠키 (입력창에서 읽음)
+          const yesterday = 4;      // 어제 남은 쿠키
+          const perBox = 6;         // 한 상자에 담는 개수
 
-          // 여기에 leftover와 boxes를 만들고 출력하세요.
+          // 여기에 cookies, leftover, boxes를 만들고 출력하세요.
   solution:
     files:
       - path: main.js
         content: |
-          const cookies = 23;
-          const perBox = 5;
+          const bakedText = "23";   // 오늘 구운 쿠키 (입력창에서 읽음)
+          const yesterday = 4;      // 어제 남은 쿠키
+          const perBox = 6;         // 한 상자에 담는 개수
 
+          const cookies = Number(bakedText) + yesterday;
           const leftover = cookies % perBox;
           const boxes = (cookies - leftover) / perBox;
+          console.log("전체 쿠키:", cookies);
           console.log("상자:", boxes);
           console.log("남은 쿠키:", leftover);
   checks:
     - kind: console
       id: output
-      description: 꽉 찬 상자 수와 남은 쿠키 수가 차례로 출력되어야 합니다.
+      description: 전체 쿠키 수, 꽉 찬 상자 수, 남은 쿠키 수가 차례로 출력되어야 합니다.
       requirement: 결과 출력
       expect:
-        lines: ["상자: 4", "남은 쿠키: 3"]
+        lines: ["전체 쿠키: 27", "상자: 4", "남은 쿠키: 3"]
     - kind: program
-      id: values
-      description: 프로그램이 오류 없이 끝나고, boxes에는 4, leftover에는 3이 들어 있어야 합니다.
-      requirement: 계산한 변수
+      id: total
+      description: cookies에는 두 쿠키 수를 숫자로 더한 27이 들어 있어야 합니다.
+      requirement: 전체 쿠키 수
+      misconceptionIfFail: js.mc.plus-string-adds
+      expect:
+        globals:
+          cookies: { equals: 27 }
+        noError: true
+    - kind: program
+      id: boxes
+      description: 프로그램이 오류 없이 끝나고, boxes에는 꽉 찬 상자 수 4, leftover에는 남는 쿠키 수 3이 들어 있어야 합니다.
+      requirement: 상자 계산
+      misconceptionIfFail: js.mc.remainder-is-quotient
       expect:
         globals:
           boxes: { equals: 4 }
           leftover: { equals: 3 }
         noError: true
-      misconceptionIfFail: js.mc.remainder-is-quotient
-misconceptions: [js.mc.remainder-is-quotient, js.mc.division-truncates]
+misconceptions: [js.mc.remainder-is-quotient, js.mc.division-truncates, js.mc.plus-string-adds]
 hints:
-  - 남는 쿠키 수는 나머지 연산자 `%` 하나로 구할 수 있어요.
-  - "`cookies / perBox`는 4.6이에요. JavaScript의 나눗셈은 소수점을 버리지 않아요."
-  - 남는 쿠키를 먼저 빼면 5로 딱 나누어떨어져요. 그 값을 상자 크기로 나눠 보세요.
+  - "먼저 `cookies`를 만들고 출력해 보세요. 27이 나오나요? `\"23\" + 4`는 덧셈이 아니라 이어 붙이기예요."
+  - "남는 쿠키 수는 나머지 연산자 `%` 하나로 구할 수 있어요. JavaScript의 나눗셈은 소수점을 버리지 않아서 `cookies / perBox`는 4.5예요."
+  - 남는 쿠키를 먼저 빼면 상자 크기로 딱 나누어떨어져요. 그 값을 상자 크기로 나눠 보세요.
 explanation: |
   예시 정답이에요.
 
   ```js
-  const leftover = cookies % perBox;              // 23 % 5 = 3
-  const boxes = (cookies - leftover) / perBox;    // (23 - 3) / 5 = 4
+  const cookies = Number(bakedText) + yesterday;   // 23 + 4 = 27
+  const leftover = cookies % perBox;               // 27 % 6 = 3
+  const boxes = (cookies - leftover) / perBox;     // (27 - 3) / 6 = 4
   ```
 
-  - `%`는 나머지를 구해요. 23을 5로 나누면 몫은 4, 나머지는 3이라 `23 % 5`는 3이에요. 몫이 아니에요.
-  - `cookies / perBox`는 4.6이에요. JavaScript의 `/`는 소수까지 계산하므로 몫만 남기려면 나머지를 먼저 빼고 나눠요.
-  - `(cookies - leftover)`의 괄호를 빼면 `leftover / perBox`가 먼저 계산되어 엉뚱한 값이 돼요.
+  - `bakedText + yesterday`라고 쓰면 `+`가 이어 붙여서 `"234"`가 돼요. 그러면 `"234" % 6`은 0, 상자는 39개가 되어 버려요. 더하기 전에 `Number`로 바꿔요.
+  - `%`는 나머지를 구해요. 27을 6으로 나누면 몫은 4, 나머지는 3이라 `27 % 6`은 3이에요. 몫이 아니에요.
+  - `cookies / perBox`는 4.5예요. JavaScript의 `/`는 소수까지 계산하므로, 몫만 남기려면 나머지를 먼저 빼고 나눠요. `(cookies - leftover)`의 괄호를 빼면 `leftover / perBox`가 먼저 계산되어 엉뚱한 값이 돼요.
 
   나중에 배울 `Math.floor(cookies / perBox)`로도 몫을 구할 수 있어요. 결과가 같으면 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

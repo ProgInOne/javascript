@@ -21,7 +21,6 @@ spec:
       rationale: "0.85는 5의 17%예요. %는 백분율이 아니라 나머지 연산자예요."
     - id: d
       text: "`3.4`"
-      misconception: js.mc.division-truncates
       rationale: 3.4는 17 / 5의 결과예요. %는 나누기가 아니라 나누고 남은 수를 구해요.
   correct: a
 hints:
@@ -38,5 +37,6 @@ explanation: |
   - `3.4`: `17 / 5`의 결과예요. `/`와 `%`는 다른 연산자예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -66,5 +66,6 @@ explanation: |
   "24도 이하"는 `const notTooHot = temp <= 24;`로 고쳐요. 두 조건을 하나로 묶는 방법(`&&`)은 다음 단원에서 배워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

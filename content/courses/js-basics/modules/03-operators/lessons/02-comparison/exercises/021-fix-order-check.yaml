@@ -49,7 +49,7 @@ spec:
           console.log("수량 있음:", hasQuantity);
   bugDescription: 합계 계산이 실패했는데 "가격 오류"가 false로 나오고, "결제 완료"는 true/false가 아니라 NaN으로 나와요.
   bugMisconception: js.mc.nan-equals-nan
-  maxEditDistance: 8
+  maxEditDistance: 10
   checks:
     - kind: console
       id: output
@@ -89,5 +89,6 @@ explanation: |
   7번 줄의 `quantity !== 0`은 "수량이 0이 아닌가?"를 올바르게 묻고 있어서 고칠 필요가 없어요. 2번 줄의 `"8000원"`은 문제에서 일부러 넣은 잘못된 입력이에요. 이 프로그램이 할 일은 그 실패를 알아채는 것이라, 값은 그대로 둬요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

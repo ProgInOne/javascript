@@ -38,5 +38,6 @@ explanation: |
   값이 `null`인지 정확히 확인하려면 `x === null`이라고 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

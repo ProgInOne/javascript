@@ -30,10 +30,8 @@ spec:
       correct: true
     - id: c2
       text: "||는 왼쪽 값과 관계없이 항상 오른쪽 값을 돌려준다"
-      misconception: js.mc.logical-returns-boolean
     - id: c3
       text: 문자열과 이어 붙이는 과정에서 숫자 0이 사라졌다
-      misconception: js.mc.concat-whole-expression
     - id: c4
       text: score를 const로 만들어서 값이 지워졌다
 misconceptions: [js.mc.or-default-keeps-zero]
@@ -51,5 +49,6 @@ explanation: |
   - `const`는 다시 대입을 막을 뿐 값을 지우지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

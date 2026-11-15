@@ -43,5 +43,6 @@ explanation: |
   `==`와 `!=`는 자료형을 바꿔 가며 비교해서 `===`와 결과가 달라질 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -38,5 +38,6 @@ explanation: |
   - `NaN`: `+`는 숫자로 바꾸는 일을 하지 않으므로 NaN이 생길 이유가 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

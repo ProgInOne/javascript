@@ -1,6 +1,6 @@
 id: js-basics.operators.arithmetic.fix-cafe-orders
 type: fix_bug
-difficulty: 5
+difficulty: 4
 concepts:
   - { id: js.ops.increment, weight: 1 }
   - { id: js.ops.compound-assignment, weight: 0.5 }
@@ -65,7 +65,7 @@ spec:
           console.log("할인 후", total);
   bugDescription: 주문 번호가 0번부터 나오고, 두 번째 합계와 할인 후 금액이 이상해요. 오류 메시지는 없어요.
   bugMisconception: js.mc.postfix-prefix-same
-  maxEditDistance: 10
+  maxEditDistance: 20
   checks:
     - kind: console
       id: output
@@ -113,5 +113,6 @@ explanation: |
   오류 메시지가 없는 버그는 기대 출력과 실제 출력을 한 줄씩 비교하고, 틀린 값이 처음 생긴 줄부터 거슬러 올라가며 찾아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

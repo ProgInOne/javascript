@@ -90,5 +90,6 @@ explanation: |
   `"김하늘"`처럼 글자를 직접 써도 이 체크는 통과하지만, 이름이 바뀌면 프로그램도 고쳐야 해요. 연산자로 고르면 어떤 이름이 와도 규칙대로 동작해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

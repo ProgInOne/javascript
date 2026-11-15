@@ -113,5 +113,6 @@ explanation: |
   B에서 경고가 나왔다면 "충전 중이 아님" 부분을 빠뜨렸거나 `!` 위치가 틀렸을 가능성이 커요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

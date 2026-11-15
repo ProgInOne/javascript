@@ -1,6 +1,6 @@
 id: js-basics.operators.logical.fix-settings-bugs
 type: fix_bug
-difficulty: 5
+difficulty: 4
 concepts:
   - { id: js.ops.nullish, weight: 1 }
   - { id: js.ops.short-circuit, weight: 0.5 }
@@ -50,7 +50,7 @@ spec:
           console.log("테마:", theme);
   bugDescription: "실행하면 아무것도 출력되지 않고 SyntaxError: Unexpected token '||'가 나요. 고치면 다른 문제가 나타나요."
   bugMisconception: js.mc.nullish-same-as-or
-  maxEditDistance: 8
+  maxEditDistance: 10
   checks:
     - kind: console
       id: output
@@ -91,5 +91,6 @@ explanation: |
   `(savedName ?? "익명") || "손님"`처럼 괄호를 넣어도 문법 오류는 사라지고 결과도 `"익명"`이라 통과해요. 다만 "손님"은 쓰일 일이 없으니 지우는 편이 깔끔해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

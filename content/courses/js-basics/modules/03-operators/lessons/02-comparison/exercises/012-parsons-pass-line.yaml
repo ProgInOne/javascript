@@ -47,5 +47,6 @@ explanation: |
   - `score === 61`은 합격선과 상관없이 61점인지만 묻는 식이라 요구사항과 달라요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -3,25 +3,35 @@ type: true_false
 difficulty: 1
 concepts:
   - { id: js.ops.loose-equality, weight: 1 }
-tags: [loose-equality, review]
-estimatedSeconds: 30
+  - { id: js.ops.strict-equality, weight: 0.3 }
+tags: [loose-equality, strict-equality, review]
+estimatedSeconds: 40
 usage: assessment
 prompt: |
   다음 설명이 맞는지 고르세요.
 spec:
-  statement: '`==`는 두 값의 자료형이 다르면 한쪽을 바꿔서 비교하므로, `"7" == 7`의 결과는 `true`다.'
+  statement: '`==`와 `===`는 자료형이 **같은** 두 값을 비교할 때는 결과가 같다. 결과가 달라질 수 있는 것은 두 값의 자료형이 다를 때뿐이다.'
   answer: true
-  misconceptionIfWrong: js.mc.loose-equals-like-strict
 misconceptions: [js.mc.loose-equals-like-strict]
 hints:
-  - "`==`와 `===` 중 자료형이 달라도 값을 바꿔서 비교하는 쪽은 어느 것이었나요?"
-  - "`==`는 문자열 `\"7\"`을 숫자로 바꾼 다음 비교해요."
-  - "바꾼 뒤에는 `7 == 7`을 비교하는 셈이에요."
+  - "`==`가 값을 바꿔서 비교하는 것은 어떤 경우였나요?"
+  - "`5 == 5`와 `5 === 5`, `\"a\" == \"b\"`와 `\"a\" === \"b\"`를 각각 비교해 보세요."
+  - "`NaN`처럼 특별한 값도 떠올려 보세요. `NaN == NaN`과 `NaN === NaN`의 결과는 각각 무엇이었나요?"
 explanation: |
-  **맞아요.** `==`(동등 연산자)는 자료형이 다르면 값을 바꿔서 비교해요. 문자열 `"7"`이 숫자 `7`로 바뀌어 `7 == 7`이 되므로 `true`예요.
+  **맞아요.** `==`는 두 값의 자료형이 **다를 때만** 한쪽을 바꿔서 비교해요. 자료형이 같으면 바꿀 것이 없으니 `===`와 똑같이 비교해요.
 
-  자료형까지 같아야 `true`인 것은 `===`(일치 연산자)예요. `"7" === 7`은 `false`예요. 이런 변환 때문에 결과를 예측하기 어려워서, 실무에서는 보통 `===`를 써요.
+  | 식 | `==` | `===` |
+  |---|---|---|
+  | `5` 와 `5` | `true` | `true` |
+  | `"a"` 와 `"b"` | `false` | `false` |
+  | `NaN` 과 `NaN` | `false` | `false` |
+  | `"5"` 와 `5` (자료형이 다름) | `true` | `false` |
+
+  `NaN`은 `==`로 비교해도 자기 자신과 같지 않아요. 결과가 갈리는 것은 마지막 줄처럼 자료형이 다를 때뿐이에요. 그래서 `===`만 써도 잃는 것이 없고, 자료형이 다를 때의 예상 밖 변환만 피할 수 있어요. 실무에서 `===`를 기본으로 쓰는 이유예요.
+
+  "틀리다"를 골랐다면 `==`가 자료형이 같아도 값을 바꾼다고 생각했거나, 반대로 `==`와 `===`가 언제나 같다고 생각했을 수 있어요. `==`가 값을 바꾸는 것은 자료형이 다를 때뿐이고, 그때는 `"5" == 5`처럼 결과가 갈려요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

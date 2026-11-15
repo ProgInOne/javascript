@@ -136,5 +136,6 @@ explanation: |
   `(ageB < 13 || ageB >= 65 || isStudentB) && isWeekdayB`처럼 묶으면 "모든 할인이 평일에만"이라는 다른 규칙이 되어, 주말에 온 어린이 A가 할인을 못 받아요. 규칙 문장에서 "평일에만"이 어디에 붙는지 정확히 읽는 것이 핵심이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -75,5 +75,6 @@ explanation: |
   - `message`에서는 일부러 이어 붙이기를 써요. `nextLevel`과 `needExp`는 이미 계산이 끝난 숫자라서 글자에 그대로 붙어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

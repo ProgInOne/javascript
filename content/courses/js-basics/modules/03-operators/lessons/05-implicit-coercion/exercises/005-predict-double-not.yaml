@@ -26,7 +26,7 @@ misconceptions: [js.mc.string-zero-falsy, js.mc.space-string-falsy]
 hints:
   - "`!!값`은 값이 truthy면 `true`, falsy면 `false`예요."
   - 네 변수 중 숫자는 하나이고 나머지는 문자열이에요. 문자열은 글자가 있는지만 보세요.
-  - 숫자 `0`과 빈 문자열은 falsy예요. `"0"`과 `" "`에는 글자가 있어요.
+  - "문자열이 falsy가 되는 경우는 길이가 0일 때뿐이에요. `\"0\"`과 `\" \"`의 길이는 얼마인가요?"
 explanation: |
   정답은 다음 두 줄이에요.
 
@@ -45,5 +45,6 @@ explanation: |
   `answer`를 `false`로 답했다면 문자열 `"0"`을 숫자 0처럼 봤어요. `nickname`을 `false`로 답했다면 공백을 "빈 것"으로 봤어요. 문자열은 길이가 0일 때만 falsy예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

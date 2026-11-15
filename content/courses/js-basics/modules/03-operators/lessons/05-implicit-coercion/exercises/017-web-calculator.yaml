@@ -138,5 +138,6 @@ explanation: |
   실제 웹 페이지의 입력값 버그 가운데 가장 흔한 것이 이 문제예요. 모듈 10에서 입력칸을 직접 다룰 때 다시 만나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

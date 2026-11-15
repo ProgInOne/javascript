@@ -1,0 +1,96 @@
+id: js-basics.operators.operators-review.impl-trip-budget
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.ops.arithmetic, weight: 1 }
+  - { id: js.ops.precedence, weight: 0.5 }
+  - { id: js.conv.to-number, weight: 0.5 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [arithmetic, to-number, write-code, review]
+estimatedSeconds: 300
+usage: assessment
+prompt: |
+  3박 여행 경비를 계산하는 프로그램을 완성하세요. 숙박비와 식비는 입력창에서 읽은 값이라 **문자열**이에요. 시작 코드의 네 줄은 그대로 두고, 그 아래에 다음 변수를 만들어 출력하세요.
+
+  - `perNight`: 하룻밤 비용 (숙박비 + 식비)
+  - `total`: 여행 경비 (하룻밤 비용 × 박 수)
+  - `left`: 예산에서 여행 경비를 빼고 남는 돈
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  하룻밤 비용: 50000
+  여행 경비: 150000
+  남는 돈: 30000
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const budget = 180000;
+          const nights = 3;
+          const roomText = "38000";   // 1박 숙박비 (입력창에서 읽음)
+          const foodText = "12000";   // 하루 식비 (입력창에서 읽음)
+
+          // 여기에 perNight, total, left를 만들고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const budget = 180000;
+          const nights = 3;
+          const roomText = "38000";   // 1박 숙박비 (입력창에서 읽음)
+          const foodText = "12000";   // 하루 식비 (입력창에서 읽음)
+
+          const perNight = Number(roomText) + Number(foodText);
+          const total = perNight * nights;
+          const left = budget - total;
+          console.log("하룻밤 비용:", perNight);
+          console.log("여행 경비:", total);
+          console.log("남는 돈:", left);
+  checks:
+    - kind: console
+      id: output
+      description: 하룻밤 비용, 여행 경비, 남는 돈이 차례로 출력되어야 합니다.
+      requirement: 경비 출력
+      expect:
+        lines: ["하룻밤 비용: 50000", "여행 경비: 150000", "남는 돈: 30000"]
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, perNight·total·left에 숫자로 계산한 결과가 들어 있으며, 시작 코드의 값은 그대로여야 합니다.
+      requirement: 계산한 변수
+      misconceptionIfFail: js.mc.plus-string-adds
+      expect:
+        globals:
+          perNight: { equals: 50000 }
+          total: { equals: 150000 }
+          left: { equals: 30000 }
+          budget: { equals: 180000 }
+          nights: { equals: 3 }
+          roomText: { equals: "38000" }
+          foodText: { equals: "12000" }
+        noError: true
+misconceptions: [js.mc.plus-string-adds, js.mc.always-left-to-right]
+hints:
+  - "먼저 `perNight`를 만들고 출력해 보세요. 50000이 나오나요?"
+  - "`roomText + foodText`는 두 문자열을 이어 붙여요. 더하기 전에 각각 숫자로 바꿔야 해요."
+  - "perNight를 만들어 두면 total은 `perNight`와 `nights`로, left는 `budget`과 `total`로 계산할 수 있어요. 한 줄로 쓴다면 덧셈을 곱셈보다 먼저 하도록 괄호가 필요해요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const perNight = Number(roomText) + Number(foodText);   // 38000 + 12000 = 50000
+  const total = perNight * nights;                        // 50000 * 3 = 150000
+  const left = budget - total;                            // 180000 - 150000 = 30000
+  ```
+
+  - `roomText + foodText`라고 쓰면 `+`가 문자열을 이어 붙여 `"3800012000"`이 돼요. `-`, `*`와 달리 `+`는 문자열을 숫자로 바꿔 주지 않으니, 더하기 전에 `Number`로 바꿔요.
+  - total을 한 줄로 쓰려면 `(Number(roomText) + Number(foodText)) * nights`처럼 괄호가 필요해요. 괄호가 없으면 `Number(foodText) * nights`가 먼저 계산되어 74000이 돼요.
+  - 문자열 `"38000" * 3`은 `*`가 숫자로 바꿔 주어서 114000으로 계산되긴 해요. 하지만 어떤 연산자가 바꿔 주는지 기억하는 것보다, 입력값을 **처음에 Number로 바꿔 두는 편**이 안전해요.
+  - `const`든 `let`이든 결과가 같으면 정답이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

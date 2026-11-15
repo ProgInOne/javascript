@@ -40,5 +40,6 @@ explanation: |
   `=`를 쓰면 비교가 아니라 대입이 되어 오류가 나요(`isCorrect = choice = answer`에서 const인 choice에 다시 대입하므로 TypeError). `==`, `!=`는 자료형을 바꿔서 비교하는 연산자라서, 문제의 조건(자료형까지 비교)에 맞지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

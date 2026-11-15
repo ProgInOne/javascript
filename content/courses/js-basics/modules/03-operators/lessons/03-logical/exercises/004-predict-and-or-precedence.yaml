@@ -40,5 +40,6 @@ explanation: |
   - 6번 줄을 `true`라고 답했다면 `!`가 `b && c` 전체에 붙는다고 본 거예요. `!`는 바로 뒤의 값 하나(`b`)에만 먼저 붙어요. 7번 줄처럼 괄호로 감싸야 전체가 뒤집혀요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

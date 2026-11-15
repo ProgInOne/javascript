@@ -38,5 +38,6 @@ explanation: |
   - 오류를 골랐다면: 변환에 실패해도 오류는 나지 않고 `NaN`이 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: js-basics.operators.arithmetic.fix-reversed-compound
 type: fix_bug
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.ops.compound-assignment, weight: 1 }
 tags: [compound-assignment, debugging]
@@ -41,7 +41,7 @@ spec:
           console.log("거스름돈:", money);
   bugDescription: 합계가 1200, 거스름돈이 -1200으로 나와요.
   bugMisconception: js.mc.compound-operator-reversed
-  maxEditDistance: 6
+  maxEditDistance: 12
   checks:
     - kind: console
       id: output
@@ -72,5 +72,6 @@ explanation: |
   연산 기호를 `=` 앞에 붙여 `+=`, `-=`로 고치면 합계 3000 + 4500 + 1200 = 8700, 거스름돈 10000 − 8700 = 1300이 나와요. `=+`, `=-`는 문법상 올바른 식이라 오류가 나지 않아요. 그래서 결과를 보고 찾아야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

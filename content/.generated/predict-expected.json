@@ -248,7 +248,7 @@
       }
     },
     "js-basics.operators.operators-review.predict-boolean-conversions": {
-      "inputHash": "3a307e7230cf2d1fc106f55ed3709887c1d1fa683c9a48cb79f1b43a19757ab3",
+      "inputHash": "2fc0df9847cfd5d444b524903d8cb27d01e1ec235bf73eba01bc697f15027232",
       "expected": {
         "kind": "console",
         "lines": [
@@ -258,21 +258,21 @@
       }
     },
     "js-basics.operators.operators-review.predict-increment-values": {
-      "inputHash": "1384adba0318eab157d0eebc32e5764c69ed7a58de3a116e45ed8d417bd18083",
+      "inputHash": "72dc7e2f427b9077b7ea6b3534a0998104b47be6b23a7a69d0a7ba3d53c99dcb",
       "expected": {
         "kind": "console",
         "lines": [
-          "5 7 7"
+          "true true 1"
         ]
       }
     },
     "js-basics.operators.operators-review.predict-precedence-mix": {
-      "inputHash": "a588e8f7c3f8870f67268fdbf7b9df091eb9e9527073aec8c92d0515e1f06d41",
+      "inputHash": "725658ca71520f57754339161d82ed91308dde8d113e0401315a16dd0f1dd5e4",
       "expected": {
         "kind": "console",
         "lines": [
           "4",
-          "9"
+          "true"
         ]
       }
     },

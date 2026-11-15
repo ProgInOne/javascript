@@ -1,6 +1,6 @@
 id: js-basics.operators.implicit-coercion.fix-saved-settings
 type: fix_bug
-difficulty: 5
+difficulty: 4
 concepts:
   - { id: js.conv.truthy-falsy, weight: 1 }
   - { id: js.ops.short-circuit, weight: 0.5 }
@@ -121,5 +121,6 @@ explanation: |
   별명 줄의 `savedName || "손님"`은 맞아요. 규칙이 "빈 문자열이면 손님"이고, 빈 문자열은 falsy라서 `||`가 "손님"을 골라요. 여기서 `??`로 바꾸면 빈 문자열이 그대로 남아서 오히려 틀려요. **기본값을 정할 때는 "어떤 값을 비어 있다고 볼지"에 따라 `||`와 `??`를 골라요.**
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

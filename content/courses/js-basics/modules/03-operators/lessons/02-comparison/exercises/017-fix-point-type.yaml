@@ -1,6 +1,6 @@
 id: js-basics.operators.comparison.fix-point-type
 type: fix_bug
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.ops.loose-equality, weight: 1 }
   - { id: js.ops.strict-equality, weight: 0.5 }
@@ -69,5 +69,6 @@ explanation: |
   4번 줄만 고쳐도 출력은 맞지만, 같은 검사는 같은 연산자로 쓰는 게 좋아요. `pointB`를 숫자로 바꾸면 "잘못 저장된 값을 찾아내는" 검사의 의미가 사라지니, 값은 그대로 두는 것이 맞아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

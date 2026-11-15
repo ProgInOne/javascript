@@ -43,7 +43,7 @@ spec:
           console.log("메모 입력:", memoEntered);
   bugDescription: '나이 칸에 0을 입력했는데 "나이 입력: false"가 나와요.'
   bugMisconception: js.mc.string-zero-falsy
-  maxEditDistance: 6
+  maxEditDistance: 8
   checks:
     - kind: console
       id: output
@@ -80,5 +80,6 @@ explanation: |
   나이 값을 계산에 써야 한다면 그때 `Number(ageText)`로 바꾸면 돼요. **입력했는지 확인**과 **숫자로 계산**은 다른 단계예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

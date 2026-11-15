@@ -96,7 +96,7 @@ console.log("사과" && "배");   // 배    (왼쪽이 truthy → 오른쪽)
 
 ### 단락 평가: 오른쪽을 아예 계산하지 않아요
 
-`false && 무엇`은 무엇이 오든 거짓이고, `true || 무엇`은 무엇이 오든 참이에요. 그래서 JavaScript는 왼쪽만 보고 결과가 정해지면 **오른쪽을 계산하지 않아요.** 이것을 **단락 평가**(short-circuit evaluation)라고 해요. 전기 회로가 짧게 끊겨 뒤쪽으로 전류가 흐르지 않는 것과 비슷해요.
+`false && 무엇`은 무엇이 오든 거짓이고, `true || 무엇`은 무엇이 오든 참이에요. 그래서 JavaScript는 왼쪽만 보고 결과가 정해지면 **오른쪽을 계산하지 않아요.** 이것을 **단락 평가**(short-circuit evaluation)라고 해요. 전류가 지름길(short circuit)로 빠져서 회로의 뒤쪽을 지나가지 않는 것에 빗댄 이름이에요.
 
 ```js
 false && console.log("A");   // 아무것도 출력되지 않아요
@@ -278,14 +278,14 @@ light
 
 <Pitfall misconception="js.mc.not-applies-to-whole">
 <Wrong>`!age >= 19`는 "19세 이상이 아니다"라는 뜻이다.</Wrong>
-<Actual>`!`가 `age`에 먼저 붙어 `(!age) >= 19`가 돼요. `age`가 15면 `!15`는 `false`, `false >= 19`는 `false`예요. 미성년자인데도 `false`가 나와요.</Actual>
+<Actual>`!`가 `age`에 먼저 붙어 `(!age) >= 19`가 돼요. `age`가 15면 `!15`는 `false`이고, `false >= 19`는 `false`를 숫자 0으로 바꿔 `0 >= 19`를 계산하니 `false`예요. 미성년자인데도 `false`가 나와요.</Actual>
 <Right>식 전체를 뒤집으려면 `!(age >= 19)`처럼 괄호로 감싸요. 더 간단하게 `age < 19`라고 쓸 수도 있어요.</Right>
 </Pitfall>
 
 <Pitfall misconception="js.mc.logical-returns-boolean">
 <Wrong>`"사과" || "배"`의 결과는 `true`다. 논리 연산자의 결과는 항상 `true`나 `false`다.</Wrong>
 <Actual>결과는 `"사과"`예요. `0 && "배"`의 결과도 `false`가 아니라 `0`이에요.</Actual>
-<Right>`&&`와 `||`는 양쪽 값 중 하나를 **그대로** 돌려줘요. `true`/`false`가 나오는 건 양쪽에 `true`/`false`를 넣었을 때뿐이에요.</Right>
+<Right>`&&`와 `||`는 양쪽 값 중 하나를 **그대로** 돌려줘요. 결과가 `true`/`false`라면, 고른 쪽의 값이 원래 `true`/`false`였기 때문이에요.</Right>
 </Pitfall>
 
 <Pitfall misconception="js.mc.right-side-always-runs">
@@ -312,6 +312,8 @@ light
 const name = savedName ?? "익명" || "손님";
 // SyntaxError: Unexpected token '||'
 ```
+
+오류 설명은 코드 모양에 따라 달라질 수 있어요. 예를 들어 같은 식을 `console.log(…)`의 괄호 안에 쓰면 Chrome은 `missing ) after argument list`라고 알려 줘요. 설명이 달라도 원인은 같으니, 그 줄에 `??`와 `||`·`&&`가 괄호 없이 섞여 있는지 확인해요.
 
 정말 섞어야 한다면 `(savedName ?? "익명") || "손님"`처럼 괄호로 순서를 정해요. 보통은 둘 중 하나만 쓰면 충분해요.
 </Section>

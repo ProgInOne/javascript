@@ -1,6 +1,6 @@
 id: js-basics.operators.logical.predict-and-returns-zero
 type: predict_output
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.ops.short-circuit, weight: 1 }
 tags: [short-circuit, logical-and, logical-or]
@@ -37,5 +37,6 @@ explanation: |
   `&&`로 "있을 때만 글자"를 만들면 없을 때 `0` 같은 의외의 값이 남을 수 있어요. 화면에 `0`이 그대로 찍히는 버그는 실무에서도 자주 생겨요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

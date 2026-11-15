@@ -28,11 +28,11 @@ spec:
       misconception: js.mc.boolean-reads-string-content
       rationale: 글자의 뜻은 보지 않아요. 글자가 있으니 truthy예요.
   correct: [a, b, c]
-misconceptions: [js.mc.string-zero-falsy, js.mc.empty-array-falsy]
+misconceptions: [js.mc.string-zero-falsy, js.mc.empty-array-falsy, js.mc.boolean-reads-string-content]
 hints:
   - 정답이 하나가 아닐 수 있어요. falsy 값 목록과 하나씩 대조해 보세요.
   - 문자열은 따옴표 안에 글자가 있는지만 보면 돼요.
-  - 숫자 중 falsy는 `0`과 `NaN`, 문자열 중 falsy는 빈 문자열뿐이에요.
+  - 숫자 중 falsy는 두 개, 문자열 중 falsy는 하나뿐이에요. 배열은 falsy 목록에 있었나요?
 explanation: |
   정답은 **`0`, `""`, `NaN`**이에요.
 
@@ -42,5 +42,6 @@ explanation: |
   - `[]`: 배열은 비어 있어도 truthy예요. "비어 있다"와 "falsy"는 다른 개념이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -34,5 +34,6 @@ explanation: |
   - `6`이나 따옴표 없는 `33`이라고 답했다면 `"3"`을 숫자처럼 본 거예요. 마지막 단계에서 문자열과 만났으니 결과는 문자열이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

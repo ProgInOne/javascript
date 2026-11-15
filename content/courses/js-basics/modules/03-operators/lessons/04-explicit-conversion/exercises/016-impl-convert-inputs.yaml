@@ -53,7 +53,7 @@ spec:
 hints:
   - "`\"17\" + 1`은 덧셈이 아니라 글자 이어 붙이기가 돼요. 계산하기 전에 무엇을 해야 할까요?"
   - 문자열 전체가 숫자인 값은 Number(문자열)로 바꿀 수 있어요.
-  - "`const age = Number(ageText);`처럼 키도 같은 방법으로 바꾼 뒤, console.log에 쉼표로 글자와 값을 나눠 출력하세요."
+  - "나이와 키를 각각 Number로 바꿔 `age`, `height`에 넣어요. 내년 나이는 출력할 때 `age + 1`로 계산해도 돼요."
 explanation: |
   예시 정답이에요.
 
@@ -69,5 +69,6 @@ explanation: |
   바꾸지 않고 `ageText + 1`을 출력하면 `171`이라는 글자가 나와요. `+`는 한쪽이 문자열이면 이어 붙이기 때문이에요(다음 단원 "암묵적 형 변환"에서 자세히 배워요).
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

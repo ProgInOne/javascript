@@ -1,6 +1,6 @@
 id: js-basics.operators.logical.predict-nullish-mix
 type: predict_output
-difficulty: 4
+difficulty: 3
 concepts:
   - { id: js.ops.nullish, weight: 1 }
   - { id: js.ops.short-circuit, weight: 0.5 }
@@ -22,7 +22,6 @@ spec:
   answerKind: console
   misconceptionByAnswer:
     "5\n5\n이름 없음\n파랑\n7": js.mc.nullish-same-as-or
-    "5\n5\n이름 없음\n파랑\n5": js.mc.nullish-same-as-or
     "0\n0\n이름 없음\n파랑\n0": js.mc.or-default-keeps-zero
 misconceptions: [js.mc.nullish-same-as-or, js.mc.or-default-keeps-zero]
 hints:
@@ -45,5 +44,6 @@ explanation: |
   - 마지막 줄은 `??`를 이어 쓴 것이에요. `null`이 아닌 첫 값 `0`에서 멈춰요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

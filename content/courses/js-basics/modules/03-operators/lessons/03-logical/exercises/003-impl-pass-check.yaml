@@ -81,5 +81,6 @@ explanation: |
   `true`/`false`를 직접 써도 이 체크는 통과하지만, 점수가 바뀌면 다시 고쳐야 해요. 규칙을 식으로 써 두면 값이 바뀌어도 자동으로 맞는 결과가 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

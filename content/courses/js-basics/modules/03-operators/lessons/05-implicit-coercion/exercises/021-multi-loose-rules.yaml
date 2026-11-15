@@ -29,7 +29,7 @@ misconceptions: [js.mc.loose-equality-uses-truthiness, js.mc.null-loose-equals-z
 hints:
   - 정답이 하나가 아닐 수 있어요. 각 설명을 실제 예로 바꿔 확인해 보세요.
   - '`"0" == false`의 결과를 떠올려 보세요. `"0"`은 truthy인데 결과는 무엇이었나요?'
-  - "`==`는 주로 \"숫자로 바꿔서\" 비교하고, `null`과 `NaN`에는 특별한 규칙이 있어요."
+  - "`null == 0`과 `NaN == NaN`의 결과도 떠올려 보세요. `null`과 `NaN`에는 특별한 규칙이 있었어요."
 explanation: |
   정답은 **a, b, c**예요.
 
@@ -42,5 +42,6 @@ explanation: |
   이렇게 규칙이 복잡하기 때문에 실무에서는 `===`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -22,5 +22,6 @@ explanation: |
   JavaScript는 문자열의 뜻을 읽지 않아요. 숫자 `0`은 falsy지만, 따옴표로 감싼 `"0"`은 숫자가 아니라 글자라는 점을 구분하세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: js-basics.operators.comparison.impl-score-compare
 type: implement_function
-difficulty: 4
+difficulty: 3
 concepts:
   - { id: js.ops.relational, weight: 1 }
   - { id: js.ops.strict-equality, weight: 0.5 }
@@ -83,7 +83,7 @@ spec:
 hints:
   - 표의 "높으면", "같으면", "이상"을 각각 어떤 연산자로 옮길지 먼저 정하세요.
   - "\"이상\"은 같은 값도 포함해요. 친구 점수 92와 최고 기록 92가 같을 때 true가 나와야 해요."
-  - "`iWin`은 `>`, `isTie`는 `===`, `friendRecord`는 `>=`로 비교하고, `gap`은 빼기로 계산한 뒤 네 줄을 출력하세요."
+  - "`iWin`은 `>`, `isTie`는 `===`로 비교해요. `friendRecord`는 92와 92가 같을 때도 true가 되는 연산자를 고르고, `gap`은 비교가 아니라 빼기로 계산해요."
 explanation: |
   예시 정답이에요.
 
@@ -99,5 +99,6 @@ explanation: |
   - `gap`은 비교가 아니라 계산이에요. 비교 연산자와 산술 연산자를 목적에 맞게 골라 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

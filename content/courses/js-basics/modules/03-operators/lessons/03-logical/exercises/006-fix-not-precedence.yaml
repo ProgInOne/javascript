@@ -62,12 +62,13 @@ explanation: |
   원래 코드 `!age >= 19`는 이렇게 계산됐어요.
 
   1. `!`가 먼저 `age`에 붙어요: `!15` → `false` (15는 truthy라서 뒤집으면 false)
-  1. `false >= 19` → `false`
+  1. `false >= 19` → `false` (비교할 때 `false`는 숫자 0으로 바뀌어 `0 >= 19`가 돼요)
 
   그래서 `isMinor`가 `false`가 되고, 3번 줄의 `canBuyAlcohol`도 거꾸로 `true`가 됐어요. 오류 메시지가 없어서 찾기 어려운 버그예요.
 
   `!`는 바로 뒤의 값 하나에만 먼저 붙어요. 비교 전체를 뒤집으려면 괄호로 감싸요. 3번 줄의 `!isMinor`는 변수 하나를 뒤집으니 괄호가 필요 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -39,7 +39,7 @@ misconceptions: [js.mc.loose-equality-uses-truthiness]
 hints:
   - "`isSoldOut`의 값을 정하는 줄은 어디인가요?"
   - "`==`는 문자열과 숫자를 비교할 때 문자열을 무엇으로 바꾸나요? `Number(\" \")`의 결과를 떠올려 보세요."
-  - 공백 문자열은 truthy예요. 그런데도 0과 같다고 나온 이유는 truthy·falsy가 아니라 숫자 변환 때문이에요.
+  - 공백 문자열은 truthy예요. 그러니 "falsy라서 0과 같다"는 이유는 아니에요. `==`가 비교하기 전에 무엇을 하는지 떠올려 보세요.
 explanation: |
   원인은 **2번 줄**이에요. `stockInput == 0`은 문자열과 숫자를 비교하므로 `==`가 `" "`을 숫자로 바꿔요. 공백만 있는 문자열은 숫자로 바꾸면 `0`이라서 `0 == 0` → `true`가 됐어요.
 
@@ -54,5 +54,6 @@ explanation: |
   - `==`가 항상 `true`인 것은 아니에요. `"5" == 0`은 `false`예요. 문자열이 숫자로 바뀐 값에 따라 달라져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

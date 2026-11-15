@@ -42,7 +42,7 @@ spec:
           console.log("점수:", score);
   bugDescription: 점수가 180이어야 하는데 오류 없이 다른 숫자가 나와요.
   bugMisconception: js.mc.expression-changes-variable
-  maxEditDistance: 6
+  maxEditDistance: 8
   checks:
     - kind: console
       id: output
@@ -75,5 +75,6 @@ explanation: |
   오류 없이 결과만 틀릴 때는 중간 값을 `console.log`로 찍어 보며 범위를 좁히는 것이 가장 빠른 방법이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

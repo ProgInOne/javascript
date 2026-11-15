@@ -93,5 +93,6 @@ explanation: |
   세 줄을 모두 같은 방식으로 고쳐요. `!familyAnswer`처럼 falsy로 판단해도 이 문제의 값들에서는 정답이에요. 빈 문자열만 falsy인 문자열이기 때문이에요. 하지만 "무엇과 비교하는지"가 드러나는 `=== ""`가 읽기 쉬워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

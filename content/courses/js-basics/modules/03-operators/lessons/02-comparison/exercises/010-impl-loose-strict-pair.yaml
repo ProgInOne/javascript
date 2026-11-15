@@ -59,7 +59,7 @@ spec:
 hints:
   - 두 변수는 같은 두 값을 비교하고, 연산자만 달라요.
   - "`==`는 자료형이 다르면 값을 바꿔서 비교하고, `===`는 바꾸지 않아요."
-  - "`const looseResult = textNumber == realNumber;`처럼 비교식을 변수에 넣은 다음, `strictResult`도 같은 모양으로 만들고 console.log로 출력하세요."
+  - "`const same = a === b;`처럼 비교식을 `=` 오른쪽에 쓰면 결과가 변수에 들어가요. 두 변수를 만든 뒤 console.log에 설명 글자와 변수를 쉼표로 함께 넣으세요."
 explanation: |
   예시 정답이에요.
 
@@ -76,5 +76,6 @@ explanation: |
   같은 두 값인데 연산자에 따라 결과가 달라져요. 의도하지 않은 변환을 막으려면 `===`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

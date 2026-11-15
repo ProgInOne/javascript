@@ -139,5 +139,6 @@ explanation: |
   `total * 0.9 + shippingFee`처럼 한 줄로 써도 결과가 같으면 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: js-basics.operators.arithmetic.find-bug-candy-share
 type: find_bug_line
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.ops.remainder, weight: 1 }
   - { id: js.ops.arithmetic, weight: 0.3 }
@@ -34,7 +34,6 @@ spec:
       misconception: js.mc.remainder-is-quotient
     - id: c3
       text: /가 소수점을 버리지 않아서 3번 줄의 계산이 틀렸다
-      misconception: js.mc.division-truncates
 misconceptions: [js.mc.remainder-is-quotient]
 hints:
   - 한 명당 7개는 맞게 나왔어요. 틀린 값은 무엇이고, 그 값은 어느 줄에서 만들어지나요?
@@ -49,5 +48,6 @@ explanation: |
   - `/`가 소수까지 계산하는 것은 맞지만, 3번 줄은 나누어떨어지는 35를 나누므로 문제가 없어요. 증상은 4번 줄에서 생겼어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

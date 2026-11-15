@@ -63,5 +63,6 @@ explanation: |
   `Boolean(Number(phone))`처럼 숫자로 먼저 바꾸면 안 돼요. `"0"`이 입력된 칸은 숫자 `0`이 되어 "입력 안 함"으로 처리돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -63,5 +63,6 @@ explanation: |
   1·2번 줄의 따옴표를 지워도 이 프로그램은 맞게 동작하지만, 실제로는 외부에서 받은 값을 고칠 수 없는 경우가 많아요. 받은 문자열을 `Number`로 바꾸는 습관을 들여요. 한쪽만 바꾸면 `5000 + "7000"`이 되어 여전히 이어 붙여지니 양쪽 모두 바꿔야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

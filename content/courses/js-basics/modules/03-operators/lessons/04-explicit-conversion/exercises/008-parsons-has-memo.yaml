@@ -54,5 +54,6 @@ explanation: |
   - `memo === true`: 문자열 `"0"`과 불리언 `true`는 자료형이 달라서 항상 `false`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

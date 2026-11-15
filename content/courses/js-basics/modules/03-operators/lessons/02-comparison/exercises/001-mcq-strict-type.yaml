@@ -39,5 +39,6 @@ explanation: |
   - 오류를 고른 경우: 자료형이 다른 값도 비교할 수 있고, 결과가 `false`일 뿐이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

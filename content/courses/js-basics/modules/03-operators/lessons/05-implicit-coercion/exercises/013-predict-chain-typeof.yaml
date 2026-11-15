@@ -1,6 +1,6 @@
 id: js-basics.operators.implicit-coercion.predict-chain-typeof
 type: predict_output
-difficulty: 4
+difficulty: 3
 concepts:
   - { id: js.conv.plus-concat, weight: 1 }
   - { id: js.conv.to-number, weight: 0.5 }
@@ -48,5 +48,6 @@ explanation: |
   - `c`를 숫자 `8`처럼 계산했다면 마지막 `+ "2"`를 덧셈으로 본 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

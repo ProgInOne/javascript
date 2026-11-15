@@ -23,7 +23,6 @@ spec:
       correct: true
     - id: r2
       text: console.log는 변수를 출력만 할 수 있고 계산은 할 수 없어서 60이 출력되지 않는다
-      misconception: js.mc.log-is-return
     - id: r3
       text: score + 10을 계산하면 그 결과가 자동으로 score에 저장된다
       misconception: js.mc.expression-changes-variable
@@ -42,5 +41,6 @@ explanation: |
   - "결과가 자동으로 저장된다": 계산식은 변수를 바꾸지 않아요. 바꾸는 것은 대입뿐이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

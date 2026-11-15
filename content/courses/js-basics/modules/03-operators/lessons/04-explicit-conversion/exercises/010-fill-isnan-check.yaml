@@ -46,5 +46,6 @@ explanation: |
   `age === NaN`이라고 쓰면 항상 `false`예요. `NaN`은 자기 자신을 포함해 어떤 값과도 같지 않기 때문이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -3,27 +3,30 @@ type: predict_output
 difficulty: 2
 concepts:
   - { id: js.conv.to-boolean, weight: 1 }
-  - { id: js.ops.logical-and-or-not, weight: 0.3 }
-tags: [to-boolean, review]
-estimatedSeconds: 70
+  - { id: js.conv.to-number, weight: 0.5 }
+  - { id: js.conv.truthy-falsy, weight: 0.3 }
+tags: [to-boolean, to-number, review]
+estimatedSeconds: 80
 usage: assessment
 prompt: |
-  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요?
+  입력창에서 읽은 값 두 개를 그대로, 그리고 숫자로 바꾼 뒤 참·거짓으로 바꿔 봐요. 실행하면 콘솔에 무엇이 출력되나요?
 spec:
   lang: js
   code: |
-    console.log(Boolean("false"), Boolean(""));
-    console.log(!!"0", !!0);
+    const countText = "0";
+    const memo = " ";
+    console.log(Boolean(countText), Boolean(Number(countText)));
+    console.log(Boolean(memo), Boolean(Number(memo)));
   answerKind: console
   misconceptionByAnswer:
-    "false false\nfalse false": js.mc.boolean-reads-string-content
-    "false false\ntrue false": js.mc.boolean-reads-string-content
-    "true false\nfalse false": js.mc.string-zero-falsy
-misconceptions: [js.mc.boolean-reads-string-content, js.mc.string-zero-falsy]
+    "false false\ntrue false": js.mc.string-zero-falsy
+    "false false\nfalse false": js.mc.string-zero-falsy
+    "true false\nfalse false": js.mc.space-string-falsy
+misconceptions: [js.mc.string-zero-falsy, js.mc.space-string-falsy, js.mc.empty-string-to-nan]
 hints:
-  - Boolean은 글자의 **뜻**을 읽을까요, 글자가 **있는지**만 볼까요?
-  - "문자열 중에서 false가 되는 것은 글자가 하나도 없는 `\"\"` 하나뿐이에요. `!!값`은 `Boolean(값)`과 같아요."
-  - '`"false"`와 `"0"`은 글자가 있는 문자열이고, `0`은 숫자예요.'
+  - "`Boolean(Number(값))`은 안쪽부터 계산해요. 먼저 숫자로 바꾼 결과가 무엇인지 적어 보세요."
+  - "문자열은 글자가 하나라도 있으면 `true`예요. 숫자는 `0`과 `NaN`만 `false`예요."
+  - "`Number(\"0\")`는 0이에요. 공백만 있는 문자열을 Number로 바꾸면 무엇이 되는지 명시적 형 변환 단원의 표를 떠올려 보세요."
 explanation: |
   정답은 아래 두 줄이에요.
 
@@ -32,13 +35,20 @@ explanation: |
   true false
   ```
 
-  - `Boolean("false")`: 글자 `false`가 들어 있는 **문자열**이에요. Boolean은 글자의 뜻을 읽지 않으므로 `true`예요.
-  - `Boolean("")`: 글자가 하나도 없는 빈 문자열이라 `false`예요.
-  - `!!"0"`: `!`를 두 번 쓰면 `Boolean(값)`과 같아요. `"0"`은 글자가 있는 문자열이라 `true`예요.
-  - `!!0`: 숫자 `0`은 false로 취급되는 값이라 `false`예요.
+  | 식 | 안쪽 결과 | 최종 결과 |
+  |---|---|---|
+  | `Boolean("0")` | | `true` (글자가 있는 문자열) |
+  | `Boolean(Number("0"))` | `0` | `false` |
+  | `Boolean(" ")` | | `true` (공백도 글자) |
+  | `Boolean(Number(" "))` | `0` (공백만 있으면 0) | `false` |
 
-  숫자 `0`과 문자열 `"0"`을 구별하는 것이 핵심이에요. 입력창에서 읽은 값은 문자열이라, `"0"`을 입력해도 true가 돼요.
+  - 문자열을 Boolean으로 바꾸면 **글자가 있는지만** 봐요. `"0"`과 `" "`는 글자가 하나씩 있어서 `true`예요. 글자 `0`의 뜻이나 공백이라는 점은 상관없어요.
+  - 먼저 Number로 바꾸면 이야기가 달라져요. `"0"`은 숫자 `0`, 공백만 있는 `" "`도 `0`이 되고, `0`은 `false`예요.
+  - `Number(" ")`가 `NaN`이라고 생각했더라도 `NaN`도 `false`라서 답은 같아요. 하지만 실제 값은 `0`이에요.
+
+  같은 입력이라도 **어떤 변환을 먼저 하느냐**에 따라 참·거짓이 달라져요. 입력값이 "0인지"를 알고 싶으면 숫자로 바꾼 뒤 비교하고, "입력했는지"를 알고 싶으면 문자열 그대로 확인해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

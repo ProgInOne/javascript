@@ -38,5 +38,6 @@ explanation: |
   - `10 === 5 + 5`: 산술 연산이 먼저 계산되어 `10 === 10`이 되므로 `true`.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

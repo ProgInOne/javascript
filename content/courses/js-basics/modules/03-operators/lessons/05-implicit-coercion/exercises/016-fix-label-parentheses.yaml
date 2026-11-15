@@ -63,5 +63,6 @@ explanation: |
   `const total = apples + pears;`로 먼저 계산해 두고 `"모두 " + total + "개"`처럼 써도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

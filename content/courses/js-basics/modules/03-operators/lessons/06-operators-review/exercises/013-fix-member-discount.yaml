@@ -1,0 +1,90 @@
+id: js-basics.operators.operators-review.fix-member-discount
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+  - { id: js.conv.plus-concat, weight: 0.5 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+tags: [short-circuit, plus-concat, review]
+estimatedSeconds: 180
+usage: assessment
+prompt: |
+  회원이면 2000원을 할인해 주는 계산 코드예요. 회원이 아닌 손님은 할인 금액이 `0원`으로 보여야 해요. 할인 금액 변수(`discountA`, `discountB`)에 숫자가 들어가도록 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  A 할인: 2000원, 결제: 13000원
+  B 할인: 0원, 결제: 15000원
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const price = 15000;
+          const memberDiscount = 2000;
+          const isMemberA = true;
+          const isMemberB = false;
+
+          const discountA = isMemberA && memberDiscount;
+          const discountB = isMemberB && memberDiscount;
+          console.log("A 할인: " + discountA + "원, 결제: " + (price - discountA) + "원");
+          console.log("B 할인: " + discountB + "원, 결제: " + (price - discountB) + "원");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const price = 15000;
+          const memberDiscount = 2000;
+          const isMemberA = true;
+          const isMemberB = false;
+
+          const discountA = isMemberA && memberDiscount || 0;
+          const discountB = isMemberB && memberDiscount || 0;
+          console.log("A 할인: " + discountA + "원, 결제: " + (price - discountA) + "원");
+          console.log("B 할인: " + discountB + "원, 결제: " + (price - discountB) + "원");
+  bugDescription: "B 손님의 할인 금액이 `0원`이 아니라 `false원`으로 나와요. 결제 금액은 맞게 나와요."
+  maxEditDistance: 10
+  checks:
+    - kind: console
+      id: output
+      description: 두 손님의 할인 금액과 결제 금액이 정해진 형식으로 출력되어야 합니다.
+      requirement: 영수증 출력
+      expect:
+        lines: ["A 할인: 2000원, 결제: 13000원", "B 할인: 0원, 결제: 15000원"]
+    - kind: program
+      id: discounts
+      description: 프로그램이 오류 없이 끝나고, discountA는 2000, discountB는 숫자 0이어야 합니다.
+      requirement: 할인 금액
+      misconceptionIfFail: js.mc.logical-returns-boolean
+      expect:
+        globals:
+          discountA: { equals: 2000 }
+          discountB: { equals: 0 }
+        noError: true
+misconceptions: [js.mc.logical-returns-boolean]
+hints:
+  - "`isMemberB && memberDiscount`가 돌려주는 값을 따로 출력해 보세요. 숫자일까요?"
+  - "`&&`는 왼쪽이 falsy이면 **왼쪽 값 그 자체**를 돌려줘요. 그래서 discountB에는 `false`가 들어가고, `+`가 그 값을 글자 `\"false\"`로 이어 붙였어요."
+  - "왼쪽 결과가 falsy일 때 기본값 0을 고르게 하려면, 6·7번 줄 식 뒤에 어떤 연산자를 이어 붙이면 될까요?"
+explanation: |
+  6·7번 줄 끝에 `|| 0`을 붙이면 돼요.
+
+  ```js
+  const discountA = isMemberA && memberDiscount || 0;   // 2000 || 0 → 2000
+  const discountB = isMemberB && memberDiscount || 0;   // false || 0 → 0
+  ```
+
+  | 식 | 결과 | 이유 |
+  |---|---|---|
+  | `true && 2000` | `2000` | 왼쪽이 truthy라서 오른쪽 값을 돌려줘요 |
+  | `false && 2000` | `false` | 왼쪽이 falsy라서 왼쪽 값을 그대로 돌려줘요 |
+  | `false \|\| 0` | `0` | 왼쪽이 falsy라서 오른쪽(기본값)을 돌려줘요 |
+
+  - `&&`와 `||`는 `true`·`false`로 바꾼 결과가 아니라 **왼쪽이나 오른쪽 값 그 자체**를 돌려줘요. discountB에 `false`가 들어가서 `"B 할인: " + false`가 `"B 할인: false"`가 됐어요.
+  - 결제 금액은 왜 맞았을까요? `-`는 값을 숫자로 바꿔 계산하므로 `15000 - false`는 `15000 - 0` = 15000이에요. 오류도 없고 결제 금액도 맞아서 버그를 놓치기 쉬워요.
+  - `&&`가 `||`보다 먼저 계산되므로 괄호 없이 써도 되지만, `(isMemberB && memberDiscount) || 0`처럼 괄호를 쓰면 의도가 더 잘 보여요. 결과가 같으면 다른 방법(예: `Number(...)`로 감싸기)도 정답이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

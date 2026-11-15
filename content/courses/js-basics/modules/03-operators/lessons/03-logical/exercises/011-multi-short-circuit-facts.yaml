@@ -43,5 +43,6 @@ explanation: |
   - d: 왼쪽이 `true`라 `||`는 오른쪽을 보지 않아요. 그래서 B는 출력되지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -39,5 +39,6 @@ explanation: |
   - console.log 안에서도 비교식이나 대입식을 쓸 수 있어요. 오류는 나지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

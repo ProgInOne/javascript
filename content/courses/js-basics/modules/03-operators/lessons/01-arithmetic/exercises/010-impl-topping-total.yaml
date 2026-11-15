@@ -60,5 +60,6 @@ explanation: |
   `price * count + toppingPrice * count`처럼 나눠 써도 결과가 같으니 정답이에요. 괄호를 쓰면 "한 개 값 × 개수"라는 뜻이 더 잘 보여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

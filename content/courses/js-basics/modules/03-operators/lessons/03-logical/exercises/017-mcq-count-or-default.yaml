@@ -42,5 +42,6 @@ explanation: |
   - `true`·`false`를 골랐다면: `||`는 양쪽 값 중 하나를 그대로 돌려줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

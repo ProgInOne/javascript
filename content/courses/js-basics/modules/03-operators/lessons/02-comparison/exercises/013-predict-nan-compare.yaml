@@ -34,5 +34,6 @@ explanation: |
   3번째 줄을 `true`라고 했다면 NaN끼리는 같다고 생각한 거예요. NaN은 `===`로 확인할 수 없고 `Number.isNaN`을 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

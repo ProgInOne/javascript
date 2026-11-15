@@ -58,5 +58,6 @@ explanation: |
   - `2`를 직접 쓰면 이번 출력은 맞지만, 달걀 수가 바뀌면 다시 계산해야 해요. 변수로 계산해 두면 `eggs`만 바꿔도 맞는 답이 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -95,5 +95,6 @@ explanation: |
   `Number(inputCode) === savedCode`도 같은 이유로 틀려요. `Number("")`는 0이기 때문이에요. 그래서 입력 쪽을 숫자로 바꾸지 않고, 저장된 숫자를 `String`으로 바꿔 **문자열끼리** 비교하면 두 경우 모두 맞아요. `"" === String(savedCode)`처럼 다른 순서로 써도 결과가 같으면 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

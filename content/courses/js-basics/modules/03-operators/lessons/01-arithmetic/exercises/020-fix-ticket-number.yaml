@@ -65,5 +65,6 @@ explanation: |
   두 줄로 쓰면 앞뒤 차이를 고민하지 않아도 돼서 읽기 쉬워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

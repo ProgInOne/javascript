@@ -76,5 +76,6 @@ explanation: |
   4번 줄만 고쳐도 체크는 통과하지만, 5·6번 줄도 `??`로 바꾸는 편이 안전해요. 예를 들어 나중에 자막 크기 0(자막 끄기)을 허용하면 `||`는 또 같은 버그를 만들어요. 숫자 설정처럼 0도 올바른 값이면 `??`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

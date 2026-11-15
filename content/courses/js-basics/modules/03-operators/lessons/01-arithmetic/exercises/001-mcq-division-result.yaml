@@ -37,5 +37,6 @@ explanation: |
   - `4 ... 1`: 이런 형태로 보여 주는 연산자는 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

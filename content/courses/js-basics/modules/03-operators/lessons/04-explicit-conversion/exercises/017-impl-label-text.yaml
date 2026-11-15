@@ -48,7 +48,7 @@ spec:
 hints:
   - 어떤 값이든 글자로 바꿔 주는 변환 방법이 있어요.
   - String(값)은 값을 보이는 그대로 글자로 바꿔요.
-  - "`const scoreText = String(score);`처럼 passed도 같은 방법으로 바꾸세요. 글자를 직접 써서 \"95\"라고 넣으면 score가 바뀌었을 때 따라가지 못해요."
+  - "score와 passed를 각각 String으로 바꿔 두 변수에 넣어요. 글자를 직접 써서 \"95\"라고 넣으면 score가 바뀌었을 때 따라가지 못해요."
 explanation: |
   예시 정답이에요.
 
@@ -62,5 +62,6 @@ explanation: |
   `const scoreText = "95";`처럼 글자를 직접 써도 이 문제의 체크는 통과하지만, 점수가 바뀌면 글자도 손으로 고쳐야 해요. 변환은 값이 무엇이든 따라가도록 변수에서 바로 만드는 것이 목표예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

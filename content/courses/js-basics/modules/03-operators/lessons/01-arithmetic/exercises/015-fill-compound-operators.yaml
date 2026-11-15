@@ -46,5 +46,6 @@ explanation: |
   기호 순서를 바꿔 `=+`라고 쓰면 `coins = +5`로 읽혀서 5가 **들어갈** 뿐 더해지지 않아요. `=-`는 `coins = -8`이 되고, `=*`는 문법 오류예요. 연산 기호는 항상 `=` 앞에 붙여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

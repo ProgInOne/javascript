@@ -37,5 +37,6 @@ explanation: |
   - 오류를 골랐다면: String은 null과 undefined도 오류 없이 바꿔요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

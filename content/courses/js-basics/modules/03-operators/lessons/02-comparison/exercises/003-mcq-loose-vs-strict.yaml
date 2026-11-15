@@ -40,5 +40,6 @@ explanation: |
   `false false`를 골랐다면 `==`도 자료형까지 비교한다고 생각한 거예요. `true true`라면 반대로 `===`도 값을 바꾼다고 본 거예요. 이렇게 헷갈리기 쉬워서 실무에서는 바꾸지 않는 `===`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

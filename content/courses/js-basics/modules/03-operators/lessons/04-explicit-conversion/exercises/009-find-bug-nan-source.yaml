@@ -52,5 +52,6 @@ explanation: |
   - Number가 앞부분을 읽는다는 이유: 앞부분만 읽는 건 parseInt예요. 또 `height`는 이미 Number로 바꾼 숫자예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

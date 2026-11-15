@@ -3,16 +3,17 @@ type: mcq_single
 difficulty: 3
 concepts:
   - { id: js.conv.equality-coercion, weight: 1 }
+  - { id: js.conv.plus-concat, weight: 0.5 }
   - { id: js.ops.loose-equality, weight: 0.3 }
-tags: [equality-coercion, review]
-estimatedSeconds: 75
+tags: [equality-coercion, plus-concat, review]
+estimatedSeconds: 90
 usage: assessment
 prompt: |
-  다음 중 결과가 `true`인 식은 무엇인가요?
+  다음 중 결과가 `true`인 식은 무엇인가요? 연산자의 계산 순서도 함께 생각해 보세요.
 spec:
   options:
     - id: a
-      text: '`"0" == false`'
+      text: '`"1" + 1 == 11`'
     - id: b
       text: "`null == 0`"
       misconception: js.mc.null-loose-equals-zero
@@ -22,23 +23,33 @@ spec:
       misconception: js.mc.nan-equals-nan
       rationale: NaN은 자기 자신과도 같지 않아요. ==도 마찬가지예요.
     - id: d
-      text: '`"" == null`'
-      misconception: js.mc.null-loose-equals-zero
-      rationale: null은 undefined와만 같아요. 빈 문자열은 null과 같지 않아요.
+      text: '`"2" * "3" == "23"`'
+      misconception: js.mc.minus-string-fails
+      rationale: "*는 이어 붙이지 않고 숫자로 바꿔 곱해요. 6 == \"23\"은 \"23\"이 23으로 바뀌어 6 == 23이라 false예요."
   correct: a
-misconceptions: [js.mc.loose-equality-uses-truthiness, js.mc.null-loose-equals-zero]
+misconceptions: [js.mc.null-loose-equals-zero, js.mc.nan-equals-nan, js.mc.minus-string-fails, js.mc.plus-string-adds]
 hints:
-  - "`==`는 truthy·falsy를 보지 않고, 주로 **숫자로 바꿔서** 비교해요."
-  - null과 NaN에는 특별한 규칙이 있어요. null은 무엇과만 같았나요? NaN은요?
-  - '`"0"`을 숫자로 바꾸면 무엇이고, `false`를 숫자로 바꾸면 무엇인가요?'
+  - "`+`, `*` 같은 산술 연산이 `==`보다 먼저 계산돼요. 각 식의 왼쪽부터 계산해 보세요."
+  - "`+`는 문자열을 만나면 이어 붙이고, `*`는 숫자로 바꿔 계산해요. 그다음 `==`는 문자열과 숫자를 비교할 때 문자열을 숫자로 바꿔요."
+  - "null과 NaN에는 특별한 규칙이 있었어요. 남은 식에서 `\"1\" + 1`의 결과가 무엇인지 계산해 보세요."
 explanation: |
-  정답은 **`"0" == false`**예요.
+  정답은 **`"1" + 1 == 11`**이에요.
 
-  `==`는 문자열과 불리언을 숫자로 바꿔 비교해요. `"0"`은 0, `false`도 0이 되어 `0 == 0`, 즉 `true`예요. `"0"`은 truthy인데 `false`와 같다니 이상하죠? `==`는 truthy·falsy로 비교하지 않기 때문이에요. 이런 혼란 때문에 `===`를 써요.
+  | 식 | 계산 과정 | 결과 |
+  |---|---|---|
+  | `"1" + 1 == 11` | `"1" + 1` → `"11"` → `"11" == 11` → `11 == 11` | `true` |
+  | `null == 0` | `null`은 `undefined`와만 같음 | `false` |
+  | `NaN == NaN` | `NaN`은 무엇과도 같지 않음 | `false` |
+  | `"2" * "3" == "23"` | `"2" * "3"` → `6` → `6 == "23"` → `6 == 23` | `false` |
 
-  - `null == 0`, `"" == null`: `==`에서 `null`은 `undefined`와만 같아요. 0이나 빈 문자열과는 같지 않아요.
-  - `NaN == NaN`: NaN은 어떤 비교에서도 자기 자신과 같지 않아요. NaN인지는 `Number.isNaN`으로 확인해요.
+  - 산술 연산이 비교보다 먼저예요. `+`는 문자열 `"1"`을 만나 이어 붙여서 `"11"`이 되고, `==`가 문자열 `"11"`을 숫자 11로 바꿔 비교해요. `"1" + 1`을 2로 계산했다면 `+`의 이어 붙이기를 놓친 거예요.
+  - `*`는 이어 붙이지 않아요. 두 문자열을 숫자로 바꿔 곱하므로 6이에요.
+  - `null == 0`: `==`에서 `null`은 `undefined`와만 같아요. `null`이 falsy라고 해서 0과 같아지지 않아요.
+  - `NaN == NaN`: NaN은 `==`로도 자기 자신과 같지 않아요. NaN인지는 `Number.isNaN`으로 확인해요.
+
+  한 식에 여러 변환이 섞이면 결과를 예측하기 어려워요. 그래서 비교는 `===`로 하고, 계산 전에 `Number`로 바꿔 두는 편이 안전해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

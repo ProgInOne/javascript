@@ -60,7 +60,7 @@ spec:
 hints:
   - 같은지 묻는 연산자와 다른지 묻는 연산자를 하나씩 써요.
   - 비교식의 결과(true/false)를 그대로 변수에 넣을 수 있어요. 예를 들어 `const isBig = 10 > 3;`처럼요.
-  - "`myCorrect`는 `myAnswer`와 `correctAnswer`를 `===`로, `friendWrong`은 `friendAnswer`와 `correctAnswer`를 다른지 묻는 연산자로 비교해요."
+  - "`myCorrect`는 내 답과 정답이 같은지, `friendWrong`은 친구 답과 정답이 다른지 묻는 비교식이에요. 비교식을 `=` 오른쪽에 써서 변수에 넣고, console.log로 설명 글자와 함께 출력해요."
 explanation: |
   예시 정답이에요.
 
@@ -77,5 +77,6 @@ explanation: |
   `=`로 비교하려고 하면 대입이 되어 `TypeError: Assignment to constant variable.`이 나요. `true`를 직접 써도 출력은 같지만, 답이 바뀌면 틀린 결과가 나와요. 비교 연산자를 쓰면 답이 무엇이든 맞게 채점돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

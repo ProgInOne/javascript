@@ -1,6 +1,6 @@
 id: js-basics.operators.comparison.impl-ride-check
 type: implement_function
-difficulty: 4
+difficulty: 3
 concepts:
   - { id: js.ops.relational, weight: 1 }
 tags: [relational, boundary, write-code]
@@ -104,5 +104,6 @@ explanation: |
   키가 딱 120cm인 이 손님은 `height > 120`으로 쓰면 탈 수 없다고 나와요. 요구사항을 연산자로 옮길 때는 **기준값과 같은 경우**를 꼭 따져 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

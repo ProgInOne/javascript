@@ -38,5 +38,6 @@ explanation: |
   세 번째 줄을 `9`라고 답했다면 계산기나 문서의 `3^2` 표기를 떠올린 거예요. JavaScript에서 거듭제곱은 꼭 `**`로 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

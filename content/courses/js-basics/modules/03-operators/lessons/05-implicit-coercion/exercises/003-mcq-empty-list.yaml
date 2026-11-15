@@ -1,9 +1,8 @@
 id: js-basics.operators.implicit-coercion.mcq-empty-list
 type: mcq_single
-difficulty: 2
+difficulty: 1
 concepts:
   - { id: js.conv.truthy-falsy, weight: 1 }
-  - { id: js.ops.short-circuit, weight: 0.3 }
 tags: [truthy, falsy, array]
 estimatedSeconds: 50
 prompt: |
@@ -43,5 +42,6 @@ explanation: |
   - `undefined`를 골랐다면: `items`에는 빈 배열이라는 값이 들어 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

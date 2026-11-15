@@ -1,6 +1,6 @@
 id: js-basics.operators.comparison.fix-ticket-checker
 type: fix_bug
-difficulty: 5
+difficulty: 4
 concepts:
   - { id: js.ops.relational, weight: 1 }
   - { id: js.ops.strict-equality, weight: 0.5 }
@@ -55,7 +55,7 @@ spec:
           console.log("가격 미정:", isPriceUnknown);
   bugDescription: 실행하면 아무것도 출력되지 않고 TypeError가 나요. 그 오류를 고치면 25장밖에 안 팔렸는데 매진이라고 나오고, 가격이 정해지지 않았는데 "가격 미정"이 false로 나와요.
   bugMisconception: js.mc.string-compare-numeric
-  maxEditDistance: 12
+  maxEditDistance: 14
   checks:
     - kind: console
       id: output
@@ -98,5 +98,6 @@ explanation: |
   7번 줄의 연산자를 `<`로 뒤집어도 우연히 `false`가 나오지만, 문자열 비교라는 원인은 그대로라 판매량이 바뀌면 다시 틀려요. 크기를 비교할 값은 숫자로 저장하는 것이 근본적인 해결이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

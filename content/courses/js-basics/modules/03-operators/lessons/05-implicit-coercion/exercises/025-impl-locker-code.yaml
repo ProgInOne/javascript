@@ -80,5 +80,6 @@ explanation: |
   값을 비교할 때는 `===`를 기본으로 쓰고, 다른 자료형끼리 비교해야 한다면 직접 변환한 뒤 `===`로 비교해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

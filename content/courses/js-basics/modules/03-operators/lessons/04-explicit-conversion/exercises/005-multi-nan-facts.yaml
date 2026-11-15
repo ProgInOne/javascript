@@ -1,6 +1,6 @@
 id: js-basics.operators.explicit-conversion.multi-nan-facts
 type: mcq_multi
-difficulty: 1
+difficulty: 2
 concepts:
   - { id: js.conv.nan, weight: 1 }
 tags: [nan]
@@ -27,7 +27,7 @@ spec:
       misconception: js.mc.nan-type-not-number
       rationale: NaN은 숫자 자료형의 특별한 값이라 typeof 결과는 "number"예요.
   correct: [a, b]
-misconceptions: [js.mc.nan-type-not-number, js.mc.failed-conversion-throws]
+misconceptions: [js.mc.nan-type-not-number, js.mc.failed-conversion-throws, js.mc.nan-equals-nan]
 hints:
   - 정답이 하나가 아닐 수 있어요. NaN은 "숫자 계산이 실패했다"는 표시라는 점에서 출발해 보세요.
   - 변환에 실패했을 때 프로그램이 멈추는지, 조용히 계속되는지 떠올려 보세요.
@@ -36,10 +36,11 @@ explanation: |
   정답은 **a, b**예요.
 
   - a: `NaN`은 "숫자 계산이 실패했다"를 나타내는 **숫자 자료형**의 값이라 `typeof NaN`은 `"number"`예요. 그래서 e는 틀렸어요.
-  - b: `NaN`은 퍼져요. `NaN`과 무엇을 계산해도 결과는 `NaN`이에요.
+  - b: `NaN`은 퍼져요. `NaN`으로 숫자 계산을 하면 결과도 `NaN`이에요.
   - c는 틀렸어요: 숫자로 바꿀 수 없어도 오류는 나지 않고 `NaN`이 나와요. 그래서 마지막 출력에서 `NaN`을 보면 처음 생긴 곳을 거슬러 올라가 찾아야 해요.
   - d는 틀렸어요: `NaN === NaN`은 `false`라서 `x === NaN`은 언제나 `false`예요. `Number.isNaN(x)`로 확인해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

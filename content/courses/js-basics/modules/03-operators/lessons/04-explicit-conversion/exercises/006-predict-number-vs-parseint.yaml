@@ -36,5 +36,6 @@ explanation: |
   - 둘째 값을 `4`로 답했다면: parseInt는 반올림하지 않고 소수점 앞에서 그냥 멈춰요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

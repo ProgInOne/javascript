@@ -1,6 +1,6 @@
 id: js-basics.operators.explicit-conversion.fix-parseint-decimal
 type: fix_bug
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.conv.to-number, weight: 1 }
   - { id: js.ops.arithmetic, weight: 0.3 }
@@ -60,5 +60,6 @@ explanation: |
   `Number(weightText)`로 바꾸면 `kg` 때문에 `NaN`이 되어 가격도 `NaN`이에요. 단위가 붙은 글자에서 숫자를 꺼낼 때는 `parseInt`(정수)와 `parseFloat`(소수) 중 알맞은 쪽을 골라요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

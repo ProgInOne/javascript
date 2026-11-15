@@ -47,7 +47,7 @@ misconceptions: [js.mc.boolean-reads-string-content]
 hints:
   - "`Boolean(\"false\")`의 결과를 떠올려 보세요. 문자열 중 false가 되는 것은 무엇뿐이었나요?"
   - Boolean은 글자의 뜻을 읽지 않아요. "false"라는 글자의 뜻을 반영하려면 다른 방법이 필요해요.
-  - 저장된 글자가 정확히 "true"인지 비교하면, 그 결과가 바로 원하는 true/false예요.
+  - 비교 연산의 결과는 그 자체로 true나 false예요. 저장된 글자를 어떤 글자와 비교하면 될까요?
 explanation: |
   2번 줄을 `const darkMode = savedDarkMode === "true";`로 고쳐요.
 
@@ -56,5 +56,6 @@ explanation: |
   `savedDarkMode === "false"`로 쓰면 결과가 반대(`true`)가 되고, `!Boolean(savedDarkMode)`는 `"true"`가 저장되어 있을 때도 `false`가 되어 틀려요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

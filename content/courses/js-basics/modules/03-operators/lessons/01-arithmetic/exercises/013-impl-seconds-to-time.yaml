@@ -64,8 +64,8 @@ spec:
           seconds: { equals: 5 }
 misconceptions: [js.mc.remainder-is-quotient, js.mc.division-truncates]
 hints:
-  - "`totalSeconds / 3600`은 2.05…처럼 소수가 나와요. 꽉 찬 시간 수만 얻으려면, 3600으로 나눈 나머지를 먼저 빼고 나누면 나누어떨어져요."
-  - 시간을 채우고 남은 초는 `totalSeconds % 3600`이에요. 이 남은 초로 분과 초를 같은 방법으로 구해요.
+  - "`totalSeconds / 3600`은 2.05…처럼 소수가 나와요. 레슨의 실전 사용 사례에서 135초를 분과 초로 바꾼 방법을 떠올려 보세요."
+  - 꽉 찬 시간 수는 3600으로 나눈 나머지를 먼저 빼고 나누면 나누어떨어져요. 시간을 채우고 남은 초는 `totalSeconds % 3600`이고, 이 남은 초로 분과 초를 같은 방법으로 구해요.
   - "남은 초가 185라면 분은 (185 - 185 % 60) / 60, 초는 185 % 60이에요. 남은 초를 변수에 넣어 두면 식이 짧아져요."
 explanation: |
   예시 정답이에요.
@@ -90,5 +90,6 @@ explanation: |
   - 소수점 아래를 버리는 `Math.floor(값)`을 알고 있다면 `Math.floor(totalSeconds / 3600)`처럼 써도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

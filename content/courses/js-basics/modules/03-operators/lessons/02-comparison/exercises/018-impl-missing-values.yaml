@@ -1,6 +1,6 @@
 id: js-basics.operators.comparison.impl-missing-values
 type: implement_function
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.ops.loose-equality, weight: 1 }
 tags: [loose-equality, "null", "undefined", write-code]
@@ -65,7 +65,7 @@ spec:
 hints:
   - "\"null이거나 undefined인가\"를 한 번의 비교로 확인하는 방법을 레슨에서 배웠어요."
   - "`==`는 `null`과 `undefined`를 같다고 봐요. 그러면 `값 == null`은 값이 무엇일 때 true일까요?"
-  - "`const nicknameEmpty = nickname == null;`처럼 세 항목을 같은 모양으로 비교하고 출력하세요."
+  - "`null`과 비교하되 `null`과 `undefined`를 같게 보는 연산자를 쓰면, 세 항목을 같은 모양의 비교식 하나씩으로 확인할 수 있어요."
 explanation: |
   예시 정답이에요.
 
@@ -80,5 +80,6 @@ explanation: |
   `nickname === undefined`, `phone === null`처럼 항목마다 맞는 값을 `===`로 비교해도 이 문제는 통과해요. 다만 어느 항목이 `null`이고 어느 항목이 `undefined`일지 미리 알아야 하죠. `== null`은 둘 중 무엇이든 한 번에 잡아 줘요. 반대로 `nickname === null`은 `undefined`를 놓쳐서 `false`가 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
