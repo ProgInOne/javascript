@@ -133,19 +133,6 @@
         ]
       }
     },
-    "js-basics.loops.for.predict-step-down": {
-      "inputHash": "1f5a0ee72257bcbd375ba832620477da09b6701a2ce08b8931446f349f80b888",
-      "expected": {
-        "kind": "console",
-        "lines": [
-          "20",
-          "14",
-          "8",
-          "2",
-          "끝"
-        ]
-      }
-    },
     "js-basics.loops.nested-loops.predict-break-inner": {
       "inputHash": "63f3aad45d219ed18122d0b5f418279f5b6fff3c6af4e2b1839d7f365815ea9a",
       "expected": {

@@ -44,5 +44,6 @@ explanation: |
   ```
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

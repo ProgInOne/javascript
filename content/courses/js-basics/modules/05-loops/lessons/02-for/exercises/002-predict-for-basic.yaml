@@ -35,5 +35,6 @@ explanation: |
   - 0부터 시작해 `< 3`으로 끝내면 0, 1, 2로 딱 3번이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

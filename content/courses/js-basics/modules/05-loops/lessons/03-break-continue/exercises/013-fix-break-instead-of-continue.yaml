@@ -1,6 +1,6 @@
 id: js-basics.loops.break-continue.fix-break-instead-of-continue
 type: fix_bug
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.loops.continue, weight: 1 }
   - { id: js.loops.break, weight: 0.5 }
@@ -82,5 +82,6 @@ explanation: |
   | 더는 할 필요가 없으니 그만 | `break` |
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: js-basics.loops.for.impl-multiples-of-three
 type: implement_function
-difficulty: 4
+difficulty: 3
 concepts:
   - { id: js.loops.accumulator-pattern, weight: 1 }
   - { id: js.control.if, weight: 0.3 }
@@ -8,29 +8,30 @@ concepts:
 tags: [accumulator, count, sum, if, write-code, boundary]
 estimatedSeconds: 360
 prompt: |
-  1부터 60까지(60 포함)의 수 중에서 **3의 배수**의 개수와 합계를 구하는 프로그램을 작성하세요.
+  1부터 999까지(999 포함)의 수 중에서 **3의 배수**의 개수와 합계를 구하는 프로그램을 작성하세요.
 
-  - `for` 문 하나로 1부터 60까지 살펴보면서, 3의 배수일 때만 개수와 합계를 모으세요.
+  - `for` 문 하나로 1부터 999까지 살펴보면서, 3의 배수일 때만 개수와 합계를 모으세요.
   - 개수는 `count`, 합계는 `sum`이라는 변수에 담으세요.
-  - 실행하면 콘솔에 아래처럼 나와야 해요.
+  - 마지막에 `3의 배수: (개수)개, 합계: (합계)` 형식으로 한 줄을 출력하세요.
+  - 정답 숫자는 알려 주지 않아요. 범위를 1부터 10까지로 줄여 먼저 확인해 보세요. 1부터 10까지라면 3, 6, 9로 아래처럼 나와야 해요. 맞으면 범위를 999까지로 늘리세요.
 
   ```text
-  3의 배수: 20개, 합계: 630
+  3의 배수: 3개, 합계: 18
   ```
 spec:
   starter:
     files:
       - path: main.js
         content: |
-          // 1부터 60까지 중 3의 배수의 개수(count)와 합계(sum)를 구하세요.
+          // 1부터 999까지 중 3의 배수의 개수(count)와 합계(sum)를 구하세요.
   solution:
     files:
       - path: main.js
         content: |
-          // 1부터 60까지 중 3의 배수의 개수(count)와 합계(sum)를 구하세요.
+          // 1부터 999까지 중 3의 배수의 개수(count)와 합계(sum)를 구하세요.
           let count = 0;
           let sum = 0;
-          for (let n = 1; n <= 60; n++) {
+          for (let n = 1; n <= 999; n++) {
             if (n % 3 === 0) {
               count++;
               sum += n;
@@ -40,16 +41,17 @@ spec:
   checks:
     - kind: console
       id: output
-      description: 3의 배수의 개수와 합계가 한 줄로 출력되어야 합니다.
+      description: '1부터 999까지 중 3의 배수의 개수와 합계가 "3의 배수: (개수)개, 합계: (합계)" 형식의 한 줄로 출력되어야 합니다.'
+      visible: false
       requirement: 개수와 합계 출력
       expect:
-        lines: ["3의 배수: 20개, 합계: 630"]
+        lines: ["3의 배수: 333개, 합계: 166833"]
     - kind: program
       id: count
-      description: 반복이 끝난 뒤 count에 3의 배수의 개수가 들어 있어야 합니다. 60도 3의 배수예요.
+      description: 반복이 끝난 뒤 count에 3의 배수의 개수가 들어 있어야 합니다. 999도 3의 배수예요.
       requirement: 개수 세기
       expect:
-        globals: { count: { equals: 20 } }
+        globals: { count: { equals: 333 } }
         noError: true
       misconceptionIfFail: js.mc.for-off-by-one
     - kind: program
@@ -57,20 +59,20 @@ spec:
       description: 반복이 끝난 뒤 sum에 3의 배수의 합계가 들어 있어야 합니다.
       requirement: 합계 구하기
       expect:
-        globals: { sum: { equals: 630 } }
+        globals: { sum: { equals: 166833 } }
         noError: true
 misconceptions: [js.mc.accumulator-reset-in-loop, js.mc.for-off-by-one]
 hints:
   - 누적 변수가 두 개 필요해요. 둘 다 반복 앞에서 시작값으로 만들어 두세요.
   - 어떤 수가 3의 배수인지는 3으로 나눈 나머지로 알 수 있어요(`n % 3 === 0`). 반복 안에 `if`를 넣으세요.
-  - "`if` 블록 안에서 `count++`와 `sum += n`을 해요. 60도 포함해야 하니 조건은 `n <= 60`이에요."
+  - "`if` 블록 안에서 개수를 1 늘리고 합계에 `n`을 더해요. 999도 3의 배수라서 조건에 999가 포함되어야 해요."
 explanation: |
   예시 정답이에요.
 
   ```js
   let count = 0;
   let sum = 0;
-  for (let n = 1; n <= 60; n++) {
+  for (let n = 1; n <= 999; n++) {
     if (n % 3 === 0) {
       count++;
       sum += n;
@@ -80,10 +82,12 @@ explanation: |
   ```
 
   - **누적 변수 두 개**: 개수(`count`)와 합계(`sum`) 모두 반복 앞에서 0으로 시작해요.
-  - **조건에 맞는 것만 모으기**: 반복 안의 `if`가 3의 배수일 때만 모아요. `count++`를 `if` 밖에 두면 60개를 모두 세요.
-  - **경계값**: 60은 3의 배수라 포함해야 해요. `n < 60`으로 쓰면 19개, 570이 나와요.
-  - `for (let n = 3; n <= 60; n += 3)`처럼 3씩 건너뛰어도 같은 결과가 나와요. 이렇게 하면 `if`가 필요 없어요.
+  - **조건에 맞는 것만 모으기**: 반복 안의 `if`가 3의 배수일 때만 모아요. `count++`를 `if` 밖에 두면 999개를 모두 세요.
+  - **경계값**: 999는 3의 배수(3 × 333)라 포함해야 해요. `n < 999`로 쓰면 332개, 165834가 나와요.
+  - 범위가 커서 손으로 세기 어려워요. 반복이 대신 세고 더해 주는 것이 반복문을 쓰는 이유예요.
+  - `for (let n = 3; n <= 999; n += 3)`처럼 3씩 건너뛰어도 같은 결과가 나와요. 이렇게 하면 `if`가 필요 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

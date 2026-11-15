@@ -42,5 +42,6 @@ explanation: |
   반복이 끝나는지 확인하려면 **조건 변수가 바뀌는지, 그 방향이 맞는지, 목표값을 건너뛰지 않는지** 세 가지를 봐요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

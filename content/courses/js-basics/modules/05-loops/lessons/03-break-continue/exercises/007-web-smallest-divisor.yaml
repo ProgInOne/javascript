@@ -165,7 +165,7 @@ misconceptions: [js.mc.break-ends-program]
 hints:
   - 2부터 `n`보다 작은 수까지 하나씩 나눠 보면 돼요. 나누어떨어지는지는 나머지(`%`)로 알 수 있어요.
   - 나누어떨어지는 수를 찾으면 `divisor`에 넣어요. 그런데 12는 2, 3, 4, 6으로 모두 나누어떨어져요. 계속 돌면 `divisor`에는 무엇이 남을까요?
-  - "`for (let d = 2; d < n; d++)` 안에서 `if (n % d === 0) { divisor = d; break; }`처럼 찾자마자 멈춰요."
+  - 처음 찾은 수가 가장 작은 약수예요. 찾으면 `divisor`에 넣고 그 자리에서 반복을 끝내요. 반복 조건은 `n` 자신을 나누지 않도록 `n`보다 작은 수까지만 돌게 해요.
 explanation: |
   예시 정답이에요.
 
@@ -184,5 +184,6 @@ explanation: |
   - 반복이 끝나는 곳을 미리 정해 두고(`d < n`), 일찍 끝내는 일은 `break`가 맡는 모양은 "찾기" 반복에서 아주 흔해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

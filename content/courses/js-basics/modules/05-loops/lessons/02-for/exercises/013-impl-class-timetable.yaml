@@ -1,0 +1,112 @@
+id: js-basics.loops.for.impl-class-timetable
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.loops.loop-variable, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [loop-variable, for, if, write-code, boundary]
+estimatedSeconds: 360
+prompt: |
+  학교 시간표 안내 프로그램을 작성하세요. 규칙은 이래요.
+
+  - 1교시는 9시(`firstHour`)에 시작하고, 수업은 6교시까지 있어요.
+  - 교시마다 1시간씩 걸려요. 쉬는 시간은 생각하지 않아요.
+  - 4교시가 끝나면 **점심시간 1시간**이 있어요. 그래서 5교시부터는 시작 시각이 1시간 늦어져요.
+  - `for` 문 하나로 1교시부터 6교시까지 차례로 살펴보며 시작 시각을 출력하세요. 반복 변수 `period`로 시각을 계산해 보세요. 점심시간 줄은 4교시 바로 다음에 한 번만 출력해요.
+  - 실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  1교시: 9시
+  2교시: 10시
+  3교시: 11시
+  4교시: 12시
+  점심시간: 13시
+  5교시: 14시
+  6교시: 15시
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const firstHour = 9; // 1교시 시작 시각
+
+          // for 문 하나로 1교시부터 6교시까지의 시작 시각을 출력하세요.
+          // 4교시 다음에는 점심시간 줄을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const firstHour = 9; // 1교시 시작 시각
+
+          // for 문 하나로 1교시부터 6교시까지의 시작 시각을 출력하세요.
+          // 4교시 다음에는 점심시간 줄을 출력하세요.
+          for (let period = 1; period <= 6; period++) {
+            if (period <= 4) {
+              console.log(period + "교시: " + (firstHour + period - 1) + "시");
+            } else {
+              console.log(period + "교시: " + (firstHour + period) + "시");
+            }
+            if (period === 4) {
+              console.log("점심시간: " + (firstHour + 4) + "시");
+            }
+          }
+  checks:
+    - kind: console
+      id: output
+      description: 1교시부터 6교시까지의 시작 시각이 차례로 나오고, 4교시 다음에 점심시간이 한 번 출력되어야 합니다.
+      requirement: 시간표 출력
+      expect:
+        lines:
+          - "1교시: 9시"
+          - "2교시: 10시"
+          - "3교시: 11시"
+          - "4교시: 12시"
+          - "점심시간: 13시"
+          - "5교시: 14시"
+          - "6교시: 15시"
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+misconceptions: [js.mc.for-off-by-one]
+hints:
+  - 반복 변수 `period`가 1부터 6까지 거치게 하세요. 그리고 교시 번호와 시작 시각을 표로 적어 보세요. 1교시는 9시, 2교시는 10시, … 둘 사이에 어떤 관계가 있나요?
+  - 4교시까지는 "시작 시각 = `firstHour + period - 1`"이에요. 5교시부터는 점심시간 때문에 여기에 1시간이 더해져요. `if`로 두 경우를 나누고, 점심시간 줄은 `period`가 4일 때 4교시를 출력한 다음에 출력해요.
+  - '출력할 때 시각 계산은 괄호로 묶어 먼저 계산하세요. `"교시: " + firstHour + period`처럼 쓰면 숫자를 더하지 않고 글자를 이어 붙여요.'
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  for (let period = 1; period <= 6; period++) {
+    if (period <= 4) {
+      console.log(period + "교시: " + (firstHour + period - 1) + "시");
+    } else {
+      console.log(period + "교시: " + (firstHour + period) + "시");
+    }
+    if (period === 4) {
+      console.log("점심시간: " + (firstHour + 4) + "시");
+    }
+  }
+  ```
+
+  | `period` | 계산 | 시작 시각 |
+  |---|---|---|
+  | 1 | 9 + 1 - 1 | 9 |
+  | 4 | 9 + 4 - 1 | 12 |
+  | (점심) | 9 + 4 | 13 |
+  | 5 | 9 + 5 | 14 |
+  | 6 | 9 + 6 | 15 |
+
+  - **반복 변수로 계산하기**: 교시 번호 `period`에서 시작 시각을 계산해요. 1교시가 9시이므로 `firstHour + period`가 아니라 `firstHour + period - 1`이에요. 하나 차이를 놓치면 모든 시각이 한 시간씩 밀려요.
+  - **점심시간 뒤의 규칙 바꾸기**: 5교시부터는 점심시간 1시간이 끼어서 `- 1`이 없어져요. 점심시간 줄은 `period === 4`인 회차에서 4교시를 출력한 **다음에** 출력해야 4교시와 5교시 사이에 나와요.
+  - **괄호**: `period + "교시: " + firstHour + period - 1`은 왼쪽부터 계산되어 `"1교시: 91"`이 된 뒤 `- 1`을 만나 `NaN`이 되고, 출력은 `NaN시`가 돼요. 계산할 부분을 괄호로 묶어요.
+  - 반복 바깥에 `let hour = firstHour;`를 두고 회차마다 `hour++`하는 방법도 출력은 같아요. 다만 이 문제는 `period`로 시각을 계산하는 연습이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -44,5 +44,6 @@ explanation: |
   `seconds`가 0이 되면 `0 > 0`이 거짓이라 `0초 남음`은 출력되지 않아요. 반복이 끝난 뒤 6번 줄의 `띵!`이 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

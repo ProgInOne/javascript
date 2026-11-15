@@ -73,7 +73,7 @@ misconceptions: [js.mc.inner-var-not-reset]
 hints:
   - 먼저 2단 하나만 `for`로 출력해 보세요. 그다음 그 반복을 "단마다" 반복하는 바깥 반복으로 감싸요.
   - 제목 `[2단]`은 단마다 한 번만 나와야 해요. 바깥 반복의 본문에서, 안쪽 반복 **앞**에 써요.
-  - "바깥은 `for (let dan = 2; dan <= 3; dan++)`, 안쪽은 `for (let i = 1; i <= 9; i++)`이고, 안쪽에서 `dan + \" x \" + i + \" = \" + dan * i`를 출력해요."
+  - 바깥 반복 변수는 단(2부터 3까지), 안쪽 반복 변수는 곱하는 수(1부터 9까지)예요. 안쪽 본문에서 두 변수를 함께 써서 한 줄을 출력해요.
 explanation: |
   예시 정답이에요.
 
@@ -91,5 +91,6 @@ explanation: |
   - 바깥 조건의 `3`을 `9`로 바꾸기만 하면 구구단 전체(8단 × 9줄 + 제목 8줄)가 나와요. 반복을 겹치면 코드는 그대로인데 할 수 있는 일이 크게 늘어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

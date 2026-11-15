@@ -73,5 +73,6 @@ explanation: |
   `while`은 조건에 쓴 변수를 대신 바꿔 주지 않아요. 반복문을 쓰면 "조건의 변수는 본문 어디서 바뀌지?"를 꼭 확인해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

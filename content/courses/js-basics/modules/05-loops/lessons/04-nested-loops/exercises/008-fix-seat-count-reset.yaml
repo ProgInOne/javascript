@@ -72,8 +72,9 @@ explanation: |
   |---|---|
   | 바깥 반복보다 먼저 | 처음부터 지금까지 전체 |
   | 바깥 본문, 안쪽 반복 앞 | 이번 줄(열) 하나 |
-  | 안쪽 본문 | 아무것도 쌓이지 않음 |
+  | 안쪽 본문 | 칸마다 0으로 돌아가 쌓이지 않음 (안쪽 반복 밖에서는 쓸 수도 없음) |
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

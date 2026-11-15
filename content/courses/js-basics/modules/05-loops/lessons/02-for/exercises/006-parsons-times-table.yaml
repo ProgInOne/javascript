@@ -75,5 +75,6 @@ explanation: |
   - 시작·끝 안내는 반복 바깥에 둬야 한 번씩만 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

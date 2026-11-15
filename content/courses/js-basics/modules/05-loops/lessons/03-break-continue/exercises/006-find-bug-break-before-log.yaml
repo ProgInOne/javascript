@@ -51,5 +51,6 @@ explanation: |
   - c3: 12, 24, 36, 48이 4와 6으로 모두 나누어떨어져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

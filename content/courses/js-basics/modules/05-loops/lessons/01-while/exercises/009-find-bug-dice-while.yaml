@@ -24,13 +24,13 @@ spec:
   symptomCheck:
     console: ["6이 나왔어요! 굴리기 끝"]
   fixedCode: |-
-    let dice = 6; // 아직 굴리기 전
+    let dice = 0; // 아직 굴리기 전
     let rolls = 0;
-    do {
+    while (dice !== 6) {
       dice = (dice * 3 + 2) % 6 + 1; // 가짜 주사위
       rolls++;
       console.log(rolls + "번째: " + dice);
-    } while (dice !== 6);
+    }
     console.log("6이 나왔어요! 굴리기 끝");
   causeOptions:
     - id: c1
@@ -40,7 +40,7 @@ spec:
       text: while 본문은 한 번 실행되는데, 가짜 주사위 공식이 첫 회차에 바로 6을 만들어 반복이 끝났다
       misconception: js.mc.while-runs-at-least-once
     - id: c3
-      text: "!==는 두 값이 같을 때 참이 되므로, dice가 6이면 반복이 끝난다"
+      text: "!==는 두 값이 같은지 확인하는 연산자라서, dice가 6이면 참이 되어 반복이 끝났다"
 misconceptions: [js.mc.while-runs-at-least-once]
 hints:
   - "콘솔에 `1번째: ...` 같은 줄이 하나도 없어요. 본문이 몇 번 실행됐을까요?"
@@ -59,11 +59,14 @@ explanation: |
   } while (dice !== 6);
   ```
 
-  이렇게 고치면 `1번째: 3`, `2번째: 6`을 출력한 뒤 끝나요. 1번 줄의 시작값을 6이 아닌 값(예: 0)으로 바꿔도 반복이 시작되므로 1번 줄을 골라도 정답으로 인정해요.
+  이렇게 고치면 `1번째: 3`, `2번째: 6`을 출력한 뒤 끝나요. `do`가 3번 줄을, `while (dice !== 6);`이 7번 줄의 `}` 자리를 차지해요.
+
+  1번 줄의 시작값을 "아직 굴리기 전"을 뜻하는 0처럼 6이 아닌 값으로 바꿔도 첫 검사가 참이 되어 반복이 시작돼요. 결과도 같아요. 그래서 1번 줄을 골라도 정답으로 인정해요. 다만 "일단 한 번 굴린다"는 뜻은 `do...while`이 더 분명하게 보여 줘요.
 
   - c2: `while`은 조건부터 검사해요. 공식이 실행됐다면 `1번째: ...`가 출력됐을 거예요.
-  - c3: `!==`는 두 값이 **다를 때** 참이에요. `6 !== 6`은 거짓이에요.
+  - c3: `!==`는 두 값이 **다를 때** 참이에요. `6 !== 6`은 거짓이고, `while`은 조건이 거짓이면 끝나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

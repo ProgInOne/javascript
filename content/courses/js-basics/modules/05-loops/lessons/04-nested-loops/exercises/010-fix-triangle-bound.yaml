@@ -60,5 +60,6 @@ explanation: |
   조건에 바깥 반복 변수 `line`을 쓰면 안쪽 반복이 1번째 줄에서는 1번, 2번째 줄에서는 2번, …, 4번째 줄에서는 4번 돌아요. 이렇게 **안쪽 범위를 바깥 반복 변수로 정하면** 줄마다 길이가 다른 모양을 만들 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

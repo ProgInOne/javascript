@@ -65,5 +65,6 @@ explanation: |
   `let i = 0`으로 시작하면 `0번 손님`부터 나오고, `i < 5`로 끝내면 4번 손님에서 멈춰요. 첫 값과 마지막 값을 적어 보면 이런 실수를 막을 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

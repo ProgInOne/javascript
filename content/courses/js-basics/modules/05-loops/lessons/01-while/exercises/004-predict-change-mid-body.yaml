@@ -41,5 +41,6 @@ explanation: |
   2회차에서 `hp`가 110이 되어 조건이 거짓이 됐지만, 그 회차의 4번 줄은 실행돼요. 조건은 다음 회차를 시작하기 전에야 다시 검사해요. 그래서 체력이 100을 넘은 110으로 끝나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

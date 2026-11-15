@@ -61,5 +61,6 @@ explanation: |
   - `=`로 쓰면 매번 `4500`으로 덮어써서 세 줄 모두 `4500원`이 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -59,5 +59,6 @@ explanation: |
   - `console.log(stars);`를 안쪽 반복 안에 두면 별을 하나 붙일 때마다 출력해서 줄이 훨씬 많아져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

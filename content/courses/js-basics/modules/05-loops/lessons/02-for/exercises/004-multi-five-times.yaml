@@ -47,5 +47,6 @@ explanation: |
   c와 d는 시작값과 비교 연산자의 짝이 어긋나서 하나씩 많거나 적어요(off-by-one). 횟수를 셀 때는 첫 값과 마지막 값을 꼭 직접 적어 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

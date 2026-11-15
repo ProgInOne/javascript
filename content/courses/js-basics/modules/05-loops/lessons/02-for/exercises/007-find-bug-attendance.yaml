@@ -1,6 +1,6 @@
 id: js-basics.loops.for.find-bug-attendance
 type: find_bug_line
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.loops.for, weight: 1 }
 tags: [for, off-by-one, debugging]
@@ -48,5 +48,6 @@ explanation: |
   - c3: 누적 변수(개수)를 0부터 세는 것은 올바른 시작값이에요. 한 회차를 돌 때마다 1씩 늘어나니, 반복 횟수와 정확히 같아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

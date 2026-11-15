@@ -49,5 +49,6 @@ explanation: |
   - `break`는 반복만 끝내므로 반복 다음의 `기록 끝`은 출력돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

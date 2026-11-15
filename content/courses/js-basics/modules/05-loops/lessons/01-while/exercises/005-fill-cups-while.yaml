@@ -8,7 +8,7 @@ concepts:
 tags: [while, infinite-loop, fill]
 estimatedSeconds: 90
 prompt: |
-  카페에서 주문받은 음료 3잔을 차례로 채우는 프로그램이에요. 빈칸을 채워 아래처럼 출력되게 하세요.
+  카페에서 주문받은 음료 3잔을 차례로 채우는 프로그램이에요. 빈칸을 채워 아래처럼 출력되고 반복이 끝나게 하세요. 반복이 끝나지 않으면 `주문 완료`는 나오지 않아요.
 
   ```text
   1번째 컵 채우기
@@ -62,5 +62,6 @@ explanation: |
   - `cup < 3`으로 쓰면 1, 2번째 컵만 채우고 끝나요. 마지막 값이 3이 되도록 `<=`를 쓰거나 `< 4`로 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

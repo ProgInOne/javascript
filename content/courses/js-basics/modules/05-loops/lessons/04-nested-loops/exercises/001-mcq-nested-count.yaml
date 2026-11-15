@@ -42,5 +42,6 @@ explanation: |
   - d: 바깥 회차 수만 세었어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

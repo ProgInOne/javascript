@@ -36,5 +36,6 @@ explanation: |
   - d: 둘 다 조건이 **참인 동안** 반복해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

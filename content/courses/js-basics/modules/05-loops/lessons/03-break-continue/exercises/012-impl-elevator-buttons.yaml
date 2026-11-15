@@ -51,7 +51,7 @@ spec:
 hints:
   - 1부터 15까지 도는 `for` 문부터 쓰고, 본문에서 층을 출력해 보세요.
   - 출력하기 **전에** 건너뛸 층인지 검사해야 해요. 건너뛸 층이 두 개라서 조건을 `||`로 이어요.
-  - "`if (floor === 4 || floor === 13) { continue; }`를 `console.log` 위에 둬요."
+  - 건너뛸 층인지 검사하는 `if`는 출력하는 줄보다 **위**에 두고, 그 블록 안에서 `continue`해요.
 explanation: |
   예시 정답이에요.
 
@@ -69,5 +69,6 @@ explanation: |
   - `if (floor !== 4 && floor !== 13) { console.log(floor + "층"); }`처럼 조건을 뒤집어 써도 같은 결과예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

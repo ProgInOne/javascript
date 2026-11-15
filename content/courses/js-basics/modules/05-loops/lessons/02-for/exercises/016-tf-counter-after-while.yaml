@@ -41,5 +41,6 @@ explanation: |
   - r3: `n`은 반복 바깥에서 만든 변수라 반복이 끝나도 바뀐 값이 그대로 남아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

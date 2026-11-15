@@ -41,5 +41,6 @@ explanation: |
   - `continue`는 반복을 끝내지 않으므로 3 다음에도 4~7회차가 이어지고, 반복이 끝난 뒤 `출발`이 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

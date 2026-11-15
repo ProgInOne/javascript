@@ -91,5 +91,6 @@ explanation: |
   - `!==`로 끝을 검사하는 반복은 변수가 그 값을 정확히 지나가는지 꼭 확인해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -35,5 +35,6 @@ explanation: |
   - d: 같은 회차를 다시 하지 않아요. 갱신식으로 반복 변수가 바뀐 다음 회차예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

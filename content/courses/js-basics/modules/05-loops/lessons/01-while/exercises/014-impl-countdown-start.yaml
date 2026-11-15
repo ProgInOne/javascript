@@ -59,7 +59,7 @@ misconceptions: [js.mc.while-auto-update]
 hints:
   - 반복할 조건은 "`seconds`가 0보다 큰 동안"이에요.
   - 본문에서 할 일은 두 가지예요. 지금 값을 출력하고, 다음 회차를 위해 1 줄이기.
-  - "`while (seconds > 0) { console.log(seconds); seconds--; }` 다음 줄에 `출발!`을 출력해요. 출력과 줄이기의 순서를 바꾸면 결과가 어떻게 달라질지도 생각해 보세요."
+  - 본문에서는 출력을 먼저, 줄이기를 나중에 해요. 순서를 바꾸면 4부터 0까지 출력돼요. `출발!`은 반복의 닫는 `}` 아래에 써요.
 explanation: |
   예시 정답이에요.
 
@@ -78,5 +78,6 @@ explanation: |
   - `console.log("출발!")`은 반복 **바깥**(닫는 `}` 아래)에 써야 한 번만 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

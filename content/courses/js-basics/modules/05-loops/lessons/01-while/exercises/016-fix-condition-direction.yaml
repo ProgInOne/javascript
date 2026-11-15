@@ -63,5 +63,6 @@ explanation: |
   - `while (lap >= 1)`처럼 고치면 `lap`이 늘수록 조건이 계속 참이라 무한 반복이 돼요. 조건은 변수가 바뀌는 방향과 맞아야 끝나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

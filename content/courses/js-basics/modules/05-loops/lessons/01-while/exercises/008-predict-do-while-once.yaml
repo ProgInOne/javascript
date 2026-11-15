@@ -38,5 +38,6 @@ explanation: |
   `while (ticket <= 3) { ... }`로 썼다면 `5 <= 3`이 처음부터 거짓이라 본문이 실행되지 않고 `다음 번호: 5`만 나왔을 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

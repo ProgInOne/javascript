@@ -68,5 +68,6 @@ explanation: |
   `break`를 `if` 블록 안으로 옮기면 3번째 표를 팔았을 때만 반복이 끝나요. `break`는 보통 "이럴 때 멈춰"라는 조건과 함께 `if` 안에 둬요. 들여쓰기만 맞추는 것으로는 부족하고, 중괄호 `{ }` 안에 있어야 조건에 묶여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -36,5 +36,6 @@ explanation: |
   - d: 반복 변수가 만들어지기 전에는 조건을 계산할 수 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

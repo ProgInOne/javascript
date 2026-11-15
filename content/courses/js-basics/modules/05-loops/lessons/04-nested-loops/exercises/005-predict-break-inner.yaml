@@ -49,5 +49,6 @@ explanation: |
   `break`는 **안쪽 반복만** 끝내요. 안쪽 반복이 끝나면 바깥 반복이 다음 칸으로 넘어가서, 칸마다 칸 번호만큼 책이 출력돼요. 바깥 반복까지 끝났다면 `1번 칸 1번 책`과 `정리 끝`만 나왔을 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

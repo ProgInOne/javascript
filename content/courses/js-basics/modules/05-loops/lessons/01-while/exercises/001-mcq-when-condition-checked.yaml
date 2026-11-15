@@ -36,5 +36,6 @@ explanation: |
   - d: 조건을 한 번만 검사하면 반복을 멈출 기회가 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

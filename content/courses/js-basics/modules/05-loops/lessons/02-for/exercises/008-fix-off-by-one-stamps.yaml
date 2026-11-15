@@ -76,5 +76,6 @@ explanation: |
   조건을 `s < stampsNeeded`로 바꾸면 횟수는 10번이 되지만 `도장 0`부터 `도장 9`까지 나와서 틀려요. 반복 변수를 출력에 쓸 때는 **횟수뿐 아니라 첫 값과 마지막 값**도 맞아야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -58,5 +58,6 @@ explanation: |
   반복 변수는 회차마다 값이 바뀌어야 하니 `let`으로 만들어요. 오류가 첫 회차가 **끝난 뒤** 나는 것도 실행 순서(초기화 → 조건 → 본문 → 갱신)와 맞아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

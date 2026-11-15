@@ -44,5 +44,6 @@ explanation: |
   마지막으로 읽은 쪽은 3쪽이지만, 그 회차의 `page++`로 `page`는 4가 됐어요. 그리고 `4 <= 3`이 거짓이라 반복이 끝났어요. 반복이 끝난 뒤의 반복 변수는 **조건을 거짓으로 만든 값**이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

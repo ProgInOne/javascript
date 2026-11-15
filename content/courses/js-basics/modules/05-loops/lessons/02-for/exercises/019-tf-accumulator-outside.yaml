@@ -30,5 +30,6 @@ explanation: |
   - 시작값을 빠뜨리면(`let total;`) `undefined`에 더하게 되어 `NaN`이 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

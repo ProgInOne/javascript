@@ -45,5 +45,6 @@ explanation: |
   - r3: 반복이 겹쳐 있어도 `break`는 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

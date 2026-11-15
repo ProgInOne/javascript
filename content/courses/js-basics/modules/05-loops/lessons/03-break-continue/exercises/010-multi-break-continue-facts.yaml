@@ -41,5 +41,6 @@ explanation: |
   - e (오답): `break`는 반복만 끝내요. 반복 아래의 문장은 실행돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

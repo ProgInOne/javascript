@@ -67,7 +67,7 @@ spec:
 hints:
   - 출금 횟수를 셀 변수가 하나 더 필요해요. 반복 **전에** 0으로 만들어 두세요.
   - "\"잔액이 뽑을 돈 이상인 동안\"을 조건으로 옮겨 보세요. 잔액이 30000원으로 뽑을 돈과 똑같을 때도 뽑을 수 있어야 해요."
-  - "`while (balance >= amount)` 안에서 잔액을 줄이고, 횟수를 1 늘리고, 출력해요. 요약 출력은 반복 바깥에 써요."
+  - 반복 안에서 할 일은 이 순서예요. ① 잔액에서 뽑을 돈 빼기 → ② 횟수 1 늘리기 → ③ 출력. 마지막 요약 출력은 반복 바깥에 써요.
 explanation: |
   예시 정답이에요.
 
@@ -86,5 +86,6 @@ explanation: |
   - `count`는 반복이 끝난 뒤에도 써야 하므로 반복 바깥에서 만들어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

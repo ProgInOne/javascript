@@ -54,5 +54,6 @@ explanation: |
   - c3: `problem++`는 `problem`만 바꿔요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

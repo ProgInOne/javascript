@@ -44,5 +44,6 @@ explanation: |
   - r3: `i++`는 `i`를 실제로 1 늘려요. 그래서 다음 회차에는 1, 그다음은 2가 출력돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

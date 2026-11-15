@@ -57,5 +57,6 @@ explanation: |
   `+=`(`totalSteps = totalSteps + steps`)로 바꾸면 1000 + 2000 + … + 7000 = 28000이 쌓여요. `const steps`는 회차마다 새로 만들어지므로 `const`로 두어도 괜찮아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

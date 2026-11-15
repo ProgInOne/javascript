@@ -56,7 +56,7 @@ misconceptions: [js.mc.break-ends-program]
 hints:
   - 누적 패턴으로 `sum`에 `i`를 더해 가요. 더한 **다음에** 100을 넘었는지 검사해요.
   - 처음 넘은 순간에만 출력해야 해요. 출력한 뒤에 더 더하지 않으려면 무엇이 필요할까요?
-  - "`if (sum > 100) { console.log(...); break; }`를 `sum += i;` 아래에 둬요."
+  - 더하는 줄 바로 아래에 "100을 넘었는지" 검사하는 `if`를 두고, 그 블록 안에서 출력한 **다음** 반복을 끝내요.
 explanation: |
   예시 정답이에요.
 
@@ -76,5 +76,6 @@ explanation: |
   - 반복이 끝나는 수를 미리 몰라서 조건에는 넉넉하게 100을 두고, 실제로 멈추는 일은 `break`가 맡아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
