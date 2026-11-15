@@ -1,0 +1,310 @@
+<Section kind="objectives">
+- `break`를 만나면 반복이 끝나고 반복 다음 문장으로 넘어간다는 것을 알고, 출력이 어디서 멈출지 예측할 수 있어요.
+- `continue`가 이번 회차의 남은 본문만 건너뛰고 다음 회차로 넘어간다는 것을 `break`와 비교해 설명할 수 있어요.
+- 찾던 값을 찾으면 `break`로 멈추는 반복과, 조건에 맞지 않는 값을 `continue`로 건너뛰는 반복을 작성할 수 있어요.
+- `while` 안의 `continue`가 갱신 줄을 건너뛰어 생기는 무한 반복을 알아볼 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+분실물 보관함 1번부터 100번까지를 차례로 열어 보며 잃어버린 우산을 찾는다고 해 볼게요. 7번 보관함에서 우산을 찾았다면 나머지 93개를 더 열어 볼 필요가 없어요. 그런데 지금까지 배운 `for`는 조건이 거짓이 될 때까지, 즉 100번까지 꼬박꼬박 돌아요.
+
+반대 상황도 있어요. 1일부터 7일까지 가게 영업 안내를 출력하는데 3일은 휴무라면, 3일만 **건너뛰고** 나머지 날은 그대로 출력하고 싶어요.
+
+이 두 가지를 위한 문장이 있어요. 반복을 그 자리에서 **끝내는** `break`와, 이번 회차만 **건너뛰는** `continue`예요. `break`는 모듈 4의 `switch`에서 한 번 만났죠. 반복 안에서도 "여기서 빠져나가"라는 같은 뜻이에요.
+</Section>
+
+<Section kind="principle">
+### break: 반복을 바로 끝내요
+
+반복 본문에서 `break;`를 만나면 남은 본문과 남은 회차를 모두 건너뛰고, **반복 바로 다음 문장**으로 가요. 보통 `if` 안에 두어 "이 조건이면 그만"을 표현해요.
+
+```js
+for (let box = 1; box <= 100; box++) {
+  if (box === 7) {
+    console.log(box + "번 보관함에서 우산을 찾았어요");
+    break;
+  }
+}
+console.log("찾기 끝");
+```
+
+`box`가 7일 때 `break`로 반복이 끝나서, 8번부터 100번까지는 열지 않아요. 그리고 반복 다음 문장인 `찾기 끝`이 나와요. `break`는 **반복만** 끝내요. 프로그램 전체를 끝내지 않아요.
+
+### continue: 이번 회차만 건너뛰어요
+
+`continue;`를 만나면 이번 회차의 남은 본문만 건너뛰고 **다음 회차**로 넘어가요. 반복은 계속돼요.
+
+```js
+for (let day = 1; day <= 5; day++) {
+  if (day === 3) {
+    continue;
+  }
+  console.log(day + "일 영업");
+}
+```
+
+`day`가 3일 때 `continue`로 아래 `console.log`를 건너뛰어요. 그래서 `1일 영업`, `2일 영업`, `4일 영업`, `5일 영업`이 나와요.
+
+`continue` 다음에 어디로 가는지는 반복 종류에 따라 달라요.
+
+| 반복 | `continue` 다음에 실행되는 것 |
+|---|---|
+| `for` | **갱신**(`day++`) → 조건 검사 → 다음 회차 |
+| `while` | 바로 **조건 검사** → 다음 회차 (갱신 자리가 따로 없어요) |
+
+### break와 continue 비교
+
+<CompareTable columns={["break", "continue"]}>
+<Row label="이번 회차의 남은 본문">건너뜀 | 건너뜀</Row>
+<Row label="남은 회차">모두 건너뜀 (반복 끝) | 계속 실행</Row>
+<Row label="그다음 실행되는 곳">반복 다음 문장 | (for) 갱신 → 조건 / (while) 조건</Row>
+<Row label="자주 쓰는 곳">찾던 것을 찾았을 때, 더 할 필요가 없을 때 | 조건에 맞지 않는 값을 거를 때</Row>
+</CompareTable>
+
+### 반복이 겹쳐 있으면 가장 가까운 반복 하나만
+
+다음 단원에서 반복 안에 반복을 넣는 방법을 배워요. 그때 안쪽 반복에서 `break`를 쓰면 **자기를 감싼 가장 가까운 반복 하나만** 끝나요. 바깥 반복은 다음 회차로 이어져요. 자세한 내용은 다음 단원에서 다시 다뤄요.
+
+<Callout kind="tip" title="break·continue 없이 쓸 수도 있어요">
+`continue`는 조건을 뒤집은 `if`로 바꿔 쓸 수 있어요. 위의 휴무일 예제는 `if (day !== 3) { console.log(day + "일 영업"); }`과 같아요. 둘 중 읽기 쉬운 쪽을 고르면 돼요. 걸러 낼 조건이 여러 개이거나 본문이 길 때는 맨 앞에서 `continue`로 걸러 내는 편이 들여쓰기가 얕아서 읽기 쉬워요.
+</Callout>
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 `break`로 찾기를 멈추는 코드예요. 50 이상인 수 중에서 처음 나오는 7의 배수를 찾아요. 무엇이 출력될까요?
+
+<RunnableExample id="find-seven" lang="js" predict predictKind="console" concepts={["js.loops.break"]}>
+```js
+for (let n = 50; n <= 100; n++) {
+  if (n % 7 === 0) {
+    console.log("찾았다: " + n);
+    break;
+  }
+}
+console.log("검색 끝");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+찾았다: 56
+검색 끝
+```
+
+| `n` | `n % 7 === 0` | 일어나는 일 |
+|---|---|---|
+| 50 ~ 55 | 거짓 | 아무것도 출력하지 않고 다음 회차로 |
+| 56 | 참 | `찾았다: 56` 출력 → `break`로 반복 끝 |
+| 57 ~ 100 | — | 검사하지 않아요 |
+
+`break`가 없으면 63, 70, 77, …, 98까지 7의 배수가 모두 출력돼요. "처음 하나만" 찾을 때는 찾자마자 `break`해요. 반복이 끝난 뒤 7번 줄의 `검색 끝`은 그대로 실행돼요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 `continue`로 홀수만 출력하는 코드예요. 몇 줄이 출력될까요?
+
+<RunnableExample id="odd-only" lang="js" predict predictKind="console" concepts={["js.loops.continue"]}>
+```js
+for (let i = 1; i <= 6; i++) {
+  if (i % 2 === 0) {
+    continue;
+  }
+  console.log(i + "번 자리 배정");
+}
+console.log("배정 끝");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+1번 자리 배정
+3번 자리 배정
+5번 자리 배정
+배정 끝
+```
+
+- `i`가 짝수(2, 4, 6)이면 `continue`로 5번 줄을 건너뛰고, 갱신 `i++`로 가서 다음 회차를 시작해요.
+- `i`가 홀수(1, 3, 5)이면 `if`를 지나 5번 줄을 실행해요.
+- `continue`는 반복을 끝내지 않았어요. 2에서 건너뛴 뒤에도 3, 4, 5, 6 회차가 이어졌어요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 같은 반복에서 `break`와 `continue`만 바꾼 코드예요. 실행해서 두 결과를 비교해 보세요.
+
+<RunnableExample id="break-vs-continue" lang="js" concepts={["js.loops.break", "js.loops.continue"]}>
+```js
+console.log("--- break ---");
+for (let i = 1; i <= 5; i++) {
+  if (i === 3) {
+    break;
+  }
+  console.log(i);
+}
+
+console.log("--- continue ---");
+for (let i = 1; i <= 5; i++) {
+  if (i === 3) {
+    continue;
+  }
+  console.log(i);
+}
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+--- break ---
+1
+2
+--- continue ---
+1
+2
+4
+5
+```
+
+- `break`: 3에서 반복이 통째로 끝나서 1, 2만 나와요.
+- `continue`: 3인 회차만 건너뛰고 4, 5 회차는 계속해서 1, 2, 4, 5가 나와요.
+
+두 문장 모두 "이번 회차의 아래쪽 본문을 건너뛴다"까지는 같아요. 다른 점은 **남은 회차를 계속하느냐**예요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 `while`에서 `continue`를 쓸 때의 올바른 모양이에요. `continue`보다 **먼저** 변수를 바꾼 점을 눈여겨보세요.
+
+<RunnableExample id="while-continue" lang="js" concepts={["js.loops.continue"]}>
+```js
+let floor = 0;
+while (floor < 5) {
+  floor++;
+  if (floor === 4) {
+    continue; // 4층은 없는 건물이에요
+  }
+  console.log(floor + "층에 섰어요");
+}
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+1층에 섰어요
+2층에 섰어요
+3층에 섰어요
+5층에 섰어요
+```
+
+- 3번 줄에서 `floor`를 먼저 늘린 다음 4층인지 검사해요. 4층이면 `continue`로 출력만 건너뛰고 바로 조건 검사(`4 < 5`)로 가요.
+- `floor++`가 `continue`보다 위에 있어서, 건너뛰는 회차에도 `floor`는 늘어나요.
+
+만약 `floor++`를 본문 **맨 끝**에 두었다면, 4층에서 `continue`가 `floor++`까지 건너뛰어 `floor`가 4에 멈춰요. 그러면 `4 < 5`가 영원히 참인 무한 반복이 돼요. `while`에는 `for`처럼 따로 실행되는 갱신 자리가 없기 때문이에요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.break-ends-program">
+<Wrong>`break`를 만나면 프로그램이 거기서 끝나서, 반복 아래의 문장도 실행되지 않는다.</Wrong>
+<Actual>첫 번째 예제에서 `break` 뒤에도 반복 다음 줄의 `검색 끝`이 출력됐어요. `break`는 반복만 끝내요.</Actual>
+<Right>`break` 다음에는 반복 바로 다음 문장으로 가요. 프로그램은 평소처럼 아래로 이어져요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.break-exits-all-loops">
+<Wrong>반복 안에 반복이 있을 때, 안쪽 반복의 `break`는 바깥 반복까지 한꺼번에 끝낸다.</Wrong>
+<Actual>
+
+`break`는 자기를 감싼 **가장 가까운** 반복 하나만 끝내요. 아래 코드에서 안쪽 `break`는 안쪽 반복만 끝내고, 바깥 반복은 다음 회차(2반)로 이어져요.
+
+```js
+for (let room = 1; room <= 2; room++) {
+  for (let seat = 1; seat <= 3; seat++) {
+    if (seat === 2) {
+      break; // 안쪽 반복만 끝나요
+    }
+    console.log(room + "반 " + seat + "번");
+  }
+}
+// 1반 1번, 2반 1번
+```
+</Actual>
+<Right>바깥 반복까지 끝내야 한다면 바깥 반복에서도 따로 검사해서 `break`해야 해요. 다음 단원 "중첩 반복"에서 방법을 배워요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.continue-ends-loop">
+<Wrong>`continue`를 만나면 `break`처럼 반복 전체가 끝난다.</Wrong>
+<Actual>두 번째 예제에서 2를 건너뛴 뒤에도 3, 4, 5, 6 회차가 이어졌어요. `continue`는 이번 회차의 남은 본문만 건너뛰어요.</Actual>
+<Right>`continue`는 "이번 것은 넘기고 다음 것"이에요. 반복을 끝내려면 `break`를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.continue-while-update">
+<Wrong>`while`에서도 `continue`를 쓰면 본문 끝의 `i++`가 실행된 뒤 다음 회차로 넘어간다.</Wrong>
+<Actual>
+
+`while`에는 따로 실행되는 갱신 자리가 없어요. `continue`가 본문 끝의 `i++`보다 앞에 있으면 `i++`도 건너뛰어요. 아래 코드는 `i`가 2에서 멈춰 끝나지 않아요.
+
+```js
+let i = 0;
+while (i < 5) {
+  if (i === 2) {
+    continue; // i++를 건너뛰어 i가 계속 2
+  }
+  console.log(i);
+  i++;
+}
+```
+</Actual>
+<Right>`while`에서 `continue`를 쓸 때는 네 번째 예제처럼 변수를 `continue`보다 **먼저** 바꾸거나, 갱신이 자동으로 실행되는 `for`를 써요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+회원 가입 화면에서 쓸 수 있는 아이디를 추천하는 기능을 생각해 볼게요. `user1`, `user2`, …를 차례로 검사해서 이미 쓰는 아이디는 건너뛰고(`continue`), 처음 비어 있는 아이디를 찾으면 멈춰요(`break`).
+
+```js
+const taken1 = 1; // 이미 쓰는 번호들
+const taken2 = 2;
+const taken3 = 4;
+let suggestion = "";
+
+for (let n = 1; n <= 100; n++) {
+  if (n === taken1 || n === taken2 || n === taken3) {
+    continue; // 이미 쓰는 번호는 건너뛰기
+  }
+  suggestion = "user" + n;
+  break; // 처음 비어 있는 번호를 찾으면 끝
+}
+console.log("추천 아이디: " + suggestion);
+```
+
+- 결과는 `추천 아이디: user3`이에요. 1, 2는 건너뛰고 3에서 찾자마자 멈춰요.
+- 찾은 값은 반복 바깥에서 만든 `suggestion`에 담아, 반복이 끝난 뒤에 써요.
+- 실제 서비스에서는 이미 쓰는 아이디 목록을 서버에서 받아 배열(모듈 8)로 다루지만, "건너뛰며 찾다가 찾으면 멈춘다"는 생각은 같아요.
+</Section>
+
+<Section kind="check">
+`break`가 바깥 반복에 어떤 영향을 주는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.loops.break-continue.tf-break-exits-all" />
+
+`continue`가 하는 일을 확인해 보세요.
+
+<InlineExercise ref="js-basics.loops.break-continue.mcq-continue-effect" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `break`는 반복을 바로 끝내고 반복 다음 문장으로 가요. 프로그램 전체를 끝내지 않아요.
+- `continue`는 이번 회차의 남은 본문만 건너뛰고 다음 회차로 가요. 반복은 계속돼요.
+- `for`에서 `continue` 다음에는 갱신 → 조건 검사, `while`에서는 바로 조건 검사예요.
+- `while`에서 `continue`가 변수를 바꾸는 줄보다 앞에 있으면 무한 반복이 될 수 있어요. 변수를 먼저 바꿔요.
+- 반복이 겹쳐 있으면 `break`·`continue`는 자기를 감싼 가장 가까운 반복에만 작용해요.
+- 찾던 것을 찾으면 `break`, 맞지 않는 것을 거를 때는 `continue`를 써요.
+</Section>
+
+<Section kind="next">
+다음 단원 "중첩 반복"에서는 반복 안에 반복을 넣어 표나 격자를 만드는 방법과, 그때 `break`가 어느 반복을 끝내는지 자세히 배워요. <MdnLink path="Web/JavaScript/Reference/Statements/break" />
+</Section>

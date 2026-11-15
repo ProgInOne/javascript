@@ -1,0 +1,64 @@
+id: js-basics.loops.nested-loops.fix-triangle-bound
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.loops.nested, weight: 1 }
+tags: [nested, triangle, debugging]
+estimatedSeconds: 120
+prompt: |
+  `#`으로 계단 모양 삼각형을 만드는 프로그램이에요. 그런데 사각형이 나와요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  #
+  ##
+  ###
+  ####
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          for (let line = 1; line <= 4; line++) {
+            let text = "";
+            for (let k = 1; k <= 4; k++) {
+              text += "#";
+            }
+            console.log(text);
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          for (let line = 1; line <= 4; line++) {
+            let text = "";
+            for (let k = 1; k <= line; k++) {
+              text += "#";
+            }
+            console.log(text);
+          }
+  bugDescription: 네 줄 모두 `####`로 똑같이 나와요.
+  maxEditDistance: 2
+  checks:
+    - kind: console
+      id: output
+      description: "#이 한 줄에 1개, 2개, 3개, 4개씩 늘어나는 네 줄이 출력되어야 합니다."
+      requirement: 계단 삼각형
+      expect:
+        lines: ["#", "##", "###", "####"]
+hints:
+  - 안쪽 반복은 줄마다 몇 번 도나요? 줄마다 몇 번 돌아야 하나요?
+  - 1번째 줄은 1번, 2번째 줄은 2번처럼, 안쪽 반복의 횟수가 "지금 몇 번째 줄인지"와 같아야 해요.
+  - 지금 몇 번째 줄인지는 바깥 반복 변수 `line`에 들어 있어요. 안쪽 반복의 조건에 써 보세요.
+explanation: |
+  3번 줄 안쪽 반복의 조건이 `k <= 4`로 고정되어 있어서, 줄마다 `#`을 똑같이 4개씩 붙였어요.
+
+  ```js
+  for (let k = 1; k <= line; k++) {
+  ```
+
+  조건에 바깥 반복 변수 `line`을 쓰면 안쪽 반복이 1번째 줄에서는 1번, 2번째 줄에서는 2번, …, 4번째 줄에서는 4번 돌아요. 이렇게 **안쪽 범위를 바깥 반복 변수로 정하면** 줄마다 길이가 다른 모양을 만들 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

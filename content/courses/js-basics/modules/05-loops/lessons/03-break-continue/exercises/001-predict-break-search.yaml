@@ -1,0 +1,53 @@
+id: js-basics.loops.break-continue.predict-break-search
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.loops.break, weight: 1 }
+tags: [break, trace]
+estimatedSeconds: 100
+prompt: |
+  날마다 기온이 2도씩 오를 때, 처음으로 30도를 넘는 날 에어컨을 켜는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    let temp = 24;
+    for (let day = 1; day <= 7; day++) {
+      temp += 2;
+      if (temp > 30) {
+        console.log(day + "일째: " + temp + "도, 에어컨 켜기");
+        break;
+      }
+      console.log(day + "일째: " + temp + "도");
+    }
+    console.log("기록 끝");
+  answerKind: console
+  misconceptionByAnswer:
+    "1일째: 26도\n2일째: 28도\n3일째: 30도\n4일째: 32도, 에어컨 켜기": js.mc.break-ends-program
+hints:
+  - 회차마다 3번 줄을 실행한 뒤의 `temp`를 적어 보세요. 1일째는 26이에요.
+  - "30도일 때 `temp > 30`은 참인가요? 처음으로 참이 되는 날은 며칠째인가요?"
+  - "`break`를 만나면 반복이 끝나요. 그 회차의 8번 줄, 그리고 반복 다음의 10번 줄은 각각 실행될까요?"
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  1일째: 26도
+  2일째: 28도
+  3일째: 30도
+  4일째: 32도, 에어컨 켜기
+  기록 끝
+  ```
+
+  | 회차 | `temp` | `temp > 30` | 일어나는 일 |
+  |---|---|---|---|
+  | 1 | 26 | 거짓 | 8번 줄 출력 |
+  | 2 | 28 | 거짓 | 8번 줄 출력 |
+  | 3 | 30 | 거짓 | 8번 줄 출력 (30은 30보다 크지 않아요) |
+  | 4 | 32 | 참 | 5번 줄 출력 → `break` |
+
+  - 4일째에 `break`를 만나 반복이 끝나요. 그 회차의 8번 줄도, 5~7일째도 실행되지 않아요.
+  - `break`는 반복만 끝내므로 반복 다음의 `기록 끝`은 출력돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

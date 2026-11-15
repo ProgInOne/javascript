@@ -1,0 +1,51 @@
+id: js-basics.loops.for.multi-five-times
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.loops.for, weight: 1 }
+tags: [for, off-by-one, count]
+estimatedSeconds: 120
+prompt: |
+  본문이 **정확히 5번** 실행되는 `for` 문을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`for (let i = 0; i < 5; i++) { ... }`"
+    - id: b
+      text: "`for (let i = 1; i <= 5; i++) { ... }`"
+    - id: c
+      text: "`for (let i = 0; i <= 5; i++) { ... }`"
+      misconception: js.mc.for-off-by-one
+      rationale: i가 0, 1, 2, 3, 4, 5를 거쳐 6번 실행돼요.
+    - id: d
+      text: "`for (let i = 1; i < 5; i++) { ... }`"
+      misconception: js.mc.for-off-by-one
+      rationale: i가 1, 2, 3, 4를 거쳐 4번 실행돼요.
+    - id: e
+      text: "`for (let i = 5; i > 0; i--) { ... }`"
+      missedMisconception: js.mc.for-off-by-one
+    - id: f
+      text: "`for (let i = 0; i < 10; i += 2) { ... }`"
+  correct: [a, b, e, f]
+misconceptions: [js.mc.for-off-by-one]
+hints:
+  - 각 반복에서 `i`의 첫 값과 마지막 값(조건이 아직 참인 값)을 적어 보세요.
+  - "`<`는 끝 값을 포함하지 않고, `<=`는 포함해요. 시작값이 0인지 1인지도 함께 보세요."
+  - 거꾸로 세거나 두 칸씩 세는 반복도 있어요. 거치는 값을 직접 나열해 세어 보세요.
+explanation: |
+  정답은 **a, b, e, f**예요.
+
+  | 반복 | `i`가 거치는 값 | 횟수 |
+  |---|---|---|
+  | a | 0, 1, 2, 3, 4 | 5 |
+  | b | 1, 2, 3, 4, 5 | 5 |
+  | c | 0, 1, 2, 3, 4, 5 | **6** |
+  | d | 1, 2, 3, 4 | **4** |
+  | e | 5, 4, 3, 2, 1 | 5 |
+  | f | 0, 2, 4, 6, 8 | 5 |
+
+  c와 d는 시작값과 비교 연산자의 짝이 어긋나서 하나씩 많거나 적어요(off-by-one). 횟수를 셀 때는 첫 값과 마지막 값을 꼭 직접 적어 보세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

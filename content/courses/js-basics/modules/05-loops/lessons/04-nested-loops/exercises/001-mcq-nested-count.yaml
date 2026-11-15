@@ -1,0 +1,46 @@
+id: js-basics.loops.nested-loops.mcq-nested-count
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.loops.nested, weight: 1 }
+tags: [nested, count]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 실행하면 `console.log`는 모두 몇 번 실행되나요?
+code: |
+  for (let i = 1; i <= 3; i++) {
+    for (let j = 1; j <= 4; j++) {
+      console.log(i, j);
+    }
+  }
+spec:
+  options:
+    - id: a
+      text: 7번
+      misconception: js.mc.nested-count-additive
+      rationale: 바깥 회차마다 안쪽 반복이 4번씩 통째로 돌아요. 3 + 4가 아니라 3 × 4예요.
+    - id: b
+      text: 12번
+    - id: c
+      text: 4번
+      misconception: js.mc.inner-var-not-reset
+      rationale: 안쪽 반복은 첫 바깥 회차에서만 도는 게 아니라, 바깥 회차마다 처음부터 다시 돌아요.
+    - id: d
+      text: 3번
+      rationale: 바깥 반복의 횟수만 센 거예요. 바깥 회차 하나 안에서 console.log가 여러 번 실행돼요.
+  correct: b
+misconceptions: [js.mc.nested-count-additive, js.mc.inner-var-not-reset]
+hints:
+  - "`i`가 1일 때 안쪽 반복은 몇 번 도나요?"
+  - "`i`가 2, 3일 때도 안쪽 반복은 처음부터 다시 돌아요."
+  - 4번씩 도는 일을 3번 하면 모두 몇 번일까요?
+explanation: |
+  정답은 **b** 12번이에요. 바깥 반복이 3번 돌고, 바깥 회차마다 안쪽 반복이 `j` = 1, 2, 3, 4로 4번씩 돌아요. 그래서 안쪽 본문은 4 + 4 + 4 = 3 × 4 = 12번 실행돼요.
+
+  - a: 바깥 횟수와 안쪽 횟수를 더하면 안 돼요. 안쪽 반복은 바깥 회차마다 **전부** 돌아요.
+  - c: 안쪽 `for`는 바깥 회차마다 `let j = 1`부터 다시 시작해요.
+  - d: 바깥 회차 수만 세었어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

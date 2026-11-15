@@ -1,0 +1,53 @@
+id: js-basics.loops.nested-loops.predict-break-inner
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.loops.break, weight: 1 }
+  - { id: js.loops.nested, weight: 0.5 }
+tags: [break, nested, trace]
+estimatedSeconds: 120
+prompt: |
+  책장 정리 프로그램이에요. 1번 칸에는 책 1권, 2번 칸에는 2권처럼 칸 번호만큼만 책을 꽂아요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    for (let shelf = 1; shelf <= 3; shelf++) {
+      for (let book = 1; book <= 4; book++) {
+        if (book > shelf) {
+          break;
+        }
+        console.log(shelf + "번 칸 " + book + "번 책");
+      }
+    }
+    console.log("정리 끝");
+  answerKind: console
+  misconceptionByAnswer:
+    "1번 칸 1번 책\n정리 끝": js.mc.break-exits-all-loops
+hints:
+  - "`shelf`가 1일 때 안쪽 반복에서 `book`이 2가 되면 무슨 일이 일어나나요?"
+  - "`break`는 가장 가까운 반복 하나만 끝내요. 그다음에는 어디로 가나요?"
+  - 바깥 반복은 계속되므로 `shelf`가 2, 3일 때도 안쪽 반복이 다시 시작돼요. 칸마다 몇 권에서 멈출까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  1번 칸 1번 책
+  2번 칸 1번 책
+  2번 칸 2번 책
+  3번 칸 1번 책
+  3번 칸 2번 책
+  3번 칸 3번 책
+  정리 끝
+  ```
+
+  | `shelf` | 안쪽 반복 | 출력한 책 |
+  |---|---|---|
+  | 1 | `book` 2에서 `2 > 1` → break | 1권 |
+  | 2 | `book` 3에서 `3 > 2` → break | 2권 |
+  | 3 | `book` 4에서 `4 > 3` → break | 3권 |
+
+  `break`는 **안쪽 반복만** 끝내요. 안쪽 반복이 끝나면 바깥 반복이 다음 칸으로 넘어가서, 칸마다 칸 번호만큼 책이 출력돼요. 바깥 반복까지 끝났다면 `1번 칸 1번 책`과 `정리 끝`만 나왔을 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

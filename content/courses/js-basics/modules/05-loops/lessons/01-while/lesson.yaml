@@ -1,0 +1,16 @@
+id: js-basics.loops.while
+title: while 반복
+summary: 조건이 참인 동안 같은 코드를 되풀이하는 while, 본문을 먼저 한 번 실행하는 do...while, 끝나지 않는 무한 반복을 알아보고 피하는 법을 배웁니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 13, practice: 22 }
+concepts:
+  primary: [js.loops.while, js.loops.do-while, js.loops.infinite]
+  reviewed: [js.control.if, js.ops.increment, js.ops.compound-assignment, js.ops.relational]
+objectives:
+  - while 반복에서 조건을 언제 검사하는지 알고, 본문이 몇 번 실행되고 무엇이 출력될지 예측할 수 있다.
+  - 조건이 참인 동안 반복하는 while 프로그램을 작성할 수 있다.
+  - do...while이 본문을 적어도 한 번 실행한다는 점을 while과 비교해 설명할 수 있다.
+  - 반복 조건이 거짓이 되지 않는 무한 반복을 알아보고, 조건 변수를 바꿔 고칠 수 있다.
+practice:
+  targetCount: 16

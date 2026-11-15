@@ -1,0 +1,46 @@
+id: js-basics.loops.for.predict-step-down
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.loops.for, weight: 1 }
+  - { id: js.ops.compound-assignment, weight: 0.3 }
+tags: [for, step, trace]
+estimatedSeconds: 90
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    for (let n = 20; n >= 0; n -= 6) {
+      console.log(n);
+    }
+    console.log("끝");
+  answerKind: console
+hints:
+  - 회차마다 `n`이 6씩 줄어요. 20부터 차례로 적어 보세요.
+  - "`n`이 2 다음에는 얼마가 되나요? 그때 `n >= 0`은 참인가요?"
+  - 조건이 거짓이 된 값은 출력되지 않아요. 조건은 본문 전에 검사하니까요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  20
+  14
+  8
+  2
+  끝
+  ```
+
+  | 회차 | `n` | `n >= 0` |
+  |---|---|---|
+  | 1 | 20 | 참 |
+  | 2 | 14 | 참 |
+  | 3 | 8 | 참 |
+  | 4 | 2 | 참 |
+  | — | -4 | 거짓 → 반복 끝 |
+
+  갱신 `n -= 6`으로 `n`이 -4가 되면 조건이 거짓이라 본문을 실행하지 않아요. 그래서 -4는 출력되지 않고 `끝`이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

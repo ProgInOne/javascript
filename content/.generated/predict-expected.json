@@ -72,6 +72,142 @@
         ]
       }
     },
+    "js-basics.loops.break-continue.predict-break-search": {
+      "inputHash": "327abf206e97872ba87d300fc5722575e13b418f1baefddb3d436f021b45e229",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1일째: 26도",
+          "2일째: 28도",
+          "3일째: 30도",
+          "4일째: 32도, 에어컨 켜기",
+          "기록 끝"
+        ]
+      }
+    },
+    "js-basics.loops.break-continue.predict-continue-boxes": {
+      "inputHash": "d6f8731ce4863def5a730c58cca1f9551119418e05ba0dd1288a8cde0609eac1",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1번 상자 싣기",
+          "2번 상자 싣기",
+          "4번 상자 싣기",
+          "5번 상자 싣기",
+          "7번 상자 싣기",
+          "출발"
+        ]
+      }
+    },
+    "js-basics.loops.for.predict-final-counter": {
+      "inputHash": "720a8d623934ec04a559d83026c1d582f78ca479299d9efd7a61bc092606db4d",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1쪽 읽기",
+          "2쪽 읽기",
+          "3쪽 읽기",
+          "지금 page: 4"
+        ]
+      }
+    },
+    "js-basics.loops.for.predict-for-basic": {
+      "inputHash": "4441e52bd5128e67df2ed9bcc27c8f136c9bd127a6aa4b5c612e211ef198b296",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "손님 번호: 0",
+          "손님 번호: 1",
+          "손님 번호: 2"
+        ]
+      }
+    },
+    "js-basics.loops.for.predict-reset-inside": {
+      "inputHash": "4e9eebd51dd266dcf522974cdb1f4464873ad5872a988813e79a8d739015b208",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1일째 저금통: 1000원",
+          "2일째 저금통: 1000원",
+          "3일째 저금통: 1000원"
+        ]
+      }
+    },
+    "js-basics.loops.for.predict-step-down": {
+      "inputHash": "1f5a0ee72257bcbd375ba832620477da09b6701a2ce08b8931446f349f80b888",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "20",
+          "14",
+          "8",
+          "2",
+          "끝"
+        ]
+      }
+    },
+    "js-basics.loops.nested-loops.predict-break-inner": {
+      "inputHash": "63f3aad45d219ed18122d0b5f418279f5b6fff3c6af4e2b1839d7f365815ea9a",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1번 칸 1번 책",
+          "2번 칸 1번 책",
+          "2번 칸 2번 책",
+          "3번 칸 1번 책",
+          "3번 칸 2번 책",
+          "3번 칸 3번 책",
+          "정리 끝"
+        ]
+      }
+    },
+    "js-basics.loops.nested-loops.predict-room-numbers": {
+      "inputHash": "39a01487f6c62ff418c1ebc3a636e50921aa0c3f75a6e4fa555bc3c57bafb3cd",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "101",
+          "102",
+          "103",
+          "201",
+          "202",
+          "203"
+        ]
+      }
+    },
+    "js-basics.loops.while.predict-change-mid-body": {
+      "inputHash": "d06baf13e9418d09db1229475f540753b8c8ec970eb3380a69f9751a95fdf3ca",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "포션! 체력: 90",
+          "포션! 체력: 110",
+          "최종 체력: 110"
+        ]
+      }
+    },
+    "js-basics.loops.while.predict-countdown": {
+      "inputHash": "6e2aaf3b122521a06df5b9e7d288d7b46c1d82150f982a0fb9f54631d1b1bb8e",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "30초 남음",
+          "20초 남음",
+          "10초 남음",
+          "띵!"
+        ]
+      }
+    },
+    "js-basics.loops.while.predict-do-while-once": {
+      "inputHash": "3bd867e0aaf566c4e76af4af7ea0fc13ae4d5fcfbc1de7840ac362e3e080dedb",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "5번 손님 들어오세요",
+          "다음 번호: 6"
+        ]
+      }
+    },
     "js-basics.operators.arithmetic.predict-compound-chain": {
       "inputHash": "6aa67c462d0122270567bce8bb68fff01b579659224a176b30db54a490f08d7b",
       "expected": {

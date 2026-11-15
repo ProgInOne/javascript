@@ -1,0 +1,66 @@
+id: js-basics.loops.while.fill-cups-while
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.loops.infinite, weight: 1 }
+  - { id: js.loops.while, weight: 0.5 }
+  - { id: js.ops.increment, weight: 0.3 }
+tags: [while, infinite-loop, fill]
+estimatedSeconds: 90
+prompt: |
+  카페에서 주문받은 음료 3잔을 차례로 채우는 프로그램이에요. 빈칸을 채워 아래처럼 출력되게 하세요.
+
+  ```text
+  1번째 컵 채우기
+  2번째 컵 채우기
+  3번째 컵 채우기
+  주문 완료
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    let cup = 1;
+    while ({{blank:cond}}) {
+      console.log(cup + "번째 컵 채우기");
+      {{blank:update}}
+    }
+    console.log("주문 완료");
+  blanks:
+    - id: cond
+      accept: ["cup <= 3", "cup < 4"]
+      width: 10
+    - id: update
+      accept: ["cup++;", "cup += 1;", "cup = cup + 1;"]
+      width: 12
+  checks:
+    - kind: console
+      id: output
+      description: 컵 1~3번을 차례로 채운 뒤 "주문 완료"가 출력되어야 합니다.
+      requirement: 세 잔 채우기
+      expect:
+        lines: ["1번째 컵 채우기", "2번째 컵 채우기", "3번째 컵 채우기", "주문 완료"]
+misconceptions: [js.mc.while-auto-update]
+hints:
+  - 첫 번째 빈칸은 "언제까지 반복할지"예요. `cup`이 몇일 때까지 컵을 채워야 하나요?
+  - 두 번째 빈칸은 다음 회차를 위해 `cup`을 바꾸는 줄이에요. 이 줄이 없으면 `cup`은 계속 1이에요.
+  - "`cup`이 3 이하인 동안 반복하고, 회차마다 `cup`을 1씩 늘려요. 증가 연산자를 떠올려 보세요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  let cup = 1;
+  while (cup <= 3) {
+    console.log(cup + "번째 컵 채우기");
+    cup++;
+  }
+  console.log("주문 완료");
+  ```
+
+  - 조건 `cup <= 3`은 `cup`이 1, 2, 3일 때 참이고 4가 되면 거짓이에요. `cup < 4`도 같은 뜻이라 정답이에요.
+  - `cup++`가 회차마다 `cup`을 1씩 늘려 언젠가 조건이 거짓이 되게 해요. 이 줄을 빠뜨리면 `cup`이 계속 1이라 `1번째 컵 채우기`만 끝없이 반복돼요.
+  - `cup < 3`으로 쓰면 1, 2번째 컵만 채우고 끝나요. 마지막 값이 3이 되도록 `<=`를 쓰거나 `< 4`로 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,82 @@
+id: js-basics.loops.while.impl-countdown-start
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.loops.while, weight: 1 }
+  - { id: js.ops.increment, weight: 0.3 }
+tags: [while, write-code, countdown]
+estimatedSeconds: 180
+prompt: |
+  달리기 출발 신호 프로그램을 작성하세요.
+
+  - 시작 코드의 `seconds`를 그대로 쓰고, `while` 반복으로 `seconds`를 1씩 줄이며 5부터 1까지 출력하세요.
+  - 반복이 끝나면 `출발!`을 출력하세요.
+  - 실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  5
+  4
+  3
+  2
+  1
+  출발!
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          let seconds = 5;
+
+          // while로 seconds를 5부터 1까지 출력한 뒤, "출발!"을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let seconds = 5;
+
+          // while로 seconds를 5부터 1까지 출력한 뒤, "출발!"을 출력하세요.
+          while (seconds > 0) {
+            console.log(seconds);
+            seconds--;
+          }
+          console.log("출발!");
+  checks:
+    - kind: console
+      id: output
+      description: 5부터 1까지 한 줄에 하나씩 출력한 뒤 "출발!"이 출력되어야 합니다.
+      requirement: 카운트다운 출력
+      expect:
+        lines: ["5", "4", "3", "2", "1", "출발!"]
+    - kind: program
+      id: seconds-zero
+      description: seconds를 1씩 줄이다가 0이 되었을 때 반복이 끝나야 합니다.
+      requirement: seconds를 줄여 가며 반복
+      expect:
+        globals: { seconds: { equals: 0 } }
+        noError: true
+misconceptions: [js.mc.while-auto-update]
+hints:
+  - 반복할 조건은 "`seconds`가 0보다 큰 동안"이에요.
+  - 본문에서 할 일은 두 가지예요. 지금 값을 출력하고, 다음 회차를 위해 1 줄이기.
+  - "`while (seconds > 0) { console.log(seconds); seconds--; }` 다음 줄에 `출발!`을 출력해요. 출력과 줄이기의 순서를 바꾸면 결과가 어떻게 달라질지도 생각해 보세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  let seconds = 5;
+  while (seconds > 0) {
+    console.log(seconds);
+    seconds--;
+  }
+  console.log("출발!");
+  ```
+
+  - `seconds`가 5, 4, 3, 2, 1일 때 조건이 참이라 출력하고, 0이 되면 반복이 끝나요.
+  - 본문의 두 줄 순서가 중요해요. `seconds--`를 먼저 쓰면 4, 3, 2, 1, 0이 출력돼요.
+  - `seconds--`를 빠뜨리면 5가 끝없이 출력되는 무한 반복이 돼요.
+  - `console.log("출발!")`은 반복 **바깥**(닫는 `}` 아래)에 써야 한 번만 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

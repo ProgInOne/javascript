@@ -1,0 +1,42 @@
+id: js-basics.loops.while.predict-do-while-once
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.loops.do-while, weight: 1 }
+tags: [do-while, trace]
+estimatedSeconds: 80
+prompt: |
+  번호표 호출 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    let ticket = 5;
+    do {
+      console.log(ticket + "번 손님 들어오세요");
+      ticket++;
+    } while (ticket <= 3);
+    console.log("다음 번호: " + ticket);
+  answerKind: console
+  misconceptionByAnswer:
+    "다음 번호: 5": js.mc.do-while-checks-first
+hints:
+  - "`do...while`은 무엇을 먼저 하나요? 조건 검사인가요, 본문 실행인가요?"
+  - 본문을 한 번 실행한 뒤 `ticket`은 얼마가 되나요? 그다음 조건 `ticket <= 3`은 참인가요?
+  - 조건이 처음부터 거짓이어도 `do...while`의 본문은 한 번 실행돼요. 그 한 번 동안 `ticket`도 1 늘어요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  5번 손님 들어오세요
+  다음 번호: 6
+  ```
+
+  - 2~4번 줄: `do...while`은 조건을 보기 전에 본문을 실행해요. `5번 손님 들어오세요`를 출력하고 `ticket`이 6이 돼요.
+  - 5번 줄: 이제 조건 `6 <= 3`을 검사해요. 거짓이라 반복이 끝나요.
+  - 6번 줄: `다음 번호: 6`이 나와요.
+
+  `while (ticket <= 3) { ... }`로 썼다면 `5 <= 3`이 처음부터 거짓이라 본문이 실행되지 않고 `다음 번호: 5`만 나왔을 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

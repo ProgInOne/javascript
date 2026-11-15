@@ -1,0 +1,77 @@
+id: js-basics.loops.while.fix-forgot-update
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.loops.infinite, weight: 1 }
+  - { id: js.loops.while, weight: 0.3 }
+tags: [infinite-loop, while, debugging]
+estimatedSeconds: 150
+prompt: |
+  붕어빵 4개의 값을 계산하는 프로그램이에요. 그런데 실행하면 아무것도 나오지 않다가 약 1초 뒤 실행이 멈춰요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  붕어빵 4개: 6000원
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const price = 1500; // 붕어빵 하나 가격
+          let count = 0;      // 지금까지 산 개수
+          let total = 0;      // 지금까지의 금액
+
+          while (count < 4) {
+            total += price;
+          }
+          console.log("붕어빵 " + count + "개: " + total + "원");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const price = 1500; // 붕어빵 하나 가격
+          let count = 0;      // 지금까지 산 개수
+          let total = 0;      // 지금까지의 금액
+
+          while (count < 4) {
+            total += price;
+            count++;
+          }
+          console.log("붕어빵 " + count + "개: " + total + "원");
+  bugDescription: 실행하면 콘솔에 아무것도 나오지 않고, 약 1초 뒤 반복이 너무 오래 실행되어 멈췄다는 안내가 나와요.
+  bugMisconception: js.mc.while-auto-update
+  checks:
+    - kind: console
+      id: output
+      description: 붕어빵 4개의 개수와 금액이 출력되어야 합니다.
+      requirement: 4개 계산
+      expect:
+        lines: ["붕어빵 4개: 6000원"]
+    - kind: program
+      id: finished
+      description: 반복이 끝나서 프로그램이 오류 없이 마쳐야 합니다.
+      requirement: 반복 끝내기
+      expect:
+        noError: true
+misconceptions: [js.mc.while-auto-update]
+hints:
+  - 반복이 끝나려면 조건 `count < 4`가 언젠가 거짓이 되어야 해요.
+  - 본문에서 바뀌는 변수는 무엇이고, 바뀌지 않는 변수는 무엇인가요?
+  - 붕어빵 하나를 살 때마다 금액만 늘고 개수는 늘지 않아요. 본문에 한 줄을 더해 보세요.
+explanation: |
+  본문에서 `count`를 바꾸지 않아서 `count`는 계속 0이고, `0 < 4`가 영원히 참이었어요. 그래서 반복이 끝나지 않아 8번 줄에 도착하지 못했어요.
+
+  ```js
+  while (count < 4) {
+    total += price;
+    count++; // 하나 살 때마다 개수도 1 늘려요
+  }
+  ```
+
+  이제 `count`가 0 → 1 → 2 → 3 → 4로 늘고, 4에서 조건이 거짓이 되어 `붕어빵 4개: 6000원`이 나와요.
+
+  `while`은 조건에 쓴 변수를 대신 바꿔 주지 않아요. 반복문을 쓰면 "조건의 변수는 본문 어디서 바뀌지?"를 꼭 확인해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,80 @@
+id: js-basics.loops.for.fix-off-by-one-stamps
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.loops.for, weight: 1 }
+tags: [for, off-by-one, debugging]
+estimatedSeconds: 150
+prompt: |
+  카페 쿠폰에 도장 10개를 찍는 프로그램이에요. 그런데 도장 칸이 이상하게 나와요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  도장 1
+  도장 2
+  도장 3
+  도장 4
+  도장 5
+  도장 6
+  도장 7
+  도장 8
+  도장 9
+  도장 10
+  무료 음료 쿠폰 완성!
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const stampsNeeded = 10;
+          for (let s = 0; s <= stampsNeeded; s++) {
+            console.log("도장 " + s);
+          }
+          console.log("무료 음료 쿠폰 완성!");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const stampsNeeded = 10;
+          for (let s = 1; s <= stampsNeeded; s++) {
+            console.log("도장 " + s);
+          }
+          console.log("무료 음료 쿠폰 완성!");
+  bugDescription: 도장이 `도장 0`부터 시작해서 모두 11개가 찍혀요.
+  bugMisconception: js.mc.for-off-by-one
+  maxEditDistance: 4
+  checks:
+    - kind: console
+      id: output
+      description: 도장 1부터 도장 10까지 열 줄과 쿠폰 완성 안내가 출력되어야 합니다.
+      requirement: 도장 10개
+      expect:
+        lines:
+          - 도장 1
+          - 도장 2
+          - 도장 3
+          - 도장 4
+          - 도장 5
+          - 도장 6
+          - 도장 7
+          - 도장 8
+          - 도장 9
+          - 도장 10
+          - 무료 음료 쿠폰 완성!
+misconceptions: [js.mc.for-off-by-one]
+hints:
+  - 지금 `s`가 거치는 값을 처음부터 끝까지 적어 보세요. 몇 개인가요?
+  - 출력의 첫 줄은 `도장 1`, 마지막 줄은 `도장 10`이어야 해요. 마지막 값은 지금도 맞아요.
+  - 시작값과 조건 중 하나만 바꾸면 돼요. 마지막 값(10)을 지키려면 어느 쪽을 바꿔야 할까요?
+explanation: |
+  `s`가 0부터 10까지(10 포함) 거쳐서 0, 1, …, 10으로 11번 반복했어요. 출력에 쓰이는 `s`가 1부터 10까지여야 하니 시작값을 1로 바꿔요.
+
+  ```js
+  for (let s = 1; s <= stampsNeeded; s++) {
+  ```
+
+  조건을 `s < stampsNeeded`로 바꾸면 횟수는 10번이 되지만 `도장 0`부터 `도장 9`까지 나와서 틀려요. 반복 변수를 출력에 쓸 때는 **횟수뿐 아니라 첫 값과 마지막 값**도 맞아야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

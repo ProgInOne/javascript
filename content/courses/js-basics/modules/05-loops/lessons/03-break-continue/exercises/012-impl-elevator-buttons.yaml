@@ -1,0 +1,73 @@
+id: js-basics.loops.break-continue.impl-elevator-buttons
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.loops.continue, weight: 1 }
+  - { id: js.ops.logical-and-or-not, weight: 0.3 }
+tags: [continue, write-code]
+estimatedSeconds: 210
+prompt: |
+  어떤 건물에는 4층과 13층이 없어요. 엘리베이터 버튼에 표시할 층을 출력하는 프로그램을 작성하세요.
+
+  - `for` 문으로 1층부터 15층까지 차례로 살펴보고, 4층과 13층은 `continue`로 건너뛰세요.
+  - 나머지 층은 `1층`처럼 한 줄에 하나씩 출력하세요.
+  - 실행하면 콘솔에 1층부터 15층까지 중 4층과 13층을 뺀 13줄이 나와야 해요.
+
+  ```text
+  1층
+  2층
+  3층
+  5층
+  …
+  12층
+  14층
+  15층
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1층부터 15층까지 출력하되, 4층과 13층은 continue로 건너뛰세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 1층부터 15층까지 출력하되, 4층과 13층은 continue로 건너뛰세요.
+          for (let floor = 1; floor <= 15; floor++) {
+            if (floor === 4 || floor === 13) {
+              continue;
+            }
+            console.log(floor + "층");
+          }
+  checks:
+    - kind: console
+      id: output
+      description: 1층부터 15층까지 중 4층과 13층을 뺀 층이 차례로 한 줄씩 출력되어야 합니다.
+      requirement: 없는 층 건너뛰기
+      expect:
+        lines: ["1층", "2층", "3층", "5층", "6층", "7층", "8층", "9층", "10층", "11층", "12층", "14층", "15층"]
+      misconceptionIfFail: js.mc.continue-ends-loop
+hints:
+  - 1부터 15까지 도는 `for` 문부터 쓰고, 본문에서 층을 출력해 보세요.
+  - 출력하기 **전에** 건너뛸 층인지 검사해야 해요. 건너뛸 층이 두 개라서 조건을 `||`로 이어요.
+  - "`if (floor === 4 || floor === 13) { continue; }`를 `console.log` 위에 둬요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  for (let floor = 1; floor <= 15; floor++) {
+    if (floor === 4 || floor === 13) {
+      continue;
+    }
+    console.log(floor + "층");
+  }
+  ```
+
+  - 건너뛸 조건을 출력보다 **먼저** 검사해요. `continue`가 출력보다 아래에 있으면 이미 출력한 뒤라 건너뛰는 효과가 없어요.
+  - `continue` 대신 `break`를 쓰면 4층에서 반복이 끝나 `1층`~`3층`만 나와요.
+  - `if (floor !== 4 && floor !== 13) { console.log(floor + "층"); }`처럼 조건을 뒤집어 써도 같은 결과예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

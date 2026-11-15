@@ -1,0 +1,34 @@
+id: js-basics.loops.for.tf-accumulator-outside
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+tags: [accumulator]
+estimatedSeconds: 40
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: 반복하며 합계를 구할 때, 누적 변수는 반복이 시작되기 전에 반복 바깥에서 0으로 만들어 둔다.
+  answer: true
+  misconceptionIfWrong: js.mc.accumulator-reset-in-loop
+hints:
+  - 레슨의 누적 패턴 세 단계 중 첫 번째는 무엇이었나요?
+  - 누적 변수를 반복 본문 안에서 만들면 회차마다 어떻게 될까요?
+  - 시작값이 없으면 `undefined`부터 더하게 돼요.
+explanation: |
+  정답은 **참**이에요. 누적 패턴은 이렇게 써요.
+
+  ```js
+  let total = 0;          // 반복 앞, 반복 바깥에서 시작값
+  for (let i = 1; i <= 3; i++) {
+    total += i;           // 본문에서 더하기
+  }
+  console.log(total);     // 반복 뒤에서 쓰기: 6
+  ```
+
+  - 본문 안에서 `let total = 0;`을 쓰면 회차마다 0으로 돌아가 마지막 값만 남고, 반복이 끝난 뒤에는 `total`을 쓸 수도 없어요.
+  - 시작값을 빠뜨리면(`let total;`) `undefined`에 더하게 되어 `NaN`이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

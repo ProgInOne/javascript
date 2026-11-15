@@ -1,0 +1,45 @@
+id: js-basics.loops.break-continue.predict-continue-boxes
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.loops.continue, weight: 1 }
+tags: [continue, trace]
+estimatedSeconds: 90
+prompt: |
+  택배 상자를 트럭에 싣는 프로그램이에요. 번호가 3의 배수인 상자는 다른 트럭에 실어요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    for (let box = 1; box <= 7; box++) {
+      if (box % 3 === 0) {
+        continue;
+      }
+      console.log(box + "번 상자 싣기");
+    }
+    console.log("출발");
+  answerKind: console
+  misconceptionByAnswer:
+    "1번 상자 싣기\n2번 상자 싣기\n출발": js.mc.continue-ends-loop
+hints:
+  - 1부터 7까지 중 3의 배수는 무엇인가요?
+  - 3의 배수일 때 `continue`를 만나면 5번 줄은 실행될까요? 그다음에는 어디로 가나요?
+  - "`continue`는 반복을 끝내지 않아요. 3을 건너뛴 다음 회차는 4예요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  1번 상자 싣기
+  2번 상자 싣기
+  4번 상자 싣기
+  5번 상자 싣기
+  7번 상자 싣기
+  출발
+  ```
+
+  - `box`가 3, 6일 때 `continue`로 5번 줄을 건너뛰고 갱신 `box++`로 가요.
+  - 나머지 1, 2, 4, 5, 7은 5번 줄을 실행해요.
+  - `continue`는 반복을 끝내지 않으므로 3 다음에도 4~7회차가 이어지고, 반복이 끝난 뒤 `출발`이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

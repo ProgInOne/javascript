@@ -1,0 +1,79 @@
+id: js-basics.loops.nested-loops.fix-seat-count-reset
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.loops.nested, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.5 }
+tags: [nested, accumulator, debugging]
+estimatedSeconds: 180
+prompt: |
+  공연장의 좌석 수를 세는 프로그램이에요. 1열은 5석, 2열은 6석, 3열은 7석처럼 열마다 한 석씩 늘어나요. 열마다 "그 열까지의 좌석 수 합계"를 보여 줘야 하는데 숫자가 이상해요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  1열까지 좌석: 5석
+  2열까지 좌석: 11석
+  3열까지 좌석: 18석
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          for (let row = 1; row <= 3; row++) {
+            let total = 0;
+            for (let seat = 1; seat <= row + 4; seat++) {
+              total++;
+            }
+            console.log(row + "열까지 좌석: " + total + "석");
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let total = 0;
+          for (let row = 1; row <= 3; row++) {
+            for (let seat = 1; seat <= row + 4; seat++) {
+              total++;
+            }
+            console.log(row + "열까지 좌석: " + total + "석");
+          }
+  bugDescription: "`1열까지 좌석: 5석`, `2열까지 좌석: 6석`, `3열까지 좌석: 7석`처럼 그 열의 좌석 수만 나와요."
+  bugMisconception: js.mc.accumulator-reset-in-loop
+  checks:
+    - kind: console
+      id: output
+      description: 열마다 1열부터 그 열까지의 좌석 수 합계가 출력되어야 합니다.
+      requirement: 누적 좌석 수
+      expect:
+        lines: ["1열까지 좌석: 5석", "2열까지 좌석: 11석", "3열까지 좌석: 18석"]
+misconceptions: [js.mc.accumulator-reset-in-loop]
+hints:
+  - 지금 출력된 5, 6, 7은 무엇의 개수인가요? 이전 열의 좌석은 어디로 갔을까요?
+  - "`let total = 0;`은 어느 반복의 본문에 있나요? 그 반복의 회차마다 무슨 일이 일어나나요?"
+  - 1열부터 계속 쌓여야 하니, 누적 변수는 열이 바뀌어도 다시 0이 되면 안 돼요. 바깥 반복보다 먼저 만들어요.
+explanation: |
+  2번 줄 `let total = 0;`이 바깥 반복의 본문에 있어서, 열이 바뀔 때마다 `total`이 0으로 돌아갔어요. 그래서 그 열의 좌석 수만 셌어요.
+
+  ```js
+  let total = 0;
+  for (let row = 1; row <= 3; row++) {
+    for (let seat = 1; seat <= row + 4; seat++) {
+      total++;
+    }
+    console.log(row + "열까지 좌석: " + total + "석");
+  }
+  ```
+
+  누적 변수를 바깥 반복보다 **먼저** 만들면 5 → 11 → 18로 계속 쌓여요.
+
+  중첩 반복에서는 누적 변수를 어디에 두느냐에 따라 뜻이 달라져요.
+
+  | `let total = 0;`의 위치 | 세는 것 |
+  |---|---|
+  | 바깥 반복보다 먼저 | 처음부터 지금까지 전체 |
+  | 바깥 본문, 안쪽 반복 앞 | 이번 줄(열) 하나 |
+  | 안쪽 본문 | 아무것도 쌓이지 않음 |
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

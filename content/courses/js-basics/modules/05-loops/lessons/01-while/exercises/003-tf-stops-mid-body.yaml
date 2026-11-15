@@ -1,0 +1,46 @@
+id: js-basics.loops.while.tf-stops-mid-body
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.loops.while, weight: 1 }
+tags: [while, condition]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: while 본문을 실행하는 도중에 조건이 거짓이 되면, 그 즉시 반복이 멈추고 본문의 나머지 줄은 실행되지 않는다.
+  answer: false
+  misconceptionIfWrong: js.mc.while-checks-mid-body
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 조건은 회차를 시작하기 전에만 검사하므로, 그 회차의 본문은 끝까지 실행된다
+      correct: true
+    - id: r2
+      text: JavaScript가 조건에 쓴 변수를 계속 지켜보다가 거짓이 되는 순간 반복을 멈춘다
+      misconception: js.mc.while-checks-mid-body
+    - id: r3
+      text: 조건이 거짓이 되면 그 회차는 끝까지 실행되고, 반복은 한 번 더 실행된 뒤에 끝난다
+hints:
+  - 레슨의 두 번째 예제에서 `energy`가 0이 된 다음 줄은 실행됐나요?
+  - 조건을 검사하는 곳은 본문 안이 아니라 본문 바깥, `while (...)` 자리 하나뿐이에요.
+  - 본문 마지막 줄까지 실행한 뒤 다시 `while (...)`로 돌아가서야 조건을 검사해요.
+explanation: |
+  정답은 **거짓**, 이유는 **조건은 회차를 시작하기 전에만 검사하므로, 그 회차의 본문은 끝까지 실행된다**예요.
+
+  ```js
+  let energy = 2;
+  while (energy > 0) {
+    energy--;
+    console.log("남은 힘: " + energy); // energy가 0이 된 뒤에도 실행돼요
+  }
+  ```
+
+  2회차에서 `energy`가 0이 되어도 바로 다음 줄의 `console.log`가 실행돼요. 반복은 3회차를 시작하려고 조건을 검사할 때 끝나요.
+
+  - r2: JavaScript는 변수를 지켜보지 않아요. 조건은 `while (...)` 자리에 도착했을 때만 계산돼요.
+  - r3: 회차가 끝나면 바로 조건을 검사하므로 "한 번 더" 실행되지는 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,58 @@
+id: js-basics.loops.for.find-bug-reset-total
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+tags: [accumulator, reset, debugging]
+estimatedSeconds: 110
+prompt: |
+  게임을 4판 하고 총점을 내는 프로그램이에요. 판마다 얻는 점수는 10점, 20점, 30점, 40점이에요. 오류는 없는데 총점이 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    let total = 0;
+    for (let round = 1; round <= 4; round++) {
+      total = 0;
+      total += round * 10;
+    }
+    console.log("총점: " + total);
+  bugLines: [3]
+  symptom: "총점이 100점이어야 하는데 `총점: 40`이 나와요."
+  symptomCheck:
+    console: ["총점: 40"]
+  fixedCode: |-
+    let total = 0;
+    for (let round = 1; round <= 4; round++) {
+      total += round * 10;
+    }
+    console.log("총점: " + total);
+  causeOptions:
+    - id: c1
+      text: 3번 줄이 회차마다 total을 0으로 되돌려서, 마지막 판의 점수만 남았다
+      correct: true
+    - id: c2
+      text: 4번 줄의 +=가 이전 값을 버리고 새 값으로 바꿨다
+      misconception: js.mc.accumulator-overwrite
+    - id: c3
+      text: 반복이 4판을 다 돌지 못하고 마지막 한 판만 실행됐다
+hints:
+  - 회차마다 `total`이 어떻게 바뀌는지 표로 적어 보세요. 1판이 끝나면 10이에요.
+  - 2판이 시작되면 3번 줄에서 `total`은 얼마가 되나요?
+  - 1번 줄과 3번 줄이 같은 일을 해요. 누적 변수를 0으로 만드는 일은 언제 한 번만 해야 할까요?
+explanation: |
+  원인은 **3번 줄** `total = 0;`이에요. 본문 안에 있어서 회차마다 실행되고, 그때마다 이전 판까지의 점수를 지워 버려요.
+
+  | 판 | 3번 줄 뒤 `total` | 4번 줄 뒤 `total` |
+  |---|---|---|
+  | 1 | 0 | 10 |
+  | 2 | 0 | 20 |
+  | 3 | 0 | 30 |
+  | 4 | 0 | 40 |
+
+  누적 변수는 1번 줄처럼 반복 **앞에서 한 번만** 0으로 만들어요. 3번 줄을 지우면 10 + 20 + 30 + 40 = 100점이 나와요.
+
+  - c2: `+=`는 이전 값에 더해요. 덮어쓰는 것은 `=`예요.
+  - c3: 반복은 4판을 모두 돌았어요. 다만 매번 처음부터 다시 셌을 뿐이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

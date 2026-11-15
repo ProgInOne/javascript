@@ -11,6 +11,7 @@ objectives:
   - 변수와 상수로 값에 이름을 붙이고, 대입으로 값을 바꿀 수 있다.
   - 연산자로 값을 계산·비교·조합하고, 자료형이 바뀌는 결과를 예측할 수 있다.
   - 조건문으로 상황에 따라 다른 코드를 실행하고, 어느 갈래가 실행될지 예측할 수 있다.
+  - 반복문으로 같은 일을 여러 번 실행하고, 반복 횟수와 변수 값의 변화를 추적할 수 있다.
 # v0.1 시범판에 있는 모듈만 나열합니다. 전체 목록: start, values, operators, control, loops,
 # functions, strings, arrays, objects, browser-intro
-modules: [start, values, operators, control]
+modules: [start, values, operators, control, loops]

@@ -1,0 +1,53 @@
+id: js-basics.loops.nested-loops.multi-nested-facts
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.loops.nested, weight: 1 }
+  - { id: js.loops.break, weight: 0.3 }
+tags: [nested, break, facts]
+estimatedSeconds: 90
+prompt: |
+  아래 코드에 대한 설명으로 옳은 것을 모두 고르세요.
+code: |
+  for (let row = 1; row <= 4; row++) {
+    let line = "";
+    for (let col = 1; col <= 5; col++) {
+      line += "#";
+    }
+    console.log(line);
+  }
+spec:
+  options:
+    - id: a
+      text: 4번 줄은 모두 20번 실행된다
+    - id: b
+      text: 6번 줄은 모두 4번 실행된다
+    - id: c
+      text: 출력된 네 줄은 모두 `#####`(# 다섯 개)이다
+      missedMisconception: js.mc.inner-var-not-reset
+    - id: d
+      text: 4번 줄은 모두 9번 실행된다
+      misconception: js.mc.nested-count-additive
+      rationale: 바깥 4번 × 안쪽 5번이라 20번이에요. 더하면 안 돼요.
+    - id: e
+      text: 출력은 `#####`, `##########`처럼 줄마다 # 다섯 개씩 길어진다
+      misconception: js.mc.accumulator-reset-in-loop
+      rationale: 2번 줄 let line = "";이 바깥 본문에 있어서 줄마다 빈 문자열에서 다시 시작해요.
+  correct: [a, b, c]
+misconceptions: [js.mc.nested-count-additive]
+hints:
+  - 4번 줄은 안쪽 반복의 본문, 6번 줄은 바깥 반복의 본문이에요.
+  - 안쪽 본문은 (바깥 횟수) × (안쪽 횟수)번 실행돼요.
+  - "`let line = \"\";`은 어느 반복의 본문에 있나요? 그 반복의 회차마다 무슨 일이 일어나나요?"
+explanation: |
+  정답은 **a, b, c**예요.
+
+  - a: 4번 줄은 안쪽 본문이라 4 × 5 = 20번 실행돼요.
+  - b: 6번 줄은 안쪽 반복이 끝난 뒤 바깥 본문에서 실행되므로 바깥 횟수만큼 4번이에요.
+  - c: 2번 줄 `let line = "";`이 바깥 본문에 있어서 줄마다 빈 문자열에서 시작해 `#`을 5개 이어 붙여요. 그래서 네 줄 모두 `#####`예요.
+  - d (오답): 4 + 5 = 9가 아니라 4 × 5 = 20이에요.
+  - e (오답): `line`이 바깥 반복보다 **먼저** 만들어졌다면 줄마다 길어졌을 거예요. 변수를 만드는 위치가 결과를 바꿔요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

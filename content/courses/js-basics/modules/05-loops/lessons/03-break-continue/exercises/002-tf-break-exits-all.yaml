@@ -1,0 +1,49 @@
+id: js-basics.loops.break-continue.tf-break-exits-all
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.loops.break, weight: 1 }
+tags: [break, nested]
+estimatedSeconds: 70
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`for` 반복 안에 또 다른 `for` 반복이 있을 때, 안쪽 반복에서 `break`를 만나면 바깥 반복까지 한꺼번에 끝난다."
+  answer: false
+  misconceptionIfWrong: js.mc.break-exits-all-loops
+  requireReason: true
+  reasons:
+    - id: r1
+      text: break는 자기를 감싼 가장 가까운 반복 하나만 끝내므로, 바깥 반복은 다음 회차로 이어진다
+      correct: true
+    - id: r2
+      text: break는 그것이 들어 있는 모든 반복을 빠져나가서 반복 전체의 다음 문장으로 간다
+      misconception: js.mc.break-exits-all-loops
+    - id: r3
+      text: 안쪽 반복에서는 break를 쓸 수 없어서 SyntaxError가 난다
+hints:
+  - 레슨의 흔한 실수에 있던 `room`과 `seat` 예제에서 2반은 출력됐나요?
+  - "`break`가 끝내는 것은 \"반복 전체\"가 아니라 \"반복 하나\"예요. 어느 반복일까요?"
+  - 안쪽 반복이 끝나면 실행은 바깥 반복의 본문에서 안쪽 반복 다음 줄로 이어져요.
+explanation: |
+  정답은 **거짓**, 이유는 **break는 자기를 감싼 가장 가까운 반복 하나만 끝내므로, 바깥 반복은 다음 회차로 이어진다**예요.
+
+  ```js
+  for (let room = 1; room <= 2; room++) {
+    for (let seat = 1; seat <= 3; seat++) {
+      if (seat === 2) {
+        break; // 안쪽 반복만 끝나요
+      }
+      console.log(room + "반 " + seat + "번");
+    }
+  }
+  ```
+
+  이 코드는 `1반 1번`, `2반 1번`을 출력해요. 1반에서 안쪽 반복이 `break`로 끝난 뒤에도 바깥 반복은 2반으로 넘어가요.
+
+  - r2: `break`는 한 단계만 빠져나가요. 바깥 반복도 끝내려면 바깥에서 따로 검사해야 해요.
+  - r3: 반복이 겹쳐 있어도 `break`는 쓸 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

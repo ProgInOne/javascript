@@ -1,0 +1,63 @@
+id: js-basics.loops.nested-loops.parsons-star-triangle
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.loops.nested, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [nested, parsons, triangle]
+estimatedSeconds: 180
+prompt: |
+  별(`*`)로 계단 모양 삼각형을 만드는 프로그램이에요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  *
+  **
+  ***
+  ****
+  ```
+spec:
+  lines:
+    - { id: l1, code: "for (let line = 1; line <= 4; line++) {" }
+    - { id: l2, code: 'let stars = "";', indent: 1 }
+    - { id: l3, code: "for (let k = 1; k <= line; k++) {", indent: 1 }
+    - { id: l4, code: 'stars += "*";', indent: 2 }
+    - { id: l5, code: "}", indent: 1 }
+    - { id: l6, code: "console.log(stars);", indent: 1 }
+    - { id: l7, code: "}" }
+  distractors:
+    - { id: d1, code: "for (let k = 1; k <= 4; k++) {", replaces: l3 }
+    - { id: d2, code: 'stars = "*";', replaces: l4, misconception: js.mc.accumulator-overwrite }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 별이 한 줄에 1개, 2개, 3개, 4개씩 늘어나는 네 줄이 출력되어야 합니다.
+      requirement: 계단 삼각형
+      expect:
+        lines: ["*", "**", "***", "****"]
+misconceptions: [js.mc.accumulator-overwrite]
+hints:
+  - 바깥 반복은 줄, 안쪽 반복은 한 줄에 붙일 별이에요. 줄마다 별을 모을 빈 문자열이 필요해요.
+  - "`let stars = \"\";`은 줄마다 새로 시작해야 해요. 그러면 바깥 반복의 안, 안쪽 반복의 앞에 와야겠죠. `console.log(stars);`는 한 줄이 완성된 뒤에 와요."
+  - 줄마다 별의 개수가 달라요. 안쪽 반복의 조건에 바깥 반복 변수 `line`을 쓰는 조각을 고르세요.
+explanation: |
+  정답 순서는 다음과 같아요.
+
+  ```js
+  for (let line = 1; line <= 4; line++) {
+    let stars = "";
+    for (let k = 1; k <= line; k++) {
+      stars += "*";
+    }
+    console.log(stars);
+  }
+  ```
+
+  - `let stars = "";`이 바깥 본문에 있어서 줄마다 빈 문자열에서 시작해요. 바깥 반복보다 먼저 두면 별이 계속 쌓여 `*`, `***`, `******`처럼 나와요.
+  - 안쪽 조건 `k <= line` 덕분에 줄 번호만큼 별이 붙어요. `k <= 4`를 쓰면 네 줄 모두 `****`인 사각형이 돼요.
+  - `stars = "*";`는 덮어쓰기라 줄마다 별이 하나만 남아요.
+  - `console.log(stars);`를 안쪽 반복 안에 두면 별을 하나 붙일 때마다 출력해서 줄이 훨씬 많아져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

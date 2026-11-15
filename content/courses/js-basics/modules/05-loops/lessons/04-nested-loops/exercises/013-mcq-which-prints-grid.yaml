@@ -1,0 +1,87 @@
+id: js-basics.loops.nested-loops.mcq-which-prints-grid
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.loops.nested, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [nested, grid, trace]
+estimatedSeconds: 120
+prompt: |
+  아래 네 코드 중 실행 결과가 다음과 같은 것은 무엇인가요?
+
+  ```text
+  ***
+  ***
+  ```
+code: |
+  // A
+  for (let r = 1; r <= 2; r++) {
+    let s = "";
+    for (let c = 1; c <= 3; c++) {
+      s += "*";
+    }
+    console.log(s);
+  }
+
+  // B
+  for (let r = 1; r <= 3; r++) {
+    let s = "";
+    for (let c = 1; c <= 2; c++) {
+      s += "*";
+    }
+    console.log(s);
+  }
+
+  // C
+  let s = "";
+  for (let r = 1; r <= 2; r++) {
+    for (let c = 1; c <= 3; c++) {
+      s += "*";
+    }
+    console.log(s);
+  }
+
+  // D
+  for (let r = 1; r <= 2; r++) {
+    let s = "";
+    for (let c = 1; c <= 3; c++) {
+      s += "*";
+      console.log(s);
+    }
+  }
+spec:
+  options:
+    - id: a
+      text: A
+    - id: b
+      text: B
+      rationale: B는 바깥 반복이 3번, 안쪽이 2번이라 `**`가 세 줄 나와요. 줄 수는 바깥, 한 줄의 길이는 안쪽 반복이 정해요.
+    - id: c
+      text: C
+      misconception: js.mc.inner-var-not-reset
+      rationale: C는 s를 바깥 반복보다 먼저 만들어서 줄이 바뀌어도 비우지 않아요. 그래서 `***` 다음에 `******`가 나와요.
+    - id: d
+      text: D
+      rationale: D는 console.log가 안쪽 반복 안에 있어서 별을 붙일 때마다 출력해요. `*`, `**`, `***`가 두 번 나와 여섯 줄이에요.
+  correct: a
+  shuffle: false
+misconceptions: [js.mc.inner-var-not-reset]
+hints:
+  - 줄 수(2줄)를 정하는 것은 바깥 반복, 한 줄의 별 개수(3개)를 정하는 것은 안쪽 반복이에요.
+  - 줄마다 `s`가 빈 문자열에서 다시 시작해야 해요. `let s = "";`은 어디에 있어야 할까요?
+  - 한 줄이 완성된 뒤에 한 번만 출력해야 해요. `console.log(s)`가 안쪽 반복의 안에 있는지 밖에 있는지 보세요.
+explanation: |
+  정답은 **A**예요. 바깥 반복이 2번(줄 2개), 안쪽 반복이 3번(별 3개)이고, `s`는 줄마다 빈 문자열에서 시작하며, 한 줄이 완성된 뒤 출력해요.
+
+  | 코드 | 출력 | 다른 점 |
+  |---|---|---|
+  | A | `***`, `***` | 정답 |
+  | B | `**`, `**`, `**` | 바깥·안쪽 횟수가 바뀜 |
+  | C | `***`, `******` | `s`를 바깥 반복보다 먼저 만들어 줄마다 비우지 않음 |
+  | D | `*`, `**`, `***`, `*`, `**`, `***` | 출력이 안쪽 반복 안에 있음 |
+
+  중첩 반복에서는 **어느 줄이 어느 반복의 본문에 있는지**가 결과를 정해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,79 @@
+id: js-basics.loops.for.parsons-times-table
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.loops.for, weight: 1 }
+  - { id: js.loops.loop-variable, weight: 0.5 }
+tags: [for, parsons, times-table]
+estimatedSeconds: 150
+prompt: |
+  구구단 3단을 출력하는 프로그램이에요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  3단 시작
+  3 x 1 = 3
+  3 x 2 = 6
+  3 x 3 = 9
+  3 x 4 = 12
+  3 x 5 = 15
+  3 x 6 = 18
+  3 x 7 = 21
+  3 x 8 = 24
+  3 x 9 = 27
+  3단 끝
+  ```
+spec:
+  lines:
+    - { id: l1, code: "const dan = 3;" }
+    - { id: l2, code: 'console.log(dan + "단 시작");' }
+    - { id: l3, code: "for (let i = 1; i <= 9; i++) {" }
+    - { id: l4, code: 'console.log(dan + " x " + i + " = " + dan * i);', indent: 1 }
+    - { id: l5, code: "}" }
+    - { id: l6, code: 'console.log(dan + "단 끝");' }
+  distractors:
+    - { id: d1, code: "for (let i = 1; i < 9; i++) {", replaces: l3, misconception: js.mc.for-off-by-one }
+    - { id: d2, code: "for (let i = 0; i <= 9; i++) {", replaces: l3, misconception: js.mc.for-off-by-one }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: "\"3단 시작\", 3 x 1부터 3 x 9까지, \"3단 끝\"이 차례로 출력되어야 합니다."
+      requirement: 3단 출력
+      expect:
+        lines:
+          - 3단 시작
+          - 3 x 1 = 3
+          - 3 x 2 = 6
+          - 3 x 3 = 9
+          - 3 x 4 = 12
+          - 3 x 5 = 15
+          - 3 x 6 = 18
+          - 3 x 7 = 21
+          - 3 x 8 = 24
+          - 3 x 9 = 27
+          - 3단 끝
+misconceptions: [js.mc.for-off-by-one]
+hints:
+  - "`dan`을 쓰는 줄보다 `dan`을 만드는 줄이 먼저 와야 해요."
+  - "`3단 시작`과 `3단 끝`은 한 번씩만 나와야 해요. 반복 안에 들어가야 하는 줄은 하나뿐이에요."
+  - "`for` 줄이 두 개 이상 보여요. `i`가 1부터 9까지(9 포함) 거치는 것을 고르세요."
+explanation: |
+  정답 순서는 다음과 같아요.
+
+  ```js
+  const dan = 3;
+  console.log(dan + "단 시작");
+  for (let i = 1; i <= 9; i++) {
+    console.log(dan + " x " + i + " = " + dan * i);
+  }
+  console.log(dan + "단 끝");
+  ```
+
+  - 반복 변수 `i`가 1부터 9까지 바뀌면서 곱하는 수가 돼요.
+  - `for (let i = 1; i < 9; i++) {`는 `3 x 8`에서 멈춰요. 9를 포함하지 않으니까요.
+  - `for (let i = 0; i <= 9; i++) {`는 `3 x 0 = 0`부터 시작해서 한 줄이 더 나와요.
+  - 시작·끝 안내는 반복 바깥에 둬야 한 번씩만 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

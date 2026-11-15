@@ -1,0 +1,61 @@
+id: js-basics.loops.for.fix-overwrite-score
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+tags: [accumulator, overwrite, debugging]
+estimatedSeconds: 150
+prompt: |
+  일주일 동안 걸은 걸음 수를 더하는 프로그램이에요. 첫날 1000보, 둘째 날 2000보처럼 날마다 1000보씩 늘려 걸었어요. 그런데 합계가 이상하게 나와요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  일주일 걸음 수: 28000보
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          let totalSteps = 0;
+          for (let day = 1; day <= 7; day++) {
+            const steps = 1000 * day; // 그날 걸은 걸음 수
+            totalSteps = steps;
+          }
+          console.log("일주일 걸음 수: " + totalSteps + "보");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let totalSteps = 0;
+          for (let day = 1; day <= 7; day++) {
+            const steps = 1000 * day; // 그날 걸은 걸음 수
+            totalSteps += steps;
+          }
+          console.log("일주일 걸음 수: " + totalSteps + "보");
+  bugDescription: "`일주일 걸음 수: 7000보`가 나와요. 마지막 날의 걸음 수뿐이에요."
+  bugMisconception: js.mc.accumulator-overwrite
+  maxEditDistance: 3
+  checks:
+    - kind: console
+      id: output
+      description: 7일 동안의 걸음 수를 모두 더한 합계가 출력되어야 합니다.
+      requirement: 일주일 합계
+      expect:
+        lines: ["일주일 걸음 수: 28000보"]
+misconceptions: [js.mc.accumulator-overwrite]
+hints:
+  - 결과 7000은 며칠째의 걸음 수와 같나요?
+  - 회차마다 `totalSteps`에 무슨 일이 일어나는지 보세요. 이전 값은 어디로 갔나요?
+  - "`=`는 덮어쓰기, `+=`는 더해서 다시 넣기예요."
+explanation: |
+  4번 줄 `totalSteps = steps;`는 `=`라서 회차마다 이전 합계를 버리고 그날의 걸음 수로 **덮어써요**. 반복이 끝나면 마지막 날(7일째)의 7000만 남아요.
+
+  ```js
+  totalSteps += steps;
+  ```
+
+  `+=`(`totalSteps = totalSteps + steps`)로 바꾸면 1000 + 2000 + … + 7000 = 28000이 쌓여요. `const steps`는 회차마다 새로 만들어지므로 `const`로 두어도 괜찮아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

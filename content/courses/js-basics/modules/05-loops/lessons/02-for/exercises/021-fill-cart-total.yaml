@@ -1,0 +1,65 @@
+id: js-basics.loops.for.fill-cart-total
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+  - { id: js.ops.compound-assignment, weight: 0.3 }
+tags: [accumulator, fill]
+estimatedSeconds: 80
+prompt: |
+  떡볶이를 1인분씩 추가할 때마다 누적 금액을 보여 주는 프로그램이에요. 빈칸을 채워 아래처럼 출력되게 하세요.
+
+  ```text
+  1인분: 4500원
+  2인분: 9000원
+  3인분: 13500원
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    const price = 4500; // 떡볶이 1인분
+    let total = {{blank:start}};
+    for (let i = 1; i <= 3; i++) {
+      total {{blank:op}} price;
+      console.log(i + "인분: " + total + "원");
+    }
+  blanks:
+    - id: start
+      accept: ["0"]
+      width: 4
+    - id: op
+      accept: ["+="]
+      width: 4
+      misconceptionMap:
+        "=": js.mc.accumulator-overwrite
+  checks:
+    - kind: console
+      id: output
+      description: 1인분을 추가할 때마다 누적 금액이 한 줄씩 출력되어야 합니다.
+      requirement: 누적 금액
+      expect:
+        lines: ["1인분: 4500원", "2인분: 9000원", "3인분: 13500원"]
+misconceptions: [js.mc.accumulator-overwrite, js.mc.accumulator-no-init]
+hints:
+  - 첫 번째 빈칸은 누적 변수의 시작값이에요. 아무것도 담지 않았을 때 금액은 얼마인가요?
+  - 두 번째 빈칸은 `total`에 `price`를 **더해서 다시 넣는** 연산자예요.
+  - "`total = price`는 덮어쓰기예요. `total = total + price`를 짧게 쓰는 복합 대입 연산자를 떠올려 보세요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  let total = 0;
+  for (let i = 1; i <= 3; i++) {
+    total += price;
+    console.log(i + "인분: " + total + "원");
+  }
+  ```
+
+  - 시작값 `0`: 아직 아무것도 담지 않은 금액이에요. 빈칸을 비워 `let total;`처럼 되면 `undefined + 4500`이 `NaN`이 돼요.
+  - `+=`: `total = total + price`와 같아요. 이전 금액에 1인분 값을 더해 쌓아요.
+  - `=`로 쓰면 매번 `4500`으로 덮어써서 세 줄 모두 `4500원`이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

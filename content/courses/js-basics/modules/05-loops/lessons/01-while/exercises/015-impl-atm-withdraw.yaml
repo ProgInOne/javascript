@@ -1,0 +1,90 @@
+id: js-basics.loops.while.impl-atm-withdraw
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.loops.while, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [while, write-code, boundary]
+estimatedSeconds: 360
+prompt: |
+  현금 인출기에서 같은 금액을 여러 번 뽑는 프로그램을 작성하세요.
+
+  - 통장 잔액은 `balance`, 한 번에 뽑는 돈은 `amount`예요(시작 코드에 있어요).
+  - **잔액이 뽑을 돈 이상인 동안** 계속 뽑아요. 뽑을 때마다 잔액에서 빼고, 아래 형식으로 출력해요.
+  - 더 뽑을 수 없으면 출금 횟수와 남은 잔액을 출력해요.
+  - 실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  1번째 출금, 남은 잔액: 60000원
+  2번째 출금, 남은 잔액: 30000원
+  3번째 출금, 남은 잔액: 0원
+  출금 횟수: 3, 남은 잔액: 0원
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          let balance = 90000;  // 통장 잔액
+          const amount = 30000; // 한 번에 뽑는 돈
+
+          // 잔액이 뽑을 돈 이상인 동안 뽑고, 뽑을 때마다 출력하세요.
+          // 마지막에 출금 횟수와 남은 잔액을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let balance = 90000;  // 통장 잔액
+          const amount = 30000; // 한 번에 뽑는 돈
+
+          // 잔액이 뽑을 돈 이상인 동안 뽑고, 뽑을 때마다 출력하세요.
+          // 마지막에 출금 횟수와 남은 잔액을 출력하세요.
+          let count = 0;
+          while (balance >= amount) {
+            balance -= amount;
+            count++;
+            console.log(count + "번째 출금, 남은 잔액: " + balance + "원");
+          }
+          console.log("출금 횟수: " + count + ", 남은 잔액: " + balance + "원");
+  checks:
+    - kind: console
+      id: each-withdraw
+      description: 뽑을 때마다 몇 번째 출금인지와 남은 잔액이 출력되고, 마지막에 출금 횟수와 남은 잔액이 출력되어야 합니다.
+      requirement: 출금 기록 출력
+      expect:
+        lines:
+          - "1번째 출금, 남은 잔액: 60000원"
+          - "2번째 출금, 남은 잔액: 30000원"
+          - "3번째 출금, 남은 잔액: 0원"
+          - "출금 횟수: 3, 남은 잔액: 0원"
+    - kind: program
+      id: balance-zero
+      description: 잔액이 뽑을 돈과 똑같을 때도 한 번 더 뽑아서, 끝난 뒤 balance가 0이어야 합니다.
+      requirement: 잔액과 같은 금액도 출금
+      expect:
+        globals: { balance: { equals: 0 } }
+        noError: true
+hints:
+  - 출금 횟수를 셀 변수가 하나 더 필요해요. 반복 **전에** 0으로 만들어 두세요.
+  - "\"잔액이 뽑을 돈 이상인 동안\"을 조건으로 옮겨 보세요. 잔액이 30000원으로 뽑을 돈과 똑같을 때도 뽑을 수 있어야 해요."
+  - "`while (balance >= amount)` 안에서 잔액을 줄이고, 횟수를 1 늘리고, 출력해요. 요약 출력은 반복 바깥에 써요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  let count = 0;
+  while (balance >= amount) {
+    balance -= amount;
+    count++;
+    console.log(count + "번째 출금, 남은 잔액: " + balance + "원");
+  }
+  console.log("출금 횟수: " + count + ", 남은 잔액: " + balance + "원");
+  ```
+
+  - **경계값**: 2번째 출금 뒤 잔액은 30000원으로 뽑을 돈과 똑같아요. "이상"은 같은 값도 포함하므로 `>=`를 써야 3번째 출금이 일어나요. `balance > amount`로 쓰면 30000원에서 멈춰 출금이 2번으로 끝나요.
+  - 본문 안의 순서도 중요해요. 출력보다 `balance -= amount`와 `count++`를 먼저 해야 "출금 후" 잔액과 "몇 번째"가 맞게 나와요.
+  - `count`는 반복이 끝난 뒤에도 써야 하므로 반복 바깥에서 만들어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,45 @@
+id: js-basics.loops.break-continue.multi-break-continue-facts
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.loops.continue, weight: 1 }
+  - { id: js.loops.break, weight: 0.5 }
+tags: [continue, break, compare]
+estimatedSeconds: 90
+prompt: |
+  `break`와 `continue`에 대한 설명으로 옳은 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: break를 만나면 반복이 끝나고, 반복 다음 문장으로 넘어간다
+    - id: b
+      text: continue를 만나면 이번 회차의 남은 본문을 건너뛰고 다음 회차로 넘어간다
+      missedMisconception: js.mc.continue-ends-loop
+    - id: c
+      text: for 반복에서 continue를 만나면, 다음 회차로 가기 전에 갱신식이 실행된다
+    - id: d
+      text: continue를 만나면 반복이 끝나고, 반복 다음 문장으로 넘어간다
+      misconception: js.mc.continue-ends-loop
+      rationale: 반복을 끝내는 것은 break예요. continue 뒤에도 반복은 계속돼요.
+    - id: e
+      text: break를 만나면 프로그램 전체가 끝나서 반복 아래의 문장도 실행되지 않는다
+      misconception: js.mc.break-ends-program
+      rationale: break는 반복만 끝내요. 반복 다음 문장부터는 평소처럼 실행돼요.
+  correct: [a, b, c]
+misconceptions: [js.mc.continue-ends-loop, js.mc.break-ends-program]
+hints:
+  - 레슨의 세 번째 예제에서 break와 continue의 출력이 어떻게 달랐는지 떠올려 보세요.
+  - "`break` 뒤에도 반복 다음 줄의 `console.log`가 실행됐나요?"
+  - "`for`는 다음 회차로 갈 때 항상 갱신식을 거쳐요. continue로 갈 때도 마찬가지예요."
+explanation: |
+  정답은 **a, b, c**예요.
+
+  - a: `break`는 반복을 끝내고 반복 다음 문장으로 가요.
+  - b: `continue`는 이번 회차의 남은 본문만 건너뛰어요.
+  - c: `for`에서 `continue` 다음에는 갱신식 → 조건 검사 순서로 다음 회차가 시작돼요. 그래서 `for`에서는 `continue`로 무한 반복이 생기지 않아요.
+  - d (오답): `continue`는 반복을 끝내지 않아요.
+  - e (오답): `break`는 반복만 끝내요. 반복 아래의 문장은 실행돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,86 @@
+id: js-basics.loops.break-continue.fix-break-instead-of-continue
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.loops.continue, weight: 1 }
+  - { id: js.loops.break, weight: 0.5 }
+tags: [continue, break, debugging]
+estimatedSeconds: 130
+prompt: |
+  카페에서 1번부터 6번 손님의 음료를 만드는 프로그램이에요. 4번 손님은 주문을 취소해서 음료를 만들지 않아요. 그런데 5번, 6번 손님의 음료가 만들어지지 않아요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  1번 손님: 음료 완성
+  2번 손님: 음료 완성
+  3번 손님: 음료 완성
+  4번 손님: 주문 취소
+  5번 손님: 음료 완성
+  6번 손님: 음료 완성
+  오늘 주문 끝
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          for (let guest = 1; guest <= 6; guest++) {
+            if (guest === 4) {
+              console.log(guest + "번 손님: 주문 취소");
+              break;
+            }
+            console.log(guest + "번 손님: 음료 완성");
+          }
+          console.log("오늘 주문 끝");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          for (let guest = 1; guest <= 6; guest++) {
+            if (guest === 4) {
+              console.log(guest + "번 손님: 주문 취소");
+              continue;
+            }
+            console.log(guest + "번 손님: 음료 완성");
+          }
+          console.log("오늘 주문 끝");
+  bugDescription: "`4번 손님: 주문 취소` 다음에 바로 `오늘 주문 끝`이 나와요. 5번, 6번 손님은 건너뛰어져요."
+  maxEditDistance: 2
+  checks:
+    - kind: console
+      id: output
+      description: 4번 손님만 주문 취소로 안내하고, 나머지 손님의 음료를 모두 만든 뒤 주문을 끝내야 합니다.
+      requirement: 취소한 손님만 건너뛰기
+      expect:
+        lines:
+          - "1번 손님: 음료 완성"
+          - "2번 손님: 음료 완성"
+          - "3번 손님: 음료 완성"
+          - "4번 손님: 주문 취소"
+          - "5번 손님: 음료 완성"
+          - "6번 손님: 음료 완성"
+          - 오늘 주문 끝
+misconceptions: [js.mc.continue-ends-loop]
+hints:
+  - 4번 손님 차례에서 반복 전체가 끝났어요. 어느 줄 때문일까요?
+  - 4번 손님에게 할 일은 "음료 완성"을 건너뛰는 것이지, 남은 손님까지 모두 그만두는 것이 아니에요.
+  - 이번 회차만 건너뛰고 다음 회차로 가는 문장은 `break`가 아니라 무엇이었나요?
+explanation: |
+  4번 줄의 `break`가 반복 전체를 끝내서 5번, 6번 손님 차례가 오지 않았어요.
+
+  ```js
+  if (guest === 4) {
+    console.log(guest + "번 손님: 주문 취소");
+    continue;
+  }
+  ```
+
+  `continue`로 바꾸면 4번 손님 회차의 남은 본문(`음료 완성`)만 건너뛰고, 5번 손님부터 계속 만들어요.
+
+  | 하고 싶은 일 | 쓰는 문장 |
+  |---|---|
+  | 이번 것만 넘기고 다음 것 계속 | `continue` |
+  | 더는 할 필요가 없으니 그만 | `break` |
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

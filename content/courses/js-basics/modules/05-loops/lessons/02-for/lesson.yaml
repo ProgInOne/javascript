@@ -1,0 +1,17 @@
+id: js-basics.loops.for
+title: for 반복
+summary: 시작값·조건·갱신을 한 줄에 모아 정해진 횟수만큼 반복하는 for, 회차마다 값이 바뀌는 반복 변수, 반복하며 합계·개수·글자를 모으는 누적 패턴을 배웁니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 15, practice: 32 }
+concepts:
+  primary: [js.loops.for, js.loops.loop-variable, js.loops.accumulator-pattern]
+  practiced: [js.control.if, js.ops.remainder]
+  reviewed: [js.loops.while, js.ops.compound-assignment, js.conv.plus-concat, js.types.undefined]
+objectives:
+  - for 문의 초기화·조건·갱신이 실행되는 순서를 알고, 반복 횟수와 회차마다의 반복 변수 값을 예측할 수 있다.
+  - 시작값과 조건을 골라 원하는 횟수만큼 반복하는 for 문을 작성하고, 횟수가 하나씩 어긋나는 버그를 고칠 수 있다.
+  - 반복 변수를 본문의 계산에 쓰고, 반복이 끝난 뒤 반복 변수를 쓸 수 있는지와 그 값을 설명할 수 있다.
+  - 누적 변수를 반복 바깥에서 시작값으로 만들고 본문에서 더해 가는 누적 패턴으로 합계·개수·문자열을 만들 수 있다.
+practice:
+  targetCount: 26

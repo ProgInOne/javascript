@@ -1,0 +1,48 @@
+id: js-basics.loops.for.mcq-total-without-init
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+  - { id: js.types.undefined, weight: 0.3 }
+tags: [accumulator, nan, undefined]
+estimatedSeconds: 70
+prompt: |
+  아래 코드를 실행하면 마지막 줄에서 무엇이 출력되나요?
+code: |
+  let total;
+  for (let i = 1; i <= 3; i++) {
+    total += i;
+  }
+  console.log(total);
+spec:
+  options:
+    - id: a
+      text: "`6`"
+      misconception: js.mc.accumulator-no-init
+      rationale: 시작값 없이 만든 변수는 0이 아니라 undefined예요.
+    - id: b
+      text: "`NaN`"
+    - id: c
+      text: "`undefined`"
+      rationale: total에 값을 더하는 대입이 세 번 일어났으니 undefined로 남지 않아요. 더한 결과가 문제예요.
+    - id: d
+      text: "`ReferenceError`가 난다"
+      rationale: total은 let으로 만들어졌으니 이름은 있어요. 값이 undefined일 뿐이에요.
+  correct: b
+misconceptions: [js.mc.accumulator-no-init]
+hints:
+  - "`let total;`처럼 값 없이 만든 변수에는 무엇이 들어 있나요?"
+  - 첫 회차의 `total += 1`은 `total = undefined + 1`이에요. 그 결과는 무엇인가요?
+  - "`NaN`에 숫자를 더하면 어떻게 되는지도 떠올려 보세요."
+explanation: |
+  정답은 **b**예요.
+
+  - 1번 줄에서 `total`은 시작값 없이 만들어져 `undefined`예요.
+  - 첫 회차: `undefined + 1`은 `NaN`이에요(모듈 3에서 `undefined`는 숫자로 바꾸면 `NaN`이라고 배웠어요).
+  - 그다음 회차: `NaN + 2`, `NaN + 3`도 모두 `NaN`이에요. `NaN`에 무엇을 더해도 `NaN`이에요.
+
+  누적 변수에는 항상 시작값을 줘요. 합계는 `let total = 0;`으로 시작하면 `6`이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

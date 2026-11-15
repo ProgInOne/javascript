@@ -1,0 +1,188 @@
+id: js-basics.loops.break-continue.web-smallest-divisor
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.loops.break, weight: 1 }
+  - { id: js.ops.remainder, weight: 0.3 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [break, search, web, prime]
+estimatedSeconds: 480
+prompt: |
+  수를 입력하면 그 수가 **소수**(1과 자기 자신으로만 나누어떨어지는 수)인지 알려 주는 화면을 완성하세요. 소수가 아니면, 나누어떨어지게 하는 수 중 **가장 작은 수**(2 이상)도 함께 보여 줘요.
+
+  | 입력 | 화면에 보이는 글자 |
+  |---|---|
+  | 9 | `9 → 소수 아님, 가장 작은 약수 3` |
+  | 12 | `12 → 소수 아님, 가장 작은 약수 2` |
+  | 7 | `7 → 소수` |
+
+  - 시작 코드에서 **검사하기** 버튼을 누를 때마다 `{ }` 안의 코드가 실행되도록 이미 연결해 두었어요(화면을 다루는 방법은 모듈 10에서 배워요). 입력한 수는 숫자로 바뀌어 `n`에 들어 있어요. 2 이상의 수만 입력한다고 생각하세요.
+  - 표시한 자리에 `for` 문을 써서 2부터 차례로 나눠 보세요. 나누어떨어지는 수를 찾으면 `divisor`에 넣고, **더 찾지 말고** 멈추세요.
+  - 나머지 코드는 그대로 두세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>소수 검사기</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #result { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>소수 검사기</h1>
+              <label>
+                검사할 수
+                <input id="num" type="number" min="2" value="9" />
+              </label>
+              <button id="check" type="button">검사하기</button>
+              <p id="result"></p>
+              <script>
+                const input = document.querySelector("#num");
+                const button = document.querySelector("#check");
+                const result = document.querySelector("#result");
+
+                // 버튼을 누를 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                button.addEventListener("click", () => {
+                  const n = Number(input.value);
+                  let divisor = 0; // n을 나누어떨어지게 하는 가장 작은 수(2 이상). 없으면 0
+
+                  // 여기에 for 문을 써서 divisor를 찾으세요. 찾으면 바로 멈추세요.
+
+                  if (divisor === 0) {
+                    result.textContent = n + " → 소수";
+                  } else {
+                    result.textContent = n + " → 소수 아님, 가장 작은 약수 " + divisor;
+                  }
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>소수 검사기</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #result { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>소수 검사기</h1>
+              <label>
+                검사할 수
+                <input id="num" type="number" min="2" value="9" />
+              </label>
+              <button id="check" type="button">검사하기</button>
+              <p id="result"></p>
+              <script>
+                const input = document.querySelector("#num");
+                const button = document.querySelector("#check");
+                const result = document.querySelector("#result");
+
+                // 버튼을 누를 때마다 아래 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                button.addEventListener("click", () => {
+                  const n = Number(input.value);
+                  let divisor = 0; // n을 나누어떨어지게 하는 가장 작은 수(2 이상). 없으면 0
+
+                  // 여기에 for 문을 써서 divisor를 찾으세요. 찾으면 바로 멈추세요.
+                  for (let d = 2; d < n; d++) {
+                    if (n % d === 0) {
+                      divisor = d;
+                      break;
+                    }
+                  }
+
+                  if (divisor === 0) {
+                    result.textContent = n + " → 소수";
+                  } else {
+                    result.textContent = n + " → 소수 아님, 가장 작은 약수 " + divisor;
+                  }
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: nine
+      description: 9를 검사하면 소수가 아니고 가장 작은 약수가 3이라고 보여야 합니다.
+      requirement: 소수가 아닌 수
+      visible: true
+      steps:
+        - { action: type, selector: "#num", value: "9" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "9 → 소수 아님, 가장 작은 약수 3" } }
+    - kind: event
+      id: seven
+      description: 7을 검사하면 소수라고 보여야 합니다.
+      requirement: 소수
+      visible: true
+      steps:
+        - { action: type, selector: "#num", value: "7" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "7 → 소수" } }
+    - kind: event
+      id: twelve
+      description: 약수가 여러 개인 수(12)는 그중 가장 작은 약수를 보여야 합니다. 찾자마자 멈춰야 합니다.
+      requirement: 가장 작은 약수
+      steps:
+        - { action: type, selector: "#num", value: "12" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "12 → 소수 아님, 가장 작은 약수 2" } }
+    - kind: event
+      id: two
+      description: 가장 작은 소수 2도 소수라고 보여야 합니다. 자기 자신으로 나누는 것은 세지 않아요.
+      requirement: 소수
+      steps:
+        - { action: type, selector: "#num", value: "2" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "2 → 소수" } }
+    - kind: event
+      id: square
+      description: 제곱수(49)처럼 약수가 하나뿐인 수도 그 약수를 찾아야 합니다.
+      requirement: 가장 작은 약수
+      steps:
+        - { action: type, selector: "#num", value: "49" }
+        - { action: click, selector: "#check" }
+      expect:
+        - { selector: "#result", text: { equals: "49 → 소수 아님, 가장 작은 약수 7" } }
+misconceptions: [js.mc.break-ends-program]
+hints:
+  - 2부터 `n`보다 작은 수까지 하나씩 나눠 보면 돼요. 나누어떨어지는지는 나머지(`%`)로 알 수 있어요.
+  - 나누어떨어지는 수를 찾으면 `divisor`에 넣어요. 그런데 12는 2, 3, 4, 6으로 모두 나누어떨어져요. 계속 돌면 `divisor`에는 무엇이 남을까요?
+  - "`for (let d = 2; d < n; d++)` 안에서 `if (n % d === 0) { divisor = d; break; }`처럼 찾자마자 멈춰요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  for (let d = 2; d < n; d++) {
+    if (n % d === 0) {
+      divisor = d;
+      break;
+    }
+  }
+  ```
+
+  - 2부터 차례로 나누므로 처음 찾은 수가 곧 **가장 작은** 약수예요. 찾자마자 `break`해야 그 값이 남아요. `break`가 없으면 12에서 2, 3, 4, 6을 차례로 덮어써서 `6`이 보여요.
+  - `d < n`이라서 자기 자신(`n % n === 0`)은 검사하지 않아요. `d <= n`으로 쓰면 7도 `가장 작은 약수 7`이 되어 소수를 알아보지 못해요.
+  - 아무것도 찾지 못하면 `divisor`는 시작값 0 그대로라, 아래 `if`가 소수라고 보여 줘요.
+  - 반복이 끝나는 곳을 미리 정해 두고(`d < n`), 일찍 끝내는 일은 `break`가 맡는 모양은 "찾기" 반복에서 아주 흔해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

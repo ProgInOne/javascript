@@ -1,0 +1,86 @@
+id: js-basics.loops.for.fix-loop-var-outside
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.loops.loop-variable, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [loop-variable, scope, error, debugging]
+estimatedSeconds: 200
+prompt: |
+  붕어빵을 하나씩 사다가 5,000원이 넘지 않을 만큼만 사는 프로그램이에요. 산 개수와 합계를 출력해야 하는데 오류가 나요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  4개를 샀어요
+  합계: 4800원
+  ```
+
+  - 산 개수는 반복이 끝난 뒤에도 쓸 수 있어야 해요. 붕어빵 가격(`price`)이나 예산(`budget`)이 바뀌어도 맞게 동작하도록, 개수를 직접 `4`로 쓰지 말고 반복에서 세세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const price = 1200;  // 붕어빵 하나 가격
+          const budget = 5000; // 쓸 수 있는 돈
+          let total = 0;
+
+          for (let count = 1; total + price <= budget; count++) {
+            total += price;
+          }
+          console.log(count + "개를 샀어요");
+          console.log("합계: " + total + "원");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const price = 1200;  // 붕어빵 하나 가격
+          const budget = 5000; // 쓸 수 있는 돈
+          let total = 0;
+          let bought = 0;
+
+          while (total + price <= budget) {
+            total += price;
+            bought++;
+          }
+          console.log(bought + "개를 샀어요");
+          console.log("합계: " + total + "원");
+  bugDescription: "실행하면 `ReferenceError: count is not defined` 오류가 나요."
+  bugMisconception: js.mc.loop-var-outside-for
+  checks:
+    - kind: console
+      id: output
+      description: 산 개수와 합계가 차례로 출력되어야 합니다.
+      requirement: 개수와 합계 출력
+      expect:
+        lines: ["4개를 샀어요", "합계: 4800원"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+misconceptions: [js.mc.loop-var-outside-for]
+hints:
+  - 오류가 난 줄은 반복의 안인가요, 바깥인가요? `count`는 어디에서 만들어졌나요?
+  - "`for` 괄호에서 `let`으로 만든 변수는 반복이 끝나면 쓸 수 없어요. 반복 뒤에도 쓸 개수는 어디에서 만들어야 할까요?"
+  - 반복 바깥(위)에 `let bought = 0;`처럼 개수를 셀 변수를 만들고, 붕어빵을 하나 살 때마다 1씩 늘려 보세요. 그리고 그 변수를 출력해요.
+explanation: |
+  `count`는 `for` 괄호에서 `let`으로 만들었기 때문에 반복 안에서만 있어요. 8번 줄은 반복 바깥이라 `ReferenceError: count is not defined`가 나요.
+
+  반복이 끝난 뒤에도 쓸 값은 반복 **바깥**에서 만든 변수에 세요. 예시 정답은 `while`로 바꿔서 조건만 남겼어요.
+
+  ```js
+  let bought = 0;
+  while (total + price <= budget) {
+    total += price;
+    bought++;
+  }
+  console.log(bought + "개를 샀어요");
+  ```
+
+  - `for`를 그대로 두고 반복 앞에 `let bought = 0;`을 만들어 본문에서 `bought++`해도 정답이에요.
+  - 원래 코드의 `count`는 1부터 시작해서, 반복 뒤에 값이 남아 있었더라도 4가 아니라 5였을 거예요(조건을 거짓으로 만든 값). 개수를 세는 변수는 0부터 시작해 하나 살 때마다 늘리는 편이 정확해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

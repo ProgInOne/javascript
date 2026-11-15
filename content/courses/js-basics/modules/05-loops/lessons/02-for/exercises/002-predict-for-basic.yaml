@@ -1,0 +1,39 @@
+id: js-basics.loops.for.predict-for-basic
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.loops.for, weight: 1 }
+tags: [for, trace]
+estimatedSeconds: 70
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    for (let i = 0; i < 3; i++) {
+      console.log("손님 번호: " + i);
+    }
+  answerKind: console
+  misconceptionByAnswer:
+    "손님 번호: 1\n손님 번호: 2\n손님 번호: 3": js.mc.for-update-before-body
+    "손님 번호: 0\n손님 번호: 1\n손님 번호: 2\n손님 번호: 3": js.mc.for-off-by-one
+hints:
+  - 첫 회차에서 `i`는 몇인가요? 초기화에서 정한 값을 보세요.
+  - "`i++`는 본문을 실행한 뒤에 실행돼요. 그다음 조건을 검사해요."
+  - "`i`가 3이 되었을 때 `3 < 3`은 참인가요, 거짓인가요?"
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  손님 번호: 0
+  손님 번호: 1
+  손님 번호: 2
+  ```
+
+  - 초기화로 `i`가 0이 되고, 갱신 `i++`는 본문 **뒤에** 실행돼서 첫 줄은 `손님 번호: 0`이에요.
+  - `i`가 3이 되면 `3 < 3`이 거짓이라 반복이 끝나요. 3은 출력되지 않아요.
+  - 0부터 시작해 `< 3`으로 끝내면 0, 1, 2로 딱 3번이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

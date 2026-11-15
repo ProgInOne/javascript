@@ -1,0 +1,45 @@
+id: js-basics.loops.for.tf-counter-after-while
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.loops.loop-variable, weight: 1 }
+tags: [loop-variable, final-value]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`let n = 0; while (n < 5) { n++; }`이 끝난 뒤 `n`의 값은 4이다."
+  answer: false
+  misconceptionIfWrong: js.mc.loop-var-final-value
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 반복은 조건이 거짓이 되어야 끝나므로, 반복 뒤의 n은 n < 5를 거짓으로 만든 값 5이다
+      correct: true
+    - id: r2
+      text: 본문은 n이 0, 1, 2, 3, 4일 때 실행되므로 마지막 회차의 값인 4가 남는다
+      misconception: js.mc.loop-var-final-value
+    - id: r3
+      text: n은 while 안에서 바뀌었으므로 반복이 끝나면 처음 값 0으로 돌아간다
+hints:
+  - 본문이 마지막으로 실행되는 회차에서, 그 회차가 시작할 때 `n`은 얼마이고 끝날 때는 얼마인가요?
+  - 반복이 끝나려면 조건 `n < 5`가 거짓이어야 해요. 어떤 값에서 거짓이 되나요?
+  - 값 추적 표의 마지막 줄(조건이 거짓인 줄)에 적힌 값이 반복 뒤의 값이에요.
+explanation: |
+  정답은 **거짓**, 이유는 **반복은 조건이 거짓이 되어야 끝나므로, 반복 뒤의 n은 n < 5를 거짓으로 만든 값 5이다**예요.
+
+  | 검사할 때 `n` | 조건 | 본문 뒤 `n` |
+  |---|---|---|
+  | 0 | 참 | 1 |
+  | 1 | 참 | 2 |
+  | 2 | 참 | 3 |
+  | 3 | 참 | 4 |
+  | 4 | 참 | 5 |
+  | 5 | 거짓 | (반복 끝) |
+
+  - r2: 마지막 회차는 `n`이 4일 때 **시작**하지만, 그 회차의 `n++`로 5가 돼요.
+  - r3: `n`은 반복 바깥에서 만든 변수라 반복이 끝나도 바뀐 값이 그대로 남아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

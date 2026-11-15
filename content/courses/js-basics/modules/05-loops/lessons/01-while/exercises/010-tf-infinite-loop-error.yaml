@@ -1,0 +1,25 @@
+id: js-basics.loops.while.tf-infinite-loop-error
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.loops.infinite, weight: 1 }
+tags: [infinite-loop]
+estimatedSeconds: 40
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: 반복 조건이 끝내 거짓이 되지 않으면, JavaScript가 곧바로 오류를 내서 무한 반복이라고 알려 준다.
+  answer: false
+  misconceptionIfWrong: js.mc.infinite-loop-error
+hints:
+  - 무한 반복 코드에 문법 오류가 있나요?
+  - 레슨의 네 번째 예제에서 실행을 멈춘 것은 누구였나요?
+  - 실제 브라우저에서는 무한 반복이 있으면 페이지가 어떻게 되는지 떠올려 보세요.
+explanation: |
+  정답은 **거짓**이에요. 무한 반복은 문법상 올바른 코드라서 JavaScript는 아무 오류도 내지 않고 계속 반복해요. 실제 브라우저에서는 페이지가 멈춘 것처럼 응답하지 않게 돼요.
+
+  ProgInOne에서 반복이 1초 넘게 계속되면 실행이 멈추는 것은 학습 도구가 덧붙인 안전장치예요. 그래서 무한 반복은 오류 메시지가 아니라 코드를 읽어서 찾아야 해요. 조건에 쓴 변수가 본문에서 끝나는 쪽으로 바뀌는지 확인해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

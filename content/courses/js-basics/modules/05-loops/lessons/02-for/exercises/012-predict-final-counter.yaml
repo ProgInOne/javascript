@@ -1,0 +1,48 @@
+id: js-basics.loops.for.predict-final-counter
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.loops.loop-variable, weight: 1 }
+  - { id: js.loops.while, weight: 0.3 }
+tags: [loop-variable, final-value, trace]
+estimatedSeconds: 90
+prompt: |
+  책을 읽는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 특히 마지막 줄을 잘 생각해 보세요.
+spec:
+  lang: js
+  code: |
+    let page = 1;
+    while (page <= 3) {
+      console.log(page + "쪽 읽기");
+      page++;
+    }
+    console.log("지금 page: " + page);
+  answerKind: console
+  misconceptionByAnswer:
+    "1쪽 읽기\n2쪽 읽기\n3쪽 읽기\n지금 page: 3": js.mc.loop-var-final-value
+hints:
+  - "`page`는 반복 바깥에서 만들었으니 반복이 끝난 뒤에도 쓸 수 있어요."
+  - 3쪽을 읽은 회차의 마지막 줄에서 `page`는 얼마가 되나요?
+  - 반복은 조건이 거짓이 되어야 끝나요. `page <= 3`을 거짓으로 만든 값은 무엇일까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  1쪽 읽기
+  2쪽 읽기
+  3쪽 읽기
+  지금 page: 4
+  ```
+
+  | 검사할 때 `page` | 조건 | 출력 | 본문 끝난 뒤 `page` |
+  |---|---|---|---|
+  | 1 | 참 | `1쪽 읽기` | 2 |
+  | 2 | 참 | `2쪽 읽기` | 3 |
+  | 3 | 참 | `3쪽 읽기` | 4 |
+  | 4 | 거짓 | (반복 끝) | |
+
+  마지막으로 읽은 쪽은 3쪽이지만, 그 회차의 `page++`로 `page`는 4가 됐어요. 그리고 `4 <= 3`이 거짓이라 반복이 끝났어요. 반복이 끝난 뒤의 반복 변수는 **조건을 거짓으로 만든 값**이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,95 @@
+id: js-basics.loops.while.fix-skip-target
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.loops.infinite, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [infinite-loop, while, if, debugging, boundary]
+estimatedSeconds: 300
+prompt: |
+  계단을 오르는 프로그램이에요. 규칙은 이래요.
+
+  - 0번 칸에서 출발해 **두 칸씩** 올라요.
+  - 꼭대기까지 **한 칸만 남았으면 한 칸만** 올라요. 꼭대기를 넘어갈 수는 없어요.
+  - 꼭대기(15번 칸)에 정확히 도착하면 몇 번 만에 어디에 도착했는지 출력해요.
+
+  그런데 실행하면 아무것도 나오지 않다가 약 1초 뒤 실행이 멈춰요. 규칙대로 동작하도록 고치세요. 올바르게 고치면 아래처럼 나와요.
+
+  ```text
+  8번 만에 15번 칸 도착
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const goal = 15; // 꼭대기 칸 번호
+          let step = 0;   // 지금 서 있는 칸
+          let moves = 0;  // 오른 횟수
+
+          while (step !== goal) {
+            step += 2;
+            moves++;
+          }
+          console.log(moves + "번 만에 " + step + "번 칸 도착");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const goal = 15; // 꼭대기 칸 번호
+          let step = 0;   // 지금 서 있는 칸
+          let moves = 0;  // 오른 횟수
+
+          while (step !== goal) {
+            if (goal - step === 1) {
+              step += 1;
+            } else {
+              step += 2;
+            }
+            moves++;
+          }
+          console.log(moves + "번 만에 " + step + "번 칸 도착");
+  bugDescription: 실행하면 콘솔에 아무것도 나오지 않고, 약 1초 뒤 반복이 너무 오래 실행되어 멈췄다는 안내가 나와요.
+  checks:
+    - kind: console
+      id: output
+      description: 오른 횟수와 도착한 칸(꼭대기 15번 칸)이 출력되어야 합니다.
+      requirement: 꼭대기에 정확히 도착
+      expect:
+        lines: ["8번 만에 15번 칸 도착"]
+    - kind: program
+      id: final-step
+      description: 반복이 끝난 뒤 step이 꼭대기 칸 번호와 같아야 합니다. 꼭대기를 넘어가면 안 됩니다.
+      requirement: 꼭대기에 정확히 도착
+      expect:
+        globals: { step: { equals: 15 }, moves: { equals: 8 } }
+        noError: true
+misconceptions: [js.mc.while-auto-update]
+hints:
+  - 회차마다 `step`이 0, 2, 4, …로 바뀌어요. 15가 되는 순간이 있나요?
+  - "`step`이 14일 때 두 칸을 오르면 16이 되어 15를 건너뛰어요. 그러면 `step !== goal`은 언제 거짓이 될까요?"
+  - 두 칸을 오르기 전에 "꼭대기까지 한 칸만 남았는지"(`goal - step === 1`)를 `if`로 검사해서, 그때는 한 칸만 오르게 하세요.
+explanation: |
+  `step`이 0, 2, 4, …, 14, 16, 18, …로 짝수만 지나가서 15가 되는 순간이 없어요. 그래서 `step !== goal`이 영원히 참인 무한 반복이었어요. 이렇게 **목표값을 건너뛰는** 경우는 변수가 바뀌고 있어서 찾기 더 어려워요.
+
+  규칙의 "한 칸만 남았으면 한 칸만"을 `if`로 옮기면 돼요.
+
+  ```js
+  while (step !== goal) {
+    if (goal - step === 1) {
+      step += 1;
+    } else {
+      step += 2;
+    }
+    moves++;
+  }
+  ```
+
+  0 → 2 → … → 14까지 일곱 번, 14에서 한 칸이 남아 15로 한 번, 모두 8번 만에 정확히 15번 칸에 도착해요.
+
+  - 조건만 `while (step < goal)`으로 바꾸면 반복은 끝나지만 16번 칸에서 멈춰서 "꼭대기를 넘어갈 수 없다"는 규칙을 어겨요.
+  - `!==`로 끝을 검사하는 반복은 변수가 그 값을 정확히 지나가는지 꼭 확인해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

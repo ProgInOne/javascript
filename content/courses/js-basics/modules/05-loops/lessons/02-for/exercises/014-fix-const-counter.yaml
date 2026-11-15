@@ -1,0 +1,62 @@
+id: js-basics.loops.for.fix-const-counter
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.loops.loop-variable, weight: 1 }
+  - { id: js.values.const, weight: 0.3 }
+tags: [loop-variable, const, error, debugging]
+estimatedSeconds: 100
+prompt: |
+  알림을 세 번 보내는 프로그램이에요. 그런데 첫 알림만 나오고 오류가 나요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  1번째 알림
+  2번째 알림
+  3번째 알림
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          for (const i = 1; i <= 3; i++) {
+            console.log(i + "번째 알림");
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          for (let i = 1; i <= 3; i++) {
+            console.log(i + "번째 알림");
+          }
+  bugDescription: "`1번째 알림`이 나온 다음 `TypeError: Assignment to constant variable.` 오류가 나요."
+  maxEditDistance: 2
+  checks:
+    - kind: console
+      id: output
+      description: 알림 세 줄이 차례로 출력되어야 합니다.
+      requirement: 알림 세 번
+      expect:
+        lines: ["1번째 알림", "2번째 알림", "3번째 알림"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+hints:
+  - 오류 메시지 `Assignment to constant variable.`은 무엇을 하려다 났나요?
+  - 첫 회차의 본문은 실행됐어요. 첫 회차가 끝난 직후에 실행되는 부분은 어디인가요?
+  - 갱신 `i++`가 반복 변수의 값을 바꿔요. 값을 바꿀 수 있는 변수는 어떤 키워드로 만들었나요?
+explanation: |
+  반복 변수를 `const`로 만든 것이 원인이에요. 첫 회차의 본문은 실행되지만, 그 뒤 갱신 `i++`가 상수 `i`의 값을 바꾸려고 해서 `TypeError: Assignment to constant variable.`이 나요.
+
+  ```js
+  for (let i = 1; i <= 3; i++) {
+  ```
+
+  반복 변수는 회차마다 값이 바뀌어야 하니 `let`으로 만들어요. 오류가 첫 회차가 **끝난 뒤** 나는 것도 실행 순서(초기화 → 조건 → 본문 → 갱신)와 맞아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

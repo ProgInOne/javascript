@@ -1,0 +1,40 @@
+id: js-basics.loops.while.mcq-when-condition-checked
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.loops.while, weight: 1 }
+tags: [while, condition]
+estimatedSeconds: 45
+prompt: |
+  `while (조건) { 본문 }`에서 조건은 언제 검사하나요?
+spec:
+  options:
+    - id: a
+      text: 회차를 시작하기 전마다 검사하고, 본문을 실행하는 동안에는 검사하지 않는다
+    - id: b
+      text: 본문의 각 줄을 실행할 때마다 검사해서, 거짓이 되는 순간 반복을 멈춘다
+      misconception: js.mc.while-checks-mid-body
+      rationale: 본문 중간에 조건이 거짓이 되어도 그 회차는 끝까지 실행돼요. 다음 회차를 시작할 때 검사해요.
+    - id: c
+      text: 본문을 한 번 실행한 다음부터 검사한다
+      misconception: js.mc.while-runs-at-least-once
+      rationale: 그건 do...while이에요. while은 첫 회차 전에도 조건을 검사해요.
+    - id: d
+      text: 반복을 시작할 때 딱 한 번만 검사한다
+      rationale: 한 번만 검사하면 반복이 끝날 수가 없어요. 회차마다 다시 검사해요.
+  correct: a
+misconceptions: [js.mc.while-checks-mid-body, js.mc.while-runs-at-least-once]
+hints:
+  - 레슨의 그림에서 화살표가 어디로 돌아갔는지 떠올려 보세요.
+  - 본문 마지막 줄을 실행한 뒤에는 어디로 가나요?
+  - 조건 검사는 "회차의 입구"에서 일어나요. 입구는 첫 회차 앞에도 있어요.
+explanation: |
+  정답은 **a**예요. `while`은 회차를 시작하기 직전에 조건을 검사해요. 참이면 본문을 처음부터 끝까지 실행하고 다시 조건 검사로 돌아가고, 거짓이면 반복을 끝내요.
+
+  - b: 본문을 실행하는 동안에는 조건을 보지 않아요. 본문 중간에 조건이 거짓이 되어도 그 회차의 남은 줄은 실행돼요.
+  - c: 본문을 먼저 실행하고 나중에 검사하는 것은 `do...while`이에요. `while`은 조건이 처음부터 거짓이면 본문을 한 번도 실행하지 않아요.
+  - d: 조건을 한 번만 검사하면 반복을 멈출 기회가 없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

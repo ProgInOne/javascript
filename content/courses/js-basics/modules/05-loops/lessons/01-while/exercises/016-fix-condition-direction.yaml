@@ -1,0 +1,67 @@
+id: js-basics.loops.while.fix-condition-direction
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.loops.while, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [while, condition, debugging]
+estimatedSeconds: 120
+prompt: |
+  운동장을 3바퀴 도는 프로그램이에요. 그런데 한 바퀴도 돌지 않고 끝나요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  1바퀴 달리기
+  2바퀴 달리기
+  3바퀴 달리기
+  운동 끝
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          let lap = 1;
+          while (lap >= 3) {
+            console.log(lap + "바퀴 달리기");
+            lap++;
+          }
+          console.log("운동 끝");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let lap = 1;
+          while (lap <= 3) {
+            console.log(lap + "바퀴 달리기");
+            lap++;
+          }
+          console.log("운동 끝");
+  bugDescription: 실행하면 `운동 끝`만 나오고 달리기는 한 번도 하지 않아요.
+  maxEditDistance: 4
+  checks:
+    - kind: console
+      id: output
+      description: 1바퀴부터 3바퀴까지 달린 뒤 "운동 끝"이 출력되어야 합니다.
+      requirement: 3바퀴 달리기
+      expect:
+        lines: ["1바퀴 달리기", "2바퀴 달리기", "3바퀴 달리기", "운동 끝"]
+misconceptions: [js.mc.while-runs-at-least-once]
+hints:
+  - 처음 조건을 검사할 때 `lap`은 얼마이고, 그때 조건은 참인가요?
+  - "`while`은 조건부터 검사해서, 처음부터 거짓이면 본문을 한 번도 실행하지 않아요."
+  - "`lap`이 1, 2, 3일 때 참이고 4일 때 거짓이 되는 조건이 필요해요. 비교 연산자의 방향을 보세요."
+explanation: |
+  2번 줄의 조건 `lap >= 3`이 문제예요. `lap`이 1일 때 `1 >= 3`은 거짓이라, `while`은 본문을 한 번도 실행하지 않고 바로 `운동 끝`으로 넘어갔어요.
+
+  "3바퀴가 될 때까지 달린다"는 "`lap`이 3 이하인 동안 달린다"예요.
+
+  ```js
+  while (lap <= 3) {
+  ```
+
+  - `lap`이 1, 2, 3일 때 참이라 세 번 달리고, 4가 되면 거짓이 되어 끝나요.
+  - `while (lap >= 1)`처럼 고치면 `lap`이 늘수록 조건이 계속 참이라 무한 반복이 돼요. 조건은 변수가 바뀌는 방향과 맞아야 끝나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

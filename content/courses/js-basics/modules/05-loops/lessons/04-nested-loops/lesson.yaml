@@ -1,0 +1,17 @@
+id: js-basics.loops.nested-loops
+title: 중첩 반복
+summary: 반복 안에 반복을 넣어 표와 격자를 만들고, 안쪽 반복이 바깥 회차마다 처음부터 다시 도는 원리와 중첩 반복 안에서 break가 끝내는 범위를 배웁니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 12, practice: 22 }
+concepts:
+  primary: [js.loops.nested]
+  practiced: [js.loops.for, js.loops.accumulator-pattern]
+  reviewed: [js.loops.break, js.loops.loop-variable, js.control.block]
+objectives:
+  - 바깥 반복이 한 번 돌 때마다 안쪽 반복이 처음부터 끝까지 다시 돈다는 것을 알고, 안쪽 본문의 실행 횟수와 출력 순서를 예측할 수 있다.
+  - 바깥 반복 변수로 안쪽 반복의 범위를 바꿔 삼각형처럼 줄마다 길이가 다른 모양을 만들 수 있다.
+  - 중첩 반복으로 구구단표·좌석표 같은 표를 출력하는 프로그램을 작성할 수 있다.
+  - 안쪽 반복의 break가 안쪽 반복만 끝낸다는 것을 알고, 바깥 반복까지 멈추는 코드를 작성할 수 있다.
+practice:
+  targetCount: 14

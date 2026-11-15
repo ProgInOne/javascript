@@ -363,3 +363,83 @@
   prerequisites: [js.control.if, { id: js.ops.precedence, strength: helpful }, { id: js.conv.plus-concat, strength: helpful }]
   misconceptions: [js.mc.ternary-as-statement, js.mc.ternary-result-discarded, js.mc.ternary-precedence]
   mdn: Web/JavaScript/Reference/Operators/Conditional_operator
+
+# ── 모듈 5. 반복문: while ──
+
+- id: js.loops.while
+  title: while 반복
+  importance: standard
+  summary: while (조건) { ... }은 조건이 참인 동안 블록을 되풀이해 실행해요. 조건은 본문을 시작하기 전에만 검사하고, 본문을 끝까지 실행한 뒤 다시 검사해요.
+  prerequisites: [js.control.if, js.ops.increment]
+  misconceptions: [js.mc.while-checks-mid-body, js.mc.while-runs-at-least-once]
+  mdn: Web/JavaScript/Reference/Statements/while
+
+- id: js.loops.do-while
+  title: do...while 반복
+  importance: minor
+  summary: do { ... } while (조건);은 본문을 먼저 한 번 실행한 뒤 조건을 검사해요. 그래서 조건이 처음부터 거짓이어도 본문이 적어도 한 번은 실행돼요.
+  prerequisites: [js.loops.while]
+  misconceptions: [js.mc.do-while-checks-first]
+  mdn: Web/JavaScript/Reference/Statements/do...while
+
+- id: js.loops.infinite
+  title: 무한 반복
+  importance: standard
+  summary: 반복 조건이 끝내 거짓이 되지 않으면 반복이 영원히 계속돼요(무한 반복). 본문 안에서 조건에 쓰인 변수를 끝나는 쪽으로 바꿔야 해요. JavaScript는 무한 반복을 오류로 알려 주지 않아요.
+  prerequisites: [js.loops.while]
+  misconceptions: [js.mc.while-auto-update, js.mc.infinite-loop-error]
+  mdn: Web/JavaScript/Guide/Loops_and_iteration
+
+# ── 모듈 5. 반복문: for ──
+
+- id: js.loops.for
+  title: for 반복
+  importance: core
+  summary: for (초기화; 조건; 갱신) { ... }은 초기화를 한 번 실행한 뒤, 조건 검사 → 본문 → 갱신을 조건이 거짓이 될 때까지 되풀이해요. 정해진 횟수만큼 반복할 때 써요.
+  prerequisites: [js.loops.while]
+  misconceptions: [js.mc.for-off-by-one, js.mc.for-update-before-body, js.mc.for-init-every-time]
+  mdn: Web/JavaScript/Reference/Statements/for
+
+- id: js.loops.loop-variable
+  title: 반복 변수
+  importance: standard
+  summary: 반복 횟수를 세는 변수(i 같은 반복 변수)는 회차마다 값이 바뀌어 본문에서 계산에 쓸 수 있어요. for (let i ...)의 i는 반복 안에서만 쓸 수 있고, 반복이 끝난 뒤의 값은 조건을 거짓으로 만든 값이에요.
+  prerequisites: [js.loops.for, js.control.block]
+  misconceptions: [js.mc.loop-var-outside-for, js.mc.loop-var-final-value]
+  mdn: Web/JavaScript/Reference/Statements/for
+
+- id: js.loops.accumulator-pattern
+  title: 누적 패턴
+  importance: core
+  summary: 합계·개수·이어 붙인 글자처럼 반복하며 값을 모을 때는 누적 변수를 반복 바깥에서 시작값(0이나 "")으로 만들고, 본문에서 += 같은 연산으로 조금씩 더해요.
+  prerequisites: [js.loops.for, js.ops.compound-assignment]
+  misconceptions: [js.mc.accumulator-reset-in-loop, js.mc.accumulator-overwrite, js.mc.accumulator-no-init]
+  mdn: Web/JavaScript/Reference/Operators/Addition_assignment
+
+# ── 모듈 5. 반복문: break-continue ──
+
+- id: js.loops.break
+  title: break로 반복 끝내기
+  importance: standard
+  summary: 반복 안에서 break를 만나면 그 반복을 바로 끝내고 반복 다음 문장으로 넘어가요. 찾던 것을 찾았을 때처럼 더 반복할 필요가 없을 때 써요. 반복이 겹쳐 있으면 가장 가까운 반복 하나만 끝내요.
+  prerequisites: [js.loops.for]
+  misconceptions: [js.mc.break-exits-all-loops, js.mc.break-ends-program]
+  mdn: Web/JavaScript/Reference/Statements/break
+
+- id: js.loops.continue
+  title: continue로 건너뛰기
+  importance: standard
+  summary: continue를 만나면 이번 회차의 남은 본문을 건너뛰고 다음 회차로 넘어가요. for에서는 갱신식을 실행한 뒤 조건을 검사하고, while에서는 바로 조건을 검사해요. 반복 자체는 끝나지 않아요.
+  prerequisites: [js.loops.for]
+  misconceptions: [js.mc.continue-ends-loop, js.mc.continue-while-update]
+  mdn: Web/JavaScript/Reference/Statements/continue
+
+# ── 모듈 5. 반복문: nested-loops ──
+
+- id: js.loops.nested
+  title: 중첩 반복
+  importance: standard
+  summary: 반복 안에 반복을 넣으면 바깥 반복이 한 번 돌 때마다 안쪽 반복이 처음부터 끝까지 다시 돌아요. 그래서 안쪽 본문은 (바깥 횟수 × 안쪽 횟수)번 실행돼요. 표나 격자를 만들 때 써요.
+  prerequisites: [js.loops.for, js.control.block]
+  misconceptions: [js.mc.inner-var-not-reset, js.mc.nested-count-additive]
+  mdn: Web/JavaScript/Guide/Loops_and_iteration

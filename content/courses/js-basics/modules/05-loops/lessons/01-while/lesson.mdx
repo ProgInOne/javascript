@@ -1,0 +1,327 @@
+<Section kind="objectives">
+- `while` 반복에서 조건을 언제 검사하는지 알고, 본문이 몇 번 실행되고 무엇이 출력될지 예측할 수 있어요.
+- 조건이 참인 동안 반복하는 `while` 프로그램을 작성할 수 있어요.
+- `do...while`이 본문을 적어도 한 번 실행한다는 점을 `while`과 비교해 설명할 수 있어요.
+- 반복 조건이 거짓이 되지 않는 무한 반복을 알아보고, 조건 변수를 바꿔 고칠 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+로켓 발사 카운트다운을 출력하는 프로그램을 만든다고 해 볼게요. 지금까지 배운 방법으로는 이렇게 써야 해요.
+
+```js
+console.log(5);
+console.log(4);
+console.log(3);
+console.log(2);
+console.log(1);
+console.log("발사!");
+```
+
+5초라면 참을 만하지만, 100초 카운트다운이라면 `console.log`를 100번 써야 해요. 더 곤란한 경우도 있어요. "저금통에 10000원이 모일 때까지 매주 3000원씩 넣기"처럼 **몇 번 반복해야 할지 미리 모르는** 일은 줄을 몇 개 써야 할지조차 정할 수 없어요.
+
+이럴 때 쓰는 문장이 **반복문**이에요. "조건이 참인 동안 이 코드를 되풀이해"라고 한 번만 쓰면, 컴퓨터가 지치지 않고 필요한 만큼 반복해 줘요. 이 단원에서는 가장 기본이 되는 반복문인 `while`을 배워요.
+</Section>
+
+<Section kind="principle">
+### while의 모양
+
+```js
+while (조건) {
+  // 조건이 참인 동안 되풀이할 문장들 (본문)
+}
+```
+
+`if`와 모양이 거의 같아요. 다른 점은 블록을 **한 번 실행하고 끝나지 않는다**는 것이에요. `while`은 이렇게 동작해요.
+
+1. 조건을 검사해요.
+1. 참이면 본문(블록)을 처음부터 끝까지 실행하고, **다시 1번으로 돌아가요.**
+1. 거짓이면 본문을 건너뛰고 반복 다음 문장으로 넘어가요.
+
+본문을 한 번 실행하는 것을 **한 회차**라고 불러요. 카운트다운을 `while`로 쓰면 이래요.
+
+```js
+let count = 5;
+while (count > 0) {
+  console.log(count);
+  count--;
+}
+console.log("발사!");
+```
+
+- `count`는 반복이 몇 번 남았는지 기억하는 변수예요.
+- 본문 마지막 줄의 `count--`(모듈 3에서 배운 감소 연산자)가 회차마다 `count`를 1씩 줄여요.
+- `count`가 0이 되면 `0 > 0`이 거짓이라 반복이 끝나고 `발사!`가 나와요.
+
+### 조건은 회차를 시작하기 전에만 검사해요
+
+`while`의 조건은 **본문에 들어가기 직전에만** 검사해요. 본문을 실행하는 동안에는 조건을 보지 않아요. 그래서 본문 중간에 조건이 거짓이 되어도 그 회차의 남은 줄은 끝까지 실행되고, 다음 회차를 시작하려고 조건을 다시 검사할 때에야 반복이 끝나요.
+
+```text
+① 조건 검사
+   ├─ 참   → ② 본문 첫 줄부터 마지막 줄까지 실행 → ①로 돌아가기
+   └─ 거짓 → 반복 다음 문장으로
+```
+
+본문을 실행하는 ② 동안에는 ①로 가지 않아요. ①에 다시 도착하는 것은 본문 마지막 줄을 실행한 뒤예요.
+
+또 하나, 조건을 **먼저** 검사하기 때문에 조건이 처음부터 거짓이면 본문은 **한 번도** 실행되지 않아요.
+
+### 반복을 끝내는 것은 내 몫이에요
+
+`while`은 조건을 검사하기만 할 뿐, 조건에 쓴 변수를 대신 바꿔 주지 않아요. 반복이 언젠가 끝나려면 본문 안에서 **조건이 거짓이 되는 쪽으로** 변수를 바꿔야 해요. 반복문을 쓸 때는 다음 세 가지를 함께 챙겨요.
+
+| 할 일 | 카운트다운에서 |
+|---|---|
+| 반복 전에 변수의 시작값 정하기 | `let count = 5;` |
+| 조건에서 그 변수 검사하기 | `while (count > 0)` |
+| 본문에서 끝나는 쪽으로 바꾸기 | `count--;` |
+
+셋 중 하나라도 빠지거나 방향이 틀리면 반복이 한 번도 돌지 않거나, 영원히 끝나지 않아요.
+
+### 무한 반복
+
+조건이 끝내 거짓이 되지 않아 영원히 도는 반복을 **무한 반복**이라고 해요. 가장 흔한 원인은 이 세 가지예요.
+
+- 본문에서 변수를 바꾸는 줄을 깜빡했어요. (`count--;`가 없음)
+- 변수를 반대 방향으로 바꿔요. (`count > 0`인데 `count++`)
+- 변수가 목표값을 건너뛰어요. (`while (n !== 10)`인데 `n += 3`이라 10이 되는 순간이 없음)
+
+무한 반복은 문법 오류가 아니라서 JavaScript는 **아무 오류도 내지 않고** 계속 반복해요. 실제 브라우저에서는 탭이 멈춘 것처럼 응답하지 않게 돼요.
+
+<Callout kind="note" title="ProgInOne에서 무한 반복을 실행하면">
+ProgInOne은 학습자 코드가 화면을 멈추지 않도록, 반복이 1초 넘게 계속되면 실행을 강제로 멈추고 `LoopLimitError`와 함께 "반복이 너무 많이 돌아서 실행을 멈췄어요"처럼 알려 줘요. 이것은 학습 도구가 덧붙인 안전장치예요. JavaScript가 오류를 알려 주는 것이 아니에요.
+</Callout>
+
+### do...while: 먼저 실행하고 나중에 검사해요
+
+본문을 **적어도 한 번은** 실행해야 할 때는 `do...while`을 써요.
+
+```js
+do {
+  // 본문
+} while (조건);
+```
+
+`do` 블록을 먼저 실행하고, 맨 끝의 `while (조건)`에서 조건을 검사해 참이면 다시 `do` 블록으로 돌아가요. 조건이 처음부터 거짓이어도 본문은 한 번 실행돼요. 맨 끝의 `;`을 잊지 마세요.
+
+<CompareTable columns={["while", "do...while"]}>
+<Row label="조건 검사 시점">본문 실행 전 | 본문 실행 후</Row>
+<Row label="조건이 처음부터 거짓이면">본문 0번 실행 | 본문 1번 실행</Row>
+<Row label="자주 쓰는 곳">대부분의 반복 | 메뉴 보여 주기처럼 일단 한 번 해야 하는 일</Row>
+</CompareTable>
+
+실무에서는 `while`과 다음 단원의 `for`를 훨씬 많이 써요. `do...while`은 "일단 한 번"이 꼭 필요할 때만 꺼내는 도구라고 기억하면 돼요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 카운트다운이에요. 무엇이 몇 줄 출력될지 예측해 보세요.
+
+<RunnableExample id="countdown" lang="js" predict predictKind="console" concepts={["js.loops.while"]}>
+```js
+let count = 3;
+while (count > 0) {
+  console.log(count);
+  count--;
+}
+console.log("발사!");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+3
+2
+1
+발사!
+```
+
+회차마다 `count`가 어떻게 바뀌는지 표로 따라가 보면 이래요.
+
+| 회차 | 검사할 때 `count` | 조건 `count > 0` | 출력 | 본문 끝난 뒤 `count` |
+|---|---|---|---|---|
+| 1 | 3 | `true` | `3` | 2 |
+| 2 | 2 | `true` | `2` | 1 |
+| 3 | 1 | `true` | `1` | 0 |
+| — | 0 | `false` | (반복 끝) | |
+
+조건을 네 번 검사했지만 본문은 세 번 실행됐어요. 마지막 검사에서 거짓이 나와야 반복이 끝나기 때문이에요. 반복이 끝나면 6번 줄의 `발사!`로 넘어가요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 본문 **중간에** 조건이 거짓이 되는 코드예요. `energy`가 0이 된 뒤에도 `console.log`가 실행될까요?
+
+<RunnableExample id="mid-body" lang="js" predict predictKind="console" concepts={["js.loops.while"]}>
+```js
+let energy = 2;
+while (energy > 0) {
+  energy--;
+  console.log("달리기! 남은 힘: " + energy);
+}
+console.log("휴식");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+달리기! 남은 힘: 1
+달리기! 남은 힘: 0
+휴식
+```
+
+| 회차 | 검사할 때 `energy` | 3번 줄 뒤 `energy` | 4번 줄 출력 |
+|---|---|---|---|
+| 1 | 2 → 참 | 1 | `달리기! 남은 힘: 1` |
+| 2 | 1 → 참 | 0 | `달리기! 남은 힘: 0` |
+| — | 0 → 거짓 | | (반복 끝) |
+
+2회차의 3번 줄에서 `energy`가 0이 되어 조건 `energy > 0`이 거짓이 됐어요. 그래도 4번 줄은 실행됐어요. 조건은 회차를 **시작할 때만** 검사하기 때문이에요. 반복은 3회차를 시작하려고 조건을 다시 검사할 때 끝나요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `while`과 `do...while`을 나란히 놓은 코드예요. 두 반복 모두 조건이 처음부터 거짓이에요.
+
+<RunnableExample id="while-vs-do-while" lang="js" predict predictKind="console" concepts={["js.loops.do-while"]}>
+```js
+let a = 10;
+while (a < 5) {
+  console.log("while 본문: " + a);
+  a++;
+}
+
+let b = 10;
+do {
+  console.log("do...while 본문: " + b);
+  b++;
+} while (b < 5);
+
+console.log("끝");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+do...while 본문: 10
+끝
+```
+
+- 2번 줄: `10 < 5`는 거짓이에요. `while`은 본문에 들어가기 전에 검사하므로 본문을 한 번도 실행하지 않아요.
+- 8~10번 줄: `do...while`은 검사 없이 본문부터 실행해요. `do...while 본문: 10`이 나오고 `b`가 11이 돼요.
+- 11번 줄: 이제야 `11 < 5`를 검사해요. 거짓이라 반복이 끝나요.
+
+조건이 같아도 검사하는 **시점**이 다르면 결과가 달라져요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 일부러 만든 무한 반복이에요. 먼저 그대로 실행해 보세요. ProgInOne이 약 1초 뒤 실행을 멈출 거예요. 그다음 3번 줄의 `//`를 지우고 다시 실행해 보세요.
+
+<RunnableExample id="infinite" lang="js" expectError concepts={["js.loops.infinite"]}>
+```js
+let cups = 0;
+while (cups < 3) {
+  // cups++;
+}
+console.log("물 세 잔을 다 마셨어요");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+처음 실행하면 콘솔에 아무것도 나오지 않다가, 약 1초 뒤 이런 안내가 보여요.
+
+```text
+LoopLimitError: 반복문이 1000ms 넘게 실행되어 멈췄습니다. (2번째 줄)
+반복이 너무 많이 돌아서 실행을 멈췄어요. 반복 조건을 확인해 보세요.
+```
+
+`LoopLimitError`는 JavaScript의 오류 종류가 아니라 ProgInOne이 붙인 이름이에요. 2번째 줄의 `while`이 1초 넘게 돌아서 멈췄다는 뜻이에요.
+
+- 3번 줄이 주석이라 본문에서 아무 일도 일어나지 않아요. `cups`는 계속 0이고, `0 < 3`은 영원히 참이에요.
+- 반복이 끝나지 않으니 5번 줄에는 도착하지도 못해요.
+- JavaScript 자체는 오류를 내지 않았어요. 실행을 멈춘 것은 ProgInOne의 안전장치예요.
+
+`//`를 지우면 회차마다 `cups`가 1씩 늘어 0 → 1 → 2 → 3이 되고, 3에서 조건이 거짓이 되어 `물 세 잔을 다 마셨어요`가 출력돼요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.while-checks-mid-body">
+<Wrong>본문을 실행하는 도중에 조건이 거짓이 되면, 그 순간 반복이 멈추고 본문의 나머지 줄은 실행되지 않는다.</Wrong>
+<Actual>두 번째 예제에서 `energy`가 0이 된 바로 다음 줄의 `console.log`도 실행됐어요. `while`은 회차를 시작할 때만 조건을 검사해요.</Actual>
+<Right>조건 검사는 "회차의 입구"에서만 일어나요. 본문 안에서 조건이 거짓이 되어도 그 회차는 끝까지 실행되고, 다음 입구에서 반복이 끝나요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.while-runs-at-least-once">
+<Wrong>`while` 본문은 일단 한 번 실행된 다음 조건을 검사하므로, 조건이 처음부터 거짓이어도 한 번은 실행된다.</Wrong>
+<Actual>세 번째 예제의 `while (a < 5)`는 `a`가 10이라 본문을 한 번도 실행하지 않았어요. `while`은 조건부터 검사해요.</Actual>
+<Right>적어도 한 번 실행해야 하는 일이면 `do...while`을 쓰거나, 처음 검사에서 조건이 참이 되도록 시작값을 정해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.do-while-checks-first">
+<Wrong>`do...while`도 조건을 먼저 검사하니까, 조건이 처음부터 거짓이면 본문이 실행되지 않는다.</Wrong>
+<Actual>세 번째 예제의 `do...while`은 조건 `b < 5`가 처음부터 거짓인데도 `do...while 본문: 10`을 출력했어요. 조건은 맨 끝에 있는 그대로, 본문을 실행한 뒤에 검사해요.</Actual>
+<Right>코드에 적힌 순서대로 읽으면 돼요. `do { 본문 }`이 먼저, `while (조건)`이 나중이에요. 그래서 본문은 적어도 한 번 실행돼요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.while-auto-update">
+<Wrong>`while (cups < 3)`처럼 조건에 변수를 쓰면, 반복할 때마다 `cups`가 저절로 늘어나서 언젠가 끝난다.</Wrong>
+<Actual>네 번째 예제처럼 본문에서 `cups`를 바꾸지 않으면 `cups`는 계속 0이에요. 조건이 영원히 참이라 반복이 끝나지 않아요.</Actual>
+<Right>`while`은 조건을 검사만 해요. 본문 안에서 `cups++`처럼 조건이 거짓이 되는 쪽으로 변수를 직접 바꿔요. 반복문을 다 쓰면 "이 변수는 어디서 바뀌지?"를 꼭 확인해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.infinite-loop-error">
+<Wrong>반복이 끝나지 않으면 JavaScript가 곧바로 오류를 내서 알려 준다.</Wrong>
+<Actual>무한 반복은 문법상 올바른 코드라서 JavaScript는 오류 없이 계속 반복해요. 실제 브라우저에서는 페이지가 멈추고, 한참 뒤에 "페이지가 응답하지 않습니다" 같은 브라우저 안내가 뜰 수 있어요. ProgInOne이 1초 뒤 멈춰 주는 것은 학습 도구의 안전장치예요.</Actual>
+<Right>무한 반복은 오류 메시지로 찾을 수 없으니 코드를 읽고 찾아야 해요. 조건에 쓴 변수가 본문에서 끝나는 쪽으로 바뀌는지, 목표값을 건너뛰지 않는지 확인해요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+실제 프로그램에서는 "몇 번 반복할지 모르지만, 언제 멈출지는 아는" 일에 `while`을 써요. 적금 계산이 좋은 예예요.
+
+```js
+const goal = 100000;    // 모으고 싶은 돈
+const monthly = 30000;  // 한 달에 모으는 돈
+let saved = 0;
+let months = 0;
+
+while (saved < goal) {
+  saved += monthly;
+  months++;
+}
+console.log(months + "개월이면 " + saved + "원이 모여요");
+```
+
+- 몇 달이 걸릴지 미리 계산하지 않아도, "목표에 못 미치는 동안 한 달씩 더하기"를 그대로 코드로 옮기면 돼요. 결과는 `4개월이면 120000원이 모여요`예요.
+- `saved`와 `months`처럼 반복이 끝난 뒤에도 쓸 값은 반복 **바깥(위)**에서 만들어요.
+
+웹 개발에서는 "서버가 응답할 때까지 다시 시도하기", "빈 칸이 아닌 이름을 받을 때까지 다시 묻기"처럼 끝나는 시점이 상황에 따라 달라지는 일에 `while`과 같은 생각을 써요. 이런 코드는 시도 횟수에 상한을 함께 두어, 만에 하나 조건이 끝내 거짓이 되지 않더라도 무한 반복에 빠지지 않게 해요.
+</Section>
+
+<Section kind="check">
+`while`이 조건을 언제 검사하는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.loops.while.tf-stops-mid-body" />
+
+`while`과 `do...while`의 차이를 확인해 보세요.
+
+<InlineExercise ref="js-basics.loops.while.mcq-do-while-difference" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `while (조건) { ... }`은 조건이 참인 동안 본문을 되풀이해요. 조건이 거짓이면 반복 다음 문장으로 넘어가요.
+- 조건은 회차를 시작하기 전에만 검사해요. 본문 중간에 조건이 거짓이 되어도 그 회차는 끝까지 실행돼요.
+- 조건이 처음부터 거짓이면 `while` 본문은 한 번도 실행되지 않아요.
+- `do { ... } while (조건);`은 본문을 먼저 실행하고 나중에 검사해서, 본문이 적어도 한 번 실행돼요.
+- 반복이 끝나려면 본문에서 조건 변수를 끝나는 쪽으로 직접 바꿔야 해요. 그렇지 않으면 무한 반복이 돼요.
+- JavaScript는 무한 반복을 오류로 알려 주지 않아요. 시작값·조건·변수 바꾸기 세 가지를 함께 확인해요.
+</Section>
+
+<Section kind="next">
+다음 단원 "for 반복"에서는 시작값·조건·변수 바꾸기를 괄호 한 줄에 모아 쓰는 `for`를 배워요. 정해진 횟수만큼 반복할 때는 `while`보다 `for`가 읽기 쉬워요. <MdnLink path="Web/JavaScript/Reference/Statements/while" />
+</Section>

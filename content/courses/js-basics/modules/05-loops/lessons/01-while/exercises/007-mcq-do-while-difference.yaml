@@ -1,0 +1,40 @@
+id: js-basics.loops.while.mcq-do-while-difference
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.loops.do-while, weight: 1 }
+tags: [do-while, while, compare]
+estimatedSeconds: 50
+prompt: |
+  `while`과 `do...while`의 차이를 바르게 설명한 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: do...while은 본문을 먼저 실행하고 조건을 나중에 검사해서, 조건이 처음부터 거짓이어도 본문이 한 번은 실행된다
+    - id: b
+      text: do...while도 조건을 먼저 검사하므로, 두 반복은 쓰는 모양만 다르고 동작은 같다
+      misconception: js.mc.do-while-checks-first
+      rationale: 조건이 맨 끝에 있는 그대로 본문을 실행한 뒤에 검사해요. 조건이 처음부터 거짓일 때 결과가 달라요.
+    - id: c
+      text: while은 본문을 먼저 한 번 실행하고, do...while은 조건부터 검사한다
+      misconception: js.mc.while-runs-at-least-once
+      rationale: 반대예요. while은 조건부터 검사해서 본문이 한 번도 실행되지 않을 수 있어요.
+    - id: d
+      text: do...while은 조건이 거짓인 동안 반복하고, while은 조건이 참인 동안 반복한다
+      rationale: 둘 다 조건이 참인 동안 반복해요. 다른 점은 검사하는 시점이에요.
+  correct: a
+misconceptions: [js.mc.do-while-checks-first, js.mc.while-runs-at-least-once]
+hints:
+  - 두 반복의 모양에서 조건이 어디에 적혀 있는지 보세요.
+  - "`do { ... } while (조건);`은 위에서부터 읽으면 무엇이 먼저 오나요?"
+  - 조건이 처음부터 거짓일 때 두 반복의 본문은 각각 몇 번 실행될까요?
+explanation: |
+  정답은 **a**예요. `do...while`은 적힌 순서대로 `do` 블록을 먼저 실행하고, 끝의 `while (조건)`에서 조건을 검사해요. 그래서 조건이 처음부터 거짓이어도 본문이 정확히 한 번 실행돼요. `while`은 조건부터 검사하므로 이 경우 본문을 한 번도 실행하지 않아요.
+
+  - b: 조건이 처음부터 참이면 두 반복의 결과가 같을 수 있지만, 처음부터 거짓이면 0번과 1번으로 달라요.
+  - c: 설명이 뒤바뀌었어요.
+  - d: 둘 다 조건이 **참인 동안** 반복해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

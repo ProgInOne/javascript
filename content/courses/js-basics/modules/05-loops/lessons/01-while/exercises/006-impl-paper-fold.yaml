@@ -1,0 +1,87 @@
+id: js-basics.loops.while.impl-paper-fold
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.loops.while, weight: 1 }
+  - { id: js.ops.compound-assignment, weight: 0.3 }
+tags: [while, write-code, unknown-count]
+estimatedSeconds: 240
+prompt: |
+  두께가 0.1mm인 종이를 반으로 접을 때마다 두께가 2배가 돼요. 두께가 **10mm 이상**이 되려면 몇 번 접어야 할까요?
+
+  - 시작 코드의 변수와 마지막 출력 줄은 그대로 두고, 그 사이에 `while` 반복을 써서 `thickness`와 `folds`를 바꾸세요.
+  - 몇 번 접어야 하는지는 미리 계산하지 말고, 반복이 알아서 찾게 하세요.
+  - 실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  7번 접으면 12.8mm
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          let thickness = 0.1; // 종이 두께(mm)
+          let folds = 0;       // 접은 횟수
+
+          // 두께가 10mm 이상이 될 때까지 반으로 접으세요.
+
+          console.log(folds + "번 접으면 " + thickness + "mm");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let thickness = 0.1; // 종이 두께(mm)
+          let folds = 0;       // 접은 횟수
+
+          // 두께가 10mm 이상이 될 때까지 반으로 접으세요.
+          while (thickness < 10) {
+            thickness *= 2;
+            folds++;
+          }
+
+          console.log(folds + "번 접으면 " + thickness + "mm");
+  checks:
+    - kind: console
+      id: output
+      description: 두께가 처음으로 10mm 이상이 될 때의 접은 횟수와 두께가 출력되어야 합니다.
+      requirement: 접은 횟수 찾기
+      expect:
+        lines: ["7번 접으면 12.8mm"]
+    - kind: program
+      id: folds
+      description: 반복이 끝난 뒤 folds에 접은 횟수 7이 들어 있어야 합니다.
+      requirement: 접은 횟수 찾기
+      expect:
+        globals: { folds: { equals: 7 } }
+        noError: true
+misconceptions: [js.mc.while-auto-update]
+hints:
+  - "\"두께가 10mm보다 작은 동안 접는다\"를 그대로 `while`의 조건으로 옮겨 보세요."
+  - 한 번 접을 때 바뀌는 것이 두 가지예요. 두께는 2배가 되고, 접은 횟수는 1 늘어요.
+  - "`while (thickness < 10) { ... }` 안에서 `thickness *= 2;`와 `folds++;`를 실행해요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  while (thickness < 10) {
+    thickness *= 2;
+    folds++;
+  }
+  ```
+
+  | 회차 | 검사할 때 두께 | 접은 뒤 두께 | `folds` |
+  |---|---|---|---|
+  | 1 | 0.1 | 0.2 | 1 |
+  | 2 | 0.2 | 0.4 | 2 |
+  | … | … | … | … |
+  | 7 | 6.4 | 12.8 | 7 |
+  | — | 12.8 → 거짓 | | (반복 끝) |
+
+  - 몇 번 반복할지 모르지만 "언제 멈출지"는 알 때 `while`이 잘 맞아요. 조건은 "10mm 이상"의 반대인 `thickness < 10`이에요.
+  - 본문에서 `thickness`를 바꾸지 않으면 조건이 계속 참이라 무한 반복이 돼요. `folds`만 늘리고 두께를 안 바꾸는 실수도 마찬가지예요.
+  - `thickness <= 10`으로 써도 이 문제에서는 결과가 같아요. 하지만 "10mm 이상이 될 때까지"를 정확히 옮긴 것은 `< 10`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

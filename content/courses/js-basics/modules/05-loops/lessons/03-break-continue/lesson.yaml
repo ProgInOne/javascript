@@ -1,0 +1,17 @@
+id: js-basics.loops.break-continue
+title: 반복 제어
+summary: 반복을 중간에 바로 끝내는 break와, 이번 회차의 남은 본문만 건너뛰는 continue를 배우고, 둘을 써서 찾기·거르기 반복을 만듭니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 11, practice: 20 }
+concepts:
+  primary: [js.loops.break, js.loops.continue]
+  practiced: [js.loops.for, js.control.if, js.ops.remainder]
+  reviewed: [js.loops.while, js.loops.infinite, js.loops.accumulator-pattern, js.control.fallthrough]
+objectives:
+  - break를 만나면 반복이 끝나고 반복 다음 문장으로 넘어간다는 것을 알고, 출력이 어디서 멈출지 예측할 수 있다.
+  - continue가 이번 회차의 남은 본문만 건너뛰고 다음 회차로 넘어간다는 것을 break와 비교해 설명할 수 있다.
+  - 찾던 값을 찾으면 break로 멈추는 반복과, 조건에 맞지 않는 값을 continue로 건너뛰는 반복을 작성할 수 있다.
+  - while 안의 continue가 갱신 줄을 건너뛰어 생기는 무한 반복을 알아볼 수 있다.
+practice:
+  targetCount: 14

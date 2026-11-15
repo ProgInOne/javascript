@@ -1,0 +1,48 @@
+id: js-basics.loops.while.predict-countdown
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.loops.while, weight: 1 }
+  - { id: js.ops.compound-assignment, weight: 0.3 }
+tags: [while, trace]
+estimatedSeconds: 80
+prompt: |
+  전자레인지 타이머 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    let seconds = 30;
+    while (seconds > 0) {
+      console.log(seconds + "초 남음");
+      seconds -= 10;
+    }
+    console.log("띵!");
+  answerKind: console
+  misconceptionByAnswer:
+    "30초 남음\n20초 남음\n10초 남음\n0초 남음\n띵!": js.mc.while-checks-mid-body
+hints:
+  - 회차마다 `seconds`가 얼마인지 표로 적어 보세요. 처음은 30이에요.
+  - 본문 마지막 줄에서 `seconds`가 10씩 줄어요. 30 → 20 → 10 → ?
+  - "`seconds`가 0일 때 조건 `0 > 0`은 참일까요, 거짓일까요? 거짓이면 그 회차의 본문은 실행되지 않아요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  30초 남음
+  20초 남음
+  10초 남음
+  띵!
+  ```
+
+  | 검사할 때 `seconds` | 조건 | 출력 |
+  |---|---|---|
+  | 30 | 참 | `30초 남음` |
+  | 20 | 참 | `20초 남음` |
+  | 10 | 참 | `10초 남음` |
+  | 0 | 거짓 | (반복 끝) |
+
+  `seconds`가 0이 되면 `0 > 0`이 거짓이라 `0초 남음`은 출력되지 않아요. 반복이 끝난 뒤 6번 줄의 `띵!`이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

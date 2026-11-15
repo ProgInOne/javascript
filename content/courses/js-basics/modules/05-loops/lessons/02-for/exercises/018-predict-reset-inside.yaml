@@ -1,0 +1,48 @@
+id: js-basics.loops.for.predict-reset-inside
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+tags: [accumulator, reset, trace]
+estimatedSeconds: 90
+prompt: |
+  날마다 1000원씩 저금통에 넣는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    for (let day = 1; day <= 3; day++) {
+      let saved = 0;
+      saved += 1000;
+      console.log(day + "일째 저금통: " + saved + "원");
+    }
+  answerKind: console
+  misconceptionByAnswer:
+    "1일째 저금통: 1000원\n2일째 저금통: 2000원\n3일째 저금통: 3000원": js.mc.accumulator-reset-in-loop
+hints:
+  - 2번 줄 `let saved = 0;`은 반복의 안에 있나요, 바깥에 있나요?
+  - 본문 안의 문장은 회차마다 모두 다시 실행돼요. 2회차가 시작되면 `saved`는 얼마가 되나요?
+  - 회차마다 0에서 시작해 1000을 더하면, 출력되는 금액은 매번 얼마일까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  1일째 저금통: 1000원
+  2일째 저금통: 1000원
+  3일째 저금통: 1000원
+  ```
+
+  2번 줄 `let saved = 0;`이 본문 **안**에 있어서 회차마다 다시 실행돼요. 그래서 `saved`는 매번 0에서 시작해 1000이 될 뿐, 이전 날의 금액이 쌓이지 않아요.
+
+  금액을 쌓으려면 누적 변수를 반복 **앞**으로 옮겨요.
+
+  ```js
+  let saved = 0;
+  for (let day = 1; day <= 3; day++) {
+    saved += 1000;
+    console.log(day + "일째 저금통: " + saved + "원"); // 1000, 2000, 3000
+  }
+  ```
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,69 @@
+id: js-basics.loops.while.find-bug-dice-while
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.loops.do-while, weight: 1 }
+  - { id: js.loops.while, weight: 0.5 }
+tags: [do-while, while, debugging]
+estimatedSeconds: 120
+prompt: |
+  6이 나올 때까지 주사위를 굴리는 프로그램이에요. (실제 주사위 대신, 앞의 눈으로 다음 눈을 정하는 가짜 공식을 써요.) 오류는 없는데 결과가 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    let dice = 6; // 아직 굴리기 전
+    let rolls = 0;
+    while (dice !== 6) {
+      dice = (dice * 3 + 2) % 6 + 1; // 가짜 주사위
+      rolls++;
+      console.log(rolls + "번째: " + dice);
+    }
+    console.log("6이 나왔어요! 굴리기 끝");
+  bugLines: [3]
+  acceptLines: [1]
+  symptom: 주사위를 한 번도 굴리지 않았는데 `6이 나왔어요! 굴리기 끝`만 나와요.
+  symptomCheck:
+    console: ["6이 나왔어요! 굴리기 끝"]
+  fixedCode: |-
+    let dice = 6; // 아직 굴리기 전
+    let rolls = 0;
+    do {
+      dice = (dice * 3 + 2) % 6 + 1; // 가짜 주사위
+      rolls++;
+      console.log(rolls + "번째: " + dice);
+    } while (dice !== 6);
+    console.log("6이 나왔어요! 굴리기 끝");
+  causeOptions:
+    - id: c1
+      text: while은 본문보다 조건을 먼저 검사하는데, dice가 처음부터 6이라 조건이 거짓이 되어 본문이 한 번도 실행되지 않았다
+      correct: true
+    - id: c2
+      text: while 본문은 한 번 실행되는데, 가짜 주사위 공식이 첫 회차에 바로 6을 만들어 반복이 끝났다
+      misconception: js.mc.while-runs-at-least-once
+    - id: c3
+      text: "!==는 두 값이 같을 때 참이 되므로, dice가 6이면 반복이 끝난다"
+misconceptions: [js.mc.while-runs-at-least-once]
+hints:
+  - "콘솔에 `1번째: ...` 같은 줄이 하나도 없어요. 본문이 몇 번 실행됐을까요?"
+  - 처음 조건을 검사할 때 `dice`는 얼마인가요? 그때 `dice !== 6`은 참인가요, 거짓인가요?
+  - 굴리기는 "일단 한 번" 해야 하는 일이에요. 본문을 먼저 실행하고 나중에 검사하는 반복이 있었죠.
+explanation: |
+  원인은 **3번 줄**이에요. `while`은 본문에 들어가기 전에 조건을 검사하는데, 1번 줄에서 `dice`를 6으로 시작해서 `6 !== 6`이 처음부터 거짓이에요. 그래서 본문은 한 번도 실행되지 않고 바로 8번 줄로 넘어갔어요.
+
+  주사위는 결과를 보기 전에 일단 한 번 굴려야 하니 `do...while`이 잘 맞아요.
+
+  ```js
+  do {
+    dice = (dice * 3 + 2) % 6 + 1;
+    rolls++;
+    console.log(rolls + "번째: " + dice);
+  } while (dice !== 6);
+  ```
+
+  이렇게 고치면 `1번째: 3`, `2번째: 6`을 출력한 뒤 끝나요. 1번 줄의 시작값을 6이 아닌 값(예: 0)으로 바꿔도 반복이 시작되므로 1번 줄을 골라도 정답으로 인정해요.
+
+  - c2: `while`은 조건부터 검사해요. 공식이 실행됐다면 `1번째: ...`가 출력됐을 거예요.
+  - c3: `!==`는 두 값이 **다를 때** 참이에요. `6 !== 6`은 거짓이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,40 @@
+id: js-basics.loops.for.mcq-for-parts-order
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.loops.for, weight: 1 }
+tags: [for, order]
+estimatedSeconds: 50
+prompt: |
+  `for (초기화; 조건; 갱신) { 본문 }`이 실행되는 순서로 옳은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: 초기화 → 조건 → 본문 → 갱신 → 조건 → 본문 → 갱신 → … (조건이 거짓이면 끝)
+    - id: b
+      text: 초기화 → 조건 → 갱신 → 본문 → 조건 → 갱신 → 본문 → … (조건이 거짓이면 끝)
+      misconception: js.mc.for-update-before-body
+      rationale: 갱신은 괄호 안에서 조건 옆에 적혀 있지만, 실제로는 본문을 실행한 뒤에 실행돼요.
+    - id: c
+      text: 초기화 → 조건 → 본문 → 갱신 → 초기화 → 조건 → 본문 → … (조건이 거짓이면 끝)
+      misconception: js.mc.for-init-every-time
+      rationale: 초기화가 회차마다 실행되면 반복 변수가 매번 처음 값으로 돌아가 반복이 끝나지 않아요. 초기화는 한 번뿐이에요.
+    - id: d
+      text: 조건 → 초기화 → 본문 → 갱신 → 조건 → 본문 → 갱신 → … (조건이 거짓이면 끝)
+      rationale: 반복 변수를 만들기 전에는 조건을 검사할 수 없어요. 초기화가 가장 먼저예요.
+  correct: a
+misconceptions: [js.mc.for-update-before-body, js.mc.for-init-every-time]
+hints:
+  - 초기화는 몇 번 실행될까요? 반복 변수를 만드는 일이라는 점을 떠올려 보세요.
+  - "`for (let i = 0; i < 3; i++)`의 첫 회차에서 `i`는 0이었어요. 그렇다면 `i++`는 첫 본문보다 먼저일까요, 나중일까요?"
+  - 초기화는 한 번, 그다음은 "조건 → 본문 → 갱신"의 되풀이예요.
+explanation: |
+  정답은 **a**예요. `for`는 초기화를 한 번 실행한 뒤 "조건 → 본문 → 갱신"을 되풀이하다가, 조건이 거짓이 되면 끝나요.
+
+  - b: 갱신이 본문보다 먼저라면 `for (let i = 0; i < 3; i++)`의 첫 회차에서 `i`가 1이어야 하지만, 실제로는 0이에요.
+  - c: 초기화가 회차마다 실행되면 `i`가 계속 0으로 돌아가 무한 반복이 돼요.
+  - d: 반복 변수가 만들어지기 전에는 조건을 계산할 수 없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,73 @@
+id: js-basics.loops.for.impl-sum-1-to-100
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+  - { id: js.loops.for, weight: 0.5 }
+tags: [accumulator, sum, write-code]
+estimatedSeconds: 240
+prompt: |
+  1부터 100까지의 자연수를 모두 더한 값을 구하는 프로그램을 작성하세요.
+
+  - `for` 문과 누적 변수를 써서 반복으로 더하세요. 합계를 머리로 계산해서 직접 쓰지 마세요.
+  - 결과를 담는 변수 이름은 `sum`으로 하세요.
+  - 실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  1부터 100까지의 합: 5050
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 누적 변수 sum을 만들고, for 문으로 1부터 100까지 더하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 누적 변수 sum을 만들고, for 문으로 1부터 100까지 더하세요.
+          let sum = 0;
+          for (let i = 1; i <= 100; i++) {
+            sum += i;
+          }
+          console.log("1부터 100까지의 합: " + sum);
+  checks:
+    - kind: console
+      id: output
+      description: 1부터 100까지의 합이 한 줄로 출력되어야 합니다.
+      requirement: 합계 출력
+      expect:
+        lines: ["1부터 100까지의 합: 5050"]
+      misconceptionIfFail: js.mc.accumulator-reset-in-loop
+    - kind: program
+      id: sum-variable
+      description: 반복이 끝난 뒤 sum 변수에 합계가 들어 있어야 합니다.
+      requirement: 누적 변수 sum
+      expect:
+        globals: { sum: { equals: 5050 } }
+        noError: true
+misconceptions: [js.mc.accumulator-reset-in-loop, js.mc.accumulator-no-init]
+hints:
+  - 누적 패턴의 세 단계를 떠올려 보세요. 반복 앞에서 시작값, 본문에서 더하기, 반복 뒤에서 출력.
+  - "`sum`은 반복 바깥에서 `let sum = 0;`으로 만들어요. 본문 안에서 만들면 회차마다 0이 돼요."
+  - "`for (let i = 1; i <= 100; i++)` 안에서 `sum += i;`를 하고, 출력은 반복이 끝난 뒤에 한 번만 해요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  let sum = 0;
+  for (let i = 1; i <= 100; i++) {
+    sum += i;
+  }
+  console.log("1부터 100까지의 합: " + sum);
+  ```
+
+  - `sum`을 반복 **앞**에서 0으로 만들어요. 본문 안에 두면 회차마다 0으로 돌아가 마지막 값 100만 남고, 반복 뒤에서는 쓸 수도 없어요.
+  - 시작값을 빠뜨리고 `let sum;`이라고 쓰면 `undefined + 1`이 `NaN`이 되어 결과가 `NaN`이에요.
+  - `console.log`를 반복 안에 넣으면 중간 합계가 100줄 출력돼요. 결과는 반복이 끝난 뒤 한 번만 출력해요.
+  - 조건을 `i < 100`으로 쓰면 100이 빠져서 4950이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

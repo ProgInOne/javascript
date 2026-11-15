@@ -1,0 +1,72 @@
+id: js-basics.loops.break-continue.fix-break-outside-if
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.loops.break, weight: 1 }
+  - { id: js.control.block, weight: 0.3 }
+tags: [break, block, debugging]
+estimatedSeconds: 150
+prompt: |
+  공연 표를 파는 프로그램이에요. 좌석은 3개라서 3번째 표를 팔면 매진 안내를 하고 판매를 멈춰야 해요. 그런데 표가 한 장만 팔리고 끝나요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  1번 표 판매
+  2번 표 판매
+  3번 표 판매
+  매진!
+  판매 창구 닫음
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const seats = 3; // 좌석 수
+          for (let ticket = 1; ticket <= 10; ticket++) {
+            console.log(ticket + "번 표 판매");
+            if (ticket === seats) {
+              console.log("매진!");
+            }
+            break;
+          }
+          console.log("판매 창구 닫음");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const seats = 3; // 좌석 수
+          for (let ticket = 1; ticket <= 10; ticket++) {
+            console.log(ticket + "번 표 판매");
+            if (ticket === seats) {
+              console.log("매진!");
+              break;
+            }
+          }
+          console.log("판매 창구 닫음");
+  bugDescription: "`1번 표 판매` 다음에 바로 `판매 창구 닫음`이 나와요."
+  checks:
+    - kind: console
+      id: output
+      description: 표 세 장을 판 뒤 매진 안내가 나오고, 판매를 멈춘 다음 창구를 닫아야 합니다.
+      requirement: 세 장 팔고 멈추기
+      expect:
+        lines: ["1번 표 판매", "2번 표 판매", "3번 표 판매", "매진!", "판매 창구 닫음"]
+hints:
+  - 반복이 첫 회차에서 끝났어요. 첫 회차에 실행된 줄 중 반복을 끝내는 줄은 무엇인가요?
+  - "`break`는 `if` 블록의 안에 있나요, 밖에 있나요? 중괄호를 따라가 보세요."
+  - 반복을 멈춰야 하는 때는 "매진일 때"뿐이에요. `break`가 그 조건에 묶이도록 옮기세요.
+explanation: |
+  7번 줄의 `break`가 `if` 블록 **바깥**에 있어서, 조건과 상관없이 첫 회차에서 바로 반복을 끝냈어요.
+
+  ```js
+  if (ticket === seats) {
+    console.log("매진!");
+    break; // if 블록 안으로
+  }
+  ```
+
+  `break`를 `if` 블록 안으로 옮기면 3번째 표를 팔았을 때만 반복이 끝나요. `break`는 보통 "이럴 때 멈춰"라는 조건과 함께 `if` 안에 둬요. 들여쓰기만 맞추는 것으로는 부족하고, 중괄호 `{ }` 안에 있어야 조건에 묶여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
