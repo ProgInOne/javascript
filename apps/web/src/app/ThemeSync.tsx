@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useSettings } from '../api/queries.ts';
-import { applyTheme } from '../lib/theme.ts';
+import { applyAppearance, applyTheme } from '../lib/theme.ts';
 
-/** Keeps <html data-theme> in sync with the stored setting. */
+/** Keeps <html> in sync with the stored appearance settings (theme, workbench, lesson size). */
 export function ThemeSync() {
   const { data } = useSettings();
   useEffect(() => {
-    if (data) applyTheme(data.theme);
+    if (!data) return;
+    applyTheme(data.theme);
+    applyAppearance(data);
   }, [data]);
   return null;
 }

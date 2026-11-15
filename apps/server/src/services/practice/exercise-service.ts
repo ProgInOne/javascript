@@ -2,6 +2,7 @@ import { buildRunPlan, exerciseOriginOf, redactSpec } from '@proginone/exercise-
 import {
   HINT_LEVELS,
   type ExerciseView,
+  type HintPolicy,
   type HintResponse,
   type PracticeContext,
   type ReportRequest,
@@ -11,6 +12,7 @@ import {
   type SolutionResponse,
 } from '@proginone/shared';
 import type { ContentExercise } from '../../db/content/repository.ts';
+import { countExerciseScopeAttempts } from '../../db/user/attempts.ts';
 import type { UserDb } from '../../db/user/connection.ts';
 import {
   findItem,
@@ -32,7 +34,12 @@ export interface ExerciseServiceDeps {
   userDb: UserDb;
   content: ContentAccess;
   now: Clock;
+  /** `hints.policy` from settings (D-047). Default `standard`. */
+  hintPolicy?: () => HintPolicy;
 }
+
+/** Items that open hint 1 by themselves (easier relearning item), so never wait for a try. */
+const HINT_FIRST_REASONS = new Set(['remedial_easier']);
 
 /**
  * Reading an exercise and the actions around solving it that are not attempts: run plans,
@@ -43,11 +50,30 @@ export class ExerciseService {
   readonly #userDb: UserDb;
   readonly #content: ContentAccess;
   readonly #now: Clock;
+  readonly #hintPolicy: () => HintPolicy;
 
   constructor(deps: ExerciseServiceDeps) {
     this.#userDb = deps.userDb;
     this.#content = deps.content;
     this.#now = deps.now;
+    this.#hintPolicy = deps.hintPolicy ?? (() => 'standard');
+  }
+
+  /** `after-attempt`: the first hint waits for one submission in this context (D-047). */
+  #assertTriedFirst(scope: HintScope): void {
+    if (this.#hintPolicy() !== 'after-attempt') return;
+    const orm = this.#userDb.orm;
+    if (scope.itemId !== null) {
+      const reason = findItem(orm, scope.learnerId, scope.itemId)?.item.reason;
+      if (reason !== undefined && HINT_FIRST_REASONS.has(reason)) return;
+    }
+    if (countExerciseScopeAttempts(orm, scope) > 0) return;
+    throw new AppError(
+      'EXERCISE_TRY_FIRST',
+      409,
+      '먼저 한 번 답을 제출해 본 뒤에 힌트를 볼 수 있어요. (설정 > 학습 방식에서 바꿀 수 있어요)',
+      { details: { exerciseId: scope.exerciseId } },
+    );
   }
 
   #exercise(id: string): ContentExercise {
@@ -161,6 +187,7 @@ export class ExerciseService {
     const orm = this.#userDb.orm;
     return orm.transaction(() => {
       const { level } = hintState(listHintEvents(orm, scope));
+      if (level === 0) this.#assertTriedFirst(scope);
       if (level >= levels.length) {
         throw new AppError('EXERCISE_HINTS_EXHAUSTED', 409, '더 열 수 있는 힌트가 없습니다.', {
           details: { hintCount: levels.length },

@@ -168,6 +168,31 @@ describe('hints and solution', () => {
     expect(view.openedHints.map((h) => h.level)).toEqual([1, 2, 3]);
   });
 
+  it("waits for one submission under hints.policy 'after-attempt' (D-047)", async () => {
+    const ctx = await practiceApp();
+    const patched = await ctx.call('PATCH', '/settings', { 'hints.policy': 'after-attempt' });
+    expect(patched.status).toBe(200);
+    const early = await ctx.call('POST', `/exercises/${EX.mcq}/hints`);
+    expect(early.status).toBe(409);
+    expect(errorCode(early.json)).toBe('EXERCISE_TRY_FIRST');
+    expect(count(ctx, 'hint_events')).toBe(0);
+
+    const attempt = await ctx.call('POST', `/exercises/${EX.mcq}/inline-attempts`, {
+      answer: { optionId: 'a' },
+      startedAt: ctx.clock.now - 20_000,
+      activeMs: 15_000,
+      confidence: null,
+    });
+    expect(attempt.status).toBe(201);
+    const after = await ctx.call('POST', `/exercises/${EX.mcq}/hints`);
+    expect(after.status).toBe(200);
+    expect(hintResponseSchema.parse(after.json).level).toBe(1);
+
+    // Back to standard: no submission needed.
+    await ctx.call('PATCH', '/settings', { 'hints.policy': 'standard' });
+    expect((await ctx.call('POST', `/exercises/${EX.implement}/hints`)).status).toBe(200);
+  });
+
   it('locks the solution until all hints are open, then records one view', async () => {
     const ctx = await practiceApp();
     const locked = await ctx.call('POST', `/exercises/${EX.implement}/solution`);

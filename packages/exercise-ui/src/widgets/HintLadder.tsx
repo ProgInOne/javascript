@@ -26,6 +26,8 @@ export interface HintLadderProps {
   answer?: ReactNode;
   /** Assessment context: everything is locked until the set ends (D-023). */
   locked?: boolean;
+  /** Why the ladder is locked. Default: the assessment reason "평가가 끝나면 열려요". */
+  lockedReason?: string;
   /** A hint or answer request is in flight. */
   pending?: boolean;
   /** Heading level of the "힌트" title. Default 3. */
@@ -53,6 +55,7 @@ export function HintLadder({
   answerRevealed = false,
   answer,
   locked = false,
+  lockedReason = LOCKED_REASON,
   pending = false,
   headingLevel = 3,
   renderText = defaultRenderText,
@@ -100,7 +103,7 @@ export function HintLadder({
       {locked && (
         <p id={lockedId} className="pi-ex-hints__note">
           <Lock size={14} aria-hidden="true" />
-          {LOCKED_REASON}
+          {lockedReason}
         </p>
       )}
 

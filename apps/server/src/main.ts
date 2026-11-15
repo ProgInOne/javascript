@@ -159,6 +159,7 @@ const tutor = new TutorService({ userDb, content, runner, ai, now: systemClock, 
 tutorRef = tutor;
 // Rolling summaries of idle tutor threads (docs/design/ai-system.md#sessionsummarize).
 memory.start();
+const settings = new SettingsService({ userDb, log });
 const token = randomBytes(32).toString('base64url');
 const webDistDir = fileURLToPath(new URL('../../web/dist', import.meta.url));
 const app = createApp({
@@ -174,9 +175,15 @@ const app = createApp({
     log,
   }),
   dataReset: new DataResetService({ userDb, backups, log }),
-  settings: new SettingsService({ userDb, log }),
+  settings,
   content,
-  practice: createPracticeServices({ userDb, content, engine, now: learningClock }),
+  practice: createPracticeServices({
+    userDb,
+    content,
+    engine,
+    now: learningClock,
+    hintPolicy: () => settings.get()['hints.policy'],
+  }),
   ai: { ai, tutor, memory, evaluator },
   maintenance,
   version: APP_VERSION,

@@ -93,6 +93,28 @@ export function countExerciseAttempts(orm: Orm, learnerId: string, exerciseId: s
   );
 }
 
+/** Attempts on an exercise in one context: a practice set item, or outside any set (null). */
+export function countExerciseScopeAttempts(
+  orm: Orm,
+  scope: { learnerId: string; exerciseId: string; itemId: string | null },
+): number {
+  return (
+    orm
+      .select({ n: count() })
+      .from(attempts)
+      .where(
+        and(
+          eq(attempts.learnerId, scope.learnerId),
+          eq(attempts.exerciseId, scope.exerciseId),
+          scope.itemId === null
+            ? isNull(attempts.practiceSetItemId)
+            : eq(attempts.practiceSetItemId, scope.itemId),
+        ),
+      )
+      .get()?.n ?? 0
+  );
+}
+
 /** Engine-applied attempts in a practice set item (`attempt_in_item` counts these). */
 export function countAppliedItemAttempts(orm: Orm, itemId: string): number {
   return (

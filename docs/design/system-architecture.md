@@ -298,6 +298,7 @@ sequenceDiagram
 - `code`는 대문자 스네이크 케이스의 안정적 식별자입니다. 웹은 `code`로 분기하고 `message`는 표시용입니다.
 - 오류 코드는 영역 접두사를 씁니다: `VALIDATION_*`, `NOT_FOUND`, `CONTENT_*`, `EXERCISE_*`(문제·힌트·정답 열람), `PRACTICE_*`(연습 세트·시도), `RUNNER_*`, `AI_*`, `BACKUP_*`(백업·백업 위치), `RESTORE_FAILED`, `RESET_FAILED`, `MAINTENANCE`, `INTERNAL`.
 - 단원 평가(v0.3): 평가 중인 문항의 힌트·정답·본문 확인 시도는 `403 EXERCISE_LOCKED_IN_ASSESSMENT`, 튜터·AI 힌트·오답 분석은 `403 AI_LOCKED_IN_ASSESSMENT`, 같은 문항의 두 번째 제출은 `409 PRACTICE_ITEM_DONE`, 단원 종류와 맞지 않는 세트 요청은 `409 PRACTICE_KIND_MISMATCH`입니다([학습 엔진 설계 구현 메모 (v0.3)](/docs/design/learning-engine.md#구현-메모-v03)).
+- 힌트 정책 "먼저 풀어 보기"(`settings.hints.policy = 'after-attempt'`)에서 그 문항에 제출하기 전 첫 힌트 요청은 `409 EXERCISE_TRY_FIRST`입니다(D-047).
 - 서버는 예상하지 못한 예외를 `INTERNAL`로 감싸고, 스택은 로그에만 남깁니다.
 - 백업 복원이나 데이터 재계산 중에는 서버가 유지보수 모드가 되어 `/api` 요청에 `503`과 `MAINTENANCE`를 반환합니다. 웹은 전체 화면 안내를 표시합니다.
 - AI 관련 오류 코드(`AI_*`)의 전체 목록은 [AI 시스템 설계](/docs/design/ai-system.md)가 원천입니다.

@@ -65,6 +65,14 @@ describe('RunnableExampleBlock', () => {
     expect(screen.getByRole('button', { name: '실행' })).toBeEnabled();
   });
 
+  it('has no skip link when predict-first is required (설정 > 학습 방식)', async () => {
+    render(<RunnableExampleBlock id="req" lang="js" code="1" predict allowSkip={false} />);
+    expect(screen.queryByRole('button', { name: '예측 건너뛰기' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '실행' })).toBeDisabled();
+    await userEvent.type(screen.getByRole('textbox', { name: '예상한 출력' }), '1');
+    expect(screen.getByRole('button', { name: '실행' })).toBeEnabled();
+  });
+
   it('shows errors with their line and timeouts in plain words', async () => {
     run.mockResolvedValue(
       result({

@@ -24,6 +24,7 @@ import { Route as SettingsAiRouteImport } from './routes/settings/ai'
 import { Route as SettingsAppearanceRouteImport } from './routes/settings/appearance'
 import { Route as SettingsDataRouteImport } from './routes/settings/data'
 import { Route as SettingsGoalsRouteImport } from './routes/settings/goals'
+import { Route as SettingsLearningRouteImport } from './routes/settings/learning'
 import { Route as ReviewMistakesIndexRouteImport } from './routes/review/mistakes/index'
 import { Route as ReviewMistakesExerciseIdRouteImport } from './routes/review/mistakes/$exerciseId'
 import { Route as ReviewSessionSetIdRouteImport } from './routes/review/session/$setId'
@@ -103,6 +104,11 @@ const SettingsGoalsRoute = SettingsGoalsRouteImport.update({
   path: '/goals',
   getParentRoute: () => SettingsRouteRoute,
 } as any)
+const SettingsLearningRoute = SettingsLearningRouteImport.update({
+  id: '/learning',
+  path: '/learning',
+  getParentRoute: () => SettingsRouteRoute,
+} as any)
 const ReviewMistakesIndexRoute = ReviewMistakesIndexRouteImport.update({
   id: '/review/mistakes/',
   path: '/review/mistakes/',
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/data': typeof SettingsDataRoute
   '/settings/goals': typeof SettingsGoalsRoute
+  '/settings/learning': typeof SettingsLearningRoute
   '/courses/': typeof CoursesIndexRoute
   '/review/': typeof ReviewIndexRoute
   '/settings/': typeof SettingsIndexRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/data': typeof SettingsDataRoute
   '/settings/goals': typeof SettingsGoalsRoute
+  '/settings/learning': typeof SettingsLearningRoute
   '/courses': typeof CoursesIndexRoute
   '/review': typeof ReviewIndexRoute
   '/settings': typeof SettingsIndexRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/data': typeof SettingsDataRoute
   '/settings/goals': typeof SettingsGoalsRoute
+  '/settings/learning': typeof SettingsLearningRoute
   '/courses/': typeof CoursesIndexRoute
   '/review/': typeof ReviewIndexRoute
   '/settings/': typeof SettingsIndexRoute
@@ -195,6 +204,7 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/data'
     | '/settings/goals'
+    | '/settings/learning'
     | '/courses/'
     | '/review/'
     | '/settings/'
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/data'
     | '/settings/goals'
+    | '/settings/learning'
     | '/courses'
     | '/review'
     | '/settings'
@@ -234,6 +245,7 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/data'
     | '/settings/goals'
+    | '/settings/learning'
     | '/courses/'
     | '/review/'
     | '/settings/'
@@ -365,6 +377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsGoalsRouteImport
       parentRoute: typeof SettingsRouteRoute
     }
+    '/settings/learning': {
+      id: '/settings/learning'
+      path: '/learning'
+      fullPath: '/settings/learning'
+      preLoaderRoute: typeof SettingsLearningRouteImport
+      parentRoute: typeof SettingsRouteRoute
+    }
     '/review/mistakes/': {
       id: '/review/mistakes/'
       path: '/review/mistakes'
@@ -394,6 +413,7 @@ interface SettingsRouteRouteChildren {
   SettingsAppearanceRoute: typeof SettingsAppearanceRoute
   SettingsDataRoute: typeof SettingsDataRoute
   SettingsGoalsRoute: typeof SettingsGoalsRoute
+  SettingsLearningRoute: typeof SettingsLearningRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
 }
 
@@ -402,6 +422,7 @@ const SettingsRouteRouteChildren: SettingsRouteRouteChildren = {
   SettingsAppearanceRoute: SettingsAppearanceRoute,
   SettingsDataRoute: SettingsDataRoute,
   SettingsGoalsRoute: SettingsGoalsRoute,
+  SettingsLearningRoute: SettingsLearningRoute,
   SettingsIndexRoute: SettingsIndexRoute,
 }
 

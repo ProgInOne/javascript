@@ -12,13 +12,17 @@ import {
   type RenderableExercise,
   type RenderableTypeId,
 } from '@proginone/exercise-ui';
-import type { ExerciseView, InlineAttemptResponse } from '@proginone/shared';
+import {
+  SETTINGS_DEFAULTS,
+  type ExerciseView,
+  type InlineAttemptResponse,
+} from '@proginone/shared';
 import { Button, Skeleton } from '@proginone/ui';
 import { useQuery } from '@tanstack/react-query';
 import { ListChecks, RotateCcw } from 'lucide-react';
 import { useId, useState } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
-import { exerciseQuery, submitInlineAttempt } from '../../api/queries.ts';
+import { exerciseQuery, submitInlineAttempt, useSettings } from '../../api/queries.ts';
 import { useActiveTime } from '../practice/hooks.ts';
 import { Markdown } from '../practice/Markdown.tsx';
 import { ExerciseCode, feedbackResultOf, MasteryChangeList } from '../practice/parts.tsx';
@@ -64,6 +68,7 @@ function InlineCheck({ view, exercise }: { view: ExerciseView; exercise: Rendera
   const [error, setError] = useState<string | null>(null);
   const timing = useActiveTime();
   const ready = isAnswerReady(exercise, answer);
+  const ask = (useSettings().data ?? SETTINGS_DEFAULTS)['practice.askConfidence'];
 
   const submit = async (choice: Confidence | null) => {
     if (!ready || submitting) return;
@@ -94,7 +99,7 @@ function InlineCheck({ view, exercise }: { view: ExerciseView; exercise: Rendera
       onKeyDown={(e) => {
         if (result === null && matchExerciseShortcut(e) === 'onSubmit') {
           e.preventDefault();
-          void submit('sure');
+          void submit(ask ? 'sure' : null);
         }
       }}
     >
@@ -114,6 +119,7 @@ function InlineCheck({ view, exercise }: { view: ExerciseView; exercise: Rendera
       {!result && (
         <ConfidencePicker
           onSubmit={(c) => void submit(c)}
+          askConfidence={ask}
           disabledReason={ready ? null : notReadyReason(exercise)}
           submitting={submitting}
         />

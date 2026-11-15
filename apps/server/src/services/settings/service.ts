@@ -1,6 +1,7 @@
 import {
   SETTINGS_DEFAULTS,
   settingsSchema,
+  type SettingKey,
   type Settings,
   type SettingsPatch,
 } from '@proginone/shared';
@@ -34,7 +35,7 @@ export class SettingsService {
       if (!KEYS.includes(row.key as keyof Settings)) continue; // key from a newer app version
       const key = row.key as keyof Settings;
       const parsed = settingsSchema.shape[key].safeParse(row.valueJson);
-      if (parsed.success) out[key] = parsed.data;
+      if (parsed.success) (out as Record<SettingKey, unknown>)[key] = parsed.data;
       else this.#log.warn({ key, issues: parsed.error.issues }, 'ignoring invalid stored setting');
     }
     return out;

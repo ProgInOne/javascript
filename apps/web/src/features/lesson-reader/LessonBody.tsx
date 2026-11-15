@@ -1,4 +1,4 @@
-import type { LessonConcept } from '@proginone/shared';
+import type { LessonConcept, Settings } from '@proginone/shared';
 import { Badge } from '@proginone/ui';
 import { Link } from '@tanstack/react-router';
 import {
@@ -27,6 +27,8 @@ interface LessonContextValue {
   lessonId: string;
   kind: 'lesson' | 'assessment' | 'project';
   concepts: ReadonlyMap<string, LessonConcept>;
+  /** `lesson.predictFirst` (설정 > 학습 방식): `required` hides "예측 건너뛰기". */
+  predictFirst: Settings['lesson.predictFirst'];
 }
 const LessonContext = createContext<LessonContextValue | null>(null);
 const useLesson = () => {
@@ -193,14 +195,7 @@ function Component({ node }: { node: Node }) {
         </kbd>
       );
     case 'RunnableExample':
-      return (
-        <RunnableExampleBlock
-          id={str(p['id']) ?? ''}
-          lang={str(p['lang']) ?? 'js'}
-          code={str(p['code']) ?? ''}
-          predict={p['predict'] === true}
-        />
-      );
+      return <RunnableExample p={p} />;
     case 'InlineExercise':
       return <InlineExerciseSlot exerciseId={str(p['ref']) ?? ''} />;
     case 'Diagram':
@@ -286,6 +281,19 @@ function PracticeSection() {
         {kind === 'assessment' ? '단원 평가 보기' : '연습 시작'}
       </Link>
     </div>
+  );
+}
+
+function RunnableExample({ p }: { p: Record<string, unknown> }) {
+  const { predictFirst } = useLesson();
+  return (
+    <RunnableExampleBlock
+      id={str(p['id']) ?? ''}
+      lang={str(p['lang']) ?? 'js'}
+      code={str(p['code']) ?? ''}
+      predict={p['predict'] === true}
+      allowSkip={predictFirst !== 'required'}
+    />
   );
 }
 
@@ -424,13 +432,20 @@ export function LessonBody({
   kind = 'lesson',
   body,
   concepts,
+  predictFirst = 'recommended',
 }: {
   lessonId: string;
   kind?: LessonContextValue['kind'];
   body: readonly unknown[];
   concepts: readonly LessonConcept[];
+  predictFirst?: LessonContextValue['predictFirst'];
 }) {
-  const value = { lessonId, kind, concepts: new Map(concepts.map((c) => [c.id, c])) };
+  const value = {
+    lessonId,
+    kind,
+    concepts: new Map(concepts.map((c) => [c.id, c])),
+    predictFirst,
+  };
   return (
     <LessonContext.Provider value={value}>
       <div className="lesson-prose">

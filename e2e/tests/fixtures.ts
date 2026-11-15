@@ -4,6 +4,7 @@ import { expect, type Page } from '@playwright/test';
 export const SCREENS = [
   { path: '/', heading: '대시보드' },
   { path: '/settings/ai', heading: 'AI' },
+  { path: '/settings/learning', heading: '학습 방식' },
   { path: '/settings/appearance', heading: '화면' },
   { path: '/settings/data', heading: '데이터' },
   { path: '/courses', heading: '과정' },

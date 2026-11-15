@@ -19,3 +19,25 @@ export function applyTheme(
     // Storage unavailable (private mode); the attribute is still applied.
   }
 }
+
+/** `lesson.fontSize` → `--lesson-font-size` (16 / 17 / 19px, ui-ux.md 타이포그래피). */
+export const LESSON_FONT_SIZE_VALUES: Record<Settings['lesson.fontSize'], string> = {
+  small: '1rem',
+  medium: '1.0625rem',
+  large: '1.1875rem',
+};
+
+/**
+ * Applies the other appearance settings to <html>: `data-workbench="dark"` for the dark
+ * workbench (D-024) and the lesson body size. Defaults remove the overrides so the tokens apply.
+ */
+export function applyAppearance(
+  settings: Pick<Settings, 'appearance.workbench' | 'lesson.fontSize'>,
+  root: HTMLElement = document.documentElement,
+): void {
+  if (settings['appearance.workbench'] === 'dark') root.dataset['workbench'] = 'dark';
+  else delete root.dataset['workbench'];
+  const size = settings['lesson.fontSize'];
+  if (size === 'medium') root.style.removeProperty('--lesson-font-size');
+  else root.style.setProperty('--lesson-font-size', LESSON_FONT_SIZE_VALUES[size]);
+}

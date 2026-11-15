@@ -67,11 +67,14 @@ function reviewSet(extra: PracticeSetView['items'] = []): PracticeSetView {
 }
 
 /** A fake API: the first answer is wrong with a relearning suggestion appended to the set. */
-function relearningApi(suggestion: Remediation = remediation()) {
+function relearningApi(
+  suggestion: Remediation = remediation(),
+  settings: Record<string, unknown> = {},
+) {
   let set = reviewSet();
   let hints = 0;
   const handler = (method: string, path: string) => {
-    if (path === '/settings') return { body: { theme: 'system' } };
+    if (path === '/settings') return { body: { theme: 'system', ...settings } };
     if (path === `/practice-sets/${SET_ID}`) return { body: set };
     if (path.startsWith(`/exercises/${encodeURIComponent(MCQ)}?`)) return { body: mcqView };
     if (path.endsWith('/hints')) {
@@ -226,6 +229,28 @@ describe('재학습 유도', () => {
     expect(within(card).getByText('AI 튜터')).toBeInTheDocument();
     // The tutor is never opened by itself (D-010).
     expect(screen.queryByRole('complementary', { name: 'AI 튜터' })).not.toBeInTheDocument();
+  });
+
+  it('hides the tutor suggestion when 튜터 선제 제안 is off', async () => {
+    const user = userEvent.setup();
+    renderApp(
+      `/review/session/${SET_ID}?i=1`,
+      relearningApi(
+        remediation({
+          kind: 'reread_lesson',
+          trigger: 'recent_consecutive_failures',
+          prerequisite: null,
+          check: null,
+          tutorBadge: true,
+          itemIds: [],
+        }),
+        { 'tutor.proactiveSuggestions': false },
+      ),
+    );
+    await answerWrong(user);
+    const card = await screen.findByRole('region', { name: '잠깐 쉬어가요' });
+    expect(within(card).getByRole('link', { name: '레슨 다시 읽기' })).toBeVisible();
+    expect(within(card).queryByText('AI 튜터')).not.toBeInTheDocument();
   });
 
   it('opens hint 1 by itself on an easier relearning item', async () => {

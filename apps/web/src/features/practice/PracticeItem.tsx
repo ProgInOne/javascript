@@ -14,6 +14,7 @@ import {
   type RenderableTypeId,
 } from '@proginone/exercise-ui';
 import {
+  SETTINGS_DEFAULTS,
   isWithheldAttempt,
   type AssessmentAttemptResponse,
   type AttemptResponse,
@@ -36,6 +37,7 @@ import {
   fetchRunPlan,
   openHint,
   submitAttempt,
+  useSettings,
   viewSolution,
 } from '../../api/queries.ts';
 import { examplePlan, statusMessage } from '../runner/runner.ts';
@@ -180,6 +182,8 @@ function ItemWorkspace({
   const [attemptsHere, setAttemptsHere] = useState(item.attempts);
   const runner = useExerciseRunner();
   const timing = useActiveTime();
+  // 설정 > 학습 방식 (D-047). Defaults until the settings arrive.
+  const settings = useSettings().data ?? SETTINGS_DEFAULTS;
 
   // What the tutor sees about this item: read when a question or AI hint is sent.
   const work = useRef({ answer, run, result });
@@ -224,7 +228,14 @@ function ItemWorkspace({
   const alreadySubmitted = assessment && submitted === null && item.status !== 'pending';
   const ready = isAnswerReady(exercise, answer);
   // Test-graded exercises ask for confidence on the first submission only.
-  const ask = askConfidence && !(isCode && attemptsHere > 0);
+  const ask = askConfidence && settings['practice.askConfidence'] && !(isCode && attemptsHere > 0);
+  // `hints.policy: 'after-attempt'`: the first hint waits for one submission here (the server
+  // enforces it too). The easier relearning item opens hint 1 by itself, so it is exempt.
+  const hintsWaitForTry =
+    settings['hints.policy'] === 'after-attempt' &&
+    attemptsHere === 0 &&
+    hints.length === 0 &&
+    item.reason !== 'remedial_easier';
 
   const changeAnswer = (next: Answer) => {
     setAnswer(next);
@@ -299,7 +310,7 @@ function ItemWorkspace({
   };
 
   const revealHint = async () => {
-    if (assessment || hintPending || hints.length >= view.hintCount) return;
+    if (assessment || hintsWaitForTry || hintPending || hints.length >= view.hintCount) return;
     setHintPending(true);
     try {
       const res = await openHint(view.id, item.id);
@@ -390,6 +401,7 @@ function ItemWorkspace({
       {remediation && (
         <RemediationCard
           remediation={remediation}
+          showTutorBadge={settings['tutor.proactiveSuggestions']}
           onGo={() => onFollowRemediation?.()}
           onDismiss={() => onDismissRemediation?.()}
         />
@@ -430,6 +442,7 @@ function ItemWorkspace({
       onChange={changeAnswer}
       disabled={graded || submitting}
       labelledBy={promptId}
+      autocomplete={settings['editor.autocomplete']}
       {...(result ? { feedback: feedbackResultOf(result).feedback } : {})}
       checkResults={(result ? feedbackResultOf(result).checkResults : undefined) ?? null}
       {...(view.requiresRun && isCode
@@ -530,7 +543,8 @@ function ItemWorkspace({
       )}
       {view.hintCount > 0 && !alreadySubmitted && (
         <HintLadder
-          locked={assessment}
+          locked={assessment || hintsWaitForTry}
+          {...(hintsWaitForTry ? { lockedReason: '한 번 답을 제출해 본 뒤에 열려요' } : {})}
           hints={Array.from({ length: view.hintCount }, (_, i) => hints[i]?.text ?? '')}
           revealed={hints.length}
           onReveal={() => void revealHint()}

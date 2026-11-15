@@ -44,6 +44,8 @@ export const ERROR_CODES = [
   'EXERCISE_HINTS_EXHAUSTED',
   'EXERCISE_SOLUTION_LOCKED',
   'EXERCISE_HINT_REQUIRED',
+  /** `hints.policy: 'after-attempt'`: hints open after one submission on the item (D-046). */
+  'EXERCISE_TRY_FIRST',
   /**
    * Hints, the solution or an inline attempt on an exercise of an assessment in progress
    * (learning-engine.md#단원-평가-세트: locked until the assessment ends).

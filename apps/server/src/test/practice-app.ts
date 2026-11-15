@@ -28,11 +28,13 @@ export async function practiceApp() {
   const content = ContentAccess.open(writeContentDb());
   const clock = { now: T0 };
   const now = () => clock.now;
+  const settings = new SettingsService({ userDb: ctx.userDb, log: silentLog });
   const practice = createPracticeServices({
     userDb: ctx.userDb,
     content,
     engine: await (engine ??= createEngine()),
     now,
+    hintPolicy: () => settings.get()['hints.policy'],
   });
   const provider = new MockProvider({ deltaDelayMs: 0 });
   const aiService = new AiService({ provider, log: silentLog, userDb: ctx.userDb });
@@ -68,7 +70,7 @@ export async function practiceApp() {
     log: silentLog,
     token: 't',
     backups: ctx.backups,
-    settings: new SettingsService({ userDb: ctx.userDb, log: silentLog }),
+    settings,
     content,
     practice,
     ai: { ai: aiService, tutor, memory, evaluator, keepAliveMs: 50 },

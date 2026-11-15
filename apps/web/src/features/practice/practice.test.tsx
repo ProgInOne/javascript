@@ -1,4 +1,9 @@
-import type { PracticeSetView, RunPlan } from '@proginone/shared';
+import {
+  SETTINGS_DEFAULTS,
+  type PracticeSetView,
+  type RunPlan,
+  type Settings,
+} from '@proginone/shared';
 import type * as RunnerModule from '../runner/runner.ts';
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -54,7 +59,7 @@ const plan = (purpose: string) => ({
 });
 
 /** A fake practice API with a mutable set. */
-function practiceApi(initial: PracticeSetView = practiceSet()) {
+function practiceApi(initial: PracticeSetView = practiceSet(), settings: Partial<Settings> = {}) {
   let set = initial;
   let hints = 0;
   const outcomes: Record<string, ('correct' | 'incorrect')[]> = {
@@ -62,7 +67,7 @@ function practiceApi(initial: PracticeSetView = practiceSet()) {
     [FIX]: ['correct'],
   };
   const handler = (method: string, path: string, body: unknown) => {
-    if (path === '/settings') return { body: { theme: 'system' } };
+    if (path === '/settings') return { body: { ...SETTINGS_DEFAULTS, ...settings } };
     if (path === `/lessons/${encodeURIComponent(LESSON_ID)}`) return { body: lesson };
     if (method === 'POST' && path === '/practice-sets') return { body: set };
     if (path === `/practice-sets/${SET_ID}`) return { body: set };
@@ -170,6 +175,41 @@ describe('practice mode', () => {
       { practiceSetItemId: practiceSet().items[0]?.id },
     ]);
     expect(screen.getByRole('button', { name: '정답 보기' })).toBeDisabled();
+  });
+
+  it('submits with one button and no confidence when 확신도 is off (설정 > 학습 방식)', async () => {
+    const user = userEvent.setup();
+    const { calls } = renderApp(
+      `/learn/${LESSON_ID}?mode=practice&set=${SET_ID}&i=1`,
+      practiceApi(practiceSet(), { 'practice.askConfidence': false }),
+    );
+    await user.click(await screen.findByRole('radio', { name: /값을 저장한다/ }));
+    expect(screen.queryByRole('button', { name: /확실해요/ })).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /^제출/ }));
+    expect(await screen.findByRole('heading', { name: '정답이 아니에요.' })).toBeVisible();
+    expect(calls.find((c) => c.path === '/attempts')?.body).toMatchObject({ confidence: null });
+  });
+
+  it("locks hints until the first submission under 'after-attempt' (D-047)", async () => {
+    const user = userEvent.setup();
+    const { calls } = renderApp(
+      `/learn/${LESSON_ID}?mode=practice&set=${SET_ID}&i=1`,
+      practiceApi(practiceSet(), { 'hints.policy': 'after-attempt' }),
+    );
+    const hint = await screen.findByRole('button', { name: /힌트 1\/3 보기/ });
+    expect(hint).toHaveAttribute('aria-disabled', 'true');
+    expect(hint).toHaveAccessibleDescription('한 번 답을 제출해 본 뒤에 열려요');
+    await user.click(hint);
+    await user.keyboard('{Control>}.{/Control}');
+    expect(calls.some((c) => c.path.endsWith('/hints'))).toBe(false);
+
+    await user.click(screen.getByRole('radio', { name: /값을 저장한다/ }));
+    await user.click(screen.getByRole('button', { name: '확실해요' }));
+    expect(await screen.findByRole('heading', { name: '정답이 아니에요.' })).toBeVisible();
+    const open = screen.getByRole('button', { name: /힌트 1\/3 보기/ });
+    expect(open).not.toHaveAttribute('aria-disabled');
+    await user.click(open);
+    expect(await screen.findByText('첫 번째 힌트')).toBeVisible();
   });
 
   it('runs code in the sandbox for grading and ends with the completion summary', async () => {

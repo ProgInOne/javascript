@@ -29,7 +29,7 @@ import {
   courseListSchema,
   lessonDetailSchema,
   backupSummarySchema,
-  settingsSchema,
+  settingsResponseSchema,
   type SettingsPatch,
   dailyPlanSchema,
   goalStatusSchema,
@@ -50,7 +50,7 @@ import { api } from './client.ts';
 
 export const settingsQuery = queryOptions({
   queryKey: ['settings'],
-  queryFn: ({ signal }) => api('/settings', { schema: settingsSchema, signal }),
+  queryFn: ({ signal }) => api('/settings', { schema: settingsResponseSchema, signal }),
   staleTime: Infinity,
 });
 
@@ -62,7 +62,7 @@ export function useUpdateSettings() {
   const client = useQueryClient();
   return useMutation({
     mutationFn: (patch: SettingsPatch) =>
-      api('/settings', { method: 'PATCH', body: patch, schema: settingsSchema }),
+      api('/settings', { method: 'PATCH', body: patch, schema: settingsResponseSchema }),
     onSuccess: (settings) => {
       client.setQueryData(settingsQuery.queryKey, settings);
     },

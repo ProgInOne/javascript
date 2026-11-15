@@ -1,3 +1,4 @@
+import { SETTINGS_DEFAULTS } from '@proginone/shared';
 import { ContentAccess } from '../services/curriculum/content-access.ts';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -94,8 +95,13 @@ describe('settings routes', () => {
         },
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),
       });
-    expect(await (await call('GET')).json()).toEqual({ theme: 'system' });
-    expect(await (await call('PATCH', { theme: 'dark' })).json()).toEqual({ theme: 'dark' });
+    expect(await (await call('GET')).json()).toEqual(SETTINGS_DEFAULTS);
+    expect(await (await call('PATCH', { theme: 'dark' })).json()).toEqual({
+      ...SETTINGS_DEFAULTS,
+      theme: 'dark',
+    });
+    expect((await call('PATCH', { 'hints.policy': 'never' })).status).toBe(400);
+    expect((await call('PATCH', { 'editor.autocomplete': 'yes' })).status).toBe(400);
     expect((await call('PATCH', { theme: 'neon' })).status).toBe(400);
     expect((await call('PATCH', { nope: 1 })).status).toBe(400);
   });

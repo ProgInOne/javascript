@@ -65,8 +65,11 @@ export function RemediationCard({
   remediation,
   onGo,
   onDismiss,
+  showTutorBadge = true,
 }: {
   remediation: Remediation;
+  /** `tutor.proactiveSuggestions` (설정 > 학습 방식): off hides the tutor suggestion. */
+  showTutorBadge?: boolean;
   /** Moves to the first suggested item. */
   onGo: () => void;
   onDismiss: () => void;
@@ -132,7 +135,7 @@ export function RemediationCard({
         )}
         <Button onClick={onDismiss}>계속 풀기</Button>
       </div>
-      {r.tutorBadge && (
+      {r.tutorBadge && showTutorBadge && (
         <p className="remediation__tutor">
           <Badge variant="ai" icon={<MessageCircle size={14} />}>
             AI 튜터

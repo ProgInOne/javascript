@@ -21,11 +21,14 @@ export function RunnableExampleBlock({
   lang,
   code,
   predict,
+  allowSkip = true,
 }: {
   id: string;
   lang: string;
   code: string;
   predict: boolean;
+  /** "예측 건너뛰기" link; hidden when the learner set predict-first to required (ui-ux.md). */
+  allowSkip?: boolean;
 }) {
   const kind = lang === 'js' ? 'js' : lang === 'html' || lang === 'web' ? 'html' : null;
   const titleId = `example-${id}`;
@@ -107,7 +110,7 @@ export function RunnableExampleBlock({
             </div>
           )}
           <div className="flex items-center justify-end gap-2">
-            {predict && !result && !skipped && prediction.trim() === '' && (
+            {predict && allowSkip && !result && !skipped && prediction.trim() === '' && (
               <Button
                 variant="ghost"
                 size="sm"

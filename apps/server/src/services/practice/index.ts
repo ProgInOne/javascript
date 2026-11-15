@@ -1,4 +1,5 @@
 import type { EngineDeps } from '@proginone/learning-engine';
+import type { HintPolicy } from '@proginone/shared';
 import type { UserDb } from '../../db/user/connection.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
@@ -24,6 +25,8 @@ export interface PracticeDeps {
   /** Created once at startup with `createEngine()`. */
   engine: EngineDeps;
   now: Clock;
+  /** `hints.policy` from settings, read on every hint request (D-047). */
+  hintPolicy?: () => HintPolicy;
 }
 
 /** Services behind the learning-record API (practice, reading, review, activity), created once. */

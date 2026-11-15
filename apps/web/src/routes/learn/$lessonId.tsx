@@ -10,6 +10,7 @@ import {
   lessonQuery,
   practiceSetQuery,
   recordLessonProgress,
+  useSettings,
 } from '../../api/queries.ts';
 import {
   AssessmentResultView,
@@ -326,6 +327,7 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
       ? lesson.sections.find((s) => s.id === progress.lastSectionId)
       : undefined;
   const own = lesson.concepts.filter((c) => c.role !== 'linked');
+  const predictFirst = useSettings().data?.['lesson.predictFirst'] ?? 'recommended';
   return (
     <div className="min-h-screen bg-canvas">
       <LearnHeader lesson={lesson} mode="read" />
@@ -354,6 +356,7 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
               kind={lesson.kind}
               body={lesson.body}
               concepts={lesson.concepts}
+              predictFirst={predictFirst}
             />
 
             {(lesson.previous ?? lesson.next) && (
