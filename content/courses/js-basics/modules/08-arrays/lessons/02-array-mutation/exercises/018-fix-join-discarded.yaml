@@ -71,5 +71,6 @@ explanation: |
   `return "#" + tags.join(" #");`처럼 한 줄로 바로 써도 돼요. 원래 배열을 바꾸지 않는 메서드는 결과를 담거나 바로 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

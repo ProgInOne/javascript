@@ -57,5 +57,6 @@ explanation: |
   - `const next = line.pop();`은 맨 끝의 `"서연"`을 꺼내요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

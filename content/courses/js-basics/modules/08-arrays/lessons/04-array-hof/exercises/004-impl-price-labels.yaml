@@ -7,7 +7,7 @@ concepts:
 tags: [map, template-literal, write-code]
 estimatedSeconds: 200
 prompt: |
-  가격 목록을 받아 화면에 보여 줄 글자 목록을 돌려주는 함수 `toLabels(prices)`를 `map`으로 완성하세요. 가격 뒤에 `원`을 붙이면 돼요.
+  가격 목록을 받아 화면에 보여 줄 글자 목록을 돌려주는 함수 `toLabels(prices)`를 완성하세요. 가격 뒤에 `원`을 붙이면 돼요. 이 단원에서 배운 `map`으로 풀어 보세요(반복과 `push`로 만들어도 채점은 통과해요).
 
   | 호출 | 돌려줄 값 |
   |---|---|
@@ -76,5 +76,6 @@ explanation: |
   - 반복 안에서 `prices[i] = prices[i] + "원"`처럼 원래 배열을 바꾸면 숨겨진 테스트가 실패해요. 함수에 넘긴 배열은 호출한 쪽의 배열과 같은 배열이라 바깥 목록까지 바뀌어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

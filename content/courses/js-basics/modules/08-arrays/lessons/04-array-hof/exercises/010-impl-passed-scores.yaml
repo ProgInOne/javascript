@@ -6,7 +6,7 @@ concepts:
 tags: [filter, boundary, write-code]
 estimatedSeconds: 200
 prompt: |
-  점수 목록과 합격 기준 점수를 받아, **기준 점수 이상**인 점수만 원래 순서대로 담은 새 배열을 돌려주는 함수 `passedScores(scores, cut)`을 `filter`로 완성하세요.
+  점수 목록과 합격 기준 점수를 받아, **기준 점수 이상**인 점수만 원래 순서대로 담은 새 배열을 돌려주는 함수 `passedScores(scores, cut)`을 완성하세요. 이 단원에서 배운 `filter`로 풀어 보세요.
 
   | 호출 | 돌려줄 값 |
   |---|---|
@@ -81,5 +81,6 @@ explanation: |
   - 모두 합격일 때 `return scores;`처럼 받은 배열을 그대로 돌려주는 코드는 "새 배열" 테스트에서 실패해요. 돌려받은 쪽이 결과를 바꾸면 원래 목록까지 바뀌기 때문이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

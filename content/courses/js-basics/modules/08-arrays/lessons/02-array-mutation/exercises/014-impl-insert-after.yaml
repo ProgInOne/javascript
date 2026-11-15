@@ -53,6 +53,7 @@ spec:
       args: [["공항", "호텔"], "박물관", "시장"]
       expect: { equals: ["공항", "호텔", "시장"] }
       requirement: 없으면 맨 끝에
+      misconceptionIfFail: js.mc.indexof-as-boolean
     - kind: call
       id: after-last
       visible: false
@@ -74,7 +75,6 @@ spec:
       requirement: 없으면 맨 끝에
       args: [[], "공항", "호텔"]
       expect: { equals: ["호텔"] }
-      misconceptionIfFail: js.mc.indexof-as-boolean
     - kind: call
       id: keep-others
       visible: false
@@ -109,5 +109,6 @@ explanation: |
   - 두 번째 인수를 1로 쓰면 다음 장소 하나를 지우고 그 자리에 넣어 버려요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

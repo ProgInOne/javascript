@@ -23,7 +23,6 @@ spec:
   misconceptionByAnswer:
     "0\nfalse\n2\ntrue\n-1": js.mc.array-includes-partial
     "0\nfalse\n-1\ntrue\n1": js.mc.includes-loose-match
-    "3\nfalse\n-1\ntrue\n-1": js.mc.indexof-as-boolean
 hints:
   - "`indexOf`는 같은 요소가 여러 개면 어느 것의 위치를 알려 줄까요?"
   - 배열에서 찾을 때는 요소 전체가 같아야 해요. 대소문자, 글자 일부, 자료형이 다르면 어떻게 될지 줄마다 따져 보세요.
@@ -46,5 +45,6 @@ explanation: |
   - `answers.indexOf("1")`: 배열에는 숫자 `1`이 있고 찾는 값은 문자열 `"1"`이에요. 자료형이 달라 `-1`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

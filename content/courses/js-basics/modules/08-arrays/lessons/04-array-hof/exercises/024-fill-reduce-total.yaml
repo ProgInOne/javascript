@@ -52,5 +52,6 @@ explanation: |
   - 초기값을 빼면 3000 + 12000 + 4500은 그대로 19500이지만, 빈 배열에서 `TypeError: Reduce of empty array with no initial value`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

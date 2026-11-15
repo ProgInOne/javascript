@@ -119,5 +119,6 @@ explanation: |
   - 빈 배열과 `[0, 0]`은 반복 안에서 `best`가 한 번도 바뀌지 않아 0이 돌아가요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

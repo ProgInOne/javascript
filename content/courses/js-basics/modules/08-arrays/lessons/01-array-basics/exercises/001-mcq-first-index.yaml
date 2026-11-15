@@ -38,5 +38,6 @@ explanation: |
   - `undefined`: 범위 밖 인덱스를 읽었을 때의 값이에요. 인덱스 1은 범위 안이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

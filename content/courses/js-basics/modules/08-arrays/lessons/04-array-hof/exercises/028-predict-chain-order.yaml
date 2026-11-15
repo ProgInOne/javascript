@@ -48,5 +48,6 @@ explanation: |
   - `picked`의 `map`은 `filter`가 만든 새 배열 `[45, 80, 58]`을 받아요. 콜백의 인덱스도 이 새 배열의 인덱스라서 0, 1, 2예요. 원래 배열의 인덱스 0, 2, 4가 아니에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

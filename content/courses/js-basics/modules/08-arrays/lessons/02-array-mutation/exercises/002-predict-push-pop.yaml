@@ -48,5 +48,6 @@ explanation: |
   - `pop`이 `history`를 직접 바꿨으므로 마지막 줄의 길이는 2예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

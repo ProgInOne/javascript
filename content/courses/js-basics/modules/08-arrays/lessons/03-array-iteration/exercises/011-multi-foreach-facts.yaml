@@ -41,5 +41,6 @@ explanation: |
   - **`break`로 멈춘다(틀림)**: `break`는 `for`·`while` 같은 반복문 안에서만 쓸 수 있어요. 콜백 함수 안에 쓰면 `SyntaxError: Illegal break statement`가 나서 아예 실행되지 않아요. 중간에 멈춰야 하면 `for...of`와 `break`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

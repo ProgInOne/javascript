@@ -38,5 +38,6 @@ explanation: |
   - 인덱스는 세 번째 매개변수예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

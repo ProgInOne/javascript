@@ -39,5 +39,6 @@ explanation: |
   - 끝에 하나만 덧붙이려면 `arr[arr.length] = 1`처럼 `length`번 자리에 넣어야 `length`가 4가 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -39,9 +39,10 @@ explanation: |
 
   - `a`가 12000, `b`가 45000이면 `b - a`는 양수라서 `b`(45000)가 앞으로 가요. 큰 수가 앞에 오는 내림차순이에요.
   - `a - b`라고 쓰면 작은 수부터 정렬되어 `800 > 3500 > 12000 > 45000`이 나와요.
-  - `a < b`처럼 `true`·`false`를 돌려주면 음수가 나오지 않아 제대로 정렬되지 않아요. 비교 함수는 음수·0·양수를 돌려줘야 해요.
+  - `a < b`처럼 `true`·`false`를 돌려주면 음수가 나오지 않아 정렬 결과를 믿을 수 없어요. 비교 함수는 음수·0·양수를 돌려줘야 해요.
   - `-(a - b)`처럼 같은 값을 돌려주는 다른 식도 실행 결과가 같아서 정답으로 채점돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

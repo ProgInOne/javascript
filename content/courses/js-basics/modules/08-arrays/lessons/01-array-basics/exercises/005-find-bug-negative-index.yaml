@@ -55,5 +55,6 @@ explanation: |
   - `temps[0]`은 첫 요소 `12`가 맞아요. 4번 줄 출력이 정상이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

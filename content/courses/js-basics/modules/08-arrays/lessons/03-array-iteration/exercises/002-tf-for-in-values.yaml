@@ -37,5 +37,6 @@ explanation: |
   - `const`라 바뀔 수 없다는 이유: 반복 변수는 바퀴마다 새로 만들어지므로 `const`로 써도 바퀴마다 다른 값이 들어와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

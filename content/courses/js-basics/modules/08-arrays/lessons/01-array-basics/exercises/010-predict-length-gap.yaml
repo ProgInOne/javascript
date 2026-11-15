@@ -45,5 +45,6 @@ explanation: |
   끝에 값을 덧붙이려면 인덱스를 어림하지 말고 `marks[marks.length] = 5`처럼 정확히 `length`번 자리에 넣어요(다음 단원의 `push`가 이 일을 해요).
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

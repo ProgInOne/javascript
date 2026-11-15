@@ -61,5 +61,6 @@ explanation: |
   - `return prices.sort((a, b) => a - b);`로 한 줄로 써도 같아요. `sort`는 정렬한 그 배열을 돌려줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

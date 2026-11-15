@@ -86,5 +86,6 @@ explanation: |
   - 1부터 `n`까지 넣은 뒤 순서를 뒤집는 방법도 있지만, 처음부터 큰 수부터 넣으면 더 간단해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

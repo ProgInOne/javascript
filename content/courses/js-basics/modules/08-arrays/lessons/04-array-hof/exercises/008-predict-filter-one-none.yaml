@@ -49,5 +49,6 @@ explanation: |
   찾았는지는 `if (missing.length > 0)`처럼 길이로 확인해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

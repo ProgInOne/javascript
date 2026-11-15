@@ -42,5 +42,6 @@ explanation: |
   두 배가 된 배열이 필요하면 지금은 빈 배열에 `push`로 모아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -18,14 +18,14 @@ spec:
     }
     console.log(scores);
   bugLines: [4]
-  acceptLines: [2, 3]
+  acceptLines: [2]
   symptom: "`[60, 78, 60, 90]`가 나와야 하는데 `[55, 78, 42, 90]`이 그대로 나와요."
   symptomCheck:
     console: ["[55, 78, 42, 90]"]
   fixedCode: |-
     const scores = [55, 78, 42, 90];
-    for (let i = 0; i < scores.length; i++) {
-      if (scores[i] < 60) {
+    for (let i = 0; i < scores.length; i++) { const score = scores[i];
+      if (score < 60) {
         scores[i] = 60;
       }
     }
@@ -56,18 +56,20 @@ explanation: |
 
   ```js
   for (let i = 0; i < scores.length; i++) {
-    if (scores[i] < 60) {
+    const score = scores[i];
+    if (score < 60) {
       scores[i] = 60;
     }
   }
   ```
 
-  그래서 반복을 바꾸는 2번 줄과 조건을 바꾸는 3번 줄을 골라도 정답으로 인정해요.
+  이렇게 고치려면 반복의 머리(2번 줄)도 함께 바꿔야 해서, 2번 줄을 골라도 정답으로 인정해요. 3번 줄의 조건은 원래부터 바르게 동작하므로 원인이 아니에요.
 
   - `const`라서 못 바꾼다: `const`는 `scores`에 다른 배열을 다시 대입하는 것만 막아요. `scores[0] = 60`처럼 요소는 바꿀 수 있어요.
   - `score`가 인덱스다: `for...of`의 `score`에는 55, 78처럼 요소가 들어와요. 인덱스라면 0, 1, 2, 3이 모두 60보다 작아 결과가 달랐을 거예요.
   - `let` 반복 변수는 못 바꾼다: `let` 변수는 대입할 수 있어요. 실제로 4번 줄은 오류 없이 `score`를 바꿨어요. 바뀐 것이 배열이 아니었을 뿐이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

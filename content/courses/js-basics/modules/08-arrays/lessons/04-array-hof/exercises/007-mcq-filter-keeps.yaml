@@ -42,5 +42,6 @@ explanation: |
   - `true`: 하나라도 맞는지는 `some`이 알려 줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

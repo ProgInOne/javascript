@@ -42,5 +42,6 @@ explanation: |
   - `[100, 10, 9, 1]`: 기본 정렬은 앞에서부터 커지는 순서(오름차순)예요. 큰 것부터 정렬하려면 `(a, b) => b - a`를 넘겨요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

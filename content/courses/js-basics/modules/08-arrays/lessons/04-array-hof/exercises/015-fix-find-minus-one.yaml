@@ -1,6 +1,6 @@
 id: js-basics.arrays.array-hof.fix-find-minus-one
 type: fix_bug
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.arr.find, weight: 1 }
   - { id: js.control.if, weight: 0.3 }
@@ -70,5 +70,6 @@ explanation: |
   `if (found)`로 써도 이 문제의 테스트는 통과해요. 다만 찾은 값이 `0`처럼 falsy인 수일 수 있는 상황에서는 찾았는데도 못 찾은 것으로 처리되므로, `undefined`와 직접 비교하는 습관을 권해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -48,5 +48,6 @@ explanation: |
   - `items[3]`: 범위 밖이라 `undefined`예요. 처음으로 돌아가지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

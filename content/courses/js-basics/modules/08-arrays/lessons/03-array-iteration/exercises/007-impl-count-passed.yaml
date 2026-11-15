@@ -88,5 +88,6 @@ explanation: |
   - 빈 배열이면 반복이 돌지 않아 0이 그대로 돌아가요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -38,5 +38,6 @@ explanation: |
   - TypeError라는 이유: 남는 인수는 오류 없이 무시돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

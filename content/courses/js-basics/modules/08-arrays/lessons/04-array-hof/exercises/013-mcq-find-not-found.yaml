@@ -42,5 +42,6 @@ explanation: |
   - 오류: 못 찾는 것은 정상적인 결과라 오류가 나지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

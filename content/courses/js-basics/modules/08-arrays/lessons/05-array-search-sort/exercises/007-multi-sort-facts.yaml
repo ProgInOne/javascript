@@ -26,9 +26,9 @@ spec:
       misconception: js.mc.sort-returns-new-array
       rationale: sort는 원래 배열을 직접 정렬하고, 돌려주는 값도 그 배열이에요.
     - id: d
-      text: "비교 함수를 `(a, b) => a > b`로 바꿔도 결과는 같다"
+      text: "비교 함수를 `(a, b) => a > b`로 바꿔 써도 작은 수부터 정렬된다고 믿을 수 있다"
       misconception: js.mc.sort-compare-boolean
-      rationale: 비교 함수는 음수·0·양수를 돌려줘야 해요. true·false로는 음수가 나오지 않아 제대로 정렬되지 않아요.
+      rationale: "`a > b`는 `true`(1)나 `false`(0)만 돌려줘서 \"`a`를 앞에\"를 뜻하는 음수를 낼 수 없어요. 결과가 브라우저와 배열에 따라 달라 믿을 수 없어요."
     - id: e
       text: "`nums`를 정렬된 순서로 쓰려면 `nums = nums.sort((a, b) => a - b);`처럼 다시 대입해야 한다"
       misconception: js.mc.mutating-method-keeps-original
@@ -45,9 +45,10 @@ explanation: |
   - `sort`는 원래 배열 `nums`를 직접 정렬해요. `(a, b) => a - b`는 작은 수부터 정렬하므로 `nums`는 `[4, 30, 200]`이에요.
   - `sort`가 돌려주는 값은 정렬된 **바로 그 배열**이에요. `result`와 `nums`는 같은 배열이라 `===`로 비교하면 `true`예요.
   - "`result`는 새 배열이고 `nums`는 그대로"는 틀렸어요. 원본을 지키려면 `nums.slice().sort(...)`처럼 복사본을 정렬해야 해요.
-  - "`a > b`로 바꿔도 같다"는 틀렸어요. `true`·`false`는 `1`·`0`이 되어 음수가 나오지 않아서 제대로 정렬되지 않아요. 실제로 `[30, 4, 200].sort((a, b) => a > b)`는 `[30, 4, 200]` 그대로예요.
+  - "`a > b`로 써도 믿을 수 있다"는 틀렸어요. `a > b`는 `true`(숫자로 `1`)나 `false`(`0`)만 돌려줘서 "`a`를 앞에"를 뜻하는 음수가 나오지 않아요. 그래서 이런 비교 함수로 정렬한 결과는 브라우저와 배열에 따라 그대로이거나, 일부만 정렬되거나, 우연히 맞게 정렬되기도 해서 믿을 수 없어요.
   - "다시 대입해야 한다"는 틀렸어요. `sort`가 이미 `nums`를 바꿨고, `const`로 만든 `nums`에 다시 대입하면 `TypeError`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

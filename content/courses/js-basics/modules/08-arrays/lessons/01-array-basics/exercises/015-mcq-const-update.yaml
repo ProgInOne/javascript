@@ -43,5 +43,6 @@ explanation: |
   - 인덱스 1은 첫 번째가 아니라 두 번째 자리예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

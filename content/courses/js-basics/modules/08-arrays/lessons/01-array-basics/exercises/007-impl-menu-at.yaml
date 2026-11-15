@@ -91,5 +91,6 @@ explanation: |
   - `menu[number - 1] === undefined`인지 확인하는 방법도 이 문제에서는 같은 결과예요. 다만 번호 범위를 직접 확인하는 편이 의도가 분명해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

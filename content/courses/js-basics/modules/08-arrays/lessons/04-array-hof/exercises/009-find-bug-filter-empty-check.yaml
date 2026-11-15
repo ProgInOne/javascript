@@ -59,5 +59,6 @@ explanation: |
   - 3번 줄의 `food.includes(keyword)`는 모듈 7에서 배운 문자열의 `includes`예요. 문자열에도 `includes`가 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

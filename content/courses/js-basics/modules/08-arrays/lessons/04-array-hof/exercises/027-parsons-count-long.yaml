@@ -70,5 +70,6 @@ explanation: |
   - `(word, count)`처럼 매개변수 순서를 바꾸면 `word`에 누적값이, `count`에 단어가 들어가요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

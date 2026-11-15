@@ -69,5 +69,6 @@ explanation: |
   마지막 인덱스는 `length - 1`이므로 조건은 `i < prices.length`예요. 이렇게 고치면 빈 배열은 반복을 한 번도 돌지 않고 `0`을 돌려줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

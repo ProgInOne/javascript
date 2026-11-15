@@ -1,6 +1,6 @@
 id: js-basics.arrays.array-hof.web-search-filter
 type: web_task
-difficulty: 3
+difficulty: 4
 concepts:
   - { id: js.arr.filter, weight: 1 }
   - { id: js.str.search, weight: 0.3 }
@@ -201,5 +201,6 @@ explanation: |
   - `whenTyped(showList(search(word)))`처럼 괄호를 붙여 넘기면 그 자리에서 한 번 실행되고, 입력할 때마다 불릴 함수가 넘어가지 않아요. 입력한 글자를 받는 함수를 넘겨야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

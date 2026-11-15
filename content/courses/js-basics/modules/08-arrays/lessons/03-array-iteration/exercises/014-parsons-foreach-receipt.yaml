@@ -61,5 +61,6 @@ explanation: |
   - 두 배열을 만드는 줄은 서로 순서를 바꿔도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

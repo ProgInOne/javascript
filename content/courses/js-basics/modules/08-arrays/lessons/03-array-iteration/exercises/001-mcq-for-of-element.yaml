@@ -43,5 +43,6 @@ explanation: |
   - 배열 전체: 배열 전체는 `fruits`이고, `item`은 그중 하나예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

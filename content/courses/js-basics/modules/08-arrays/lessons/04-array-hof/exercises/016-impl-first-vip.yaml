@@ -94,5 +94,6 @@ explanation: |
   - 반복으로 직접 찾아도 정답이에요. 맞는 회원을 찾는 즉시 이름을 돌려주고, 반복이 끝나면 `"없음"`을 돌려주면 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

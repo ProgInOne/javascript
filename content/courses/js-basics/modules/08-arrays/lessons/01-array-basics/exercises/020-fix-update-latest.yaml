@@ -16,7 +16,7 @@ prompt: |
   // 이제 weights는 [61, 60, 59]
   ```
 
-  시작 코드 아래쪽의 확인용 줄은 그대로 두세요.
+  시작 코드 아래쪽 줄은 실행해 보는 예시라서 바꾸거나 지워도 돼요. 채점은 함수를 직접 불러서 확인해요.
 spec:
   buggy:
     files:
@@ -28,7 +28,7 @@ spec:
             return previous;
           }
 
-          // 확인용 (그대로 두세요)
+          // 실행해 보는 예시예요(바꾸거나 지워도 채점과 상관없어요).
           const weights = [61, 60, 62];
           const old = updateLatest(weights, 59);
           console.log(weights, old);
@@ -42,22 +42,22 @@ spec:
             return previous;
           }
 
-          // 확인용 (그대로 두세요)
+          // 실행해 보는 예시예요(바꾸거나 지워도 채점과 상관없어요).
           const weights = [61, 60, 62];
           const old = updateLatest(weights, 59);
           console.log(weights, old);
   entry: updateLatest
   bugDescription: '`updateLatest(weights, 59)`가 `62`가 아니라 `undefined`를 돌려주고, 마지막 기록이 고쳐지지 않은 채 기록이 하나 늘어나요.'
   checks:
-    - kind: program
-      id: weights
-      description: 확인용 줄을 실행한 뒤 weights는 [61, 60, 59], old는 62여야 합니다.
+    - { kind: call, id: example, args: [[61, 60, 62], 59], expect: { equals: 62 }, requirement: 바꾸기 전 기록 돌려주기 }
+    - kind: call
+      id: replaced-in-place
+      visible: false
+      description: "[61, 60, 62]의 마지막 기록을 59로 고치면 세 번째 자리(인덱스 2)가 59가 되어야 합니다(기록이 하나 덧붙으면 안 돼요)."
       requirement: 마지막 기록 고치기
-      expect:
-        globals:
-          weights: { equals: [61, 60, 59] }
-          old: { equals: 62 }
-        noError: true
+      argsExpr: '(() => { const r = [61, 60, 62]; updateLatest(r, 59); const last = r.length === 3 ? r[2] : "기록이 늘어남"; const probe = [last]; probe[-1] = last; return [probe, 0]; })()'
+      expect: { equals: 59 }
+      misconceptionIfFail: js.mc.array-last-index-is-length
     - { kind: call, id: returns-previous, args: [[10, 12, 15], 14], expect: { equals: 15 }, requirement: 바꾸기 전 기록 돌려주기, misconceptionIfFail: js.mc.array-negative-index-last }
     - kind: call
       id: single
@@ -84,5 +84,6 @@ explanation: |
   - 마지막 요소는 언제나 `length - 1`번이에요. 고친 뒤 `weights`는 `[61, 60, 59]`, 돌려준 값은 `62`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

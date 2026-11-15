@@ -53,5 +53,6 @@ explanation: |
   배열 메서드로 **요소를 바꾸면** 바깥에도 보이지만, 변수에 **다른 배열을 대입하면** 바깥과 연결이 끊겨요. 왜 그런지는 모듈 9에서 자세히 배워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

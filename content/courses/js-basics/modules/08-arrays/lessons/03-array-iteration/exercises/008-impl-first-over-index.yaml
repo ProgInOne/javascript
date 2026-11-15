@@ -94,5 +94,6 @@ explanation: |
   - **경계**: "넘는다"이므로 `>`예요. `>=`로 쓰면 10000원짜리 상품(0번)을 돌려줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

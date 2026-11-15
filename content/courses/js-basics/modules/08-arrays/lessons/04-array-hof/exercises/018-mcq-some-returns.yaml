@@ -44,5 +44,6 @@ explanation: |
   - `1`: `-3000`의 인덱스는 `findIndex`가 돌려줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

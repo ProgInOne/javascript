@@ -96,5 +96,6 @@ explanation: |
   - `filter`·`map`·`reduce`는 모두 원래 배열을 바꾸지 않아서 `prices`는 그대로예요. `for...of`와 `if`로 한 번에 계산한 답도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

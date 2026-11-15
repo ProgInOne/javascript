@@ -73,5 +73,6 @@ explanation: |
   고친 콜백은 `return acc + minutes;`예요. 식 하나뿐이라 `(acc, minutes) => acc + minutes`처럼 중괄호 없이 써도 돼요. `acc += minutes;` 다음 줄에 `return acc;`를 더해도 동작하지만, 누적값은 바꾸는 대상이 아니라 **새로 돌려줄 값**이라고 생각하는 편이 `reduce`를 이해하기 쉬워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

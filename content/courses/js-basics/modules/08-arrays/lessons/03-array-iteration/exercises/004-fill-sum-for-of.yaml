@@ -48,5 +48,6 @@ explanation: |
   - `const step in steps`로 쓰면 `step`이 `"0"`, `"1"`, ... 같은 문자열이라 `total`이 `"00123456"`처럼 글자를 이어 붙인 값이 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -42,5 +42,6 @@ explanation: |
   - `longest`: `""` → `"sun"`(3 > 0) → `"moon"`(4 > 3) → `"moon"`(`sky`는 3) → `"moon"`(`star`도 4라서 `4 > 4`가 거짓)이에요. 길이가 같으면 먼저 나온 단어가 남아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -59,5 +59,6 @@ explanation: |
   - `user`는 변수라서 따옴표 없이 넘기는 것이 맞아요. 변수에 든 `"minji"`를 찾아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

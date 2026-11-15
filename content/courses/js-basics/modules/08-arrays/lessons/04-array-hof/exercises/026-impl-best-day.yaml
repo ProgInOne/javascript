@@ -94,7 +94,7 @@ misconceptions: [js.mc.reduce-initial-optional-safe, js.mc.reduce-callback-no-re
 hints:
   - 누적값이 "값"이 아니라 "인덱스"라는 점이 핵심이에요. 처음에는 어느 날을 가장 좋은 날로 두면 될까요? 빈 목록은 그 전에 따로 처리해요.
   - 콜백은 `(지금까지 가장 좋은 날의 인덱스, 오늘 손익, 오늘 인덱스)`를 받아요. 지금까지 가장 좋은 날의 손익은 인덱스로 배열에서 읽을 수 있어요.
-  - 오늘이 **더 클 때만** 누적값을 바꾸고, 아니면 원래 누적값을 그대로 돌려줘요. 같을 때 바꾸면 어떤 날이 남을지 생각해 보세요.
+  - 콜백은 어느 경우에도 다음 누적값을 돌려줘야 해요. 오늘 손익이 지금까지 가장 좋은 날과 **같을 때** 어느 날이 남아야 하는지 요구사항을 다시 읽고, 그에 맞는 비교 연산자를 고르세요.
 explanation: |
   예시 정답이에요.
 
@@ -119,5 +119,6 @@ explanation: |
   - 정렬해서 찾으면 원래 순서(날짜)를 잃고 배열도 바뀌어요. `for` 반복으로 같은 비교를 해서 푼 답도 정답으로 인정돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

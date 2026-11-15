@@ -27,7 +27,6 @@ spec:
       .map((f) => Math.round((f - 32) * 5 / 9))
       .filter((c) => c >= 25);
     console.log(hotDays);
-  acceptLines: [5]
   causeOptions:
     - id: c1
       text: forEach는 undefined를 돌려주므로, 그 뒤에 이어 쓴 filter를 undefined에서 찾다가 오류가 난다
@@ -46,7 +45,7 @@ hints:
 explanation: |
   원인은 **4번 줄**의 `forEach`예요.
 
-  `forEach`는 요소마다 콜백을 불러 줄 뿐, 콜백의 반환값을 버리고 항상 `undefined`를 돌려줘요. 그래서 5번 줄의 `.filter(...)`는 `undefined.filter(...)`가 되어 `TypeError: Cannot read properties of undefined (reading 'filter')`가 나요. 오류는 5번 줄에서 보고될 수 있지만, 원인은 배열 대신 `undefined`를 넘긴 4번 줄이에요.
+  `forEach`는 요소마다 콜백을 불러 줄 뿐, 콜백의 반환값을 버리고 항상 `undefined`를 돌려줘요. 그래서 5번 줄의 `.filter(...)`는 `undefined.filter(...)`가 되어 `TypeError: Cannot read properties of undefined (reading 'filter')`가 나요. 오류는 `filter`를 읽는 5번 줄에서 보고되지만, 5번 줄의 `filter` 호출 자체는 잘못이 없어요. 원인은 배열 대신 `undefined`를 넘긴 4번 줄이에요.
 
   `forEach`를 `map`으로 바꾸면 섭씨 배열 `[20, 30, 35, 15]`가 `filter`로 넘어가고, 출력은 `[30, 35]`예요.
 
@@ -55,5 +54,6 @@ explanation: |
   - `forEach`는 새 배열을 돌려주지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

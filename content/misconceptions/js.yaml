@@ -1916,7 +1916,7 @@
   concept: js.arr.sort
   title: sort의 비교 함수가 true·false를 돌려주면 된다고 생각함
   statement: 'sort((a, b) => a > b)처럼 비교 결과(true·false)를 돌려주면 오름차순으로 정렬된다고 생각한다.'
-  reality: '비교 함수는 a가 앞이면 음수, b가 앞이면 양수, 같으면 0을 돌려줘야 한다. true·false는 숫자 1·0으로 바뀌어 음수가 나오지 않으므로 정렬이 제대로 되지 않는다. 숫자는 a - b(오름차순)나 b - a(내림차순)를 돌려준다.'
+  reality: '비교 함수는 a가 앞이면 음수, b가 앞이면 양수, 같으면 0을 돌려줘야 한다. true·false는 숫자 1·0으로 바뀌어 음수가 나오지 않으므로 정렬 결과를 믿을 수 없다(브라우저와 배열에 따라 그대로이거나, 일부만 정렬되거나, 우연히 맞게 정렬되기도 한다). 숫자는 a - b(오름차순)나 b - a(내림차순)를 돌려준다.'
   remediation:
     lessonSection: js-basics.arrays.array-search-sort#pitfalls
     exercises: [js-basics.arrays.array-search-sort.tf-compare-boolean, js-basics.arrays.array-search-sort.multi-sort-facts]

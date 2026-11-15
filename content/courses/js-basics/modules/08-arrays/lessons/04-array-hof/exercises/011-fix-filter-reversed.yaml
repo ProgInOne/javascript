@@ -61,5 +61,6 @@ explanation: |
   고친 콜백은 "남길 조건"인 `answer !== ""`예요. `answer.length > 0`으로 써도 같아요. 빈 문자열이 falsy라는 것을 이용해 `answers.filter((answer) => answer)`라고 써도 동작하지만, 뜻이 잘 드러나는 비교식을 권해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

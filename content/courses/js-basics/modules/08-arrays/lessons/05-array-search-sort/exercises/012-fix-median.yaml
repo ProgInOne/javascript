@@ -100,5 +100,6 @@ explanation: |
   - 비교 함수만 고치면 값은 맞지만 원본이 바뀌고, 복사만 하면 원본은 지키지만 값이 틀려요. 두 가지를 모두 고쳐야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

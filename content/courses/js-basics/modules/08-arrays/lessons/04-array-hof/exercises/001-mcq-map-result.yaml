@@ -44,5 +44,6 @@ explanation: |
   - 콜백은 첫 요소뿐 아니라 모든 요소에 불려요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

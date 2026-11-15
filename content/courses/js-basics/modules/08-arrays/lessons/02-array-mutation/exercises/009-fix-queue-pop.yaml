@@ -49,6 +49,13 @@ spec:
       args: [[30, 31]]
       expect: { equals: "30번 손님 차례예요" }
       misconceptionIfFail: js.mc.shift-unshift-swapped
+    - kind: call
+      id: removed-from-queue
+      visible: false
+      description: 부른 손님은 대기열에서 빠져야 합니다. [12, 13, 14]에서 한 명을 부른 뒤 같은 대기열로 다시 부르면 13번이 불려야 해요.
+      requirement: 부른 손님 빼기
+      argsExpr: "(() => { const q = [12, 13, 14]; callNext(q); return [q]; })()"
+      expect: { equals: "13번 손님 차례예요" }
 misconceptions: [js.mc.shift-unshift-swapped]
 hints:
   - 불린 14번은 대기열의 어느 쪽에 있던 번호인가요?
@@ -63,8 +70,9 @@ explanation: |
   const number = queue.shift();
   ```
 
-  `shift()`도 `pop()`처럼 꺼낸 요소를 돌려주고 원래 배열에서 지워요. 그래서 부른 손님이 대기열에서 빠지는 동작은 그대로예요. 줄 끝에 세우는 `push`와 앞에서 꺼내는 `shift`를 함께 쓰면 먼저 온 사람이 먼저 나가는 줄이 돼요.
+  `shift()`도 `pop()`처럼 꺼낸 요소를 돌려주고 원래 배열에서 지워요. 그래서 부른 손님이 대기열에서 빠지는 동작은 그대로예요. `queue[0]`으로 읽기만 하면 번호는 맞게 나오지만 대기열에서 빠지지 않아서, 다음 호출에서 같은 손님을 또 불러요. 줄 끝에 세우는 `push`와 앞에서 꺼내는 `shift`를 함께 쓰면 먼저 온 사람이 먼저 나가는 줄이 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

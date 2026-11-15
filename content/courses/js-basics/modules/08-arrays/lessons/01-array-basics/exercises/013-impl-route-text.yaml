@@ -77,5 +77,6 @@ explanation: |
   - 역이 하나면 0번이 첫 역이자 마지막 역이라 `"순천 → 순천 (1개 역)"`이 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

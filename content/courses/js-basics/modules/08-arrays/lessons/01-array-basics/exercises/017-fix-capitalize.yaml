@@ -74,5 +74,6 @@ explanation: |
   `letters`는 `const`지만 요소를 바꾸는 것은 문제없어요. `word.toUpperCase()`처럼 전체를 바꾸면 `"JAVA"`가 되어 틀려요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

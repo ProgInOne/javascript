@@ -39,5 +39,6 @@ explanation: |
   요소 안의 글자를 찾고 싶다면 `fruits.some((f) => f.includes("app"))`처럼 요소마다 문자열 `includes`를 불러요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

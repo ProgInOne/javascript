@@ -72,5 +72,6 @@ explanation: |
   - `some((score) => score >= cut)`는 "한 명이라도 통과했나?"라서 두 번째 예에서 `true`가 되어 틀려요. 반대로 `!scores.some((score) => score < cut)`("미달이 아무도 없다")는 `every`와 같은 뜻이라 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

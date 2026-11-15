@@ -86,5 +86,6 @@ explanation: |
   - "읽기만 하는 함수는 입력을 바꾸지 않는다"는 것이 함수의 약속이에요. 합계·개수·최댓값을 구하는 함수에서는 배열을 바꾸는 메서드를 쓰지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

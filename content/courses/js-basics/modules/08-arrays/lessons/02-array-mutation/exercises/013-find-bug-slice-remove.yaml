@@ -37,7 +37,6 @@ spec:
       correct: true
     - id: c2
       text: indexOf가 달걀을 찾지 못해 -1을 돌려줬으므로 if 블록이 실행되지 않았다
-      misconception: js.mc.indexof-as-boolean
     - id: c3
       text: slice와 splice는 같은 일을 하지만, 결과를 cart에 다시 대입하지 않아서 반영되지 않았다
       misconception: js.mc.splice-slice-same
@@ -63,5 +62,6 @@ explanation: |
   - `length`는 요소가 바뀌면 함께 바뀌어요. 지워지지 않았기 때문에 4가 나온 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

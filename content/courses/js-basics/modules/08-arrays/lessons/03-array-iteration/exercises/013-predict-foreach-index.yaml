@@ -33,5 +33,6 @@ explanation: |
   `forEach`는 요소마다 콜백을 `(요소, 인덱스)`로 불러요. 첫 번째 호출은 `("월", 0)`이에요. 인덱스는 0부터 시작하므로 첫 줄은 `1: 월`이 아니라 `0: 월`이에요. 사람이 읽는 번호로 보여 주려면 `(i + 1) + ": " + day`처럼 1을 더해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

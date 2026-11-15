@@ -52,5 +52,6 @@ explanation: |
   - `splice`와 `slice`는 이름이 비슷하지만 `splice`만 원래 배열을 바꿔요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

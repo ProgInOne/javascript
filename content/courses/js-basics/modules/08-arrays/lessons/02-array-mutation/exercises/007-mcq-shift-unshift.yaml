@@ -44,5 +44,6 @@ explanation: |
   - `push()`는 끝에 넣는 메서드예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

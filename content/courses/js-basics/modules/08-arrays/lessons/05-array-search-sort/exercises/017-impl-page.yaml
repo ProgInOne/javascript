@@ -87,5 +87,6 @@ explanation: |
   - `splice`로 자르면 결과는 같아도 `items`에서 글이 사라져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

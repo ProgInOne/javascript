@@ -40,5 +40,6 @@ explanation: |
   "할 일이 하나도 없으면 완료가 아니다" 같은 요구사항이 있으면 `done.length > 0 && done.every(...)`처럼 길이를 함께 확인해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

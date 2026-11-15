@@ -39,5 +39,6 @@ explanation: |
   - `profile[3]`은 범위 밖이에요(인덱스는 0~2). 오류 대신 `undefined`가 나오고, 프로그램은 계속 실행되어 `끝`까지 출력돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

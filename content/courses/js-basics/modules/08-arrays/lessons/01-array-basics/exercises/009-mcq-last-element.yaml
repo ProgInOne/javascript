@@ -38,5 +38,6 @@ explanation: |
   - `arr.length - 1`: 마지막 요소의 **인덱스**일 뿐 요소가 아니에요. `[3, 9]`라면 9가 아니라 1이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

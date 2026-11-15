@@ -39,5 +39,6 @@ explanation: |
   - "원래 배열을 바꾼다"는 이유: `map`은 원래 배열을 바꾸지 않고 새 배열을 돌려줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

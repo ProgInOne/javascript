@@ -30,5 +30,6 @@ explanation: |
   `join`처럼 원래 배열을 바꾸지 않는 메서드도 있으니, 배열 메서드는 하나씩 어느 쪽인지 기억해 둬요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

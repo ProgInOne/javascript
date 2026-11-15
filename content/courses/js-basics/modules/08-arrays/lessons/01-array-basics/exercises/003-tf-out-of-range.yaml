@@ -37,5 +37,6 @@ explanation: |
   - `RangeError`는 나지 않아요. 오류가 나지 않기 때문에 인덱스 실수를 알아차리기 어렵다는 점을 기억해 두세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

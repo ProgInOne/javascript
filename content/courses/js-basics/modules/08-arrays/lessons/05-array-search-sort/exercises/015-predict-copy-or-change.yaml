@@ -54,5 +54,6 @@ explanation: |
   - `splice`는 원본에서 지우고, 지운 요소를 **배열**로 돌려줘요. 그래서 `c`는 `1`이 아니라 `[1]`이고, `base`는 3개가 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

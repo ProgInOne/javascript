@@ -38,11 +38,12 @@ explanation: |
 
   `push`는 `fruits` 끝에 `"귤"`을 넣어 `fruits`를 직접 바꾸고, 넣은 뒤의 **새 길이**를 돌려줘요. 요소가 2개에서 3개가 되었으니 3이에요.
 
-  - `["사과", "배", "귤"]`: 바뀐 배열은 `fruits`에 있어요. `result`에 배열이 들어가는 것이 아니에요. 그래서 `fruits = fruits.push("귤")`처럼 쓰면 `fruits`가 숫자가 되어 버려요.
+  - `["사과", "배", "귤"]`: 바뀐 배열은 `fruits`에 있어요. `result`에 배열이 들어가는 것이 아니에요. 그래서 `let`으로 만든 배열에 `fruits = fruits.push("귤")`처럼 다시 대입하면 `fruits`가 숫자가 되어 버려요.
   - `"귤"`: 요소 하나를 돌려주는 것은 꺼내는 메서드 `pop`·`shift`예요.
   - `2`: 넣기 **전** 길이가 아니라 넣은 **뒤** 길이예요.
   - `undefined`: `push`는 숫자를 돌려줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

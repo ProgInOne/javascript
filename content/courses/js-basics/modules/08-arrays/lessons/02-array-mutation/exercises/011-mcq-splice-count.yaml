@@ -50,5 +50,6 @@ explanation: |
   - `["A", "B"]`: `seats.splice(2)`처럼 개수를 생략했을 때의 결과예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

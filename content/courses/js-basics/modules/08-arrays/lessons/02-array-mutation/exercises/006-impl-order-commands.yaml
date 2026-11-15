@@ -115,5 +115,6 @@ explanation: |
   - `commands.pop()`처럼 기록 배열에서 빼면 취소가 엉뚱하게 되고, 바깥의 기록 배열도 바뀌어요. 함수에 넘긴 배열은 같은 배열이기 때문이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

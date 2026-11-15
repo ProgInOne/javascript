@@ -2,8 +2,8 @@ id: js-basics.arrays.array-search-sort.impl-top-three
 type: implement_function
 difficulty: 4
 concepts:
-  - { id: js.arr.slice-concat, weight: 1 }
-  - { id: js.arr.sort, weight: 0.5 }
+  - { id: js.arr.sort, weight: 1 }
+  - { id: js.arr.slice-concat, weight: 0.5 }
   - { id: js.arr.mutating-vs-not, weight: 0.5 }
 tags: [slice, sort, compare-function, no-mutation, boundary, write-code]
 estimatedSeconds: 420
@@ -98,5 +98,6 @@ explanation: |
   - 같은 점수 두 개는 정렬해도 둘 다 남으므로 `[80, 50, 50]`이 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

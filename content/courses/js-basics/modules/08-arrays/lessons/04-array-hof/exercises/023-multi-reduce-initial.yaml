@@ -1,6 +1,6 @@
 id: js-basics.arrays.array-hof.multi-reduce-initial
 type: mcq_multi
-difficulty: 4
+difficulty: 3
 concepts:
   - { id: js.arr.reduce, weight: 1 }
 tags: [reduce, initial-value, empty-array, typeerror]
@@ -50,5 +50,6 @@ explanation: |
   그래서 초기값은 항상 적는 것이 안전해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

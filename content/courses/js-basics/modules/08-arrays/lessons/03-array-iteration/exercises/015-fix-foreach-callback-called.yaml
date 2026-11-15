@@ -72,5 +72,6 @@ explanation: |
   `guests.forEach((name) => printLine(name));`처럼 화살표 함수로 감싸도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

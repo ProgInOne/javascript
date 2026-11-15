@@ -76,5 +76,6 @@ explanation: |
   인덱스 반복 `for (let i = 0; i < prices.length; i++) { total += prices[i]; }`로 고쳐도 정답이에요. 빈 배열이면 반복이 한 번도 돌지 않아 `0`이 그대로 돌아가요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -81,5 +81,6 @@ explanation: |
   - 반복과 `push`로 새 배열을 만들어도 정답이에요. 다만 `shoppingList`에서 `splice`로 지우면 입력 배열이 바뀌어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -113,5 +113,6 @@ explanation: |
   - **찾을 태그**: `tag`도 `trim().toLowerCase()`로 정리해야 `" VUE "`가 `"vue"`와 같아져요. 결과 문장에도 정리한 태그를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

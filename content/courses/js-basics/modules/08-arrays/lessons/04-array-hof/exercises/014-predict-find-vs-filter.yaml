@@ -46,5 +46,6 @@ explanation: |
   - 7번 줄: 못 찾은 `find`는 `-1`이 아니라 `undefined`를 돌려줘요. `undefined === -1`은 `false`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -96,5 +96,6 @@ explanation: |
   - 한 줄만 고치면 안 돼요. `unshift`만 바꾸고 `shift`를 그대로 두면, 방금 넣은 상품을 바로 지워 버려요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

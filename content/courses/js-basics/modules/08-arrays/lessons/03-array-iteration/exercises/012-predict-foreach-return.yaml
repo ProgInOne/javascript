@@ -55,5 +55,6 @@ explanation: |
   첫 번째를 찾고 멈추려면 `for (const n of nums) { if (n < 0) { return n; } }`처럼 `for...of` 안에서 `return`해요. 이때는 `findFirstNegative` 자체가 끝나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

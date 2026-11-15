@@ -98,5 +98,6 @@ explanation: |
   - `for (let i = 0; i < names.length; i++)`와 `push`로 써도 정답이에요. 다음 단원의 `map`은 이 일을 한 줄로 해 줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

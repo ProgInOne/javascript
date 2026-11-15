@@ -59,5 +59,6 @@ explanation: |
   - 나누는 수는 점수의 개수 `scores.length`예요. `3`으로 고정하면 첫 반은 90으로 맞지만 두 번째 반은 `145 / 3`이 되어 틀려요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

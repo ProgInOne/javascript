@@ -44,5 +44,6 @@ explanation: |
   `splice(2, 1, "가을")`로 쓰면 `"겨울"` 1개를 지우고 그 자리에 넣어서 `["봄", "여름", "가을"]`이 돼요. `playlist[2] = "가을"`도 `"겨울"`을 덮어써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

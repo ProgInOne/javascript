@@ -67,5 +67,6 @@ explanation: |
   - `splice`와 `slice`는 이름이 비슷하지만, `splice`는 원본에서 지우고 `slice`는 복사만 해요. 화면에 보여 주기만 할 값은 원본을 바꾸지 않는 메서드로 만들어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -53,5 +53,6 @@ explanation: |
   - `"월화수"`처럼 문자열 하나로 쓰면 `week[2]`는 `수`지만 `length`는 3, `week`는 배열이 아니라 문자열이라 숨김 체크를 통과하지 못해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

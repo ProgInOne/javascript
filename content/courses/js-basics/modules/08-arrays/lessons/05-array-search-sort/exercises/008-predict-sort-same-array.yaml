@@ -43,5 +43,6 @@ explanation: |
   `scores`를 들어온 순서 그대로 남기고 싶었다면 `const ranking = scores.slice().sort((a, b) => b - a);`처럼 복사본을 정렬해야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

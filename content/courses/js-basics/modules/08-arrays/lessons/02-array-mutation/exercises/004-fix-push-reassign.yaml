@@ -64,5 +64,6 @@ explanation: |
   `push`처럼 원래 배열을 바꾸는 메서드는 결과를 담지 않고 한 줄로 불러요. 바뀐 배열은 `todos` 자신이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

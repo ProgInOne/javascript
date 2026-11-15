@@ -98,5 +98,6 @@ explanation: |
   `forEach`를 그대로 두고 바깥 변수 `let found = false;`를 콜백 안에서 `true`로 바꾼 뒤 마지막에 `return found;`해도 결과는 맞아요. 다만 음수를 찾은 뒤에도 끝까지 돌아요. 다음 단원에서 배울 `some`은 이 일을 한 줄로 해 줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

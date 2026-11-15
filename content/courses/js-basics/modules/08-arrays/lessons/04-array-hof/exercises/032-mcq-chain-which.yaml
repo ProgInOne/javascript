@@ -40,5 +40,6 @@ explanation: |
   - 중괄호 본문의 `map`을 쓴 식: 콜백이 값을 돌려주지 않아 `[undefined, undefined, undefined]`가 되고, `undefined > 2`는 거짓이라 `[]`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

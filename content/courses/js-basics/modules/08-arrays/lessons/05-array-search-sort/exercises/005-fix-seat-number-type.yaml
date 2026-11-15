@@ -69,5 +69,6 @@ explanation: |
   - 예약 번호를 모두 문자열로 바꿔 이어 붙인 뒤 문자열 `includes`로 찾으면, `"2"`를 입력했을 때 `25`의 일부를 찾아 예약됐다고 잘못 판단해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
