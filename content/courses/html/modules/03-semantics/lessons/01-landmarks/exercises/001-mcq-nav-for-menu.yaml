@@ -33,5 +33,6 @@ explanation: |
   - `footer`는 꼬리말, `main`은 페이지의 핵심 내용, `article`은 독립된 글이라 메뉴의 뜻과 맞지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

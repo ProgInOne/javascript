@@ -40,5 +40,6 @@ explanation: |
   - 그림이 잘 보일 때 `alt`는 화면에 나오지 않아요. 항상 보이는 캡션은 다른 요소로 만들어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -47,5 +47,6 @@ explanation: |
   본문(body)에는 "이번 주 금요일은 체육대회예요."만 보여요. 본문에도 큰 제목을 보이고 싶다면 body 안에 `<h1>우리 반 소식</h1>`을 따로 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

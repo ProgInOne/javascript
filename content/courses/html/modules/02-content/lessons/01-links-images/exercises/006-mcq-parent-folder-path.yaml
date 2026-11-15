@@ -1,6 +1,6 @@
 id: html.content.links-images.mcq-parent-folder-path
 type: mcq_single
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: html.content.paths, weight: 1 }
 tags: [path, relative-path, parent-folder]
@@ -49,5 +49,6 @@ explanation: |
   - `blog/images/logo.png`는 blog 안에서 blog를 또 찾아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: html.basics.how-web-works.mcq-tags-not-shown
 type: mcq_single
-difficulty: 2
+difficulty: 1
 concepts:
   - { id: html.web.rendering, weight: 1 }
 tags: [rendering, tags]
@@ -42,5 +42,6 @@ explanation: |
   코드가 그대로 보이거나 태그 이름이 남는다고 생각했다면, 태그가 브라우저에게 주는 표시라는 점을 다시 떠올려 보세요. 화면에는 태그 사이의 내용만 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -46,5 +46,6 @@ explanation: |
   "수량 확인"에 `submit`을 쓰거나 type을 아예 빼면, 수량만 확인하려다 주문이 보내져 버려요. form 안의 button은 type을 쓰지 않으면 submit이기 때문이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

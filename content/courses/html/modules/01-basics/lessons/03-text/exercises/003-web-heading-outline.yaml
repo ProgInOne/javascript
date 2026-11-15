@@ -133,5 +133,6 @@ explanation: |
   CSS로 크기만 키운 `p`는 화면에서 제목처럼 보여도 브라우저에게는 그냥 문단이에요. 제목 요소로 바꾸면 기본 스타일만으로도 크기가 단계별로 달라지고, 화면 낭독기가 목차를 읽을 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

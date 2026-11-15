@@ -112,5 +112,6 @@ explanation: |
   나중에 단계를 끼워 넣어도 번호를 고칠 필요가 없다는 것이 목록 요소의 장점이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

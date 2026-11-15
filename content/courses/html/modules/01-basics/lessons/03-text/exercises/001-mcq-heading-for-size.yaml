@@ -39,5 +39,6 @@ explanation: |
   중요한 안내라면 `<p><strong>오늘의 빵은 오후 3시에 나와요</strong></p>`처럼 `strong`으로 중요하다는 뜻을 더할 수도 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

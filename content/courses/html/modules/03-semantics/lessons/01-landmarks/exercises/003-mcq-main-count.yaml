@@ -44,5 +44,6 @@ explanation: |
   (구매 후기 하나하나는 독립된 글이라 section 안에서 각각 `article`로 감쌀 수도 있어요.)
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

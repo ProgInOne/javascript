@@ -42,5 +42,6 @@ explanation: |
   태그는 꺾쇠로 감싼 표시 하나하나이고, 요소는 그 태그와 내용을 모두 합친 전체예요. "여는 태그"를 골랐다면 태그와 요소를 같은 것으로 생각한 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

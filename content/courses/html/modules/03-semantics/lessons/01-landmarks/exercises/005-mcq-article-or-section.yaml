@@ -17,7 +17,6 @@ spec:
       rationale: section은 한 문서 안의 주제별 구역이에요. 혼자서도 뜻이 통하는 독립된 글은 article이에요.
     - id: c
       text: "`div`"
-      misconception: html.mc.div-is-wrong
       rationale: 기사 한 편은 "독립된 글"이라는 뜻이 분명해요. 뜻이 있는 묶음에는 시맨틱 요소를 써요.
     - id: d
       text: "`header`"
@@ -38,5 +37,6 @@ explanation: |
   - `header`는 머리말이에요. 기사의 제목과 기자 이름 부분만 article 안에서 header로 감쌀 수는 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

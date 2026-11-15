@@ -1,6 +1,6 @@
 id: html.content.lists-tables.web-exercise-table
 type: web_task
-difficulty: 4
+difficulty: 3
 concepts:
   - { id: html.content.tables, weight: 1 }
   - { id: html.doc.nesting, weight: 0.3 }
@@ -161,5 +161,6 @@ explanation: |
   `thead`를 빼면 제목 행 체크가 실패해요(브라우저는 빠진 `tbody`는 채워 주지만 `thead`는 채워 주지 않아요).
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

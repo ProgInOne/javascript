@@ -133,7 +133,7 @@ misconceptions: [html.mc.semantic-is-style]
 hints:
   - 레슨의 표에서 머리말, 주요 메뉴, 핵심 내용, 꼬리말을 뜻하는 요소를 찾아보세요.
   - "`top` → `header`, `menu` → `nav`처럼 각 div의 여는 태그와 닫는 태그를 함께 바꿔요."
-  - "나머지 둘은 `main`과 `footer`예요. 닫는 태그 `</div>`도 짝에 맞게 `</nav>`, `</header>` 등으로 바꿨는지 확인하세요."
+  - "핵심 내용은 \"주요한\"이라는 뜻의 영어 낱말, 꼬리말은 머리말(header)의 짝이 되는 낱말이 요소 이름이에요. 닫는 태그 `</div>`도 짝에 맞게 바꿨는지 들여쓰기로 확인하세요."
 explanation: |
   예시 정답은 네 개의 `div`를 이렇게 바꾸는 거예요.
 
@@ -163,5 +163,6 @@ explanation: |
   닫는 태그를 바꾸지 않아 `<header>...</div>`처럼 짝이 맞지 않으면, 브라우저가 구조를 추측해서 고치면서 체크가 실패할 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

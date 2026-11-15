@@ -37,5 +37,6 @@ explanation: |
   - 행마다 맨 앞에 이름표가 있는 표에서는 tbody 안에도 th를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

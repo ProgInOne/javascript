@@ -38,5 +38,6 @@ explanation: |
   - 꺾쇠 바로 뒤에는 요소 이름이 와야 해요. `<title=...`처럼 쓰면 브라우저가 요소 이름을 알아볼 수 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

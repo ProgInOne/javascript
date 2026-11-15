@@ -34,5 +34,6 @@ explanation: |
   - footer는 화면에 보이는 요소예요. head처럼 숨겨지는 곳이 아니라 body 안에 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -36,5 +36,6 @@ explanation: |
   - 값을 계산해서 화면에 보여 주는 동작은 HTML이 아니라 JavaScript나 서버의 몫이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

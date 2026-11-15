@@ -52,5 +52,6 @@ explanation: |
   속성은 여는 태그 안, 요소 이름 `a` 뒤에 공백을 두고 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

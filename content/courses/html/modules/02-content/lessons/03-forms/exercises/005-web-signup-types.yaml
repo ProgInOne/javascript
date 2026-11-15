@@ -12,7 +12,7 @@ prompt: |
   - 비밀번호가 화면에 그대로 보여요.
   - 나이 칸에 글자를 써도 받아 줘요.
 
-  세 입력칸의 `type`을 받을 값에 맞게 바꿔서 세 문제를 모두 고치세요. 다른 속성과 `label`은 그대로 두세요. (올바른 값으로 가입하기를 누르면 폼이 보내지면서 미리보기가 빈 화면이 돼요. 실제 전송은 막혀 있으니 다시 실행하면 돼요.)
+  세 입력칸의 `type`을 받을 값에 맞게 바꿔서 세 문제를 모두 고치세요. 다른 속성과 `label`은 그대로 두세요. (미리보기는 폼을 실제로 전송하지 않아요. 가입하기를 누른 뒤 미리보기 모양이 바뀌면 다시 실행하세요.)
 spec:
   focus: html
   starter:
@@ -103,7 +103,7 @@ misconceptions: [html.mc.input-type-looks-only]
 hints:
   - 받을 값의 종류를 정하는 속성이 바로 `type`이에요. 세 칸은 각각 어떤 종류의 값을 받나요?
   - 레슨의 type 표에서 "이메일 검사", "글자 가리기", "숫자만 받기"를 해 주는 값을 찾아보세요.
-  - "각각 `email`, `password`, `number`예요. `type=\"text\"`의 `text`를 바꾸면 돼요."
+  - "`type=\"text\"`의 `text`만 바꾸면 돼요. 세 값 모두 받을 값의 종류를 뜻하는 영어 낱말이에요(이메일, 비밀번호, 숫자)."
 explanation: |
   예시 정답은 세 입력칸의 `type`을 이렇게 바꾸는 거예요.
 
@@ -120,5 +120,6 @@ explanation: |
   JavaScript 없이 속성 하나만 바꿔도 이만큼 달라져요. 고친 뒤 미리보기에서 직접 입력해 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

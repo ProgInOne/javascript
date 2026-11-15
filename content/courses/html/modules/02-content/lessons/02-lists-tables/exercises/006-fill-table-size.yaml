@@ -44,7 +44,7 @@ spec:
 hints:
   - 행(가로줄) 하나를 만드는 요소가 무엇이었는지 떠올리고, 그 요소의 개수를 세어 보세요.
   - "`tr`은 thead에 1개, tbody에 몇 개 있나요? 열은 한 행 안의 칸 수예요."
-  - 제목 행 1개 + 데이터 행 3개, 그리고 각 행의 칸(th 또는 td)은 2개씩이에요.
+  - 행 수는 thead와 tbody에 있는 `tr`을 모두 더한 수예요. 열 수는 `tr` 하나 안에 든 칸(`th` 또는 `td`)의 수예요.
 explanation: |
   정답은 **4행 2열**이에요.
 
@@ -54,5 +54,6 @@ explanation: |
   열을 만드는 요소는 따로 없고, 같은 위치의 칸들이 모여 열이 돼요. 그래서 행마다 칸 수를 같게 맞춰야 표가 반듯해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

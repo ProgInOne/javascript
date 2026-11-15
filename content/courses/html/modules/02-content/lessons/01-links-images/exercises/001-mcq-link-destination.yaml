@@ -38,5 +38,6 @@ explanation: |
   링크 글자가 주소라고 생각했다면, 속성(브라우저에게 주는 정보)과 내용(화면에 보이는 글자)을 다시 구분해 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

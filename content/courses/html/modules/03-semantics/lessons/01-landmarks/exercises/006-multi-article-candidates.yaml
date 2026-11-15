@@ -41,5 +41,6 @@ explanation: |
   - "재료" 부분: 레시피 안의 주제별 구역이라 `section`이 어울려요. 혼자 떼어 내면 무슨 요리인지 알 수 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

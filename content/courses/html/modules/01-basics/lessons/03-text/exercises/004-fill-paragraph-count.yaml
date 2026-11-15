@@ -1,0 +1,43 @@
+id: html.basics.text.fill-paragraph-count
+type: fill_blank
+difficulty: 1
+concepts:
+  - { id: html.text.paragraphs, weight: 1 }
+tags: [paragraphs, whitespace]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 브라우저로 열면 화면에 문단이 몇 개로 보이나요? 빈칸에 숫자를 쓰세요.
+code: |
+  <p>
+    오늘은 비가 와요.
+
+    우산을 챙기세요.
+  </p>
+  <p>내일은 맑아요.</p>
+spec:
+  mode: text
+  template: |
+    화면에 보이는 문단의 수: {{blank:count}}개
+  blanks:
+    - id: count
+      accept: ["2"]
+      width: 3
+      misconceptionMap:
+        "3": html.mc.newline-in-source
+misconceptions: [html.mc.newline-in-source]
+hints:
+  - 화면의 문단을 나누는 것은 코드의 빈 줄일까요, 요소일까요?
+  - 코드의 줄바꿈과 빈 줄은 화면에서 공백 한 칸으로 합쳐져요. 그렇다면 첫째 `p` 안의 두 문장은 몇 문단일까요?
+  - 문단은 `p` 요소의 수만큼 생겨요. 코드에 `p` 요소가 몇 개 있는지 세어 보세요.
+explanation: |
+  정답은 **2개**예요.
+
+  - 첫째 `p` 안에서 "오늘은 비가 와요."와 "우산을 챙기세요." 사이에 빈 줄이 있지만, 브라우저는 줄바꿈과 빈 줄을 **공백 한 칸**으로 합쳐요. 그래서 두 문장은 "오늘은 비가 와요. 우산을 챙기세요."라는 한 문단으로 보여요.
+  - 둘째 `p`가 또 하나의 문단이에요.
+
+  3개라고 생각했다면 코드의 빈 줄에서 문단이 나뉜다고 오해한 거예요. 문단은 `p` 요소의 수만큼 생겨요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

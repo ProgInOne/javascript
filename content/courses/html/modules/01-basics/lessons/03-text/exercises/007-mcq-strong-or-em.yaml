@@ -38,5 +38,6 @@ explanation: |
   - "굵게만 보이면 된다"는 틀렸어요. 굵은 모양은 strong의 기본 스타일일 뿐이고, 화면 낭독기 사용자에게 전해지는 것은 "중요하다"는 뜻이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

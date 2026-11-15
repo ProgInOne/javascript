@@ -30,5 +30,6 @@ explanation: |
   `<p>`를 한 번 더 쓰면 요소를 닫는 것이 아니라 새 문단을 여는 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -34,5 +34,6 @@ explanation: |
   - JavaScript가 없어도 submit 버튼은 폼을 보내요. 아무 일도 하지 않는 버튼을 만들려면 `type="button"`을 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

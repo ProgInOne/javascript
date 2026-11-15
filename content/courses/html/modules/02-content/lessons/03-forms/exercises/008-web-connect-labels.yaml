@@ -1,6 +1,6 @@
 id: html.content.forms.web-connect-labels
 type: web_task
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: html.forms.labels, weight: 1 }
   - { id: html.doc.attributes, weight: 0.3 }
@@ -122,5 +122,6 @@ explanation: |
   label이 input보다 뒤에 있어도 괜찮아요. 연결은 위치가 아니라 `for`와 `id`(또는 감싸기)로 정해져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

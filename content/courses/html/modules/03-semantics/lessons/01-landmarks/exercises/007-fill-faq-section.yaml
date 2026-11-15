@@ -64,5 +64,6 @@ explanation: |
   `div`도 브라우저에서는 똑같이 보이지만, "주제별 구역"이라는 뜻이 사라져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

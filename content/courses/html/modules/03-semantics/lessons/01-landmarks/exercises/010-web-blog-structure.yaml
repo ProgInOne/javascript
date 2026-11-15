@@ -135,7 +135,7 @@ misconceptions: [html.mc.div-is-wrong, html.mc.section-article-same]
 hints:
   - 세 종류의 묶음마다 "이 묶음에 붙일 이름(핵심 내용, 독립된 글)이 있는가?"를 물어보세요.
   - 핵심 내용 전체는 `main`, 혼자서도 뜻이 통하는 글은 `article`이에요. 배치만을 위한 상자에는 이름이 없어요.
-  - "`div class=\"page\"`는 `main class=\"page\"`로, 두 `div class=\"post\"`는 `article class=\"post\"`로 바꾸고, `post-row`는 그대로 둬요. 닫는 태그도 짝을 맞추세요."
+  - "여는 태그에서는 `div`라는 이름만 바꾸고 `class=\"...\"`는 그대로 남겨요. `post-row`는 바꾸지 않아요. 어느 `</div>`가 어느 여는 태그의 짝인지 들여쓰기로 확인해서 닫는 태그도 맞춰 바꾸세요."
 explanation: |
   예시 정답은 이래요.
 
@@ -151,10 +151,11 @@ explanation: |
 
   - **`page` → `main`**: 이 페이지의 핵심 내용 전체예요.
   - **`post` → `article`**: 글 한 편은 따로 떼어 내도 뜻이 통하는 독립된 글이에요. `section`은 문서 안의 주제별 구역이라 맞지 않아요.
-  - **`post-row`는 `div` 그대로**: 두 글을 가로로 놓으려는 배치용 상자일 뿐 뜻이 없어요. 이 상자를 `section` 등으로 바꾸면 화면 낭독기에 이름 없는 구역이 생겨요. div를 없애야 좋은 HTML이 되는 것이 아니에요.
+  - **`post-row`는 `div` 그대로**: 두 글을 가로로 놓으려는 배치용 상자일 뿐 뜻이 없어요. 이 상자를 `article`로 바꾸면 화면 낭독기가 글이 하나 더 있다고 알리고, `section`으로 바꾸면 있지도 않은 "주제별 구역"이라는 뜻이 붙어요. div를 없애야 좋은 HTML이 되는 것이 아니에요.
 
   `class`를 그대로 두었기 때문에 CSS도 그대로 적용되어, 화면은 바꾸기 전과 똑같아요. 시맨틱 요소는 뜻만 바꾸고 모양은 바꾸지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

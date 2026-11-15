@@ -102,5 +102,6 @@ explanation: |
   `<br>`로 줄만 바꾸면 화면에서는 줄이 바뀌지만 여전히 한 문단이라 이 문제의 체크를 통과하지 못해요. `<br>`는 주소나 시의 행처럼 줄바꿈 자체가 내용일 때 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

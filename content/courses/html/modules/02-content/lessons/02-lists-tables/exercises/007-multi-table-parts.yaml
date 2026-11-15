@@ -35,5 +35,6 @@ explanation: |
   - `tr`(table row)은 가로줄이에요. 세로줄(열)은 각 행의 같은 위치 칸이 모여 생겨요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

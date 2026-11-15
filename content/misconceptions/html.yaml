@@ -82,7 +82,7 @@
   diagnosticHint: "`<p>`를 닫지 않고 다음 `<p>`를 열었을 때 문단이 하나인지 둘인지 생각해 본다."
   remediation:
     lessonSection: html.basics.document#pitfalls
-    exercises: [html.basics.document.tf-dom-is-source]
+    exercises: [html.basics.document.fill-dom-repair]
 
 # ---- html.basics.text ----
 
@@ -114,7 +114,7 @@
   diagnosticHint: 화면에서 줄이 바뀐 곳마다 그 자리를 나누는 요소가 있는지 확인한다.
   remediation:
     lessonSection: html.basics.text#pitfalls
-    exercises: [html.basics.text.tf-newline-in-source, html.basics.text.mcq-whitespace-render]
+    exercises: [html.basics.text.fill-paragraph-count, html.basics.text.mcq-whitespace-render]
 
 - id: html.mc.strong-is-bold
   concept: html.text.emphasis
@@ -166,7 +166,7 @@
   diagnosticHint: 그림 요소가 화면에 보여 줄 "내용"은 글자가 아니라 그림 파일이라는 점을 떠올린다.
   remediation:
     lessonSection: html.content.links-images#pitfalls
-    exercises: [html.content.links-images.tf-img-content]
+    exercises: [html.content.links-images.fill-img-alt]
 
 # ---- html.content.lists-tables ----
 
@@ -178,7 +178,7 @@
   diagnosticHint: 항목들을 묶는 "목록 상자"가 코드 어디에 있는지 찾아본다.
   remediation:
     lessonSection: html.content.lists-tables#pitfalls
-    exercises: [html.content.lists-tables.tf-li-alone, html.content.lists-tables.web-recipe-steps]
+    exercises: [html.content.lists-tables.fill-wrap-list, html.content.lists-tables.web-recipe-steps]
 
 - id: html.mc.th-is-bold-td
   concept: html.content.tables
@@ -200,7 +200,7 @@
   diagnosticHint: 휴대폰에서 이메일 칸과 숫자 칸을 눌렀을 때 키보드가 어떻게 다른지 떠올린다.
   remediation:
     lessonSection: html.content.forms#pitfalls
-    exercises: [html.content.forms.multi-type-effects]
+    exercises: [html.content.forms.multi-type-effects, html.content.forms.fill-email-type]
 
 - id: html.mc.label-just-text
   concept: html.forms.labels
@@ -272,4 +272,4 @@
   diagnosticHint: 그 묶음에 붙일 "이름"(머리말, 메뉴, 독립된 글 등)이 있는지 생각해 본다. 없으면 div다.
   remediation:
     lessonSection: html.semantics.landmarks#pitfalls
-    exercises: [html.semantics.landmarks.tf-div-is-wrong, html.semantics.landmarks.mcq-div-when]
+    exercises: [html.semantics.landmarks.fill-layout-div, html.semantics.landmarks.mcq-div-when]

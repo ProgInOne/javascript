@@ -42,5 +42,6 @@ explanation: |
   `h5`를 고른 경우: 단계를 건너뛰었어요. 목차를 훑는 사람은 h3, h4가 빠졌다고 오해해요. 크기가 마음에 들지 않으면 단계는 그대로 두고 CSS로 크기를 바꿔요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

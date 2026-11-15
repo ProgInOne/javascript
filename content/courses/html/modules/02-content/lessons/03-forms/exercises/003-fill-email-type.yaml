@@ -1,0 +1,40 @@
+id: html.content.forms.fill-email-type
+type: fill_blank
+difficulty: 1
+concepts:
+  - { id: html.forms.inputs, weight: 1 }
+tags: [input, type, email]
+estimatedSeconds: 40
+prompt: |
+  뉴스레터 신청 폼에 이메일 주소를 받는 칸을 만들고 있어요. `@`가 빠진 주소는 폼을 보내기 전에 브라우저가 알려 주면 좋겠어요. 빈칸에 알맞은 `type` 값을 쓰세요.
+spec:
+  mode: text
+  template: |
+    <form action="/subscribe">
+      <label for="email">이메일</label>
+      <input id="email" name="email" type="{{blank:type}}" />
+      <button type="submit">신청하기</button>
+    </form>
+  blanks:
+    - id: type
+      accept: ["email"]
+      caseSensitive: false
+      width: 10
+      misconceptionMap:
+        "text": html.mc.input-type-looks-only
+misconceptions: [html.mc.input-type-looks-only]
+hints:
+  - input의 `type`은 받을 값의 종류를 정해요. 이 칸은 어떤 종류의 값을 받나요?
+  - 받을 값에 맞는 type을 고르면 브라우저가 입력값의 형식을 검사해 줘요.
+  - 받을 값의 종류를 뜻하는 영어 낱말이 그대로 type 값이 되는 경우가 많아요.
+explanation: |
+  정답은 **`email`**이에요.
+
+  `type="email"`이면 폼을 보내기 전에 브라우저가 `@`가 있는 이메일 모양인지 검사하고, 휴대폰에서는 `@` 키가 있는 자판을 보여 줘요. JavaScript 없이 속성 값 하나로 생기는 기능이에요.
+
+  `text`를 쓰면 겉보기는 비슷하지만 어떤 글자든 그대로 받아서 `@`가 없어도 검사하지 않아요. type이 모양만 바꾼다고 생각하면 이 차이를 놓쳐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

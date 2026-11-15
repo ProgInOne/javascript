@@ -63,6 +63,7 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 | [v0.1 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-v0.1-content-review.md) | 레슨 4개, 문제 56개 (`css.box.model`, `js-basics.start`, `js-basics.values.variables`) |
 | [JS 기초 모듈 2·4 검토 (2026-11-15)](/docs/reviews/2026-11-15-m5-js-modules-2-4-review.md) | 레슨 6개, 문제 94개 (`js-basics.values`의 data-types·null-undefined·var-and-tdz, `js-basics.control`) |
 | [JS 기초 모듈 3 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-m5-js-module-3-review.md) | 레슨 6개, 문제 134개 (`js-basics.operators`) |
+| [M5 HTML 핵심 검토 (2026-11-15)](/docs/reviews/2026-11-15-m5-html-core-review.md) | 레슨 7개, 문제 61개 (`html` 과정 전체) |
 
 ## 예정 문서
 

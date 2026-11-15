@@ -34,5 +34,6 @@ explanation: |
   - placeholder는 form 안에서도 쓸 수 있어요. 다만 `예: 김하늘`처럼 입력 예시에 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

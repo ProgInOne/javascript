@@ -35,5 +35,6 @@ explanation: |
   이 두 가지는 순서가 중요한 목록이라 `ol`로 써요. ul과 ol은 글머리 기호냐 번호냐는 모양이 아니라, 순서가 뜻을 가지는지로 골라요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

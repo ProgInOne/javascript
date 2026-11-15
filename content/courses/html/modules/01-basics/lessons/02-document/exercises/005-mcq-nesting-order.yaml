@@ -37,5 +37,6 @@ explanation: |
   나머지 선택지는 모두 태그가 엇갈려 있어요. 화면이 비슷하게 나오더라도, 브라우저가 추측해서 구조를 고친 것이라 의도와 다른 DOM 트리가 만들어질 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

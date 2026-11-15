@@ -39,5 +39,6 @@ explanation: |
   - 글자 색과 크기 바꾸기: 모양은 **CSS**의 몫이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

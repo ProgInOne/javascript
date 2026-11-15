@@ -37,5 +37,6 @@ explanation: |
   - div가 낡아서 쓰면 안 된다는 생각은 틀렸어요. 오히려 뜻 없는 묶음에 시맨틱 요소를 쓰면 화면 낭독기에 엉뚱한 구역이 생겨요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

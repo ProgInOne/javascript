@@ -59,5 +59,6 @@ explanation: |
   - `head`는 body 안에 있지 않아요. html의 자식이고, body와 같은 부모를 둔 **형제**예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

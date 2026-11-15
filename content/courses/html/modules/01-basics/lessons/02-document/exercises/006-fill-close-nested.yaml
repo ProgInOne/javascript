@@ -1,6 +1,6 @@
 id: html.basics.document.fill-close-nested
 type: fill_blank
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: html.doc.nesting, weight: 1 }
   - { id: html.doc.elements, weight: 0.3 }
@@ -53,5 +53,6 @@ explanation: |
   body → p → strong 순서로 열었으니, 가장 안쪽(나중에 연) strong부터 닫고 p, body 순서로 닫아요. 순서를 바꾸면 태그가 엇갈려서 잘못된 중첩이 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

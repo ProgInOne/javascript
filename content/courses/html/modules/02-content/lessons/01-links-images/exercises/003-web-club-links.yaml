@@ -1,6 +1,6 @@
 id: html.content.links-images.web-club-links
 type: web_task
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: html.content.links, weight: 1 }
   - { id: html.content.paths, weight: 0.5 }
@@ -17,7 +17,7 @@ prompt: |
   | 가입 신청 | 같은 폴더의 `join.html` |
   | 사진 강좌 | 외부 사이트 `https://www.example.com/photo-class` |
 
-  링크 글자는 바꾸지 마세요. (미리보기에서 링크를 누르면 빈 화면이 돼요. 그럴 때는 다시 실행하세요.)
+  링크 글자는 바꾸지 마세요. (미리보기는 다른 페이지로 이동하지 않아요. 링크를 누른 뒤 미리보기 모양이 바뀌면 다시 실행하세요.)
 spec:
   focus: html
   starter:
@@ -115,5 +115,6 @@ explanation: |
   `a`는 `p` 안에 넣어요. `<a><p>...</p></a>`처럼 문단 전체를 감싸도 링크는 되지만, 이 문제에서는 문단 안의 글자를 링크로 만드는 것이 요구사항이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

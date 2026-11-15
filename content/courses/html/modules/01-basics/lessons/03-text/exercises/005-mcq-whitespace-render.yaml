@@ -44,5 +44,6 @@ explanation: |
   - 세 항목을 나눠 보이고 싶다면 문단을 나누거나(`p` 여러 개), "목록과 표" 단원에서 배우는 목록 요소를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

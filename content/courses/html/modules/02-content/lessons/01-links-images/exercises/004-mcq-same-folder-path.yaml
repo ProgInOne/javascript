@@ -41,5 +41,6 @@ explanation: |
   - `https://menu.html`: 다른 사이트의 주소처럼 읽혀요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

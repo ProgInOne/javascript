@@ -35,5 +35,6 @@ explanation: |
   실제 페이지에서는 세 언어가 함께 쓰여요. HTML로 버튼을 만들고, CSS로 꾸미고, JavaScript로 누를 때의 동작을 붙여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

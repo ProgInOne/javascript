@@ -14,7 +14,7 @@ prompt: |
   1. 입력칸과 버튼을 **폼**으로 묶어서, 폼을 보내면 검색어가 `/search` 주소로 가게 하세요.
   1. 서버가 검색어를 알아볼 수 있게, 입력칸의 값에 `q`라는 **이름**을 붙이세요.
 
-  `label`, 입력칸의 `id`와 `type`, 버튼은 그대로 두세요. (고친 뒤 미리보기에서 검색 버튼을 누르면 폼이 보내지면서 빈 화면이 돼요. 실제 전송은 막혀 있으니 다시 실행하면 돼요.)
+  `label`, 입력칸의 `id`와 `type`, 버튼은 그대로 두세요. (미리보기는 폼을 실제로 전송하지 않아요. 검색 버튼을 누른 뒤 미리보기 모양이 바뀌면 다시 실행하세요.)
 spec:
   focus: html
   starter:
@@ -97,7 +97,7 @@ spec:
 hints:
   - 여러 입력 요소를 묶어서 한꺼번에 보내는 상자 요소가 있어요. 보낼 주소는 그 요소의 속성으로 정해요.
   - "`form` 요소로 label, input, button을 모두 감싸고, `action` 속성에 보낼 주소를 써요. 값의 이름은 input의 `name` 속성이에요."
-  - "`<form action=\"/search\">`와 `</form>` 사이에 세 요소를 넣고, input에 `name=\"q\"`를 추가해 보세요."
+  - "form의 여는 태그는 `label` 앞에, 닫는 태그는 `button` 뒤에 둬요. `action`의 값은 문제의 주소, input에 추가할 `name`의 값은 `q`예요."
 explanation: |
   예시 정답은 이래요.
 
@@ -114,5 +114,6 @@ explanation: |
   - **name**: 보낼 때 값에 붙는 이름이에요. `id`는 HTML 안에서 요소를 찾을 때(label 연결 등) 쓰고, 서버로 보낼 때의 이름은 `name`이에요. 둘이 같은 값이어도 괜찮아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

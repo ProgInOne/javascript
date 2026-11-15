@@ -41,5 +41,6 @@ explanation: |
   `<label>전화번호 <input type="tel" /></label>`처럼 label 안에 input을 넣어도 연결돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

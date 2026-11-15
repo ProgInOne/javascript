@@ -34,5 +34,6 @@ explanation: |
   - `lang`은 올바른 속성이에요. 브라우저가 요소를 무시하지 않고 "Hello"를 정상으로 그려요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

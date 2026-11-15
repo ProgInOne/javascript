@@ -36,5 +36,6 @@ explanation: |
   (한 번 방문한 페이지는 브라우저가 잠시 저장해 두기도 하지만, 처음 가 보는 사이트에는 해당하지 않아요.)
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

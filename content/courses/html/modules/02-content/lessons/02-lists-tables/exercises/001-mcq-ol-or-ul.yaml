@@ -37,5 +37,6 @@ explanation: |
   - 번호를 직접 쓴 문단은 겉보기만 목록이고 목록이라는 뜻이 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
