@@ -1,0 +1,11 @@
+id: js-basics.start.start-review
+title: 시작하기 단원 평가
+summary: 모듈 1에서 배운 console.log 출력을 확인합니다.
+kind: assessment
+estimatedMinutes: { read: 1, practice: 5 }
+concepts:
+  reviewed: [js.basics.console-log]
+objectives:
+  - console.log가 하는 일을 설명할 수 있다.
+assessment:
+  passRatio: 0.8

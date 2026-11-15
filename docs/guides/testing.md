@@ -35,6 +35,7 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 - **컴포넌트·화면**: Testing Library로 역할과 이름을 찾습니다(`getByRole('button', { name: '지금 백업' })`). 클래스나 테스트 ID로 찾지 않습니다. 화면 테스트는 `apps/web/src/test/render-app.tsx`로 실제 라우트 트리를 가짜 API와 함께 렌더링합니다.
 - **시간**: 날짜 경계나 보존 정책은 `now`를 주입해 테스트합니다. 실제 시계를 기다리지 않습니다.
 - 버그 수정에는 재현 테스트를 먼저 추가합니다.
+- **학습 시나리오(여러 날)**: 며칠에서 몇 주에 걸친 학습 규칙(복습 간격, 단계 게이트)은 `apps/server/src/test/practice-app.ts`의 `practiceApp()`(실제 임시 user.db, HTTP API, `clock.now`로 움직이는 가짜 시계, Asia/Seoul 학습자)으로 날마다 같은 시각(예: 19:00)에 세션을 돌려 테스트합니다. 예: `routes/simulation.test.ts`(30일), `routes/mastered-gate.test.ts`(3주 `mastered` 게이트). 성공 경로 하나를 두고, 조건 하나만 바꾼 변형마다 결과(단계, `nextStage.missing`)가 **그 조건 하나만** 빠졌음을 확인합니다. FSRS는 실제 ts-fsrs(퍼즈는 개념 ID로 시드)라 결정론적이므로 평가 날짜와 등급(`review_logs`)을 그대로 단언해 흐름이 바뀌면 바로 드러나게 합니다.
 - **AI**: 서비스 흐름은 `MockProvider`(시나리오 주입 `enqueue`, 요청 기록 `requests`)로 테스트합니다. Codex 어댑터는 실제 `codex app-server` 교환을 녹화해 재생하는 계약 테스트(`packages/ai/src/provider/codex/replay.test.ts`)와 가짜 `codex`(`fake-codex.mjs`)로 테스트하며, CI는 실제 Codex를 쓰지 않습니다. 다시 녹화하는 법은 [`@proginone/ai` README](/packages/ai/README.md#codex-프로토콜-계약-테스트)에 있습니다.
 - **콘텐츠 실행 검증**: `tools/content-cli`의 판정 로직은 가짜 러너(`src/test/fake-runner.ts`)로 테스트합니다. 실제 러너를 쓰는 `src/verify/browser.test.ts`는 Chromium이 없으면 건너뜁니다. 실제 `content/` 전체는 CI e2e 작업의 `pnpm content:check:run --frozen`이 검증합니다([콘텐츠 작성 가이드](/docs/guides/content-authoring.md#contentcheckrun-실행-검증)).
 
@@ -57,13 +58,14 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 | `tests/data-settings.spec.ts` | 설정 > 데이터 전용 서버에서 백업 → 데이터 변경 → 복원으로 복구, 학습 데이터 초기화(온보딩으로) → "초기화 전" 백업으로 되돌리기, 백업 위치 변경(잘못된 경로 거부, 새 위치에 증명 백업, 원래 위치로 복귀) |
 | `tests/journey.spec.ts` | 첫 실행 전용 서버에서 새 학습자의 흐름: 온보딩 → 빈 대시보드 → 첫날(단원 연습) → 한 달(복습·약점, 테스트 시계) → 약점 집중 세트. 온보딩 목표 단계와 대시보드 빈·신규·장기 상태 시각 회귀 |
 | `tests/seed.ts` | API로 학습 기록 만들기: 실행이 필요 없는 문제는 답하고 나머지는 건너뛰어 세트를 끝냄, 하트비트로 학습 시간 |
+| `tests/mastered.spec.ts` | `mastered` 게이트 전용 서버에서 3주(테스트 시계): 단원 연습 → 숙련과 "숙달까지" 조건 목록 → 예정일 복습 → 1주 뒤 단원 평가 → 1주 뒤 다시 연습 → 개념 상세·개념 지도에 숙달 |
 | `tests/onboarded.setup.ts` | 준비 단계(`setup` 프로젝트): 주 서버의 학습자를 온보딩 완료 상태로 둠 |
 
 - 처음 한 번 `pnpm --filter @proginone/e2e exec playwright install chromium`으로 브라우저를 설치합니다.
-- **서버 세 개**: 주 서버(`E2E_PORT`), 첫 실행 전용 서버(`E2E_PORT + 1`, 데이터 위치 `E2E_JOURNEY_DATA_DIR`), 설정 > 데이터 전용 서버(`E2E_PORT + 2`, 데이터 위치 `E2E_DATA_SETTINGS_DIR`)를 띄웁니다. 주 서버의 학습자는 `setup` 프로젝트가 먼저 온보딩을 마친 상태로 만듭니다. 새 학습자가 필요한 테스트는 `test.use({ baseURL: process.env['E2E_JOURNEY_URL'] })`로 두 번째 서버를 씁니다(D-034). 복원·초기화·백업 위치 변경처럼 학습자 전체를 바꾸는 테스트는 `E2E_DATA_SETTINGS_URL`의 세 번째 서버를 씁니다(D-045).
+- **서버 네 개**: 주 서버(`E2E_PORT`), 첫 실행 전용 서버(`E2E_PORT + 1`, 데이터 위치 `E2E_JOURNEY_DATA_DIR`), 설정 > 데이터 전용 서버(`E2E_PORT + 2`, 데이터 위치 `E2E_DATA_SETTINGS_DIR`), `mastered` 게이트 전용 서버(`E2E_PORT + 3`, 데이터 위치 `E2E_MASTERY_DATA_DIR`, 주소 `E2E_MASTERY_URL`)를 띄웁니다. 주 서버의 학습자는 `setup` 프로젝트가 먼저 온보딩을 마친 상태로 만듭니다. 새 학습자가 필요한 테스트는 `test.use({ baseURL: process.env['E2E_JOURNEY_URL'] })`로 두 번째 서버를 씁니다(D-034). 복원·초기화·백업 위치 변경처럼 학습자 전체를 바꾸는 테스트는 `E2E_DATA_SETTINGS_URL`의 세 번째 서버를 씁니다(D-045).
 - 테스트는 서버를 공유하며 순서대로 실행됩니다(`workers: 1`). 앞 테스트가 만든 상태(예: 백업)를 뒤 테스트가 가정하지 않도록, 각 테스트는 필요한 상태를 직접 만들거나 확인합니다.
 - 샌드박스 테스트는 앱 화면이 아직 러너를 쓰지 않으므로, `packages/runner`의 호스트 모듈을 테스트에서 번들해 앱 페이지에 `page.evaluate`로 넣고 실행합니다(DevTools 평가는 페이지 CSP를 받지 않음). 앱 문서와 CSP, 서버의 `/sandbox/runner.html`, 셸·하네스는 모두 실제 프로덕션 빌드입니다. 공격 코드가 노린 요청이 서버에 닿았는지는 테스트가 띄운 탐지용 서버와 페이지의 응답 기록으로 확인합니다.
-- E2E 콘텐츠는 `e2e/fixtures/content`(문제는 draft로 저작, `includeDrafts`로 빌드)입니다. 예측 문제의 기대값은 `node tools/content-cli/src/cli.ts check --dir e2e/fixtures/content --run`으로 `.generated/predict-expected.json`에 기록해 커밋합니다. 실제 `content/`가 바뀌어도 E2E와 시각 기준 이미지가 흔들리지 않게 따로 둡니다.
+- E2E 콘텐츠는 `e2e/fixtures/content`(문제는 draft로 저작, `includeDrafts`로 빌드)입니다. 한 서버만 더 많은 콘텐츠가 필요하면 공유 콘텐츠를 바꾸지 않고 덮어쓰기 디렉터리를 둡니다(`buildFixtureContent(out, 'content-mastery')`: `e2e/fixtures/content-mastery`를 픽스처 위에 복사해 모듈 1 단원 평가를 더함, `mastered` 게이트 서버 전용). 예측 문제의 기대값은 `node tools/content-cli/src/cli.ts check --dir e2e/fixtures/content --run`으로 `.generated/predict-expected.json`에 기록해 커밋합니다. 실제 `content/`가 바뀌어도 E2E와 시각 기준 이미지가 흔들리지 않게 따로 둡니다.
 - **테스트 시계**: E2E 서버는 `PROGINONE_TEST_CLOCK_FILE=<데이터 위치>/clock-offset-ms`로 시작합니다. 서버의 학습 서비스(복습 일정, 하루 경계, 활동 시간)는 이 파일의 밀리초만큼 미래로 옮긴 시각을 씁니다(`tests/clock.ts`의 `shiftServerClock`). 학습 상태를 찍는 시각 회귀는 `setServerTime(고정 시각, 'journey')`으로 서버 시각을 고정해 날짜·요일이 실행일과 상관없이 같게 합니다. 이 환경 변수는 E2E 설정에서만 쓰며, 일반 실행에서는 설정하지 않습니다(설정되면 시작 로그에 경고).
 - 실패하면 `e2e/test-results/`의 트레이스를 `pnpm --filter @proginone/e2e exec playwright show-trace <trace.zip>`으로 엽니다.
 

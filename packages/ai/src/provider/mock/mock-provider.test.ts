@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { ProviderRequest } from '../types.ts';
-import { MOCK_SLOW_MARKER, MockProvider } from './mock-provider.ts';
+import { MOCK_SLOW_MARKER, MockProvider, SLOW_HOLD_BEFORE, SLOW_HOLD_MS } from './mock-provider.ts';
 
 const request = (question: string): ProviderRequest => ({
   taskName: 'tutor.reply',
@@ -28,6 +28,47 @@ describe('MockProvider slow marker', () => {
     await expect(run).rejects.toMatchObject({ code: 'AI_CANCELLED' });
     expect(deltas).toHaveLength(1);
     expect(Date.now() - started).toBeGreaterThanOrEqual(300);
+  });
+
+  describe('hold before the held sentence', () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('streams up to the held sentence, then waits for the cancel and keeps the partial text', async () => {
+      vi.useFakeTimers();
+      const mock = new MockProvider({ deltaDelayMs: 1 });
+      const controller = new AbortController();
+      let streamed = '';
+      const run = mock.run(request(`${MOCK_SLOW_MARKER} 천천히`), {
+        signal: controller.signal,
+        onDelta: (d) => {
+          streamed += d;
+        },
+      });
+      const settled = run.then(
+        () => 'resolved',
+        (e: unknown) => e,
+      );
+      // Long after the whole reply would have streamed, it stops short of the held sentence.
+      await vi.advanceTimersByTimeAsync(SLOW_HOLD_MS - 1_000);
+      expect(streamed).toContain('(모의 튜터) "[mock:slow] 천천히"에 대해 함께 생각해 볼게요.');
+      expect(streamed).not.toContain(SLOW_HOLD_BEFORE);
+      expect(streamed.length).toBeGreaterThanOrEqual(60);
+      controller.abort();
+      await vi.advanceTimersByTimeAsync(0);
+      expect(await settled).toMatchObject({ code: 'AI_CANCELLED', partialText: streamed });
+    });
+
+    it('finishes the reply after the hold when nobody cancels', async () => {
+      vi.useFakeTimers();
+      const mock = new MockProvider({ deltaDelayMs: 1 });
+      const run = mock.run(request(`${MOCK_SLOW_MARKER} 천천히`), {
+        signal: new AbortController().signal,
+      });
+      await vi.advanceTimersByTimeAsync(SLOW_HOLD_MS + 60_000);
+      expect((await run).text).toContain('한 문장으로 정리해 보세요');
+    });
   });
 
   it('keeps the normal pace without the marker', async () => {

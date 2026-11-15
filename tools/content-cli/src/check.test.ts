@@ -202,8 +202,58 @@ describe('checkContent: unit assessments', () => {
   it('accepts a declared assessment unit (only the item-count advice)', () => {
     const { diagnostics } = checkContent(writeContent(withAssessment));
     expect(diagnostics.items.map((d) => `${d.level} ${d.message}`)).toEqual([
-      'warning 단원 평가 문항은 10~20개를 권장합니다(지금 1개)',
+      'warning 단원 평가 한 번에 내는 문항은 10~20개를 권장합니다(지금 1개)',
     ]);
+  });
+
+  /** `n` assessment items in the unit (copies of the fixture item). */
+  const withPool = (f: Files, n: number) => {
+    const item = obj(f, REVIEW_EXERCISE_YAML);
+    for (let i = 1; i < n; i++) {
+      f[REVIEW_EXERCISE_YAML.replace(/\.yaml$/, `-${String(i)}.yaml`)] = {
+        ...item,
+        id: `${String(item['id'])}-${String(i)}`,
+      };
+    }
+  };
+  const countAdvice = (patch: (f: Files) => void) =>
+    checkContent(
+      writeContent((f) => {
+        withAssessment(f);
+        patch(f);
+      }),
+    )
+      .diagnostics.items.map((d) => d.message)
+      .filter((m) => m.startsWith('단원 평가 한 번에 내는 문항'));
+
+  it.each<[string, number, number | undefined, string[]]>([
+    ['a pool in range without itemCount', 12, undefined, []],
+    [
+      'a pool larger than one sitting, itemCount in range',
+      25,
+      15,
+      [], // retakes draw other items from the pool
+    ],
+    [
+      'a large pool with a small itemCount',
+      12,
+      5,
+      ['단원 평가 한 번에 내는 문항은 10~20개를 권장합니다(지금 5개)'],
+    ],
+    [
+      'a small pool without itemCount',
+      4,
+      undefined,
+      ['단원 평가 한 번에 내는 문항은 10~20개를 권장합니다(지금 4개)'],
+    ],
+    ['a pool over 20 without itemCount (the engine asks 20)', 24, undefined, []],
+  ])('advises on the items asked per sitting: %s', (_, pool, itemCount, expected) => {
+    expect(
+      countAdvice((f) => {
+        withPool(f, pool);
+        if (itemCount !== undefined) obj(f, REVIEW_YAML)['assessment'] = { itemCount };
+      }),
+    ).toEqual(expected);
   });
 
   it.each<[string, (f: Files) => void, string]>([

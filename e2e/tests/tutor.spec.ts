@@ -48,14 +48,25 @@ test.describe('tutor drawer (mock AI)', () => {
     const drawer = drawerOf(page);
     const input = drawer.getByRole('textbox', { name: '튜터에게 질문' });
     await expect(input).toBeFocused();
-    // The mock streams this question slowly (MOCK_SLOW_MARKER).
-    await input.fill('[mock:slow] 천천히 설명해 주세요');
+    // The mock streams this question's reply slowly and holds it before "한 문장으로 정리해
+    // 보세요" until it is cancelled (MOCK_SLOW_MARKER), so the cancel always lands mid-reply
+    // however slow the machine is. The thread keeps earlier turns, so the reply is located as
+    // the item right after this run's (unique) question, never the last item of an older turn.
+    const question = `[mock:slow] 천천히 설명해 주세요 ${Date.now().toString(36)}`;
+    await input.fill(question);
     await input.press('Enter');
-    const reply = conversation(page).last();
+    const reply = conversation(page)
+      .filter({ hasText: question })
+      .first()
+      .locator('xpath=following-sibling::li[1]');
+    // Visible once the text passes the output guard's holdback (practice context).
     await expect(reply).toContainText('(모의 튜터)', { timeout: 15_000 });
     await drawer.getByRole('button', { name: '중단' }).click();
     await expect(reply).toContainText('(중단됨)', { timeout: 10_000 });
+    // The partial text stays; the held rest of the reply never arrives.
+    await expect(reply).toContainText('(모의 튜터)');
     await expect(reply).not.toContainText('한 문장으로 정리해 보세요');
+    await expect(drawer.getByRole('button', { name: '보내기' })).toBeVisible();
   });
 
   test('asks about selected lesson text', async ({ page }) => {

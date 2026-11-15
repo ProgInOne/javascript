@@ -1,0 +1,30 @@
+id: js-basics.start.start-review.mcq-log-output
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+estimatedSeconds: 40
+usage: assessment
+prompt: |
+  `console.log(1 + 1);`을 실행하면 콘솔에 무엇이 보이나요?
+spec:
+  options:
+    - id: a
+      text: '`2`'
+    - id: b
+      text: '`1 + 1`'
+      rationale: 괄호 안의 식을 먼저 계산한 값이 보여요.
+    - id: c
+      text: 아무것도 보이지 않는다
+      rationale: console.log는 콘솔에 값을 보여 줘요.
+  correct: a
+hints:
+  - 평가 힌트 1단계예요.
+  - 평가 힌트 2단계예요.
+  - 평가 힌트 3단계예요.
+explanation: |
+  평가 해설: 식을 계산한 값 `2`가 콘솔에 보여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

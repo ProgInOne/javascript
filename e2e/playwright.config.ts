@@ -31,12 +31,25 @@ const dataSettingsDir =
   process.env['E2E_DATA_SETTINGS_DIR'] ?? mkdtempSync(join(tmpdir(), 'proginone-e2e-data-'));
 process.env['E2E_DATA_SETTINGS_DIR'] = dataSettingsDir;
 process.env['E2E_DATA_SETTINGS_URL'] = `http://127.0.0.1:${DATA_PORT}`;
+// A fourth server for the three-week `mastered` journey (tests/mastered.spec.ts): its own learner
+// and clock, and the fixture content plus a module 1 unit assessment (fixtures/content-mastery),
+// so neither the long clock jumps nor the extra unit change what the other specs see.
+const MASTERY_PORT = PORT + 3;
+const masteryDir =
+  process.env['E2E_MASTERY_DATA_DIR'] ?? mkdtempSync(join(tmpdir(), 'proginone-e2e-mastery-'));
+process.env['E2E_MASTERY_DATA_DIR'] = masteryDir;
+process.env['E2E_MASTERY_URL'] = `http://127.0.0.1:${MASTERY_PORT}`;
+const masteryContentDb = join(masteryDir, 'content.db');
+if (process.env['E2E_MASTERY_CONTENT_DB'] !== masteryContentDb) {
+  buildFixtureContent(masteryContentDb, 'content-mastery');
+  process.env['E2E_MASTERY_CONTENT_DB'] = masteryContentDb;
+}
 
-const serverEnv = (port: number, dir: string) => ({
+const serverEnv = (port: number, dir: string, content = contentDb) => ({
   NODE_ENV: 'production',
   PROGINONE_PORT: String(port),
   PROGINONE_DATA_DIR: dir,
-  PROGINONE_CONTENT_DB: contentDb,
+  PROGINONE_CONTENT_DB: content,
   PROGINONE_OPEN_BROWSER: 'false',
   PROGINONE_LOG_LEVEL: 'warn',
   // Deterministic AI; E2E never starts Codex (docs/design/ai-system.md#mockprovider).
@@ -89,6 +102,13 @@ export default defineConfig({
       reuseExistingServer: false,
       timeout: 30_000,
       env: serverEnv(DATA_PORT, dataSettingsDir),
+    },
+    {
+      command: 'node ../apps/server/src/main.ts',
+      url: `http://127.0.0.1:${MASTERY_PORT}/`,
+      reuseExistingServer: false,
+      timeout: 30_000,
+      env: serverEnv(MASTERY_PORT, masteryDir, masteryContentDb),
     },
   ],
 });

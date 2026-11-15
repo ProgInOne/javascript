@@ -621,7 +621,7 @@ practice:
 
 - 문항은 그 단원의 `exercises/`에 두고 모두 `usage: assessment`입니다. 문항의 주 개념은 `concepts.reviewed`에 있어야 합니다. `usage: assessment` 문항은 다른 단원에 둘 수 없습니다(평가 문항은 연습·복습 세트에 나오지 않음).
 - 본문(`lesson.mdx`)은 `objectives`, `practice`, `summary`, `next` 섹션만 필수입니다.
-- `content-cli check` 규칙: 오류 — `concepts.primary`가 있음, `concepts.reviewed`가 비어 있음, `practice.passRule`을 씀, `usage`가 `assessment`가 아닌 문항, 주 개념이 `reviewed`에 없는 문항, 다른 단원의 `usage: assessment` 문항, 일반 단원의 `assessment` 설정, `module.yaml`의 `assessment`가 그 모듈의 `kind: assessment` 단원이 아님, 한 모듈에 평가 단원이 둘 이상. 경고 — 문항이 없는 평가 개념(개념당 최소 1), 문항 수가 10~20개 밖, `itemCount`가 문항 수보다 크거나 평가 개념 수보다 작음, `module.yaml`에 `assessment` 선언이 없음.
+- `content-cli check` 규칙: 오류 — `concepts.primary`가 있음, `concepts.reviewed`가 비어 있음, `practice.passRule`을 씀, `usage`가 `assessment`가 아닌 문항, 주 개념이 `reviewed`에 없는 문항, 다른 단원의 `usage: assessment` 문항, 일반 단원의 `assessment` 설정, `module.yaml`의 `assessment`가 그 모듈의 `kind: assessment` 단원이 아님, 한 모듈에 평가 단원이 둘 이상. 경고 — 문항이 없는 평가 개념(개념당 최소 1), 한 번에 내는 문항 수(`itemCount`, 생략하면 문항 전부·최대 20)가 10~20개 밖(재응시 때 새 문항이 나오도록 문항 풀은 `itemCount`보다 많아도 됨), `itemCount`가 문항 수보다 크거나 평가 개념 수보다 작음, `module.yaml`에 `assessment` 선언이 없음.
 - content.db: `assessments` 행(ID는 평가 단원 ID, `scope_type: module`, 빌드에 포함된 평가 문항 목록, `selection_rule_json: { v, itemCount, conceptIds }`, `pass_ratio`)과 `modules.assessment_id`. content.db 스키마 버전 2.
 - 문항 선택(개념 포함 → 난이도 분포 → 쉬운 순서, 처음 보는 문항 우선)은 [학습 엔진 설계](/docs/design/learning-engine.md#구현-메모-v03)를 따릅니다.
 
@@ -1655,7 +1655,7 @@ PRD [FR-EX-09](/docs/product/prd.md)의 목표를 다음과 같이 셉니다.
     - JavaScript: `core` 개념 6, `standard` 개념 4, `minor` 개념 3.
     - HTML/CSS: 모든 개념 2.
     - 단원 목표가 주 개념 최솟값 합보다 크면, 남는 수는 개념 `importance` 비율(`minor` 1, `standard` 2, `core` 3)로 나눕니다.
-1.  **단원 평가** = 10~20, 모듈의 주 개념을 고르게 포함(개념당 최소 1).
+1.  **단원 평가** = 한 번에 내는 문항 10~20(`assessment.itemCount`), 모듈의 주 개념을 고르게 포함(개념당 최소 1). 문항 풀은 재응시를 위해 그보다 많아도 됩니다.
 1.  **빌드 보고서**: `content-cli check`는 개념·단원별 "목표 / 실제 / 부족" 표와 난이도·유형 분포를 출력합니다. JavaScript 기초에서 목표 미달은 **오류**, HTML/CSS 핵심에서는 **경고** 입니다.
 1.  **"더 풀기" 재고**: 학습자가 단원 풀을 소진해도 템플릿 변형과 런타임 생성으로 계속 문제를 제공할 수 있으므로, 사전 제작 수량은 "첫 학습 + 첫 2회 복습"에 충분한 양을 목표로 합니다.
 

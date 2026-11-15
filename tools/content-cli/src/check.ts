@@ -317,6 +317,9 @@ function applyExpectation(
 /** Item count range of a unit assessment (content-and-exercises.md#문제-수-산정-방식). */
 export const ASSESSMENT_ITEM_RANGE = { min: 10, max: 20 } as const;
 
+/** Most items one assessment asks without `itemCount` (learning-engine `config.assessment.maxItems`). */
+export const ASSESSMENT_MAX_ASKED = 20;
+
 /**
  * Rules of a `kind: assessment` unit (learning-engine.md#단원-평가-세트): it introduces nothing,
  * assesses the concepts in `concepts.reviewed` with its own `usage: assessment` items (at least
@@ -362,10 +365,13 @@ function checkAssessmentUnit(lesson: LessonNodeSource, diag: Diagnostics): void 
     if (!covered.has(c)) diag.warn(file, `평가 문항이 없는 개념입니다: ${c}`);
   }
   const items = lesson.exercises.length;
-  const { min, max } = ASSESSMENT_ITEM_RANGE;
-  if (items < min || items > max)
-    diag.warn(file, `단원 평가 문항은 ${min}~${max}개를 권장합니다(지금 ${items}개)`);
   const itemCount = data.assessment?.itemCount;
+  // The advice is about one sitting: `itemCount` items are asked (the pool may hold more so that
+  // retakes see new items); without it, the whole pool up to the engine's cap.
+  const asked = Math.min(items, itemCount ?? ASSESSMENT_MAX_ASKED);
+  const { min, max } = ASSESSMENT_ITEM_RANGE;
+  if (asked < min || asked > max)
+    diag.warn(file, `단원 평가 한 번에 내는 문항은 ${min}~${max}개를 권장합니다(지금 ${asked}개)`);
   if (itemCount !== undefined) {
     if (itemCount > items)
       diag.warn(file, `assessment.itemCount ${itemCount}가 문항 ${items}개보다 많습니다`);

@@ -1,0 +1,32 @@
+id: js-basics.start.start-review.mcq-log-return
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+estimatedSeconds: 50
+usage: assessment
+prompt: |
+  `const shown = console.log("안녕");` 다음에 `shown`에는 무엇이 들어 있나요?
+spec:
+  options:
+    - id: a
+      text: '`undefined`'
+    - id: b
+      text: '`"안녕"`'
+      misconception: js.mc.log-is-return
+      rationale: console.log는 보여 주기만 하고 값을 돌려주지 않아요.
+    - id: c
+      text: 오류가 난다
+      rationale: console.log의 결과를 변수에 담아도 오류는 나지 않아요.
+  correct: a
+misconceptions: [js.mc.log-is-return]
+hints:
+  - 평가 힌트 1단계예요.
+  - 평가 힌트 2단계예요.
+  - 평가 힌트 3단계예요.
+explanation: |
+  평가 해설: console.log는 값을 돌려주지 않으므로 `shown`은 `undefined`예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

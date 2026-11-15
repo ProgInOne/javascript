@@ -69,10 +69,16 @@ function learnerQuestion(req: ProviderRequest): string | undefined {
 
 /**
  * A question containing this marker streams its unscripted reply slowly (one delta per
- * {@link SLOW_DELTA_MS}), so E2E can cancel a reply in flight. Mock provider only.
+ * {@link SLOW_DELTA_MS}) and holds it before {@link SLOW_HOLD_BEFORE} until the run is cancelled
+ * (or {@link SLOW_HOLD_MS} passes), so E2E can cancel a reply in flight however slow the machine
+ * is. Mock provider only.
  */
 export const MOCK_SLOW_MARKER = '[mock:slow]';
 const SLOW_DELTA_MS = 400;
+/** Text of the default reply that a slow reply holds back until cancelled. */
+export const SLOW_HOLD_BEFORE = '한 문장으로 정리해 보세요';
+/** Upper bound of the hold (well under the `tutor.reply` timeout), so a forgotten run ends. */
+export const SLOW_HOLD_MS = 30_000;
 
 /**
  * A question containing `[mock:error:AI_*]` fails its unscripted reply with that error code
@@ -247,8 +253,17 @@ export class MockProvider implements ProviderAdapter {
     const slow =
       !step && !req.outputSchema && (learnerQuestion(req) ?? '').includes(MOCK_SLOW_MARKER);
 
+    // A slow reply pauses before the delta that would reach SLOW_HOLD_BEFORE: what came before is
+    // long enough to pass the output guard's holdback, the rest stays "in flight" until cancelled.
+    const holdIndex = text.indexOf(SLOW_HOLD_BEFORE);
+    const holdAt = !slow ? Infinity : holdIndex >= 0 ? holdIndex : text.length;
+    let held = false;
     let streamed = '';
     for (const delta of deltas) {
+      if (!held && streamed.length + delta.length > holdAt) {
+        held = true;
+        await this.#hold(opts.signal, streamed);
+      }
       await this.#tick(opts.signal, streamed, slow ? SLOW_DELTA_MS : undefined);
       streamed += delta;
       opts.onDelta?.(delta);
@@ -302,6 +317,20 @@ export class MockProvider implements ProviderAdapter {
   ): Promise<void> {
     if (signal.aborted) throw new AIError('AI_CANCELLED', { partialText });
     await new Promise((resolve) => setTimeout(resolve, delayMs));
+    if (isAborted(signal)) throw new AIError('AI_CANCELLED', { partialText });
+  }
+
+  /** Waits until `signal` aborts (then throws `AI_CANCELLED`) or {@link SLOW_HOLD_MS} passes. */
+  async #hold(signal: AbortSignal, partialText: string): Promise<void> {
+    await new Promise<void>((resolve) => {
+      const timer = setTimeout(resolve, SLOW_HOLD_MS);
+      const stop = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      if (signal.aborted) stop();
+      else signal.addEventListener('abort', stop, { once: true });
+    });
     if (isAborted(signal)) throw new AIError('AI_CANCELLED', { partialText });
   }
 
