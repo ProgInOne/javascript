@@ -72,5 +72,6 @@ explanation: |
   - `Object.keys(scores)`를 쓰면 `score`에 `"국어"` 같은 과목 이름이 들어와요. `"국어" >= 60`은 `"국어"`가 `NaN`으로 바뀌어 비교되므로 항상 `false`라 결과가 0이 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -108,5 +108,6 @@ explanation: |
   - `push` 대신 `copy.items = [...order.items, "서비스 음료"];`처럼 새 배열을 대입해도 지난 주문은 바뀌지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

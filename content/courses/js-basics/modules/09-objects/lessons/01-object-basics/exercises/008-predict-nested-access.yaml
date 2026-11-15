@@ -42,8 +42,9 @@ explanation: |
   - `student.subjects`는 배열 `["국어", "과학"]`이고, `[1]`은 0부터 세어 두 번째 요소인 `"과학"`이에요.
   - `student.club`은 안쪽 객체예요. 점을 이어서 `student.club.title`, `student.club.room`으로 안까지 들어가요.
   - `student.subjects.length`는 요소 수 2이고, `student.grade`도 숫자 2라서 더하면 `4`예요.
-  - '객체를 통째로 출력하면 `{ title: "코딩부", room: 301 }`처럼 보여요. 맨 바깥에서 출력한 문자열(`과학`)과 달리, 객체 **안의** 문자열은 큰따옴표가 붙어요.'
+  - 객체를 통째로 출력하면 `{ title: "코딩부", room: 301 }`처럼 보여요. 맨 바깥에서 출력한 문자열(`과학`)과 달리, 객체 **안의** 문자열은 큰따옴표가 붙어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

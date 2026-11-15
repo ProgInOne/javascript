@@ -59,5 +59,6 @@ explanation: |
   "`y.count`는 `30`이다"나 "`z === y`는 `true`이다"를 골랐다면 매개변수에 새 객체를 대입하면 바깥 변수도 그 객체를 가리킨다고 본 거예요. 속성을 바꾸는 것(`a.count = 10`)만 바깥 객체에 영향을 줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

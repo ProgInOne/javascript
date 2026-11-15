@@ -240,10 +240,11 @@ explanation: |
   }
   ```
 
-  - '**대괄호 표기법**: 고른 항목은 `key`에 문자열로 들어와요. `profile[key]`는 그 문자열을 이름으로 속성을 찾아요. `profile.key`는 이름이 `key`인 속성을 찾아서 언제나 `undefined`라 모든 항목이 "등록되지 않았어요"가 돼요. `"favorite-food"`처럼 하이픈이 든 키도 대괄호라서 읽을 수 있어요.'
-  - '**없는 항목**: 없는 속성은 `undefined`이므로 `=== undefined`로 확인해요.'
-  - '**추가와 수정은 같은 대입**: `profile[key] = value;`는 있는 항목이면 바꾸고, 없던 이메일이면 새로 만들어요. 객체에 남아 있어서 다른 항목을 보고 돌아와도 그대로예요.'
+  - **대괄호 표기법**: 고른 항목은 `key`에 문자열로 들어와요. `profile[key]`는 그 문자열을 이름으로 속성을 찾아요. `profile.key`는 이름이 `key`인 속성을 찾아서 언제나 `undefined`라 모든 항목이 "등록되지 않았어요"가 돼요. `"favorite-food"`처럼 하이픈이 든 키도 대괄호라서 읽을 수 있어요.
+  - **없는 항목**: 없는 속성은 `undefined`이므로 `=== undefined`로 확인해요.
+  - **추가와 수정은 같은 대입**: `profile[key] = value;`는 있는 항목이면 바꾸고, 없던 이메일이면 새로 만들어요. 객체에 남아 있어서 다른 항목을 보고 돌아와도 그대로예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

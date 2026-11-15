@@ -51,5 +51,6 @@ explanation: |
   `-3세 확인`이나 `청소년`을 썼다면 `throw` 뒤에도 함수가 계속 실행된다고 본 거예요. `throw`는 `return`처럼 함수를 끝내되, 값 대신 오류를 던져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

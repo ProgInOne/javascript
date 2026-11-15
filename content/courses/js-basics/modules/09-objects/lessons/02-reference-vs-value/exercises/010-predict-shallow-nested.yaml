@@ -43,10 +43,11 @@ explanation: |
   ```
 
   ```text
-  base ─────────▶ { name: "기본 세트", price: 5000, items: ─┐ }
-                                                          ├──▶ ["버거", "감자튀김", "콜라"]
-  combo ─┬──────▶ { name: "콤보 세트", price: 7000, items: ─┘ }
-  same  ─┘
+  base  ──▶ 객체 1 { name: "기본 세트", price: 5000, items: 배열 A }
+  combo ──▶ 객체 2 { name: "콤보 세트", price: 7000, items: 배열 A }
+  same  ──▶ 객체 2 (combo와 같은 객체)
+
+  배열 A = ["버거", "감자튀김", "콜라"]  ← 객체 1과 객체 2가 함께 써요
   ```
 
   - `{ ...base }`는 새 객체를 만드는 얕은 복사예요. `name`, `price`를 바꿔도 `base`는 그대로라서 `기본 세트 5000`이에요.
@@ -57,5 +58,6 @@ explanation: |
   첫 줄의 배열 길이를 1이라고 썼다면 얕은 복사가 안쪽 배열까지 새로 만든다고 본 거예요. 셋째 줄 첫 값을 `true`라고 썼다면 복사본이 원본과 같은 객체라고 본 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

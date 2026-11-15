@@ -95,5 +95,6 @@ explanation: |
   - `{ name: product.name, price: product.price * (1 - rate), onSale: true }`처럼 새 객체를 직접 만들어 돌려줘도 정답이에요. 다만 상품에 속성이 더 생기면 빠뜨리기 쉬워서 복사하는 방법을 더 많이 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

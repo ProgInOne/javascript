@@ -65,5 +65,6 @@ explanation: |
   4번 줄을 `nickname`으로 바꾸면 오류는 사라지지만 `닉네임: undefined`가 출력돼요. 원인은 변수를 쓰는 줄이 아니라 꺼내는 줄이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

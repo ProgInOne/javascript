@@ -134,5 +134,6 @@ explanation: |
   - **새 객체**: `changes`가 없을 때 `return saved;`로 끝내면 내용은 같지만 같은 객체라서, 나중에 결과를 고치면 저장본까지 바뀌어요. 늘 새 객체를 돌려줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

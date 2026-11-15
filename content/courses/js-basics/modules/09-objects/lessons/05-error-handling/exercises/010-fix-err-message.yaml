@@ -68,5 +68,6 @@ explanation: |
   `catch`의 `err`에는 3번 줄에서 던진 바로 그 오류 객체가 들어와요. 그래서 `err.name`은 `"Error"`, `err.message`는 만들 때 넣은 문장이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

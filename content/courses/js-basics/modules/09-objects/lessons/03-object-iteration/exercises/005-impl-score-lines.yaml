@@ -98,5 +98,6 @@ explanation: |
   - `for (const subject in scores)`로 돌며 `scores[subject]`를 읽어도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

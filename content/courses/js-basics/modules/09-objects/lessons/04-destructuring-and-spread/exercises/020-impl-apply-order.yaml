@@ -118,8 +118,8 @@ explanation: |
   - **대괄호 표기법**: 품목 이름이 변수 `item`에 들어 있으니 `stock[item]`으로 읽어요. `stock.item`은 이름이 `"item"`인 속성을 찾아 늘 `undefined`예요.
   - **받을 수 없는 주문**: 없는 품목은 `stock[item]`이 `undefined`예요. `undefined < 1`은 `false`라서 부족 검사만으로는 걸러지지 않으니 따로 확인해요. 확인하지 않으면 `undefined - 1`로 `튀김: NaN`이 생겨요. 수량이 0인 품목은 `0 < 1`이라 걸러져요.
   - **새 객체**: `{ ...stock }`으로 새 객체를 만든 뒤 그 객체만 고쳐요. 재고 값이 숫자라 얕은 복사로 충분해요. `stock[item] -= qty; return stock;`은 결과는 맞아 보여도 원래 재고를 바꾸고 같은 객체를 돌려줘서 숨긴 테스트 두 개에 실패해요.
-  - `{ ...stock, [item]: left - qty }`처럼 대괄호로 키를 계산해 한 번에 써도 돼요(계산된 속성 이름).
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

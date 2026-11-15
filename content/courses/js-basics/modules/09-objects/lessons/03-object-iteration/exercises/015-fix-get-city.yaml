@@ -79,5 +79,6 @@ explanation: |
   - `if (!("address" in user)) { return "지역 미설정"; }`처럼 `in`으로 먼저 확인해도 되지만, 그러면 `city`가 없는 경우를 따로 처리해야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -57,9 +57,10 @@ hints:
 explanation: |
   예시 답은 `this.seconds++`와 `timer.tick()`이에요.
 
-  - '첫 번째 빈칸: `timer.tick()`으로 부르면 `tick` 안의 `this`는 `timer`예요. `this.seconds++`는 `timer.seconds`를 1 늘려요. `this.seconds += 1`처럼 써도 맞아요. `seconds++`만 쓰면 변수 `seconds`를 찾다가 `ReferenceError`가 나요.'
-  - '두 번째 빈칸: 세 번째 호출이에요. `timer.tick`처럼 괄호를 빼면 함수를 가리키기만 하고 실행하지 않아서 `2`가 출력돼요. 그냥 `tick()`이라고 쓰면 `tick`이라는 변수(함수)가 없어서 `ReferenceError`예요. 메서드는 `객체.메서드()`로 불러요.'
+  - 첫 번째 빈칸: `timer.tick()`으로 부르면 `tick` 안의 `this`는 `timer`예요. `this.seconds++`는 `timer.seconds`를 1 늘려요. `this.seconds += 1`처럼 써도 맞아요. `seconds++`만 쓰면 변수 `seconds`를 찾다가 `ReferenceError`가 나요.
+  - 두 번째 빈칸: 세 번째 호출이에요. `timer.tick`처럼 괄호를 빼면 함수를 가리키기만 하고 실행하지 않아서 `2`가 출력돼요. 그냥 `tick()`이라고 쓰면 `tick`이라는 변수(함수)가 없어서 `ReferenceError`예요. 메서드는 `객체.메서드()`로 불러요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

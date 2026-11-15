@@ -4,19 +4,19 @@ difficulty: 3
 concepts:
   - { id: js.errors.finally, weight: 1 }
   - { id: js.errors.try-catch, weight: 0.5 }
-  - { id: js.scope.global, weight: 0.3 }
-tags: [finally, try-catch, cleanup, debugging]
+  - { id: js.fn.return, weight: 0.3 }
+tags: [finally, try-catch, return, cleanup, debugging]
 estimatedSeconds: 200
 prompt: |
-  상품 가격을 보여 주는 동안 "불러오는 중" 상태를 켜 두는 프로그램이에요. 상태는 바깥 변수 `loading`에 있어요. 가격을 보여 주는 데 **성공하든 실패하든**, 함수가 끝나면 `loading`은 다시 `false`가 되어야 해요.
+  상품 가격 문장을 만드는 동안 "불러오는 중" 상태를 켜 두는 프로그램이에요. 상태는 바깥 변수 `loading`에 있어요. `priceText(product)`는 가격 문장을 돌려주고, 가격 정보가 없으면 안내 문장을 돌려줘요. 어느 쪽이든 함수가 끝나면 `loading`은 다시 `false`가 되어야 해요.
 
-  지금은 가격 정보가 없는 상품에서 실패한 뒤 `loading`이 `true`로 남아요. 버그를 고쳐서 아래처럼 출력되게 하세요. 정리 작업을 어디에 두면 성공·실패 모두에서 실행될지 생각해 보세요.
+  지금은 `loading`이 계속 `true`로 남아요. 버그를 고쳐서 아래처럼 출력되게 하세요.
 
   ```text
-  불러오는 중...
+  불러오는 중... (로딩 중: true)
   김밥: 3000원
   로딩 중: false
-  불러오는 중...
+  불러오는 중... (로딩 중: true)
   가격을 불러오지 못했어요
   로딩 중: false
   ```
@@ -27,20 +27,20 @@ spec:
         content: |
           let loading = false;
 
-          function showPrice(product) {
+          function priceText(product) {
             loading = true;
-            console.log("불러오는 중...");
+            console.log("불러오는 중... (로딩 중: " + loading + ")");
             try {
-              console.log(product.name + ": " + product.price.won + "원");
-              loading = false;
+              return product.name + ": " + product.price.won + "원";
             } catch (err) {
-              console.log("가격을 불러오지 못했어요");
+              return "가격을 불러오지 못했어요";
             }
+            loading = false;
           }
 
-          showPrice({ name: "김밥", price: { won: 3000 } });
+          console.log(priceText({ name: "김밥", price: { won: 3000 } }));
           console.log("로딩 중: " + loading);
-          showPrice({ name: "라면" });
+          console.log(priceText({ name: "라면" }));
           console.log("로딩 중: " + loading);
   solution:
     files:
@@ -48,30 +48,31 @@ spec:
         content: |
           let loading = false;
 
-          function showPrice(product) {
+          function priceText(product) {
             loading = true;
-            console.log("불러오는 중...");
+            console.log("불러오는 중... (로딩 중: " + loading + ")");
             try {
-              console.log(product.name + ": " + product.price.won + "원");
+              return product.name + ": " + product.price.won + "원";
             } catch (err) {
-              console.log("가격을 불러오지 못했어요");
+              return "가격을 불러오지 못했어요";
             } finally {
               loading = false;
             }
           }
 
-          showPrice({ name: "김밥", price: { won: 3000 } });
+          console.log(priceText({ name: "김밥", price: { won: 3000 } }));
           console.log("로딩 중: " + loading);
-          showPrice({ name: "라면" });
+          console.log(priceText({ name: "라면" }));
           console.log("로딩 중: " + loading);
-  bugDescription: "두 번째 상품에서 실패한 뒤 `로딩 중: true`가 출력돼요."
+  bugDescription: "가격 문장은 맞게 나오지만, 성공한 뒤에도 실패한 뒤에도 `로딩 중: true`가 출력돼요."
+  bugMisconception: js.mc.code-after-return-runs
   checks:
     - kind: console
       id: output
-      description: '두 상품 모두 함수가 끝난 뒤 "로딩 중: false"가 출력되어야 합니다.'
+      description: '불러오는 동안에는 로딩 중이 true이고, 두 상품 모두 문장을 돌려받은 뒤에는 "로딩 중: false"가 출력되어야 합니다.'
       requirement: 성공·실패 모두 로딩 끄기
       expect:
-        lines: ["불러오는 중...", "김밥: 3000원", "로딩 중: false", "불러오는 중...", "가격을 불러오지 못했어요", "로딩 중: false"]
+        lines: ["불러오는 중... (로딩 중: true)", "김밥: 3000원", "로딩 중: false", "불러오는 중... (로딩 중: true)", "가격을 불러오지 못했어요", "로딩 중: false"]
     - kind: program
       id: loading-off
       description: 프로그램이 오류 없이 끝나고 loading이 false여야 합니다.
@@ -79,28 +80,29 @@ spec:
       expect:
         globals: { loading: { equals: false } }
         noError: true
-misconceptions: [js.mc.try-resumes-after-catch]
+misconceptions: [js.mc.code-after-return-runs, js.mc.finally-only-on-error]
 hints:
-  - "`라면`에는 `price`가 없어요. 7번 줄에서 오류가 나면 8번 줄은 실행되나요?"
-  - 오류가 난 뒤 `try`의 남은 줄로는 돌아가지 않아요. `loading = false;`가 성공한 경우에만 실행되는 자리에 있어요.
-  - 성공하든 실패하든 항상 마지막에 실행되는 블록이 있어요. 그 블록을 `catch` 뒤에 붙이고 정리 작업을 옮겨 보세요.
+  - 11번 줄의 `loading = false;`는 언제 실행될까요? 그 앞의 `try`와 `catch`는 모두 어떤 문장으로 끝나나요?
+  - "`return`을 만나면 함수는 그 자리에서 끝나요. 그래서 11번 줄은 성공할 때도 실패할 때도 실행되지 않아요."
+  - "`return`이 있어도, 오류가 나도 함수가 끝나기 직전에 꼭 실행되는 블록이 있었어요. 그 블록을 `catch` 뒤에 붙이고 정리 작업을 옮겨 보세요."
 explanation: |
-  `loading = false;`를 `try`에서 빼서 `finally` 블록으로 옮겨요.
+  `loading = false;`를 `finally` 블록으로 옮겨요.
 
   ```js
   try {
-    console.log(product.name + ": " + product.price.won + "원");
+    return product.name + ": " + product.price.won + "원";
   } catch (err) {
-    console.log("가격을 불러오지 못했어요");
+    return "가격을 불러오지 못했어요";
   } finally {
     loading = false;
   }
   ```
 
-  - `라면`에는 `price`가 없어서 `product.price`가 `undefined`이고, `.won`을 읽는 7번 줄에서 `TypeError`가 나요. 오류가 난 뒤 `try`의 나머지(8번 줄)는 건너뛰고 다시 돌아가지 않아요. 그래서 원래 코드에서는 실패할 때 `loading`이 `true`로 남았어요.
-  - `finally`는 성공해도, 실패해서 `catch`가 실행돼도 항상 실행돼요. 성공·실패와 상관없이 해야 하는 정리 작업의 자리예요.
-  - `catch` 안에도 `loading = false;`를 한 줄 더 써도 출력은 같아요. 하지만 같은 줄을 두 곳에 두면 나중에 한쪽만 고치는 실수가 생기기 쉬워요. 한 곳(`finally`)에 두는 편이 안전해요.
+  - 원래 코드에서 `try`는 성공하면 7번 줄에서 `return`하고, 실패하면(라면에는 `price`가 없어 `TypeError`) `catch`가 9번 줄에서 `return`해요. 어느 쪽이든 함수가 거기서 끝나서 11번 줄은 한 번도 실행되지 않았어요.
+  - `finally`는 `try`나 `catch`에서 `return`해도 함수가 끝나기 직전에 실행돼요. 그래서 돌려줄 문장은 그대로 돌려주면서 `loading`도 끌 수 있어요.
+  - `finally` 없이 고치려면 결과를 변수에 담아 두고 `loading = false;`를 한 다음 돌려주는 식으로 `try`와 `catch`를 모두 바꿔야 해요. 출력은 같지만 정리 코드가 여러 곳에 흩어져요. 성공·실패와 상관없이 해야 하는 정리 작업은 `finally` 한 곳에 둬요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

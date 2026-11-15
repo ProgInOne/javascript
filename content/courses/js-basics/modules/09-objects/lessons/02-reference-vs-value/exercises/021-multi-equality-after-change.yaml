@@ -57,5 +57,6 @@ explanation: |
   "객체끼리 비교"와 "속성 값끼리 비교"를 구별하는 것이 핵심이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

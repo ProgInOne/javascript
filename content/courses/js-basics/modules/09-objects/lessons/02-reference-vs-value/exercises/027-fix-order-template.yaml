@@ -1,6 +1,6 @@
 id: js-basics.objects.reference-vs-value.fix-order-template
 type: fix_bug
-difficulty: 5
+difficulty: 4
 concepts:
   - { id: js.obj.reference, weight: 1 }
   - { id: js.obj.copy-shallow, weight: 0.5 }
@@ -127,5 +127,6 @@ explanation: |
   - `addTopping`이 받은 주문을 바꾸는 것은 이 프로그램에서 의도한 동작이에요. 문제는 주문들이 서로 같은 객체·배열을 함께 쓴 것이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

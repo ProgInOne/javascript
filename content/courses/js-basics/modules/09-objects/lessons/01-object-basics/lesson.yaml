@@ -6,7 +6,7 @@ importance: core
 estimatedMinutes: { read: 16, practice: 30 }
 concepts:
   primary: [js.obj.literal, js.obj.dot-bracket, js.obj.add-delete, js.obj.methods-intro]
-  reviewed: [js.types.undefined, js.errors.error-types, js.fn.expression, js.fn.call, js.str.template-literal]
+  reviewed: [js.types.undefined, js.errors.error-types, js.fn.expression, js.fn.call, js.str.template-literal, js.arr.literal-index, js.arr.push-pop, js.arr.for-of]
 objectives:
   - 관련된 값을 객체 리터럴로 묶고, 속성 값으로 문자열·숫자·배열·객체를 넣을 수 있다.
   - 점 표기법과 대괄호 표기법 중 상황에 맞는 것을 골라 속성을 읽고, 변수에 든 키로 속성을 찾을 수 있다.

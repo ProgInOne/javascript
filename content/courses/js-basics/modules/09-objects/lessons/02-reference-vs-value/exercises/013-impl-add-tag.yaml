@@ -87,5 +87,6 @@ explanation: |
   - `structuredClone(post)`로 복사한 뒤 `push`해도 원래 글이 바뀌지 않아 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

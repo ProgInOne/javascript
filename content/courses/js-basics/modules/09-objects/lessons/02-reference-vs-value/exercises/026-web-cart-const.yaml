@@ -8,14 +8,12 @@ concepts:
 tags: [const, mutation, web, event, write-code]
 estimatedSeconds: 480
 prompt: |
-  분식집 장바구니 화면을 완성하세요. 장바구니는 `const cart = { items: [], total: 0 };`로 만들어져 있고, 화면을 그리는 `show()`와 버튼 연결은 시작 코드에 이미 있어요.
+  분식집 장바구니 화면을 완성하세요. 장바구니는 `const cart = { items: [], total: 0 };`로 만들어져 있고, 화면을 그리는 `show()`와 버튼 연결은 시작 코드에 이미 있어요. 화면 객체 `view`는 처음 만든 장바구니 객체를 기억해 두고, `show()`는 그 객체의 내용을 그려요.
 
   할 일은 함수 두 개를 만드는 거예요.
 
   1. `addItem(name, price)`: 메뉴 이름을 `cart.items` 끝에 더하고, 가격을 `cart.total`에 더한 뒤 `show()`를 불러요.
   1. `clearCart()`: 장바구니를 비워요(담은 메뉴 없음, 합계 0). 그다음 `show()`를 불러요. **비운 뒤에도 다시 담을 수 있어야 해요.**
-
-  `cart`를 만드는 줄은 그대로 두세요.
 spec:
   focus: dom
   starter:
@@ -49,11 +47,12 @@ spec:
 
                 const cart = { items: [], total: 0 };
 
-                // cart의 내용을 화면에 그려요.
+                // 화면은 처음 만든 장바구니 객체를 기억해 두고, show()가 그 객체의 내용을 그려요.
+                const view = { cart: cart };
                 function show() {
-                  document.querySelector("#count").textContent = cart.items.length;
-                  document.querySelector("#total").textContent = cart.total;
-                  document.querySelector("#list").textContent = cart.items.join(", ");
+                  document.querySelector("#count").textContent = view.cart.items.length;
+                  document.querySelector("#total").textContent = view.cart.total;
+                  document.querySelector("#list").textContent = view.cart.items.join(", ");
                 }
 
                 // 1) addItem(name, price): 메뉴 이름을 cart.items 끝에 더하고, 가격을 cart.total에 더한 뒤 show()를 불러요.
@@ -97,11 +96,12 @@ spec:
 
                 const cart = { items: [], total: 0 };
 
-                // cart의 내용을 화면에 그려요.
+                // 화면은 처음 만든 장바구니 객체를 기억해 두고, show()가 그 객체의 내용을 그려요.
+                const view = { cart: cart };
                 function show() {
-                  document.querySelector("#count").textContent = cart.items.length;
-                  document.querySelector("#total").textContent = cart.total;
-                  document.querySelector("#list").textContent = cart.items.join(", ");
+                  document.querySelector("#count").textContent = view.cart.items.length;
+                  document.querySelector("#total").textContent = view.cart.total;
+                  document.querySelector("#list").textContent = view.cart.items.join(", ");
                 }
 
                 // 1) addItem(name, price): 메뉴 이름을 cart.items 끝에 더하고, 가격을 cart.total에 더한 뒤 show()를 불러요.
@@ -148,6 +148,8 @@ spec:
       expect:
         - { selector: "#count", text: { equals: "0" } }
         - { selector: "#total", text: { equals: "0" } }
+        - { selector: "#list", text: { equals: "" } }
+      misconceptionIfFail: js.mc.const-can-reassign
     - kind: event
       id: add-after-clear
       description: 비운 뒤 김밥을 담으면 개수 1, 합계 3000, 메뉴 "김밥"만 보여야 합니다.
@@ -198,9 +200,10 @@ explanation: |
 
   - **`const` 객체 바꾸기**: `cart`는 `const`지만 `cart.items.push(...)`, `cart.total += ...`, `cart.items = []`는 모두 속성을 바꾸는 일이라 돼요.
   - **함정**: `clearCart`에서 `cart = { items: [], total: 0 };`라고 쓰면 버튼을 누를 때 `TypeError: Assignment to constant variable.`이 나서 장바구니가 비워지지 않아요. `const`가 막는 것은 변수에 새 객체를 대입하는 것뿐이에요.
-  - **`show()`가 읽는 객체**: `show()`는 바깥의 `cart`를 읽어요. 만약 `cart`를 `let`으로 바꿔 새 객체를 대입해도 동작은 하지만, 이 문제는 `cart`를 만드는 줄을 그대로 두는 연습이에요.
+  - **화면이 기억하는 객체**: `show()`는 `view.cart`, 즉 처음 만든 장바구니 객체를 그려요. `cart`를 `let`으로 바꿔 새 객체를 대입하면 오류는 사라지지만, `view.cart`는 여전히 원래 객체를 가리켜서 화면이 비워지지 않아요. 같은 객체의 속성을 바꿔야 그 객체를 기억하는 모든 곳에 바뀐 내용이 보여요.
   - `cart.items.length = 0;`으로 배열을 비워도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

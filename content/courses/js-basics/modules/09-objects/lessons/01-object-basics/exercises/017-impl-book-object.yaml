@@ -65,10 +65,11 @@ explanation: |
   console.log(book.title);
   ```
 
-  - '객체 리터럴은 중괄호로 감싸고, `키: 값` 짝을 쉼표로 나눠요.'
-  - '`pages: "120"`처럼 따옴표를 붙이면 숫자가 아니라 문자열이 되어 `book-object` 검사를 통과하지 못해요.'
+  - 객체 리터럴은 중괄호로 감싸고, `키: 값` 짝을 쉼표로 나눠요.
+  - `pages: "120"`처럼 따옴표를 붙이면 숫자가 아니라 문자열이 되어 `book-object` 검사를 통과하지 못해요.
   - 속성의 순서는 바꿔 써도 돼요. 객체는 순서가 아니라 이름으로 값을 찾으니까요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

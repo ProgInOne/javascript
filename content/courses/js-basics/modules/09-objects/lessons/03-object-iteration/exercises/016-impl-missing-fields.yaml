@@ -98,5 +98,6 @@ explanation: |
   - 결과는 새 배열 `missing`에 담고, `form`과 `required`는 바꾸지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

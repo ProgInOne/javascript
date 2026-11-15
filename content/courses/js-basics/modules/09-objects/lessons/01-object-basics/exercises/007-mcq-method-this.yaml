@@ -43,10 +43,11 @@ explanation: |
 
   `pet.introduce()`처럼 점을 찍어 부르면 메서드 안의 `this`는 점 앞의 `pet`이에요. 그래서 `this.nickname`은 `"초코"`, `this.age`는 `3`이고, 만든 문장을 `return`으로 돌려주면 마지막 줄이 출력해요.
 
-  - '`nickname`, `age`만 쓴 코드: 메서드가 객체 안에 있어도 속성이 변수가 되지는 않아요. `ReferenceError: nickname is not defined`가 나요.'
-  - '`console.log`로 출력만 하는 코드: 문장은 한 번 보이지만 반환값이 없어서 마지막 줄의 `console.log`가 `undefined`를 한 번 더 출력해요. 출력과 반환은 달라요(모듈 6).'
-  - '`pet.introduce.nickname` 같은 코드: `pet.introduce`는 메서드(함수) 자체를 가리켜요. 함수에는 그런 속성이 없어서 `"undefined는 undefined살이에요"`가 돼요. 우리가 원하는 것은 함수가 아니라 `pet`의 속성이에요.'
+  - `nickname`, `age`만 쓴 코드: 메서드가 객체 안에 있어도 속성이 변수가 되지는 않아요. `ReferenceError: nickname is not defined`가 나요.
+  - `console.log`로 출력만 하는 코드: 문장은 한 번 보이지만 반환값이 없어서 마지막 줄의 `console.log`가 `undefined`를 한 번 더 출력해요. 출력과 반환은 달라요(모듈 6).
+  - `pet.introduce.nickname` 같은 코드: `pet.introduce`는 메서드(함수) 자체를 가리켜요. 함수에는 그런 속성이 없어서 `"undefined는 undefined살이에요"`가 돼요. 우리가 원하는 것은 함수가 아니라 `pet`의 속성이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

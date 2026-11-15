@@ -116,5 +116,6 @@ explanation: |
   `item?.coupon.amount`처럼 `?.`를 `item` 뒤에 붙이면 `item`만 확인하므로 쿠폰 없는 상품에서 같은 오류가 그대로 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

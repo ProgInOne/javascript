@@ -39,5 +39,6 @@ explanation: |
   오류가 나지 않아서 실수로 값이 사라져도 알아차리기 어려워요. 긴 객체를 쓸 때는 키가 겹치지 않는지 확인해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

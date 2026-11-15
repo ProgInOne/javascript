@@ -37,5 +37,6 @@ explanation: |
   - "`return`하지 않았을 때만": `return`이 있어도 함수가 끝나기 직전에 `finally`가 먼저 실행돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

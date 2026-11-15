@@ -39,5 +39,6 @@ explanation: |
   - `Object.keys(menu)`: 개수가 아니라 키 배열 자체예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

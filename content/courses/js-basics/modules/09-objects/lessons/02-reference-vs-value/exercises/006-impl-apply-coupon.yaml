@@ -104,5 +104,6 @@ explanation: |
   - 속성을 직접 적어 새 객체를 만들면 `table`처럼 다른 주문에만 있는 속성을 빠뜨리게 돼요. 복사한 뒤 바꾸면 어떤 주문이 와도 모든 속성이 유지돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -92,5 +92,6 @@ explanation: |
   - `const { volume = 50 } = settings;`를 그대로 두고 `return volume ?? 50;`만 써도 정답이에요. 기본값은 `undefined`를, `??`는 남은 `null`을 맡아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -43,5 +43,6 @@ explanation: |
   - 객체의 속성 순서는 정해져 있고, 덧셈은 순서와 상관없이 합이 같아요. 문제는 순서가 아니라 반복 자체가 안 된다는 점이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

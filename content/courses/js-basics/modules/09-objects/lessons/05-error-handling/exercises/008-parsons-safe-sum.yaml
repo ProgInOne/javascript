@@ -77,5 +77,6 @@ explanation: |
   - `return new Error(...)`는 오류를 던지지 않고 값으로 돌려줘요. 숫자와 더해져 `합계: 1500Error: 숫자가 아니에요: abc` 같은 엉뚱한 문장이 나와요. 오류는 `throw`로 던져야 `catch`가 받을 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

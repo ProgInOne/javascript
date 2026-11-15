@@ -95,5 +95,6 @@ explanation: |
   - 함수 안에서 `const { menu, qty = 1, price, memo } = order;`로 꺼내도 같아요. 구조 분해는 `order`를 바꾸지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

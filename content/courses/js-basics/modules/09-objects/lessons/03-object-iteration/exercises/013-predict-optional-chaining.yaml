@@ -47,5 +47,6 @@ explanation: |
   3번째 줄을 `층 없음`이라고 답했다면 `??`를 `||`처럼 본 거예요. 0층(지상층)처럼 0이 의미 있는 값일 때는 `??`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

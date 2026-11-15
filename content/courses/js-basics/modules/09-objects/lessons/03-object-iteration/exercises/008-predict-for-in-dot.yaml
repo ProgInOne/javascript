@@ -45,5 +45,6 @@ explanation: |
   같은 반복 안에서도 점과 대괄호의 결과가 이렇게 달라요. 키가 변수에 들어 있으면 대괄호를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

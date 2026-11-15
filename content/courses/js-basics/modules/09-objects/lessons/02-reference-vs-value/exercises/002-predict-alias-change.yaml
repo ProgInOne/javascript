@@ -42,5 +42,6 @@ explanation: |
   둘째 줄을 `나무 검 강철 검`이라고 썼다면 객체도 숫자처럼 복사된다고 본 거예요. 첫째 줄을 `4 4`라고 썼다면 반대로 숫자도 함께 바뀐다고 본 거예요. 원시 값과 객체의 대입은 다르게 움직여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

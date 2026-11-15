@@ -81,5 +81,6 @@ explanation: |
   출력 줄만 고치고 6번 줄을 그대로 두면 합계는 여전히 `NaN원`이에요. 같은 실수가 두 군데 있었어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

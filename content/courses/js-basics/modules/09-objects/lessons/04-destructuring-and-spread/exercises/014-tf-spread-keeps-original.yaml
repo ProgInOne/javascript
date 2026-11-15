@@ -26,5 +26,6 @@ explanation: |
   "거짓"이라고 생각했다면 전개가 원본을 고친다고 본 거예요. 원본을 그대로 두고 바뀐 새 객체를 만드는 것이 전개 구문을 쓰는 이유예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

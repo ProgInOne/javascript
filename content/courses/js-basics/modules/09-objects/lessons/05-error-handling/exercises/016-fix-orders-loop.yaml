@@ -126,5 +126,6 @@ explanation: |
   `sum += orderTotal(order)`는 `orderTotal`이 오류를 던지면 더하기 전에 멈추므로, 실패한 주문의 금액은 `sum`에 들어가지 않아요. 합계는 김밥 6000원 + 떡볶이 4000원 = 10000원이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

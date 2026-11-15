@@ -47,5 +47,6 @@ explanation: |
   - `throw`는 문법 오류가 아니에요. 문법 검사는 통과하므로 프로그램은 시작되고, 9번 줄은 실행돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

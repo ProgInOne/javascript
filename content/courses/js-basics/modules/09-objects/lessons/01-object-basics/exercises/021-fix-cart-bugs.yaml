@@ -9,8 +9,8 @@ estimatedSeconds: 420
 prompt: |
   장바구니 객체 `cart`(상품 이름 → 개수)를 다루는 프로그램이에요.
 
-  - '`addToCart(name, qty)`: 상품을 `qty`개 담고, `"(상품) (총 개수)개"`를 돌려줘요. 처음 담는 상품은 0개에서 시작해요.'
-  - '`removeFromCart(name)`: 상품을 장바구니에서 **완전히 빼요**.'
+  - `addToCart(name, qty)`: 상품을 `qty`개 담고, `"(상품) (총 개수)개"`를 돌려줘요. 처음 담는 상품은 0개에서 시작해요.
+  - `removeFromCart(name)`: 상품을 장바구니에서 **완전히 빼요**.
 
   지금은 결과가 이상해요. 버그를 모두 고쳐서 아래처럼 출력되게 하세요. 버그는 하나가 아닐 수 있어요.
 
@@ -111,5 +111,6 @@ explanation: |
   값이 `undefined`인 속성과 없는 속성의 차이는 단원 "객체 순회"에서 `in` 연산자와 함께 더 자세히 다뤄요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

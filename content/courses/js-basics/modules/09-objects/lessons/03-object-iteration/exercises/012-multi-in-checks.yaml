@@ -47,5 +47,6 @@ explanation: |
   - `"name" in member.name`: `in`의 오른쪽은 객체여야 해요. 문자열 `"서연"`에 쓰면 `TypeError: Cannot use 'in' operator to search for 'name' in 서연`이 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

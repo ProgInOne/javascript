@@ -34,5 +34,6 @@ explanation: |
   `hp: 100`이라고 썼다면 `const` 객체의 속성은 바뀌지 않는다고 본 거예요. `items`를 빠뜨렸다면 `backup`이 복사본이라고 본 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

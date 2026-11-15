@@ -54,5 +54,6 @@ explanation: |
   - 마지막 줄: `upgraded`는 전개로 만든 새 객체라 `basic`과 다른 객체(`false`)지만, 안쪽 `sides`는 같은 배열(`true`)이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

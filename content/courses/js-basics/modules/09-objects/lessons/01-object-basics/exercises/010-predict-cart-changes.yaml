@@ -25,8 +25,8 @@ spec:
   answerKind: console
   misconceptionByAnswer:
     "{ milk: 3, bread: 5, apple: undefined }": js.mc.dot-with-variable-key
-    "{ milk: 3, item: 5, apple: undefined }": js.mc.dot-with-variable-key
-    "{ milk: 3, bread: 1, item: 5 }": js.mc.missing-property-error
+    "{ milk: 3, item: 5, apple: undefined }": js.mc.bracket-key-without-quotes
+    "{ milk: 3, bread: 1, item: 5 }": js.mc.undefined-value-means-missing
 hints:
   - 줄마다 `cart`가 어떻게 바뀌는지 표로 적어 보세요. 1번 줄에서 이미 함정이 하나 있어요.
   - "`cart[item]`과 `cart.item`은 각각 어떤 이름의 속성을 만드나요? 새 속성은 객체의 어느 자리에 붙나요?"
@@ -43,10 +43,11 @@ explanation: |
   | 7 | `apple` 삭제 | `{ milk: 3, bread: 1, item: 5 }` |
   | 8 | 없는 `banana`를 읽으면 `undefined`, 그 값으로 `apple`을 새로 만듦 | `{ milk: 3, bread: 1, item: 5, apple: undefined }` |
 
-  - '1번 줄: 같은 키가 다시 나오면 오류 없이 값을 덮어쓰고, 자리는 처음 나온 곳 그대로예요.'
-  - '4·5번 줄: 대괄호는 변수의 값으로, 점은 글자 그대로 이름을 정해서 서로 다른 속성 두 개가 생겨요.'
-  - '8번 줄: 삭제한 뒤 다시 만든 `apple`은 새 속성이라 **맨 끝**에 붙어요. 값은 없는 속성 `cart.banana`를 읽은 `undefined`예요. 속성은 있고 값이 `undefined`인 상태라 출력에도 `apple: undefined`가 보여요.'
+  - 1번 줄: 같은 키가 다시 나오면 오류 없이 값을 덮어쓰고, 자리는 처음 나온 곳 그대로예요.
+  - 4·5번 줄: 대괄호는 변수의 값으로, 점은 글자 그대로 이름을 정해서 서로 다른 속성 두 개가 생겨요.
+  - 8번 줄: 삭제한 뒤 다시 만든 `apple`은 새 속성이라 **맨 끝**에 붙어요. 값은 없는 속성 `cart.banana`를 읽은 `undefined`예요. 속성은 있고 값이 `undefined`인 상태라 출력에도 `apple: undefined`가 보여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

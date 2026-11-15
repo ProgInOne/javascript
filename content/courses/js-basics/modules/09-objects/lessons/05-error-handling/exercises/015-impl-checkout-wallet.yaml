@@ -132,5 +132,6 @@ explanation: |
   - **같은 객체**: `charge`는 넘겨받은 `wallet`의 `balance`를 직접 빼요. 객체는 참조로 넘어가므로, `checkout`에서 `wallet.balance`를 읽으면 결제 뒤의 잔액이에요. 실패하면 `charge`가 잔액을 바꾸기 전에 던지므로 잔액은 그대로예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

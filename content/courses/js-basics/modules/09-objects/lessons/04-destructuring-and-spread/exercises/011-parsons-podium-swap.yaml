@@ -61,5 +61,6 @@ explanation: |
   - `[first, second] = [second, first];`는 오른쪽에 `["민지", "준호"]`를 먼저 만들고 위치대로 넣어 두 값을 바꿔요. `[first, second] = [first, second];`는 같은 순서로 다시 넣을 뿐이라 아무것도 바뀌지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

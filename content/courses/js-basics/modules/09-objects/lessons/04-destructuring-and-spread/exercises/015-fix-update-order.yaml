@@ -77,5 +77,6 @@ explanation: |
   `profile.level = changes.level; return profile;`처럼 고치면 첫 테스트는 통과하지만, 원래 프로필이 바뀌고 같은 객체를 돌려줘서 숨긴 테스트에 실패해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

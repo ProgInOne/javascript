@@ -64,6 +64,16 @@ receipt({ menu: "김밥", qty: 3 }); // "김밥 3개"
 
 이때 인수를 아예 넘기지 않으면 `undefined`를 풀려고 해서 `TypeError: Cannot destructure property 'menu' of 'undefined' as it is undefined.`가 나요. `null`을 풀 때도 같은 종류의 오류가 나요. 인수를 생략할 수도 있다면 `function receipt({ menu, qty = 1 } = {})`처럼 매개변수 전체에 빈 객체 기본값을 줘요.
 
+반대 방향도 짧게 쓸 수 있어요. 객체를 **만드는** 자리에서 `{ menu, qty }`처럼 변수 이름만 쓰면, 그 이름의 속성에 같은 이름의 변수 값을 담아요. `{ menu: menu, qty: qty }`를 줄여 쓴 모양이에요(단축 속성).
+
+```js
+const menu = "김밥";
+const qty = 2;
+const order = { menu, qty };   // { menu: "김밥", qty: 2 }
+```
+
+`=` 왼쪽(꺼내는 자리)의 `{ menu, qty }`는 구조 분해이고, 오른쪽(만드는 자리)의 `{ menu, qty }`는 객체 리터럴이에요. 모양은 같지만 하는 일은 반대예요.
+
 ### 배열 구조 분해: 위치대로 꺼내요
 
 배열에는 이름 대신 순서가 있어요. 그래서 배열 구조 분해는 대괄호 `[ ]`를 쓰고, **위치대로** 값을 넣어요.
@@ -120,7 +130,7 @@ const settings = { ...defaults, ...saved };   // { theme: "dark", fontSize: 16 }
 
 | 자리 | 이름 | 하는 일 | 예 |
 |---|---|---|---|
-| 값을 **만드는** 자리 (`=` 오른쪽, 호출의 인수) | 전개 | 하나의 객체·배열을 여러 개로 **펼침** | `{ ...user, age: 21 }`, `[...a, ...b]` |
+| 값을 **만드는** 자리 (`=` 오른쪽처럼 값이 쓰이는 곳) | 전개 | 하나의 객체·배열을 여러 개로 **펼침** | `{ ...user, age: 21 }`, `[...a, ...b]` |
 | 값을 **받는** 자리 (`=` 왼쪽, 매개변수) | 나머지 | 남은 여러 개를 하나로 **모음** | `const { password, ...info } = user;`, `function f(...nums)` |
 
 나머지는 구조 분해의 마지막에만 쓸 수 있어요. `const { password, ...info } = user;`는 `password`를 꺼내고, 남은 속성을 모두 담은 **새 객체** `info`를 만들어요. "어떤 속성만 뺀 객체"가 필요할 때 써요. 이때도 `user`에서는 아무것도 빠지지 않아요.
@@ -131,13 +141,13 @@ const settings = { ...defaults, ...saved };   // { theme: "dark", fontSize: 16 }
 
 <RunnableExample id="object-destructuring" lang="js" predict predictKind="console" concepts={["js.obj.destructuring"]}>
 ```js
-const menu = { name: "떡볶이", price: 4000, spicy: true };
+const menu = { title: "떡볶이", price: 4000, spicy: true };
 
-const { name, price } = menu;
-console.log(name, price);
+const { title, price } = menu;
+console.log(title, price);
 
-const { name: menuName, size = "보통", spicy } = menu;
-console.log(menuName, size, spicy);
+const { title: menuTitle, size = "보통", spicy } = menu;
+console.log(menuTitle, size, spicy);
 
 console.log(menu);
 ```
@@ -148,11 +158,11 @@ console.log(menu);
 ```text
 떡볶이 4000
 떡볶이 보통 true
-{ name: "떡볶이", price: 4000, spicy: true }
+{ title: "떡볶이", price: 4000, spicy: true }
 ```
 
-- 3번 줄은 `name`, `price` 속성을 꺼내 같은 이름의 변수 두 개를 만들어요.
-- 6번 줄의 `name: menuName`은 `name` 속성을 `menuName`이라는 **새 이름**의 변수로 받아요. 3번 줄에서 `name` 변수를 이미 만들었기 때문에, 같은 이름으로 또 만들 수 없어서 이름을 바꾼 거예요.
+- 3번 줄은 `title`, `price` 속성을 꺼내 같은 이름의 변수 두 개를 만들어요.
+- 6번 줄의 `title: menuTitle`은 `title` 속성을 `menuTitle`이라는 **새 이름**의 변수로 받아요. 3번 줄에서 `title` 변수를 이미 만들었기 때문에, 같은 이름으로 또 만들 수 없어서 이름을 바꾼 거예요.
 - `size`는 `menu`에 없는 속성이라 원래는 `undefined`인데, 기본값 `"보통"`이 들어가요. `spicy`는 있는 속성이라 `true`예요.
 - 9번 줄에서 `menu`는 처음 모습 그대로예요. 구조 분해는 값을 읽어 올 뿐 속성을 빼내지 않아요.
 </Section>
@@ -302,18 +312,19 @@ console.log(Object.keys(user).length);
 </Pitfall>
 
 <Pitfall misconception="js.mc.destructuring-rename-direction">
-<Wrong>`const { userName: name } = user;`는 `user`의 `name` 속성을 `userName` 변수로 받는다.</Wrong>
+<Wrong>`const { userName: nickname } = user;`는 `user`의 `nickname` 속성을 `userName` 변수로 받는다.</Wrong>
 <Actual>
 
 콜론 왼쪽이 **속성 이름**, 오른쪽이 **새 변수 이름**이에요. 거꾸로 쓰면 `userName` 속성을 찾아요.
 
 ```js
-const user = { name: "민지" };
-const { userName: name } = user;
-console.log(name); // undefined (userName 속성이 없음)
+const user = { nickname: "코코" };
+const { userName: nickname } = user;
+console.log(nickname); // undefined (userName 속성이 없음)
+console.log(userName); // ReferenceError: userName is not defined
 ```
 </Actual>
-<Right>`{ 어느속성: 어떤변수 }` 순서로 써요. `name` 속성을 `userName` 변수로 받으려면 `const { name: userName } = user;`예요.</Right>
+<Right>`{ 어느속성: 어떤변수 }` 순서로 써요. `nickname` 속성을 `userName` 변수로 받으려면 `const { nickname: userName } = user;`예요.</Right>
 </Pitfall>
 
 <Pitfall misconception="js.mc.destructuring-default-on-null">
@@ -377,6 +388,8 @@ function formatPrice(price, { currency = "원", comma = true } = {}) {
 console.log(formatPrice(12000));                    // 12,000원
 console.log(formatPrice(12000, { comma: false }));  // 12000원
 ```
+
+`price.toLocaleString("ko-KR")`은 숫자를 `"12,000"`처럼 세 자리마다 쉼표를 넣은 문자열로 바꿔 주는 메서드예요. 두 번째 인수를 아예 넘기지 않아도 `= {}` 덕분에 오류 없이 기본값이 쓰여요.
 </Section>
 
 <Section kind="check">

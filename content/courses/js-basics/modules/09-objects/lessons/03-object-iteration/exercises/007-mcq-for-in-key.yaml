@@ -43,5 +43,6 @@ explanation: |
   - `is not iterable` 오류는 객체를 `for...of`로 돌 때 나요. `for...in`은 객체에 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

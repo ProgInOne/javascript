@@ -75,5 +75,6 @@ explanation: |
   - 1번 줄을 `let cart = ...`로 바꿔도 출력과 결과가 같아서 정답이에요. 다만 객체를 계속 같은 장바구니로 쓸 거라면 `const`로 두고 속성을 바꾸는 편이 의도가 분명해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

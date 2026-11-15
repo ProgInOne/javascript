@@ -72,5 +72,6 @@ explanation: |
   - 속성 `row`와 `num`은 원시 값(문자열, 숫자)이라 `===`가 값을 비교해요. 두 비교를 `&&`로 묶어 둘 다 같을 때만 `true`가 되게 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

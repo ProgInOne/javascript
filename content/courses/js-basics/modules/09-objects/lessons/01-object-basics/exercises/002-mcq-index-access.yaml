@@ -42,5 +42,6 @@ explanation: |
   - 오류를 예상했다면, 오류는 없는 속성을 읽을 때가 아니라 `undefined`에서 다시 속성을 읽을 때 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -45,13 +45,14 @@ hints:
 explanation: |
   정답은 `shop["home-city"]`와 `shop[field]`예요. 둘 다 찾는 이름이 `"home-city"`가 돼요.
 
-  - '`shop["home-city"]`: 대괄호 안의 문자열을 그대로 이름으로 써요.'
-  - '`shop[field]`: 변수 `field`를 계산해 `"home-city"`를 얻어요.'
-  - '`shop.home-city`: 점 표기법은 하이픈을 읽지 못해서 `shop.home - city`로 해석돼요. `shop.home`은 `undefined`이고, 변수 `city`는 없으니 `ReferenceError: city is not defined`가 나요. 하이픈이나 공백이 든 키는 대괄호로만 읽을 수 있어요.'
-  - '`shop.field`: 이름이 `field`인 속성을 찾아서 `undefined`예요.'
-  - '`shop[home-city]`: 따옴표가 없어서 변수 `home`과 `city`의 뺄셈으로 읽혀요. 변수 `home`이 없어 `ReferenceError`예요.'
-  - '`shop.city`: 다른 속성이라 `"부산"`이에요.'
+  - `shop["home-city"]`: 대괄호 안의 문자열을 그대로 이름으로 써요.
+  - `shop[field]`: 변수 `field`를 계산해 `"home-city"`를 얻어요.
+  - `shop.home-city`: 점 표기법은 하이픈을 읽지 못해서 `shop.home - city`로 해석돼요. `shop.home`은 `undefined`이고, 변수 `city`는 없으니 `ReferenceError: city is not defined`가 나요. 하이픈이나 공백이 든 키는 대괄호로만 읽을 수 있어요.
+  - `shop.field`: 이름이 `field`인 속성을 찾아서 `undefined`예요.
+  - `shop[home-city]`: 따옴표가 없어서 변수 `home`과 `city`의 뺄셈으로 읽혀요. 변수 `home`이 없어 `ReferenceError`예요.
+  - `shop.city`: 다른 속성이라 `"부산"`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

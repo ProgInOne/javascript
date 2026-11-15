@@ -58,5 +58,6 @@ explanation: |
   `structuredClone(settings)`를 써도 새 객체가 만들어지므로 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

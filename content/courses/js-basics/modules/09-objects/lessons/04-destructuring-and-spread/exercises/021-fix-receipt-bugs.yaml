@@ -106,5 +106,6 @@ explanation: |
   1번만 고치면 오류는 사라지지만, 출력이 그럴듯해 보여서 2·3번을 놓치기 쉬워요. 공개된 예시의 숫자를 하나하나 비교해 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -90,5 +90,6 @@ explanation: |
   - 함수가 새 객체를 `return`하게 하고 반복을 `for (let i = 0; i < players.length; i++) { players[i] = resetScore(players[i]); }`처럼 바꿔도 결과는 같아요. 단, `for (const p of players) { p = resetScore(p); }`는 `const` 변수에 대입해서 오류가 나고, `let`으로 바꿔도 반복 변수만 바뀌어 배열은 그대로예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

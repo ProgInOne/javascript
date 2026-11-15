@@ -72,7 +72,7 @@ spec:
       expect:
         noError: true
       misconceptionIfFail: js.mc.method-reads-props-by-name
-misconceptions: [js.mc.method-reads-props-by-name, js.mc.undeclared-assign-creates-global]
+misconceptions: [js.mc.method-reads-props-by-name]
 hints:
   - 오류는 `balance`라는 **변수**가 없다고 말해요. `balance`는 변수인가요, 객체의 속성인가요?
   - 메서드는 객체 안에 있지만, 속성 이름만 쓰면 속성이 아니라 변수를 찾아요.
@@ -93,8 +93,9 @@ explanation: |
 
   - 속성은 변수가 아니에요. 메서드 안에서 `balance`라고 쓰면 JavaScript는 변수 `balance`를 찾고, 어디에도 없으니 `ReferenceError`를 내요.
   - `card.charge(5000)`처럼 점을 찍어 부르면 메서드 안의 `this`는 `card`예요. `this.balance`를 바꾸면 객체의 속성이 바뀐 채로 남아서 다음 `ride()`가 이어서 계산해요.
-  - '맨 위에 `let balance = 0;`을 만들면 오류는 사라지지만, 바깥 변수만 바뀌고 `card.balance`는 계속 `0`이라 마지막 줄이 `카드에 남은 돈: 0원`이 돼요. 카드의 잔액은 카드 객체 안에 있어야 해요.'
+  - 맨 위에 `let balance = 0;`을 만들면 오류는 사라지지만, 바깥 변수만 바뀌고 `card.balance`는 계속 `0`이라 마지막 줄이 `카드에 남은 돈: 0원`이 돼요. 카드의 잔액은 카드 객체 안에 있어야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

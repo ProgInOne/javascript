@@ -40,5 +40,6 @@ explanation: |
   손님의 선택이 이기게 하려면 기본값을 앞에, 바꿀 값을 뒤에 써서 `{ ...base, ...choice }`로 합쳐야 해요. 그러면 `M white 2`가 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -45,7 +45,6 @@ spec:
       misconception: js.mc.object-param-copied
     - id: c3
       text: const로 만든 result의 속성을 바꾸면 원래 값이 함께 바뀐다
-      misconception: js.mc.const-object-props-frozen
 hints:
   - 이 프로그램에서 `{ }`로 객체를 만드는 곳은 몇 군데인가요? 객체는 몇 개 있을까요?
   - "`order`, `result`, `cart`가 각각 무엇을 가리키는지 화살표로 그려 보세요."
@@ -65,5 +64,6 @@ explanation: |
   - "`const`로 만든 객체의 속성을 바꾸면 원래 값이 함께 바뀐다": `const`는 값을 함께 바꾸는 것과 상관이 없어요. `let result = order;`였어도 같은 버그가 나요. 문제는 새 객체를 만들지 않은 것이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

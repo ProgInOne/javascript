@@ -862,7 +862,7 @@
   title: 얕은 복사
   importance: core
   summary: '{ ...obj }나 [...arr]는 새 객체(배열)를 만들어 첫 단계 속성만 복사해요(얕은 복사). 속성 값이 객체나 배열이면 그 참조가 복사되어 원본과 함께 쓰므로, 중첩된 것까지 따로 만들려면 structuredClone을 쓰거나 안쪽도 복사해요.'
-  prerequisites: [js.obj.reference, js.arr.literal-index, js.arr.for-of]
+  prerequisites: [js.obj.reference, js.arr.literal-index, js.arr.push-pop]
   misconceptions: [js.mc.shallow-copy-is-deep, js.mc.array-assign-copies]
   mdn: Web/JavaScript/Reference/Global_Objects/structuredClone
 

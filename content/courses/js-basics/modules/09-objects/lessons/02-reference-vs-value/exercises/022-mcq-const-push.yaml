@@ -41,5 +41,6 @@ explanation: |
   `scores = { math: 95 };`처럼 변수 자체에 새 객체를 대입했다면 그때 `TypeError: Assignment to constant variable.`이 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

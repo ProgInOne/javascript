@@ -65,5 +65,6 @@ explanation: |
   마지막 속성 `rating: 4.5` 뒤의 쉼표는 있어도 되고 없어도 돼요. 닫는 중괄호 뒤의 `;`는 `const movie = ...;` 문장 전체를 끝내는 것이라 그대로 둬요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

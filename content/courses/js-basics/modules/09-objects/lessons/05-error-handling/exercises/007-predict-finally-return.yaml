@@ -32,7 +32,6 @@ spec:
   misconceptionByAnswer:
     "4000\n쿠폰 실패: 없는 쿠폰\n쿠폰 확인 끝\n5000": js.mc.finally-only-on-error
     "4000\n쿠폰 실패: 없는 쿠폰\n5000\n쿠폰 확인 끝": js.mc.finally-only-on-error
-    "4000\n쿠폰 확인 끝\n쿠폰 실패: 없는 쿠폰\n5000\n쿠폰 확인 끝": js.mc.finally-only-on-error
 misconceptions: [js.mc.finally-only-on-error]
 hints:
   - 첫 호출은 오류가 나나요? `return price - 1000;`을 만난 뒤 무엇이 실행될지 생각해 보세요.
@@ -58,5 +57,6 @@ explanation: |
   - 반환값이 `finally`보다 먼저 나온다고 답했다면 순서를 다시 보세요. 반환값을 출력하는 `console.log`는 함수 **바깥**에 있어서, 함수가 `finally`까지 모두 마친 뒤에야 실행돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

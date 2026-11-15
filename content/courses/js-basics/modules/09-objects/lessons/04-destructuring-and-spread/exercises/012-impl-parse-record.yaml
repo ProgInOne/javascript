@@ -60,7 +60,7 @@ spec:
       requirement: 나이는 숫자
       args: ["하린,40"]
       expect: { equals: { name: "하린", age: 40, city: "미정" } }
-misconceptions: [js.mc.array-destructuring-by-name, js.mc.split-result-is-string]
+misconceptions: [js.mc.array-destructuring-by-name]
 hints:
   - "`\"민지,24,서울\".split(\",\")`의 결과는 어떤 모양인가요? 몇 번 칸에 무엇이 들어 있나요?"
   - 그 결과를 위치대로 세 변수에 꺼내 보세요. 배열 구조 분해에서도 `= 값`으로 기본값을 줄 수 있어요.
@@ -80,5 +80,6 @@ explanation: |
   - `split`의 조각은 모두 문자열이라 `age`도 `"24"`예요. `Number(age)`로 바꾸지 않으면 숨긴 테스트(나이는 숫자)에서 `"40"`과 `40`이 달라 실패해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

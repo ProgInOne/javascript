@@ -2151,8 +2151,8 @@
 - id: js.mc.destructuring-rename-direction
   concept: js.obj.destructuring
   title: 구조 분해에서 새 이름의 방향을 거꾸로 씀
-  statement: 'const { userName: name } = user;가 user의 name 속성을 userName 변수로 받는다고 생각한다.'
-  reality: '{ 속성이름: 새변수이름 } 순서다. { name: userName }이 name 속성을 userName 변수로 받는다. 거꾸로 쓰면 userName 속성을 찾아 undefined가 되고, 변수는 name이 된다.'
+  statement: 'const { userName: nickname } = user;가 user의 nickname 속성을 userName 변수로 받는다고 생각한다.'
+  reality: '{ 속성이름: 새변수이름 } 순서다. { nickname: userName }이 nickname 속성을 userName 변수로 받는다. 거꾸로 쓰면 userName 속성을 찾아 undefined가 되고, 만들어지는 변수는 nickname이다.'
   remediation:
     lessonSection: js-basics.objects.destructuring-and-spread#pitfalls
     exercises: [js-basics.objects.destructuring-and-spread.tf-rename-direction, js-basics.objects.destructuring-and-spread.fix-rename-reversed, js-basics.objects.destructuring-and-spread.multi-destructure-facts, js-basics.objects.destructuring-and-spread.fix-receipt-bugs]
@@ -2221,7 +2221,7 @@
   reality: '오류가 난 줄 뒤의 try 블록은 건너뛰고 다시 돌아가지 않는다. catch(와 finally)가 끝나면 try...catch 다음 줄부터 이어진다.'
   remediation:
     lessonSection: js-basics.objects.error-handling#pitfalls
-    exercises: [js-basics.objects.error-handling.predict-try-resume, js-basics.objects.error-handling.fix-finally-loading, js-basics.objects.error-handling.fix-orders-loop]
+    exercises: [js-basics.objects.error-handling.predict-try-resume, js-basics.objects.error-handling.impl-check-orders, js-basics.objects.error-handling.fix-orders-loop]
 
 - id: js.mc.caught-error-stops-program
   concept: js.errors.try-catch
@@ -2239,7 +2239,7 @@
   reality: 'finally는 오류가 나든 안 나든, try 안에서 return하든 항상 실행된다.'
   remediation:
     lessonSection: js-basics.objects.error-handling#pitfalls
-    exercises: [js-basics.objects.error-handling.mcq-finally-when, js-basics.objects.error-handling.predict-finally-return, js-basics.objects.error-handling.fix-orders-loop]
+    exercises: [js-basics.objects.error-handling.mcq-finally-when, js-basics.objects.error-handling.predict-finally-return, js-basics.objects.error-handling.fix-finally-loading]
 
 # ── 모듈 10. dom-basics ──
 

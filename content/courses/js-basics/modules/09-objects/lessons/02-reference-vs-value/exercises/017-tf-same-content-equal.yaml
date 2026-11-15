@@ -23,5 +23,6 @@ explanation: |
   내용이 같은지 알고 싶으면 `a.size === b.size`처럼 원시 값인 속성끼리 비교해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

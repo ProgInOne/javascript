@@ -24,7 +24,7 @@ misconceptions: [js.mc.missing-property-error]
 hints:
   - 줄마다 점 앞의 값이 무엇인지 차례로 적어 보세요.
   - "`order`에는 `delivery` 속성이 없어요. 4번 줄의 결과는 무엇인가요?"
-  - 5번 줄은 4번 줄의 결과에서 다시 `.address`를 찾아요. 그 값에 서랍(속성)이 있을 수 있는지, 값을 할 수 없는 방식으로 쓰면 어떤 종류의 오류였는지 떠올려 보세요.
+  - 5번 줄은 4번 줄의 결과에서 다시 `.address`를 찾아요. `undefined`에도 속성(서랍)이 있을까요? 어떤 값을 그 값에 맞지 않는 방식으로 쓰면 어떤 종류의 오류가 났는지 떠올려 보세요.
 explanation: |
   **오류가 나요. 종류는 `TypeError`**예요. 실제 출력은 이래요.
 
@@ -34,12 +34,13 @@ explanation: |
   TypeError: Cannot read properties of undefined (reading 'address')
   ```
 
-  - '4번 줄: `delivery` 속성은 없지만 오류가 아니라 `undefined`가 출력돼요.'
-  - '5번 줄: `order.delivery`가 `undefined`이고, `undefined`에서 `.address`를 읽으려 하니 `TypeError`가 나요. 메시지의 `(reading ''address'')`는 읽으려던 속성 이름이고, 원인은 그 앞의 값이 `undefined`라는 데 있어요.'
+  - 4번 줄: `delivery` 속성은 없지만 오류가 아니라 `undefined`가 출력돼요.
+  - 5번 줄: `order.delivery`가 `undefined`이고, `undefined`에서 `.address`를 읽으려 하니 `TypeError`가 나요. 메시지의 `(reading 'address')`는 읽으려던 속성 이름이고, 원인은 그 앞의 값이 `undefined`라는 데 있어요.
   - 오류가 난 뒤의 6번 줄은 실행되지 않아요.
 
   `ReferenceError`라고 생각했다면 없는 속성을 없는 변수처럼 본 거예요. `ReferenceError`는 **변수**가 없을 때이고, 여기서 변수 `order`는 있어요. "오류 없음"이라고 생각했다면 5번 줄도 `undefined`가 될 거라고 본 거예요. 없는 속성은 괜찮지만, 없는 속성의 속성은 오류예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

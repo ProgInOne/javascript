@@ -26,7 +26,6 @@ spec:
   misconceptionByAnswer:
     "주문 확인\n메뉴: 라면\n손님 정보 없음 (TypeError)\n가격: 4500\n주문 확인 끝": js.mc.try-resumes-after-catch
     "주문 확인\n메뉴: 라면\n손님 정보 없음 (TypeError)": js.mc.caught-error-stops-program
-    "주문 확인\n메뉴: 라면\n손님: undefined\n가격: 4500\n주문 확인 끝": js.mc.missing-property-error
 misconceptions: [js.mc.try-resumes-after-catch, js.mc.caught-error-stops-program]
 hints:
   - "`order.customer`는 어떤 값인가요? 그 값에서 다시 `.name`을 읽으면 어떻게 되나요?"
@@ -50,5 +49,6 @@ explanation: |
   가격까지 출력된다고 답했다면 `catch` 뒤에 `try`의 남은 줄이 이어진다고 본 거예요. 마지막 줄을 뺐다면 잡힌 오류도 프로그램을 멈춘다고 본 거예요. 가격도 꼭 보여 줘야 한다면 그 줄을 `try...catch` 다음으로 옮겨요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

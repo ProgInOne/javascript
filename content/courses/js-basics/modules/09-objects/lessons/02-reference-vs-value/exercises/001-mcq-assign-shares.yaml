@@ -42,5 +42,6 @@ explanation: |
   - `TypeError`라고 생각했다면: `const`는 `draft = ...`처럼 변수에 다시 대입할 때만 오류를 내요. 속성을 바꾸는 것은 막지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

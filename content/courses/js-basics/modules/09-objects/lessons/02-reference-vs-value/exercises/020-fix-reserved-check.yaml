@@ -81,5 +81,6 @@ explanation: |
   - `isReserved(reserved)`처럼 `reserved` 자체를 넘길 때만 원래 코드가 `true`를 내요. 실제 프로그램에서는 손님이 고른 좌석이 항상 새 객체라서 쓸모가 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

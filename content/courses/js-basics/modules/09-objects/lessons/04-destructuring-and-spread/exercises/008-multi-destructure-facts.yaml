@@ -1,6 +1,6 @@
 id: js-basics.objects.destructuring-and-spread.multi-destructure-facts
 type: mcq_multi
-difficulty: 4
+difficulty: 3
 concepts:
   - { id: js.obj.destructuring, weight: 1 }
   - { id: js.obj.spread, weight: 0.3 }
@@ -55,5 +55,6 @@ explanation: |
   - 구조 분해와 나머지는 값을 읽기만 하므로 `order`는 그대로 속성 3개를 가져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

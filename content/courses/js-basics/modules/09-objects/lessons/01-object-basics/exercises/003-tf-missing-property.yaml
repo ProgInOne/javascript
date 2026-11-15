@@ -39,5 +39,6 @@ explanation: |
   참고로 `user.email.length`처럼 `undefined`에서 다시 속성을 읽으면 그때는 `TypeError`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

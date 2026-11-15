@@ -69,5 +69,6 @@ explanation: |
   - `todayMenu.slice()`처럼 새 배열을 돌려주는 다른 방법도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

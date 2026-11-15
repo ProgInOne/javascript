@@ -7,12 +7,12 @@ concepts:
 tags: [object, method, this, write-code]
 estimatedSeconds: 300
 prompt: |
-  퀴즈 점수판 객체 `board`를 만드세요. 아래쪽에 이미 있는 코드는 그대로 두고, 그 위에 객체를 만들면 돼요.
+  퀴즈 점수판 객체 `board`를 만드세요. 시작 코드의 아래쪽 코드가 `board`의 메서드를 불러 결과를 출력해요. 그 위에 객체를 만들면 돼요.
 
   - 속성 `team`은 `"파랑팀"`, 속성 `points`는 `0`으로 시작해요.
-  - '메서드 `add(n)`: `points`에 `n`을 더하고, 더한 뒤의 `points`를 돌려줘요.'
-  - '메서드 `summary()`: `"(팀 이름) (점수)점"` 문장을 돌려줘요.'
-  - '메서드 `reset()`: `points`를 0으로 되돌리고 `"초기화"`를 돌려줘요.'
+  - 메서드 `add(n)`: `points`에 `n`을 더하고, 더한 뒤의 `points`를 돌려줘요.
+  - 메서드 `summary()`: `"(팀 이름) (점수)점"` 문장을 돌려줘요.
+  - 메서드 `reset()`: `points`를 0으로 되돌리고 `"초기화"`를 돌려줘요.
 
   아래처럼 출력되어야 해요.
 
@@ -32,7 +32,7 @@ spec:
           // 여기에 board 객체를 만드세요.
 
 
-          // 아래 코드는 그대로 두세요.
+          // 아래 코드가 board의 메서드를 불러요.
           console.log(board.add(10));
           console.log(board.add(15));
           console.log(board.summary());
@@ -61,7 +61,7 @@ spec:
             },
           };
 
-          // 아래 코드는 그대로 두세요.
+          // 아래 코드가 board의 메서드를 불러요.
           console.log(board.add(10));
           console.log(board.add(15));
           console.log(board.summary());
@@ -78,9 +78,11 @@ spec:
         lines: ["10", "25", "파랑팀 25점", "초기화", "파랑팀 0점", "파랑팀 7점"]
     - kind: program
       id: no-error
-      description: 프로그램이 오류 없이 끝나야 합니다.
+      description: 프로그램이 오류 없이 끝나고, board 변수에 점수판 객체가 들어 있어야 합니다.
       requirement: 점수판 동작
       expect:
+        globals:
+          board: { matches: { type: object } }
         noError: true
       misconceptionIfFail: js.mc.method-reads-props-by-name
 misconceptions: [js.mc.method-reads-props-by-name, js.mc.return-is-log]
@@ -109,11 +111,12 @@ explanation: |
   };
   ```
 
-  - '**`this`**: `board.add(10)`처럼 부르면 메서드 안의 `this`는 `board`예요. `this.points`를 바꾸면 객체에 그대로 남아서 다음 호출이 이어서 계산해요. `points`만 쓰면 `ReferenceError`예요.'
-  - '**반환과 출력**: 아래 코드가 `console.log(board.add(10))`처럼 반환값을 출력해요. 메서드 안에서 `console.log`만 하면 바깥 `console.log`가 `undefined`를 출력해요.'
+  - **`this`**: `board.add(10)`처럼 부르면 메서드 안의 `this`는 `board`예요. `this.points`를 바꾸면 객체에 그대로 남아서 다음 호출이 이어서 계산해요. `points`만 쓰면 `ReferenceError`예요.
+  - **반환과 출력**: 아래 코드가 `console.log(board.add(10))`처럼 반환값을 출력해요. 메서드 안에서 `console.log`만 하면 바깥 `console.log`가 `undefined`를 출력해요.
   - `board`는 아래 코드보다 **위**에 만들어야 해요. `const`는 선언하기 전에 쓸 수 없어요(모듈 2).
-  - 이 문제는 출력만 검사해요. 정해진 줄을 그대로 출력해도 통과하지만, 그러면 메서드를 연습할 수 없어요.
+  - 이 문제는 출력과 `board` 객체가 있는지만 검사해요. 아래 코드를 지우고 정해진 줄을 직접 출력해도 통과할 수 있지만, 그러면 메서드를 연습할 수 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

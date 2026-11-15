@@ -43,5 +43,6 @@ explanation: |
   - "return하지 않으면 모두 취소된다": `return`이 없어도 함수가 바꾼 객체의 속성은 그대로 남아요. 이런 변경을 부수 효과라고 했어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

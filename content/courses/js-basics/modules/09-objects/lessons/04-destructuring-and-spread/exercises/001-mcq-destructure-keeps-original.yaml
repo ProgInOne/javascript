@@ -8,38 +8,39 @@ estimatedSeconds: 50
 prompt: |
   아래 코드를 실행하면 마지막 줄에서 무엇이 출력되나요?
 code: |
-  const user = { name: "민지", age: 20 };
-  const { name } = user;
+  const user = { nickname: "민지", age: 20 };
+  const { nickname } = user;
   console.log(user);
 spec:
   options:
     - id: a
-      text: "`{ name: \"민지\", age: 20 }`"
+      text: "`{ nickname: \"민지\", age: 20 }`"
     - id: b
       text: "`{ age: 20 }`"
       misconception: js.mc.destructuring-removes-property
       rationale: 구조 분해는 속성 값을 읽어서 변수에 담을 뿐, 객체에서 속성을 빼내지 않아요.
     - id: c
       text: "`민지`"
-      rationale: 출력하는 것은 변수 name이 아니라 객체 user 전체예요.
+      rationale: 출력하는 것은 변수 nickname이 아니라 객체 user 전체예요.
     - id: d
       text: "`TypeError`가 난다"
       rationale: 있는 객체에서 속성을 꺼내는 것은 오류가 아니에요. 오류는 undefined나 null을 구조 분해할 때 나요.
   correct: a
 misconceptions: [js.mc.destructuring-removes-property]
 hints:
-  - 2번 줄의 `{ name }`은 무엇을 하는 문법이었나요?
-  - "`const { name } = user;`는 `const name = user.name;`과 같아요."
-  - "`const name = user.name;`을 실행하면 `user` 객체가 바뀌나요?"
+  - 2번 줄의 `{ nickname }`은 무엇을 하는 문법이었나요?
+  - "`const { nickname } = user;`는 `const nickname = user.nickname;`과 같아요."
+  - "`const nickname = user.nickname;`을 실행하면 `user` 객체가 바뀌나요?"
 explanation: |
-  `{ name: "민지", age: 20 }`이 출력돼요.
+  `{ nickname: "민지", age: 20 }`이 출력돼요.
 
-  2번 줄은 `user.name`의 값을 읽어서 `name` 변수를 만들 뿐이에요. `const name = user.name;`을 짧게 쓴 것이라, `user`에서 속성이 빠지지 않아요.
+  2번 줄은 `user.nickname`의 값을 읽어서 `nickname` 변수를 만들 뿐이에요. `const nickname = user.nickname;`을 짧게 쓴 것이라, `user`에서 속성이 빠지지 않아요.
 
   - `{ age: 20 }`이라고 생각했다면 구조 분해가 속성을 "꺼내서 옮긴다"고 본 거예요. 실제로는 복사해서 읽어 와요.
-  - `민지`는 `console.log(name)`의 결과예요. 이 코드는 `user`를 출력해요.
+  - `민지`는 `console.log(nickname)`의 결과예요. 이 코드는 `user`를 출력해요.
   - 구조 분해의 `TypeError`는 `undefined`나 `null`을 풀려고 할 때만 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

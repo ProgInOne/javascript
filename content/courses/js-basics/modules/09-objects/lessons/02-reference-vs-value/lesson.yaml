@@ -6,7 +6,7 @@ importance: core
 estimatedMinutes: { read: 18, practice: 36 }
 concepts:
   primary: [js.obj.reference, js.obj.copy-shallow, js.obj.equality, js.obj.const-mutation]
-  reviewed: [js.obj.dot-bracket, js.obj.add-delete, js.values.const, js.ops.strict-equality, js.fn.params-args, js.scope.shadowing]
+  reviewed: [js.obj.dot-bracket, js.obj.add-delete, js.values.const, js.ops.strict-equality, js.fn.params-args, js.scope.shadowing, js.arr.literal-index, js.arr.push-pop, js.arr.for-of, js.arr.mutating-vs-not]
 objectives:
   - 객체를 다른 변수에 대입하거나 함수에 넘긴 뒤 속성을 바꾼 결과를 예측할 수 있다.
   - 속성을 바꾸는 것과 변수(매개변수)에 새 객체를 대입하는 것의 차이를 설명할 수 있다.

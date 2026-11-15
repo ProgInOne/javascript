@@ -108,5 +108,6 @@ explanation: |
   - 줄 수가 많은 풀이도 괜찮아요. 예를 들어 `if (settings === undefined || settings === null) { return fallback; }`로 먼저 걸러 내고, 그다음 `const value = settings[key];`가 `null`·`undefined`인지 확인해도 같은 결과예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -66,5 +66,6 @@ explanation: |
   - `try...catch`는 `throw`로 직접 던진 오류도 잡아요. 여기서는 던지지 않은 것이 문제예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

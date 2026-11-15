@@ -122,5 +122,6 @@ explanation: |
   - **경계**: 8세는 7000원, 19세는 12000원, 0세는 0원이에요. `age <= 0`으로 쓰면 0세에서 오류를 던져 틀려요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

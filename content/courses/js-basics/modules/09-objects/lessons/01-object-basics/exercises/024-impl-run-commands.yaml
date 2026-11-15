@@ -22,9 +22,9 @@ prompt: |
 
   `take`와 `check`에는 규칙이 더 있어요.
 
-  - '창고에 없는 상품이면 `없는 상품: 상품`이에요.'
-  - '꺼낼 개수가 남은 개수보다 많으면 꺼내지 않고 `부족: 상품 (남은 개수)개`예요.'
-  - '꺼낸 뒤 0개가 되면 그 상품을 재고에서 **지우고** `상품: 품절`이에요.'
+  - 창고에 없는 상품이면 `없는 상품: 상품`이에요.
+  - 꺼낼 개수가 남은 개수보다 많으면 꺼내지 않고 `부족: 상품 (남은 개수)개`예요.
+  - 꺼낸 뒤 0개가 되면 그 상품을 재고에서 **지우고** `상품: 품절`이에요.
 
   모든 명령을 처리한 뒤 `{ messages: 결과 문장 배열, stock: 재고 객체 }`를 돌려줘요.
 
@@ -33,7 +33,7 @@ prompt: |
   // { messages: ["milk: 3", "milk: 2", "milk: 2", "없는 상품: egg"], stock: { milk: 2 } }
   ```
 
-  문자열을 나누는 `split`(모듈 7)과 숫자로 바꾸는 `Number`(모듈 3)가 쓸모 있어요. 배열 끝에 값을 넣을 때는 `messages.push(문장)`을 써요.
+  문자열을 나누는 `split`(모듈 7), 숫자로 바꾸는 `Number`(모듈 3), 배열 끝에 값을 넣는 `push`(모듈 8)가 쓸모 있어요.
 spec:
   starter:
     files:
@@ -137,7 +137,7 @@ spec:
       args: [["add item 1", "add count 4", "take count 1"]]
       expect: { equals: { messages: ["item: 1", "count: 4", "count: 3"], stock: { item: 1, count: 3 } } }
       misconceptionIfFail: js.mc.dot-with-variable-key
-misconceptions: [js.mc.dot-with-variable-key, js.mc.add-property-needs-declare, js.mc.split-result-is-string, js.mc.plus-string-adds]
+misconceptions: [js.mc.dot-with-variable-key, js.mc.add-property-needs-declare, js.mc.plus-string-adds]
 hints:
   - 창고 객체와 결과 배열은 반복 앞에서 한 번씩 만들어요. 명령 하나는 `split(" ")`로 나누면 명령·상품·개수를 인덱스로 꺼낼 수 있어요.
   - 상품 이름은 변수에 있으니 대괄호로 읽고 써요. `split`이 만든 개수는 문자열이라 `Number`로 바꾸지 않으면 `"2" + "10"`처럼 이어 붙여져요.
@@ -184,12 +184,13 @@ explanation: |
   }
   ```
 
-  - '**명령 나누기**: `"add milk 3".split(" ")`은 `["add", "milk", "3"]`이에요. 개수 `"3"`은 문자열이라 `Number`로 바꿔요. 바꾸지 않으면 `0 + "2"`가 `"02"`, 이어서 `"0210"`처럼 이어 붙여져요.'
-  - '**대괄호로 읽고 쓰기**: 상품 이름은 매번 달라서 `stock[item]`이에요. 숨긴 검사 `item-named-item`은 `stock.item`처럼 쓴 답을 걸러요.'
-  - '**추가와 삭제**: 없던 상품은 0을 넣어 속성을 만든 뒤 더하고, 0개가 되면 `delete`로 지워요. 값만 0으로 두면 `{ tea: 0 }`이 남고 다음 `check`도 `tea: 0`이 돼요.'
-  - '**확인 순서**: 없는 상품을 먼저 걸러야 `undefined`와 비교하는 일이 없어요. 부족할 때는 재고를 바꾸지 않고 안내만 넣어요.'
-  - 결과 객체는 `{ messages, stock }`처럼 짧게 써도 같아요. 이 줄임 문법은 단원 "구조 분해와 전개"에서 다시 봐요.
+  - **명령 나누기**: `"add milk 3".split(" ")`은 `["add", "milk", "3"]`이에요. 개수 `"3"`은 문자열이라 `Number`로 바꿔요. 바꾸지 않으면 `0 + "2"`가 `"02"`, 이어서 `"0210"`처럼 이어 붙여져요.
+  - **대괄호로 읽고 쓰기**: 상품 이름은 매번 달라서 `stock[item]`이에요. 숨긴 검사 `item-named-item`은 `stock.item`처럼 쓴 답을 걸러요.
+  - **추가와 삭제**: 없던 상품은 0을 넣어 속성을 만든 뒤 더하고, 0개가 되면 `delete`로 지워요. 값만 0으로 두면 `{ tea: 0 }`이 남고 다음 `check`도 `tea: 0`이 돼요.
+  - **확인 순서**: 없는 상품을 먼저 걸러야 `undefined`와 비교하는 일이 없어요. 부족할 때는 재고를 바꾸지 않고 안내만 넣어요.
+  - 결과 객체는 `{ messages, stock }`처럼 짧게 써도 같아요. 이 줄임 문법은 단원 "구조 분해와 전개"에서 배워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

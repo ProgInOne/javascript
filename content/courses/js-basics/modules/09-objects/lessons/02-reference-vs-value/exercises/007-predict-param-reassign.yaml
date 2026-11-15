@@ -29,7 +29,6 @@ spec:
   misconceptionByAnswer:
     "민지 20\n익명 99\nfalse": js.mc.object-param-copied
     "익명 99\n익명 99\ntrue": js.mc.param-reassign-replaces-object
-    "지민 99\n익명 99\nfalse": js.mc.param-reassign-replaces-object
 hints:
   - 9번 줄에서 `profile`은 처음에 어떤 객체를 가리키나요?
   - 2번 줄과 3번 줄은 하는 일이 달라요. 하나는 가리키는 객체의 속성을 바꾸고, 하나는 `profile`이 가리키는 곳을 바꿔요.
@@ -54,8 +53,9 @@ explanation: |
   - 3번 줄은 매개변수 `profile`에 새 객체를 대입해요. 화살표만 옮겨졌을 뿐 `user`는 원래 객체를 그대로 가리켜요. 4번 줄은 새 객체를 바꾸므로 `user.age`는 20이에요.
   - `result`는 함수가 돌려준 새 객체라서 `익명 99`이고, `user`와 다른 객체이므로 `user === result`는 `false`예요.
 
-  첫 줄을 `민지 20`이라고 썼다면 함수에 넘긴 객체가 복사본이라고 본 거예요. `익명 99`나 `지민 99`라고 썼다면 매개변수에 새 객체를 대입하면 바깥 `user`도 그 객체를 가리킨다고 본 거예요.
+  첫 줄을 `민지 20`이라고 썼다면 함수에 넘긴 객체가 복사본이라고 본 거예요. `익명 99`라고 썼다면 매개변수에 새 객체를 대입하면 바깥 `user`도 그 객체를 가리킨다고 본 거예요. `지민 99`라고 썼다면 4번 줄의 `profile.age = 99`가 `user`의 객체를 바꾼다고 본 거예요. 3번 줄에서 `profile`은 이미 새 객체를 가리켜요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

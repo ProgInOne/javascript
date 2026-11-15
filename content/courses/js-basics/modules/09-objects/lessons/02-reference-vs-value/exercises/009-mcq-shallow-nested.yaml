@@ -42,5 +42,6 @@ explanation: |
   `places`가 `["부산"]` 그대로라고 생각했다면 얕은 복사가 안쪽 배열까지 새로 만든다고 본 거예요. 안쪽도 따로 만들려면 `{ ...original, places: [...original.places] }`나 `structuredClone(original)`을 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

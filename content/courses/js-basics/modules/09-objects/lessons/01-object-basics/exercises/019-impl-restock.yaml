@@ -107,11 +107,12 @@ explanation: |
   }
   ```
 
-  - '**대괄호**: 상품 이름이 `item`에 들어 있으니 `stock[item]`으로 읽고 써요. `stock.item`은 이름이 `item`인 속성을 고쳐요.'
-  - '**추가**: 없는 상품은 `stock[item] = 0;`으로 그 자리에서 속성을 만든 뒤 더해요. 이 줄이 없으면 `undefined + 4`가 `NaN`이에요.'
-  - '**삭제**: 0 이하가 되면 `delete stock[item];`으로 속성을 없애요. `stock[item] = 0`으로 두면 `{ milk: 2, egg: 0 }`처럼 속성이 남아서 검사를 통과하지 못해요.'
+  - **대괄호**: 상품 이름이 `item`에 들어 있으니 `stock[item]`으로 읽고 써요. `stock.item`은 이름이 `item`인 속성을 고쳐요.
+  - **추가**: 없는 상품은 `stock[item] = 0;`으로 그 자리에서 속성을 만든 뒤 더해요. 이 줄이 없으면 `undefined + 4`가 `NaN`이에요.
+  - **삭제**: 0 이하가 되면 `delete stock[item];`으로 속성을 없애요. `stock[item] = 0`으로 두면 `{ milk: 2, egg: 0 }`처럼 속성이 남아서 검사를 통과하지 못해요.
   - 없는 상품에 음수가 들어오면 0에서 시작해 음수가 되고, 곧바로 지워져서 재고에 남지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

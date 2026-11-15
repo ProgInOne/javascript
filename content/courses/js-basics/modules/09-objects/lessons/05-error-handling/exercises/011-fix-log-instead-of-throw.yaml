@@ -87,5 +87,6 @@ explanation: |
   - 경계: 가격과 잔액이 같으면 `price > balance`가 거짓이라 결제되어 0이 돼요. `>=`로 쓰면 이 숨긴 검사에서 틀려요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

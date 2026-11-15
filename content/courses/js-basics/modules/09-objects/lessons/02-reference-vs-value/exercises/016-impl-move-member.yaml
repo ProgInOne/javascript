@@ -133,11 +133,12 @@ explanation: |
   }
   ```
 
-  ```text
-  club ──▶ { title, groups: ─▶ { a: ─▶ ["민지", "준호"], b: ─▶ ["서연"] } }
-  결과 ──▶ { title, groups: ─▶ { a: ─▶ ["민지"],          b: ─▶ ["서연", "준호"] } }
-           (새 객체)          (새 객체)  (새 배열)            (새 배열)
-  ```
+  | 단계 | 받은 `club` | 돌려주는 결과 |
+  |---|---|---|
+  | 동아리 객체 | `{ title, groups }` | 새 객체 |
+  | `groups` 객체 | `{ a, b }` | 새 객체 |
+  | `a` 조 배열 | `["민지", "준호"]` | 새 배열 `["민지"]` |
+  | `b` 조 배열 | `["서연"]` | 새 배열 `["서연", "준호"]` |
 
   - **바뀌는 단계만 새로**: 내용이 바뀌는 것은 두 조 배열, 그 배열을 담은 `groups`, 그 `groups`를 담은 `club`이에요. 세 단계를 모두 새로 만들어야 받은 객체가 그대로 남아요. 옮기지 않는 조(숨긴 검사의 `a` 조)는 바뀌지 않으니 함께 써도 괜찮아요.
   - **얕은 복사의 함정**: `const result = { ...club };` 다음에 `result.groups[to].push(name)`을 하면 `groups`와 조 배열이 원래 객체와 같아서 "받은 객체를 바꾸면 안 됩니다" 검사에서 실패해요. `{ ...club, groups: { ...club.groups } }`까지만 해도 조 배열은 여전히 공유돼요.
@@ -146,5 +147,6 @@ explanation: |
   - `structuredClone(club)`로 통째로 복사한 뒤 복사본의 배열을 고쳐도 정답이에요. 이 방법은 쉽지만 바뀌지 않는 부분까지 모두 새로 만들어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

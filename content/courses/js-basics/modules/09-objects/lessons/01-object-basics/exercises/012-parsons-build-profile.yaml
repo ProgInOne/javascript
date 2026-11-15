@@ -54,10 +54,11 @@ explanation: |
   console.log(profile.nickname + " Lv." + profile.level);
   ```
 
-  - '객체 리터럴 안의 속성은 쉼표로 나눠요. `nickname: "별빛";`처럼 세미콜론을 쓰면 실행 전에 `SyntaxError`가 나요.'
+  - 객체 리터럴 안의 속성은 쉼표로 나눠요. `nickname: "별빛";`처럼 세미콜론을 쓰면 실행 전에 `SyntaxError`가 나요.
   - `profile[level]`의 `level`은 따옴표가 없어서 변수로 읽혀요. 변수 `level`이 없으니 `ReferenceError`가 나요. `profile.level`이나 `profile["level"]`로 써요.
   - 두 속성 줄의 순서를 바꿔도 출력이 같으므로 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

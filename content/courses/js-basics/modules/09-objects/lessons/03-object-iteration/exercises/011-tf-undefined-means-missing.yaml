@@ -26,5 +26,6 @@ explanation: |
   그래서 값이 `undefined`라는 것만으로는 속성이 없다고 말할 수 없어요. 속성이 있는지 물을 때는 `in`을 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

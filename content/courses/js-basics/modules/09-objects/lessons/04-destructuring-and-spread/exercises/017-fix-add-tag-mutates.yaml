@@ -81,5 +81,6 @@ explanation: |
   - 그래서 안쪽 배열도 `[...post.tags, tag]`로 새로 만들고, 펼친 **뒤에** `tags`를 써서 덮어써요. `tags`를 앞에 쓰면 `...post`가 원래 배열로 다시 덮어써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

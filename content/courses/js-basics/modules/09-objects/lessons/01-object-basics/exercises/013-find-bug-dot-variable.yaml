@@ -67,5 +67,6 @@ explanation: |
   - "`==`를 써야 한다": `price === undefined`는 값이 `undefined`인지 정확히 확인하는 올바른 비교예요. 문제는 비교가 아니라 `price`에 늘 `undefined`가 들어간다는 것이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

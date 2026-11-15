@@ -39,5 +39,6 @@ explanation: |
   - 9번 줄: 쉼표 두 개로 0번과 1번을 건너뛰고 2번 값 88을 `last`에 넣어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

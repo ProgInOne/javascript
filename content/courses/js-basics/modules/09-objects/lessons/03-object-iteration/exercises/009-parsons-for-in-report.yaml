@@ -71,5 +71,6 @@ explanation: |
   - `grade + ": " + grade`는 키를 두 번 써서 `VIP: VIP석`이 돼요. 값은 `seats[grade]`로 읽어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

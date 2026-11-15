@@ -35,11 +35,12 @@ hints:
 explanation: |
   `70 85`가 출력돼요.
 
-  - '`scores.key`: 점 뒤의 `key`는 변수가 아니라 **속성 이름 그대로**예요. `scores`에는 이름이 `key`인 속성이 있으니 `70`이에요.'
-  - '`scores[key]`: 대괄호 안은 **식**이라서 변수 `key`를 계산해 `"english"`를 얻고, `english` 속성의 `85`를 읽어요.'
+  - `scores.key`: 점 뒤의 `key`는 변수가 아니라 **속성 이름 그대로**예요. `scores`에는 이름이 `key`인 속성이 있으니 `70`이에요.
+  - `scores[key]`: 대괄호 안은 **식**이라서 변수 `key`를 계산해 `"english"`를 얻고, `english` 속성의 `85`를 읽어요.
 
   `85 85`나 `undefined 85`를 골랐다면 점 표기법도 변수에 든 이름으로 찾는다고 본 거예요. 이 문제는 일부러 `key`라는 속성을 넣어 두었어요. 그 속성이 없었다면 `scores.key`는 `undefined`였을 거예요. 어느 쪽이든 변수에 든 이름으로 찾으려면 대괄호를 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

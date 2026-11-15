@@ -6,7 +6,7 @@ importance: standard
 estimatedMinutes: { read: 13, practice: 24 }
 concepts:
   primary: [js.obj.keys-values-entries, js.obj.for-in, js.obj.in-optional-chaining]
-  reviewed: [js.obj.dot-bracket, js.loops.accumulator-pattern, js.ops.nullish, js.types.undefined]
+  reviewed: [js.obj.dot-bracket, js.loops.accumulator-pattern, js.ops.nullish, js.types.undefined, js.arr.literal-index, js.arr.push-pop, js.arr.for-of]
 objectives:
   - Object.keys·values·entries로 키·값 목록을 만들어 개수를 세고 반복할 수 있다.
   - for...in으로 키를 돌며 대괄호 표기법으로 값을 읽을 수 있다.

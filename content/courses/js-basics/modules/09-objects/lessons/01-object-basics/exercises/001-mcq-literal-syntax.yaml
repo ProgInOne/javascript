@@ -33,10 +33,11 @@ explanation: |
 
   객체 리터럴은 **중괄호**로 감싸고, 속성마다 `키: 값`으로 쓰며, 속성 사이를 **쉼표**로 나눠요. 문장 끝의 세미콜론은 닫는 중괄호 뒤에 한 번만 써요.
 
-  - '속성 사이에 세미콜론을 쓴 코드는 실행 전에 `SyntaxError: Unexpected token '';''`가 나요. 문장을 끝내는 습관대로 쓰기 쉬운 실수예요.'
+  - 속성 사이에 세미콜론을 쓴 코드는 실행 전에 `SyntaxError: Unexpected token ';'`가 나요. 문장을 끝내는 습관대로 쓰기 쉬운 실수예요.
   - `name = "참치김밥"`처럼 `=`을 쓰면 객체 리터럴의 문법이 아니라서 `SyntaxError`예요.
   - 소괄호로 감싼 코드도 `SyntaxError`예요. 소괄호는 객체를 만들지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

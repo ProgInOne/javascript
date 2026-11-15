@@ -44,5 +44,6 @@ explanation: |
   - "잡더라도 프로그램이 멈춘다": 실행 중 오류를 `catch`로 잡았다면 프로그램은 계속돼요. 이 코드에서 아무것도 출력되지 않는 이유는 오류를 잡지 못해서가 아니라 프로그램이 아예 시작되지 않아서예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

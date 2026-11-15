@@ -57,5 +57,6 @@ explanation: |
   빈칸에 `member`라고만 쓰면 객체 전체가 `member`에 들어가고 `name`, `grade`라는 변수는 만들어지지 않아요. 그래서 `ReferenceError: grade is not defined`가 나요. (`name`은 브라우저가 미리 만들어 둔 전역 이름이라 오류 대신 엉뚱한 빈 값을 읽어요. 변수를 만들지 않고 쓰면 이렇게 알아차리기 어려운 결과가 나오기도 해요.)
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

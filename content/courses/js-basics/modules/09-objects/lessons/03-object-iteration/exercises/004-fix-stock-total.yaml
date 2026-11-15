@@ -73,5 +73,6 @@ explanation: |
   `for (const name in stock) { total += stock[name]; }`처럼 `for...in`으로 키를 돌며 값을 읽어도 정답이에요. `Object.keys(stock)`을 돌면서 `total += count`를 그대로 두면 키(과일 이름)가 더해져 `"0사과배귤"`이 되니 주의하세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

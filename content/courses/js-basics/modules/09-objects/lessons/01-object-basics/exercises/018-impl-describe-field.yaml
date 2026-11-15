@@ -9,8 +9,8 @@ estimatedSeconds: 200
 prompt: |
   회원 정보 객체 `record`와 속성 이름 `field`를 받아, 그 속성을 설명하는 문장을 돌려주는 함수 `describe(record, field)`를 만드세요.
 
-  - '속성이 있으면 `"(속성 이름): (값)"`을 돌려줘요.'
-  - '속성이 없으면(값이 `undefined`이면) `"(속성 이름): 정보 없음"`을 돌려줘요.'
+  - 속성이 있으면 `"(속성 이름): (값)"`을 돌려줘요.
+  - 속성이 없으면(값이 `undefined`이면) `"(속성 이름): 정보 없음"`을 돌려줘요.
 
   ```js
   describe({ name: "하린", city: "대전" }, "city");   // "city: 대전"
@@ -95,10 +95,11 @@ explanation: |
   }
   ```
 
-  - '**대괄호 표기법**: 어떤 속성을 읽을지는 호출할 때 정해지므로 `record[field]`로 읽어요. `record.field`는 이름이 `field`인 속성을 찾아서, 숨긴 검사 `field-property`처럼 그런 속성이 따로 있으면 엉뚱한 값을 돌려줘요.'
-  - '**없는 속성**: 없는 속성은 `undefined`라서 `=== undefined`로 확인해요.'
-  - '**`0`과 빈 문자열**: `if (!value)`처럼 쓰면 `0`도 거짓으로 보아 `points: 정보 없음`이 돼요. 있는 속성의 값이 우연히 `0`일 수 있으니 `undefined`와 정확히 비교해요.'
+  - **대괄호 표기법**: 어떤 속성을 읽을지는 호출할 때 정해지므로 `record[field]`로 읽어요. `record.field`는 이름이 `field`인 속성을 찾아서, 숨긴 검사 `field-property`처럼 그런 속성이 따로 있으면 엉뚱한 값을 돌려줘요.
+  - **없는 속성**: 없는 속성은 `undefined`라서 `=== undefined`로 확인해요.
+  - **`0`과 빈 문자열**: `if (!value)`처럼 쓰면 `0`도 거짓으로 보아 `points: 정보 없음`이 돼요. 있는 속성의 값이 우연히 `0`일 수 있으니 `undefined`와 정확히 비교해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

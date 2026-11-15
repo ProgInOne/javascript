@@ -59,5 +59,6 @@ explanation: |
   - "없는 속성을 읽는 순간 오류가 난다": 없는 속성을 읽으면 오류가 아니라 `undefined`예요. `order2.delivery`도 `undefined`일 뿐이에요. 오류는 `undefined`에서 **다시** 속성을 읽을 때 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

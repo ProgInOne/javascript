@@ -8,14 +8,14 @@ concepts:
 tags: [spread, object, state, web, event]
 estimatedSeconds: 420
 prompt: |
-  카페 앱의 음료 주문 화면을 완성하세요. 주문 상태는 객체 하나(`state`)에 들어 있고, `render()`가 그 객체를 화면에 보여 줘요. 버튼 네 개의 함수를 채우면 돼요.
+  카페 앱의 음료 주문 화면을 완성하세요. 주문 상태는 객체 하나(`state`)에 들어 있고, `render()`가 그 객체와 기본 주문 `DEFAULT`를 화면에 보여 줘요. 버튼 네 개의 함수를 채우면 돼요.
 
   - **L 사이즈**(`makeLarge`): 사이즈를 `"L"`로 바꿔요.
   - **샷 추가**(`addShot`): 샷 수를 1 늘려요.
   - **시럽 넣기·빼기**(`toggleSyrup`): 시럽이 없으면 넣고, 있으면 빼요.
   - **처음으로**(`resetOrder`): 기본 주문 `DEFAULT`로 되돌려요.
 
-  처음에는 `state`와 `DEFAULT`가 **같은 객체**예요. 그래서 `state.size = "L";`처럼 `state`를 직접 고치면 `DEFAULT`도 바뀌어 "처음으로"가 동작하지 않아요. 함수마다 `{ ...state, ... }`로 **바뀐 새 객체**를 만들어 `state`에 넣고, `render()`를 부르세요. 버튼 연결은 이미 되어 있어요.
+  처음에는 `state`와 `DEFAULT`가 **같은 객체**예요. 그래서 `state.size = "L";`처럼 `state`를 직접 고치면 `DEFAULT`도 바뀌어 버려요. 화면 아래의 "기본 주문"은 어떤 버튼을 눌러도 `M / 1샷 / 시럽 없음` 그대로여야 해요. 함수마다 `{ ...state, ... }`처럼 **바뀐 새 객체**를 만들어 `state`에 넣고, `render()`를 부르세요. 버튼 연결은 이미 되어 있어요.
 spec:
   focus: dom
   starter:
@@ -36,6 +36,7 @@ spec:
             <body>
               <h1>아메리카노 주문</h1>
               <p id="summary">M / 1샷 / 시럽 없음</p>
+              <p>기본 주문: <span id="default">M / 1샷 / 시럽 없음</span></p>
               <button id="large">L 사이즈</button>
               <button id="shot">샷 추가</button>
               <button id="syrup">시럽 넣기·빼기</button>
@@ -46,11 +47,15 @@ spec:
                   document.querySelector(selector).addEventListener("click", callback);
                 }
 
-                // 주문 상태를 화면에 보여 줘요.
+                function describe(order) {
+                  const syrupText = order.syrup ? "추가" : "없음";
+                  return order.size + " / " + order.shots + "샷 / 시럽 " + syrupText;
+                }
+
+                // 주문 상태와 기본 주문을 화면에 보여 줘요.
                 function render() {
-                  const syrupText = state.syrup ? "추가" : "없음";
-                  document.querySelector("#summary").textContent =
-                    state.size + " / " + state.shots + "샷 / 시럽 " + syrupText;
+                  document.querySelector("#summary").textContent = describe(state);
+                  document.querySelector("#default").textContent = describe(DEFAULT);
                 }
 
                 const DEFAULT = { size: "M", shots: 1, syrup: false };
@@ -95,6 +100,7 @@ spec:
             <body>
               <h1>아메리카노 주문</h1>
               <p id="summary">M / 1샷 / 시럽 없음</p>
+              <p>기본 주문: <span id="default">M / 1샷 / 시럽 없음</span></p>
               <button id="large">L 사이즈</button>
               <button id="shot">샷 추가</button>
               <button id="syrup">시럽 넣기·빼기</button>
@@ -105,11 +111,15 @@ spec:
                   document.querySelector(selector).addEventListener("click", callback);
                 }
 
-                // 주문 상태를 화면에 보여 줘요.
+                function describe(order) {
+                  const syrupText = order.syrup ? "추가" : "없음";
+                  return order.size + " / " + order.shots + "샷 / 시럽 " + syrupText;
+                }
+
+                // 주문 상태와 기본 주문을 화면에 보여 줘요.
                 function render() {
-                  const syrupText = state.syrup ? "추가" : "없음";
-                  document.querySelector("#summary").textContent =
-                    state.size + " / " + state.shots + "샷 / 시럽 " + syrupText;
+                  document.querySelector("#summary").textContent = describe(state);
+                  document.querySelector("#default").textContent = describe(DEFAULT);
                 }
 
                 const DEFAULT = { size: "M", shots: 1, syrup: false };
@@ -189,6 +199,17 @@ spec:
         - { selector: "#summary", text: { equals: "M / 1샷 / 시럽 없음" } }
       misconceptionIfFail: js.mc.assign-copies-object
     - kind: event
+      id: default-kept
+      description: 사이즈·샷·시럽을 바꾸는 동안에도 기본 주문(DEFAULT)은 M / 1샷 / 시럽 없음으로 남아 있어야 합니다.
+      requirement: 처음으로
+      steps:
+        - { action: click, selector: "#large" }
+        - { action: click, selector: "#shot" }
+        - { action: click, selector: "#syrup" }
+      expect:
+        - { selector: "#default", text: { equals: "M / 1샷 / 시럽 없음" } }
+      misconceptionIfFail: js.mc.assign-copies-object
+    - kind: event
       id: keep-others
       description: 한 가지를 바꿀 때 다른 항목은 그대로 남아야 합니다(L 사이즈 뒤 샷 추가 → L / 2샷).
       requirement: 사이즈 바꾸기
@@ -231,8 +252,10 @@ explanation: |
   - 각 함수는 지금 `state`를 펼치고 한 속성만 덮어쓴 **새 객체**를 만들어 `state`에 넣어요. 다른 항목은 펼칠 때 그대로 담겨요.
   - **왜 새 객체인가**: 처음에 `let state = DEFAULT;`라서 둘은 같은 객체예요. `state.size = "L";`로 고치면 `DEFAULT.size`도 `"L"`이 되어, "처음으로"를 눌러도 바뀐 주문이 그대로 보여요. 새 객체를 대입하면 `state`만 다른 객체를 가리키고 `DEFAULT`는 그대로예요.
   - `resetOrder`에서 `state = DEFAULT;`는 괜찮아요. 다른 함수가 `state`를 직접 고치지 않으니 `DEFAULT`가 바뀔 일이 없어요. `state = { ...DEFAULT };`처럼 복사본을 넣으면 더 안전해요.
+  - 전개 구문 대신 `state = { size: "L", shots: state.shots, syrup: state.syrup };`처럼 속성을 하나씩 적어 새 객체를 만들어도 통과해요. 다만 주문 항목이 늘어나면 빠뜨리기 쉬워서 전개 구문을 많이 써요.
   - `{ size: "L", ...state }`처럼 순서를 바꾸면 `state`의 `"M"`이 다시 덮어써서 사이즈가 바뀌지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

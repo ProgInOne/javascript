@@ -47,5 +47,6 @@ explanation: |
   첫 줄을 `true true`라고 썼다면 내용이 같은 배열은 `===`로 같다고 본 거예요. 길이를 `1 1`이라고 썼다면 배열을 대입하면 복사된다고 본 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

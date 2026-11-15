@@ -47,5 +47,6 @@ explanation: |
   두 번째 줄을 `50 / ko / false`라고 답했다면 `null`에도 기본값이 쓰인다고 본 거예요. `null`도 바꾸고 싶다면 `volume ?? 50`처럼 `??`를 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

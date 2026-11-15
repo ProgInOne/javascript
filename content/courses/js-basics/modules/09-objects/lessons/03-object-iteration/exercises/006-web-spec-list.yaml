@@ -196,5 +196,6 @@ explanation: |
   - `clearRows()`를 빼먹으면 다음 상품을 눌렀을 때 3줄 뒤에 4줄이 붙어 7줄이 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
