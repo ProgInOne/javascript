@@ -152,6 +152,40 @@ describe('checkContent', () => {
   });
 });
 
+describe('checkContent: diagrams', () => {
+  const withDiagram = (source: string) => (f: Files) => {
+    f[LESSON_MDX] = lessonMdx({
+      principle: `원리 본문\n\n<Diagram alt="흐름">\n\n\`\`\`mermaid\n${source}\n\`\`\`\n\n</Diagram>`,
+    });
+  };
+
+  it('accepts a Mermaid diagram that parses', () => {
+    const out = messages(withDiagram('flowchart TD\n  A[시작] --> B{조건}\n  B -->|예| C[끝]'));
+    expect(out).not.toMatch(/^error/m);
+    expect(out).not.toContain('Diagram');
+  });
+
+  it('reports a Mermaid syntax error with the line', () => {
+    expect(messages(withDiagram('flowchart TD\n  A -->'))).toMatch(
+      /error .*lesson\.mdx \d+행: <Diagram> Mermaid 구문 오류: Parse error/,
+    );
+  });
+
+  it('reports an unknown diagram type', () => {
+    expect(messages(withDiagram('graphh TD\n  A --> B'))).toContain('<Diagram> Mermaid 구문 오류');
+  });
+
+  it('rejects configuration directives and interactions', () => {
+    const out = messages(
+      withDiagram(
+        '%%{init: {"securityLevel": "loose"}}%%\nflowchart TD\n  A --> B\n  click A "https://example.com"',
+      ),
+    );
+    expect(out).toContain('지시문은 쓸 수 없습니다');
+    expect(out).toContain('click·link 상호작용은 쓸 수 없습니다');
+  });
+});
+
 describe('checkContent: unit assessments', () => {
   const errorsOf = (patch: (f: Files) => void) =>
     checkContent(

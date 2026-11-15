@@ -49,13 +49,27 @@ a {
   text-underline-offset: 3px;
 }
 
-/* Ligatures off so beginners see `=>` and `!==` as the characters they type. */
+/*
+ * Ligatures off so beginners see `<!--`, `=>` and `!==` as the characters they type
+ * (ui-ux.md 타이포그래피). JetBrains Mono draws them through `calt`, so both switches are set.
+ * A `font:` shorthand resets `font-variant-ligatures`, so component rules that use
+ * `font: var(--text-code)` repeat these two lines (checked by scripts/code-font.test.ts).
+ */
 code,
 kbd,
 pre,
 samp {
   font-family: var(--font-mono);
+}
+code,
+kbd,
+pre,
+samp,
+.font-mono {
   font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
 }
 
 :not(pre) > code {

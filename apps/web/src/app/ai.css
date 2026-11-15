@@ -93,6 +93,10 @@
     border-radius: var(--radius-sm);
     background: var(--color-bg-muted);
     font-family: var(--font-mono);
+    font-variant-ligatures: none;
+    font-feature-settings:
+      'liga' 0,
+      'calt' 0;
     font-size: 0.875em;
   }
   .ai-settings__problems {

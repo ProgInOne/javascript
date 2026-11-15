@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm';
 import remarkMdx from 'remark-mdx';
 import remarkParse from 'remark-parse';
 import { unified } from 'unified';
+import { lintDiagramSource } from './diagram.ts';
 
 // Lesson MDX → validated, serializable tree (docs/design/content-and-exercises.md#mdx-컴포넌트).
 // Content never runs code: imports, exports and expressions are rejected; only the listed
@@ -64,7 +65,7 @@ export const COMPONENTS: Record<string, ComponentSpec> = {
   Actual: { props: {} },
   Right: { props: {} },
   ValueTrace: { props: { code: req(s), vars: req({ type: 'string[]' }) } },
-  Diagram: { codeChild: true, props: { alt: req(s) } },
+  Diagram: { codeChild: true, props: { alt: req(s), caption: s } },
   Figure: { props: { src: req(s), alt: req(s), caption: s } },
   MdnLink: { props: { path: req(s) } },
   Reveal: { props: { title: req(s) } },
@@ -87,6 +88,8 @@ export interface CompiledLesson {
     concepts: string[];
     misconceptions: string[];
     examples: string[];
+    /** Mermaid sources of `<Diagram>`s; check parses them (diagram.ts). */
+    diagrams: { line: number | null; code: string }[];
   };
   errors: string[];
 }
@@ -167,6 +170,7 @@ export function compileLessonMdx(
     concepts: [],
     misconceptions: [],
     examples: [],
+    diagrams: [],
   };
   const sections: CompiledLesson['sections'] = [];
 
@@ -283,6 +287,10 @@ export function compileLessonMdx(
         errors.push(`${where(el)}RunnableExample id가 중복됩니다: ${props['id']}`);
       refs.examples.push(props['id']);
       if (Array.isArray(props['concepts'])) refs.concepts.push(...props['concepts']);
+    }
+    if (name === 'Diagram' && typeof props['code'] === 'string') {
+      for (const e of lintDiagramSource(props['code'])) errors.push(`${where(el)}<Diagram>: ${e}`);
+      refs.diagrams.push({ line: el.position?.start.line ?? null, code: props['code'] });
     }
     return { type: 'component', name, props, children };
   };

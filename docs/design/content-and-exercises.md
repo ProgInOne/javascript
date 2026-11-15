@@ -418,11 +418,20 @@ MVP JavaScript 기초 118개 개념의 중요도 분포 목표는 `core` 약 30�
 | `<ConceptLink>` | 다른 개념으로의 링크 | `to`: 개념 slug (필수), 자식: 링크 텍스트. 빌드 시 존재 여부 검증. 화면에는 숙련 단계 배지 표시 |
 | `<Pitfall>` | 흔한 실수 블록 | `misconception`: 오개념 ID (필수). 자식으로 `<Wrong>`, `<Actual>`, `<Right>` 세 부분 |
 | `<ValueTrace>` | 줄 단위 변수 값 추적 표 | `code`: 예제 `id` 참조, `vars`: 추적할 변수 이름 목록. 값은 빌드 시 실행 계측으로 자동 생성 (손으로 쓰지 않음) |
-| `<Diagram>` | Mermaid 다이어그램 | `alt` (필수, 대체 텍스트), 자식: Mermaid 소스 |
+| `<Diagram>` | Mermaid 다이어그램 | `alt` (필수, 대체 텍스트), `caption` (선택, 그림 아래 설명), 자식: Mermaid 소스(코드 블록). 브라우저에서 그리며([D-050](/docs/decisions.md)) 아래 "`<Diagram>` 렌더링" 참고 |
 | `<Figure>` | 이미지 | `src`: `content/` 안의 상대 경로, `alt` (필수), `caption` |
 | `<MdnLink>` | MDN 문서 링크 | `path`: MDN 경로 (예: `Web/JavaScript/Reference/Operators/Strict_equality`) |
 | `<Reveal>` | 접힌 상세 설명 | `title`. 심화 내용이나 "왜?"에 대한 추가 설명 |
 | `<Key>` | 단축키 표시 | 자식: 키 이름 |
+
+`<Diagram>` 렌더링([D-050](/docs/decisions.md)):
+
+- 웹 앱이 Mermaid로 그립니다. 라이브러리는 다이어그램이 있는 레슨을 처음 열 때만 불러옵니다(주 번들에 넣지 않음).
+- 콘텐츠도 신뢰하지 않는 입력으로 다룹니다: `securityLevel: 'strict'`(라벨 인코딩, 클릭 콜백 없음), HTML 라벨 끔(SVG 텍스트만), 지시문으로 바꿀 수 없게 잠근 설정 키(보안 수준·테마·글꼴·HTML 라벨 등), 붙이기 전 DOMPurify로 SVG를 한 번 더 정리합니다.
+- 테마는 디자인 토큰에서 읽어 Mermaid `base` 테마 변수로 넘기고, 라이트/다크가 바뀌면 다시 그립니다.
+- 접근성: 그림은 `role="img"`이고 이름은 `alt`입니다. Mermaid 소스는 "다이어그램 소스 보기 (텍스트)"로 접어 둔 텍스트 대안입니다.
+- 그리지 못하면(구문 오류, 불러오기 실패) 안내 문구와 `alt`, 펼친 소스를 보여 줍니다.
+- `content:check`가 모든 다이어그램을 Mermaid 파서로 검사해 구문 오류를 빌드 오류로 냅니다. `%%{init}%%` 지시문, front matter(`---`) 설정, `click`·`link` 상호작용도 거부합니다.
 
 `<RunnableExample predict>`의 동작:
 

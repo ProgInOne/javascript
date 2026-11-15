@@ -52,14 +52,25 @@
   }
   .lesson-inline-code {
     font-family: var(--font-mono);
+    font-variant-ligatures: none;
+    font-feature-settings:
+      'liga' 0,
+      'calt' 0;
     font-size: var(--text-code-inline-size, 0.9em);
     background: var(--color-bg-subtle);
     border: 1px solid var(--color-border-default);
     border-radius: var(--radius-xs);
     padding: 0.05em 0.35em;
+    white-space: break-spaces;
+    overflow-wrap: anywhere;
+    box-decoration-break: clone;
   }
   .lesson-code {
     font: var(--text-code);
+    font-variant-ligatures: none;
+    font-feature-settings:
+      'liga' 0,
+      'calt' 0;
     background: var(--code-bg, var(--color-bg-subtle));
     color: var(--code-fg, var(--color-text-primary));
     border: 1px solid var(--color-border-default);
@@ -175,6 +186,10 @@
   }
   .lesson-kbd {
     font-family: var(--font-mono);
+    font-variant-ligatures: none;
+    font-feature-settings:
+      'liga' 0,
+      'calt' 0;
     font-size: 0.85em;
     border: 1px solid var(--color-border-strong);
     border-bottom-width: 2px;
@@ -215,9 +230,76 @@
     color: var(--color-text-secondary);
     font: var(--text-ui);
   }
-  .lesson-figure figcaption {
+  .lesson-diagram {
+    margin: 0 0 var(--space-4);
+  }
+  .lesson-diagram__canvas {
+    min-height: 6rem;
+    text-align: center;
+    padding: var(--space-4);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-surface);
+    color: var(--color-text-primary);
+    font: var(--text-body);
+    /* Wide diagrams scroll inside the box instead of widening the page (390px). */
+    overflow-x: auto;
+  }
+  .lesson-diagram__canvas[hidden] {
+    display: none;
+  }
+  .lesson-diagram__svg {
+    width: 100%;
+  }
+  .lesson-diagram__svg:empty {
+    display: none;
+  }
+  .lesson-diagram__svg svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
+  }
+  .lesson-diagram__loading {
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .lesson-diagram figcaption {
     font: var(--text-small);
     color: var(--color-text-secondary);
     margin-top: var(--space-2);
+  }
+  .lesson-diagram__error {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-warning-border);
+    border-radius: var(--radius-md);
+    background: var(--color-warning-bg);
+    color: var(--color-text-primary);
+    font: var(--text-body);
+  }
+  .lesson-diagram__error > svg {
+    flex: none;
+    margin-top: 0.15em;
+    color: var(--color-warning-fg);
+  }
+  .lesson-diagram__error-title {
+    font-weight: 600;
+  }
+  .lesson-diagram__error-hint {
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .lesson-diagram__source {
+    margin-top: var(--space-2);
+  }
+  .lesson-diagram__source summary {
+    cursor: pointer;
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .lesson-diagram__source[open] summary {
+    margin-bottom: var(--space-2);
   }
 }

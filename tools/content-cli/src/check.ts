@@ -4,6 +4,7 @@ import {
   type ConceptSource,
   type ExerciseSource,
 } from '@proginone/content-schema';
+import { parseDiagrams } from './diagram.ts';
 import { Diagnostics } from './diagnostics.ts';
 import {
   EXPECTATIONS_FILE,
@@ -64,6 +65,7 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
   const lessons = new Map<string, CompiledLesson>();
   const expectations = options.expectations ?? readExpectations(root, diag);
   const predictIds = new Set<string>();
+  const diagrams: { file: string; line: number | null; code: string }[] = [];
 
   // ── Uniqueness ──
   const seen = new Map<string, string>();
@@ -148,6 +150,7 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
       const compiled = compileLessonMdx(lesson.mdx, { lessonKind: data.kind });
       lessons.set(data.id, compiled);
       for (const e of compiled.errors) diag.error(lesson.mdxFile, e);
+      for (const d of compiled.refs.diagrams) diagrams.push({ file: lesson.mdxFile, ...d });
       for (const ref of compiled.refs.exercises) {
         if (!lesson.exercises.some((x) => x.data.id === ref))
           diag.error(lesson.mdxFile, `이 단원에 없는 문제입니다: ${ref}`);
@@ -260,6 +263,16 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
         `없는 predict_output 문제의 기대값입니다: ${id} (pnpm content:check:run이 정리합니다)`,
       );
   }
+
+  // Mermaid syntax of every <Diagram>, in one child process (diagram.ts).
+  parseDiagrams(diagrams.map((d) => d.code)).forEach(({ error }, i) => {
+    const d = diagrams[i];
+    if (error !== null && d)
+      diag.error(
+        d.file,
+        `${d.line === null ? '' : `${d.line}행: `}<Diagram> Mermaid 구문 오류: ${error}`,
+      );
+  });
 
   return { source, diagnostics: diag, lessons };
 }

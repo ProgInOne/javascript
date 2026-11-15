@@ -298,7 +298,7 @@ ProgInOne의 디자인 콘셉트는 **"밝은 교실, 정돈된 작업대"** 입
 | 용도 | 서체 | 근거 |
 |---|---|---|
 | UI·본문 | **Pretendard Variable** | 한글·라틴 균형, 가변 굵기, 한국 서비스의 표준적 선택 |
-| 코드 | **JetBrains Mono** (가변) | `0/O`, `1/l/I` 구분이 명확, 넓은 x-height. 리거처는 기본 끔(초보자가 `=>`, `!==`를 실제 문자로 보도록) |
+| 코드 | **JetBrains Mono** (가변) | `0/O`, `1/l/I` 구분이 명확, 넓은 x-height. 리거처는 끔(초보자가 `<!--`, `=>`, `!==`를 실제 문자로 보도록). 인라인 코드·코드 블록·에디터·콘솔 출력 모두 `font-variant-ligatures: none`과 `font-feature-settings: "liga" 0, "calt" 0`. `font:` 단축 속성은 리거처 설정을 되돌리므로 `font: var(--text-code)`를 쓰는 규칙은 두 줄을 함께 씁니다 |
 | 숫자 강조 | Pretendard `tnum`(고정폭 숫자) | 통계·진도 숫자 정렬 |
 
 폰트 파일은 번들에 포함합니다(오프라인 요구사항 [NFR-09](/docs/product/prd.md#비기능-요구사항)). Pretendard는 한글 사용 빈도 기반 서브셋(dynamic subset)으로 초기 로딩을 줄입니다.
@@ -317,7 +317,7 @@ ProgInOne의 디자인 콘셉트는 **"밝은 교실, 정돈된 작업대"** 입
 | `--text-small` | 13px / 1.45 | 500 | 0 | 보조 정보, 배지 |
 | `--text-caption` | 12px / 1.4 | 500 | 0.01em | 캡션, 단축키 표시 |
 | `--text-code` | 14px / 1.6 | 400 | 0 | 에디터, 코드 블록 |
-| `--text-code-inline` | 0.92em | 500 | 0 | 본문 속 인라인 코드 |
+| `--text-code-inline` | 0.92em | 500 | 0 | 본문 속 인라인 코드. 공백을 그대로 보여 주고(`white-space: break-spaces`), 긴 토큰은 줄을 바꿉니다(`overflow-wrap: anywhere`) |
 
 규칙:
 

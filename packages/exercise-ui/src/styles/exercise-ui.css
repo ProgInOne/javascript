@@ -11,7 +11,15 @@
   background: var(--code-bg);
   color: var(--code-fg);
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
   font-size: var(--text-code-inline-size);
+  /* Spaces are part of the syntax being taught: keep them, but still wrap long tokens. */
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  box-decoration-break: clone;
 }
 .pi-ex-code {
   margin: 0;
@@ -21,6 +29,10 @@
   background: var(--code-bg);
   color: var(--code-fg);
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
   white-space: pre;
   tab-size: 2;
   overflow-x: auto;
@@ -71,6 +83,10 @@
 }
 .pi-ex-code-input {
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
 }
 .pi-ex-textarea {
   resize: vertical;
@@ -167,6 +183,10 @@
 }
 .pi-ex-choice__code {
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
   white-space: pre-wrap;
 }
 .pi-ex-choice__mark {
@@ -271,6 +291,10 @@
   background: var(--color-bg-surface);
   color: var(--code-fg);
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
   text-align: start;
   cursor: grab;
   transition:
@@ -323,6 +347,10 @@
   border-radius: var(--radius-xs);
   color: var(--code-fg);
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
   cursor: grab;
 }
 .pi-ex-parsons__line[data-current] {
@@ -394,6 +422,10 @@
   border-inline-start: 3px solid transparent;
   color: var(--code-fg);
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
   cursor: pointer;
 }
 .pi-ex-find-bug__line:hover {
@@ -479,6 +511,10 @@
   background: var(--color-bg-surface);
   color: var(--code-fg);
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
 }
 .pi-ex-blank__input:focus-visible {
   outline-offset: 1px;
@@ -907,6 +943,10 @@
 .pi-ex-checks__summary-code {
   margin: 0;
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
   font-size: 0.8125rem;
   color: var(--color-text-secondary);
   white-space: pre-wrap;
@@ -1001,6 +1041,10 @@
   padding: 2px var(--space-3);
   border-bottom: 1px solid var(--code-border);
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
   font-size: 0.8125rem;
 }
 .pi-ex-console__entry[data-level='warn'] {
@@ -1054,6 +1098,10 @@
   flex-wrap: wrap;
   gap: var(--space-2);
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
   font-size: 0.8125rem;
 }
 .pi-ex-console__error-help {
@@ -1119,6 +1167,10 @@
   border-radius: var(--radius-xs);
   background: none;
   font: var(--text-code);
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
   font-size: 0.8125rem;
   color: var(--color-text-secondary);
 }

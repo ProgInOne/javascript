@@ -25,6 +25,7 @@ describe('compileLessonMdx', () => {
       concepts: ['js.basics.statement', 'js.basics.console-log'],
       misconceptions: ['js.mc.log-is-return'],
       examples: ['hello'],
+      diagrams: [],
     });
     const json = JSON.stringify(r.tree);
     expect(json).not.toContain('position');
@@ -49,6 +50,19 @@ describe('compileLessonMdx', () => {
   ])('rejects %s', (_, snippet, message) => {
     const r = compileLessonMdx(sections({ intro: snippet }));
     expect(r.errors.join('\n')).toContain(message);
+  });
+
+  it('keeps a Diagram source and its line for the Mermaid check', () => {
+    const r = compileLessonMdx(
+      sections({
+        principle:
+          '<Diagram alt="흐름" caption="그림 1">\n\n```mermaid\nflowchart TD\n  A --> B\n```\n\n</Diagram>',
+      }),
+    );
+    expect(r.errors).toEqual([]);
+    expect(r.refs.diagrams.map((d) => d.code)).toEqual(['flowchart TD\n  A --> B']);
+    expect(typeof r.refs.diagrams[0]?.line).toBe('number');
+    expect(JSON.stringify(r.tree)).toContain('"caption":"그림 1"');
   });
 
   it('accepts a fenced code block inside RunnableExample', () => {

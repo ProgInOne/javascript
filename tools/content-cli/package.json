@@ -18,6 +18,8 @@
     "better-sqlite3": "^13.1.1",
     "drizzle-orm": "^0.45.4",
     "esbuild": "0.28.2",
+    "jsdom": "^31.0.1",
+    "mermaid": "^12.3.0",
     "playwright-core": "1.65.1",
     "remark-cjk-friendly": "^2.3.4",
     "remark-gfm": "^4.0.1",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^9.6.0",
+    "@types/jsdom": "^30.0.0",
     "@types/mdast": "^4.0.4",
     "mdast-util-mdx-expression": "^2.0.1",
     "mdast-util-mdx-jsx": "^3.2.1",

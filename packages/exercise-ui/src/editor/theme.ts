@@ -12,6 +12,9 @@ export const editorTheme = EditorView.theme({
     backgroundColor: 'var(--code-surface)',
     color: 'var(--code-fg)',
     font: 'var(--text-code)',
+    // Ligatures off in the editor too (ui-ux.md 타이포그래피): `=>` stays two characters.
+    fontVariantLigatures: 'none',
+    fontFeatureSettings: '"liga" 0, "calt" 0',
     height: '100%',
   },
   '&.cm-focused': {
@@ -26,6 +29,7 @@ export const editorTheme = EditorView.theme({
     caretColor: 'var(--code-fg)',
     padding: 'var(--space-3) 0',
     fontVariantLigatures: 'none',
+    fontFeatureSettings: '"liga" 0, "calt" 0',
   },
   '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--code-fg)', borderLeftWidth: '2px' },
   '.cm-selectionBackground, &.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground':

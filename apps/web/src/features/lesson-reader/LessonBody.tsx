@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { createContext, useContext, type ReactNode } from 'react';
 import { InlineExerciseSlot } from './InlineExerciseSlot.tsx';
+import { LessonDiagram } from './LessonDiagram.tsx';
 import { RunnableExampleBlock } from './RunnableExampleBlock.tsx';
 import { SECTION_LABELS } from './sections.ts';
 
@@ -199,14 +200,12 @@ function Component({ node }: { node: Node }) {
     case 'InlineExercise':
       return <InlineExerciseSlot exerciseId={str(p['ref']) ?? ''} />;
     case 'Diagram':
-      // Mermaid rendering arrives later; the alt text keeps the content accessible meanwhile.
       return (
-        <figure className="lesson-figure">
-          <pre className="lesson-code">
-            <code>{str(p['code'])}</code>
-          </pre>
-          <figcaption>{str(p['alt'])}</figcaption>
-        </figure>
+        <LessonDiagram
+          source={str(p['code']) ?? ''}
+          alt={str(p['alt']) ?? '다이어그램'}
+          caption={str(p['caption'])}
+        />
       );
     default:
       return null;

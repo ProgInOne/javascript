@@ -355,3 +355,14 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - **저장 버튼 없이 바로 저장합니다.** 테마 설정과 같은 방식이고, 각 항목이 독립적이라 묶어 저장할 이유가 없습니다. 실패만 토스트로 알립니다.
 - **초기화는 이 설정들을 지우지 않습니다**(D-045).
 - 상세: [UI/UX 설계 설정](/docs/design/ui-ux.md#설정).
+
+## D-050. 레슨 `<Diagram>`은 브라우저에서 Mermaid로 그림 — `확정`
+- 2026-11-15, 사용자가 위임한 결정(콘텐츠 검토자 후속 요청: `<Diagram>`이 Mermaid 소스 그대로 보이던 문제).
+- **런타임 렌더링을 고릅니다.** 웹 앱이 Mermaid를 지연 로드해 그리고, 다이어그램이 없는 레슨은 라이브러리를 받지 않습니다(system-architecture.md 지연 로드 원칙). 빌드 시 SVG로 미리 그리는 안은 버렸습니다:
+  - Mermaid는 글자 크기를 실제 브라우저 레이아웃으로 재므로 `content:build`마다 헤드리스 브라우저가 필요하고, 학습자 기기의 글꼴과 다르게 잴 수 있습니다.
+  - 레슨 트리는 API로 오는 신뢰하지 않는 데이터이고 원시 HTML 경로가 없습니다(LessonBody). 미리 그린 SVG 문자열을 넣으려면 그 경로를 새로 열고 결국 클라이언트에서도 정리해야 합니다.
+  - 라이트/다크 전환을 토큰에서 바로 반영하려면 테마별 SVG를 두 벌 저장해야 합니다.
+- **안전 설정**: `securityLevel: 'strict'`, HTML 라벨 끔, 지시문·front matter가 바꿀 수 없는 설정 키 목록(`secure`), 오류 그림 끔(`suppressErrorRendering`), 붙이기 전 DOMPurify(SVG 프로필)로 한 번 더 정리. 앱 CSP는 바꾸지 않습니다(`script-src 'self'`, Mermaid가 넣는 `<style>`은 기존 `style-src 'unsafe-inline'` 범위, 외부 요청 없음). E2E가 CSP 위반이 없는지 확인합니다.
+- **빌드 검사**: `content:check`가 자식 프로세스(jsdom + Mermaid 파서)로 모든 다이어그램의 구문을 검사해 오류를 빌드 오류로 냅니다. 지시문, front matter 설정, `click`·`link` 상호작용은 쓸 수 없습니다. 런타임에 그리지 못하면 안내 문구, `alt`, 펼친 소스를 보여 줍니다.
+- **접근성**: 그림은 `role="img"` + `alt`, 소스는 접힌 텍스트 대안. `caption`(선택) 속성을 더합니다.
+- 의존성: `mermaid`, `dompurify`(웹), `mermaid`, `jsdom`(content-cli). 상세: [콘텐츠·문제 설계 MDX 컴포넌트](/docs/design/content-and-exercises.md#mdx-컴포넌트).
