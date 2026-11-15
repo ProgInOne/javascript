@@ -1,0 +1,44 @@
+id: js-basics.arrays.arrays-review.predict-pack-bag
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.arr.push-pop, weight: 1 }
+tags: [push, pop, return-value, assessment]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  소풍 가방에 물건을 넣고 빼는 코드예요. 실행하면 콘솔에 무엇이 출력될까요? 세 줄을 차례로 적어 보세요. 배열은 콘솔에 `["a", "b"]`처럼 보여요.
+spec:
+  lang: js
+  code: |
+    const bag = ["물", "지도"];
+    const count = bag.push("모자", "간식");
+    const last = bag.pop();
+    console.log(count);
+    console.log(last);
+    console.log(bag);
+  answerKind: console
+  misconceptionByAnswer:
+    "[\"물\", \"지도\", \"모자\", \"간식\"]\n간식\n[\"물\", \"지도\", \"모자\"]": js.mc.push-returns-new-array
+    "4\n[\"물\", \"지도\", \"모자\"]\n[\"물\", \"지도\", \"모자\"]": js.mc.pop-returns-rest
+misconceptions: [js.mc.push-returns-new-array, js.mc.pop-returns-rest]
+hints:
+  - "`push`와 `pop`은 배열을 바꾸는 일과 값을 돌려주는 일을 함께 해요. 줄마다 두 가지를 따로 적어 보세요."
+  - "`push`는 값을 몇 개든 한 번에 넣을 수 있어요. 2번 줄이 끝난 뒤 `bag`에는 요소가 몇 개 있나요?"
+  - "`push`가 돌려주는 것과 `pop`이 돌려주는 것은 종류가 달라요. 하나는 수이고, 하나는 배열에서 나온 요소예요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  4
+  간식
+  ["물", "지도", "모자"]
+  ```
+
+  - 2번 줄: `push("모자", "간식")`은 두 값을 끝에 차례로 넣어 `bag`을 `["물", "지도", "모자", "간식"]`으로 바꾸고, 넣은 뒤의 **길이** 4를 돌려줘요. 새 배열을 돌려주지 않아요.
+  - 3번 줄: `pop()`은 맨 끝 요소 `"간식"`을 꺼내 돌려주고, `bag`에서 지워요. 남은 배열을 돌려주는 것이 아니에요.
+  - 그래서 `count`는 4, `last`는 `"간식"`, `bag`은 `["물", "지도", "모자"]`예요. `count`에 담긴 4는 `push` 직후의 길이라서, 뒤에 `pop`을 해도 3으로 바뀌지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,93 @@
+id: js-basics.functions.functions-review.parsons-arrow-temp-label
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [arrow, return, if, parsons, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  기온(°C)을 받아 옷차림 안내를 돌려주는 **화살표 함수** `outfitFor`를 만들려고 해요. 코드 조각을 순서대로 배열하세요.
+
+  - 기온이 28도 이상이면 `"반팔"`, 10도 미만이면 `"패딩"`, 그 밖에는 `"긴팔"`을 돌려줘요.
+  - `outfitFor(30)` → `"반팔"`, `outfitFor(5)` → `"패딩"`, `outfitFor(18)` → `"긴팔"`
+spec:
+  lines:
+    - { id: l1, code: "const outfitFor = (temp) => {" }
+    - { id: l2, code: "if (temp >= 28) {", indent: 1 }
+    - { id: l3, code: 'return "반팔";', indent: 2 }
+    - { id: l4, code: "}", indent: 1 }
+    - { id: l5, code: "if (temp < 10) {", indent: 1 }
+    - { id: l6, code: 'return "패딩";', indent: 2 }
+    - { id: l7, code: "}", indent: 1 }
+    - { id: l8, code: 'return "긴팔";', indent: 1 }
+    - { id: l9, code: "};" }
+  distractors:
+    - { id: d1, code: "const outfitFor => (temp) {", replaces: l1, misconception: js.mc.arrow-is-comparison }
+    - { id: d2, code: '"긴팔";', replaces: l8, misconception: js.mc.arrow-braces-implicit-return }
+    - { id: d3, code: 'console.log("반팔");', replaces: l3, misconception: js.mc.return-is-log }
+  gradeIndent: false
+  entry: outfitFor
+  checks:
+    - kind: call
+      id: hot
+      description: 30도면 "반팔"을 돌려줘야 합니다.
+      requirement: 기온별 안내
+      args: [30]
+      expect: { equals: "반팔" }
+    - kind: call
+      id: cold
+      description: 5도면 "패딩"을 돌려줘야 합니다.
+      requirement: 기온별 안내
+      args: [5]
+      expect: { equals: "패딩" }
+    - kind: call
+      id: mild
+      description: 18도면 "긴팔"을 돌려줘야 합니다.
+      requirement: 기온별 안내
+      args: [18]
+      expect: { equals: "긴팔" }
+    - kind: call
+      id: edge-hot
+      visible: false
+      description: 정확히 28도도 "반팔"이어야 합니다.
+      requirement: 경계값
+      args: [28]
+      expect: { equals: "반팔" }
+    - kind: call
+      id: edge-cold
+      visible: false
+      description: 정확히 10도는 "긴팔"이어야 합니다.
+      requirement: 경계값
+      args: [10]
+      expect: { equals: "긴팔" }
+misconceptions: [js.mc.arrow-braces-implicit-return, js.mc.arrow-is-comparison]
+hints:
+  - 화살표 함수는 `const 이름 = (매개변수) => { 본문 };` 모양이에요.
+  - 본문에 중괄호를 쓰는 화살표 함수는 값을 어떻게 돌려줘야 했나요?
+  - 조건에 맞지 않을 때 돌려줄 값은 두 `if` 블록이 모두 끝난 뒤에 와요. 그 줄에도 무엇이 필요한지 살펴보세요.
+explanation: |
+  정답 순서는 다음과 같아요.
+
+  ```js
+  const outfitFor = (temp) => {
+    if (temp >= 28) {
+      return "반팔";
+    }
+    if (temp < 10) {
+      return "패딩";
+    }
+    return "긴팔";
+  };
+  ```
+
+  - 화살표 `=>`는 매개변수 목록 `(temp)` 뒤에 와요. `const outfitFor => (temp) {`는 문법에 맞지 않아요. `=>`는 비교가 아니라 "이 매개변수로 이 본문을 실행한다"는 표시예요.
+  - 본문에 중괄호가 있으면 `return`을 직접 써야 해요. `"긴팔";`만 쓰면 값을 만들기만 하고 돌려주지 않아서 18도일 때 `undefined`가 나와요.
+  - `console.log("반팔")`은 출력만 하고 돌려주지 않아요. 함수를 쓰는 쪽은 `undefined`를 받고, 함수가 끝나지도 않아서 아래 줄까지 계속 실행돼요.
+  - `return`을 만나면 함수가 끝나므로 `else`가 없어도 돼요. 두 `if` 블록의 순서를 바꿔도 결과가 같아서 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

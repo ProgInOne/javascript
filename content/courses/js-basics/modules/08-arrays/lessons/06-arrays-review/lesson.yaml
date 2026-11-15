@@ -1,0 +1,35 @@
+id: js-basics.arrays.arrays-review
+title: 배열 단원 평가
+summary: 모듈 8에서 배운 배열 읽기·바꾸기, 원본을 바꾸는 메서드와 바꾸지 않는 메서드, 순회, map·filter·reduce 같은 고차 함수, 찾기와 정렬을 섞어 풀며 이해도를 확인합니다.
+kind: assessment
+importance: standard
+estimatedMinutes: { read: 2, practice: 45 }
+concepts:
+  reviewed:
+    - js.arr.literal-index
+    - js.arr.length
+    - js.arr.element-update
+    - js.arr.push-pop
+    - js.arr.shift-unshift
+    - js.arr.splice
+    - js.arr.mutating-vs-not
+    - js.arr.for-of
+    - js.arr.foreach
+    - js.arr.map
+    - js.arr.filter
+    - js.arr.find
+    - js.arr.some-every
+    - js.arr.reduce
+    - js.arr.chaining
+    - js.arr.includes-indexof
+    - js.arr.sort
+    - js.arr.slice-concat
+objectives:
+  - 배열 메서드가 무엇을 돌려주고 원래 배열을 바꾸는지 따져 실행 결과를 예측할 수 있다.
+  - 인덱스 범위, 원본 변경, 콜백의 반환값, 정렬 기준 때문에 생긴 버그를 찾아 고칠 수 있다.
+  - 요구사항을 읽고 순회·고차 함수·찾기·정렬을 조합해 배열을 처리하는 함수를 작성할 수 있다.
+assessment:
+  itemCount: 20                    # 평가 개념 18개를 한 문항씩 모두 확인하고 2문항을 더 냄
+  passRatio: 0.8
+practice:
+  targetCount: 24                  # itemCount보다 4문항 많아 다시 응시하면 다른 문항이 섞임

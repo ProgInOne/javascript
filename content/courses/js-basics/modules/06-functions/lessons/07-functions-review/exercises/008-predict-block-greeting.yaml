@@ -1,0 +1,52 @@
+id: js-basics.functions.functions-review.predict-block-greeting
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.scope.block, weight: 1 }
+  - { id: js.scope.shadowing, weight: 0.3 }
+  - { id: js.control.else-if, weight: 0.3 }
+tags: [scope, block, shadowing, assessment]
+estimatedSeconds: 80
+usage: assessment
+prompt: |
+  시간에 따라 인사말을 고르는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const hour = 15;
+    let greeting = "안녕하세요";
+
+    if (hour < 12) {
+      let greeting = "좋은 아침이에요";
+      console.log(greeting);
+    } else {
+      let greeting = "좋은 오후예요";
+      console.log(greeting);
+    }
+
+    console.log(greeting);
+  answerKind: console
+  misconceptionByAnswer:
+    "좋은 오후예요\n좋은 오후예요": js.mc.shadow-changes-outer
+misconceptions: [js.mc.shadow-changes-outer, js.mc.sibling-blocks-name-conflict]
+hints:
+  - "`hour`가 15일 때 `if`와 `else` 중 어느 블록이 실행되나요?"
+  - 블록 안에서 `let`으로 만든 `greeting`은 바깥의 `greeting`과 같은 변수인가요, 새 변수인가요?
+  - 블록이 끝나면 그 안에서 만든 변수는 어떻게 되나요? 12번 줄에서 보이는 `greeting`은 몇 번 줄에서 만든 것일까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  좋은 오후예요
+  안녕하세요
+  ```
+
+  - `hour`가 15라서 `else` 블록이 실행돼요. 8번 줄의 `let greeting`은 그 블록 안에서만 쓰는 **새 변수**예요. 바깥 `greeting`을 가리기 때문에 9번 줄은 `좋은 오후예요`를 출력해요.
+  - 블록이 끝나면 블록 안의 `greeting`은 사라져요. 12번 줄의 `greeting`은 2번 줄에서 만든 바깥 변수이고, 값은 처음 그대로 `안녕하세요`예요.
+  - `if` 블록과 `else` 블록에서 같은 이름을 `let`으로 만들어도 부딪히지 않아요. 서로 다른 블록이라 각자 따로인 변수예요.
+
+  마지막 줄을 `좋은 오후예요`로 예상했다면, 안쪽에서 같은 이름으로 만든 변수가 바깥 변수를 바꾼다고 본 거예요. 바깥 값을 바꾸려면 `let` 없이 `greeting = "좋은 오후예요";`처럼 대입해야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

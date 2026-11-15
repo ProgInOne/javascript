@@ -1,0 +1,114 @@
+id: js-basics.functions.functions-review.fix-best-jump-block
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.scope.block, weight: 1 }
+  - { id: js.control.else-if, weight: 0.3 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [scope, block, let, reference-error, debugging, assessment]
+estimatedSeconds: 200
+usage: assessment
+prompt: |
+  멀리뛰기 기록 세 개(cm) 중 가장 긴 기록을 돌려주는 함수 `bestJump(a, b, c)`예요. 실행하면 오류가 나요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  최고 기록: 172cm
+  ```
+
+  - 함수 이름과 매개변수, 마지막 줄은 바꾸지 마세요. 숨겨진 테스트가 다른 기록으로도 `bestJump`를 불러 봐요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function bestJump(a, b, c) {
+            if (a >= b && a >= c) {
+              let best = a;
+            } else if (b >= c) {
+              let best = b;
+            } else {
+              let best = c;
+            }
+            return best;
+          }
+
+          console.log("최고 기록: " + bestJump(165, 172, 158) + "cm");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function bestJump(a, b, c) {
+            let best;
+            if (a >= b && a >= c) {
+              best = a;
+            } else if (b >= c) {
+              best = b;
+            } else {
+              best = c;
+            }
+            return best;
+          }
+
+          console.log("최고 기록: " + bestJump(165, 172, 158) + "cm");
+  entry: bestJump
+  bugDescription: "실행하면 `ReferenceError: best is not defined` 오류가 나요(9번째 줄)."
+  bugMisconception: js.mc.block-let-visible-outside
+  checks:
+    - kind: console
+      id: output
+      description: "\"최고 기록: 172cm\"가 출력되어야 합니다."
+      requirement: 최고 기록 출력
+      expect:
+        lines: ["최고 기록: 172cm"]
+    - kind: call
+      id: first-best
+      visible: false
+      description: 첫 번째 기록이 가장 길 때도 그 기록을 돌려줘야 합니다.
+      requirement: 세 갈래 모두 반환
+      args: [180, 150, 170]
+      expect: { equals: 180 }
+      misconceptionIfFail: js.mc.block-let-visible-outside
+    - kind: call
+      id: last-best
+      visible: false
+      description: 세 번째 기록이 가장 길 때도 그 기록을 돌려줘야 합니다.
+      requirement: 세 갈래 모두 반환
+      args: [140, 155, 161]
+      expect: { equals: 161 }
+    - kind: call
+      id: tie
+      visible: false
+      description: 가장 긴 기록이 두 개 있어도 그 값을 돌려줘야 합니다.
+      requirement: 세 갈래 모두 반환
+      args: [150, 150, 120]
+      expect: { equals: 150 }
+misconceptions: [js.mc.block-let-visible-outside]
+hints:
+  - 오류는 9번 줄에서 났어요. 9번 줄에서 쓰는 `best`는 어디에서 만들어졌나요?
+  - 블록 안에서 `let`으로 만든 변수는 그 블록이 끝나면 어떻게 되나요? 세 블록의 `best`는 서로 같은 변수인가요?
+  - "`return` 줄에서도 보이려면 변수를 어느 높이에서 만들어야 할까요? 블록 안에서는 새로 만들지 말고 값만 넣어 보세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function bestJump(a, b, c) {
+    let best;
+    if (a >= b && a >= c) {
+      best = a;
+    } else if (b >= c) {
+      best = b;
+    } else {
+      best = c;
+    }
+    return best;
+  }
+  ```
+
+  - 원래 코드는 세 블록 안에서 각각 `let best`를 만들었어요. 블록 안의 `let` 변수는 그 블록 안에서만 쓸 수 있고, 블록이 끝나면 사라져요. 세 블록의 `best`는 이름만 같은 서로 다른 변수예요.
+  - 그래서 블록 밖인 `return best;`에서는 `best`라는 변수를 찾을 수 없어 `ReferenceError: best is not defined`가 나요.
+  - `best`를 `if` 앞(함수 본문 높이)에서 한 번 만들고, 블록 안에서는 `let` 없이 값만 넣으면 `return` 줄에서도 보여요.
+  - 갈래마다 `return a;`처럼 바로 돌려주도록 고쳐도 정답이에요. 숨겨진 테스트는 세 갈래와 같은 기록이 있는 경우를 모두 확인해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

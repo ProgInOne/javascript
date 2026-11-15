@@ -1,0 +1,45 @@
+id: js-basics.arrays.arrays-review.tf-splice-count
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.arr.splice, weight: 1 }
+tags: [splice, delete-count, assessment]
+estimatedSeconds: 80
+usage: assessment
+prompt: |
+  주차장 칸 번호 목록에서 공사하는 칸을 지우는 코드예요. 다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+code: |
+  const spots = [10, 20, 30, 40, 50];
+  spots.splice(1, 3);
+spec:
+  statement: "이 코드를 실행하면 `spots`는 `[10, 40, 50]`이 된다."
+  answer: false
+  misconceptionIfWrong: js.mc.splice-second-arg-end
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 두 번째 인수 3은 지울 개수라서, 인덱스 1부터 세 요소(20, 30, 40)를 지워 [10, 50]이 된다
+      correct: true
+    - id: r2
+      text: 두 번째 인수 3은 끝 인덱스라서, 인덱스 1부터 3 앞까지(20, 30)만 지워 [10, 40, 50]이 된다
+      misconception: js.mc.splice-second-arg-end
+    - id: r3
+      text: splice는 지운 결과를 새 배열로 돌려줄 뿐이라서 spots는 [10, 20, 30, 40, 50] 그대로다
+      misconception: js.mc.splice-slice-same
+misconceptions: [js.mc.splice-second-arg-end, js.mc.splice-slice-same]
+hints:
+  - "`splice(시작, 두 번째 인수)`에서 두 번째 인수는 무엇을 뜻했는지 떠올려 보세요."
+  - 이름이 비슷한 `slice`는 두 번째 인수가 끝 위치예요. `splice`도 그런가요?
+  - 인덱스 1부터 시작해서 두 번째 인수가 뜻하는 만큼 요소를 하나씩 지워 보세요. 원래 배열에 무슨 일이 생기나요?
+explanation: |
+  설명은 **틀렸어요**. 실행 뒤 `spots`는 `[10, 50]`이에요.
+
+  - `splice(시작, 지울 개수)`의 두 번째 인수는 끝 인덱스가 아니라 **개수**예요. 인덱스 1(20)부터 세 요소 20, 30, 40을 지워요.
+  - `splice`는 원래 배열을 직접 바꿔요. 지운 요소들은 `[20, 30, 40]`으로 돌려주지만, 이 코드는 그 값을 쓰지 않았어요.
+
+  - "3은 끝 인덱스라서 20, 30만 지운다"는 이유는 `slice(1, 3)`의 규칙이에요. `splice`는 개수로 세요.
+  - "`spots`는 그대로다"는 이유도 틀렸어요. 원래 배열을 그대로 두고 새 배열을 돌려주는 것은 `slice`예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

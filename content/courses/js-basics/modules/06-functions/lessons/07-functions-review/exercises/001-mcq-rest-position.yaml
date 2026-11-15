@@ -1,0 +1,42 @@
+id: js-basics.functions.functions-review.mcq-rest-position
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.rest-params, weight: 1 }
+tags: [rest-params, syntax, assessment]
+estimatedSeconds: 50
+usage: assessment
+prompt: |
+  릴레이 경기의 첫 주자와 나머지 주자들을 받는 함수를 만들려고 해요. 다음 함수 선언 중 **오류 없이** 만들어지는 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`function relay(first, ...others) { }`"
+    - id: b
+      text: "`function relay(...others, last) { }`"
+      misconception: js.mc.rest-not-last
+      rationale: "나머지 매개변수 뒤에는 다른 매개변수를 둘 수 없어요. `SyntaxError: Rest parameter must be last formal parameter`가 나요."
+    - id: c
+      text: "`function relay(...front, ...back) { }`"
+      misconception: js.mc.rest-not-last
+      rationale: 나머지 매개변수는 하나만, 맨 끝에 둘 수 있어요. 앞의 `...front`가 맨 끝이 아니라서 같은 `SyntaxError`가 나요.
+    - id: d
+      text: "`function relay(first, others...) { }`"
+      rationale: "점 세 개는 이름 앞에 붙여요. 이름 뒤에 쓰면 `SyntaxError: Unexpected token '...'`이 나요."
+  correct: a
+misconceptions: [js.mc.rest-not-last]
+hints:
+  - 나머지 매개변수는 "앞 매개변수가 받고 **남은** 인수"를 모아요. 남은 것을 모으려면 어디에 있어야 할까요?
+  - 점 세 개(`...`)를 이름의 앞과 뒤 중 어디에 붙이는지 떠올려 보세요.
+  - 나머지 매개변수는 몇 개까지, 어느 자리에 둘 수 있었나요? 그 규칙에 맞는 선언은 하나뿐이에요.
+explanation: |
+  오류 없이 만들어지는 것은 `function relay(first, ...others) { }`예요.
+
+  - 나머지 매개변수는 **맨 끝에 하나만** 둘 수 있어요. 앞 매개변수(`first`)가 첫 인수를 받고, 남은 인수를 `others`가 모두 모아요.
+  - `(...others, last)`: 나머지 매개변수 뒤에 `last`가 있어요. `others`가 남은 인수를 모두 모으면 `last`가 받을 인수가 남지 않으니, JavaScript는 이 선언을 `SyntaxError: Rest parameter must be last formal parameter`로 막아요.
+  - `(...front, ...back)`: 나머지 매개변수가 두 개예요. 첫 번째 `...front`가 맨 끝이 아니라서 같은 `SyntaxError`가 나요.
+  - `(first, others...)`: 점 세 개는 이름 **앞**에 붙여요. 뒤에 붙이면 `SyntaxError: Unexpected token '...'`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

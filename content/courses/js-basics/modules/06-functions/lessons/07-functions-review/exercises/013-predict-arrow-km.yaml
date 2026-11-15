@@ -1,0 +1,54 @@
+id: js-basics.functions.functions-review.predict-arrow-km
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.fn.undefined-return, weight: 0.5 }
+  - { id: js.conv.nan, weight: 0.3 }
+tags: [arrow, return, undefined, nan, assessment]
+estimatedSeconds: 140
+usage: assessment
+prompt: |
+  산책 거리를 계산하는 화살표 함수 세 개예요. 실행하면 콘솔에 무엇이 출력될까요? 네 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const toKm = (m) => m / 1000;
+    const addRest = (km) => { km + 2; };
+    const roundTrip = (m) => {
+      return toKm(m) * 2;
+    };
+
+    console.log(toKm(3000));
+    console.log(addRest(5));
+    console.log(roundTrip(1500));
+    console.log(addRest(toKm(4000)) + 1);
+  answerKind: console
+  misconceptionByAnswer:
+    "3\n7\n3\n7": js.mc.arrow-braces-implicit-return
+    "3\n7\n3\n6": js.mc.arrow-braces-implicit-return
+misconceptions: [js.mc.arrow-braces-implicit-return]
+hints:
+  - 세 함수의 본문 모양을 비교해 보세요. 중괄호가 있는 것과 없는 것이 있어요.
+  - 중괄호 없는 본문은 식의 값을 자동으로 돌려줘요. 중괄호가 있는 본문은 무엇이 있어야 값을 돌려줄까요?
+  - "`addRest`가 돌려주는 값에 1을 더하면 어떤 값이 될지 생각해 보세요. 숫자가 아닌 값에 숫자를 더할 때를 떠올려 보세요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  3
+  undefined
+  3
+  NaN
+  ```
+
+  - `toKm`은 중괄호 없는 본문이라 `m / 1000`의 값을 자동으로 돌려줘요. `toKm(3000)`은 `3`이에요.
+  - `addRest`는 본문에 중괄호가 있는데 `return`이 없어요. `km + 2`를 계산만 하고 버리므로 `addRest(5)`는 `undefined`예요.
+  - `roundTrip`은 중괄호 본문에 `return`을 썼어요. `toKm(1500)`인 1.5에 2를 곱해 `3`을 돌려줘요.
+  - 마지막 줄: 안쪽의 `toKm(4000)`이 먼저 4를 돌려주고, `addRest(4)`는 `undefined`예요. `undefined + 1`은 숫자로 바꿀 수 없어 `NaN`이에요.
+
+  둘째 줄을 `7`로 예상했다면 중괄호 본문도 마지막 식을 저절로 돌려준다고 본 거예요. `addRest`를 고치려면 `(km) => km + 2`처럼 중괄호를 빼거나 `{ return km + 2; }`처럼 `return`을 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

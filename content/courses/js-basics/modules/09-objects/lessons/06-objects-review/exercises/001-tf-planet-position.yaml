@@ -1,0 +1,46 @@
+id: js-basics.objects.objects-review.tf-planet-position
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.obj.literal, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.3 }
+tags: [object, literal, index, assessment]
+estimatedSeconds: 60
+usage: assessment
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+code: |
+  const planet = { name: "화성", moons: 2, rings: false };
+  console.log(planet[1]);
+spec:
+  statement: "위 코드는 두 번째로 쓴 속성의 값인 `2`를 출력한다."
+  answer: false
+  misconceptionIfWrong: js.mc.obj-access-by-index
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 객체 속성은 순서 번호가 아니라 키 이름으로 읽는다. planet에는 키가 1인 속성이 없어서 undefined가 출력된다
+      correct: true
+    - id: r2
+      text: 객체도 배열처럼 적은 순서대로 0, 1, 2번 자리가 있어서 planet[1]은 두 번째 속성인 moons의 값을 읽는다
+      misconception: js.mc.obj-access-by-index
+    - id: r3
+      text: 객체에 없는 속성을 읽으면 TypeError가 나서 아무것도 출력되지 않는다
+      misconception: js.mc.missing-property-error
+misconceptions: [js.mc.obj-access-by-index, js.mc.missing-property-error]
+hints:
+  - 배열과 객체는 값을 찾는 방법이 달라요. 배열은 위치로, 객체는 무엇으로 찾나요?
+  - "`planet[1]`은 이름이 `1`인 속성을 찾아요. `planet`의 키 이름을 모두 적어 보세요."
+  - 찾는 이름의 속성이 객체에 없을 때 읽은 결과가 무엇이었는지 떠올려 보세요.
+explanation: |
+  설명은 **틀렸어요**. 이 코드는 `undefined`를 출력해요.
+
+  - 객체의 속성은 적은 순서가 아니라 **키 이름**으로 찾아요. `planet`의 키는 `name`, `moons`, `rings` 세 개예요.
+  - `planet[1]`은 이름이 `1`인 속성을 찾는데, 그런 속성이 없어요. 없는 속성을 읽으면 오류 없이 `undefined`가 나와요.
+  - 위성 수를 읽으려면 `planet.moons`나 `planet["moons"]`처럼 키 이름을 써야 해요.
+
+  "객체에도 0, 1, 2번 자리가 있다"는 이유는 배열과 객체를 섞은 생각이에요. "없는 속성을 읽으면 `TypeError`가 난다"도 틀렸어요. `TypeError`는 `undefined`에서 **다시** 속성을 읽을 때(예: `planet.ring.size`) 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

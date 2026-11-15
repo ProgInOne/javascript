@@ -1,0 +1,68 @@
+id: js-basics.functions.functions-review.mcq-mood-shadow
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: js.scope.shadowing, weight: 1 }
+  - { id: js.scope.block, weight: 0.3 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [scope, shadowing, parameter, block, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  반려동물의 기분을 바꾸는 함수예요. 마지막 줄은 무엇을 출력하나요?
+code: |
+  let mood = "보통";
+
+  function react(mood) {
+    if (mood === "좋음") {
+      let mood = "최고";
+      return mood;
+    }
+    mood = "나쁨";
+    return mood;
+  }
+
+  const a = react("좋음");
+  const b = react("보통");
+  console.log(a + " " + b + " " + mood);
+spec:
+  options:
+    - id: a
+      text: "`최고 나쁨 보통`"
+    - id: b
+      text: "`최고 나쁨 나쁨`"
+      misconception: js.mc.param-reassign-changes-outer
+      rationale: 8번 줄의 mood는 매개변수예요. 매개변수에 새 값을 넣어도 바깥 변수 mood는 바뀌지 않아요.
+    - id: c
+      text: "`최고 나쁨 최고`"
+      misconception: js.mc.shadow-changes-outer
+      rationale: 5번 줄의 let mood는 if 블록 안에서만 쓰는 새 변수예요. 바깥 mood에는 아무 영향이 없어요.
+    - id: d
+      text: "`좋음 나쁨 보통`"
+      rationale: 블록 안의 let mood에 "최고"를 넣었고, 6번 줄은 그 블록 안의 mood를 돌려줘요.
+  correct: a
+misconceptions: [js.mc.param-reassign-changes-outer, js.mc.shadow-changes-outer]
+hints:
+  - 이 코드에는 `mood`라는 이름의 변수가 세 개 있어요. 각각 어디에서 만들어졌는지 표시해 보세요.
+  - 이름을 찾을 때는 가장 가까운 상자부터 봐요. 6번 줄과 8번 줄의 `mood`는 각각 어느 변수일까요?
+  - 14번 줄은 함수 밖이에요. 함수 밖에서 보이는 `mood`는 하나뿐이에요. 그 변수에 대입한 줄이 있었나요?
+explanation: |
+  정답은 `최고 나쁨 보통`이에요. 이 코드에는 `mood`가 세 개 있어요.
+
+  1. 1번 줄의 바깥 변수 `mood`(`"보통"`)
+  1. 3번 줄의 매개변수 `mood`(호출할 때 받은 값)
+  1. 5번 줄의 블록 변수 `mood`(`if` 블록 안에서만)
+
+  - `react("좋음")`: 매개변수가 `"좋음"`이라 `if`에 들어가요. 블록 안의 `let mood`가 매개변수를 가리고, 6번 줄은 그 블록 변수 `"최고"`를 돌려줘요. `a`는 `"최고"`예요.
+  - `react("보통")`: `if`에 들어가지 않아요. 8번 줄은 매개변수에 `"나쁨"`을 넣고 돌려줘요. `b`는 `"나쁨"`이에요.
+  - 두 호출 모두 바깥 `mood`에는 대입하지 않았어요. 매개변수와 블록 변수가 바깥 이름을 가렸기 때문이에요. 그래서 14번 줄의 `mood`는 그대로 `"보통"`이에요.
+
+  오답 풀이:
+
+  - `최고 나쁨 나쁨`: 매개변수에 대입하면 바깥 변수도 바뀐다고 본 거예요.
+  - `최고 나쁨 최고`: 블록 안에서 같은 이름으로 만든 변수가 바깥 변수를 바꾼다고 본 거예요.
+  - `좋음 나쁨 보통`: 6번 줄이 매개변수를 돌려준다고 본 거예요. 블록 안에서는 블록 변수가 더 가까워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

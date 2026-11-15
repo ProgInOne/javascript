@@ -1,0 +1,66 @@
+id: js-basics.functions.functions-review.find-bug-lives-typo
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.scope.global, weight: 1 }
+  - { id: js.errors.error-messages, weight: 0.3 }
+tags: [scope, global, strict-mode, reference-error, debugging, assessment]
+estimatedSeconds: 120
+usage: assessment
+prompt: |
+  게임에서 목숨을 하나 잃을 때마다 남은 목숨을 보여 주는 프로그램이에요. 실행하면 오류가 나요. 오류의 **원인**이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    let lives = 3;
+
+    function loseLife() {
+      live = lives - 1;
+      console.log("남은 목숨: " + lives);
+    }
+
+    console.log("게임 시작");
+    loseLife();
+    loseLife();
+  bugLines: [4]
+  symptom: "`게임 시작`이 나온 뒤 `ReferenceError: live is not defined` 오류가 나요."
+  symptomCheck:
+    error: ReferenceError
+  fixedCode: |-
+    let lives = 3;
+
+    function loseLife() {
+      lives = lives - 1;
+      console.log("남은 목숨: " + lives);
+    }
+
+    console.log("게임 시작");
+    loseLife();
+    loseLife();
+  causeOptions:
+    - id: c1
+      text: 4번 줄에서 선언하지 않은 이름 live에 대입해서, 엄격 모드에서 ReferenceError가 났다
+      correct: true
+    - id: c2
+      text: 함수 안에서는 바깥 변수 lives를 읽을 수 없어서 오류가 났다
+      misconception: js.mc.inner-cant-read-outer
+    - id: c3
+      text: let 없이 대입하면 새 전역 변수 live가 생기는데, 5번 줄이 그 변수 대신 lives를 출력하려 해서 오류가 났다
+      misconception: js.mc.undeclared-assign-creates-global
+misconceptions: [js.mc.inner-cant-read-outer, js.mc.undeclared-assign-creates-global]
+hints:
+  - 오류 메시지에 나온 이름을 코드에서 찾아보세요. 그 이름을 `let`이나 `const`로 만든 줄이 있나요?
+  - 함수 안에서 바깥 변수를 읽고 바꾸는 것 자체는 괜찮아요. 4번 줄의 왼쪽과 오른쪽 이름을 글자 하나하나 비교해 보세요.
+  - 이 프로그램은 엄격 모드로 실행돼요. 엄격 모드에서 한 번도 선언하지 않은 이름에 값을 넣으면 어떻게 되었나요?
+explanation: |
+  원인은 **4번 줄** `live = lives - 1;`이에요. `lives = lives - 1;`로 고쳐야 해요.
+
+  - 대입하는 쪽 이름이 `lives`가 아니라 `live`예요. `live`는 어디에서도 선언하지 않은 이름이에요.
+  - 엄격 모드에서 선언하지 않은 이름에 대입하면 `ReferenceError: live is not defined`가 나요. 그래서 `게임 시작`만 출력되고 첫 `loseLife()` 호출에서 멈춰요.
+  - 함수 안에서는 바깥 변수 `lives`를 읽을 수도, 바꿀 수도 있어요. 오른쪽의 `lives - 1`은 문제없이 2로 계산돼요.
+  - 엄격 모드가 아니면 `live`라는 전역 변수가 몰래 생기고 `lives`는 그대로 3으로 남는 더 찾기 어려운 버그가 돼요. 엄격 모드에서는 새 변수가 생기지 않고 바로 오류로 알려 줘요.
+
+  고친 코드는 `남은 목숨: 2`, `남은 목숨: 1`을 출력해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

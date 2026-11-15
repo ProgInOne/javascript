@@ -1,0 +1,112 @@
+id: js-basics.objects.objects-review.impl-trip-label
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.obj.destructuring, weight: 1 }
+  - { id: js.fn.default-params, weight: 0.3 }
+  - { id: js.control.ternary, weight: 0.3 }
+tags: [object, destructuring, default-value, write-code, assessment]
+estimatedSeconds: 300
+usage: assessment
+prompt: |
+  여행 일정 카드에 보여 줄 한 줄을 만드는 함수 `tripLabel(trip)`을 완성하세요. 여행 객체에는 `city`(도시)가 꼭 있고, `nights`(숙박 수)와 `transport`(교통수단)는 없을 수도 있어요.
+
+  ```js
+  tripLabel({ city: "강릉", nights: 2, transport: "기차" });     // "강릉 2박 · 기차"
+  tripLabel({ city: "춘천" });                                   // "춘천 1박 · 버스"
+  tripLabel({ city: "속초", nights: 0, transport: "자가용" });   // "속초 당일치기 · 자가용"
+  ```
+
+  - `nights`가 없으면 1박, `transport`가 없으면 `"버스"`로 봐요.
+  - `nights`가 `0`이면 `"0박"` 대신 `"당일치기"`라고 써요.
+  - 매개변수 자리나 함수 첫 줄에서 **객체 구조 분해와 기본값**으로 값을 꺼내 써 보세요. 채점은 돌려준 문장으로만 해요.
+  - 받은 객체를 바꾸면 안 돼요. 숨겨진 테스트는 다른 여행으로 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function tripLabel(trip) {
+            // city, nights, transport를 꺼내 문장을 만들어 돌려주세요.
+          }
+  entry: tripLabel
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function tripLabel({ city, nights = 1, transport = "버스" }) {
+            const stay = nights === 0 ? "당일치기" : nights + "박";
+            return city + " " + stay + " · " + transport;
+          }
+  checks:
+    - kind: call
+      id: full
+      description: 숙박 수와 교통수단이 있으면 그대로 써야 합니다.
+      requirement: 일정 문장
+      args: [{ city: "강릉", nights: 2, transport: "기차" }]
+      expect: { equals: "강릉 2박 · 기차" }
+    - kind: call
+      id: defaults
+      description: 숙박 수와 교통수단이 없으면 1박, 버스로 써야 합니다.
+      requirement: 기본값
+      args: [{ city: "춘천" }]
+      expect: { equals: "춘천 1박 · 버스" }
+    - kind: call
+      id: day-trip
+      visible: false
+      description: 숙박 수가 0이면 "당일치기"여야 합니다(0을 기본값 1로 바꾸면 안 됩니다).
+      requirement: 당일치기
+      args: [{ city: "속초", nights: 0, transport: "자가용" }]
+      expect: { equals: "속초 당일치기 · 자가용" }
+    - kind: call
+      id: only-transport-missing
+      visible: false
+      description: 교통수단만 없으면 숙박 수는 그대로, 교통수단은 버스여야 합니다.
+      requirement: 기본값
+      args: [{ city: "여수", nights: 3 }]
+      expect: { equals: "여수 3박 · 버스" }
+    - kind: call
+      id: only-nights-missing
+      visible: false
+      description: 숙박 수만 없으면 1박, 교통수단은 받은 그대로여야 합니다.
+      requirement: 기본값
+      args: [{ city: "제주", transport: "비행기" }]
+      expect: { equals: "제주 1박 · 비행기" }
+    - kind: call
+      id: day-trip-default-transport
+      visible: false
+      description: 숙박 수 0과 교통수단 기본값이 함께 쓰여도 맞아야 합니다.
+      requirement: 당일치기
+      args: [{ city: "공주", nights: 0 }]
+      expect: { equals: "공주 당일치기 · 버스" }
+    - kind: call
+      id: keep-trip
+      visible: false
+      description: 받은 여행 객체를 바꾸면 안 됩니다(없는 속성을 채워 넣지 마세요).
+      requirement: 일정 문장
+      args: [{ city: "춘천" }]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.destructuring-default-on-null]
+hints:
+  - "`const { 이름 = 기본값 } = 객체;`처럼 구조 분해에서도 기본값을 정할 수 있어요. 매개변수 자리에 바로 쓸 수도 있어요."
+  - 구조 분해 기본값은 값이 `undefined`일 때만 쓰여요. 그렇다면 `nights`가 0일 때 변수에는 무엇이 들어가나요? `||`로 기본값을 정하면 어떻게 될까요?
+  - 숙박 부분만 따로 변수에 만들어 두세요. 0인지 아닌지에 따라 두 가지 중 하나를 고른 뒤 나머지 부분과 이어 붙이면 돼요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function tripLabel({ city, nights = 1, transport = "버스" }) {
+    const stay = nights === 0 ? "당일치기" : nights + "박";
+    return city + " " + stay + " · " + transport;
+  }
+  ```
+
+  - 매개변수 자리의 `{ city, nights = 1, transport = "버스" }`는 받은 객체에서 같은 이름의 속성을 꺼내요. 속성이 없어서 `undefined`이면 기본값이 쓰여요.
+  - 기본값은 `undefined`일 때만 쓰이므로 `nights: 0`은 0 그대로 들어와요. 그래서 0을 따로 확인해 `"당일치기"`로 바꿀 수 있어요.
+  - `const n = trip.nights || 1;`로 기본값을 정하면 0도 falsy라서 1이 되고, 속초 여행이 `"속초 1박 · 자가용"`이 돼요.
+  - 구조 분해는 값을 꺼낼 뿐 받은 객체를 바꾸지 않아요. `trip.nights = trip.nights ?? 1;`처럼 원본에 기본값을 채우면 넘긴 객체가 바뀌어서 숨겨진 테스트가 실패해요.
+  - 함수 첫 줄에서 `const { city, nights = 1, transport = "버스" } = trip;`로 꺼내도 똑같이 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

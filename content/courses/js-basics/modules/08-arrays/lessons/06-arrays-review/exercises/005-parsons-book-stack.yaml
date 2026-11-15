@@ -1,0 +1,69 @@
+id: js-basics.arrays.arrays-review.parsons-book-stack
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.arr.push-pop, weight: 1 }
+  - { id: js.arr.shift-unshift, weight: 0.3 }
+  - { id: js.arr.length, weight: 0.3 }
+tags: [push, pop, stack, length, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  책상 위에 책을 쌓는 프로그램이에요. 처음에는 아래부터 국어, 수학 순서로 쌓여 있어요(배열의 끝이 맨 위). 과학책을 맨 위에 올리고, 맨 위의 책을 확인한 다음, 맨 위의 책을 꺼내요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  맨 위: 과학
+  꺼낸 책: 과학
+  남은 책: 2권
+  ```
+spec:
+  lines:
+    - { id: l1, code: 'const books = ["국어", "수학"];' }
+    - { id: l2, code: 'books.push("과학");' }
+    - { id: l3, code: 'console.log("맨 위: " + books[books.length - 1]);' }
+    - { id: l4, code: "const taken = books.pop();" }
+    - { id: l5, code: 'console.log("꺼낸 책: " + taken);' }
+    - { id: l6, code: 'console.log("남은 책: " + books.length + "권");' }
+  distractors:
+    - { id: d1, code: 'books.unshift("과학");', replaces: l2, misconception: js.mc.shift-unshift-swapped }
+    - { id: d2, code: "const taken = books.shift();", replaces: l4, misconception: js.mc.shift-unshift-swapped }
+    - { id: d3, code: 'console.log("맨 위: " + books[books.length]);', replaces: l3, misconception: js.mc.array-last-index-is-length }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 맨 위의 책, 꺼낸 책, 남은 책 수가 차례로 출력되어야 합니다.
+      requirement: 책 쌓고 꺼내기
+      expect:
+        lines: ["맨 위: 과학", "꺼낸 책: 과학", "남은 책: 2권"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 책 쌓고 꺼내기
+      expect:
+        noError: true
+misconceptions: [js.mc.shift-unshift-swapped, js.mc.array-last-index-is-length]
+hints:
+  - 이 문제에서는 배열의 **끝**이 책 더미의 맨 위예요. 끝에 넣고 끝에서 빼는 메서드 짝을 떠올려 보세요.
+  - 앞에 넣고 앞에서 빼는 메서드도 조각에 섞여 있어요. 그 메서드를 쓰면 국어책이 맨 위가 되는지, 맨 아래가 되는지 따져 보세요.
+  - 맨 위의 책을 읽는 줄도 두 가지예요. 책이 3권일 때 맨 끝 칸의 인덱스는 몇인지 세어 보세요.
+explanation: |
+  정답 순서예요.
+
+  ```js
+  const books = ["국어", "수학"];
+  books.push("과학");
+  console.log("맨 위: " + books[books.length - 1]);
+  const taken = books.pop();
+  console.log("꺼낸 책: " + taken);
+  console.log("남은 책: " + books.length + "권");
+  ```
+
+  - 배열의 끝을 맨 위로 쓰기로 했으니, 올릴 때는 끝에 넣는 `push`, 꺼낼 때는 끝에서 빼는 `pop`을 써요. `pop`은 꺼낸 요소를 돌려주므로 `taken`에 `"과학"`이 담겨요.
+  - 맨 위 책은 마지막 요소 `books[books.length - 1]`이에요. `books[books.length]`는 없는 칸이라 `맨 위: undefined`가 나와요.
+  - `unshift("과학")`은 배열 **앞**(책 더미의 맨 아래)에 넣어서 맨 위가 `수학`이 돼요. `shift()`는 **앞**에서 꺼내서 `꺼낸 책: 국어`가 나와요. `shift`·`unshift`는 앞쪽, `push`·`pop`은 끝쪽이에요.
+  - 확인하는 줄은 `push` 뒤, `pop` 앞에 있어야 과학책이 맨 위로 보여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

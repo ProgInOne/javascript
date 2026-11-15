@@ -1,0 +1,137 @@
+id: js-basics.functions.functions-review.impl-rental-fee
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.fn.default-params, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+  - { id: js.control.if, weight: 0.3 }
+  - { id: js.types.undefined, weight: 0.3 }
+tags: [default-params, undefined, return, write-code, assessment]
+estimatedSeconds: 330
+usage: assessment
+prompt: |
+  공원의 자전거 대여료를 계산하는 함수 `rentalFee(hours, pricePerHour, maxFee)`를 완성하세요.
+
+  - 대여료는 `hours * pricePerHour`예요. 다만 `maxFee`보다 비싸면 `maxFee`만 받아요(하루 최대 요금).
+  - `hours`가 0 이하이면 대여료는 0이에요.
+  - `pricePerHour`를 넘기지 않으면 **2000**, `maxFee`를 넘기지 않으면 **10000**으로 계산해요. 기본값 매개변수를 쓰세요.
+
+  ```js
+  rentalFee(3);               // 6000
+  rentalFee(7);               // 10000 (14000이지만 최대 요금)
+  rentalFee(2, 3000);         // 6000
+  rentalFee(4, undefined, 7000);  // 7000 (8000이지만 최대 요금)
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function rentalFee(hours, pricePerHour, maxFee) {
+            // 여기에 작성하세요
+          }
+  entry: rentalFee
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function rentalFee(hours, pricePerHour = 2000, maxFee = 10000) {
+            if (hours <= 0) {
+              return 0;
+            }
+            const fee = hours * pricePerHour;
+            if (fee > maxFee) {
+              return maxFee;
+            }
+            return fee;
+          }
+  checks:
+    - kind: call
+      id: only-hours
+      description: rentalFee(3)은 시간당 2000원으로 6000을 돌려줘야 합니다.
+      requirement: 빠진 인수는 기본값
+      args: [3]
+      expect: { equals: 6000 }
+    - kind: call
+      id: capped
+      description: rentalFee(7)은 14000이 최대 요금 10000을 넘으므로 10000입니다.
+      requirement: 최대 요금
+      args: [7]
+      expect: { equals: 10000 }
+    - kind: call
+      id: own-price
+      description: rentalFee(2, 3000)은 6000입니다.
+      requirement: 빠진 인수는 기본값
+      args: [2, 3000]
+      expect: { equals: 6000 }
+    - kind: call
+      id: undefined-middle
+      description: rentalFee(4, undefined, 7000)은 시간당 2000원으로 8000이지만 최대 7000입니다.
+      requirement: 빠진 인수는 기본값
+      argsExpr: "[4, undefined, 7000]"
+      expect: { equals: 7000 }
+    - kind: call
+      id: zero-hours
+      visible: false
+      description: 0시간이면 0을 돌려줘야 합니다.
+      requirement: 0시간 이하
+      args: [0]
+      expect: { equals: 0 }
+    - kind: call
+      id: negative-hours
+      visible: false
+      description: 시간이 음수여도 0을 돌려줘야 합니다(최대 요금이나 음수가 아님).
+      requirement: 0시간 이하
+      args: [-2, 3000]
+      expect: { equals: 0 }
+    - kind: call
+      id: high-cap
+      visible: false
+      description: 최대 요금을 넉넉히 주면 그대로 시간 × 요금이어야 합니다.
+      requirement: 최대 요금
+      args: [6, 1500, 20000]
+      expect: { equals: 9000 }
+    - kind: call
+      id: exactly-cap
+      visible: false
+      description: 대여료가 최대 요금과 정확히 같으면 그 값을 돌려줘야 합니다.
+      requirement: 최대 요금
+      args: [5]
+      expect: { equals: 10000 }
+    - kind: call
+      id: undefined-both
+      visible: false
+      description: 두 요금을 모두 undefined로 넘겨도 기본값으로 계산해야 합니다.
+      requirement: 빠진 인수는 기본값
+      argsExpr: "[2, undefined, undefined]"
+      expect: { equals: 4000 }
+misconceptions: [js.mc.missing-arg-error, js.mc.default-on-null]
+hints:
+  - 넘기지 않은 매개변수에는 무엇이 들어오나요? 그럴 때 쓸 값을 매개변수 자리에서 정하는 문법이 있었어요.
+  - 기본값은 어떤 값이 들어왔을 때 쓰이나요? 일부러 `undefined`를 넘긴 경우도 생각해 보세요.
+  - 계산 순서를 정해 보세요. 0시간 이하를 먼저 처리하고, 그다음 요금을 계산해 최대 요금과 비교해요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function rentalFee(hours, pricePerHour = 2000, maxFee = 10000) {
+    if (hours <= 0) {
+      return 0;
+    }
+    const fee = hours * pricePerHour;
+    if (fee > maxFee) {
+      return maxFee;
+    }
+    return fee;
+  }
+  ```
+
+  - 인수를 덜 넘겨도 오류는 나지 않아요. 짝이 없는 매개변수는 `undefined`가 되고, 기본값을 정해 두면 그 자리에 기본값이 쓰여요.
+  - 기본값은 매개변수가 `undefined`일 때 쓰여요. 그래서 `rentalFee(4, undefined, 7000)`처럼 가운데를 건너뛰고 싶을 때 `undefined`를 넘기면 시간당 요금은 2000, 최대 요금은 7000이에요.
+  - 0시간 이하를 먼저 처리해야 음수 요금(`-2 * 3000`)이 나오지 않아요.
+  - `fee > maxFee`일 때만 최대 요금으로 바꿔요. 정확히 같으면 어느 쪽을 돌려줘도 값이 같아요.
+  - 기본값 없이 함수 안에서 `if (pricePerHour === undefined)`로 채워도 결과는 같아요. 다만 기본값 매개변수가 더 짧고 읽기 쉬워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

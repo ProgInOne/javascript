@@ -1,0 +1,60 @@
+id: js-basics.objects.objects-review.multi-point-equality
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.obj.equality, weight: 1 }
+  - { id: js.obj.reference, weight: 0.5 }
+tags: [object, equality, reference, assessment]
+estimatedSeconds: 120
+usage: assessment
+prompt: |
+  아래 코드를 끝까지 실행한 뒤, 결과가 `true`인 식을 **모두** 고르세요.
+code: |
+  function makePoint(x, y) {
+    return { x: x, y: y };
+  }
+
+  const p = makePoint(2, 3);
+  const q = makePoint(2, 3);
+  const r = p;
+  r.x = 5;
+spec:
+  options:
+    - id: a
+      text: "`p === q`"
+      misconception: js.mc.same-content-objects-equal
+      rationale: makePoint를 부를 때마다 객체 리터럴이 새 객체를 만들어요. p와 q는 처음 내용이 같았어도 서로 다른 객체예요.
+    - id: b
+      text: "`p === r`"
+    - id: c
+      text: "`p.x === 5`"
+      missedMisconception: js.mc.assign-copies-object
+    - id: d
+      text: "`q.x === 5`"
+      rationale: r은 p와 같은 객체를 가리키므로 r.x를 바꿔도 q는 그대로예요. q.x는 2예요.
+    - id: e
+      text: "`p.y === q.y`"
+    - id: f
+      text: "`makePoint(1, 1) === makePoint(1, 1)`"
+      misconception: js.mc.same-content-objects-equal
+      rationale: 두 번 부르면 객체가 두 개 만들어져요. ===는 내용이 아니라 같은 객체인지를 비교해요.
+  correct: [b, c, e]
+misconceptions: [js.mc.same-content-objects-equal, js.mc.assign-copies-object]
+hints:
+  - 코드가 끝났을 때 객체가 몇 개 있는지, 변수 `p`, `q`, `r`이 각각 어느 객체를 가리키는지 그려 보세요.
+  - 객체끼리 `===`로 비교하면 내용을 비교하나요, 같은 객체인지를 비교하나요?
+  - 숫자끼리의 `===`는 값을 비교해요. 8번 줄이 바꾼 객체를 어떤 변수로 읽을 수 있는지 확인해 보세요.
+explanation: |
+  `true`인 식은 "`p === r`", "`p.x === 5`", "`p.y === q.y`" 세 개예요.
+
+  - `makePoint`를 부를 때마다 함수 안의 객체 리터럴이 **새 객체**를 만들어요. 그래서 `p`와 `q`는 내용이 같아도 다른 객체이고 `p === q`는 `false`예요. `makePoint(1, 1) === makePoint(1, 1)`도 객체 두 개를 비교하므로 `false`예요.
+  - `const r = p;`는 객체를 복사하지 않고 `r`이 `p`와 같은 객체를 가리키게 해요. 그래서 `p === r`은 `true`예요.
+  - `r.x = 5`는 그 하나뿐인 객체를 바꾸므로 `p.x`도 5예요. `p.x === 5`는 `true`예요.
+  - `q`는 따로 만든 객체라서 `q.x`는 2 그대로예요. `q.x === 5`는 `false`예요.
+  - `p.y`와 `q.y`는 둘 다 숫자 3이에요. 원시 값끼리의 `===`는 값을 비교하므로 `true`예요.
+
+  객체의 `===`는 "같은 객체인가"를, 원시 값의 `===`는 "같은 값인가"를 물어요. 객체의 내용을 비교하려면 `p.x === q.x && p.y === q.y`처럼 속성을 하나씩 비교해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

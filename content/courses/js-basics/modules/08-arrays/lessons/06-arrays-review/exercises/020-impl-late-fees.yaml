@@ -1,0 +1,121 @@
+id: js-basics.arrays.arrays-review.impl-late-fees
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.arr.chaining, weight: 1 }
+  - { id: js.arr.filter, weight: 0.3 }
+  - { id: js.arr.map, weight: 0.3 }
+  - { id: js.arr.reduce, weight: 0.3 }
+tags: [chaining, filter, map, reduce, boundary, write-code, assessment]
+estimatedSeconds: 420
+usage: assessment
+prompt: |
+  도서관 연체료 계산기예요. 한 사람이 반납한 책마다 **며칠 늦었는지**를 담은 배열 `daysLate`를 받아 연체료 합계(원)를 돌려주는 함수 `lateFee(daysLate)`를 완성하세요.
+
+  - 0 이하(제때 또는 일찍 반납)인 책은 연체료가 없어요.
+  - 늦은 책은 하루에 200원이에요. 다만 책 한 권의 연체료는 **최대 3000원**이에요.
+  - 반납한 책이 없으면 0이에요. 받은 배열은 바꾸지 마세요.
+
+  ```js
+  lateFee([0, 3, -2, 20]);  // 3600 (3일 → 600원, 20일 → 4000원이지만 3000원)
+  lateFee([]);              // 0
+  ```
+
+  `filter`·`map`·`reduce`를 이어 쓰면 단계별로 나눠 풀 수 있어요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function lateFee(daysLate) {
+            // 늦은 책만 고르고, 책마다 연체료를 구한 뒤, 모두 더해 돌려주세요.
+          }
+  entry: lateFee
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function lateFee(daysLate) {
+            return daysLate
+              .filter((d) => d > 0)
+              .map((d) => (d * 200 > 3000 ? 3000 : d * 200))
+              .reduce((sum, fee) => sum + fee, 0);
+          }
+  checks:
+    - kind: call
+      id: example
+      description: 3일 늦은 책 600원과 20일 늦은 책 3000원(상한)을 더해 3600원입니다.
+      requirement: 연체료 합계
+      args: [[0, 3, -2, 20]]
+      expect: { equals: 3600 }
+    - kind: call
+      id: empty
+      description: 반납한 책이 없으면 0원입니다.
+      requirement: 책이 없거나 늦지 않음
+      args: [[]]
+      expect: { equals: 0 }
+      misconceptionIfFail: js.mc.reduce-initial-optional-safe
+    - kind: call
+      id: none-late
+      visible: false
+      description: 늦은 책이 하나도 없으면 0원이어야 합니다.
+      requirement: 책이 없거나 늦지 않음
+      args: [[-1, 0, -5]]
+      expect: { equals: 0 }
+      misconceptionIfFail: js.mc.reduce-initial-optional-safe
+    - kind: call
+      id: exactly-cap
+      visible: false
+      description: 15일 늦은 책은 정확히 3000원이어야 합니다.
+      requirement: 한 권 최대 3000원
+      args: [[15]]
+      expect: { equals: 3000 }
+    - kind: call
+      id: over-cap
+      visible: false
+      description: 상한을 넘는 책이 여러 권이면 책마다 3000원씩 더해야 합니다.
+      requirement: 한 권 최대 3000원
+      args: [[16, 40, 2]]
+      expect: { equals: 6400 }
+    - kind: call
+      id: small-days
+      visible: false
+      description: 하루씩 늦은 책 세 권은 600원이어야 합니다.
+      requirement: 연체료 합계
+      args: [[1, 1, 1]]
+      expect: { equals: 600 }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 배열을 바꾸면 안 됩니다.
+      requirement: 원래 배열 지키기
+      args: [[5, 0, 30]]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.reduce-initial-optional-safe, js.mc.map-can-skip-items]
+hints:
+  - 일을 세 단계로 나눠 보세요. 늦은 책 고르기 → 책마다 연체료로 바꾸기 → 모두 더하기. 각 단계에 맞는 메서드가 있어요.
+  - 한 권의 연체료는 "일수 × 200"과 3000 중 작은 쪽이에요. 조건 연산자나 `if`로 고를 수 있어요.
+  - 늦은 책이 하나도 없으면 더하기 단계에 빈 배열이 들어가요. 그때도 0이 나오려면 더하기 단계에 무엇이 있어야 할까요?
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function lateFee(daysLate) {
+    return daysLate
+      .filter((d) => d > 0)
+      .map((d) => (d * 200 > 3000 ? 3000 : d * 200))
+      .reduce((sum, fee) => sum + fee, 0);
+  }
+  ```
+
+  - `filter`가 늦은 책(1일 이상)만 남긴 새 배열을 만들고, `map`이 일수를 책마다의 연체료로 바꾸고, `reduce`가 모두 더해요. 앞 메서드가 돌려준 새 배열에 다음 메서드를 이어 불러요.
+  - 고르는 단계를 빠뜨리면 안 돼요. `filter` 없이 `map`과 `reduce`만 쓰면 음수 일수가 음수 연체료(-2일 → -400원)가 되어 합계가 줄어들어요. 먼저 고르고 나서 바꾸는 순서가 읽기 쉽지만, `map`으로 바꾼 뒤 `filter((fee) => fee > 0)`으로 걸러도 결과는 같아요.
+  - `reduce`의 초기값 `0`이 있어야 늦은 책이 없을 때(빈 배열) 오류 없이 0이 나와요. 초기값 없이 빈 배열에 `reduce`를 쓰면 `TypeError`가 나요.
+  - 15일은 200 × 15 = 3000원으로 상한과 같아요. `>`로 비교하든 `>=`로 비교하든 결과는 3000원이에요.
+  - 세 메서드 모두 원래 배열을 바꾸지 않아요.
+
+  `for...of`로 한 번 돌면서 같은 계산을 해도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

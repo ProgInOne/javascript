@@ -1,0 +1,52 @@
+id: js-basics.arrays.arrays-review.mcq-ride-line
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.arr.shift-unshift, weight: 1 }
+  - { id: js.arr.push-pop, weight: 0.3 }
+tags: [shift, unshift, queue, assessment]
+estimatedSeconds: 80
+usage: assessment
+prompt: |
+  놀이기구 탑승 줄이에요(배열의 앞이 줄의 맨 앞). 다음 코드를 실행한 뒤 `called`와 `ride`에는 각각 무엇이 들어 있나요?
+code: |
+  const ride = ["하늘", "바다"];
+  ride.unshift("별");
+  ride.push("구름");
+  const called = ride.shift();
+spec:
+  options:
+    - id: a
+      text: '`called`는 `"별"`, `ride`는 `["하늘", "바다", "구름"]`'
+    - id: b
+      text: '`called`는 `"구름"`, `ride`는 `["하늘", "바다", "별"]`'
+      misconception: js.mc.shift-unshift-swapped
+      rationale: unshift는 맨 앞에 넣고 shift는 맨 앞에서 꺼내요. 끝쪽을 다루는 것은 push와 pop이에요.
+    - id: c
+      text: '`called`는 `"별"`, `ride`는 `["별", "하늘", "바다", "구름"]`'
+      misconception: js.mc.mutating-method-keeps-original
+      rationale: shift는 맨 앞 요소를 읽기만 하지 않고 배열에서 꺼내요. 그래서 ride에서 "별"이 빠져요.
+    - id: d
+      text: '`called`는 `["하늘", "바다", "구름"]`, `ride`도 `["하늘", "바다", "구름"]`'
+      misconception: js.mc.pop-returns-rest
+      rationale: shift가 돌려주는 것은 남은 배열이 아니라 꺼낸 요소 하나예요.
+  correct: a
+misconceptions: [js.mc.shift-unshift-swapped, js.mc.mutating-method-keeps-original, js.mc.pop-returns-rest]
+hints:
+  - 줄마다 `ride`가 어떻게 바뀌는지 배열 모양을 적어 보세요.
+  - "`unshift`와 `shift`는 배열의 같은 쪽 끝을 다뤄요. 그쪽이 앞인지 끝인지 떠올려 보세요."
+  - "`shift`는 배열을 바꾸는 일과 값을 돌려주는 일을 함께 해요. 돌려주는 값이 요소 하나인지 배열인지 생각해 보세요."
+explanation: |
+  정답은 "`called`는 `"별"`, `ride`는 `["하늘", "바다", "구름"]`"이에요.
+
+  1. `unshift("별")`: 맨 앞에 넣어요 → `["별", "하늘", "바다"]`
+  1. `push("구름")`: 맨 끝에 넣어요 → `["별", "하늘", "바다", "구름"]`
+  1. `shift()`: 맨 앞 요소 `"별"`을 꺼내 돌려주고 배열에서 지워요 → `called`는 `"별"`, `ride`는 `["하늘", "바다", "구름"]`
+
+  - `called`가 `"구름"`이라고 봤다면 `shift`·`unshift`가 끝쪽을 다룬다고 거꾸로 기억한 거예요. 두 메서드는 앞쪽, `push`·`pop`은 끝쪽이에요.
+  - `ride`에 `"별"`이 남아 있다고 봤다면 `shift`가 읽기만 한다고 생각한 거예요. `shift`는 원래 배열을 바꿔요.
+  - `called`가 배열이라고 봤다면 `shift`가 남은 배열을 돌려준다고 생각한 거예요. 돌려주는 값은 꺼낸 요소 하나예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

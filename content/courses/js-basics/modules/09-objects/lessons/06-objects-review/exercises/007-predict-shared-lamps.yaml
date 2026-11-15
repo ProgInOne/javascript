@@ -1,0 +1,53 @@
+id: js-basics.objects.objects-review.predict-shared-lamps
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+  - { id: js.obj.equality, weight: 0.3 }
+  - { id: js.arr.literal-index, weight: 0.3 }
+tags: [object, reference, array, equality, trace, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  방 세 곳의 조명을 배열에 담아 설정을 바꾸는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 세 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const base = { color: "흰색", watt: 8 };
+    const lamps = [base, base, { color: "흰색", watt: 8 }];
+
+    lamps[0].watt = 12;
+    lamps[2].color = "노란색";
+
+    console.log(base.watt, lamps[1].watt, lamps[2].watt);
+    console.log(lamps[1].color, lamps[2].color);
+    console.log(lamps[0] === lamps[1], lamps[1] === lamps[2]);
+  answerKind: console
+  misconceptionByAnswer:
+    "12 8 8\n흰색 노란색\nfalse false": js.mc.assign-copies-object
+    "8 8 8\n흰색 노란색\nfalse false": js.mc.assign-copies-object
+    "12 12 8\n흰색 노란색\ntrue true": js.mc.same-content-objects-equal
+misconceptions: [js.mc.assign-copies-object, js.mc.same-content-objects-equal]
+hints:
+  - 이 코드에서 객체 리터럴 `{ }`는 몇 번 나오나요? 그 수가 실제로 만들어진 객체의 수예요.
+  - 배열의 세 칸이 각각 어떤 객체를 가리키는지 화살표로 그려 보세요. 0번과 1번 칸은 같은 객체인가요?
+  - 4번 줄은 0번 칸이 가리키는 객체를 바꿔요. 그 객체를 함께 가리키는 다른 이름이 있는지, 그리고 `===`가 무엇을 비교하는지 떠올려 보세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  12 12 8
+  흰색 노란색
+  true false
+  ```
+
+  - 객체 리터럴은 두 번 나오므로 객체는 **두 개**예요. `base`가 가리키는 객체(A)와 2번 칸의 객체(B)예요.
+  - 배열의 0번, 1번 칸에 `base`를 넣으면 복사되지 않고 둘 다 A를 가리켜요. 그래서 `lamps[0].watt = 12`는 A를 바꾸고, `base.watt`와 `lamps[1].watt`도 12예요.
+  - 2번 칸은 내용만 같은 다른 객체 B라서 `watt`는 그대로 8이고, `color`만 `노란색`으로 바뀌어요. A의 `color`는 `흰색` 그대로예요.
+  - `lamps[0] === lamps[1]`은 둘 다 A이므로 `true`, `lamps[1] === lamps[2]`는 A와 B라서 처음 내용이 같았어도 `false`예요.
+
+  `12 8 8`이라고 생각했다면 배열에 넣을 때 객체가 복사된다고 본 거예요. 마지막 줄을 `true true`라고 생각했다면 `===`가 내용을 비교한다고 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

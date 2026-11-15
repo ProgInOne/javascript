@@ -1,0 +1,49 @@
+id: js-basics.functions.functions-review.predict-team-arg-order
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.fn.params-args, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [parameters, arguments, order, assessment]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  운동회 경기 대진표를 만드는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    function matchTitle(home, away) {
+      return home + " 대 " + away;
+    }
+
+    const away = "청팀";
+    const home = "백팀";
+
+    console.log(matchTitle(away, home));
+    console.log(matchTitle("홍팀", "백팀", "청팀"));
+  answerKind: console
+  misconceptionByAnswer:
+    "백팀 대 청팀\n홍팀 대 백팀": js.mc.params-match-by-name
+    "백팀 대 청팀\n홍팀 대 백팀 대 청팀": js.mc.params-match-by-name
+misconceptions: [js.mc.params-match-by-name]
+hints:
+  - 인수는 어떤 기준으로 매개변수에 들어가나요? 이름인가요, 순서인가요?
+  - 8번 줄에서 첫 번째 인수는 변수 `away`예요. 이 값은 매개변수 `home`과 `away` 중 어디로 갈까요?
+  - 9번 줄은 인수가 세 개인데 매개변수는 두 개예요. 세 번째 인수와 짝이 되는 매개변수가 있나요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  청팀 대 백팀
+  홍팀 대 백팀
+  ```
+
+  - 인수는 이름이 아니라 **순서대로** 매개변수에 들어가요. 8번 줄의 첫 인수 `away`(값 `"청팀"`)는 첫 매개변수 `home`에, 둘째 인수 `home`(값 `"백팀"`)은 `away`에 들어가요. 그래서 `청팀 대 백팀`이에요.
+  - 바깥 변수 이름과 매개변수 이름이 같아도 서로 연결되지 않아요. 함수 안의 `home`, `away`는 호출할 때 받은 값을 담는 새 변수예요.
+  - 9번 줄은 인수가 매개변수보다 하나 많아요. 남는 인수 `"청팀"`은 오류 없이 버려지고 `홍팀 대 백팀`이 나와요.
+
+  첫 줄을 `백팀 대 청팀`으로 예상했다면 인수가 이름이 같은 매개변수로 간다고 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

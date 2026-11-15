@@ -1,0 +1,51 @@
+id: js-basics.functions.functions-review.tf-no-return-not-null
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.fn.undefined-return, weight: 1 }
+  - { id: js.types.null, weight: 0.3 }
+tags: [undefined-return, null-value, assessment]
+estimatedSeconds: 80
+usage: assessment
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+code: |
+  function showBattery(percent) {
+    console.log("배터리: " + percent + "%");
+  }
+
+  const saved = showBattery(80);
+  console.log(saved === null);
+spec:
+  statement: "위 코드의 마지막 줄은 `true`를 출력한다."
+  answer: false
+  misconceptionIfWrong: js.mc.no-return-is-null
+  requireReason: true
+  reasons:
+    - id: r1
+      text: showBattery에는 return이 없어서 saved에는 undefined가 들어가고, undefined === null은 false다
+      correct: true
+    - id: r2
+      text: 반환문이 없는 함수는 비어 있다는 뜻으로 null을 돌려주므로 true다
+      misconception: js.mc.no-return-is-null
+    - id: r3
+      text: showBattery가 배터리 80%를 출력했으므로 saved에는 그 글자가 들어 있어 false다
+      misconception: js.mc.return-is-log
+misconceptions: [js.mc.no-return-is-null, js.mc.return-is-log]
+hints:
+  - "`showBattery` 본문에 `return`이 있나요?"
+  - "`return`이 없는 함수를 호출한 결과는 비어 있는 값 중 하나예요. `null`과 `undefined` 중 어느 쪽인지 떠올려 보세요."
+  - "`===`는 자료형까지 같아야 `true`예요. 두 \"빈 값\"은 같은 자료형인가요?"
+explanation: |
+  설명은 **틀렸어요**. 마지막 줄은 `false`를 출력해요.
+
+  - `showBattery`에는 `return`이 없어요. `return`이 없는 함수의 호출 결과는 `undefined`예요. 그래서 `saved`에는 `undefined`가 들어가요.
+  - `undefined === null`은 `false`예요. 둘 다 "값이 없다"는 뜻이지만 서로 다른 값이고, `===`는 자료형까지 같아야 `true`예요.
+
+  이유 중 "반환문이 없으면 `null`을 돌려준다"는 틀렸어요. JavaScript는 `return`이 없으면 `null`이 아니라 `undefined`를 돌려줘요.
+
+  "`saved`에 출력한 글자가 들어 있다"도 틀렸어요. `console.log`는 콘솔에 보여 주기만 하고 값을 돌려주지 않아요. 출력 결과는 `false`로 같지만, 그 이유가 아니에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

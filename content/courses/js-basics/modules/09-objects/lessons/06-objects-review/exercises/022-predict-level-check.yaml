@@ -1,0 +1,63 @@
+id: js-basics.objects.objects-review.predict-level-check
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.errors.try-catch, weight: 1 }
+  - { id: js.errors.throw, weight: 0.5 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [try-catch, throw, loop, trace, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  퍼즐 게임에서 고른 단계마다 점수를 매기는 프로그램이에요. 3단계까지만 열려 있어요. 실행하면 콘솔에 무엇이 출력될까요? 출력되는 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    function score(level) {
+      if (level > 3) {
+        throw new Error("잠긴 단계: " + level);
+      }
+      return level * 10;
+    }
+
+    let total = 0;
+    for (const lv of [1, 5, 2]) {
+      try {
+        total += score(lv);
+        console.log("통과 " + lv);
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+    console.log("합계 " + total);
+  answerKind: console
+  misconceptionByAnswer:
+    "통과 1\n잠긴 단계: 5\n통과 5\n통과 2\n합계 30": js.mc.try-resumes-after-catch
+    "통과 1\n잠긴 단계: 5": js.mc.caught-error-stops-program
+    "통과 1\n잠긴 단계: 5\n합계 10": js.mc.caught-error-stops-program
+misconceptions: [js.mc.try-resumes-after-catch, js.mc.caught-error-stops-program]
+hints:
+  - 반복이 세 번 돌아요. 회차마다 `score`가 값을 돌려주는지, 오류를 던지는지 먼저 정해 보세요.
+  - "`try` 안에서 오류가 나면 그 아래의 `console.log(\"통과 \" + lv)`는 어떻게 되나요? `total += ...`의 덧셈은 이루어지나요?"
+  - "`catch`가 끝나면 반복은 다음 회차로 넘어가나요, 프로그램이 멈추나요? 마지막 줄까지 실행되는지도 확인해 보세요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  통과 1
+  잠긴 단계: 5
+  통과 2
+  합계 30
+  ```
+
+  - `lv = 1`: `score(1)`이 10을 돌려줘서 `total`은 10이 되고 `통과 1`이 나와요.
+  - `lv = 5`: `score(5)`가 오류를 던져요. `total += score(5)`는 값을 받지 못해서 덧셈이 이루어지지 않고(`total`은 10 그대로), 아래의 `통과 5` 줄도 건너뛰고 바로 `catch`로 가요. `err.message`인 `잠긴 단계: 5`가 나와요.
+  - `catch`가 끝나면 `try...catch` 다음으로 이어지고, 반복은 다음 회차로 넘어가요.
+  - `lv = 2`: 20을 더해 `total`은 30, `통과 2`가 나와요.
+  - 반복이 끝나고 `합계 30`이 나와요.
+
+  `통과 5`가 나온다고 생각했다면 `catch` 뒤에 `try`의 나머지가 이어서 실행된다고 본 거예요. 출력이 `잠긴 단계: 5`에서 끝난다고 생각했다면 잡은 오류도 프로그램을 멈춘다고 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

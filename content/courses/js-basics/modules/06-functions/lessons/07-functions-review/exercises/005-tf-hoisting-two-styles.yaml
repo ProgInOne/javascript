@@ -1,0 +1,60 @@
+id: js-basics.functions.functions-review.tf-hoisting-two-styles
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.fn.hoisting, weight: 1 }
+  - { id: js.fn.arrow, weight: 0.3 }
+tags: [hoisting, declaration, arrow, reference-error, assessment]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+code: |
+  console.log(double(4));
+  console.log(triple(4));
+
+  function double(n) {
+    return n * 2;
+  }
+
+  const triple = (n) => n * 3;
+spec:
+  statement: "위 코드를 실행하면 `8`과 `12`가 차례로 출력된다."
+  answer: false
+  misconceptionIfWrong: js.mc.expression-hoisted
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 함수 선언 double은 선언보다 위에서 불러도 되지만, const로 만든 triple은 그 줄이 실행되기 전에 쓸 수 없어서 2번 줄에서 ReferenceError가 난다
+      correct: true
+    - id: r2
+      text: 두 함수 모두 호출보다 아래에서 만들어지므로 1번 줄부터 오류가 나서 아무것도 출력되지 않는다
+      misconception: js.mc.declaration-not-hoisted
+    - id: r3
+      text: 화살표 함수는 값을 돌려주지 못하므로 2번 줄은 undefined를 출력한다
+      misconception: js.mc.arrow-braces-implicit-return
+misconceptions: [js.mc.expression-hoisted, js.mc.declaration-not-hoisted]
+hints:
+  - 두 함수가 만들어지는 방식이 달라요. 하나는 함수 선언, 하나는 `const`에 담은 화살표 함수예요.
+  - 함수 선언은 프로그램이 시작되기 전에 미리 만들어져요. `const` 변수는 언제부터 쓸 수 있었나요?
+  - 1번 줄과 2번 줄을 따로 생각해 보세요. 각 줄이 실행되는 순간 그 함수는 이미 만들어져 있나요?
+explanation: |
+  설명은 **틀렸어요**. `8`이 출력된 뒤 2번 줄에서 오류가 나요.
+
+  ```text
+  8
+  ReferenceError: Cannot access 'triple' before initialization
+  ```
+
+  - `double`은 함수 선언이라 프로그램이 시작되기 전에 미리 만들어져요(호이스팅). 그래서 1번 줄에서 불러도 `8`이 나와요.
+  - `triple`은 `const` 변수에 담은 화살표 함수예요. 8번 줄이 실행되어야 함수가 담기므로, 그 전인 2번 줄에서 쓰면 `ReferenceError`예요.
+
+  "두 함수 모두 1번 줄부터 오류"라는 이유는 틀렸어요. 함수 선언은 선언보다 위에서 불러도 돼요.
+
+  "화살표 함수는 값을 돌려주지 못한다"도 틀렸어요. 중괄호 없는 화살표 함수 `(n) => n * 3`은 식의 값을 돌려줘요. 문제는 반환이 아니라 호출 시점이에요.
+
+  고치려면 2번 줄의 호출을 8번 줄 아래로 옮기거나, `triple`을 함수 선언으로 바꿔요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,53 @@
+id: js-basics.objects.objects-review.predict-rainfall-days
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.obj.dot-bracket, weight: 1 }
+  - { id: js.obj.in-optional-chaining, weight: 0.3 }
+  - { id: js.ops.nullish, weight: 0.3 }
+tags: [object, bracket, variable-key, trace, assessment]
+estimatedSeconds: 120
+usage: assessment
+prompt: |
+  요일별 강수량(mm)을 담은 객체에서 고른 요일의 강수량만 더하는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 세 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const rainfall = { mon: 10, tue: 0, wed: 35 };
+    const days = ["wed", "fri", "mon"];
+
+    let total = 0;
+    for (const day of days) {
+      total += rainfall[day] ?? 0;
+    }
+
+    console.log(total);
+    console.log(rainfall.day);
+    console.log("fri" in rainfall);
+  answerKind: console
+  misconceptionByAnswer:
+    "45\n10\nfalse": js.mc.dot-with-variable-key
+    "45\nmon\nfalse": js.mc.dot-with-variable-key
+misconceptions: [js.mc.dot-with-variable-key, js.mc.missing-property-error]
+hints:
+  - 반복이 세 번 돌아요. 회차마다 `day`에 든 문자열과 `rainfall[day]`의 값을 적어 보세요.
+  - 객체에 없는 키를 대괄호로 읽으면 무엇이 나오고, 그 값에 `?? 0`을 하면 어떻게 되나요?
+  - "`rainfall.day`의 점 뒤에 쓴 `day`는 변수인가요, 속성 이름인가요? `rainfall`에 그 이름의 속성이 있는지 보세요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  45
+  undefined
+  false
+  ```
+
+  - 반복에서 `rainfall[day]`는 변수 `day`에 든 이름의 속성을 읽어요.
+    - `"wed"` → 35, `"fri"` → 속성이 없어 `undefined`이고 `?? 0`으로 0, `"mon"` → 10
+    - 합계는 35 + 0 + 10 = 45예요. 없는 키를 읽어도 오류가 나지 않아요.
+  - `rainfall.day`는 변수 `day`와 관계없이 **이름이 `day`인 속성**을 찾아요. 그런 속성이 없으므로 `undefined`예요. 반복이 끝난 뒤라 변수 `day`는 여기서 쓸 수도 없어요. 10이나 `mon`이 나온다고 생각했다면 점 표기법과 대괄호 표기법을 같은 것으로 본 거예요.
+  - `"fri" in rainfall`은 `fri`라는 속성이 있는지 묻고, 없으므로 `false`예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

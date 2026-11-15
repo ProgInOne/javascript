@@ -1,0 +1,140 @@
+id: js-basics.arrays.arrays-review.impl-elevator-route
+type: implement_function
+difficulty: 5
+concepts:
+  - { id: js.arr.sort, weight: 1 }
+  - { id: js.arr.filter, weight: 0.3 }
+  - { id: js.arr.includes-indexof, weight: 0.3 }
+  - { id: js.arr.slice-concat, weight: 0.3 }
+  - { id: js.arr.mutating-vs-not, weight: 0.3 }
+tags: [sort, compare-function, filter, dedupe, concat, challenge, write-code, assessment]
+estimatedSeconds: 600
+usage: assessment
+prompt: |
+  엘리베이터가 지금 `current`층에 있고, 위로 올라가는 중이에요. 사람들이 누른 층 번호 배열 `requests`를 받아, 엘리베이터가 **멈추는 층의 순서**를 새 배열로 돌려주는 함수 `elevatorRoute(current, requests)`를 완성하세요.
+
+  1. 먼저 지금 층보다 **높은** 층들을 낮은 층부터 차례로 들러요.
+  1. 그다음 지금 층보다 **낮은** 층들을 높은 층부터 차례로 들러요.
+  1. 지금 층과 같은 층은 들르지 않아요. 같은 층을 여러 번 눌렀어도 한 번만 멈춰요.
+
+  ```js
+  elevatorRoute(5, [8, 2, 6, 2, 10, 5, 3]);  // [6, 8, 10, 3, 2]
+  elevatorRoute(1, [3, 2]);                  // [2, 3]
+  ```
+
+  - 받은 `requests` 배열은 바꾸면 안 돼요. 누른 순서를 버튼 기록 화면이 그대로 쓰고 있어요.
+  - 숨겨진 테스트는 두 자리 층(10층 이상)이 섞인 경우도 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function elevatorRoute(current, requests) {
+            // requests는 그대로 두고, 멈추는 층의 순서를 새 배열로 돌려주세요.
+          }
+  entry: elevatorRoute
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function elevatorRoute(current, requests) {
+            const floors = [];
+            for (const floor of requests) {
+              if (floor !== current && !floors.includes(floor)) {
+                floors.push(floor);
+              }
+            }
+            const up = floors.filter((f) => f > current).sort((a, b) => a - b);
+            const down = floors.filter((f) => f < current).sort((a, b) => b - a);
+            return up.concat(down);
+          }
+  checks:
+    - kind: call
+      id: example
+      description: 위층 6·8·10을 오르며 들른 뒤 아래층 3·2를 내려가며 들릅니다. 지금 층 5는 빼고, 두 번 누른 2층은 한 번만 들릅니다.
+      requirement: 멈추는 순서
+      args: [5, [8, 2, 6, 2, 10, 5, 3]]
+      expect: { equals: [6, 8, 10, 3, 2] }
+    - kind: call
+      id: up-only
+      description: 위층만 눌렀으면 낮은 층부터 들릅니다.
+      requirement: 멈추는 순서
+      args: [1, [3, 2]]
+      expect: { equals: [2, 3] }
+    - kind: call
+      id: two-digit-up
+      visible: false
+      description: 두 자리 층이 섞여 있어도 숫자 크기 순으로 올라가야 합니다.
+      requirement: 숫자 크기 순서
+      args: [1, [12, 9, 3, 10]]
+      expect: { equals: [3, 9, 10, 12] }
+      misconceptionIfFail: js.mc.sort-numeric-default
+    - kind: call
+      id: two-digit-down
+      visible: false
+      description: 아래층만 눌렀으면 높은 층부터 숫자 크기 순으로 내려가야 합니다.
+      requirement: 숫자 크기 순서
+      args: [20, [3, 11, 7, 19]]
+      expect: { equals: [19, 11, 7, 3] }
+      misconceptionIfFail: js.mc.sort-numeric-default
+    - kind: call
+      id: dup-both-sides
+      visible: false
+      description: 위아래 모두 같은 층을 여러 번 눌러도 한 번씩만 멈춰야 합니다.
+      requirement: 한 번만 멈추기
+      args: [6, [9, 1, 9, 1, 7]]
+      expect: { equals: [7, 9, 1] }
+    - kind: call
+      id: only-current
+      visible: false
+      description: 지금 층만 눌렀으면 멈출 층이 없어야 합니다.
+      requirement: 한 번만 멈추기
+      args: [4, [4, 4]]
+      expect: { equals: [] }
+    - kind: call
+      id: empty
+      visible: false
+      description: 누른 층이 없으면 빈 배열이어야 합니다.
+      requirement: 멈추는 순서
+      args: [3, []]
+      expect: { equals: [] }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 requests 배열의 순서와 내용을 바꾸면 안 됩니다.
+      requirement: 버튼 기록 지키기
+      args: [5, [12, 2, 8, 2, 30]]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.sort-returns-new-array
+misconceptions: [js.mc.sort-numeric-default, js.mc.sort-returns-new-array, js.mc.sort-compare-boolean]
+hints:
+  - 문제를 작은 일로 나눠 보세요. 중복과 지금 층 빼기, 위층과 아래층 나누기, 각각 정렬하기, 두 결과 잇기.
+  - 정렬은 원래 배열을 바꿔요. `requests`를 바로 정렬하지 말고, 먼저 새로 만든 배열에서 정렬하세요. 두 자리 층이 있으니 비교 함수도 필요해요.
+  - 올라갈 때와 내려갈 때는 정렬 방향이 달라요. 비교 함수가 돌려주는 수의 부호가 순서를 정한다는 점을 떠올려 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function elevatorRoute(current, requests) {
+    const floors = [];
+    for (const floor of requests) {
+      if (floor !== current && !floors.includes(floor)) {
+        floors.push(floor);
+      }
+    }
+    const up = floors.filter((f) => f > current).sort((a, b) => a - b);
+    const down = floors.filter((f) => f < current).sort((a, b) => b - a);
+    return up.concat(down);
+  }
+  ```
+
+  - 먼저 `for...of`와 `includes`로 지금 층이 아니고 아직 담지 않은 층만 새 배열 `floors`에 모아요. 같은 층을 여러 번 눌러도 한 번만 들어가요.
+  - `filter`로 위층과 아래층을 나눠 새 배열 두 개를 만들고, 위층은 `(a, b) => a - b`(오름차순), 아래층은 `(a, b) => b - a`(내림차순)로 정렬해요. 마지막에 `concat`으로 이어요.
+  - `sort()`를 비교 함수 없이 쓰면 문자열 사전순이라 `[12, 9, 3, 10]`이 `[10, 12, 3, 9]`가 돼요. 비교 함수는 `a > b`처럼 `true`/`false`가 아니라 음수·0·양수를 돌려줘야 해요.
+  - `sort`는 원래 배열을 바꾸므로 `requests.sort(…)`를 하면 버튼 기록이 바뀌어요. 여기서는 `filter`가 만든 새 배열만 정렬해서 `requests`는 그대로예요.
+
+  중복을 나중에 빼거나, `requests.slice()`로 복사한 배열을 정렬한 뒤 나누는 풀이도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

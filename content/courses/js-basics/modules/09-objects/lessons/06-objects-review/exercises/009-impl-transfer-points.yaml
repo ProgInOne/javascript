@@ -1,0 +1,182 @@
+id: js-basics.objects.objects-review.impl-transfer-points
+type: implement_function
+difficulty: 5
+concepts:
+  - { id: js.obj.copy-shallow, weight: 1 }
+  - { id: js.obj.spread, weight: 0.5 }
+  - { id: js.obj.dot-bracket, weight: 0.5 }
+  - { id: js.obj.in-optional-chaining, weight: 0.3 }
+  - { id: js.errors.throw, weight: 0.3 }
+tags: [object, shallow-copy, nested, spread, throw, no-mutation, write-code, challenge, assessment]
+estimatedSeconds: 600
+usage: assessment
+prompt: |
+  동네 도서관의 독서 포인트 앱이에요. 회원 정보는 이름을 키로 하는 객체이고, 회원마다 포인트와 기록 배열이 있어요.
+
+  ```js
+  const wallets = {
+    가람: { points: 50, log: ["가입 +50"] },
+    나래: { points: 20, log: [] },
+  };
+  ```
+
+  포인트를 보내는 함수 `transfer(wallets, from, to, amount)`를 완성하세요. `from`이 `to`에게 `amount`포인트를 보낸 결과를 **새 회원 정보 객체**로 돌려줘요.
+
+  ```js
+  transfer(wallets, "가람", "나래", 30);
+  // {
+  //   가람: { points: 20, log: ["가입 +50", "보냄 -30"] },
+  //   나래: { points: 50, log: ["받음 +30"] },
+  // }
+  ```
+
+  - 보낸 사람의 `points`는 줄고 `log` 끝에 `"보냄 -" + amount`를, 받는 사람의 `points`는 늘고 `log` 끝에 `"받음 +" + amount`를 더해요.
+  - 거래와 관계없는 회원도 결과에 그대로 있어야 해요.
+  - **넘긴 `wallets`는 안쪽 객체와 배열까지 하나도 바뀌면 안 돼요.** 앱이 "보내기 전" 화면을 그대로 보여 줘야 하기 때문이에요.
+  - `from`이나 `to`가 회원 정보에 없으면 `"없는 회원이에요: " + 이름` 메시지로 오류를 던져요(`from`을 먼저 확인해요).
+  - 보낸 사람의 포인트가 `amount`보다 적으면 `"포인트가 부족해요"` 메시지로 오류를 던져요. 포인트를 딱 맞게 다 보내는 것은 괜찮아요.
+  - `from`과 `to`는 항상 다른 이름이고, `amount`는 1 이상의 정수예요. 숨겨진 테스트는 다른 회원과 포인트로 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function transfer(wallets, from, to, amount) {
+            // 1. 없는 회원, 포인트 부족이면 오류를 던져요.
+            // 2. 원본을 바꾸지 않고 새 회원 정보 객체를 만들어 돌려줘요.
+          }
+  entry: transfer
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function transfer(wallets, from, to, amount) {
+            if (!(from in wallets)) {
+              throw new Error("없는 회원이에요: " + from);
+            }
+            if (!(to in wallets)) {
+              throw new Error("없는 회원이에요: " + to);
+            }
+            const sender = wallets[from];
+            const receiver = wallets[to];
+            if (sender.points < amount) {
+              throw new Error("포인트가 부족해요");
+            }
+            const result = { ...wallets };
+            result[from] = {
+              ...sender,
+              points: sender.points - amount,
+              log: [...sender.log, "보냄 -" + amount],
+            };
+            result[to] = {
+              ...receiver,
+              points: receiver.points + amount,
+              log: [...receiver.log, "받음 +" + amount],
+            };
+            return result;
+          }
+  checks:
+    - kind: call
+      id: basic
+      description: 가람이 나래에게 30포인트를 보낸 결과를 돌려줘야 합니다.
+      requirement: 포인트 보내기
+      args: [{ "가람": { points: 50, log: ["가입 +50"] }, "나래": { points: 20, log: [] } }, "가람", "나래", 30]
+      expect: { equals: { "가람": { points: 20, log: ["가입 +50", "보냄 -30"] }, "나래": { points: 50, log: ["받음 +30"] } } }
+    - kind: call
+      id: unknown-sender
+      description: '보내는 사람이 없으면 "없는 회원이에요: 이름" 오류를 던져야 합니다.'
+      requirement: 잘못된 거래 막기
+      args: [{ "가람": { points: 50, log: [] } }, "다온", "가람", 10]
+      expect: { throws: { name: Error, messageIncludes: "없는 회원이에요: 다온" } }
+      misconceptionIfFail: js.mc.throw-just-logs
+    - kind: call
+      id: keep-original
+      visible: false
+      description: 넘긴 회원 정보는 안쪽 객체와 기록 배열까지 바뀌면 안 됩니다.
+      requirement: 원본 지키기
+      args: [{ "가람": { points: 50, log: ["가입 +50"] }, "나래": { points: 20, log: [] } }, "가람", "나래", 30]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.shallow-copy-is-deep
+    - kind: call
+      id: new-object
+      visible: false
+      description: 받은 회원 정보 객체를 그대로 돌려주지 말고 새 객체를 돌려줘야 합니다.
+      requirement: 원본 지키기
+      args: [{ "가람": { points: 50, log: [] }, "나래": { points: 20, log: [] } }, "나래", "가람", 5]
+      expect: { returnsNewReference: true }
+      misconceptionIfFail: js.mc.assign-copies-object
+    - kind: call
+      id: others-kept
+      visible: false
+      description: 거래와 관계없는 회원은 그대로 남고, 받는 쪽이 앞에 있어도 맞게 계산해야 합니다.
+      requirement: 포인트 보내기
+      args: [{ "다온": { points: 5, log: ["출석 +5"] }, "라희": { points: 100, log: ["가입 +100"] }, "마루": { points: 0, log: [] } }, "라희", "다온", 45]
+      expect: { equals: { "다온": { points: 50, log: ["출석 +5", "받음 +45"] }, "라희": { points: 55, log: ["가입 +100", "보냄 -45"] }, "마루": { points: 0, log: [] } } }
+    - kind: call
+      id: send-all
+      visible: false
+      description: 가진 포인트를 모두 보내는 것은 허용해야 합니다.
+      requirement: 잘못된 거래 막기
+      args: [{ "가람": { points: 12, log: [] }, "나래": { points: 0, log: [] } }, "가람", "나래", 12]
+      expect: { equals: { "가람": { points: 0, log: ["보냄 -12"] }, "나래": { points: 12, log: ["받음 +12"] } } }
+    - kind: call
+      id: not-enough
+      visible: false
+      description: 포인트가 모자라면 "포인트가 부족해요" 오류를 던져야 합니다.
+      requirement: 잘못된 거래 막기
+      args: [{ "가람": { points: 12, log: [] }, "나래": { points: 0, log: [] } }, "가람", "나래", 13]
+      expect: { throws: { name: Error, messageIncludes: "포인트가 부족해요" } }
+      misconceptionIfFail: js.mc.throw-just-logs
+    - kind: call
+      id: unknown-receiver
+      visible: false
+      description: 받는 사람이 없으면 그 이름을 담아 오류를 던져야 합니다.
+      requirement: 잘못된 거래 막기
+      args: [{ "가람": { points: 50, log: [] } }, "가람", "바다", 10]
+      expect: { throws: { name: Error, messageIncludes: "없는 회원이에요: 바다" } }
+misconceptions: [js.mc.shallow-copy-is-deep, js.mc.assign-copies-object, js.mc.dot-with-variable-key, js.mc.throw-just-logs]
+hints:
+  - 두 부분으로 나눠 보세요. 먼저 오류를 던질 경우를 모두 확인하고, 그다음 결과 객체를 만들어요.
+  - 회원 이름은 변수 `from`, `to`에 들어 있어요. 회원이 있는지 확인하고 회원 정보를 꺼낼 때 어떤 표기법을 써야 할까요? `{ ...wallets }`만으로 원본이 지켜지는지도 생각해 보세요.
+  - 바뀌는 회원은 두 명이고, 각자 `points`와 `log` 배열이 바뀌어요. 바깥 객체, 바뀌는 회원 객체, 그 회원의 `log` 배열 중 무엇을 새로 만들어야 원본이 그대로 남을까요?
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function transfer(wallets, from, to, amount) {
+    if (!(from in wallets)) {
+      throw new Error("없는 회원이에요: " + from);
+    }
+    if (!(to in wallets)) {
+      throw new Error("없는 회원이에요: " + to);
+    }
+    const sender = wallets[from];
+    const receiver = wallets[to];
+    if (sender.points < amount) {
+      throw new Error("포인트가 부족해요");
+    }
+    const result = { ...wallets };
+    result[from] = {
+      ...sender,
+      points: sender.points - amount,
+      log: [...sender.log, "보냄 -" + amount],
+    };
+    result[to] = {
+      ...receiver,
+      points: receiver.points + amount,
+      log: [...receiver.log, "받음 +" + amount],
+    };
+    return result;
+  }
+  ```
+
+  - **오류 먼저**: `from in wallets`로 회원이 있는지 확인해요. 회원 이름이 변수에 있으므로 `wallets[from]`처럼 대괄호로 읽어요. `wallets.from`은 이름이 `from`인 속성을 찾으므로 늘 `undefined`예요. `throw`는 함수를 바로 끝내므로 오류 뒤의 코드는 실행되지 않아요.
+  - **얕은 복사의 함정**: `const result = { ...wallets };`만 하고 `result[from].points -= amount;`를 하면, `result[from]`과 `wallets[from]`이 같은 회원 객체라서 원본의 포인트도 줄어요. `result[from].log.push(...)`도 원본 배열을 바꿔요.
+  - 그래서 바뀌는 회원은 `{ ...sender, points: ... }`로 새 객체를 만들고, 기록도 `[...sender.log, "보냄 -" + amount]`로 새 배열을 만들어요. 바깥 객체 → 회원 객체 → 기록 배열의 세 단계를 모두 새로 만들어야 원본이 그대로 남아요.
+  - 관계없는 회원은 `{ ...wallets }`에서 원본 객체를 그대로 함께 쓰지만, 바꾸지 않으므로 괜찮아요.
+  - `sender.points < amount`일 때만 오류라서, 포인트를 딱 맞게 다 보내면 0이 남아요. `<=`로 쓰면 이 경우를 막아 버려요.
+  - `structuredClone(wallets)`로 깊은 복사본을 만든 뒤 그 안을 바꾸는 풀이도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

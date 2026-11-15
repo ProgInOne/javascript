@@ -1,0 +1,96 @@
+id: js-basics.functions.functions-review.fix-weather-report
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.fn.hoisting, weight: 1 }
+  - { id: js.fn.callback, weight: 0.5 }
+  - { id: js.fn.arrow, weight: 0.5 }
+tags: [hoisting, callback, arrow, reference-error, debugging, assessment]
+estimatedSeconds: 300
+usage: assessment
+prompt: |
+  도시의 섭씨 기온을 화씨로 바꿔 알려 주는 날씨 프로그램이에요. `printReport`는 바꾸는 함수(`convert`)를 콜백으로 받아요. 버그가 **세 군데** 있어요. 모두 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  서울 25도 = 화씨 77도
+  부산 30도 = 화씨 86도
+  ```
+
+  - 화씨는 `섭씨 * 9 / 5 + 32`예요. 계산식과 `printReport`의 출력 문장은 맞게 쓰여 있어요.
+  - 하나를 고치면 다른 증상이 나타날 수 있어요. 실행해 보며 차례로 고치세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          printReport("서울", 25, toFahrenheit());
+          printReport("부산", 30, toFahrenheit());
+
+          function printReport(city, celsius, convert) {
+            console.log(city + " " + celsius + "도 = 화씨 " + convert(celsius) + "도");
+          }
+
+          const toFahrenheit = (c) => {
+            c * 9 / 5 + 32;
+          };
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function printReport(city, celsius, convert) {
+            console.log(city + " " + celsius + "도 = 화씨 " + convert(celsius) + "도");
+          }
+
+          const toFahrenheit = (c) => {
+            return c * 9 / 5 + 32;
+          };
+
+          printReport("서울", 25, toFahrenheit);
+          printReport("부산", 30, toFahrenheit);
+  bugDescription: "실행하면 아무것도 출력되지 않고 `ReferenceError: Cannot access 'toFahrenheit' before initialization` 오류가 나요(1번째 줄)."
+  bugMisconception: js.mc.expression-hoisted
+  checks:
+    - kind: console
+      id: output
+      description: 두 도시의 섭씨·화씨 기온이 차례로 출력되어야 합니다.
+      requirement: 두 도시 보고
+      expect:
+        lines: ["서울 25도 = 화씨 77도", "부산 30도 = 화씨 86도"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+misconceptions: [js.mc.expression-hoisted, js.mc.callback-called-when-passed, js.mc.arrow-braces-implicit-return]
+hints:
+  - 첫 오류는 1번 줄에서 나요. 1번 줄이 실행되는 순간 `toFahrenheit`는 이미 만들어져 있나요? 함수 선언과 `const` 함수는 이 점이 달랐어요.
+  - 그다음은 `printReport`에 무엇이 넘어가는지 보세요. `printReport`가 `convert(celsius)`로 부를 수 있으려면 함수 자체가 넘어가야 해요.
+  - 마지막으로 `toFahrenheit`가 정말 값을 돌려주는지 확인해 보세요. 본문에 중괄호가 있는 화살표 함수예요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function printReport(city, celsius, convert) {
+    console.log(city + " " + celsius + "도 = 화씨 " + convert(celsius) + "도");
+  }
+
+  const toFahrenheit = (c) => {
+    return c * 9 / 5 + 32;
+  };
+
+  printReport("서울", 25, toFahrenheit);
+  printReport("부산", 30, toFahrenheit);
+  ```
+
+  고친 세 군데:
+
+  1. **호출 위치**: `toFahrenheit`는 `const`에 담은 화살표 함수라서, 8번 줄이 실행되기 전에는 쓸 수 없어요. 1번 줄에서 쓰면 `ReferenceError: Cannot access 'toFahrenheit' before initialization`이에요. 호출 두 줄을 맨 아래로 옮겨요. `printReport`는 함수 선언이라 어디서 불러도 되지만, 인수로 쓰는 `toFahrenheit`가 문제예요.
+  1. **콜백의 괄호**: `toFahrenheit()`는 넘기기 전에 함수를 실행해서 결과를 넘겨요. `convert`가 함수가 아니게 되어 `TypeError: convert is not a function`이 나요. 괄호를 빼고 `toFahrenheit` 자체를 넘겨요.
+  1. **빠진 `return`**: 중괄호 본문인데 `return`이 없어서 `undefined`를 돌려줘요. 그러면 `서울 25도 = 화씨 undefined도`가 나와요. `return`을 붙이거나 `(c) => c * 9 / 5 + 32`로 중괄호를 빼요.
+
+  `toFahrenheit`를 함수 선언(`function toFahrenheit(c) { ... }`)으로 바꾸면 호출을 옮기지 않아도 1번 오류는 사라져요. 이것도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

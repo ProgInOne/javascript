@@ -1,0 +1,92 @@
+id: js-basics.objects.objects-review.impl-make-workshop
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.obj.literal, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [object, literal, nested, write-code, assessment]
+estimatedSeconds: 180
+usage: assessment
+prompt: |
+  공방의 체험 수업 정보를 객체로 만드는 함수 `makeWorkshop(title, day, capacity)`를 완성하세요. 수업 이름, 요일, 정원을 받아 아래 모양의 객체를 돌려줘요.
+
+  ```js
+  makeWorkshop("도자기 빚기", "토", 8);
+  // {
+  //   title: "도자기 빚기",
+  //   info: { day: "토", capacity: 8 },
+  //   students: [],
+  // }
+  ```
+
+  - 요일과 정원은 안쪽 객체 `info`에 담아요.
+  - `students`는 아직 신청한 사람이 없으니 빈 배열이에요.
+  - 위 세 속성 말고 다른 속성은 넣지 않아요. 숨겨진 테스트는 다른 수업 정보로 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function makeWorkshop(title, day, capacity) {
+            // 받은 값으로 수업 객체를 만들어 돌려주세요.
+          }
+  entry: makeWorkshop
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function makeWorkshop(title, day, capacity) {
+            return {
+              title: title,
+              info: { day: day, capacity: capacity },
+              students: [],
+            };
+          }
+  checks:
+    - kind: call
+      id: pottery
+      description: 도자기 수업 객체를 예시 모양대로 돌려줘야 합니다.
+      requirement: 수업 객체 모양
+      args: ["도자기 빚기", "토", 8]
+      expect: { equals: { title: "도자기 빚기", info: { day: "토", capacity: 8 }, students: [] } }
+    - kind: call
+      id: other-class
+      visible: false
+      description: 처음 보는 수업 정보도 받은 값 그대로 담아야 합니다.
+      requirement: 받은 값 쓰기
+      args: ["가죽 지갑", "수", 12]
+      expect: { equals: { title: "가죽 지갑", info: { day: "수", capacity: 12 }, students: [] } }
+    - kind: call
+      id: small-class
+      visible: false
+      description: 정원이 1명인 수업도 같은 모양이어야 합니다.
+      requirement: 받은 값 쓰기
+      args: ["향초 만들기", "일", 1]
+      expect: { equals: { title: "향초 만들기", info: { day: "일", capacity: 1 }, students: [] } }
+misconceptions: [js.mc.obj-property-semicolon]
+hints:
+  - "객체 리터럴은 `{ 키: 값 }` 모양이고, 값 자리에 다른 객체나 배열을 넣을 수도 있어요."
+  - 속성과 속성 사이는 무엇으로 나누는지, 매개변수를 값 자리에 어떻게 쓰는지 확인해 보세요.
+  - 바깥 객체에는 속성이 세 개, 안쪽 객체 `info`에는 속성이 두 개 있어야 해요. 만든 객체를 `return`으로 돌려줬는지도 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function makeWorkshop(title, day, capacity) {
+    return {
+      title: title,
+      info: { day: day, capacity: capacity },
+      students: [],
+    };
+  }
+  ```
+
+  - `title: title`에서 왼쪽은 속성 이름(키), 오른쪽은 매개변수에 든 값이에요. 키 이름을 따옴표로 감싸지 않아도 돼요.
+  - `info`의 값 자리에 객체 리터럴을 하나 더 써서 중첩 객체를 만들어요. `students`의 값은 빈 배열 `[]`이에요.
+  - 속성 사이는 쉼표로 나눠요. 세미콜론으로 나누면 문법 오류가 나요.
+  - `"도자기 빚기"` 같은 값을 직접 써 넣으면 보이는 테스트 하나만 통과하고, 다른 수업 정보로 부르는 숨겨진 테스트는 실패해요.
+  - 객체를 만들기만 하고 `return`하지 않으면 함수는 `undefined`를 돌려줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

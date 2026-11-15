@@ -1,0 +1,58 @@
+id: js-basics.functions.functions-review.predict-energy-jump
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.fn.side-effects, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+  - { id: js.scope.global, weight: 0.3 }
+tags: [side-effects, return, global, trace, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  게임 캐릭터가 점프할 때마다 힘이 3씩 줄어요. `jump`는 남은 힘을 출력하고, 그 값을 돌려줘요. 실행하면 콘솔에 무엇이 출력될까요? 여섯 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    let energy = 10;
+
+    function jump() {
+      energy -= 3;
+      console.log("점프! 남은 힘 " + energy);
+      return energy;
+    }
+
+    const first = jump();
+    console.log(first + first);
+    console.log(jump() + jump());
+    console.log("끝: " + energy);
+  answerKind: console
+  misconceptionByAnswer:
+    "점프! 남은 힘 7\n점프! 남은 힘 4\n점프! 남은 힘 1\n5\n점프! 남은 힘 -2\n점프! 남은 힘 -5\n-7\n끝: -5": js.mc.side-effect-repeats-on-reuse
+    "점프! 남은 힘 7\n14\n점프! 남은 힘 4\n점프! 남은 힘 1\n5\n끝: 10": js.mc.function-cant-change-outer
+misconceptions: [js.mc.side-effect-repeats-on-reuse, js.mc.function-cant-change-outer]
+hints:
+  - "`jump`가 실제로 호출되는 곳을 모두 찾아보세요. 변수 `first`를 읽는 것도 호출인가요?"
+  - 10번 줄의 `first + first`는 이미 담아 둔 값을 두 번 읽는 거예요. 11번 줄은 어떤가요?
+  - 11번 줄에서는 출력이 먼저 두 번 일어나고, 그다음에 두 반환값을 더한 결과가 출력돼요. 그때마다 `energy`가 얼마인지 적어 보세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  점프! 남은 힘 7
+  14
+  점프! 남은 힘 4
+  점프! 남은 힘 1
+  5
+  끝: 1
+  ```
+
+  - 9번 줄: `jump()`가 한 번 실행돼요. `energy`가 7이 되고 `점프! 남은 힘 7`이 출력되며, 반환값 7이 `first`에 담겨요.
+  - 10번 줄: `first + first`는 담아 둔 7을 두 번 읽을 뿐이에요. 함수가 다시 실행되지 않으므로 출력도, 힘이 주는 일도 없어요. `14`가 나와요.
+  - 11번 줄: `jump()`를 두 번 **호출**해요. 첫 호출에서 `energy` 4(출력, 반환 4), 둘째 호출에서 1(출력, 반환 1). 두 출력이 먼저 나오고, 그다음 `4 + 1`인 `5`가 출력돼요.
+  - 12번 줄: 함수가 바깥 변수 `energy`를 바꿨으므로 함수가 끝난 뒤에도 바뀐 값 `1`이 남아 있어요.
+
+  부수 효과(출력, 바깥 변수 바꾸기)는 함수를 **호출할 때** 일어나요. 반환값을 담은 변수를 다시 써도 함수는 다시 실행되지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

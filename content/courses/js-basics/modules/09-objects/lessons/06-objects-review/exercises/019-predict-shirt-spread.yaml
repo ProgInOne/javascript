@@ -1,0 +1,50 @@
+id: js-basics.objects.objects-review.predict-shirt-spread
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.obj.spread, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.3 }
+tags: [object, spread, order, trace, assessment]
+estimatedSeconds: 130
+usage: assessment
+prompt: |
+  옷 가게 앱에서 기본 옵션과 손님이 고른 옵션을 합치는 코드예요. 실행하면 콘솔에 무엇이 출력될까요? 두 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const base = { size: "M", color: "검정", qty: 1 };
+    const pick = { color: "빨강", qty: 2 };
+
+    const a = { ...base, ...pick };
+    const b = { ...pick, ...base };
+    const c = { ...base, qty: base.qty + 5, size: "L" };
+
+    console.log(a.color, a.qty, b.color, b.qty);
+    console.log(c.qty, c.size, base.qty, base.size);
+  answerKind: console
+  misconceptionByAnswer:
+    "빨강 2 빨강 2\n6 L 1 M": js.mc.spread-order-irrelevant
+    "빨강 2 검정 1\n6 L 6 L": js.mc.spread-mutates-original
+misconceptions: [js.mc.spread-order-irrelevant, js.mc.spread-mutates-original]
+hints:
+  - 전개 구문은 왼쪽부터 차례로 속성을 담아요. 같은 키가 다시 나오면 앞의 값은 어떻게 되나요?
+  - "`a`와 `b`는 같은 두 객체를 펼치지만 순서가 달라요. `color`와 `qty`에 마지막으로 담기는 값은 각각 무엇인가요?"
+  - "`c`를 만들 때 `base.qty + 5`는 `base`를 바꾸나요? `c`를 만든 뒤 `base`의 속성이 그대로인지 확인해 보세요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  빨강 2 검정 1
+  6 L 1 M
+  ```
+
+  - `a = { ...base, ...pick }`: `base`의 `size`, `color`, `qty`를 담은 뒤 `pick`이 `color`와 `qty`를 덮어써요. `a.color`는 `빨강`, `a.qty`는 2예요.
+  - `b = { ...pick, ...base }`: 이번에는 `base`가 나중이라 `pick`의 값을 덮어써요. `b.color`는 `검정`, `b.qty`는 1이에요. 같은 키는 **나중에 담은 값이 이겨요**.
+  - `c`: `base`를 펼친 다음 `qty`를 1 + 5 = 6으로, `size`를 `L`로 덮어쓴 새 객체예요.
+  - 전개 구문은 새 객체를 만들 뿐 원본을 바꾸지 않아요. `base.qty`는 1, `base.size`는 `M` 그대로예요.
+
+  `b`도 `빨강 2`라고 생각했다면 펼치는 순서가 상관없다고 본 거예요. 마지막 두 값을 `6 L`이라고 생각했다면 전개 구문이 원본을 바꾼다고 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

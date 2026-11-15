@@ -1,0 +1,74 @@
+id: js-basics.objects.objects-review.parsons-map-size
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.errors.try-catch, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.3 }
+tags: [try-catch, error-object, parsons, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  게임 저장 파일에서 맵 크기를 읽는 함수 `readSize(save)`를 만들어요. 저장 파일이 망가져 `map` 정보가 없으면 읽다가 오류가 나는데, 이 오류를 함수 안에서 잡아 **오류의 종류**를 담은 문장을 돌려줘요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  맵 크기 20
+  읽기 실패: TypeError
+  ```
+spec:
+  lines:
+    - { id: l1, code: "function readSize(save) {" }
+    - { id: l2, code: "try {", indent: 1 }
+    - { id: l3, code: "const size = save.map.width * save.map.height;", indent: 2 }
+    - { id: l4, code: 'return "맵 크기 " + size;', indent: 2 }
+    - { id: l5, code: "} catch (err) {", indent: 1 }
+    - { id: l6, code: 'return "읽기 실패: " + err.name;', indent: 2 }
+    - { id: l7, code: "}", indent: 1 }
+    - { id: l8, code: "}" }
+    - { id: l9, code: "console.log(readSize({ map: { width: 4, height: 5 } }));" }
+    - { id: l10, code: "console.log(readSize({}));" }
+  distractors:
+    - { id: d1, code: 'return "읽기 실패: " + err;', replaces: l6 }
+    - { id: d2, code: 'console.log("읽기 실패: " + err.name);', replaces: l6, misconception: js.mc.caught-error-stops-program }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 맵 크기와 오류 종류를 담은 두 줄이 차례로 출력되어야 합니다.
+      requirement: 오류를 잡아 종류 알리기
+      expect:
+        lines: ["맵 크기 20", "읽기 실패: TypeError"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 잡히지 않은 오류 없이 끝나야 합니다.
+      requirement: 오류를 잡아 종류 알리기
+      expect:
+        noError: true
+misconceptions: [js.mc.caught-error-stops-program]
+hints:
+  - 함수 틀(`function ... {`와 마지막 `}`) 안에 `try { ... } catch (err) { ... }`를 넣고, 함수 밖에서 두 번 불러요.
+  - 맵 정보가 없는 저장 파일에서는 어느 줄에서 오류가 나나요? 그 줄과 성공했을 때 돌려줄 줄은 어느 블록에 있어야 할까요?
+  - "출력은 함수 밖의 `console.log`가 해요. `catch`에서는 무엇을 해야 바깥의 `console.log`가 `읽기 실패: TypeError`를 출력할까요? 오류 객체에서 종류만 담은 속성도 떠올려 보세요."
+explanation: |
+  정답 순서예요.
+
+  ```js
+  function readSize(save) {
+    try {
+      const size = save.map.width * save.map.height;
+      return "맵 크기 " + size;
+    } catch (err) {
+      return "읽기 실패: " + err.name;
+    }
+  }
+  console.log(readSize({ map: { width: 4, height: 5 } }));
+  console.log(readSize({}));
+  ```
+
+  - 첫 호출은 `4 * 5 = 20`을 계산하고 `try` 안의 `return`으로 `맵 크기 20`을 돌려줘요. 오류가 없으니 `catch`는 실행되지 않아요.
+  - 두 번째 호출은 `save.map`이 `undefined`라서 `.width`를 읽다가 `TypeError`가 나요. 남은 `try` 줄을 건너뛰고 `catch`로 가서 `err.name`인 `TypeError`를 담은 문장을 돌려줘요. 오류를 잡았으므로 프로그램은 멈추지 않아요.
+  - `"읽기 실패: " + err`는 오류 객체를 문자열로 바꿔 `읽기 실패: TypeError: Cannot read properties of undefined (reading 'width')`처럼 종류와 설명을 모두 붙여요. 종류만 필요하면 `err.name`을 써요.
+  - `catch`에서 `console.log`만 하고 돌려주지 않으면 함수는 `undefined`를 돌려주고, 바깥의 `console.log`가 `undefined`를 한 줄 더 출력해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

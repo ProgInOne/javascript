@@ -1,0 +1,42 @@
+id: js-basics.functions.functions-review.mcq-expression-half
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.expression, weight: 1 }
+tags: [function-expression, assessment]
+estimatedSeconds: 60
+usage: assessment
+prompt: |
+  피자 한 판을 반으로 나누는 함수 `half`를 **함수 표현식**으로 만들려고 해요. 아래 줄을 실행한 뒤 `console.log(half(10));`이 `5`를 출력하게 하는 코드는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`const half = function (n) { return n / 2; };`"
+    - id: b
+      text: "`const half = function (n) { return n / 2; }(10);`"
+      misconception: js.mc.fn-expression-stores-result
+      rationale: "끝의 `(10)` 때문에 함수가 그 자리에서 실행되고 결과인 숫자 5가 담겨요. `half(10)`은 숫자를 부르려는 것이라 `TypeError: half is not a function`이 나요."
+    - id: c
+      text: "`const half(n) = function { return n / 2; };`"
+      rationale: 매개변수는 변수 이름이 아니라 `function` 뒤의 괄호에 써요. 이 줄은 문법 오류예요.
+    - id: d
+      text: "`const half = function (n) { console.log(n / 2); };`"
+      misconception: js.mc.return-is-log
+      rationale: 함수 안에서 5를 출력하지만 돌려주지는 않아요. `console.log(half(10))`은 `5` 다음 줄에 `undefined`도 출력해요.
+  correct: a
+misconceptions: [js.mc.fn-expression-stores-result, js.mc.return-is-log]
+hints:
+  - 함수 표현식은 `const 이름 = function (매개변수) { 본문 };` 모양이에요.
+  - 변수에 담기는 것이 "함수 자체"인지 "함수를 실행한 결과"인지 선택지마다 따져 보세요.
+  - "`console.log(half(10))`이 정확히 `5` 한 줄만 출력하려면 `half(10)`의 반환값이 5여야 해요. 함수 안에서 출력만 하면 어떻게 될까요?"
+explanation: |
+  정답은 `const half = function (n) { return n / 2; };`예요.
+
+  - 함수 표현식은 함수를 값으로 만들어 변수 `half`에 담아요. 담기만 하고 실행하지 않아요. `half(10)`으로 부를 때 `n`에 10이 들어가 5를 돌려줘요.
+  - 끝에 `(10)`을 붙인 코드는 함수를 만들자마자 실행해요. `half`에는 함수가 아니라 결과인 숫자 `5`가 담기고, `half(10)`은 `TypeError: half is not a function`이에요.
+  - `const half(n) = ...`는 매개변수를 변수 이름 쪽에 써서 문법 오류(`SyntaxError`)예요. 매개변수는 `function` 뒤의 괄호에 써요.
+  - 본문에서 `console.log`만 하는 함수는 값을 돌려주지 않아요. 함수 안에서 `5`가 출력되고, 바깥의 `console.log(half(10))`은 반환값 `undefined`를 한 줄 더 출력해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

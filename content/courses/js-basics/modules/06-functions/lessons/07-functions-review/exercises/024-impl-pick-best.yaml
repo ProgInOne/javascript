@@ -1,0 +1,135 @@
+id: js-basics.functions.functions-review.impl-pick-best
+type: implement_function
+difficulty: 5
+concepts:
+  - { id: js.fn.rest-params, weight: 1 }
+  - { id: js.fn.callback, weight: 0.5 }
+  - { id: js.fn.undefined-return, weight: 0.3 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [rest-params, callback, undefined, boundary, write-code, challenge, assessment]
+estimatedSeconds: 540
+usage: assessment
+prompt: |
+  소풍 날짜를 고르는 앱이에요. 후보 날짜(숫자)를 몇 개든 받아, 점수 함수가 **가장 높은 점수**를 준 후보를 돌려주는 함수 `pickBest(score, ...candidates)`를 완성하세요.
+
+  - `score`는 후보 하나를 받아 점수(숫자)를 돌려주는 콜백이에요. 어떤 점수를 줄지는 `score`가 정해요.
+  - 점수가 가장 높은 후보가 여럿이면 **앞쪽**(먼저 넘긴) 후보를 돌려줘요.
+  - 후보가 하나도 없으면 `undefined`를 돌려줘요.
+
+  ```js
+  pickBest((day) => day % 10, 23, 17, 15);  // 17 (점수 3, 7, 5)
+  pickBest((day) => 31 - day, 12, 4, 9);    // 4  (점수 19, 27, 22)
+  ```
+
+  - 숨겨진 테스트는 처음 보는 점수 함수로 확인해요. 점수가 모두 음수이거나 0인 경우도 있어요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function pickBest(score, ...candidates) {
+            // 여기에 작성하세요
+          }
+  entry: pickBest
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function pickBest(score, ...candidates) {
+            if (candidates.length === 0) {
+              return undefined;
+            }
+            let best = candidates[0];
+            let bestScore = score(best);
+            for (let i = 1; i < candidates.length; i++) {
+              const s = score(candidates[i]);
+              if (s > bestScore) {
+                best = candidates[i];
+                bestScore = s;
+              }
+            }
+            return best;
+          }
+  checks:
+    - kind: call
+      id: last-digit
+      description: 일의 자리가 점수이면 17을 돌려줘야 합니다.
+      requirement: 가장 높은 점수의 후보
+      argsExpr: "[(day) => day % 10, 23, 17, 15]"
+      expect: { equals: 17 }
+    - kind: call
+      id: closer-start
+      description: 31에서 뺀 값이 점수이면 4를 돌려줘야 합니다.
+      requirement: 가장 높은 점수의 후보
+      argsExpr: "[(day) => 31 - day, 12, 4, 9]"
+      expect: { equals: 4 }
+    - kind: call
+      id: all-negative
+      visible: false
+      description: 점수가 모두 음수여도 그중 가장 높은 후보를 돌려줘야 합니다.
+      requirement: 음수·0 점수
+      argsExpr: "[(day) => -day, 8, 3, 5]"
+      expect: { equals: 3 }
+    - kind: call
+      id: single-zero
+      visible: false
+      description: 후보가 하나뿐이고 점수가 0이어도 그 후보를 돌려줘야 합니다.
+      requirement: 음수·0 점수
+      argsExpr: "[(day) => day * 0, 21]"
+      expect: { equals: 21 }
+    - kind: call
+      id: tie-first
+      visible: false
+      description: 가장 높은 점수가 여럿이면 앞쪽 후보를 돌려줘야 합니다.
+      requirement: 같은 점수는 앞쪽
+      argsExpr: "[(day) => day % 2, 4, 7, 9]"
+      expect: { equals: 7 }
+    - kind: call
+      id: middle-peak
+      visible: false
+      description: 처음 보는 점수 함수(가운데가 높음)로도 가장 높은 후보를 골라야 합니다.
+      requirement: 가장 높은 점수의 후보
+      argsExpr: "[(day) => day * (20 - day), 3, 11, 16, 9]"
+      expect: { equals: 11 }
+    - kind: call
+      id: no-candidates
+      visible: false
+      description: 후보가 없으면 undefined를 돌려줘야 합니다.
+      requirement: 후보 없음
+      argsExpr: "[(day) => day]"
+      expect: { strictEqualsLiteral: "undefined" }
+misconceptions: [js.mc.rest-includes-named, js.mc.callback-called-when-passed]
+hints:
+  - "`candidates`는 `score` 다음부터 넘긴 후보들만 모은 묶음이에요. 위치 번호와 `length`로 하나씩 꺼낼 수 있어요."
+  - 지금까지 가장 좋은 후보와 그 점수를 변수 두 개에 기억해 두세요. 시작값을 아무 숫자(예를 들어 0)로 정하면 어떤 테스트에서 문제가 생길지 생각해 보세요.
+  - 같은 점수일 때 앞쪽 후보를 지키려면 비교를 `>`와 `>=` 중 무엇으로 해야 할까요? 후보가 없을 때 반복 전에 할 일도 있어요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function pickBest(score, ...candidates) {
+    if (candidates.length === 0) {
+      return undefined;
+    }
+    let best = candidates[0];
+    let bestScore = score(best);
+    for (let i = 1; i < candidates.length; i++) {
+      const s = score(candidates[i]);
+      if (s > bestScore) {
+        best = candidates[i];
+        bestScore = s;
+      }
+    }
+    return best;
+  }
+  ```
+
+  - 나머지 매개변수 `...candidates`는 첫 인수(`score`)를 뺀 **남은** 인수만 모아요. 콜백이 후보 묶음에 섞이지 않아요.
+  - 기준값은 첫 후보와 그 점수로 시작해요. `bestScore = 0`으로 시작하면 점수가 모두 음수일 때(`-day`) 어떤 후보도 0보다 크지 않아 `undefined`를 돌려주고, 점수가 0인 후보 하나만 있을 때도 고르지 못해요.
+  - `s > bestScore`일 때만 바꿔야 같은 점수에서 앞쪽 후보가 남아요. `>=`로 쓰면 뒤쪽 후보로 바뀌어 `tie-first` 테스트(7 대신 9)에서 틀려요.
+  - 후보가 없으면 `candidates.length`가 0이에요. 먼저 `undefined`를 돌려줘요. 이 검사 없이 `candidates[0]`으로 시작해도 반복이 돌지 않아 `undefined`가 반환되지만, 점수 함수를 `undefined`로 한 번 부르게 돼요.
+  - 점수를 정하는 규칙은 `pickBest` 안에 쓰지 않고 `score(후보)`로 콜백을 불러 받아요. 그래서 처음 보는 점수 함수로도 동작해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,54 @@
+id: js-basics.arrays.arrays-review.find-bug-water-plants
+type: find_bug_line
+difficulty: 2
+concepts:
+  - { id: js.arr.length, weight: 1 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [length, off-by-one, for, debugging, assessment]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  베란다 화분마다 물 주기 알림을 출력하는 프로그램이에요. 화분은 세 개인데 알림이 네 줄 나오고, 마지막 줄이 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const plants = ["장미", "선인장", "고사리"];
+    console.log("물 주기 알림 시작");
+    for (let i = 0; i <= plants.length; i++) {
+      console.log(plants[i] + "에 물 주기");
+    }
+  bugLines: [3]
+  symptom: "`고사리에 물 주기` 다음에 `undefined에 물 주기`라는 줄이 하나 더 나와요."
+  symptomCheck:
+    console: ["물 주기 알림 시작", "장미에 물 주기", "선인장에 물 주기", "고사리에 물 주기", "undefined에 물 주기"]
+  fixedCode: |-
+    const plants = ["장미", "선인장", "고사리"];
+    console.log("물 주기 알림 시작");
+    for (let i = 0; i < plants.length; i++) {
+      console.log(plants[i] + "에 물 주기");
+    }
+  causeOptions:
+    - id: c1
+      text: 마지막 인덱스는 length - 1인데 i가 length(3)까지 돌아서, 없는 칸 plants[3]을 읽는다
+      correct: true
+    - id: c2
+      text: 마지막 인덱스가 length이므로 i를 1부터 시작해야 하는데 0부터 시작했다
+      misconception: js.mc.array-last-index-is-length
+    - id: c3
+      text: plants.length는 배열을 만들 때의 크기라서, 반복 중에 1씩 늘어난다
+misconceptions: [js.mc.array-last-index-is-length]
+hints:
+  - 화분 세 개의 인덱스를 모두 적어 보세요. 가장 큰 인덱스는 몇인가요?
+  - 반복 조건이 참인 동안 `i`는 어떤 값들을 거치나요? 마지막 회차의 `i`는 몇인가요?
+  - 마지막 회차에 읽는 칸이 배열에 실제로 있는 칸인지 확인해 보세요. 범위 밖 인덱스를 읽으면 어떤 값이 나오는지 떠올려 보세요.
+explanation: |
+  원인은 **3번 줄**의 반복 조건 `i <= plants.length`예요.
+
+  - `plants.length`는 3이고, 인덱스는 0, 1, 2예요. 마지막 인덱스는 `length - 1`인 2예요.
+  - `<=`로 쓰면 `i`가 0, 1, 2, 3을 거쳐요. `i`가 3일 때 `plants[3]`은 없는 칸이라 오류 없이 `undefined`가 나오고, `undefined + "에 물 주기"`가 출력돼요.
+  - `i < plants.length`로 고치면 0, 1, 2까지만 돌아요.
+
+  "마지막 인덱스가 length라서 1부터 시작해야 한다"는 이유는 틀렸어요. 1부터 시작하면 `장미`가 빠지고 `undefined` 줄은 그대로 남아요. `length`는 반복 중에 저절로 바뀌지 않아요. 요소를 넣거나 빼야 바뀌어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

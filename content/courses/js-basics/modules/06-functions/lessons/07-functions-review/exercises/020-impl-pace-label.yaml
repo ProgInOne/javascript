@@ -1,0 +1,143 @@
+id: js-basics.functions.functions-review.impl-pace-label
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.fn.return, weight: 1 }
+  - { id: js.control.else-if, weight: 0.5 }
+  - { id: js.ops.logical-and-or-not, weight: 0.3 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [return, early-return, else-if, write-code, assessment]
+estimatedSeconds: 360
+usage: assessment
+prompt: |
+  운동 기록 앱에서 이동 거리(km)와 걸린 시간(분)으로 이동 방법을 짐작해 돌려주는 함수 `paceLabel(distance, minutes)`를 완성하세요.
+
+  1. `distance`나 `minutes`가 0 이하이면 계산하지 않고 `"기록 없음"`을 돌려줘요.
+  1. 그 밖에는 시속(km/h)을 `distance / minutes * 60`으로 구해요.
+  1. 시속이 20 이상이면 `"자전거"`, 8 이상이면 `"달리기"`, 그보다 느리면 `"걷기"`를 돌려줘요.
+
+  ```js
+  paceLabel(10, 30);  // "자전거" (시속 20)
+  paceLabel(5, 30);   // "달리기" (시속 10)
+  paceLabel(3, 60);   // "걷기" (시속 3)
+  ```
+
+  - 출력이 아니라 **반환**해야 해요. 숨겨진 테스트는 다른 기록과 경계값으로도 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function paceLabel(distance, minutes) {
+            // 여기에 작성하세요
+          }
+  entry: paceLabel
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function paceLabel(distance, minutes) {
+            if (distance <= 0 || minutes <= 0) {
+              return "기록 없음";
+            }
+            const speed = distance / minutes * 60;
+            if (speed >= 20) {
+              return "자전거";
+            } else if (speed >= 8) {
+              return "달리기";
+            }
+            return "걷기";
+          }
+  checks:
+    - kind: call
+      id: bike
+      description: 10km를 30분에 가면(시속 20) "자전거"입니다.
+      requirement: 시속에 따른 이동 방법
+      args: [10, 30]
+      expect: { equals: "자전거" }
+    - kind: call
+      id: run
+      description: 5km를 30분에 가면(시속 10) "달리기"입니다.
+      requirement: 시속에 따른 이동 방법
+      args: [5, 30]
+      expect: { equals: "달리기" }
+    - kind: call
+      id: walk
+      description: 3km를 60분에 가면(시속 3) "걷기"입니다.
+      requirement: 시속에 따른 이동 방법
+      args: [3, 60]
+      expect: { equals: "걷기" }
+    - kind: call
+      id: zero-distance
+      visible: false
+      description: 거리가 0이면 "기록 없음"이어야 합니다.
+      requirement: 기록 없음 처리
+      args: [0, 25]
+      expect: { equals: "기록 없음" }
+    - kind: call
+      id: zero-minutes
+      visible: false
+      description: 시간이 0분이면 나누기 전에 "기록 없음"을 돌려줘야 합니다.
+      requirement: 기록 없음 처리
+      args: [4, 0]
+      expect: { equals: "기록 없음" }
+    - kind: call
+      id: negative-minutes
+      visible: false
+      description: 시간이 음수여도 "기록 없음"이어야 합니다.
+      requirement: 기록 없음 처리
+      args: [6, -30]
+      expect: { equals: "기록 없음" }
+    - kind: call
+      id: edge-run
+      visible: false
+      description: 시속이 정확히 8이면 "달리기"여야 합니다.
+      requirement: 경계값
+      args: [2, 15]
+      expect: { equals: "달리기" }
+    - kind: call
+      id: edge-bike
+      visible: false
+      description: 시속이 정확히 20이면(다른 거리·시간) "자전거"여야 합니다.
+      requirement: 경계값
+      args: [5, 15]
+      expect: { equals: "자전거" }
+    - kind: call
+      id: slow-long
+      visible: false
+      description: 긴 시간 천천히 이동한 기록은 "걷기"여야 합니다.
+      requirement: 시속에 따른 이동 방법
+      args: [7, 120]
+      expect: { equals: "걷기" }
+misconceptions: [js.mc.return-is-log, js.mc.return-in-if-covers-all, js.mc.code-after-return-runs]
+hints:
+  - 먼저 계산할 수 없는 경우를 걸러 내세요. 걸러 낸 뒤에는 나머지 코드가 실행되면 안 돼요.
+  - "`return`을 만나면 함수가 바로 끝나요. 이 성질을 쓰면 \"기록 없음\" 뒤에 `else`를 길게 쓰지 않아도 돼요."
+  - 시속을 변수에 담은 뒤 빠른 기준부터 차례로 비교하세요. 어느 조건에도 맞지 않을 때도 무언가를 돌려주는지 확인하세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function paceLabel(distance, minutes) {
+    if (distance <= 0 || minutes <= 0) {
+      return "기록 없음";
+    }
+    const speed = distance / minutes * 60;
+    if (speed >= 20) {
+      return "자전거";
+    } else if (speed >= 8) {
+      return "달리기";
+    }
+    return "걷기";
+  }
+  ```
+
+  - 첫 `if`가 0 이하인 값을 먼저 걸러 내요. `return`을 만나면 함수가 바로 끝나므로 아래의 나누기는 실행되지 않아요. 이 검사가 없으면 `paceLabel(4, 0)`은 `4 / 0 * 60`이 `Infinity`가 되어 `"자전거"`를 돌려줘요.
+  - 둘 중 하나만 0 이하여도 기록 없음이므로 `||`로 묶어요. `&&`로 묶으면 둘 다 0 이하일 때만 걸러져요.
+  - 빠른 기준(20)부터 비교해야 해요. `speed >= 8`을 먼저 쓰면 시속 20도 `"달리기"`가 돼요. 경계값(정확히 8, 정확히 20)은 `>=`로 포함해요.
+  - 마지막 `return "걷기";`가 없으면 느린 기록에서 어느 `return`도 만나지 못해 `undefined`가 돼요. 모든 갈래에서 값을 돌려줘야 해요.
+  - `console.log("자전거")`처럼 출력만 하면 반환값은 `undefined`라서 테스트를 통과하지 못해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

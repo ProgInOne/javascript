@@ -1,0 +1,51 @@
+id: js-basics.arrays.arrays-review.mcq-reduce-no-initial
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: js.arr.reduce, weight: 1 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [reduce, initial-value, plus-concat, trace, assessment]
+estimatedSeconds: 120
+usage: assessment
+prompt: |
+  단어 목록의 전체 글자 수를 구하려고 했어요. 다음 코드를 실행하면 콘솔에 무엇이 출력되나요?
+code: |
+  const words = ["ab", "cde", "f"];
+  const total = words.reduce((sum, w) => sum + w.length);
+  console.log(total);
+spec:
+  options:
+    - id: a
+      text: "`ab31`"
+    - id: b
+      text: "`6`"
+      misconception: js.mc.reduce-initial-optional-safe
+      rationale: 초기값이 없으면 첫 요소 "ab"(문자열)가 처음 누적값이 되어 덧셈이 문자열 이어 붙이기가 돼요.
+    - id: c
+      text: "`4`"
+      rationale: 첫 요소가 건너뛰어지는 것이 아니라 첫 누적값 자리에 그대로 들어가요. 숫자 2가 아니라 문자열 "ab"예요.
+    - id: d
+      text: "`TypeError` 오류가 난다"
+      rationale: 초기값을 빼도 배열이 비어 있지 않으면 오류는 나지 않아요. 첫 요소가 누적값이 될 뿐이에요.
+  correct: a
+misconceptions: [js.mc.reduce-initial-optional-safe]
+hints:
+  - "`reduce`에 두 번째 인수(초기값)가 있나요? 없으면 첫 회차의 `sum`에는 무엇이 들어가나요?"
+  - 첫 회차의 `sum`과 `w`를 적어 보세요. 콜백은 몇 번 불리나요?
+  - 문자열에 숫자를 `+`로 더하면 어떤 일이 생기는지 모듈 3에서 배운 규칙을 떠올려 보세요.
+explanation: |
+  정답은 `ab31`이에요.
+
+  초기값이 없으면 `reduce`는 **첫 요소를 처음 누적값**으로 쓰고, 두 번째 요소부터 콜백을 불러요.
+
+  1. 처음 `sum`은 `"ab"`(문자열)이에요. 첫 요소의 길이가 아니라 요소 자체예요.
+  1. `w`가 `"cde"`: `"ab" + 3` → `"ab3"`
+  1. `w`가 `"f"`: `"ab3" + 1` → `"ab31"`
+
+  - `6`을 얻으려면 초기값 `0`을 넣어 `words.reduce((sum, w) => sum + w.length, 0)`으로 써야 해요. 초기값을 생략해도 결과가 늘 같다고 생각하면 이런 버그가 생겨요. 누적값과 요소의 종류가 다를 때(여기서는 수와 문자열)는 초기값이 꼭 필요해요.
+  - `4`는 첫 요소를 아예 건너뛴다고 본 계산(3 + 1)이에요. 첫 요소는 건너뛰지 않고 누적값 자리에 들어가요.
+  - 오류는 나지 않아요. 초기값 없이 **빈 배열**에 `reduce`를 쓸 때 `TypeError`가 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,58 @@
+id: js-basics.objects.objects-review.predict-camp-copy
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.obj.copy-shallow, weight: 1 }
+  - { id: js.obj.equality, weight: 0.3 }
+  - { id: js.obj.spread, weight: 0.3 }
+tags: [object, shallow-copy, nested, spread, trace, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  여름 캠프 계획을 복사해 다음 캠프 계획을 만드는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 두 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const camp = {
+      title: "여름 캠프",
+      days: 3,
+      staff: { lead: "도윤" },
+      tags: ["수영"],
+    };
+    const next = { ...camp };
+
+    next.days = 4;
+    next.staff.lead = "서아";
+    next.tags = ["등산"];
+
+    console.log(camp.days, camp.staff.lead, camp.tags[0]);
+    console.log(next.staff === camp.staff, next.tags === camp.tags);
+  answerKind: console
+  misconceptionByAnswer:
+    "3 도윤 수영\nfalse false": js.mc.shallow-copy-is-deep
+    "4 서아 등산\ntrue true": js.mc.assign-copies-object
+misconceptions: [js.mc.shallow-copy-is-deep, js.mc.assign-copies-object]
+hints:
+  - "`{ ...camp }`는 바깥 객체를 새로 만들어요. 안쪽의 `staff` 객체와 `tags` 배열도 새로 만들까요?"
+  - 9~11번 줄이 각각 "next의 속성에 새 값을 대입"하는지, "next와 camp가 함께 쓰는 안쪽 객체를 고치는지" 구별해 보세요.
+  - 11번 줄은 `next.tags`가 가리키는 대상을 새 배열로 바꿔요. 그 뒤 `next.tags`와 `camp.tags`는 같은 배열인가요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  3 서아 수영
+  true false
+  ```
+
+  `{ ...camp }`는 **얕은 복사**예요. 바깥 객체는 새로 만들지만, 속성 값인 `staff` 객체와 `tags` 배열은 원본과 같은 것을 가리켜요.
+
+  - 9번 줄 `next.days = 4`: `next`의 속성에 새 값을 넣어요. `camp.days`는 3 그대로예요.
+  - 10번 줄 `next.staff.lead = "서아"`: `next.staff`와 `camp.staff`는 같은 객체라서 `camp.staff.lead`도 `서아`가 돼요.
+  - 11번 줄 `next.tags = ["등산"]`: 함께 쓰던 배열을 고친 게 아니라, `next.tags`가 **새 배열**을 가리키게 했어요. `camp.tags`는 원래 배열 `["수영"]`을 그대로 가리켜요.
+  - 마지막 줄: `staff`는 여전히 같은 객체라서 `true`, `tags`는 11번 줄 뒤로 다른 배열이라서 `false`예요.
+
+  `3 도윤 수영`이라고 생각했다면 얕은 복사가 안쪽 객체까지 복사한다고 본 거예요. 안쪽까지 따로 두려면 `{ ...camp, staff: { ...camp.staff } }`처럼 안쪽도 펼쳐요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

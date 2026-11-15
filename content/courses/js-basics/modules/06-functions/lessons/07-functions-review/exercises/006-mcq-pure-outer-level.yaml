@@ -1,0 +1,58 @@
+id: js-basics.functions.functions-review.mcq-pure-outer-level
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.fn.pure, weight: 1 }
+  - { id: js.scope.global, weight: 0.3 }
+tags: [pure-function, global, assessment]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  게임에서 공격력을 계산하는 코드예요. 실행한 뒤의 `a`, `b` 값과 `power` 함수에 대한 설명으로 맞는 것은 무엇인가요?
+code: |
+  let level = 2;
+
+  function power(base) {
+    return base * level;
+  }
+
+  const a = power(5);
+  level = 3;
+  const b = power(5);
+spec:
+  options:
+    - id: a
+      text: "`a`는 10, `b`는 15예요. `power`는 바깥 변수 `level`에 따라 결과가 달라지므로 순수 함수가 아니에요."
+    - id: b
+      text: "`a`와 `b`는 모두 10이에요. 같은 인수 5를 넘겼으니 결과도 같아요."
+      misconception: js.mc.same-args-same-result-always
+      rationale: power는 부를 때마다 그 순간의 level을 읽어요. 두 번째 호출 때 level은 3이라 15예요.
+    - id: c
+      text: "`a`는 10, `b`는 15예요. `power`는 바깥 변수를 바꾸지 않으므로 순수 함수예요."
+      rationale: 바깥 값을 바꾸지 않아도, 바깥 값을 읽어서 같은 인수에 다른 결과가 나오면 순수 함수가 아니에요.
+    - id: d
+      text: "`a`는 10이고, 8번 줄에서 오류가 나요. 함수가 읽고 있는 변수는 바꿀 수 없어요."
+      rationale: level은 let으로 만든 변수라 다시 대입할 수 있어요. 함수가 읽는다고 잠기지 않아요.
+  correct: a
+misconceptions: [js.mc.same-args-same-result-always]
+hints:
+  - "`power`는 `level`을 언제 읽나요? 함수를 만들 때인가요, 부를 때인가요?"
+  - 두 번째 호출이 일어나는 순간 `level`에는 얼마가 들어 있나요?
+  - 순수 함수는 "부수 효과가 없다"는 조건 말고 조건이 하나 더 있었어요. 같은 인수 5로 불렀을 때의 두 결과를 비교해 보세요.
+explanation: |
+  정답은 "`a`는 10, `b`는 15이고, `power`는 순수 함수가 아니다"예요.
+
+  - `power`는 호출될 때마다 그 순간의 바깥 변수 `level`을 읽어요. 첫 호출 때 `level`은 2라서 `5 * 2 = 10`, 8번 줄에서 3으로 바뀐 뒤의 호출은 `5 * 3 = 15`예요.
+  - 순수 함수는 **같은 인수에 항상 같은 값을 돌려주고**, 부수 효과가 없는 함수예요. `power`는 바깥 값을 바꾸지는 않지만, 같은 인수 5에 10과 15라는 다른 결과를 내므로 순수 함수가 아니에요.
+
+  오답 풀이:
+
+  - "둘 다 10": 인수가 같아도 함수가 바깥 값을 읽으면 결과가 달라질 수 있어요. "같은 인수면 같은 결과"는 순수 함수에서만 보장돼요.
+  - "바깥 변수를 바꾸지 않으니 순수 함수": 두 조건 중 하나만 본 거예요.
+  - "8번 줄에서 오류": `let` 변수는 함수가 읽고 있어도 다시 대입할 수 있어요.
+
+  순수 함수로 바꾸려면 `level`도 매개변수로 받아요: `function power(base, level) { return base * level; }`
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

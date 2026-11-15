@@ -1,0 +1,54 @@
+id: js-basics.objects.objects-review.predict-club-votes
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.obj.keys-values-entries, weight: 1 }
+  - { id: js.arr.literal-index, weight: 0.3 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [object, keys, values, entries, trace, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  동아리 활동 투표 결과를 정리하는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 네 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const votes = { 보드게임: 4, 영화: 7, 등산: 2 };
+
+    console.log(Object.keys(votes).length);
+    console.log(Object.values(votes)[1]);
+
+    let picked = "";
+    for (const entry of Object.entries(votes)) {
+      if (entry[1] > 3) {
+        picked += entry[0] + " ";
+      }
+    }
+    console.log(picked.trim());
+    console.log(votes.length);
+  answerKind: console
+  misconceptionByAnswer:
+    "3\n7\n보드게임 영화\n3": js.mc.object-has-length
+misconceptions: [js.mc.object-has-length]
+hints:
+  - "`Object.keys`, `Object.values`, `Object.entries`가 각각 어떤 배열을 돌려주는지 이 객체로 직접 써 보세요."
+  - "`Object.entries(votes)`의 요소 하나는 `[키, 값]` 모양의 배열이에요. `entry[0]`과 `entry[1]`은 각각 무엇인가요?"
+  - 마지막 줄의 `votes`는 배열이 아니라 객체예요. 객체에 `length`라는 속성을 만든 적이 있나요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  3
+  7
+  보드게임 영화
+  undefined
+  ```
+
+  - `Object.keys(votes)`는 `["보드게임", "영화", "등산"]`이라 길이가 3이에요.
+  - `Object.values(votes)`는 `[4, 7, 2]`이고, 1번 요소는 7이에요.
+  - `Object.entries(votes)`는 `[["보드게임", 4], ["영화", 7], ["등산", 2]]`예요. `entry[1]`(값)이 3보다 큰 짝의 `entry[0]`(키)만 이어 붙이므로 `보드게임 영화`가 돼요. 끝에 붙은 공백은 `trim()`이 지워요.
+  - `votes.length`: 객체에는 배열처럼 저절로 생기는 `length`가 없어요. 없는 속성을 읽었으니 `undefined`예요. 속성 개수가 필요하면 첫 줄처럼 `Object.keys(votes).length`를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

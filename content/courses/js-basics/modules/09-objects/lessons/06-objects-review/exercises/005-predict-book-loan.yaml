@@ -1,0 +1,51 @@
+id: js-basics.objects.objects-review.predict-book-loan
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.obj.add-delete, weight: 1 }
+  - { id: js.obj.keys-values-entries, weight: 0.3 }
+tags: [object, add-property, delete, trace, assessment]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  도서관 책 한 권의 정보를 대출과 반납에 맞춰 고치는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 두 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const book = { title: "어린 왕자", loans: 3 };
+
+    book.loans += 1;
+    book.borrower = "하은";
+    delete book.borrower;
+    book.shelf = "B-2";
+
+    console.log(book.loans, book.borrower, book.shelf);
+    console.log(Object.keys(book).length);
+  answerKind: console
+misconceptions: [js.mc.add-property-needs-declare, js.mc.missing-property-error]
+hints:
+  - 한 줄씩 실행하면서 `book`에 어떤 속성이 있는지 목록을 적어 보세요.
+  - 리터럴에 없던 속성에 대입하면 어떻게 되나요? `delete`를 한 뒤 그 속성은 어떻게 되나요?
+  - 마지막 줄은 지금 `book`에 남아 있는 키가 몇 개인지 세요. 지운 속성도 세어야 할까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  4 undefined B-2
+  3
+  ```
+
+  | 줄 | 하는 일 | 남은 속성 |
+  |---|---|---|
+  | 3 | 있는 속성 `loans`를 3 → 4로 바꿈 | `title`, `loans` |
+  | 4 | 없던 `borrower`에 대입 → 새 속성이 생김 | `title`, `loans`, `borrower` |
+  | 5 | `delete`로 `borrower`를 아예 없앰 | `title`, `loans` |
+  | 6 | 없던 `shelf`에 대입 → 새 속성이 생김 | `title`, `loans`, `shelf` |
+
+  - 지운 `borrower`를 읽으면 오류가 아니라 `undefined`예요.
+  - 새 속성은 리터럴에 미리 적어 두지 않아도 대입하는 순간 생겨요. `const`로 만든 객체여도 속성을 더하고 지울 수 있어요.
+  - 남은 키는 `title`, `loans`, `shelf` 세 개라서 `Object.keys(book).length`는 3이에요. `delete`한 속성은 키 목록에서도 빠져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,62 @@
+id: js-basics.objects.objects-review.find-bug-step-history
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+  - { id: js.obj.spread, weight: 0.3 }
+  - { id: js.arr.push-pop, weight: 0.3 }
+tags: [object, reference, array, debugging, assessment]
+estimatedSeconds: 120
+usage: assessment
+prompt: |
+  요리 앱이 단계가 바뀔 때마다 그 순간의 상태를 기록 배열에 남기는 코드예요. 첫 기록에는 1단계 상태가 남아 있어야 하는데, 결과가 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const history = [];
+    const current = { step: 1, note: "재료 준비" };
+    history.push(current);
+    current.step = 2;
+    current.note = "굽기";
+    history.push(current);
+    console.log(history[0].step + " " + history[0].note);
+    console.log(history[1].step + " " + history[1].note);
+  bugLines: [3]
+  symptom: "첫 줄에 `1 재료 준비` 대신 `2 굽기`가 나와서, 두 줄이 똑같이 `2 굽기`예요."
+  symptomCheck:
+    console: ["2 굽기", "2 굽기"]
+  fixedCode: |-
+    const history = [];
+    const current = { step: 1, note: "재료 준비" };
+    history.push({ ...current });
+    current.step = 2;
+    current.note = "굽기";
+    history.push(current);
+    console.log(history[0].step + " " + history[0].note);
+    console.log(history[1].step + " " + history[1].note);
+  causeOptions:
+    - id: c1
+      text: 3번 줄은 객체를 복사하지 않고 같은 객체를 배열에 넣어서, 4~5번 줄에서 바꾼 내용이 첫 기록에도 보인다
+      correct: true
+    - id: c2
+      text: push는 객체를 복사해 넣지만, 6번 줄의 push가 앞의 기록을 새 값으로 덮어쓴다
+      misconception: js.mc.assign-copies-object
+    - id: c3
+      text: const로 만든 current의 속성을 4~5번 줄에서 바꾸면 안 되는데 바꿔서 기록이 망가졌다
+      misconception: js.mc.const-object-props-frozen
+misconceptions: [js.mc.assign-copies-object, js.mc.const-object-props-frozen]
+hints:
+  - 코드가 끝났을 때 객체는 몇 개 있나요? 객체 리터럴 `{ }`가 몇 번 나오는지 세어 보세요.
+  - "`history[0]`과 `history[1]`은 서로 다른 객체인가요, 같은 객체인가요?"
+  - 첫 기록이 4~5번 줄의 변경에 영향을 받지 않으려면, 기록할 때 무엇을 배열에 넣어야 할까요?
+explanation: |
+  원인은 **3번 줄** `history.push(current);`이에요.
+
+  - `push`는 받은 값을 그대로 배열에 넣어요. 객체를 넣으면 복사본이 아니라 **같은 객체를 가리키는 참조**가 들어가요.
+  - 그래서 `history[0]`과 `current`는 같은 객체예요. 4~5번 줄에서 `current`를 바꾸면 `history[0]`으로 읽어도 바뀐 값이 보여요. 6번 줄은 같은 객체를 한 번 더 넣을 뿐이에요.
+  - 기록하는 순간의 상태를 남기려면 3번 줄에서 복사본을 넣어요: `history.push({ ...current });` 이 객체에는 원시 값만 있으므로 얕은 복사로 충분해요.
+
+  6번 줄의 `push`는 앞 기록을 덮어쓰지 않아요. 배열 길이는 2이고 두 칸이 같은 객체를 가리킬 뿐이에요. `const`는 변수 `current`가 다른 객체를 가리키지 못하게 할 뿐, 속성을 바꾸는 것은 막지 않아요. 실제로 4~5번 줄은 오류 없이 실행됐어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

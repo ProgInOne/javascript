@@ -1,0 +1,120 @@
+id: js-basics.arrays.arrays-review.impl-pin-to-front
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.arr.mutating-vs-not, weight: 1 }
+  - { id: js.arr.filter, weight: 0.3 }
+  - { id: js.arr.slice-concat, weight: 0.3 }
+tags: [non-mutating, filter, concat, new-array, write-code, assessment]
+estimatedSeconds: 360
+usage: assessment
+prompt: |
+  음악 앱의 "맨 위에 고정" 기능이에요. 재생 목록 `songs`와 곡 이름 `song`을 받아, `song`을 맨 앞에 둔 **새 재생 목록**을 돌려주는 함수 `pinToFront(songs, song)`을 완성하세요.
+
+  ```js
+  pinToFront(["봄", "여름", "가을"], "겨울");  // ["겨울", "봄", "여름", "가을"]
+  pinToFront(["봄", "여름", "가을"], "가을");  // ["가을", "봄", "여름"]
+  ```
+
+  - `song`이 이미 목록에 있으면 맨 앞으로 **옮겨요**. 같은 곡이 두 번 나오면 안 돼요. 나머지 곡의 순서는 그대로예요.
+  - 받은 `songs` 배열은 바꾸면 안 돼요. 화면의 다른 곳이 원래 목록을 그대로 쓰고 있어요.
+  - 결과가 원래 목록과 순서가 같아도, 원래 배열이 아닌 새 배열을 돌려줘요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function pinToFront(songs, song) {
+            // songs는 그대로 두고, song이 맨 앞에 있는 새 배열을 돌려주세요.
+          }
+  entry: pinToFront
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function pinToFront(songs, song) {
+            const rest = songs.filter((s) => s !== song);
+            return [song].concat(rest);
+          }
+  checks:
+    - kind: call
+      id: new-song
+      description: 목록에 없는 곡은 맨 앞에 더해집니다.
+      requirement: 맨 앞에 두기
+      args: [["봄", "여름", "가을"], "겨울"]
+      expect: { equals: ["겨울", "봄", "여름", "가을"] }
+    - kind: call
+      id: move-song
+      description: 이미 있는 곡은 맨 앞으로 옮겨지고 한 번만 나옵니다.
+      requirement: 이미 있는 곡은 옮기기
+      args: [["봄", "여름", "가을"], "가을"]
+      expect: { equals: ["가을", "봄", "여름"] }
+    - kind: call
+      id: move-middle
+      visible: false
+      description: 가운데에 있던 곡을 옮겨도 나머지 곡의 순서는 그대로여야 합니다.
+      requirement: 이미 있는 곡은 옮기기
+      args: [["달", "별", "해", "구름"], "해"]
+      expect: { equals: ["해", "달", "별", "구름"] }
+    - kind: call
+      id: already-first
+      visible: false
+      description: 이미 맨 앞에 있는 곡이면 순서가 그대로인 목록이 나와야 합니다.
+      requirement: 이미 있는 곡은 옮기기
+      args: [["밤", "낮"], "밤"]
+      expect: { equals: ["밤", "낮"] }
+    - kind: call
+      id: empty-list
+      visible: false
+      description: 빈 목록이면 그 곡 하나만 담긴 목록이 나와야 합니다.
+      requirement: 맨 앞에 두기
+      args: [[], "새벽"]
+      expect: { equals: ["새벽"] }
+    - kind: call
+      id: keep-input-new
+      visible: false
+      description: 새 곡을 더할 때 받은 배열을 바꾸면 안 됩니다.
+      requirement: 원래 목록 지키기
+      args: [["파도", "바람"], "노을"]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.mutating-method-keeps-original
+    - kind: call
+      id: keep-input-move
+      visible: false
+      description: 곡을 옮길 때도 받은 배열을 바꾸면 안 됩니다.
+      requirement: 원래 목록 지키기
+      args: [["파도", "바람", "노을"], "노을"]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.mutating-method-keeps-original
+    - kind: call
+      id: new-reference
+      visible: false
+      description: 순서가 그대로여도 받은 배열이 아닌 새 배열을 돌려줘야 합니다.
+      requirement: 원래 목록 지키기
+      args: [["첫눈", "눈사람"], "첫눈"]
+      expect: { returnsNewReference: true }
+misconceptions: [js.mc.mutating-method-keeps-original, js.mc.function-arg-array-copied]
+hints:
+  - 받은 배열에 `unshift`나 `splice`를 쓰면 원래 목록이 바뀌어요. 원래 배열을 바꾸지 않는 메서드만으로 만들 방법을 찾아보세요.
+  - 일을 두 단계로 나눠 보세요. 먼저 `song`을 뺀 나머지 곡들의 새 배열을 만들고, 그다음 그 앞에 `song`을 붙여요.
+  - 배열 두 개를 이어 새 배열을 만드는 메서드를 떠올려 보세요. `song` 하나도 요소가 하나인 배열로 만들면 이을 수 있어요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function pinToFront(songs, song) {
+    const rest = songs.filter((s) => s !== song);
+    return [song].concat(rest);
+  }
+  ```
+
+  - `filter`로 `song`이 아닌 곡만 모은 새 배열 `rest`를 만들어요. `song`이 목록에 있었다면 여기서 빠지므로, 맨 앞에 다시 붙여도 한 번만 나와요. 없었다면 `rest`는 원래 곡이 모두 담긴 새 배열이에요.
+  - `[song].concat(rest)`는 두 배열을 이은 **새 배열**을 돌려줘요. `filter`와 `concat` 모두 원래 배열을 바꾸지 않아서 `songs`는 그대로예요.
+  - 받은 배열에 `songs.unshift(song)`을 하면 결과는 맞아 보여도 원래 목록이 바뀌어요. 함수에 넘긴 배열은 복사본이 아니라 같은 배열이기 때문이에요.
+  - 이미 맨 앞에 있을 때 `return songs;`처럼 받은 배열을 그대로 돌려주면, 나중에 결과를 바꿀 때 원래 목록도 함께 바뀌어요. 그래서 항상 새 배열을 돌려줘요.
+
+  `const copy = songs.slice();`로 복사한 뒤 `copy`에 `indexOf`·`splice`·`unshift`를 써도 정답이에요. 복사본만 바꾸기 때문이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

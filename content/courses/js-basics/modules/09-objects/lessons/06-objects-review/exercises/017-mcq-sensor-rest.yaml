@@ -1,0 +1,47 @@
+id: js-basics.objects.objects-review.mcq-sensor-rest
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.obj.destructuring, weight: 1 }
+  - { id: js.obj.keys-values-entries, weight: 0.3 }
+tags: [object, destructuring, rest, assessment]
+estimatedSeconds: 80
+usage: assessment
+prompt: |
+  온도 센서의 정보에서 배터리 값만 따로 꺼내고, 나머지를 측정값 객체로 모아요. 아래 코드를 실행하면 무엇이 출력되나요?
+code: |
+  const sensor = { id: "T-01", temp: 21.5, battery: 80 };
+  const { battery, ...reading } = sensor;
+  console.log(Object.keys(sensor).length, Object.keys(reading).length, battery);
+spec:
+  options:
+    - id: a
+      text: "`3 2 80`"
+    - id: b
+      text: "`2 2 80`"
+      misconception: js.mc.destructuring-removes-property
+      rationale: 구조 분해는 값을 읽어서 변수에 담을 뿐, sensor에서 battery를 지우지 않아요.
+    - id: c
+      text: "`3 3 80`"
+      rationale: 나머지(...reading)에는 앞에서 이미 꺼낸 battery를 뺀 속성만 모여요.
+    - id: d
+      text: "`3 2 undefined`"
+      rationale: 객체 구조 분해는 이름으로 맞춰요. 변수 battery에는 sensor.battery의 값 80이 들어가요.
+  correct: a
+misconceptions: [js.mc.destructuring-removes-property]
+hints:
+  - 2번 줄이 실행된 뒤 `sensor` 객체 자체가 바뀌었는지 생각해 보세요.
+  - "`...reading`은 값을 받는 자리의 `...`예요. 어떤 속성들이 `reading`으로 모이나요?"
+  - 세 값을 따로 구해 보세요. 원본의 키 개수, 나머지로 모은 객체의 키 개수, 변수 `battery`의 값이에요.
+explanation: |
+  `3 2 80`이 출력돼요.
+
+  - `const { battery, ...reading } = sensor;`는 `sensor.battery`의 값 80을 변수 `battery`에 담고, 남은 속성 `id`, `temp`를 모은 **새 객체**를 `reading`에 담아요.
+  - 구조 분해는 원본을 읽기만 해요. `sensor`에는 여전히 속성이 세 개 있어서 `Object.keys(sensor).length`는 3이에요.
+  - `reading`은 `{ id: "T-01", temp: 21.5 }`라서 키가 2개예요. 앞에서 꺼낸 `battery`는 나머지에 다시 들어가지 않아요.
+
+  `2 2 80`을 골랐다면 구조 분해가 원본에서 속성을 꺼내 없앤다고 본 거예요. "어떤 속성만 뺀 객체"는 새로 만들어질 뿐 원본은 그대로예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

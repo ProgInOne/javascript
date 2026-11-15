@@ -1,0 +1,48 @@
+id: js-basics.objects.objects-review.mcq-thermostat-const
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.obj.const-mutation, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [object, const, type-error, assessment]
+estimatedSeconds: 60
+usage: assessment
+prompt: |
+  아래 코드를 실행하면 어떤 일이 일어나나요?
+code: |
+  const thermostat = { temp: 22, mode: "난방" };
+  thermostat.temp = 25;
+  thermostat.mode = "냉방";
+  thermostat = { temp: 18, mode: "꺼짐" };
+  console.log(thermostat.temp);
+spec:
+  options:
+    - id: a
+      text: 4번 줄에서 `TypeError`가 나고, 5번 줄은 실행되지 않는다
+    - id: b
+      text: 2번 줄에서 `TypeError`가 나고, 그 뒤의 줄은 실행되지 않는다
+      misconception: js.mc.const-object-props-frozen
+      rationale: const 객체의 속성은 바꿀 수 있어요. 2·3번 줄은 오류 없이 실행돼요.
+    - id: c
+      text: 오류 없이 `18`이 출력된다
+      rationale: const 변수에는 다른 객체를 다시 대입할 수 없어요.
+    - id: d
+      text: 4번 줄은 무시되고 `25`가 출력된다
+      rationale: 엄격 모드에서 const 재대입은 조용히 무시되지 않고 오류를 내요.
+  correct: a
+misconceptions: [js.mc.const-object-props-frozen]
+hints:
+  - "`const`가 고정하는 것은 객체의 속성인가요, 변수가 가리키는 대상인가요?"
+  - 2·3번 줄과 4번 줄은 각각 "속성을 바꾸기"와 "변수에 새 값 넣기" 중 무엇인가요?
+  - 오류가 나는 줄이 있다면, 그 줄 뒤의 코드가 실행되는지도 생각해 보세요.
+explanation: |
+  4번 줄에서 `TypeError: Assignment to constant variable.`이 나고, 5번 줄은 실행되지 않아요.
+
+  - `const`는 변수 `thermostat`가 **처음 가리킨 객체를 계속 가리키게** 고정해요. 객체의 속성을 바꾸는 것은 막지 않으므로 2·3번 줄은 오류 없이 실행돼요.
+  - 4번 줄은 속성이 아니라 변수 자체에 새 객체를 대입하려고 해서 `TypeError`가 나요. 오류가 나면 프로그램이 멈추므로 `console.log`는 실행되지 않아요.
+  - 2번 줄에서 오류가 난다고 생각했다면 `const`가 객체의 내용까지 얼린다고 본 거예요. 오류 없이 18이나 25가 나온다는 답은 `const` 재대입이 허용되거나 무시된다고 본 것인데, 둘 다 아니에요.
+  - 설정을 처음 값으로 되돌리고 싶다면 `thermostat.temp = 18;`처럼 속성을 바꿔요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

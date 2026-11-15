@@ -1,0 +1,62 @@
+id: js-basics.functions.functions-review.multi-pack-local-box
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.scope.function, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [scope, function-scope, local-variable, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  짐을 싸는 함수 두 개가 있어요. 아래 코드에 대한 설명으로 맞는 것을 모두 고르세요.
+code: |
+  function packBox(items) {
+    const label = "상자(" + items + "개)";
+    return label;
+  }
+
+  function packBag(items) {
+    const label = "가방(" + items + "개)";
+    return label;
+  }
+
+  const result = packBox(2) + " / " + packBag(3);
+spec:
+  options:
+    - id: a
+      text: 두 함수의 `label`은 서로 다른 변수라서, 이름이 같아도 부딪히지 않는다.
+    - id: b
+      text: "`result`에는 `상자(2개) / 가방(3개)`가 들어 있다."
+    - id: c
+      text: "마지막 줄 아래에 `console.log(label);`을 쓰면 `가방(3개)`가 출력된다."
+      misconception: js.mc.function-local-visible-outside
+      rationale: "label은 함수 안에서 만든 변수라 함수 밖에서는 보이지 않아요. ReferenceError: label is not defined가 나요."
+    - id: d
+      text: "`packBox(5)`를 한 번 더 부르면, 앞 호출의 `label`이 남아 있어서 `const`에 다시 대입하는 오류가 난다."
+      misconception: js.mc.function-var-persists
+      rationale: 함수 안의 변수는 호출할 때마다 새로 만들어지고 호출이 끝나면 사라져요. 다시 불러도 오류 없이 상자(5개)를 돌려줘요.
+    - id: e
+      text: "마지막 줄 아래에서 `items`를 읽으면 마지막으로 넘긴 값 `3`이 나온다."
+      misconception: js.mc.function-local-visible-outside
+      rationale: "매개변수도 함수 안에서만 쓰는 변수예요. 함수 밖에서 items를 쓰면 ReferenceError: items is not defined가 나요."
+  correct: [a, b]
+misconceptions: [js.mc.function-local-visible-outside, js.mc.function-var-persists]
+hints:
+  - 함수 안에서 `const`로 만든 변수와 매개변수는 어디까지 쓸 수 있나요?
+  - 함수 안의 변수는 호출이 끝나면 어떻게 되나요? 다음 호출에서는 어떻게 되나요?
+  - 함수 밖에서 그 값을 쓰고 싶을 때 쓰는 방법은 무엇이었나요? 마지막 줄이 어떻게 값을 얻는지 보세요.
+explanation: |
+  맞는 설명은 다음 두 개예요.
+
+  - 두 함수의 `label`은 각자의 함수 안에서만 쓰는 변수예요. 함수마다 따로 상자가 있어서, 이름이 같아도 부딪히지 않아요.
+  - `packBox(2)`는 `상자(2개)`, `packBag(3)`은 `가방(3개)`를 돌려줘요. 그래서 `result`는 `상자(2개) / 가방(3개)`예요. 함수 밖에서는 `return`으로 돌려받은 값만 쓸 수 있어요.
+
+  틀린 설명:
+
+  - 함수 밖에서 `label`을 쓰면 `ReferenceError: label is not defined`예요. 함수 안에서 만든 변수는 호출이 끝나면 사라져요.
+  - `packBox(5)`를 다시 불러도 오류가 나지 않아요. 함수 안의 변수와 매개변수는 **호출할 때마다 새로** 만들어져요. 앞 호출의 `label`은 이미 사라졌으니 다시 대입하는 것이 아니에요.
+  - 매개변수 `items`도 함수 안에서만 쓰는 변수예요. 함수 밖에서 읽으면 `ReferenceError: items is not defined`예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

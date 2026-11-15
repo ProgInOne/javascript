@@ -1,0 +1,65 @@
+id: js-basics.functions.functions-review.find-bug-rain-check
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.fn.call, weight: 1 }
+  - { id: js.conv.truthy-falsy, weight: 0.5 }
+tags: [call, parentheses, truthy, debugging, assessment]
+estimatedSeconds: 120
+usage: assessment
+prompt: |
+  강수량(mm)을 보고 우산이 필요한지 알려 주는 프로그램이에요. 오늘 강수량은 0mm인데도 우산을 챙기라는 안내가 나와요. 오류는 나지 않아요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    function isRainy(rainMm) {
+      return rainMm >= 1;
+    }
+
+    const today = 0;
+
+    if (isRainy) {
+      console.log("우산을 챙기세요");
+    } else {
+      console.log("우산은 필요 없어요");
+    }
+  bugLines: [7]
+  symptom: "강수량이 0mm인데 `우산을 챙기세요`가 출력돼요. 강수량을 바꿔도 늘 같은 안내가 나와요."
+  symptomCheck:
+    console: ["우산을 챙기세요"]
+  fixedCode: |-
+    function isRainy(rainMm) {
+      return rainMm >= 1;
+    }
+
+    const today = 0;
+
+    if (isRainy(today)) {
+      console.log("우산을 챙기세요");
+    } else {
+      console.log("우산은 필요 없어요");
+    }
+  causeOptions:
+    - id: c1
+      text: 괄호 없이 함수 이름만 써서 함수가 실행되지 않았고, 조건에는 함수 자체(truthy인 값)가 들어갔다
+      correct: true
+    - id: c2
+      text: isRainy 안의 비교 rainMm >= 1이 0일 때도 true를 돌려준다
+    - id: c3
+      text: if 조건에 함수 이름을 쓰면 JavaScript가 알아서 today를 넣어 호출하는데, 값이 잘못 넘어갔다
+      misconception: js.mc.call-without-parens
+misconceptions: [js.mc.call-without-parens]
+hints:
+  - "`isRainy` 함수 본문이 실행되기는 하나요? 함수를 실행하려면 무엇이 필요했나요?"
+  - 7번 줄의 조건에 들어간 값은 `true`/`false`인가요, 아니면 다른 무엇인가요?
+  - 함수도 값이에요. 함수 값은 조건 자리에서 truthy일까요, falsy일까요? 그리고 `today`는 어디에서 쓰이고 있나요?
+explanation: |
+  원인은 **7번 줄** `if (isRainy)`예요. `if (isRainy(today))`로 고쳐야 해요.
+
+  - 함수 이름 뒤에 괄호를 붙여야 호출돼요. `isRainy`만 쓰면 함수가 실행되지 않고, 조건에는 **함수 자체**가 들어가요.
+  - 함수는 값이고, 조건 자리에서 truthy예요. 그래서 강수량이 얼마든 늘 `우산을 챙기세요`가 나와요. 변수 `today`는 한 번도 쓰이지 않았어요.
+  - `isRainy` 안의 비교는 맞아요. `isRainy(0)`은 `0 >= 1`이라 `false`를 돌려줘요. 문제는 그 함수를 부르지 않은 것이에요.
+  - JavaScript는 함수 이름만 보고 알아서 인수를 넣어 부르지 않아요. 어떤 값을 넘길지는 호출하는 쪽이 괄호 안에 직접 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

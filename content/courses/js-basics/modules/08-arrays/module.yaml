@@ -1,5 +1,5 @@
 id: js-basics.arrays
 title: 배열
 summary: 여러 값을 순서대로 담는 배열을 만들고 인덱스로 읽고 바꾸는 법, 요소를 넣고 빼는 메서드와 원본을 바꾸는 메서드·바꾸지 않는 메서드의 차이, 반복으로 순회하는 법, map·filter·reduce 같은 고차 함수, 그리고 찾기와 정렬을 배웁니다.
-# 단원 평가(arrays-review)는 단원 평가 작업에서 따로 추가합니다.
-lessons: [array-basics, array-mutation, array-iteration, array-hof, array-search-sort]
+lessons: [array-basics, array-mutation, array-iteration, array-hof, array-search-sort, arrays-review]
+assessment: arrays-review

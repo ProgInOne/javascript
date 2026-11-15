@@ -1,0 +1,34 @@
+id: js-basics.objects.objects-review
+title: 객체 단원 평가
+summary: 모듈 9에서 배운 객체 만들기·읽기, 참조와 복사, 객체 순회, 구조 분해와 전개, 오류 처리를 섞어 풀며 이해도를 확인합니다.
+kind: assessment
+importance: standard
+estimatedMinutes: { read: 2, practice: 45 }
+concepts:
+  reviewed:
+    - js.obj.literal
+    - js.obj.dot-bracket
+    - js.obj.add-delete
+    - js.obj.methods-intro
+    - js.obj.reference
+    - js.obj.copy-shallow
+    - js.obj.equality
+    - js.obj.const-mutation
+    - js.obj.keys-values-entries
+    - js.obj.for-in
+    - js.obj.in-optional-chaining
+    - js.obj.destructuring
+    - js.arr.destructuring
+    - js.obj.spread
+    - js.errors.throw
+    - js.errors.try-catch
+    - js.errors.finally
+objectives:
+  - 객체를 대입·전달·복사·비교한 뒤 속성 값과 === 결과가 어떻게 되는지 예측할 수 있다.
+  - 변수 키를 점으로 읽기, 얕은 복사, 없는 중첩 속성 읽기, 잡지 않은 오류 때문에 생긴 버그를 찾아 고칠 수 있다.
+  - 요구사항을 읽고 원본을 바꾸지 않는 객체 함수, 잘못된 입력에 오류를 던지는 함수를 작성할 수 있다.
+assessment:
+  itemCount: 20                    # 평가 개념 17개를 한 문항씩 모두 확인하고 3문항을 더 냄. 문항 풀은 24개라 다시 응시하면 일부 문항이 바뀜
+  passRatio: 0.8
+practice:
+  targetCount: 24

@@ -1,0 +1,58 @@
+id: js-basics.arrays.arrays-review.fill-shoe-sizes
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.arr.filter, weight: 1 }
+  - { id: js.ops.logical-and-or-not, weight: 0.3 }
+tags: [filter, callback, range, assessment]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  신발 가게 재고 사이즈 목록에서 **250 이상 265 이하**인 사이즈만 골라 새 배열을 만들려고 해요. 빈칸에 `filter`에 넘길 콜백을 채워 아래처럼 출력되게 하세요. 두 번째 줄은 원래 재고 목록의 개수예요.
+
+  ```text
+  [250, 265, 255]
+  5
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    const sizes = [250, 265, 240, 270, 255];
+    const fit = sizes.filter({{blank:cb}});
+    console.log(fit);
+    console.log(sizes.length);
+  blanks:
+    - id: cb
+      accept: ["(s) => s >= 250 && s <= 265", "(size) => size >= 250 && size <= 265"]
+      width: 34
+  checks:
+    - kind: console
+      id: output
+      description: 250 이상 265 이하인 사이즈만 원래 순서대로 담긴 배열과, 원래 목록의 개수 5가 출력되어야 합니다.
+      requirement: 범위 안의 사이즈 고르기
+      expect:
+        lines: ["[250, 265, 255]", "5"]
+      misconceptionIfFail: js.mc.filter-removes-matching
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 범위 안의 사이즈 고르기
+      expect:
+        noError: true
+misconceptions: [js.mc.filter-removes-matching]
+hints:
+  - "`filter`의 콜백은 요소 하나를 받아, 그 요소를 **남길지** 참·거짓으로 알려 줘요."
+  - 두 조건(250 이상, 265 이하)을 모두 만족해야 남아요. 두 조건을 함께 묶는 논리 연산자를 떠올려 보세요.
+  - 경계값 250과 265도 남아야 해요. `>`와 `>=` 중 어느 것이 경계값을 포함하나요?
+explanation: |
+  예시 정답은 `(s) => s >= 250 && s <= 265`예요.
+
+  - `filter`는 콜백이 `true`를 돌려준 요소를 **남긴** 새 배열을 만들어요. 조건에 맞는 요소를 지우는 것이 아니에요. 그래서 콜백에는 "남길 조건"을 써요.
+  - 두 조건을 모두 만족해야 하므로 `&&`로 묶어요. `||`로 쓰면 모든 사이즈가 둘 중 하나는 만족해서 다섯 개가 다 남아요.
+  - `>`·`<`로 쓰면 경계값 250과 265가 빠져서 `[255]`만 남아요.
+  - `filter`는 원래 배열을 바꾸지 않아서 `sizes.length`는 그대로 5예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

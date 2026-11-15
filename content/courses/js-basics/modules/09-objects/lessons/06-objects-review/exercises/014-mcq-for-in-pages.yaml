@@ -1,0 +1,50 @@
+id: js-basics.objects.objects-review.mcq-for-in-pages
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.obj.for-in, weight: 1 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [object, for-in, plus-concat, assessment]
+estimatedSeconds: 80
+usage: assessment
+prompt: |
+  보고서의 부분별 쪽수를 모두 더하려는 코드예요. 실행하면 콘솔에 무엇이 출력되나요?
+code: |
+  const pages = { 서론: 12, 본론: 30, 결론: 8 };
+  let total = 0;
+  for (const part in pages) {
+    total += part;
+  }
+  console.log(total);
+spec:
+  options:
+    - id: a
+      text: "`0서론본론결론`"
+    - id: b
+      text: "`50`"
+      misconception: js.mc.for-in-gives-values
+      rationale: for...in의 변수 part에는 값이 아니라 키 문자열이 들어와요.
+    - id: c
+      text: "`서론본론결론`"
+      rationale: total은 숫자 0에서 시작해요. 0 + "서론"은 "0서론"이 되므로 맨 앞의 0이 남아요.
+    - id: d
+      text: "`NaN`"
+      rationale: 숫자에 문자열을 +로 더하면 숫자 계산이 아니라 이어 붙이기가 돼요. NaN이 되지 않아요.
+  correct: a
+misconceptions: [js.mc.for-in-gives-values]
+hints:
+  - "`for...in`이 회차마다 변수 `part`에 넣어 주는 것은 키인가요, 값인가요?"
+  - 첫 회차에서 `total += part`는 `0 + ?`이에요. `?`에 들어갈 것과 그 결과를 적어 보세요.
+  - 숫자와 문자열을 `+`로 더하면 어떤 일이 일어나는지 모듈 3에서 배웠어요. 그 결과로 이어지는 다음 회차도 계산해 보세요.
+explanation: |
+  `0서론본론결론`이 출력돼요.
+
+  - `for...in`은 객체의 **키**를 하나씩 줘요. `part`에는 `"서론"`, `"본론"`, `"결론"`이 차례로 들어와요.
+  - 첫 회차: `0 + "서론"`은 숫자와 문자열의 `+`라서 이어 붙이기가 되고 `"0서론"`이에요. 그 뒤로는 문자열에 계속 이어 붙어요.
+  - 쪽수를 더하려면 키로 값을 읽어야 해요: `total += pages[part];` → 50
+
+  `50`이라고 생각했다면 `for...in`이 값을 준다고 본 거예요. 맨 앞의 `0`을 빠뜨렸거나 `NaN`을 골랐다면 숫자와 문자열을 `+`로 더할 때의 규칙을 다시 확인해 보세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

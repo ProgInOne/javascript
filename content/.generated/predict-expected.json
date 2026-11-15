@@ -214,6 +214,52 @@
         ]
       }
     },
+    "js-basics.arrays.arrays-review.predict-foreach-tickets": {
+      "inputHash": "4357760f64ff543fa8209879c7cfbd8f4a64cec1cf7c60bf5d7e95ac8dc6c5e2",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "0번: 12장",
+          "2번: 7장",
+          "3번: 3장",
+          "3",
+          "undefined"
+        ]
+      }
+    },
+    "js-basics.arrays.arrays-review.predict-levels-loops": {
+      "inputHash": "59aed612f986d30e0967689c40e4c0d2b119ca03ca12eff425da49cb54379eae",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "0,1,2,",
+          "32",
+          "[3, 5, 8]"
+        ]
+      }
+    },
+    "js-basics.arrays.arrays-review.predict-pack-bag": {
+      "inputHash": "171d93831d634c968891e4b133f236b7e1b645c8706bda16ef3a3039fae7e5a1",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "4",
+          "간식",
+          "[\"물\", \"지도\", \"모자\"]"
+        ]
+      }
+    },
+    "js-basics.arrays.arrays-review.predict-rank-sort": {
+      "inputHash": "c97552fd013984eaafc7bfe952b8533470128bbdefa8ae1da910fce0e4dc360d",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[100, 25, 3, 42, 1]",
+          "100",
+          "5"
+        ]
+      }
+    },
     "js-basics.browser-intro.dom-basics.predict-query-null": {
       "inputHash": "d2f803c1f0236484d46490c38a3f16231684cfcd62a1cd75669ee08188be901c",
       "expected": {
@@ -511,6 +557,75 @@
           "add 2, 2",
           "double 4",
           "9"
+        ]
+      }
+    },
+    "js-basics.functions.functions-review.predict-arrow-km": {
+      "inputHash": "f1127779c7834676c5de2052243920b2efdf0d6c76773a418b98b3d25959b682",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3",
+          "undefined",
+          "3",
+          "NaN"
+        ]
+      }
+    },
+    "js-basics.functions.functions-review.predict-block-greeting": {
+      "inputHash": "f44277e4a452e5e310b81f61929c8bf1d6dbc1020958b827ff73b6bb526a75d5",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "좋은 오후예요",
+          "안녕하세요"
+        ]
+      }
+    },
+    "js-basics.functions.functions-review.predict-declared-not-called": {
+      "inputHash": "0a2454d4ed11aaec54d8a9b10d86f8c7a1e2cbfaec92d636810fffd68aa47019",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "아침 시작",
+          "고무나무에 물 주기",
+          "아침 끝"
+        ]
+      }
+    },
+    "js-basics.functions.functions-review.predict-energy-jump": {
+      "inputHash": "e58a1fd8ce68a60a0b864ba54dcf279f141331feef3cddbdace1e6c6f36eda36",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "점프! 남은 힘 7",
+          "14",
+          "점프! 남은 힘 4",
+          "점프! 남은 힘 1",
+          "5",
+          "끝: 1"
+        ]
+      }
+    },
+    "js-basics.functions.functions-review.predict-pick-style": {
+      "inputHash": "5651101a9631b0b3548079068331a10a428ef118684566074be3327bfe8445f0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "안녕!!!",
+          "(안녕)",
+          "잘 자!!!",
+          "function"
+        ]
+      }
+    },
+    "js-basics.functions.functions-review.predict-team-arg-order": {
+      "inputHash": "6d1fcc418f0496a657dd0bc534e1521c120c98f43160f1d7be4c9e09cc1adecb",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "청팀 대 백팀",
+          "홍팀 대 백팀"
         ]
       }
     },
@@ -873,6 +988,92 @@
           "0",
           "층 없음",
           "false"
+        ]
+      }
+    },
+    "js-basics.objects.objects-review.predict-book-loan": {
+      "inputHash": "a7520cbe4d543915950da06e7ba41bc04dbf111b6647c90cdcfc059b7c1998e9",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "4 undefined B-2",
+          "3"
+        ]
+      }
+    },
+    "js-basics.objects.objects-review.predict-camp-copy": {
+      "inputHash": "9062d7fb0a37a20965c0103d45048246ad464f880fb8a79cd8b83e82368659ac",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3 서아 수영",
+          "true false"
+        ]
+      }
+    },
+    "js-basics.objects.objects-review.predict-club-votes": {
+      "inputHash": "381a3fce91a055d0f3f1b2c906d579d4b14ee42b918a01934d0d5f6d25b9dd96",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3",
+          "7",
+          "보드게임 영화",
+          "undefined"
+        ]
+      }
+    },
+    "js-basics.objects.objects-review.predict-level-check": {
+      "inputHash": "b65dec4323cd07398be4035df89fa90451a736878f052fbe4a2de7bc2be682a1",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "통과 1",
+          "잠긴 단계: 5",
+          "통과 2",
+          "합계 30"
+        ]
+      }
+    },
+    "js-basics.objects.objects-review.predict-rainfall-days": {
+      "inputHash": "124c0fdc88db02c06fc9f472a39243475ae805bb6defc20bc2c7cf4153af984e",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "45",
+          "undefined",
+          "false"
+        ]
+      }
+    },
+    "js-basics.objects.objects-review.predict-range-order": {
+      "inputHash": "ef3394511709e9c80f5883cd46075f18517e57ff918b9695b39d588552d43cd8",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "최고 3",
+          "최저 9"
+        ]
+      }
+    },
+    "js-basics.objects.objects-review.predict-shared-lamps": {
+      "inputHash": "af5e63b6b71fe965c5fce5c893229228de206fef3fc7db77baf453a039df47ea",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "12 12 8",
+          "흰색 노란색",
+          "true false"
+        ]
+      }
+    },
+    "js-basics.objects.objects-review.predict-shirt-spread": {
+      "inputHash": "6980038ec11f55e1d0937107850486c146737c3dc49ee0e7477ce19417223077",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "빨강 2 검정 1",
+          "6 L 1 M"
         ]
       }
     },

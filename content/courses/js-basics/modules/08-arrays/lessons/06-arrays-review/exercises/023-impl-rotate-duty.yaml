@@ -1,0 +1,131 @@
+id: js-basics.arrays.arrays-review.impl-rotate-duty
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.arr.slice-concat, weight: 1 }
+  - { id: js.arr.mutating-vs-not, weight: 0.3 }
+  - { id: js.ops.remainder, weight: 0.3 }
+tags: [slice, concat, rotate, new-array, boundary, write-code, assessment]
+estimatedSeconds: 360
+usage: assessment
+prompt: |
+  교실 청소 당번표는 모둠 이름을 순서대로 담은 배열이에요. 한 주가 지날 때마다 맨 앞 모둠이 맨 뒤로 가요. 당번표 `groups`와 지난 주 수 `weeks`를 받아, `weeks`주 뒤의 **새 당번표**를 돌려주는 함수 `rotateDuty(groups, weeks)`를 완성하세요.
+
+  ```js
+  rotateDuty(["1모둠", "2모둠", "3모둠", "4모둠"], 1);  // ["2모둠", "3모둠", "4모둠", "1모둠"]
+  rotateDuty(["1모둠", "2모둠", "3모둠", "4모둠"], 6);  // ["3모둠", "4모둠", "1모둠", "2모둠"]
+  ```
+
+  - `weeks`는 0 이상의 정수이고, 모둠 수보다 클 수도 있어요. 모둠 수만큼 돌면 처음 순서로 돌아와요.
+  - 당번표가 비어 있으면 빈 배열을 돌려줘요.
+  - 받은 배열은 바꾸지 말고, 순서가 그대로여도 새 배열을 돌려줘요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function rotateDuty(groups, weeks) {
+            // groups는 그대로 두고, weeks주 뒤의 새 당번표를 돌려주세요.
+          }
+  entry: rotateDuty
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function rotateDuty(groups, weeks) {
+            if (groups.length === 0) {
+              return [];
+            }
+            const k = weeks % groups.length;
+            return groups.slice(k).concat(groups.slice(0, k));
+          }
+  checks:
+    - kind: call
+      id: one-week
+      description: 한 주 뒤에는 1모둠이 맨 뒤로 갑니다.
+      requirement: 당번 돌리기
+      args: [["1모둠", "2모둠", "3모둠", "4모둠"], 1]
+      expect: { equals: ["2모둠", "3모둠", "4모둠", "1모둠"] }
+    - kind: call
+      id: wrap-around
+      description: 6주 뒤는 4모둠이 한 바퀴 돈 뒤 2주 더 돈 것과 같습니다.
+      requirement: 모둠 수보다 많이 돌리기
+      args: [["1모둠", "2모둠", "3모둠", "4모둠"], 6]
+      expect: { equals: ["3모둠", "4모둠", "1모둠", "2모둠"] }
+    - kind: call
+      id: three-groups
+      visible: false
+      description: 모둠이 셋일 때 2주 뒤에는 3모둠이 맨 앞이어야 합니다.
+      requirement: 당번 돌리기
+      args: [["가", "나", "다"], 2]
+      expect: { equals: ["다", "가", "나"] }
+    - kind: call
+      id: zero-weeks
+      visible: false
+      description: 0주 뒤에는 순서가 그대로여야 합니다.
+      requirement: 당번 돌리기
+      args: [["해", "달", "별"], 0]
+      expect: { equals: ["해", "달", "별"] }
+    - kind: call
+      id: full-cycle
+      visible: false
+      description: 모둠 수와 같은 주가 지나면 처음 순서로 돌아와야 합니다.
+      requirement: 모둠 수보다 많이 돌리기
+      args: [["봄", "여름", "가을"], 3]
+      expect: { equals: ["봄", "여름", "가을"] }
+    - kind: call
+      id: big-weeks
+      visible: false
+      description: 아주 많은 주가 지나도 남는 주만큼만 돌아야 합니다.
+      requirement: 모둠 수보다 많이 돌리기
+      args: [["A", "B", "C", "D", "E"], 23]
+      expect: { equals: ["D", "E", "A", "B", "C"] }
+    - kind: call
+      id: empty
+      visible: false
+      description: 당번표가 비어 있으면 빈 배열이어야 합니다.
+      requirement: 빈 당번표
+      args: [[], 5]
+      expect: { equals: [] }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 당번표 배열을 바꾸면 안 됩니다.
+      requirement: 원래 당번표 지키기
+      args: [["1모둠", "2모둠", "3모둠"], 1]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.array-slice-mutates
+    - kind: call
+      id: new-reference
+      visible: false
+      description: 순서가 그대로여도 받은 배열이 아닌 새 배열을 돌려줘야 합니다.
+      requirement: 원래 당번표 지키기
+      args: [["1모둠", "2모둠"], 0]
+      expect: { returnsNewReference: true }
+misconceptions: [js.mc.array-slice-mutates, js.mc.concat-adds-nested]
+hints:
+  - 결과 당번표는 "앞에서 몇 개를 뗀 나머지"와 "뗀 앞부분"을 순서만 바꿔 이은 모양이에요. 두 부분을 원래 배열을 바꾸지 않고 잘라 내는 메서드를 떠올려 보세요.
+  - 모둠 수만큼 돌면 제자리예요. `weeks`가 모둠 수보다 클 때, 실제로 몇 칸만 돌리면 되는지 모듈 3의 연산자로 구해 보세요.
+  - 잘라 낸 두 배열을 이을 때, 배열이 통째로 요소 하나가 되지 않고 요소들이 이어지는 메서드를 쓰세요. 빈 당번표일 때 무엇을 돌려줄지도 따로 생각해 두세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function rotateDuty(groups, weeks) {
+    if (groups.length === 0) {
+      return [];
+    }
+    const k = weeks % groups.length;
+    return groups.slice(k).concat(groups.slice(0, k));
+  }
+  ```
+
+  - 모둠 수만큼 돌면 처음 순서이므로, 실제로 돌릴 칸 수는 `weeks % groups.length`예요. 4모둠에 6주면 2칸이에요.
+  - `groups.slice(k)`는 인덱스 `k`부터 끝까지, `groups.slice(0, k)`는 앞의 `k`개예요. `concat`으로 이으면 앞부분이 뒤로 간 새 배열이 돼요. `concat`은 넘긴 배열의 **요소들**을 이어 붙이므로 배열 안에 배열이 생기지 않아요.
+  - `slice`와 `concat`은 원래 배열을 바꾸지 않고 항상 새 배열을 돌려줘요. `k`가 0이어도 `groups.slice(0)`은 새 배열이라 원래 배열과 다른 배열이 돌아가요.
+  - 빈 배열이면 `weeks % 0`이 `NaN`이 돼요. 이 풀이에서는 `slice(NaN)`이 `slice(0)`처럼 동작해서 빈 배열이 나오긴 하지만, 기대지 않고 빈 배열을 먼저 처리해 두면 읽는 사람이 헷갈리지 않아요.
+  - `shift`와 `push`로 한 칸씩 옮기는 방법은 받은 배열을 바꿔요. 그렇게 풀려면 `slice()`로 먼저 복사한 배열에서 해야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

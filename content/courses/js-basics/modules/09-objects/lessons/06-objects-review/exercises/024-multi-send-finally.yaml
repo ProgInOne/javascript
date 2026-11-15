@@ -1,0 +1,77 @@
+id: js-basics.objects.objects-review.multi-send-finally
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.errors.finally, weight: 1 }
+  - { id: js.errors.try-catch, weight: 0.5 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [finally, try-catch, return, assessment]
+estimatedSeconds: 150
+usage: assessment
+prompt: |
+  메신저 앱이 메시지를 보내는 함수예요. 아래 함수를 `send("")`와 `send("안녕")`으로 **따로** 불렀을 때, 맞는 설명을 **모두** 고르세요.
+code: |
+  function send(msg) {
+    try {
+      if (msg === "") {
+        throw new Error("빈 메시지");
+      }
+      console.log("보냄: " + msg);
+    } catch (err) {
+      console.log("오류: " + err.message);
+      return;
+    } finally {
+      console.log("연결 종료");
+    }
+    console.log("다음 메시지 대기");
+  }
+spec:
+  options:
+    - id: a
+      text: "`send(\"안녕\")`을 부르면 `연결 종료`가 출력된다"
+      missedMisconception: js.mc.finally-only-on-error
+    - id: b
+      text: "`send(\"\")`을 부르면 `연결 종료`가 출력된다"
+    - id: c
+      text: "`send(\"안녕\")`을 부르면 `다음 메시지 대기`가 출력된다"
+    - id: d
+      text: "`send(\"\")`을 부르면 `다음 메시지 대기`가 출력된다"
+      rationale: catch 안의 return이 함수를 끝내요. finally는 실행되지만, try...catch...finally 다음 줄은 실행되지 않아요.
+    - id: e
+      text: "`send(\"\")`을 부르면 `연결 종료`가 `오류: 빈 메시지`보다 먼저 출력된다"
+      rationale: finally는 try와 catch가 끝난 뒤, 함수를 빠져나가기 직전에 실행돼요. 오류 줄이 먼저 나와요.
+  correct: [a, b, c]
+misconceptions: [js.mc.finally-only-on-error]
+hints:
+  - 두 호출을 따로 따라가 보세요. 각 호출에서 `try`의 어느 줄까지 실행되고, `catch`로 가는지 정해 보세요.
+  - "`finally`는 어떤 경우에 실행되나요? 오류가 없을 때와 `catch`에서 `return`했을 때를 모두 생각해 보세요."
+  - "`catch`의 `return`이 함수를 끝내기 전에 일어나는 일과, `finally` 블록 다음 줄(`다음 메시지 대기`)이 실행되는지를 구별해 보세요."
+explanation: |
+  맞는 설명은 다음 세 개예요.
+
+  - "`send(\"안녕\")`을 부르면 `연결 종료`가 출력된다"
+  - "`send(\"\")`을 부르면 `연결 종료`가 출력된다"
+  - "`send(\"안녕\")`을 부르면 `다음 메시지 대기`가 출력된다"
+
+  `send("안녕")`의 출력이에요.
+
+  ```text
+  보냄: 안녕
+  연결 종료
+  다음 메시지 대기
+  ```
+
+  `send("")`의 출력이에요.
+
+  ```text
+  오류: 빈 메시지
+  연결 종료
+  ```
+
+  - `send("안녕")`: 오류가 없으니 `catch`는 건너뛰어요. `finally`는 오류와 관계없이 실행되므로 `연결 종료`가 나오고, 그 뒤 함수의 나머지 줄 `다음 메시지 대기`도 실행돼요. `finally`가 오류가 났을 때만 실행된다고 생각했다면 이 호출의 `연결 종료`를 놓쳐요.
+  - `send("")`: `throw`로 `catch`에 가서 `오류: 빈 메시지`를 출력하고 `return`을 만나요. 함수를 빠져나가기 직전에 `finally`가 실행되어 `연결 종료`가 나와요. 하지만 `return` 때문에 `finally` 다음 줄인 `다음 메시지 대기`는 실행되지 않아요.
+  - `finally`는 `try`와 `catch`가 끝난 뒤에 실행되므로, `연결 종료`가 `오류: 빈 메시지`보다 먼저 나오지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

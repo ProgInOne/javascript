@@ -1,0 +1,43 @@
+id: js-basics.arrays.arrays-review.tf-mixed-types
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.arr.literal-index, weight: 1 }
+tags: [array-literal, index, assessment]
+estimatedSeconds: 60
+usage: assessment
+prompt: |
+  캠핑 준비물 기록이에요. 다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+code: |
+  const camp = ["텐트", 2, true];
+  console.log(camp[1]);
+spec:
+  statement: "`camp`에 문자열·숫자·불리언이 섞여 있어서, 이 코드는 첫 줄에서 오류가 난다."
+  answer: false
+  misconceptionIfWrong: js.mc.array-same-type-only
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 배열에는 자료형이 다른 값을 함께 담을 수 있으므로 오류 없이 2가 출력된다
+      correct: true
+    - id: r2
+      text: 배열에는 첫 요소와 같은 자료형만 담을 수 있으므로 숫자 2를 넣는 순간 오류가 난다
+      misconception: js.mc.array-same-type-only
+    - id: r3
+      text: 오류는 나지 않지만 인덱스가 1부터 시작하므로 "텐트"가 출력된다
+misconceptions: [js.mc.array-same-type-only]
+hints:
+  - 배열 대괄호 안에는 값을 쉼표로 나열해요. 값의 자료형에 대한 규칙을 배운 적이 있나요?
+  - 문자열 배열, 숫자 배열만 보았더라도, 한 배열에 서로 다른 자료형을 넣는 것은 JavaScript가 막지 않아요.
+  - 오류가 나지 않는다면, 인덱스 1에 있는 요소는 몇 번째 요소인지 세어 보세요.
+explanation: |
+  설명은 **틀렸어요**. 이 코드는 오류 없이 `2`를 출력해요.
+
+  - JavaScript 배열에는 문자열, 숫자, 불리언처럼 자료형이 다른 값을 함께 담을 수 있어요. 첫 요소의 자료형을 따라야 한다는 규칙은 없어요.
+  - 인덱스는 0부터 시작해요. `camp[0]`은 `"텐트"`, `camp[1]`은 `2`, `camp[2]`는 `true`예요.
+
+  "인덱스가 1부터 시작해서 `텐트`가 출력된다"는 이유는 오류가 나지 않는다는 점은 맞지만 인덱스를 잘못 셌어요. 실제 프로그램에서는 한 배열에 같은 종류의 값을 모아 두는 경우가 많지만, 그것은 읽기 쉽게 하려는 습관이지 언어 규칙이 아니에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

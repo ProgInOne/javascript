@@ -1,0 +1,139 @@
+id: js-basics.objects.objects-review.fix-phrasebook
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.obj.dot-bracket, weight: 1 }
+  - { id: js.obj.reference, weight: 0.5 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [object, bracket, variable-key, array, no-mutation, debugging, assessment]
+estimatedSeconds: 300
+usage: assessment
+prompt: |
+  여행용 단어장 함수 `translate(dict, words)`예요. 단어장 객체 `dict`(한국어 → 영어)와 단어 배열 `words`를 받아, 단어마다 영어 뜻을 담은 **새 배열**을 돌려줘요. 단어장에 없는 단어는 괄호로 감싸 그대로 둬요.
+
+  ```js
+  const dict = { 물: "water", 역: "station" };
+  const words = ["역", "버스", "물"];
+  translate(dict, words);  // ["station", "(버스)", "water"]
+  console.log(words);      // ["역", "버스", "물"] (그대로)
+  ```
+
+  지금은 결과가 이상하고, 넘긴 `words` 배열까지 바뀌어요. 버그를 모두 고치세요. 버그는 하나가 아닐 수 있어요. 숨겨진 테스트는 다른 단어장과 단어로 확인해요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function translate(dict, words) {
+            const result = words;
+            for (let i = 0; i < result.length; i++) {
+              const word = result[i];
+              if (dict.word !== undefined) {
+                result[i] = dict.word;
+              } else {
+                result[i] = "(" + word + ")";
+              }
+            }
+            return result;
+          }
+  entry: translate
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function translate(dict, words) {
+            const result = [];
+            for (let i = 0; i < words.length; i++) {
+              const word = words[i];
+              if (dict[word] !== undefined) {
+                result.push(dict[word]);
+              } else {
+                result.push("(" + word + ")");
+              }
+            }
+            return result;
+          }
+  bugDescription: 단어장에 있는 단어도 모두 괄호로 감싸져 나오고, 함수를 부른 뒤 넘긴 단어 배열의 내용까지 바뀌어 있어요.
+  bugMisconception: js.mc.dot-with-variable-key
+  checks:
+    - kind: call
+      id: basic
+      description: 단어장에 있는 단어는 영어 뜻으로, 없는 단어는 괄호로 감싸야 합니다.
+      requirement: 단어 찾기
+      args: [{ "물": "water", "역": "station" }, ["역", "버스", "물"]]
+      expect: { equals: ["station", "(버스)", "water"] }
+      misconceptionIfFail: js.mc.dot-with-variable-key
+    - kind: call
+      id: other-dict
+      visible: false
+      description: 처음 보는 단어장과 단어도 같은 규칙으로 바꿔야 합니다.
+      requirement: 단어 찾기
+      args: [{ "왼쪽": "left", "오른쪽": "right", "출구": "exit" }, ["출구", "왼쪽", "화장실", "출구"]]
+      expect: { equals: ["exit", "left", "(화장실)", "exit"] }
+      misconceptionIfFail: js.mc.dot-with-variable-key
+    - kind: call
+      id: word-key
+      visible: false
+      description: 단어장에 이름이 word인 속성이 있어도, 단어마다 그 단어의 뜻을 찾아야 합니다.
+      requirement: 단어 찾기
+      args: [{ "word": "?!", "표": "ticket" }, ["표", "지도"]]
+      expect: { equals: ["ticket", "(지도)"] }
+      misconceptionIfFail: js.mc.dot-with-variable-key
+    - kind: call
+      id: empty
+      visible: false
+      description: 단어가 하나도 없으면 빈 배열을 돌려줘야 합니다.
+      requirement: 단어 찾기
+      args: [{ "물": "water" }, []]
+      expect: { equals: [] }
+    - kind: call
+      id: keep-words
+      visible: false
+      description: 넘긴 단어장과 단어 배열이 바뀌면 안 됩니다.
+      requirement: 원래 배열 지키기
+      args: [{ "물": "water", "역": "station" }, ["역", "버스", "물"]]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.array-assign-copies
+    - kind: call
+      id: new-array
+      visible: false
+      description: 받은 배열을 그대로 돌려주지 말고 새 배열을 돌려줘야 합니다.
+      requirement: 원래 배열 지키기
+      args: [{ "물": "water" }, ["물"]]
+      expect: { returnsNewReference: true }
+      misconceptionIfFail: js.mc.array-assign-copies
+misconceptions: [js.mc.dot-with-variable-key, js.mc.array-assign-copies]
+hints:
+  - 증상이 두 가지예요. "모두 괄호로 나옴"과 "넘긴 배열이 바뀜"의 원인을 따로 찾아보세요.
+  - "`dict.word`는 변수 `word`에 든 단어를 찾나요, 이름이 `word`인 속성을 찾나요? 그리고 `const result = words;`를 하면 배열이 하나 더 생기나요?"
+  - 반복 안에서 `result[i] = ...`로 덮어쓰는 배열이 실제로 어떤 배열인지 생각해 보세요. 결과를 담을 배열은 어디서 새로 만들어야 할까요?
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function translate(dict, words) {
+    const result = [];
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      if (dict[word] !== undefined) {
+        result.push(dict[word]);
+      } else {
+        result.push("(" + word + ")");
+      }
+    }
+    return result;
+  }
+  ```
+
+  버그는 두 개예요.
+
+  1. **`dict.word`**: 점 뒤의 `word`는 변수가 아니라 속성 이름이에요. 단어장에 `word`라는 속성은 없으니 늘 `undefined`이고, 모든 단어가 괄호로 감싸졌어요. 변수에 든 이름으로 찾으려면 `dict[word]`처럼 대괄호를 써요.
+  1. **`const result = words;`**: 배열을 대입하면 복사되지 않고, `result`와 `words`가 같은 배열을 가리켜요. 그래서 `result[i] = ...`가 넘긴 배열의 내용을 바꿨어요. 결과는 새 빈 배열 `[]`에 담아야 해요.
+
+  - 첫 번째 버그만 고치면 결과는 맞지만, 숨겨진 테스트가 넘긴 배열이 바뀐 것과 같은 배열을 돌려준 것을 잡아요.
+  - `const result = [...words];`로 복사본을 만든 뒤 그 안을 바꾸는 풀이도 정답이에요.
+  - `if (dict[word])`처럼 써도 이번 테스트는 통과해요. 다만 뜻이 빈 문자열처럼 falsy인 값이면 없는 단어로 처리되므로, "없음"을 `undefined`로 확인하는 편이 정확해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
