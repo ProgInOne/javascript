@@ -90,5 +90,6 @@ explanation: |
   - 함수 하나를 반복 안에서 여러 번 부르면, 출력 모양은 함수 한 곳에서 관리하고 반복은 "몇 번, 어떤 값으로"만 정하면 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -58,5 +58,6 @@ explanation: |
   - 민지가 두 번째에 `2잔째`라고 답했다면 함수 안의 변수가 다음 호출까지 남는다고 본 거예요. 손님별 잔 수를 기억하려면 그 값도 함수 바깥에 둬야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

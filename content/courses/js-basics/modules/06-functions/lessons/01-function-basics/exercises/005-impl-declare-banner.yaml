@@ -78,5 +78,6 @@ explanation: |
   - 안내판 모양을 바꾸고 싶으면 함수 본문 한 곳만 고치면 돼요. 여섯 줄을 직접 써도 출력은 같지만, 함수를 쓰는 연습이 되지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

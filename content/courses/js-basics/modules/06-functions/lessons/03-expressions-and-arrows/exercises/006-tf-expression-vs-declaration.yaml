@@ -39,5 +39,6 @@ explanation: |
   - 이름이 없어서 부를 수 없다는 이유를 골랐다면: `function` 뒤에 이름은 없지만, 함수를 담은 변수 이름 `square`로 불러요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

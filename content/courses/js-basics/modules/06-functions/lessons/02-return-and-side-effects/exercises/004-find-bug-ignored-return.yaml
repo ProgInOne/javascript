@@ -59,5 +59,6 @@ explanation: |
   - 함수는 호출할 때마다 실행돼요. 두 번 다 실행됐지만 결과를 버렸을 뿐이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

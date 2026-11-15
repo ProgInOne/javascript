@@ -146,5 +146,6 @@ explanation: |
   - 인수 순서는 `(age, isWeekend)`예요. `ticketPrice(12, true)`는 12세가 주말에 온 경우예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

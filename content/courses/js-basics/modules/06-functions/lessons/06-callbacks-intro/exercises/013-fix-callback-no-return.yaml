@@ -93,5 +93,6 @@ explanation: |
   - 콜백을 받는 함수는 콜백의 **반환값**을 써요. 콜백이 값을 돌려줘야 하는 자리에서는 `return`(또는 중괄호 없는 화살표 함수)이 필요해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

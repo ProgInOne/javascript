@@ -15,7 +15,7 @@ prompt: |
   오늘도 힘내요!
   ```
 
-  함수 본문은 그대로 두세요.
+  함수 본문은 고치지 않아도 돼요.
 spec:
   buggy:
     files:
@@ -65,5 +65,6 @@ explanation: |
   - 이름만 쓴 `openShop;`은 호출이 아니에요. 괄호까지 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

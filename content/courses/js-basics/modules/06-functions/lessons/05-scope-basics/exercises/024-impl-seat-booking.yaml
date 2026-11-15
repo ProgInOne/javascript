@@ -157,5 +157,6 @@ explanation: |
   - **매진 경계**: 매진 검사는 `booked += count;` 뒤에 `booked === TOTAL_SEATS`로 해요. 매진 뒤에는 남은 좌석이 0이라 1석도 `남은 좌석은 0석이에요`로 거절돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -33,5 +33,6 @@ explanation: |
   `multiply`는 바깥 변수 `rate`를 읽기 때문에, 같은 인수 5를 넣어도 `rate`가 바뀌면 결과가 달라져요. 바깥 변수를 바꾸는 함수도 호출할 때마다 결과가 달라질 수 있어요. 필요한 값을 모두 매개변수로 받으면 순수 함수가 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -67,5 +67,6 @@ explanation: |
   - 포장 줄이 `배달 준비`보다 먼저 나온다고 생각했다면 선언 순서대로 실행된다고 본 거예요. 실행 순서는 호출 순서가 정해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

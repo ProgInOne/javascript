@@ -52,5 +52,6 @@ explanation: |
   함수는 괄호를 붙여 호출할 때마다 실행되고, 반환값을 담은 변수를 쓰는 것은 값을 읽을 뿐이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

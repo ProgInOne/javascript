@@ -75,5 +75,6 @@ explanation: |
   - 끝의 `};`는 `const` 문장을 끝내는 세미콜론까지 포함해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

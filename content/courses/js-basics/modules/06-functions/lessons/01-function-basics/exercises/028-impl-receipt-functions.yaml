@@ -169,5 +169,6 @@ explanation: |
   - 모든 계산을 `checkout` 하나에 써도 정답이지만, 나눠 두면 각 부분을 따로 확인하고 고치기 쉬워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

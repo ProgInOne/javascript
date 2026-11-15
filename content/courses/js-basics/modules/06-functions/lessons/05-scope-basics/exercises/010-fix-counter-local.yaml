@@ -93,5 +93,6 @@ explanation: |
   바깥 변수는 함수 안에서 바꿀 수 있고, 함수가 끝나도 값이 남아요. 호출 사이에 기억해야 하는 값(도장 수, 방문 횟수 등)은 이렇게 함수 바깥에 둬요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

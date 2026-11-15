@@ -107,5 +107,6 @@ explanation: |
   - `if (transform === undefined)`로 나눠 처리해도 동작은 같아요. 다만 기본값을 쓰면 반복 코드를 한 벌만 쓰면 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

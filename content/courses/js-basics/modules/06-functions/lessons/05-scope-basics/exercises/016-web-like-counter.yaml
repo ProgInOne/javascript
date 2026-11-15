@@ -209,5 +209,6 @@ explanation: |
   - `showLikes(likes)`를 함수마다 호출해 화면을 변수와 맞춰요. 화면 글자는 보여 주는 것일 뿐, 개수의 원본은 변수예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -77,5 +77,6 @@ explanation: |
   바깥의 `console.log`를 지우고 `formatPrice(3000);`만 남겨도 출력은 같아요. 하지만 그러면 함수가 출력이라는 부수 효과를 계속 갖고 있어서, 값만 필요한 곳에서 쓸 때마다 원하지 않는 출력이 생겨요. 반대로 함수 안의 `return`을 지우면 `formatPrice(1200)`이 `undefined`가 되어 두 번째 체크를 통과하지 못해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

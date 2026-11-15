@@ -64,5 +64,6 @@ explanation: |
   - 끝의 `};`의 세미콜론은 `const` 문장이 끝났다는 표시예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

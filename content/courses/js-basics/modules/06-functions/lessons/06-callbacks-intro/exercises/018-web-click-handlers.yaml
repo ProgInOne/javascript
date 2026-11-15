@@ -234,5 +234,6 @@ explanation: |
   - **경계**: 확인 없이 늘리면 12번 눌렀을 때 12가 되고, 확인 없이 줄이면 0에서 -1이 돼요. `qty`를 바꾸기 전에 `if`로 확인하세요. `qty++` 뒤에 `if (qty > 10) { qty = 10; }`처럼 되돌려도 결과는 같아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

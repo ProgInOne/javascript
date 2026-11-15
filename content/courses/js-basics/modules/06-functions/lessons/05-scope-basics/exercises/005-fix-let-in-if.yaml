@@ -77,5 +77,6 @@ explanation: |
   - `console.log`를 블록 안으로 옮겨도 이 경우의 출력은 같지만, 회원이 아닐 때 아무것도 출력되지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

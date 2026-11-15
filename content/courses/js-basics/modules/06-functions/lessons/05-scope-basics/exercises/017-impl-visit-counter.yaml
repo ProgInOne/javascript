@@ -85,5 +85,6 @@ explanation: |
   - `let visitCount = 0;`은 `visit("민지");`보다 위에 있어야 해요. 아래에 두면 첫 호출 때 아직 만들어지지 않은 변수를 쓰게 되어 `Cannot access 'visitCount' before initialization` 오류가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -15,7 +15,7 @@ prompt: |
   두 번째 손님: 4500원
   ```
 
-  - 함수 `kimbapPrice`는 그대로 두고, 함수를 부르는 쪽을 고쳐 보세요.
+  - 함수 `kimbapPrice`는 고치지 않아도 돼요. 함수를 부르는 쪽을 고쳐 보세요.
 spec:
   buggy:
     files:
@@ -63,7 +63,10 @@ explanation: |
   ```
 
   `kimbapPrice(4500, undefined)`로 써도 기본값이 쓰여 정답이에요. 다만 "정하지 않았다"는 뜻이면 인수를 빼는 편이 자연스러워요.
+
+  함수 안에서 `null`을 따로 검사해 1로 바꿔도 출력은 같아서 채점은 통과해요. 하지만 이 문제의 요점은 "기본값은 `undefined`일 때만 쓰인다"이고, 기본값을 쓰고 싶을 때는 인수를 빼고 부르면 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

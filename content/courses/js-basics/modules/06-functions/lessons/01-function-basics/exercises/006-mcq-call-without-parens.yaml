@@ -45,5 +45,6 @@ explanation: |
   함수를 실행하는 것은 이름 뒤의 **괄호**예요. 인수가 없어도 빈 괄호를 붙여야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

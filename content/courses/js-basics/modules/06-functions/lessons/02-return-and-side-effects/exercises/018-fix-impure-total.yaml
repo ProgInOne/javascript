@@ -121,5 +121,6 @@ explanation: |
   `points +` 대신 `return points + price / 100;`으로만 고치면 바깥을 바꾸지는 않지만 여전히 바깥 `points`를 읽어요. 그러면 `previewPoints(0, 5000)`도 `points`를 기준으로 계산해서 50이 아닌 1050이 나와요. 실제로 결제할 때만 `points = previewPoints(points, 20000);`처럼 결과를 대입해 바꾸면 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

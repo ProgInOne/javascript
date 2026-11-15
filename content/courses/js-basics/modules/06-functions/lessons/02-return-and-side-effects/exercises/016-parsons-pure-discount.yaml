@@ -20,7 +20,7 @@ spec:
     - { id: l4, code: "}" }
   distractors:
     - { id: d1, code: "console.log(price - off);", replaces: l3, misconception: js.mc.return-is-log }
-    - { id: d2, code: "salePrice = price - off;", replaces: l3, misconception: js.mc.undeclared-assign-creates-global }
+    - { id: d2, code: "salePrice = price - off;", replaces: l3 }
   gradeIndent: false
   entry: discounted
   checks:
@@ -71,5 +71,6 @@ explanation: |
   - `salePrice = price - off;`는 선언하지 않은 이름에 대입해서 엄격 모드에서 `ReferenceError: salePrice is not defined`가 나요. 바깥 변수를 미리 만들어 두었더라도, 바깥을 바꾸는 것은 부수 효과라서 순수 함수가 아니게 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

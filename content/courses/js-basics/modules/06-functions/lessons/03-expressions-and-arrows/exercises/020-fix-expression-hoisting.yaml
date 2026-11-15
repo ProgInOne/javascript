@@ -83,5 +83,6 @@ explanation: |
   계산: 2장은 `2 * 12000` = `24000`, 5장은 `5 * 12000 - 5000` = `55000`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

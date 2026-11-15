@@ -67,5 +67,6 @@ explanation: |
   - `"안녕하세요, 하린님!"`을 그대로 돌려주면 다른 인수로 부른 검사에서 틀려요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

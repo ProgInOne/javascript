@@ -52,5 +52,6 @@ explanation: |
   1번 줄에서 오류가 난다고 생각했다면 함수 선언의 호이스팅을, `receipt(3)`에서 오류가 난다고 생각했다면 "본문은 호출할 때 실행된다"는 점을 다시 확인해 보세요. 만약 13번 줄을 7번 줄보다 위로 옮기면 그때는 `price`를 쓸 수 없어서 `ReferenceError`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

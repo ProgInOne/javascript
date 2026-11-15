@@ -38,5 +38,6 @@ explanation: |
   - `...`은 매개변수 앞에 쓰는 정식 문법이라 오류가 나지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

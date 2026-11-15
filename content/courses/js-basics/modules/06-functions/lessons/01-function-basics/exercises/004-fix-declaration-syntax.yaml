@@ -61,5 +61,6 @@ explanation: |
   - `SyntaxError`는 실행 전에 나는 오류라서, 아래의 `showMenu();`를 포함해 한 줄도 실행되지 않아요. 그래서 아무것도 출력되지 않았어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

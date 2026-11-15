@@ -50,5 +50,6 @@ explanation: |
   - 인수가 모자라도 오류는 나지 않아요. 나머지 매개변수는 빈 묶음이 될 뿐이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

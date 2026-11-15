@@ -69,5 +69,6 @@ explanation: |
   - 함수 본문을 `return price - paid;`로 바꾸면 첫 손님은 맞지만, 순서가 올바른 둘째 손님 호출이 `-800원`이 되어 틀려요. 함수는 그대로 두고 잘못된 호출을 고쳐야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

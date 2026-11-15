@@ -113,5 +113,6 @@ explanation: |
   - **계산 순서**: `"..." + sum / scores.length + "점"`에서 나눗셈이 `+`보다 먼저 계산되므로 괄호가 없어도 평균이 숫자로 들어가요. 헷갈리면 `const average = sum / scores.length;`로 먼저 구해 두어도 좋아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

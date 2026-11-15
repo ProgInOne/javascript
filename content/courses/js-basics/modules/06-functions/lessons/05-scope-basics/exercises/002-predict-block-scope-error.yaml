@@ -32,5 +32,6 @@ explanation: |
   "오류 없음"이라고 생각했다면 마지막 회차의 값 6이 남는다고 본 거예요. 반복이 끝난 뒤에도 값이 필요하면 `let last = 0;`을 반복 **앞에서** 만들고 본문에서 `last = i * 2;`처럼 대입해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

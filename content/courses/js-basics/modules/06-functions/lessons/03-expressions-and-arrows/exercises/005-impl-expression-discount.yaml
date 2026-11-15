@@ -81,5 +81,6 @@ explanation: |
   - `const discount = price * percent / 100;`처럼 중간값을 변수에 담은 뒤 `return price - discount;`로 써도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

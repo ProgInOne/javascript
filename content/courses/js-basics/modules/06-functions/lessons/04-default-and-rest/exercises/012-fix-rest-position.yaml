@@ -63,5 +63,6 @@ explanation: |
   매개변수 순서만 바꾸고 호출은 그대로 두면 `customer`가 `1200`을 받고, `prices`에는 `3500`, `800`, `"유나"`가 들어가 `1200님, 상품 3개를 담았어요`가 나와요. 인수는 이름이 아니라 순서대로 들어가니까요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

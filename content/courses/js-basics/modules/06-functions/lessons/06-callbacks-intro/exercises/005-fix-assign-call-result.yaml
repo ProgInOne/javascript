@@ -66,5 +66,6 @@ explanation: |
   - 괄호를 지우면 함수 자체가 담겨서, `doorbell()`을 부를 때마다 `ring`이 실행돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -86,5 +86,6 @@ explanation: |
   - 비엄격 모드였다면 이 코드는 오류 없이 전역 변수를 만들어 버려요. 오타로 새 변수가 생겨도 모르고 넘어가게 되므로, 엄격 모드의 오류가 오히려 실수를 빨리 알려 줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

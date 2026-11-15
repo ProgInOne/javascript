@@ -44,5 +44,6 @@ explanation: |
   `8`을 `result`에 담으려면 `return n * 2;`를 써야 해요. 보여 주기(`console.log`)와 돌려주기(`return`)는 다른 일이에요. `null`은 프로그래머가 일부러 넣는 다른 값이고, 인수 `4`가 저절로 돌아오지도 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

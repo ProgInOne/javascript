@@ -1,6 +1,6 @@
 id: js-basics.functions.function-basics.find-bug-missing-parens
 type: find_bug_line
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.fn.call, weight: 1 }
   - { id: js.fn.declaration, weight: 0.3 }
@@ -59,5 +59,6 @@ explanation: |
   - 함수 선언은 본문을 실행하지 않아요. 그리고 함수는 몇 번이든 다시 부를 수 있어요. "이미 실행되어서 다시 실행되지 않는다"는 두 가지 면에서 틀린 생각이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -72,5 +72,6 @@ explanation: |
   - `console.log`가 아니라 `return`으로 돌려줘야 호출한 쪽에서 문장을 받아 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

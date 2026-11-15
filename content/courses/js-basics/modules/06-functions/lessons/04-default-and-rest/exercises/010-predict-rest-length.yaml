@@ -41,5 +41,6 @@ explanation: |
   조원 수를 4라고 답했다면, 나머지 매개변수가 앞의 `leader` 몫까지 모은다고 생각한 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -81,5 +81,6 @@ explanation: |
   - 50000에서 20퍼센트를 깎으면 `50000 - 50000 * 20 / 100` = `50000 - 10000` = `40000`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

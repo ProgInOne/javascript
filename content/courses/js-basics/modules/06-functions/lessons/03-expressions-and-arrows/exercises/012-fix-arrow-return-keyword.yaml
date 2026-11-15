@@ -57,5 +57,6 @@ explanation: |
   식 본문에서는 `dollar * 1400`의 값이 자동으로 반환돼요. 한 줄 계산이면 첫 번째 방법이 더 간단해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

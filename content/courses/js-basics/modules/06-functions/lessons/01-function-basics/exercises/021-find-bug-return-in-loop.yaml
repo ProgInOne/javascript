@@ -1,6 +1,6 @@
 id: js-basics.functions.function-basics.find-bug-return-in-loop
 type: find_bug_line
-difficulty: 4
+difficulty: 3
 concepts:
   - { id: js.fn.return, weight: 1 }
   - { id: js.loops.accumulator-pattern, weight: 0.3 }
@@ -22,7 +22,6 @@ spec:
     console.log("1부터 4까지 합: " + sumUpTo(4));
     console.log("1부터 10까지 합: " + sumUpTo(10));
   bugLines: [5]
-  acceptLines: [6]
   symptom: "합이 10과 55로 나와야 하는데, 둘 다 `1`이 나와요."
   symptomCheck:
     console: ["1부터 4까지 합: 1", "1부터 10까지 합: 1"]
@@ -31,8 +30,8 @@ spec:
       let total = 0;
       for (let i = 1; i <= n; i++) {
         total += i;
+        if (i === n) return total;
       }
-      return total;
     }
 
     console.log("1부터 4까지 합: " + sumUpTo(4));
@@ -67,8 +66,9 @@ explanation: |
 
   - "반복은 계속되지만 처음 값만 남는다"는 틀렸어요. `return` 뒤로는 반복을 포함해 함수 안의 어떤 코드도 실행되지 않아요.
   - `total += i`는 덮어쓰기가 아니라 이전 값에 더하기예요. 덮어썼다면 마지막 값(4나 10)이 나왔을 거예요.
-  - 6번 줄(반복의 닫는 중괄호)도 원인 줄로 인정해요. `return`을 그 줄 아래로 내리는 것이 고치는 방법이기 때문이에요.
+  - 고칠 때는 5번 줄을 반복의 닫는 중괄호(6번 줄) 아래로 옮겨요. 6번 줄 자체에는 잘못이 없으니 원인 줄은 5번 줄이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -53,5 +53,6 @@ explanation: |
   4등을 계산하지 않고 180이 그대로 남는다고 생각했다면, `if`에 맞지 않는 경우에 함수가 "아무 영향 없는 값"을 돌려준다고 본 거예요. 실제로는 `undefined`가 돌아와 합계를 망가뜨려요. 4등 이하에 0점을 주려면 함수 끝에 `return 0;`을 두면 되고, 그러면 마지막 줄은 `4등까지: 180`이 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

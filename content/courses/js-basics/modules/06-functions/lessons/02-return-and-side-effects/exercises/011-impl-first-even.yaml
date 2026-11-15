@@ -106,5 +106,6 @@ explanation: |
   흔한 실수는 반복 안에 `else { return undefined; }`(또는 `return null;`)을 넣는 것이에요. 그러면 첫 수가 홀수일 때 바로 끝나서 `firstEven(3, 9)`도 4를 찾지 못해요. "없다"는 결론은 모든 수를 살펴본 **뒤에야** 내릴 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

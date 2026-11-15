@@ -57,5 +57,6 @@ explanation: |
   - 호출 식은 반환값으로 바뀐다고 생각하고 안쪽부터 하나씩 바꿔 쓰면 헷갈리지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -59,5 +59,6 @@ explanation: |
   - `stamp(day);`는 함수 밖에서 `day`를 쓰려고 해서 `ReferenceError: day is not defined`가 나요. `day`는 함수 안에서만 쓰는 매개변수예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

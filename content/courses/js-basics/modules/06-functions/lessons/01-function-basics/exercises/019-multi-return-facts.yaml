@@ -1,6 +1,6 @@
 id: js-basics.functions.function-basics.multi-return-facts
 type: mcq_multi
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: js.fn.return, weight: 1 }
 tags: [return, facts]
@@ -48,5 +48,6 @@ explanation: |
   - "`console.log(x)`의 `x`가 반환값이 된다": `console.log`는 보여 주기만 해요. 반환값은 `return`으로만 정해져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

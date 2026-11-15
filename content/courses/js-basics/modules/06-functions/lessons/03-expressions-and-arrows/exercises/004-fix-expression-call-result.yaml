@@ -72,5 +72,6 @@ explanation: |
   - `getTax`를 아예 쓰지 않고 6, 7번 줄에서 `calcTax(4500)`처럼 바로 불러도 출력은 같아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

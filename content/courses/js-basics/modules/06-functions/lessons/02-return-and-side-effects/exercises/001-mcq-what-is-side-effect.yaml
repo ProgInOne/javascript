@@ -44,5 +44,6 @@ explanation: |
   - 함수가 끝나도 바깥 변수의 변화는 되돌아가지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

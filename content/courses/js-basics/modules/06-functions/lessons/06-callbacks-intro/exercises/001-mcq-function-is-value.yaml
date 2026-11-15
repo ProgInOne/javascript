@@ -43,5 +43,6 @@ explanation: |
   오류가 난다고 답했다면 "함수는 변수에 담을 수 없다"고 생각한 거예요. `undefined`라고 답했다면 `hello`에 함수가 아닌 다른 것이 담겼다고 본 거예요. 괄호가 없으니 담긴 것은 함수 그대로예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

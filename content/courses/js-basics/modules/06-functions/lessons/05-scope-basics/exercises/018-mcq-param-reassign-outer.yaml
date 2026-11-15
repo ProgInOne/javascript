@@ -48,5 +48,6 @@ explanation: |
   `70`이라고 생각했다면 매개변수를 바꾸면 인수로 넘긴 바깥 변수도 바뀐다고 본 거예요. 바깥 변수를 바꾸려면 `coins = spend(coins);`처럼 반환값을 직접 대입해야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

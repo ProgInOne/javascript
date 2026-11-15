@@ -1,6 +1,6 @@
 id: js-basics.functions.scope-basics.find-bug-shadow-total
 type: find_bug_line
-difficulty: 4
+difficulty: 3
 concepts:
   - { id: js.scope.shadowing, weight: 1 }
   - { id: js.scope.global, weight: 0.5 }
@@ -76,5 +76,6 @@ explanation: |
   - "출력 줄을 함수 안으로 옮겨야 한다": 옮기면 함수 안의 `total`(그 회차의 금액)이 보일 뿐, 합계는 여전히 어디에도 쌓이지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

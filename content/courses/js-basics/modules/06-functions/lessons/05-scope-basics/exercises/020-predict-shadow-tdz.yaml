@@ -48,5 +48,6 @@ explanation: |
   "오류 없음"이라고 생각했다면, 안쪽 선언 전 줄에서는 바깥 `discount`(1000)를 읽는다고 본 거예요. 안쪽에서 바깥 값도 쓰고 싶다면 안쪽 변수에 `bigDiscount`처럼 다른 이름을 붙여야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

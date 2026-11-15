@@ -102,5 +102,6 @@ explanation: |
   **함정**: `let bonus = 0;`을 함수 **바깥**에 두면 오류는 사라지지만, 첫 구매에서 500이 된 `bonus`가 그대로 남아 두 번째 구매도 `550점 적립`이 돼요. 구매마다 새로 정하는 값은 함수 안에, 계속 쌓이는 값만 바깥에 둬요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

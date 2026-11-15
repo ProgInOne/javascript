@@ -43,5 +43,6 @@ explanation: |
   이렇게 조용히 틀어지기 때문에, 빠질 수 있는 인수에는 `city = "서울"`처럼 기본값을 정해 두면 좋아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

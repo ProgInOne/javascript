@@ -85,5 +85,6 @@ explanation: |
   - 기본값 없이 `if (name === undefined) { name = "손님"; }`처럼 써도 같은 결과예요. 기본값 매개변수는 이것을 한 줄로 줄인 모양이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

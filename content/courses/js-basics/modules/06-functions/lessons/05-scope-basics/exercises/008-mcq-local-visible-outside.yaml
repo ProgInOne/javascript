@@ -43,5 +43,6 @@ explanation: |
   `WELCOME10`도 나온다고 생각했다면, 함수를 한 번 호출하면 안의 변수가 밖에 남는다고 본 거예요. 함수 안의 값이 밖에서 필요하면 `return code;`처럼 돌려줘야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

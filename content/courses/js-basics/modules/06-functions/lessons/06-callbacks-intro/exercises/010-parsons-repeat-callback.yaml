@@ -71,5 +71,6 @@ explanation: |
   - 함수 선언은 미리 만들어지므로 `check` 선언을 `forEachStudent` 선언보다 먼저 놓아도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

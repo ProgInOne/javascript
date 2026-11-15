@@ -106,5 +106,6 @@ explanation: |
   - 숨겨진 테스트의 `(p) => (p >= 10000 ? 2000 : 0)`처럼, 함수 규칙은 받은 가격에 따라 다른 금액을 돌려줄 수 있어요. 그래서 할인 금액을 미리 정해 두지 않고 매번 `rule(price)`로 물어봐야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

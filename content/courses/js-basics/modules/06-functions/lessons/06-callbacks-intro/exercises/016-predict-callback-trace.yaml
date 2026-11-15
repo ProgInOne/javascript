@@ -68,5 +68,6 @@ explanation: |
   두 번째 `visit`의 도장 수를 2, 3으로 적었다면, 함수가 바꾼 바깥 변수가 호출이 끝나면 원래대로 돌아간다고 본 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

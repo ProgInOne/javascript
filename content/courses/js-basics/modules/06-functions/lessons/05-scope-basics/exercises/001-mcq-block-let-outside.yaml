@@ -42,5 +42,6 @@ explanation: |
   - "`undefined`가 출력된다"고 생각했다면: `undefined`는 변수는 **있는데** 값이 없을 때예요. 여기서는 변수 자체가 없어서 오류예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

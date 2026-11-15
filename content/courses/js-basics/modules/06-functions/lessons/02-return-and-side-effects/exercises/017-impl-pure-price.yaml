@@ -83,5 +83,6 @@ explanation: |
   - 지금의 쿠폰을 쓰고 싶으면 호출하는 쪽에서 `finalPrice(20000, couponRate)`처럼 인수로 넘겨요. 시작 코드의 마지막 줄이 그 예예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

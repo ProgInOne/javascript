@@ -47,5 +47,6 @@ explanation: |
   - `repeat(cheer, 3);`: 인수는 이름이 아니라 순서대로 들어가요. `times`가 함수가 되어 `1 <= cheer`가 거짓이라 반복이 한 번도 돌지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

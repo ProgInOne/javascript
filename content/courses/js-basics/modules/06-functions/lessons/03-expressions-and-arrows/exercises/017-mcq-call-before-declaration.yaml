@@ -44,5 +44,6 @@ explanation: |
   - `undefined`라고 생각했다면: 함수가 비어 있는 상태가 아니라 완전히 만들어져 있어서, 호출하면 `return`한 글자가 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

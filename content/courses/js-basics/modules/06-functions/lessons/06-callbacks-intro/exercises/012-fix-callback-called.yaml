@@ -79,5 +79,6 @@ explanation: |
   - 괄호를 지우면 함수 자체가 넘어가서, `repeat`가 세 번 불러 줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

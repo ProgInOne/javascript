@@ -33,5 +33,6 @@ explanation: |
   - 두 번째 호출은 `"큰 컵"`을 넘겼으니 기본값은 쓰이지 않아요. 기본값은 값이 빠졌을 때만 쓰는 예비 값이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

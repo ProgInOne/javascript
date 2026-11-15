@@ -120,5 +120,6 @@ explanation: |
   - 쿠폰을 주는 경우와 아닌 경우의 `return`이 각각 있어서 모든 갈래에서 문장을 돌려줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

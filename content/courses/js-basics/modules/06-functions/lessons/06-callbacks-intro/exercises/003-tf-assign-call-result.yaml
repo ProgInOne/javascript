@@ -39,5 +39,6 @@ explanation: |
   - "함수는 변수에 담을 수 없다"는 이유도 틀려요. 괄호 없이 `const say = greet;`로 쓰면 `say()`로 잘 불러져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

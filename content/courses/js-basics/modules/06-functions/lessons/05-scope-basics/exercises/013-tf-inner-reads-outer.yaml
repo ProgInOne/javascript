@@ -45,5 +45,6 @@ explanation: |
   - "함수 안에서 바꾼 값은 함수가 끝나면 원래대로 돌아간다": 위 코드처럼 바깥 변수를 바꾼 결과는 함수가 끝나도 남아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

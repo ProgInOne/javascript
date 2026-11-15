@@ -45,5 +45,6 @@ explanation: |
   두 줄 모두 `number`라고 답했다면 괄호가 없는 `add`도 실행 결과로 본 거예요. `greet`와 `greet()`는 함수와 그 결과로, 서로 다른 값이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

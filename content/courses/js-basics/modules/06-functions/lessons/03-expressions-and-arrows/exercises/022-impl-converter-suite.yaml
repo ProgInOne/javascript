@@ -161,5 +161,6 @@ explanation: |
   - 세 함수 모두 `const`로 만들었으므로, `convertLength`가 **호출되기 전에** `toCm`과 `fromCm`이 만들어져 있어야 해요. 위처럼 차례로 쓰면 문제없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

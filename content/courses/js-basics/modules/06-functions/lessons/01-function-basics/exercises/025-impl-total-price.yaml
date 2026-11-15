@@ -83,5 +83,6 @@ explanation: |
   - 출력만 하고 돌려주지 않으면 결과가 `undefined`라 검사를 통과하지 못해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

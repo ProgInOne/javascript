@@ -53,5 +53,6 @@ explanation: |
   - 매개변수는 함수 **안**에서 쓰는 변수예요. 함수 밖에서 쓸 수 없는 것이지, 안에서 못 쓰는 것이 아니에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

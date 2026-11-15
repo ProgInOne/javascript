@@ -42,5 +42,6 @@ explanation: |
   - 쓰지 않는 함수가 있어도 오류는 나지 않아요. 만들어 두기만 한 함수일 뿐이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

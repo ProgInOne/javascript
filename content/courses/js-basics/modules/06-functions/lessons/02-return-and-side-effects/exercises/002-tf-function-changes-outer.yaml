@@ -44,5 +44,6 @@ explanation: |
   - `return`은 값을 돌려주는 일만 해요. `return`이 없어도 대입이나 출력 같은 문장은 그대로 실행돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

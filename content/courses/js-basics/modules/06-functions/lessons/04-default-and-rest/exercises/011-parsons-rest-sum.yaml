@@ -70,5 +70,6 @@ explanation: |
   - 인수가 없으면 반복이 한 번도 돌지 않아 0을 반환해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

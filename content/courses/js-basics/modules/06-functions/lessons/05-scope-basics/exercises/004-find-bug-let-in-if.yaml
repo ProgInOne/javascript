@@ -61,5 +61,6 @@ explanation: |
   - "글자와 숫자를 `+`로 이어 붙일 수 없다": `"배송비: " + 0`은 문제없이 `"배송비: 0"`이 돼요(모듈 3).
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

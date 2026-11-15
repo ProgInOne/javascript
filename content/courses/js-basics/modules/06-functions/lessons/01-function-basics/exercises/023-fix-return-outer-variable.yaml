@@ -14,7 +14,7 @@ prompt: |
   두 번째 구매 적립: 80점
   ```
 
-  함수 `calcPoints`는 그대로 두세요.
+  함수 `calcPoints`는 고치지 않아도 돼요.
 spec:
   buggy:
     files:
@@ -80,5 +80,6 @@ explanation: |
   - `console.log("첫 구매 적립: " + calcPoints(15000) + "점");`처럼 반환값을 바로 이어 붙여도 같은 출력이 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

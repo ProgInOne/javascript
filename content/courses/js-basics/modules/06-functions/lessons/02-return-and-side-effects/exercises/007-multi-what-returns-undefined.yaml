@@ -48,5 +48,6 @@ explanation: |
   - `f(-1)`은 조건이 거짓이지만 함수 끝의 `return "0 이하";`를 만나요. 모든 경우에 값이 필요할 때 쓰는 모양이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

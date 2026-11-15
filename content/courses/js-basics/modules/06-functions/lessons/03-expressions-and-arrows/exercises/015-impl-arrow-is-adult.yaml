@@ -68,5 +68,6 @@ explanation: |
   - `(age) => { return age >= 19; }`나 `if`로 나눠 `true`/`false`를 돌려줘도 정답이에요. 다만 `(age) => return age >= 19`는 문법 오류예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

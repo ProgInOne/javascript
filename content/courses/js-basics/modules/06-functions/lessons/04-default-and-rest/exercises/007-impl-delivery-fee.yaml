@@ -119,5 +119,6 @@ explanation: |
   - **인수 순서**: 기준 금액만 바꾸고 배달비는 기본값을 쓰려면 `payment(8000, undefined, 30000)`처럼 배달비 자리에 `undefined`를 넘겨요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

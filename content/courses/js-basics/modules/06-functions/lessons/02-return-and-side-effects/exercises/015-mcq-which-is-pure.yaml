@@ -37,5 +37,6 @@ explanation: |
   - `showDouble`: 콘솔 출력이라는 부수 효과가 있고, 값을 돌려주지도 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

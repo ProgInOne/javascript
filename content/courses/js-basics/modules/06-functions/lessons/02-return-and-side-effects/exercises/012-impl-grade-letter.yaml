@@ -163,5 +163,6 @@ explanation: |
   - `console.log("A")`처럼 출력하면 화면에는 보이지만 함수의 결과는 `undefined`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

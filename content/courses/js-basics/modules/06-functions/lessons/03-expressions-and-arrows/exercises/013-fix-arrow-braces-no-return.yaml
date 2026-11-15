@@ -79,5 +79,6 @@ explanation: |
   - `if (total >= 50000) { return total - 5000; } return total;`로 써도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

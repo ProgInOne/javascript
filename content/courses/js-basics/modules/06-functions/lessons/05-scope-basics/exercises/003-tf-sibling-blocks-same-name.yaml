@@ -43,5 +43,6 @@ explanation: |
   - "else 블록은 실행되지 않으므로 그 안의 코드는 문법 검사도 하지 않는다": 문법 검사는 실행 전에 코드 전체를 대상으로 해요. `else` 블록에 문법 오류가 있었다면 아무것도 실행되지 않았을 거예요. 여기서는 문법 오류가 없어서 실행되는 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -62,5 +62,6 @@ explanation: |
   - 빈칸에 `price`만 쓰면 `notebookPrice(3)`이 `3 * undefined`로 `NaN`이 돼요. 오류는 나지 않아서 결과를 보고서야 알 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

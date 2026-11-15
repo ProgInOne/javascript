@@ -42,6 +42,7 @@ spec:
           printItem("라면", 1, 4000);
           printLine();
           console.log("합계: " + (itemTotal(3500, 2) + itemTotal(4000, 1)) + "원");
+  entry: itemTotal
   solution:
     files:
       - path: main.js
@@ -88,6 +89,14 @@ spec:
           - "라면 x1: 4000원"
           - "--------------------"
           - "합계: 11000원"
+    - kind: call
+      id: item-total-returns
+      visible: false
+      description: 금액 계산은 itemTotal이 맡아요. itemTotal(가격, 개수)는 금액을 출력하지 않고 돌려줘야 합니다.
+      requirement: itemTotal이 금액 돌려주기
+      args: [1500, 3]
+      expect: { equals: 4500 }
+      misconceptionIfFail: js.mc.return-is-log
 misconceptions: [js.mc.call-without-parens, js.mc.params-match-by-name, js.mc.return-is-log]
 hints:
   - 증상을 하나씩 나눠 보세요. ① 맨 위 구분선이 없어요. ② 금액 자리가 `undefined`이고 숫자가 따로 출력돼요. ③ 김밥 개수가 `x3500`이에요.
@@ -112,5 +121,6 @@ explanation: |
   하나만 고치면 다른 버그의 증상이 그대로 남아요. 증상을 하나씩 원인과 짝지어 보는 것이 여러 버그를 고치는 요령이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

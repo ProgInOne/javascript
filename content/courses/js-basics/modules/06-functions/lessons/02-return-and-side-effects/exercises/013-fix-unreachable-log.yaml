@@ -77,5 +77,6 @@ explanation: |
   `return`을 지우고 `console.log`만 남기면 안내는 나오지만, 함수가 금액을 돌려주지 않아 `결제 금액: undefined원`이 돼요. 출력이라는 부수 효과는 `return` 전에 하고, `return`은 함수의 마지막 할 일로 둬요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -35,5 +35,6 @@ explanation: |
   - "인수를 넘기면 오류가 난다"는 틀려요. 기본값이 있어도 인수를 넘길 수 있고, 그러면 넘긴 값을 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

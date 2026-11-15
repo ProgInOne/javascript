@@ -55,5 +55,6 @@ explanation: |
   - 매번 10000에서 시작한다고 생각했다면, 함수가 바꾼 바깥 변수가 함수가 끝나면 원래대로 돌아간다고 본 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

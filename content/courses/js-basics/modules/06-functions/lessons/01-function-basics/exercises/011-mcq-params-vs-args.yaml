@@ -40,5 +40,6 @@ explanation: |
   - `width * height`는 반환할 값을 계산하는 식이고, `area`는 함수 이름이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

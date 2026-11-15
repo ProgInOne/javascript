@@ -38,5 +38,6 @@ explanation: |
   - 오류가 난다는 이유를 골랐다면: 매개변수는 중괄호 본문 안에서 자유롭게 쓸 수 있어요. `n * n`은 계산되지만 돌려주지 않을 뿐이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

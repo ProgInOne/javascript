@@ -139,5 +139,6 @@ explanation: |
   - 각 갈래에서 바로 `return`하는 방식도 가능하지만, 섬 추가 요금을 갈래마다 반복해야 해서 실수하기 쉬워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

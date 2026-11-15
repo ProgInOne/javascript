@@ -203,5 +203,6 @@ explanation: |
   - 경계: 5000원의 20%처럼 팁이 딱 1000원이면 `tip < 1000`이 거짓이라 계산한 1000원을 그대로 돌려줘요. 어느 쪽이든 1000원이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

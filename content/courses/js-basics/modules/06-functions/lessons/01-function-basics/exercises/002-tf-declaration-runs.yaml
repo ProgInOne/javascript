@@ -43,5 +43,6 @@ explanation: |
   - "두 번째 호출은 무시된다"도 틀렸어요. 함수는 부를 때마다 본문을 처음부터 다시 실행해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

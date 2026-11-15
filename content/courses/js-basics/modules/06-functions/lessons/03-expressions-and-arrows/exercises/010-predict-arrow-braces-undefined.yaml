@@ -46,5 +46,6 @@ explanation: |
   두 번째 줄을 `1500`이라고 답했다면, 중괄호를 써도 값이 자동으로 반환된다고 생각한 거예요. 중괄호를 열면 `return`을 직접 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

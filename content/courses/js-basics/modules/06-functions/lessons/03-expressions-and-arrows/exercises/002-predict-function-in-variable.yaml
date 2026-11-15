@@ -41,5 +41,6 @@ explanation: |
   첫 줄을 `string`이라고 답했다면, 함수 표현식을 쓰는 순간 실행 결과가 변수에 담긴다고 생각한 거예요. 변수에 담기는 것은 함수 자체예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

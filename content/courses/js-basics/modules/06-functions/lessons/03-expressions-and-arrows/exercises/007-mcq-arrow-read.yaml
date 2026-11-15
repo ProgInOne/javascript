@@ -39,5 +39,6 @@ explanation: |
   같은 함수를 함수 표현식으로 쓰면 `const double = function (n) { return n * 2; };`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

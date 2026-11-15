@@ -96,5 +96,6 @@ explanation: |
   - 매개변수 `hp`를 지우고 `function heal(amount)`로 바꿔 함수 안에서 바깥 `hp`를 직접 바꾸는 방법도 체크를 통과해요. 다만 값을 돌려주는 방식이 어떤 값이 바뀌는지 부르는 쪽에서 분명히 보여서 더 읽기 쉬워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

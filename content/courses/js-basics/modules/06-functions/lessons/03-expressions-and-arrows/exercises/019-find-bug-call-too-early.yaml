@@ -61,5 +61,6 @@ explanation: |
   - 함수 선언 안에서 화살표 함수를 부를 수 없다고 골랐다면: 준비만 되어 있으면 어떤 함수 안에서든 부를 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

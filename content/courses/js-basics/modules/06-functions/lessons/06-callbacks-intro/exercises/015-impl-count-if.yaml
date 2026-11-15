@@ -107,5 +107,6 @@ explanation: |
   - 짝수 조건을 `countIf` 안에 직접 쓰면 보이는 테스트 하나는 통과해도 다른 조건의 테스트는 실패해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

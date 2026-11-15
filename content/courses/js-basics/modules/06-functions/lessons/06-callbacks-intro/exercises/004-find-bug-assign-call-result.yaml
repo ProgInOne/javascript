@@ -17,7 +17,6 @@ spec:
     console.log("메뉴판을 엽니다");
     console.log(printTitle());
   bugLines: [4]
-  acceptLines: [6]
   symptom: "`메뉴판을 엽니다`가 나온 뒤 `TypeError: printTitle is not a function` 오류가 나요(6번째 줄)."
   symptomCheck:
     error: TypeError
@@ -47,13 +46,13 @@ explanation: |
   - `makeTitle()`은 괄호가 있어서 그 자리에서 실행되고, 결과인 문자열 `"== 오늘의 메뉴 =="`가 `printTitle`에 담겨요.
   - 6번 줄의 `printTitle()`은 문자열을 함수처럼 부르려는 것이라 `TypeError: printTitle is not a function`이 나요. 오류가 보고된 줄(6번)과 원인이 있는 줄(4번)이 달라요.
 
-  고치는 방법은 둘 중 하나예요.
+  처음 의도대로 `printTitle`을 함수로 부르려면 4번 줄에서 괄호를 지워 함수 자체를 담아요: `const printTitle = makeTitle;`
 
-  - 4번 줄에서 괄호를 지워 함수 자체를 담기: `const printTitle = makeTitle;` (처음 의도)
-  - 6번 줄에서 괄호를 지워 담긴 문자열을 출력하기: `console.log(printTitle);` 이 방법도 같은 출력을 내서 6번 줄도 정답으로 인정해요.
+  6번 줄에서 괄호를 지워 `console.log(printTitle);`로 바꿔도 오류는 사라지지만, 그러면 `printTitle`은 함수가 아니라 문자열로 남아요. "함수를 다른 이름으로도 부르고 싶다"는 의도와 어긋나서 원인 줄은 4번 줄이에요.
 
   함수는 다른 이름의 변수에 담을 수 있고, `console.log` 안에서 함수를 부르는 것도 괜찮아요. 문제는 괄호 하나예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

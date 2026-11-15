@@ -116,5 +116,6 @@ explanation: |
   `if (total < 10000) { return 4000; }`처럼 조건을 하나 더 쓰는 것도 동작은 맞아요. 다만 마지막 갈래에도 조건을 달면, 조건을 잘못 쓰는 순간 다시 빠지는 경우가 생기기 쉬워요. 마지막은 조건 없는 `else`나 함수 끝 `return`으로 마무리하는 습관이 안전해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

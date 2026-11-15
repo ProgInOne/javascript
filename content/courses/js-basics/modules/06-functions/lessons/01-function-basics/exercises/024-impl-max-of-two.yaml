@@ -80,5 +80,6 @@ explanation: |
   - JavaScript에는 `Math.max(a, b)`라는 기능도 있어요. 이것을 써도 정답이지만, 지금은 조건과 `return`을 연습해 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -104,5 +104,6 @@ explanation: |
   - **괄호**: `(total + fee)`의 괄호가 없으면 앞의 글자에 숫자가 차례로 이어 붙어 `320000`처럼 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

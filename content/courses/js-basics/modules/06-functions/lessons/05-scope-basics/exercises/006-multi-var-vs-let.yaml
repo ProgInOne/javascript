@@ -58,5 +58,6 @@ explanation: |
   `var`를 놓쳤다면 `var`도 블록 스코프를 따른다고 본 거예요. 실제로는 블록이 끝나도 변수가 남아서 실수를 숨기기 쉬워요. 그래서 새 코드에서는 `let`과 `const`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

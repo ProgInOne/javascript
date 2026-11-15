@@ -86,5 +86,6 @@ explanation: |
   - 숫자와 글자를 `+`로 이으면 글자가 돼요(`1 + "시간 "` → `"1시간 "`).
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -43,5 +43,6 @@ explanation: |
   - `undefined`라고 답했다면: 변수가 비어 있지는 않아요. `typeof add`를 출력하면 `"function"`이 나와요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

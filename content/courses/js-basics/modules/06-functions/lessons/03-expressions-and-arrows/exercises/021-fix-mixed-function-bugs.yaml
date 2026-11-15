@@ -113,5 +113,6 @@ explanation: |
   | + `return` | `떡볶이 2개: 9000원`, `김밥 4개: 12000원` |
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
