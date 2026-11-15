@@ -71,6 +71,7 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 - 기준 이미지는 `e2e/tests/__screenshots__/`에 커밋합니다. 글꼴 렌더링이 OS마다 달라서 **반드시 Docker(`pnpm test:e2e:visual`)에서 만들고 비교**합니다. 로컬 `pnpm test:e2e`는 `@visual` 테스트를 건너뜁니다.
 - 매번 바뀌는 값(백업 시각·크기 등)은 `mask`로 가립니다.
 - 화면을 의도적으로 바꿨다면 `pnpm test:e2e:visual --update`로 다시 만들고, PR에서 이미지 차이를 직접 확인한 뒤 커밋합니다.
+- 로컬 Docker를 쓸 수 없으면 GitHub Actions의 `visual-baselines` 워크플로로 같은 이미지에서 기준 이미지를 만듭니다: `gh workflow run visual-baselines.yml --ref <브랜치>`로 실행하고, 끝나면 `gh run download <실행 ID> -n visual-baselines -D e2e/tests/__screenshots__`로 받아 차이를 확인한 뒤 커밋합니다. 워크플로는 커밋하거나 푸시하지 않습니다.
 - CI가 실패하면 `playwright-report` 아티팩트의 차이 이미지를 확인합니다.
 
 ## 관련 문서

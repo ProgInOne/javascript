@@ -1,0 +1,47 @@
+# Regenerates Playwright visual baselines in the same container image the CI e2e job uses and
+# uploads them as an artifact. Use it when local Docker is unavailable:
+#   gh workflow run visual-baselines.yml --ref <branch>
+#   gh run download <run-id> -n visual-baselines -D e2e/tests/__screenshots__
+# Review the image diff before committing — this never commits or pushes by itself.
+name: visual-baselines
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    name: update visual baselines
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.1-noble
+      options: --ipc=host --init
+    env:
+      HOME: /root
+      PW_VISUAL: '1'
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+      - name: Playwright (update snapshots)
+        working-directory: e2e
+        run: pnpm exec playwright test --update-snapshots
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: visual-baselines
+          path: e2e/tests/__screenshots__
+          retention-days: 7
