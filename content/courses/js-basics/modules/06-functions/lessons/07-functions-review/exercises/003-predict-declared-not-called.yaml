@@ -49,5 +49,6 @@ explanation: |
   선언한 순서대로 본문이 실행된다고 생각하면 `창문 열기`, `선인장에 물 주기`가 출력에 들어가요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

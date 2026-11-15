@@ -47,5 +47,6 @@ explanation: |
   "`saved`에 출력한 글자가 들어 있다"도 틀렸어요. `console.log`는 콘솔에 보여 주기만 하고 값을 돌려주지 않아요. 출력 결과는 `false`로 같지만, 그 이유가 아니에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

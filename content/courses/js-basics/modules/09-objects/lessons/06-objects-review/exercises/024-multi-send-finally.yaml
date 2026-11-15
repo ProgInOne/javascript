@@ -73,5 +73,6 @@ explanation: |
   - `finally`는 `try`와 `catch`가 끝난 뒤에 실행되므로, `연결 종료`가 `오류: 빈 메시지`보다 먼저 나오지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

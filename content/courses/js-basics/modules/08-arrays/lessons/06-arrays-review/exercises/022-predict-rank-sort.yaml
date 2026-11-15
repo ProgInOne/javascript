@@ -4,43 +4,48 @@ difficulty: 3
 concepts:
   - { id: js.arr.sort, weight: 1 }
   - { id: js.arr.mutating-vs-not, weight: 0.3 }
-tags: [sort, default-sort, same-array, trace, assessment]
-estimatedSeconds: 140
+  - { id: js.arr.slice-concat, weight: 0.3 }
+tags: [sort, default-sort, compare-function, same-array, trace, assessment]
+estimatedSeconds: 150
 usage: assessment
 prompt: |
-  게임 점수를 정렬해 저장하려는 코드예요. 실행하면 콘솔에 무엇이 출력될까요? 세 줄을 차례로 적어 보세요. 배열은 콘솔에 `[1, 2]`처럼 보여요.
+  달리기 기록(초)으로 순위를 정하려는 코드예요. 가장 빠른 기록은 가장 작은 수예요. 실행하면 콘솔에 무엇이 출력될까요? 세 줄을 차례로 적어 보세요. 배열은 콘솔에 `[1, 2]`처럼 보여요.
 spec:
   lang: js
   code: |
-    const ranks = [25, 3, 100, 42];
-    const sorted = ranks.sort();
-    ranks.push(1);
-    console.log(sorted);
-    console.log(ranks[0]);
-    console.log(sorted.length);
+    const ranks = [58, 105, 7, 61];
+    const first = ranks.slice().sort()[0];
+    const sorted = ranks.sort((a, b) => a - b);
+    console.log(first);
+    console.log(sorted[0], sorted === ranks);
+    console.log(ranks);
   answerKind: console
   misconceptionByAnswer:
-    "[3, 25, 42, 100, 1]\n3\n5": js.mc.sort-numeric-default
-    "[3, 25, 42, 100]\n25\n4": js.mc.sort-returns-new-array
-    "[100, 25, 3, 42]\n25\n4": js.mc.sort-returns-new-array
+    "7\n7 true\n[7, 58, 61, 105]": js.mc.sort-numeric-default
+    "105\n7 false\n[58, 105, 7, 61]": js.mc.sort-returns-new-array
+    "7\n7 false\n[58, 105, 7, 61]": js.mc.sort-returns-new-array
 misconceptions: [js.mc.sort-numeric-default, js.mc.sort-returns-new-array]
 hints:
-  - "`sort()`에 비교 함수가 없으면 요소를 무엇으로 바꿔서 비교하나요?"
-  - "`25`, `3`, `100`, `42`를 글자로 보고 사전에서처럼 첫 글자부터 비교해 보세요."
-  - "`sort`가 돌려주는 배열은 새 배열인가요, `ranks` 자신인가요? 3번 줄의 `push`가 `sorted`에도 보일지 생각해 보세요."
+  - 2번 줄과 3번 줄은 둘 다 정렬하지만, `sort`에 비교 함수를 넘겼는지가 달라요. 비교 함수가 없으면 요소를 무엇으로 바꿔서 비교하나요?
+  - "`58`, `105`, `7`, `61`을 글자로 보고 사전에서처럼 첫 글자부터 비교해 보세요. 2번 줄은 `slice()`로 만든 배열을 정렬해요. 그 배열은 `ranks`와 같은 배열인가요?"
+  - 3번 줄의 `sort`가 돌려주는 배열은 새 배열인가요, `ranks` 자신인가요? 정렬한 뒤 `ranks`의 순서도 생각해 보세요.
 explanation: |
   출력은 다음과 같아요.
 
   ```text
-  [100, 25, 3, 42, 1]
-  100
-  5
+  105
+  7 true
+  [7, 58, 61, 105]
   ```
 
-  - `sort()`는 비교 함수가 없으면 요소를 **문자열로 바꿔 사전순**으로 정렬해요. `"100"`, `"25"`, `"3"`, `"42"`의 첫 글자 1 < 2 < 3 < 4 순서라 `[100, 25, 3, 42]`가 돼요. 크기 순 `[3, 25, 42, 100]`이 아니에요. 숫자를 크기 순으로 정렬하려면 `ranks.sort((a, b) => a - b)`처럼 비교 함수를 넘겨요.
-  - `sort`는 원래 배열을 직접 정렬하고 **그 배열 자신**을 돌려줘요. `sorted`와 `ranks`는 같은 배열이라, 3번 줄에서 `ranks`에 넣은 `1`이 `sorted`에도 보이고 길이도 5예요.
-  - `ranks[0]`도 정렬된 뒤의 첫 요소 `100`이에요. 원래 순서를 지키려면 `ranks.slice().sort(…)`처럼 복사본을 정렬해요.
+  - 2번 줄: `ranks.slice()`가 복사본을 만들고, 그 복사본을 비교 함수 없이 `sort()`해요. 비교 함수가 없으면 요소를 **문자열로 바꿔 사전순**으로 정렬해요. `"105"`, `"58"`, `"61"`, `"7"`의 첫 글자 1 < 5 < 6 < 7 순서라 `[105, 58, 61, 7]`이 되고, 0번 요소 `105`가 `first`에 담겨요. 가장 빠른 기록 7이 아니에요.
+  - 2번 줄은 복사본만 정렬했으므로 `ranks`는 아직 `[58, 105, 7, 61]` 그대로예요.
+  - 3번 줄: 비교 함수 `(a, b) => a - b`를 넘기면 수의 크기 순으로 정렬해요. `sort`는 원래 배열을 직접 정렬하고 **그 배열 자신**을 돌려줘요. 그래서 `sorted[0]`은 7이고, `sorted === ranks`는 `true`예요.
+  - 마지막 줄: `ranks`도 정렬된 `[7, 58, 61, 105]`예요.
+
+  첫 줄을 `7`로 예상했다면 `sort()`가 비교 함수 없이도 숫자를 크기 순으로 정렬한다고 본 거예요. `sorted === ranks`를 `false`로, 마지막 줄을 원래 순서로 예상했다면 `sort`가 새 배열을 돌려준다고 본 거예요. 원래 순서를 지키려면 2번 줄처럼 `slice()`로 복사한 배열을 정렬해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -88,5 +88,6 @@ explanation: |
   - 객체를 만들기만 하고 `return`하지 않으면 함수는 `undefined`를 돌려줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -58,5 +58,6 @@ explanation: |
   - 매개변수 `items`도 함수 안에서만 쓰는 변수예요. 함수 밖에서 읽으면 `ReferenceError: items is not defined`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

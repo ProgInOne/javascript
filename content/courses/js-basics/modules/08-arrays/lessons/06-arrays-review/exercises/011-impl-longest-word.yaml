@@ -8,7 +8,7 @@ tags: [for-of, max, string-length, write-code, assessment]
 estimatedSeconds: 240
 usage: assessment
 prompt: |
-  영어 단어장 앱이 오늘 외운 단어 중 가장 긴 단어를 보여 줘요. 단어 배열 `words`를 받아 **글자 수가 가장 많은 단어**를 돌려주는 함수 `longestWord(words)`를 `for...of`로 완성하세요.
+  영어 단어장 앱이 오늘 외운 단어 중 가장 긴 단어를 보여 줘요. 단어 배열 `words`를 받아 **글자 수가 가장 많은 단어**를 돌려주는 함수 `longestWord(words)`를 완성하세요. `for...of`로 단어를 하나씩 꺼내 보면 쉽게 풀 수 있어요. 채점은 돌려준 값으로만 해요.
 
   ```js
   longestWord(["cat", "banana", "kiwi"]);  // "banana"
@@ -119,7 +119,9 @@ explanation: |
   - `for...of`는 단어 자체를 꺼내 주므로 `word.length`로 바로 길이를 비교할 수 있어요.
   - `>`로 비교해야 길이가 같을 때 바꾸지 않아서 먼저 나온 단어가 남아요. `>=`로 쓰면 `["red", "blue", "pink"]`에서 `"pink"`가 나와요.
   - `let longest = "";`를 반복 안에 쓰면 회차마다 새로 만들어져 앞에서 찾은 단어를 잊고, 반복 밖의 `return longest;`에서는 그 변수를 쓸 수도 없어요(`ReferenceError`).
+  - 인덱스를 쓰는 `for` 반복이나 `forEach`로 풀어도 결과가 같으면 통과해요. `for...of`는 인덱스가 필요 없을 때 가장 짧게 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

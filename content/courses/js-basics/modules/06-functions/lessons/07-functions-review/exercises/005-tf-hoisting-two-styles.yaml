@@ -56,5 +56,6 @@ explanation: |
   고치려면 2번 줄의 호출을 8번 줄 아래로 옮기거나, `triple`을 함수 선언으로 바꿔요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

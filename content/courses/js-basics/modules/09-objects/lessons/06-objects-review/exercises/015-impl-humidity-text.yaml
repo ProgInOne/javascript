@@ -129,5 +129,6 @@ explanation: |
   - 이름도 `??`로 기본값을 정해요. `name`이 없는 측정소만 `"이름 없음"`이 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

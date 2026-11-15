@@ -44,5 +44,6 @@ explanation: |
   - 설정을 처음 값으로 되돌리고 싶다면 `thermostat.temp = 18;`처럼 속성을 바꿔요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

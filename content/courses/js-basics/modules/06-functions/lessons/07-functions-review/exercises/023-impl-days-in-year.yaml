@@ -24,7 +24,7 @@ prompt: |
   daysInYear(2023);  // 365
   ```
 
-  - 채점은 `daysInYear`를 여러 해로 불러서 해요. 숨겨진 테스트에는 100과 400으로 나누어떨어지는 해도 있어요.
+  - 채점은 `daysInYear`를 여러 해로 불러 돌려준 값으로만 해요. 숨겨진 테스트에는 100과 400으로 나누어떨어지는 해도 있어요.
 spec:
   starter:
     files:
@@ -132,7 +132,9 @@ explanation: |
   - `daysInYear`는 `isLeapYear(year)`를 **괄호를 붙여** 불러 그 반환값으로 갈래를 정해요. `if (isLeapYear)`처럼 이름만 쓰면 함수 자체가 truthy라서 늘 366이 돼요.
   - 함수 선언은 프로그램이 시작되기 전에 만들어지므로 두 함수의 순서는 상관없어요. 선언만으로는 본문이 실행되지 않고, 채점이 `daysInYear`를 부를 때 실행돼요.
   - `console.log(366)`처럼 출력만 하면 반환값은 `undefined`예요.
+  - 채점은 `daysInYear`의 반환값만 봐요. 그래서 `daysInYear` 안에 윤년 규칙을 직접 써도 통과하지만, 규칙을 `isLeapYear`에 따로 두면 다른 곳(예: 2월의 날수)에서도 다시 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

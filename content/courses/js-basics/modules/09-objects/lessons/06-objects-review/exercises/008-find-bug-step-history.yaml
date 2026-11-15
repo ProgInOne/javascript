@@ -58,5 +58,6 @@ explanation: |
   6번 줄의 `push`는 앞 기록을 덮어쓰지 않아요. 배열 길이는 2이고 두 칸이 같은 객체를 가리킬 뿐이에요. `const`는 변수 `current`가 다른 객체를 가리키지 못하게 할 뿐, 속성을 바꾸는 것은 막지 않아요. 실제로 4~5번 줄은 오류 없이 실행됐어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

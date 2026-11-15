@@ -28,12 +28,11 @@ spec:
     console.log(typeof pick(true));
   answerKind: console
   misconceptionByAnswer:
-    "안녕!!!\n안녕!!!\n잘 자!!!\nfunction": js.mc.assign-call-result
-    "안녕!!!\n(안녕)\n잘 자!!!\nstring": js.mc.assign-call-result
-misconceptions: [js.mc.assign-call-result, js.mc.function-not-a-value]
+    "안녕!!!\n(안녕)\n잘 자!!!\nstring": js.mc.function-not-a-value
+misconceptions: [js.mc.function-not-a-value]
 hints:
   - "`style`에는 함수가 담겨요. 7번 줄 뒤에는 어떤 함수가 담겨 있나요?"
-  - "`pick`은 문자열이 아니라 함수 `quiet`나 `loud` 자체를 돌려줘요. `pick(false)`가 돌려준 것에 바로 괄호를 붙이면 무슨 일이 일어날까요?"
+  - "`pick`의 조건 연산자가 고르는 두 값 `quiet`, `loud`에는 괄호가 붙어 있나요? 그렇다면 `pick(false)`가 돌려주는 것은 어떤 종류의 값일까요?"
   - "`pick(true)`의 결과에는 괄호를 한 번 더 붙이지 않았어요. 그 결과는 어떤 자료형인가요?"
 explanation: |
   출력은 다음과 같아요.
@@ -49,7 +48,10 @@ explanation: |
   - 7~8번 줄: `style`에 다른 함수 `quiet`를 다시 대입했어요. 같은 `style("안녕")`이 이번에는 `(안녕)`이에요. 함수는 값이라 변수에 담고 바꿔 담을 수 있어요.
   - 11번 줄: `pick(false)`는 조건 연산자로 `loud` **함수 자체**를 돌려줘요. 바로 뒤의 `("잘 자")`가 그 함수를 불러서 `잘 자!!!`예요. 왼쪽 호출부터 차례로 실행돼요.
   - 12번 줄: `pick(true)`는 함수 `quiet`를 돌려주고, 여기서는 부르지 않았어요. 함수의 `typeof`는 `function`이에요. 만약 `pick(true)("밤")`처럼 불렀다면 결과는 문자열이었을 거예요.
+
+  마지막 줄을 `string`으로 예상했다면 함수가 돌려줄 수 있는 값은 숫자·문자열 같은 값뿐이라고 본 거예요. 함수도 값이라서 다른 값처럼 변수에 담고, 함수에서 돌려줄 수도 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

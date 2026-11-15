@@ -47,5 +47,6 @@ explanation: |
   - 오류는 나지 않아요. 초기값 없이 **빈 배열**에 `reduce`를 쓸 때 `TypeError`가 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

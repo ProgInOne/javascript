@@ -61,5 +61,6 @@ explanation: |
   - JavaScript는 함수 이름만 보고 알아서 인수를 넣어 부르지 않아요. 어떤 값을 넘길지는 호출하는 쪽이 괄호 안에 직접 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -50,5 +50,6 @@ explanation: |
   둘째 줄을 `7`로 예상했다면 중괄호 본문도 마지막 식을 저절로 돌려준다고 본 거예요. `addRest`를 고치려면 `(km) => km + 2`처럼 중괄호를 빼거나 `{ return km + 2; }`처럼 `return`을 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

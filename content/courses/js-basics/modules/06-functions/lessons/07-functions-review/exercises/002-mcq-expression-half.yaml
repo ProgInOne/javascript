@@ -38,5 +38,6 @@ explanation: |
   - 본문에서 `console.log`만 하는 함수는 값을 돌려주지 않아요. 함수 안에서 `5`가 출력되고, 바깥의 `console.log(half(10))`은 반환값 `undefined`를 한 줄 더 출력해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

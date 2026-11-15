@@ -46,5 +46,6 @@ explanation: |
   `50`이라고 생각했다면 `for...in`이 값을 준다고 본 거예요. 맨 앞의 `0`을 빠뜨렸거나 `NaN`을 골랐다면 숫자와 문자열을 `+`로 더할 때의 규칙을 다시 확인해 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

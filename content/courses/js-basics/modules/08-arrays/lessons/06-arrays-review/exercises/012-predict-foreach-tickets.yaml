@@ -48,5 +48,6 @@ explanation: |
   - `forEach`는 아무것도 돌려주지 않아서 `result`는 `undefined`예요. 결과 배열이 필요하면 `map`이나 `filter`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

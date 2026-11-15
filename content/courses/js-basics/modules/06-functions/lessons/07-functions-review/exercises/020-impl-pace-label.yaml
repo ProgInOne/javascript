@@ -139,5 +139,6 @@ explanation: |
   - `console.log("자전거")`처럼 출력만 하면 반환값은 `undefined`라서 테스트를 통과하지 못해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

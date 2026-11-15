@@ -50,5 +50,6 @@ explanation: |
   - `votes.length`: 객체에는 배열처럼 저절로 생기는 `length`가 없어요. 없는 속성을 읽었으니 `undefined`예요. 속성 개수가 필요하면 첫 줄처럼 `Object.keys(votes).length`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

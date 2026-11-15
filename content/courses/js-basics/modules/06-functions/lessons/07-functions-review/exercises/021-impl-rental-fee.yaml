@@ -14,7 +14,7 @@ prompt: |
 
   - 대여료는 `hours * pricePerHour`예요. 다만 `maxFee`보다 비싸면 `maxFee`만 받아요(하루 최대 요금).
   - `hours`가 0 이하이면 대여료는 0이에요.
-  - `pricePerHour`를 넘기지 않으면 **2000**, `maxFee`를 넘기지 않으면 **10000**으로 계산해요. 기본값 매개변수를 쓰세요.
+  - `pricePerHour`를 넘기지 않으면 **2000**, `maxFee`를 넘기지 않으면 **10000**으로 계산해요. 기본값 매개변수로 정해 보세요. 채점은 돌려준 값으로만 해요.
 
   ```js
   rentalFee(3);               // 6000
@@ -130,8 +130,9 @@ explanation: |
   - 기본값은 매개변수가 `undefined`일 때 쓰여요. 그래서 `rentalFee(4, undefined, 7000)`처럼 가운데를 건너뛰고 싶을 때 `undefined`를 넘기면 시간당 요금은 2000, 최대 요금은 7000이에요.
   - 0시간 이하를 먼저 처리해야 음수 요금(`-2 * 3000`)이 나오지 않아요.
   - `fee > maxFee`일 때만 최대 요금으로 바꿔요. 정확히 같으면 어느 쪽을 돌려줘도 값이 같아요.
-  - 기본값 없이 함수 안에서 `if (pricePerHour === undefined)`로 채워도 결과는 같아요. 다만 기본값 매개변수가 더 짧고 읽기 쉬워요.
+  - 기본값 없이 함수 안에서 `if (pricePerHour === undefined)`로 채워도 결과가 같아서 통과해요. 다만 기본값 매개변수가 더 짧고 읽기 쉬워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

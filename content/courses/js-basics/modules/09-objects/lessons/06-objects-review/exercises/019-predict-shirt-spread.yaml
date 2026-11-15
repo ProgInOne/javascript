@@ -46,5 +46,6 @@ explanation: |
   `b`도 `빨강 2`라고 생각했다면 펼치는 순서가 상관없다고 본 거예요. 마지막 두 값을 `6 L`이라고 생각했다면 전개 구문이 원본을 바꾼다고 본 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

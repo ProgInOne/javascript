@@ -64,5 +64,6 @@ explanation: |
   - `좋음 나쁨 보통`: 6번 줄이 매개변수를 돌려준다고 본 거예요. 블록 안에서는 블록 변수가 더 가까워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

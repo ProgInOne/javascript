@@ -15,9 +15,9 @@ spec:
       text: "`function f(n) { return n * 2; }`"
     - id: b
       text: "`function f(n) { return n + 5; console.log(\"끝\"); }`"
-      missedMisconception: js.mc.code-after-return-runs
     - id: c
       text: "`function f(n) { if (n > 3) { return 10; } return 0; }`"
+      missedMisconception: js.mc.code-after-return-runs
     - id: d
       text: "`function f(n) { console.log(n * 2); }`"
       misconception: js.mc.return-is-log
@@ -40,7 +40,7 @@ explanation: |
 
   - `return n * 2;`: 5 × 2 = 10을 돌려줘요.
   - `return n + 5; console.log("끝");`: 5 + 5 = 10을 돌려주고 함수가 끝나요. `return` 뒤의 `console.log`는 실행되지 않지만, 반환값에는 영향이 없어요.
-  - `if (n > 3) { return 10; } return 0;`: 5 > 3이 참이라 `return 10;`을 먼저 만나 10을 돌려주고 끝나요. 아래의 `return 0;`은 실행되지 않아요.
+  - `if (n > 3) { return 10; } return 0;`: 5 > 3이 참이라 `return 10;`을 먼저 만나 10을 돌려주고 끝나요. 아래의 `return 0;`은 실행되지 않아요. `return` 뒤의 코드도 이어서 실행된다고 생각하면 `return 0;`이 결과를 0으로 덮어쓴다고 보고 이 선택지를 놓치기 쉬워요.
 
   `undefined`가 되는 것:
 
@@ -49,5 +49,6 @@ explanation: |
   - `let result = n * 2;`만 있는 함수: 함수 안의 변수에 담기만 했어요. `result`는 함수가 끝나면 사라지고, 반환값은 `undefined`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

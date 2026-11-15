@@ -56,5 +56,6 @@ explanation: |
   객체의 `===`는 "같은 객체인가"를, 원시 값의 `===`는 "같은 값인가"를 물어요. 객체의 내용을 비교하려면 `p.x === q.x && p.y === q.y`처럼 속성을 하나씩 비교해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

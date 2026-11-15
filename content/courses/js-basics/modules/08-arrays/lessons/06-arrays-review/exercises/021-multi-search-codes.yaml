@@ -50,5 +50,6 @@ explanation: |
   - `codes.indexOf("A12") > 0`: `"A12"`는 인덱스 0이라 `0 > 0`은 `false`예요. 있는지 확인하려면 `> 0`이 아니라 `!== -1`(또는 `>= 0`)로 비교해야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -113,5 +113,6 @@ explanation: |
   - 설정 값은 모두 원시 값이라 얕은 복사로 충분해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

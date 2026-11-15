@@ -239,24 +239,23 @@
       }
     },
     "js-basics.arrays.arrays-review.predict-pack-bag": {
-      "inputHash": "171d93831d634c968891e4b133f236b7e1b645c8706bda16ef3a3039fae7e5a1",
+      "inputHash": "a975dce34e5d02240fbc1c4de0734cecfaa2ab4c8d69252739461fb02c97ec41",
       "expected": {
         "kind": "console",
         "lines": [
-          "4",
-          "간식",
-          "[\"물\", \"지도\", \"모자\"]"
+          "[\"모자\", \"지도\", \"물\", undefined]",
+          "0"
         ]
       }
     },
     "js-basics.arrays.arrays-review.predict-rank-sort": {
-      "inputHash": "c97552fd013984eaafc7bfe952b8533470128bbdefa8ae1da910fce0e4dc360d",
+      "inputHash": "6213021a27be41764bc063961a54f68fd51a82bd9f6b812278ee7770cabf4a17",
       "expected": {
         "kind": "console",
         "lines": [
-          "[100, 25, 3, 42, 1]",
-          "100",
-          "5"
+          "105",
+          "7 true",
+          "[7, 58, 61, 105]"
         ]
       }
     },
@@ -573,11 +572,13 @@
       }
     },
     "js-basics.functions.functions-review.predict-block-greeting": {
-      "inputHash": "f44277e4a452e5e310b81f61929c8bf1d6dbc1020958b827ff73b6bb526a75d5",
+      "inputHash": "89895ecb3e22ad6a683fe71b0df73f5c343bb4f724535570ba0fcf2c261fe4e0",
       "expected": {
         "kind": "console",
         "lines": [
-          "좋은 오후예요",
+          "9시: 좋은 아침이에요",
+          "12시: undefined",
+          "15시: undefined",
           "안녕하세요"
         ]
       }
@@ -1002,11 +1003,11 @@
       }
     },
     "js-basics.objects.objects-review.predict-camp-copy": {
-      "inputHash": "9062d7fb0a37a20965c0103d45048246ad464f880fb8a79cd8b83e82368659ac",
+      "inputHash": "ac840ec86979f2435a0ef6f8566d70423ba789b360afe278f8e6d4d6c7e09261",
       "expected": {
         "kind": "console",
         "lines": [
-          "3 서아 수영",
+          "2 10 6",
           "true false"
         ]
       }
@@ -1024,14 +1025,12 @@
       }
     },
     "js-basics.objects.objects-review.predict-level-check": {
-      "inputHash": "b65dec4323cd07398be4035df89fa90451a736878f052fbe4a2de7bc2be682a1",
+      "inputHash": "f8a18647325b543f5eaf14d96cb383e57d1a0f755f0269de1b0e12acd9824b69",
       "expected": {
         "kind": "console",
         "lines": [
-          "통과 1",
-          "잠긴 단계: 5",
-          "통과 2",
-          "합계 30"
+          "잠긴 단계: 5 (시도 2번)",
+          "시도 3번, 별 4개"
         ]
       }
     },
@@ -1047,7 +1046,7 @@
       }
     },
     "js-basics.objects.objects-review.predict-range-order": {
-      "inputHash": "ef3394511709e9c80f5883cd46075f18517e57ff918b9695b39d588552d43cd8",
+      "inputHash": "59c4d323268cb4c602b7fa760915730a7673429a390191be32d9a01d39f9f2ed",
       "expected": {
         "kind": "console",
         "lines": [

@@ -135,5 +135,6 @@ explanation: |
   - `if (dict[word])`처럼 써도 이번 테스트는 통과해요. 다만 뜻이 빈 문자열처럼 falsy인 값이면 없는 단어로 처리되므로, "없음"을 `undefined`로 확인하는 편이 정확해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

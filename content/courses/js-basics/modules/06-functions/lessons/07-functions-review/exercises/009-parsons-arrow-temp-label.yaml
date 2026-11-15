@@ -89,5 +89,6 @@ explanation: |
   - `return`을 만나면 함수가 끝나므로 `else`가 없어도 돼요. 두 `if` 블록의 순서를 바꿔도 결과가 같아서 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -49,5 +49,6 @@ explanation: |
   - `"fri" in rainfall`은 `fri`라는 속성이 있는지 묻고, 없으므로 `false`예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

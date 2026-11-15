@@ -117,5 +117,6 @@ explanation: |
   `for...of`로 한 번 돌면서 같은 계산을 해도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -43,5 +43,6 @@ explanation: |
   - `[2, 4, 6]`도 틀렸어요. `map`은 원래 요소를 그대로 옮기지 않고 콜백이 돌려준 값을 담아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

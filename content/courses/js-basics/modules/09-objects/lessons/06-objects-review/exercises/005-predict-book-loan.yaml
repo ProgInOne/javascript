@@ -47,5 +47,6 @@ explanation: |
   - 남은 키는 `title`, `loans`, `shelf` 세 개라서 `Object.keys(book).length`는 3이에요. `delete`한 속성은 키 목록에서도 빠져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

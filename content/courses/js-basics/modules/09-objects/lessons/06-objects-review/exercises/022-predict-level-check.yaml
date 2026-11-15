@@ -4,60 +4,65 @@ difficulty: 3
 concepts:
   - { id: js.errors.try-catch, weight: 1 }
   - { id: js.errors.throw, weight: 0.5 }
-  - { id: js.loops.accumulator-pattern, weight: 0.3 }
-tags: [try-catch, throw, loop, trace, assessment]
-estimatedSeconds: 150
+  - { id: js.fn.side-effects, weight: 0.3 }
+tags: [try-catch, throw, side-effects, trace, assessment]
+estimatedSeconds: 160
 usage: assessment
 prompt: |
-  퍼즐 게임에서 고른 단계마다 점수를 매기는 프로그램이에요. 3단계까지만 열려 있어요. 실행하면 콘솔에 무엇이 출력될까요? 출력되는 줄을 모두 쓰세요.
+  퍼즐 게임에서 단계를 차례로 플레이하는 프로그램이에요. 3단계까지만 열려 있어요. `play`는 먼저 시도 횟수를 세고, 열린 단계일 때만 별을 더해요. 잠긴 단계를 고르면 `catch`에서 안내를 보여 주고 3단계를 대신 플레이해요. 실행하면 콘솔에 무엇이 출력될까요? 출력되는 줄을 모두 쓰세요.
 spec:
   lang: js
   code: |
-    function score(level) {
+    const game = { tries: 0, stars: 0 };
+
+    function play(level, stars) {
+      game.tries += 1;
       if (level > 3) {
         throw new Error("잠긴 단계: " + level);
       }
-      return level * 10;
+      game.stars += stars;
     }
 
-    let total = 0;
-    for (const lv of [1, 5, 2]) {
-      try {
-        total += score(lv);
-        console.log("통과 " + lv);
-      } catch (err) {
-        console.log(err.message);
-      }
+    try {
+      play(1, 3);
+      play(5, 2);
+      play(2, 1);
+    } catch (err) {
+      console.log(err.message + " (시도 " + game.tries + "번)");
+      play(3, 1);
     }
-    console.log("합계 " + total);
+    console.log("시도 " + game.tries + "번, 별 " + game.stars + "개");
   answerKind: console
   misconceptionByAnswer:
-    "통과 1\n잠긴 단계: 5\n통과 5\n통과 2\n합계 30": js.mc.try-resumes-after-catch
-    "통과 1\n잠긴 단계: 5": js.mc.caught-error-stops-program
-    "통과 1\n잠긴 단계: 5\n합계 10": js.mc.caught-error-stops-program
+    "잠긴 단계: 5 (시도 2번)\n시도 4번, 별 5개": js.mc.try-resumes-after-catch
+    "잠긴 단계: 5 (시도 2번)": js.mc.caught-error-stops-program
 misconceptions: [js.mc.try-resumes-after-catch, js.mc.caught-error-stops-program]
 hints:
-  - 반복이 세 번 돌아요. 회차마다 `score`가 값을 돌려주는지, 오류를 던지는지 먼저 정해 보세요.
-  - "`try` 안에서 오류가 나면 그 아래의 `console.log(\"통과 \" + lv)`는 어떻게 되나요? `total += ...`의 덧셈은 이루어지나요?"
-  - "`catch`가 끝나면 반복은 다음 회차로 넘어가나요, 프로그램이 멈추나요? 마지막 줄까지 실행되는지도 확인해 보세요."
+  - "`try` 안의 세 호출을 차례로 따라가 보세요. 어느 호출에서 오류가 나고, 그때까지 `game`의 두 속성은 얼마인가요?"
+  - 오류가 난 호출에서도 `throw` 앞의 줄은 이미 실행됐어요. 그 줄이 바꾼 값은 오류가 났다고 되돌아갈까요? `try` 안에서 오류가 난 줄 아래의 호출은 어떻게 되나요?
+  - "`catch` 블록 안의 `play(3, 1)`도 한 번의 시도예요. `catch`가 끝나면 그다음에는 어느 줄이 실행되나요?"
 explanation: |
   출력은 다음과 같아요.
 
   ```text
-  통과 1
-  잠긴 단계: 5
-  통과 2
-  합계 30
+  잠긴 단계: 5 (시도 2번)
+  시도 3번, 별 4개
   ```
 
-  - `lv = 1`: `score(1)`이 10을 돌려줘서 `total`은 10이 되고 `통과 1`이 나와요.
-  - `lv = 5`: `score(5)`가 오류를 던져요. `total += score(5)`는 값을 받지 못해서 덧셈이 이루어지지 않고(`total`은 10 그대로), 아래의 `통과 5` 줄도 건너뛰고 바로 `catch`로 가요. `err.message`인 `잠긴 단계: 5`가 나와요.
-  - `catch`가 끝나면 `try...catch` 다음으로 이어지고, 반복은 다음 회차로 넘어가요.
-  - `lv = 2`: 20을 더해 `total`은 30, `통과 2`가 나와요.
-  - 반복이 끝나고 `합계 30`이 나와요.
+  | 실행 | `tries` | `stars` |
+  |---|---|---|
+  | `play(1, 3)` | 1 | 3 |
+  | `play(5, 2)`: 시도를 센 뒤 오류를 던짐 | 2 | 3 |
+  | `play(2, 1)` | 실행되지 않음 | |
+  | `catch` 안의 `play(3, 1)` | 3 | 4 |
 
-  `통과 5`가 나온다고 생각했다면 `catch` 뒤에 `try`의 나머지가 이어서 실행된다고 본 거예요. 출력이 `잠긴 단계: 5`에서 끝난다고 생각했다면 잡은 오류도 프로그램을 멈춘다고 본 거예요.
+  - `play(5, 2)`는 먼저 `tries`를 2로 올리고, 5 > 3이라 오류를 던져요. `throw`는 함수를 바로 끝내므로 `game.stars += stars;`는 실행되지 않아요. 하지만 이미 바뀐 `tries`는 **되돌아가지 않아요.** 그래서 `catch`가 출력할 때 `시도 2번`이에요.
+  - 오류가 나면 `try` 안의 남은 줄을 건너뛰고 `catch`로 가요. `play(2, 1)`은 한 번도 실행되지 않아요.
+  - `catch` 안의 `play(3, 1)`은 3단계라 오류 없이 `tries` 3, `stars` 4를 만들어요. `catch`가 끝나면 `try...catch` 다음 줄로 이어져 마지막 줄이 출력돼요.
+
+  첫 줄을 `시도 1번`으로 예상했다면 오류가 나면 그 호출이 바꾼 값까지 되돌려진다고 본 거예요. 마지막 줄을 `시도 4번, 별 5개`로 예상했다면 `catch` 뒤에 `try`의 남은 호출(`play(2, 1)`)이 이어서 실행된다고 본 거예요. 출력이 첫 줄에서 끝난다고 생각했다면 잡은 오류도 프로그램을 멈춘다고 본 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

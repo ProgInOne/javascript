@@ -45,5 +45,6 @@ explanation: |
   첫 줄을 `백팀 대 청팀`으로 예상했다면 인수가 이름이 같은 매개변수로 간다고 본 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

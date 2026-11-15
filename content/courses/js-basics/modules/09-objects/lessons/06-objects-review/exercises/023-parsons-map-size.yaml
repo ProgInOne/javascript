@@ -70,5 +70,6 @@ explanation: |
   - `catch`에서 `console.log`만 하고 돌려주지 않으면 함수는 `undefined`를 돌려주고, 바깥의 `console.log`가 `undefined`를 한 줄 더 출력해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

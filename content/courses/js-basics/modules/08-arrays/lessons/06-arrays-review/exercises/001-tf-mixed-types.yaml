@@ -39,5 +39,6 @@ explanation: |
   "인덱스가 1부터 시작해서 `텐트`가 출력된다"는 이유는 오류가 나지 않는다는 점은 맞지만 인덱스를 잘못 셌어요. 실제 프로그램에서는 한 배열에 같은 종류의 값을 모아 두는 경우가 많지만, 그것은 읽기 쉽게 하려는 습관이지 언어 규칙이 아니에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

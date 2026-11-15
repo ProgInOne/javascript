@@ -54,5 +54,6 @@ explanation: |
   순수 함수로 바꾸려면 `level`도 매개변수로 받아요: `function power(base, level) { return base * level; }`
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

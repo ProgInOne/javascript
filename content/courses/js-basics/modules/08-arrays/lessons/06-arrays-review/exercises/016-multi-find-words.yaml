@@ -49,5 +49,6 @@ explanation: |
   - `words.find((w) => w.length > 4)`는 맞는 단어가 없어서 `undefined`예요. `find`는 못 찾아도 `-1`이 아니라 `undefined`를 돌려줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

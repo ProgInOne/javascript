@@ -48,5 +48,6 @@ explanation: |
   - `called`가 배열이라고 봤다면 `shift`가 남은 배열을 돌려준다고 생각한 거예요. 돌려주는 값은 꺼낸 요소 하나예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

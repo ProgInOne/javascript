@@ -3,12 +3,12 @@ type: fill_blank
 difficulty: 2
 concepts:
   - { id: js.obj.methods-intro, weight: 1 }
-  - { id: js.fn.first-class, weight: 0.3 }
+  - { id: js.obj.literal, weight: 0.3 }
 tags: [object, method, this, fill, assessment]
 estimatedSeconds: 120
 usage: assessment
 prompt: |
-  화분 객체의 `water(ml)` 메서드는 물을 준 만큼 **그 메서드를 부른 화분**의 `moisture`(수분)를 `ml / 10`만큼 올려요. 선인장 객체는 몬스테라의 `water` 함수를 자기 메서드로 함께 써요.
+  화분 객체를 만들어 돌려주는 함수 `makePlant`가 있어요. 화분 객체의 `water(ml)` 메서드는 물을 준 만큼 **자기 화분**의 `moisture`(수분)를 `ml / 10`만큼 올려요. 몬스테라와 선인장은 같은 함수로 만든 서로 다른 화분이에요.
 
   빈칸을 채워서 아래처럼 출력되게 하세요.
 
@@ -20,18 +20,21 @@ spec:
   mode: code
   lang: js
   template: |
-    const plant = {
-      name: "몬스테라",
-      moisture: 20,
-      water(ml) {
-        {{blank:target}} += ml / 10;
-      },
-    };
-    const cactus = { name: "선인장", moisture: 5, water: plant.water };
+    function makePlant(plantName, start) {
+      return {
+        name: plantName,
+        moisture: start,
+        water(ml) {
+          {{blank:target}} += ml / 10;
+        },
+      };
+    }
 
-    plant.water(50);
+    const monstera = makePlant("몬스테라", 20);
+    const cactus = makePlant("선인장", 5);
+    monstera.water(50);
     cactus.water(30);
-    console.log(plant.name + " " + plant.moisture);
+    console.log(monstera.name + " " + monstera.moisture);
     console.log(cactus.name + " " + cactus.moisture);
   blanks:
     - id: target
@@ -43,29 +46,31 @@ spec:
     - kind: console
       id: output
       description: 몬스테라는 25, 선인장은 8이 출력되어야 합니다.
-      requirement: 부른 화분의 수분 올리기
+      requirement: 자기 화분의 수분 올리기
       expect:
         lines: ["몬스테라 25", "선인장 8"]
     - kind: program
       id: no-error
       description: 프로그램이 오류 없이 끝나야 합니다.
-      requirement: 부른 화분의 수분 올리기
+      requirement: 자기 화분의 수분 올리기
       expect:
         noError: true
       misconceptionIfFail: js.mc.method-reads-props-by-name
 misconceptions: [js.mc.method-reads-props-by-name]
 hints:
   - 메서드 안에서 `moisture`라고만 쓰면 무엇을 찾을까요? 속성은 변수가 아니에요.
-  - "`cactus.water(30)`으로 불렀을 때 바뀌어야 하는 것은 몬스테라의 수분인가요, 선인장의 수분인가요?"
-  - 메서드를 부를 때 점 앞에 있던 객체를 메서드 안에서 가리키는 이름이 있어요. 그 이름 뒤에 바꿀 속성을 붙여 보세요.
+  - "`monstera.water(50)`과 `cactus.water(30)`은 각각 어느 화분의 수분을 바꿔야 하나요? `water` 안에서는 `monstera`나 `cactus` 중 하나의 이름을 골라 쓸 수 있을까요?"
+  - "`객체.메서드()`로 부를 때 점 앞에 있던 객체를 메서드 안에서 가리키는 이름이 있어요. 그 이름 뒤에 바꿀 속성을 붙여 보세요."
 explanation: |
   빈칸에는 `this.moisture`가 들어가요.
 
-  - `plant.water(50)`으로 부르면 `water` 안의 `this`는 점 앞의 `plant`예요. `plant.moisture`가 20 + 5 = 25가 돼요.
-  - `cactus.water`에는 같은 함수가 들어 있지만, `cactus.water(30)`으로 부르면 이번에는 `this`가 `cactus`예요. `cactus.moisture`가 5 + 3 = 8이 돼요.
+  - `makePlant`를 부를 때마다 객체 리터럴이 새 화분 객체를 만들어요. 몬스테라와 선인장은 각자 `moisture`와 `water` 메서드를 가진 서로 다른 객체예요.
+  - `monstera.water(50)`으로 부르면 `water` 안의 `this`는 점 앞의 `monstera`예요. `monstera.moisture`가 20 + 5 = 25가 돼요.
+  - `cactus.water(30)`으로 부르면 `this`는 `cactus`예요. `cactus.moisture`가 5 + 3 = 8이 돼요.
   - `moisture`라고만 쓰면 메서드는 변수 `moisture`를 찾다가 `ReferenceError: moisture is not defined`를 내요. 객체의 속성은 변수가 아니에요.
-  - `plant.moisture`라고 쓰면 오류는 없지만, 선인장에 물을 줘도 몬스테라의 수분이 올라서 `몬스테라 28`, `선인장 5`가 나와요. 메서드를 부른 객체를 가리키려면 `this`를 써요.
+  - `water` 안에서 `monstera.moisture`라고 쓰면 선인장에 물을 줘도 몬스테라의 수분이 올라서 `몬스테라 28`, `선인장 5`가 나와요. 메서드 안에서 자기 객체를 가리키려면 `this`를 써요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

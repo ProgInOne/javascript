@@ -42,5 +42,6 @@ explanation: |
   "객체에도 0, 1, 2번 자리가 있다"는 이유는 배열과 객체를 섞은 생각이에요. "없는 속성을 읽으면 `TypeError`가 난다"도 틀렸어요. `TypeError`는 `undefined`에서 **다시** 속성을 읽을 때(예: `planet.ring.size`) 나요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -49,5 +49,6 @@ explanation: |
   `12 8 8`이라고 생각했다면 배열에 넣을 때 객체가 복사된다고 본 거예요. 마지막 줄을 `true true`라고 생각했다면 `===`가 내용을 비교한다고 본 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

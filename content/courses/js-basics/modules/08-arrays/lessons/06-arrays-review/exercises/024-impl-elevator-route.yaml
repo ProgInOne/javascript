@@ -136,5 +136,6 @@ explanation: |
   중복을 나중에 빼거나, `requests.slice()`로 복사한 배열을 정렬한 뒤 나누는 풀이도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

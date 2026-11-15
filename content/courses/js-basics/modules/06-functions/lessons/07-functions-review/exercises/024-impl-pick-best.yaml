@@ -131,5 +131,6 @@ explanation: |
   - 점수를 정하는 규칙은 `pickBest` 안에 쓰지 않고 `score(후보)`로 콜백을 불러 받아요. 그래서 처음 보는 점수 함수로도 동작해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

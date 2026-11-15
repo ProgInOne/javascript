@@ -50,5 +50,6 @@ explanation: |
   "마지막 인덱스가 length라서 1부터 시작해야 한다"는 이유는 틀렸어요. 1부터 시작하면 `장미`가 빠지고 `undefined` 줄은 그대로 남아요. `length`는 반복 중에 저절로 바뀌지 않아요. 요소를 넣거나 빼야 바뀌어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

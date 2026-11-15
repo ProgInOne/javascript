@@ -127,5 +127,6 @@ explanation: |
   - `shift`와 `push`로 한 칸씩 옮기는 방법은 받은 배열을 바꿔요. 그렇게 풀려면 `slice()`로 먼저 복사한 배열에서 해야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

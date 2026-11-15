@@ -154,5 +154,6 @@ explanation: |
   - `parts[0] * 60 + parts[1]`처럼 숫자로 바꾸지 않고 더하면 `"1:30"`이 `"6030"` 같은 문자열이 돼요. `Number`로 바꾼 값으로 계산해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

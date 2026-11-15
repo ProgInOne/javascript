@@ -54,5 +54,6 @@ explanation: |
   - `filter`는 원래 배열을 바꾸지 않아서 `sizes.length`는 그대로 5예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

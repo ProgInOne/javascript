@@ -178,5 +178,6 @@ explanation: |
   - `structuredClone(wallets)`로 깊은 복사본을 만든 뒤 그 안을 바꾸는 풀이도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

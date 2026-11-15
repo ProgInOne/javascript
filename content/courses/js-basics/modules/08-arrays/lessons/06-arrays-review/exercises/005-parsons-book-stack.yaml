@@ -65,5 +65,6 @@ explanation: |
   - 확인하는 줄은 `push` 뒤, `pop` 앞에 있어야 과학책이 맨 위로 보여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

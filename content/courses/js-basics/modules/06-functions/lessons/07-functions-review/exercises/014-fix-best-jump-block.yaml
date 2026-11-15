@@ -110,5 +110,6 @@ explanation: |
   - 갈래마다 `return a;`처럼 바로 돌려주도록 고쳐도 정답이에요. 숨겨진 테스트는 세 갈래와 같은 기록이 있는 경우를 모두 확인해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

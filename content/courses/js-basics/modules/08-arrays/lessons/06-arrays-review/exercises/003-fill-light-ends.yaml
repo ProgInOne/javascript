@@ -63,5 +63,6 @@ explanation: |
   - 함수에 넘긴 배열은 복사되지 않으므로, 함수 안에서 `lamps`를 바꾸면 `hall`·`room`이 바뀌어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

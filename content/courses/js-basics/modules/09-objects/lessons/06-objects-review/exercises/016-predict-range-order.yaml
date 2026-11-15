@@ -16,8 +16,12 @@ spec:
       let low = list[0];
       let high = list[0];
       for (const n of list) {
-        if (n < low) low = n;
-        if (n > high) high = n;
+        if (n < low) {
+          low = n;
+        }
+        if (n > high) {
+          high = n;
+        }
       }
       return [low, high];
     }
@@ -32,7 +36,7 @@ misconceptions: [js.mc.array-destructuring-by-name]
 hints:
   - 먼저 `range([7, 3, 9, 5])`가 돌려주는 배열을 구해 보세요. 0번과 1번에 각각 무엇이 있나요?
   - 배열 구조 분해는 변수 이름과 함수 안의 변수 이름을 맞춰 보나요, 아니면 다른 기준으로 값을 넣나요?
-  - 11번 줄의 대괄호 안 첫 번째 자리에 있는 변수가 받는 값이 무엇인지 생각해 보세요.
+  - 15번 줄의 대괄호 안 첫 번째 자리에 있는 변수가 받는 값이 무엇인지 생각해 보세요.
 explanation: |
   출력은 다음과 같아요.
 
@@ -48,5 +52,6 @@ explanation: |
   `최고 9`, `최저 3`이라고 생각했다면 배열 구조 분해가 이름으로 맞춰진다고 본 거예요. 의도대로 받으려면 `const [low, high] = range(...)`처럼 돌려주는 순서에 맞춰 써야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

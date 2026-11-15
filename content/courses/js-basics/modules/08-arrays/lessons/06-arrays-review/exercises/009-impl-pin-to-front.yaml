@@ -116,5 +116,6 @@ explanation: |
   `const copy = songs.slice();`로 복사한 뒤 `copy`에 `indexOf`·`splice`·`unshift`를 써도 정답이에요. 복사본만 바꾸기 때문이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

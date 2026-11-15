@@ -131,5 +131,6 @@ explanation: |
   `every` 대신 `bad.length === 0`으로 "정상"을 판단해도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

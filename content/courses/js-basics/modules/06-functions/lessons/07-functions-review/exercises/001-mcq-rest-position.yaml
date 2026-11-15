@@ -38,5 +38,6 @@ explanation: |
   - `(first, others...)`: 점 세 개는 이름 **앞**에 붙여요. 뒤에 붙이면 `SyntaxError: Unexpected token '...'`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

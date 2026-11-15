@@ -54,5 +54,6 @@ explanation: |
   부수 효과(출력, 바깥 변수 바꾸기)는 함수를 **호출할 때** 일어나요. 반환값을 담은 변수를 다시 써도 함수는 다시 실행되지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

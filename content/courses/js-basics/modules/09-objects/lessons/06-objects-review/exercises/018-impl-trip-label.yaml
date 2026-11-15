@@ -58,6 +58,7 @@ spec:
       requirement: 당일치기
       args: [{ city: "속초", nights: 0, transport: "자가용" }]
       expect: { equals: "속초 당일치기 · 자가용" }
+      misconceptionIfFail: js.mc.or-default-keeps-zero
     - kind: call
       id: only-transport-missing
       visible: false
@@ -86,7 +87,7 @@ spec:
       requirement: 일정 문장
       args: [{ city: "춘천" }]
       expect: { argsUnchanged: true }
-misconceptions: [js.mc.destructuring-default-on-null]
+misconceptions: [js.mc.or-default-keeps-zero]
 hints:
   - "`const { 이름 = 기본값 } = 객체;`처럼 구조 분해에서도 기본값을 정할 수 있어요. 매개변수 자리에 바로 쓸 수도 있어요."
   - 구조 분해 기본값은 값이 `undefined`일 때만 쓰여요. 그렇다면 `nights`가 0일 때 변수에는 무엇이 들어가나요? `||`로 기본값을 정하면 어떻게 될까요?
@@ -108,5 +109,6 @@ explanation: |
   - 함수 첫 줄에서 `const { city, nights = 1, transport = "버스" } = trip;`로 꺼내도 똑같이 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
