@@ -32,6 +32,15 @@ const BACKUPS = {
   ],
 };
 
+// The real backup folder is a temp directory; show the macOS default instead.
+const LOCATION = {
+  path: '/Users/learner/Library/Application Support/ProgInOne/backups',
+  defaultPath: '/Users/learner/Library/Application Support/ProgInOne/backups',
+  source: 'default',
+  editable: true,
+  cloudSynced: false,
+};
+
 const DASHBOARD = {
   date: '2026-11-15',
   activeMinutesToday: 18,
@@ -131,6 +140,9 @@ for (const viewport of VIEWPORTS) {
       test(`${name} @visual`, async ({ page }) => {
         await page.setViewportSize(viewport);
         await page.route('**/api/v1/backups', (route) => route.fulfill({ json: BACKUPS }));
+        await page.route('**/api/v1/backups/location', (route) =>
+          route.fulfill({ json: LOCATION }),
+        );
         // Learning state depends on earlier tests: fixed dashboard, first visit of the lesson.
         await page.route('**/api/v1/dashboard', (route) => route.fulfill({ json: DASHBOARD }));
         await page.route('**/api/v1/review-queue', (route) => route.fulfill({ json: QUEUE }));

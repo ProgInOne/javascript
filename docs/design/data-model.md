@@ -1059,10 +1059,25 @@ backups/
 1. 다시 열고, 백업의 스키마가 현재 앱보다 오래되었으면 일반 마이그레이션 절차를 실행합니다. **현재 앱보다 새 스키마의 백업은 복원을 거부** 합니다.
 1. 고아 참조 검사를 실행하고 유지보수 모드를 해제합니다. 웹은 전체 쿼리 캐시를 무효화합니다.
 
+**구현 메모 (v0.3)**: 1단계 검사는 `GET /backups/:id/check`(`ok`, `problem`: `checksum`/`integrity`/`newer-schema`, `migrationNeeded`)이고, 복원 요청 때도 같은 검사를 다시 합니다. SQLite로 열리지 않는 파일은 `integrity`로 거부합니다. 3단계의 "AI 턴 중단"은 유지보수 모드 진입 직후 튜터의 진행 중 턴을 모두 취소하는 것으로 구현했습니다(`BackupService`의 `interrupt`). 고아 참조 검사는 아직 없습니다(콘텐츠 별칭 처리와 함께). 웹은 정적으로 캐시한 학습자 프로필까지 다시 읽도록 쿼리 캐시를 리셋합니다.
+
+#### 학습 데이터 초기화
+
+FR-SET-07, [D-045](/docs/decisions.md). `POST /data/reset { "confirm": "초기화" }`.
+
+1. `pre-reset` 백업을 만들고 무결성을 확인합니다. 실패하면 아무것도 지우지 않습니다.
+1. 유지보수 모드로 들어가 진행 중인 튜터 턴을 취소합니다.
+1. 한 트랜잭션에서(`defer_foreign_keys`) **남길 테이블을 뺀 모든 테이블** 을 비웁니다. 남기는 것: `__drizzle_migrations`, `app_meta`(백업 날짜·콘텐츠 팩 버전), `learners` 행(시간대·하루 경계), `settings`(화면·학습 방식). 이후 마이그레이션이 추가하는 테이블은 기본적으로 학습 데이터로 지워집니다. FTS 그림자 테이블은 건너뛰고 가상 테이블 자체를 비웁니다.
+1. `learners.onboarded_at`을 비우고 `experience_level`을 `none`으로 되돌려, 다음 진입 때 온보딩을 다시 보여 줍니다.
+1. `integrity_check`·`foreign_key_check` 후 유지보수 모드를 해제합니다. 웹은 쿼리 캐시를 리셋하고 대시보드로 이동해 온보딩으로 안내됩니다.
+
+되돌리기는 "초기화 전" 백업 복원입니다. AI 연결(Codex 로그인)은 user.db 밖이라 유지됩니다.
+
 #### 백업 위치 변경
 
 - `backupDir` 설정으로 바꿉니다. 바꾸면 기존 백업을 옮기지 않고, 새 위치에 즉시 `manual` 백업을 만들어 쓰기 가능 여부를 확인합니다.
 - 클라우드 동기화 폴더로 지정하면 대화 원문이 포함된다는 안내를 표시합니다([시스템 아키텍처 설계](/docs/design/system-architecture.md#개인정보)).
+- **구현 메모 (v0.3, [D-045](/docs/decisions.md))**: `PUT /backups/location { path }`. 경로는 신뢰할 수 없는 입력으로 다룹니다: 절대 경로만(`~`는 홈 폴더), 제어 문자·`..` 구간 거부, 폴더 자체가 심볼릭 링크면 거부하고 상위의 심볼릭 링크는 실제 경로로 풀어 저장, 디스크 최상위·데이터 폴더와 그 상위 폴더 거부, 이미 있는 폴더는 비어 있거나 백업 종류 폴더만 있어야 함, 없는 폴더는 상위 폴더가 있어야 하고 한 단계만 `0700`으로 만듭니다. 새 위치에 `manual` 백업을 만드는 데 성공해야 바꾸고(실패하면 원래 위치 유지, 새로 만든 폴더 삭제), `<dataDir>/config.json`의 `backupDir`에 원자적으로 저장합니다(기본 위치로 돌아가면 키 삭제). 목록은 현재 위치의 백업만 보여 주고 이전 위치는 응답(`previousPath`)과 화면에 알려 줍니다. `PROGINONE_BACKUP_DIR`가 있으면 `409 BACKUP_LOCATION_LOCKED`. 클라우드 동기화 폴더 판별(`isCloudSyncedPath`)은 안내용 추정입니다(iCloud Drive, `Library/CloudStorage`, Dropbox, OneDrive, Google Drive, Box).
 
 ### JSON 내보내기·가져오기 형식
 

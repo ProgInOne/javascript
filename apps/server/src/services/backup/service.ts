@@ -16,8 +16,10 @@ import {
   BACKUP_KINDS,
   backupIdSchema,
   backupMetaSchema,
+  type BackupCheck,
   type BackupKind,
   type BackupMeta,
+  type BackupProblem,
   type BackupSummary,
 } from '@proginone/shared';
 import {
@@ -48,9 +50,28 @@ export interface BackupServiceDeps {
   maintenance: MaintenanceState;
   /** Re-runs startup migrations after a restore (older backups). Receives a pre-migration backup function. */
   migrate: (backup: () => Promise<string>) => Promise<unknown>;
+  /** Stops work that writes user.db outside a request (AI turns) before the file is replaced. */
+  interrupt?: () => void;
   migrationsDir?: string;
   now?: () => Date;
 }
+
+/** The API view of a backup (no file paths). */
+export const toSummary = ({
+  id,
+  kind,
+  createdAt,
+  appVersion,
+  schemaMigration,
+  sizeBytes,
+}: BackupSummary): BackupSummary => ({
+  id,
+  kind,
+  createdAt,
+  appVersion,
+  schemaMigration,
+  sizeBytes,
+});
 
 const sha256File = (path: string) => createHash('sha256').update(readFileSync(path)).digest('hex');
 
@@ -70,7 +91,42 @@ export class BackupService {
   #busy: Promise<unknown> = Promise.resolve();
 
   constructor(deps: BackupServiceDeps) {
-    this.#d = { now: () => new Date(), ...deps, migrationsDir: deps.migrationsDir };
+    this.#d = {
+      now: () => new Date(),
+      interrupt: () => undefined,
+      ...deps,
+      migrationsDir: deps.migrationsDir,
+    };
+  }
+
+  /** The folder new backups go to (data-model.md#백업-위치-변경). */
+  get backupDir(): string {
+    return this.#d.backupDir;
+  }
+
+  /**
+   * Switches to another folder and proves it is writable with a `manual` backup there. Existing
+   * backups stay in the old folder. On failure the old folder stays in use.
+   */
+  relocate(dir: string): Promise<BackupEntry> {
+    return this.#exclusive(async () => {
+      const previous = this.#d.backupDir;
+      this.#d.backupDir = dir;
+      try {
+        return await this.#create('manual', {});
+      } catch (e) {
+        this.#d.backupDir = previous;
+        throw e;
+      }
+    });
+  }
+
+  /** Switches folders without a backup (rolling back a relocation that could not be saved). */
+  useDir(dir: string): Promise<void> {
+    return this.#exclusive(() => {
+      this.#d.backupDir = dir;
+      return Promise.resolve();
+    });
   }
 
   /** Serializes backup/restore work so two jobs never touch the same files at once. */
@@ -207,22 +263,68 @@ export class BackupService {
     }
   }
 
-  /** Checks a backup before restoring: checksum, integrity, and schema not newer than this app. */
-  verify(entry: BackupEntry): void {
-    const fail = (reason: string, message: string) => {
-      throw new AppError('RESTORE_FAILED', 409, message, { details: { reason, id: entry.id } });
-    };
+  /** Inspects a backup without changing anything: checksum, integrity, schema compatibility. */
+  inspect(entry: BackupEntry): { problem: BackupProblem | null; migrationNeeded: boolean } {
     if (sha256File(entry.path) !== entry.meta.sha256)
-      fail('checksum', '백업 파일이 손상되었습니다.');
-    const db = openSqlite(entry.path, { readonly: true });
+      return { problem: 'checksum', migrationNeeded: false };
+    let db;
     try {
-      if (checkDatabase(db).length > 0) fail('integrity', '백업 파일이 손상되었습니다.');
-      if (schemaState(db, this.#d.migrationsDir).newerThanApp) {
-        fail('newer-schema', '더 새로운 버전의 앱에서 만든 백업이라 복원할 수 없습니다.');
-      }
+      db = openSqlite(entry.path, { readonly: true });
+    } catch {
+      return { problem: 'integrity', migrationNeeded: false }; // not a SQLite file at all
+    }
+    try {
+      if (checkDatabase(db).length > 0) return { problem: 'integrity', migrationNeeded: false };
+      const state = schemaState(db, this.#d.migrationsDir);
+      if (state.newerThanApp) return { problem: 'newer-schema', migrationNeeded: false };
+      return { problem: null, migrationNeeded: state.pending.length > 0 };
+    } catch {
+      return { problem: 'integrity', migrationNeeded: false };
     } finally {
       db.close();
     }
+  }
+
+  /** `GET /backups/:id/check`: what the restore dialog shows before the learner confirms. */
+  check(id: string): BackupCheck {
+    const entry = this.get(id);
+    const { problem, migrationNeeded } = this.inspect(entry);
+    return { id: entry.id, ok: problem === null, problem, migrationNeeded };
+  }
+
+  /** Checks a backup before restoring; throws `RESTORE_FAILED` (409) with `details.reason`. */
+  verify(entry: BackupEntry): void {
+    const { problem } = this.inspect(entry);
+    if (problem === null) return;
+    throw new AppError(
+      'RESTORE_FAILED',
+      409,
+      problem === 'newer-schema'
+        ? '더 새로운 버전의 앱에서 만든 백업이라 복원할 수 없습니다.'
+        : '백업 파일이 손상되었습니다.',
+      { details: { reason: problem, id: entry.id } },
+    );
+  }
+
+  /**
+   * Runs a job that rewrites user.db (learning data reset) after a verified safety backup of
+   * `kind`, in maintenance mode, with background AI work stopped. Serialized with backups.
+   */
+  guarded<T>(
+    kind: BackupKind,
+    reason: string,
+    job: () => T | Promise<T>,
+  ): Promise<{ backup: BackupEntry; result: T }> {
+    return this.#exclusive(async () => {
+      const backup = await this.#create(kind, {});
+      this.#d.maintenance.enter(reason);
+      try {
+        this.#d.interrupt();
+        return { backup, result: await job() };
+      } finally {
+        this.#d.maintenance.exit();
+      }
+    });
   }
 
   /** Restore flow from docs/design/data-model.md#복원-절차. */
@@ -234,6 +336,7 @@ export class BackupService {
       const safety = await this.#create('pre-restore', {});
       maintenance.enter('restore');
       try {
+        this.#d.interrupt();
         userDb.close();
         removeSideFiles(userDb.path);
         copyFileSync(entry.path, userDb.path);

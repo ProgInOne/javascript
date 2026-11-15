@@ -24,6 +24,13 @@ const journeyDir =
   process.env['E2E_JOURNEY_DATA_DIR'] ?? mkdtempSync(join(tmpdir(), 'proginone-e2e-journey-'));
 process.env['E2E_JOURNEY_DATA_DIR'] = journeyDir;
 process.env['E2E_JOURNEY_URL'] = `http://127.0.0.1:${JOURNEY_PORT}`;
+// A third server for 설정 > 데이터 (tests/data-settings.spec.ts): restore, reset and the backup
+// folder change rewrite the whole learner, so they must not share the main server.
+const DATA_PORT = PORT + 2;
+const dataSettingsDir =
+  process.env['E2E_DATA_SETTINGS_DIR'] ?? mkdtempSync(join(tmpdir(), 'proginone-e2e-data-'));
+process.env['E2E_DATA_SETTINGS_DIR'] = dataSettingsDir;
+process.env['E2E_DATA_SETTINGS_URL'] = `http://127.0.0.1:${DATA_PORT}`;
 
 const serverEnv = (port: number, dir: string) => ({
   NODE_ENV: 'production',
@@ -75,6 +82,13 @@ export default defineConfig({
       reuseExistingServer: false,
       timeout: 30_000,
       env: serverEnv(JOURNEY_PORT, journeyDir),
+    },
+    {
+      command: 'node ../apps/server/src/main.ts',
+      url: `http://127.0.0.1:${DATA_PORT}/`,
+      reuseExistingServer: false,
+      timeout: 30_000,
+      env: serverEnv(DATA_PORT, dataSettingsDir),
     },
   ],
 });

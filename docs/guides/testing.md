@@ -54,12 +54,13 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 | `tests/review.spec.ts` | 대시보드와 다음 날 복습: 테스트 시계를 하루 넘겨 복습 세트를 풀고 끝냄 |
 | `tests/ai-unavailable.spec.ts` | AI 비가용 상태: 실패한 답변의 오류 표시(모의 제공자의 `[mock:error:AI_*]`), 연결 해제 시 AI 진입점 비활성·서버 거부·오답 설명 대체, 다시 연결 |
 | `tests/journey.spec.ts` | 첫 실행 전용 서버에서 새 학습자의 흐름: 온보딩 → 대시보드, 온보딩 목표 단계 시각 회귀 |
+| `tests/data-settings.spec.ts` | 설정 > 데이터 전용 서버에서 백업 → 데이터 변경 → 복원으로 복구, 학습 데이터 초기화(온보딩으로) → "초기화 전" 백업으로 되돌리기, 백업 위치 변경(잘못된 경로 거부, 새 위치에 증명 백업, 원래 위치로 복귀) |
 | `tests/journey.spec.ts` | 첫 실행 전용 서버에서 새 학습자의 흐름: 온보딩 → 빈 대시보드 → 첫날(단원 연습) → 한 달(복습·약점, 테스트 시계) → 약점 집중 세트. 온보딩 목표 단계와 대시보드 빈·신규·장기 상태 시각 회귀 |
 | `tests/seed.ts` | API로 학습 기록 만들기: 실행이 필요 없는 문제는 답하고 나머지는 건너뛰어 세트를 끝냄, 하트비트로 학습 시간 |
 | `tests/onboarded.setup.ts` | 준비 단계(`setup` 프로젝트): 주 서버의 학습자를 온보딩 완료 상태로 둠 |
 
 - 처음 한 번 `pnpm --filter @proginone/e2e exec playwright install chromium`으로 브라우저를 설치합니다.
-- **서버 두 개**: 주 서버(`E2E_PORT`)와 첫 실행 전용 서버(`E2E_PORT + 1`, 데이터 위치 `E2E_JOURNEY_DATA_DIR`)를 띄웁니다. 주 서버의 학습자는 `setup` 프로젝트가 먼저 온보딩을 마친 상태로 만듭니다. 새 학습자가 필요한 테스트는 `test.use({ baseURL: process.env['E2E_JOURNEY_URL'] })`로 두 번째 서버를 씁니다(D-034).
+- **서버 세 개**: 주 서버(`E2E_PORT`), 첫 실행 전용 서버(`E2E_PORT + 1`, 데이터 위치 `E2E_JOURNEY_DATA_DIR`), 설정 > 데이터 전용 서버(`E2E_PORT + 2`, 데이터 위치 `E2E_DATA_SETTINGS_DIR`)를 띄웁니다. 주 서버의 학습자는 `setup` 프로젝트가 먼저 온보딩을 마친 상태로 만듭니다. 새 학습자가 필요한 테스트는 `test.use({ baseURL: process.env['E2E_JOURNEY_URL'] })`로 두 번째 서버를 씁니다(D-034). 복원·초기화·백업 위치 변경처럼 학습자 전체를 바꾸는 테스트는 `E2E_DATA_SETTINGS_URL`의 세 번째 서버를 씁니다(D-045).
 - 테스트는 서버를 공유하며 순서대로 실행됩니다(`workers: 1`). 앞 테스트가 만든 상태(예: 백업)를 뒤 테스트가 가정하지 않도록, 각 테스트는 필요한 상태를 직접 만들거나 확인합니다.
 - 샌드박스 테스트는 앱 화면이 아직 러너를 쓰지 않으므로, `packages/runner`의 호스트 모듈을 테스트에서 번들해 앱 페이지에 `page.evaluate`로 넣고 실행합니다(DevTools 평가는 페이지 CSP를 받지 않음). 앱 문서와 CSP, 서버의 `/sandbox/runner.html`, 셸·하네스는 모두 실제 프로덕션 빌드입니다. 공격 코드가 노린 요청이 서버에 닿았는지는 테스트가 띄운 탐지용 서버와 페이지의 응답 기록으로 확인합니다.
 - E2E 콘텐츠는 `e2e/fixtures/content`(문제는 draft로 저작, `includeDrafts`로 빌드)입니다. 예측 문제의 기대값은 `node tools/content-cli/src/cli.ts check --dir e2e/fixtures/content --run`으로 `.generated/predict-expected.json`에 기록해 커밋합니다. 실제 `content/`가 바뀌어도 E2E와 시각 기준 이미지가 흔들리지 않게 따로 둡니다.

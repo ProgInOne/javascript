@@ -1,9 +1,9 @@
-import { cpSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { MaintenanceState } from '../../http/security.ts';
 import { BackupService } from '../../services/backup/service.ts';
-import { setupDb, silentLog, tmpDir } from '../../test/helpers.ts';
+import { migrationsUpTo, setupDb, silentLog, tmpDir } from '../../test/helpers.ts';
 import { UserDb } from './connection.ts';
 import { MIGRATIONS_DIR, MigrationError, migrateUserDb, schemaState } from './migrate.ts';
 
@@ -21,19 +21,6 @@ function migrationsWithExtra(sql: string) {
   journal.entries.push({ ...last, idx: last.idx + 1, when: last.when + 1000, tag });
   writeFileSync(journalPath, JSON.stringify(journal));
   writeFileSync(join(dir, `${tag}.sql`), sql);
-  return dir;
-}
-
-/** Copies the real migrations up to and including `tag` (an older release's schema). */
-function migrationsUpTo(tag: string) {
-  const dir = tmpDir('proginone-migrations-');
-  cpSync(MIGRATIONS_DIR, dir, { recursive: true });
-  const journalPath = join(dir, 'meta', '_journal.json');
-  const journal = JSON.parse(readFileSync(journalPath, 'utf8')) as { entries: { tag: string }[] };
-  const keep = journal.entries.findIndex((e) => e.tag === tag);
-  for (const e of journal.entries.slice(keep + 1)) rmSync(join(dir, `${e.tag}.sql`));
-  journal.entries = journal.entries.slice(0, keep + 1);
-  writeFileSync(journalPath, JSON.stringify(journal));
   return dir;
 }
 

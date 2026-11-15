@@ -62,6 +62,11 @@ export const ERROR_CODES = [
   'BACKUP_FAILED',
   'BACKUP_NOT_FOUND',
   'RESTORE_FAILED',
+  /** `PUT /backups/location`: not an absolute, safe, writable folder (`details.reason`). */
+  'BACKUP_LOCATION_INVALID',
+  /** The backup folder is fixed by `PROGINONE_BACKUP_DIR` and cannot be changed from the UI. */
+  'BACKUP_LOCATION_LOCKED',
+  'RESET_FAILED',
   ...AI_ERROR_CODES,
   'INTERNAL',
 ] as const;

@@ -2,7 +2,9 @@ import { Hono } from 'hono';
 import { requestId } from 'hono/request-id';
 import type { Config } from '../config/schema.ts';
 import type { Logger } from '../observability/logger.ts';
+import type { BackupLocationService } from '../services/backup/location.ts';
 import type { BackupService } from '../services/backup/service.ts';
+import type { DataResetService } from '../services/data/reset-service.ts';
 import type { ContentAccess } from '../services/curriculum/content-access.ts';
 import type { AiService } from '../services/ai/ai-service.ts';
 import type { PracticeServices } from '../services/practice/index.ts';
@@ -13,7 +15,7 @@ import type { TutorService } from '../services/tutor/tutor-service.ts';
 import type { AppEnv } from './env.ts';
 import { AppError, errorResponse, handleError } from './errors.ts';
 import { aiRoutes } from './routes/ai.ts';
-import { backupRoutes } from './routes/backups.ts';
+import { backupRoutes, dataRoutes } from './routes/backups.ts';
 import { curriculumRoutes } from './routes/curriculum.ts';
 import { exerciseRoutes } from './routes/exercises.ts';
 import { learningRoutes } from './routes/learning.ts';
@@ -29,6 +31,10 @@ export interface AppDeps {
   log: Logger;
   token: string;
   backups: BackupService;
+  /** Backup folder change (설정 > 데이터). Omitted in tests that do not exercise it. */
+  backupLocation?: BackupLocationService;
+  /** Learning data reset (설정 > 데이터). Omitted in tests that do not exercise it. */
+  dataReset?: DataResetService;
   settings: SettingsService;
   content: ContentAccess;
   practice: PracticeServices;
@@ -56,6 +62,8 @@ export function createApp({
   log,
   token,
   backups,
+  backupLocation,
+  dataReset,
   settings,
   content,
   practice,
@@ -92,13 +100,14 @@ export function createApp({
 
   const api = new Hono<AppEnv>()
     .get('/health', (c) => c.json({ status: 'ok' as const, version }))
-    .route('/backups', backupRoutes(backups))
+    .route('/backups', backupRoutes(backups, backupLocation))
     .route('/settings', settingsRoutes(settings))
     .route('/', curriculumRoutes(content))
     .route('/exercises', exerciseRoutes(practice.exercises, practice.attempts))
     .route('/practice-sets', practiceSetRoutes(practice.sets, practice.attempts))
     .route('/attempts', attemptRoutes(practice.attempts))
     .route('/', learningRoutes(practice));
+  if (dataReset) api.route('/data', dataRoutes(dataReset));
   if (ai) {
     const opts = ai.keepAliveMs ? { keepAliveMs: ai.keepAliveMs } : {};
     api

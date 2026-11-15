@@ -1,5 +1,6 @@
 export * from './errors.ts';
 export * from './backups.ts';
+export * from './data.ts';
 export * from './settings.ts';
 export * from './curriculum.ts';
 export * from './run-protocol.ts';

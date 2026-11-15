@@ -6,6 +6,7 @@ import { serve } from '@hono/node-server';
 import { TaskRunner } from '@proginone/ai';
 import { createProvider } from './ai/provider.ts';
 import { ConfigError, loadConfig } from './config/load.ts';
+import { ENV_KEYS } from './config/schema.ts';
 import { UserDb } from './db/user/connection.ts';
 import { ensureLearner } from './db/user/learners.ts';
 import { appMeta } from './db/user/schema.ts';
@@ -18,7 +19,9 @@ import { acquireInstanceLock } from './lifecycle/instance-lock.ts';
 import { openBrowser } from './lifecycle/open-browser.ts';
 import { createLogger } from './observability/logger.ts';
 import { BackupScheduler } from './services/backup/scheduler.ts';
+import { BackupLocationService } from './services/backup/location.ts';
 import { BackupService } from './services/backup/service.ts';
+import { DataResetService } from './services/data/reset-service.ts';
 import { AiService } from './services/ai/ai-service.ts';
 import { systemClock } from './services/clock.ts';
 import { offsetFileClock } from './services/test-clock.ts';
@@ -62,6 +65,7 @@ if (!lock.acquired) {
 const { release } = lock;
 
 const maintenance = new MaintenanceState();
+let tutorRef: TutorService | null = null;
 const userDb = new UserDb(join(config.dataDir, 'user.db')).open();
 const backups = new BackupService({
   userDb,
@@ -70,6 +74,8 @@ const backups = new BackupService({
   log,
   maintenance,
   migrate: (backup) => migrateUserDb(userDb, { backup }),
+  // Restore and reset stop running tutor turns first (data-model.md#복원-절차).
+  interrupt: () => tutorRef?.cancelAll(),
 });
 
 try {
@@ -138,7 +144,6 @@ const provider = createProvider(config, log, APP_VERSION);
 const ai = new AiService({ provider, log, userDb });
 // One runner, so every AI task shares the turn limit (interactive before background).
 const runner = new TaskRunner({ provider, now: systemClock });
-let tutorRef: TutorService | null = null;
 const evaluator = new EvaluatorService({ userDb, content, runner, ai, now: systemClock, log });
 const memory = new MemoryService({
   userDb,
@@ -161,6 +166,14 @@ const app = createApp({
   log,
   token,
   backups,
+  backupLocation: new BackupLocationService({
+    backups,
+    dataDir: config.dataDir,
+    defaultDir: join(config.dataDir, 'backups'),
+    fixedByEnv: Boolean(process.env[ENV_KEYS.backupDir]),
+    log,
+  }),
+  dataReset: new DataResetService({ userDb, backups, log }),
   settings: new SettingsService({ userDb, log }),
   content,
   practice: createPracticeServices({ userDb, content, engine, now: learningClock }),

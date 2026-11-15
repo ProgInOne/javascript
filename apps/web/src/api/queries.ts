@@ -20,6 +20,11 @@ import {
   type ReportRequest,
   type RunPlanRequest,
   backupListSchema,
+  backupCheckSchema,
+  backupLocationChangeSchema,
+  backupLocationSchema,
+  resetResponseSchema,
+  RESET_CONFIRM_TEXT,
   courseDetailSchema,
   courseListSchema,
   lessonDetailSchema,
@@ -89,8 +94,51 @@ export function useRestoreBackup() {
         method: 'POST',
         schema: z.object({ restored: backupSummarySchema }),
       }),
-    // Every cached server state may have changed (docs/design/data-model.md#복원-절차).
-    onSuccess: () => client.invalidateQueries(),
+    // Every cached server state may have changed (docs/design/data-model.md#복원-절차). Reset,
+    // not invalidate: some queries are cached as static (the learner profile).
+    onSuccess: () => client.resetQueries(),
+  });
+}
+
+/** Pre-restore check shown in the restore dialog (data-model.md#복원-절차 step 1). */
+export const backupCheckQuery = (id: string) =>
+  queryOptions({
+    queryKey: ['backups', id, 'check'],
+    queryFn: ({ signal }) =>
+      api(`/backups/${encodeURIComponent(id)}/check`, { schema: backupCheckSchema, signal }),
+    staleTime: 0,
+    gcTime: 0,
+  });
+
+export const backupLocationQuery = queryOptions({
+  queryKey: ['backups', 'location'],
+  queryFn: ({ signal }) => api('/backups/location', { schema: backupLocationSchema, signal }),
+});
+
+export function useChangeBackupLocation() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (path: string) =>
+      api('/backups/location', {
+        method: 'PUT',
+        body: { path },
+        schema: backupLocationChangeSchema,
+      }),
+    onSuccess: () => client.invalidateQueries({ queryKey: ['backups'] }),
+  });
+}
+
+/** `POST /data/reset`; afterwards every cached query is stale (FR-SET-07). */
+export function useResetLearningData() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: () =>
+      api('/data/reset', {
+        method: 'POST',
+        body: { confirm: RESET_CONFIRM_TEXT },
+        schema: resetResponseSchema,
+      }),
+    onSuccess: () => client.resetQueries(),
   });
 }
 
