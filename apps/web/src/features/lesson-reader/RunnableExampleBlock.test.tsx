@@ -1,13 +1,21 @@
 import type { RunResult } from '@proginone/shared';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type * as RunnerModule from '../runner/runner.ts';
 
 const run = vi.fn<() => Promise<RunResult>>();
+let previewNotice: ((message: string) => void) | undefined;
 vi.mock('../runner/runner.ts', async (importOriginal) => {
   const actual = await importOriginal<typeof RunnerModule>();
-  return { ...actual, consoleRunner: () => ({ run }) };
+  return {
+    ...actual,
+    consoleRunner: () => ({ run }),
+    previewRunner: (_container: HTMLElement, onNotice?: (message: string) => void) => {
+      previewNotice = onNotice;
+      return { run, dispose: () => undefined };
+    },
+  };
 });
 
 const { RunnableExampleBlock } = await import('./RunnableExampleBlock.tsx');
@@ -78,6 +86,22 @@ describe('RunnableExampleBlock', () => {
       await screen.findByText('ReferenceError: x is not defined (2번째 줄)'),
     ).toBeInTheDocument();
     expect(screen.getByText(/시간 안에 끝나지 않았어요/)).toBeInTheDocument();
+  });
+
+  it('tells the learner when the HTML preview did not follow a link or submit a form', async () => {
+    const { noticeMessage } = await vi.importActual<typeof RunnerModule>('../runner/runner.ts');
+    run.mockResolvedValue(result({ console: [] }));
+    render(
+      <RunnableExampleBlock id="h" lang="html" code="<a href='x.html'>x</a>" predict={false} />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: '실행' }));
+    await screen.findByRole('status');
+    act(() => {
+      previewNotice?.(noticeMessage('navigation-blocked'));
+    });
+    expect(screen.getByRole('status')).toHaveTextContent(
+      '미리보기에서는 링크 이동과 폼 제출이 실제로 일어나지 않아요.',
+    );
   });
 
   it('shows CSS-only snippets without a run button', () => {

@@ -160,6 +160,18 @@ export const hostToShellSchema = z.discriminatedUnion('type', [
 export type HostToShell = z.infer<typeof hostToShellSchema>;
 
 /**
+ * Something the preview UI should tell the learner, independent of any run (the preview document
+ * stays interactive after its run has finished).
+ *
+ * - `navigation-blocked`: the learner followed a link or submitted a form in the preview. The
+ *   harness cancelled it, because the sandbox would only show the browser's error page.
+ *
+ * Learner code can make the shell send this too; it only ever shows a notice.
+ */
+export const RUNNER_NOTICES = ['navigation-blocked'] as const;
+export type RunnerNotice = (typeof RUNNER_NOTICES)[number];
+
+/**
  * Shell → host over the port, except results: those are checked with the shared
  * `parseRunResult` (depth and `__proto__` guards first).
  */
@@ -167,6 +179,7 @@ export const shellControlSchema = z.union([
   z.object({ v, type: z.literal('ready') }),
   z.object({ v, type: z.literal('heartbeat'), runId: z.uuid(), at: z.number().nonnegative() }),
   runEventSchema,
+  z.object({ v, type: z.literal('notice'), notice: z.enum(RUNNER_NOTICES) }),
 ]);
 export type ShellControl = z.infer<typeof shellControlSchema>;
 
@@ -209,4 +222,15 @@ export interface HarnessConfig {
   scripts: PreparedScript[];
   /** Learner-visible file id per blob URL, filled in by whoever creates the blob. */
   sourceIds: Record<string, string>;
+  /**
+   * `preview` only: cancel link navigation and form submission in the learner document and tell
+   * the shell (`pg-notice`), instead of letting the sandbox swap in an error page.
+   */
+  interceptNavigation?: boolean;
+}
+
+/** Learner document → shell over `window.postMessage` (see `RunnerNotice`). */
+export interface HarnessNoticeMessage {
+  type: 'pg-notice';
+  notice: RunnerNotice;
 }

@@ -357,6 +357,46 @@ describe('check evaluation', () => {
     ).toBe(false);
   });
 
+  it('dom: order or parentSelector alone works with a count-only main query', () => {
+    // The main query of such a check reads only `count`, and the runner returns no items for
+    // count-only reads (harness/steps.ts). Only the extra steps carry the details.
+    const dom = (expect: object) => ({ kind: 'dom', id: 'd', selector: 'body', expect });
+    const { bundle } = compileChecks(checks([dom({ order: ['header', 'main', 'footer'] })]), {
+      timers: 'real',
+      purpose: 'grading',
+    });
+    expect(bundle.steps.find((s) => s.id === 'd#q')).toMatchObject({
+      op: 'domQuery',
+      read: ['count'],
+    });
+
+    const q = (count: number) => ({ op: 'domQuery', id: 'd#q', count, items: [] });
+    const children = (tags: string[]) => ({
+      op: 'domQuery',
+      id: 'd#q.order',
+      count: tags.length,
+      items: tags.map((tagName) => ({ tagName })),
+    });
+    const order = dom({ order: ['header', 'main', 'footer'] });
+    expect(one(order, [q(1), children(['header', 'main', 'footer'])])).toMatchObject({
+      passed: true,
+    });
+    expect(one(order, [q(1), children(['main', 'header', 'footer'])])).toMatchObject({
+      passed: false,
+      reason: 'MISMATCH',
+    });
+    expect(one(order, [q(0), children([])])?.reason).toBe('NOT_FOUND');
+
+    const parent = { kind: 'dom', id: 'd', selector: 'li', expect: { parentSelector: 'ul' } };
+    const parentObs = (count: number, matching: number) => [
+      q(count),
+      { op: 'domQuery', id: 'd#q.parent', count: matching, items: [] },
+    ];
+    expect(one(parent, parentObs(2, 2))?.passed).toBe(true);
+    expect(one(parent, parentObs(2, 1))?.reason).toBe('MISMATCH');
+    expect(one(parent, parentObs(0, 0))?.reason).toBe('NOT_FOUND');
+  });
+
   it('event: dispatch failures and DOM state after the scenario', () => {
     const check = {
       kind: 'event',

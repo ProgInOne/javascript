@@ -3,7 +3,8 @@
  * the shell CSP (docs/design/code-execution-sandbox.md#러너-셸-iframe).
  *
  * - Talks to the host only over the transferred MessagePort; the only window messages it reacts
- *   to are `connect` from its parent and `pg-harness-hello` from its current learner document.
+ *   to are `connect` from its parent, `pg-harness-hello` from its current learner document and
+ *   `pg-notice` from a preview document.
  * - Validates everything it receives with the protocol schemas.
  * - Runs `js-console` in a `blob:` Worker and `dom`/`preview` in a nested sandboxed `srcdoc`
  *   frame, enforces `maxDurationMs`, and sends heartbeats while a run is active.
@@ -13,6 +14,7 @@ import {
   HARNESS_CONFIG_GLOBAL,
   harnessToShellSchema,
   type HarnessConfig,
+  type HarnessNoticeMessage,
   type HarnessToShell,
   hostToShellSchema,
   PROTOCOL_VERSION,
@@ -29,6 +31,8 @@ const HEARTBEAT_MS = 250;
 /** Grace period after maxDurationMs before the shell gives up on the harness. */
 const HARD_STOP_GRACE_MS = 300;
 const LEARNER_CSP = `<meta http-equiv="Content-Security-Policy" content="worker-src 'none'">`;
+/** At most one notice per this interval: learner code can post `pg-notice` in a loop. */
+const NOTICE_INTERVAL_MS = 500;
 
 interface ActiveRun {
   request: RunRequest;
@@ -48,6 +52,7 @@ let hostPort: MessagePort | null = null;
 let current: ActiveRun | null = null;
 /** A finished preview keeps its document on screen until the next run. */
 let previewFrame: HTMLIFrameElement | null = null;
+let lastNoticeAt = -Infinity;
 
 const post = (msg: ShellControl | RunResult) => {
   hostPort?.postMessage(msg);
@@ -72,11 +77,29 @@ window.addEventListener('message', (e: MessageEvent) => {
   ) {
     run.harnessPortGiven = true;
     learner.postMessage({ type: 'pg-port' }, '*', [run.channel.port2]);
+    return;
   }
+  if (isPreviewWindow(e.source)) forwardNotice(e.data);
   // Everything else, including learner code posting fake results to its parent, is ignored.
 });
 
 parent.postMessage({ v: PROTOCOL_VERSION, type: 'shell-hello' }, '*');
+
+/** The preview document on screen: a finished preview, or the one the current run renders. */
+function isPreviewWindow(source: MessageEventSource | null): boolean {
+  if (source === null) return false;
+  if (previewFrame?.contentWindow === source) return true;
+  return current?.request.mode === 'preview' && current.frame?.contentWindow === source;
+}
+
+function forwardNotice(data: unknown) {
+  const d = data as Partial<HarnessNoticeMessage> | null;
+  if (d?.type !== 'pg-notice' || d.notice !== 'navigation-blocked') return;
+  const at = performance.now();
+  if (at - lastNoticeAt < NOTICE_INTERVAL_MS) return;
+  lastNoticeAt = at;
+  post({ v: PROTOCOL_VERSION, type: 'notice', notice: d.notice });
+}
 
 function onHostMessage(e: MessageEvent) {
   const parsed = hostToShellSchema.safeParse(e.data);
@@ -141,6 +164,7 @@ function startRun(request: RunRequest) {
     stdin: request.stdin,
     scripts: request.mode === 'js-console' ? [] : request.scripts,
     sourceIds: {},
+    ...(request.mode === 'preview' ? { interceptNavigation: true } : {}),
   };
 
   if (request.mode === 'js-console') {

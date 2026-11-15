@@ -5,6 +5,7 @@ import {
   type RunEvent,
   type RunPlan,
   type RunPlanInput,
+  type RunnerNotice,
   type RunRequest,
   runnablePlanSchema,
   runRequestSchema,
@@ -37,6 +38,11 @@ export interface RunnerHostOptions {
   placement?: 'hidden' | 'visible';
   /** Live console/progress events of the current run. */
   onEvent?: (event: RunEvent) => void;
+  /**
+   * Notices from a `preview` document, also after its run has finished (e.g. the learner clicked
+   * a link the preview does not follow). Show them next to the preview.
+   */
+  onNotice?: (notice: RunnerNotice) => void;
   /**
    * Load every shell from its own `<shellId>.localhost` site (default `true`, D-018). A stuck
    * shell process is then never reused, and Firefox keeps the app responsive.
@@ -257,6 +263,10 @@ export function createRunnerHost(options: RunnerHostOptions = {}): RunnerHost {
   };
 
   function onShellMessage(msg: ShellControl) {
+    if (msg.type === 'notice') {
+      options.onNotice?.(msg.notice);
+      return;
+    }
     const p = pending;
     if (msg.type === 'ready' || !p) return;
     if (msg.runId !== p.runId) return; // stale run

@@ -13,7 +13,12 @@
  */
 import { HARNESS_CONFIG_GLOBAL } from '../protocol/constants.ts';
 import type { ConsoleEntry, ConsoleLevel } from '@proginone/shared';
-import type { BlockedRequest, HarnessConfig, HarnessToShell } from '../protocol/messages.ts';
+import type {
+  BlockedRequest,
+  HarnessConfig,
+  HarnessNoticeMessage,
+  HarnessToShell,
+} from '../protocol/messages.ts';
 import type {
   Observation,
   ObservationStep,
@@ -734,6 +739,114 @@ function start(config: HarnessConfig) {
     finish();
   };
 
+  // ---- preview navigation ------------------------------------------------------------------
+  /**
+   * Preview only. Following a link or submitting a form would navigate the learner document,
+   * which the shell CSP blocks (`frame-src`/`form-action 'none'`), so the learner would only see
+   * the browser's error page. Cancel those navigations before the browser starts them and ask the
+   * shell to show a notice. The sandbox itself is unchanged: this only stops navigations earlier.
+   *
+   * Fragment links (`#id`) are cancelled too: a `srcdoc` document resolves them against its
+   * parent's URL, so even they would leave the document. They scroll to their target instead and
+   * show no notice.
+   *
+   * Learner code keeps its usual view of the event: the listener runs first (window, capture,
+   * registered before any learner code), cancels the default action with the captured
+   * `preventDefault`, and shadows `preventDefault`/`defaultPrevented`/`returnValue` on that event
+   * so learner handlers see only their own cancellation. The default (notice or scroll) happens
+   * only when no learner handler cancelled the event (e.g. a submit handler that calls
+   * `event.preventDefault()` gets no notice). Limitation: an inline handler's `return false`
+   * cancels without calling `preventDefault`, so it still gets the notice.
+   */
+  function interceptNavigation(parentWindow: Window) {
+    const ElementCtor = G.Element;
+    const closest = ElementCtor.prototype.closest;
+    const getAttribute = ElementCtor.prototype.getAttribute as Fn;
+    const scrollIntoView = ElementCtor.prototype.scrollIntoView as Fn;
+    const getElementById = Document.prototype.getElementById;
+    const getElementsByName = Document.prototype.getElementsByName;
+    const scrollTo = G.scrollTo as unknown as Fn;
+    const decode = decodeURIComponent;
+    const nativePreventDefault = Event.prototype.preventDefault;
+    const notice: HarnessNoticeMessage = { type: 'pg-notice', notice: 'navigation-blocked' };
+    const attr = (el: Element, name: string) => apply(getAttribute, el, [name]) as string | null;
+
+    /** What following this event would do: `null` (nothing to stop), a fragment, or leave. */
+    const navigation = (ev: Event): { fragment: string } | 'leave' | null => {
+      const target = ev.target;
+      if (!(target instanceof ElementCtor)) return null;
+      if (ev.type === 'click') {
+        const link = apply(closest, target, ['a[href], area[href]']) as Element | null;
+        if (link === null) return null;
+        const href = attr(link, 'href') ?? '';
+        if (reExec(/^\s*javascript:/i, href)) return null; // runs script, stays
+        const hash = reExec(/^\s*#(.*)$/, href);
+        return hash ? { fragment: hash[1] ?? '' } : 'leave';
+      }
+      // `submit`: scripts dispatching a plain `Event('submit')` submit nothing; `<form
+      // method="dialog">` closes its dialog instead of navigating.
+      if (!ev.isTrusted) return null;
+      const submitter = (ev as SubmitEvent).submitter;
+      const method = (submitter && attr(submitter, 'formmethod')) ?? attr(target, 'method') ?? '';
+      return reExec(/^\s*dialog\s*$/i, method) ? null : 'leave';
+    };
+
+    /** Scrolls like a same-document fragment navigation: `id`, then `name`, else `#top`. */
+    const scrollToFragment = (raw: string) => {
+      let id = raw;
+      try {
+        id = decode(raw);
+      } catch {
+        // keep it as written
+      }
+      let el: unknown = null;
+      if (id !== '') {
+        el =
+          apply(getElementById, document, [id]) ??
+          (apply(getElementsByName, document, [id]) as NodeList)[0];
+      }
+      if (el instanceof ElementCtor) apply(scrollIntoView, el, []);
+      else if (id === '' || reExec(/^top$/i, id)) apply(scrollTo, G, [0, 0]);
+    };
+
+    const onNavigation = (ev: Event) => {
+      const nav = ev.cancelable ? navigation(ev) : null;
+      if (nav === null) return;
+      apply(nativePreventDefault, ev, []);
+      let cancelled = false;
+      try {
+        defineProperty(ev, 'preventDefault', {
+          configurable: true,
+          value: function preventDefault() {
+            cancelled = true;
+          },
+        });
+        defineProperty(ev, 'defaultPrevented', { configurable: true, get: () => cancelled });
+        defineProperty(ev, 'returnValue', {
+          configurable: true,
+          get: () => !cancelled,
+          set: (value: unknown) => {
+            if (!value) cancelled = true;
+          },
+        });
+      } catch {
+        return; // learner handlers see the cancellation; acting on it could then be wrong
+      }
+      // The whole dispatch has finished by the time a timer runs.
+      setTimeoutRaw(() => {
+        if (cancelled) return;
+        try {
+          if (nav === 'leave') parentWindow.postMessage(notice, '*');
+          else scrollToFragment(nav.fragment);
+        } catch {
+          // ignore
+        }
+      }, 0);
+    };
+    addListener('click', onNavigation, true);
+    addListener('submit', onNavigation, true);
+  }
+
   // ---- start ---------------------------------------------------------------------------------
   if (isWorker) {
     // Firefox does not apply the inherited connect-src to EventSource in workers (PoC S5-w), and
@@ -786,6 +899,7 @@ function start(config: HarnessConfig) {
       true,
     );
     parentWindow.postMessage({ type: 'pg-harness-hello' }, '*');
+    if (config.interceptNavigation) interceptNavigation(parentWindow);
     addListener('load', () => {
       void afterScripts();
     });

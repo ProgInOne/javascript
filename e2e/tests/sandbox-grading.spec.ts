@@ -41,6 +41,9 @@ const webTask = {
   solution: { files: [{ path: 'index.html', content: '<!doctype html>\n<ul></ul>' }] },
   checks: [
     { kind: 'dom', id: 'list', selector: 'ul.cards', expect: { exists: true } },
+    // `order` or `parentSelector` alone: the main query reads only `count`.
+    { kind: 'dom', id: 'order', selector: 'body', expect: { order: ['ul', 'input', 'button'] } },
+    { kind: 'dom', id: 'parent', selector: 'li', expect: { parentSelector: 'ul.cards' } },
     {
       kind: 'css',
       id: 'flex',
@@ -122,5 +125,15 @@ test.describe('runner ↔ exercise-kit grading contract', () => {
     const noFlex = await grade(WEB_ANSWER.replace('display: flex; ', ''));
     expect(noFlex.correct).toBe(false);
     expect(noFlex.score).toBeGreaterThan(0);
+    const reordered = await grade(
+      WEB_ANSWER.replace(
+        '<input id="name"><button id="add">추가</button>',
+        '<button id="add">추가</button><input id="name">',
+      ),
+    );
+    expect(reordered.checkResults?.find((r) => r.id === 'order')).toMatchObject({
+      passed: false,
+      reason: 'MISMATCH',
+    });
   });
 });

@@ -111,6 +111,12 @@ describe('channel schemas', () => {
       true,
     );
     expect(shellControlSchema.safeParse({ v: 1, type: 'result', runId }).success).toBe(false);
+    expect(
+      shellControlSchema.safeParse({ v: 1, type: 'notice', notice: 'navigation-blocked' }).success,
+    ).toBe(true);
+    expect(shellControlSchema.safeParse({ v: 1, type: 'notice', notice: 'other' }).success).toBe(
+      false,
+    );
     expect(harnessToShellSchema.safeParse({ type: 'settled' }).success).toBe(true);
     expect(
       harnessToShellSchema.safeParse({ type: 'viewport', reqId: 1, width: 10, height: 10 }).success,

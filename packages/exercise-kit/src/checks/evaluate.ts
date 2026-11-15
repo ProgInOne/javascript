@@ -385,16 +385,19 @@ export function evaluateDomExpect(
       return fail('MISMATCH', { path: '개수', expected: exp, actual: `${count}개` });
     }
   }
-  const needsElement =
+  // Per-element reads come back as `items`. `parentSelector` and `order` are answered by their own
+  // steps, and a main query that reads only `count` has no items (harness `domQuery`), so those
+  // two need a matched element but not items.
+  const needsItems =
     expect.text !== undefined ||
     expect.attr !== undefined ||
     expect.tag !== undefined ||
     expect.value !== undefined ||
-    expect.checked !== undefined ||
-    expect.parentSelector !== undefined ||
-    expect.order !== undefined;
+    expect.checked !== undefined;
+  const needsElement =
+    needsItems || expect.parentSelector !== undefined || expect.order !== undefined;
   if (!needsElement) return PASS;
-  if (count === 0 || obs.items.length === 0) return fail('NOT_FOUND');
+  if (count === 0 || (needsItems && obs.items.length === 0)) return fail('NOT_FOUND');
 
   const all = expect.all;
   const firstOnly = obs.items.slice(0, 1);

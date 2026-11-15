@@ -6,6 +6,7 @@ import type {
   WebTaskPublicSpec,
 } from '@proginone/exercise-kit';
 import type { RunResult } from '@proginone/shared';
+import { UiProvider } from '@proginone/ui';
 import { act, screen, within } from '@testing-library/react';
 import { createRef, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
@@ -235,6 +236,21 @@ describe('WebTask and PreviewFrame', () => {
   it('shows the error state', () => {
     renderUi(<PreviewFrame status="error" errorMessage="실행 환경 오류 — 다시 실행해 주세요" />);
     expect(screen.getByRole('alert').textContent).toBe('실행 환경 오류 — 다시 실행해 주세요');
+  });
+
+  it('announces a notice in a live region that exists before the notice arrives', async () => {
+    const message = '미리보기에서는 링크 이동과 폼 제출이 실제로 일어나지 않아요.';
+    const { rerender, container } = renderUi(<PreviewFrame status="ready" />);
+    const region = screen.getByRole('status');
+    expect(region.textContent).toBe('');
+    rerender(
+      <UiProvider>
+        <PreviewFrame status="ready" notice={message} />
+      </UiProvider>,
+    );
+    expect(screen.getByRole('status')).toBe(region);
+    expect(region.textContent).toBe(message);
+    expect(await axeViolations(container)).toEqual([]);
   });
 });
 

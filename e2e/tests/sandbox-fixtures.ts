@@ -47,12 +47,13 @@ function hostScript(): Promise<string> {
   return hostBundle;
 }
 
-type HostOptions = Omit<RunnerHostOptions, 'container' | 'onEvent'>;
+type HostOptions = Omit<RunnerHostOptions, 'container' | 'onEvent' | 'onNotice'>;
 
 interface TestWindow {
   __runnerHostModule: typeof HostModule;
   __host: RunnerHost;
   __events: unknown[];
+  __notices: string[];
   __monitor: { maxGap: number; last: number };
 }
 
@@ -63,9 +64,11 @@ export async function openRunner(page: Page, options: HostOptions = {}) {
   await page.evaluate(async (opts) => {
     const w = window as unknown as TestWindow;
     w.__events = [];
+    w.__notices = [];
     w.__host = w.__runnerHostModule.createRunnerHost({
       ...opts,
       onEvent: (e) => w.__events.push(e),
+      onNotice: (n) => w.__notices.push(n),
     });
     await w.__host.ready();
   }, options);
@@ -138,6 +141,11 @@ export const html = (content: string, extra: PlanExtra = {}): RunPlan =>
     },
     extra,
   );
+
+/** Preview notices received so far (`RunnerHostOptions.onNotice`). */
+export function notices(page: Page) {
+  return page.evaluate(() => (window as unknown as TestWindow).__notices);
+}
 
 /** Requests the shell CSP blocked in the last run (from the `blocked` event). */
 export function blockedRequests(page: Page) {

@@ -35,6 +35,7 @@ export function RunnableExampleBlock({
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<RunResult | null>(null);
   const [failed, setFailed] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const previewHost = useRef<ReturnType<typeof previewRunner> | null>(null);
 
@@ -51,12 +52,13 @@ export function RunnableExampleBlock({
     if (!kind) return;
     setRunning(true);
     setFailed(false);
+    setNotice(null);
     try {
       let host = consoleRunner();
       if (kind === 'html') {
         if (!previewRef.current) return;
         previewHost.current?.dispose();
-        previewHost.current = previewRunner(previewRef.current);
+        previewHost.current = previewRunner(previewRef.current, setNotice);
         host = previewHost.current;
       }
       setResult(await host.run(examplePlan(kind, code)));
@@ -174,6 +176,7 @@ export function RunnableExampleBlock({
             </p>
           ))}
           {status && <p className="mt-1 text-fg-secondary">{status}</p>}
+          {notice && <p className="mt-1 text-fg-secondary">{notice}</p>}
         </div>
       )}
     </figure>

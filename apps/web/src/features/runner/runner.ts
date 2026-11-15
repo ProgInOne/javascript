@@ -1,4 +1,4 @@
-import { createRunnerHost, type RunnerHost } from '@proginone/runner';
+import { createRunnerHost, type RunnerHost, type RunnerNotice } from '@proginone/runner';
 import type { RunPlan, RunResult } from '@proginone/shared';
 
 /**
@@ -16,9 +16,35 @@ export function consoleRunner(): RunnerHost {
   return hidden;
 }
 
-/** A visible runner rendering into `container` (HTML preview). Dispose it when unmounting. */
-export function previewRunner(container: HTMLElement): RunnerHost {
-  return createRunnerHost({ serverOrigin: SERVER_ORIGIN, placement: 'visible', container });
+const NOTICE_MESSAGES: Record<RunnerNotice, string> = {
+  'navigation-blocked': '미리보기에서는 링크 이동과 폼 제출이 실제로 일어나지 않아요.',
+};
+
+/** Learner-facing copy for preview notices (docs/design/code-execution-sandbox.md#미리보기). */
+export function noticeMessage(notice: RunnerNotice): string {
+  return NOTICE_MESSAGES[notice];
+}
+
+/**
+ * A visible runner rendering into `container` (HTML preview). Dispose it when unmounting.
+ * `onNotice` receives learner-facing notices (e.g. a link the preview did not follow).
+ */
+export function previewRunner(
+  container: HTMLElement,
+  onNotice?: (message: string) => void,
+): RunnerHost {
+  return createRunnerHost({
+    serverOrigin: SERVER_ORIGIN,
+    placement: 'visible',
+    container,
+    ...(onNotice
+      ? {
+          onNotice: (notice: RunnerNotice) => {
+            onNotice(noticeMessage(notice));
+          },
+        }
+      : {}),
+  });
 }
 
 const noChecks = (): RunPlan['checks'] => ({ v: 1, expose: [], steps: [] });

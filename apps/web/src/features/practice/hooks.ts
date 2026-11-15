@@ -10,6 +10,8 @@ import { consoleRunner, previewRunner } from '../runner/runner.ts';
 export function useExerciseRunner() {
   const previewMount = useRef<HTMLDivElement | null>(null);
   const previewHost = useRef<RunnerHost | null>(null);
+  /** Notice about the current preview document (cleared by the next preview run). */
+  const [previewNotice, setPreviewNotice] = useState<string | null>(null);
   useEffect(
     () => () => {
       previewHost.current?.dispose();
@@ -22,14 +24,15 @@ export function useExerciseRunner() {
   const preview = useCallback((plan: RunPlan): Promise<RunResult> => {
     const mount = previewMount.current;
     if (!mount) return consoleRunner().run(plan);
-    previewHost.current ??= previewRunner(mount);
+    setPreviewNotice(null);
+    previewHost.current ??= previewRunner(mount, setPreviewNotice);
     return previewHost.current.run(plan.mode === 'dom' ? { ...plan, mode: 'preview' } : plan);
   }, []);
   const abort = useCallback(() => {
     consoleRunner().abort();
     previewHost.current?.abort();
   }, []);
-  return { previewMount, hidden, preview, abort };
+  return { previewMount, previewNotice, hidden, preview, abort };
 }
 
 const DRAFT_PREFIX = 'proginone:draft:';

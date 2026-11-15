@@ -6,6 +6,7 @@ import {
   html,
   js,
   maxFrameGap,
+  notices,
   openRunner,
   run,
   startFrameMonitor,
@@ -483,6 +484,56 @@ test.describe('runner: execution and observations', () => {
     await expect(
       shell.frameLocator('iframe[title="학습자 문서"]:visible').locator('#p'),
     ).toHaveText('미리보기');
+  });
+
+  test('preview cancels links and form submissions with a notice instead of an error page', async ({
+    page,
+  }) => {
+    const { appOrigin, expectNoLeaks } = await setup(page, { placement: 'visible' });
+    const doc = `<!doctype html>
+<a id="away" href="other.html">다른 페이지</a> <a id="jump" href="#end">아래로</a>
+<form id="plain" method="post" action="${appOrigin}/api/v1/settings"><button id="send">보내기</button></form>
+<form id="handled"><input name="q"><button id="save">저장</button></form>
+<p id="out"></p><div style="height: 3000px"></div><p id="end">끝</p>
+<script>
+const out = document.getElementById('out');
+document.getElementById('handled').addEventListener('submit', (e) => {
+  e.preventDefault();
+  out.textContent = 'handled:' + e.defaultPrevented;
+});
+document.getElementById('plain').addEventListener('submit', (e) => {
+  out.textContent = 'plain:' + e.defaultPrevented;
+});
+</script>`;
+    const result = await run(page, { ...html(doc), mode: 'preview' });
+    expect(result.status).toBe('completed');
+    const learner = page
+      .frameLocator('iframe[title="코드 실행 결과"]')
+      .frameLocator('iframe[title="학습자 문서"]');
+
+    // Learner code that handles the submit itself sees its own cancellation and gets no notice.
+    await learner.locator('#save').click();
+    await expect(learner.locator('#out')).toHaveText('handled:true');
+    // A fragment link would leave a srcdoc document too (it resolves against the shell URL); it
+    // scrolls to its target instead, without a notice.
+    await expect(learner.locator('#end')).not.toBeInViewport();
+    await learner.locator('#jump').click();
+    await expect(learner.locator('#end')).toBeInViewport();
+    await page.waitForTimeout(300);
+    expect(await notices(page)).toEqual([]);
+
+    // An unhandled submit is cancelled before it starts; the handler still sees an uncancelled
+    // event.
+    await learner.locator('#send').click();
+    await expect(learner.locator('#out')).toHaveText('plain:false');
+    await expect.poll(() => notices(page)).toEqual(['navigation-blocked']);
+
+    // A link to another page: the document stays (no error page). Wait out the notice throttle.
+    await page.waitForTimeout(600);
+    await learner.locator('#away').click();
+    await expect.poll(() => notices(page)).toEqual(['navigation-blocked', 'navigation-blocked']);
+    await expect(learner.locator('#end')).toHaveText('끝');
+    await expectNoLeaks();
   });
 
   test('dialogs never block and read stdin (S20)', async ({ page }) => {

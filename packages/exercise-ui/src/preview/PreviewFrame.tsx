@@ -1,5 +1,5 @@
 import { Button, Spinner } from '@proginone/ui';
-import { MonitorPlay, RefreshCw } from 'lucide-react';
+import { Info, MonitorPlay, RefreshCw } from 'lucide-react';
 import { useId, type ReactNode, type Ref } from 'react';
 
 export type PreviewStatus = 'idle' | 'loading' | 'ready' | 'error';
@@ -16,6 +16,11 @@ export interface PreviewFrameProps {
   status?: PreviewStatus;
   /** Message for the `error` state (from `RunResult`, e.g. "실행 환경 오류 — 다시 실행해 주세요"). */
   errorMessage?: string;
+  /**
+   * Short notice about the shown document, announced politely (e.g. "미리보기에서는 링크 이동과
+   * 폼 제출이 실제로 일어나지 않아요."). Cleared by the caller on the next run.
+   */
+  notice?: string;
   /** Re-renders the preview (새로 고침). Hidden when omitted. */
   onRefresh?: () => void;
   /** Accessible name of the region. Default "미리보기". */
@@ -31,6 +36,7 @@ export function PreviewFrame({
   children,
   status = 'idle',
   errorMessage,
+  notice,
   onRefresh,
   label = '미리보기',
 }: PreviewFrameProps) {
@@ -63,6 +69,15 @@ export function PreviewFrame({
           </Button>
         )}
       </header>
+      {/* Always rendered: a live region must exist before its content changes. */}
+      <div role="status" className="pi-ex-preview__notices">
+        {notice && (
+          <p className="pi-ex-preview__notice">
+            <Info size={14} aria-hidden="true" />
+            {notice}
+          </p>
+        )}
+      </div>
       <div className="pi-ex-preview__stage">
         <div ref={mountRef} className="pi-ex-preview__mount" data-status={status}>
           {children}

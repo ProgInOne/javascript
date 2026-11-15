@@ -422,6 +422,7 @@ function ItemWorkspace({
               mountRef: runner.previewMount,
               status: previewStatus,
               onRefresh: () => void runInteractive(),
+              ...(runner.previewNotice === null ? {} : { notice: runner.previewNotice }),
             },
           }
         : {})}
