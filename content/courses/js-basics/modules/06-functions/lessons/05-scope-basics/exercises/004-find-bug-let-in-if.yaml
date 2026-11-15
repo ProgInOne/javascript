@@ -1,0 +1,65 @@
+id: js-basics.functions.scope-basics.find-bug-let-in-if
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.scope.block, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [scope, block, reference-error, debugging]
+estimatedSeconds: 100
+prompt: |
+  주문 금액이 30,000원 이상이면 배송비가 0원, 아니면 3,000원인 프로그램이에요. 실행하면 오류가 나요. 오류의 **원인**이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const total = 32000;
+    if (total >= 30000) {
+      let fee = 0;
+    } else {
+      let fee = 3000;
+    }
+    console.log("배송비: " + fee + "원");
+    console.log("결제 금액: " + (total + fee) + "원");
+  bugLines: [3, 5]
+  symptom: "실행하면 아무것도 출력되지 않고 `ReferenceError: fee is not defined` 오류가 나요."
+  symptomCheck:
+    error: ReferenceError
+  fixedCode: |-
+    const total = 32000;
+    let fee = 3000;
+    if (total >= 30000) {
+      fee = 0;
+    }
+    console.log("배송비: " + fee + "원");
+    console.log("결제 금액: " + (total + fee) + "원");
+  causeOptions:
+    - id: c1
+      text: fee를 블록 안에서 let으로 만들어서, 블록이 끝나면 fee가 사라진다
+      correct: true
+    - id: c2
+      text: if 블록과 else 블록에서 같은 이름 fee를 두 번 만들어서 서로 부딪혔다
+      misconception: js.mc.sibling-blocks-name-conflict
+    - id: c3
+      text: 7번 줄에서 글자와 숫자를 +로 이어 붙일 수 없다
+hints:
+  - 오류 메시지가 가리키는 줄은 `fee`를 **쓰는** 줄이에요. 그 줄이 원인인지, `fee`를 **만든** 방법이 원인인지 생각해 보세요.
+  - "`fee`는 어느 `{ }` 안에서 만들어졌나요? 7번 줄은 그 블록의 안인가요, 밖인가요?"
+  - 블록 안에서 `let`으로 만든 변수는 블록이 끝나면 사라져요. 블록 밖에서도 쓸 변수는 어디에서 만들어야 할까요?
+explanation: |
+  원인은 **3번 줄과 5번 줄**이에요(둘 중 하나를 골라도 정답). 두 줄 모두 `fee`를 블록 **안에서** `let`으로 만들어요.
+
+  블록 안에서 만든 `let` 변수는 그 블록이 끝나면 사라져요. 그래서 블록 밖인 7번 줄에서 `fee`를 찾지 못해 `ReferenceError: fee is not defined`가 나요. 오류는 7번 줄에서 났지만, 고쳐야 할 곳은 변수를 만든 자리예요.
+
+  고치는 방법은 `fee`를 블록 **바깥(위)**에서 만들고, 블록 안에서는 대입만 하는 거예요.
+
+  ```js
+  let fee = 3000;
+  if (total >= 30000) {
+    fee = 0;
+  }
+  ```
+
+  - "같은 이름 `fee`를 두 번 만들어서 부딪혔다": 서로 다른 블록끼리는 같은 이름을 써도 오류가 나지 않아요. 부딪혔다면 `SyntaxError`였을 거예요.
+  - "글자와 숫자를 `+`로 이어 붙일 수 없다": `"배송비: " + 0`은 문제없이 `"배송비: 0"`이 돼요(모듈 3).
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

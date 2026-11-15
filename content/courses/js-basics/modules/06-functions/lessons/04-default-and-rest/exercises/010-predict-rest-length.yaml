@@ -1,0 +1,45 @@
+id: js-basics.functions.default-and-rest.predict-rest-length
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.fn.rest-params, weight: 1 }
+tags: [rest-params, length, index, predict]
+estimatedSeconds: 80
+prompt: |
+  모둠 활동의 조장과 조원을 출력하는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    function team(leader, ...members) {
+      console.log("조장: " + leader);
+      console.log("조원 수: " + members.length);
+      console.log("첫 조원: " + members[0]);
+    }
+
+    team("서연", "민호", "지아", "태윤");
+  answerKind: console
+  misconceptionByAnswer:
+    "조장: 서연\n조원 수: 4\n첫 조원: 서연": js.mc.rest-includes-named
+    "조장: 서연\n조원 수: 4\n첫 조원: 민호": js.mc.rest-includes-named
+hints:
+  - 인수 네 개 중 첫 번째는 어느 매개변수가 받나요?
+  - "`members`는 `leader`가 받고 남은 인수만 모아요. 몇 개가 남나요?"
+  - "`members[0]`은 묶음의 첫 번째 값이에요. 위치 번호는 0부터 시작해요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  조장: 서연
+  조원 수: 3
+  첫 조원: 민호
+  ```
+
+  - `leader`가 첫 인수 `"서연"`을 받아요.
+  - `members`에는 **남은** `"민호"`, `"지아"`, `"태윤"` 세 값만 모여요. 그래서 `members.length`는 3이에요.
+  - `members[0]`은 묶음의 첫 값 `"민호"`예요.
+
+  조원 수를 4라고 답했다면, 나머지 매개변수가 앞의 `leader` 몫까지 모은다고 생각한 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

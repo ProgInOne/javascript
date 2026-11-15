@@ -1,0 +1,383 @@
+<Section kind="objectives">
+- 함수 표현식으로 함수를 변수에 담고, 변수 이름으로 호출할 수 있어요.
+- 함수 선언을 화살표 함수로 바꿔 쓰고, 중괄호가 있는 본문과 없는 본문에서 반환값이 어떻게 달라지는지 예측할 수 있어요.
+- 함수 선언은 선언 전에 호출할 수 있지만 `const`로 만든 함수 표현식은 그럴 수 없다는 것을 실행 결과와 오류로 설명할 수 있어요.
+- 화살표 함수의 `return` 실수와 선언 전 호출 오류를 찾아 고칠 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+앞 단원까지는 함수를 늘 `function 이름() { ... }` 모양(<ConceptLink to="js.fn.declaration">함수 선언</ConceptLink>)으로 만들었어요. 그런데 다른 사람이 쓴 JavaScript 코드를 보면 이런 줄이 아주 많이 나와요.
+
+```js
+const double = (n) => n * 2;
+```
+
+`function`도 `return`도 없는데, 이것도 함수예요. 처음 보면 `=>`가 비교 연산자처럼 보여서 무슨 뜻인지 알기 어려워요.
+
+이 단원에서는 함수를 만드는 다른 두 가지 방법을 배워요.
+
+- **함수 표현식**: 함수를 숫자나 글자처럼 **값**으로 만들어 변수에 담아요.
+- **화살표 함수**: 함수 표현식을 더 짧게 쓰는 방법이에요. 가격 계산처럼 한 줄짜리 작은 함수를 많이 만들 때 편해요.
+
+그리고 만드는 방법에 따라 **언제부터 부를 수 있는지**가 달라진다는 것(호이스팅)도 알아봐요. 이 차이를 모르면 "분명히 만든 함수인데 왜 없다고 하지?" 하는 오류를 만나게 돼요.
+</Section>
+
+<Section kind="principle">
+### 함수 표현식: 함수를 변수에 담기
+
+함수 선언과 함수 표현식으로 같은 함수를 만들어 볼게요.
+
+```js
+// 함수 선언
+function add(a, b) {
+  return a + b;
+}
+
+// 함수 표현식
+const add2 = function (a, b) {
+  return a + b;
+};
+```
+
+함수 표현식은 `function (a, b) { ... }` 부분이 **함수라는 값**을 만들고, `const add2 =`가 그 값을 변수에 담아요. `const price = 3000;`에서 `3000`을 담는 것과 같은 모양이에요. 그래서 끝에 세미콜론 `;`도 붙여요.
+
+중요한 점은 **담기만 하고 실행하지는 않는다**는 것이에요. `add2`에 들어 있는 것은 계산 결과가 아니라 함수 자체예요. 결과를 얻으려면 선언과 똑같이 `add2(2, 3)`처럼 괄호를 붙여 호출해요.
+
+<CompareTable columns={["함수 선언", "함수 표현식"]}>
+<Row label="모양">`function add(a, b) { … }` | `const add = function (a, b) { … };`</Row>
+<Row label="호출">`add(2, 3)` | `add(2, 3)` (같아요)</Row>
+<Row label="이름이 붙는 곳">`function` 뒤 | 담는 변수</Row>
+<Row label="선언 전에 호출">가능 | 불가능 (아래 호이스팅)</Row>
+</CompareTable>
+
+### 화살표 함수: 더 짧게 쓰기
+
+화살표 함수는 함수 표현식에서 `function`을 빼고, 매개변수 괄호 뒤에 화살표 `=>`를 붙여요. `=>`는 "이 매개변수를 받아서 오른쪽을 실행한다"는 뜻이에요. 비교 연산자 `>=`(크거나 같다)와는 글자 순서도 뜻도 달라요.
+
+같은 함수를 단계별로 줄여 볼게요.
+
+```js
+// 1. 함수 표현식
+const double1 = function (n) {
+  return n * 2;
+};
+
+// 2. function을 빼고 => 붙이기 (중괄호 본문)
+const double2 = (n) => {
+  return n * 2;
+};
+
+// 3. 본문이 return 한 줄이면 중괄호와 return을 함께 빼기 (식 본문)
+const double3 = (n) => n * 2;
+```
+
+세 함수 모두 `double(4)`가 `8`이에요. 3번처럼 쓸 때는 **중괄호와 `return`을 함께** 빼야 해요. 하나만 빼면 아래처럼 문제가 생겨요.
+
+### 두 가지 본문: 식 본문과 중괄호 본문
+
+화살표 함수의 본문은 두 가지 중 하나예요. 이것이 이 단원에서 가장 중요한 규칙이에요.
+
+| 본문 | 예 | 반환값 |
+|---|---|---|
+| 식 본문 (중괄호 없음) | `(n) => n * 2` | 식의 값이 **자동으로** 반환돼요 |
+| 중괄호 본문 | `(n) => { return n * 2; }` | 일반 함수처럼 `return`을 **직접** 써야 해요 |
+| 중괄호 본문인데 `return` 없음 | `(n) => { n * 2; }` | `n * 2`를 계산만 하고 버려요. 반환값은 `undefined` |
+| 식 본문인데 `return` 있음 | `(n) => return n * 2` | `SyntaxError` — 프로그램 전체가 실행되지 않아요 |
+
+식 본문 자리에는 **값이 되는 식 하나**만 올 수 있어요. `return`은 식이 아니라 문장이라서 그 자리에 쓸 수 없어요. 반대로 중괄호를 열면 그 안은 여러 문장을 쓰는 일반 함수 본문이 되므로, 값을 돌려주려면 `return`이 필요해요. 여러 줄이 필요하거나 `if`를 써야 하면 중괄호 본문을, 계산 한 줄이면 식 본문을 쓰면 돼요.
+
+매개변수 괄호는 이렇게 써요.
+
+- 매개변수가 **하나**면 괄호를 빼도 돼요: `n => n * 2`. 이 과정에서는 헷갈리지 않게 항상 괄호를 써요.
+- 매개변수가 **없거나 둘 이상**이면 괄호가 꼭 필요해요: `() => "안녕"`, `(a, b) => a + b`.
+
+### 호이스팅: 언제부터 부를 수 있나요?
+
+코드는 위에서 아래로 실행된다고 배웠어요. 그런데 함수 **선언**은 예외예요. JavaScript는 코드를 실행하기 **전에** 함수 선언을 먼저 훑어서 함수를 만들어 둬요. 그래서 선언보다 위에서 호출해도 동작해요. 이것을 **호이스팅**(끌어올리기)이라고 해요.
+
+`const`로 만든 함수 표현식과 화살표 함수는 다른 `const` 변수와 똑같아요. 그 줄이 실행되어야 변수에 함수가 담겨요. 그 전에 쓰면 <ConceptLink to="js.values.tdz">선언 전 사용(TDZ)</ConceptLink>에서 배운 오류가 나요.
+
+```text
+ReferenceError: Cannot access 'greet' before initialization
+```
+
+두 관점으로 정리해 볼게요.
+
+**실행 전 준비 관점.** 아래 코드를 실행하면 JavaScript는 이렇게 움직여요.
+
+```js
+console.log(hello());       // 1번 줄
+console.log(bye());         // 2번 줄
+function hello() { return "안녕"; }
+const bye = () => "잘 가";
+```
+
+| 단계 | `hello` | `bye` | 일어나는 일 |
+|---|---|---|---|
+| 실행 전 준비 | 함수 | 아직 쓸 수 없음 | 함수 선언 `hello`를 미리 만들어요 |
+| 1번 줄 | 함수 | 아직 쓸 수 없음 | `안녕` 출력 |
+| 2번 줄 | 함수 | 아직 쓸 수 없음 | `ReferenceError`, 프로그램이 멈춰요 |
+| (4번 줄) | | | 실행되지 못해요 |
+
+**"호출하는 순간" 관점.** 함수 본문 안에서 다른 함수를 쓰는 것은 괜찮아요. 본문은 **호출할 때** 실행되니까요. 중요한 것은 적힌 위치가 아니라, 그 함수를 **호출하는 순간**에 쓰려는 이름이 이미 준비되어 있느냐예요.
+
+```js
+function receipt(n) {
+  return n + "개: " + price(n) + "원";  // 여기서 price를 써요
+}
+const price = (n) => n * 1500;
+console.log(receipt(2));  // 이때는 price가 이미 준비되어 있어요
+```
+
+`receipt`를 선언하는 줄에서는 `price`가 아직 없지만, 마지막 줄에서 `receipt(2)`를 **호출할 때는** 이미 `price`가 담겨 있어서 `2개: 3000원`이 나와요.
+
+헷갈리지 않는 가장 쉬운 방법은 **함수를 먼저 만들고, 호출은 아래에서** 하는 거예요. 선언이든 표현식이든 이렇게 쓰면 항상 안전해요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 함수 표현식이에요. 변수에 무엇이 담기는지 예측해 보세요. `typeof`는 값의 자료형을 글자로 알려 줘요.
+
+<RunnableExample id="expression-basic" lang="js" predict predictKind="console" concepts={["js.fn.expression"]}>
+```js
+const makeTag = function (name) {
+  return "#" + name;
+};
+console.log(typeof makeTag);
+console.log(makeTag("여행"));
+console.log(makeTag("맛집"));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+function
+#여행
+#맛집
+```
+
+- 1~3번 줄은 함수를 **값으로** 만들어 `makeTag`에 담기만 해요. 이때 본문은 실행되지 않아요.
+- 4번 줄: `makeTag`에는 함수가 들어 있으니 `typeof makeTag`는 `"function"`이에요. 계산 결과가 담겼다면 `"string"`이 나왔겠죠.
+- 5, 6번 줄: 변수 이름 뒤에 괄호를 붙여 호출하면 그때 본문이 실행되고 `return`한 값이 출력돼요. 함수 선언과 부르는 방법이 똑같아요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 같은 계산을 하는 세 가지 함수예요. 실행해 본 뒤, `toWon3`의 본문을 `{ dollar * 1400 }`으로 바꿔 다시 실행해 보세요.
+
+<RunnableExample id="three-forms" lang="js" concepts={["js.fn.arrow"]}>
+```js
+const toWon1 = function (dollar) {
+  return dollar * 1400;
+};
+const toWon2 = (dollar) => {
+  return dollar * 1400;
+};
+const toWon3 = (dollar) => dollar * 1400;
+
+console.log(toWon1(10));
+console.log(toWon2(10));
+console.log(toWon3(10));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+14000
+14000
+14000
+```
+
+- 세 함수는 모양만 다르고 하는 일은 같아요. `toWon3`은 식 본문이라 `dollar * 1400`의 값이 자동으로 반환돼요.
+- `toWon3`을 `(dollar) => { dollar * 1400 }`으로 바꾸면 마지막 줄이 `undefined`가 돼요. 중괄호를 쓰는 순간 일반 함수 본문이 되어 `return`이 필요하거든요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 중괄호 본문의 함정이에요. 세 줄에 각각 무엇이 나올지 예측해 보세요.
+
+<RunnableExample id="braces-undefined" lang="js" predict predictKind="console" concepts={["js.fn.arrow"]}>
+```js
+const square = (n) => n * n;
+const squareBraces = (n) => {
+  n * n;
+};
+const squareReturn = (n) => {
+  const result = n * n;
+  return result;
+};
+
+console.log(square(5));
+console.log(squareBraces(5));
+console.log(squareReturn(5));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+25
+undefined
+25
+```
+
+| 함수 | 본문 | 반환값 |
+|---|---|---|
+| `square` | 식 본문 `n * n` | 자동으로 `25` |
+| `squareBraces` | 중괄호 본문, `return` 없음 | `undefined` |
+| `squareReturn` | 중괄호 본문, `return result` | `25` |
+
+- `squareBraces`는 `n * n`을 계산하긴 하지만, 그 값을 돌려주라는 `return`이 없어서 버려요. `return`이 없는 함수는 <ConceptLink to="js.fn.undefined-return">`undefined`를 반환</ConceptLink>해요.
+- `squareReturn`처럼 중간 계산을 변수에 담아야 할 때는 중괄호 본문을 쓰고 마지막에 `return`해요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 함수 선언을 선언보다 위에서 호출해요. 오류가 날까요?
+
+<RunnableExample id="declaration-hoisted" lang="js" predict predictKind="console" concepts={["js.fn.hoisting"]}>
+```js
+console.log(area(3, 4));
+console.log("계산 끝");
+
+function area(width, height) {
+  return width * height;
+}
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+12
+계산 끝
+```
+
+- JavaScript는 실행 전에 함수 선언 `area`를 미리 만들어 둬요. 그래서 1번 줄에서 이미 `area`를 부를 수 있어요.
+- 4~6번 줄은 실행 순서가 와도 함수를 다시 만들지 않고 지나가요. 출력에도 영향이 없어요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 같은 함수를 화살표 함수로 만들고 똑같이 위에서 호출해요. 실행하면 오류가 나요. 오류 메시지를 읽어 보세요.
+
+<RunnableExample id="expression-not-hoisted" lang="js" expectError concepts={["js.fn.hoisting"]}>
+```js
+console.log(area(3, 4));
+console.log("계산 끝");
+
+const area = (width, height) => width * height;
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+ReferenceError: Cannot access 'area' before initialization (1번째 줄)
+```
+
+- `area`는 `const` 변수예요. 4번 줄이 실행되어야 함수가 담기는데, 1번 줄에서 먼저 쓰려고 해서 오류가 났어요.
+- 메시지의 "before initialization"은 "값을 넣기(초기화) 전에"라는 뜻이에요. 이름을 잘못 쓴 것(`is not defined`)과는 다른 오류예요.
+- 4번 줄을 맨 위로 옮기면 `12`와 `계산 끝`이 나와요. 함수 표현식과 화살표 함수는 **쓰기 전에 먼저 만들어** 두세요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.fn-expression-stores-result">
+<Wrong>`const add = function (a, b) { return a + b; };`를 실행하면 함수가 실행되어 결과값이 `add`에 담긴다.</Wrong>
+<Actual>첫 번째 예제에서 `typeof makeTag`는 `"function"`이었어요. 함수 표현식은 함수 자체를 담을 뿐, 실행하지 않아요. 인수도 넘기지 않았는데 무엇을 계산할 수 있을까요?</Actual>
+<Right>함수 표현식이 담는 것은 **함수**예요. 결과가 필요하면 `add(2, 3)`처럼 호출해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.arrow-is-comparison">
+<Wrong>`(n) => n * 2`의 `=>`는 `>=`처럼 크거나 같은지 비교하는 연산자다.</Wrong>
+<Actual>`=>`는 화살표 함수를 만드는 기호예요. 비교 연산자는 `>=`(꺾쇠가 뒤)이고, 화살표는 `=>`(꺾쇠가 앞)예요.</Actual>
+<Right>`(n) => n * 2`는 "`n`을 받아서 `n * 2`를 돌려주는 함수"라고 읽어요. 왼쪽은 매개변수, 오른쪽은 본문이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.arrow-braces-implicit-return">
+<Wrong>화살표 함수는 항상 값을 자동으로 돌려주니까 `(n) => { n * n }`도 `n * n`을 반환한다.</Wrong>
+<Actual>세 번째 예제의 `squareBraces(5)`는 `undefined`였어요. 자동 반환은 **중괄호가 없는** 식 본문에만 해당해요.</Actual>
+<Right>중괄호를 쓰면 `return`을 직접 써요. 한 줄 계산이면 중괄호와 `return`을 함께 빼서 `(n) => n * n`으로 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.arrow-concise-with-return">
+<Wrong>중괄호를 빼도 `return`은 남겨 둬야 하니까 `(a, b) => return a + b`라고 쓴다.</Wrong>
+<Actual>
+
+식 본문 자리에는 식만 올 수 있어서 `return`이 오면 문법 오류가 나요. 프로그램이 한 줄도 실행되지 않아요.
+
+```text
+SyntaxError: Unexpected token 'return'
+```
+</Actual>
+<Right>중괄호와 `return`은 **함께 빼거나 함께 써요**. `(a, b) => a + b` 또는 `(a, b) => { return a + b; }`예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.expression-hoisted">
+<Wrong>함수 선언을 위에서 부를 수 있으니, `const area = (w, h) => w * h;`로 만든 함수도 위에서 부를 수 있다.</Wrong>
+<Actual>다섯 번째 예제에서 `ReferenceError: Cannot access 'area' before initialization`이 났어요. 미리 만들어지는 것은 함수 **선언**뿐이에요.</Actual>
+<Right>`const`로 만든 함수는 일반 `const` 변수처럼 그 줄이 실행된 뒤에 써요. 함수를 먼저 만들고 호출은 아래에 두면 안전해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.declaration-not-hoisted">
+<Wrong>코드는 위에서 아래로 실행되니까 `function area() {}`보다 위에서 `area()`를 부르면 오류가 난다.</Wrong>
+<Actual>네 번째 예제는 오류 없이 `12`를 출력했어요. 함수 선언은 실행 전에 미리 만들어져요.</Actual>
+<Right>함수 선언은 어디서든 부를 수 있어요(호이스팅). 다만 읽는 사람을 위해 보통은 선언을 먼저 쓰거나, 프로그램의 흐름이 먼저 보이도록 호출을 위에 두고 선언을 아래에 모으기도 해요. 어느 쪽이든 선언에는 문제가 없어요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+쇼핑몰 장바구니 화면에서 금액을 보여 주는 작은 계산이 여러 개 필요하다고 해 볼게요. 이런 한 줄짜리 계산은 화살표 함수로 짧게 모아 두는 경우가 많아요.
+
+```js
+const addTax = (price) => price + price / 10;
+const formatWon = (price) => price + "원";
+const shippingFee = (total) => {
+  if (total >= 30000) {
+    return 0;
+  }
+  return 3000;
+};
+
+const total = 25000;
+console.log("상품 금액: " + formatWon(addTax(total)));
+console.log("배송비: " + formatWon(shippingFee(total)));
+```
+
+- 계산 한 줄이면 식 본문(`addTax`, `formatWon`), `if`가 필요하면 중괄호 본문과 `return`(`shippingFee`)을 써요.
+- 함수를 모두 위에 만들어 두고 아래에서 호출해서, 선언 전 호출 오류가 생기지 않아요.
+
+실제 웹 개발에서는 화살표 함수를 다른 함수에 넘기는 일이 아주 많아요. 다음다음 단원 "함수를 값으로 다루기", 모듈 8의 배열 메서드, 모듈 10의 이벤트 처리에서 `(item) => ...` 같은 화살표 함수를 계속 만나게 돼요.
+</Section>
+
+<Section kind="check">
+함수 표현식이 변수에 무엇을 담는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.functions.expressions-and-arrows.mcq-expression-stores-function" />
+
+화살표를 읽어 보세요.
+
+<InlineExercise ref="js-basics.functions.expressions-and-arrows.mcq-arrow-read" />
+
+중괄호 본문의 반환값을 확인해 보세요.
+
+<InlineExercise ref="js-basics.functions.expressions-and-arrows.tf-arrow-braces-return" />
+
+함수 선언을 선언보다 위에서 부르면 어떻게 될까요?
+
+<InlineExercise ref="js-basics.functions.expressions-and-arrows.mcq-call-before-declaration" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 함수 표현식 `const f = function (a) { ... };`은 함수를 값으로 만들어 변수에 담아요. 담기만 하고 실행하지 않으며, `f(값)`으로 호출해요.
+- 화살표 함수 `(a) => ...`는 함수 표현식을 짧게 쓰는 방법이에요. `=>`는 비교 연산자가 아니에요.
+- 중괄호 없는 식 본문은 식의 값이 자동으로 반환되고, 중괄호 본문은 `return`을 직접 써야 해요. 없으면 `undefined`예요.
+- 식 본문에 `return`을 쓰면 `SyntaxError`예요. 중괄호와 `return`은 함께 빼거나 함께 써요.
+- 함수 선언은 실행 전에 미리 만들어져서 선언보다 위에서도 부를 수 있어요(호이스팅).
+- `const`로 만든 함수 표현식·화살표 함수는 그 줄이 실행되기 전에 부르면 `ReferenceError`가 나요. 함수를 먼저 만들고 아래에서 호출해요.
+</Section>
+
+<Section kind="next">
+다음 단원 "기본값과 나머지 매개변수"에서는 인수를 덜 넘기거나 개수를 정하지 않고 넘길 때 매개변수가 어떻게 되는지 배워요. 화살표 함수는 "함수를 값으로 다루기" 단원에서 다른 함수에 넘기는 콜백으로 다시 만나요. <MdnLink path="Web/JavaScript/Reference/Functions/Arrow_functions" />
+</Section>

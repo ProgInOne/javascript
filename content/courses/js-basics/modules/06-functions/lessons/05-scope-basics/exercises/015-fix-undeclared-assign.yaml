@@ -1,0 +1,90 @@
+id: js-basics.functions.scope-basics.fix-undeclared-assign
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.scope.global, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [scope, global, strict-mode, reference-error, debugging]
+estimatedSeconds: 120
+prompt: |
+  가게 방문자를 세는 프로그램이에요. 실행하면 오류가 나요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  오늘 방문자: 2명
+  ```
+
+  `todayTotal`이라는 이름은 그대로 쓰세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          let count = 0;
+
+          function addVisitor() {
+            count++;
+            todayTotal = count;
+          }
+
+          addVisitor();
+          addVisitor();
+          console.log("오늘 방문자: " + todayTotal + "명");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let count = 0;
+          let todayTotal = 0;
+
+          function addVisitor() {
+            count++;
+            todayTotal = count;
+          }
+
+          addVisitor();
+          addVisitor();
+          console.log("오늘 방문자: " + todayTotal + "명");
+  bugDescription: "실행하면 `ReferenceError: todayTotal is not defined` 오류가 나요."
+  bugMisconception: js.mc.undeclared-assign-creates-global
+  checks:
+    - kind: console
+      id: output
+      description: 두 번 방문한 뒤 방문자 수가 출력되어야 합니다.
+      requirement: 방문자 수 출력
+      expect:
+        lines: ["오늘 방문자: 2명"]
+    - kind: program
+      id: today-total
+      description: 프로그램이 오류 없이 끝나고 todayTotal에 2가 들어 있어야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        globals: { todayTotal: { equals: 2 } }
+        noError: true
+      misconceptionIfFail: js.mc.undeclared-assign-creates-global
+misconceptions: [js.mc.undeclared-assign-creates-global]
+hints:
+  - 오류는 몇 번째 줄에서 나나요? 그 줄의 `todayTotal`은 어디에서 만들어졌나요?
+  - ProgInOne은 엄격 모드로 실행해요. 엄격 모드에서 `let` 없이 처음 보는 이름에 대입하면 어떻게 됐나요?
+  - "`todayTotal`은 함수 안에서도, 마지막 줄의 함수 밖에서도 쓰여요. 두 곳에서 모두 보이려면 어느 상자에서 만들어야 할까요?"
+explanation: |
+  5번 줄의 `todayTotal = count;`가 원인이에요. `todayTotal`은 어디에서도 `let`이나 `const`로 만든 적이 없어요. 엄격 모드에서는 선언하지 않은 이름에 대입하면 전역 변수가 저절로 생기지 않고 `ReferenceError: todayTotal is not defined`가 나요.
+
+  예시 정답은 `todayTotal`을 맨 바깥에서 만들어요.
+
+  ```js
+  let count = 0;
+  let todayTotal = 0;
+
+  function addVisitor() {
+    count++;
+    todayTotal = count;
+  }
+  ```
+
+  - 맨 바깥에서 만들었으니 함수 안에서 바꿀 수 있고, 마지막 줄의 함수 밖에서도 읽을 수 있어요.
+  - 함수 **안에서** `let todayTotal = count;`로 고치면 오류 위치만 바뀌어요. 함수 안의 변수는 마지막 줄에서 보이지 않으니까요.
+  - 비엄격 모드였다면 이 코드는 오류 없이 전역 변수를 만들어 버려요. 오타로 새 변수가 생겨도 모르고 넘어가게 되므로, 엄격 모드의 오류가 오히려 실수를 빨리 알려 줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

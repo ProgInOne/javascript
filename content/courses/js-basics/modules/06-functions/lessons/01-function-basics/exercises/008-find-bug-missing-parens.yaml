@@ -1,0 +1,63 @@
+id: js-basics.functions.function-basics.find-bug-missing-parens
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.fn.call, weight: 1 }
+  - { id: js.fn.declaration, weight: 0.3 }
+tags: [function, call, parentheses, debugging]
+estimatedSeconds: 120
+prompt: |
+  성적표를 출력하는 프로그램이에요. 오류는 나지 않는데 출력이 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    function printHeader() {
+      console.log("[ 성적표 ]");
+    }
+
+    function printScore(subject, score) {
+      console.log(subject + ": " + score + "점");
+    }
+
+    printHeader;
+    printScore("국어", 90);
+    printScore("수학", 85);
+  bugLines: [9]
+  symptom: "`국어: 90점`과 `수학: 85점`은 나오는데, 맨 위에 나와야 할 제목 `[ 성적표 ]`이 나오지 않아요."
+  symptomCheck:
+    console: ["국어: 90점", "수학: 85점"]
+  fixedCode: |-
+    function printHeader() {
+      console.log("[ 성적표 ]");
+    }
+
+    function printScore(subject, score) {
+      console.log(subject + ": " + score + "점");
+    }
+
+    printHeader();
+    printScore("국어", 90);
+    printScore("수학", 85);
+  causeOptions:
+    - id: c1
+      text: 함수 이름 뒤에 괄호가 없어서 함수가 호출되지 않았다
+      correct: true
+    - id: c2
+      text: 매개변수가 없는 함수는 호출해도 본문이 실행되지 않는다
+    - id: c3
+      text: 함수가 선언된 자리에서 이미 한 번 실행되었기 때문에 다시 실행되지 않았다
+      misconception: js.mc.function-runs-once
+hints:
+  - 나오지 않은 줄은 어느 함수의 본문에 있나요?
+  - 그 함수를 부르는 줄을 찾아 다른 호출 줄과 모양을 비교해 보세요.
+  - 오류가 나지 않았다고 해서 그 줄이 무언가를 실행한 것은 아니에요. 함수를 실행하게 만드는 기호가 무엇인지 떠올려 보세요.
+explanation: |
+  원인은 **9번 줄** `printHeader;`예요. 괄호가 없어서 함수를 가리키기만 하고 실행하지 않았어요. 오류도 나지 않아서 알아차리기 어려워요.
+
+  `printHeader();`로 고치면 제목이 맨 위에 나와요.
+
+  - 매개변수가 없는 함수도 `printHeader()`처럼 빈 괄호로 호출하면 본문이 실행돼요. 매개변수가 있는지와 실행되는지는 관계없어요.
+  - 함수 선언은 본문을 실행하지 않아요. 그리고 함수는 몇 번이든 다시 부를 수 있어요. "이미 실행되어서 다시 실행되지 않는다"는 두 가지 면에서 틀린 생각이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

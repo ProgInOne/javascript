@@ -1,0 +1,167 @@
+id: js-basics.functions.return-and-side-effects.impl-grade-letter
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.fn.undefined-return, weight: 1 }
+  - { id: js.control.else-if, weight: 0.5 }
+  - { id: js.ops.logical-and-or-not, weight: 0.3 }
+tags: [undefined-return, else-if, boundary, validation, write-code]
+estimatedSeconds: 420
+prompt: |
+  성적표 앱에서 점수를 받아 등급을 돌려주는 함수 `gradeLetter(score)`를 작성하세요.
+
+  - 90점 이상은 `"A"`, 80점 이상은 `"B"`, 70점 이상은 `"C"`, 그보다 낮으면 `"F"`를 돌려줘요.
+  - 점수는 0점부터 100점까지만 있어요. 0보다 작거나 100보다 큰 점수가 들어오면 `"잘못된 점수"`를 돌려줘요.
+  - **어떤 점수가 들어와도** 문자열 하나를 돌려줘야 해요. `undefined`가 나오는 경우가 있으면 안 돼요.
+  - 출력하지 말고 돌려주세요.
+
+  예: `gradeLetter(95)` → `"A"`, `gradeLetter(85)` → `"B"`, `gradeLetter(50)` → `"F"`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function gradeLetter(score) {
+            // 여기에 작성하세요
+          }
+
+          console.log(gradeLetter(95));
+          console.log(gradeLetter(85));
+          console.log(gradeLetter(50));
+  entry: gradeLetter
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function gradeLetter(score) {
+            if (score < 0 || score > 100) {
+              return "잘못된 점수";
+            }
+            if (score >= 90) {
+              return "A";
+            } else if (score >= 80) {
+              return "B";
+            } else if (score >= 70) {
+              return "C";
+            }
+            return "F";
+          }
+
+          console.log(gradeLetter(95));
+          console.log(gradeLetter(85));
+          console.log(gradeLetter(50));
+  checks:
+    - kind: call
+      id: a
+      description: 95점은 "A"여야 합니다.
+      requirement: 등급 나누기
+      args: [95]
+      expect: { equals: "A" }
+    - kind: call
+      id: b
+      description: 85점은 "B"여야 합니다.
+      requirement: 등급 나누기
+      args: [85]
+      expect: { equals: "B" }
+    - kind: call
+      id: f
+      description: 50점은 "F"여야 합니다.
+      requirement: 낮은 점수
+      args: [50]
+      expect: { equals: "F" }
+      misconceptionIfFail: js.mc.return-in-if-covers-all
+    - kind: call
+      id: c-hidden
+      visible: false
+      description: 70점대 점수도 알맞은 등급이어야 합니다.
+      requirement: 등급 나누기
+      args: [74]
+      expect: { equals: "C" }
+    - kind: call
+      id: boundary-90
+      visible: false
+      description: 딱 90점은 "A"여야 합니다(이상은 경계 점수를 포함해요).
+      requirement: 경계 점수
+      args: [90]
+      expect: { equals: "A" }
+    - kind: call
+      id: boundary-80
+      visible: false
+      description: 딱 80점은 "B"여야 합니다.
+      requirement: 경계 점수
+      args: [80]
+      expect: { equals: "B" }
+    - kind: call
+      id: boundary-70
+      visible: false
+      description: 딱 70점은 "C"여야 합니다.
+      requirement: 경계 점수
+      args: [70]
+      expect: { equals: "C" }
+    - kind: call
+      id: boundary-69
+      visible: false
+      description: 69점은 "F"여야 합니다.
+      requirement: 경계 점수
+      args: [69]
+      expect: { equals: "F" }
+    - kind: call
+      id: zero
+      visible: false
+      description: 0점도 올바른 점수이므로 "F"여야 합니다.
+      requirement: 낮은 점수
+      args: [0]
+      expect: { equals: "F" }
+    - kind: call
+      id: hundred
+      visible: false
+      description: 100점도 올바른 점수이므로 "A"여야 합니다.
+      requirement: 경계 점수
+      args: [100]
+      expect: { equals: "A" }
+    - kind: call
+      id: too-high
+      visible: false
+      description: 100보다 큰 점수는 "잘못된 점수"여야 합니다.
+      requirement: 잘못된 점수 걸러내기
+      args: [101]
+      expect: { equals: "잘못된 점수" }
+    - kind: call
+      id: negative
+      visible: false
+      description: 0보다 작은 점수는 "잘못된 점수"여야 합니다.
+      requirement: 잘못된 점수 걸러내기
+      args: [-5]
+      expect: { equals: "잘못된 점수" }
+misconceptions: [js.mc.return-in-if-covers-all, js.mc.return-is-log]
+hints:
+  - 먼저 "잘못된 점수"인지부터 검사해 보세요. 걸러 낸 뒤에는 0~100점만 남아요.
+  - 등급은 높은 기준부터 차례로 검사하는 `else if` 체인으로 나눌 수 있어요. "이상"은 경계 점수를 포함한다는 것을 비교 연산자로 나타내세요.
+  - 모든 조건이 거짓일 때 함수가 어디로 가는지 따라가 보세요. 그 경우에 돌려줄 값이 정해져 있어야 `undefined`가 나오지 않아요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function gradeLetter(score) {
+    if (score < 0 || score > 100) {
+      return "잘못된 점수";
+    }
+    if (score >= 90) {
+      return "A";
+    } else if (score >= 80) {
+      return "B";
+    } else if (score >= 70) {
+      return "C";
+    }
+    return "F";
+  }
+  ```
+
+  - **잘못된 점수 먼저 걸러내기**: 첫 `if`의 `return`이 함수를 바로 끝내요. 그래서 그 아래는 0~100점만 생각하면 돼요. 이 검사를 등급 검사 뒤에 두면 101점이 `"A"`가 돼요.
+  - **경계 포함**: "90점 이상"은 `>= 90`이에요. `> 90`으로 쓰면 90점이 `"B"`가 돼요.
+  - **모든 갈래에서 돌려주기**: 마지막 `return "F";`가 없으면 69점 이하에서 함수가 끝까지 내려가 `undefined`를 돌려줘요. 마지막 갈래는 조건 없는 `else`나 함수 끝 `return`으로 마무리해요.
+  - `console.log("A")`처럼 출력하면 화면에는 보이지만 함수의 결과는 `undefined`예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

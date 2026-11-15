@@ -1,0 +1,207 @@
+id: js-basics.functions.function-basics.web-tip-calculator
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.fn.return, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.5 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [return, function, boundary, web]
+estimatedSeconds: 480
+prompt: |
+  식당 계산서의 팁 계산기를 완성하세요. 금액을 넣고 팁 비율을 고른 뒤 **계산하기** 버튼을 누르면 `팁 5000원 · 합계 55000원`처럼 보여야 해요.
+
+  시작 코드에서 버튼을 누르면 입력값을 숫자로 바꿔 함수 `calcTip(amount, percent)`를 부르고, 그 **반환값**으로 팁과 합계를 화면에 보여 주도록 이미 연결해 두었어요(화면을 다루는 방법은 모듈 10에서 배워요). 여러분은 `calcTip` 함수의 본문만 작성하면 돼요.
+
+  `calcTip`이 돌려줄 팁(숫자)은 이렇게 정해요.
+
+  - 팁은 `금액 × 비율 ÷ 100`이에요. 예: 50000원의 10%는 5000원.
+  - 단, 계산한 팁이 1000원보다 적으면 팁은 **1000원**이에요(최소 팁).
+  - 비율이 0%이면 팁을 주지 않으므로 0원이에요. 이때는 최소 팁을 적용하지 않아요.
+
+  미리보기에서 6000원·10%, 8000원·0%처럼 규칙의 경계에 있는 값도 직접 넣어 확인해 보세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>팁 계산기</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                input { width: 100px; }
+                #result { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>팁 계산기</h1>
+              <label>금액(원) <input id="amount" type="number" /></label>
+              <label>
+                팁 비율
+                <select id="percent">
+                  <option value="0">0%</option>
+                  <option value="10">10%</option>
+                  <option value="15">15%</option>
+                  <option value="20">20%</option>
+                </select>
+              </label>
+              <button id="calc">계산하기</button>
+              <p id="result"></p>
+              <script>
+                // 이 함수의 본문을 작성하세요. 팁(숫자)을 돌려줘야 해요.
+                function calcTip(amount, percent) {
+                }
+
+                // 아래는 고치지 마세요. 버튼을 누르면 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                const amountInput = document.querySelector("#amount");
+                const percentSelect = document.querySelector("#percent");
+                const result = document.querySelector("#result");
+                document.querySelector("#calc").addEventListener("click", () => {
+                  const amount = Number(amountInput.value);
+                  const percent = Number(percentSelect.value);
+                  const tip = calcTip(amount, percent);
+                  result.textContent = "팁 " + tip + "원 · 합계 " + (amount + tip) + "원";
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>팁 계산기</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                input { width: 100px; }
+                #result { margin-top: 12px; font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <h1>팁 계산기</h1>
+              <label>금액(원) <input id="amount" type="number" /></label>
+              <label>
+                팁 비율
+                <select id="percent">
+                  <option value="0">0%</option>
+                  <option value="10">10%</option>
+                  <option value="15">15%</option>
+                  <option value="20">20%</option>
+                </select>
+              </label>
+              <button id="calc">계산하기</button>
+              <p id="result"></p>
+              <script>
+                // 이 함수의 본문을 작성하세요. 팁(숫자)을 돌려줘야 해요.
+                function calcTip(amount, percent) {
+                  if (percent === 0) {
+                    return 0;
+                  }
+                  const tip = amount * percent / 100;
+                  if (tip < 1000) {
+                    return 1000;
+                  }
+                  return tip;
+                }
+
+                // 아래는 고치지 마세요. 버튼을 누르면 { } 안의 코드가 실행돼요(모듈 10에서 배워요).
+                const amountInput = document.querySelector("#amount");
+                const percentSelect = document.querySelector("#percent");
+                const result = document.querySelector("#result");
+                document.querySelector("#calc").addEventListener("click", () => {
+                  const amount = Number(amountInput.value);
+                  const percent = Number(percentSelect.value);
+                  const tip = calcTip(amount, percent);
+                  result.textContent = "팁 " + tip + "원 · 합계 " + (amount + tip) + "원";
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: ten-percent
+      description: 50000원에 10%를 고르면 "팁 5000원 · 합계 55000원"이 보여야 합니다.
+      requirement: 팁 계산
+      visible: true
+      steps:
+        - { action: type, selector: "#amount", value: "50000" }
+        - { action: change, selector: "#percent", value: "10" }
+        - { action: click, selector: "#calc" }
+      expect:
+        - { selector: "#result", text: { equals: "팁 5000원 · 합계 55000원" } }
+    - kind: event
+      id: fifteen-percent
+      description: 30000원에 15%를 고르면 "팁 4500원 · 합계 34500원"이 보여야 합니다.
+      requirement: 팁 계산
+      visible: true
+      steps:
+        - { action: type, selector: "#amount", value: "30000" }
+        - { action: change, selector: "#percent", value: "15" }
+        - { action: click, selector: "#calc" }
+      expect:
+        - { selector: "#result", text: { equals: "팁 4500원 · 합계 34500원" } }
+    - kind: event
+      id: minimum-tip
+      description: 계산한 팁이 1000원보다 적으면 팁은 1000원이어야 합니다.
+      requirement: 최소 팁
+      steps:
+        - { action: type, selector: "#amount", value: "6000" }
+        - { action: change, selector: "#percent", value: "10" }
+        - { action: click, selector: "#calc" }
+      expect:
+        - { selector: "#result", text: { equals: "팁 1000원 · 합계 7000원" } }
+    - kind: event
+      id: minimum-tip-20
+      description: 다른 비율에서도 1000원보다 적은 팁은 1000원이어야 합니다.
+      requirement: 최소 팁
+      steps:
+        - { action: type, selector: "#amount", value: "3000" }
+        - { action: change, selector: "#percent", value: "20" }
+        - { action: click, selector: "#calc" }
+      expect:
+        - { selector: "#result", text: { equals: "팁 1000원 · 합계 4000원" } }
+    - kind: event
+      id: zero-percent
+      description: 비율이 0%이면 최소 팁 없이 팁이 0원이어야 합니다.
+      requirement: 0% 팁
+      steps:
+        - { action: type, selector: "#amount", value: "8000" }
+        - { action: change, selector: "#percent", value: "0" }
+        - { action: click, selector: "#calc" }
+      expect:
+        - { selector: "#result", text: { equals: "팁 0원 · 합계 8000원" } }
+misconceptions: [js.mc.return-is-log, js.mc.code-after-return-runs]
+hints:
+  - 화면 코드는 `calcTip`의 **반환값**을 `tip`에 담아 써요. 함수 안에서 출력만 하면 화면에 `undefined`가 보여요.
+  - 규칙이 세 가지예요. 어떤 규칙을 먼저 따져야 다른 규칙과 부딪히지 않을지 생각해 보세요. 0%인 경우에 최소 팁 규칙이 먼저 적용되면 어떻게 될까요?
+  - "`return`을 만나면 함수가 끝나요. 특별한 경우를 위에서 먼저 돌려주고, 남은 경우를 아래에서 처리해 보세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function calcTip(amount, percent) {
+    if (percent === 0) {
+      return 0;
+    }
+    const tip = amount * percent / 100;
+    if (tip < 1000) {
+      return 1000;
+    }
+    return tip;
+  }
+  ```
+
+  - **반환값을 쓰는 코드**: 화면 코드는 `const tip = calcTip(amount, percent);`로 돌려받은 값을 팁과 합계 두 곳에 써요. 함수가 `return`하지 않으면 `tip`이 `undefined`가 되어 `팁 undefined원 · 합계 NaN원`이 보여요.
+  - **규칙의 순서**: 0%를 먼저 돌려줘야 해요. 최소 팁 검사를 먼저 하면 0%의 팁 0원도 "1000원보다 적다"에 걸려 1000원이 돼 버려요.
+  - **`return`으로 일찍 끝내기**: `return 0;`을 만나면 함수가 끝나서 아래 계산은 실행되지 않아요. 그래서 갈래마다 `else`를 쓰지 않아도 돼요.
+  - 경계: 5000원의 20%처럼 팁이 딱 1000원이면 `tip < 1000`이 거짓이라 계산한 1000원을 그대로 돌려줘요. 어느 쪽이든 1000원이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

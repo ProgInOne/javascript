@@ -1,0 +1,71 @@
+id: js-basics.functions.function-basics.impl-make-greeting
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.fn.params-args, weight: 1 }
+  - { id: js.fn.return, weight: 0.5 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [function, parameter, return, string, write-code]
+estimatedSeconds: 180
+prompt: |
+  메시지 앱의 인사말을 만드는 함수 `makeGreeting(name, greeting)`을 완성하세요.
+
+  - 첫 번째 매개변수 `name`은 받는 사람 이름, 두 번째 매개변수 `greeting`은 인사말이에요.
+  - `인사말, 이름님!` 모양의 문자열을 **돌려주세요**(출력이 아니라 `return`).
+  - 예: `makeGreeting("하린", "안녕하세요")` → `"안녕하세요, 하린님!"`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function makeGreeting(name, greeting) {
+            // 여기에 작성하세요
+          }
+  entry: makeGreeting
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function makeGreeting(name, greeting) {
+            return greeting + ", " + name + "님!";
+          }
+  checks:
+    - kind: call
+      id: example
+      args: ["하린", "안녕하세요"]
+      expect: { equals: "안녕하세요, 하린님!" }
+      requirement: 인사말 만들기
+    - kind: call
+      id: other-greeting
+      args: ["도윤", "좋은 아침이에요"]
+      expect: { equals: "좋은 아침이에요, 도윤님!" }
+      requirement: 인사말 만들기
+    - kind: call
+      id: hidden-other
+      visible: false
+      description: 다른 이름과 인사말을 넘겨도 그 값으로 인사말을 만들어야 합니다.
+      args: ["지우", "생일 축하해요"]
+      expect: { equals: "생일 축하해요, 지우님!" }
+      requirement: 인사말 만들기
+misconceptions: [js.mc.params-match-by-name, js.mc.return-is-log]
+hints:
+  - 함수가 할 일은 문자열 하나를 만들어 `return`으로 돌려주는 거예요.
+  - 매개변수 `greeting`과 `name` 사이에 `", "`를, 끝에 `"님!"`을 `+`로 이어 붙여요.
+  - 인사말이 이름보다 **앞**에 와야 해요. 매개변수의 순서와 문장 안의 순서는 달라도 괜찮아요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function makeGreeting(name, greeting) {
+    return greeting + ", " + name + "님!";
+  }
+  ```
+
+  - 인수는 순서대로 들어가서, `makeGreeting("하린", "안녕하세요")`를 부르면 `name`은 `"하린"`, `greeting`은 `"안녕하세요"`예요.
+  - 문장에서는 인사말을 먼저 써야 해서 `greeting`을 앞에 이어 붙였어요. 매개변수 순서와 쓰는 순서는 따로예요.
+  - `console.log(...)`로 출력만 하면 함수의 결과는 `undefined`라서 검사를 통과하지 못해요. 다른 코드가 이 문장을 받아서 쓸 수 있게 `return`해야 해요.
+  - `"안녕하세요, 하린님!"`을 그대로 돌려주면 다른 인수로 부른 검사에서 틀려요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

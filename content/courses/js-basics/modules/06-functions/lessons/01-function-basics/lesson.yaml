@@ -1,0 +1,17 @@
+id: js-basics.functions.function-basics
+title: 함수 선언과 호출
+summary: 코드에 이름을 붙이는 함수 선언, 이름으로 코드를 실행하는 호출, 함수에 값을 넘기는 매개변수와 인수, 결과를 돌려주는 return을 배웁니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 16, practice: 34 }
+concepts:
+  primary: [js.fn.declaration, js.fn.call, js.fn.params-args, js.fn.return]
+  practiced: [js.control.if]
+  reviewed: [js.basics.console-log, js.loops.for, js.loops.accumulator-pattern, js.conv.plus-concat]
+objectives:
+  - 함수를 선언하고 원하는 인수로 호출할 수 있으며, 선언만으로는 함수 본문이 실행되지 않는다는 것을 예측할 수 있다.
+  - 매개변수와 인수의 차이를 설명하고, 인수가 순서대로 매개변수에 들어가는 결과를 예측할 수 있다.
+  - return으로 값을 돌려주는 함수를 작성하고, return과 console.log의 차이를 실행 결과로 구분할 수 있다.
+  - 함수 안에서 다른 함수를 부를 때 실행 흐름이 어디로 갔다가 돌아오는지 추적할 수 있다.
+practice:
+  targetCount: 28

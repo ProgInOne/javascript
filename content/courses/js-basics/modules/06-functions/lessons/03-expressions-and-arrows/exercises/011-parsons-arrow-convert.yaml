@@ -1,0 +1,79 @@
+id: js-basics.functions.expressions-and-arrows.parsons-arrow-convert
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [arrow-function, if, return, parsons]
+estimatedSeconds: 150
+prompt: |
+  아래 함수 선언을 같은 일을 하는 **화살표 함수** `shippingFee`로 바꾸려고 해요. 코드 조각을 순서대로 배열하세요.
+
+  ```js
+  function shippingFee(total) {
+    if (total >= 30000) {
+      return 0;
+    }
+    return 3000;
+  }
+  ```
+
+  주문 금액이 30000원 이상이면 배송비 `0`, 아니면 `3000`을 돌려줘야 해요.
+spec:
+  lines:
+    - { id: l1, code: "const shippingFee = (total) => {" }
+    - { id: l2, code: "if (total >= 30000) {", indent: 1 }
+    - { id: l3, code: "return 0;", indent: 2 }
+    - { id: l4, code: "}", indent: 1 }
+    - { id: l5, code: "return 3000;", indent: 1 }
+    - { id: l6, code: "};" }
+  distractors:
+    - { id: d1, code: "const shippingFee = (total) >= {", replaces: l1, misconception: js.mc.arrow-is-comparison }
+    - { id: d2, code: "3000;", replaces: l5, misconception: js.mc.arrow-braces-implicit-return }
+  gradeIndent: false
+  entry: shippingFee
+  checks:
+    - kind: call
+      id: free
+      description: 50000원어치를 주문하면 배송비가 0이어야 합니다.
+      requirement: 배송비 돌려주기
+      args: [50000]
+      expect: { equals: 0 }
+    - kind: call
+      id: paid
+      description: 12000원어치를 주문하면 배송비가 3000이어야 합니다.
+      requirement: 배송비 돌려주기
+      args: [12000]
+      expect: { equals: 3000 }
+    - kind: call
+      id: boundary
+      visible: false
+      description: 주문 금액이 정확히 30000원이어도 배송비가 0이어야 합니다.
+      requirement: 배송비 돌려주기
+      args: [30000]
+      expect: { equals: 0 }
+misconceptions: [js.mc.arrow-is-comparison, js.mc.arrow-braces-implicit-return]
+hints:
+  - 화살표 함수의 첫 줄은 `const 이름 = (매개변수) =>` 모양이에요. 비교 연산자와 화살표를 잘 구별하세요.
+  - 본문에 `if`가 있어서 여러 줄이 필요하니 중괄호 본문을 써야 해요.
+  - 중괄호 본문에서는 값을 자동으로 돌려주지 않아요. 마지막 줄에도 무엇이 필요할지 생각해 보세요.
+explanation: |
+  정답 순서는 다음과 같아요.
+
+  ```js
+  const shippingFee = (total) => {
+    if (total >= 30000) {
+      return 0;
+    }
+    return 3000;
+  };
+  ```
+
+  - 본문에 `if`가 있어 여러 문장이 필요하므로 중괄호 본문을 썼어요. 그래서 두 갈래 모두 `return`이 있어야 해요.
+  - `3000;`만 쓴 조각은 값을 계산만 하고 돌려주지 않아서, 30000원 미만일 때 `undefined`가 나와요.
+  - `(total) >= {`는 화살표가 아니라 비교 연산자라 문법 오류가 나요. 화살표는 `=>`예요.
+  - 끝의 `};`는 `const` 문장을 끝내는 세미콜론까지 포함해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

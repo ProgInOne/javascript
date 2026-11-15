@@ -1,0 +1,69 @@
+id: js-basics.functions.callbacks-intro.multi-callback-facts
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.fn.callback, weight: 1 }
+  - { id: js.fn.first-class, weight: 0.3 }
+tags: [callback, flow]
+estimatedSeconds: 120
+prompt: |
+  아래 코드에 대한 설명으로 맞는 것을 모두 고르세요.
+code: |
+  function runTwice(action) {
+    console.log("시작");
+    action();
+    action();
+    console.log("끝");
+  }
+
+  function beep() {
+    console.log("삐");
+  }
+
+  runTwice(beep);
+spec:
+  options:
+    - id: a
+      text: "`시작`이 `삐`보다 먼저 출력된다"
+      missedMisconception: js.mc.callback-runs-at-pass-time
+    - id: b
+      text: "`삐`는 모두 두 번 출력된다"
+    - id: c
+      text: "`runTwice(beep)`으로 넘기는 순간 `삐`가 한 번 먼저 출력된다"
+      misconception: js.mc.callback-runs-at-pass-time
+      rationale: 괄호 없이 넘긴 beep은 넘길 때 실행되지 않아요. runTwice가 action()으로 부를 때만 실행돼요.
+    - id: d
+      text: "`runTwice` 안의 `action`과 바깥의 `beep`은 같은 함수를 가리킨다"
+      missedMisconception: js.mc.function-not-a-value
+    - id: e
+      text: "마지막 줄을 `runTwice(beep());`으로 바꿔도 출력은 똑같다"
+      misconception: js.mc.callback-called-when-passed
+      rationale: beep()이 먼저 실행되어 삐가 한 번 나오고, 반환값 undefined가 넘어가요. runTwice가 시작을 출력한 뒤 action()에서 TypeError가 나요.
+    - id: f
+      text: "`beep`을 인수로 넘기려면 `beep`을 화살표 함수로 다시 만들어야 한다"
+      rationale: 함수 선언으로 만든 함수도 값이라 그대로 넘길 수 있어요.
+  correct: [a, b, d]
+misconceptions: [js.mc.callback-runs-at-pass-time, js.mc.callback-called-when-passed]
+hints:
+  - 마지막 줄에서 넘기는 `beep`에는 괄호가 있나요? 괄호가 없으면 그 자리에서 실행되지 않아요.
+  - "`runTwice`의 본문을 위에서부터 따라가 보세요. `action()`은 몇 번, 언제 불리나요?"
+  - "`beep()`처럼 괄호를 붙여 넘기면 `runTwice`를 부르기 전에 무슨 일이 일어나고, `action`에는 무엇이 들어갈지 생각해 보세요."
+explanation: |
+  맞는 설명은 "`시작`이 `삐`보다 먼저 출력된다", "`삐`는 모두 두 번 출력된다", "`runTwice` 안의 `action`과 바깥의 `beep`은 같은 함수를 가리킨다"예요. 실제 출력은 이래요.
+
+  ```text
+  시작
+  삐
+  삐
+  끝
+  ```
+
+  - `runTwice(beep)`은 `beep`을 실행하지 않고 함수째로 넘겨요. 그래서 매개변수 `action`은 `beep`과 같은 함수예요.
+  - `runTwice`가 `시작`을 먼저 출력하고, `action()`을 두 번 불러서 `삐`가 두 번 나와요.
+  - "넘기는 순간 한 번 먼저 출력된다"는 틀렸어요. 콜백은 받은 함수가 부를 때만 실행돼요.
+  - `runTwice(beep())`으로 바꾸면 출력이 달라져요. `beep()`이 먼저 실행되어 `삐`, 그다음 `시작`이 나오고, `action`에 `undefined`가 들어가서 `TypeError: action is not a function`이 나요.
+  - 함수 선언으로 만든 함수도 값이라서 화살표 함수로 바꾸지 않아도 넘길 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

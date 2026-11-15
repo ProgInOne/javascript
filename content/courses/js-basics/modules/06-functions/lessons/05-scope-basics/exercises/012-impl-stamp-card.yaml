@@ -1,0 +1,124 @@
+id: js-basics.functions.scope-basics.impl-stamp-card
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.scope.function, weight: 1 }
+  - { id: js.scope.global, weight: 0.5 }
+  - { id: js.loops.while, weight: 0.3 }
+tags: [scope, function, global, state, while, write-code, boundary]
+estimatedSeconds: 480
+prompt: |
+  카페 도장 카드를 만드세요. 함수 `stamp(count)`는 이번에 받은 도장 `count`개를 카드에 더하고 결과 문장을 **돌려줘요**.
+
+  - 카드의 도장 수는 호출과 호출 사이에 **기억**되어야 해요. 프로그램이 시작할 때 카드는 비어 있어요(0개).
+  - 도장이 10개 모이면 쿠폰 1장을 주고 도장 10개를 지워요. 한 번에 많이 받아서 20개 이상이 되면 쿠폰도 그만큼(2장, 3장, …) 줘요.
+  - 이번 호출에서 쿠폰을 주면 `쿠폰 (장수)장 발급! 남은 도장 (개수)개`, 주지 않으면 `도장 (개수)개`를 돌려줘요. 장수는 **이번 호출에서** 준 쿠폰만 세요.
+
+  차례로 호출한 예:
+
+  ```text
+  stamp(3) → "도장 3개"
+  stamp(4) → "도장 7개"
+  stamp(5) → "쿠폰 1장 발급! 남은 도장 2개"
+  ```
+
+  채점은 위 세 호출에 이어서 숨긴 호출을 더 해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 카드에 찍힌 도장 수는 호출 사이에 기억해야 해요.
+
+          function stamp(count) {
+          }
+  entry: stamp
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 카드에 찍힌 도장 수는 호출 사이에 기억해야 해요.
+          let stamps = 0;
+
+          function stamp(count) {
+            stamps += count;
+            let coupons = 0;
+            while (stamps >= 10) {
+              stamps -= 10;
+              coupons++;
+            }
+            if (coupons > 0) {
+              return "쿠폰 " + coupons + "장 발급! 남은 도장 " + stamps + "개";
+            }
+            return "도장 " + stamps + "개";
+          }
+  checks:
+    - kind: call
+      id: first
+      args: [3]
+      requirement: 도장 쌓기
+      expect: { equals: "도장 3개" }
+    - kind: call
+      id: second
+      args: [4]
+      requirement: 도장 쌓기
+      expect: { equals: "도장 7개" }
+    - kind: call
+      id: coupon
+      args: [5]
+      requirement: 쿠폰 발급
+      expect: { equals: "쿠폰 1장 발급! 남은 도장 2개" }
+    - kind: call
+      id: exactly-ten
+      visible: false
+      description: 이어서 도장 8개를 받아 정확히 10개가 되면 쿠폰 1장을 주고 남은 도장은 0개여야 합니다.
+      requirement: 경계 개수
+      args: [8]
+      expect: { equals: "쿠폰 1장 발급! 남은 도장 0개" }
+    - kind: call
+      id: many-coupons
+      visible: false
+      description: 이어서 한 번에 21개를 받으면 이번 호출의 쿠폰은 2장, 남은 도장은 1개여야 합니다.
+      requirement: 쿠폰 여러 장
+      args: [21]
+      expect: { equals: "쿠폰 2장 발급! 남은 도장 1개" }
+    - kind: call
+      id: no-coupon-after
+      visible: false
+      description: 이어서 도장 0개를 받으면 쿠폰 없이 남은 도장 수만 알려 줘야 합니다(앞 호출의 쿠폰 수가 남으면 안 됩니다).
+      requirement: 이번 호출의 쿠폰만
+      args: [0]
+      expect: { equals: "도장 1개" }
+misconceptions: [js.mc.function-var-persists]
+hints:
+  - 값이 두 종류예요. 호출이 끝나도 기억해야 하는 값(카드의 도장 수)과, 이번 호출에서만 쓰는 값(이번에 준 쿠폰 수). 각각 어디에 만들어야 할까요?
+  - 도장 수 변수를 함수 안에서 0으로 만들면 호출마다 빈 카드가 돼요. 쿠폰 수는 반대로 호출마다 0에서 시작해야 해요.
+  - 10개 이상인 동안 "10개 지우고 쿠폰 1장"을 되풀이하면 21개처럼 큰 수도 처리돼요. 한 번만 검사하는 `if`로는 부족한 경우가 있어요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  let stamps = 0;
+
+  function stamp(count) {
+    stamps += count;
+    let coupons = 0;
+    while (stamps >= 10) {
+      stamps -= 10;
+      coupons++;
+    }
+    if (coupons > 0) {
+      return "쿠폰 " + coupons + "장 발급! 남은 도장 " + stamps + "개";
+    }
+    return "도장 " + stamps + "개";
+  }
+  ```
+
+  - **기억할 값은 바깥에**: `stamps`는 호출 사이에 쌓여야 하므로 함수 바깥에 둬요. 함수 안에 `let stamps = 0;`을 두면 두 번째 호출이 `도장 4개`가 돼요.
+  - **이번 호출의 값은 안에**: `coupons`는 이번에 준 쿠폰 수라서 함수 안에서 매번 0으로 시작해요. 바깥에 두면 앞 호출의 쿠폰이 쌓여서, 마지막 숨긴 호출에서 쿠폰 문장이 잘못 나와요.
+  - **경계와 여러 장**: 정확히 10개도 쿠폰을 줘야 하므로 `>= 10`이에요. `if`로 한 번만 빼면 21개일 때 `쿠폰 1장, 남은 도장 11개`가 되어 틀려요. `while`로 되풀이하거나, 나머지 연산(`stamps % 10`)으로 남은 도장과 쿠폰 수를 계산해도 돼요.
+  - 쿠폰을 주는 경우와 아닌 경우의 `return`이 각각 있어서 모든 갈래에서 문장을 돌려줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

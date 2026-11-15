@@ -1,0 +1,110 @@
+id: js-basics.functions.return-and-side-effects.impl-first-even
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.fn.undefined-return, weight: 1 }
+  - { id: js.loops.for, weight: 0.3 }
+  - { id: js.ops.remainder, weight: 0.3 }
+tags: [undefined-return, return, for, write-code]
+estimatedSeconds: 300
+prompt: |
+  `start`부터 `end`까지(둘 다 포함) 차례로 살펴보며 **처음 나오는 짝수**를 돌려주는 함수 `firstEven(start, end)`를 완성하세요.
+
+  - `firstEven(3, 9)` → `4`
+  - `firstEven(5, 5)` → `undefined` (짝수가 하나도 없음)
+  - 짝수가 없으면 아무 값도 돌려주지 마세요. 그러면 함수는 `undefined`를 돌려줘요. `null`이나 `0`, `false`를 돌려주면 안 돼요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function firstEven(start, end) {
+            // 여기에 작성하세요
+          }
+
+          console.log(firstEven(3, 9));
+          console.log(firstEven(5, 5));
+  entry: firstEven
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function firstEven(start, end) {
+            for (let n = start; n <= end; n++) {
+              if (n % 2 === 0) {
+                return n;
+              }
+            }
+          }
+
+          console.log(firstEven(3, 9));
+          console.log(firstEven(5, 5));
+  checks:
+    - kind: call
+      id: basic
+      description: firstEven(3, 9)는 4를 돌려줘야 합니다.
+      requirement: 처음 나오는 짝수
+      args: [3, 9]
+      expect: { equals: 4 }
+    - kind: call
+      id: none
+      description: firstEven(5, 5)는 짝수가 없으므로 undefined를 돌려줘야 합니다.
+      requirement: 없으면 undefined
+      args: [5, 5]
+      expect: { equalsLiteral: "undefined" }
+      misconceptionIfFail: js.mc.no-return-is-null
+    - kind: call
+      id: start-even
+      visible: false
+      description: 시작 수가 짝수이면 그 수를 돌려줘야 합니다.
+      requirement: 처음 나오는 짝수
+      args: [10, 20]
+      expect: { equals: 10 }
+    - kind: call
+      id: end-even
+      visible: false
+      description: 짝수가 마지막 수 하나뿐이어도 찾아야 합니다(end 포함).
+      requirement: 처음 나오는 짝수
+      args: [1, 2]
+      expect: { equals: 2 }
+    - kind: call
+      id: none-odd
+      visible: false
+      description: 홀수 하나뿐인 범위에서도 undefined를 돌려줘야 합니다.
+      requirement: 없으면 undefined
+      args: [7, 7]
+      expect: { equalsLiteral: "undefined" }
+    - kind: call
+      id: empty-range
+      visible: false
+      description: start가 end보다 크면 살펴볼 수가 없으므로 undefined를 돌려줘야 합니다.
+      requirement: 없으면 undefined
+      args: [9, 3]
+      expect: { equalsLiteral: "undefined" }
+misconceptions: [js.mc.no-return-is-null, js.mc.code-after-return-runs]
+hints:
+  - "`for` 반복으로 `start`부터 `end`까지 하나씩 살펴보세요. 짝수인지는 2로 나눈 나머지로 알 수 있어요."
+  - 반복 안의 `return`은 반복과 함수를 함께 끝내요. 그래서 처음 찾은 짝수에서 바로 끝낼 수 있어요.
+  - 짝수가 아닐 때 반복 안에서 무언가를 돌려주면 첫 수만 보고 끝나 버려요. 짝수가 끝내 없을 때는 반복이 끝까지 돈 뒤 함수가 그대로 끝나면 돼요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function firstEven(start, end) {
+    for (let n = start; n <= end; n++) {
+      if (n % 2 === 0) {
+        return n;
+      }
+    }
+  }
+  ```
+
+  - 반복 안의 `return n;`은 처음 찾은 짝수를 돌려주면서 반복과 함수를 **함께** 끝내요. 그래서 뒤의 짝수는 보지 않아요.
+  - 짝수가 없으면 반복이 끝까지 돌고 함수 끝에 닿아요. 만난 `return`이 없으니 결과는 `undefined`예요. 이 문제에서는 그것이 바라는 동작이에요.
+  - `start`가 `end`보다 크면 조건 `n <= end`가 처음부터 거짓이라 반복이 한 번도 돌지 않고 `undefined`가 돼요.
+
+  흔한 실수는 반복 안에 `else { return undefined; }`(또는 `return null;`)을 넣는 것이에요. 그러면 첫 수가 홀수일 때 바로 끝나서 `firstEven(3, 9)`도 4를 찾지 못해요. "없다"는 결론은 모든 수를 살펴본 **뒤에야** 내릴 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

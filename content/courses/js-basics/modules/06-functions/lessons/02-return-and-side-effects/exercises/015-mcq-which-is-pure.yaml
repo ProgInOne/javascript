@@ -1,0 +1,41 @@
+id: js-basics.functions.return-and-side-effects.mcq-which-is-pure
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.fn.pure, weight: 1 }
+  - { id: js.fn.side-effects, weight: 0.3 }
+tags: [pure, side-effects]
+estimatedSeconds: 80
+prompt: |
+  아래 함수 중 **순수 함수**는 어느 것인가요? (`total`과 `rate`는 프로그램 위쪽에서 `let`으로 만든 바깥 변수예요.)
+spec:
+  options:
+    - id: a
+      text: "`function double(n) { return n * 2; }`"
+    - id: b
+      text: "`function addToTotal(n) { total += n; return total; }`"
+      misconception: js.mc.same-args-same-result-always
+      rationale: 바깥 변수 total을 바꾸는 부수 효과가 있어요. addToTotal(5)를 두 번 부르면 두 번째 결과가 첫 번째와 달라요.
+    - id: c
+      text: "`function multiply(n) { return n * rate; }`"
+      misconception: js.mc.same-args-same-result-always
+      rationale: 바깥 변수 rate를 읽어요. rate가 바뀌면 같은 인수로도 결과가 달라져요.
+    - id: d
+      text: "`function showDouble(n) { console.log(n * 2); }`"
+      rationale: 콘솔에 출력하는 것도 부수 효과예요. 게다가 값을 돌려주지 않아 결과는 늘 undefined예요.
+  correct: a
+misconceptions: [js.mc.same-args-same-result-always]
+hints:
+  - 순수 함수의 두 조건을 떠올려 보세요. 결과에 관한 조건 하나, 바깥에 남기는 것에 관한 조건 하나예요.
+  - 함수 본문이 매개변수 말고 다른 변수를 읽거나 바꾸는지 하나씩 확인해 보세요.
+  - 출력도 바깥에 남는 흔적이에요. 인수만 보고 계산해 돌려주기만 하는 함수를 찾으세요.
+explanation: |
+  정답은 `function double(n) { return n * 2; }`예요. 매개변수 `n`만 보고 계산해서 돌려주기만 해요. `double(5)`는 언제 불러도 10이고, 바깥에 아무 흔적도 남기지 않아요.
+
+  - `addToTotal`: 바깥 변수 `total`을 바꿔요(부수 효과). 그 결과 같은 인수 5를 넣어도 부를 때마다 더 큰 값이 돌아와요.
+  - `multiply`: 바깥 변수 `rate`에 기대요. 바깥에서 `rate`를 바꾸면 같은 인수로도 결과가 달라져요. `multiply(n, rate)`처럼 매개변수로 받으면 순수 함수가 돼요.
+  - `showDouble`: 콘솔 출력이라는 부수 효과가 있고, 값을 돌려주지도 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

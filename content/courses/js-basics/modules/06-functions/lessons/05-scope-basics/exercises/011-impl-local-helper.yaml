@@ -1,0 +1,76 @@
+id: js-basics.functions.scope-basics.impl-local-helper
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.scope.function, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [scope, function, local-variable, return, write-code]
+estimatedSeconds: 200
+prompt: |
+  메뉴 이름, 한 잔 가격, 잔 수를 받아 주문 한 줄을 **돌려주는** 함수 `orderLine(menu, price, cups)`을 완성하세요.
+
+  ```text
+  orderLine("아메리카노", 4500, 3) → "아메리카노 3잔: 13500원"
+  ```
+
+  - 금액(가격 × 잔 수)은 계산에만 쓰는 값이에요. 함수 **안**에 변수를 만들어 담아 보세요.
+  - 같은 인수로 다시 불러도 같은 문장이 나와야 해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function orderLine(menu, price, cups) {
+            // 금액을 계산해 주문 한 줄을 돌려주세요.
+          }
+  entry: orderLine
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function orderLine(menu, price, cups) {
+            const subtotal = price * cups;
+            return menu + " " + cups + "잔: " + subtotal + "원";
+          }
+  checks:
+    - kind: call
+      id: americano
+      args: ["아메리카노", 4500, 3]
+      requirement: 주문 한 줄
+      expect: { equals: "아메리카노 3잔: 13500원" }
+    - kind: call
+      id: latte
+      visible: false
+      description: 다른 메뉴, 가격, 잔 수에서도 맞는 문장을 돌려줘야 합니다.
+      requirement: 주문 한 줄
+      args: ["라테", 5000, 1]
+      expect: { equals: "라테 1잔: 5000원" }
+    - kind: call
+      id: again
+      visible: false
+      description: 첫 번째와 같은 인수로 다시 불러도 같은 문장이어야 합니다(앞의 호출 금액이 쌓이면 안 됩니다).
+      requirement: 다시 불러도 같은 결과
+      args: ["아메리카노", 4500, 3]
+      expect: { equals: "아메리카노 3잔: 13500원" }
+misconceptions: [js.mc.function-var-persists]
+hints:
+  - 함수가 할 일은 두 가지예요. 금액 계산하기, 문장 만들어 돌려주기.
+  - 금액을 담을 변수를 함수 본문 안에서 `const`로 만들어 보세요. 호출할 때마다 새로 계산돼요.
+  - '문장은 메뉴, 공백, 잔 수, `"잔: "`, 금액, `"원"`을 차례로 `+`로 이어 붙여요. 결과는 출력하지 말고 돌려줘야 해요.'
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function orderLine(menu, price, cups) {
+    const subtotal = price * cups;
+    return menu + " " + cups + "잔: " + subtotal + "원";
+  }
+  ```
+
+  - `subtotal`은 함수 안의 변수라 호출할 때마다 새로 만들어지고 끝나면 사라져요. 그래서 몇 번을 불러도 그 호출의 인수로만 계산돼요.
+  - 금액 변수를 함수 바깥에 두고 `subtotal += price * cups;`처럼 쌓으면, 두 번째 호출부터 앞 주문 금액이 더해져서 틀려요. 계산에만 쓰는 값은 안쪽에 두는 것이 안전해요.
+  - `console.log`가 아니라 `return`으로 돌려줘야 호출한 쪽에서 문장을 받아 쓸 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

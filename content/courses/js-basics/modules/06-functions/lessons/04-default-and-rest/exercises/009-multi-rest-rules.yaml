@@ -1,0 +1,54 @@
+id: js-basics.functions.default-and-rest.multi-rest-rules
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.fn.rest-params, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [rest-params, rules]
+estimatedSeconds: 120
+prompt: |
+  아래 함수에 대한 설명 중 맞는 것을 모두 고르세요.
+code: |
+  function order(table, ...menus) {
+    return table + "번 테이블: " + menus.length + "개";
+  }
+spec:
+  options:
+    - id: a
+      text: "`order(3, \"김밥\", \"라면\")`은 `\"3번 테이블: 2개\"`를 반환한다"
+      missedMisconception: js.mc.rest-includes-named
+    - id: b
+      text: "`order(5)`는 `\"5번 테이블: 0개\"`를 반환한다"
+    - id: c
+      text: "`order(3, \"김밥\", \"라면\")`에서 `menus`에는 `3`까지 세 값이 들어가 `\"3번 테이블: 3개\"`를 반환한다"
+      misconception: js.mc.rest-includes-named
+      rationale: 첫 인수 3은 table이 먼저 받아요. menus에는 그 뒤에 남은 두 값만 모여요.
+    - id: d
+      text: "`function order(...menus, table)`로 순서를 바꿔 써도 똑같이 동작한다"
+      misconception: js.mc.rest-not-last
+      rationale: 나머지 매개변수는 맨 끝에만 둘 수 있어요. 뒤에 매개변수가 있으면 SyntaxError가 나요.
+    - id: e
+      text: "`order(5)`는 메뉴 인수가 없어서 오류가 난다"
+      misconception: js.mc.missing-arg-error
+      rationale: 남은 인수가 없으면 menus는 빈 묶음이 되고 length는 0이에요. 오류는 나지 않아요.
+  correct: [a, b]
+misconceptions: [js.mc.rest-includes-named, js.mc.rest-not-last]
+hints:
+  - 인수는 앞에서부터 차례로 매개변수에 들어가요. `table`이 무엇을 받는지 먼저 정하세요.
+  - "`menus`는 `table`이 받고 **남은** 인수만 모아요. 남은 게 하나도 없으면 묶음은 어떻게 될까요?"
+  - 나머지 매개변수가 "남은 것 전부"를 가져간다면, 그 뒤에 다른 매개변수가 올 수 있을지 생각해 보세요.
+explanation: |
+  맞는 설명은 다음 두 가지예요.
+
+  - `order(3, "김밥", "라면")`은 `"3번 테이블: 2개"`를 반환해요. `table`이 `3`을 먼저 받고, `menus`에는 남은 `"김밥"`, `"라면"`만 모여요.
+  - `order(5)`는 `"5번 테이블: 0개"`를 반환해요. 남은 인수가 없으면 `menus`는 빈 묶음이고 `length`는 0이에요.
+
+  틀린 설명:
+
+  - `menus`에 `3`까지 들어간다는 설명은 나머지 매개변수가 앞 매개변수의 인수까지 모은다고 본 거예요.
+  - `(...menus, table)`처럼 나머지 매개변수 뒤에 다른 매개변수를 두면 `SyntaxError: Rest parameter must be last formal parameter`가 나서 프로그램이 실행되지 않아요.
+  - 인수가 모자라도 오류는 나지 않아요. 나머지 매개변수는 빈 묶음이 될 뿐이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

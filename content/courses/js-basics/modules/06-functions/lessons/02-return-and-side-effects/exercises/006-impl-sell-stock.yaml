@@ -1,0 +1,86 @@
+id: js-basics.functions.return-and-side-effects.impl-sell-stock
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.fn.side-effects, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [side-effects, outer-variable, write-code]
+estimatedSeconds: 240
+prompt: |
+  가게의 재고를 관리하는 프로그램이에요. 시작 코드의 아래쪽은 이미 쓰여 있어요. 표시한 자리에 함수 `sell`을 만들어 아래처럼 출력되게 하세요.
+
+  ```text
+  3개 판매, 남은 재고 7개
+  4개 판매, 남은 재고 3개
+  남은 재고: 3
+  ```
+
+  - `sell(count)`는 바깥 변수 `stock`에서 `count`만큼 빼고, `(count)개 판매, 남은 재고 (stock)개` 한 줄을 출력해요.
+  - `sell`은 값을 돌려주지 않아도 돼요. 바깥 변수를 바꾸고 출력하는 부수 효과가 이 함수의 일이에요.
+  - 아래쪽의 호출 세 줄과 `stock`의 시작값은 그대로 두세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          let stock = 10;
+
+          // 여기에 sell 함수를 만드세요
+
+
+          sell(3);
+          sell(4);
+          console.log("남은 재고: " + stock);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let stock = 10;
+
+          // 여기에 sell 함수를 만드세요
+          function sell(count) {
+            stock -= count;
+            console.log(count + "개 판매, 남은 재고 " + stock + "개");
+          }
+
+          sell(3);
+          sell(4);
+          console.log("남은 재고: " + stock);
+  checks:
+    - kind: console
+      id: output
+      description: 판매할 때마다 한 줄씩, 마지막에 남은 재고가 출력되어야 합니다.
+      requirement: 판매 내역 출력
+      expect:
+        lines: ["3개 판매, 남은 재고 7개", "4개 판매, 남은 재고 3개", "남은 재고: 3"]
+    - kind: program
+      id: stock
+      description: 두 번 판매한 뒤 바깥 변수 stock이 3이어야 합니다.
+      requirement: 재고 줄이기
+      expect:
+        globals: { stock: { equals: 3 } }
+        noError: true
+      misconceptionIfFail: js.mc.function-cant-change-outer
+misconceptions: [js.mc.function-cant-change-outer]
+hints:
+  - "`function sell(count) { ... }` 모양으로 만들고, 본문에서 할 일은 두 가지예요. 재고 줄이기, 한 줄 출력하기."
+  - 바깥 변수 `stock`은 함수 안에서 그대로 쓸 수 있어요. 함수 안에서 `let stock`으로 새로 만들 필요가 없어요.
+  - 출력보다 재고를 줄이는 줄이 먼저 와야, 줄어든 뒤의 재고가 출력돼요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function sell(count) {
+    stock -= count;
+    console.log(count + "개 판매, 남은 재고 " + stock + "개");
+  }
+  ```
+
+  - `stock -= count;`는 바깥 변수 `stock`을 바꾸는 부수 효과예요. 함수가 끝나도 줄어든 값이 남아서, 두 번째 호출은 7에서 4를 빼 3이 돼요.
+  - 순서가 중요해요. 출력을 먼저 하면 `3개 판매, 남은 재고 10개`처럼 줄기 전 재고가 나와요.
+  - 함수 안에서 `let stock = ...`처럼 새 변수를 만들면 바깥 `stock`과 다른 변수가 되어 바깥 재고가 줄지 않아요(`let stock = stock - count;`처럼 쓰면 아예 오류가 나요). 이 내용은 "스코프 기초" 단원에서 자세히 배워요.
+  - 이 함수는 `return`이 없으니 `sell(3)`의 결과는 `undefined`예요. 결과값 대신 부수 효과로 일하는 함수라서 괜찮아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

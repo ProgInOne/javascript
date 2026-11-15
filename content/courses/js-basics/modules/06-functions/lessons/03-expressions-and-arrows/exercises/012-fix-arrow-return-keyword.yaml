@@ -1,0 +1,61 @@
+id: js-basics.functions.expressions-and-arrows.fix-arrow-return-keyword
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [arrow-function, return, syntax-error, debugging]
+estimatedSeconds: 100
+prompt: |
+  달러를 원으로 바꾸는 화살표 함수예요(1달러 = 1400원). 실행하면 오류가 나요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  10달러는 14000원
+  25달러는 35000원
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const toWon = (dollar) => return dollar * 1400;
+
+          console.log("10달러는 " + toWon(10) + "원");
+          console.log("25달러는 " + toWon(25) + "원");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const toWon = (dollar) => dollar * 1400;
+
+          console.log("10달러는 " + toWon(10) + "원");
+          console.log("25달러는 " + toWon(25) + "원");
+  bugDescription: "실행하면 `SyntaxError: Unexpected token 'return'` 오류가 나고 아무것도 출력되지 않아요."
+  bugMisconception: js.mc.arrow-concise-with-return
+  checks:
+    - kind: console
+      id: output
+      description: 10달러와 25달러를 원으로 바꾼 금액이 차례로 출력되어야 합니다.
+      requirement: 환전 금액 출력
+      expect:
+        lines: ["10달러는 14000원", "25달러는 35000원"]
+misconceptions: [js.mc.arrow-concise-with-return]
+hints:
+  - "`SyntaxError`는 문법 오류라서 프로그램이 한 줄도 실행되지 않아요. 오류가 가리키는 낱말은 `return`이에요."
+  - 이 화살표 함수에는 중괄호가 없어요. 중괄호 없는 본문 자리에는 무엇만 올 수 있었나요?
+  - 중괄호와 `return`은 함께 빼거나 함께 써야 해요. 둘 중 한 가지 방법으로 맞춰 보세요.
+explanation: |
+  중괄호 없는 화살표 본문(식 본문) 자리에는 **식 하나**만 올 수 있어요. `return`은 식이 아니라 문장이라 그 자리에 오면 `SyntaxError: Unexpected token 'return'`이 나요. 문법 오류는 실행 전에 발견되므로 아래 `console.log`도 실행되지 않아요.
+
+  고치는 방법은 두 가지예요.
+
+  ```js
+  const toWon = (dollar) => dollar * 1400;              // return과 중괄호를 함께 빼기
+  const toWon = (dollar) => { return dollar * 1400; };  // 중괄호와 return을 함께 쓰기
+  ```
+
+  식 본문에서는 `dollar * 1400`의 값이 자동으로 반환돼요. 한 줄 계산이면 첫 번째 방법이 더 간단해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

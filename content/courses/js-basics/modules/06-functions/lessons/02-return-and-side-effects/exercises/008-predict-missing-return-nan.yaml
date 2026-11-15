@@ -1,0 +1,57 @@
+id: js-basics.functions.return-and-side-effects.predict-missing-return-nan
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.fn.undefined-return, weight: 1 }
+  - { id: js.control.else-if, weight: 0.3 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+  - { id: js.conv.nan, weight: 0.3 }
+tags: [undefined-return, else-if, accumulator, nan, trace]
+estimatedSeconds: 150
+prompt: |
+  달리기 대회에서 등수마다 점수를 주고, 1등부터 4등까지의 점수를 차례로 더해 보는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 마지막 줄을 특히 잘 생각해 보세요.
+spec:
+  lang: js
+  code: |
+    function pointsFor(rank) {
+      if (rank === 1) {
+        return 100;
+      } else if (rank === 2) {
+        return 50;
+      } else if (rank === 3) {
+        return 30;
+      }
+    }
+
+    let total = 0;
+    for (let rank = 1; rank <= 4; rank++) {
+      total += pointsFor(rank);
+      console.log(rank + "등까지: " + total);
+    }
+  answerKind: console
+  misconceptionByAnswer:
+    "1등까지: 100\n2등까지: 150\n3등까지: 180\n4등까지: 180": js.mc.return-in-if-covers-all
+hints:
+  - 1등부터 3등까지는 어느 갈래의 `return`을 만나는지 차례로 따라가며 `total`을 적어 보세요.
+  - "`pointsFor(4)`는 어느 조건에도 맞지 않아요. 그러면 함수는 무엇을 돌려주나요?"
+  - 숫자에 `undefined`를 더하면 어떤 값이 되었는지 모듈 3의 형 변환을 떠올려 보세요. 그 값에 다시 무엇을 더하거나 이어 붙이면 어떻게 보일까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  1등까지: 100
+  2등까지: 150
+  3등까지: 180
+  4등까지: NaN
+  ```
+
+  - 1~3등은 각 갈래의 `return`을 만나 100, 50, 30을 돌려줘요. `total`은 100 → 150 → 180으로 쌓여요.
+  - `pointsFor(4)`는 세 조건이 모두 거짓이라 함수 끝까지 내려가요. 만난 `return`이 없으니 `undefined`를 돌려줘요. 오류는 나지 않아요.
+  - `total += undefined`는 `180 + undefined`예요. 숫자와 `undefined`를 더하면 `NaN`이 되므로 `total`이 `NaN`이 돼요.
+  - 마지막으로 `"4등까지: " + NaN`은 문자열 이어 붙이기라서 `4등까지: NaN`이 나와요.
+
+  4등을 계산하지 않고 180이 그대로 남는다고 생각했다면, `if`에 맞지 않는 경우에 함수가 "아무 영향 없는 값"을 돌려준다고 본 거예요. 실제로는 `undefined`가 돌아와 합계를 망가뜨려요. 4등 이하에 0점을 주려면 함수 끝에 `return 0;`을 두면 되고, 그러면 마지막 줄은 `4등까지: 180`이 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

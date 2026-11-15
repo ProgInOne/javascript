@@ -1,0 +1,52 @@
+id: js-basics.functions.return-and-side-effects.multi-what-returns-undefined
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.fn.undefined-return, weight: 1 }
+tags: [undefined-return, return]
+estimatedSeconds: 120
+prompt: |
+  호출 결과(반환값)가 `undefined`인 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`function a() { console.log(5); }`를 `a()`로 호출"
+      missedMisconception: js.mc.return-is-log
+    - id: b
+      text: "`function b() { return; }`를 `b()`로 호출"
+      missedMisconception: js.mc.no-return-is-null
+    - id: c
+      text: "`function c(n) { if (n > 0) { return \"양수\"; } }`를 `c(-1)`로 호출"
+      missedMisconception: js.mc.return-in-if-covers-all
+    - id: d
+      text: "`function d() { return null; }`를 `d()`로 호출"
+      misconception: js.mc.null-undefined-same
+      rationale: return null;은 null이라는 값을 일부러 돌려줘요. null과 undefined는 다른 값이에요.
+    - id: e
+      text: "`function e() { return 0; }`를 `e()`로 호출"
+      rationale: 0도 값이에요. 값을 돌려주었으니 undefined가 아니에요.
+    - id: f
+      text: "`function f(n) { if (n > 0) { return \"양수\"; } return \"0 이하\"; }`를 `f(-1)`로 호출"
+      rationale: 조건이 거짓이어도 함수 끝의 return "0 이하";를 만나요.
+  correct: [a, b, c]
+misconceptions: [js.mc.no-return-is-null, js.mc.return-in-if-covers-all, js.mc.return-is-log]
+hints:
+  - 함수가 값을 돌려주지 못하는 경우는 세 가지였어요. `return`이 없을 때, `return` 뒤에 값이 없을 때, 그리고 하나 더예요.
+  - 조건문이 있는 함수는 주어진 인수로 어느 갈래가 실행되는지 직접 따라가 보세요.
+  - "`null`과 `0`은 함수가 **일부러 돌려준 값**이에요. 출력은 돌려주는 것과 다른 일이에요."
+explanation: |
+  정답은 `a()`, `b()`, `c(-1)` 세 가지예요.
+
+  - `a()`: `return`이 없어요. `5`를 출력하는 부수 효과만 있고 결과는 `undefined`예요. 출력과 반환은 달라요.
+  - `b()`: `return;`처럼 값 없이 끝나면 `undefined`를 돌려줘요.
+  - `c(-1)`: `-1 > 0`이 거짓이라 `if` 블록을 건너뛰고 함수 끝까지 내려가요. 만난 `return`이 없으니 `undefined`예요.
+
+  나머지는 값을 돌려줘요.
+
+  - `d()`는 `null`을 돌려줘요. `null`은 "비어 있음"을 일부러 표시하는 값이고 `undefined`와 달라요.
+  - `e()`는 `0`을 돌려줘요.
+  - `f(-1)`은 조건이 거짓이지만 함수 끝의 `return "0 이하";`를 만나요. 모든 경우에 값이 필요할 때 쓰는 모양이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

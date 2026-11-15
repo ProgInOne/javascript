@@ -1,0 +1,67 @@
+id: js-basics.functions.default-and-rest.fix-rest-position
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.fn.rest-params, weight: 1 }
+  - { id: js.errors.error-messages, weight: 0.3 }
+tags: [rest-params, syntax-error, debugging]
+estimatedSeconds: 150
+prompt: |
+  장바구니에 담은 상품 가격들과 손님 이름을 받아 안내 문구를 출력하는 프로그램이에요. 실행하면 오류가 나고 아무것도 출력되지 않아요. 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  유나님, 상품 3개를 담았어요
+  ```
+
+  - 함수 이름과 매개변수 이름은 그대로 두세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function cartMessage(...prices, customer) {
+            return customer + "님, 상품 " + prices.length + "개를 담았어요";
+          }
+
+          console.log(cartMessage(1200, 3500, 800, "유나"));
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function cartMessage(customer, ...prices) {
+            return customer + "님, 상품 " + prices.length + "개를 담았어요";
+          }
+
+          console.log(cartMessage("유나", 1200, 3500, 800));
+  bugDescription: "실행하면 `SyntaxError: Rest parameter must be last formal parameter` 오류가 나요."
+  bugMisconception: js.mc.rest-not-last
+  checks:
+    - kind: console
+      id: output
+      description: 손님 이름과 담은 상품 개수가 한 줄로 출력되어야 합니다.
+      requirement: 안내 문구 출력
+      expect:
+        lines: ["유나님, 상품 3개를 담았어요"]
+misconceptions: [js.mc.rest-not-last]
+hints:
+  - 오류 메시지의 `Rest parameter must be last`를 해석해 보세요. "나머지 매개변수는 ○○에 있어야 한다"는 뜻이에요.
+  - 나머지 매개변수가 남은 인수를 전부 가져간다면, 그 뒤의 `customer`는 무엇을 받을 수 있을까요?
+  - 매개변수 순서를 바꾸면, 인수는 순서대로 들어가므로 호출하는 쪽의 인수 순서도 함께 맞춰야 해요.
+explanation: |
+  나머지 매개변수는 남은 인수를 모두 모으기 때문에 **맨 끝에만** 둘 수 있어요. 그래서 1번 줄은 실행 전에 `SyntaxError: Rest parameter must be last formal parameter`가 나고, 프로그램 전체가 실행되지 않아요.
+
+  예시 정답은 매개변수와 인수의 순서를 함께 바꿔요.
+
+  ```js
+  function cartMessage(customer, ...prices) {
+    return customer + "님, 상품 " + prices.length + "개를 담았어요";
+  }
+
+  console.log(cartMessage("유나", 1200, 3500, 800));
+  ```
+
+  매개변수 순서만 바꾸고 호출은 그대로 두면 `customer`가 `1200`을 받고, `prices`에는 `3500`, `800`, `"유나"`가 들어가 `1200님, 상품 3개를 담았어요`가 나와요. 인수는 이름이 아니라 순서대로 들어가니까요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,476 @@
+<Section kind="objectives">
+- 블록과 함수 안에서 만든 변수를 어디까지 쓸 수 있는지 예측하고, 범위 밖에서 쓸 때 나는 `ReferenceError`를 고칠 수 있어요.
+- 함수 안의 변수는 호출할 때마다 새로 만들어지고, 바깥 변수는 함수 안에서 읽고 바꿀 수 있다는 것을 실행 결과로 설명할 수 있어요.
+- 같은 이름의 변수나 매개변수가 바깥 변수를 가리는 섀도잉을 알아보고, 매개변수를 바꿔도 바깥 변수가 바뀌지 않는 결과를 예측할 수 있어요.
+- 호출 사이에 기억해야 하는 값은 바깥에, 계산에만 쓰는 값은 안쪽에 두어 스코프 버그를 고칠 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+쇼핑몰 프로그램을 여러 사람이 나눠 만든다고 해 볼게요. 한 사람은 장바구니 합계를 내는 함수를, 다른 사람은 포인트 합계를 내는 함수를 만들었어요. 두 함수 모두 안에서 `total`이라는 변수를 써요. 만약 프로그램 안의 모든 변수가 하나의 공간에 섞여 있다면, 한 함수가 `total`을 바꿀 때 다른 함수의 `total`도 같이 바뀌어 버릴 거예요. 프로그램이 커질수록 이름이 겹칠 때마다 서로의 값을 망가뜨리겠죠.
+
+그래서 JavaScript는 변수마다 **쓸 수 있는 범위**를 정해 둬요. 이 범위를 **스코프(scope)**라고 해요. 앞에서 이미 조금 만났어요. 모듈 4에서 "블록 안에서 만든 변수는 블록 밖에서 쓸 수 없다"고 했고, 모듈 5에서는 `for (let i …)`의 `i`를 반복 밖에서 쓰면 `ReferenceError`가 났어요.
+
+이 단원에서는 그 규칙을 함수까지 넓혀서 정리해요. 어떤 변수가 어디서 보이는지, 함수가 끝나면 변수가 어떻게 되는지, 안과 밖에 같은 이름이 있으면 어느 쪽을 쓰는지 알면, "분명히 만들었는데 `is not defined`가 나요"나 "함수 안에서 바꿨는데 밖에서는 그대로예요" 같은 버그를 스스로 고칠 수 있어요.
+</Section>
+
+<Section kind="principle">
+### 스코프는 겹쳐 있는 상자예요
+
+코드의 각 부분은 스코프라는 상자 안에 있어요. 상자는 세 종류가 겹쳐 있어요.
+
+| 스코프 | 어디 | 그 안에서 만든 것 |
+|---|---|---|
+| 전역 스코프 | 어떤 함수나 블록에도 들어 있지 않은 맨 바깥 | 맨 바깥에서 `let`·`const`로 만든 변수, 함수 선언 |
+| 함수 스코프 | 함수 본문 `{ }` | 매개변수, 함수 안에서 만든 변수 |
+| 블록 스코프 | `if`, `else`, `for`, `while`의 `{ }` | 블록 안에서 `let`·`const`로 만든 변수, `for (let i …)`의 `i` |
+
+```js
+const shopName = "코코마트";            // 전역 스코프
+
+function checkout(price) {              // 함수 스코프 시작: price
+  const fee = 3000;
+  if (price >= 30000) {                 // 블록 스코프 시작
+    const discount = 2000;
+    console.log(shopName, price, fee, discount); // 모두 쓸 수 있음
+  }                                     // 블록 스코프 끝: discount 사라짐
+  console.log(shopName, price, fee);    // discount는 쓸 수 없음
+}                                       // 함수 스코프 끝: price, fee 사라짐
+
+console.log(shopName);                  // price, fee, discount는 쓸 수 없음
+```
+
+규칙은 하나예요. **안쪽 상자에서는 바깥 상자의 변수가 보이지만, 바깥 상자에서는 안쪽 상자의 변수가 보이지 않아요.** 상자의 벽이 안에서 밖으로만 보이는 유리라고 생각하면 돼요.
+
+```text
+┌ 전역: shopName ─────────────────────────────┐
+│  ┌ 함수 checkout: price, fee ─────────────┐ │
+│  │  ┌ if 블록: discount ────────────────┐ │ │
+│  │  │ 여기서는 discount, price, fee,    │ │ │
+│  │  │ shopName이 모두 보여요            │ │ │
+│  │  └────────────────────────────────────┘ │ │
+│  │ 여기서는 price, fee, shopName만 보여요  │ │
+│  └─────────────────────────────────────────┘ │
+│ 여기서는 shopName만 보여요                   │
+└──────────────────────────────────────────────┘
+```
+
+### 두 번째 관점: 이름을 찾는 순서
+
+코드에서 변수 이름을 만나면 JavaScript는 **지금 있는 상자부터 바깥쪽으로** 차례로 그 이름을 찾아요. 처음 찾은 변수를 쓰고, 맨 바깥까지 가도 없으면 `ReferenceError: ... is not defined`가 나요.
+
+위 코드의 `if` 블록 안에서 네 이름을 찾는 과정을 따라가 보면 이래요.
+
+| 이름 | 블록에서 찾기 | 함수에서 찾기 | 전역에서 찾기 | 결과 |
+|---|---|---|---|---|
+| `discount` | 있음 | | | 블록의 `discount` |
+| `fee` | 없음 | 있음 | | 함수의 `fee` |
+| `shopName` | 없음 | 없음 | 있음 | 전역의 `shopName` |
+| `coupon` | 없음 | 없음 | 없음 | `ReferenceError` |
+
+함수 밖 맨 아래 줄에서 `price`를 찾으면, 전역에서 시작해 더 바깥이 없으니 바로 `ReferenceError`예요. 찾기는 바깥쪽으로만 가고, 안쪽 상자를 들여다보지는 않아요.
+
+### 블록 스코프
+
+`{ }` 블록 안에서 `let`이나 `const`로 만든 변수는 그 블록이 끝나면 사라져요. 그래서 다음 두 가지가 따라와요.
+
+- 블록 밖에서도 쓸 값은 **블록 바깥(위)에서 먼저 만들고**, 블록 안에서는 대입만 해요.
+- `if` 블록과 `else` 블록처럼 **서로 다른 블록**에서 같은 이름의 변수를 각각 만들어도 부딪히지 않아요. 상자가 다르니까요. 같은 블록 안에서 두 번 만들 때만 `SyntaxError`가 나요.
+
+모듈 2에서 배운 `var`는 이 규칙을 따르지 않아요. `var`로 만든 변수는 블록을 무시하고, 자기를 감싼 함수 전체(함수 밖이면 프로그램 전체)에서 쓸 수 있어요. 블록이 끝났는데도 변수가 남아 있으니 실수를 숨기기 쉬워요. 그래서 새 코드에서는 `let`과 `const`를 써요.
+
+### 함수 스코프: 호출할 때마다 새로 만들어져요
+
+매개변수와 함수 안에서 만든 변수는 그 함수 안에서만 쓸 수 있어요. 여기에 함수만의 특징이 하나 더 있어요.
+
+- 함수 안의 변수는 **호출할 때마다 새로 만들어지고, 호출이 끝나면 사라져요.**
+- 그래서 함수 안의 `let count = 0;`은 호출할 때마다 다시 0에서 시작해요. 앞 호출의 값이 다음 호출로 이어지지 않아요.
+- 함수 안에서 계산한 값을 밖에서 쓰고 싶으면, 변수를 꺼내 쓰는 게 아니라 `return`으로 돌려받아요.
+
+### 전역 변수: 어디서나 읽고 바꿀 수 있어요
+
+맨 바깥에서 만든 변수는 프로그램 어디서나 쓸 수 있어요. 함수 안에서도 읽고 바꿀 수 있고, 함수 호출이 끝나도 값이 남아 있어요. 그래서 **호출과 호출 사이에 기억해야 하는 값**(방문 횟수, 쌓인 점수, 남은 재고)은 함수 바깥에 둬요.
+
+다만 전역 변수가 많아지면 어느 함수가 언제 바꿨는지 알기 어려워져요. 계산에만 잠깐 쓰는 값은 함수 안에 두고, 꼭 기억해야 하는 값만 바깥에 두는 것이 좋아요.
+
+ProgInOne은 코드를 **엄격 모드**로 실행해요. 엄격 모드에서는 `let` 없이 `total = 0;`처럼 대입하면 전역 변수가 새로 생기지 않고 `ReferenceError: total is not defined`가 나요. 변수는 항상 `let`이나 `const`로 먼저 만들어요.
+
+### 섀도잉: 안쪽의 같은 이름이 바깥을 가려요
+
+안쪽 상자에서 바깥과 **같은 이름**의 변수를 만들면 어떻게 될까요? 이름을 찾는 순서를 떠올려 보세요. 안쪽부터 찾으니, 안쪽에서는 그 이름이 **안쪽 변수**를 가리켜요. 바깥 변수는 가려져서 보이지 않을 뿐 사라지지 않아요. 이것을 **섀도잉(shadowing, 그림자로 가리기)**이라고 해요.
+
+- 안쪽 변수를 바꿔도 바깥 변수는 그대로예요. 이름만 같은 다른 변수니까요.
+- **매개변수도 안쪽 변수**예요. `function addBonus(score)`의 `score`는 바깥에 `score`가 있어도 그것을 가려요. 호출할 때 인수 **값**이 복사되어 들어올 뿐이라, 함수 안에서 `score += 10`을 해도 바깥 `score`는 바뀌지 않아요.
+- 안쪽 상자에 같은 이름의 `let`·`const`가 있으면, **그 상자 전체**에서 그 이름은 안쪽 변수예요. 선언 줄보다 위에서 쓰면 바깥 값을 읽는 게 아니라 `ReferenceError: Cannot access '...' before initialization`이 나요. 모듈 2의 TDZ와 같은 규칙이에요.
+
+섀도잉은 오류가 아니지만, 바깥 변수를 바꾸려다 실수로 안쪽에 새 변수를 만드는 버그를 자주 만들어요. 바깥 변수를 바꾸고 싶으면 안쪽에서 `let`을 붙이지 말고, 매개변수로 받았다면 새 값을 `return`해서 바깥에서 대입해요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. `if` 블록과 `else` 블록에 같은 이름 `left`가 있어요. 오류가 날까요? 무엇이 출력될까요?
+
+<RunnableExample id="sibling-blocks" lang="js" predict predictKind="console" concepts={["js.scope.block"]}>
+```js
+const stock = 3;
+let message = "";
+
+if (stock > 0) {
+  const left = stock - 1;
+  message = "구매 가능 (주문 뒤 남는 수량 " + left + "개)";
+} else {
+  const left = 0;
+  message = "품절 (남은 수량 " + left + "개)";
+}
+
+console.log(message);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+구매 가능 (주문 뒤 남는 수량 2개)
+```
+
+- `if` 블록의 `left`와 `else` 블록의 `left`는 서로 다른 상자에 있는 다른 변수예요. 그래서 같은 이름이어도 오류가 나지 않아요.
+- `message`는 블록 **바깥**에서 먼저 만들었어요. 그래서 블록 안에서 대입한 값을 블록이 끝난 뒤 12번 줄에서 쓸 수 있어요.
+- 12번 줄에서 `left`를 쓰려고 하면 오류가 나요. 두 `left` 모두 자기 블록이 끝날 때 사라졌으니까요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 블록 안에서 만든 변수를 블록 밖에서 써요. 실행해서 오류 메시지를 읽어 보세요.
+
+<RunnableExample id="block-outside" lang="js" expectError concepts={["js.scope.block"]}>
+```js
+const score = 85;
+
+if (score >= 80) {
+  let grade = "우수";
+  console.log("블록 안: " + grade);
+}
+
+console.log("블록 밖: " + grade);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+블록 안: 우수
+ReferenceError: grade is not defined
+```
+
+- 5번 줄은 `grade`를 만든 블록 안이라 잘 출력돼요.
+- 8번 줄은 블록 밖이에요. 전역에서 `grade`를 찾지만 없어서 `ReferenceError`가 나요. "정의되지 않았다(not defined)"는 말은 **이 자리에서 보이는 상자 어디에도 그 이름이 없다**는 뜻이에요.
+- 고치려면 `let grade = "";`를 `if` 위(블록 바깥)로 옮기고, 블록 안에서는 `grade = "우수";`처럼 대입만 해요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 함수 안의 변수와 바깥 변수를 비교해요. 세 줄에 각각 어떤 두 숫자가 나올까요?
+
+<RunnableExample id="two-counters" lang="js" predict predictKind="console" concepts={["js.scope.function", "js.scope.global"]}>
+```js
+let visits = 0;
+
+function countLocal() {
+  let count = 0;
+  count++;
+  return count;
+}
+
+function countGlobal() {
+  visits++;
+  return visits;
+}
+
+console.log(countLocal() + " / " + countGlobal());
+console.log(countLocal() + " / " + countGlobal());
+console.log(countLocal() + " / " + countGlobal());
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+1 / 1
+1 / 2
+1 / 3
+```
+
+| 호출 | `countLocal`의 `count` | 바깥 `visits` |
+|---|---|---|
+| 1번째 줄 | 새로 0 → 1 | 0 → 1 |
+| 2번째 줄 | 새로 0 → 1 | 1 → 2 |
+| 3번째 줄 | 새로 0 → 1 | 2 → 3 |
+
+- `count`는 함수 안의 변수라 호출할 때마다 `let count = 0;`부터 새로 만들어지고, 호출이 끝나면 사라져요. 그래서 항상 1이에요.
+- `visits`는 바깥(전역) 변수예요. 함수 안에서도 바꿀 수 있고, 호출이 끝나도 값이 남아서 1, 2, 3으로 쌓여요.
+- "몇 번 불렀는지"처럼 호출 사이에 기억해야 하는 값은 함수 바깥에 둬야 해요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 바깥 변수를 읽어서 계산하고, 바깥 변수에 결과를 쌓는 함수예요.
+
+<RunnableExample id="global-sales" lang="js" concepts={["js.scope.global"]}>
+```js
+const taxRate = 0.1;
+let totalSales = 0;
+
+function sell(price) {
+  const tax = price * taxRate;
+  totalSales += price + tax;
+  return price + tax;
+}
+
+console.log(sell(1000));
+console.log(sell(2000));
+console.log("오늘 매출: " + totalSales);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+1100
+2200
+오늘 매출: 3300
+```
+
+- `sell` 안에서 `taxRate`를 찾으면 함수 안에는 없으니 바깥에서 찾아 0.1을 써요. 함수 안에서도 바깥 변수를 **읽을 수 있어요**.
+- 6번 줄은 바깥 `totalSales`를 **바꿔요**. 함수가 끝나도 바뀐 값이 남아서, 두 번 호출한 뒤 3300이 돼요.
+- `tax`는 계산에만 쓰는 값이라 함수 안에 뒀어요. 함수 밖에서는 쓸 수 없고, 쓸 필요도 없어요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 같은 이름 `name`이 세 군데 있어요. 1~4번 줄에 각각 무엇이 나올지 예측해 보세요.
+
+<RunnableExample id="shadowing" lang="js" predict predictKind="console" concepts={["js.scope.shadowing"]}>
+```js
+const name = "바깥";
+
+function greet(name) {
+  console.log("1: " + name);
+  if (name === "민지") {
+    const name = "블록 안";
+    console.log("2: " + name);
+  }
+  console.log("3: " + name);
+}
+
+greet("민지");
+console.log("4: " + name);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+1: 민지
+2: 블록 안
+3: 민지
+4: 바깥
+```
+
+| 줄 | 가장 가까운 `name` | 값 |
+|---|---|---|
+| `1:` | 매개변수 `name` (함수 스코프) | `"민지"` |
+| `2:` | 블록의 `const name` | `"블록 안"` |
+| `3:` | 매개변수 `name` (블록은 이미 끝남) | `"민지"` |
+| `4:` | 전역 `name` | `"바깥"` |
+
+- 매개변수 `name`은 전역 `name`을 가려요. 그래서 함수 안에서는 `"바깥"`이 보이지 않아요.
+- 블록 안의 `const name`은 다시 매개변수를 가려요. 블록이 끝나면 가림막이 걷혀서 3번 줄은 다시 매개변수를 봐요.
+- 가려졌던 바깥 변수는 바뀌거나 사라지지 않았어요. 4번 줄에서 그대로 `"바깥"`이에요.
+</Section>
+
+<Section kind="examples">
+여섯 번째 예제는 매개변수를 바꾸면 바깥 변수도 바뀌는지 확인해요.
+
+<RunnableExample id="param-copy" lang="js" predict predictKind="console" concepts={["js.scope.shadowing"]}>
+```js
+let score = 70;
+
+function addBonus(score) {
+  score += 10;
+  return score;
+}
+
+addBonus(score);
+console.log("그냥 호출: " + score);
+
+score = addBonus(score);
+console.log("돌려받아 대입: " + score);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+그냥 호출: 70
+돌려받아 대입: 80
+```
+
+- 8번 줄에서 바깥 `score`의 **값** 70이 매개변수 `score`에 들어가요. 매개변수는 함수 안의 새 변수라서, 4번 줄은 매개변수만 80으로 바꿔요. 바깥 `score`는 70 그대로예요. 반환값 80은 아무도 받지 않아 버려져요.
+- 11번 줄은 반환값 80을 바깥 `score`에 **직접 대입**해요. 바깥 변수를 바꾸는 확실한 방법은 이렇게 "돌려받아 대입하기"예요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.block-let-visible-outside">
+<Wrong>`if` 블록 안에서 `let message = "합격";`을 만들었으니, 블록이 끝난 뒤에도 `message`를 쓸 수 있다.</Wrong>
+<Actual>블록 안에서 `let`·`const`로 만든 변수는 블록이 끝나면 사라져요. 블록 밖에서 쓰면 `ReferenceError: message is not defined`가 나요.</Actual>
+<Right>블록 밖에서도 쓸 값은 블록 **바깥(위)**에서 `let message = "";`로 먼저 만들고, 블록 안에서는 `message = "합격";`처럼 대입만 해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.var-is-block-scoped">
+<Wrong>`var`로 만든 변수도 `let`처럼 블록이 끝나면 쓸 수 없다.</Wrong>
+<Actual>
+
+`var`는 블록을 무시해요. 블록이 끝나도 남아 있어요.
+
+```js
+if (true) {
+  var a = 1;
+  let b = 2;
+}
+console.log(a); // 1
+console.log(b); // ReferenceError: b is not defined
+```
+</Actual>
+<Right>블록 스코프를 따르는 것은 `let`과 `const`예요. `var`는 실수를 숨기므로 새 코드에서는 쓰지 않아요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.sibling-blocks-name-conflict">
+<Wrong>`if` 블록과 `else` 블록에서 각각 `const left`를 만들면 "이미 선언되었다"는 오류가 난다.</Wrong>
+<Actual>첫 번째 예제에서 봤듯이 오류 없이 실행돼요. 블록마다 상자가 따로라서 두 `left`는 다른 변수예요.</Actual>
+<Right>같은 이름을 두 번 만들어서 오류가 나는 것은 **같은 블록(같은 상자)** 안에서 두 번 선언할 때뿐이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.function-local-visible-outside">
+<Wrong>함수를 한 번 호출했으니, 함수 안에서 만든 `discount`를 함수 밖에서도 쓸 수 있다.</Wrong>
+<Actual>함수 안의 변수는 호출이 끝나면 사라져요. 함수 밖에서 쓰면 `ReferenceError: discount is not defined`가 나요.</Actual>
+<Right>함수 안에서 계산한 값이 밖에서 필요하면 `return discount;`로 돌려주고, 밖에서 `const d = calc();`처럼 받아서 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.function-var-persists">
+<Wrong>함수 안에서 `let count = 0; count++;`을 하면, 다음 호출에서는 `count`가 1부터 이어진다.</Wrong>
+<Actual>세 번째 예제의 `countLocal()`은 몇 번을 불러도 1이었어요. 호출할 때마다 `let count = 0;`이 다시 실행되어 새 변수가 만들어져요.</Actual>
+<Right>호출 사이에 값을 기억해야 하면 변수를 함수 **바깥**에 만들고, 함수 안에서는 바꾸기만 해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.inner-cant-read-outer">
+<Wrong>함수 안에서는 매개변수와 함수 안에서 만든 변수만 쓸 수 있다.</Wrong>
+<Actual>네 번째 예제의 `sell`은 바깥 `taxRate`를 읽고, 바깥 `totalSales`를 바꿨어요. 안쪽에서는 바깥 변수가 보여요.</Actual>
+<Right>막혀 있는 쪽은 반대 방향이에요. **안에서 밖은 보이고, 밖에서 안은 안 보여요.**</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.undeclared-assign-creates-global">
+<Wrong>함수 안에서 `let` 없이 `total = 0;`이라고 쓰면 `total`이라는 전역 변수가 새로 생긴다.</Wrong>
+<Actual>엄격 모드에서는 어디에도 선언되지 않은 이름에 대입하면 `ReferenceError: total is not defined`가 나요. ProgInOne은 엄격 모드로 실행해요.</Actual>
+<Right>변수는 쓰기 전에 항상 `let`이나 `const`로 만들어요. 여러 함수가 함께 쓸 값이면 맨 바깥에서 만들어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.param-reassign-changes-outer">
+<Wrong>`addBonus(score)`를 부르고 함수 안에서 매개변수 `score`에 10을 더하면, 바깥 `score`도 10 늘어난다.</Wrong>
+<Actual>여섯 번째 예제에서 그냥 호출한 뒤의 바깥 `score`는 70 그대로였어요. 매개변수는 인수 값을 받은 함수 안의 새 변수예요.</Actual>
+<Right>바깥 변수를 바꾸려면 새 값을 `return`하고 바깥에서 `score = addBonus(score);`처럼 대입해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.shadow-changes-outer">
+<Wrong>바깥에 `let total = 0;`이 있을 때 함수 안에서 `let total = 0;`을 만들고 더해 가면 바깥 `total`이 바뀐다.</Wrong>
+<Actual>
+
+함수 안의 `let total`은 이름만 같은 새 변수예요. 바깥 `total`은 가려져서 손대지 못해요.
+
+```js
+let total = 0;
+function addPrice(price) {
+  let total = 0;     // 바깥 total을 가리는 새 변수
+  total += price;
+}
+addPrice(5000);
+console.log(total); // 0
+```
+</Actual>
+<Right>바깥 변수를 바꾸려면 안쪽에서 `let`을 붙이지 말고 `total += price;`만 써요. 같은 이름을 새로 만들지 않았는지 확인해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.shadow-reads-outer-before-decl">
+<Wrong>함수 안에서 `let price = 2000;`을 선언하기 전 줄에서는 아직 안쪽 `price`가 없으니 바깥 `price`를 읽는다.</Wrong>
+<Actual>
+
+안쪽 상자에 같은 이름의 `let`이 있으면, 그 상자 전체에서 `price`는 안쪽 변수를 가리켜요. 선언 줄보다 위에서 쓰면 오류가 나요.
+
+```js
+let price = 1000;
+function show() {
+  console.log(price); // ReferenceError: Cannot access 'price' before initialization
+  let price = 2000;
+}
+show();
+```
+</Actual>
+<Right>안쪽에서 바깥 값을 쓰고 싶다면 안쪽 변수에 다른 이름을 붙여요(예: `salePrice`). 같은 이름을 쓰면 그 상자 안에서는 바깥 변수를 아예 쓸 수 없어요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+게임의 점수판을 만든다고 해 볼게요. 점수는 판이 끝날 때마다 쌓여야 하고, 한 판의 점수를 계산하는 데 쓰는 값은 그 판에만 필요해요. 스코프로 이 둘을 나누면 이렇게 돼요.
+
+```js
+let totalScore = 0;      // 호출 사이에 기억할 값 → 바깥
+let bestRound = 0;
+
+function finishRound(hits, misses) {
+  const roundScore = hits * 10 - misses * 3;   // 이번 판 계산용 → 안쪽
+  totalScore += roundScore;
+  if (roundScore > bestRound) {
+    bestRound = roundScore;
+  }
+  return roundScore;
+}
+
+console.log(finishRound(5, 2)); // 44
+console.log(finishRound(8, 1)); // 77
+console.log("총점: " + totalScore + ", 최고 판: " + bestRound); // 총점: 121, 최고 판: 77
+```
+
+- `totalScore`와 `bestRound`는 판이 바뀌어도 남아야 하므로 함수 바깥에 둬요.
+- `roundScore`는 한 판의 계산에만 쓰므로 함수 안에 둬요. 다음 판에서는 새로 계산돼요.
+- 함수 안에서 `let totalScore = …`처럼 같은 이름을 다시 만들면 섀도잉 때문에 총점이 쌓이지 않아요.
+
+실제 웹 개발에서도 같아요. 버튼을 누른 횟수, 장바구니에 담긴 상품 수처럼 화면이 살아 있는 동안 기억해야 하는 값은 바깥에 두고, 클릭할 때마다 하는 계산은 함수 안에 둬요. 바깥 값이 꼭 필요한 것만 남아 있을수록 "누가 이 값을 바꿨지?"를 찾기 쉬워요.
+</Section>
+
+<Section kind="check">
+블록 안에서 만든 변수를 확인해 보세요.
+
+<InlineExercise ref="js-basics.functions.scope-basics.mcq-block-let-outside" />
+
+함수 안에서 만든 변수는 어디까지 쓸 수 있을까요?
+
+<InlineExercise ref="js-basics.functions.scope-basics.mcq-local-visible-outside" />
+
+함수 안에서 바깥 변수를 쓸 수 있는지 판단해 보세요.
+
+<InlineExercise ref="js-basics.functions.scope-basics.tf-inner-reads-outer" />
+
+매개변수를 바꾸면 바깥 변수는 어떻게 될까요?
+
+<InlineExercise ref="js-basics.functions.scope-basics.mcq-param-reassign-outer" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 스코프는 변수를 쓸 수 있는 범위예요. 전역 → 함수 → 블록 순서로 상자가 겹쳐 있어요.
+- 안쪽에서는 바깥 변수가 보이지만, 바깥에서는 안쪽 변수가 보이지 않아요. 이름은 가까운 상자부터 바깥으로 찾고, 끝까지 없으면 `ReferenceError`예요.
+- 블록 안에서 `let`·`const`로 만든 변수는 블록이 끝나면 사라져요. 다른 블록끼리는 같은 이름을 써도 돼요. `var`는 블록을 무시해요.
+- 함수 안의 변수와 매개변수는 호출할 때마다 새로 만들어지고 호출이 끝나면 사라져요. 값이 필요하면 `return`으로 돌려받아요.
+- 호출 사이에 기억할 값은 바깥에 두고, 엄격 모드에서는 `let` 없이 대입하면 `ReferenceError`가 나요.
+- 안쪽에서 같은 이름을 만들면 바깥 변수를 가려요(섀도잉). 안쪽 변수나 매개변수를 바꿔도 바깥 변수는 그대로예요.
+</Section>
+
+<Section kind="next">
+다음 단원 "함수를 값으로 다루기"에서는 함수를 변수에 담고 다른 함수에 넘기는 콜백을 배워요. 넘겨진 함수도 지금 배운 규칙대로 자기가 만들어진 자리의 바깥 변수를 볼 수 있어요. 함수가 끝난 뒤에도 바깥 변수를 기억하는 "클로저"는 JavaScript 심화 과정에서 이 스코프 규칙을 바탕으로 다시 만나요. <MdnLink path="Glossary/Scope" />
+</Section>

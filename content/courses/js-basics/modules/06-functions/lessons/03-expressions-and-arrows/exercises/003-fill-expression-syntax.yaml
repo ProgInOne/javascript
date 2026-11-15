@@ -1,0 +1,68 @@
+id: js-basics.functions.expressions-and-arrows.fill-expression-syntax
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.fn.expression, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [function-expression, return, fill]
+estimatedSeconds: 70
+prompt: |
+  구매 금액의 1%를 포인트로 돌려주는 함수 `calcPoint`를 **함수 표현식**으로 만들고 있어요. 빈칸을 채워 완성하세요.
+
+  예: `calcPoint(5000)`은 `50`, `calcPoint(12000)`은 `120`을 돌려줘야 해요.
+spec:
+  mode: code
+  lang: js
+  entry: calcPoint
+  template: |
+    const calcPoint = {{blank:kw}} (price) {
+      {{blank:ret}} price / 100;
+    };
+  blanks:
+    - id: kw
+      accept: ["function"]
+      width: 10
+    - id: ret
+      accept: ["return"]
+      width: 8
+      misconceptionMap:
+        "console.log": js.mc.return-is-log
+  checks:
+    - kind: call
+      id: five-thousand
+      requirement: 1% 포인트 돌려주기
+      args: [5000]
+      expect: { equals: 50 }
+    - kind: call
+      id: twelve-thousand
+      requirement: 1% 포인트 돌려주기
+      args: [12000]
+      expect: { equals: 120 }
+    - kind: call
+      id: zero
+      visible: false
+      description: 구매 금액이 0원이면 포인트도 0이어야 합니다.
+      requirement: 1% 포인트 돌려주기
+      args: [0]
+      expect: { equals: 0 }
+misconceptions: [js.mc.return-is-log]
+hints:
+  - 함수 표현식은 `=` 오른쪽에 함수를 만드는 식을 써요. 함수 선언과 같은 키워드로 시작해요.
+  - 두 번째 빈칸은 계산한 값을 호출한 자리로 **돌려주는** 말이에요.
+  - "`console.log`는 화면에 보여 주기만 하고 값을 돌려주지 않아요. 함수의 결과가 되는 키워드를 떠올려 보세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const calcPoint = function (price) {
+    return price / 100;
+  };
+  ```
+
+  - `function (price) { ... }`가 함수라는 값을 만들고, `const calcPoint =`가 그 함수를 담아요. 함수 선언과 달리 `function` 뒤에 이름을 쓰지 않고, 이름은 담는 변수가 맡아요.
+  - `return`이 있어야 `calcPoint(5000)`을 부른 자리에 `50`이 돌아와요. `console.log`로 쓰면 `50`이 화면에 보이기만 하고 결과는 `undefined`가 돼요.
+  - 끝의 `};`의 세미콜론은 `const` 문장이 끝났다는 표시예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,43 @@
+id: js-basics.functions.expressions-and-arrows.mcq-arrow-read
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+tags: [arrow-function, syntax]
+estimatedSeconds: 45
+prompt: |
+  다음 코드에서 `=>`는 무엇을 뜻하나요?
+code: |
+  const double = (n) => n * 2;
+spec:
+  options:
+    - id: a
+      text: "`n`을 받아서 `n * 2`를 계산해 돌려주는 함수를 만든다는 표시"
+    - id: b
+      text: "`n`이 `n * 2`보다 크거나 같은지 비교하는 연산자"
+      misconception: js.mc.arrow-is-comparison
+      rationale: 크거나 같다는 `>=`(꺾쇠가 뒤)예요. `=>`(꺾쇠가 앞)는 화살표 함수의 기호예요.
+    - id: c
+      text: "`n * 2`를 계산해서 그 값을 `n`에 대입하라는 표시"
+      rationale: 대입은 `=`로 해요. 화살표 오른쪽의 값은 `n`에 들어가지 않고 함수의 결과로 돌아가요.
+    - id: d
+      text: "`n`을 먼저 출력한 뒤 `n * 2`를 출력하라는 표시"
+      rationale: 화살표 함수는 출력하지 않아요. 값을 계산해 돌려줄 뿐이에요.
+  correct: a
+misconceptions: [js.mc.arrow-is-comparison]
+hints:
+  - "`const double =` 오른쪽 전체가 `double`에 담겨요. 무엇이 담길까요?"
+  - "`>=`와 `=>`는 꺾쇠의 위치가 달라요."
+  - 화살표 왼쪽 괄호에는 매개변수, 오른쪽에는 함수가 계산할 식이 와요.
+explanation: |
+  `=>`는 **화살표 함수**를 만드는 기호예요. `(n) => n * 2`는 "`n`을 받아서 `n * 2`를 돌려주는 함수"라고 읽어요. 그래서 `double(5)`는 `10`이에요.
+
+  - 비교라고 생각했다면: 크거나 같다는 `>=`예요. 글자 순서가 반대예요.
+  - 대입이라고 생각했다면: 대입 기호는 `=` 하나예요. 화살표 오른쪽 값은 함수의 결과로 돌아가요.
+  - 출력이라고 생각했다면: 함수는 값을 돌려주기만 하고, 출력하려면 `console.log(double(5))`처럼 써야 해요.
+
+  같은 함수를 함수 표현식으로 쓰면 `const double = function (n) { return n * 2; };`예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

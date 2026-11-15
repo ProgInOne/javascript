@@ -1,0 +1,143 @@
+id: js-basics.functions.expressions-and-arrows.impl-arrow-shipping
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.control.else-if, weight: 0.3 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [arrow-function, else-if, boundary, requirements, write-code]
+estimatedSeconds: 420
+prompt: |
+  온라인 꽃집의 배송비를 계산하는 **화살표 함수** `shippingCost(weight, orderTotal, isIsland)`를 만드세요. 무게 `weight`는 kg, 주문 금액 `orderTotal`은 원, `isIsland`는 섬 지역이면 `true`예요.
+
+  배송비 규칙:
+
+  1. 기본 요금은 무게로 정해요. 2kg 이하는 3000원, 2kg 초과 10kg 이하는 5000원, 10kg 초과는 8000원이에요.
+  1. 주문 금액이 50000원 이상이면 **기본 요금**이 무료(0원)예요.
+  1. 섬 지역이면 3000원을 더해요. 이 추가 요금은 주문 금액과 상관없이 항상 붙어요.
+
+  예:
+
+  - `shippingCost(1, 20000, false)` → `3000`
+  - `shippingCost(5, 20000, true)` → `8000`
+
+  규칙의 경계(정확히 2kg, 정확히 10kg, 정확히 50000원)를 숨김 확인에서 검사해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const shippingCost = (weight, orderTotal, isIsland) => {
+            // 여기에 작성하세요
+          };
+  entry: shippingCost
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const shippingCost = (weight, orderTotal, isIsland) => {
+            let fee = 0;
+            if (weight <= 2) {
+              fee = 3000;
+            } else if (weight <= 10) {
+              fee = 5000;
+            } else {
+              fee = 8000;
+            }
+            if (orderTotal >= 50000) {
+              fee = 0;
+            }
+            if (isIsland) {
+              fee += 3000;
+            }
+            return fee;
+          };
+  checks:
+    - kind: call
+      id: light
+      requirement: 무게별 기본 요금
+      args: [1, 20000, false]
+      expect: { equals: 3000 }
+    - kind: call
+      id: island
+      requirement: 섬 지역 추가 요금
+      args: [5, 20000, true]
+      expect: { equals: 8000 }
+    - kind: call
+      id: two-kg
+      visible: false
+      description: 정확히 2kg은 3000원 구간이어야 합니다.
+      requirement: 무게별 기본 요금
+      args: [2, 10000, false]
+      expect: { equals: 3000 }
+    - kind: call
+      id: ten-kg
+      visible: false
+      description: 정확히 10kg은 5000원 구간이어야 합니다.
+      requirement: 무게별 기본 요금
+      args: [10, 10000, false]
+      expect: { equals: 5000 }
+    - kind: call
+      id: heavy
+      visible: false
+      description: 10kg을 조금이라도 넘으면 8000원이어야 합니다.
+      requirement: 무게별 기본 요금
+      args: [10.5, 10000, false]
+      expect: { equals: 8000 }
+    - kind: call
+      id: free-exact
+      visible: false
+      description: 주문 금액이 정확히 50000원이면 기본 요금이 무료여야 합니다.
+      requirement: 큰 주문은 기본 요금 무료
+      args: [3, 50000, false]
+      expect: { equals: 0 }
+    - kind: call
+      id: free-but-island
+      visible: false
+      description: 기본 요금이 무료여도 섬 지역 추가 요금 3000원은 붙어야 합니다.
+      requirement: 섬 지역 추가 요금
+      args: [12, 60000, true]
+      expect: { equals: 3000 }
+    - kind: call
+      id: almost-free
+      visible: false
+      description: 50000원에 1원 모자라면 기본 요금이 그대로 붙어야 합니다.
+      requirement: 큰 주문은 기본 요금 무료
+      args: [3, 49999, true]
+      expect: { equals: 8000 }
+misconceptions: [js.mc.arrow-braces-implicit-return, js.mc.return-in-if-covers-all]
+hints:
+  - 규칙 세 개를 한 번에 처리하려 하지 말고, 순서대로 하나씩 계산해 보세요. 배송비를 담을 변수를 하나 두면 편해요.
+  - "\"이하\"와 \"초과\"가 어떤 비교 연산자인지 확인하세요. 무료 규칙은 기본 요금에만 해당하고, 섬 추가 요금은 그 뒤에 따로 더해요."
+  - 중괄호 본문이라 계산한 값을 마지막에 직접 돌려줘야 해요. 규칙 2와 3의 순서를 바꾸면 섬 지역의 큰 주문에서 어떻게 되는지 따져 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const shippingCost = (weight, orderTotal, isIsland) => {
+    let fee = 0;
+    if (weight <= 2) {
+      fee = 3000;
+    } else if (weight <= 10) {
+      fee = 5000;
+    } else {
+      fee = 8000;
+    }
+    if (orderTotal >= 50000) {
+      fee = 0;
+    }
+    if (isIsland) {
+      fee += 3000;
+    }
+    return fee;
+  };
+  ```
+
+  - **경계**: "2kg 이하"는 `<= 2`, "10kg 이하"는 `<= 10`이에요. `else if`는 앞 조건이 거짓일 때만 검사하므로 두 번째 조건에 `weight > 2`를 다시 쓰지 않아도 돼요. "50000원 이상"은 `>= 50000`이에요.
+  - **규칙 순서**: 무료는 기본 요금에만 해당해요. 섬 추가 요금을 먼저 더하고 나중에 `fee = 0`을 하면 섬 지역의 큰 주문이 0원이 되어 틀려요(`shippingCost(12, 60000, true)`는 3000원이어야 해요).
+  - **반환**: 중괄호 본문이라 마지막의 `return fee;`가 없으면 모든 확인에서 `undefined`가 돌아와요.
+  - 각 갈래에서 바로 `return`하는 방식도 가능하지만, 섬 추가 요금을 갈래마다 반복해야 해서 실수하기 쉬워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

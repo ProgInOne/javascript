@@ -1,0 +1,83 @@
+id: js-basics.functions.expressions-and-arrows.fix-arrow-braces-no-return
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.control.ternary, weight: 0.3 }
+  - { id: js.fn.undefined-return, weight: 0.3 }
+tags: [arrow-function, return, undefined, debugging]
+estimatedSeconds: 150
+prompt: |
+  상품 가격(`price`)과 개수(`count`)로 결제 금액을 돌려주는 화살표 함수 `finalPrice`예요. 합계가 50000원 이상이면 5000원을 깎아 줘야 해요.
+
+  - `finalPrice(10000, 3)` → `30000`
+  - `finalPrice(20000, 3)` → `55000`
+
+  그런데 어떤 값을 넣어도 `undefined`가 돌아와요. 버그를 고치세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const finalPrice = (price, count) => {
+            const total = price * count;
+            total >= 50000 ? total - 5000 : total;
+          };
+  entry: finalPrice
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const finalPrice = (price, count) => {
+            const total = price * count;
+            return total >= 50000 ? total - 5000 : total;
+          };
+  bugDescription: "`finalPrice(10000, 3)`처럼 어떤 값을 넣어도 `undefined`가 돌아와요."
+  bugMisconception: js.mc.arrow-braces-implicit-return
+  checks:
+    - kind: call
+      id: no-discount
+      requirement: 결제 금액 돌려주기
+      args: [10000, 3]
+      expect: { equals: 30000 }
+    - kind: call
+      id: discount
+      requirement: 결제 금액 돌려주기
+      args: [20000, 3]
+      expect: { equals: 55000 }
+    - kind: call
+      id: boundary
+      visible: false
+      description: 합계가 정확히 50000원이어도 5000원을 깎아야 합니다.
+      requirement: 결제 금액 돌려주기
+      args: [25000, 2]
+      expect: { equals: 45000 }
+    - kind: call
+      id: zero
+      visible: false
+      description: 개수가 0이면 0을 돌려줘야 합니다.
+      requirement: 결제 금액 돌려주기
+      args: [1000, 0]
+      expect: { equals: 0 }
+misconceptions: [js.mc.arrow-braces-implicit-return]
+hints:
+  - 이 화살표 함수는 중괄호 본문이에요. 중괄호 본문은 값을 자동으로 돌려주나요?
+  - 3번 줄의 조건 연산자는 값을 만들기만 해요. 만든 값을 어디로 보내야 할까요?
+  - 중괄호 본문에서 값을 돌려주는 키워드를 3번 줄의 알맞은 곳에 더해 보세요.
+explanation: |
+  중괄호 본문에는 `return`이 있어야 값이 돌아와요. 3번 줄의 조건 연산자는 `30000`이나 `55000`을 **만들기만** 하고, 그 값을 돌려주라는 말이 없어서 버려져요. 그래서 함수는 끝까지 내려가 `undefined`를 돌려줘요.
+
+  ```js
+  const finalPrice = (price, count) => {
+    const total = price * count;
+    return total >= 50000 ? total - 5000 : total;
+  };
+  ```
+
+  - 조건 연산자 전체가 하나의 값이 되므로, 그 앞에 `return`을 붙이면 돼요.
+  - `total`을 계산하는 줄이 필요해서 중괄호 본문을 썼어요. 그래서 식 본문처럼 자동 반환이 되지 않아요.
+  - `if (total >= 50000) { return total - 5000; } return total;`로 써도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

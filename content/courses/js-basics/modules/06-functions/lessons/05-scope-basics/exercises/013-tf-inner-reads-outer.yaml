@@ -1,0 +1,49 @@
+id: js-basics.functions.scope-basics.tf-inner-reads-outer
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.scope.global, weight: 1 }
+tags: [scope, global]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: 함수 안에서는 매개변수와 함수 안에서 만든 변수만 쓸 수 있고, 함수 바깥에서 만든 변수는 읽을 수 없다.
+  answer: false
+  misconceptionIfWrong: js.mc.inner-cant-read-outer
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 안쪽 스코프에서는 바깥 스코프의 변수가 보이므로, 함수 안에서도 바깥 변수를 읽고 바꿀 수 있다
+      correct: true
+    - id: r2
+      text: 함수는 인수로 넘겨받은 값만 쓸 수 있어서, 바깥 값이 필요하면 반드시 매개변수로 받아야 한다
+      misconception: js.mc.inner-cant-read-outer
+    - id: r3
+      text: 바깥 변수를 읽을 수는 있지만, 함수 안에서 바꾼 값은 함수가 끝나면 원래대로 돌아간다
+      misconception: js.mc.function-cant-change-outer
+hints:
+  - 레슨의 `sell` 함수는 `taxRate`를 어디에서 가져왔나요?
+  - 이름을 찾을 때는 지금 있는 상자부터 바깥쪽으로 찾아요.
+  - 막혀 있는 방향은 "안에서 밖"과 "밖에서 안" 중 어느 쪽이었나요?
+explanation: |
+  설명은 **거짓**이에요. 이유는 "안쪽 스코프에서는 바깥 스코프의 변수가 보이므로, 함수 안에서도 바깥 변수를 읽고 바꿀 수 있다"예요.
+
+  ```js
+  const taxRate = 0.1;
+  let totalSales = 0;
+  function sell(price) {
+    totalSales += price + price * taxRate; // 바깥 변수를 읽고 바꿈
+  }
+  sell(1000);
+  console.log(totalSales); // 1100
+  ```
+
+  변수 이름은 가까운 상자부터 바깥으로 찾기 때문에 함수 안에서 바깥 변수가 보여요. 막혀 있는 것은 반대 방향, 즉 함수 **바깥에서 안쪽** 변수를 쓰는 것이에요.
+
+  - "함수는 인수로 넘겨받은 값만 쓸 수 있다": 매개변수로 받는 것이 깔끔할 때가 많지만, 꼭 그래야 하는 것은 아니에요.
+  - "함수 안에서 바꾼 값은 함수가 끝나면 원래대로 돌아간다": 위 코드처럼 바깥 변수를 바꾼 결과는 함수가 끝나도 남아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,62 @@
+id: js-basics.functions.scope-basics.predict-shadow-param
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.scope.shadowing, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [scope, shadowing, parameter, trace]
+estimatedSeconds: 130
+prompt: |
+  게임 캐릭터의 레벨을 올리는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 여섯 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    let level = 1;
+
+    function levelUp(level) {
+      level = level + 1;
+      console.log("함수 안: " + level);
+      return level;
+    }
+
+    levelUp(level);
+    console.log("1차: " + level);
+
+    level = levelUp(level);
+    console.log("2차: " + level);
+
+    levelUp(5);
+    console.log("3차: " + level);
+  answerKind: console
+  misconceptionByAnswer:
+    "함수 안: 2\n1차: 2\n함수 안: 3\n2차: 3\n함수 안: 6\n3차: 6": js.mc.param-reassign-changes-outer
+    "함수 안: 2\n1차: 2\n함수 안: 3\n2차: 3\n함수 안: 6\n3차: 3": js.mc.param-reassign-changes-outer
+hints:
+  - "`levelUp` 안의 `level`은 매개변수예요. 바깥 `level`과 같은 변수일까요?"
+  - 바깥 `level`이 바뀌는 줄은 `level = ...`처럼 바깥에서 직접 대입하는 줄뿐이에요. 그런 줄이 몇 번째 줄에 있나요?
+  - 호출마다 "매개변수에 들어온 값"과 "그 뒤 바깥 `level`"을 따로 적어 보세요. `levelUp(5)`의 매개변수에는 5가 들어가요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  함수 안: 2
+  1차: 1
+  함수 안: 2
+  2차: 2
+  함수 안: 6
+  3차: 2
+  ```
+
+  | 줄 | 매개변수 `level` | 바깥 `level` |
+  |---|---|---|
+  | `levelUp(level);` | 1 → 2 | 1 (반환값 버림) |
+  | `level = levelUp(level);` | 1 → 2 | 반환값 2를 대입 → 2 |
+  | `levelUp(5);` | 5 → 6 | 2 (반환값 버림) |
+
+  - 매개변수 `level`은 바깥 `level`을 가리는 함수 안의 새 변수예요. 4번 줄은 매개변수만 바꿔요.
+  - 바깥 `level`은 12번 줄처럼 반환값을 **직접 대입**할 때만 바뀌어요.
+  - `1차: 2`라고 답했다면 매개변수를 바꾸면 바깥 변수도 바뀐다고 본 거예요. `levelUp(5)`처럼 변수가 아닌 값을 넘겨도 똑같이 동작한다는 점에서도, 매개변수는 값을 받은 새 변수라는 것을 알 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

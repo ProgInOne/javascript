@@ -1,0 +1,97 @@
+id: js-basics.functions.callbacks-intro.fix-callback-no-return
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.fn.callback, weight: 1 }
+  - { id: js.fn.arrow, weight: 0.3 }
+  - { id: js.fn.undefined-return, weight: 0.3 }
+tags: [callback, arrow, return, nan, debugging]
+estimatedSeconds: 180
+prompt: |
+  `applyAll(start, end, transform)`은 `start`부터 `end`까지의 수를 콜백 `transform`으로 바꿔서 모두 더해요. 이것으로 "두 배 한 값의 합"을 구하는 `sumOfDoubles(start, end)`를 만들었어요.
+
+  ```js
+  sumOfDoubles(1, 3);   // 2 + 4 + 6 = 12가 나와야 해요
+  ```
+
+  그런데 결과가 `NaN`이에요. 버그를 고치세요. `applyAll`은 고치지 마세요.
+spec:
+  entry: sumOfDoubles
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function applyAll(start, end, transform) {
+            let total = 0;
+            for (let n = start; n <= end; n++) {
+              total += transform(n);
+            }
+            return total;
+          }
+
+          const double = (n) => { n * 2; };
+
+          function sumOfDoubles(start, end) {
+            return applyAll(start, end, double);
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function applyAll(start, end, transform) {
+            let total = 0;
+            for (let n = start; n <= end; n++) {
+              total += transform(n);
+            }
+            return total;
+          }
+
+          const double = (n) => n * 2;
+
+          function sumOfDoubles(start, end) {
+            return applyAll(start, end, double);
+          }
+  bugDescription: "`sumOfDoubles(1, 3)`이 12가 아니라 `NaN`이 돼요."
+  bugMisconception: js.mc.arrow-braces-implicit-return
+  checks:
+    - kind: call
+      id: one-to-three
+      description: sumOfDoubles(1, 3)은 2 + 4 + 6 = 12를 돌려줘야 합니다.
+      requirement: 두 배 한 값의 합
+      args: [1, 3]
+      expect: { equals: 12 }
+    - kind: call
+      id: single
+      visible: false
+      description: 시작과 끝이 같으면 그 수 하나를 두 배 한 값이어야 합니다.
+      requirement: 두 배 한 값의 합
+      args: [2, 2]
+      expect: { equals: 4 }
+    - kind: call
+      id: one-to-ten
+      visible: false
+      description: 1부터 10까지를 두 배 해서 더한 값이어야 합니다.
+      requirement: 두 배 한 값의 합
+      args: [1, 10]
+      expect: { equals: 110 }
+      misconceptionIfFail: js.mc.arrow-braces-implicit-return
+misconceptions: [js.mc.arrow-braces-implicit-return]
+hints:
+  - "`applyAll`은 콜백이 돌려준 값을 `total`에 더해요. 콜백 `double`이 무엇을 돌려주는지 확인해 보세요."
+  - "`double(1)`을 따로 실행해 보면 무엇이 나올까요? 중괄호가 있는 화살표 함수의 규칙을 떠올려 보세요."
+  - "`0 + undefined`는 `NaN`이에요. `double`이 계산한 값을 실제로 돌려주게 만들면 돼요. 방법은 두 가지가 있어요."
+explanation: |
+  9번 줄의 `double`이 값을 돌려주지 않는 게 원인이에요. 둘 중 하나로 고쳐요.
+
+  ```js
+  const double = (n) => n * 2;               // 중괄호를 빼면 식의 값이 반환돼요
+  const double = (n) => { return n * 2; };   // 중괄호를 쓰면 return을 직접 써요
+  ```
+
+  - 화살표 함수에 중괄호를 쓰면 일반 함수 본문이 되어, `return`이 없으면 `undefined`를 반환해요. `n * 2`는 계산만 하고 버려져요.
+  - `applyAll`은 콜백이 돌려준 값을 더하는데, 첫 회차에 `0 + undefined`가 `NaN`이 되고 그 뒤로 계속 `NaN`이에요.
+  - 콜백을 받는 함수는 콜백의 **반환값**을 써요. 콜백이 값을 돌려줘야 하는 자리에서는 `return`(또는 중괄호 없는 화살표 함수)이 필요해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

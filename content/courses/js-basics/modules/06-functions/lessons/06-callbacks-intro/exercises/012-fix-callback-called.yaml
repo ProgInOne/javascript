@@ -1,0 +1,83 @@
+id: js-basics.functions.callbacks-intro.fix-callback-called
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.fn.callback, weight: 1 }
+tags: [callback, parentheses, debugging]
+estimatedSeconds: 120
+prompt: |
+  `repeat`로 `sayHi`를 세 번 실행하려는 프로그램이에요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  안녕!
+  안녕!
+  안녕!
+  인사 끝
+  ```
+
+  - `repeat` 함수와 `sayHi` 함수는 고치지 마세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function repeat(times, action) {
+            for (let i = 1; i <= times; i++) {
+              action();
+            }
+          }
+
+          function sayHi() {
+            console.log("안녕!");
+          }
+
+          repeat(3, sayHi());
+          console.log("인사 끝");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function repeat(times, action) {
+            for (let i = 1; i <= times; i++) {
+              action();
+            }
+          }
+
+          function sayHi() {
+            console.log("안녕!");
+          }
+
+          repeat(3, sayHi);
+          console.log("인사 끝");
+  bugDescription: "`안녕!`이 한 번만 나오고 `TypeError: action is not a function` 오류가 나요(3번째 줄)."
+  bugMisconception: js.mc.callback-called-when-passed
+  checks:
+    - kind: console
+      id: output
+      description: "\"안녕!\"이 세 번 나온 뒤 \"인사 끝\"이 출력되어야 합니다."
+      requirement: 세 번 인사
+      expect:
+        lines: ["안녕!", "안녕!", "안녕!", "인사 끝"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+      misconceptionIfFail: js.mc.callback-called-when-passed
+misconceptions: [js.mc.callback-called-when-passed]
+hints:
+  - 오류는 3번 줄에서 났지만, `action`에 무엇이 들어갔는지는 11번 줄이 정했어요.
+  - "11번 줄의 `sayHi()`는 `repeat`를 부르기 전에 먼저 실행돼요. 그 결과는 무엇일까요?"
+  - "`repeat`에는 실행 결과가 아니라 함수 자체가 넘어가야 해요. 11번 줄에서 무엇을 빼야 할지 생각해 보세요."
+explanation: |
+  11번 줄을 `repeat(3, sayHi);`로 고치면 돼요.
+
+  - `sayHi()`는 괄호가 있어서 `repeat`를 부르기 전에 먼저 실행돼요. 그래서 `안녕!`이 한 번 나와요.
+  - `sayHi`에는 `return`이 없으니 결과는 `undefined`이고, `repeat`의 `action`에 `undefined`가 들어가요.
+  - 반복 안의 `action()`은 `undefined`를 부르려는 것이라 `TypeError: action is not a function`이 나요. 오류가 난 줄(3번)이 아니라 넘긴 줄(11번)이 원인이에요.
+  - 괄호를 지우면 함수 자체가 넘어가서, `repeat`가 세 번 불러 줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

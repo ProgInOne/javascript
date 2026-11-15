@@ -1,0 +1,76 @@
+id: js-basics.functions.expressions-and-arrows.fix-expression-call-result
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.fn.expression, weight: 1 }
+  - { id: js.fn.call, weight: 0.3 }
+tags: [function-expression, call, type-error, debugging]
+estimatedSeconds: 150
+prompt: |
+  세금(가격의 10%)을 계산하는 함수를 `getTax`라는 이름으로도 쓰고 싶었어요. 그런데 실행하면 오류가 나요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  커피 세금: 450원
+  케이크 세금: 600원
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const calcTax = function (price) {
+            return price / 10;
+          };
+          const getTax = calcTax(1000);
+
+          console.log("커피 세금: " + getTax(4500) + "원");
+          console.log("케이크 세금: " + getTax(6000) + "원");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const calcTax = function (price) {
+            return price / 10;
+          };
+          const getTax = calcTax;
+
+          console.log("커피 세금: " + getTax(4500) + "원");
+          console.log("케이크 세금: " + getTax(6000) + "원");
+  bugDescription: "실행하면 `TypeError: getTax is not a function` 오류가 나고 아무것도 출력되지 않아요."
+  bugMisconception: js.mc.assign-call-result
+  checks:
+    - kind: console
+      id: output
+      description: 커피와 케이크의 세금이 차례로 출력되어야 합니다.
+      requirement: 세금 출력
+      expect:
+        lines: ["커피 세금: 450원", "케이크 세금: 600원"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+      misconceptionIfFail: js.mc.assign-call-result
+misconceptions: [js.mc.assign-call-result, js.mc.fn-expression-stores-result]
+hints:
+  - 오류 메시지는 `getTax`가 함수가 아니라고 해요. 4번 줄이 끝난 뒤 `getTax`에는 무엇이 들어 있을까요?
+  - "`calcTax(1000)`은 함수를 **실행한 결과**예요. 그 결과는 숫자인가요, 함수인가요?"
+  - "`calcTax`라는 변수에 담긴 것은 함수 자체예요. 괄호를 붙이면 실행되고, 붙이지 않으면 함수 그대로예요."
+explanation: |
+  4번 줄 `const getTax = calcTax(1000);`은 `calcTax`를 **실행**해서 그 결과 `100`을 `getTax`에 담아요. 그래서 6번 줄의 `getTax(4500)`은 숫자 `100`을 함수처럼 부르려다 `TypeError: getTax is not a function`이 나요.
+
+  함수 자체를 다른 이름에 담으려면 괄호 없이 씁니다.
+
+  ```js
+  const getTax = calcTax;
+  ```
+
+  이제 `getTax`와 `calcTax`는 같은 함수를 가리키고, `getTax(4500)`은 `450`을 돌려줘요.
+
+  - 함수 이름만 쓰면(`calcTax`) 함수라는 **값**이고, 괄호를 붙이면(`calcTax(1000)`) 실행 **결과**예요.
+  - `getTax`를 아예 쓰지 않고 6, 7번 줄에서 `calcTax(4500)`처럼 바로 불러도 출력은 같아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

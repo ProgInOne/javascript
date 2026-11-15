@@ -1,0 +1,48 @@
+id: js-basics.functions.return-and-side-effects.tf-function-changes-outer
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.fn.side-effects, weight: 1 }
+tags: [side-effects, outer-variable]
+estimatedSeconds: 60
+prompt: |
+  아래 코드에 대한 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+code: |
+  let coins = 3;
+
+  function useCoin() {
+    coins = coins - 1;
+  }
+
+  useCoin();
+  console.log(coins);
+spec:
+  statement: 함수 안에서 바꾼 값은 함수가 끝나면 원래대로 돌아가므로, 이 코드는 `3`을 출력한다.
+  answer: false
+  misconceptionIfWrong: js.mc.function-cant-change-outer
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 함수 안에서 같은 이름의 변수를 새로 만들지 않았으므로 4번 줄은 바깥 coins를 바꾸고, 그 변화는 함수가 끝나도 남아서 2가 출력된다
+      correct: true
+    - id: r2
+      text: 함수 안에서 일어난 일은 함수가 끝나면 모두 사라지므로 coins는 3으로 돌아간다
+      misconception: js.mc.function-cant-change-outer
+    - id: r3
+      text: useCoin에는 return이 없어서 함수가 아무 일도 하지 못하므로 coins는 3 그대로다
+      misconception: js.mc.function-cant-change-outer
+hints:
+  - "`coins`는 어디에서 만든 변수인가요?"
+  - 함수 안에 `let coins`처럼 새 변수를 만드는 줄이 있나요? 없다면 4번 줄의 `coins`는 어느 변수일까요?
+  - "`return`이 없어도 함수 본문의 문장은 모두 실행돼요. 대입도 마찬가지예요."
+explanation: |
+  정답은 **거짓**, 이유는 "함수 안에서 같은 이름의 변수를 새로 만들지 않았으므로 4번 줄은 바깥 coins를 바꾸고, 그 변화는 함수가 끝나도 남아서 2가 출력된다"예요.
+
+  실행하면 `2`가 출력돼요. `useCoin()`을 호출하면 4번 줄이 바깥 변수 `coins`를 3에서 2로 바꿔요. 이 변화가 바로 함수의 부수 효과이고, 함수가 끝나도 되돌아가지 않아요.
+
+  - "함수 안의 일은 끝나면 사라진다"는 생각은 틀려요. 사라지는 것은 함수 **안에서 새로 만든** 변수예요(스코프 기초 단원에서 자세히 배워요).
+  - `return`은 값을 돌려주는 일만 해요. `return`이 없어도 대입이나 출력 같은 문장은 그대로 실행돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

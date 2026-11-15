@@ -1,0 +1,84 @@
+id: js-basics.functions.function-basics.fix-return-outer-variable
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.fn.return, weight: 1 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [return, assignment, debugging]
+estimatedSeconds: 180
+prompt: |
+  쇼핑몰에서 구매 금액의 1%를 포인트로 적립해 주는 프로그램이에요. 함수 `calcPoints`는 적립 포인트를 계산해서 `return`해요. 그런데 적립 포인트가 계속 0점으로 나와요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  첫 구매 적립: 150점
+  두 번째 구매 적립: 80점
+  ```
+
+  함수 `calcPoints`는 그대로 두세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          let points = 0;
+
+          function calcPoints(price) {
+            const points = price / 100;
+            return points;
+          }
+
+          calcPoints(15000);
+          console.log("첫 구매 적립: " + points + "점");
+
+          calcPoints(8000);
+          console.log("두 번째 구매 적립: " + points + "점");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let points = 0;
+
+          function calcPoints(price) {
+            const points = price / 100;
+            return points;
+          }
+
+          points = calcPoints(15000);
+          console.log("첫 구매 적립: " + points + "점");
+
+          points = calcPoints(8000);
+          console.log("두 번째 구매 적립: " + points + "점");
+  bugDescription: "두 줄 모두 `0점`이 나와요. 오류는 없어요."
+  bugMisconception: js.mc.return-changes-outer-variable
+  checks:
+    - kind: console
+      id: output
+      description: 첫 구매 150점, 두 번째 구매 80점이 출력되어야 합니다.
+      requirement: 적립 포인트 출력
+      expect:
+        lines: ["첫 구매 적립: 150점", "두 번째 구매 적립: 80점"]
+      misconceptionIfFail: js.mc.return-changes-outer-variable
+misconceptions: [js.mc.return-changes-outer-variable, js.mc.return-value-auto-printed]
+hints:
+  - 함수는 150을 제대로 계산해서 돌려주고 있어요. 그 돌려준 값은 어디로 갔을까요?
+  - 함수 안의 `return points;`가 바깥의 `points` 변수에 값을 넣어 줄까요? 9번 줄에서 출력하는 `points`는 언제 바뀐 적이 있나요?
+  - 돌려받은 값을 바깥 변수에 담으려면, 호출하는 줄에서 무엇을 해야 할까요? `=`를 떠올려 보세요.
+explanation: |
+  `return`은 값을 **호출한 자리로** 돌려줄 뿐, 바깥에 있는 같은 이름의 변수 `points`에 값을 넣어 주지 않아요. 8번 줄과 11번 줄은 돌려받은 값을 아무 데도 담지 않아서 그대로 버려졌고, 바깥 `points`는 처음 값 0 그대로였어요.
+
+  호출 결과를 바깥 변수에 직접 대입하면 돼요.
+
+  ```js
+  points = calcPoints(15000);
+  console.log("첫 구매 적립: " + points + "점");
+
+  points = calcPoints(8000);
+  console.log("두 번째 구매 적립: " + points + "점");
+  ```
+
+  - 함수 안의 `const points`는 이름만 같을 뿐 바깥 `points`와 다른 변수예요. 이 규칙은 "스코프 기초" 단원에서 자세히 배워요.
+  - `console.log("첫 구매 적립: " + calcPoints(15000) + "점");`처럼 반환값을 바로 이어 붙여도 같은 출력이 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,37 @@
+id: js-basics.functions.return-and-side-effects.tf-pure-same-result
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.fn.pure, weight: 1 }
+tags: [pure]
+estimatedSeconds: 40
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: 어떤 함수든 같은 인수를 넣으면, 언제 호출하든 항상 같은 값을 돌려준다.
+  answer: false
+  misconceptionIfWrong: js.mc.same-args-same-result-always
+hints:
+  - 레슨의 네 번째 예제에서 `taxFromOutside(1000)`은 몇이 나왔나요?
+  - 함수가 인수 말고 다른 값을 읽어서 계산한다면 어떻게 될까요?
+  - "\"같은 인수 → 같은 결과\"가 항상 지켜지는 함수에는 따로 이름이 있었어요."
+explanation: |
+  정답은 **거짓**이에요.
+
+  같은 인수에 항상 같은 값을 돌려주는 것은 **순수 함수**의 성질이에요. 모든 함수가 그렇지는 않아요.
+
+  ```js
+  let rate = 2;
+  function multiply(n) {
+    return n * rate;
+  }
+  console.log(multiply(5)); // 10
+  rate = 3;
+  console.log(multiply(5)); // 15
+  ```
+
+  `multiply`는 바깥 변수 `rate`를 읽기 때문에, 같은 인수 5를 넣어도 `rate`가 바뀌면 결과가 달라져요. 바깥 변수를 바꾸는 함수도 호출할 때마다 결과가 달라질 수 있어요. 필요한 값을 모두 매개변수로 받으면 순수 함수가 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

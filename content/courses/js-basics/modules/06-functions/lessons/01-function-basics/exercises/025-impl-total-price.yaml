@@ -1,0 +1,87 @@
+id: js-basics.functions.function-basics.impl-total-price
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.fn.return, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [return, if, boundary, write-code]
+estimatedSeconds: 240
+prompt: |
+  문구점의 대량 구매 할인을 계산하는 함수 `totalPrice(price, count)`를 완성하세요.
+
+  - `price`는 물건 하나의 가격, `count`는 산 개수예요.
+  - 금액은 `price × count`예요. 단, **10개 이상** 사면 금액의 10%를 깎아 줘요.
+  - 계산한 금액(숫자)을 **돌려주세요**.
+  - 예: `totalPrice(1000, 3)` → `3000`, `totalPrice(2000, 10)` → `18000`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function totalPrice(price, count) {
+            // 여기에 작성하세요
+          }
+  entry: totalPrice
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function totalPrice(price, count) {
+            const total = price * count;
+            if (count >= 10) {
+              return total - total / 10;
+            }
+            return total;
+          }
+  checks:
+    - kind: call
+      id: small
+      args: [1000, 3]
+      expect: { equals: 3000 }
+      requirement: 금액 계산
+    - kind: call
+      id: ten
+      args: [2000, 10]
+      expect: { equals: 18000 }
+      requirement: 10개 이상 할인
+    - kind: call
+      id: hidden-nine
+      visible: false
+      description: 9개는 할인 대상이 아닙니다(경계값).
+      args: [500, 9]
+      expect: { equals: 4500 }
+      requirement: 금액 계산
+    - kind: call
+      id: hidden-twelve
+      visible: false
+      description: 10개보다 많이 사도 10% 할인을 받습니다.
+      args: [1500, 12]
+      expect: { equals: 16200 }
+      requirement: 10개 이상 할인
+misconceptions: [js.mc.return-is-log]
+hints:
+  - 먼저 할인 전 금액(`price * count`)을 계산해 변수에 담아 두면 편해요.
+  - 할인은 개수가 10개 **이상**일 때만이에요. 10개를 포함하는 비교 연산자를 고르세요.
+  - 10%를 깎은 금액은 "금액에서 금액의 10분의 1을 뺀 값"이에요. 할인하는 경우와 아닌 경우 모두 값을 `return`해야 해요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function totalPrice(price, count) {
+    const total = price * count;
+    if (count >= 10) {
+      return total - total / 10;
+    }
+    return total;
+  }
+  ```
+
+  - 할인 전 금액을 `total`에 담고, 10개 이상이면 10%를 뺀 값을 돌려줘요. `return`을 만나면 함수가 끝나서, 할인하지 않는 경우만 마지막 줄까지 내려와요.
+  - "10개 이상"은 `count >= 10`이에요. `count > 10`으로 쓰면 딱 10개 산 손님이 할인을 받지 못해요.
+  - `total * 0.9`로 계산해도 이 문제의 값에서는 같은 결과가 나와요.
+  - 출력만 하고 돌려주지 않으면 결과가 `undefined`라 검사를 통과하지 못해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

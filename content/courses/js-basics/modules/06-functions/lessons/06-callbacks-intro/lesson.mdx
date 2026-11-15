@@ -1,0 +1,323 @@
+<Section kind="objectives">
+- 함수 이름(`greet`)과 함수 호출(`greet()`)의 차이를 알고, 함수를 변수에 담거나 인수로 넘길 수 있어요.
+- 콜백을 받는 함수가 콜백을 언제, 몇 번, 어떤 인수로 부르는지 추적해 출력을 예측할 수 있어요.
+- 콜백을 넘길 때 괄호를 붙여 호출 결과를 넘기는 버그를 찾아 고칠 수 있어요.
+- 콜백을 받는 함수를 작성하고, 화살표 함수로 콜백을 만들어 넘길 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+1부터 10까지 살펴보며 "짝수인 수"를 세는 함수를 만들었다고 해 볼게요. 다음 날에는 "5의 배수"를 세야 하고, 그다음 날에는 "50보다 큰 수"를 세야 해요. 반복하며 세는 부분은 똑같고 **조건 하나만** 달라지는데, 조건마다 함수를 새로 복사해 만들면 같은 반복 코드가 여기저기 생겨요.
+
+```js
+function countEven(start, end) { /* 반복하며 n % 2 === 0인 것 세기 */ }
+function countFive(start, end) { /* 반복하며 n % 5 === 0인 것 세기 */ }
+function countBig(start, end)  { /* 반복하며 n > 50인 것 세기 */ }
+```
+
+달라지는 "조건"만 따로 함수로 만들어 **넘겨줄 수** 있다면, 세는 함수는 하나면 충분해요. JavaScript에서는 그게 가능해요. 함수도 숫자나 문자열처럼 **값**이라서 변수에 담고 다른 함수에 인수로 넘길 수 있거든요. 이렇게 넘겨서 받은 함수가 대신 불러 주는 함수를 **콜백**이라고 해요.
+
+콜백은 이 뒤의 거의 모든 곳에서 나와요. 모듈 8의 배열 메서드(`map`, `filter`)와 모듈 10의 "버튼을 누르면 이 함수를 실행해 줘"가 모두 콜백이에요.
+</Section>
+
+<Section kind="principle">
+### 함수도 값이에요
+
+지금까지 함수는 "이름을 붙여 두고 부르는 코드 묶음"이었어요. 사실 함수는 그 자체로 하나의 **값**이에요. <ConceptLink to="js.fn.expression">함수 표현식</ConceptLink>에서 `const add = function (a, b) { ... };`처럼 함수를 변수에 담았던 것을 떠올려 보세요. 담을 수 있다는 것은 값이라는 뜻이에요.
+
+값이니까 숫자로 할 수 있는 일을 함수로도 할 수 있어요.
+
+| 숫자로 하는 일 | 함수로 하는 일 |
+|---|---|
+| `const a = 5;` 변수에 담기 | `const say = greet;` 변수에 담기 |
+| `console.log(a + 1)` 인수로 넘기기 | `repeat(3, greet)` 인수로 넘기기 |
+| `typeof 5`는 `"number"` | `typeof greet`는 `"function"` |
+
+### 이름과 호출은 달라요: `greet`와 `greet()`
+
+함수를 다룰 때 가장 중요한 구분이에요.
+
+- `greet`는 **함수 자체**예요. 아직 실행하지 않은, 상자에 담긴 레시피 같은 것이에요.
+- `greet()`는 함수를 **지금 실행한 결과**(반환값)예요. 레시피대로 만든 요리예요.
+
+```js
+function greet() {
+  return "안녕하세요";
+}
+
+const a = greet;    // a에는 함수가 담겨요 → a()로 부를 수 있어요
+const b = greet();  // b에는 "안녕하세요"가 담겨요 → b()는 오류예요
+```
+
+괄호를 붙이는 순간 함수가 실행된다는 점은 <ConceptLink to="js.fn.call">함수 호출</ConceptLink>에서 배운 것과 같아요. 함수를 다른 곳에 **넘기거나 담고 싶을 때**는 괄호를 붙이지 않아요.
+
+### 콜백: 넘겨주고 대신 부르게 하기
+
+함수를 다른 함수의 인수로 넘기면, 받은 함수는 그 값을 매개변수 이름으로 부를 수 있어요.
+
+```js
+function repeat(times, action) {
+  for (let i = 1; i <= times; i++) {
+    action(i);         // 받은 함수를 i를 넣어 불러요
+  }
+}
+
+function cheer(n) {
+  console.log(n + "번째 화이팅!");
+}
+
+repeat(3, cheer);      // cheer를 괄호 없이 넘겨요
+```
+
+여기서 `cheer`가 **콜백**이에요. 일이 어떻게 나뉘는지 보면 이래요.
+
+| 누가 | 무엇을 정해요 |
+|---|---|
+| `repeat` (콜백을 받는 함수) | 콜백을 **언제**, **몇 번**, **어떤 인수로** 부를지 |
+| `cheer` (콜백) | 불렸을 때 **무엇을 할지** |
+| 호출하는 쪽 `repeat(3, cheer)` | 어떤 함수를 콜백으로 줄지 |
+
+`repeat(3, cheer)`를 실행하면 `repeat` 안에서 매개변수 `action`은 `cheer`와 **같은 함수**를 가리켜요. 그래서 `action(1)`은 곧 `cheer(1)`이에요.
+
+### 흐름 따라가기
+
+콜백은 넘길 때가 아니라 **받은 함수가 부를 때** 실행돼요. `repeat(2, cheer)`의 흐름을 줄 단위로 따라가 보면 이래요.
+
+| 순서 | 실행 위치 | 일어나는 일 |
+|---|---|---|
+| 1 | 호출하는 쪽 | `repeat(2, cheer)` — `cheer`는 아직 실행되지 않고 함수째로 넘어가요 |
+| 2 | `repeat` 안 | `times`는 2, `action`은 `cheer` |
+| 3 | `repeat`의 반복 (`i`는 1) | `action(1)` → `cheer` 실행 → `1번째 화이팅!` → `repeat`로 돌아옴 |
+| 4 | `repeat`의 반복 (`i`는 2) | `action(2)` → `2번째 화이팅!` |
+| 5 | `repeat` 끝 | 호출하는 쪽의 다음 줄로 돌아가요 |
+
+### 화살표 함수로 그 자리에서 만들어 넘기기
+
+한 번만 쓸 콜백은 이름을 붙이지 않고 <ConceptLink to="js.fn.arrow">화살표 함수</ConceptLink>로 그 자리에서 만들어 넘기는 경우가 많아요.
+
+```js
+repeat(2, (n) => {
+  console.log(n + "번째 박수");
+});
+```
+
+`(n) => { ... }`는 함수를 **만드는** 식이에요. 만들기만 할 뿐 실행하지 않고, 그 함수가 `repeat`에 넘어가서 `repeat`가 부를 때 실행돼요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 함수를 다른 변수에 담아 부르는 코드예요. 무엇이 출력될까요?
+
+<RunnableExample id="function-as-value" lang="js" predict predictKind="console" concepts={["js.fn.first-class"]}>
+```js
+function greet(name) {
+  return name + "님, 안녕하세요";
+}
+
+const hello = greet;
+console.log(hello("민지"));
+console.log(typeof hello);
+console.log(typeof hello("민지"));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+민지님, 안녕하세요
+function
+string
+```
+
+- 5번 줄: `greet`에 괄호가 없으니 함수를 실행하지 않고, 함수 자체를 `hello`에 담아요. 이제 `hello`와 `greet`는 같은 함수를 가리켜요.
+- 6번 줄: `hello("민지")`는 `greet("민지")`와 똑같이 실행되어 문자열을 돌려줘요.
+- 7번 줄: `hello`는 함수라서 `typeof`가 `"function"`이에요.
+- 8번 줄: `hello("민지")`는 실행한 **결과**(문자열)라서 `"string"`이에요. 괄호 하나로 "함수"와 "결과"가 갈려요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 콜백을 넘기는 기본 모양이에요. 출력 순서를 예측해 보세요.
+
+<RunnableExample id="pass-callback" lang="js" predict predictKind="console" concepts={["js.fn.callback"]}>
+```js
+function repeat(times, action) {
+  console.log("시작");
+  for (let i = 1; i <= times; i++) {
+    action(i);
+  }
+  console.log("끝");
+}
+
+function cheer(n) {
+  console.log(n + "번째 화이팅!");
+}
+
+repeat(3, cheer);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+시작
+1번째 화이팅!
+2번째 화이팅!
+3번째 화이팅!
+끝
+```
+
+- 13번 줄에서 `cheer`를 넘기는 순간에는 아무것도 출력되지 않아요. 넘긴 것은 함수 자체예요.
+- `repeat`가 먼저 `시작`을 출력하고, 반복 안에서 `action(i)`로 콜백을 세 번 불러요. 이때 `i`(1, 2, 3)가 `cheer`의 매개변수 `n`에 들어가요.
+- 콜백에 무엇을 넣어 부를지는 `repeat`가 정했어요. `cheer`는 받은 숫자로 무엇을 할지만 정했어요.
+
+`repeat(3, cheer)`의 3을 5로 바꾸거나, `cheer` 대신 다른 함수를 만들어 넘겨 보세요. `repeat`는 고치지 않아도 돼요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 도입에서 말한 "조건만 바꿔 세기"예요. 조건을 화살표 함수로 그 자리에서 만들어 넘겨요.
+
+<RunnableExample id="count-if" lang="js" predict predictKind="console" concepts={["js.fn.callback", "js.fn.arrow"]}>
+```js
+function countIf(start, end, test) {
+  let count = 0;
+  for (let n = start; n <= end; n++) {
+    if (test(n)) {
+      count++;
+    }
+  }
+  return count;
+}
+
+console.log(countIf(1, 10, (n) => n % 2 === 0));
+console.log(countIf(1, 10, (n) => n % 5 === 0));
+console.log(countIf(1, 10, (n) => n > 100));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+5
+2
+0
+```
+
+- `countIf`는 반복하며 세는 일만 해요. "무엇을 셀지"는 매개변수 `test`로 받은 콜백이 정해요.
+- `test(n)`은 콜백을 불러서 `true`나 `false`를 돌려받아요. `(n) => n % 2 === 0`은 중괄호가 없는 화살표 함수라서 비교 결과가 그대로 반환돼요.
+- 세 번째 줄은 1~10 중 100보다 큰 수가 없어서, 콜백이 10번 불렸지만 한 번도 `true`가 아니라 0이에요.
+
+세는 함수 하나로 세 가지 질문에 답했어요. 조건이 바뀌면 콜백만 바꾸면 돼요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 콜백 이름 뒤에 괄호를 붙여 넘긴 경우예요. 실행하면 오류가 나요. 오류가 나기 전에 무엇이 출력되는지 보세요.
+
+<RunnableExample id="called-when-passed" lang="js" expectError concepts={["js.fn.callback"]}>
+```js
+function repeat(times, action) {
+  for (let i = 1; i <= times; i++) {
+    action();
+  }
+}
+
+function sayHi() {
+  console.log("안녕!");
+}
+
+repeat(3, sayHi());
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+안녕!
+TypeError: action is not a function (3번째 줄)
+```
+
+- 11번 줄의 `sayHi()`는 `repeat`를 부르기 **전에** 먼저 실행돼요. 인수를 계산해야 함수를 부를 수 있기 때문이에요. 그래서 `안녕!`이 한 번 나와요.
+- `sayHi`에는 `return`이 없으니 `sayHi()`의 결과는 `undefined`예요. `repeat`에는 함수가 아니라 `undefined`가 넘어가요.
+- `repeat` 안에서 `action()`은 `undefined()`를 부르려는 것이라 `TypeError: action is not a function`이 나요. 오류는 3번째 줄에서 났지만, 원인은 11번 줄의 괄호예요.
+
+괄호를 지운 `repeat(3, sayHi);`로 고치면 `안녕!`이 세 번 나와요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.function-not-a-value">
+<Wrong>변수에 담고 인수로 넘길 수 있는 건 숫자나 문자열 같은 값뿐이다. 함수는 이름으로 부르는 것만 할 수 있다.</Wrong>
+<Actual>첫 번째 예제에서 `const hello = greet;`로 함수를 담고 `hello("민지")`로 불렀어요. `typeof hello`도 `"function"`이었어요.</Actual>
+<Right>JavaScript에서 함수도 값이에요. 다른 변수에 담을 수 있고, 다른 함수에 인수로 넘길 수 있어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.assign-call-result">
+<Wrong>함수를 다른 이름으로 쓰려면 `const say = greet();`처럼 괄호를 붙여 담는다.</Wrong>
+<Actual>
+
+`greet()`는 함수를 실행한 **결과**예요. `say`에는 반환값이 담겨서, `say()`로 부르면 오류가 나요.
+
+```js
+function greet() {
+  return "안녕하세요";
+}
+const say = greet();
+say(); // TypeError: say is not a function
+```
+</Actual>
+<Right>함수 자체를 담을 때는 괄호 없이 `const say = greet;`로 써요. 괄호는 "지금 실행해"라는 뜻이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.callback-called-when-passed">
+<Wrong>콜백을 넘길 때도 함수니까 `repeat(3, sayHi())`처럼 괄호를 붙여야 한다.</Wrong>
+<Actual>네 번째 예제처럼 `sayHi()`가 그 자리에서 한 번 실행되고, 그 반환값 `undefined`가 넘어가요. `repeat`가 `undefined`를 부르려다 `TypeError: action is not a function`이 나요.</Actual>
+<Right>콜백은 괄호 없이 함수 자체를 넘겨요: `repeat(3, sayHi)`. 부르는 일(괄호)은 받은 함수가 해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.callback-runs-at-pass-time">
+<Wrong>`repeat(3, cheer)`라고 쓰는 순간 `cheer`가 먼저 한 번 실행되고, 그다음 `repeat`가 시작된다.</Wrong>
+<Actual>두 번째 예제의 첫 줄은 `시작`이었어요. 넘길 때는 아무것도 실행되지 않고, `repeat`가 `action(i)`로 부를 때마다 `cheer`가 실행됐어요.</Actual>
+<Right>콜백이 언제, 몇 번 실행될지는 콜백을 받은 함수의 본문이 정해요. 받은 함수가 한 번도 부르지 않으면 콜백은 실행되지 않아요. 출력을 예측할 때는 받은 함수의 본문을 따라가요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+웹 페이지에서 "버튼을 누르면 수량을 1 늘린다"를 만든다고 해 볼게요. 버튼이 **언제** 눌릴지는 프로그램을 쓰는 사람이 알 수 없어요. 그래서 "눌리면 이 함수를 불러 줘"라고 함수를 맡겨 두는 방식, 즉 콜백을 써요. 모듈 10에서 배울 실제 코드는 이런 모양이에요.
+
+```js
+function addOne() {
+  qty++;
+  show();
+}
+
+plusButton.addEventListener("click", addOne);   // 괄호 없이 넘겨요
+```
+
+- `addEventListener`가 콜백을 받는 함수예요. 클릭이 일어날 때마다 `addOne`을 불러 줘요.
+- 여기서 `addOne()`처럼 괄호를 붙이면, 페이지가 열리자마자 한 번 실행되고 버튼에는 `undefined`가 맡겨져요. 그러면 버튼을 눌러도 아무 일도 일어나지 않아요. 실무에서도 아주 흔한 버그예요.
+
+모듈 8에서는 배열의 값마다 콜백을 불러 주는 `forEach`, `map`, `filter`를 배워요. 오늘 만든 `countIf`처럼 "반복은 메서드가, 할 일은 콜백이" 나눠 맡는 방식이에요.
+</Section>
+
+<Section kind="check">
+함수 이름과 함수 호출의 차이를 확인해 보세요.
+
+<InlineExercise ref="js-basics.functions.callbacks-intro.tf-assign-call-result" />
+
+콜백을 올바르게 넘기는 방법을 골라 보세요.
+
+<InlineExercise ref="js-basics.functions.callbacks-intro.mcq-pass-callback" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 함수는 값이에요. 변수에 담고, 다른 함수의 인수로 넘길 수 있고, `typeof`로 확인하면 `"function"`이에요.
+- `greet`는 함수 자체, `greet()`는 함수를 지금 실행한 결과(반환값)예요. 함수를 담거나 넘길 때는 괄호를 붙이지 않아요.
+- 다른 함수에 넘겨서 그 함수가 대신 불러 주는 함수를 콜백이라고 해요.
+- 콜백은 넘길 때가 아니라 받은 함수가 부를 때 실행돼요. 언제, 몇 번, 어떤 인수로 부를지는 받은 함수가 정해요.
+- 콜백을 `repeat(3, sayHi())`처럼 괄호를 붙여 넘기면 반환값(대개 `undefined`)이 넘어가서 `TypeError: ... is not a function`이 나요.
+- 한 번만 쓸 콜백은 화살표 함수로 그 자리에서 만들어 넘길 수 있어요.
+</Section>
+
+<Section kind="next">
+이 단원으로 함수 모듈의 레슨이 끝나요. 다음 모듈 "문자열"에서는 문자열을 다루는 메서드를 배우고, 모듈 8 "배열"에서 콜백을 받는 `forEach`·`map`·`filter`로 오늘 배운 콜백을 본격적으로 써요. 모듈 10에서는 버튼 클릭에 콜백을 맡기는 이벤트를 배워요. <MdnLink path="Glossary/Callback_function" />
+</Section>

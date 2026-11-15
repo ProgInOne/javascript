@@ -1,0 +1,81 @@
+id: js-basics.functions.return-and-side-effects.fix-double-log
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.fn.side-effects, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [side-effects, return, console-log, debugging]
+estimatedSeconds: 150
+prompt: |
+  가격에 `원`을 붙여 주는 함수 `formatPrice`와, 그 결과를 출력하는 프로그램이에요. 가격이 한 번씩만 나와야 하는데 두 번씩 나와요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  3000원
+  4500원
+  ```
+
+  - `formatPrice`는 다른 곳에서도 쓸 함수라서, 출력하지 말고 **값을 돌려주는 일만** 하게 만드세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function formatPrice(price) {
+            console.log(price + "원");
+            return price + "원";
+          }
+
+          console.log(formatPrice(3000));
+          console.log(formatPrice(4500));
+  entry: formatPrice
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function formatPrice(price) {
+            return price + "원";
+          }
+
+          console.log(formatPrice(3000));
+          console.log(formatPrice(4500));
+  bugDescription: 가격이 한 줄에 하나씩, 두 줄만 나와야 하는데 같은 가격이 두 번씩 출력돼요.
+  checks:
+    - kind: console
+      id: output
+      description: 두 가격이 한 번씩, 차례로 출력되어야 합니다.
+      requirement: 한 번씩 출력
+      expect:
+        lines: ["3000원", "4500원"]
+      misconceptionIfFail: js.mc.return-is-log
+    - kind: call
+      id: returns-text
+      description: formatPrice(1200)은 "1200원"을 돌려줘야 합니다.
+      requirement: 값을 돌려주기
+      args: [1200]
+      expect: { equals: "1200원" }
+misconceptions: [js.mc.return-is-log]
+hints:
+  - 출력이 한 가격마다 두 번씩 생겨요. 한 번은 함수 안에서, 한 번은 어디에서 생길까요?
+  - "`console.log(formatPrice(3000))`은 함수가 돌려준 값을 출력해요. 함수 안의 `console.log`는 그와 따로 또 출력하는 부수 효과예요."
+  - 지시대로 함수는 값을 돌려주는 일만 하게 하세요. 함수 안의 두 줄 중 무엇이 출력이라는 부수 효과인가요?
+explanation: |
+  예시 정답은 함수 안의 `console.log`를 지운 것이에요.
+
+  ```js
+  function formatPrice(price) {
+    return price + "원";
+  }
+  ```
+
+  원래 코드는 가격마다 두 번 출력했어요.
+
+  1. 함수 안의 `console.log(price + "원")` → 부수 효과로 한 번 출력
+  1. 바깥의 `console.log(formatPrice(3000))` → 돌려받은 `"3000원"`을 한 번 더 출력
+
+  함수는 값을 만들어 돌려주고, 출력은 그 값을 받은 쪽에서 한 번만 하면 돼요. 이렇게 하면 `formatPrice`를 영수증, 장바구니 등 출력하지 않을 곳에서도 쓸 수 있어요.
+
+  바깥의 `console.log`를 지우고 `formatPrice(3000);`만 남겨도 출력은 같아요. 하지만 그러면 함수가 출력이라는 부수 효과를 계속 갖고 있어서, 값만 필요한 곳에서 쓸 때마다 원하지 않는 출력이 생겨요. 반대로 함수 안의 `return`을 지우면 `formatPrice(1200)`이 `undefined`가 되어 두 번째 체크를 통과하지 못해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

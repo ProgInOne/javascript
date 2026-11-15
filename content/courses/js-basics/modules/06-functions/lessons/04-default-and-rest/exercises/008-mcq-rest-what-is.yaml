@@ -1,0 +1,42 @@
+id: js-basics.functions.default-and-rest.mcq-rest-what-is
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.rest-params, weight: 1 }
+tags: [rest-params, length]
+estimatedSeconds: 50
+prompt: |
+  아래 코드에서 `scores`에 대한 설명으로 맞는 것은 무엇인가요?
+code: |
+  function report(...scores) {
+    console.log(scores.length);
+  }
+  report(80, 95, 70);
+spec:
+  options:
+    - id: a
+      text: "`80`, `95`, `70` 세 값을 모두 담은 묶음(배열)이고, `3`이 출력된다"
+    - id: b
+      text: 첫 번째 인수 `80`만 담기고, 나머지 인수는 버려진다
+      rationale: 점 세 개를 붙인 나머지 매개변수는 남은 인수를 모두 모아요. 하나만 받는 것은 일반 매개변수예요.
+    - id: c
+      text: 세 값을 더한 `245`가 담긴다
+      rationale: 나머지 매개변수는 값을 계산하지 않고 모아 두기만 해요. 더하려면 반복으로 하나씩 꺼내 더해야 해요.
+    - id: d
+      text: "`...`은 줄임표라서 문법 오류가 난다"
+      rationale: 매개변수 앞의 ...은 나머지 매개변수를 만드는 JavaScript 문법이에요.
+  correct: a
+hints:
+  - "`scores` 앞에 붙은 점 세 개 `...`는 무슨 뜻이었나요?"
+  - 나머지 매개변수는 인수를 하나만 받는 것이 아니라 여러 개를 한데 모아요.
+  - "`scores.length`는 묶음에 담긴 값의 개수예요. 인수를 몇 개 넘겼는지 세어 보세요."
+explanation: |
+  `...scores`는 **나머지 매개변수**예요. 넘긴 인수 `80`, `95`, `70`을 모두 한 묶음(배열)으로 모아요. 그래서 `scores.length`는 `3`이에요.
+
+  - 첫 값만 담긴다고 생각했다면, 점 세 개가 없는 일반 매개변수와 헷갈린 거예요.
+  - 나머지 매개변수는 값을 더하지 않아요. 합계가 필요하면 `for`로 `scores[0]`, `scores[1]`, …을 꺼내 더해요.
+  - `...`은 매개변수 앞에 쓰는 정식 문법이라 오류가 나지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

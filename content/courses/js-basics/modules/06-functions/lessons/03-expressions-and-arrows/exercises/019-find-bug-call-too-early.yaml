@@ -1,0 +1,65 @@
+id: js-basics.functions.expressions-and-arrows.find-bug-call-too-early
+type: find_bug_line
+difficulty: 4
+concepts:
+  - { id: js.fn.hoisting, weight: 1 }
+  - { id: js.errors.error-messages, weight: 0.3 }
+  - { id: js.fn.arrow, weight: 0.3 }
+tags: [hoisting, tdz, error-line, debugging]
+estimatedSeconds: 180
+prompt: |
+  분식집 메뉴판을 출력하는 프로그램이에요. 오류 메시지는 3번 줄을 가리키지만, 3번 줄은 고칠 필요가 없어요. 오류의 **원인이 되는 줄**을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    function showMenu() {
+      console.log("오늘의 메뉴");
+      console.log("떡볶이 " + formatPrice(4500));
+    }
+    showMenu();
+    const formatPrice = (price) => price + "원";
+  bugLines: [5]
+  acceptLines: [6]
+  symptom: "`오늘의 메뉴`가 출력된 뒤 `ReferenceError: Cannot access 'formatPrice' before initialization (3번째 줄)` 오류가 나요."
+  symptomCheck:
+    error: ReferenceError
+  fixedCode: |-
+    function showMenu() {
+      console.log("오늘의 메뉴");
+      console.log("떡볶이 " + formatPrice(4500));
+    }
+    const formatPrice = (price) => price + "원";
+    showMenu();
+  causeOptions:
+    - id: c1
+      text: 5번 줄에서 showMenu를 호출할 때는 6번 줄이 아직 실행되지 않아 formatPrice에 함수가 담기기 전이다
+      correct: true
+    - id: c2
+      text: 오류 메시지가 3번 줄을 가리키므로 3번 줄의 formatPrice(4500) 호출 방법이 틀렸다
+      misconception: js.mc.error-line-is-cause
+    - id: c3
+      text: 화살표 함수도 함수 선언처럼 미리 만들어지므로, 문제는 1번 줄의 함수 이름 showMenu다
+      misconception: js.mc.expression-hoisted
+    - id: c4
+      text: function으로 선언한 함수 안에서는 화살표 함수를 부를 수 없다
+hints:
+  - "`오늘의 메뉴`는 출력됐어요. 즉 `showMenu`는 실행되었고, 그 본문의 3번 줄에서 멈췄어요. `showMenu`를 실행시킨 줄은 몇 번인가요?"
+  - 메시지의 "before initialization"은 "값을 넣기 전에"라는 뜻이에요. `formatPrice`에 함수가 담기는 줄은 몇 번이고, 그 줄은 언제 실행되나요?
+  - 함수 본문은 호출하는 순간 실행돼요. 호출하는 순간에 필요한 함수가 준비되어 있는지 줄 순서를 따라가 보세요.
+explanation: |
+  원인은 **5번 줄**에서 `showMenu()`를 너무 일찍 부른 것이에요(6번 줄을 고르는 것도 인정해요).
+
+  실행 순서를 따라가 보면 이래요.
+
+  1. 실행 전 준비: 함수 선언 `showMenu`는 미리 만들어져요. `formatPrice`는 `const`라서 6번 줄이 실행될 때까지 쓸 수 없어요.
+  1. 5번 줄: `showMenu()`를 호출해서 본문으로 들어가요. 2번 줄이 `오늘의 메뉴`를 출력해요.
+  1. 3번 줄: `formatPrice`를 쓰려는데 6번 줄은 아직 실행되지 않았어요. 그래서 `ReferenceError`가 나요.
+
+  오류가 **보고된 줄**(3번)과 **원인이 된 줄**(5번)이 달라요. 3번 줄의 코드 자체는 맞고, 부르는 시점이 문제예요. 5번과 6번 줄의 순서를 바꿔 `formatPrice`를 먼저 만들고 `showMenu()`를 부르면 `떡볶이 4500원`까지 출력돼요.
+
+  - 3번 줄의 호출 방법이 틀렸다고 골랐다면: 오류 메시지의 줄 번호는 오류가 "발생한" 곳일 뿐, 원인은 앞에 있을 수 있어요.
+  - 화살표 함수도 미리 만들어진다고 골랐다면: 미리 만들어지는 것은 함수 선언뿐이에요. 그래서 `formatPrice`가 문제가 됐어요.
+  - 함수 선언 안에서 화살표 함수를 부를 수 없다고 골랐다면: 준비만 되어 있으면 어떤 함수 안에서든 부를 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

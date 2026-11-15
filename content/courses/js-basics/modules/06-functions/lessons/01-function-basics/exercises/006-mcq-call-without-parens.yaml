@@ -1,0 +1,49 @@
+id: js-basics.functions.function-basics.mcq-call-without-parens
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.call, weight: 1 }
+tags: [function, call, parentheses]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 실행하면 `알람이 울려요!`가 몇 번 출력되나요?
+code: |
+  function ring() {
+    console.log("알람이 울려요!");
+  }
+
+  ring;
+  ring();
+spec:
+  options:
+    - id: a
+      text: 한 번
+    - id: b
+      text: 두 번
+      misconception: js.mc.call-without-parens
+      rationale: "`ring;`처럼 괄호 없이 이름만 쓰면 함수를 가리키기만 하고 실행하지 않아요."
+    - id: c
+      text: 세 번
+      misconception: js.mc.declaration-runs-function
+      rationale: 선언은 함수를 만들어 두기만 해요. 선언할 때는 본문이 실행되지 않아요.
+    - id: d
+      text: "한 번도 출력되지 않고 `ring;` 줄에서 오류가 난다"
+      rationale: "`ring;`은 오류가 나지 않아요. 아무 일도 하지 않는 줄일 뿐이에요."
+  correct: a
+misconceptions: [js.mc.call-without-parens]
+hints:
+  - 함수 본문을 실행시키는 것은 무엇인지 떠올려 보세요.
+  - 5번 줄과 6번 줄은 무엇이 다른가요?
+  - 함수 이름 뒤에 괄호가 있어야 호출이에요. 괄호가 있는 줄이 몇 개인지 세어 보세요.
+explanation: |
+  `알람이 울려요!`는 **한 번** 출력돼요.
+
+  - 1~3번 줄은 선언이라 실행되지 않아요.
+  - 5번 줄 `ring;`은 함수를 가리키기만 하고 실행하지 않아요. 오류도 나지 않아서 알아차리기 어려운 실수예요.
+  - 6번 줄 `ring();`만 괄호가 있는 호출이라 본문을 한 번 실행해요.
+
+  함수를 실행하는 것은 이름 뒤의 **괄호**예요. 인수가 없어도 빈 괄호를 붙여야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

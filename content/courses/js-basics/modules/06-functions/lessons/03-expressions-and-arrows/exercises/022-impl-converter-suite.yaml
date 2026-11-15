@@ -1,0 +1,165 @@
+id: js-basics.functions.expressions-and-arrows.impl-converter-suite
+type: implement_function
+difficulty: 5
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+  - { id: js.control.else-if, weight: 0.3 }
+  - { id: js.ops.strict-equality, weight: 0.3 }
+tags: [arrow-function, composition, requirements, boundary, write-code]
+estimatedSeconds: 600
+prompt: |
+  길이 단위 변환기를 만들어요. `convertLength(value, from, to)`는 `from` 단위의 길이 `value`를 `to` 단위로 바꾼 **숫자**를 돌려줘요. 쓸 수 있는 단위는 `"mm"`, `"cm"`, `"m"`, `"km"` 네 가지예요.
+
+  - 10mm = 1cm, 100cm = 1m, 1000m = 1km예요.
+  - 예: `convertLength(250, "cm", "m")` → `2.5`, `convertLength(3, "km", "m")` → `3000`
+  - `from`이나 `to`가 네 단위가 아니면(예: `"inch"`) 변환할 수 없다는 뜻으로 `-1`을 돌려줘요.
+
+  단위가 4개라 경우가 16가지나 돼요. 하나씩 다 쓰지 말고, **모든 길이를 일단 cm로 바꾼 뒤 cm에서 원하는 단위로 바꾸는** 두 단계로 나눠 보세요.
+
+  1. 화살표 함수 `toCm(value, unit)`: `unit` 단위의 길이를 cm로 바꿔 돌려줘요.
+  1. 화살표 함수 `fromCm(cm, unit)`: cm 길이를 `unit` 단위로 바꿔 돌려줘요.
+  1. 화살표 함수 `convertLength(value, from, to)`: 위의 두 함수를 써서 완성해요.
+
+  채점은 `convertLength`를 여러 단위 조합으로 불러서 해요(숨김 확인 포함).
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1. toCm(value, unit)
+
+          // 2. fromCm(cm, unit)
+
+          // 3. convertLength(value, from, to)
+  entry: convertLength
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 1. toCm(value, unit)
+          const toCm = (value, unit) => {
+            if (unit === "mm") {
+              return value / 10;
+            } else if (unit === "cm") {
+              return value;
+            } else if (unit === "m") {
+              return value * 100;
+            } else if (unit === "km") {
+              return value * 100000;
+            }
+            return -1;
+          };
+
+          // 2. fromCm(cm, unit)
+          const fromCm = (cm, unit) => {
+            if (unit === "mm") {
+              return cm * 10;
+            } else if (unit === "cm") {
+              return cm;
+            } else if (unit === "m") {
+              return cm / 100;
+            } else if (unit === "km") {
+              return cm / 100000;
+            }
+            return -1;
+          };
+
+          // 3. convertLength(value, from, to)
+          const isUnit = (unit) => unit === "mm" || unit === "cm" || unit === "m" || unit === "km";
+
+          const convertLength = (value, from, to) => {
+            if (!isUnit(from) || !isUnit(to)) {
+              return -1;
+            }
+            return fromCm(toCm(value, from), to);
+          };
+  checks:
+    - kind: call
+      id: cm-to-m
+      requirement: 단위 바꾸기
+      args: [250, "cm", "m"]
+      expect: { closeTo: { value: 2.5 } }
+    - kind: call
+      id: km-to-m
+      requirement: 단위 바꾸기
+      args: [3, "km", "m"]
+      expect: { closeTo: { value: 3000 } }
+    - kind: call
+      id: mm-to-cm
+      visible: false
+      description: 작은 단위에서 큰 단위로(5mm → cm) 바꾸면 소수가 나올 수 있어요.
+      requirement: 단위 바꾸기
+      args: [5, "mm", "cm"]
+      expect: { closeTo: { value: 0.5 } }
+    - kind: call
+      id: m-to-km
+      visible: false
+      description: m에서 km로(1234m) 바꿀 수 있어야 합니다.
+      requirement: 단위 바꾸기
+      args: [1234, "m", "km"]
+      expect: { closeTo: { value: 1.234 } }
+    - kind: call
+      id: km-to-mm
+      visible: false
+      description: 가장 큰 단위에서 가장 작은 단위로(1km → mm) 바꿀 수 있어야 합니다.
+      requirement: 단위 바꾸기
+      args: [1, "km", "mm"]
+      expect: { closeTo: { value: 1000000 } }
+    - kind: call
+      id: same-unit
+      visible: false
+      description: 같은 단위로 바꾸면 값이 그대로여야 합니다.
+      requirement: 단위 바꾸기
+      args: [7, "m", "m"]
+      expect: { closeTo: { value: 7 } }
+    - kind: call
+      id: zero
+      visible: false
+      description: 길이 0은 올바른 길이라서 0을 돌려줘야 합니다(-1이 아님).
+      requirement: 단위 바꾸기
+      args: [0, "cm", "km"]
+      expect: { closeTo: { value: 0 } }
+    - kind: call
+      id: bad-to
+      visible: false
+      description: 바꿀 단위(to)가 네 단위가 아니면 -1을 돌려줘야 합니다.
+      requirement: 잘못된 단위 처리
+      args: [100, "cm", "inch"]
+      expect: { equals: -1 }
+    - kind: call
+      id: bad-from
+      visible: false
+      description: 원래 단위(from)가 네 단위가 아니어도 -1을 돌려줘야 합니다. 이때 다른 숫자로 바뀌어 나오면 안 됩니다.
+      requirement: 잘못된 단위 처리
+      args: [100, "ft", "m"]
+      expect: { equals: -1 }
+misconceptions: [js.mc.arrow-braces-implicit-return, js.mc.expression-hoisted, js.mc.return-in-if-covers-all]
+hints:
+  - "`toCm`부터 만들어 보세요. mm는 10으로 나누고, m은 100을 곱하면 cm가 돼요. km는 몇 cm인지 먼저 계산해 보세요."
+  - "`fromCm`은 `toCm`과 반대 방향이라 곱하기와 나누기가 바뀌어요. `convertLength`에서는 `toCm`이 돌려준 값을 그대로 `fromCm`에 넘기면 두 단계가 이어져요."
+  - "`toCm(100, \"ft\")`이 `-1`을 돌려준 뒤 그 `-1`을 `fromCm`에 넘기면 무엇이 나오는지 계산해 보세요. 잘못된 단위는 변환을 시작하기 **전에** 걸러야 해요."
+explanation: |
+  예시 정답의 핵심은 `convertLength`예요.
+
+  ```js
+  const isUnit = (unit) => unit === "mm" || unit === "cm" || unit === "m" || unit === "km";
+
+  const convertLength = (value, from, to) => {
+    if (!isUnit(from) || !isUnit(to)) {
+      return -1;
+    }
+    return fromCm(toCm(value, from), to);
+  };
+  ```
+
+  - **두 단계로 나누기**: 모든 단위를 cm로 바꿨다가 다시 바꾸면, 단위마다 규칙을 두 개(`toCm`, `fromCm`)만 쓰면 돼요. 16가지 조합을 하나씩 쓰는 것보다 훨씬 짧고 실수가 적어요. 1km = 1000m = 100000cm예요.
+  - **함수의 결과를 다른 함수의 인수로**: `fromCm(toCm(value, from), to)`는 안쪽 `toCm`이 먼저 실행되고, 그 반환값이 `fromCm`의 첫 인수가 돼요.
+  - **잘못된 단위를 먼저 거르기**: `toCm`이 `-1`을 돌려줘도 그대로 `fromCm(-1, "m")`에 넘기면 `-0.01`이 나와요. 변환 결과로 진짜 `-1`이 나올 수도 있으니(예: `-1`cm), 결과를 보고 판단하지 말고 변환 전에 단위부터 확인해요. `isUnit` 같은 작은 함수를 따로 두면 읽기 쉬워요.
+  - **0은 올바른 값**: `if (!value)`처럼 값을 검사하면 길이 0이 잘못된 값으로 처리돼요. 확인할 것은 단위뿐이에요.
+  - **중괄호 본문과 return**: `toCm`, `fromCm`처럼 `if`가 있는 화살표 함수는 중괄호 본문이라 모든 갈래에 `return`이 필요해요. 단위가 맞지 않을 때의 `return -1;`이 없으면 `undefined`가 돌아와요.
+  - 세 함수 모두 `const`로 만들었으므로, `convertLength`가 **호출되기 전에** `toCm`과 `fromCm`이 만들어져 있어야 해요. 위처럼 차례로 쓰면 문제없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

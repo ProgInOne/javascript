@@ -1,0 +1,71 @@
+id: js-basics.functions.function-basics.predict-call-flow
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.fn.call, weight: 1 }
+  - { id: js.fn.return, weight: 0.5 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [function, call, flow, return, trace]
+estimatedSeconds: 240
+prompt: |
+  택배를 포장하고 배달하는 프로그램이에요. `deliver` 안에서 `wrap`을 불러요. 실행하면 콘솔에 무엇이 어떤 순서로 출력될까요? 줄마다 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    function wrap(item) {
+      console.log("- " + item + " 포장 시작");
+      const box = item + " 상자";
+      console.log("- " + item + " 포장 끝");
+      return box;
+    }
+
+    function deliver(item, place) {
+      console.log(place + " 배달 준비");
+      const parcel = wrap(item);
+      console.log(parcel + " 출발");
+      return place + " 도착";
+    }
+
+    console.log("주문 접수");
+    const result = deliver("책", "학교");
+    deliver("우산", "도서관");
+    console.log(result);
+  answerKind: console
+  misconceptionByAnswer:
+    "주문 접수\n학교 배달 준비\n- 책 포장 시작\n- 책 포장 끝\n책 상자 출발\n도서관 배달 준비\n- 우산 포장 시작\n- 우산 포장 끝\n우산 상자 출발\n도서관 도착\n학교 도착": js.mc.return-value-auto-printed
+    "- 책 포장 시작\n- 책 포장 끝\n학교 배달 준비\n책 상자 출발\n주문 접수\n- 우산 포장 시작\n- 우산 포장 끝\n도서관 배달 준비\n우산 상자 출발\n학교 도착": js.mc.declaration-runs-function
+hints:
+  - 1~13번 줄은 선언이라 아무것도 출력하지 않아요. 맨 처음 실행되는 출력은 15번 줄이에요.
+  - "`deliver` 본문을 실행하다가 10번 줄에서 `wrap`으로 건너가요. `wrap`이 끝나면 어디로 돌아와 무엇을 이어서 실행할까요?"
+  - 17번 줄처럼 반환값을 받아서 쓰지 않는 호출이 있어요. `return`이 돌려준 값은 저절로 출력될까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  주문 접수
+  학교 배달 준비
+  - 책 포장 시작
+  - 책 포장 끝
+  책 상자 출발
+  도서관 배달 준비
+  - 우산 포장 시작
+  - 우산 포장 끝
+  우산 상자 출발
+  학교 도착
+  ```
+
+  실행 흐름을 따라가 보면 이래요.
+
+  1. 15번 줄: `주문 접수`.
+  1. 16번 줄: `deliver("책", "학교")`로 건너가요. `item`은 `"책"`, `place`는 `"학교"`예요. 9번 줄이 `학교 배달 준비`를 출력해요.
+  1. 10번 줄: `wrap("책")`으로 한 번 더 건너가요. `- 책 포장 시작`, `- 책 포장 끝`을 출력하고 `"책 상자"`를 돌려줘요. 10번 줄로 돌아와 `parcel`에 담아요.
+  1. 11번 줄: `책 상자 출발`. 12번 줄이 `"학교 도착"`을 돌려주고, 16번 줄로 돌아와 `result`에 담아요.
+  1. 17번 줄: 같은 과정을 `"우산"`, `"도서관"`으로 다시 해요. 마지막에 `"도서관 도착"`을 돌려주지만 **받아서 쓰는 곳이 없어서 버려지고 출력되지 않아요.**
+  1. 18번 줄: `result`에 담아 둔 `학교 도착`을 출력해요.
+
+  - `도서관 도착`이 출력된다고 생각했다면, `return`이 값을 출력까지 한다고 본 거예요. `return`은 돌려주기만 해요.
+  - 포장 줄이 `배달 준비`보다 먼저 나온다고 생각했다면 선언 순서대로 실행된다고 본 거예요. 실행 순서는 호출 순서가 정해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,110 @@
+id: js-basics.functions.callbacks-intro.impl-discount-rule
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.fn.first-class, weight: 1 }
+  - { id: js.types.typeof, weight: 0.3 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [first-class, typeof, write-code]
+estimatedSeconds: 300
+prompt: |
+  쇼핑몰의 할인 규칙(`rule`)은 두 가지 모양 중 하나로 주어져요.
+
+  - **숫자**: 깎아 줄 금액이에요. 예: `1000`이면 1000원 할인
+  - **함수**: 가격을 받아 깎아 줄 금액을 돌려주는 함수예요. 예: `(p) => p * 0.1`이면 10% 할인
+
+  할인 규칙과 가격을 받아 **할인한 뒤의 가격**을 돌려주는 함수 `discountFor(rule, price)`를 완성하세요.
+
+  ```js
+  discountFor(1000, 5000);            // 4000
+  discountFor((p) => p * 0.1, 5000);  // 4500
+  ```
+
+  - `rule`이 함수인지는 `typeof`로 알 수 있어요.
+  - 숨겨진 테스트는 다른 규칙과 가격으로도 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function discountFor(rule, price) {
+            // rule이 함수이면 rule을 불러서 할인 금액을 구하고,
+            // 숫자이면 rule 자체가 할인 금액이에요.
+          }
+  entry: discountFor
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function discountFor(rule, price) {
+            if (typeof rule === "function") {
+              return price - rule(price);
+            }
+            return price - rule;
+          }
+  checks:
+    - kind: call
+      id: fixed-amount
+      description: 숫자 규칙 1000이면 5000원에서 1000원을 깎아 4000을 돌려줘야 합니다.
+      requirement: 숫자 규칙
+      args: [1000, 5000]
+      expect: { equals: 4000 }
+    - kind: call
+      id: function-rule
+      description: 10% 할인 함수를 받으면 5000원에서 500원을 깎아 4500을 돌려줘야 합니다.
+      requirement: 함수 규칙
+      argsExpr: "[(p) => p * 0.1, 5000]"
+      expect: { equals: 4500 }
+    - kind: call
+      id: zero-amount
+      visible: false
+      description: 숫자 규칙이 0이면 가격이 그대로여야 합니다.
+      requirement: 숫자 규칙
+      args: [0, 3000]
+      expect: { equals: 3000 }
+    - kind: call
+      id: conditional-rule
+      visible: false
+      description: 가격에 따라 할인 금액이 달라지는 함수 규칙도 그 함수가 돌려준 금액만큼 깎아야 합니다.
+      requirement: 함수 규칙
+      argsExpr: "[(p) => (p >= 10000 ? 2000 : 0), 8000]"
+      expect: { equals: 8000 }
+    - kind: call
+      id: conditional-rule-big
+      visible: false
+      description: 같은 함수 규칙이라도 가격이 바뀌면 그 가격을 넣어 다시 계산해야 합니다.
+      requirement: 함수 규칙
+      argsExpr: "[(p) => (p >= 10000 ? 2000 : 0), 12000]"
+      expect: { equals: 10000 }
+    - kind: call
+      id: half-rule
+      visible: false
+      description: 절반 할인 함수를 받으면 3000원이 1500이 되어야 합니다.
+      requirement: 함수 규칙
+      argsExpr: "[(p) => p * 0.5, 3000]"
+      expect: { equals: 1500 }
+misconceptions: [js.mc.function-not-a-value, js.mc.call-without-parens]
+hints:
+  - 먼저 두 경우를 나눠야 해요. `rule`이 함수일 때와 숫자일 때예요.
+  - "`typeof rule`이 `\"function\"`이면 `rule`은 함수예요. 함수인 `rule`에 가격을 넣어 부르면 할인 금액을 돌려받아요."
+  - 함수일 때는 "가격 − (규칙에 가격을 넣어 부른 결과)", 숫자일 때는 "가격 − 규칙"을 돌려주면 돼요. 함수를 부를 때 괄호를 잊지 마세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function discountFor(rule, price) {
+    if (typeof rule === "function") {
+      return price - rule(price);
+    }
+    return price - rule;
+  }
+  ```
+
+  - 매개변수 `rule`에는 숫자가 올 수도, **함수**가 올 수도 있어요. 함수도 값이라 인수로 넘어올 수 있기 때문이에요.
+  - `typeof rule === "function"`으로 함수인지 확인하고, 함수이면 `rule(price)`로 불러서 할인 금액을 받아요.
+  - 괄호를 빠뜨려 `price - rule`로 쓰면 함수에서 숫자를 빼는 계산이 되어 `NaN`이 나와요.
+  - 숨겨진 테스트의 `(p) => (p >= 10000 ? 2000 : 0)`처럼, 함수 규칙은 받은 가격에 따라 다른 금액을 돌려줄 수 있어요. 그래서 할인 금액을 미리 정해 두지 않고 매번 `rule(price)`로 물어봐야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

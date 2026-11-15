@@ -1,0 +1,52 @@
+id: js-basics.functions.scope-basics.predict-shadow-tdz
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.scope.shadowing, weight: 1 }
+  - { id: js.scope.block, weight: 0.5 }
+  - { id: js.values.tdz, weight: 0.5 }
+tags: [scope, shadowing, tdz, block, reference-error]
+estimatedSeconds: 150
+prompt: |
+  할인 금액을 계산하는 프로그램이에요. 이 프로그램을 끝까지 실행하면 오류가 날까요? 오류가 난다면 어떤 종류의 오류인가요?
+
+  두 번의 `finalPrice` 호출이 각각 어느 갈래로 가는지 나눠서 생각해 보세요.
+spec:
+  lang: js
+  code: |
+    let discount = 1000;
+
+    function finalPrice(price) {
+      if (price >= 20000) {
+        console.log("할인 적용: " + discount + "원");
+        let discount = 3000;
+        return price - discount;
+      }
+      return price - discount;
+    }
+
+    console.log(finalPrice(15000));
+    console.log(finalPrice(25000));
+  answerKind: error
+  misconceptionByAnswer:
+    none: js.mc.shadow-reads-outer-before-decl
+hints:
+  - 첫 번째 호출(15000)은 `if` 블록에 들어가나요? 들어가지 않는다면 9번 줄의 `discount`는 어느 변수일까요?
+  - 두 번째 호출(25000)은 `if` 블록에 들어가요. 그 블록 안에는 `discount`라는 이름의 `let` 선언이 있어요.
+  - 블록 안에 같은 이름의 `let`이 있으면 그 블록 전체에서 이름이 안쪽 변수를 가리켜요. 선언 줄보다 위인 5번 줄에서 그 변수를 쓰면 어떻게 되는지 TDZ를 떠올려 보세요.
+explanation: |
+  **오류가 나요. 종류는 `ReferenceError`**예요. 실제 출력은 이래요.
+
+  ```text
+  14000
+  ReferenceError: Cannot access 'discount' before initialization
+  ```
+
+  - **첫 번째 호출 `finalPrice(15000)`**: 15000은 20000보다 작아 `if` 블록에 들어가지 않아요. 9번 줄은 블록 밖이라 `discount`를 바깥에서 찾아 1000을 써요. 그래서 `14000`이 출력돼요.
+  - **두 번째 호출 `finalPrice(25000)`**: `if` 블록에 들어가요. 이 블록에는 6번 줄의 `let discount`가 있어서, 블록 **전체**에서 `discount`는 블록 안의 변수를 가리켜요(섀도잉). 5번 줄은 그 변수의 선언보다 위라서 아직 쓸 수 없는 구간(TDZ)이에요. 바깥 `discount`를 대신 읽어 주지 않고 `ReferenceError`가 나요.
+
+  "오류 없음"이라고 생각했다면, 안쪽 선언 전 줄에서는 바깥 `discount`(1000)를 읽는다고 본 거예요. 안쪽에서 바깥 값도 쓰고 싶다면 안쪽 변수에 `bigDiscount`처럼 다른 이름을 붙여야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

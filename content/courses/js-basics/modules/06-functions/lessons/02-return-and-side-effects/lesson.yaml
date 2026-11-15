@@ -1,0 +1,16 @@
+id: js-basics.functions.return-and-side-effects
+title: 반환값과 부수 효과
+summary: 함수가 값을 돌려주는 일(반환)과 바깥에 흔적을 남기는 일(부수 효과)을 구분하고, return이 없거나 일부 경우에만 있을 때 undefined가 되는 이유와, 같은 인수에 같은 결과를 내는 순수 함수를 배웁니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 13, practice: 24 }
+concepts:
+  primary: [js.fn.side-effects, js.fn.undefined-return, js.fn.pure]
+  reviewed: [js.fn.return, js.fn.params-args, js.types.undefined, js.control.else-if, js.conv.nan]
+objectives:
+  - 함수의 반환값과 부수 효과(출력, 바깥 변수 바꾸기)를 구분하고, 반환값을 담은 변수를 써도 함수가 다시 실행되지 않는다는 것을 예측할 수 있다.
+  - return이 없거나 일부 갈래에만 있는 함수가 undefined를 반환하는 경우를 찾아 모든 갈래에서 값을 돌려주게 고칠 수 있다.
+  - return을 만나면 함수가 바로 끝나서 그 뒤의 코드가 실행되지 않는다는 것을 설명할 수 있다.
+  - 바깥 변수에 기대는 함수와 순수 함수를 구별하고, 바깥 값을 매개변수로 받아 순수 함수로 바꿀 수 있다.
+practice:
+  targetCount: 18

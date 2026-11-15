@@ -443,3 +443,159 @@
   prerequisites: [js.loops.for, js.control.block]
   misconceptions: [js.mc.inner-var-not-reset, js.mc.nested-count-additive]
   mdn: Web/JavaScript/Guide/Loops_and_iteration
+
+# ── 모듈 6. 함수: function-basics ──
+
+- id: js.fn.declaration
+  title: 함수 선언
+  importance: core
+  summary: function 이름(매개변수) { 본문 }으로 코드 묶음에 이름을 붙여 둬요. 선언은 함수를 만들어 두기만 하고, 본문은 호출하기 전까지 실행되지 않아요.
+  prerequisites: [js.basics.statements, js.control.block]
+  misconceptions: [js.mc.declaration-runs-function]
+  mdn: Web/JavaScript/Reference/Statements/function
+
+- id: js.fn.call
+  title: 함수 호출
+  importance: standard
+  summary: 함수 이름 뒤에 괄호를 붙여(이름()) 부르면 본문이 처음부터 실행되고, 끝나면 부른 자리로 돌아와요. 같은 함수를 몇 번이든 다시 부를 수 있고, 괄호 없이 이름만 쓰면 실행되지 않아요.
+  prerequisites: [js.fn.declaration]
+  misconceptions: [js.mc.call-without-parens, js.mc.function-runs-once]
+  mdn: Web/JavaScript/Guide/Functions
+
+- id: js.fn.params-args
+  title: 매개변수와 인수
+  importance: core
+  summary: 매개변수는 함수를 선언할 때 괄호 안에 적는 이름이고, 인수는 호출할 때 넘기는 값이에요. 인수는 이름이 아니라 순서대로 매개변수에 들어가고, 매개변수는 함수 안에서만 쓰는 변수처럼 동작해요.
+  prerequisites: [js.fn.call, js.values.assignment]
+  misconceptions: [js.mc.params-match-by-name, js.mc.param-redeclare-with-let]
+  mdn: Web/JavaScript/Guide/Functions
+
+- id: js.fn.return
+  title: return으로 값 돌려주기
+  importance: core
+  summary: return 값;은 함수를 끝내고 그 값을 호출한 자리로 돌려줘요. 돌려받은 값은 변수에 담거나 계산에 바로 쓸 수 있어요. console.log는 화면에 보여 주기만 하고 값을 돌려주지 않아요.
+  prerequisites: [js.fn.call]
+  misconceptions: [js.mc.return-is-log, js.mc.return-value-auto-printed, js.mc.return-changes-outer-variable, js.mc.code-after-return-runs]
+  mdn: Web/JavaScript/Reference/Statements/return
+
+# ── 모듈 6. 함수: return-and-side-effects ──
+
+- id: js.fn.side-effects
+  title: 부수 효과
+  importance: standard
+  summary: 함수가 값을 돌려주는 것 말고 바깥에 남기는 흔적(콘솔 출력, 바깥 변수 바꾸기 등)을 부수 효과라고 해요. 부수 효과는 함수를 호출할 때만 일어나고, 반환값을 담은 변수를 쓴다고 다시 일어나지 않아요.
+  prerequisites: [js.fn.return]
+  misconceptions: [js.mc.function-cant-change-outer, js.mc.side-effect-repeats-on-reuse]
+  mdn: Web/JavaScript/Guide/Functions
+
+- id: js.fn.undefined-return
+  title: 반환값이 없는 함수
+  importance: standard
+  summary: return이 없거나, return 뒤에 값이 없거나, 실행된 갈래에 return이 없으면 함수는 undefined를 반환해요. null이나 0이 아니에요.
+  prerequisites: [js.fn.return, js.types.undefined]
+  misconceptions: [js.mc.no-return-is-null, js.mc.return-in-if-covers-all]
+  mdn: Web/JavaScript/Reference/Statements/return
+
+- id: js.fn.pure
+  title: 순수 함수
+  importance: minor
+  summary: 같은 인수를 넣으면 항상 같은 값을 돌려주고 부수 효과가 없는 함수를 순수 함수라고 해요. 바깥 변수에 기대거나 바깥 변수를 바꾸는 함수는 같은 인수여도 결과가 달라질 수 있어요.
+  prerequisites: [js.fn.side-effects, js.fn.params-args]
+  misconceptions: [js.mc.same-args-same-result-always]
+  mdn: Web/JavaScript/Guide/Functions
+
+# ── 모듈 6. 함수: expressions-and-arrows ──
+
+- id: js.fn.expression
+  title: 함수 표현식
+  importance: standard
+  summary: const 이름 = function (매개변수) { ... };처럼 함수를 값으로 만들어 변수에 담는 방법이에요. 담기만 할 뿐 실행되지는 않고, 변수 이름 뒤에 괄호를 붙여 호출해요.
+  prerequisites: [js.fn.declaration, js.values.const]
+  misconceptions: [js.mc.fn-expression-stores-result]
+  mdn: Web/JavaScript/Reference/Operators/function
+
+- id: js.fn.arrow
+  title: 화살표 함수
+  importance: core
+  summary: (매개변수) => 식은 function 키워드 없이 함수를 짧게 쓰는 방법이에요. 중괄호 없이 식 하나만 쓰면 그 값이 자동으로 반환되고, 중괄호를 쓰면 일반 함수처럼 return을 직접 써야 해요.
+  prerequisites: [js.fn.expression, js.fn.return]
+  misconceptions: [js.mc.arrow-is-comparison, js.mc.arrow-braces-implicit-return, js.mc.arrow-concise-with-return]
+  mdn: Web/JavaScript/Reference/Functions/Arrow_functions
+
+- id: js.fn.hoisting
+  title: 함수 호이스팅
+  importance: standard
+  summary: 함수 선언은 코드가 실행되기 전에 미리 만들어져서 선언보다 위에서 호출해도 돼요(호이스팅). const로 만든 함수 표현식과 화살표 함수는 그 줄이 실행된 뒤에야 쓸 수 있어서, 먼저 부르면 ReferenceError가 나요.
+  prerequisites: [js.fn.expression, js.values.tdz]
+  misconceptions: [js.mc.expression-hoisted, js.mc.declaration-not-hoisted]
+  mdn: Web/JavaScript/Guide/Functions
+
+# ── 모듈 6. 함수: default-and-rest ──
+
+- id: js.fn.default-params
+  title: 기본값 매개변수
+  importance: standard
+  summary: 인수를 덜 넘기면 남는 매개변수는 오류 없이 undefined가 돼요. function f(count = 1)처럼 기본값을 적어 두면 인수가 없거나 undefined일 때 그 값을 써요. null이나 0을 넘기면 기본값을 쓰지 않아요.
+  prerequisites: [js.fn.params-args, js.types.undefined]
+  misconceptions: [js.mc.missing-arg-error, js.mc.default-on-null]
+  mdn: Web/JavaScript/Reference/Functions/Default_parameters
+
+- id: js.fn.rest-params
+  title: 나머지 매개변수
+  importance: standard
+  summary: function f(...nums)처럼 마지막 매개변수 앞에 점 세 개를 붙이면, 앞 매개변수가 받고 남은 인수를 모두 한 묶음(배열)으로 모아요. nums.length로 개수를, nums[0]처럼 위치 번호로 값을 꺼내요. 나머지 매개변수는 맨 끝에만 둘 수 있어요.
+  prerequisites: [js.fn.params-args, js.loops.for]
+  misconceptions: [js.mc.rest-not-last, js.mc.rest-includes-named]
+  mdn: Web/JavaScript/Reference/Functions/rest_parameters
+
+# ── 모듈 6. 함수: scope-basics ──
+
+- id: js.scope.block
+  title: 블록 스코프
+  importance: core
+  summary: 중괄호 블록 안에서 let이나 const로 만든 변수는 그 블록 안에서만 쓸 수 있어요(블록 스코프). 블록이 끝나면 사라지므로 블록 밖에서 쓰면 ReferenceError가 나고, 다른 블록에서 같은 이름을 다시 만들어도 부딪히지 않아요.
+  prerequisites: [js.control.block, js.values.let]
+  misconceptions: [js.mc.block-let-visible-outside, js.mc.var-is-block-scoped, js.mc.sibling-blocks-name-conflict]
+  mdn: Web/JavaScript/Reference/Statements/block
+
+- id: js.scope.function
+  title: 함수 스코프
+  importance: standard
+  summary: 함수 안에서 만든 변수와 매개변수는 그 함수 안에서만 쓸 수 있어요. 호출할 때마다 새로 만들어지고 호출이 끝나면 사라지기 때문에, 다음 호출로 값이 이어지지 않아요.
+  prerequisites: [js.fn.declaration, js.scope.block]
+  misconceptions: [js.mc.function-local-visible-outside, js.mc.function-var-persists]
+  mdn: Web/JavaScript/Reference/Statements/function
+
+- id: js.scope.global
+  title: 전역 변수
+  importance: standard
+  summary: 어떤 블록이나 함수에도 들어 있지 않은 맨 바깥의 변수는 프로그램 어디서나 읽고 바꿀 수 있어요. 함수 안에서도 바깥 변수를 쓸 수 있고, 호출이 끝나도 값이 남아요. 엄격 모드에서는 let 없이 대입해도 전역 변수가 생기지 않고 ReferenceError가 나요.
+  prerequisites: [js.scope.function]
+  misconceptions: [js.mc.inner-cant-read-outer, js.mc.undeclared-assign-creates-global]
+  mdn: Web/JavaScript/Guide/Grammar_and_types
+
+- id: js.scope.shadowing
+  title: 섀도잉
+  importance: core
+  summary: 안쪽 스코프에서 바깥과 같은 이름의 변수나 매개변수를 만들면, 안쪽에서는 그 이름이 안쪽 변수를 가리키고 바깥 변수는 가려져요(섀도잉). 안쪽 변수를 바꿔도 바깥 변수는 그대로예요.
+  prerequisites: [js.scope.global, js.fn.params-args]
+  misconceptions: [js.mc.param-reassign-changes-outer, js.mc.shadow-changes-outer, js.mc.shadow-reads-outer-before-decl]
+  mdn: Web/JavaScript/Reference/Statements/let
+
+# ── 모듈 6. 함수: callbacks-intro ──
+
+- id: js.fn.first-class
+  title: 값으로서의 함수
+  importance: standard
+  summary: JavaScript에서 함수는 숫자나 문자열처럼 값이에요. 변수에 담고, 다른 함수의 인수로 넘기고, typeof로 "function"을 확인할 수 있어요. 함수 이름(greet)은 함수 자체이고, greet()는 함수를 실행한 결과예요.
+  prerequisites: [js.fn.expression]
+  misconceptions: [js.mc.function-not-a-value, js.mc.assign-call-result]
+  mdn: Web/JavaScript/Guide/Functions
+
+- id: js.fn.callback
+  title: 콜백 함수
+  importance: standard
+  summary: 다른 함수에 인수로 넘겨서, 그 함수가 필요할 때 대신 불러 주는 함수를 콜백이라고 해요. 넘길 때는 괄호 없이 함수 자체를 넘기고, 언제·몇 번·어떤 인수로 부를지는 받은 함수가 정해요.
+  prerequisites: [js.fn.first-class, js.fn.arrow]
+  misconceptions: [js.mc.callback-called-when-passed, js.mc.callback-runs-at-pass-time]
+  mdn: Web/JavaScript/Guide/Functions

@@ -1,0 +1,111 @@
+id: js-basics.functions.callbacks-intro.impl-sum-with
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.fn.callback, weight: 1 }
+  - { id: js.fn.default-params, weight: 0.5 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [callback, default-params, accumulator, boundary, write-code]
+estimatedSeconds: 420
+prompt: |
+  `start`부터 `end`까지(둘 다 포함)의 정수를 콜백 `transform`으로 하나씩 바꾼 뒤 모두 더해 돌려주는 함수 `sumWith(start, end, transform)`을 완성하세요.
+
+  ```js
+  sumWith(1, 4, (n) => n * n);  // 1 + 4 + 9 + 16 = 30
+  sumWith(1, 5);                // 1 + 2 + 3 + 4 + 5 = 15
+  ```
+
+  요구사항:
+
+  - `transform`을 넘기지 않으면(또는 `undefined`를 넘기면) 수를 **바꾸지 않고 그대로** 더해요. 이 경우를 `if`로 따로 처리하지 말고, **기본값 매개변수**에 "받은 수를 그대로 돌려주는 화살표 함수"를 넣어 해결해 보세요.
+  - `start`가 `end`보다 크면 더할 수가 없으니 0을 돌려줘요.
+  - 숨겨진 테스트는 다른 범위와 다른 콜백으로도 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function sumWith(start, end, transform) {
+            // start부터 end까지의 수 n마다 transform(n)을 더해 돌려주세요.
+          }
+  entry: sumWith
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function sumWith(start, end, transform = (n) => n) {
+            let total = 0;
+            for (let n = start; n <= end; n++) {
+              total += transform(n);
+            }
+            return total;
+          }
+  checks:
+    - kind: call
+      id: squares
+      description: 제곱하는 콜백을 받으면 1부터 4까지의 제곱의 합 30을 돌려줘야 합니다.
+      requirement: 콜백으로 바꿔 더하기
+      argsExpr: "[1, 4, (n) => n * n]"
+      expect: { equals: 30 }
+    - kind: call
+      id: no-callback
+      description: 콜백을 넘기지 않으면 1부터 5까지를 그대로 더한 15를 돌려줘야 합니다.
+      requirement: 콜백이 없을 때
+      args: [1, 5]
+      expect: { equals: 15 }
+      misconceptionIfFail: js.mc.missing-arg-error
+    - kind: call
+      id: undefined-callback
+      visible: false
+      description: 콜백 자리에 undefined를 넘겨도 콜백이 없을 때처럼 수를 그대로 더해야 합니다.
+      requirement: 콜백이 없을 때
+      argsExpr: "[1, 3, undefined]"
+      expect: { equals: 6 }
+    - kind: call
+      id: single
+      visible: false
+      description: 시작과 끝이 같으면 그 수 하나를 바꾼 값이어야 합니다(끝 수 포함).
+      requirement: 범위의 끝 포함
+      argsExpr: "[2, 2, (n) => n * 10]"
+      expect: { equals: 20 }
+    - kind: call
+      id: empty-range
+      visible: false
+      description: start가 end보다 크면 0을 돌려줘야 합니다.
+      requirement: 범위의 끝 포함
+      argsExpr: "[5, 1, (n) => n]"
+      expect: { equals: 0 }
+    - kind: call
+      id: picky-callback
+      visible: false
+      description: 콜백이 어떤 수는 0으로 바꾸더라도 콜백이 돌려준 값을 그대로 더해야 합니다.
+      requirement: 콜백으로 바꿔 더하기
+      argsExpr: "[1, 4, (n) => (n % 2 === 0 ? n : 0)]"
+      expect: { equals: 6 }
+misconceptions: [js.mc.missing-arg-error, js.mc.callback-called-when-passed]
+hints:
+  - 먼저 콜백이 항상 있다고 생각하고, 누적 패턴으로 `transform(n)`을 더하는 반복을 만들어 보세요.
+  - 콜백을 넘기지 않으면 `transform`은 `undefined`가 되어 `transform(n)`에서 오류가 나요. 매개변수 자리에서 기본값을 정할 수 있었어요.
+  - 기본값으로 넣을 함수는 "받은 수를 아무것도 바꾸지 않고 돌려주는" 화살표 함수예요. 범위가 비었을 때는 반복이 돌지 않게 조건을 확인하세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function sumWith(start, end, transform = (n) => n) {
+    let total = 0;
+    for (let n = start; n <= end; n++) {
+      total += transform(n);
+    }
+    return total;
+  }
+  ```
+
+  - **콜백으로 바꿔 더하기**: 반복하며 `transform(n)`의 반환값을 `total`에 더해요. 무엇으로 바꿀지는 콜백이 정해요.
+  - **기본값으로 함수 넣기**: 기본값 매개변수에는 숫자나 문자열뿐 아니라 함수도 넣을 수 있어요. `(n) => n`은 받은 수를 그대로 돌려주니, 콜백이 없으면 수를 그대로 더하게 돼요. 기본값은 인수가 없을 때와 `undefined`를 넘겼을 때 모두 쓰여요.
+  - 기본값이 없으면 `sumWith(1, 5)`에서 `transform`이 `undefined`라서 `TypeError: transform is not a function`이 나요. 인수를 덜 넘겨도 바로 오류가 나는 게 아니라, 빠진 매개변수를 **부르는 순간** 오류가 나요.
+  - **경계**: `n <= end`로 끝 수를 포함하고, `start > end`면 반복이 한 번도 돌지 않아 0이 반환돼요.
+  - `if (transform === undefined)`로 나눠 처리해도 동작은 같아요. 다만 기본값을 쓰면 반복 코드를 한 벌만 쓰면 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

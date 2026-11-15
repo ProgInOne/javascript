@@ -1,0 +1,59 @@
+id: js-basics.functions.callbacks-intro.find-bug-assign-call-result
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.fn.first-class, weight: 1 }
+  - { id: js.errors.error-messages, weight: 0.3 }
+tags: [first-class, call, parentheses, error, debugging]
+estimatedSeconds: 100
+prompt: |
+  메뉴판 제목을 만드는 함수를 `printTitle`이라는 이름으로도 부르고 싶었어요. 그런데 실행하면 오류가 나요. 오류의 **원인**이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    function makeTitle() {
+      return "== 오늘의 메뉴 ==";
+    }
+    const printTitle = makeTitle();
+    console.log("메뉴판을 엽니다");
+    console.log(printTitle());
+  bugLines: [4]
+  acceptLines: [6]
+  symptom: "`메뉴판을 엽니다`가 나온 뒤 `TypeError: printTitle is not a function` 오류가 나요(6번째 줄)."
+  symptomCheck:
+    error: TypeError
+  fixedCode: |-
+    function makeTitle() {
+      return "== 오늘의 메뉴 ==";
+    }
+    const printTitle = makeTitle;
+    console.log("메뉴판을 엽니다");
+    console.log(printTitle());
+  causeOptions:
+    - id: c1
+      text: 4번 줄에서 makeTitle을 실행한 결과(문자열)를 담아서, printTitle은 함수가 아니다
+      correct: true
+    - id: c2
+      text: 함수는 다른 이름의 변수에 담을 수 없어서, printTitle이라는 이름으로는 부를 수 없다
+      misconception: js.mc.function-not-a-value
+    - id: c3
+      text: 6번 줄처럼 console.log 안에서는 함수를 부를 수 없다
+hints:
+  - 오류는 6번 줄에서 났지만, `printTitle`에 무엇이 들어갔는지는 다른 줄이 정했어요.
+  - 4번 줄의 `makeTitle()`은 함수인가요, 함수를 실행한 결과인가요?
+  - "`printTitle`에 문자열이 들어 있다면 `printTitle()`은 무엇을 부르려는 걸까요? 함수 자체를 담는 방법을 떠올려 보세요."
+explanation: |
+  원인은 **4번 줄** `const printTitle = makeTitle();`이에요.
+
+  - `makeTitle()`은 괄호가 있어서 그 자리에서 실행되고, 결과인 문자열 `"== 오늘의 메뉴 =="`가 `printTitle`에 담겨요.
+  - 6번 줄의 `printTitle()`은 문자열을 함수처럼 부르려는 것이라 `TypeError: printTitle is not a function`이 나요. 오류가 보고된 줄(6번)과 원인이 있는 줄(4번)이 달라요.
+
+  고치는 방법은 둘 중 하나예요.
+
+  - 4번 줄에서 괄호를 지워 함수 자체를 담기: `const printTitle = makeTitle;` (처음 의도)
+  - 6번 줄에서 괄호를 지워 담긴 문자열을 출력하기: `console.log(printTitle);` 이 방법도 같은 출력을 내서 6번 줄도 정답으로 인정해요.
+
+  함수는 다른 이름의 변수에 담을 수 있고, `console.log` 안에서 함수를 부르는 것도 괜찮아요. 문제는 괄호 하나예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,73 @@
+id: js-basics.functions.function-basics.fix-swapped-args
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.fn.params-args, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [function, argument, order, debugging]
+estimatedSeconds: 180
+prompt: |
+  계산대에서 거스름돈을 계산하는 프로그램이에요. 함수 `calcChange(paid, price)`는 낸 돈에서 물건값을 뺀 거스름돈을 돌려줘요. 그런데 첫 번째 손님의 거스름돈이 이상하게 나와요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  첫 손님 거스름돈: 3500원
+  둘째 손님 거스름돈: 800원
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function calcChange(paid, price) {
+            return paid - price;
+          }
+
+          const price = 6500;
+          const paid = 10000;
+          const change = calcChange(price, paid);
+          console.log("첫 손님 거스름돈: " + change + "원");
+
+          console.log("둘째 손님 거스름돈: " + calcChange(5000, 4200) + "원");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function calcChange(paid, price) {
+            return paid - price;
+          }
+
+          const price = 6500;
+          const paid = 10000;
+          const change = calcChange(paid, price);
+          console.log("첫 손님 거스름돈: " + change + "원");
+
+          console.log("둘째 손님 거스름돈: " + calcChange(5000, 4200) + "원");
+  bugDescription: "첫 손님 거스름돈이 `-3500원`으로 나와요. 둘째 손님은 맞게 나와요."
+  bugMisconception: js.mc.params-match-by-name
+  checks:
+    - kind: console
+      id: output
+      description: 두 손님의 거스름돈이 각각 3500원, 800원으로 출력되어야 합니다.
+      requirement: 거스름돈 출력
+      expect:
+        lines: ["첫 손님 거스름돈: 3500원", "둘째 손님 거스름돈: 800원"]
+      misconceptionIfFail: js.mc.params-match-by-name
+misconceptions: [js.mc.params-match-by-name]
+hints:
+  - 둘째 손님은 맞게 나와요. 그러니 함수 본문보다는 첫 손님을 계산하는 호출을 의심해 보세요.
+  - 7번 줄에서 `paid` 매개변수에는 어떤 값이 들어가나요? 인수는 이름이 아니라 순서대로 들어가요.
+  - 매개변수 순서는 `(paid, price)`예요. 7번 줄 인수의 순서가 이 순서와 맞는지 비교해 보세요.
+explanation: |
+  7번 줄의 인수 순서가 바뀌어 있었어요.
+
+  ```js
+  const change = calcChange(paid, price);
+  ```
+
+  - 버그 코드 `calcChange(price, paid)`에서는 첫 번째 인수 `price`의 값 6500이 매개변수 `paid`에, 10000이 `price`에 들어갔어요. 그래서 `6500 - 10000`인 `-3500`이 나왔어요.
+  - 변수 이름이 매개변수 이름과 같아도 짝을 맞춰 주지 않아요. 인수는 **순서대로** 들어가요.
+  - 함수 본문을 `return price - paid;`로 바꾸면 첫 손님은 맞지만, 순서가 올바른 둘째 손님 호출이 `-800원`이 되어 틀려요. 함수는 그대로 두고 잘못된 호출을 고쳐야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

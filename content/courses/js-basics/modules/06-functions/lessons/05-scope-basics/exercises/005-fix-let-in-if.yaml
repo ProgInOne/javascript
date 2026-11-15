@@ -1,0 +1,81 @@
+id: js-basics.functions.scope-basics.fix-let-in-if
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.scope.block, weight: 1 }
+tags: [scope, block, reference-error, debugging]
+estimatedSeconds: 120
+prompt: |
+  회원이면 10% 할인한 금액을 출력하는 프로그램이에요. 실행하면 오류가 나요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  결제 금액: 10800원
+  ```
+
+  `isMember`가 `false`일 때는 원래 가격 `12000원`이 나와야 해요. 그 경우에도 맞게 동작하도록 고쳐 보세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const price = 12000;
+          const isMember = true;
+
+          if (isMember) {
+            const salePrice = price * 0.9;
+          }
+
+          console.log("결제 금액: " + salePrice + "원");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const price = 12000;
+          const isMember = true;
+
+          let salePrice = price;
+          if (isMember) {
+            salePrice = price * 0.9;
+          }
+
+          console.log("결제 금액: " + salePrice + "원");
+  bugDescription: "실행하면 `ReferenceError: salePrice is not defined` 오류가 나요."
+  bugMisconception: js.mc.block-let-visible-outside
+  checks:
+    - kind: console
+      id: output
+      description: 회원 할인 금액이 출력되어야 합니다.
+      requirement: 할인 금액 출력
+      expect:
+        lines: ["결제 금액: 10800원"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+      misconceptionIfFail: js.mc.block-let-visible-outside
+misconceptions: [js.mc.block-let-visible-outside]
+hints:
+  - 오류가 난 줄에서 `salePrice`는 만든 블록의 안인가요, 밖인가요?
+  - 블록 밖에서도 쓸 변수는 블록 바깥에서 먼저 만들어야 해요. `const`로 만들면 나중에 값을 바꿀 수 없다는 점도 생각하세요.
+  - 블록 위에서 `salePrice`를 회원이 아닐 때의 가격으로 먼저 만들고, 블록 안에서는 할인 금액을 대입만 해 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  let salePrice = price;
+  if (isMember) {
+    salePrice = price * 0.9;
+  }
+  console.log("결제 금액: " + salePrice + "원");
+  ```
+
+  - 원래 코드의 `salePrice`는 `if` 블록 안에서 `const`로 만들어져서 블록이 끝나면 사라져요. 그래서 블록 밖의 `console.log`에서 `ReferenceError`가 났어요.
+  - `salePrice`를 블록 **바깥**에서 만들면 블록이 끝난 뒤에도 쓸 수 있어요. 블록 안에서 값을 바꿔야 하므로 `let`으로 만들어요.
+  - 시작값을 `price`로 두면 회원이 아닐 때(`isMember`가 `false`) 블록이 실행되지 않아도 원래 가격 `12000`이 나와요.
+  - `console.log`를 블록 안으로 옮겨도 이 경우의 출력은 같지만, 회원이 아닐 때 아무것도 출력되지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

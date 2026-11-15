@@ -1,0 +1,87 @@
+id: js-basics.functions.return-and-side-effects.impl-pure-price
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.fn.pure, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [pure, params, write-code]
+estimatedSeconds: 200
+prompt: |
+  쿠폰을 적용한 최종 가격을 돌려주는 함수 `finalPrice(price, rate)`를 완성하세요. `rate`는 할인율(%)이에요.
+
+  - 최종 가격은 `price`에서 `price * rate / 100`을 뺀 값이에요.
+  - 바깥 변수 `couponRate`는 지금 진행 중인 쿠폰의 할인율이라 언제든 바뀔 수 있어요. 함수는 바깥 변수가 아니라 **매개변수만 보고** 계산하는 순수 함수로 만드세요.
+  - 예: `finalPrice(20000, 10)` → `18000`, `finalPrice(8000, 25)` → `6000`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          let couponRate = 10; // 지금 진행 중인 쿠폰 할인율(%)
+
+          function finalPrice(price, rate) {
+            // 여기에 작성하세요
+          }
+
+          console.log(finalPrice(20000, couponRate));
+  entry: finalPrice
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let couponRate = 10; // 지금 진행 중인 쿠폰 할인율(%)
+
+          function finalPrice(price, rate) {
+            return price - price * rate / 100;
+          }
+
+          console.log(finalPrice(20000, couponRate));
+  checks:
+    - kind: call
+      id: ten
+      description: finalPrice(20000, 10)은 18000을 돌려줘야 합니다.
+      requirement: 최종 가격 돌려주기
+      args: [20000, 10]
+      expect: { equals: 18000 }
+    - kind: call
+      id: quarter
+      description: finalPrice(8000, 25)는 6000을 돌려줘야 합니다. 바깥 couponRate가 아니라 넘겨받은 rate를 써야 해요.
+      requirement: 매개변수로 계산
+      args: [8000, 25]
+      expect: { equals: 6000 }
+      misconceptionIfFail: js.mc.same-args-same-result-always
+    - kind: call
+      id: no-discount
+      visible: false
+      description: 할인율이 0이면 원래 가격을 돌려줘야 합니다.
+      requirement: 매개변수로 계산
+      args: [5000, 0]
+      expect: { equals: 5000 }
+    - kind: call
+      id: half
+      visible: false
+      description: 다른 할인율(50%)에도 맞게 계산해야 합니다.
+      requirement: 매개변수로 계산
+      args: [12000, 50]
+      expect: { equals: 6000 }
+misconceptions: [js.mc.same-args-same-result-always]
+hints:
+  - 함수가 써야 할 값은 모두 괄호 안의 `price`와 `rate`로 들어와요.
+  - 본문에서 `couponRate`를 쓰면 `finalPrice(8000, 25)`도 10% 할인이 되어 버려요.
+  - 할인 금액을 계산해서 원래 가격에서 뺀 값을 출력하지 말고 돌려주세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function finalPrice(price, rate) {
+    return price - price * rate / 100;
+  }
+  ```
+
+  - 계산에 필요한 값을 모두 매개변수로 받아서, `finalPrice(8000, 25)`는 언제 불러도 6000이에요. 순수 함수예요.
+  - 본문에서 `couponRate`를 읽으면 넘긴 `rate`를 무시하게 되고, 바깥에서 `couponRate`가 바뀔 때마다 같은 인수로도 결과가 달라져요.
+  - 지금의 쿠폰을 쓰고 싶으면 호출하는 쪽에서 `finalPrice(20000, couponRate)`처럼 인수로 넘겨요. 시작 코드의 마지막 줄이 그 예예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

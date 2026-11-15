@@ -1,0 +1,48 @@
+id: js-basics.functions.expressions-and-arrows.mcq-call-before-declaration
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.hoisting, weight: 1 }
+tags: [hoisting, declaration]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 실행하면 어떻게 되나요?
+code: |
+  console.log(welcome("지우"));
+
+  function welcome(name) {
+    return name + "님 환영해요";
+  }
+spec:
+  options:
+    - id: a
+      text: "`지우님 환영해요`가 출력된다"
+    - id: b
+      text: "`ReferenceError: welcome is not defined` 오류가 난다"
+      misconception: js.mc.declaration-not-hoisted
+      rationale: 함수 선언은 실행 전에 미리 만들어지므로, 1번 줄에서도 welcome이 이미 있어요.
+    - id: c
+      text: "`ReferenceError: Cannot access 'welcome' before initialization` 오류가 난다"
+      misconception: js.mc.declaration-not-hoisted
+      rationale: 이 오류는 const로 만든 함수를 먼저 부를 때 나요. function으로 선언한 함수는 먼저 불러도 돼요.
+    - id: d
+      text: "`undefined`가 출력된다"
+      rationale: welcome은 이미 완성된 함수라서 실행되고, return한 글자가 출력돼요.
+  correct: a
+misconceptions: [js.mc.declaration-not-hoisted]
+hints:
+  - "`welcome`은 `function` 키워드로 만든 함수 선언이에요."
+  - JavaScript는 코드를 실행하기 전에 함수 선언을 먼저 훑어 만들어 둬요.
+  - 선언 전에 부르면 오류가 나는 것은 어떤 방법으로 만든 함수였는지 떠올려 보세요.
+explanation: |
+  `지우님 환영해요`가 출력돼요.
+
+  함수 **선언**은 코드를 실행하기 전에 미리 만들어져요(호이스팅). 그래서 1번 줄에서 아직 3~5번 줄을 지나지 않았어도 `welcome`을 부를 수 있어요.
+
+  - `welcome is not defined`라고 생각했다면: 코드가 위에서 아래로만 실행된다고 본 거예요. 함수 선언은 예외예요.
+  - `Cannot access 'welcome' before initialization`이라고 생각했다면: 이 오류는 `const welcome = ...`처럼 함수 표현식이나 화살표 함수로 만들었을 때 나요.
+  - `undefined`라고 생각했다면: 함수가 비어 있는 상태가 아니라 완전히 만들어져 있어서, 호출하면 `return`한 글자가 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

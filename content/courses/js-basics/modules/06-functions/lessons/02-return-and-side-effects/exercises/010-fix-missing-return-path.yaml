@@ -1,0 +1,120 @@
+id: js-basics.functions.return-and-side-effects.fix-missing-return-path
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.fn.undefined-return, weight: 1 }
+  - { id: js.control.else-if, weight: 0.3 }
+tags: [undefined-return, else-if, boundary, debugging]
+estimatedSeconds: 200
+prompt: |
+  주문 금액에 따라 배송비를 돌려주는 함수 `shippingFee(total)`이에요. 규칙은 이래요.
+
+  - 30,000원 이상: 무료(`0`)
+  - 10,000원 이상 30,000원 미만: `2500`
+  - 10,000원 미만: `4000`
+
+  일부 금액에서 배송비가 이상하게 나와요. 버그를 고쳐서 어떤 금액이든 규칙대로 배송비를 돌려주게 하세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function shippingFee(total) {
+            if (total >= 30000) {
+              return 0;
+            } else if (total >= 10000) {
+              return 2500;
+            }
+          }
+
+          console.log("배송비: " + shippingFee(35000));
+          console.log("배송비: " + shippingFee(15000));
+          console.log("배송비: " + shippingFee(5000));
+  entry: shippingFee
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function shippingFee(total) {
+            if (total >= 30000) {
+              return 0;
+            } else if (total >= 10000) {
+              return 2500;
+            }
+            return 4000;
+          }
+
+          console.log("배송비: " + shippingFee(35000));
+          console.log("배송비: " + shippingFee(15000));
+          console.log("배송비: " + shippingFee(5000));
+  bugDescription: "실행하면 마지막 줄이 `배송비: undefined`로 나와요."
+  bugMisconception: js.mc.return-in-if-covers-all
+  checks:
+    - kind: call
+      id: free
+      description: 35000원이면 배송비는 0이어야 합니다.
+      requirement: 규칙대로 배송비 돌려주기
+      args: [35000]
+      expect: { equals: 0 }
+    - kind: call
+      id: middle
+      description: 15000원이면 배송비는 2500이어야 합니다.
+      requirement: 규칙대로 배송비 돌려주기
+      args: [15000]
+      expect: { equals: 2500 }
+    - kind: call
+      id: small
+      description: 5000원이면 배송비는 4000이어야 합니다.
+      requirement: 10,000원 미만 처리
+      args: [5000]
+      expect: { equals: 4000 }
+      misconceptionIfFail: js.mc.return-in-if-covers-all
+    - kind: call
+      id: just-under
+      visible: false
+      description: 10,000원보다 조금이라도 적으면 4000이어야 합니다.
+      requirement: 10,000원 미만 처리
+      args: [9999]
+      expect: { equals: 4000 }
+    - kind: call
+      id: boundary-10000
+      visible: false
+      description: 딱 10,000원이면 2500이어야 합니다.
+      requirement: 경계 금액
+      args: [10000]
+      expect: { equals: 2500 }
+    - kind: call
+      id: boundary-30000
+      visible: false
+      description: 딱 30,000원이면 무료여야 합니다.
+      requirement: 경계 금액
+      args: [30000]
+      expect: { equals: 0 }
+misconceptions: [js.mc.return-in-if-covers-all, js.mc.no-return-is-null]
+hints:
+  - "`shippingFee(5000)`을 따라가 보세요. 두 조건은 각각 참인가요, 거짓인가요?"
+  - 두 조건이 모두 거짓이면 함수는 끝까지 내려가요. 그때 만나는 `return`이 있나요?
+  - 10,000원 미만일 때 돌려줄 값을 정하는 갈래가 하나 빠져 있어요. `else`를 더해도 되고, 함수 끝에 "그 밖의 경우"를 둬도 돼요.
+explanation: |
+  예시 정답은 함수 끝에 "그 밖의 경우"의 `return`을 더한 것이에요.
+
+  ```js
+  function shippingFee(total) {
+    if (total >= 30000) {
+      return 0;
+    } else if (total >= 10000) {
+      return 2500;
+    }
+    return 4000;
+  }
+  ```
+
+  `shippingFee(5000)`은 두 조건이 모두 거짓이라 `if`문을 지나 함수 끝까지 내려가요. 원래 코드에는 거기에 `return`이 없어서 `undefined`를 돌려줬어요. `null`이나 `0`이 아니라 `undefined`예요.
+
+  `else { return 4000; }`를 붙여도 똑같이 정답이에요. 중요한 것은 **어떤 금액이 들어와도 `return`을 만나게** 하는 것이에요.
+
+  `if (total < 10000) { return 4000; }`처럼 조건을 하나 더 쓰는 것도 동작은 맞아요. 다만 마지막 갈래에도 조건을 달면, 조건을 잘못 쓰는 순간 다시 빠지는 경우가 생기기 쉬워요. 마지막은 조건 없는 `else`나 함수 끝 `return`으로 마무리하는 습관이 안전해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,47 @@
+id: js-basics.functions.scope-basics.tf-sibling-blocks-same-name
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.scope.block, weight: 1 }
+tags: [scope, block, same-name]
+estimatedSeconds: 70
+prompt: |
+  아래 코드를 보고, 설명이 맞는지 고른 뒤 그렇게 판단한 이유도 고르세요.
+code: |
+  const score = 72;
+  if (score >= 60) {
+    let label = "합격";
+    console.log(label);
+  } else {
+    let label = "다음 기회에";
+    console.log(label);
+  }
+spec:
+  statement: "`if` 블록과 `else` 블록에서 `let label`을 두 번 만들었으므로, 실행하면 같은 이름을 다시 선언했다는 SyntaxError가 난다."
+  answer: false
+  misconceptionIfWrong: js.mc.sibling-blocks-name-conflict
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 두 블록은 서로 다른 스코프라서 각 label은 다른 변수이고, 오류 없이 합격이 출력된다
+      correct: true
+    - id: r2
+      text: 한 프로그램에서 let으로 같은 이름을 두 번 쓰면 어디에 있든 이미 선언된 이름이 된다
+      misconception: js.mc.sibling-blocks-name-conflict
+    - id: r3
+      text: else 블록은 실행되지 않으므로 그 안의 코드는 문법 검사도 하지 않는다
+hints:
+  - 두 `let label`은 각각 어떤 `{ }` 안에 있나요?
+  - 블록마다 상자(스코프)가 따로예요. 같은 상자 안에 같은 이름이 두 번 있나요?
+  - 같은 이름 때문에 오류가 나는 것은 어떤 경우였는지 레슨의 첫 번째 예제를 떠올려 보세요. 문법 검사는 실행 전에 코드 전체를 대상으로 해요.
+explanation: |
+  설명은 **거짓**이에요. 이유는 "두 블록은 서로 다른 스코프라서 각 label은 다른 변수이고, 오류 없이 합격이 출력된다"예요.
+
+  `if` 블록의 `label`과 `else` 블록의 `label`은 서로 다른 상자에 있어요. 상자가 다르니 이름이 같아도 부딪히지 않아요. 실행하면 `score`가 72라서 `합격`이 출력돼요. 같은 이름 때문에 `SyntaxError`가 나는 것은 **같은 블록 안에서** 두 번 선언할 때뿐이에요.
+
+  - "한 프로그램에서 let으로 같은 이름을 두 번 쓰면 어디에 있든 이미 선언된 이름이 된다": 스코프를 생각하지 않은 이유예요. 이름은 상자마다 따로 관리돼요.
+  - "else 블록은 실행되지 않으므로 그 안의 코드는 문법 검사도 하지 않는다": 문법 검사는 실행 전에 코드 전체를 대상으로 해요. `else` 블록에 문법 오류가 있었다면 아무것도 실행되지 않았을 거예요. 여기서는 문법 오류가 없어서 실행되는 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

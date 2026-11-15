@@ -1,0 +1,52 @@
+id: js-basics.functions.function-basics.multi-return-facts
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.fn.return, weight: 1 }
+tags: [return, facts]
+estimatedSeconds: 120
+prompt: |
+  `return`에 대한 설명으로 옳은 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`return 값;`은 그 값을 함수를 호출한 자리로 돌려준다"
+    - id: b
+      text: 함수 안에서 `return`을 만나면 그 아래에 있는 코드는 실행되지 않는다
+      missedMisconception: js.mc.code-after-return-runs
+    - id: c
+      text: "반환값은 변수에 담지 않아도 `console.log(add(1, 2))`처럼 바로 쓸 수 있다"
+    - id: d
+      text: "`add(1, 2);`처럼 호출만 해도 반환값이 콘솔에 출력된다"
+      misconception: js.mc.return-value-auto-printed
+      rationale: return은 돌려주기만 해요. 받아서 출력하지 않은 반환값은 버려지고 화면에는 아무것도 나오지 않아요.
+    - id: e
+      text: "함수 안에서 `return total;`을 하면 함수 밖에 있는 변수 `total`에 그 값이 들어간다"
+      misconception: js.mc.return-changes-outer-variable
+      rationale: return은 어떤 변수에도 값을 넣지 않아요. 담으려면 total = 함수();처럼 직접 대입해야 해요.
+    - id: f
+      text: "함수 안에서 `console.log(x)`를 하면 `x`가 함수의 반환값이 된다"
+      misconception: js.mc.return-is-log
+      rationale: console.log는 보여 주기만 해요. return이 없으면 반환값은 undefined예요.
+  correct: [a, b, c]
+misconceptions: [js.mc.return-value-auto-printed, js.mc.return-changes-outer-variable, js.mc.return-is-log, js.mc.code-after-return-runs]
+hints:
+  - "`return`이 하는 일은 두 가지예요. 무엇을 하고, 그다음 함수는 어떻게 되나요?"
+  - 호출 식(`add(1, 2)`)은 반환값으로 바뀐다고 생각하면, 그 값을 어디에 어떻게 쓸 수 있을까요?
+  - "`return`이 하지 **않는** 일도 있어요. 출력하기, 다른 변수에 넣기는 누가 하는 일인가요?"
+explanation: |
+  옳은 설명은 세 가지예요.
+
+  - "`return 값;`은 그 값을 함수를 호출한 자리로 돌려준다": 호출 식 `add(1, 2)`가 반환값으로 바뀌어요.
+  - "`return`을 만나면 그 아래 코드는 실행되지 않는다": `return`은 함수를 그 자리에서 끝내요.
+  - "반환값은 바로 쓸 수 있다": 호출 식이 값이 되니까 변수에 담지 않고도 `console.log`나 계산에 넣을 수 있어요.
+
+  틀린 설명은 모두 `return`이 하지 않는 일을 말해요.
+
+  - "호출만 해도 반환값이 출력된다": `return`은 출력하지 않아요. 받아서 쓰지 않은 반환값은 버려져요.
+  - "함수 밖 `total`에 값이 들어간다": `return`은 값을 돌려줄 뿐 어떤 변수에도 넣지 않아요. `total = calc();`처럼 직접 대입해야 해요.
+  - "`console.log(x)`의 `x`가 반환값이 된다": `console.log`는 보여 주기만 해요. 반환값은 `return`으로만 정해져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

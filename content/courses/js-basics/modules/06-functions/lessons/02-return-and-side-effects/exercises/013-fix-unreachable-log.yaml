@@ -1,0 +1,81 @@
+id: js-basics.functions.return-and-side-effects.fix-unreachable-log
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.fn.return, weight: 1 }
+  - { id: js.fn.side-effects, weight: 0.3 }
+tags: [return, unreachable, debugging]
+estimatedSeconds: 140
+prompt: |
+  김밥 가격과 개수로 결제 금액을 계산하는 프로그램이에요. 함수 `makeReceipt`는 계산을 마치면 `계산 완료` 안내를 출력하고 금액을 돌려줘야 해요. 그런데 안내가 출력되지 않아요. 버그를 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  계산 완료: 4500원
+  결제 금액: 4500원
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function makeReceipt(price, count) {
+            const total = price * count;
+            return total;
+            console.log("계산 완료: " + total + "원");
+          }
+
+          const paid = makeReceipt(1500, 3);
+          console.log("결제 금액: " + paid + "원");
+  entry: makeReceipt
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function makeReceipt(price, count) {
+            const total = price * count;
+            console.log("계산 완료: " + total + "원");
+            return total;
+          }
+
+          const paid = makeReceipt(1500, 3);
+          console.log("결제 금액: " + paid + "원");
+  bugDescription: "`계산 완료` 안내가 출력되지 않고 `결제 금액: 4500원`만 나와요."
+  bugMisconception: js.mc.code-after-return-runs
+  checks:
+    - kind: console
+      id: output
+      description: 계산 완료 안내가 먼저, 결제 금액이 그다음에 출력되어야 합니다.
+      requirement: 안내와 금액 출력
+      expect:
+        lines: ["계산 완료: 4500원", "결제 금액: 4500원"]
+      misconceptionIfFail: js.mc.code-after-return-runs
+    - kind: call
+      id: still-returns
+      visible: false
+      description: makeReceipt는 여전히 금액을 돌려줘야 합니다.
+      requirement: 금액 돌려주기
+      args: [2000, 2]
+      expect: { equals: 4000 }
+misconceptions: [js.mc.code-after-return-runs]
+hints:
+  - 함수 본문은 위에서 아래로 실행돼요. 3번 줄에서 무슨 일이 일어나나요?
+  - "`return`은 값을 돌려주는 것 말고도 함수에 어떤 영향을 주나요?"
+  - "`return`을 만나면 함수가 그 자리에서 끝나요. 함수가 끝나기 전에 해야 할 일은 어디에 있어야 할까요?"
+explanation: |
+  예시 정답은 출력 줄을 `return` 위로 옮긴 것이에요.
+
+  ```js
+  function makeReceipt(price, count) {
+    const total = price * count;
+    console.log("계산 완료: " + total + "원");
+    return total;
+  }
+  ```
+
+  `return`은 값을 돌려주는 동시에 함수를 **그 자리에서 끝내요**. 원래 코드에서 4번 줄은 `return` 뒤에 있어서 한 번도 실행되지 않았어요. 오류도 나지 않아서 알아차리기 어려운 버그예요.
+
+  `return`을 지우고 `console.log`만 남기면 안내는 나오지만, 함수가 금액을 돌려주지 않아 `결제 금액: undefined원`이 돼요. 출력이라는 부수 효과는 `return` 전에 하고, `return`은 함수의 마지막 할 일로 둬요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

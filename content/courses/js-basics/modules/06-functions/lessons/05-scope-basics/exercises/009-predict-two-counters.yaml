@@ -1,0 +1,62 @@
+id: js-basics.functions.scope-basics.predict-two-counters
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.scope.function, weight: 1 }
+  - { id: js.scope.global, weight: 0.5 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [scope, function, global, trace, counter]
+estimatedSeconds: 150
+prompt: |
+  카페에서 손님마다 음료를 내주며 잔 수를 세는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 다섯 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    let totalCups = 0;
+
+    function serve(name) {
+      let cups = 0;
+      cups++;
+      totalCups++;
+      console.log(name + ": " + cups + "잔째 (오늘 " + totalCups + "잔)");
+    }
+
+    for (let i = 1; i <= 2; i++) {
+      serve("민지");
+      serve("준호");
+    }
+    console.log("합계: " + totalCups + "잔");
+  answerKind: console
+  misconceptionByAnswer:
+    "민지: 1잔째 (오늘 1잔)\n준호: 1잔째 (오늘 2잔)\n민지: 2잔째 (오늘 3잔)\n준호: 2잔째 (오늘 4잔)\n합계: 4잔": js.mc.function-var-persists
+    "민지: 1잔째 (오늘 1잔)\n준호: 2잔째 (오늘 2잔)\n민지: 3잔째 (오늘 3잔)\n준호: 4잔째 (오늘 4잔)\n합계: 4잔": js.mc.function-var-persists
+    "민지: 1잔째 (오늘 1잔)\n준호: 1잔째 (오늘 1잔)\n민지: 1잔째 (오늘 1잔)\n준호: 1잔째 (오늘 1잔)\n합계: 0잔": js.mc.function-cant-change-outer
+hints:
+  - "`serve`는 모두 몇 번 호출되나요? 호출 순서대로 이름을 적어 보세요."
+  - "`cups`와 `totalCups`는 각각 어디에서 만들어졌나요? 호출할 때마다 새로 만들어지는 것은 어느 쪽일까요?"
+  - 호출마다 두 변수의 값을 표로 따라가 보세요. 함수 안의 `let cups = 0;`은 호출할 때마다 다시 실행되고, 바깥 변수는 함수가 끝나도 바뀐 값이 남아요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  민지: 1잔째 (오늘 1잔)
+  준호: 1잔째 (오늘 2잔)
+  민지: 1잔째 (오늘 3잔)
+  준호: 1잔째 (오늘 4잔)
+  합계: 4잔
+  ```
+
+  | 호출 | `cups` (함수 안) | `totalCups` (바깥) |
+  |---|---|---|
+  | `serve("민지")` | 새로 0 → 1 | 0 → 1 |
+  | `serve("준호")` | 새로 0 → 1 | 1 → 2 |
+  | `serve("민지")` | 새로 0 → 1 | 2 → 3 |
+  | `serve("준호")` | 새로 0 → 1 | 3 → 4 |
+
+  - `cups`는 함수 안의 변수라 호출할 때마다 `let cups = 0;`부터 **새로** 만들어지고 호출이 끝나면 사라져요. 그래서 누구든 항상 `1잔째`예요. 함수는 이름이 같은 손님을 기억하지 않아요.
+  - `totalCups`는 바깥 변수예요. 함수 안에서 바꾼 값이 호출이 끝나도 남아서 1, 2, 3, 4로 쌓이고, 반복 뒤 `합계: 4잔`이 나와요.
+  - 민지가 두 번째에 `2잔째`라고 답했다면 함수 안의 변수가 다음 호출까지 남는다고 본 거예요. 손님별 잔 수를 기억하려면 그 값도 함수 바깥에 둬야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

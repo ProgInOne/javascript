@@ -1,0 +1,238 @@
+id: js-basics.functions.callbacks-intro.web-click-handlers
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.fn.callback, weight: 1 }
+  - { id: js.scope.global, weight: 0.3 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [callback, web, event, boundary]
+estimatedSeconds: 480
+prompt: |
+  장바구니의 수량 조절 버튼을 완성하세요. 버튼이 세 개 있어요.
+
+  - **+1**: 수량을 1 늘려요. 단, 한 번에 **최대 10개**까지만 담을 수 있어요(10에서 더 누르면 10 그대로).
+  - **-1**: 수량을 1 줄여요. 단, **0보다 작아지지 않아요**(0에서 더 누르면 0 그대로).
+  - **처음으로**: 수량을 0으로 되돌려요.
+
+  시작 코드에는 버튼을 누를 때마다 콜백을 불러 주는 도우미 함수 `whenClicked(selector, callback)`이 있어요(안의 코드는 모듈 10에서 배워요). 할 일은 두 가지예요.
+
+  1. 수량을 바꾸는 함수 `addOne`, `removeOne`, `resetQty`를 만드세요. 수량은 바깥 변수 `qty`에 있고, 바꾼 뒤에는 `show()`를 불러야 화면에 보여요.
+  1. `whenClicked`로 세 버튼(`#plus`, `#minus`, `#reset`)에 각 함수를 연결하세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>수량 조절</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #qty { font-size: 28px; font-weight: bold; }
+                button { font-size: 18px; margin-right: 8px; }
+              </style>
+            </head>
+            <body>
+              <h1>떡볶이 담기</h1>
+              <p>수량: <span id="qty">0</span>개</p>
+              <button id="plus">+1</button>
+              <button id="minus">-1</button>
+              <button id="reset">처음으로</button>
+              <script>
+                // 버튼(selector)을 누를 때마다 callback을 불러 주는 도우미예요(모듈 10에서 배워요).
+                function whenClicked(selector, callback) {
+                  document.querySelector(selector).addEventListener("click", callback);
+                }
+
+                const qtyBox = document.querySelector("#qty");
+                let qty = 0;
+
+                function show() {
+                  qtyBox.textContent = qty;
+                }
+
+                // 1) addOne, removeOne, resetQty 함수를 만드세요.
+
+                // 2) whenClicked로 세 버튼에 함수를 연결하세요.
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>수량 조절</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #qty { font-size: 28px; font-weight: bold; }
+                button { font-size: 18px; margin-right: 8px; }
+              </style>
+            </head>
+            <body>
+              <h1>떡볶이 담기</h1>
+              <p>수량: <span id="qty">0</span>개</p>
+              <button id="plus">+1</button>
+              <button id="minus">-1</button>
+              <button id="reset">처음으로</button>
+              <script>
+                // 버튼(selector)을 누를 때마다 callback을 불러 주는 도우미예요(모듈 10에서 배워요).
+                function whenClicked(selector, callback) {
+                  document.querySelector(selector).addEventListener("click", callback);
+                }
+
+                const qtyBox = document.querySelector("#qty");
+                let qty = 0;
+
+                function show() {
+                  qtyBox.textContent = qty;
+                }
+
+                // 1) addOne, removeOne, resetQty 함수를 만드세요.
+                function addOne() {
+                  if (qty < 10) {
+                    qty++;
+                  }
+                  show();
+                }
+
+                function removeOne() {
+                  if (qty > 0) {
+                    qty--;
+                  }
+                  show();
+                }
+
+                function resetQty() {
+                  qty = 0;
+                  show();
+                }
+
+                // 2) whenClicked로 세 버튼에 함수를 연결하세요.
+                whenClicked("#plus", addOne);
+                whenClicked("#minus", removeOne);
+                whenClicked("#reset", resetQty);
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: plus-three
+      description: "+1을 세 번 누르면 수량이 3이어야 합니다."
+      requirement: 수량 늘리기
+      visible: true
+      steps:
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+      expect:
+        - { selector: "#qty", text: { equals: "3" } }
+    - kind: event
+      id: reset
+      description: 처음으로를 누르면 수량이 0으로 돌아가야 합니다.
+      requirement: 처음으로
+      visible: true
+      steps:
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#reset" }
+      expect:
+        - { selector: "#qty", text: { equals: "0" } }
+    - kind: event
+      id: minus
+      description: "+1을 두 번, -1을 한 번 누르면 수량이 1이어야 합니다."
+      requirement: 수량 줄이기
+      steps:
+        - { action: click, selector: "#reset" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#minus" }
+      expect:
+        - { selector: "#qty", text: { equals: "1" } }
+    - kind: event
+      id: not-below-zero
+      description: 수량이 0일 때 -1을 눌러도 0보다 작아지지 않아야 합니다.
+      requirement: 0보다 작아지지 않기
+      steps:
+        - { action: click, selector: "#reset" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#minus" }
+        - { action: click, selector: "#minus" }
+        - { action: click, selector: "#minus" }
+      expect:
+        - { selector: "#qty", text: { equals: "0" } }
+    - kind: event
+      id: max-ten
+      description: "+1을 12번 눌러도 수량은 최대 10이어야 합니다."
+      requirement: 최대 10개
+      steps:
+        - { action: click, selector: "#reset" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+      expect:
+        - { selector: "#qty", text: { equals: "10" } }
+    - kind: event
+      id: down-from-ten
+      description: 최대 10에서 -1을 한 번 누르면 9가 되어야 합니다(10을 넘게 세지 않음).
+      requirement: 최대 10개
+      steps:
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#minus" }
+      expect:
+        - { selector: "#qty", text: { equals: "9" } }
+misconceptions: [js.mc.callback-called-when-passed, js.mc.callback-runs-at-pass-time]
+hints:
+  - 먼저 `addOne` 하나만 만들어 `#plus`에 연결하고 눌러 보세요. 함수 안에서 `qty`를 바꾼 뒤 `show()`를 불러야 화면이 바뀌어요.
+  - "`whenClicked`에는 함수 자체를 넘겨요. 괄호를 붙이면 페이지가 열리자마자 한 번 실행되고, 버튼에는 함수가 아닌 값이 맡겨져요."
+  - 최대 10개와 0개 아래 금지는 함수 안에서 `qty`를 바꾸기 **전에** `if`로 확인해요. 마지막 테스트는 10에서 더 눌렀을 때 실제 값이 10에 머물러 있는지도 확인해요.
+explanation: |
+  예시 정답의 핵심이에요.
+
+  ```js
+  function addOne() {
+    if (qty < 10) {
+      qty++;
+    }
+    show();
+  }
+
+  function removeOne() {
+    if (qty > 0) {
+      qty--;
+    }
+    show();
+  }
+
+  function resetQty() {
+    qty = 0;
+    show();
+  }
+
+  whenClicked("#plus", addOne);
+  whenClicked("#minus", removeOne);
+  whenClicked("#reset", resetQty);
+  ```
+
+  - **콜백 맡기기**: `whenClicked("#plus", addOne)`은 `addOne`을 괄호 없이 넘겨서 "누를 때마다 불러 줘"라고 맡겨요. 언제 부를지는 버튼을 누르는 순간이 정해요.
+  - `whenClicked("#plus", addOne())`처럼 괄호를 붙이면 페이지가 열릴 때 `addOne`이 한 번 실행되어 수량이 1로 시작하고, 버튼에는 `undefined`가 맡겨져서 눌러도 아무 일도 일어나지 않아요.
+  - **바깥 변수**: `qty`는 함수 바깥에 있어서 여러 번 눌러도 값이 이어져요. 함수 안에서 `let qty = 0;`을 새로 만들면 누를 때마다 0부터 다시 시작해요.
+  - **경계**: 확인 없이 늘리면 12번 눌렀을 때 12가 되고, 확인 없이 줄이면 0에서 -1이 돼요. `qty`를 바꾸기 전에 `if`로 확인하세요. `qty++` 뒤에 `if (qty > 10) { qty = 10; }`처럼 되돌려도 결과는 같아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

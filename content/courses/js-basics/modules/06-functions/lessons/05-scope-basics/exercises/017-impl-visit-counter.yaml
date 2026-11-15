@@ -1,0 +1,89 @@
+id: js-basics.functions.scope-basics.impl-visit-counter
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.scope.global, weight: 1 }
+  - { id: js.fn.declaration, weight: 0.3 }
+tags: [scope, global, counter, write-code]
+estimatedSeconds: 200
+prompt: |
+  도서관 방문 기록 프로그램을 완성하세요. 시작 코드의 아래쪽 네 줄은 그대로 두고, 그 위에 필요한 코드를 쓰세요.
+
+  - 전체 방문 횟수를 담는 변수 `visitCount`를 만드세요. 처음에는 0이에요.
+  - 함수 `visit(name)`은 부를 때마다 `visitCount`를 1 늘리고 `(횟수)번째 방문: (이름)`을 출력해요.
+
+  실행하면 아래처럼 나와야 해요.
+
+  ```text
+  1번째 방문: 민지
+  2번째 방문: 준호
+  3번째 방문: 민지
+  총 방문: 3번
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // visitCount 변수와 visit 함수를 여기에 만드세요.
+
+
+          visit("민지");
+          visit("준호");
+          visit("민지");
+          console.log("총 방문: " + visitCount + "번");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // visitCount 변수와 visit 함수를 여기에 만드세요.
+          let visitCount = 0;
+
+          function visit(name) {
+            visitCount++;
+            console.log(visitCount + "번째 방문: " + name);
+          }
+
+          visit("민지");
+          visit("준호");
+          visit("민지");
+          console.log("총 방문: " + visitCount + "번");
+  checks:
+    - kind: console
+      id: output
+      description: 방문할 때마다 횟수와 이름이 출력되고, 마지막에 총 방문 횟수가 출력되어야 합니다.
+      requirement: 방문 기록 출력
+      expect:
+        lines: ["1번째 방문: 민지", "2번째 방문: 준호", "3번째 방문: 민지", "총 방문: 3번"]
+    - kind: program
+      id: visit-count
+      description: 프로그램이 끝난 뒤 visitCount에 3이 들어 있어야 합니다.
+      requirement: 방문 횟수 기억
+      expect:
+        globals: { visitCount: { equals: 3 } }
+        noError: true
+misconceptions: [js.mc.function-var-persists, js.mc.undeclared-assign-creates-global]
+hints:
+  - "`visitCount`는 `visit` 함수 안에서도, 맨 아래 줄의 함수 밖에서도 쓰여요. 어디에 만들어야 두 곳에서 모두 보일까요?"
+  - 횟수는 호출이 끝나도 남아야 해요. 함수 안에서 `let visitCount = 0;`을 만들면 호출마다 어떻게 될까요?
+  - 함수 본문에서는 횟수를 1 늘린 **다음에** 출력해야 첫 줄이 `1번째`가 돼요. 변수를 만드는 줄은 `visit(...)`을 부르는 줄보다 위에 있어야 해요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  let visitCount = 0;
+
+  function visit(name) {
+    visitCount++;
+    console.log(visitCount + "번째 방문: " + name);
+  }
+  ```
+
+  - `visitCount`는 맨 바깥(전역)에 만들어요. 함수 안에서 바꾼 값이 호출이 끝나도 남아서 1, 2, 3으로 이어지고, 맨 아래 줄의 함수 밖에서도 읽을 수 있어요.
+  - 함수 안에서 `let visitCount = 0;`을 만들면 출력이 모두 `1번째`가 되고, 맨 아래 줄에서는 `ReferenceError`가 나요.
+  - `let` 없이 `visitCount = 0;`만 쓰면 엄격 모드에서 `ReferenceError: visitCount is not defined`가 나요.
+  - `let visitCount = 0;`은 `visit("민지");`보다 위에 있어야 해요. 아래에 두면 첫 호출 때 아직 만들어지지 않은 변수를 쓰게 되어 `Cannot access 'visitCount' before initialization` 오류가 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

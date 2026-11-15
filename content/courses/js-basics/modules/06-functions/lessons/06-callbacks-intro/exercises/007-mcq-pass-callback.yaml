@@ -1,0 +1,51 @@
+id: js-basics.functions.callbacks-intro.mcq-pass-callback
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.callback, weight: 1 }
+tags: [callback, parentheses]
+estimatedSeconds: 60
+prompt: |
+  `repeat`는 받은 함수를 `times`번 불러 주는 함수예요. `cheer`가 세 번 실행되어 `1번째 화이팅!`부터 `3번째 화이팅!`까지 나오게 하려면, 마지막 줄을 어떻게 써야 하나요?
+code: |
+  function repeat(times, action) {
+    for (let i = 1; i <= times; i++) {
+      action(i);
+    }
+  }
+
+  function cheer(n) {
+    console.log(n + "번째 화이팅!");
+  }
+
+  // 여기에 한 줄
+spec:
+  options:
+    - id: a
+      text: "`repeat(3, cheer);`"
+    - id: b
+      text: "`repeat(3, cheer());`"
+      misconception: js.mc.callback-called-when-passed
+      rationale: cheer()는 그 자리에서 cheer를 한 번 실행하고 반환값 undefined를 넘겨요. repeat가 undefined를 부르려다 TypeError가 나요.
+    - id: c
+      text: "`repeat(3, \"cheer\");`"
+      rationale: 따옴표로 감싸면 함수가 아니라 "cheer"라는 글자예요. 글자는 부를 수 없어서 TypeError가 나요.
+    - id: d
+      text: "`repeat(cheer, 3);`"
+      rationale: 인수는 순서대로 매개변수에 들어가요. times에 함수가, action에 3이 들어가서 cheer는 실행되지 않아요.
+  correct: a
+misconceptions: [js.mc.callback-called-when-passed]
+hints:
+  - "`repeat`에게 넘겨야 하는 것은 함수 자체예요. 실행한 결과가 아니에요."
+  - 함수 이름 뒤에 괄호를 붙이면 그 자리에서 실행돼요. 넘길 때도 그래야 할까요?
+  - 인수의 순서도 확인하세요. `repeat`의 첫 번째 매개변수는 횟수, 두 번째는 함수예요.
+explanation: |
+  정답은 `repeat(3, cheer);`예요. 괄호 없이 함수 자체를 넘기면 `repeat` 안에서 `action(i)`가 `cheer(i)`를 세 번 불러요.
+
+  - `repeat(3, cheer());`: `cheer()`가 먼저 한 번 실행되어 `undefined번째 화이팅!`이 나오고, 그 반환값 `undefined`가 넘어가요. 반복 안의 `action(i)`에서 `TypeError: action is not a function`이 나요.
+  - `repeat(3, "cheer");`: 함수 이름을 따옴표로 감싸면 그냥 글자예요. 글자는 부를 수 없어요.
+  - `repeat(cheer, 3);`: 인수는 이름이 아니라 순서대로 들어가요. `times`가 함수가 되어 `1 <= cheer`가 거짓이라 반복이 한 번도 돌지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

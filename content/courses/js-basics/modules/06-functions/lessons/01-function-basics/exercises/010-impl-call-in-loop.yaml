@@ -1,0 +1,94 @@
+id: js-basics.functions.function-basics.impl-call-in-loop
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.fn.call, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.5 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [function, call, loop, write-code]
+estimatedSeconds: 240
+prompt: |
+  공연장 좌석표를 출력하는 프로그램이에요. 좌석 한 칸을 출력하는 함수 `printSeat`는 이미 만들어 두었어요.
+
+  - 함수는 고치지 말고, `for` 문 안에서 `printSeat`를 불러 `A`열 1번부터 5번까지 좌석을 출력하세요.
+  - 이어서 `B`열 1번부터 5번까지도 출력하세요. `for` 문을 하나 더 써도 되고, 한 반복에서 두 번 불러도 돼요. 단, 출력 순서는 아래와 같아야 해요.
+
+  ```text
+  A열 1번 좌석
+  A열 2번 좌석
+  A열 3번 좌석
+  A열 4번 좌석
+  A열 5번 좌석
+  B열 1번 좌석
+  B열 2번 좌석
+  B열 3번 좌석
+  B열 4번 좌석
+  B열 5번 좌석
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function printSeat(row, num) {
+            console.log(row + "열 " + num + "번 좌석");
+          }
+
+          // 아래에 for 문을 써서 printSeat를 불러 보세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function printSeat(row, num) {
+            console.log(row + "열 " + num + "번 좌석");
+          }
+
+          // 아래에 for 문을 써서 printSeat를 불러 보세요.
+          for (let i = 1; i <= 5; i++) {
+            printSeat("A", i);
+          }
+          for (let i = 1; i <= 5; i++) {
+            printSeat("B", i);
+          }
+  checks:
+    - kind: console
+      id: output
+      description: A열 1~5번, B열 1~5번 좌석이 차례로 한 줄씩 출력되어야 합니다.
+      requirement: 좌석 열 줄
+      expect:
+        lines:
+          - A열 1번 좌석
+          - A열 2번 좌석
+          - A열 3번 좌석
+          - A열 4번 좌석
+          - A열 5번 좌석
+          - B열 1번 좌석
+          - B열 2번 좌석
+          - B열 3번 좌석
+          - B열 4번 좌석
+          - B열 5번 좌석
+misconceptions: [js.mc.params-match-by-name, js.mc.call-without-parens]
+hints:
+  - "`printSeat`에는 인수 두 개가 필요해요. 첫 번째는 열 이름(글자), 두 번째는 좌석 번호예요."
+  - 좌석 번호는 1부터 5까지 바뀌어요. 반복 변수를 인수로 넘기면 반복마다 다른 번호가 들어가요.
+  - "`A`열 반복이 다 끝난 뒤에 `B`열 반복이 시작되어야 출력 순서가 맞아요. 인수의 순서도 매개변수 순서(`row`, `num`)와 맞춰요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  for (let i = 1; i <= 5; i++) {
+    printSeat("A", i);
+  }
+  for (let i = 1; i <= 5; i++) {
+    printSeat("B", i);
+  }
+  ```
+
+  - 반복마다 `printSeat`를 부르면서 반복 변수 `i`를 두 번째 인수로 넘겨요. 호출할 때마다 매개변수 `num`에 1, 2, 3, 4, 5가 차례로 들어가요.
+  - 인수는 순서대로 들어가요. `printSeat(i, "A")`로 쓰면 `row`에 숫자가, `num`에 `"A"`가 들어가 `1열 A번 좌석`이 나와요.
+  - 한 반복 안에서 `printSeat("A", i); printSeat("B", i);`처럼 두 번 부르면 `A열 1번`, `B열 1번`, `A열 2번` 순서가 되어 위 출력과 달라요.
+  - 함수 하나를 반복 안에서 여러 번 부르면, 출력 모양은 함수 한 곳에서 관리하고 반복은 "몇 번, 어떤 값으로"만 정하면 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

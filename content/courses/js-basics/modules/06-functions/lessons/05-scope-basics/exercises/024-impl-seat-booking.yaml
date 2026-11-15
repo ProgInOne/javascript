@@ -1,0 +1,161 @@
+id: js-basics.functions.scope-basics.impl-seat-booking
+type: implement_function
+difficulty: 5
+concepts:
+  - { id: js.scope.global, weight: 1 }
+  - { id: js.scope.block, weight: 0.5 }
+  - { id: js.fn.default-params, weight: 0.3 }
+  - { id: js.fn.undefined-return, weight: 0.3 }
+tags: [scope, global, block, state, default-params, write-code, boundary]
+estimatedSeconds: 720
+prompt: |
+  좌석이 10석인 작은 공연장의 예매 함수 `book(name, count)`를 만드세요. 좌석 번호는 1번부터 차례로 배정하고, 결과 문장을 **돌려줘요**.
+
+  - `count`는 예매할 좌석 수예요. 넘기지 않으면 1석이에요.
+  - 한 번에 1~4석만 예매할 수 있어요. 범위를 벗어나면 `1~4장까지 예매할 수 있어요`를 돌려주고 아무것도 예매하지 않아요.
+  - 남은 좌석보다 많이 원하면 `남은 좌석은 (남은 수)석이에요`를 돌려주고 아무것도 예매하지 않아요.
+  - 예매에 성공하면 앞 사람 다음 번호부터 배정하고 `(이름)님 (첫 번호)~(끝 번호)번 좌석`을 돌려줘요. 1석이면 `(이름)님 (번호)번 좌석`이에요.
+  - 이번 예매로 좌석이 모두 팔리면 문장 끝에 ` (매진)`을 붙여요.
+
+  차례로 호출한 예:
+
+  ```text
+  book("민지", 2) → "민지님 1~2번 좌석"
+  book("준호")    → "준호님 3번 좌석"
+  book("서연", 5) → "1~4장까지 예매할 수 있어요"
+  ```
+
+  채점은 위 세 호출에 이어서 숨긴 호출을 더 해요(매진까지 가는 경우 포함).
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const TOTAL_SEATS = 10;
+          // 호출 사이에 기억해야 하는 값이 있다면 여기에 만드세요.
+
+          function book(name, count) {
+          }
+  entry: book
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const TOTAL_SEATS = 10;
+          // 호출 사이에 기억해야 하는 값이 있다면 여기에 만드세요.
+          let booked = 0;
+
+          function book(name, count = 1) {
+            if (count < 1 || count > 4) {
+              return "1~4장까지 예매할 수 있어요";
+            }
+            const left = TOTAL_SEATS - booked;
+            if (count > left) {
+              return "남은 좌석은 " + left + "석이에요";
+            }
+            const first = booked + 1;
+            const last = booked + count;
+            booked += count;
+            let message = name + "님 " + first + "번 좌석";
+            if (count > 1) {
+              message = name + "님 " + first + "~" + last + "번 좌석";
+            }
+            if (booked === TOTAL_SEATS) {
+              message += " (매진)";
+            }
+            return message;
+          }
+  checks:
+    - kind: call
+      id: first-two
+      args: ["민지", 2]
+      requirement: 차례로 좌석 배정
+      expect: { equals: "민지님 1~2번 좌석" }
+    - kind: call
+      id: default-one
+      args: ["준호"]
+      requirement: 좌석 수를 넘기지 않으면 1석
+      expect: { equals: "준호님 3번 좌석" }
+    - kind: call
+      id: too-many
+      args: ["서연", 5]
+      requirement: 1~4석만 예매
+      expect: { equals: "1~4장까지 예매할 수 있어요" }
+    - kind: call
+      id: zero
+      visible: false
+      description: 0석을 원하면 1~4장 안내를 돌려주고 아무것도 예매하지 않아야 합니다.
+      requirement: 1~4석만 예매
+      args: ["하린", 0]
+      expect: { equals: "1~4장까지 예매할 수 있어요" }
+    - kind: call
+      id: after-rejects
+      visible: false
+      description: 거절된 예매는 좌석을 차지하지 않으므로, 이어서 4석을 예매하면 4번부터 배정되어야 합니다.
+      requirement: 차례로 좌석 배정
+      args: ["도윤", 4]
+      expect: { equals: "도윤님 4~7번 좌석" }
+    - kind: call
+      id: not-enough
+      visible: false
+      description: 남은 좌석(3석)보다 많이 원하면 남은 좌석 수를 알려 주고 예매하지 않아야 합니다.
+      requirement: 남은 좌석 확인
+      args: ["지우", 4]
+      expect: { equals: "남은 좌석은 3석이에요" }
+    - kind: call
+      id: sold-out
+      visible: false
+      description: 남은 3석을 모두 예매하면 끝에 " (매진)"이 붙어야 합니다.
+      requirement: 매진 표시
+      args: ["지우", 3]
+      expect: { equals: "지우님 8~10번 좌석 (매진)" }
+    - kind: call
+      id: after-sold-out
+      visible: false
+      description: 매진 뒤에는 1석도 예매할 수 없어 남은 좌석 0석을 알려 줘야 합니다.
+      requirement: 남은 좌석 확인
+      args: ["유나"]
+      expect: { equals: "남은 좌석은 0석이에요" }
+misconceptions: [js.mc.function-var-persists, js.mc.block-let-visible-outside, js.mc.missing-arg-error]
+hints:
+  - 어떤 값이 호출과 호출 사이에 기억되어야 하나요? 그 값과, 한 번의 호출 안에서만 쓰는 값(남은 좌석, 첫 번호, 끝 번호, 돌려줄 문장)을 나눠 보세요.
+  - 거절하는 경우는 기억하는 값을 바꾸기 **전에** 바로 `return`으로 끝내면 좌석이 줄지 않아요. `count`를 넘기지 않은 경우는 기본값 매개변수로 처리할 수 있어요.
+  - 첫 번호는 "지금까지 예매된 좌석 수 + 1", 끝 번호는 "지금까지 예매된 수 + count"예요. 매진 검사는 이번 예매를 반영한 **뒤**에 해야 해요. 문장을 블록 안에서 바꾼다면 그 변수는 블록 밖에서 만들어 두세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const TOTAL_SEATS = 10;
+  let booked = 0;
+
+  function book(name, count = 1) {
+    if (count < 1 || count > 4) {
+      return "1~4장까지 예매할 수 있어요";
+    }
+    const left = TOTAL_SEATS - booked;
+    if (count > left) {
+      return "남은 좌석은 " + left + "석이에요";
+    }
+    const first = booked + 1;
+    const last = booked + count;
+    booked += count;
+    let message = name + "님 " + first + "번 좌석";
+    if (count > 1) {
+      message = name + "님 " + first + "~" + last + "번 좌석";
+    }
+    if (booked === TOTAL_SEATS) {
+      message += " (매진)";
+    }
+    return message;
+  }
+  ```
+
+  - **기억할 값은 바깥에 하나만**: 지금까지 예매된 좌석 수 `booked`만 호출 사이에 남으면 돼요. 남은 좌석·첫 번호·끝 번호는 `booked`로 그때그때 계산하는 값이라 함수 안에 둬요. `booked`를 함수 안에서 0으로 만들면 모든 사람이 1번 좌석을 받아요.
+  - **거절은 바꾸기 전에 끝내기**: 범위 검사와 남은 좌석 검사를 `booked += count;`보다 앞에 두고 바로 `return`해요. 순서가 바뀌면 거절된 예매도 좌석을 차지해 숨긴 호출의 번호가 어긋나요.
+  - **기본값**: `count = 1`이 없으면 `book("준호")`의 `count`는 `undefined`예요. `undefined < 1`과 `undefined > 4`가 모두 거짓이라 거절되지 않고, 문장은 우연히 `준호님 3번 좌석`으로 맞게 나와요. 하지만 `booked += count`로 `booked`가 `NaN`이 되어, 다음 예매부터 `도윤님 NaN~NaN번 좌석`처럼 망가져요. 오류가 나지 않아서 알아차리기 어려운 버그예요.
+  - **블록 스코프**: `message`는 `if` 블록 안에서 바뀌지만 블록 밖의 `return`에서 쓰이므로 블록 위에서 `let`으로 만들어요.
+  - **매진 경계**: 매진 검사는 `booked += count;` 뒤에 `booked === TOTAL_SEATS`로 해요. 매진 뒤에는 남은 좌석이 0이라 1석도 `남은 좌석은 0석이에요`로 거절돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

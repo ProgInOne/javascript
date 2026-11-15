@@ -1,0 +1,104 @@
+id: js-basics.functions.default-and-rest.impl-max-of-many
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.fn.rest-params, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [rest-params, max, for, write-code, entry]
+estimatedSeconds: 300
+prompt: |
+  줄넘기 기록을 몇 개든 받아 **가장 높은 기록**을 반환하는 함수 `bestRecord(...records)`를 완성하세요.
+
+  - 기록은 1개 이상 넘겨요. 모두 0 이상의 정수예요.
+  - `for`로 기록을 하나씩 살펴보며 지금까지의 최고 기록과 비교하는 방법으로 풀어 보세요.
+
+  예:
+
+  - `bestRecord(35, 52, 41)` → `52`
+  - `bestRecord(20)` → `20`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function bestRecord(...records) {
+            // 여기에 작성하세요
+          }
+  entry: bestRecord
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function bestRecord(...records) {
+            let best = records[0];
+            for (let i = 1; i < records.length; i++) {
+              if (records[i] > best) {
+                best = records[i];
+              }
+            }
+            return best;
+          }
+  checks:
+    - kind: call
+      id: three
+      description: 기록 세 개 중 가장 높은 기록을 반환해야 합니다.
+      requirement: 최고 기록
+      args: [35, 52, 41]
+      expect: { equals: 52 }
+    - kind: call
+      id: one
+      description: 기록이 하나면 그 기록을 반환해야 합니다.
+      requirement: 기록 하나
+      args: [20]
+      expect: { equals: 20 }
+    - kind: call
+      id: last-is-best
+      visible: false
+      description: 가장 높은 기록이 맨 마지막에 있어도 찾아야 합니다.
+      requirement: 최고 기록
+      args: [10, 30, 25, 60]
+      expect: { equals: 60 }
+    - kind: call
+      id: first-is-best
+      visible: false
+      description: 가장 높은 기록이 맨 처음에 있어도 찾아야 합니다.
+      requirement: 최고 기록
+      args: [90, 15, 40, 89]
+      expect: { equals: 90 }
+    - kind: call
+      id: zeros
+      visible: false
+      description: 기록이 모두 0이면 0을 반환해야 합니다.
+      requirement: 최고 기록
+      args: [0, 0, 0]
+      expect: { equals: 0 }
+misconceptions: [js.mc.for-off-by-one]
+hints:
+  - 최고 기록을 기억할 변수가 하나 필요해요. 처음에는 어떤 값으로 시작하면 좋을까요?
+  - 첫 번째 기록 `records[0]`을 일단 최고 기록으로 두고, 나머지 기록과 하나씩 비교하면 돼요.
+  - 반복 안에서 지금 보는 기록이 지금까지의 최고 기록보다 크면 최고 기록을 바꿔요. 반복이 마지막 칸(`length - 1`)까지 가는지 확인하세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function bestRecord(...records) {
+    let best = records[0];
+    for (let i = 1; i < records.length; i++) {
+      if (records[i] > best) {
+        best = records[i];
+      }
+    }
+    return best;
+  }
+  ```
+
+  - `...records`로 기록을 개수와 상관없이 받아요.
+  - 최고 기록 `best`는 첫 기록으로 시작해요. 그래서 반복은 두 번째 칸(`i = 1`)부터 봐도 돼요(`i = 0`부터 봐도 결과는 같아요).
+  - `best`를 `0`으로 시작해도 이 문제의 기록(0 이상)에서는 맞지만, 첫 값으로 시작하면 음수가 섞여도 맞아요.
+  - 반복 조건이 `i < records.length - 1`이면 마지막 기록을 보지 않아서, 마지막 기록이 가장 높을 때 틀려요.
+  - 반복 안에 `return`을 넣으면 첫 비교에서 함수가 끝나 버려요. 반환은 반복이 끝난 뒤에 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,45 @@
+id: js-basics.functions.expressions-and-arrows.predict-function-in-variable
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.fn.expression, weight: 1 }
+  - { id: js.types.typeof, weight: 0.3 }
+tags: [function-expression, typeof]
+estimatedSeconds: 80
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요? `typeof`는 값의 자료형을 글자로 알려 줘요.
+spec:
+  lang: js
+  code: |
+    const greet = function (name) {
+      return name + "님, 반가워요";
+    };
+    console.log(typeof greet);
+    console.log(greet("하늘"));
+    console.log(typeof greet("하늘"));
+  answerKind: console
+  misconceptionByAnswer:
+    "string\n하늘님, 반가워요\nstring": js.mc.fn-expression-stores-result
+    "undefined\n하늘님, 반가워요\nstring": js.mc.fn-expression-stores-result
+hints:
+  - "`greet`에는 함수 표현식이 만든 값이 담겨요. 그 값은 함수인가요, 글자인가요?"
+  - "`greet`와 `greet(\"하늘\")`은 달라요. 하나는 함수 자체이고, 하나는 함수를 실행해서 돌려받은 값이에요."
+  - 6번 줄은 먼저 `greet("하늘")`을 실행해 돌려받은 값의 자료형을 물어요. `return`한 값이 어떤 자료형인지 생각해 보세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  function
+  하늘님, 반가워요
+  string
+  ```
+
+  - 4번 줄: `greet`에는 함수가 담겨 있으므로 `typeof greet`는 `"function"`이에요. 1~3번 줄은 함수를 담기만 하고 실행하지 않아요.
+  - 5번 줄: `greet("하늘")`처럼 괄호를 붙여 호출해야 본문이 실행되고 `"하늘님, 반가워요"`가 돌아와요.
+  - 6번 줄: 호출 결과인 `"하늘님, 반가워요"`의 자료형이라 `"string"`이에요.
+
+  첫 줄을 `string`이라고 답했다면, 함수 표현식을 쓰는 순간 실행 결과가 변수에 담긴다고 생각한 거예요. 변수에 담기는 것은 함수 자체예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

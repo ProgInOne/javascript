@@ -1,0 +1,16 @@
+id: js-basics.functions.expressions-and-arrows
+title: 함수 표현식과 화살표 함수
+summary: 함수를 값처럼 변수에 담는 함수 표현식, 더 짧게 쓰는 화살표 함수와 중괄호가 있을 때의 return 규칙, 선언과 표현식의 호출 가능 시점(호이스팅) 차이를 배웁니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 15, practice: 28 }
+concepts:
+  primary: [js.fn.expression, js.fn.arrow, js.fn.hoisting]
+  reviewed: [js.fn.declaration, js.fn.return, js.values.const, js.values.tdz, js.fn.undefined-return]
+objectives:
+  - 함수 표현식으로 함수를 변수에 담고, 변수 이름으로 호출할 수 있다.
+  - 함수 선언을 화살표 함수로 바꿔 쓰고, 중괄호가 있는 본문과 없는 본문에서 반환값이 어떻게 달라지는지 예측할 수 있다.
+  - 함수 선언은 선언 전에 호출할 수 있지만 const로 만든 함수 표현식은 그럴 수 없다는 것을 실행 결과와 오류로 설명할 수 있다.
+  - 화살표 함수의 return 실수와 선언 전 호출 오류를 찾아 고칠 수 있다.
+practice:
+  targetCount: 22

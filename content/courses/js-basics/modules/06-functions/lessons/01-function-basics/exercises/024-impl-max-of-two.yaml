@@ -1,0 +1,84 @@
+id: js-basics.functions.function-basics.impl-max-of-two
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.fn.return, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [return, if, boundary, write-code]
+estimatedSeconds: 200
+prompt: |
+  두 선수의 점수 중 더 높은 점수를 돌려주는 함수 `higherScore(a, b)`를 완성하세요.
+
+  - 두 점수 중 큰 값을 **돌려주세요**(`return`).
+  - 두 점수가 같으면 그 점수를 돌려줘요.
+  - 예: `higherScore(72, 85)` → `85`, `higherScore(90, 64)` → `90`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function higherScore(a, b) {
+            // 여기에 작성하세요
+          }
+  entry: higherScore
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function higherScore(a, b) {
+            if (a >= b) {
+              return a;
+            }
+            return b;
+          }
+  checks:
+    - kind: call
+      id: second-bigger
+      args: [72, 85]
+      expect: { equals: 85 }
+      requirement: 큰 점수 돌려주기
+    - kind: call
+      id: first-bigger
+      args: [90, 64]
+      expect: { equals: 90 }
+      requirement: 큰 점수 돌려주기
+    - kind: call
+      id: hidden-equal
+      visible: false
+      description: 두 점수가 같으면 그 점수를 돌려줘야 합니다.
+      args: [77, 77]
+      expect: { equals: 77 }
+      requirement: 같은 점수
+    - kind: call
+      id: hidden-zero
+      visible: false
+      description: 0점이 있어도 더 큰 점수를 돌려줘야 합니다.
+      args: [0, 3]
+      expect: { equals: 3 }
+      requirement: 큰 점수 돌려주기
+misconceptions: [js.mc.return-is-log, js.mc.code-after-return-runs]
+hints:
+  - 두 값을 비교하는 조건이 필요해요. 어떤 경우에 `a`를, 어떤 경우에 `b`를 돌려줘야 할까요?
+  - "`return`을 만나면 함수가 끝나요. 그래서 `if` 안에서 한 값을 돌려주면, 그 아래에는 나머지 경우만 남아요."
+  - 두 점수가 같을 때도 어느 한쪽 갈래에서 값을 돌려줘야 해요. `>`와 `>=` 중 무엇을 쓸지, 또는 `else`를 쓸지 정해 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function higherScore(a, b) {
+    if (a >= b) {
+      return a;
+    }
+    return b;
+  }
+  ```
+
+  - `a`가 `b`보다 크거나 같으면 `a`를 돌려주고 함수가 끝나요. 그렇지 않을 때만 마지막 줄 `return b;`까지 내려와요.
+  - 같은 점수일 때 `a > b`와 `else`(`return b`)를 써도 같은 값을 돌려주니 정답이에요. 하지만 `if (a > b) { return a; }`와 `if (b > a) { return b; }`만 쓰면 같은 점수일 때 어느 `return`도 실행되지 않아 `undefined`가 돼요.
+  - `console.log`로 출력만 하면 반환값이 `undefined`라 검사를 통과하지 못해요.
+  - JavaScript에는 `Math.max(a, b)`라는 기능도 있어요. 이것을 써도 정답이지만, 지금은 조건과 `return`을 연습해 보세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

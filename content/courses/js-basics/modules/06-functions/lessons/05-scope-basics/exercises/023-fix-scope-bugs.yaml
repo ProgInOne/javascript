@@ -1,0 +1,106 @@
+id: js-basics.functions.scope-basics.fix-scope-bugs
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.scope.shadowing, weight: 1 }
+  - { id: js.scope.block, weight: 0.5 }
+  - { id: js.scope.global, weight: 0.5 }
+tags: [scope, shadowing, block, global, tdz, debugging]
+estimatedSeconds: 420
+prompt: |
+  구매 금액에 따라 포인트를 적립하는 프로그램이에요.
+
+  - 기본 포인트는 구매 금액의 1%(금액 ÷ 100)예요.
+  - 한 번에 10,000원 이상 사면 그 구매에 한해 보너스 500점을 더 줘요.
+  - 적립한 포인트는 `totalPoints`에 계속 쌓여요.
+
+  지금은 실행하면 오류가 나요. 버그를 모두 고쳐서 아래처럼 출력되게 하세요. 버그는 하나가 아닐 수 있어요.
+
+  ```text
+  620점 적립
+  50점 적립
+  누적 포인트: 670점
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          let totalPoints = 0;
+
+          function earn(amount) {
+            if (amount >= 10000) {
+              const bonus = 500;
+            }
+            let points = amount / 100 + bonus;
+            let totalPoints = totalPoints + points;
+            return points;
+          }
+
+          console.log(earn(12000) + "점 적립");
+          console.log(earn(5000) + "점 적립");
+          console.log("누적 포인트: " + totalPoints + "점");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let totalPoints = 0;
+
+          function earn(amount) {
+            let bonus = 0;
+            if (amount >= 10000) {
+              bonus = 500;
+            }
+            const points = amount / 100 + bonus;
+            totalPoints += points;
+            return points;
+          }
+
+          console.log(earn(12000) + "점 적립");
+          console.log(earn(5000) + "점 적립");
+          console.log("누적 포인트: " + totalPoints + "점");
+  bugDescription: "실행하면 아무것도 출력되지 않고 `ReferenceError: bonus is not defined` 오류가 나요."
+  bugMisconception: js.mc.shadow-changes-outer
+  checks:
+    - kind: console
+      id: output
+      description: 구매마다 적립 포인트가, 마지막에 누적 포인트가 출력되어야 합니다.
+      requirement: 포인트 출력
+      expect:
+        lines: ["620점 적립", "50점 적립", "누적 포인트: 670점"]
+    - kind: program
+      id: total-points
+      description: 프로그램이 오류 없이 끝나고 바깥 변수 totalPoints에 670이 쌓여 있어야 합니다.
+      requirement: 포인트 누적
+      expect:
+        globals: { totalPoints: { equals: 670 } }
+        noError: true
+misconceptions: [js.mc.block-let-visible-outside, js.mc.shadow-changes-outer, js.mc.shadow-reads-outer-before-decl]
+hints:
+  - 오류 메시지부터 읽으세요. `bonus`는 어느 블록에서 만들어졌고, 7번 줄은 그 블록의 안인가요?
+  - 첫 오류를 고치면 다른 오류가 나올 수 있어요. 8번 줄의 `let totalPoints`는 바깥 `totalPoints`와 같은 변수일까요? 같은 줄 오른쪽의 `totalPoints`는 어느 변수를 가리킬까요?
+  - "`bonus`는 구매마다 새로 정해야 하는 값이고, `totalPoints`는 구매가 끝나도 쌓여야 하는 값이에요. 각각 어느 상자에 있어야 할지, 안쪽에서 `let`을 붙여도 되는지 생각해 보세요."
+explanation: |
+  버그는 두 개예요.
+
+  **1. 블록 밖에서 쓰는 `bonus` (5번·7번 줄)**: `bonus`를 `if` 블록 안에서 `const`로 만들어서 블록이 끝나면 사라져요. 7번 줄에서 `ReferenceError: bonus is not defined`가 나요. 함수 안, `if` 위에서 `let bonus = 0;`으로 만들고 블록 안에서는 `bonus = 500;`처럼 대입해요.
+
+  **2. 바깥 변수를 가리는 `let totalPoints` (8번 줄)**: 첫 버그를 고치면 이번에는 `ReferenceError: Cannot access 'totalPoints' before initialization`이 나요. 8번 줄의 `let`이 함수 안에 새 `totalPoints`를 만들어서, 그 줄 오른쪽의 `totalPoints`도 바깥이 아니라 아직 준비되지 않은 안쪽 변수를 가리키기 때문이에요. 오류가 나지 않았더라도 안쪽 변수에 더한 값은 바깥에 쌓이지 않아요. `let`을 빼고 `totalPoints += points;`로 바깥 변수에 더해요.
+
+  ```js
+  function earn(amount) {
+    let bonus = 0;
+    if (amount >= 10000) {
+      bonus = 500;
+    }
+    const points = amount / 100 + bonus;
+    totalPoints += points;
+    return points;
+  }
+  ```
+
+  **함정**: `let bonus = 0;`을 함수 **바깥**에 두면 오류는 사라지지만, 첫 구매에서 500이 된 `bonus`가 그대로 남아 두 번째 구매도 `550점 적립`이 돼요. 구매마다 새로 정하는 값은 함수 안에, 계속 쌓이는 값만 바깥에 둬요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

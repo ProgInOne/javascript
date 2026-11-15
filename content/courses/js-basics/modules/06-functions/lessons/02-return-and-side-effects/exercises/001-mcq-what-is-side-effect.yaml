@@ -1,0 +1,48 @@
+id: js-basics.functions.return-and-side-effects.mcq-what-is-side-effect
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.side-effects, weight: 1 }
+tags: [side-effects, return]
+estimatedSeconds: 50
+prompt: |
+  아래 함수 `addPrice`가 하는 일 중 **부수 효과**에 해당하는 것은 무엇인가요?
+code: |
+  let total = 0;
+
+  function addPrice(price) {
+    total += price;
+    return total;
+  }
+spec:
+  options:
+    - id: a
+      text: 바깥 변수 `total`의 값을 바꾼다
+    - id: b
+      text: "`return`으로 `total`의 값을 돌려준다"
+      rationale: 값을 돌려주는 것은 함수의 결과(반환값)예요. 부수 효과는 반환값 말고 바깥에 남기는 변화예요.
+    - id: c
+      text: 함수가 끝나면 `total`이 다시 0으로 돌아가므로 부수 효과는 없다
+      misconception: js.mc.function-cant-change-outer
+      rationale: 함수 안에서 바깥 변수에 대입한 값은 함수가 끝나도 남아요. 그래서 이 함수는 부수 효과가 있어요.
+    - id: d
+      text: 매개변수 `price`로 값을 받는다
+      rationale: 인수를 받는 것은 함수가 일하는 데 필요한 입력이에요. 바깥에 남는 변화가 아니에요.
+  correct: a
+misconceptions: [js.mc.function-cant-change-outer]
+hints:
+  - 부수 효과는 함수가 값을 돌려주는 것 말고 **함수 바깥에 남기는** 변화예요.
+  - "`total`은 함수 안에서 만든 변수인가요, 바깥에서 만든 변수인가요?"
+  - 함수를 호출한 뒤 바깥에서 `total`을 출력하면 0일까요?
+explanation: |
+  정답은 "바깥 변수 `total`의 값을 바꾼다"예요.
+
+  `total`은 함수 바깥(1번 줄)에서 만든 변수예요. `addPrice(500)`을 호출하면 4번 줄이 바깥 `total`을 500으로 바꾸고, 이 변화는 함수가 끝나도 남아요. 이렇게 함수 바깥에 남는 변화가 부수 효과예요.
+
+  - `return total;`은 호출한 자리에 값을 돌려주는 일이라 반환값이에요. 부수 효과와 구분해요.
+  - 매개변수로 값을 받는 것은 입력일 뿐이에요.
+  - 함수가 끝나도 바깥 변수의 변화는 되돌아가지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

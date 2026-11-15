@@ -1,0 +1,125 @@
+id: js-basics.functions.return-and-side-effects.fix-impure-total
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.fn.pure, weight: 1 }
+  - { id: js.fn.side-effects, weight: 0.5 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [pure, side-effects, params, debugging]
+estimatedSeconds: 360
+prompt: |
+  결제 화면에서 "결제하면 포인트가 얼마가 되는지" 미리 보여 주는 프로그램이에요. 결제 금액의 1%가 적립돼요. 미리 보기는 몇 번을 해도 같은 값이 나와야 하고, 실제 포인트는 바뀌면 안 돼요. 그런데 미리 볼 때마다 포인트가 늘어나요.
+
+  함수 `previewPoints`를 **순수 함수**로 고치세요.
+
+  - `previewPoints(current, price)`: 지금 포인트 `current`와 결제 금액 `price`를 받아, 결제하면 될 포인트를 **돌려주기만** 해요. 바깥 변수를 읽거나 바꾸지 않아요.
+  - 함수를 부르는 줄도 새 매개변수에 맞게 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  결제하면 포인트: 1200
+  결제하면 포인트: 1200
+  현재 포인트: 1000
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          let points = 1000; // 지금 가진 포인트
+
+          function previewPoints(price) {
+            points += price / 100; // 1% 적립
+            return points;
+          }
+
+          console.log("결제하면 포인트: " + previewPoints(20000));
+          console.log("결제하면 포인트: " + previewPoints(20000)); // 다시 미리 보기
+          console.log("현재 포인트: " + points);
+  entry: previewPoints
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let points = 1000; // 지금 가진 포인트
+
+          function previewPoints(current, price) {
+            return current + price / 100; // 1% 적립
+          }
+
+          console.log("결제하면 포인트: " + previewPoints(points, 20000));
+          console.log("결제하면 포인트: " + previewPoints(points, 20000)); // 다시 미리 보기
+          console.log("현재 포인트: " + points);
+  bugDescription: "두 번째 미리 보기가 `1400`으로 늘어나고, 결제도 안 했는데 현재 포인트가 `1400`이 돼요."
+  bugMisconception: js.mc.same-args-same-result-always
+  checks:
+    - kind: console
+      id: output
+      description: 미리 보기가 두 번 모두 1200이고, 현재 포인트는 1000 그대로여야 합니다.
+      requirement: 미리 보기 출력
+      expect:
+        lines: ["결제하면 포인트: 1200", "결제하면 포인트: 1200", "현재 포인트: 1000"]
+    - kind: program
+      id: points-unchanged
+      description: 미리 보기를 해도 바깥 변수 points는 1000 그대로여야 합니다.
+      requirement: 실제 포인트는 그대로
+      expect:
+        globals: { points: { equals: 1000 } }
+        noError: true
+      misconceptionIfFail: js.mc.function-cant-change-outer
+    - kind: call
+      id: basic
+      description: previewPoints(1000, 20000)은 1200을 돌려줘야 합니다.
+      requirement: 순수 함수
+      args: [1000, 20000]
+      expect: { equals: 1200 }
+    - kind: call
+      id: again
+      visible: false
+      description: 같은 인수로 다시 불러도 같은 값을 돌려줘야 합니다.
+      requirement: 순수 함수
+      args: [1000, 20000]
+      expect: { equals: 1200 }
+      misconceptionIfFail: js.mc.same-args-same-result-always
+    - kind: call
+      id: other-current
+      visible: false
+      description: 바깥 points가 아니라 넘겨받은 current로 계산해야 합니다.
+      requirement: 순수 함수
+      args: [0, 5000]
+      expect: { equals: 50 }
+    - kind: call
+      id: zero-price
+      visible: false
+      description: 결제 금액이 0이면 지금 포인트를 그대로 돌려줘야 합니다.
+      requirement: 순수 함수
+      args: [1500, 0]
+      expect: { equals: 1500 }
+misconceptions: [js.mc.same-args-same-result-always, js.mc.function-cant-change-outer]
+hints:
+  - 미리 보기를 할 때마다 4번 줄이 무엇을 바꾸는지 따라가 보세요. 두 번째 호출이 시작될 때 `points`는 얼마인가요?
+  - 순수 함수는 바깥 변수를 바꾸지도, 읽지도 않아요. 지금 포인트도 인수로 받아야 해요.
+  - 함수 본문은 "받은 포인트에 적립분을 더한 값"을 돌려주기만 하면 돼요. 함수를 부르는 두 줄에서는 지금 포인트를 첫 번째 인수로 넘겨야 해요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function previewPoints(current, price) {
+    return current + price / 100;
+  }
+
+  console.log("결제하면 포인트: " + previewPoints(points, 20000));
+  console.log("결제하면 포인트: " + previewPoints(points, 20000));
+  ```
+
+  원래 함수에는 문제가 두 가지 있었어요.
+
+  1. **바깥 변수를 바꿨어요(부수 효과).** `points += ...`가 미리 보기만 해도 실제 포인트를 늘렸어요. 그래서 1000 → 1200 → 1400이 됐어요.
+  1. **바깥 변수에 기댔어요.** 같은 인수 `20000`인데 첫 번째는 1200, 두 번째는 1400을 돌려줬어요. 결과가 바깥 상태에 따라 달라졌어요.
+
+  고친 함수는 필요한 값을 모두 매개변수로 받고, 계산한 값을 돌려주기만 해요. 그래서 `previewPoints(1000, 20000)`은 몇 번을 불러도 1200이고, `points`는 그대로 1000이에요.
+
+  `points +` 대신 `return points + price / 100;`으로만 고치면 바깥을 바꾸지는 않지만 여전히 바깥 `points`를 읽어요. 그러면 `previewPoints(0, 5000)`도 `points`를 기준으로 계산해서 50이 아닌 1050이 나와요. 실제로 결제할 때만 `points = previewPoints(points, 20000);`처럼 결과를 대입해 바꾸면 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

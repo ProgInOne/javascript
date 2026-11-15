@@ -1,0 +1,63 @@
+id: js-basics.functions.return-and-side-effects.find-bug-ignored-return
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.fn.side-effects, weight: 1 }
+  - { id: js.fn.return, weight: 0.5 }
+tags: [side-effects, return, debugging]
+estimatedSeconds: 110
+prompt: |
+  게임에서 보너스를 두 번 받아 점수를 올리는 프로그램이에요. 오류는 나지 않는데 점수가 오르지 않아요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    let score = 0;
+    function addBonus(current) {
+      return current + 10;
+    }
+    addBonus(score);
+    addBonus(score);
+    console.log("최종 점수: " + score);
+  bugLines: [5, 6]
+  symptom: "보너스를 두 번 받았으니 20점이어야 하는데 `최종 점수: 0`이 나와요."
+  symptomCheck:
+    console: ["최종 점수: 0"]
+  fixedCode: |-
+    let score = 0;
+    function addBonus(current) {
+      return current + 10;
+    }
+    score = addBonus(score);
+    score = addBonus(score);
+    console.log("최종 점수: " + score);
+  causeOptions:
+    - id: c1
+      text: addBonus가 돌려준 값을 어디에도 담지 않아서, 바깥 변수 score는 한 번도 바뀌지 않았다
+      correct: true
+    - id: c2
+      text: return이 값을 바깥 변수에 넣어 주는데, 매개변수 이름이 current라서 score에 들어가지 않았다
+      misconception: js.mc.return-changes-outer-variable
+    - id: c3
+      text: 같은 함수를 두 번째로 부르면 실행되지 않아서 보너스가 한 번도 더해지지 않았다
+      misconception: js.mc.function-runs-once
+hints:
+  - "`addBonus` 본문에 바깥 변수 `score`를 바꾸는 줄이 있나요?"
+  - "`addBonus(score)`는 값을 돌려줘요. 5번 줄에서 그 값은 어디로 가나요?"
+  - 돌려받은 값을 쓰지 않으면 그냥 버려져요. `score`가 바뀌려면 무엇이 `score`에 대입되어야 할까요?
+explanation: |
+  원인은 **5번 줄과 6번 줄**이에요. 둘 중 어느 줄을 골라도 정답이에요.
+
+  `addBonus`는 바깥 변수를 바꾸지 않고 `current + 10`을 **돌려주기만** 하는 함수예요(부수 효과가 없어요). 그런데 5·6번 줄은 돌려받은 값을 어디에도 담지 않아서, 계산된 10이 그냥 버려져요. `score`는 처음 값 0 그대로예요.
+
+  고치려면 반환값을 `score`에 대입해요.
+
+  ```js
+  score = addBonus(score);   // 10
+  score = addBonus(score);   // 20
+  ```
+
+  - `return`은 어떤 변수에도 값을 넣지 않아요. 매개변수 이름이 `score`였더라도 결과는 같아요.
+  - 함수는 호출할 때마다 실행돼요. 두 번 다 실행됐지만 결과를 버렸을 뿐이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

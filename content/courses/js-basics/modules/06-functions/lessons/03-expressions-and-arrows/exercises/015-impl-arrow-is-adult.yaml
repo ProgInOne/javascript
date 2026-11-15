@@ -1,0 +1,72 @@
+id: js-basics.functions.expressions-and-arrows.impl-arrow-is-adult
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [arrow-function, boolean, write-code, boundary]
+estimatedSeconds: 120
+prompt: |
+  나이(`age`)를 받아 성인(19세 이상)이면 `true`, 아니면 `false`를 돌려주는 **화살표 함수** `isAdult`를 만드세요.
+
+  - `isAdult(20)` → `true`
+  - `isAdult(15)` → `false`
+  - 중괄호 없이 한 줄(식 본문)로 써 보세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // isAdult 화살표 함수를 만드세요
+  entry: isAdult
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // isAdult 화살표 함수를 만드세요
+          const isAdult = (age) => age >= 19;
+  checks:
+    - kind: call
+      id: twenty
+      requirement: 성인 여부 돌려주기
+      args: [20]
+      expect: { strictEquals: true }
+    - kind: call
+      id: fifteen
+      requirement: 성인 여부 돌려주기
+      args: [15]
+      expect: { strictEquals: false }
+    - kind: call
+      id: nineteen
+      visible: false
+      description: 딱 19세도 성인이어야 합니다.
+      requirement: 성인 여부 돌려주기
+      args: [19]
+      expect: { strictEquals: true }
+    - kind: call
+      id: eighteen
+      visible: false
+      description: 18세는 성인이 아니어야 합니다.
+      requirement: 성인 여부 돌려주기
+      args: [18]
+      expect: { strictEquals: false }
+misconceptions: [js.mc.arrow-concise-with-return]
+hints:
+  - 비교 연산자의 결과는 그 자체로 `true`나 `false`예요. `if`가 꼭 필요하지 않아요.
+  - 식 본문은 `(매개변수) => 식` 모양이고, 식의 값이 자동으로 돌아가요.
+  - 19세가 포함되는지 확인하세요. 화살표 `=>`와 비교 연산자를 헷갈리지 않게 써요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const isAdult = (age) => age >= 19;
+  ```
+
+  - `age >= 19`는 그 자체로 `true`나 `false`인 값이에요. 식 본문이라 이 값이 자동으로 반환돼요.
+  - 19세는 성인이라 `>`가 아니라 `>=`를 써야 해요.
+  - 한 줄 안에 `=>`(화살표)와 `>=`(비교)가 함께 있어요. 꺾쇠 위치로 구별해요.
+  - `(age) => { return age >= 19; }`나 `if`로 나눠 `true`/`false`를 돌려줘도 정답이에요. 다만 `(age) => return age >= 19`는 문법 오류예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

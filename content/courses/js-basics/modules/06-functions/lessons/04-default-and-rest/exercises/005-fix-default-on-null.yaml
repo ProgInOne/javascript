@@ -1,0 +1,69 @@
+id: js-basics.functions.default-and-rest.fix-default-on-null
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.fn.default-params, weight: 1 }
+  - { id: js.types.null, weight: 0.3 }
+tags: [default-params, "null", debugging]
+estimatedSeconds: 180
+prompt: |
+  김밥 주문 금액을 계산하는 프로그램이에요. 수량을 정하지 않은 손님은 1줄로 계산하려고 `count`에 기본값 `1`을 정해 두었어요.
+  두 번째 손님은 수량을 정하지 않았다는 뜻으로 `null`을 넘겼는데, 금액이 이상하게 나와요. 아래처럼 출력되도록 고치세요.
+
+  ```text
+  첫 손님: 9000원
+  두 번째 손님: 4500원
+  ```
+
+  - 함수 `kimbapPrice`는 그대로 두고, 함수를 부르는 쪽을 고쳐 보세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function kimbapPrice(price, count = 1) {
+            return price * count;
+          }
+
+          console.log("첫 손님: " + kimbapPrice(4500, 2) + "원");
+          console.log("두 번째 손님: " + kimbapPrice(4500, null) + "원");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function kimbapPrice(price, count = 1) {
+            return price * count;
+          }
+
+          console.log("첫 손님: " + kimbapPrice(4500, 2) + "원");
+          console.log("두 번째 손님: " + kimbapPrice(4500) + "원");
+  bugDescription: "두 번째 손님의 금액이 4500원이 아니라 `0원`으로 나와요."
+  bugMisconception: js.mc.default-on-null
+  maxEditDistance: 8
+  checks:
+    - kind: console
+      id: output
+      description: 첫 손님은 2줄 값, 두 번째 손님은 기본 수량 1줄 값이 출력되어야 합니다.
+      requirement: 주문 금액 출력
+      expect:
+        lines: ["첫 손님: 9000원", "두 번째 손님: 4500원"]
+      misconceptionIfFail: js.mc.default-on-null
+misconceptions: [js.mc.default-on-null]
+hints:
+  - 두 번째 호출에서 `count`에는 어떤 값이 들어가나요? 기본값 `1`이 정말 쓰였을까요?
+  - "`4500 * null`을 계산하면 `null`이 0처럼 바뀌어 0이 돼요. 기본값은 매개변수가 어떤 값일 때만 쓰였나요?"
+  - 기본값이 쓰이게 하려면 그 자리에 무엇을 넘겨야(또는 넘기지 않아야) 할지 생각해 보세요.
+explanation: |
+  기본값은 매개변수가 **`undefined`일 때만** 쓰여요. `null`을 넘기면 `count`는 `null`이고, `4500 * null`은 `null`이 숫자 0으로 바뀌어 `0`이 돼요.
+
+  예시 정답은 두 번째 호출에서 인수를 빼는 거예요.
+
+  ```js
+  console.log("두 번째 손님: " + kimbapPrice(4500) + "원");
+  ```
+
+  `kimbapPrice(4500, undefined)`로 써도 기본값이 쓰여 정답이에요. 다만 "정하지 않았다"는 뜻이면 인수를 빼는 편이 자연스러워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,90 @@
+id: js-basics.functions.expressions-and-arrows.impl-arrow-converter
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.ops.remainder, weight: 0.3 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [arrow-function, remainder, string, write-code]
+estimatedSeconds: 240
+prompt: |
+  영상 길이를 분(`minutes`)으로 받아 `"1시간 30분"` 같은 글자로 돌려주는 **화살표 함수** `minutesToText`를 완성하세요.
+
+  - `minutesToText(90)` → `"1시간 30분"`
+  - `minutesToText(45)` → `"0시간 45분"`
+  - 시간과 분 사이에는 공백이 하나 있어요. 1시간은 60분이에요.
+  - `minutes`는 0 이상의 정수예요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const minutesToText = (minutes) => {
+            // 여기에 작성하세요
+          };
+  entry: minutesToText
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const minutesToText = (minutes) => {
+            const rest = minutes % 60;
+            const hours = (minutes - rest) / 60;
+            return hours + "시간 " + rest + "분";
+          };
+  checks:
+    - kind: call
+      id: ninety
+      requirement: 시간과 분으로 바꾸기
+      args: [90]
+      expect: { equals: "1시간 30분" }
+    - kind: call
+      id: under-hour
+      requirement: 시간과 분으로 바꾸기
+      args: [45]
+      expect: { equals: "0시간 45분" }
+    - kind: call
+      id: exact-hours
+      visible: false
+      description: 딱 나누어떨어지는 120분은 "2시간 0분"이어야 합니다.
+      requirement: 시간과 분으로 바꾸기
+      args: [120]
+      expect: { equals: "2시간 0분" }
+    - kind: call
+      id: zero
+      visible: false
+      description: 0분은 "0시간 0분"이어야 합니다.
+      requirement: 시간과 분으로 바꾸기
+      args: [0]
+      expect: { equals: "0시간 0분" }
+    - kind: call
+      id: long
+      visible: false
+      description: 다른 길이(예를 들어 2시간이 넘는 영상)도 맞게 바꿔야 합니다.
+      requirement: 시간과 분으로 바꾸기
+      args: [135]
+      expect: { equals: "2시간 15분" }
+misconceptions: [js.mc.arrow-braces-implicit-return]
+hints:
+  - "\"분\" 부분은 60으로 나눈 나머지예요. 나머지 연산자 `%`를 떠올려 보세요."
+  - "`minutes / 60`은 `1.5`처럼 소수가 나와요. 나머지를 먼저 빼면 60으로 딱 나누어떨어져요."
+  - 계산이 여러 줄이라 중괄호 본문을 쓰고 있어요. 마지막에 글자를 이어 붙인 값을 돌려주는 것을 잊지 마세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const minutesToText = (minutes) => {
+    const rest = minutes % 60;
+    const hours = (minutes - rest) / 60;
+    return hours + "시간 " + rest + "분";
+  };
+  ```
+
+  - `rest`: 60으로 나눈 나머지가 남는 분이에요. `90 % 60`은 `30`이에요.
+  - `hours`: 나머지를 뺀 `60`을 60으로 나누면 `1`처럼 딱 떨어져요. `90 / 60`만 쓰면 `1.5시간 30분`이 돼요.
+  - 중간값을 변수에 담느라 중괄호 본문을 썼으니 마지막 줄에 `return`이 꼭 필요해요. 빠뜨리면 모든 확인에서 `undefined`가 돌아와요.
+  - 숫자와 글자를 `+`로 이으면 글자가 돼요(`1 + "시간 "` → `"1시간 "`).
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

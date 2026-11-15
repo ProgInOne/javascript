@@ -1,0 +1,123 @@
+id: js-basics.functions.default-and-rest.impl-delivery-fee
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.fn.default-params, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+  - { id: js.ops.short-circuit, weight: 0.3 }
+tags: [default-params, boundary, zero, write-code, entry]
+estimatedSeconds: 420
+prompt: |
+  배달 앱의 결제 금액을 계산하는 함수 `payment(foodPrice, fee, freeFrom)`을 완성하세요.
+
+  - `foodPrice`: 음식값(항상 넘겨요).
+  - `fee`: 가게의 배달비. 넘기지 않으면 **3000원**이에요. 가게가 `0`을 넘기면 원래 무료 배달인 가게예요.
+  - `freeFrom`: 음식값이 이 금액 **이상**이면 배달비를 받지 않아요. 넘기지 않으면 **20000원**이에요.
+  - 결제 금액(음식값 + 실제로 내는 배달비)을 숫자로 **반환**하세요.
+
+  예:
+
+  - `payment(15000)` → `18000`
+  - `payment(15000, 2500)` → `17500`
+  - `payment(20000)` → `20000`
+
+  보이지 않는 검사도 있어요. 배달비 `0`, 기준 금액을 직접 넘긴 경우, 경계 금액을 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function payment(foodPrice, fee, freeFrom) {
+            // 여기에 작성하세요
+          }
+  entry: payment
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function payment(foodPrice, fee = 3000, freeFrom = 20000) {
+            if (foodPrice >= freeFrom) {
+              return foodPrice;
+            }
+            return foodPrice + fee;
+          }
+  checks:
+    - kind: call
+      id: default-fee
+      description: 배달비를 넘기지 않으면 3000원을 더해야 합니다.
+      requirement: 배달비 기본값
+      args: [15000]
+      expect: { equals: 18000 }
+    - kind: call
+      id: given-fee
+      description: 넘긴 배달비를 더해야 합니다.
+      requirement: 넘긴 배달비 사용
+      args: [15000, 2500]
+      expect: { equals: 17500 }
+    - kind: call
+      id: free-at-default
+      description: 음식값이 기본 기준 20000원이면 배달비가 없어야 합니다.
+      requirement: 무료 배달 기준
+      args: [20000]
+      expect: { equals: 20000 }
+    - kind: call
+      id: zero-fee
+      visible: false
+      description: 배달비로 0을 넘기면 기본값 3000원이 아니라 0원으로 계산해야 합니다.
+      requirement: 배달비 0 지키기
+      args: [9000, 0]
+      expect: { equals: 9000 }
+      misconceptionIfFail: js.mc.default-on-null
+    - kind: call
+      id: just-below
+      visible: false
+      description: 기준 금액보다 1원이라도 적으면 배달비를 받아야 합니다.
+      requirement: 무료 배달 기준
+      args: [19999]
+      expect: { equals: 22999 }
+    - kind: call
+      id: custom-free-from
+      visible: false
+      description: 기준 금액을 넘기면 그 금액 이상일 때 배달비가 없어야 합니다.
+      requirement: 넘긴 기준 사용
+      args: [12000, 2000, 12000]
+      expect: { equals: 12000 }
+    - kind: call
+      id: custom-free-from-below
+      visible: false
+      description: 기준 금액을 넘겼어도 음식값이 그보다 적으면 배달비를 더해야 합니다.
+      requirement: 넘긴 기준 사용
+      args: [11000, 2000, 12000]
+      expect: { equals: 13000 }
+    - kind: call
+      id: skip-fee
+      visible: false
+      description: 배달비 자리에 undefined를 넘기고 기준만 주면 배달비는 3000원이어야 합니다.
+      requirement: 배달비 기본값
+      argsExpr: "[8000, undefined, 30000]"
+      expect: { equals: 11000 }
+misconceptions: [js.mc.default-on-null, js.mc.missing-arg-error]
+hints:
+  - 빠질 수 있는 값이 두 개예요. 각각 빠졌을 때 쓸 값을 정해 두면 본문에서는 신경 쓰지 않아도 돼요.
+  - "`fee = fee || 3000`처럼 쓰면 어떤 배달비가 문제가 될지 생각해 보세요. `0`은 falsy였어요. 기본값 매개변수는 어떤 값일 때만 바뀌었나요?"
+  - 본문은 두 경우로 나뉘어요. 음식값이 기준 금액 이상인지(`>=`) 먼저 확인하고, 경우마다 돌려줄 금액을 정하세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function payment(foodPrice, fee = 3000, freeFrom = 20000) {
+    if (foodPrice >= freeFrom) {
+      return foodPrice;
+    }
+    return foodPrice + fee;
+  }
+  ```
+
+  - **기본값 두 개**: `fee`와 `freeFrom`이 빠지면(또는 `undefined`이면) 각각 3000, 20000을 써요.
+  - **배달비 0 지키기**: 기본값 매개변수는 `undefined`일 때만 바뀌므로 `payment(9000, 0)`은 9000이에요. 기본값 대신 `fee = fee || 3000;`이라고 쓰면 `0`이 falsy라서 3000으로 바뀌어 12000이 나와요. 원래 무료 배달인 가게가 배달비를 받게 되는 버그예요.
+  - **경계값**: "이상"이므로 `>=`예요. 20000원은 무료, 19999원은 배달비를 내요. `>`로 쓰면 20000원에서 배달비가 붙어요.
+  - **인수 순서**: 기준 금액만 바꾸고 배달비는 기본값을 쓰려면 `payment(8000, undefined, 30000)`처럼 배달비 자리에 `undefined`를 넘겨요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,16 @@
+id: js-basics.functions.callbacks-intro
+title: 함수를 값으로 다루기
+summary: 함수도 숫자나 문자열처럼 변수에 담고 인수로 넘길 수 있는 값이라는 것을 배우고, 다른 함수에 넘겨서 그 함수가 대신 불러 주는 콜백을 익힙니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 13, practice: 26 }
+concepts:
+  primary: [js.fn.first-class, js.fn.callback]
+  reviewed: [js.fn.arrow, js.fn.expression, js.fn.call, js.fn.return, js.loops.for]
+objectives:
+  - 함수 이름(greet)과 함수 호출(greet())의 차이를 알고, 함수를 변수에 담거나 인수로 넘길 수 있다.
+  - 콜백을 받는 함수가 콜백을 언제, 몇 번, 어떤 인수로 부르는지 추적해 출력을 예측할 수 있다.
+  - 콜백을 넘길 때 괄호를 붙여 호출 결과를 넘기는 버그를 찾아 고칠 수 있다.
+  - 콜백을 받는 함수를 작성하고, 화살표 함수로 콜백을 만들어 넘길 수 있다.
+practice:
+  targetCount: 18

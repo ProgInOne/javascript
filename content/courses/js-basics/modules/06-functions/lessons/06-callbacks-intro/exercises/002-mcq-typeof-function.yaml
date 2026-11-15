@@ -1,0 +1,49 @@
+id: js-basics.functions.callbacks-intro.mcq-typeof-function
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.first-class, weight: 1 }
+  - { id: js.types.typeof, weight: 0.3 }
+tags: [first-class, typeof]
+estimatedSeconds: 60
+prompt: |
+  아래 코드를 실행하면 두 줄이 차례로 출력돼요. 무엇이 나올까요?
+code: |
+  function add(a, b) {
+    return a + b;
+  }
+
+  console.log(typeof add);
+  console.log(typeof add(1, 2));
+spec:
+  options:
+    - id: a
+      text: "`function`, `number`"
+    - id: b
+      text: "`number`, `number`"
+      misconception: js.mc.assign-call-result
+      rationale: 괄호 없는 add는 실행 결과가 아니라 함수 자체예요. 함수의 typeof는 "function"이에요.
+    - id: c
+      text: "`function`, `function`"
+      rationale: add(1, 2)는 함수를 실행한 결과인 숫자 3이에요. 3의 typeof는 "number"예요.
+    - id: d
+      text: "`undefined`, `number`"
+      misconception: js.mc.function-not-a-value
+      rationale: 함수도 값이라 typeof로 확인할 수 있고, 결과는 "function"이에요.
+  correct: a
+misconceptions: [js.mc.assign-call-result, js.mc.function-not-a-value]
+hints:
+  - 두 줄의 차이는 `add` 뒤의 괄호뿐이에요.
+  - 괄호가 없으면 함수 자체, 괄호가 있으면 함수를 실행한 결과예요.
+  - "`add(1, 2)`가 돌려주는 값은 무엇이고, 그 값의 자료형은 무엇일까요?"
+explanation: |
+  출력은 `function`과 `number`예요.
+
+  - `typeof add`: `add`는 괄호가 없으니 **함수 자체**예요. 함수도 값이라 `typeof`로 확인할 수 있고, 결과는 `"function"`이에요.
+  - `typeof add(1, 2)`: 괄호를 붙이면 함수가 **실행되고** 그 결과인 숫자 `3`이 돼요. 그래서 `"number"`예요.
+
+  두 줄 모두 `number`라고 답했다면 괄호가 없는 `add`도 실행 결과로 본 거예요. `greet`와 `greet()`는 함수와 그 결과로, 서로 다른 값이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,46 @@
+id: js-basics.functions.scope-basics.mcq-block-let-outside
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.scope.block, weight: 1 }
+tags: [scope, block, let, reference-error]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 실행하면 5번 줄에서 어떤 일이 일어나나요?
+code: |
+  const age = 20;
+  if (age >= 19) {
+    let ticket = "성인";
+  }
+  console.log(ticket);
+spec:
+  options:
+    - id: a
+      text: "`성인`이 출력된다"
+      misconception: js.mc.block-let-visible-outside
+      rationale: ticket은 if 블록 안에서 let으로 만들었어요. 블록이 끝나면 사라지므로 5번 줄에서는 쓸 수 없어요.
+    - id: b
+      text: "`ReferenceError: ticket is not defined`가 난다"
+    - id: c
+      text: "`undefined`가 출력된다"
+      rationale: 블록 밖에는 ticket이라는 변수가 아예 없어요. 값이 비어 있는 것과 이름이 없는 것은 달라서, undefined가 아니라 오류가 나요.
+    - id: d
+      text: 아무것도 출력되지 않고 프로그램이 정상으로 끝난다
+      rationale: 없는 이름을 쓰면 JavaScript는 조용히 넘어가지 않고 오류를 내요.
+  correct: b
+misconceptions: [js.mc.block-let-visible-outside]
+hints:
+  - "`ticket`은 어디에서 만들어졌나요? 그 자리는 어떤 `{ }` 안인가요?"
+  - 블록 안에서 `let`으로 만든 변수는 블록이 끝나면 사라져요.
+  - 5번 줄에서 보이는 상자(전역)에 `ticket`이라는 이름이 있는지 생각해 보세요. 없는 이름을 쓰면 어떤 종류의 오류가 났나요?
+explanation: |
+  5번 줄에서 `ReferenceError: ticket is not defined`가 나요.
+
+  `ticket`은 `if` 블록 안에서 `let`으로 만든 변수라서 그 블록 안에서만 있어요(블록 스코프). 블록이 끝나는 4번 줄에서 사라지기 때문에, 5번 줄의 전역에서는 `ticket`이라는 이름을 찾을 수 없어요.
+
+  - "`성인`이 출력된다"고 생각했다면: 블록 안의 변수를 블록 밖에서 쓸 수 있다고 본 거예요. 밖에서도 쓰려면 `let ticket = "";`을 `if` 위에서 먼저 만들고 블록 안에서는 `ticket = "성인";`처럼 대입해야 해요.
+  - "`undefined`가 출력된다"고 생각했다면: `undefined`는 변수는 **있는데** 값이 없을 때예요. 여기서는 변수 자체가 없어서 오류예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

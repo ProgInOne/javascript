@@ -1,0 +1,173 @@
+id: js-basics.functions.function-basics.impl-receipt-functions
+type: implement_function
+difficulty: 5
+concepts:
+  - { id: js.fn.declaration, weight: 1 }
+  - { id: js.fn.return, weight: 0.5 }
+  - { id: js.fn.call, weight: 0.5 }
+  - { id: js.fn.params-args, weight: 0.3 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [function, declaration, design, return, boundary, write-code]
+estimatedSeconds: 720
+prompt: |
+  온라인 서점의 결제 금액을 계산하는 함수 `checkout(price, count, isMember)`를 완성하세요. `price`는 책 한 권의 가격, `count`는 권수, `isMember`는 회원이면 `true`예요. 결제 금액(숫자)을 **돌려주세요**.
+
+  결제 금액은 이 순서로 정해요.
+
+  1. 상품 금액 = 가격 × 권수
+  1. 회원이면 상품 금액에서 10%를 깎아요(할인 후 금액). 회원이 아니면 깎지 않아요.
+  1. 배송비는 **할인 후 금액**이 30000원 이상이면 0원, 아니면 3000원이에요. 단, 권수가 0이면 주문이 없으므로 배송비도 0원이에요.
+  1. 결제 금액 = 할인 후 금액 + 배송비
+
+  예: `checkout(10000, 2, false)` → `23000`, `checkout(15000, 2, true)` → `30000`
+
+  **함수를 나눠서 설계해 보세요.** 시작 코드에는 할 일마다 함수 자리를 만들어 두었어요. 각 함수가 자기 일만 하고 결과를 돌려주게 만든 뒤, `checkout`에서 차례로 불러 조합하세요. 채점은 `checkout`의 반환값으로만 해요. 숨김 검사에는 규칙의 경계에 있는 경우가 들어 있어요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 상품 금액을 돌려줘요.
+          function itemTotal(price, count) {
+          }
+
+          // 회원이면 10% 깎은 금액을, 아니면 그대로 돌려줘요.
+          function applyMemberDiscount(total, isMember) {
+          }
+
+          // 할인 후 금액과 권수로 배송비를 돌려줘요.
+          function shippingFee(amount, count) {
+          }
+
+          // 위 함수들을 불러 결제 금액을 돌려줘요.
+          function checkout(price, count, isMember) {
+          }
+  entry: checkout
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 상품 금액을 돌려줘요.
+          function itemTotal(price, count) {
+            return price * count;
+          }
+
+          // 회원이면 10% 깎은 금액을, 아니면 그대로 돌려줘요.
+          function applyMemberDiscount(total, isMember) {
+            if (isMember) {
+              return total - total / 10;
+            }
+            return total;
+          }
+
+          // 할인 후 금액과 권수로 배송비를 돌려줘요.
+          function shippingFee(amount, count) {
+            if (count === 0 || amount >= 30000) {
+              return 0;
+            }
+            return 3000;
+          }
+
+          // 위 함수들을 불러 결제 금액을 돌려줘요.
+          function checkout(price, count, isMember) {
+            const total = itemTotal(price, count);
+            const amount = applyMemberDiscount(total, isMember);
+            return amount + shippingFee(amount, count);
+          }
+  checks:
+    - kind: call
+      id: example-guest
+      args: [10000, 2, false]
+      expect: { equals: 23000 }
+      requirement: 결제 금액
+    - kind: call
+      id: example-member
+      args: [15000, 2, true]
+      expect: { equals: 30000 }
+      requirement: 결제 금액
+    - kind: call
+      id: guest-free-shipping
+      visible: false
+      description: 회원이 아니고 상품 금액이 30000원 이상이면 배송비가 없어야 합니다.
+      args: [16000, 2, false]
+      expect: { equals: 32000 }
+      requirement: 배송비
+    - kind: call
+      id: member-after-discount
+      visible: false
+      description: 배송비는 할인 전이 아니라 할인 후 금액으로 정해야 합니다(할인 후 30000원 미만).
+      args: [16000, 2, true]
+      expect: { equals: 31800 }
+      requirement: 할인 후 금액으로 배송비
+    - kind: call
+      id: exactly-30000
+      visible: false
+      description: 할인 후 금액이 딱 30000원이면 배송비가 없어야 합니다(경계값).
+      args: [30000, 1, false]
+      expect: { equals: 30000 }
+      requirement: 배송비
+    - kind: call
+      id: member-free-shipping
+      visible: false
+      description: 회원 할인 후에도 30000원 이상이면 배송비가 없어야 합니다.
+      args: [10000, 4, true]
+      expect: { equals: 36000 }
+      requirement: 회원 할인
+    - kind: call
+      id: member-small
+      visible: false
+      description: 회원이 적게 사면 할인 후 금액에 배송비 3000원을 더해야 합니다.
+      args: [25000, 1, true]
+      expect: { equals: 25500 }
+      requirement: 회원 할인
+    - kind: call
+      id: zero-count
+      visible: false
+      description: 권수가 0이면 결제 금액은 0원이어야 합니다(배송비 없음).
+      args: [12000, 0, true]
+      expect: { equals: 0 }
+      requirement: 주문 없음
+misconceptions: [js.mc.return-is-log, js.mc.declaration-runs-function, js.mc.params-match-by-name]
+hints:
+  - 작은 함수부터 하나씩 완성하세요. `itemTotal`처럼 한 가지 일만 하는 함수는 한 줄이면 돼요. 각 함수는 결과를 출력하지 말고 돌려줘야 다음 함수가 쓸 수 있어요.
+  - "`checkout`에서는 앞 함수의 반환값을 변수에 담아 다음 함수의 인수로 넘겨요. 배송비 함수에는 어떤 금액을 넘겨야 할지 규칙 3을 다시 읽어 보세요."
+  - 배송비가 0원인 경우는 두 가지예요. 두 경우를 함께 검사하거나 따로 먼저 돌려주세요. 30000원 **이상**에는 30000원도 들어가요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function itemTotal(price, count) {
+    return price * count;
+  }
+
+  function applyMemberDiscount(total, isMember) {
+    if (isMember) {
+      return total - total / 10;
+    }
+    return total;
+  }
+
+  function shippingFee(amount, count) {
+    if (count === 0 || amount >= 30000) {
+      return 0;
+    }
+    return 3000;
+  }
+
+  function checkout(price, count, isMember) {
+    const total = itemTotal(price, count);
+    const amount = applyMemberDiscount(total, isMember);
+    return amount + shippingFee(amount, count);
+  }
+  ```
+
+  - **함수 나누기**: 함수마다 한 가지 일만 하고 결과를 `return`해요. `checkout`은 그 결과를 이어 붙이기만 해서, "배송비 기준을 바꿔 주세요" 같은 요청이 와도 `shippingFee` 한 곳만 고치면 돼요.
+  - **반환값 이어 주기**: `itemTotal`의 결과를 `total`에 담아 `applyMemberDiscount`에, 그 결과 `amount`를 `shippingFee`에 넘겨요. 함수 안에서 `console.log`만 하면 다음 함수가 `undefined`를 받아 `NaN`이 나와요.
+  - **할인 후 금액으로 배송비**: 16000원 2권을 회원이 사면 상품 금액 32000원이 할인 후 28800원이 돼요. 할인 전 금액으로 배송비를 정하면 0원이 되어 28800을 돌려주지만, 규칙대로면 3000원을 더한 31800이에요.
+  - **경계값**: 딱 30000원은 "30000원 이상"이라 배송비가 없어요(`>=`). 0권이면 상품 금액이 0이라 그대로 두면 배송비 3000원이 붙으니 따로 처리해요.
+  - 인수 순서: `applyMemberDiscount(total, isMember)`, `shippingFee(amount, count)`처럼 내가 정한 매개변수 순서대로 넘겨야 해요.
+  - 모든 계산을 `checkout` 하나에 써도 정답이지만, 나눠 두면 각 부분을 따로 확인하고 고치기 쉬워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

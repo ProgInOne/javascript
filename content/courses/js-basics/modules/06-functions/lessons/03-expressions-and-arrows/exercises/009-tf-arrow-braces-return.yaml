@@ -1,0 +1,42 @@
+id: js-basics.functions.expressions-and-arrows.tf-arrow-braces-return
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+tags: [arrow-function, return, undefined]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`const square = (n) => { n * n; };`일 때 `square(3)`은 `9`를 돌려준다."
+  answer: false
+  misconceptionIfWrong: js.mc.arrow-braces-implicit-return
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 중괄호를 쓰면 일반 함수 본문이 되므로, return이 없으면 undefined를 돌려준다
+      correct: true
+    - id: r2
+      text: 화살표 함수는 본문의 마지막 식 값을 항상 자동으로 돌려주므로 9를 돌려준다
+      misconception: js.mc.arrow-braces-implicit-return
+    - id: r3
+      text: 중괄호 안에서는 매개변수 n을 쓸 수 없어서 ReferenceError가 난다
+hints:
+  - 자동으로 값을 돌려주는 화살표 함수는 어떤 모양이었나요?
+  - 이 함수에는 중괄호가 있어요. 중괄호 본문에서 값을 돌려주려면 무엇이 필요할까요?
+  - "`return`이 없는 함수가 돌려주는 값을 떠올려 보세요."
+explanation: |
+  정답은 **거짓**, 이유는 "중괄호를 쓰면 일반 함수 본문이 되므로, return이 없으면 undefined를 돌려준다"예요.
+
+  ```js
+  const square1 = (n) => { n * n; };        // undefined
+  const square2 = (n) => n * n;             // 9
+  const square3 = (n) => { return n * n; }; // 9
+  ```
+
+  - 마지막 식 값이 항상 자동으로 돌아온다는 이유를 골랐다면: 자동 반환은 중괄호가 **없는** 식 본문에만 해당해요.
+  - 오류가 난다는 이유를 골랐다면: 매개변수는 중괄호 본문 안에서 자유롭게 쓸 수 있어요. `n * n`은 계산되지만 돌려주지 않을 뿐이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

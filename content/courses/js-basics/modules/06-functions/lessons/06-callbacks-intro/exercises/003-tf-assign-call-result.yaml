@@ -1,0 +1,43 @@
+id: js-basics.functions.callbacks-intro.tf-assign-call-result
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.fn.first-class, weight: 1 }
+  - { id: js.fn.call, weight: 0.3 }
+tags: [first-class, call, parentheses]
+estimatedSeconds: 70
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`function greet() { return \"안녕하세요\"; }`가 있을 때 `const say = greet();`라고 쓰면 `say`에 함수 `greet`가 담기므로, 그 뒤에 `say()`로 `greet`를 부를 수 있다."
+  answer: false
+  misconceptionIfWrong: js.mc.assign-call-result
+  requireReason: true
+  reasons:
+    - id: r1
+      text: greet()는 그 자리에서 greet를 실행한 결과("안녕하세요")라서 say에는 문자열이 담긴다. 함수를 담으려면 괄호 없이 greet라고 써야 한다
+      correct: true
+    - id: r2
+      text: 괄호를 붙여야 함수가 변수에 담기고, 괄호 없이 greet라고 쓰면 아무것도 담기지 않는다
+      misconception: js.mc.assign-call-result
+    - id: r3
+      text: 함수는 변수에 담을 수 없는 것이라서, 괄호가 있든 없든 say()는 오류가 난다
+      misconception: js.mc.function-not-a-value
+hints:
+  - "`greet()`라고 쓰면 그 순간 무슨 일이 일어나나요?"
+  - "`greet()`의 결과는 `greet`가 돌려주는 값이에요. 그 값의 자료형은 무엇인가요?"
+  - 문자열에 괄호를 붙여 부를 수 있을까요? 함수 자체를 담으려면 괄호를 어떻게 해야 할지 생각해 보세요.
+explanation: |
+  정답은 **거짓**이에요. 이유는 "greet()는 그 자리에서 greet를 실행한 결과("안녕하세요")라서 say에는 문자열이 담긴다. 함수를 담으려면 괄호 없이 greet라고 써야 한다"예요.
+
+  ```js
+  const a = greet;   // 함수 자체 → a()로 부를 수 있어요
+  const b = greet(); // "안녕하세요" → b()는 TypeError: b is not a function
+  ```
+
+  - "괄호를 붙여야 담긴다"는 이유는 거꾸로예요. 괄호는 "지금 실행해"라는 뜻이라, 괄호를 붙이면 실행 결과가 담겨요.
+  - "함수는 변수에 담을 수 없다"는 이유도 틀려요. 괄호 없이 `const say = greet;`로 쓰면 `say()`로 잘 불러져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

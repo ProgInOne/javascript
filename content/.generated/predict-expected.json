@@ -72,6 +72,211 @@
         ]
       }
     },
+    "js-basics.functions.callbacks-intro.predict-callback-order": {
+      "inputHash": "62e74b28d6f3985f2b31ec3b0a5c1f5d4c297a535ed13a7e1d4d5f448502ea68",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "주문 받음",
+          "라면 조리 중",
+          "라면 나왔습니다",
+          "라면 정리",
+          "다음 손님"
+        ]
+      }
+    },
+    "js-basics.functions.callbacks-intro.predict-callback-trace": {
+      "inputHash": "b9510e7fff5e72a4a92916001710ea371ab7caf7196b9a0f82a41aff0ca1934e",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1일차: 2",
+          "2일차: 3",
+          "3일차: 5",
+          "5",
+          "1일차: 7",
+          "2일차: 8",
+          "8"
+        ]
+      }
+    },
+    "js-basics.functions.default-and-rest.predict-default-values": {
+      "inputHash": "078669eef07db22438ce939ebb122ff1e3bae83ad2b2c20c8eb79a8cc6ea34f6",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "레몬에이드 (보통)",
+          "녹차 (큰 컵)"
+        ]
+      }
+    },
+    "js-basics.functions.default-and-rest.predict-rest-length": {
+      "inputHash": "0f05b82b104d2c52fb94fb5dceea39b4f041970a5868cde9f82ee22113113378",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "조장: 서연",
+          "조원 수: 3",
+          "첫 조원: 민호"
+        ]
+      }
+    },
+    "js-basics.functions.expressions-and-arrows.predict-arrow-braces-undefined": {
+      "inputHash": "8f96e61802a64c8ea4e009854049983403f2dc139595f42e61d23dcf4943b7bc",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1100",
+          "undefined",
+          "1600"
+        ]
+      }
+    },
+    "js-basics.functions.expressions-and-arrows.predict-function-in-variable": {
+      "inputHash": "3e28e49170a923463e1df7407f42b4caecbe521ffcf62361a64a9d82140641ea",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "function",
+          "하늘님, 반가워요",
+          "string"
+        ]
+      }
+    },
+    "js-basics.functions.expressions-and-arrows.predict-hoisting-mixed": {
+      "inputHash": "cf27a88d90759f036023824341b3f354d709fef80d7ddc9957e0c6215c488387",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "2개",
+          "3개: 4500원"
+        ]
+      }
+    },
+    "js-basics.functions.function-basics.predict-args-by-order": {
+      "inputHash": "73c993c99d9b33d4583745d93c05b8fcb1000dadeee974c85f04c83947de5561",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "서연 / 14 / 부산살",
+          "준호 / 광주 / 15살"
+        ]
+      }
+    },
+    "js-basics.functions.function-basics.predict-call-flow": {
+      "inputHash": "6d0d35c39ea1181c1b8e7666732635da37c6450b7695a6763cef6e476df106b2",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "주문 접수",
+          "학교 배달 준비",
+          "- 책 포장 시작",
+          "- 책 포장 끝",
+          "책 상자 출발",
+          "도서관 배달 준비",
+          "- 우산 포장 시작",
+          "- 우산 포장 끝",
+          "우산 상자 출발",
+          "학교 도착"
+        ]
+      }
+    },
+    "js-basics.functions.function-basics.predict-nested-calls": {
+      "inputHash": "8475af2d212e11a96ee6686ea32c45f1ceca54df124ce6b32d49510a0283e301",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "double 3",
+          "add 1, 2",
+          "add 6, 3",
+          "결과: 9",
+          "add 2, 2",
+          "double 4",
+          "9"
+        ]
+      }
+    },
+    "js-basics.functions.return-and-side-effects.predict-missing-return-nan": {
+      "inputHash": "9b541b32aba80d0502b05eacc2e05c645ddf2d45ae5dab8537dc66de7334ac4c",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1등까지: 100",
+          "2등까지: 150",
+          "3등까지: 180",
+          "4등까지: NaN"
+        ]
+      }
+    },
+    "js-basics.functions.return-and-side-effects.predict-side-effect-once": {
+      "inputHash": "01ce2387dfd5447a7365198e5a80312a4cb78d96d3b6733ffcb4cb8a9c668e34",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "주문 접수: 떡볶이",
+          "1번 떡볶이",
+          "1번 떡볶이",
+          "주문 접수: 김밥",
+          "2번 김밥",
+          "받은 주문 수: 2"
+        ]
+      }
+    },
+    "js-basics.functions.scope-basics.predict-block-scope-error": {
+      "inputHash": "f4c6837b9a7f5106f6d6cf14deeb65763b45090ef3edef50a46dfd4000b71f7e",
+      "expected": {
+        "kind": "error",
+        "thrown": true,
+        "name": "ReferenceError"
+      }
+    },
+    "js-basics.functions.scope-basics.predict-global-read-update": {
+      "inputHash": "b759d61f5dc370ef43eec04cd50cea0a01bdcc1fc2e1c08e56aa4312534be4d0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "4500원 결제, 남은 돈 5500원",
+          "6000원: 잔액 부족",
+          "5000원 결제, 남은 돈 500원",
+          "최종 잔액: 500원"
+        ]
+      }
+    },
+    "js-basics.functions.scope-basics.predict-shadow-param": {
+      "inputHash": "edbb01ca3e2ff2326fead522a42287d0064edc95af6826dfbbe8c4e3e274dfaf",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "함수 안: 2",
+          "1차: 1",
+          "함수 안: 2",
+          "2차: 2",
+          "함수 안: 6",
+          "3차: 2"
+        ]
+      }
+    },
+    "js-basics.functions.scope-basics.predict-shadow-tdz": {
+      "inputHash": "cb339b43bfee1184db3596315a7cde0aa7d5f7675afd04005df18edd02380e01",
+      "expected": {
+        "kind": "error",
+        "thrown": true,
+        "name": "ReferenceError"
+      }
+    },
+    "js-basics.functions.scope-basics.predict-two-counters": {
+      "inputHash": "e249b008bec6242abe2bcbb0c637b2ba31e61dc6484b3357ed53ada72dbc79d2",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "민지: 1잔째 (오늘 1잔)",
+          "준호: 1잔째 (오늘 2잔)",
+          "민지: 1잔째 (오늘 3잔)",
+          "준호: 1잔째 (오늘 4잔)",
+          "합계: 4잔"
+        ]
+      }
+    },
     "js-basics.loops.break-continue.predict-break-search": {
       "inputHash": "327abf206e97872ba87d300fc5722575e13b418f1baefddb3d436f021b45e229",
       "expected": {

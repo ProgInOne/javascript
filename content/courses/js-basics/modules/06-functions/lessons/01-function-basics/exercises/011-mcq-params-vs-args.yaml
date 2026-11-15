@@ -1,0 +1,44 @@
+id: js-basics.functions.function-basics.mcq-params-vs-args
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.params-args, weight: 1 }
+tags: [function, parameter, argument, terms]
+estimatedSeconds: 45
+prompt: |
+  아래 코드에서 **인수**는 무엇인가요?
+code: |
+  function area(width, height) {
+    return width * height;
+  }
+
+  console.log(area(4, 7));
+spec:
+  options:
+    - id: a
+      text: "`4`와 `7`"
+    - id: b
+      text: "`width`와 `height`"
+      rationale: width와 height는 선언의 괄호 안에 적은 이름이라 매개변수예요.
+    - id: c
+      text: "`width * height`"
+      rationale: 이것은 return이 돌려주는 계산식이에요.
+    - id: d
+      text: "`area`"
+      rationale: area는 함수의 이름이에요.
+  correct: a
+hints:
+  - 매개변수와 인수 중 하나는 함수를 **만들 때**, 다른 하나는 함수를 **부를 때** 써요.
+  - 인수는 호출할 때 실제로 넘기는 값이에요. 이 코드에서 호출은 어디에 있나요?
+  - 5번 줄의 `area(...)` 괄호 안을 보세요.
+explanation: |
+  인수는 **`4`와 `7`**이에요.
+
+  - **매개변수**는 선언의 괄호 안에 적은 이름(`width`, `height`)이에요. 함수 안에서 변수처럼 써요.
+  - **인수**는 호출할 때 괄호 안에 넣어 넘기는 실제 값(`4`, `7`)이에요.
+  - 호출하면 인수가 순서대로 매개변수에 들어가요. 여기서는 `width`에 4, `height`에 7이 들어가서 `28`이 출력돼요.
+  - `width * height`는 반환할 값을 계산하는 식이고, `area`는 함수 이름이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

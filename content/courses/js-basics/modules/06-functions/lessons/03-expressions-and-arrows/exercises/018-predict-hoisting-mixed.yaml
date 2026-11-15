@@ -1,0 +1,56 @@
+id: js-basics.functions.expressions-and-arrows.predict-hoisting-mixed
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.fn.hoisting, weight: 1 }
+  - { id: js.fn.arrow, weight: 0.3 }
+  - { id: js.fn.declaration, weight: 0.3 }
+tags: [hoisting, declaration, arrow-function, trace]
+estimatedSeconds: 150
+prompt: |
+  함수 선언과 화살표 함수가 섞인 영수증 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 함수가 **만들어지는 시점**과 **호출되는 시점**을 줄마다 따져 보세요.
+spec:
+  lang: js
+  code: |
+    console.log(label(2));
+
+    function label(n) {
+      return n + "개";
+    }
+
+    const price = (n) => n * 1500;
+
+    function receipt(n) {
+      return label(n) + ": " + price(n) + "원";
+    }
+
+    console.log(receipt(3));
+  answerKind: console
+hints:
+  - 1번 줄에서 `label`을 부를 수 있는지부터 따져 보세요. `label`은 어떤 방법으로 만든 함수인가요?
+  - "`receipt` 본문은 `price`를 쓰지만, 본문은 선언할 때가 아니라 **호출할 때** 실행돼요."
+  - 마지막 줄에서 `receipt(3)`을 부르는 순간, 7번 줄은 이미 실행되었나요?
+explanation: |
+  출력은 다음과 같아요. 오류는 나지 않아요.
+
+  ```text
+  2개
+  3개: 4500원
+  ```
+
+  | 시점 | `label` | `price` | `receipt` | 일어나는 일 |
+  |---|---|---|---|---|
+  | 실행 전 준비 | 함수 | 아직 쓸 수 없음 | 함수 | 함수 선언 두 개를 미리 만들어요 |
+  | 1번 줄 | 함수 | 아직 쓸 수 없음 | 함수 | `label(2)` → `2개` 출력 |
+  | 7번 줄 | 함수 | 함수 | 함수 | `price`에 화살표 함수가 담겨요 |
+  | 13번 줄 | 함수 | 함수 | 함수 | `receipt(3)` 실행 → `3개: 4500원` 출력 |
+
+  - **1번 줄**: `label`은 함수 선언이라 실행 전에 이미 만들어져 있어요. 그래서 선언보다 위에서 불러도 돼요.
+  - **9~11번 줄**: `receipt`를 선언할 때 `price`는 아직 준비되지 않았지만 괜찮아요. 본문은 이때 실행되지 않거든요.
+  - **13번 줄**: `receipt(3)`을 호출하는 순간 본문이 실행되는데, 이때는 7번 줄이 이미 지나서 `price`가 준비되어 있어요. `3 * 1500`은 `4500`이에요.
+
+  1번 줄에서 오류가 난다고 생각했다면 함수 선언의 호이스팅을, `receipt(3)`에서 오류가 난다고 생각했다면 "본문은 호출할 때 실행된다"는 점을 다시 확인해 보세요. 만약 13번 줄을 7번 줄보다 위로 옮기면 그때는 `price`를 쓸 수 없어서 `ReferenceError`가 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

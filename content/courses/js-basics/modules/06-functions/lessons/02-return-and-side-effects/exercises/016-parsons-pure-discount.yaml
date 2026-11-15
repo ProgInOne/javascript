@@ -1,0 +1,75 @@
+id: js-basics.functions.return-and-side-effects.parsons-pure-discount
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.fn.pure, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [pure, return, parsons]
+estimatedSeconds: 110
+prompt: |
+  할인된 가격을 돌려주는 **순수 함수** `discounted(price, percent)`를 만드세요. 코드 조각을 순서대로 배열하면 돼요.
+
+  - 할인 금액은 `price * percent / 100`이에요.
+  - 할인된 가격을 **돌려줘야** 해요. 출력하거나 바깥 변수에 넣지 마세요.
+  - 예: `discounted(10000, 10)` → `9000`, `discounted(5000, 20)` → `4000`
+spec:
+  lines:
+    - { id: l1, code: "function discounted(price, percent) {" }
+    - { id: l2, code: "const off = price * percent / 100;", indent: 1 }
+    - { id: l3, code: "return price - off;", indent: 1 }
+    - { id: l4, code: "}" }
+  distractors:
+    - { id: d1, code: "console.log(price - off);", replaces: l3, misconception: js.mc.return-is-log }
+    - { id: d2, code: "salePrice = price - off;", replaces: l3, misconception: js.mc.undeclared-assign-creates-global }
+  gradeIndent: false
+  entry: discounted
+  checks:
+    - kind: call
+      id: ten
+      description: discounted(10000, 10)은 9000을 돌려줘야 합니다.
+      requirement: 할인된 가격 돌려주기
+      args: [10000, 10]
+      expect: { equals: 9000 }
+    - kind: call
+      id: twenty
+      description: discounted(5000, 20)은 4000을 돌려줘야 합니다.
+      requirement: 할인된 가격 돌려주기
+      args: [5000, 20]
+      expect: { equals: 4000 }
+    - kind: call
+      id: again
+      visible: false
+      description: 같은 인수로 다시 불러도 같은 값을 돌려줘야 합니다.
+      requirement: 같은 인수 같은 결과
+      args: [10000, 10]
+      expect: { equals: 9000 }
+    - kind: call
+      id: zero
+      visible: false
+      description: 할인율이 0이면 원래 가격을 돌려줘야 합니다.
+      requirement: 할인된 가격 돌려주기
+      args: [3000, 0]
+      expect: { equals: 3000 }
+misconceptions: [js.mc.return-is-log]
+hints:
+  - 함수는 `function` 줄로 시작해서 `}`로 끝나요. 할인 금액을 먼저 구해야 그 값을 쓸 수 있어요.
+  - 할인된 가격을 함수 밖으로 내보내는 방법은 출력도, 대입도 아니에요.
+  - 남은 조각 중 값을 호출한 자리로 돌려주는 줄을 고르세요.
+explanation: |
+  정답 순서는 다음과 같아요.
+
+  ```js
+  function discounted(price, percent) {
+    const off = price * percent / 100;
+    return price - off;
+  }
+  ```
+
+  이 함수는 매개변수만 보고 계산해서 돌려주기만 해요. 그래서 `discounted(10000, 10)`은 언제 불러도 9000이에요. 순수 함수예요.
+
+  - `console.log(price - off);`를 쓰면 화면에는 보이지만 돌려주는 값이 없어 결과가 `undefined`가 돼요.
+  - `salePrice = price - off;`는 선언하지 않은 이름에 대입해서 엄격 모드에서 `ReferenceError: salePrice is not defined`가 나요. 바깥 변수를 미리 만들어 두었더라도, 바깥을 바꾸는 것은 부수 효과라서 순수 함수가 아니게 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

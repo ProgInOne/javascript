@@ -1,0 +1,58 @@
+id: js-basics.functions.expressions-and-arrows.multi-arrow-equivalents
+type: mcq_multi
+difficulty: 4
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.fn.expression, weight: 0.5 }
+  - { id: js.fn.undefined-return, weight: 0.3 }
+tags: [arrow-function, function-expression, return, syntax]
+estimatedSeconds: 180
+prompt: |
+  아래 함수 선언 대신 쓸 수 있는 코드를 모두 고르세요. 오류 없이 실행되고, 같은 인수를 넣었을 때 같은 값을 돌려줘야 해요.
+
+  ```js
+  function total(price, count) {
+    return price * count;
+  }
+  ```
+spec:
+  options:
+    - id: a
+      text: "`const total = (price, count) => price * count;`"
+    - id: b
+      text: "`const total = (price, count) => { return price * count; };`"
+    - id: c
+      text: "`const total = (price, count) => { price * count; };`"
+      misconception: js.mc.arrow-braces-implicit-return
+      rationale: 중괄호 본문에는 return이 있어야 해요. 이 함수는 계산만 하고 undefined를 돌려줘요.
+    - id: d
+      text: "`const total = function (price, count) { return price * count; };`"
+    - id: e
+      text: "`const total = price, count => price * count;`"
+      rationale: 매개변수가 둘 이상이면 괄호로 묶어야 해요. 괄호가 없으면 다른 뜻으로 읽혀 SyntaxError가 나요.
+    - id: f
+      text: "`const total = (price, count) => return price * count;`"
+      misconception: js.mc.arrow-concise-with-return
+      rationale: 중괄호 없는 본문에는 식만 올 수 있어요. return을 쓰면 SyntaxError가 나요.
+  correct: [a, b, d]
+misconceptions: [js.mc.arrow-braces-implicit-return, js.mc.arrow-concise-with-return]
+hints:
+  - 각 코드가 ① 문법 오류 없이 실행되는지, ② `return`할 값이 있는지 두 가지를 따로 확인해 보세요.
+  - 중괄호와 `return`은 함께 쓰거나 함께 빼야 해요. 둘 중 하나만 있는 코드를 찾아보세요.
+  - 매개변수가 몇 개일 때 괄호를 뺄 수 있었는지도 떠올려 보세요.
+explanation: |
+  쓸 수 있는 코드는 세 가지예요.
+
+  - `(price, count) => price * count`: 식 본문이라 `price * count`가 자동으로 반환돼요.
+  - `(price, count) => { return price * count; }`: 중괄호 본문에 `return`이 있어요.
+  - `function (price, count) { return price * count; }`: 함수 표현식이에요. 화살표 함수가 아니어도 똑같이 동작해요.
+
+  쓸 수 없는 코드:
+
+  - `(price, count) => { price * count; }`: 중괄호를 쓰면 일반 함수 본문이 되어 `return`이 필요해요. 오류는 없지만 항상 `undefined`를 돌려줘요.
+  - `(price, count) => return price * count`: 식 본문에 `return` 문을 쓸 수 없어서 `SyntaxError: Unexpected token 'return'`이 나요.
+  - `price, count => price * count`: 괄호를 뺄 수 있는 것은 매개변수가 하나일 때뿐이에요. 이 줄은 `const total = price`와 `count => ...`로 나뉘어 읽혀서 `SyntaxError: Missing initializer in const declaration`이 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

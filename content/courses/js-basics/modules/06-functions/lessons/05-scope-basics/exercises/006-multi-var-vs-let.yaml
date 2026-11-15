@@ -1,0 +1,62 @@
+id: js-basics.functions.scope-basics.multi-var-vs-let
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.scope.block, weight: 1 }
+  - { id: js.values.var, weight: 0.3 }
+tags: [scope, block, var, let, const]
+estimatedSeconds: 110
+prompt: |
+  아래 코드의 **맨 아래**(10번 줄 자리)에서 `console.log`로 오류 없이 출력할 수 있는 변수를 모두 고르세요.
+code: |
+  const isOpen = true;
+  if (isOpen) {
+    var a = "에이";
+    let b = "비";
+    const c = "씨";
+  }
+  for (let i = 0; i < 1; i++) {
+    var d = "디";
+  }
+  // 여기서 console.log(?)
+spec:
+  options:
+    - id: a
+      text: "`a`"
+      missedMisconception: js.mc.var-is-block-scoped
+    - id: b
+      text: "`b`"
+      misconception: js.mc.block-let-visible-outside
+      rationale: b는 if 블록 안에서 let으로 만들어서 블록이 끝나면 사라져요.
+    - id: c
+      text: "`c`"
+      misconception: js.mc.block-let-visible-outside
+      rationale: const도 let과 같이 블록 스코프를 따라요.
+    - id: d
+      text: "`d`"
+      missedMisconception: js.mc.var-is-block-scoped
+    - id: e
+      text: "`i`"
+      misconception: js.mc.block-let-visible-outside
+      rationale: for 괄호에서 let으로 만든 반복 변수는 반복 안에서만 있어요.
+    - id: f
+      text: "`isOpen`"
+  correct: [a, d, f]
+misconceptions: [js.mc.var-is-block-scoped, js.mc.block-let-visible-outside]
+hints:
+  - 변수마다 어떤 키워드(`var`, `let`, `const`)로, 어느 `{ }` 안에서 만들었는지 적어 보세요.
+  - "`let`과 `const`는 블록이 끝나면 사라져요. `var`도 그럴까요?"
+  - 블록을 무시하고 함수 전체(함수 밖이면 프로그램 전체)에서 쓸 수 있는 키워드가 하나 있어요. 맨 바깥에서 만든 변수도 잊지 마세요.
+explanation: |
+  출력할 수 있는 변수는 `a`, `d`, `isOpen`이에요.
+
+  - `isOpen`: 맨 바깥(전역)에서 만들었으니 어디서나 쓸 수 있어요.
+  - `a`, `d`: `var`로 만든 변수는 블록을 무시해요. `if` 블록이나 `for` 본문 안에서 만들었어도 블록이 끝난 뒤에 남아 있어서 `에이`, `디`가 출력돼요.
+  - `b`, `c`: 블록 안에서 `let`·`const`로 만들었으니 블록이 끝나면 사라져요. 쓰면 `ReferenceError`예요.
+  - `i`: `for (let i …)`의 반복 변수는 반복 안에서만 있어요.
+
+  `var`를 놓쳤다면 `var`도 블록 스코프를 따른다고 본 거예요. 실제로는 블록이 끝나도 변수가 남아서 실수를 숨기기 쉬워요. 그래서 새 코드에서는 `let`과 `const`를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

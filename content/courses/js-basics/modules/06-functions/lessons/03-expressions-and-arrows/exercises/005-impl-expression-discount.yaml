@@ -1,0 +1,85 @@
+id: js-basics.functions.expressions-and-arrows.impl-expression-discount
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.fn.expression, weight: 1 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+tags: [function-expression, return, write-code]
+estimatedSeconds: 180
+prompt: |
+  정가(`price`)와 할인율(`percent`, 단위 %)을 받아 **할인된 가격**을 돌려주는 함수 `salePrice`를 완성하세요.
+
+  - 시작 코드처럼 **함수 표현식**으로 쓰세요.
+  - 할인된 가격 = 정가 − 정가 × 할인율 ÷ 100
+  - 예: `salePrice(10000, 20)`은 `8000`, `salePrice(5000, 10)`은 `4500`을 돌려줘요.
+  - 출력하지 말고 `return`으로 돌려주세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const salePrice = function (price, percent) {
+            // 여기에 작성하세요
+          };
+  entry: salePrice
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const salePrice = function (price, percent) {
+            return price - price * percent / 100;
+          };
+  checks:
+    - kind: call
+      id: twenty-percent
+      requirement: 할인된 가격 돌려주기
+      args: [10000, 20]
+      expect: { equals: 8000 }
+    - kind: call
+      id: ten-percent
+      requirement: 할인된 가격 돌려주기
+      args: [5000, 10]
+      expect: { equals: 4500 }
+    - kind: call
+      id: no-discount
+      visible: false
+      description: 할인율이 0이면 정가 그대로 돌려줘야 합니다.
+      requirement: 할인된 가격 돌려주기
+      args: [3000, 0]
+      expect: { equals: 3000 }
+    - kind: call
+      id: half
+      visible: false
+      description: 다른 정가와 할인율에도 맞게 계산해야 합니다.
+      requirement: 할인된 가격 돌려주기
+      args: [8000, 50]
+      expect: { equals: 4000 }
+    - kind: call
+      id: free
+      visible: false
+      description: 100% 할인이면 0을 돌려줘야 합니다.
+      requirement: 할인된 가격 돌려주기
+      args: [4000, 100]
+      expect: { equals: 0 }
+misconceptions: [js.mc.return-is-log]
+hints:
+  - 할인 금액(정가 × 할인율 ÷ 100)을 먼저 생각하고, 정가에서 빼면 돼요.
+  - 매개변수 `price`와 `percent`로만 계산하세요. 예시의 숫자를 직접 쓰면 다른 값에서 틀려요.
+  - 계산한 값은 `console.log`가 아니라 함수의 결과로 돌려줘야 해요. 결과를 돌려주는 키워드 뒤에 계산식을 써 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const salePrice = function (price, percent) {
+    return price - price * percent / 100;
+  };
+  ```
+
+  - `price * percent / 100`이 할인 금액이에요. `10000 * 20 / 100`은 `2000`이라 `10000 - 2000 = 8000`이 돼요. 곱셈과 나눗셈이 뺄셈보다 먼저 계산되므로 괄호가 없어도 돼요.
+  - 함수 표현식으로 만든 함수도 `salePrice(10000, 20)`처럼 호출하고, `return`한 값이 결과가 돼요.
+  - 숨김 확인은 할인율 0%, 50%, 100% 같은 다른 값을 넣어 봐요. 매개변수로 계산했다면 모두 통과해요.
+  - `const discount = price * percent / 100;`처럼 중간값을 변수에 담은 뒤 `return price - discount;`로 써도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

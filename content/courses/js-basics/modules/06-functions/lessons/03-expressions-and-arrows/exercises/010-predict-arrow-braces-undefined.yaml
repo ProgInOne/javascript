@@ -1,0 +1,50 @@
+id: js-basics.functions.expressions-and-arrows.predict-arrow-braces-undefined
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.fn.undefined-return, weight: 0.3 }
+tags: [arrow-function, return, undefined, trace]
+estimatedSeconds: 100
+prompt: |
+  가격에 세금과 수수료를 붙이는 화살표 함수 세 개예요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    const addTax = (price) => price + price / 10;
+    const addFee = (price) => {
+      price + 500;
+    };
+    const addBoth = (price) => {
+      const withTax = addTax(price);
+      return withTax + 500;
+    };
+
+    console.log(addTax(1000));
+    console.log(addFee(1000));
+    console.log(addBoth(1000));
+  answerKind: console
+  misconceptionByAnswer:
+    "1100\n1500\n1600": js.mc.arrow-braces-implicit-return
+hints:
+  - 세 함수의 본문 모양을 비교해 보세요. 중괄호가 있는 것과 없는 것, `return`이 있는 것과 없는 것이 있어요.
+  - "`addFee`는 `price + 500`을 계산해요. 그 값을 돌려주라는 말이 있나요?"
+  - "`addBoth`는 `addTax`가 돌려준 값을 `withTax`에 담은 뒤 계산해요. `addTax(1000)`이 얼마인지부터 구해 보세요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  1100
+  undefined
+  1600
+  ```
+
+  - `addTax`: 식 본문이라 `1000 + 1000 / 10` = `1100`이 자동으로 반환돼요.
+  - `addFee`: 중괄호 본문인데 `return`이 없어요. `price + 500`은 계산되지만 버려지고, 함수는 `undefined`를 돌려줘요.
+  - `addBoth`: 중괄호 본문에 `return`이 있어요. `addTax(1000)`이 `1100`이므로 `1100 + 500` = `1600`이에요.
+
+  두 번째 줄을 `1500`이라고 답했다면, 중괄호를 써도 값이 자동으로 반환된다고 생각한 거예요. 중괄호를 열면 `return`을 직접 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

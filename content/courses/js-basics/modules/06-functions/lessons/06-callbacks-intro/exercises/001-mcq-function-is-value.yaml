@@ -1,0 +1,47 @@
+id: js-basics.functions.callbacks-intro.mcq-function-is-value
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.first-class, weight: 1 }
+tags: [first-class, function-value]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  function greet(name) {
+    return name + "님, 안녕하세요";
+  }
+
+  const hello = greet;
+  console.log(hello("민지"));
+spec:
+  options:
+    - id: a
+      text: "`민지님, 안녕하세요`"
+    - id: b
+      text: "`TypeError: hello is not a function` 오류가 난다"
+      misconception: js.mc.function-not-a-value
+      rationale: 함수도 값이라서 다른 변수에 담을 수 있어요. hello에는 greet와 같은 함수가 들어 있어요.
+    - id: c
+      text: "`undefined`"
+      rationale: hello에 함수가 담겼으니 hello("민지")는 greet("민지")와 똑같이 문자열을 돌려줘요.
+    - id: d
+      text: 아무것도 나오지 않는다
+      rationale: 6번 줄의 console.log가 hello("민지")의 결과를 출력해요.
+  correct: a
+misconceptions: [js.mc.function-not-a-value]
+hints:
+  - 5번 줄의 `greet` 뒤에 괄호가 있나요? 괄호가 없으면 함수를 실행하지 않아요.
+  - 숫자를 다른 변수에 담듯이 함수도 다른 변수에 담을 수 있어요. 그러면 `hello`에는 무엇이 들어 있을까요?
+  - "`hello`와 `greet`가 같은 함수를 가리킨다면, `hello(\"민지\")`는 어떤 호출과 같을까요?"
+explanation: |
+  출력은 `민지님, 안녕하세요`예요.
+
+  - 5번 줄 `const hello = greet;`는 `greet`를 실행하지 않고, **함수 자체**를 `hello`에 담아요. 함수도 숫자나 문자열처럼 값이기 때문이에요.
+  - 그래서 `hello("민지")`는 `greet("민지")`와 똑같이 실행되어 `"민지님, 안녕하세요"`를 돌려줘요.
+
+  오류가 난다고 답했다면 "함수는 변수에 담을 수 없다"고 생각한 거예요. `undefined`라고 답했다면 `hello`에 함수가 아닌 다른 것이 담겼다고 본 거예요. 괄호가 없으니 담긴 것은 함수 그대로예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

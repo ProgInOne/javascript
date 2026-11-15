@@ -1,0 +1,48 @@
+id: js-basics.functions.function-basics.mcq-return-vs-log
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.fn.return, weight: 1 }
+  - { id: js.basics.console-log, weight: 0.3 }
+tags: [return, console]
+estimatedSeconds: 60
+prompt: |
+  다음 코드를 실행한 뒤 `result`에 들어 있는 값은 무엇인가요?
+code: |
+  function double(n) {
+    console.log(n * 2);
+  }
+  const result = double(4);
+spec:
+  options:
+    - id: a
+      text: "`8`"
+      misconception: js.mc.return-is-log
+      rationale: 콘솔에 8이 보이지만, 그것은 console.log가 보여 준 것일 뿐 돌려준 값이 아니에요.
+    - id: b
+      text: "`undefined`"
+    - id: c
+      text: "`null`"
+      misconception: js.mc.no-return-is-null
+      rationale: return이 없는 함수가 돌려주는 값은 null이 아니라 undefined예요.
+    - id: d
+      text: "`4`"
+      rationale: 인수 4가 그대로 돌아오지는 않아요. 함수가 돌려주는 값은 return으로만 정해져요.
+  correct: b
+misconceptions: [js.mc.return-is-log]
+hints:
+  - 함수가 값을 돌려주는 방법은 무엇인지 떠올려 보세요.
+  - "`double` 본문에 `return`이 있나요? `console.log`는 값을 돌려주나요, 보여 주기만 하나요?"
+  - "`return`이 없는 함수를 호출한 결과는 '값 없음'을 뜻하는 특별한 값이에요."
+explanation: |
+  `result`에는 **`undefined`**가 들어 있어요.
+
+  - `double(4)`를 부르면 본문의 `console.log`가 콘솔에 `8`을 **보여 줘요**.
+  - 하지만 `double`에는 `return`이 없어요. `return`이 없는 함수를 호출한 결과는 `undefined`예요.
+  - 그래서 `const result = double(4);`는 `const result = undefined;`와 같아요.
+
+  `8`을 `result`에 담으려면 `return n * 2;`를 써야 해요. 보여 주기(`console.log`)와 돌려주기(`return`)는 다른 일이에요. `null`은 프로그래머가 일부러 넣는 다른 값이고, 인수 `4`가 저절로 돌아오지도 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

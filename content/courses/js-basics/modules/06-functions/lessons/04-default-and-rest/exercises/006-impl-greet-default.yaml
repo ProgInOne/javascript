@@ -1,0 +1,89 @@
+id: js-basics.functions.default-and-rest.impl-greet-default
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.fn.default-params, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [default-params, write-code, entry]
+estimatedSeconds: 180
+prompt: |
+  게임 대기실의 안내 문구를 만드는 함수 `welcome(name, room)`을 완성하세요.
+
+  - `"어서 오세요, (이름)! (방 번호)번 방이에요"`를 **반환**하세요(출력이 아니라 `return`).
+  - 이름을 넘기지 않으면 `"손님"`, 방 번호를 넘기지 않으면 `1`을 쓰세요.
+
+  예:
+
+  - `welcome("나래", 4)` → `"어서 오세요, 나래! 4번 방이에요"`
+  - `welcome("나래")` → `"어서 오세요, 나래! 1번 방이에요"`
+  - `welcome()` → `"어서 오세요, 손님! 1번 방이에요"`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function welcome(name, room) {
+            // 여기에 작성하세요
+          }
+  entry: welcome
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function welcome(name = "손님", room = 1) {
+            return "어서 오세요, " + name + "! " + room + "번 방이에요";
+          }
+  checks:
+    - kind: call
+      id: both
+      description: 이름과 방 번호를 모두 넘기면 그대로 써야 합니다.
+      requirement: 넘긴 값 사용
+      args: ["나래", 4]
+      expect: { equals: "어서 오세요, 나래! 4번 방이에요" }
+    - kind: call
+      id: no-room
+      description: 방 번호를 넘기지 않으면 1번 방이어야 합니다.
+      requirement: 방 번호 기본값
+      args: ["나래"]
+      expect: { equals: "어서 오세요, 나래! 1번 방이에요" }
+    - kind: call
+      id: no-args
+      description: 아무것도 넘기지 않으면 손님, 1번 방이어야 합니다.
+      requirement: 이름 기본값
+      args: []
+      expect: { equals: "어서 오세요, 손님! 1번 방이에요" }
+    - kind: call
+      id: other-name
+      visible: false
+      description: 다른 이름과 방 번호도 그대로 써야 합니다.
+      requirement: 넘긴 값 사용
+      args: ["도윤", 12]
+      expect: { equals: "어서 오세요, 도윤! 12번 방이에요" }
+    - kind: call
+      id: name-undefined
+      visible: false
+      description: 이름 자리에 undefined를 넘기고 방 번호만 주면, 이름은 손님이고 방 번호는 넘긴 값이어야 합니다.
+      requirement: 이름 기본값
+      argsExpr: "[undefined, 3]"
+      expect: { equals: "어서 오세요, 손님! 3번 방이에요" }
+misconceptions: [js.mc.missing-arg-error]
+hints:
+  - 이름과 방 번호가 빠지면 각각 `undefined`가 돼요. 빠졌을 때 쓸 값을 매개변수에서 미리 정할 수 있어요.
+  - 매개변수마다 `이름 = 값` 모양으로 기본값을 따로 정할 수 있어요.
+  - 기본값을 정한 뒤에는 본문에서 `+`로 문구를 이어 붙여 `return`하면 돼요. 띄어쓰기와 `!` 위치를 예와 비교해 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function welcome(name = "손님", room = 1) {
+    return "어서 오세요, " + name + "! " + room + "번 방이에요";
+  }
+  ```
+
+  - 매개변수마다 기본값을 따로 정할 수 있어요. 빠진 인수만 기본값으로 바뀌어요.
+  - `welcome(undefined, 3)`처럼 앞 인수만 건너뛰고 싶으면 그 자리에 `undefined`를 넘기면 돼요. 인수는 순서대로 들어가기 때문에 `welcome(3)`이라고 쓰면 `3`이 이름 자리에 들어가요.
+  - 기본값 없이 `if (name === undefined) { name = "손님"; }`처럼 써도 같은 결과예요. 기본값 매개변수는 이것을 한 줄로 줄인 모양이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

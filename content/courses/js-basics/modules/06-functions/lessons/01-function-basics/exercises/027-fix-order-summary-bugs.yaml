@@ -1,0 +1,116 @@
+id: js-basics.functions.function-basics.fix-order-summary-bugs
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.fn.call, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.5 }
+  - { id: js.fn.return, weight: 0.5 }
+tags: [function, call, argument, return, debugging]
+estimatedSeconds: 420
+prompt: |
+  분식집 주문서를 출력하는 프로그램이에요. 함수 세 개로 나눠 만들었는데 출력이 엉망이에요. 버그가 **세 군데** 있어요. 모두 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  --------------------
+  김밥 x2: 7000원
+  라면 x1: 4000원
+  --------------------
+  합계: 11000원
+  ```
+
+  - 함수의 매개변수 순서는 바꾸지 마세요(`itemTotal(price, count)`, `printItem(name, count, price)`).
+  - 금액 계산은 `itemTotal`에 맡기세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function itemTotal(price, count) {
+            console.log(price * count);
+          }
+
+          function printLine() {
+            console.log("--------------------");
+          }
+
+          function printItem(name, count, price) {
+            console.log(name + " x" + count + ": " + itemTotal(price, count) + "원");
+          }
+
+          printLine;
+          printItem("김밥", 3500, 2);
+          printItem("라면", 1, 4000);
+          printLine();
+          console.log("합계: " + (itemTotal(3500, 2) + itemTotal(4000, 1)) + "원");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function itemTotal(price, count) {
+            return price * count;
+          }
+
+          function printLine() {
+            console.log("--------------------");
+          }
+
+          function printItem(name, count, price) {
+            console.log(name + " x" + count + ": " + itemTotal(price, count) + "원");
+          }
+
+          printLine();
+          printItem("김밥", 2, 3500);
+          printItem("라면", 1, 4000);
+          printLine();
+          console.log("합계: " + (itemTotal(3500, 2) + itemTotal(4000, 1)) + "원");
+  bugDescription: |
+    지금은 이렇게 출력돼요.
+
+    ```text
+    7000
+    김밥 x3500: undefined원
+    4000
+    라면 x1: undefined원
+    --------------------
+    7000
+    4000
+    합계: NaN원
+    ```
+  checks:
+    - kind: console
+      id: output
+      description: 구분선, 김밥·라면 줄, 구분선, 합계가 차례로 출력되어야 합니다.
+      requirement: 주문서 출력
+      expect:
+        lines:
+          - "--------------------"
+          - "김밥 x2: 7000원"
+          - "라면 x1: 4000원"
+          - "--------------------"
+          - "합계: 11000원"
+misconceptions: [js.mc.call-without-parens, js.mc.params-match-by-name, js.mc.return-is-log]
+hints:
+  - 증상을 하나씩 나눠 보세요. ① 맨 위 구분선이 없어요. ② 금액 자리가 `undefined`이고 숫자가 따로 출력돼요. ③ 김밥 개수가 `x3500`이에요.
+  - "①은 함수가 실행되지 않은 경우, ②는 함수가 값을 돌려주지 않는 경우, ③은 인수가 엉뚱한 매개변수로 들어간 경우예요. 각각 어느 줄일까요?"
+  - "`printItem`의 매개변수 순서는 `(name, count, price)`예요. 라면 줄의 호출은 이 순서와 맞고, 김밥 줄은 어떤가요? 그리고 `itemTotal`이 값을 돌려주게 되면 합계 줄도 함께 맞아요."
+explanation: |
+  고칠 곳은 세 군데예요.
+
+  ```js
+  function itemTotal(price, count) {
+    return price * count;            // ② 보여 주기 대신 돌려주기
+  }
+  // ...
+  printLine();                       // ① 괄호를 붙여 호출
+  printItem("김밥", 2, 3500);         // ③ 인수를 (name, count, price) 순서로
+  ```
+
+  - **① `printLine;`**: 괄호가 없어서 호출이 아니에요. 오류 없이 지나가서 맨 위 구분선만 빠졌어요.
+  - **② `itemTotal`의 `console.log`**: 값을 보여 주기만 하고 돌려주지 않아 결과가 `undefined`였어요. 그래서 숫자가 따로 한 줄씩 출력되고, 금액 자리에는 `undefined`, 합계는 `undefined + undefined`인 `NaN`이 나왔어요. `return`으로 바꾸면 주문 줄과 합계 줄이 한꺼번에 고쳐져요.
+  - **③ `printItem("김밥", 3500, 2)`**: 인수는 순서대로 들어가서 `count`에 3500, `price`에 2가 들어갔어요. `printItem`의 매개변수 순서에 맞춰 개수 2를 먼저 써요.
+
+  하나만 고치면 다른 버그의 증상이 그대로 남아요. 증상을 하나씩 원인과 짝지어 보는 것이 여러 버그를 고치는 요령이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

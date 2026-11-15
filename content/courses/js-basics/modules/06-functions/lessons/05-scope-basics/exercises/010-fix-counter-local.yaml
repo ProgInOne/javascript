@@ -1,0 +1,97 @@
+id: js-basics.functions.scope-basics.fix-counter-local
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.scope.function, weight: 1 }
+  - { id: js.scope.global, weight: 0.3 }
+tags: [scope, function, counter, debugging]
+estimatedSeconds: 160
+prompt: |
+  커피를 살 때마다 도장을 하나 찍고, 세 번째 도장에서 무료 음료를 알려 주는 프로그램이에요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  도장 1개
+  도장 2개
+  도장 3개
+  음료 한 잔 무료!
+  ```
+
+  `addStamp()`를 세 번 호출하는 아래 세 줄은 그대로 두세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function addStamp() {
+            let stamps = 0;
+            stamps++;
+            console.log("도장 " + stamps + "개");
+            if (stamps === 3) {
+              console.log("음료 한 잔 무료!");
+            }
+          }
+
+          addStamp();
+          addStamp();
+          addStamp();
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let stamps = 0;
+
+          function addStamp() {
+            stamps++;
+            console.log("도장 " + stamps + "개");
+            if (stamps === 3) {
+              console.log("음료 한 잔 무료!");
+            }
+          }
+
+          addStamp();
+          addStamp();
+          addStamp();
+  bugDescription: 도장을 세 번 찍었는데 매번 `도장 1개`만 나오고, 무료 음료 안내가 나오지 않아요.
+  bugMisconception: js.mc.function-var-persists
+  checks:
+    - kind: console
+      id: output
+      description: 도장 수가 1, 2, 3으로 늘고 세 번째에 무료 음료 안내가 나와야 합니다.
+      requirement: 도장 쌓기
+      expect:
+        lines: ["도장 1개", "도장 2개", "도장 3개", "음료 한 잔 무료!"]
+      misconceptionIfFail: js.mc.function-var-persists
+    - kind: program
+      id: stamps-total
+      description: 세 번 호출한 뒤 stamps에 3이 남아 있어야 합니다.
+      requirement: 도장 쌓기
+      expect:
+        globals: { stamps: { equals: 3 } }
+        noError: true
+misconceptions: [js.mc.function-var-persists]
+hints:
+  - 두 번째 호출이 시작될 때 `stamps`는 얼마가 되나요? 2번 줄을 다시 읽어 보세요.
+  - 함수 안의 변수는 호출할 때마다 새로 만들어져요. 호출 사이에 값을 기억하려면 변수가 어디에 있어야 할까요?
+  - "`stamps`를 0으로 만드는 일은 프로그램 전체에서 몇 번 일어나야 할까요? 지금은 그 일이 언제마다 일어나고 있나요?"
+explanation: |
+  원인은 함수 안의 `let stamps = 0;`이에요. 함수 안의 변수는 **호출할 때마다 새로** 만들어지고 호출이 끝나면 사라져요. 그래서 세 번 모두 0에서 시작해 1이 됐고, `stamps === 3`은 한 번도 참이 되지 않았어요.
+
+  예시 정답은 `stamps`를 함수 **바깥**에서 한 번만 만들어요.
+
+  ```js
+  let stamps = 0;
+
+  function addStamp() {
+    stamps++;
+    console.log("도장 " + stamps + "개");
+    if (stamps === 3) {
+      console.log("음료 한 잔 무료!");
+    }
+  }
+  ```
+
+  바깥 변수는 함수 안에서 바꿀 수 있고, 함수가 끝나도 값이 남아요. 호출 사이에 기억해야 하는 값(도장 수, 방문 횟수 등)은 이렇게 함수 바깥에 둬요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

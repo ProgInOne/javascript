@@ -1,0 +1,444 @@
+<Section kind="objectives">
+- 함수를 선언하고 원하는 인수로 호출할 수 있으며, 선언만으로는 함수 본문이 실행되지 않는다는 것을 예측할 수 있어요.
+- 매개변수와 인수의 차이를 설명하고, 인수가 순서대로 매개변수에 들어가는 결과를 예측할 수 있어요.
+- `return`으로 값을 돌려주는 함수를 작성하고, `return`과 `console.log`의 차이를 실행 결과로 구분할 수 있어요.
+- 함수 안에서 다른 함수를 부를 때 실행 흐름이 어디로 갔다가 돌아오는지 추적할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+분식집 주문 프로그램을 만든다고 해 볼게요. 김밥 2줄, 라면 1개, 떡볶이 3인분의 금액을 계산해서 보여 줘야 해요.
+
+```js
+console.log("김밥: " + 3500 * 2 + "원");
+console.log("라면: " + 4000 * 1 + "원");
+console.log("떡볶이: " + 4500 * 3 + "원");
+```
+
+세 줄이 모양은 같고 메뉴 이름, 가격, 개수만 달라요. 그런데 "금액 뒤에 `(부가세 포함)`을 붙여 주세요"라는 요청이 오면 세 줄을 모두 고쳐야 해요. 메뉴가 서른 개라면 서른 곳을 고쳐야 하고, 한 곳을 빠뜨리기도 쉬워요.
+
+**함수**는 이렇게 되풀이되는 코드 묶음에 이름을 붙여 두고, 필요할 때마다 이름으로 불러 쓰는 방법이에요. 달라지는 부분(메뉴, 가격, 개수)은 부를 때마다 값으로 넘겨주고, 계산한 결과는 돌려받아요. 고칠 일이 생기면 함수 한 곳만 고치면 돼요. 이 단원에서는 함수를 만들고(선언), 부르고(호출), 값을 넘기고(매개변수와 인수), 결과를 돌려받는(`return`) 방법을 배워요.
+</Section>
+
+<Section kind="principle">
+### 함수 선언: 코드 묶음에 이름 붙이기
+
+```js
+function 이름(매개변수1, 매개변수2) {
+  // 본문: 함수를 부를 때 실행할 코드
+}
+```
+
+`function` 키워드 다음에 함수 이름, 괄호 안에 매개변수, 중괄호 안에 본문을 써요. 함수 이름은 변수 이름과 같은 규칙으로 짓고, 보통 하는 일을 나타내는 동사로 시작해요(`printMenu`, `calcPrice`).
+
+**선언은 함수를 만들어 두기만 해요.** 본문은 이 자리에서 실행되지 않아요. 요리법을 공책에 적어 두는 것과 같아서, 적어 두었다고 요리가 만들어지지는 않아요.
+
+### 함수 호출: 이름 뒤에 괄호
+
+```js
+function sayHello() {
+  console.log("안녕하세요!");
+}
+
+sayHello(); // 여기서 본문이 실행돼요
+sayHello(); // 또 실행돼요
+```
+
+함수 이름 뒤에 **괄호 `()`**를 붙이면 함수를 **호출**해요. 호출하면 본문이 처음부터 끝까지 실행되고, 끝나면 호출한 자리 다음으로 돌아와요. 같은 함수를 몇 번이든 다시 부를 수 있고, 부를 때마다 본문을 처음부터 다시 실행해요. 괄호 없이 `sayHello;`라고만 쓰면 함수를 가리키기만 할 뿐 실행되지 않아요.
+
+### 매개변수와 인수: 값 넘기기
+
+```js
+function orderLine(menu, price, count) {   // menu, price, count: 매개변수
+  console.log(menu + ": " + price * count + "원");
+}
+
+orderLine("김밥", 3500, 2);                 // "김밥", 3500, 2: 인수
+```
+
+| 용어 | 어디에 | 무엇 |
+|---|---|---|
+| 매개변수 | 선언의 괄호 안 (`menu, price, count`) | 함수 안에서 쓰는 변수 이름 |
+| 인수 | 호출의 괄호 안 (`"김밥", 3500, 2`) | 부를 때 실제로 넘기는 값 |
+
+호출하면 인수가 **순서대로** 매개변수에 들어가요. 첫 번째 인수는 첫 번째 매개변수에, 두 번째 인수는 두 번째 매개변수에 들어가요. 이름이 같은지는 상관없어요. 그래서 `orderLine("김밥", 3500, 2)`를 부르면 본문이 실행되기 전에 이런 대입이 일어난 것과 같아요.
+
+```js
+let menu = "김밥";
+let price = 3500;
+let count = 2;
+```
+
+매개변수는 이미 함수 안의 변수예요. 본문에서 `let price = ...;`로 다시 만들면 `SyntaxError: Identifier 'price' has already been declared`가 나요.
+
+### return: 결과 돌려주기
+
+```js
+function calcPrice(price, count) {
+  return price * count;
+}
+
+const total = calcPrice(3500, 2);  // calcPrice(3500, 2) 자리가 7000이 돼요
+console.log(total);                // 7000
+```
+
+`return 값;`은 두 가지 일을 해요.
+
+1. 값을 **호출한 자리로 돌려줘요**. `calcPrice(3500, 2)`라는 호출 식이 그 값 `7000`이 돼요. 그래서 변수에 담을 수도 있고, `calcPrice(3500, 2) + 500`처럼 계산에 바로 쓸 수도 있어요.
+1. 함수를 **그 자리에서 끝내요**. `return` 아래에 코드가 더 있어도 실행되지 않아요.
+
+`return`은 값을 돌려주기만 하고 **출력하지는 않아요**. 화면에 보고 싶으면 돌려받은 값을 `console.log`로 출력해야 해요. 반대로 함수 안의 `console.log`는 보여 주기만 하고 값을 돌려주지 않아요. `return`이 없는 함수를 호출한 결과는 `undefined`예요.
+
+### 두 가지 관점: 실행 흐름 따라가기
+
+**관점 1: 호출은 잠깐 다녀오는 길이에요.** 프로그램은 위에서 아래로 실행되다가 호출을 만나면 함수 본문으로 **건너가고**, 본문이 끝나거나 `return`을 만나면 호출한 자리로 **돌아와요**. 함수 안에서 다른 함수를 부르면 한 번 더 건너갔다가, 돌아올 때는 거꾸로 하나씩 돌아와요.
+
+```js
+function line() {
+  console.log("----------");
+}
+
+function receipt(total) {
+  line();
+  console.log("합계: " + total + "원");
+  line();
+}
+
+console.log("영수증");
+receipt(7000);
+console.log("감사합니다");
+```
+
+| 순서 | 실행하는 곳 | 일어나는 일 |
+|---|---|---|
+| 1 | 맨 아래 `console.log("영수증")` | `영수증` 출력 |
+| 2 | `receipt(7000)` 호출 | `receipt`로 건너감, `total`은 7000 |
+| 3 | `receipt` 안의 `line()` | `line`으로 건너가서 `----------` 출력 후 `receipt`로 돌아옴 |
+| 4 | `receipt` 안의 `console.log` | `합계: 7000원` 출력 |
+| 5 | `receipt` 안의 두 번째 `line()` | `----------` 출력 후 돌아옴 |
+| 6 | `receipt` 본문 끝 | 맨 아래로 돌아옴 |
+| 7 | `console.log("감사합니다")` | `감사합니다` 출력 |
+
+함수 선언 두 개(1~10번 줄)는 위에 있지만 그 자리에서는 아무것도 출력하지 않았어요.
+
+**관점 2: 호출 식은 반환값으로 바뀌어요.** 값을 돌려주는 함수의 호출은 계산식 속의 숫자처럼 읽을 수 있어요. 호출 식을 반환값으로 바꿔 쓰면서 안쪽부터 계산해 보세요.
+
+```js
+function double(n) {
+  return n * 2;
+}
+
+const result = double(3) + double(10);
+// → 6 + double(10)
+// → 6 + 20
+// → 26
+```
+
+호출이 인수 자리에 들어가 있으면(`double(double(3))`) **안쪽 호출을 먼저** 끝내서 값을 얻은 다음, 그 값을 인수로 바깥 함수를 불러요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 함수 선언이 맨 위에 있고, 호출은 아래에 있어요. 무엇이 어떤 순서로 출력될까요?
+
+<RunnableExample id="declare-then-call" lang="js" predict predictKind="console" concepts={["js.fn.declaration", "js.fn.call"]}>
+```js
+function cheer() {
+  console.log("힘내요!");
+}
+
+console.log("시작");
+cheer();
+cheer();
+console.log("끝");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+시작
+힘내요!
+힘내요!
+끝
+```
+
+- 1~3번 줄은 함수 선언이에요. `cheer`라는 함수를 만들어 두기만 하고 `힘내요!`를 출력하지 않아요. 그래서 첫 줄은 `시작`이에요.
+- 6번 줄과 7번 줄에서 `cheer()`를 두 번 불렀으니 본문이 두 번 실행돼요. 함수는 몇 번이든 다시 부를 수 있어요.
+- 7번 줄을 `cheer;`로 바꿔 실행해 보세요. 오류는 없지만 `힘내요!`가 한 번만 나와요. 괄호가 없으면 호출이 아니에요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 매개변수가 있는 함수예요. 같은 함수에 다른 인수를 넘기면 결과가 달라져요.
+
+<RunnableExample id="order-line" lang="js" concepts={["js.fn.params-args"]}>
+```js
+function orderLine(menu, price, count) {
+  console.log(menu + " " + count + "개: " + price * count + "원");
+}
+
+orderLine("김밥", 3500, 2);
+orderLine("라면", 4000, 1);
+orderLine("떡볶이", 4500, 3);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+김밥 2개: 7000원
+라면 1개: 4000원
+떡볶이 3개: 13500원
+```
+
+| 호출 | `menu` | `price` | `count` |
+|---|---|---|---|
+| `orderLine("김밥", 3500, 2)` | `"김밥"` | 3500 | 2 |
+| `orderLine("라면", 4000, 1)` | `"라면"` | 4000 | 1 |
+| `orderLine("떡볶이", 4500, 3)` | `"떡볶이"` | 4500 | 3 |
+
+- 인수는 순서대로 매개변수에 들어가요. 호출할 때마다 매개변수가 새 값으로 채워져요.
+- 출력 모양을 바꾸고 싶으면 2번 줄 하나만 고치면 세 줄이 모두 바뀌어요. 이것이 함수를 쓰는 이유예요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `return`과 `console.log`를 비교해요. `a`와 `b`에는 각각 무엇이 담길까요?
+
+<RunnableExample id="log-vs-return" lang="js" predict predictKind="console" concepts={["js.fn.return"]}>
+```js
+function doubleLog(n) {
+  console.log(n * 2);
+}
+
+function doubleReturn(n) {
+  return n * 2;
+}
+
+const a = doubleLog(4);
+const b = doubleReturn(4);
+console.log("a: " + a);
+console.log("b: " + b);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+8
+a: undefined
+b: 8
+```
+
+- 9번 줄: `doubleLog(4)`를 부르면 본문의 `console.log`가 `8`을 출력해요. 하지만 `return`이 없어서 호출 결과는 `undefined`이고, `a`에는 `undefined`가 담겨요.
+- 10번 줄: `doubleReturn(4)`는 아무것도 출력하지 않아요. 대신 `8`을 돌려줘서 `b`에 `8`이 담겨요.
+- 화면에 `8`이 보였다고 해서 그 값이 돌아온 것은 아니에요. **보여 주기(`console.log`)와 돌려주기(`return`)는 다른 일**이에요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 반환값을 계산에 바로 쓰고, 함수 안에서 다른 함수를 불러요. 마지막 줄에 무엇이 출력될까요?
+
+<RunnableExample id="compose" lang="js" predict predictKind="console" concepts={["js.fn.return", "js.fn.call"]}>
+```js
+function calcPrice(price, count) {
+  return price * count;
+}
+
+function withDelivery(total) {
+  return total + 3000;
+}
+
+const food = calcPrice(3500, 2) + calcPrice(4000, 1);
+console.log("음식값: " + food);
+console.log("배달 포함: " + withDelivery(food));
+console.log("한 번에: " + withDelivery(calcPrice(4500, 3)));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+음식값: 11000
+배달 포함: 14000
+한 번에: 16500
+```
+
+- 9번 줄: 호출 식을 반환값으로 바꿔 읽으면 `7000 + 4000`이라 `food`는 11000이에요.
+- 11번 줄: 반환값을 변수에 담지 않고 `+`로 바로 이어 붙였어요. 반환값은 담아 두지 않아도 바로 쓸 수 있어요.
+- 12번 줄: 인수 자리에 호출이 들어 있어요. 안쪽 `calcPrice(4500, 3)`이 먼저 13500을 돌려주고, 그 값으로 `withDelivery(13500)`을 불러 16500이 돼요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 `return`이 함수를 끝낸다는 것을 보여 줘요. 실행해 보고, 9번 줄의 `5`를 `8`로 바꿔 다시 실행해 보세요.
+
+<RunnableExample id="early-return" lang="js" concepts={["js.fn.return"]}>
+```js
+function ticketPrice(age) {
+  if (age < 8) {
+    return 0;
+  }
+  console.log("요금을 계산해요");
+  return 1500;
+}
+
+console.log(ticketPrice(5));
+console.log(ticketPrice(20));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+0
+요금을 계산해요
+1500
+```
+
+- `ticketPrice(5)`: `5 < 8`이 참이라 3번 줄의 `return 0;`을 만나요. 함수는 그 자리에서 끝나서 5번 줄의 `요금을 계산해요`는 출력되지 않아요.
+- `ticketPrice(20)`: 조건이 거짓이라 `if` 블록을 건너뛰고 5번, 6번 줄을 실행해요.
+- `return`은 "값 돌려주기"이면서 "함수 끝내기"예요. 조건에 따라 일찍 끝내고 싶을 때 이 성질을 써요. 자세한 내용은 다음 단원에서 다뤄요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.declaration-runs-function">
+<Wrong>`function cheer() { console.log("힘내요!"); }`를 쓰면 그 자리에서 `힘내요!`가 출력된다.</Wrong>
+<Actual>첫 번째 예제에서 선언이 맨 위에 있었지만 첫 줄은 `시작`이었어요. 선언은 함수를 만들어 두기만 해요.</Actual>
+<Right>본문은 `cheer()`처럼 **호출할 때** 실행되고, 호출한 횟수만큼 실행돼요. 선언만 있고 호출이 없으면 본문은 한 번도 실행되지 않아요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.call-without-parens">
+<Wrong>`cheer;`라고만 써도 함수가 실행된다.</Wrong>
+<Actual>`cheer;`는 오류 없이 지나가지만 아무 일도 하지 않아요. 그래서 "왜 출력이 안 되지?" 하고 오래 헤매기 쉬워요.</Actual>
+<Right>함수를 실행하는 것은 이름 뒤의 **괄호**예요. 인수가 없어도 `cheer()`처럼 빈 괄호를 꼭 붙여요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.function-runs-once">
+<Wrong>함수를 한 번 부르고 나면 다 써 버려서, 다시 불러도 실행되지 않거나 처음 결과가 그대로 나온다.</Wrong>
+<Actual>두 번째 예제에서 `orderLine`을 세 번 불렀고, 부를 때마다 다른 결과가 나왔어요.</Actual>
+<Right>함수는 부를 때마다 본문을 처음부터 다시 실행해요. 매개변수도 그때마다 새 인수로 채워져요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.params-match-by-name">
+<Wrong>`intro(age, name)`이라고 부르면 이름이 같은 매개변수에 알아서 들어간다.</Wrong>
+<Actual>
+
+인수는 이름이 아니라 **순서**로 들어가요.
+
+```js
+function intro(name, age) {
+  console.log(name + "는 " + age + "살");
+}
+const name = "민지";
+const age = 15;
+intro(age, name); // 15는 민지살
+```
+</Actual>
+<Right>호출할 때 선언의 매개변수 순서를 확인하고, 그 순서대로 인수를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.param-redeclare-with-let">
+<Wrong>매개변수 `price`를 쓰려면 본문에서 `let price = price;`처럼 다시 만들어야 한다.</Wrong>
+<Actual>매개변수는 이미 함수 안의 변수예요. 같은 이름을 `let`으로 다시 만들면 `SyntaxError: Identifier 'price' has already been declared`가 나서 프로그램 전체가 실행되지 않아요.</Actual>
+<Right>매개변수는 만들 필요 없이 본문에서 바로 써요. 다른 값을 담을 변수가 필요하면 다른 이름으로 만들어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.return-is-log">
+<Wrong>함수 안에서 `console.log(n * 2)`를 하면 그 값이 함수의 결과로 돌아온다.</Wrong>
+<Actual>세 번째 예제에서 `8`이 화면에 보였지만 `a`에는 `undefined`가 담겼어요.</Actual>
+<Right>값을 돌려주는 것은 `return`뿐이에요. 결과를 다른 곳에서 쓸 함수라면 `return`으로 돌려주고, 출력은 호출한 쪽에서 해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.return-value-auto-printed">
+<Wrong>`calcPrice(3500, 2);`처럼 부르기만 해도 `7000`이 출력된다.</Wrong>
+<Actual>`return`은 값을 돌려줄 뿐 출력하지 않아요. 받아서 쓰지 않은 반환값은 그냥 버려지고, 화면에는 아무것도 나오지 않아요.</Actual>
+<Right>반환값을 보려면 `console.log(calcPrice(3500, 2));`처럼 출력하거나, 변수에 담아서 나중에 출력해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.return-changes-outer-variable">
+<Wrong>함수 안에서 `return total;`을 하면 함수 밖의 변수 `total`에 그 값이 들어간다.</Wrong>
+<Actual>
+
+`return`은 값을 호출한 자리로 돌려줄 뿐, 어떤 변수에도 넣지 않아요.
+
+```js
+let total = 0;
+function calc() {
+  const total = 3500 * 2;
+  return total;
+}
+calc();
+console.log(total); // 0
+```
+</Actual>
+<Right>돌려받은 값을 담으려면 `total = calc();`처럼 호출 결과를 직접 대입해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.code-after-return-runs">
+<Wrong>`return` 다음 줄에 있는 코드도 이어서 실행된다.</Wrong>
+<Actual>다섯 번째 예제에서 `ticketPrice(5)`는 `return 0;`에서 끝나서 `요금을 계산해요`가 나오지 않았어요.</Actual>
+<Right>`return`을 만나면 함수는 그 자리에서 끝나요. 출력이나 계산은 `return`보다 **앞에** 둬요. 다음 단원에서 더 자세히 다뤄요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+쇼핑몰의 장바구니 화면을 생각해 보세요. 상품 금액 계산, 할인 적용, 배송비 더하기, 금액 표시가 화면 여러 곳에서 되풀이돼요. 실제 코드는 이 일을 작은 함수로 나누고, 함수끼리 서로 불러 써요.
+
+```js
+function itemTotal(price, count) {
+  return price * count;
+}
+
+function shippingFee(total) {
+  if (total >= 30000) {
+    return 0;
+  }
+  return 3000;
+}
+
+function printLine(label, amount) {
+  console.log(label + ": " + amount + "원");
+}
+
+const goods = itemTotal(12000, 2);
+printLine("상품", goods);
+printLine("배송비", shippingFee(goods));
+printLine("결제", goods + shippingFee(goods));
+```
+
+- `itemTotal`, `shippingFee`는 계산만 하고 결과를 `return`해요. 그래서 출력할 때도, 다른 계산에 넣을 때도 쓸 수 있어요.
+- `printLine`은 보여 주는 일만 해요. 계산과 출력을 나누면 "배송비 기준을 3만 원에서 5만 원으로" 같은 변경을 한 곳에서 할 수 있어요.
+
+실무 코드는 이렇게 "이름만 보고 무슨 일을 하는지 알 수 있는" 작은 함수들을 조합해서 만들어요. 버튼을 눌렀을 때 실행할 코드, 서버에서 받은 데이터를 화면용 글자로 바꾸는 코드도 모두 함수예요.
+</Section>
+
+<Section kind="check">
+선언만 했을 때 무슨 일이 일어나는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.functions.function-basics.tf-declaration-runs" />
+
+괄호의 역할을 확인해 보세요.
+
+<InlineExercise ref="js-basics.functions.function-basics.mcq-call-without-parens" />
+
+매개변수를 다시 선언하면 어떻게 될까요?
+
+<InlineExercise ref="js-basics.functions.function-basics.tf-param-let-redeclare" />
+
+`return`과 `console.log`의 차이를 확인해 보세요.
+
+<InlineExercise ref="js-basics.functions.function-basics.mcq-return-vs-log" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `function 이름(매개변수) { 본문 }`으로 함수를 **선언**하면 만들어 두기만 하고, 본문은 실행되지 않아요.
+- `이름(인수)`처럼 괄호를 붙여 **호출**하면 본문이 처음부터 실행되고, 끝나면 호출한 자리로 돌아와요. 몇 번이든 다시 부를 수 있어요.
+- 매개변수는 선언 괄호 안의 이름, 인수는 호출할 때 넘기는 값이에요. 인수는 이름이 아니라 **순서대로** 매개변수에 들어가요.
+- `return 값;`은 값을 호출한 자리로 돌려주고 함수를 끝내요. 호출 식은 반환값으로 바뀌어 변수에 담거나 계산에 바로 쓸 수 있어요.
+- `console.log`는 보여 주기만 하고, `return`은 돌려주기만 해요. `return`이 없는 함수의 결과는 `undefined`예요.
+- 함수 안에서 다른 함수를 부르면 그 함수로 갔다가 끝나면 돌아와요. 인수 자리의 호출은 안쪽부터 먼저 실행돼요.
+</Section>
+
+<Section kind="next">
+다음 단원 "반환값과 부수 효과"에서는 함수가 값을 돌려주는 일과 바깥에 흔적을 남기는 일을 구분하고, `return`이 없거나 일부 갈래에만 있을 때 무슨 일이 생기는지 자세히 봐요. 함수는 이 뒤의 모든 모듈(문자열·배열 메서드, 이벤트 처리)의 바탕이에요. <MdnLink path="Web/JavaScript/Guide/Functions" />
+</Section>

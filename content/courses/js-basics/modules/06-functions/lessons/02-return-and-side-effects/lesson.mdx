@@ -1,0 +1,343 @@
+<Section kind="objectives">
+- 함수의 반환값과 부수 효과(출력, 바깥 변수 바꾸기)를 구분하고, 반환값을 담은 변수를 써도 함수가 다시 실행되지 않는다는 것을 예측할 수 있어요.
+- `return`이 없거나 일부 갈래에만 있는 함수가 `undefined`를 반환하는 경우를 찾아, 모든 갈래에서 값을 돌려주게 고칠 수 있어요.
+- `return`을 만나면 함수가 바로 끝나서 그 뒤의 코드가 실행되지 않는다는 것을 설명할 수 있어요.
+- 바깥 변수에 기대는 함수와 순수 함수를 구별하고, 바깥 값을 매개변수로 받아 순수 함수로 바꿀 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+앞 단원에서 함수가 `return`으로 값을 돌려준다는 것을 배웠어요. 그런데 함수가 하는 일은 값을 돌려주는 것만이 아니에요. 아래 함수를 보세요.
+
+```js
+let coins = 3;
+
+function useCoin() {
+  coins = coins - 1;
+  console.log("동전을 하나 썼어요");
+}
+```
+
+`useCoin`에는 `return`이 없어요. 그래도 호출하면 콘솔에 글자가 나오고, 바깥 변수 `coins`가 줄어들어요. 이렇게 함수가 **바깥에 남기는 흔적**을 **부수 효과**라고 해요.
+
+반환값과 부수 효과를 섞어서 생각하면 이상한 버그가 생겨요. "출력은 됐는데 변수에는 `undefined`가 들어 있어요", "합계를 두 번 출력했더니 숫자가 바뀌었어요" 같은 일이에요. 이 단원에서는 함수가 돌려주는 것과 남기는 것을 나눠 보고, 값을 돌려주지 않는 경우에 무엇이 돌아오는지, 그리고 결과를 믿을 수 있는 **순수 함수**가 무엇인지 배워요.
+</Section>
+
+<Section kind="principle">
+### 함수가 하는 두 가지 일
+
+함수를 호출하면 두 종류의 일이 일어날 수 있어요.
+
+| | 반환값 | 부수 효과 |
+|---|---|---|
+| 무엇 | `return`으로 호출한 자리에 돌려주는 값 | 함수 바깥에 남는 변화 |
+| 예 | `return price * count;` | `console.log(...)`, 바깥 변수 바꾸기 |
+| 어떻게 받나요 | `const r = f();`처럼 호출 자리에서 받아요 | 받지 않아도 이미 일어나 있어요 |
+
+한 함수가 둘 다 할 수도 있고, 둘 중 하나만 할 수도 있어요.
+
+함수 안에서 바깥 변수에 대입하면, 그 변화는 함수가 끝나도 **남아요**. 위의 `useCoin()`을 한 번 호출한 뒤 `coins`를 출력하면 2가 나와요. 함수 안의 일이 끝나면 원래대로 돌아가는 것이 아니에요.
+
+### 부수 효과는 호출할 때 한 번 일어나요
+
+부수 효과가 일어나는 때는 **함수를 호출하는 순간**뿐이에요.
+
+```js
+const r = greet();   // 여기서 greet가 실행돼요 (출력 같은 부수 효과도 여기서 한 번)
+console.log(r);      // r에 담긴 반환값을 읽기만 해요
+console.log(r);      // 또 읽기만 해요. greet는 다시 실행되지 않아요
+```
+
+`r`에는 함수가 아니라 **반환값**이 담겨 있어요. 모듈 2에서 변수에는 계산식이 아니라 계산 결과가 담긴다고 배웠죠. 함수 호출도 똑같아요. 함수를 다시 실행하고 싶으면 `greet()`라고 다시 호출해야 해요.
+
+### 값을 돌려주지 않으면 undefined
+
+함수가 값을 돌려주지 않는 경우는 세 가지예요. 셋 다 결과는 <ConceptLink to="js.types.undefined">`undefined`</ConceptLink>예요.
+
+| 경우 | 예 |
+|---|---|
+| `return`이 아예 없어요 | `function show() { console.log("안녕"); }` |
+| `return` 뒤에 값이 없어요 | `return;` |
+| 실행된 갈래에 `return`이 없어요 | `if` 안에만 `return`이 있는데 조건이 거짓이었어요 |
+
+`null`이나 `0`, 빈 문자열이 아니에요. 함수가 끝까지 내려갔는데 돌려줄 값을 만나지 못하면 JavaScript가 `undefined`를 돌려줘요.
+
+세 번째 경우가 가장 찾기 어려워요. 실행 흐름을 따라가 보면 보여요.
+
+```text
+passOrFail(45) 호출
+  ↓
+if (45 >= 60) → 거짓, 블록 건너뜀
+  ↓
+함수 끝 (만난 return 없음)
+  ↓
+undefined를 돌려줌
+```
+
+그래서 모든 경우에 값이 필요한 함수는 **모든 갈래에 `return`**을 두거나, 함수 맨 끝에 "그 밖의 경우"를 돌려주는 `return`을 둬요.
+
+### return은 함수를 그 자리에서 끝내요
+
+`return`은 값을 돌려주는 동시에 **함수를 끝내요**. 같은 함수 안에서 `return`보다 뒤에 있는 줄은 실행되지 않아요. 반복 안에서 `return`을 만나면 반복도, 함수도 함께 끝나요.
+
+이 성질은 "조건이 맞으면 바로 끝내기"에 자주 써요.
+
+```js
+function checkAge(age) {
+  if (age < 0) {
+    return "잘못된 나이";   // 여기서 끝. 아래 줄은 실행되지 않아요
+  }
+  return age + "살";
+}
+```
+
+### 순수 함수
+
+**같은 인수를 넣으면 언제나 같은 값을 돌려주고, 부수 효과가 없는 함수**를 순수 함수라고 해요.
+
+```js
+function double(n) {
+  return n * 2;         // 순수 함수: 인수만 보고 계산해요
+}
+
+let rate = 2;
+function multiply(n) {
+  return n * rate;      // 순수 함수가 아니에요: 바깥 변수 rate에 기대요
+}
+```
+
+`double(5)`는 언제 불러도 10이에요. 하지만 `multiply(5)`는 지금은 10이어도, 누군가 `rate`를 3으로 바꾸면 15가 돼요. 같은 인수인데 결과가 달라지죠. 바깥 변수를 바꾸는 함수도 순수 함수가 아니에요.
+
+순수 함수는 인수만 보면 결과를 알 수 있어서 테스트하기 쉽고, 몇 번을 불러도 안전해요. 바깥 값이 필요하면 **매개변수로 받으면** 순수 함수가 돼요. `multiply(n, rate)`처럼요. 출력이나 화면 바꾸기처럼 부수 효과가 꼭 필요한 일도 있으니, 계산하는 함수와 보여 주는 코드를 나눠 두는 습관이 좋아요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 함수는 몇 번 실행될까요? 출력을 예측해 보세요.
+
+<RunnableExample id="ticket-once" lang="js" predict predictKind="console" concepts={["js.fn.side-effects"]}>
+```js
+let printed = 0;
+
+function makeTicket(name) {
+  printed++;
+  console.log("발권: " + name);
+  return name + "님 입장권";
+}
+
+const ticket = makeTicket("하나");
+console.log(ticket);
+console.log(ticket);
+console.log("발권 횟수: " + printed);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+발권: 하나
+하나님 입장권
+하나님 입장권
+발권 횟수: 1
+```
+
+- 9번 줄에서 `makeTicket("하나")`가 **한 번** 실행돼요. 이때 부수 효과 두 가지(바깥 변수 `printed`를 1로, 콘솔에 `발권: 하나`)가 일어나고, 반환값 `"하나님 입장권"`이 `ticket`에 담겨요.
+- 10~11번 줄은 `ticket`에 담긴 문자열을 읽어 출력할 뿐이에요. 함수가 다시 실행되지 않으니 `발권: 하나`도 다시 나오지 않아요.
+- `printed`는 함수 안에서 바꿨지만 바깥 변수라서 함수가 끝난 뒤에도 1로 남아 있어요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 `if` 안에만 `return`이 있는 함수예요. 두 번째 줄에 무엇이 나올까요?
+
+<RunnableExample id="missing-path" lang="js" predict predictKind="console" concepts={["js.fn.undefined-return"]}>
+```js
+function passOrFail(score) {
+  if (score >= 60) {
+    return "합격";
+  }
+}
+
+console.log(passOrFail(80));
+console.log(passOrFail(45));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+합격
+undefined
+```
+
+- `passOrFail(80)`: 조건이 참이라 `return "합격";`을 만나요.
+- `passOrFail(45)`: 조건이 거짓이라 `if` 블록을 건너뛰고 함수 끝까지 내려가요. 만난 `return`이 없으니 `undefined`를 돌려줘요. 오류는 나지 않아서 알아차리기 어려워요.
+
+고치려면 함수 끝에 `return "불합격";`을 더해 "그 밖의 경우"를 돌려주게 해요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `return` 뒤에 있는 줄이에요. 실행해 보고, `console.log`를 `return` 위로 옮겨 다시 실행해 보세요.
+
+<RunnableExample id="after-return" lang="js" concepts={["js.fn.return"]}>
+```js
+function makeReceipt(price, count) {
+  const total = price * count;
+  return total;
+  console.log("계산 완료: " + total + "원");
+}
+
+const paid = makeReceipt(1500, 3);
+console.log("결제 금액: " + paid + "원");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+결제 금액: 4500원
+```
+
+- 3번 줄 `return total;`에서 함수가 끝나요. 4번 줄은 같은 함수 안에 있지만 실행되지 않아요.
+- 오류도, 경고도 없어요. 그래서 "출력 코드를 썼는데 왜 안 나오지?"라는 버그가 돼요.
+- 4번 줄을 3번 줄 위로 옮기면 `계산 완료: 4500원`이 먼저 나오고, 그다음 `결제 금액: 4500원`이 나와요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 순수 함수와 그렇지 않은 함수를 비교해요. 같은 인수 `1000`을 넣었는데 결과가 같을까요?
+
+<RunnableExample id="pure-vs-impure" lang="js" predict predictKind="console" concepts={["js.fn.pure"]}>
+```js
+let rate = 0.1;
+
+function taxFromOutside(price) {
+  return price * rate;
+}
+
+function taxPure(price, taxRate) {
+  return price * taxRate;
+}
+
+console.log(taxFromOutside(1000));
+rate = 0.2;
+console.log(taxFromOutside(1000));
+console.log(taxPure(1000, 0.1));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+100
+200
+100
+```
+
+- `taxFromOutside(1000)`은 바깥 변수 `rate`를 읽어요. 12번 줄에서 `rate`가 0.2로 바뀌자, 같은 인수인데도 100이 200이 됐어요.
+- `taxPure`는 필요한 값을 모두 매개변수로 받아요. `taxPure(1000, 0.1)`은 프로그램의 다른 곳에서 무슨 일이 있었든 항상 100이에요.
+
+함수 이름과 인수만 보고 결과를 알 수 있는 쪽이 순수 함수예요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.function-cant-change-outer">
+<Wrong>함수 안에서 바깥 변수 `coins`에 새 값을 넣어도, 함수가 끝나면 원래 값으로 돌아간다.</Wrong>
+<Actual>
+
+함수 안의 대입은 바깥 변수를 실제로 바꿔요. 그 변화는 함수가 끝나도 남아요.
+
+```js
+let coins = 3;
+function useCoin() {
+  coins = coins - 1;
+}
+useCoin();
+console.log(coins); // 2
+```
+</Actual>
+<Right>함수 안에서 같은 이름의 변수를 새로 만들지 않았다면, 바깥 변수에 대입하는 것은 부수 효과예요. 바깥 값을 바꾸는 함수인지 꼭 확인하고 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.side-effect-repeats-on-reuse">
+<Wrong>`const ticket = makeTicket("하나");`로 받아 둔 `ticket`을 출력할 때마다 `makeTicket` 안의 `console.log`도 다시 실행된다.</Wrong>
+<Actual>첫 번째 예제처럼 `발권: 하나`는 한 번만 나와요. 함수는 `makeTicket("하나")`라고 쓴 순간에 한 번 실행되고, `ticket`에는 반환값인 문자열만 담겨요.</Actual>
+<Right>변수에는 함수의 결과(반환값)가 담겨요. 변수를 쓰는 것은 값을 읽는 것이고, 함수를 다시 실행하려면 괄호를 붙여 다시 호출해야 해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.no-return-is-null">
+<Wrong>`return`이 없는 함수를 호출하면 결과는 `null`(또는 `0`)이다.</Wrong>
+<Actual>`return`이 없거나 `return;`처럼 값 없이 끝나면 결과는 `undefined`예요. `null`은 프로그래머가 "비어 있음"을 표시하려고 일부러 쓰는 다른 값이에요.</Actual>
+<Right>"돌려준 값이 없다" = `undefined`로 기억해요. 함수의 결과가 `undefined`로 나오면 `return`이 빠졌는지 먼저 의심해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.return-in-if-covers-all">
+<Wrong>`if (score >= 60) { return "합격"; }`만 있어도, 조건이 거짓이면 함수가 알아서 빈 값이나 `false`를 돌려준다.</Wrong>
+<Actual>두 번째 예제처럼 조건이 거짓이면 `undefined`가 나와요. 함수는 실행된 갈래에서 만난 `return`의 값만 돌려줘요.</Actual>
+<Right>모든 경우에 값이 필요하면 `else`에도 `return`을 두거나, 함수 맨 끝에 "그 밖의 경우"의 `return`을 둬요. 함수를 다 쓴 뒤 "조건이 모두 거짓이면 어디로 가지?"를 따라가 보세요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.code-after-return-runs">
+<Wrong>`return total;` 다음 줄의 `console.log`도 이어서 실행된다.</Wrong>
+<Actual>세 번째 예제에서 `계산 완료`는 출력되지 않았어요. `return`을 만나면 함수는 그 자리에서 끝나요.</Actual>
+<Right>함수가 끝나기 전에 해야 할 일(출력, 계산)은 `return`보다 **위**에 써요. `return`은 보통 함수의 마지막 할 일이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.same-args-same-result-always">
+<Wrong>어떤 함수든 같은 인수를 넣으면 항상 같은 값을 돌려준다.</Wrong>
+<Actual>네 번째 예제의 `taxFromOutside(1000)`은 100이었다가 200이 됐어요. 바깥 변수 `rate`가 바뀌었기 때문이에요.</Actual>
+<Right>"같은 인수 → 같은 결과"는 순수 함수만의 성질이에요. 함수가 바깥 변수를 읽거나 바꾸는지 보고, 필요한 값은 매개변수로 받게 만들면 순수 함수가 돼요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+쇼핑몰 장바구니를 만든다고 해 볼게요. 상품 한 줄의 금액을 계산하는 일과, 합계를 쌓고 화면에 보여 주는 일을 나누면 코드가 믿을 만해져요.
+
+```js
+// 계산만 하는 순수 함수
+function linePrice(price, count) {
+  return price * count;
+}
+
+// 부수 효과(합계 쌓기, 출력)는 바깥에서
+let total = 0;
+
+const gimbap = linePrice(3000, 2);
+total += gimbap;
+console.log("김밥: " + gimbap + "원");
+
+const ramen = linePrice(4000, 1);
+total += ramen;
+console.log("라면: " + ramen + "원");
+
+console.log("합계: " + total + "원");
+```
+
+- `linePrice`는 몇 번을 불러도, 어디서 불러도 같은 인수면 같은 값이에요. 할인 화면, 영수증, 주문 확인 화면에서 마음 놓고 다시 쓸 수 있어요.
+- 합계를 쌓고 출력하는 부수 효과는 한곳에 모아 둬서, 합계가 언제 바뀌는지 한눈에 보여요.
+
+실제 웹 개발에서도 "계산하는 함수는 순수하게, 화면을 바꾸는 코드는 따로"가 기본 습관이에요. 모듈 10에서 화면을 다룰 때 이 구분이 큰 도움이 돼요.
+</Section>
+
+<Section kind="check">
+함수가 바깥 변수를 바꿀 수 있는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.functions.return-and-side-effects.tf-function-changes-outer" />
+
+어떤 함수의 결과가 `undefined`인지 골라 보세요.
+
+<InlineExercise ref="js-basics.functions.return-and-side-effects.multi-what-returns-undefined" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 함수는 `return`으로 값을 돌려주고, 출력이나 바깥 변수 바꾸기 같은 부수 효과를 남길 수 있어요.
+- 함수 안에서 바깥 변수에 대입하면 그 변화는 함수가 끝나도 남아요.
+- 부수 효과는 함수를 호출하는 순간에 한 번 일어나요. 반환값을 담은 변수를 쓴다고 함수가 다시 실행되지 않아요.
+- `return`이 없거나, 값 없는 `return;`이거나, 실행된 갈래에 `return`이 없으면 결과는 `undefined`예요.
+- `return`을 만나면 함수는 그 자리에서 끝나서, 뒤의 줄은 실행되지 않아요.
+- 같은 인수에 항상 같은 값을 돌려주고 부수 효과가 없는 함수가 순수 함수예요. 바깥 값은 매개변수로 받아요.
+</Section>
+
+<Section kind="next">
+다음 단원 "함수 표현식과 화살표 함수"에서는 함수를 변수에 담는 다른 방법과 짧게 쓰는 화살표 함수를 배워요. 화살표 함수에서도 "언제 값이 반환되는가"가 가장 중요한 규칙이라, 이 단원의 `undefined` 반환을 다시 만나요. 바깥 변수와 함수 안 변수의 관계는 "스코프 기초" 단원에서 자세히 다뤄요. <MdnLink path="Web/JavaScript/Reference/Statements/return" />
+</Section>

@@ -1,0 +1,70 @@
+id: js-basics.functions.callbacks-intro.fix-assign-call-result
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.fn.first-class, weight: 1 }
+tags: [first-class, call, parentheses, debugging]
+estimatedSeconds: 120
+prompt: |
+  초인종 함수 `ring`을 `doorbell`이라는 이름으로도 부를 수 있게 하려고 했어요. `doorbell`을 두 번 불러서 아래처럼 나와야 해요. 버그를 고치세요.
+
+  ```text
+  딩동!
+  딩동!
+  ```
+
+  - 마지막 두 줄(`doorbell();`)은 그대로 두세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function ring() {
+            console.log("딩동!");
+          }
+
+          const doorbell = ring();
+          doorbell();
+          doorbell();
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function ring() {
+            console.log("딩동!");
+          }
+
+          const doorbell = ring;
+          doorbell();
+          doorbell();
+  bugDescription: "`딩동!`이 한 번만 나오고 `TypeError: doorbell is not a function` 오류가 나요."
+  bugMisconception: js.mc.assign-call-result
+  checks:
+    - kind: console
+      id: output
+      description: "\"딩동!\"이 두 번 출력되어야 합니다."
+      requirement: 초인종 두 번
+      expect:
+        lines: ["딩동!", "딩동!"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+      misconceptionIfFail: js.mc.assign-call-result
+misconceptions: [js.mc.assign-call-result]
+hints:
+  - 첫 번째 `딩동!`은 어느 줄에서 나왔을까요? 6번 줄보다 먼저 나왔어요.
+  - "5번 줄의 `ring()`은 `ring`을 그 자리에서 실행해요. `ring`은 `return`이 없으니 `doorbell`에는 무엇이 담길까요?"
+  - "`doorbell`에 함수 자체가 담기도록 5번 줄만 고쳐 보세요. 괄호의 뜻을 떠올려 보세요."
+explanation: |
+  5번 줄을 `const doorbell = ring;`으로 고치면 돼요.
+
+  - 원래 코드의 `ring()`은 5번 줄에서 바로 실행되어 `딩동!`을 한 번 출력해요. `ring`에는 `return`이 없으니 결과는 `undefined`이고, 그 값이 `doorbell`에 담겨요.
+  - 6번 줄의 `doorbell()`은 `undefined`를 부르려는 것이라 `TypeError: doorbell is not a function`이 나요.
+  - 괄호를 지우면 함수 자체가 담겨서, `doorbell()`을 부를 때마다 `ring`이 실행돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

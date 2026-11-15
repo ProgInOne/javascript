@@ -1,0 +1,47 @@
+id: js-basics.functions.default-and-rest.mcq-missing-arg-undefined
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.fn.default-params, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [default-params, missing-argument, undefined]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  function introduce(name, city) {
+    console.log(name + "은(는) " + city + "에 살아요");
+  }
+  introduce("지우");
+spec:
+  options:
+    - id: a
+      text: "`지우은(는) undefined에 살아요`가 출력된다"
+    - id: b
+      text: 인수가 모자라서 `TypeError`가 나고 아무것도 출력되지 않는다
+      misconception: js.mc.missing-arg-error
+      rationale: JavaScript는 인수 개수를 검사하지 않아요. 짝이 없는 매개변수는 undefined가 될 뿐 오류는 나지 않아요.
+    - id: c
+      text: "`지우은(는) 에 살아요`가 출력된다"
+      rationale: 빠진 매개변수는 빈 문자열이 아니라 undefined예요. 문자열에 이어 붙이면 undefined라는 글자가 그대로 붙어요.
+    - id: d
+      text: "`지우은(는) null에 살아요`가 출력된다"
+      rationale: 빠진 매개변수에 저절로 들어가는 값은 null이 아니라 undefined예요.
+  correct: a
+misconceptions: [js.mc.missing-arg-error]
+hints:
+  - 매개변수는 두 개인데 인수는 몇 개를 넘겼나요?
+  - 인수를 받지 못한 매개변수 `city`에는 어떤 값이 들어갈까요? JavaScript는 인수 개수를 검사하지 않아요.
+  - 값을 받지 못한 변수에 들어 있는 값을 문자열에 이어 붙이면 그 값의 이름이 글자로 붙어요.
+explanation: |
+  출력은 `지우은(는) undefined에 살아요`예요.
+
+  - JavaScript는 인수가 모자라도 오류를 내지 않고 함수를 실행해요.
+  - `name`은 `"지우"`를 받고, 짝이 없는 `city`는 `undefined`가 돼요.
+  - `"..." + undefined`는 `undefined`라는 글자를 이어 붙여요. 빈 문자열이나 `null`이 들어가는 것이 아니에요.
+
+  이렇게 조용히 틀어지기 때문에, 빠질 수 있는 인수에는 `city = "서울"`처럼 기본값을 정해 두면 좋아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

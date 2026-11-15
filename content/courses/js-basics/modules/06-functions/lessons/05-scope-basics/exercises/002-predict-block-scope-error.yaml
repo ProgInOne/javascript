@@ -1,0 +1,36 @@
+id: js-basics.functions.scope-basics.predict-block-scope-error
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.scope.block, weight: 1 }
+  - { id: js.loops.loop-variable, weight: 0.3 }
+tags: [scope, block, for, reference-error]
+estimatedSeconds: 70
+prompt: |
+  다음 프로그램을 끝까지 실행하면 오류가 날까요? 오류가 난다면 어떤 종류의 오류인가요?
+spec:
+  lang: js
+  code: |
+    console.log("계산 시작");
+    for (let i = 1; i <= 3; i++) {
+      const doubled = i * 2;
+    }
+    console.log("마지막 값: " + doubled);
+  answerKind: error
+  misconceptionByAnswer:
+    none: js.mc.block-let-visible-outside
+misconceptions: [js.mc.block-let-visible-outside]
+hints:
+  - "`doubled`는 어느 `{ }` 안에서 만들어졌나요?"
+  - "`for` 본문도 블록이에요. 블록 안에서 `const`로 만든 변수는 블록이 끝나면 어떻게 되나요?"
+  - 5번 줄은 반복 블록 밖이에요. 그 자리에서 `doubled`라는 이름을 찾을 수 있을지, 찾지 못하면 어떤 종류의 오류였는지 떠올려 보세요.
+explanation: |
+  **오류가 나요. 종류는 `ReferenceError`**예요. 실제로는 `계산 시작`이 출력된 뒤 5번 줄에서 `ReferenceError: doubled is not defined`가 나요.
+
+  `doubled`는 `for` 본문 블록 안에서 `const`로 만들었어요. 블록 안의 `let`·`const` 변수는 그 블록 안에서만 있고, 회차가 끝날 때마다 사라져요. 반복이 모두 끝난 5번 줄은 블록 밖이라 `doubled`를 찾을 수 없어요.
+
+  "오류 없음"이라고 생각했다면 마지막 회차의 값 6이 남는다고 본 거예요. 반복이 끝난 뒤에도 값이 필요하면 `let last = 0;`을 반복 **앞에서** 만들고 본문에서 `last = i * 2;`처럼 대입해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

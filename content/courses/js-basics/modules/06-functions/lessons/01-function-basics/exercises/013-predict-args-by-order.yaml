@@ -1,0 +1,50 @@
+id: js-basics.functions.function-basics.predict-args-by-order
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.fn.params-args, weight: 1 }
+tags: [function, parameter, argument, order]
+estimatedSeconds: 110
+prompt: |
+  자기소개를 출력하는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    function introduce(name, city, age) {
+      console.log(name + " / " + city + " / " + age + "살");
+    }
+
+    const name = "서연";
+    const age = 14;
+    const city = "부산";
+
+    introduce(name, age, city);
+    introduce("준호", "광주", 15);
+  answerKind: console
+  misconceptionByAnswer:
+    "서연 / 부산 / 14살\n준호 / 광주 / 15살": js.mc.params-match-by-name
+hints:
+  - 9번 줄의 인수는 어떤 순서로 적혀 있나요? 선언의 매개변수 순서와 같나요?
+  - 인수는 변수 이름이 아니라 **몇 번째인지**에 따라 매개변수에 들어가요. 두 번째 인수는 어느 매개변수로 갈까요?
+  - 9번 줄의 호출에서 `city`에 들어가는 값과 `age`에 들어가는 값을 각각 적어 보세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  서연 / 14 / 부산살
+  준호 / 광주 / 15살
+  ```
+
+  9번 줄 `introduce(name, age, city)`에서 인수는 순서대로 들어가요.
+
+  - 첫 번째 인수 `name`의 값 `"서연"` → 매개변수 `name`
+  - 두 번째 인수 `age`의 값 `14` → 매개변수 `city`
+  - 세 번째 인수 `city`의 값 `"부산"` → 매개변수 `age`
+
+  변수 이름이 매개변수 이름과 같아도 짝을 맞춰 주지 않아요. 그래서 `서연 / 14 / 부산살`이라는 이상한 문장이 나왔어요. 10번 줄은 순서가 맞아서 제대로 나와요.
+
+  `서연 / 부산 / 14살`이라고 답했다면 인수가 이름이 같은 매개변수로 들어간다고 생각한 거예요. 호출할 때는 항상 선언의 매개변수 순서를 확인해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

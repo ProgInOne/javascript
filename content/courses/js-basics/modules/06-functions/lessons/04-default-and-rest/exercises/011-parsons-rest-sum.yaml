@@ -1,0 +1,74 @@
+id: js-basics.functions.default-and-rest.parsons-rest-sum
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.fn.rest-params, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [rest-params, for, accumulator, parsons, entry]
+estimatedSeconds: 180
+prompt: |
+  걸음 수를 몇 개든 받아 합계를 반환하는 함수 `totalSteps`를 만들려고 해요. 코드 조각을 순서대로 배열하세요.
+
+  - `totalSteps(3000, 4500, 2500)` → `10000`
+  - `totalSteps()` → `0`
+spec:
+  lines:
+    - { id: l1, code: "function totalSteps(...steps) {" }
+    - { id: l2, code: "let sum = 0;", indent: 1 }
+    - { id: l3, code: "for (let i = 0; i < steps.length; i++) {", indent: 1 }
+    - { id: l4, code: "sum += steps[i];", indent: 2 }
+    - { id: l5, code: "}", indent: 1 }
+    - { id: l6, code: "return sum;", indent: 1 }
+    - { id: l7, code: "}" }
+  distractors:
+    - { id: d1, code: "function totalSteps(steps, ...) {", replaces: l1 }
+    - { id: d2, code: "for (let i = 0; i <= steps.length; i++) {", replaces: l3, misconception: js.mc.for-off-by-one }
+    - { id: d3, code: "sum += steps;", replaces: l4 }
+  gradeIndent: false
+  entry: totalSteps
+  checks:
+    - kind: call
+      id: three
+      description: 걸음 수 세 개의 합계를 반환해야 합니다.
+      requirement: 합계
+      args: [3000, 4500, 2500]
+      expect: { equals: 10000 }
+    - kind: call
+      id: none
+      description: 인수가 없으면 0을 반환해야 합니다.
+      requirement: 인수 없음
+      args: []
+      expect: { equals: 0 }
+    - kind: call
+      id: five
+      visible: false
+      description: 인수가 다섯 개여도 모두 더해야 합니다.
+      requirement: 합계
+      args: [1000, 2000, 3000, 4000, 5000]
+      expect: { equals: 15000 }
+misconceptions: [js.mc.for-off-by-one]
+hints:
+  - 합계 함수는 누적 패턴이에요. 누적 변수 → 반복 → 반환 순서를 떠올려 보세요.
+  - 점 세 개는 매개변수 이름 **앞**에 붙어요. 반복은 위치 번호 0부터 시작해요.
+  - 위치 번호는 0부터 `length - 1`까지예요. `<=`를 쓰면 묶음에 없는 번호를 한 번 더 읽어요. 묶음 전체가 아니라 한 칸씩 더해야 해요.
+explanation: |
+  정답 순서는 다음과 같아요.
+
+  ```js
+  function totalSteps(...steps) {
+    let sum = 0;
+    for (let i = 0; i < steps.length; i++) {
+      sum += steps[i];
+    }
+    return sum;
+  }
+  ```
+
+  - `...steps`가 넘긴 걸음 수를 모두 모아요. `...`은 이름 앞에 붙여요. `steps, ...`처럼 쓰면 문법 오류예요.
+  - `i`는 0부터 `steps.length - 1`까지예요. `i <= steps.length`로 쓰면 마지막에 `steps[3]`처럼 없는 칸을 읽어 `undefined`를 더하고, 합계가 `NaN`이 돼요.
+  - `sum += steps`는 묶음 전체를 이어 붙이려 해서 숫자 합계가 나오지 않아요. 한 칸씩 `steps[i]`를 더해요.
+  - 인수가 없으면 반복이 한 번도 돌지 않아 0을 반환해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,66 @@
+id: js-basics.functions.default-and-rest.fill-default-param
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.fn.default-params, weight: 1 }
+tags: [default-params, fill, entry]
+estimatedSeconds: 90
+prompt: |
+  문구점에서 공책 값을 계산하는 함수 `notebookPrice(count, price)`예요. 공책 한 권은 보통 1200원이에요.
+  빈칸을 채워서, 가격(`price`)을 넘기지 않으면 1200원으로 계산하게 하세요.
+
+  - `notebookPrice(3)` → `3600`
+  - `notebookPrice(2, 1500)` → `3000`
+spec:
+  mode: code
+  lang: js
+  entry: notebookPrice
+  template: |
+    function notebookPrice(count, {{blank:param}}) {
+      return count * price;
+    }
+  blanks:
+    - id: param
+      accept: ["price = 1200"]
+      width: 14
+  checks:
+    - kind: call
+      id: default-price
+      description: 가격을 넘기지 않으면 한 권에 1200원으로 계산해야 합니다.
+      requirement: 가격 기본값
+      args: [3]
+      expect: { equals: 3600 }
+    - kind: call
+      id: given-price
+      description: 가격을 넘기면 그 가격으로 계산해야 합니다.
+      requirement: 넘긴 가격 사용
+      args: [2, 1500]
+      expect: { equals: 3000 }
+    - kind: call
+      id: one-default
+      visible: false
+      description: 한 권을 가격 없이 사면 1200원이어야 합니다.
+      requirement: 가격 기본값
+      args: [1]
+      expect: { equals: 1200 }
+misconceptions: [js.mc.missing-arg-error]
+hints:
+  - 빈칸은 두 번째 매개변수 자리예요. 함수 본문에서 쓰는 이름을 확인해 보세요.
+  - 매개변수 이름 뒤에 `=`와 값을 쓰면, 인수가 없을 때 쓸 값을 정할 수 있어요.
+  - 레슨의 `function orderPrice(price, count = 1)`에서 `count`에 기본값을 붙인 모양을 떠올려 보세요. 여기서는 본문이 쓰는 두 번째 이름에 지문의 보통 가격을 붙여요.
+explanation: |
+  예시 정답은 `price = 1200`이에요.
+
+  ```js
+  function notebookPrice(count, price = 1200) {
+    return count * price;
+  }
+  ```
+
+  - `notebookPrice(3)`은 `price`에 줄 인수가 없어 `undefined`가 되고, 기본값 1200이 쓰여요. 3 × 1200 = 3600이에요.
+  - `notebookPrice(2, 1500)`은 넘긴 1500을 써요.
+  - 빈칸에 `price`만 쓰면 `notebookPrice(3)`이 `3 * undefined`로 `NaN`이 돼요. 오류는 나지 않아서 결과를 보고서야 알 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

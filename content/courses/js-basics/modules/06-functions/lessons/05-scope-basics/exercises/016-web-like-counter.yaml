@@ -1,0 +1,213 @@
+id: js-basics.functions.scope-basics.web-like-counter
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.scope.global, weight: 1 }
+  - { id: js.scope.function, weight: 0.5 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [scope, global, state, web, event]
+estimatedSeconds: 480
+prompt: |
+  게시글의 좋아요 버튼을 완성하세요. 버튼이 세 개 있어요.
+
+  - **좋아요**: 좋아요 수를 1 늘려요.
+  - **취소**: 좋아요 수를 1 줄여요. 단, 0보다 작아지지는 않아요.
+  - **초기화**: 좋아요 수를 0으로 돌려요. 초기화한 뒤 좋아요를 누르면 1부터 다시 세야 해요.
+
+  누를 때마다 화면에 `좋아요 (개수)개`가 보여야 해요. 예를 들어 좋아요를 세 번 누르면 `좋아요 3개`예요.
+
+  - 버튼을 누르면 `addLike`, `cancelLike`, `resetLikes` 함수가 실행되도록 이미 연결해 두었어요(화면을 다루는 방법은 모듈 10에서 배워요).
+  - 화면에 개수를 보여 주는 `showLikes(n)` 함수도 준비되어 있어요. 세 함수의 본문을 채우고, 좋아요 수를 담을 변수를 알맞은 곳에 만드세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>좋아요</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #count { font-size: 24px; margin: 12px 0; }
+                button { margin-right: 8px; padding: 6px 12px; }
+              </style>
+            </head>
+            <body>
+              <h1>오늘의 사진</h1>
+              <p id="count">좋아요 0개</p>
+              <button id="like">좋아요</button>
+              <button id="cancel">취소</button>
+              <button id="reset">초기화</button>
+              <script>
+                const countBox = document.querySelector("#count");
+
+                // 화면에 좋아요 수를 보여 주는 함수예요. 그대로 쓰세요.
+                function showLikes(n) {
+                  countBox.textContent = "좋아요 " + n + "개";
+                }
+
+                // 좋아요 수를 담을 변수를 알맞은 곳에 만드세요.
+
+                function addLike() {
+                  // 여기를 채우세요
+                }
+
+                function cancelLike() {
+                  // 여기를 채우세요
+                }
+
+                function resetLikes() {
+                  // 여기를 채우세요
+                }
+
+                // 버튼을 누르면 위 함수가 실행되도록 연결해 두었어요(모듈 10에서 배워요).
+                document.querySelector("#like").addEventListener("click", addLike);
+                document.querySelector("#cancel").addEventListener("click", cancelLike);
+                document.querySelector("#reset").addEventListener("click", resetLikes);
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>좋아요</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #count { font-size: 24px; margin: 12px 0; }
+                button { margin-right: 8px; padding: 6px 12px; }
+              </style>
+            </head>
+            <body>
+              <h1>오늘의 사진</h1>
+              <p id="count">좋아요 0개</p>
+              <button id="like">좋아요</button>
+              <button id="cancel">취소</button>
+              <button id="reset">초기화</button>
+              <script>
+                const countBox = document.querySelector("#count");
+
+                // 화면에 좋아요 수를 보여 주는 함수예요. 그대로 쓰세요.
+                function showLikes(n) {
+                  countBox.textContent = "좋아요 " + n + "개";
+                }
+
+                // 좋아요 수를 담을 변수를 알맞은 곳에 만드세요.
+                let likes = 0;
+
+                function addLike() {
+                  likes++;
+                  showLikes(likes);
+                }
+
+                function cancelLike() {
+                  if (likes > 0) {
+                    likes--;
+                  }
+                  showLikes(likes);
+                }
+
+                function resetLikes() {
+                  likes = 0;
+                  showLikes(likes);
+                }
+
+                // 버튼을 누르면 위 함수가 실행되도록 연결해 두었어요(모듈 10에서 배워요).
+                document.querySelector("#like").addEventListener("click", addLike);
+                document.querySelector("#cancel").addEventListener("click", cancelLike);
+                document.querySelector("#reset").addEventListener("click", resetLikes);
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: like-three
+      description: 좋아요를 세 번 누르면 "좋아요 3개"가 보여야 합니다.
+      requirement: 좋아요 늘리기
+      visible: true
+      steps:
+        - { action: click, selector: "#like" }
+        - { action: click, selector: "#like" }
+        - { action: click, selector: "#like" }
+      expect:
+        - { selector: "#count", text: { equals: "좋아요 3개" } }
+    - kind: event
+      id: cancel-one
+      description: 이어서 취소를 한 번 누르면 "좋아요 2개"가 보여야 합니다.
+      requirement: 좋아요 줄이기
+      visible: true
+      steps:
+        - { action: click, selector: "#cancel" }
+      expect:
+        - { selector: "#count", text: { equals: "좋아요 2개" } }
+    - kind: event
+      id: reset
+      description: 이어서 초기화를 누르면 "좋아요 0개"가 보여야 합니다.
+      requirement: 초기화
+      steps:
+        - { action: click, selector: "#reset" }
+      expect:
+        - { selector: "#count", text: { equals: "좋아요 0개" } }
+    - kind: event
+      id: count-after-reset
+      description: 초기화한 뒤 좋아요를 두 번 누르면 1부터 다시 세어 "좋아요 2개"가 보여야 합니다(화면 글자만 바꾸면 안 됩니다).
+      requirement: 초기화
+      steps:
+        - { action: click, selector: "#like" }
+        - { action: click, selector: "#like" }
+      expect:
+        - { selector: "#count", text: { equals: "좋아요 2개" } }
+    - kind: event
+      id: not-below-zero
+      description: 이어서 취소를 세 번 누르면 0개에서 멈추고 0개보다 작아지지 않아야 합니다.
+      requirement: 0보다 작아지지 않기
+      steps:
+        - { action: click, selector: "#cancel" }
+        - { action: click, selector: "#cancel" }
+        - { action: click, selector: "#cancel" }
+      expect:
+        - { selector: "#count", text: { equals: "좋아요 0개" } }
+misconceptions: [js.mc.function-var-persists, js.mc.shadow-changes-outer]
+hints:
+  - 좋아요 수는 버튼을 누를 때마다(함수를 호출할 때마다) 이어져야 해요. 함수 안에서 만든 변수는 호출이 끝나면 어떻게 되나요?
+  - 세 함수가 모두 같은 좋아요 수를 읽고 바꿔야 해요. 세 함수 모두에서 보이는 곳에 변수를 하나만 만들고, 함수 안에서는 `let` 없이 바꾸기만 하세요.
+  - 바꾼 뒤에는 `showLikes`에 지금 개수를 넘겨 화면을 고쳐요. 취소는 `if`로 0보다 클 때만 줄이고, 초기화는 화면뿐 아니라 변수도 0으로 돌려야 해요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  let likes = 0;
+
+  function addLike() {
+    likes++;
+    showLikes(likes);
+  }
+
+  function cancelLike() {
+    if (likes > 0) {
+      likes--;
+    }
+    showLikes(likes);
+  }
+
+  function resetLikes() {
+    likes = 0;
+    showLikes(likes);
+  }
+  ```
+
+  - **변수는 함수 바깥에 하나**: 버튼을 누를 때마다 함수가 새로 호출돼요. `addLike` 안에서 `let likes = 0;`을 만들면 호출마다 0에서 시작해서 몇 번을 눌러도 `좋아요 1개`예요. 바깥 변수는 호출이 끝나도 값이 남고, 세 함수가 모두 같은 변수를 읽고 바꿀 수 있어요.
+  - **안쪽에서 `let`을 다시 쓰지 않기**: `resetLikes` 안에서 `let likes = 0;`이라고 쓰면 바깥 `likes`를 가리는 새 변수가 생겨요(섀도잉). 화면은 0개로 바뀌지만 바깥 `likes`는 그대로라서, 다음 좋아요에서 앞의 개수에 이어 세어요. 초기화 뒤 좋아요를 누르는 숨긴 체크가 이 경우를 확인해요.
+  - **경계 조건**: 취소는 `likes > 0`일 때만 줄여요. 이 검사가 없으면 `좋아요 -1개`가 보여요.
+  - `showLikes(likes)`를 함수마다 호출해 화면을 변수와 맞춰요. 화면 글자는 보여 주는 것일 뿐, 개수의 원본은 변수예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

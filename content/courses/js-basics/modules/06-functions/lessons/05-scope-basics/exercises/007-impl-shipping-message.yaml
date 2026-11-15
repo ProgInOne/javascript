@@ -1,0 +1,108 @@
+id: js-basics.functions.scope-basics.impl-shipping-message
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.scope.block, weight: 1 }
+  - { id: js.control.else-if, weight: 0.3 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [scope, block, else-if, return, write-code, boundary]
+estimatedSeconds: 300
+prompt: |
+  상품 금액 `total`을 받아 배송비를 정하고, 안내 문장을 **돌려주는(return)** 함수 `shippingMessage(total)`을 완성하세요.
+
+  배송비 규칙:
+
+  - 30,000원 이상: 0원
+  - 10,000원 이상 30,000원 미만: 2,500원
+  - 10,000원 미만: 3,500원
+
+  돌려줄 문장 형식은 `상품 (금액)원 + 배송비 (배송비)원 = (합계)원`이에요.
+
+  ```text
+  shippingMessage(32000) → "상품 32000원 + 배송비 0원 = 32000원"
+  shippingMessage(15000) → "상품 15000원 + 배송비 2500원 = 17500원"
+  ```
+
+  배송비는 조건에 따라 블록 안에서 정해지지만 문장은 블록이 끝난 뒤에 만들어요. 배송비 변수를 어디에 만들어야 할지 생각해 보세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function shippingMessage(total) {
+            // 배송비를 정하고 안내 문장을 돌려주세요.
+          }
+  entry: shippingMessage
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function shippingMessage(total) {
+            let fee = 3500;
+            if (total >= 30000) {
+              fee = 0;
+            } else if (total >= 10000) {
+              fee = 2500;
+            }
+            return "상품 " + total + "원 + 배송비 " + fee + "원 = " + (total + fee) + "원";
+          }
+  checks:
+    - kind: call
+      id: free
+      args: [32000]
+      requirement: 배송비 규칙
+      expect: { equals: "상품 32000원 + 배송비 0원 = 32000원" }
+    - kind: call
+      id: middle
+      args: [15000]
+      requirement: 배송비 규칙
+      expect: { equals: "상품 15000원 + 배송비 2500원 = 17500원" }
+    - kind: call
+      id: boundary-30000
+      visible: false
+      description: 정확히 30,000원이면 배송비가 0원이어야 합니다.
+      requirement: 경계 금액
+      args: [30000]
+      expect: { equals: "상품 30000원 + 배송비 0원 = 30000원" }
+    - kind: call
+      id: boundary-10000
+      visible: false
+      description: 정확히 10,000원이면 배송비가 2,500원이어야 합니다.
+      requirement: 경계 금액
+      args: [10000]
+      expect: { equals: "상품 10000원 + 배송비 2500원 = 12500원" }
+    - kind: call
+      id: small
+      visible: false
+      description: 10,000원 미만이면 배송비가 3,500원이어야 합니다.
+      requirement: 배송비 규칙
+      args: [9999]
+      expect: { equals: "상품 9999원 + 배송비 3500원 = 13499원" }
+misconceptions: [js.mc.block-let-visible-outside]
+hints:
+  - 배송비를 담을 변수가 하나 필요해요. 그 변수는 `if` 블록이 끝난 뒤 `return` 줄에서도 쓰여요.
+  - 블록 안에서 `let fee = …`로 만들면 블록이 끝날 때 사라져요. 변수는 `if` 위에서 만들고, 블록 안에서는 대입만 하세요.
+  - 조건은 큰 금액부터 검사하면 편해요. "이상"이라는 말이 경계 금액을 포함하는지도 확인하세요. 합계는 괄호로 먼저 계산해야 글자로 이어 붙지 않아요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function shippingMessage(total) {
+    let fee = 3500;
+    if (total >= 30000) {
+      fee = 0;
+    } else if (total >= 10000) {
+      fee = 2500;
+    }
+    return "상품 " + total + "원 + 배송비 " + fee + "원 = " + (total + fee) + "원";
+  }
+  ```
+
+  - **변수는 블록 바깥에서**: `fee`는 블록 안에서 정해지지만 블록 밖의 `return`에서 쓰여요. 그래서 함수 안, `if` 위에서 만들어요. 블록마다 `let fee = …`를 쓰면 `return` 줄에서 `ReferenceError`가 나요.
+  - **시작값을 기본 경우로**: 10,000원 미만일 때의 3500을 시작값으로 두면 조건이 하나 줄어요. 세 갈래를 모두 `if`/`else if`/`else`로 써도 정답이에요.
+  - **경계값**: "이상"은 그 금액을 포함해요. `>=`를 `>`로 쓰면 30000원과 10000원에서 틀려요.
+  - **괄호**: `(total + fee)`의 괄호가 없으면 앞의 글자에 숫자가 차례로 이어 붙어 `320000`처럼 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

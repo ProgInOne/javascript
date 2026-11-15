@@ -1,0 +1,61 @@
+id: js-basics.functions.function-basics.predict-nested-calls
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.fn.return, weight: 1 }
+  - { id: js.fn.call, weight: 0.5 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [return, call, nested, order, trace]
+estimatedSeconds: 240
+prompt: |
+  두 함수 모두 불릴 때마다 자기가 받은 인수를 출력하고, 계산한 값을 돌려줘요. 호출 결과가 다른 호출의 인수로 들어가 있어요. 실행하면 콘솔에 무엇이 어떤 순서로 출력될까요?
+spec:
+  lang: js
+  code: |
+    function add(a, b) {
+      console.log("add " + a + ", " + b);
+      return a + b;
+    }
+
+    function double(n) {
+      console.log("double " + n);
+      return n * 2;
+    }
+
+    const result = add(double(3), add(1, 2));
+    console.log("결과: " + result);
+    console.log(double(add(2, 2)) + 1);
+  answerKind: console
+  misconceptionByAnswer:
+    "double 3\nadd 1, 2\nadd 6, 3\n결과: 9\nadd 2, 2\ndouble 4\n8\n9": js.mc.return-value-auto-printed
+hints:
+  - 함수를 부르려면 먼저 인수의 값을 알아야 해요. 인수 자리에 호출이 있으면 어느 호출이 먼저 끝나야 할까요?
+  - 11번 줄에서 `add`의 인수는 두 개예요. 인수는 왼쪽부터 차례로 계산돼요. 각 인수의 호출이 무엇을 출력하고 무엇을 돌려주는지 적어 보세요.
+  - 13번 줄의 마지막 `+ 1`은 `double(...)`이 돌려준 값에 더해져요. 이 줄에서 출력되는 줄은 모두 몇 개일까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  double 3
+  add 1, 2
+  add 6, 3
+  결과: 9
+  add 2, 2
+  double 4
+  9
+  ```
+
+  11번 줄 `add(double(3), add(1, 2))`는 바깥 `add`를 부르기 전에 인수 두 개를 왼쪽부터 계산해요.
+
+  1. 첫 번째 인수 `double(3)`: `double 3`을 출력하고 `6`을 돌려줘요.
+  1. 두 번째 인수 `add(1, 2)`: `add 1, 2`를 출력하고 `3`을 돌려줘요.
+  1. 이제 바깥 호출은 `add(6, 3)`이 돼요. `add 6, 3`을 출력하고 `9`를 돌려줘서 `result`가 9예요.
+
+  13번 줄도 안쪽부터예요. `add(2, 2)`가 `add 2, 2`를 출력하고 4를 돌려주고, `double(4)`가 `double 4`를 출력하고 8을 돌려줘요. `8 + 1`인 `9`가 출력돼요.
+
+  - 바깥 함수(`add 6, 3`)가 먼저 출력된다고 생각했다면, 코드에 적힌 순서대로 실행된다고 본 거예요. 바깥 함수는 인수 값이 모두 정해진 뒤에야 불릴 수 있어요.
+  - 호출 식은 반환값으로 바뀐다고 생각하고 안쪽부터 하나씩 바꿔 쓰면 헷갈리지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,117 @@
+id: js-basics.functions.default-and-rest.impl-average-score
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.fn.rest-params, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+  - { id: js.control.if, weight: 0.3 }
+  - { id: js.conv.nan, weight: 0.3 }
+tags: [rest-params, average, boundary, write-code, entry]
+estimatedSeconds: 420
+prompt: |
+  쪽지 시험 점수를 몇 개든 받아 결과 문구를 반환하는 함수 `scoreReport(name, ...scores)`를 완성하세요.
+
+  - `name`은 학생 이름이고, 그 뒤의 인수가 모두 점수예요.
+  - 점수의 평균을 구해 `"(이름): (점수 개수)회 평균 (평균)점"`을 반환하세요.
+  - 점수를 하나도 넘기지 않으면 평균을 계산하지 말고 `"(이름): 기록 없음"`을 반환하세요.
+  - 평균은 나눈 값 그대로 써요(반올림하지 않아요).
+
+  예:
+
+  - `scoreReport("하준", 80, 90, 70)` → `"하준: 3회 평균 80점"`
+  - `scoreReport("하준")` → `"하준: 기록 없음"`
+
+  보이지 않는 검사에서 다른 이름, 다른 개수의 점수를 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function scoreReport(name, ...scores) {
+            // 여기에 작성하세요
+          }
+  entry: scoreReport
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function scoreReport(name, ...scores) {
+            if (scores.length === 0) {
+              return name + ": 기록 없음";
+            }
+            let sum = 0;
+            for (let i = 0; i < scores.length; i++) {
+              sum += scores[i];
+            }
+            return name + ": " + scores.length + "회 평균 " + sum / scores.length + "점";
+          }
+  checks:
+    - kind: call
+      id: three
+      description: 점수 세 개의 평균을 반환해야 합니다.
+      requirement: 평균 문구
+      args: ["하준", 80, 90, 70]
+      expect: { equals: "하준: 3회 평균 80점" }
+    - kind: call
+      id: empty
+      description: 점수가 없으면 기록 없음을 반환해야 합니다.
+      requirement: 점수 없음
+      args: ["하준"]
+      expect: { equals: "하준: 기록 없음" }
+    - kind: call
+      id: two
+      visible: false
+      description: 점수 개수와 이름이 바뀌어도 평균을 맞게 구해야 합니다. 첫 인수(이름)는 점수 개수에 세지 않아요.
+      requirement: 평균 문구
+      args: ["소율", 95, 100]
+      expect: { equals: "소율: 2회 평균 97.5점" }
+      misconceptionIfFail: js.mc.rest-includes-named
+    - kind: call
+      id: one
+      visible: false
+      description: 점수가 하나면 그 점수가 평균이어야 합니다.
+      requirement: 평균 문구
+      args: ["민재", 64]
+      expect: { equals: "민재: 1회 평균 64점" }
+    - kind: call
+      id: empty-other
+      visible: false
+      description: 다른 학생도 점수가 없으면 기록 없음이어야 합니다(NaN이 나오면 안 됩니다).
+      requirement: 점수 없음
+      args: ["소율"]
+      expect: { equals: "소율: 기록 없음" }
+    - kind: call
+      id: five
+      visible: false
+      description: 점수가 다섯 개여도 모두 평균에 넣어야 합니다.
+      requirement: 평균 문구
+      args: ["예린", 50, 60, 70, 80, 90]
+      expect: { equals: "예린: 5회 평균 70점" }
+misconceptions: [js.mc.rest-includes-named]
+hints:
+  - "`name`이 첫 인수를 받으니, `scores`에는 점수만 모여요. 평균은 (합계 ÷ 개수)예요."
+  - 합계는 누적 패턴으로, 개수는 `scores.length`로 구해요. 점수가 없을 때 `0 / 0`을 계산하면 어떤 값이 나오는지 떠올려 보세요.
+  - 점수가 없는 경우를 함수 맨 앞에서 먼저 확인해 따로 반환하고, 나머지 경우에만 평균을 계산해요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function scoreReport(name, ...scores) {
+    if (scores.length === 0) {
+      return name + ": 기록 없음";
+    }
+    let sum = 0;
+    for (let i = 0; i < scores.length; i++) {
+      sum += scores[i];
+    }
+    return name + ": " + scores.length + "회 평균 " + sum / scores.length + "점";
+  }
+  ```
+
+  - **이름과 점수 나누기**: `name`이 첫 인수를 받고, `...scores`에는 남은 점수만 모여요. 그래서 점수 개수는 `scores.length` 그대로예요.
+  - **점수가 없는 경우**: 확인하지 않고 계산하면 `sum / scores.length`가 `0 / 0`이라 `NaN`이 되어 `하준: 0회 평균 NaN점`이 나와요. 경계 상황은 먼저 처리하고 바로 `return`해요.
+  - **계산 순서**: `"..." + sum / scores.length + "점"`에서 나눗셈이 `+`보다 먼저 계산되므로 괄호가 없어도 평균이 숫자로 들어가요. 헷갈리면 `const average = sum / scores.length;`로 먼저 구해 두어도 좋아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

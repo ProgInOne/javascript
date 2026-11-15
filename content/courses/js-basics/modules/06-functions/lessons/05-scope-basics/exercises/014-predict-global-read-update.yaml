@@ -1,0 +1,59 @@
+id: js-basics.functions.scope-basics.predict-global-read-update
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.scope.global, weight: 1 }
+  - { id: js.fn.undefined-return, weight: 0.3 }
+tags: [scope, global, trace, return]
+estimatedSeconds: 130
+prompt: |
+  교통카드로 결제하는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 네 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    let balance = 10000;
+
+    function pay(price) {
+      if (price > balance) {
+        console.log(price + "원: 잔액 부족");
+        return;
+      }
+      balance -= price;
+      console.log(price + "원 결제, 남은 돈 " + balance + "원");
+    }
+
+    pay(4500);
+    pay(6000);
+    pay(5000);
+    console.log("최종 잔액: " + balance + "원");
+  answerKind: console
+  misconceptionByAnswer:
+    "4500원 결제, 남은 돈 5500원\n6000원 결제, 남은 돈 4000원\n5000원 결제, 남은 돈 5000원\n최종 잔액: 10000원": js.mc.function-cant-change-outer
+    "4500원 결제, 남은 돈 5500원\n6000원: 잔액 부족\n5000원 결제, 남은 돈 500원\n최종 잔액: 10000원": js.mc.function-cant-change-outer
+hints:
+  - "`balance`는 어디에서 만들어졌나요? 함수 안에서 바꾼 값은 함수가 끝난 뒤에도 남을까요?"
+  - 호출마다 함수가 시작할 때의 `balance`를 적어 보세요. 첫 호출이 끝나면 얼마가 남나요?
+  - 두 번째 호출에서 `6000 > balance`가 참인지 계산해 보세요. 참이면 `return;`을 만나 함수가 그 자리에서 끝나요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  4500원 결제, 남은 돈 5500원
+  6000원: 잔액 부족
+  5000원 결제, 남은 돈 500원
+  최종 잔액: 500원
+  ```
+
+  | 호출 | 시작할 때 `balance` | `price > balance` | 끝난 뒤 `balance` |
+  |---|---|---|---|
+  | `pay(4500)` | 10000 | 거짓 → 결제 | 5500 |
+  | `pay(6000)` | 5500 | 참 → 잔액 부족, `return` | 5500 |
+  | `pay(5000)` | 5500 | 거짓 → 결제 | 500 |
+
+  - `balance`는 바깥(전역) 변수예요. 함수 안에서 읽을 수 있고, 8번 줄의 `balance -= price`는 바깥 변수를 **실제로** 바꿔요. 바뀐 값은 다음 호출과 마지막 줄까지 이어져요.
+  - 두 번째 호출은 6000 > 5500이라 6번 줄의 `return;`에서 함수가 끝나요. 그래서 8번 줄이 실행되지 않아 잔액이 그대로예요.
+  - 매번 10000에서 시작한다고 생각했다면, 함수가 바꾼 바깥 변수가 함수가 끝나면 원래대로 돌아간다고 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

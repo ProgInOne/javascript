@@ -1,0 +1,150 @@
+id: js-basics.functions.function-basics.impl-ticket-price
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.fn.params-args, weight: 1 }
+  - { id: js.fn.return, weight: 0.5 }
+  - { id: js.control.else-if, weight: 0.3 }
+  - { id: js.ops.logical-and-or-not, weight: 0.3 }
+tags: [function, parameter, return, if, boundary, write-code]
+estimatedSeconds: 480
+prompt: |
+  수영장 입장료를 계산하는 함수 `ticketPrice(age, isWeekend)`를 완성하세요. `age`는 나이(숫자), `isWeekend`는 주말이면 `true`, 평일이면 `false`예요. 아래 요금표대로 입장료(숫자)를 **돌려주세요**.
+
+  - 기본 요금은 평일 10000원, 주말 12000원이에요.
+  - 7세 이하는 요일과 관계없이 무료(0원)예요.
+  - 8세 이상 18세 이하는 기본 요금에서 4000원을 깎아 줘요.
+  - 65세 이상은 **평일에만** 5000원이에요. 주말에는 기본 요금을 내요.
+  - 나이는 0 이상의 정수만 들어온다고 생각해도 돼요.
+
+  예: `ticketPrice(30, false)` → `10000`, `ticketPrice(12, true)` → `8000`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function ticketPrice(age, isWeekend) {
+            // 여기에 작성하세요
+          }
+  entry: ticketPrice
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function ticketPrice(age, isWeekend) {
+            let base = 10000;
+            if (isWeekend) {
+              base = 12000;
+            }
+
+            if (age <= 7) {
+              return 0;
+            } else if (age <= 18) {
+              return base - 4000;
+            } else if (age >= 65 && !isWeekend) {
+              return 5000;
+            }
+            return base;
+          }
+  checks:
+    - kind: call
+      id: adult-weekday
+      args: [30, false]
+      expect: { equals: 10000 }
+      requirement: 기본 요금
+    - kind: call
+      id: teen-weekend
+      args: [12, true]
+      expect: { equals: 8000 }
+      requirement: 청소년 할인
+    - kind: call
+      id: adult-weekend
+      visible: false
+      description: 어른이 주말에 오면 주말 기본 요금이어야 합니다.
+      args: [40, true]
+      expect: { equals: 12000 }
+      requirement: 기본 요금
+    - kind: call
+      id: age-7
+      visible: false
+      description: 7세는 무료 나이에 들어갑니다(경계값).
+      args: [7, true]
+      expect: { equals: 0 }
+      requirement: 무료 나이
+    - kind: call
+      id: age-8
+      visible: false
+      description: 8세는 청소년 할인 나이의 시작입니다(경계값).
+      args: [8, false]
+      expect: { equals: 6000 }
+      requirement: 청소년 할인
+    - kind: call
+      id: age-18
+      visible: false
+      description: 18세까지 청소년 할인을 받습니다(경계값).
+      args: [18, true]
+      expect: { equals: 8000 }
+      requirement: 청소년 할인
+    - kind: call
+      id: age-19
+      visible: false
+      description: 19세는 기본 요금입니다(경계값).
+      args: [19, false]
+      expect: { equals: 10000 }
+      requirement: 기본 요금
+    - kind: call
+      id: senior-weekday
+      visible: false
+      description: 65세 이상은 평일에 5000원입니다(65세 경계값).
+      args: [65, false]
+      expect: { equals: 5000 }
+      requirement: 경로 요금
+    - kind: call
+      id: senior-weekend
+      visible: false
+      description: 65세 이상이라도 주말에는 주말 기본 요금입니다.
+      args: [70, true]
+      expect: { equals: 12000 }
+      requirement: 경로 요금
+    - kind: call
+      id: age-64
+      visible: false
+      description: 64세는 평일에 기본 요금입니다(경계값).
+      args: [64, false]
+      expect: { equals: 10000 }
+      requirement: 경로 요금
+misconceptions: [js.mc.params-match-by-name, js.mc.code-after-return-runs]
+hints:
+  - 먼저 요일에 따른 기본 요금을 정해 두면 나머지 규칙을 쓰기 쉬워요. 기본 요금을 담을 변수를 하나 만들어 보세요.
+  - 나이 조건을 `if`·`else if`로 나눠요. 각 규칙의 경계(7세, 8세, 18세, 65세)가 포함인지 아닌지를 요금표에서 다시 확인하세요.
+  - 65세 규칙은 나이와 요일을 **함께** 따져야 해요. 어느 갈래에도 해당하지 않는 사람은 기본 요금을 내요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function ticketPrice(age, isWeekend) {
+    let base = 10000;
+    if (isWeekend) {
+      base = 12000;
+    }
+
+    if (age <= 7) {
+      return 0;
+    } else if (age <= 18) {
+      return base - 4000;
+    } else if (age >= 65 && !isWeekend) {
+      return 5000;
+    }
+    return base;
+  }
+  ```
+
+  - **기본 요금을 먼저**: 주말·평일 기본 요금을 `base`에 정해 두면 청소년 할인과 마지막 기본 요금에서 같이 쓸 수 있어요.
+  - **경계값**: "7세 이하"는 `age <= 7`, "8세 이상 18세 이하"는 앞 조건이 거짓일 때(8세 이상) `age <= 18`이에요. 18세를 `age < 18`로 쓰면 18세가 할인을 못 받아요.
+  - **두 조건을 함께**: 65세 규칙은 `age >= 65 && !isWeekend`예요. 나이만 보면 70세 주말 손님이 5000원이 되어 틀려요.
+  - **`return`은 함수를 끝내요**: 맞는 갈래에서 `return`하면 아래 줄은 실행되지 않아요. 그래서 마지막 `return base;`는 어느 갈래에도 해당하지 않을 때만 실행돼요.
+  - 인수 순서는 `(age, isWeekend)`예요. `ticketPrice(12, true)`는 12세가 주말에 온 경우예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

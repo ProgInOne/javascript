@@ -1,0 +1,80 @@
+id: js-basics.functions.scope-basics.find-bug-shadow-total
+type: find_bug_line
+difficulty: 4
+concepts:
+  - { id: js.scope.shadowing, weight: 1 }
+  - { id: js.scope.global, weight: 0.5 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [scope, shadowing, global, accumulator, debugging]
+estimatedSeconds: 150
+prompt: |
+  장바구니에 상품을 담을 때마다 담은 금액을 보여 주고, 마지막에 전체 개수와 합계를 출력하는 프로그램이에요. 오류는 없는데 합계가 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    let total = 0;
+    let count = 0;
+
+    function addItem(price, qty) {
+      let total = price * qty;
+      count += qty;
+      console.log(qty + "개 담음: " + total + "원");
+    }
+
+    addItem(3000, 2);
+    addItem(2000, 4);
+    console.log("상품 " + count + "개, 합계 " + total + "원");
+  bugLines: [5]
+  symptom: "개수는 `상품 6개`로 맞는데, 합계가 14000원이 아니라 `합계 0원`으로 나와요."
+  symptomCheck:
+    console: ["2개 담음: 6000원", "4개 담음: 8000원", "상품 6개, 합계 0원"]
+  fixedCode: |-
+    let total = 0;
+    let count = 0;
+
+    function addItem(price, qty) {
+      const lineTotal = price * qty;
+      total += lineTotal;
+      count += qty;
+      console.log(qty + "개 담음: " + lineTotal + "원");
+    }
+
+    addItem(3000, 2);
+    addItem(2000, 4);
+    console.log("상품 " + count + "개, 합계 " + total + "원");
+  causeOptions:
+    - id: c1
+      text: 5번 줄의 let이 함수 안에 새 total을 만들어 바깥 total을 가려서, 바깥 total에는 아무것도 더해지지 않았다
+      correct: true
+    - id: c2
+      text: 함수는 바깥 변수를 바꿀 수 없어서, 함수가 끝나면 total이 원래 값 0으로 돌아갔다
+      misconception: js.mc.function-cant-change-outer
+    - id: c3
+      text: 12번 줄은 함수 밖이라 함수 안에서 계산한 total을 읽을 수 없으니, 출력 줄을 함수 안으로 옮겨야 한다
+hints:
+  - "`count`는 제대로 6이 됐어요. `count`를 바꾸는 줄과 `total`을 다루는 줄은 무엇이 다른가요?"
+  - 함수 안에서 `total`이라는 이름을 만나면 어느 상자의 `total`을 찾게 될까요? 함수 안에도 `total`이 만들어지고 있지 않나요?
+  - 바깥 변수를 바꾸려면 안쪽에서 같은 이름을 새로 만들면 안 돼요. 그리고 지금 줄은 더하는 게 아니라 무엇을 하고 있나요?
+explanation: |
+  원인은 **5번 줄** `let total = price * qty;`예요.
+
+  - `let`이 붙어 있어서 함수 안에 **새** `total`이 만들어져요. 이름이 같으니 함수 안에서는 바깥 `total`이 가려져요(섀도잉).
+  - 7번 줄이 출력하는 `total`도 함수 안의 변수라서 담은 금액은 잘 나오지만, 바깥 `total`은 한 번도 바뀌지 않아요. 그래서 12번 줄은 0을 출력해요.
+  - 반면 6번 줄의 `count += qty;`에는 `let`이 없어서 바깥 `count`를 바꿔요. 그래서 개수는 맞았어요.
+
+  고친 예는 담은 금액에 다른 이름을 주고, 바깥 `total`에는 더하기만 해요.
+
+  ```js
+  function addItem(price, qty) {
+    const lineTotal = price * qty;
+    total += lineTotal;
+    count += qty;
+    console.log(qty + "개 담음: " + lineTotal + "원");
+  }
+  ```
+
+  - "함수는 바깥 변수를 바꿀 수 없다": `count`가 6이 된 것이 반례예요. `let`을 붙이지 않으면 함수 안에서도 바깥 변수를 바꿀 수 있어요.
+  - "출력 줄을 함수 안으로 옮겨야 한다": 옮기면 함수 안의 `total`(그 회차의 금액)이 보일 뿐, 합계는 여전히 어디에도 쌓이지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

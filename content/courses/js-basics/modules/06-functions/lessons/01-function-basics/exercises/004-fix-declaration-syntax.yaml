@@ -1,0 +1,65 @@
+id: js-basics.functions.function-basics.fix-declaration-syntax
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.fn.declaration, weight: 1 }
+  - { id: js.errors.error-messages, weight: 0.3 }
+tags: [function, declaration, syntax-error, debugging]
+estimatedSeconds: 120
+prompt: |
+  오늘의 메뉴를 보여 주는 함수 `showMenu`를 만들고 부르는 프로그램이에요. 실행하면 아무것도 출력되지 않고 오류가 나요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  오늘의 메뉴
+  - 김밥
+  - 라면
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function showMenu {
+            console.log("오늘의 메뉴");
+            console.log("- 김밥");
+            console.log("- 라면");
+          }
+
+          showMenu();
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function showMenu() {
+            console.log("오늘의 메뉴");
+            console.log("- 김밥");
+            console.log("- 라면");
+          }
+
+          showMenu();
+  bugDescription: "실행하면 `SyntaxError: Unexpected token '{'` 오류가 나고 아무것도 출력되지 않아요."
+  checks:
+    - kind: console
+      id: output
+      description: 메뉴 제목과 메뉴 두 개가 차례로 출력되어야 합니다.
+      requirement: 메뉴 출력
+      expect:
+        lines: ["오늘의 메뉴", "- 김밥", "- 라면"]
+hints:
+  - 오류 종류가 `SyntaxError`예요. 코드를 실행하기 전에 문법 검사에서 막혔다는 뜻이에요. 몇 번째 줄을 가리키나요?
+  - 함수 선언의 모양 `function 이름(매개변수) { 본문 }`과 1번 줄을 한 글자씩 비교해 보세요.
+  - 매개변수가 하나도 없는 함수라도 이름 뒤에 반드시 있어야 하는 기호가 있어요.
+explanation: |
+  1번 줄에 이름 뒤의 괄호가 빠졌어요. 고친 줄은 이래요.
+
+  ```js
+  function showMenu() {
+  ```
+
+  - 함수 선언은 `function 이름(매개변수) { 본문 }` 모양이에요. 매개변수가 없어도 빈 괄호 `()`는 꼭 써야 해요.
+  - 괄호 자리에 `{`가 나와서 JavaScript가 "여기에 `{`가 올 수 없다"(`Unexpected token '{'`)고 알려 줬어요.
+  - `SyntaxError`는 실행 전에 나는 오류라서, 아래의 `showMenu();`를 포함해 한 줄도 실행되지 않아요. 그래서 아무것도 출력되지 않았어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

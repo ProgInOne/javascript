@@ -1,0 +1,117 @@
+id: js-basics.functions.expressions-and-arrows.fix-mixed-function-bugs
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.fn.hoisting, weight: 1 }
+  - { id: js.fn.arrow, weight: 0.5 }
+  - { id: js.fn.expression, weight: 0.3 }
+tags: [hoisting, arrow-function, return, type-error, debugging]
+estimatedSeconds: 420
+prompt: |
+  분식집 영수증 프로그램이에요. 떡볶이는 4500원, 그 밖의 메뉴는 3000원이에요. 실행하면 오류가 나요. 버그를 모두 고쳐서 아래처럼 나오게 하세요.
+
+  ```text
+  떡볶이 2개: 9000원
+  김밥 4개: 12000원
+  ```
+
+  - 버그는 하나가 아니에요. 하나를 고치면 다른 증상이 나타날 수 있어요.
+  - 세 함수(`priceOf`, `lineTotal`, `makeReceipt`)는 그대로 두고 그 안의 버그를 고치세요. 다른 메뉴로도 확인해요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          console.log(makeReceipt("떡볶이", 2));
+          console.log(makeReceipt("김밥", 4));
+
+          const priceOf = (menu) => {
+            if (menu === "떡볶이") {
+              return 4500;
+            }
+            return 3000;
+          };
+          const lineTotal = (menu, count) => {
+            const getPrice = priceOf(menu);
+            getPrice() * count;
+          };
+          const makeReceipt = function (menu, count) {
+            const total = lineTotal(menu, count);
+            return menu + " " + count + "개: " + total + "원";
+          };
+  entry: makeReceipt
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const priceOf = (menu) => {
+            if (menu === "떡볶이") {
+              return 4500;
+            }
+            return 3000;
+          };
+          const lineTotal = (menu, count) => {
+            const price = priceOf(menu);
+            return price * count;
+          };
+          const makeReceipt = function (menu, count) {
+            const total = lineTotal(menu, count);
+            return menu + " " + count + "개: " + total + "원";
+          };
+
+          console.log(makeReceipt("떡볶이", 2));
+          console.log(makeReceipt("김밥", 4));
+  bugDescription: "실행하면 `ReferenceError: Cannot access 'makeReceipt' before initialization` 오류가 나요."
+  bugMisconception: js.mc.expression-hoisted
+  checks:
+    - kind: console
+      id: output
+      description: 떡볶이 2개와 김밥 4개의 영수증 줄이 차례로 출력되어야 합니다.
+      requirement: 영수증 출력
+      expect:
+        lines: ["떡볶이 2개: 9000원", "김밥 4개: 12000원"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+    - kind: call
+      id: other-menu
+      visible: false
+      description: '다른 메뉴(라면 1개)도 "라면 1개: 3000원"처럼 금액이 계산되어야 합니다.'
+      requirement: 금액 계산
+      args: ["라면", 1]
+      expect: { equals: "라면 1개: 3000원" }
+misconceptions: [js.mc.expression-hoisted, js.mc.arrow-braces-implicit-return, js.mc.assign-call-result]
+hints:
+  - 첫 오류는 함수를 만들기 전에 부른 것이에요. 세 함수는 모두 `const`로 만들었어요.
+  - 그것을 고친 뒤에는 `getPrice`에 무엇이 담기는지 보세요. `priceOf(menu)`는 함수인가요, 숫자인가요?
+  - 마지막으로 `lineTotal`의 본문 모양을 확인하세요. 중괄호 본문에서 계산한 값이 돌아오고 있나요?
+explanation: |
+  버그는 세 개이고, 하나를 고칠 때마다 다음 증상이 나타나요.
+
+  1. **선언 전 호출** (`ReferenceError`): 세 함수 모두 `const`로 만들었으므로, 1~2번 줄의 호출을 함수들보다 **아래로** 옮겨요.
+  1. **호출 결과를 함수처럼 부름** (`TypeError: getPrice is not a function`): `priceOf(menu)`는 실행 결과인 숫자(4500)예요. 숫자에 괄호를 붙여 부를 수 없어요. 숫자를 그대로 쓰면 돼요.
+  1. **중괄호 본문에 `return` 없음** (`떡볶이 2개: undefined원`): `lineTotal`은 계산만 하고 돌려주지 않아요. `return`을 붙여요.
+
+  고친 `lineTotal`은 이래요.
+
+  ```js
+  const lineTotal = (menu, count) => {
+    const price = priceOf(menu);
+    return price * count;
+  };
+  ```
+
+  `const lineTotal = (menu, count) => priceOf(menu) * count;`처럼 식 본문 한 줄로 써도 정답이에요.
+
+  | 고친 뒤 | 출력 |
+  |---|---|
+  | 호출 순서만 | `TypeError: getPrice is not a function` |
+  | + `getPrice()` 대신 숫자 사용 | `떡볶이 2개: undefined원` … |
+  | + `return` | `떡볶이 2개: 9000원`, `김밥 4개: 12000원` |
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
