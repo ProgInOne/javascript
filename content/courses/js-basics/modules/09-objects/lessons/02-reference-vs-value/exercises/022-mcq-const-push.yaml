@@ -1,0 +1,45 @@
+id: js-basics.objects.reference-vs-value.mcq-const-push
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.obj.const-mutation, weight: 1 }
+tags: [const, object, mutation]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 실행하면 어떤 일이 일어나나요?
+code: |
+  const scores = { math: 80 };
+  scores.math = 95;
+  scores.english = 88;
+  console.log(scores);
+spec:
+  options:
+    - id: a
+      text: '`{ math: 95, english: 88 }`이 출력된다'
+    - id: b
+      text: "2번 줄에서 `TypeError: Assignment to constant variable.`이 난다"
+      misconception: js.mc.const-object-props-frozen
+      rationale: const는 scores에 다른 값을 다시 대입하는 것만 막아요. 2번 줄은 객체의 속성을 바꾸는 것이에요.
+    - id: c
+      text: '`{ math: 80 }`이 출력된다'
+      misconception: js.mc.const-object-props-frozen
+      rationale: const 객체의 속성 대입은 조용히 무시되지 않아요. 실제로 값이 바뀌어요.
+    - id: d
+      text: '`{ math: 80, english: 88 }`이 출력된다'
+      rationale: 있는 속성을 바꾸는 것과 새 속성을 더하는 것은 둘 다 허용돼요. 하나만 막히지 않아요.
+  correct: a
+misconceptions: [js.mc.const-object-props-frozen]
+hints:
+  - "`const`가 막는 것은 정확히 무엇이었나요? 변수에 다시 대입하는 것인가요, 객체 안을 바꾸는 것인가요?"
+  - 2~3번 줄에 `scores = ...`처럼 변수 자체에 대입하는 줄이 있나요?
+  - 속성 바꾸기와 속성 더하기가 각각 허용되는지 따져 보세요.
+explanation: |
+  `{ math: 95, english: 88 }`이 출력돼요.
+
+  `const`는 변수 `scores`에 **다른 값을 다시 대입하는 것**만 막아요. `scores`가 가리키는 객체의 속성을 바꾸거나(2번 줄) 새 속성을 더하는 것(3번 줄)은 막지 않아요. 변수의 화살표는 여전히 같은 객체를 가리키고 있으니까요.
+
+  `scores = { math: 95 };`처럼 변수 자체에 새 객체를 대입했다면 그때 `TypeError: Assignment to constant variable.`이 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

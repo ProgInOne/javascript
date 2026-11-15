@@ -1,0 +1,75 @@
+id: js-basics.objects.object-iteration.parsons-for-in-report
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.obj.for-in, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [object, for-in, parsons]
+estimatedSeconds: 140
+prompt: |
+  좌석 등급별 남은 좌석 객체를 돌며, 남은 좌석이 있는 등급만 출력하고 매진된 등급 수를 세는 프로그램이에요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  VIP: 3석
+  S: 12석
+  매진 등급 1개
+  ```
+spec:
+  lines:
+    - { id: l1, code: "const seats = { VIP: 3, R: 0, S: 12 };" }
+    - { id: l2, code: "let soldOut = 0;" }
+    - { id: l3, code: "for (const grade in seats) {" }
+    - { id: l4, code: "if (seats[grade] === 0) {", indent: 1 }
+    - { id: l5, code: "soldOut++;", indent: 2 }
+    - { id: l6, code: "} else {", indent: 1 }
+    - { id: l7, code: 'console.log(grade + ": " + seats[grade] + "석");', indent: 2 }
+    - { id: l8, code: "}", indent: 1 }
+    - { id: l9, code: "}" }
+    - { id: l10, code: 'console.log("매진 등급 " + soldOut + "개");' }
+  distractors:
+    - { id: d1, code: "for (const grade of seats) {", replaces: l3, misconception: js.mc.for-of-object }
+    - { id: d2, code: "if (seats.grade === 0) {", replaces: l4, misconception: js.mc.dot-with-variable-key }
+    - { id: d3, code: 'console.log(grade + ": " + grade + "석");', replaces: l7, misconception: js.mc.for-in-gives-values }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 남은 좌석이 있는 등급과 매진 등급 수가 출력되어야 합니다.
+      requirement: 좌석 보고
+      expect:
+        lines: ["VIP: 3석", "S: 12석", "매진 등급 1개"]
+    - kind: program
+      id: sold-out
+      description: 프로그램이 오류 없이 끝나고 soldOut에 1이 들어 있어야 합니다.
+      requirement: 좌석 보고
+      expect:
+        globals: { soldOut: { equals: 1 } }
+        noError: true
+misconceptions: [js.mc.for-of-object, js.mc.dot-with-variable-key, js.mc.for-in-gives-values]
+hints:
+  - 객체와 세는 변수를 먼저 만들고, 그다음 반복, 맨 끝에 매진 수를 출력해요.
+  - 객체의 키를 도는 반복은 `for...of`와 `for...in` 중 무엇이었나요?
+  - 반복 변수 `grade`에는 등급 이름이 들어와요. 남은 좌석 수를 읽는 조각과 출력하는 조각에서 변수에 든 키로 값을 읽는 표기법을 고르세요.
+explanation: |
+  정답 순서예요.
+
+  ```js
+  const seats = { VIP: 3, R: 0, S: 12 };
+  let soldOut = 0;
+  for (const grade in seats) {
+    if (seats[grade] === 0) {
+      soldOut++;
+    } else {
+      console.log(grade + ": " + seats[grade] + "석");
+    }
+  }
+  console.log("매진 등급 " + soldOut + "개");
+  ```
+
+  - `for...in`은 키 `"VIP"`, `"R"`, `"S"`를 차례로 `grade`에 넣어요. `for (const grade of seats)`는 `TypeError: seats is not iterable`이에요.
+  - `seats.grade`는 이름이 `"grade"`인 속성을 찾아 항상 `undefined`라서, `=== 0`이 늘 거짓이 되고 `R: 0석`까지 출력돼요.
+  - `grade + ": " + grade`는 키를 두 번 써서 `VIP: VIP석`이 돼요. 값은 `seats[grade]`로 읽어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

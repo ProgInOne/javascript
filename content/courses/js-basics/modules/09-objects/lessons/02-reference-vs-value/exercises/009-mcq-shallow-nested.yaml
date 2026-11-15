@@ -1,0 +1,46 @@
+id: js-basics.objects.reference-vs-value.mcq-shallow-nested
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.obj.copy-shallow, weight: 1 }
+tags: [copy, shallow, nested, array]
+estimatedSeconds: 70
+prompt: |
+  여행 계획을 복사해서 친구용 계획을 만들었어요. 마지막 줄에서 무엇이 출력되나요?
+code: |
+  const original = { title: "여행", places: ["부산"] };
+  const copy = { ...original };
+  copy.title = "제주 여행";
+  copy.places.push("제주");
+  console.log(original);
+spec:
+  options:
+    - id: a
+      text: '`{ title: "여행", places: ["부산", "제주"] }`'
+    - id: b
+      text: '`{ title: "여행", places: ["부산"] }`'
+      misconception: js.mc.shallow-copy-is-deep
+      rationale: "`{ ...original }`은 첫 단계만 새로 담아요. places 배열은 참조가 복사되어 두 객체가 같은 배열을 함께 써요."
+    - id: c
+      text: '`{ title: "제주 여행", places: ["부산", "제주"] }`'
+      rationale: copy는 새 객체라서 copy.title을 바꿔도 original.title은 그대로예요.
+    - id: d
+      text: '`{ title: "제주 여행", places: ["부산"] }`'
+      rationale: title은 copy에만 바뀌고, places 배열은 두 객체가 함께 쓰므로 반대예요.
+  correct: a
+misconceptions: [js.mc.shallow-copy-is-deep]
+hints:
+  - "`copy`는 새 객체인가요? 그렇다면 `copy.title`을 바꾸면 `original.title`은 어떻게 되나요?"
+  - "`places`의 값은 배열(객체)이에요. 복사할 때 배열 자체가 복사되나요, 참조가 복사되나요?"
+  - 3번 줄과 4번 줄을 나눠서, 각각 바뀌는 것이 `copy`만의 칸인지 두 객체가 함께 쓰는 배열인지 생각해 보세요.
+explanation: |
+  `{ title: "여행", places: ["부산", "제주"] }`가 출력돼요.
+
+  - `{ ...original }`은 새 객체를 만들어 `title`과 `places`라는 칸을 새로 담아요. 그래서 3번 줄에서 `copy.title`을 바꿔도 `original.title`은 `"여행"` 그대로예요.
+  - 하지만 `places` 칸에 담긴 것은 배열의 **참조**예요. 두 객체가 같은 배열을 함께 써서, 4번 줄의 `push`는 `original.places`도 바꿔요.
+
+  `places`가 `["부산"]` 그대로라고 생각했다면 얕은 복사가 안쪽 배열까지 새로 만든다고 본 거예요. 안쪽도 따로 만들려면 `{ ...original, places: [...original.places] }`나 `structuredClone(original)`을 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

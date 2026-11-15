@@ -813,3 +813,149 @@
   prerequisites: [js.arr.mutating-vs-not, js.str.slice]
   misconceptions: [js.mc.array-slice-mutates, js.mc.concat-adds-nested]
   mdn: Web/JavaScript/Reference/Global_Objects/Array/slice
+
+# ── 모듈 9. 객체: object-basics ──
+
+- id: js.obj.literal
+  title: 객체 리터럴
+  importance: core
+  summary: '객체는 이름(키)과 값을 짝지어 묶은 값이에요. { 키: 값, 키: 값 }처럼 중괄호 안에 속성을 쉼표로 나눠 쓰고, 값에는 숫자·문자열·배열·다른 객체·함수 등 무엇이든 넣을 수 있어요.'
+  prerequisites: [js.types.primitives, js.values.const]
+  misconceptions: [js.mc.obj-access-by-index, js.mc.obj-property-semicolon]
+  mdn: Web/JavaScript/Reference/Operators/Object_initializer
+
+- id: js.obj.dot-bracket
+  title: 점 표기법과 대괄호 표기법
+  importance: core
+  summary: 'obj.key는 이름이 key인 속성을, obj[식]은 식의 값(문자열)을 이름으로 하는 속성을 읽어요. 키가 변수에 들어 있거나 공백·하이픈이 있으면 대괄호를 써요. 없는 속성을 읽으면 오류가 아니라 undefined이고, undefined의 속성을 읽을 때 TypeError가 나요.'
+  prerequisites: [js.obj.literal, js.types.undefined]
+  misconceptions: [js.mc.dot-with-variable-key, js.mc.missing-property-error, js.mc.bracket-key-without-quotes]
+  mdn: Web/JavaScript/Reference/Operators/Property_accessors
+
+- id: js.obj.add-delete
+  title: 속성 추가·수정·삭제
+  importance: standard
+  summary: '없는 속성에 대입하면 새 속성이 생기고, 있는 속성에 대입하면 값이 바뀌어요. delete obj.key는 속성을 없애요. 리터럴에 같은 키를 두 번 쓰면 오류 없이 뒤의 값이 남아요.'
+  prerequisites: [js.obj.dot-bracket, js.values.assignment]
+  misconceptions: [js.mc.add-property-needs-declare, js.mc.duplicate-key-error]
+  mdn: Web/JavaScript/Reference/Operators/delete
+
+- id: js.obj.methods-intro
+  title: 메서드 입문
+  importance: standard
+  summary: '값이 함수인 속성을 메서드라고 하고, obj.method()처럼 괄호를 붙여 불러요. 메서드 안에서 자기 객체의 속성은 이름만으로는 읽을 수 없고, obj.method()로 불렀을 때 this가 그 객체를 가리키므로 this.key로 읽어요.'
+  prerequisites: [js.obj.dot-bracket, js.fn.expression, js.fn.return]
+  misconceptions: [js.mc.method-reads-props-by-name]
+  mdn: Web/JavaScript/Reference/Functions/Method_definitions
+
+# ── 모듈 9. 객체: reference-vs-value ──
+
+- id: js.obj.reference
+  title: 객체는 참조로 다뤄져요
+  importance: core
+  summary: '변수에는 객체 자체가 아니라 객체가 있는 곳(참조)이 들어가요. 객체를 다른 변수에 대입하거나 함수에 넘기면 같은 객체를 함께 가리키므로, 한쪽에서 속성을 바꾸면 다른 쪽에서도 바뀐 값이 보여요. 원시 값은 대입할 때 값이 복사돼요.'
+  prerequisites: [js.obj.dot-bracket, js.values.assignment, js.fn.params-args]
+  misconceptions: [js.mc.assign-copies-object, js.mc.object-param-copied, js.mc.param-reassign-replaces-object]
+  mdn: Web/JavaScript/Guide/Working_with_objects
+
+- id: js.obj.copy-shallow
+  title: 얕은 복사
+  importance: core
+  summary: '{ ...obj }나 [...arr]는 새 객체(배열)를 만들어 첫 단계 속성만 복사해요(얕은 복사). 속성 값이 객체나 배열이면 그 참조가 복사되어 원본과 함께 쓰므로, 중첩된 것까지 따로 만들려면 structuredClone을 쓰거나 안쪽도 복사해요.'
+  prerequisites: [js.obj.reference, js.arr.literal-index, js.arr.for-of]
+  misconceptions: [js.mc.shallow-copy-is-deep, js.mc.array-assign-copies]
+  mdn: Web/JavaScript/Reference/Global_Objects/structuredClone
+
+- id: js.obj.equality
+  title: 객체 비교
+  importance: standard
+  summary: '객체끼리 ===로 비교하면 내용이 아니라 같은 객체(같은 참조)인지를 봐요. 내용이 같아도 따로 만든 두 객체는 같지 않아요. 내용을 비교하려면 필요한 속성을 하나씩 비교해요.'
+  prerequisites: [js.obj.reference, js.ops.strict-equality]
+  misconceptions: [js.mc.same-content-objects-equal, js.mc.copy-equals-original]
+  mdn: Web/JavaScript/Equality_comparisons_and_sameness
+
+- id: js.obj.const-mutation
+  title: const 객체의 속성 바꾸기
+  importance: standard
+  summary: 'const는 변수에 다른 값을 다시 대입하는 것만 막아요. const로 만든 객체나 배열도 속성을 바꾸고, 추가하고, 지울 수 있어요. 내용까지 못 바꾸게 하려면 Object.freeze를 써요.'
+  prerequisites: [js.obj.reference, js.values.const]
+  misconceptions: [js.mc.const-object-props-frozen]
+  mdn: Web/JavaScript/Reference/Statements/const
+
+# ── 모듈 9. 객체: object-iteration ──
+
+- id: js.obj.keys-values-entries
+  title: Object.keys·values·entries
+  importance: standard
+  summary: 'Object.keys(obj)는 키 목록을, Object.values(obj)는 값 목록을, Object.entries(obj)는 [키, 값] 짝의 목록을 배열로 돌려줘요. 객체에는 length가 없고 for...of로 바로 돌 수도 없어서, 이 배열을 길이로 쓰거나 for...of로 돌아요.'
+  prerequisites: [js.obj.dot-bracket, js.loops.for, js.arr.literal-index, js.arr.for-of]
+  misconceptions: [js.mc.object-has-length, js.mc.for-of-object]
+  mdn: Web/JavaScript/Reference/Global_Objects/Object/entries
+
+- id: js.obj.for-in
+  title: for...in으로 키 돌기
+  importance: minor
+  summary: 'for (const key in obj)는 객체의 키를 하나씩 key에 넣으며 반복해요. 값은 obj[key]로 읽어요.'
+  prerequisites: [js.obj.dot-bracket, js.loops.for]
+  misconceptions: [js.mc.for-in-gives-values]
+  mdn: Web/JavaScript/Reference/Statements/for...in
+
+- id: js.obj.in-optional-chaining
+  title: in 연산자와 옵셔널 체이닝
+  importance: standard
+  summary: '"key" in obj는 속성이 있는지를 true·false로 알려 줘요. 값이 undefined인 속성도 있는 속성이에요. obj?.key는 obj가 null이나 undefined면 오류 대신 undefined를 돌려주고, ??와 함께 기본값을 정할 때 써요.'
+  prerequisites: [js.obj.dot-bracket, js.ops.nullish, js.types.undefined]
+  misconceptions: [js.mc.undefined-value-means-missing, js.mc.optional-chaining-guards-rest]
+  mdn: Web/JavaScript/Reference/Operators/Optional_chaining
+
+# ── 모듈 9. 객체: destructuring-and-spread ──
+
+- id: js.obj.destructuring
+  title: 객체 구조 분해
+  importance: core
+  summary: 'const { name, age } = user;는 같은 이름의 속성 값을 꺼내 변수를 만들어요. { name: userName }은 다른 이름으로 받고, { level = 1 }은 값이 undefined일 때 쓸 기본값이에요. 원본 객체는 바뀌지 않아요. 함수 매개변수에서도 쓸 수 있어요.'
+  prerequisites: [js.obj.dot-bracket, js.values.const, { id: js.fn.default-params, strength: helpful }]
+  misconceptions: [js.mc.destructuring-removes-property, js.mc.destructuring-rename-direction, js.mc.destructuring-default-on-null]
+  mdn: Web/JavaScript/Reference/Operators/Destructuring
+
+- id: js.arr.destructuring
+  title: 배열 구조 분해
+  importance: standard
+  summary: 'const [first, second] = list;는 이름이 아니라 위치(순서)대로 값을 꺼내요. 쉼표로 건너뛰고, ...rest로 나머지를 새 배열로 받고, [a, b] = [b, a]로 두 값을 바꿀 수 있어요.'
+  prerequisites: [js.obj.destructuring, js.arr.literal-index, { id: js.fn.rest-params, strength: helpful }]
+  misconceptions: [js.mc.array-destructuring-by-name]
+  mdn: Web/JavaScript/Reference/Operators/Destructuring
+
+- id: js.obj.spread
+  title: 전개 구문으로 합치기
+  importance: core
+  summary: '{ ...a, ...b }는 a와 b의 속성을 펼쳐 새 객체를 만들고, 같은 키는 뒤에 쓴 값이 이겨요. [...a, ...b]는 두 배열을 이은 새 배열이에요. 원본은 바뀌지 않고, 복사는 얕은 복사예요.'
+  prerequisites: [js.obj.copy-shallow, js.fn.rest-params, js.arr.literal-index]
+  misconceptions: [js.mc.spread-order-irrelevant, js.mc.spread-mutates-original]
+  mdn: Web/JavaScript/Reference/Operators/Spread_syntax
+
+# ── 모듈 9. 객체: error-handling ──
+
+- id: js.errors.throw
+  title: throw로 오류 던지기
+  importance: standard
+  summary: 'throw new Error("설명")은 오류 객체를 던져 그 자리에서 실행을 멈춰요. 오류 객체는 name(종류)과 message(설명) 속성을 가져요. 함수가 처리할 수 없는 입력을 받았을 때 알리는 데 써요.'
+  prerequisites: [js.errors.error-types, js.obj.dot-bracket, js.fn.return]
+  misconceptions: [js.mc.throw-just-logs]
+  mdn: Web/JavaScript/Reference/Statements/throw
+
+- id: js.errors.try-catch
+  title: try...catch로 오류 처리하기
+  importance: standard
+  summary: 'try 블록에서 실행 중 오류가 나면 try의 나머지를 건너뛰고 catch 블록이 오류 객체를 받아 실행돼요. 그 뒤 프로그램은 try...catch 다음 줄부터 이어져요. 문법 오류(SyntaxError)는 실행 전에 나므로 같은 코드의 try...catch로 잡을 수 없어요.'
+  prerequisites: [js.errors.throw, js.control.block]
+  misconceptions: [js.mc.try-catch-catches-syntax-error, js.mc.try-resumes-after-catch, js.mc.caught-error-stops-program]
+  mdn: Web/JavaScript/Reference/Statements/try...catch
+
+- id: js.errors.finally
+  title: finally
+  importance: minor
+  summary: 'finally 블록은 try가 오류 없이 끝나든, catch로 처리하든, try 안에서 return하든 항상 마지막에 실행돼요. 정리 작업(로딩 표시 끄기 등)에 써요.'
+  prerequisites: [js.errors.try-catch]
+  misconceptions: [js.mc.finally-only-on-error]
+  mdn: Web/JavaScript/Reference/Statements/try...catch

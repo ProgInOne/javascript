@@ -1,0 +1,65 @@
+id: js-basics.objects.destructuring-and-spread.parsons-podium-swap
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.arr.destructuring, weight: 1 }
+tags: [destructuring, array, swap, parsons]
+estimatedSeconds: 140
+prompt: |
+  달리기 시합 결과 배열 `podium`을 1·2·3등 변수로 꺼냈는데, 비디오 판독으로 **1등과 2등이 바뀌었어요**. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  1등: 민지
+  2등: 준호
+  3등: 서연
+  ```
+spec:
+  lines:
+    - { id: l1, code: 'const podium = ["준호", "민지", "서연"];' }
+    - { id: l2, code: "let [first, second, third] = podium;" }
+    - { id: l3, code: "[first, second] = [second, first];" }
+    - { id: l4, code: 'console.log("1등: " + first);' }
+    - { id: l5, code: 'console.log("2등: " + second);' }
+    - { id: l6, code: 'console.log("3등: " + third);' }
+  distractors:
+    - { id: d1, code: "let { first, second, third } = podium;", replaces: l2, misconception: js.mc.array-destructuring-by-name }
+    - { id: d2, code: "const [first, second, third] = podium;", replaces: l2, misconception: js.mc.const-can-reassign }
+    - { id: d3, code: "[first, second] = [first, second];", replaces: l3 }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 1등과 2등이 바뀐 결과가 1등부터 차례로 출력되어야 합니다.
+      requirement: 바뀐 순위 출력
+      expect:
+        lines: ["1등: 민지", "2등: 준호", "3등: 서연"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 바뀐 순위 출력
+      expect:
+        noError: true
+misconceptions: [js.mc.array-destructuring-by-name, js.mc.const-can-reassign]
+hints:
+  - 배열을 만들고, 꺼내고, 바꾸고, 출력하는 순서로 놓아 보세요.
+  - 배열에서 꺼낼 때는 중괄호와 대괄호 중 무엇을 쓰나요? 꺼낸 변수에 나중에 다시 대입하려면 어떤 키워드로 만들어야 할까요?
+  - 두 값을 바꾸는 줄은 오른쪽에서 새 배열을 먼저 만든 뒤 위치대로 넣어요. 오른쪽 배열의 순서가 바뀌어 있어야 값이 바뀌어요.
+explanation: |
+  정답 순서예요.
+
+  ```js
+  const podium = ["준호", "민지", "서연"];
+  let [first, second, third] = podium;
+  [first, second] = [second, first];
+  console.log("1등: " + first);
+  console.log("2등: " + second);
+  console.log("3등: " + third);
+  ```
+
+  - 배열 구조 분해는 대괄호로 써요. `let { first, second, third } = podium;`은 배열에서 이름이 `first`인 속성을 찾으니 셋 다 `undefined`가 돼요.
+  - 3번 줄에서 다시 대입하므로 `let`이어야 해요. `const`로 만들면 3번 줄에서 `TypeError: Assignment to constant variable.`이 나요.
+  - `[first, second] = [second, first];`는 오른쪽에 `["민지", "준호"]`를 먼저 만들고 위치대로 넣어 두 값을 바꿔요. `[first, second] = [first, second];`는 같은 순서로 다시 넣을 뿐이라 아무것도 바뀌지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

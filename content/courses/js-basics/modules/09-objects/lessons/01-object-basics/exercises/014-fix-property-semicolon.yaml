@@ -1,0 +1,69 @@
+id: js-basics.objects.object-basics.fix-property-semicolon
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.obj.literal, weight: 1 }
+  - { id: js.errors.error-messages, weight: 0.3 }
+tags: [object, literal, syntax-error, debugging]
+estimatedSeconds: 100
+prompt: |
+  영화 한 편의 정보를 객체로 만들어 출력하는 프로그램이에요. 실행하면 아무것도 출력되지 않고 오류가 나요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  별의 정원 (2024) - 평점 4.5
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const movie = {
+            title: "별의 정원";
+            year: 2024;
+            rating: 4.5;
+          };
+
+          console.log(movie.title + " (" + movie.year + ") - 평점 " + movie.rating);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const movie = {
+            title: "별의 정원",
+            year: 2024,
+            rating: 4.5,
+          };
+
+          console.log(movie.title + " (" + movie.year + ") - 평점 " + movie.rating);
+  bugDescription: "실행하면 아무것도 출력되지 않고 `SyntaxError: Unexpected token ';'` 오류가 나요."
+  bugMisconception: js.mc.obj-property-semicolon
+  checks:
+    - kind: console
+      id: output
+      description: 영화 제목, 개봉 연도, 평점이 한 줄로 출력되어야 합니다.
+      requirement: 영화 정보 출력
+      expect:
+        lines: ["별의 정원 (2024) - 평점 4.5"]
+misconceptions: [js.mc.obj-property-semicolon]
+hints:
+  - "`SyntaxError`는 실행 전에 문법을 검사하다가 나는 오류예요. 오류가 가리키는 줄과 칸을 보세요."
+  - 객체 리터럴 안에서 속성과 속성 사이를 나누는 기호는 무엇이었나요?
+  - 세미콜론은 문장 전체가 끝나는 곳에만 써요. 객체 안에서 문장이 끝나는 곳이 있나요?
+explanation: |
+  속성 사이의 세미콜론(`;`)을 쉼표(`,`)로 바꾸면 돼요.
+
+  ```js
+  const movie = {
+    title: "별의 정원",
+    year: 2024,
+    rating: 4.5,
+  };
+  ```
+
+  객체 리터럴 안의 속성은 **쉼표**로 나눠요. 세미콜론은 문장을 끝내는 기호라서 객체 안에 나오면 JavaScript가 문법을 이해하지 못하고 `SyntaxError: Unexpected token ';'`를 내요. 문법 오류는 실행 전에 나므로 `console.log`까지 하나도 실행되지 않았어요.
+
+  마지막 속성 `rating: 4.5` 뒤의 쉼표는 있어도 되고 없어도 돼요. 닫는 중괄호 뒤의 `;`는 `const movie = ...;` 문장 전체를 끝내는 것이라 그대로 둬요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

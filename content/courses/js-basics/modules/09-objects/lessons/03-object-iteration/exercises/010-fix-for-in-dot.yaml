@@ -1,0 +1,85 @@
+id: js-basics.objects.object-iteration.fix-for-in-dot
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.obj.for-in, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.5 }
+tags: [object, for-in, dot-bracket, nan, debugging]
+estimatedSeconds: 120
+prompt: |
+  장바구니에 담긴 상품 가격을 모두 더하는 프로그램이에요. 오류는 나지 않는데 합계가 이상해요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  떡볶이 4000원
+  김밥 3000원
+  어묵 2500원
+  합계 9500원
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const cart = { 떡볶이: 4000, 김밥: 3000, 어묵: 2500 };
+          let total = 0;
+
+          for (const name in cart) {
+            console.log(name + " " + cart.name + "원");
+            total += cart.name;
+          }
+
+          console.log("합계 " + total + "원");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const cart = { 떡볶이: 4000, 김밥: 3000, 어묵: 2500 };
+          let total = 0;
+
+          for (const name in cart) {
+            console.log(name + " " + cart[name] + "원");
+            total += cart[name];
+          }
+
+          console.log("합계 " + total + "원");
+  bugDescription: 상품마다 가격이 `undefined원`으로 나오고, 합계는 `NaN원`이 나와요.
+  bugMisconception: js.mc.dot-with-variable-key
+  checks:
+    - kind: console
+      id: output
+      description: 상품별 가격과 합계가 출력되어야 합니다.
+      requirement: 가격과 합계 출력
+      expect:
+        lines: ["떡볶이 4000원", "김밥 3000원", "어묵 2500원", "합계 9500원"]
+      misconceptionIfFail: js.mc.dot-with-variable-key
+    - kind: program
+      id: total
+      description: total에 합계 9500이 들어 있어야 합니다.
+      requirement: 가격과 합계 출력
+      expect:
+        globals: { total: { equals: 9500 } }
+        noError: true
+misconceptions: [js.mc.dot-with-variable-key]
+hints:
+  - 상품 이름은 제대로 나와요. 그렇다면 `name`에는 무엇이 들어 있고, 가격을 읽는 식은 무엇을 찾고 있을까요?
+  - "`cart.name`은 변수 `name`의 값을 쓸까요, 아니면 글자 그대로 `name`이라는 속성을 찾을까요?"
+  - 변수에 든 키로 속성을 읽는 표기법으로 가격을 읽는 두 곳을 모두 바꿔 보세요.
+explanation: |
+  5번 줄과 6번 줄의 `cart.name`을 `cart[name]`으로 고쳐요.
+
+  ```js
+  for (const name in cart) {
+    console.log(name + " " + cart[name] + "원");
+    total += cart[name];
+  }
+  ```
+
+  - `cart.name`은 변수 `name`과 상관없이 이름이 `"name"`인 속성을 찾아요. 그런 속성이 없으니 `undefined`였어요.
+  - `total += undefined`는 `0 + undefined`라서 `NaN`이 되고, 그 뒤로는 무엇을 더해도 `NaN`이에요.
+  - `cart[name]`은 변수에 든 키(`"떡볶이"` 등)로 찾으므로 가격이 제대로 나와요.
+
+  출력 줄만 고치고 6번 줄을 그대로 두면 합계는 여전히 `NaN원`이에요. 같은 실수가 두 군데 있었어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

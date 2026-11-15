@@ -1,0 +1,138 @@
+id: js-basics.objects.destructuring-and-spread.impl-merge-profile
+type: implement_function
+difficulty: 5
+concepts:
+  - { id: js.obj.destructuring, weight: 1 }
+  - { id: js.obj.spread, weight: 0.5 }
+  - { id: js.obj.copy-shallow, weight: 0.5 }
+  - { id: js.fn.default-params, weight: 0.3 }
+tags: [destructuring, rest, spread, nested, immutable, boundary, write-code]
+estimatedSeconds: 900
+prompt: |
+  학습 앱의 프로필 저장 기능이에요. 저장된 프로필 `saved`에 사용자가 바꾼 내용 `changes`를 반영한 **새 프로필**을 돌려주는 함수 `mergeProfile(saved, changes)`를 만드세요.
+
+  프로필은 이런 모양이에요.
+
+  ```js
+  const saved = {
+    nickname: "코코",
+    level: 3,
+    settings: { theme: "light", fontSize: 16 },
+    tags: ["초보"],
+  };
+  ```
+
+  규칙은 이래요.
+
+  - `changes`에 있는 일반 속성(`nickname`, `level` 등)은 그 값으로 바꿔요. 새 속성이면 더해요.
+  - `changes.settings`는 **바뀐 설정만** 들어 있어요. 저장된 설정에 덮어 합쳐요. 예: `{ theme: "dark" }`면 `fontSize`는 그대로예요.
+  - `changes.tags`는 **새로 붙일 태그 목록**이에요. 저장된 태그 뒤에 이어 붙여요.
+  - `changes`를 넘기지 않으면 저장된 내용과 같은 새 프로필을 돌려줘요.
+  - `saved`와 `changes`는 어떤 경우에도 바꾸지 않아요(안쪽의 `settings`, `tags` 포함).
+
+  ```js
+  mergeProfile(saved, { level: 4, settings: { theme: "dark" } });
+  // { nickname: "코코", level: 4, settings: { theme: "dark", fontSize: 16 }, tags: ["초보"] }
+  mergeProfile(saved, { tags: ["반복문"] });
+  // { nickname: "코코", level: 3, settings: { theme: "light", fontSize: 16 }, tags: ["초보", "반복문"] }
+  ```
+
+  `changes`를 매개변수 자리에서 구조 분해해 보세요. `settings`와 `tags`를 꺼내고 나머지는 한데 모을 수 있어요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function mergeProfile(saved, changes) {
+          }
+  entry: mergeProfile
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function mergeProfile(saved, { settings = {}, tags = [], ...rest } = {}) {
+            return {
+              ...saved,
+              ...rest,
+              settings: { ...saved.settings, ...settings },
+              tags: [...saved.tags, ...tags],
+            };
+          }
+  checks:
+    - kind: call
+      id: level-theme
+      args:
+        - { nickname: "코코", level: 3, settings: { theme: "light", fontSize: 16 }, tags: ["초보"] }
+        - { level: 4, settings: { theme: "dark" } }
+      requirement: 설정 덮어 합치기
+      expect: { equals: { nickname: "코코", level: 4, settings: { theme: "dark", fontSize: 16 }, tags: ["초보"] } }
+    - kind: call
+      id: add-tag
+      args:
+        - { nickname: "코코", level: 3, settings: { theme: "light", fontSize: 16 }, tags: ["초보"] }
+        - { tags: ["반복문"] }
+      requirement: 태그 이어 붙이기
+      expect: { equals: { nickname: "코코", level: 3, settings: { theme: "light", fontSize: 16 }, tags: ["초보", "반복문"] } }
+    - kind: call
+      id: no-changes
+      visible: false
+      description: changes를 넘기지 않으면 저장된 내용과 같은 프로필을 돌려줘야 합니다.
+      requirement: changes 없이 부르기
+      args:
+        - { nickname: "라라", level: 7, settings: { theme: "dark", fontSize: 20 }, tags: [] }
+      expect: { equals: { nickname: "라라", level: 7, settings: { theme: "dark", fontSize: 20 }, tags: [] } }
+    - kind: call
+      id: new-object
+      visible: false
+      description: changes가 없어도 저장된 프로필 객체를 그대로 돌려주지 말고 새 객체를 돌려줘야 합니다.
+      requirement: 새 프로필
+      args:
+        - { nickname: "라라", level: 7, settings: { theme: "dark", fontSize: 20 }, tags: [] }
+      expect: { returnsNewReference: true }
+    - kind: call
+      id: everything
+      visible: false
+      description: 일반 속성 바꾸기·새 속성 더하기, 설정 일부 바꾸기, 태그 여러 개 붙이기가 한 번에 반영되어야 합니다.
+      requirement: 설정 덮어 합치기
+      args:
+        - { nickname: "민트", level: 1, settings: { theme: "light", fontSize: 14, sound: true }, tags: ["시작"] }
+        - { nickname: "민트초코", bio: "매일 30분", settings: { fontSize: 18, sound: false }, tags: ["함수", "객체"] }
+      expect: { equals: { nickname: "민트초코", level: 1, bio: "매일 30분", settings: { theme: "light", fontSize: 18, sound: false }, tags: ["시작", "함수", "객체"] } }
+    - kind: call
+      id: no-change
+      visible: false
+      description: saved와 changes, 그 안의 settings와 tags를 바꾸면 안 됩니다.
+      requirement: 원본 지키기
+      args:
+        - { nickname: "코코", level: 3, settings: { theme: "light", fontSize: 16 }, tags: ["초보"] }
+        - { settings: { theme: "dark" }, tags: ["반복문"] }
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.shallow-copy-is-deep
+misconceptions: [js.mc.shallow-copy-is-deep, js.mc.spread-order-irrelevant, js.mc.destructuring-removes-property]
+hints:
+  - "`{ ...saved, ...changes }` 한 줄로 합치면 어떤 속성이 틀려지는지 공개된 첫 예시로 확인해 보세요. `settings`와 `tags`만 따로 처리하면 돼요."
+  - 매개변수 자리에서 `changes`를 풀 때 `settings`와 `tags`를 꺼내고 나머지는 `...`로 모아 보세요. 꺼낸 값이 없을 때와 `changes` 자체가 없을 때 쓸 기본값도 필요해요.
+  - 결과의 `settings`는 저장된 설정과 바뀐 설정을 펼쳐 합친 새 객체, `tags`는 두 목록을 펼쳐 이은 새 배열이에요. 일반 속성은 저장된 프로필과 나머지 묶음을 펼치면 돼요. `push`는 원본 배열을 바꾼다는 점을 기억하세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function mergeProfile(saved, { settings = {}, tags = [], ...rest } = {}) {
+    return {
+      ...saved,
+      ...rest,
+      settings: { ...saved.settings, ...settings },
+      tags: [...saved.tags, ...tags],
+    };
+  }
+  ```
+
+  - **매개변수 구조 분해**: `changes`에서 `settings`와 `tags`를 꺼내고, 남은 일반 속성은 `...rest`로 새 객체에 모아요. 없을 때를 위해 `settings = {}`, `tags = []`를 주고, `changes`를 아예 넘기지 않는 경우를 위해 전체에 `= {}`를 줘요. 이 기본값이 없으면 `mergeProfile(saved)`에서 `undefined`를 풀려고 해서 `TypeError`가 나요(첫 항목에 기본값이 있으면 Chrome은 `Cannot read properties of undefined (reading 'settings')`라고 알려 줘요).
+  - **순서**: `...saved` 다음에 `...rest`를 펼쳐서 바꾼 값이 이기게 해요. `settings`와 `tags`는 맨 뒤에 직접 써서, `...saved`가 담은 원래 값을 덮어써요.
+  - **한 단계 더 합치기**: `{ ...saved, ...changes }`만 쓰면 `settings`가 `{ theme: "dark" }`로 통째로 바뀌어 `fontSize`가 사라져요. 안쪽 객체도 `{ ...saved.settings, ...settings }`로 펼쳐 합쳐야 해요.
+  - **원본 지키기**: `saved.tags.push(...)`나 `saved.settings.theme = ...`로 고치면, 얕은 복사로 만든 결과도 같은 안쪽 객체를 쓰므로 `saved`까지 바뀌어요. 안쪽도 새 객체·새 배열로 만들어야 해요.
+  - **새 객체**: `changes`가 없을 때 `return saved;`로 끝내면 내용은 같지만 같은 객체라서, 나중에 결과를 고치면 저장본까지 바뀌어요. 늘 새 객체를 돌려줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

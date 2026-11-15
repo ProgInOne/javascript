@@ -1,0 +1,43 @@
+id: js-basics.objects.destructuring-and-spread.mcq-array-by-position
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.destructuring, weight: 1 }
+tags: [destructuring, array, position]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 실행하면 무엇이 출력되나요?
+code: |
+  const item = ["떡볶이", 4000];
+  const [price, name] = item;
+  console.log(price);
+spec:
+  options:
+    - id: a
+      text: "`떡볶이`"
+    - id: b
+      text: "`4000`"
+      misconception: js.mc.array-destructuring-by-name
+      rationale: 배열 구조 분해는 변수 이름을 보지 않고 위치대로 값을 넣어요. 첫 변수 price에는 0번 값이 들어가요.
+    - id: c
+      text: "`undefined`"
+      rationale: item에 0번 값이 있으므로 price는 비어 있지 않아요.
+    - id: d
+      text: "`[\"떡볶이\", 4000]`"
+      rationale: price에는 배열 전체가 아니라 배열의 한 칸이 들어가요.
+  correct: a
+misconceptions: [js.mc.array-destructuring-by-name]
+hints:
+  - 배열에는 이름표가 있나요, 순서가 있나요?
+  - "`[price, name]`의 첫 번째 변수에는 배열의 몇 번 값이 들어갈까요?"
+  - 변수 이름이 `price`라고 해서 숫자를 골라 주지는 않아요.
+explanation: |
+  `떡볶이`가 출력돼요.
+
+  배열 구조 분해는 **위치대로** 값을 넣어요. 첫 변수 `price`에는 0번 값 `"떡볶이"`, 두 번째 변수 `name`에는 1번 값 `4000`이 들어가요. 변수 이름은 아무 역할도 하지 않아요.
+
+  `4000`을 골랐다면 이름에 맞는 값이 들어간다고 본 거예요. 의도대로 쓰려면 배열의 순서에 맞게 `const [name, price] = item;`이라고 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

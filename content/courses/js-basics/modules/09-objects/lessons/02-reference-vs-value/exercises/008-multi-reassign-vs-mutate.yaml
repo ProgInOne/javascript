@@ -1,0 +1,63 @@
+id: js-basics.objects.reference-vs-value.multi-reassign-vs-mutate
+type: mcq_multi
+difficulty: 4
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+  - { id: js.obj.equality, weight: 0.5 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [reference, parameter, reassign, equality]
+estimatedSeconds: 150
+prompt: |
+  아래 코드를 끝까지 실행한 뒤, **맞는 설명을 모두** 고르세요.
+code: |
+  function update(a, b) {
+    a.count = 10;
+    b = { count: 20 };
+    b.count = 30;
+    return b;
+  }
+
+  const x = { count: 1 };
+  const y = { count: 2 };
+  const z = update(x, y);
+spec:
+  options:
+    - id: a
+      text: "`x.count`는 `10`이다"
+      missedMisconception: js.mc.object-param-copied
+    - id: b
+      text: "`y.count`는 `30`이다"
+      misconception: js.mc.param-reassign-replaces-object
+      rationale: 3번 줄에서 b는 새 객체를 가리키게 돼요. 4번 줄은 그 새 객체를 바꾸므로 y가 가리키는 객체는 그대로예요.
+    - id: c
+      text: "`y.count`는 `2`이다"
+      missedMisconception: js.mc.param-reassign-replaces-object
+    - id: d
+      text: "`z.count`는 `30`이다"
+    - id: e
+      text: "`z === y`는 `true`이다"
+      misconception: js.mc.param-reassign-replaces-object
+      rationale: z는 3번 줄에서 만든 새 객체이고, y는 원래 객체를 가리켜요. 서로 다른 객체라서 false예요.
+    - id: f
+      text: "`y`가 `const`라서 3번 줄에서 `TypeError`가 난다"
+      rationale: 3번 줄이 대입하는 것은 매개변수 b예요. 매개변수는 const가 아니라서 다시 대입할 수 있고, 바깥 y에는 아무것도 대입하지 않아요.
+  correct: [a, c, d]
+misconceptions: [js.mc.object-param-copied, js.mc.param-reassign-replaces-object]
+hints:
+  - 10번 줄에서 `a`와 `b`는 각각 어떤 객체를 가리키나요?
+  - 2번 줄은 속성 바꾸기, 3번 줄은 매개변수에 새 객체 대입하기예요. 각각 바깥 변수에 영향을 주나요?
+  - 함수가 돌려준 객체가 3번 줄에서 새로 만든 객체라는 점을 기억하고, `z`와 `y`가 같은 객체인지 따져 보세요.
+explanation: |
+  맞는 설명은 "`x.count`는 `10`이다", "`y.count`는 `2`이다", "`z.count`는 `30`이다"예요.
+
+  - **2번 줄**: `a`는 `x`와 같은 객체를 가리켜요. 속성을 바꾸니 `x.count`가 10이 돼요.
+  - **3번 줄**: 매개변수 `b`에 새 객체를 대입해요. `b`만 새 객체를 가리키고, `y`는 원래 객체 `{ count: 2 }`를 그대로 가리켜요.
+  - **4~5번 줄**: 새 객체의 `count`를 30으로 바꾸고 그 객체를 돌려줘요. 그래서 `z.count`는 30이에요.
+  - `z`와 `y`는 서로 다른 객체라서 `z === y`는 `false`예요.
+  - 3번 줄은 매개변수 `b`에 대입하는 것이라 오류가 나지 않아요. 바깥 `y`가 `const`인 것과는 상관없어요.
+
+  "`y.count`는 `30`이다"나 "`z === y`는 `true`이다"를 골랐다면 매개변수에 새 객체를 대입하면 바깥 변수도 그 객체를 가리킨다고 본 거예요. 속성을 바꾸는 것(`a.count = 10`)만 바깥 객체에 영향을 줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

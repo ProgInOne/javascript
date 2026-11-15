@@ -1,0 +1,65 @@
+id: js-basics.objects.object-basics.fill-method-call
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.obj.methods-intro, weight: 1 }
+  - { id: js.fn.call, weight: 0.3 }
+tags: [object, method, this, fill]
+estimatedSeconds: 100
+prompt: |
+  `timer` 객체의 `tick` 메서드는 부를 때마다 자기 `seconds`를 1 늘려요. 빈칸을 채워서 `tick`을 세 번 부른 뒤 `3`이 출력되게 하세요.
+spec:
+  mode: code
+  lang: js
+  template: |
+    const timer = {
+      seconds: 0,
+      tick() {
+        {{blank:inc}};
+      },
+    };
+
+    timer.tick();
+    timer.tick();
+    {{blank:call}};
+    console.log(timer.seconds);
+  blanks:
+    - id: inc
+      accept: ["this.seconds++", "this.seconds += 1", "this.seconds = this.seconds + 1", "timer.seconds++"]
+      width: 22
+      misconceptionMap:
+        "seconds++": js.mc.method-reads-props-by-name
+        "seconds += 1": js.mc.method-reads-props-by-name
+    - id: call
+      accept: ["timer.tick()"]
+      width: 14
+      misconceptionMap:
+        "timer.tick": js.mc.call-without-parens
+        "tick()": js.mc.method-reads-props-by-name
+  checks:
+    - kind: console
+      id: output
+      description: tick을 세 번 부른 뒤 3이 출력되어야 합니다.
+      requirement: 세 번 늘리기
+      expect:
+        lines: ["3"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 세 번 늘리기
+      expect:
+        noError: true
+misconceptions: [js.mc.method-reads-props-by-name, js.mc.call-without-parens]
+hints:
+  - 첫 번째 빈칸은 메서드 안에서 자기 객체의 속성을 바꾸는 코드, 두 번째 빈칸은 메서드를 한 번 더 부르는 코드예요.
+  - 메서드 안에서 `seconds`라고만 쓰면 속성이 아니라 변수를 찾아요. 자기 객체를 가리키는 말이 필요해요.
+  - 위의 두 줄이 메서드를 어떻게 부르는지 보세요. 괄호가 빠지면 부른 게 아니에요.
+explanation: |
+  예시 답은 `this.seconds++`와 `timer.tick()`이에요.
+
+  - '첫 번째 빈칸: `timer.tick()`으로 부르면 `tick` 안의 `this`는 `timer`예요. `this.seconds++`는 `timer.seconds`를 1 늘려요. `this.seconds += 1`처럼 써도 맞아요. `seconds++`만 쓰면 변수 `seconds`를 찾다가 `ReferenceError`가 나요.'
+  - '두 번째 빈칸: 세 번째 호출이에요. `timer.tick`처럼 괄호를 빼면 함수를 가리키기만 하고 실행하지 않아서 `2`가 출력돼요. 그냥 `tick()`이라고 쓰면 `tick`이라는 변수(함수)가 없어서 `ReferenceError`예요. 메서드는 `객체.메서드()`로 불러요.'
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

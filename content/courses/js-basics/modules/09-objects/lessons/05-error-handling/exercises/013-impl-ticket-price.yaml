@@ -1,0 +1,126 @@
+id: js-basics.objects.error-handling.impl-ticket-price
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.errors.throw, weight: 1 }
+  - { id: js.control.else-if, weight: 0.3 }
+  - { id: js.types.typeof, weight: 0.3 }
+tags: [throw, function, validation, boundary, write-code]
+estimatedSeconds: 300
+prompt: |
+  영화관 입장료를 돌려주는 함수 `ticketPrice(age)`를 만드세요.
+
+  - 8세 미만은 `0`원, 8세 이상 19세 미만은 `7000`원, 19세 이상은 `12000`원이에요.
+  - `age`가 숫자가 아니거나 0보다 작으면 계산할 수 없어요. 이때는 값을 돌려주지 말고 메시지가 `나이가 올바르지 않아요`인 `Error`를 던지세요.
+
+  ```js
+  ticketPrice(30);   // 12000
+  ticketPrice(10);   // 7000
+  ticketPrice(-5);   // Error: 나이가 올바르지 않아요 를 던짐
+  ```
+
+  채점은 위 예시 말고도 경계의 나이와 잘못된 입력을 더 넣어 봐요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function ticketPrice(age) {
+          }
+  entry: ticketPrice
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function ticketPrice(age) {
+            if (typeof age !== "number" || age < 0) {
+              throw new Error("나이가 올바르지 않아요");
+            }
+            if (age < 8) {
+              return 0;
+            } else if (age < 19) {
+              return 7000;
+            }
+            return 12000;
+          }
+  checks:
+    - kind: call
+      id: adult
+      args: [30]
+      requirement: 나이별 입장료
+      expect: { equals: 12000 }
+    - kind: call
+      id: teen
+      args: [10]
+      requirement: 나이별 입장료
+      expect: { equals: 7000 }
+    - kind: call
+      id: negative
+      args: [-5]
+      requirement: 잘못된 나이는 오류
+      expect: { throws: { name: Error, messageIncludes: "나이가 올바르지 않아요" } }
+    - kind: call
+      id: age-7
+      visible: false
+      description: 7세는 무료(0원)여야 합니다.
+      requirement: 나이별 입장료
+      args: [7]
+      expect: { equals: 0 }
+    - kind: call
+      id: age-8
+      visible: false
+      description: 8세는 7000원이어야 합니다(8세 이상부터).
+      requirement: 나이별 입장료
+      args: [8]
+      expect: { equals: 7000 }
+    - kind: call
+      id: age-19
+      visible: false
+      description: 19세는 12000원이어야 합니다(19세 이상부터).
+      requirement: 나이별 입장료
+      args: [19]
+      expect: { equals: 12000 }
+    - kind: call
+      id: age-0
+      visible: false
+      description: 0세는 올바른 나이이므로 오류 없이 0원이어야 합니다.
+      requirement: 잘못된 나이는 오류
+      args: [0]
+      expect: { equals: 0 }
+    - kind: call
+      id: text-age
+      visible: false
+      description: 나이를 문자열("20")로 넘기면 숫자가 아니므로 오류를 던져야 합니다.
+      requirement: 잘못된 나이는 오류
+      args: ["20"]
+      expect: { throws: { name: Error, messageIncludes: "나이가 올바르지 않아요" } }
+misconceptions: [js.mc.throw-just-logs]
+hints:
+  - 잘못된 입력부터 먼저 걸러 내면, 아래의 요금 계산은 올바른 나이만 생각하면 돼요.
+  - 숫자인지는 `typeof`로 알 수 있어요(모듈 2). 잘못된 입력이면 `return`이 아니라 오류를 던져야 해요.
+  - 요금 구간은 "미만"과 "이상"의 경계를 조심하세요. 0세는 올바른 나이이고, 8세와 19세는 각각 어느 구간에 들어가는지 지문에서 확인해 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function ticketPrice(age) {
+    if (typeof age !== "number" || age < 0) {
+      throw new Error("나이가 올바르지 않아요");
+    }
+    if (age < 8) {
+      return 0;
+    } else if (age < 19) {
+      return 7000;
+    }
+    return 12000;
+  }
+  ```
+
+  - **검사 먼저**: 잘못된 입력을 맨 위에서 `throw`로 걸러 내면 함수가 거기서 끝나요. 아래 계산은 올바른 나이만 다뤄요.
+  - **던지기와 돌려주기**: `return "나이가 올바르지 않아요"`처럼 문장을 돌려주면, 부른 쪽은 그것을 요금으로 착각해 계산을 이어 갈 수 있어요. 오류를 던지면 부른 쪽은 반드시 알아채요.
+  - **문자열 나이**: `"20"`은 숫자가 아니에요. `typeof` 검사가 없으면 `"20" < 0`이 거짓이고 `"20" < 19`도 숫자로 바뀌어 비교되어 12000이 돌아와요. 숨긴 검사에서 틀려요.
+  - **경계**: 8세는 7000원, 19세는 12000원, 0세는 0원이에요. `age <= 0`으로 쓰면 0세에서 오류를 던져 틀려요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

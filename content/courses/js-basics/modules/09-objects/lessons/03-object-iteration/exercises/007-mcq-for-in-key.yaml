@@ -1,0 +1,47 @@
+id: js-basics.objects.object-iteration.mcq-for-in-key
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.obj.for-in, weight: 1 }
+tags: [object, for-in]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 실행하면 콘솔에 무엇이 출력되나요?
+code: |
+  const seats = { A: 3, B: 0, C: 5 };
+  for (const x in seats) {
+    console.log(x);
+  }
+spec:
+  options:
+    - id: a
+      text: "`A`, `B`, `C`가 한 줄씩"
+    - id: b
+      text: "`3`, `0`, `5`가 한 줄씩"
+      misconception: js.mc.for-in-gives-values
+      rationale: for...in의 변수에는 값이 아니라 키가 들어와요.
+    - id: c
+      text: "`A: 3`, `B: 0`, `C: 5`가 한 줄씩"
+      rationale: x에는 키 하나만 들어와요. 키와 값을 함께 출력하려면 seats[x]도 함께 써야 해요.
+    - id: d
+      text: "`TypeError: seats is not iterable`"
+      misconception: js.mc.for-of-object
+      rationale: 객체를 돌 수 없는 것은 for...of예요. for...in은 객체의 키를 돌기 위한 반복이에요.
+  correct: a
+misconceptions: [js.mc.for-in-gives-values]
+hints:
+  - "`for...in`은 객체의 무엇을 하나씩 꺼내 주는 반복이었나요?"
+  - 이 반복에서 값을 읽을 때는 `seats[x]`처럼 썼어요. 그렇다면 `x` 자체는 무엇일까요?
+  - "`in`이라는 단어를 \"객체 안에 있는 이름들\"로 읽어 보세요."
+explanation: |
+  `A`, `B`, `C`가 한 줄씩 출력돼요.
+
+  `for (const x in seats)`의 `x`에는 키(속성 이름)가 하나씩 들어와요. 값을 출력하려면 `console.log(seats[x]);`처럼 대괄호로 읽어야 해요.
+
+  - 값 `3`, `0`, `5`가 나온다고 생각했다면 `for...in`이 값을 준다고 본 거예요. 값만 돌고 싶으면 `Object.values(seats)`를 `for...of`로 돌아요.
+  - `A: 3`처럼 나오려면 `console.log(x + ": " + seats[x]);`라고 써야 해요.
+  - `is not iterable` 오류는 객체를 `for...of`로 돌 때 나요. `for...in`은 객체에 쓸 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

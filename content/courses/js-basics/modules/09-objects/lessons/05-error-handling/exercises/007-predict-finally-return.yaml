@@ -1,0 +1,62 @@
+id: js-basics.objects.error-handling.predict-finally-return
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.errors.finally, weight: 1 }
+  - { id: js.errors.throw, weight: 0.3 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [finally, return, trace]
+estimatedSeconds: 150
+prompt: |
+  쿠폰을 적용하는 함수를 두 번 불러요. 실행하면 콘솔에 무엇이 출력될까요? 출력되는 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    function applyCoupon(price, code) {
+      try {
+        if (code !== "WELCOME") {
+          throw new Error("없는 쿠폰");
+        }
+        return price - 1000;
+      } catch (err) {
+        console.log("쿠폰 실패: " + err.message);
+        return price;
+      } finally {
+        console.log("쿠폰 확인 끝");
+      }
+    }
+
+    console.log(applyCoupon(5000, "WELCOME"));
+    console.log(applyCoupon(5000, "HELLO"));
+  answerKind: console
+  misconceptionByAnswer:
+    "4000\n쿠폰 실패: 없는 쿠폰\n쿠폰 확인 끝\n5000": js.mc.finally-only-on-error
+    "4000\n쿠폰 실패: 없는 쿠폰\n5000\n쿠폰 확인 끝": js.mc.finally-only-on-error
+    "4000\n쿠폰 확인 끝\n쿠폰 실패: 없는 쿠폰\n5000\n쿠폰 확인 끝": js.mc.finally-only-on-error
+misconceptions: [js.mc.finally-only-on-error]
+hints:
+  - 첫 호출은 오류가 나나요? `return price - 1000;`을 만난 뒤 무엇이 실행될지 생각해 보세요.
+  - "`finally`는 `return`이 있어도 함수가 끝나기 직전에 실행돼요. 15번 줄의 `console.log`는 함수가 완전히 끝난 뒤에 반환값을 출력해요."
+  - 두 번째 호출에서는 4번 줄에서 던진 오류를 `catch`가 받아요. `catch` 안의 출력, `finally`의 출력, 반환값 출력의 순서를 차례로 적어 보세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  쿠폰 확인 끝
+  4000
+  쿠폰 실패: 없는 쿠폰
+  쿠폰 확인 끝
+  5000
+  ```
+
+  | 호출 | 실행 순서 |
+  |---|---|
+  | `applyCoupon(5000, "WELCOME")` | 오류 없음 → 6번 줄 `return 4000` 준비 → 함수가 끝나기 전에 `finally` (`쿠폰 확인 끝`) → 15번 줄이 `4000` 출력 |
+  | `applyCoupon(5000, "HELLO")` | 4번 줄에서 던짐 → `catch` (`쿠폰 실패: 없는 쿠폰`) → 9번 줄 `return 5000` 준비 → `finally` (`쿠폰 확인 끝`) → 16번 줄이 `5000` 출력 |
+
+  - 첫 호출에서 `쿠폰 확인 끝`을 뺐다면 `finally`가 오류일 때만 실행된다고 본 거예요. 오류가 없어도, `return`이 있어도 `finally`는 실행돼요.
+  - 반환값이 `finally`보다 먼저 나온다고 답했다면 순서를 다시 보세요. 반환값을 출력하는 `console.log`는 함수 **바깥**에 있어서, 함수가 `finally`까지 모두 마친 뒤에야 실행돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

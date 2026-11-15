@@ -1,0 +1,43 @@
+id: js-basics.objects.destructuring-and-spread.predict-skip-rest
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.arr.destructuring, weight: 1 }
+tags: [destructuring, array, rest, skip]
+estimatedSeconds: 100
+prompt: |
+  세 과목 점수를 배열 구조 분해로 꺼내요. 실행하면 콘솔에 무엇이 출력될까요? 세 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const scores = [90, 75, 88];
+
+    const [math, english, science, art] = scores;
+    console.log(math, art);
+
+    const [top, ...others] = scores;
+    console.log(top, others, others.length);
+
+    const [, , last] = scores;
+    console.log(last);
+  answerKind: console
+hints:
+  - "`scores`에는 몇 칸이 있나요? 3번 줄은 변수를 몇 개 만들려고 하나요?"
+  - "`...others`에는 앞에서 꺼내지 않은 나머지가 모두 모여요. 모인 결과는 어떤 종류의 값인가요?"
+  - 쉼표 앞을 비우면 그 칸을 건너뛰어요. 9번 줄은 몇 칸을 건너뛰나요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  90 undefined
+  90 [75, 88] 2
+  88
+  ```
+
+  - 3번 줄: 배열은 3칸인데 변수는 4개예요. 0~2번이 `math`, `english`, `science`에 들어가고, 3번 칸은 없으니 `art`는 `undefined`예요. 오류는 나지 않아요.
+  - 6번 줄: `top`에 0번 값 90, `others`에는 남은 1·2번 값을 담은 **새 배열** `[75, 88]`이 들어가요. 길이는 2예요.
+  - 9번 줄: 쉼표 두 개로 0번과 1번을 건너뛰고 2번 값 88을 `last`에 넣어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

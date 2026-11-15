@@ -1,0 +1,67 @@
+id: js-basics.objects.reference-vs-value.parsons-backup-clone
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.obj.copy-shallow, weight: 1 }
+  - { id: js.obj.reference, weight: 0.3 }
+tags: [copy, deep, structuredClone, parsons]
+estimatedSeconds: 150
+prompt: |
+  알람 설정을 바꾸기 전에 **백업**을 만들어 두고, 원래 설정을 바꾼 뒤 두 설정을 출력하는 프로그램이에요. 백업은 원래 설정을 어떻게 바꿔도 처음 그대로 남아야 해요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  준호 9
+  민지 7
+  ```
+spec:
+  lines:
+    - { id: l1, code: 'const settings = { user: "민지", alarm: { hour: 7, on: true } };' }
+    - { id: l2, code: "const backup = structuredClone(settings);" }
+    - { id: l3, code: 'settings.user = "준호";' }
+    - { id: l4, code: "settings.alarm.hour = 9;" }
+    - { id: l5, code: "console.log(settings.user, settings.alarm.hour);" }
+    - { id: l6, code: "console.log(backup.user, backup.alarm.hour);" }
+  distractors:
+    - { id: d1, code: "const backup = { ...settings };", replaces: l2, misconception: js.mc.shallow-copy-is-deep }
+    - { id: d2, code: "const backup = settings;", replaces: l2, misconception: js.mc.assign-copies-object }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 바뀐 설정(준호 9)과 처음 그대로인 백업(민지 7)이 차례로 출력되어야 합니다.
+      requirement: 백업 지키기
+      expect:
+        lines: ["준호 9", "민지 7"]
+    - kind: program
+      id: backup-kept
+      description: 프로그램이 끝난 뒤 backup은 처음 설정 그대로여야 합니다.
+      requirement: 백업 지키기
+      expect:
+        globals:
+          backup: { equals: { user: "민지", alarm: { hour: 7, on: true } } }
+        noError: true
+misconceptions: [js.mc.shallow-copy-is-deep, js.mc.assign-copies-object]
+hints:
+  - 백업은 원래 설정을 바꾸기 **전**에 만들어야 해요. 출력은 마지막에 해요.
+  - 백업을 만드는 줄이 세 가지 보여요. 그중 원래 설정과 같은 객체를 가리키게 되는 것은 무엇인가요?
+  - "`alarm`은 객체 안의 객체예요. 바깥 칸만 새로 만드는 복사로는 `alarm.hour`를 바꿀 때 백업도 함께 바뀌어요."
+explanation: |
+  정답 순서의 예예요.
+
+  ```js
+  const settings = { user: "민지", alarm: { hour: 7, on: true } };
+  const backup = structuredClone(settings);
+  settings.user = "준호";
+  settings.alarm.hour = 9;
+  console.log(settings.user, settings.alarm.hour);
+  console.log(backup.user, backup.alarm.hour);
+  ```
+
+  - `structuredClone`은 안쪽 `alarm` 객체까지 새로 만드는 깊은 복사예요. 그래서 원래 설정을 바꿔도 백업은 `민지 7` 그대로예요.
+  - `const backup = { ...settings };`는 얕은 복사예요. `user`는 지켜지지만 `alarm`은 같은 객체를 함께 써서 백업이 `민지 9`가 돼요.
+  - `const backup = settings;`는 참조 복사라서 백업도 `준호 9`가 돼요.
+  - 설정을 바꾸는 두 줄의 순서는 바꿔도 정답이에요. 백업을 만드는 줄은 반드시 바꾸는 줄보다 앞에 있어야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

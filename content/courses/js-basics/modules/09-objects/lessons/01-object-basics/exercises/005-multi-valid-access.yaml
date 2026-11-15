@@ -1,0 +1,57 @@
+id: js-basics.objects.object-basics.multi-valid-access
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.obj.dot-bracket, weight: 1 }
+  - { id: js.obj.literal, weight: 0.3 }
+tags: [object, dot, bracket, quoted-key]
+estimatedSeconds: 110
+prompt: |
+  아래 코드의 맨 아래에서 `console.log(?)`의 `?` 자리에 넣었을 때 **오류 없이 `"서울"`을 출력하는** 식을 모두 고르세요.
+code: |
+  const shop = {
+    name: "코코분식",
+    "home-city": "서울",
+    city: "부산",
+  };
+  const field = "home-city";
+  // console.log(?)
+spec:
+  options:
+    - id: a
+      text: '`shop["home-city"]`'
+    - id: b
+      text: "`shop[field]`"
+    - id: c
+      text: "`shop.home-city`"
+      rationale: 점 표기법에서는 하이픈을 빼기 연산자로 읽어요. shop.home - city를 계산하게 되어, 변수 city가 없으니 ReferenceError가 나요.
+    - id: d
+      text: "`shop.field`"
+      misconception: js.mc.dot-with-variable-key
+      rationale: 점 표기법은 변수 field를 보지 않아요. 이름이 field인 속성이 없으니 undefined예요.
+    - id: e
+      text: "`shop[home-city]`"
+      misconception: js.mc.bracket-key-without-quotes
+      rationale: 대괄호 안은 식이라 따옴표 없는 home과 city를 변수로 읽어요. 변수 home이 없어서 ReferenceError가 나요.
+    - id: f
+      text: "`shop.city`"
+      rationale: city 속성의 값은 "부산"이에요.
+  correct: [a, b]
+misconceptions: [js.mc.dot-with-variable-key, js.mc.bracket-key-without-quotes]
+hints:
+  - 키에 하이픈이 들어 있으면 점 표기법으로 쓸 수 있을까요? `-`는 계산에서 무슨 뜻이었나요?
+  - 대괄호 안은 식이에요. 따옴표가 있으면 문자열, 없으면 변수 이름이에요.
+  - 선택지마다 "찾는 이름이 무엇으로 정해지는지"를 적어 보세요. 그 이름이 `"home-city"`가 되는 것만 `"서울"`을 출력해요.
+explanation: |
+  정답은 `shop["home-city"]`와 `shop[field]`예요. 둘 다 찾는 이름이 `"home-city"`가 돼요.
+
+  - '`shop["home-city"]`: 대괄호 안의 문자열을 그대로 이름으로 써요.'
+  - '`shop[field]`: 변수 `field`를 계산해 `"home-city"`를 얻어요.'
+  - '`shop.home-city`: 점 표기법은 하이픈을 읽지 못해서 `shop.home - city`로 해석돼요. `shop.home`은 `undefined`이고, 변수 `city`는 없으니 `ReferenceError: city is not defined`가 나요. 하이픈이나 공백이 든 키는 대괄호로만 읽을 수 있어요.'
+  - '`shop.field`: 이름이 `field`인 속성을 찾아서 `undefined`예요.'
+  - '`shop[home-city]`: 따옴표가 없어서 변수 `home`과 `city`의 뺄셈으로 읽혀요. 변수 `home`이 없어 `ReferenceError`예요.'
+  - '`shop.city`: 다른 속성이라 `"부산"`이에요.'
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

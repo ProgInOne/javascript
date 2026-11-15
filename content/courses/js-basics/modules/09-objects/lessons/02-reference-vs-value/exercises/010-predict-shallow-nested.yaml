@@ -1,0 +1,61 @@
+id: js-basics.objects.reference-vs-value.predict-shallow-nested
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.obj.copy-shallow, weight: 1 }
+  - { id: js.obj.reference, weight: 0.5 }
+  - { id: js.obj.equality, weight: 0.5 }
+tags: [copy, shallow, reference, equality, trace]
+estimatedSeconds: 200
+prompt: |
+  기본 세트를 복사해서 콤보 세트를 만드는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 세 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const base = { name: "기본 세트", items: ["버거"], price: 5000 };
+    const combo = { ...base };
+
+    combo.name = "콤보 세트";
+    combo.price += 2000;
+    combo.items.push("감자튀김");
+
+    const same = combo;
+    same.items.push("콜라");
+
+    console.log(base.name, base.price, base.items.length);
+    console.log(combo.items.length, same.price);
+    console.log(base === combo, combo === same, base.items === combo.items);
+  answerKind: console
+  misconceptionByAnswer:
+    "기본 세트 5000 1\n3 7000\nfalse true false": js.mc.shallow-copy-is-deep
+    "기본 세트 5000 3\n3 7000\ntrue true true": js.mc.copy-equals-original
+hints:
+  - 이 프로그램에서 새 객체·새 배열이 만들어지는 곳을 모두 찾아보세요. `{ }`, `[ ]`, `{ ...base }`가 몇 번 나오나요?
+  - "`base`, `combo`, `same`이 가리키는 객체와, 각 객체의 `items`가 가리키는 배열을 화살표로 그려 보세요."
+  - 바뀌는 것이 각 객체만의 칸(`name`, `price`)인지, 함께 쓰는 배열인지 줄마다 표시한 뒤 마지막 줄의 세 비교를 그림에서 확인하세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  기본 세트 5000 3
+  3 7000
+  false true true
+  ```
+
+  ```text
+  base ─────────▶ { name: "기본 세트", price: 5000, items: ─┐ }
+                                                          ├──▶ ["버거", "감자튀김", "콜라"]
+  combo ─┬──────▶ { name: "콤보 세트", price: 7000, items: ─┘ }
+  same  ─┘
+  ```
+
+  - `{ ...base }`는 새 객체를 만드는 얕은 복사예요. `name`, `price`를 바꿔도 `base`는 그대로라서 `기본 세트 5000`이에요.
+  - `items`는 참조만 복사되어 `base`와 `combo`가 같은 배열을 함께 써요. 6번 줄과 9번 줄의 `push`가 모두 그 배열에 들어가서 길이는 3이에요.
+  - `same = combo`는 참조 복사라서 `same`과 `combo`는 같은 객체예요. `same.price`는 7000이에요.
+  - 비교: `base`와 `combo`는 다른 객체(`false`), `combo`와 `same`은 같은 객체(`true`), 두 `items`는 같은 배열(`true`)이에요.
+
+  첫 줄의 배열 길이를 1이라고 썼다면 얕은 복사가 안쪽 배열까지 새로 만든다고 본 거예요. 셋째 줄 첫 값을 `true`라고 썼다면 복사본이 원본과 같은 객체라고 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

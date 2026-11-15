@@ -1,0 +1,76 @@
+id: js-basics.objects.reference-vs-value.impl-same-seat
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.obj.equality, weight: 1 }
+  - { id: js.ops.logical-and-or-not, weight: 0.3 }
+tags: [equality, function, write-code]
+estimatedSeconds: 180
+prompt: |
+  영화관 좌석은 `{ row: "C", num: 7 }`처럼 줄(`row`)과 번호(`num`)로 나타내요. 두 좌석이 **같은 자리**인지 알려 주는 함수 `isSameSeat(a, b)`를 만드세요. 줄과 번호가 모두 같으면 `true`, 아니면 `false`를 돌려줘요.
+
+  ```text
+  isSameSeat({ row: "C", num: 7 }, { row: "C", num: 7 }) → true
+  isSameSeat({ row: "C", num: 7 }, { row: "C", num: 8 }) → false
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function isSameSeat(a, b) {
+          }
+  entry: isSameSeat
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function isSameSeat(a, b) {
+            return a.row === b.row && a.num === b.num;
+          }
+  checks:
+    - kind: call
+      id: same-content
+      args: [{ row: "C", num: 7 }, { row: "C", num: 7 }]
+      requirement: 같은 자리 알아보기
+      expect: { equals: true }
+      misconceptionIfFail: js.mc.same-content-objects-equal
+    - kind: call
+      id: different-num
+      args: [{ row: "C", num: 7 }, { row: "C", num: 8 }]
+      requirement: 다른 자리 구별하기
+      expect: { equals: false }
+    - kind: call
+      id: different-row
+      visible: false
+      description: 번호가 같아도 줄이 다르면 다른 자리입니다.
+      requirement: 다른 자리 구별하기
+      args: [{ row: "D", num: 7 }, { row: "C", num: 7 }]
+      expect: { equals: false }
+    - kind: call
+      id: same-content-2
+      visible: false
+      description: 다른 좌석 객체 두 개라도 줄과 번호가 같으면 true여야 합니다.
+      requirement: 같은 자리 알아보기
+      args: [{ row: "A", num: 1 }, { row: "A", num: 1 }]
+      expect: { equals: true }
+misconceptions: [js.mc.same-content-objects-equal]
+hints:
+  - "`a === b`로 비교하면 첫 번째 예시는 어떤 결과가 나올까요? 두 좌석은 같은 객체인가요?"
+  - 같은 자리인지는 객체가 아니라 그 안의 값(줄, 번호)으로 정해져요.
+  - 줄끼리, 번호끼리 각각 비교한 두 결과가 **모두** 참이어야 해요. 두 조건을 함께 묶는 논리 연산자를 떠올려 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function isSameSeat(a, b) {
+    return a.row === b.row && a.num === b.num;
+  }
+  ```
+
+  - `return a === b;`로 쓰면 따로 만든 두 좌석 객체는 내용이 같아도 같은 객체가 아니라서 항상 `false`예요. 첫 번째 검사에서 실패해요.
+  - 속성 `row`와 `num`은 원시 값(문자열, 숫자)이라 `===`가 값을 비교해요. 두 비교를 `&&`로 묶어 둘 다 같을 때만 `true`가 되게 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

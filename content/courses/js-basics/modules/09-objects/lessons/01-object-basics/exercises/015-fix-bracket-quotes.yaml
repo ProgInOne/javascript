@@ -1,0 +1,75 @@
+id: js-basics.objects.object-basics.fix-bracket-quotes
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.obj.dot-bracket, weight: 1 }
+tags: [object, bracket, quoted-key, reference-error, debugging]
+estimatedSeconds: 110
+prompt: |
+  가게 정보 객체에서 영업시간과 배달 가능 여부를 출력하는 프로그램이에요. 실행하면 오류가 나요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  영업시간: 10:00-21:00
+  배달 가능: true
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const shop = {
+            name: "코코분식",
+            "open-hours": "10:00-21:00",
+            "can deliver": true,
+          };
+
+          console.log("영업시간: " + shop[open-hours]);
+          console.log("배달 가능: " + shop[can deliver]);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const shop = {
+            name: "코코분식",
+            "open-hours": "10:00-21:00",
+            "can deliver": true,
+          };
+
+          console.log("영업시간: " + shop["open-hours"]);
+          console.log("배달 가능: " + shop["can deliver"]);
+  bugDescription: 실행하면 아무것도 출력되지 않고 오류가 나요.
+  bugMisconception: js.mc.bracket-key-without-quotes
+  checks:
+    - kind: console
+      id: output
+      description: 영업시간과 배달 가능 여부가 차례로 출력되어야 합니다.
+      requirement: 가게 정보 출력
+      expect:
+        lines: ["영업시간: 10:00-21:00", "배달 가능: true"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 가게 정보 출력
+      expect:
+        noError: true
+      misconceptionIfFail: js.mc.bracket-key-without-quotes
+misconceptions: [js.mc.bracket-key-without-quotes]
+hints:
+  - 오류 메시지의 종류와 줄 번호를 읽어 보세요. 첫 오류를 고치면 다음 줄에서 또 다른 오류가 나올 수도 있어요.
+  - 대괄호 안은 식이에요. 따옴표 없이 쓴 `open`, `hours`는 무엇으로 읽힐까요?
+  - 키를 리터럴에서 어떤 모양으로 썼는지 보고, 읽을 때도 같은 모양의 값을 대괄호에 넣어 보세요.
+explanation: |
+  대괄호 안의 키를 따옴표로 감싸 문자열로 만들어요.
+
+  ```js
+  console.log("영업시간: " + shop["open-hours"]);
+  console.log("배달 가능: " + shop["can deliver"]);
+  ```
+
+  - '7번 줄: 대괄호 안은 식이라서 `open-hours`는 "변수 `open` 빼기 변수 `hours`"로 읽혀요. 변수 `open`이 없으니 `ReferenceError: open is not defined`가 나요.'
+  - '8번 줄: `can deliver`는 변수 두 개가 공백으로 나란히 있는 모양이라 식이 될 수 없어서 `SyntaxError`예요. 사실 이 문법 오류 때문에 프로그램은 7번 줄을 실행하기도 전에 멈춰요. 7번 줄만 고치고 실행하면 그때 이 오류가 보여요.'
+  - 하이픈이나 공백이 든 키는 점 표기법(`shop.open-hours`)으로도 읽을 수 없어요. 대괄호 안에 문자열로 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

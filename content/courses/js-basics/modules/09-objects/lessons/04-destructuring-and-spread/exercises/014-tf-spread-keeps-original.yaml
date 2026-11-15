@@ -1,0 +1,30 @@
+id: js-basics.objects.destructuring-and-spread.tf-spread-keeps-original
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.obj.spread, weight: 1 }
+tags: [spread, object, immutable]
+estimatedSeconds: 45
+prompt: |
+  아래 코드를 보고, 설명이 맞는지 고르세요.
+code: |
+  const state = { count: 0, label: "타이머" };
+  const next = { ...state, count: 1 };
+spec:
+  statement: "2번 줄을 실행한 뒤에도 `state.count`는 `0`이다."
+  answer: true
+  misconceptionIfWrong: js.mc.spread-mutates-original
+hints:
+  - "`{ ...state, count: 1 }`은 새 객체를 만드나요, `state`를 고치나요?"
+  - 중괄호 `{ }`로 시작하는 식은 늘 새 객체를 만들어요.
+  - "`count: 1`이 덮어쓰는 것은 새로 만든 객체의 `count`예요."
+explanation: |
+  설명은 **참**이에요.
+
+  `{ ...state, count: 1 }`은 `state`의 속성을 **새 객체**에 펼쳐 담은 뒤, 그 새 객체의 `count`만 1로 덮어써요. `state`는 손대지 않으니 `state.count`는 0, `next.count`는 1이에요.
+
+  "거짓"이라고 생각했다면 전개가 원본을 고친다고 본 거예요. 원본을 그대로 두고 바뀐 새 객체를 만드는 것이 전개 구문을 쓰는 이유예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

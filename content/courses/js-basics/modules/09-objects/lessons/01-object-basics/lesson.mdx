@@ -1,0 +1,405 @@
+<Section kind="objectives">
+- 관련된 값을 객체 리터럴로 묶고, 속성 값으로 문자열·숫자·배열·객체를 넣을 수 있어요.
+- 점 표기법과 대괄호 표기법 중 상황에 맞는 것을 골라 속성을 읽고, 변수에 든 키로 속성을 찾을 수 있어요.
+- 없는 속성을 읽은 결과(`undefined`)와 `TypeError`가 나는 경우를 구별해 예측할 수 있어요.
+- 속성을 추가·수정·삭제하고, 객체의 메서드를 만들어 부를 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+분식집 주문 앱에서 메뉴 하나를 표현한다고 해 볼게요. 메뉴에는 이름, 가격, 맵기 단계, 품절 여부가 있어요. 지금까지 배운 방법으로는 변수를 네 개 만들어야 해요.
+
+```js
+const menuName = "떡볶이";
+const menuPrice = 4500;
+const menuSpicy = 2;
+const menuSoldOut = false;
+```
+
+메뉴가 하나일 때는 괜찮아요. 하지만 메뉴가 열 개가 되면 변수가 마흔 개가 되고, `menuPrice`가 어느 메뉴의 가격인지 이름으로만 구별해야 해요. 함수에 메뉴 하나를 넘기려 해도 인수를 네 개씩 넘겨야 하고요.
+
+이럴 때 쓰는 것이 **객체(object)**예요. 객체는 "이름표가 붙은 값"들을 하나로 묶은 값이에요. 메뉴 하나를 값 하나로 다룰 수 있어서, 변수 하나에 담고, 함수에 통째로 넘기고, 필요할 때 이름표로 꺼내 쓸 수 있어요. 실제 웹 개발에서 다루는 데이터(회원 정보, 상품, 주문, 서버가 보내 주는 응답)는 거의 모두 객체 모양이에요.
+</Section>
+
+<Section kind="principle">
+### 객체는 이름표가 붙은 서랍장이에요
+
+객체는 중괄호 `{ }` 안에 **`키: 값`** 짝을 쉼표로 나눠 써서 만들어요. 이렇게 코드에 바로 쓴 객체를 **객체 리터럴**이라고 해요.
+
+```js
+const menu = {
+  name: "떡볶이",
+  price: 4500,
+  spicy: 2,
+  soldOut: false,
+};
+```
+
+- `name: "떡볶이"` 같은 짝 하나를 **속성(property)**이라고 해요. 콜론 왼쪽이 **키**(속성 이름), 오른쪽이 **값**이에요.
+- 속성 사이는 **쉼표**로 나눠요. 마지막 속성 뒤의 쉼표는 있어도 되고 없어도 돼요.
+- 값에는 숫자, 문자열, 불리언뿐 아니라 배열, 다른 객체, 함수까지 무엇이든 넣을 수 있어요.
+
+서랍장으로 생각하면 쉬워요. 서랍마다 이름표(키)가 붙어 있고, 안에 물건(값)이 들어 있어요. 물건을 꺼낼 때는 "세 번째 서랍"이 아니라 **"price라고 적힌 서랍"**처럼 이름표로 찾아요.
+
+```text
+menu
+ ├─ name    → "떡볶이"
+ ├─ price   → 4500
+ ├─ spicy   → 2
+ └─ soldOut → false
+```
+
+`console.log(menu)`로 객체를 출력하면 ProgInOne 콘솔에는 한 줄로 `{ name: "떡볶이", price: 4500, spicy: 2, soldOut: false }`처럼 보여요. 객체 안의 문자열은 큰따옴표로 감싸서 보여 줘요.
+
+### 속성을 읽는 두 가지 방법: 점과 대괄호
+
+| 표기법 | 모양 | 무엇을 찾나 |
+|---|---|---|
+| 점 표기법 | `menu.price` | 이름이 **글자 그대로** `price`인 속성 |
+| 대괄호 표기법 | `menu["price"]`, `menu[key]` | 대괄호 안의 **식을 계산한 값**(문자열)이 이름인 속성 |
+
+평소에는 짧은 점 표기법을 써요. 대괄호 표기법은 다음 두 경우에 꼭 필요해요.
+
+1. **키가 변수에 들어 있을 때**: `const key = "price";`이면 `menu[key]`는 `key`를 계산해 `"price"`를 얻고, `price` 속성을 읽어요. 반면 `menu.key`는 변수 `key`와 아무 상관 없이 이름이 `key`인 속성을 찾아요.
+2. **키가 변수 이름 규칙에 맞지 않을 때**: `"first-name"`, `"배달 가능"`처럼 하이픈이나 공백이 있는 키는 리터럴에서 따옴표로 감싸 쓰고, 읽을 때도 `user["first-name"]`처럼 대괄호를 써요.
+
+대괄호 안은 **식**이라는 점이 핵심이에요. `menu["price"]`의 `"price"`는 문자열이고, `menu[price]`의 `price`는 변수 이름이에요. 변수 `price`가 없으면 `ReferenceError: price is not defined`가 나요.
+
+### 두 번째 관점: 이름을 찾는 과정
+
+JavaScript가 `menu.price`나 `menu[key]`를 만나면 다음 순서로 일해요.
+
+1. 점 앞(대괄호 앞)의 값을 구해요. 여기서는 `menu`가 가리키는 객체예요.
+1. 찾을 이름을 정해요. 점이면 점 뒤에 쓴 글자 그대로, 대괄호면 안의 식을 계산한 값이에요.
+1. 객체에 그 이름의 속성이 있으면 값을 돌려주고, **없으면 `undefined`를 돌려줘요.** 오류가 아니에요.
+
+| 코드 (`key`는 `"spicy"`) | 1. 객체 | 2. 찾을 이름 | 3. 결과 |
+|---|---|---|---|
+| `menu.price` | `menu` | `price` | `4500` |
+| `menu[key]` | `menu` | `spicy` | `2` |
+| `menu.key` | `menu` | `key` | `undefined` (그런 속성 없음) |
+| `menu.size` | `menu` | `size` | `undefined` (그런 속성 없음) |
+| `menu.size.large` | `menu.size` → `undefined` | `large` | `TypeError` |
+
+마지막 줄을 눈여겨보세요. `menu.size`는 `undefined`예요. 그 `undefined`에서 다시 `.large`를 찾으려 하면, `undefined`는 객체가 아니라 서랍이 없으니 `TypeError: Cannot read properties of undefined (reading 'large')`가 나요. **없는 속성을 읽는 것은 괜찮지만, 없는 속성의 속성을 읽으면 오류**예요.
+
+객체 안에 객체가 있으면 점을 이어 써서 안쪽까지 들어가요. 배열 속성은 대괄호와 인덱스로 요소를 꺼내요.
+
+```js
+const shop = {
+  name: "코코분식",
+  address: { city: "서울", zip: "04524" },
+  tags: ["매운맛", "포장"],
+};
+console.log(shop.address.city); // 서울
+console.log(shop.tags[1]);      // 포장
+```
+
+### 속성 추가·수정·삭제
+
+객체는 만든 뒤에도 속성을 바꿀 수 있어요.
+
+- **수정**: 있는 속성에 대입하면 값이 바뀌어요. `menu.price = 5000;`
+- **추가**: 없는 속성에 대입하면 그 자리에서 새 속성이 생겨요. `menu.size = "보통";` 리터럴에 미리 적어 둘 필요도, `let` 같은 선언도 필요 없어요.
+- **삭제**: `delete menu.soldOut;`은 속성을 아예 없애요. 그 뒤에 읽으면 `undefined`예요.
+
+대입은 대괄호로도 돼요. `menu[key] = 3;`은 `key`에 든 이름의 속성을 바꾸거나 만들어요.
+
+리터럴 안에 같은 키를 두 번 쓰면 어떻게 될까요? 오류가 나지 않고, **뒤에 쓴 값이 앞의 값을 덮어써요**. `{ price: 4500, price: 5000 }`은 `{ price: 5000 }`과 같아요. 조용히 값이 사라지니 주의해야 해요.
+
+### 메서드: 값이 함수인 속성
+
+속성 값에 함수를 넣을 수도 있어요. 이런 속성을 **메서드(method)**라고 해요. 이미 써 본 `console.log`도 `console` 객체의 `log` 메서드이고, `"abc".toUpperCase()`도 문자열의 메서드예요.
+
+```js
+const counter = {
+  count: 0,
+  increase() {
+    this.count++;
+    return this.count;
+  },
+};
+console.log(counter.increase()); // 1
+console.log(counter.increase()); // 2
+```
+
+- `increase() { ... }`는 `increase: function () { ... }`를 짧게 쓴 모양이에요. 둘 다 메서드를 만들어요.
+- 메서드는 `counter.increase()`처럼 **괄호를 붙여** 불러요. 괄호 없이 `counter.increase`라고 쓰면 함수 자체를 가리킬 뿐 실행되지 않아요(모듈 6의 함수와 같아요).
+- 메서드 안에서 **자기 객체의 속성**을 쓰려면 `this.count`처럼 써요. `객체.메서드()`로 부르면 그 안의 `this`는 점 앞의 객체를 가리켜요. 속성은 변수가 아니라서, 메서드 안에서 `count`라고만 쓰면 변수 `count`를 찾다가 `ReferenceError`가 나요.
+
+`this`가 정해지는 규칙은 부르는 방법에 따라 더 복잡해지는데, 그 이야기는 JavaScript 심화 과정에서 다뤄요. 이 과정에서는 **`객체.메서드()`로 부르고, 그 안에서 `this.속성`으로 자기 속성을 읽는다**는 것만 기억하면 돼요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 객체를 만들고 속성을 여러 방법으로 읽어요. 네 줄에 무엇이 나올지 예측해 보세요.
+
+<RunnableExample id="read-props" lang="js" predict predictKind="console" concepts={["js.obj.literal", "js.obj.dot-bracket"]}>
+```js
+const menu = {
+  name: "떡볶이",
+  price: 4500,
+  "spicy level": 2,
+};
+const key = "price";
+
+console.log(menu.name);
+console.log(menu[key]);
+console.log(menu["spicy level"]);
+console.log(menu.key);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+떡볶이
+4500
+2
+undefined
+```
+
+- 8번 줄: 점 뒤의 `name`을 이름 그대로 찾아 `"떡볶이"`를 읽어요. 최상위에서 출력한 문자열이라 따옴표 없이 보여요.
+- 9번 줄: 대괄호 안의 `key`를 먼저 계산해요. `key`는 `"price"`이니 `price` 속성의 `4500`을 읽어요.
+- 10번 줄: 키에 공백이 있어서 리터럴에서도 따옴표로 감쌌고, 읽을 때도 대괄호와 문자열로 읽어요.
+- 11번 줄: 점 표기법은 변수 `key`를 보지 않아요. 이름이 `key`인 속성을 찾는데 없으니 `undefined`예요. 오류가 나지 않는다는 점도 눈여겨보세요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 없는 속성을 읽어요. 어디까지 출력되고 어디서 멈출까요?
+
+<RunnableExample id="missing-prop" lang="js" expectError concepts={["js.obj.dot-bracket"]}>
+```js
+const user = { nickname: "코코", level: 3 };
+
+console.log(user.email);
+console.log(user.email === undefined);
+console.log(user.address.city);
+console.log("끝");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+undefined
+true
+TypeError: Cannot read properties of undefined (reading 'city')
+```
+
+- 3번 줄: `email` 속성이 없지만 오류가 아니에요. 서랍이 없으면 "비어 있음"을 뜻하는 `undefined`를 돌려줘요.
+- 5번 줄: `user.address`가 먼저 계산되어 `undefined`가 돼요. 그다음 `undefined.city`를 찾으려 하니 `TypeError`가 나요. 메시지의 `(reading 'city')`는 **어떤 속성을 읽다가** 실패했는지 알려 줘요. 원인은 `city`가 아니라 그 앞의 `address`가 없다는 것이에요.
+- 오류가 나서 6번 줄은 실행되지 않아요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 속성을 바꾸고, 만들고, 지워요. 객체를 출력한 결과를 예측해 보세요.
+
+<RunnableExample id="add-update-delete" lang="js" predict predictKind="console" concepts={["js.obj.add-delete"]}>
+```js
+const order = { item: "김밥", qty: 1, memo: "" };
+
+order.qty = 3;
+order.packed = true;
+delete order.memo;
+
+console.log(order);
+console.log(order.memo);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+{ item: "김밥", qty: 3, packed: true }
+undefined
+```
+
+| 줄 | 한 일 | `order` |
+|---|---|---|
+| 1 | 만들기 | `{ item: "김밥", qty: 1, memo: "" }` |
+| 3 | `qty` 수정 | `{ item: "김밥", qty: 3, memo: "" }` |
+| 4 | `packed` 추가 | `{ item: "김밥", qty: 3, memo: "", packed: true }` |
+| 5 | `memo` 삭제 | `{ item: "김밥", qty: 3, packed: true }` |
+
+- 4번 줄의 `packed`는 리터럴에 없던 속성이에요. 대입하는 순간 새로 생겨요. 새 속성은 끝에 붙어요.
+- `order`는 `const`인데도 속성을 바꿀 수 있었어요. 왜 그런지는 다음 단원 "참조와 복사"에서 자세히 다뤄요.
+- 삭제한 `memo`를 읽으면 없는 속성이라 `undefined`예요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 키를 변수로 받아 속성을 읽고 바꾸는 함수예요. 대괄호 표기법이 왜 필요한지 보여 줘요.
+
+<RunnableExample id="key-variable" lang="js" concepts={["js.obj.dot-bracket", "js.obj.add-delete"]}>
+```js
+const stock = { tteokbokki: 5, kimbap: 0 };
+
+function addStock(name, amount) {
+  if (stock[name] === undefined) {
+    stock[name] = 0;
+  }
+  stock[name] += amount;
+  return name + " 재고: " + stock[name];
+}
+
+console.log(addStock("kimbap", 10));
+console.log(addStock("ramen", 3));
+console.log(stock);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+kimbap 재고: 10
+ramen 재고: 3
+{ tteokbokki: 5, kimbap: 10, ramen: 3 }
+```
+
+- `name`에는 호출할 때마다 다른 메뉴 이름이 들어와요. 어떤 속성을 읽을지 코드를 쓸 때 정할 수 없으니 `stock[name]`처럼 대괄호를 써야 해요. `stock.name`은 이름이 `name`인 속성을 찾아요.
+- `"ramen"`은 처음에 없던 키예요. `stock["ramen"]`은 `undefined`라서 먼저 0으로 만든 뒤 더해요. 이 확인이 없으면 `undefined + 3`이 되어 `NaN`이 들어가요.
+- 한글도 변수 이름에 쓸 수 있는 글자라서 `{ 떡볶이: 5 }`처럼 따옴표 없이 키로 쓸 수 있어요. 다만 ProgInOne 콘솔은 영문자·숫자·`_`·`$`가 아닌 글자가 든 키를 `{ "떡볶이": 5 }`처럼 따옴표로 감싸 보여 줘요. 이 예제는 출력을 읽기 쉽게 영어 키를 썼어요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 메서드예요. 세 줄에 무엇이 나올지 예측해 보세요.
+
+<RunnableExample id="method-this" lang="js" predict predictKind="console" concepts={["js.obj.methods-intro"]}>
+```js
+const wallet = {
+  owner: "민지",
+  balance: 10000,
+  pay(amount) {
+    this.balance -= amount;
+    return this.owner + "님 남은 돈: " + this.balance + "원";
+  },
+};
+
+console.log(wallet.pay(3000));
+console.log(wallet.pay(4500));
+console.log(wallet.balance);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+민지님 남은 돈: 7000원
+민지님 남은 돈: 2500원
+2500
+```
+
+- `wallet.pay(3000)`으로 부르면 `pay` 안의 `this`는 점 앞의 `wallet`이에요. 그래서 `this.balance`는 `wallet.balance`와 같아요.
+- 메서드가 `this.balance`를 바꾸면 객체의 속성이 바뀐 채로 남아요. 두 번째 호출은 7000에서 시작해 2500이 되고, 마지막 줄에서 확인할 수 있어요.
+- `this` 없이 `balance -= amount;`라고 쓰면 변수 `balance`를 찾다가 `ReferenceError: balance is not defined`가 나요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.obj-property-semicolon">
+<Wrong>문장 끝처럼 속성 끝에도 세미콜론을 써서 `{ name: "떡볶이"; price: 4500 }`으로 쓴다.</Wrong>
+<Actual>객체 리터럴 안에서 세미콜론을 쓰면 실행 전에 `SyntaxError: Unexpected token ';'`가 나서 프로그램이 아예 시작되지 않아요.</Actual>
+<Right>속성 사이는 **쉼표**로 나눠요. 세미콜론은 `const menu = { ... };`처럼 문장 전체가 끝나는 닫는 중괄호 뒤에만 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.obj-access-by-index">
+<Wrong>객체도 배열처럼 `menu[0]`으로 첫 번째 속성을 읽을 수 있다.</Wrong>
+<Actual>`menu[0]`은 이름이 `"0"`인 속성을 찾아요. 그런 속성이 없으니 `undefined`예요. 객체의 속성에는 번호가 붙어 있지 않아요.</Actual>
+<Right>객체는 **이름표(키)로** 찾아요. 순서대로 여러 값을 다루고 싶으면 배열을, 이름으로 찾고 싶으면 객체를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.dot-with-variable-key">
+<Wrong>`const key = "price";`일 때 `menu.key`도 `menu[key]`처럼 `price` 속성을 읽는다.</Wrong>
+<Actual>첫 번째 예제에서 `menu.key`는 `undefined`였어요. 점 뒤의 글자는 변수가 아니라 속성 이름 그대로예요.</Actual>
+<Right>변수에 든 이름으로 찾을 때는 `menu[key]`, 이름을 코드에 그대로 쓸 때는 `menu.price`나 `menu["price"]`예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.bracket-key-without-quotes">
+<Wrong>`menu[price]`라고 쓰면 `price` 속성을 읽는다.</Wrong>
+<Actual>대괄호 안은 식이라서 따옴표 없는 `price`는 **변수**예요. 변수 `price`가 없으면 `ReferenceError: price is not defined`가 나요.</Actual>
+<Right>이름을 그대로 쓰려면 `menu["price"]`처럼 따옴표로 감싸거나 `menu.price`를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.missing-property-error">
+<Wrong>객체에 없는 속성을 읽으면 `ReferenceError` 같은 오류가 난다.</Wrong>
+<Actual>두 번째 예제의 `user.email`은 오류 없이 `undefined`였어요. 오류는 `user.address.city`처럼 `undefined`에서 **다시** 속성을 읽을 때 났고, 종류도 `TypeError`였어요.</Actual>
+<Right>없는 속성 → `undefined`. `undefined`나 `null`의 속성 → `TypeError`. `ReferenceError`는 객체가 아니라 **변수**가 없을 때예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.add-property-needs-declare">
+<Wrong>객체 리터럴에 처음부터 적어 두지 않은 속성은 나중에 대입할 수 없다(대입하면 오류가 난다).</Wrong>
+<Actual>세 번째 예제의 `order.packed = true;`처럼 없는 속성에 대입하면 그 자리에서 새 속성이 생겨요.</Actual>
+<Right>속성 추가에는 선언이 필요 없어요. 대신 이름을 잘못 쓰면(`order.qyt = 3`) 오류 없이 엉뚱한 새 속성이 생기니 이름을 꼼꼼히 확인해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.duplicate-key-error">
+<Wrong>리터럴에 같은 키를 두 번 쓰면 "이미 있는 이름"이라는 오류가 나거나, 처음 쓴 값이 남는다.</Wrong>
+<Actual>
+
+오류 없이 **뒤에 쓴 값**이 남아요. 엄격 모드에서도 마찬가지예요.
+
+```js
+const menu = { name: "떡볶이", price: 4500, price: 5000 };
+console.log(menu); // { name: "떡볶이", price: 5000 }
+```
+</Actual>
+<Right>같은 키는 하나만 남는다는 것을 기억하고, 긴 객체를 쓸 때 키가 겹치지 않았는지 확인해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.method-reads-props-by-name">
+<Wrong>메서드는 같은 객체 안에 있으니, 메서드 안에서 `balance`라고만 써도 객체의 `balance` 속성을 읽는다.</Wrong>
+<Actual>속성은 변수가 아니에요. 메서드 안에서 `balance`라고 쓰면 변수 `balance`를 찾다가 `ReferenceError: balance is not defined`가 나요.</Actual>
+<Right>`객체.메서드()`로 부른 메서드 안에서는 `this.balance`로 자기 객체의 속성을 읽고 바꿔요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+웹 서비스는 서버와 데이터를 주고받을 때 **JSON**이라는 글자 형식을 써요. JSON은 객체 리터럴과 거의 같은 모양이라, 받은 데이터를 객체로 바꾸면 지금 배운 방법으로 바로 읽을 수 있어요. 예를 들어 날씨 서비스가 이런 응답을 보냈다고 해 볼게요.
+
+```js
+const weather = {
+  city: "부산",
+  now: { temp: 18, sky: "맑음" },
+  "feels-like": 16,
+};
+
+const unit = "temp";
+console.log(`${weather.city}: ${weather.now.sky}, ${weather.now[unit]}도`); // 부산: 맑음, 18도
+console.log(`체감 ${weather["feels-like"]}도`);                          // 체감 16도
+console.log(weather.rain);                                                 // undefined
+```
+
+- 중첩된 값은 점을 이어서(`weather.now.sky`), 이름이 변수에 있으면 대괄호로(`weather.now[unit]`), 하이픈이 든 키도 대괄호로 읽어요.
+- 응답에 없는 `rain`은 `undefined`예요. 실제 서비스는 상황에 따라 어떤 속성이 빠져 오기도 해서, 없는 속성을 어떻게 다룰지 정해 두는 일이 중요해요. 단원 "객체 순회"에서 `in`과 `?.`로 안전하게 확인하는 방법을 배워요.
+</Section>
+
+<Section kind="check">
+객체 리터럴을 바르게 쓴 코드를 골라 보세요.
+
+<InlineExercise ref="js-basics.objects.object-basics.mcq-literal-syntax" />
+
+없는 속성을 읽으면 어떻게 될까요?
+
+<InlineExercise ref="js-basics.objects.object-basics.tf-missing-property" />
+
+변수에 든 키로 속성을 읽어 보세요.
+
+<InlineExercise ref="js-basics.objects.object-basics.mcq-dot-variable-key" />
+
+메서드 안에서 자기 속성을 읽는 방법을 확인해 보세요.
+
+<InlineExercise ref="js-basics.objects.object-basics.mcq-method-this" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 객체는 `{ 키: 값, 키: 값 }`으로 만들고, 속성 사이는 쉼표로 나눠요. 값에는 무엇이든 넣을 수 있어요.
+- `obj.key`는 이름이 글자 그대로 `key`인 속성을, `obj[식]`은 식의 값이 이름인 속성을 읽어요. 키가 변수에 있거나 하이픈·공백이 있으면 대괄호를 써요.
+- 없는 속성을 읽으면 `undefined`이고, `undefined`의 속성을 다시 읽으면 `TypeError`예요.
+- 없는 속성에 대입하면 새 속성이 생기고, 있는 속성에 대입하면 바뀌며, `delete`로 지워요. 리터럴의 같은 키는 뒤의 값이 남아요.
+- 값이 함수인 속성이 메서드예요. `obj.method()`로 부르고, 안에서는 `this.속성`으로 자기 속성을 읽어요.
+</Section>
+
+<Section kind="next">
+다음 단원 "참조와 복사"에서는 객체를 다른 변수에 대입하거나 함수에 넘기면 무슨 일이 일어나는지 배워요. 세 번째 예제에서 `const` 객체의 속성을 바꿀 수 있었던 이유도 거기서 풀려요. <MdnLink path="Web/JavaScript/Guide/Working_with_objects" />
+</Section>

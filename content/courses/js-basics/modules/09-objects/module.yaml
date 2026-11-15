@@ -1,0 +1,5 @@
+id: js-basics.objects
+title: 객체
+summary: 관련된 값을 이름표와 함께 묶는 객체를 만들고 읽고 바꾸며, 객체가 참조로 다뤄진다는 것과 복사·비교의 차이, 객체 순회, 구조 분해와 전개 구문, try...catch로 오류를 처리하는 방법을 배웁니다.
+# 단원 평가(objects-review)는 단원 평가 작업에서 따로 추가합니다.
+lessons: [object-basics, reference-vs-value, object-iteration, destructuring-and-spread, error-handling]

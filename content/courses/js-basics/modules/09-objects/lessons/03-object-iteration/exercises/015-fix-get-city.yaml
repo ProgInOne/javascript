@@ -1,0 +1,83 @@
+id: js-basics.objects.object-iteration.fix-get-city
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.obj.in-optional-chaining, weight: 1 }
+  - { id: js.ops.nullish, weight: 0.3 }
+tags: [object, optional-chaining, nullish, debugging]
+estimatedSeconds: 140
+prompt: |
+  `cityOf(user)`는 회원의 도시를 돌려주는 함수예요. 주소를 입력하지 않은 회원은 `address` 객체가 없을 수 있고, 그때는 `"지역 미설정"`을 돌려줘야 해요.
+
+  ```js
+  cityOf({ name: "민지", address: { city: "부산" } }); // "부산"
+  cityOf({ name: "준호" });                            // "지역 미설정"
+  ```
+
+  지금은 주소가 없는 회원에서 오류가 나요. 함수를 고치세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function cityOf(user) {
+            return user.address.city;
+          }
+  entry: cityOf
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function cityOf(user) {
+            return user.address?.city ?? "지역 미설정";
+          }
+  bugDescription: "주소가 없는 회원을 넣으면 `TypeError: Cannot read properties of undefined (reading 'city')` 오류가 나요."
+  bugMisconception: js.mc.optional-chaining-guards-rest
+  checks:
+    - kind: call
+      id: has-city
+      requirement: 도시 돌려주기
+      args: [{ "name": "민지", "address": { "city": "부산" } }]
+      expect: { equals: "부산" }
+    - kind: call
+      id: no-address
+      requirement: 주소가 없으면 기본값
+      args: [{ "name": "준호" }]
+      expect: { equals: "지역 미설정" }
+    - kind: call
+      id: address-without-city
+      visible: false
+      description: 주소 객체는 있지만 city가 없으면 "지역 미설정"이어야 합니다.
+      requirement: 주소가 없으면 기본값
+      args: [{ "name": "서연", "address": { "zip": "12345" } }]
+      expect: { equals: "지역 미설정" }
+    - kind: call
+      id: other-city
+      visible: false
+      description: 다른 도시도 그대로 돌려줘야 합니다.
+      requirement: 도시 돌려주기
+      args: [{ "name": "하린", "address": { "city": "제주" } }]
+      expect: { equals: "제주" }
+misconceptions: [js.mc.optional-chaining-guards-rest]
+hints:
+  - 주소가 없는 회원에서 `user.address`는 무엇인가요? 그 값에서 `city`를 읽으면 어떻게 되나요?
+  - 없을 수 있는 값 바로 뒤에 붙여서, 그 값이 없으면 오류 대신 `undefined`를 돌려주게 하는 표기가 있었어요.
+  - 결과가 `undefined`일 때만 기본값을 고르는 연산자를 함께 써서 `"지역 미설정"`이 나오게 하세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function cityOf(user) {
+    return user.address?.city ?? "지역 미설정";
+  }
+  ```
+
+  - 주소가 없는 회원은 `user.address`가 `undefined`예요. `user.address.city`는 `undefined`의 `city`를 읽으려다 `TypeError`가 났어요.
+  - `user.address?.city`는 `address`가 없으면 그 자리에서 멈추고 `undefined`를 돌려줘요. 그 결과에 `?? "지역 미설정"`이 기본값을 붙여요.
+  - 주소는 있지만 `city`가 없는 경우도 `user.address?.city`가 `undefined`라 같은 기본값이 나와요.
+  - `user?.address.city`처럼 `?.`를 `user` 뒤에 붙이면 `user`만 확인하므로 같은 오류가 그대로 나요.
+  - `if (!("address" in user)) { return "지역 미설정"; }`처럼 `in`으로 먼저 확인해도 되지만, 그러면 `city`가 없는 경우를 따로 처리해야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

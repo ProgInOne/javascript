@@ -1,0 +1,16 @@
+id: js-basics.objects.object-basics
+title: 객체 기초
+summary: 이름(키)과 값을 묶는 객체를 만들고, 점과 대괄호로 속성을 읽고, 속성을 추가·수정·삭제하며, 객체 안에 함수를 넣은 메서드를 불러 봅니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 16, practice: 30 }
+concepts:
+  primary: [js.obj.literal, js.obj.dot-bracket, js.obj.add-delete, js.obj.methods-intro]
+  reviewed: [js.types.undefined, js.errors.error-types, js.fn.expression, js.fn.call, js.str.template-literal]
+objectives:
+  - 관련된 값을 객체 리터럴로 묶고, 속성 값으로 문자열·숫자·배열·객체를 넣을 수 있다.
+  - 점 표기법과 대괄호 표기법 중 상황에 맞는 것을 골라 속성을 읽고, 변수에 든 키로 속성을 찾을 수 있다.
+  - 없는 속성을 읽은 결과(undefined)와 TypeError가 나는 경우를 구별해 예측할 수 있다.
+  - 속성을 추가·수정·삭제하고, 객체의 메서드를 만들어 부를 수 있다.
+practice:
+  targetCount: 24

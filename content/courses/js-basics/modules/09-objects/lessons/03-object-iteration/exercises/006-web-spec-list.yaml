@@ -1,0 +1,200 @@
+id: js-basics.objects.object-iteration.web-spec-list
+type: web_task
+difficulty: 3
+concepts:
+  - { id: js.obj.keys-values-entries, weight: 1 }
+  - { id: js.obj.for-in, weight: 0.5 }
+  - { id: js.obj.dot-bracket, weight: 0.3 }
+tags: [object, for-in, keys, web]
+estimatedSeconds: 360
+prompt: |
+  상품의 사양 목록을 보여 주는 화면이에요. 상품마다 사양 항목이 다르고, **다음 상품** 버튼을 누르면 다른 상품으로 바뀌어요.
+
+  함수 `render(product)`를 완성하세요. `product`는 `{ name: "무선 이어폰", specs: { 무게: "5g", ... } }` 모양이에요.
+
+  1. `clearRows()`로 지난 목록을 지우고, `showTitle(이름)`으로 상품 이름을 보여 줘요.
+  1. `specs`의 사양마다 `addRow("항목: 값")`을 불러 한 줄씩 추가해요. 예: `무게: 5g`
+  1. `showCount(개수)`로 사양 개수를 보여 줘요.
+
+  도우미 함수(`clearRows`, `addRow`, `showTitle`, `showCount`)와 버튼 연결은 이미 있어요. 사양 항목의 이름을 코드에 직접 적으면 다른 상품에서 맞지 않으니, 객체를 돌아서 만드세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>상품 사양</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                li { margin: 4px 0; }
+              </style>
+            </head>
+            <body>
+              <h1 id="title">상품</h1>
+              <p>사양 <span id="count">0</span>개</p>
+              <ul id="specs"></ul>
+              <button id="next">다음 상품</button>
+              <script>
+                // 화면을 다루는 도우미 함수예요(안의 코드는 모듈 10에서 배워요).
+                function clearRows() {
+                  document.querySelector("#specs").textContent = "";
+                }
+                function addRow(text) {
+                  const li = document.createElement("li");
+                  li.textContent = text;
+                  document.querySelector("#specs").append(li);
+                }
+                function showTitle(text) {
+                  document.querySelector("#title").textContent = text;
+                }
+                function showCount(n) {
+                  document.querySelector("#count").textContent = n;
+                }
+
+                const products = [
+                  { name: "무선 이어폰", specs: { 무게: "5g", 재생시간: "6시간", 색상: "흰색" } },
+                  { name: "보조배터리", specs: { 용량: "10000mAh", 무게: "180g", 단자: "USB-C", 색상: "검정" } },
+                ];
+                let current = 0;
+
+                // product를 받아 화면에 보여 주는 함수를 완성하세요.
+                function render(product) {
+                  // 1) 지난 목록을 지우고 상품 이름을 보여 주세요.
+                  // 2) 사양마다 "항목: 값" 한 줄을 추가하세요.
+                  // 3) 사양 개수를 보여 주세요.
+                }
+
+                render(products[current]);
+                document.querySelector("#next").addEventListener("click", () => {
+                  current = (current + 1) % products.length;
+                  render(products[current]);
+                });
+              </script>
+            </body>
+          </html>
+
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>상품 사양</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                li { margin: 4px 0; }
+              </style>
+            </head>
+            <body>
+              <h1 id="title">상품</h1>
+              <p>사양 <span id="count">0</span>개</p>
+              <ul id="specs"></ul>
+              <button id="next">다음 상품</button>
+              <script>
+                // 화면을 다루는 도우미 함수예요(안의 코드는 모듈 10에서 배워요).
+                function clearRows() {
+                  document.querySelector("#specs").textContent = "";
+                }
+                function addRow(text) {
+                  const li = document.createElement("li");
+                  li.textContent = text;
+                  document.querySelector("#specs").append(li);
+                }
+                function showTitle(text) {
+                  document.querySelector("#title").textContent = text;
+                }
+                function showCount(n) {
+                  document.querySelector("#count").textContent = n;
+                }
+
+                const products = [
+                  { name: "무선 이어폰", specs: { 무게: "5g", 재생시간: "6시간", 색상: "흰색" } },
+                  { name: "보조배터리", specs: { 용량: "10000mAh", 무게: "180g", 단자: "USB-C", 색상: "검정" } },
+                ];
+                let current = 0;
+
+                // product를 받아 화면에 보여 주는 함수를 완성하세요.
+                function render(product) {
+                  clearRows();
+                  showTitle(product.name);
+                  for (const key in product.specs) {
+                    addRow(key + ": " + product.specs[key]);
+                  }
+                  showCount(Object.keys(product.specs).length);
+                }
+
+                render(products[current]);
+                document.querySelector("#next").addEventListener("click", () => {
+                  current = (current + 1) % products.length;
+                  render(products[current]);
+                });
+              </script>
+            </body>
+          </html>
+
+  checks:
+    - kind: dom
+      id: first-rows
+      description: 처음에는 무선 이어폰의 사양 3줄이 보여야 합니다.
+      requirement: 사양 목록
+      visible: true
+      selector: "#specs li"
+      expect: { count: 3 }
+    - kind: dom
+      id: first-text
+      description: '첫 줄은 "무게: 5g"이어야 합니다.'
+      requirement: 사양 목록
+      visible: true
+      selector: "#specs li"
+      expect: { text: { equals: "무게: 5g" } }
+    - kind: dom
+      id: first-count
+      description: 사양 개수 3이 보여야 합니다.
+      requirement: 사양 개수
+      visible: true
+      selector: "#count"
+      expect: { text: { equals: "3" } }
+    - kind: event
+      id: next-product
+      description: 다음 상품을 누르면 보조배터리의 이름과 사양 4줄, 개수 4만 보여야 합니다(지난 목록은 지워짐).
+      requirement: 다음 상품
+      steps:
+        - { action: click, selector: "#next" }
+      expect:
+        - { selector: "#specs li", count: 4 }
+        - { selector: "#title", text: { equals: "보조배터리" } }
+        - { selector: "#specs li", text: { equals: "용량: 10000mAh" } }
+        - { selector: "#count", text: { equals: "4" } }
+misconceptions: [js.mc.dot-with-variable-key, js.mc.object-has-length, js.mc.for-of-object]
+hints:
+  - 상품마다 사양 항목이 달라요. `product.specs` 객체의 키를 모르는 채로 하나씩 도는 방법은 무엇이 있었나요?
+  - "`for...in`으로 키를 돌거나 `Object.entries`로 `[항목, 값]` 짝을 돌 수 있어요. 키가 변수에 들어 있을 때 값을 읽는 표기법을 떠올려 보세요."
+  - 개수는 객체의 `length`가 아니라 키 목록 배열의 길이예요. 줄을 추가하기 전에 지난 목록을 먼저 지워야 버튼을 눌렀을 때 줄이 쌓이지 않아요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function render(product) {
+    clearRows();
+    showTitle(product.name);
+    for (const key in product.specs) {
+      addRow(key + ": " + product.specs[key]);
+    }
+    showCount(Object.keys(product.specs).length);
+  }
+  ```
+
+  - `for...in`이 `"무게"`, `"재생시간"`, `"색상"`을 차례로 `key`에 넣어요. 값은 `product.specs[key]`로 읽어요. `product.specs.key`라고 쓰면 이름이 `"key"`인 속성을 찾아 `무게: undefined`가 돼요.
+  - `Object.entries(product.specs)`를 돌며 `entry[0] + ": " + entry[1]`로 써도 정답이에요.
+  - 개수는 `Object.keys(product.specs).length`예요. `product.specs.length`는 `undefined`라 화면에 `undefined`가 보여요.
+  - `clearRows()`를 빼먹으면 다음 상품을 눌렀을 때 3줄 뒤에 4줄이 붙어 7줄이 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,127 @@
+id: js-basics.objects.object-basics.impl-count-words
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.obj.add-delete, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.5 }
+  - { id: js.str.case-trim, weight: 0.3 }
+tags: [object, add, bracket, counting, write-code, boundary]
+estimatedSeconds: 480
+prompt: |
+  설문에서 받은 좋아하는 과일 답(문자열 배열)을 세어, 과일 이름마다 몇 번 나왔는지 담은 객체를 돌려주는 함수 `countAnswers(answers)`를 만드세요.
+
+  - 답의 앞뒤 공백은 지우고, 영어 대문자는 소문자로 바꿔서 세요. `" Apple"`과 `"apple"`은 같은 답이에요.
+  - 공백을 지우고 나서 빈 문자열이 된 답은 세지 않아요.
+  - 받은 배열 `answers`는 바꾸지 마세요.
+
+  ```js
+  countAnswers(["apple", "banana", "apple"]);   // { apple: 2, banana: 1 }
+  countAnswers([" Apple", "APPLE ", "kiwi"]);    // { apple: 2, kiwi: 1 }
+  countAnswers([]);                              // {}
+  ```
+
+  배열의 요소는 `for (const answer of answers)`로 하나씩 꺼낼 수 있어요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function countAnswers(answers) {
+          }
+  entry: countAnswers
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function countAnswers(answers) {
+            const counts = {};
+            for (const answer of answers) {
+              const fruit = answer.trim().toLowerCase();
+              if (fruit === "") {
+                continue;
+              }
+              if (counts[fruit] === undefined) {
+                counts[fruit] = 0;
+              }
+              counts[fruit]++;
+            }
+            return counts;
+          }
+  checks:
+    - kind: call
+      id: basic
+      args: [["apple", "banana", "apple"]]
+      requirement: 과일마다 세기
+      expect: { equals: { apple: 2, banana: 1 } }
+    - kind: call
+      id: normalize
+      args: [[" Apple", "APPLE ", "kiwi"]]
+      requirement: 공백·대소문자 정리
+      expect: { equals: { apple: 2, kiwi: 1 } }
+    - kind: call
+      id: empty
+      args: [[]]
+      requirement: 과일마다 세기
+      expect: { equals: {} }
+    - kind: call
+      id: blank-answers
+      visible: false
+      description: 공백만 있거나 빈 답은 세지 않아야 합니다.
+      requirement: 빈 답 건너뛰기
+      args: [["  ", "pear", "", "Pear"]]
+      expect: { equals: { pear: 2 } }
+    - kind: call
+      id: many
+      visible: false
+      description: 여러 과일이 섞여 있어도 각각 정확히 세야 합니다.
+      requirement: 과일마다 세기
+      args: [["grape", "melon", "grape", " GRAPE", "melon", "lemon"]]
+      expect: { equals: { grape: 3, melon: 2, lemon: 1 } }
+    - kind: call
+      id: fruit-named-fruit
+      visible: false
+      description: 답이 무엇이든 그 답을 이름으로 하는 속성을 세야 합니다.
+      requirement: 과일마다 세기
+      args: [["fruit", "answer", "fruit"]]
+      expect: { equals: { fruit: 2, answer: 1 } }
+      misconceptionIfFail: js.mc.dot-with-variable-key
+    - kind: call
+      id: no-mutation
+      visible: false
+      description: 받은 answers 배열을 바꾸지 않아야 합니다.
+      requirement: 원래 배열 지키기
+      args: [[" Mango", "mango"]]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.dot-with-variable-key, js.mc.add-property-needs-declare, js.mc.accumulator-reset-in-loop]
+hints:
+  - 결과를 담을 빈 객체를 반복 **앞에서** 하나 만들고, 답을 하나씩 꺼내 정리한 뒤 그 객체에 세어 넣어요.
+  - 과일 이름이 변수에 들어 있으니 속성을 읽고 쓸 때 대괄호를 써야 해요. 처음 나온 과일은 속성이 없어서 `undefined`예요.
+  - 정리(공백 지우기·소문자)는 세기 전에 해야 같은 과일이 한 속성으로 모여요. 정리한 결과가 빈 문자열이면 그 답은 넘어가요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function countAnswers(answers) {
+    const counts = {};
+    for (const answer of answers) {
+      const fruit = answer.trim().toLowerCase();
+      if (fruit === "") {
+        continue;
+      }
+      if (counts[fruit] === undefined) {
+        counts[fruit] = 0;
+      }
+      counts[fruit]++;
+    }
+    return counts;
+  }
+  ```
+
+  - '**누적할 객체**: `counts`는 반복 앞에서 한 번만 만들어요. 반복 안에서 만들면 회차마다 비어서 마지막 답만 남아요(모듈 5의 누적 패턴과 같아요).'
+  - '**대괄호와 새 속성**: 과일 이름이 `fruit` 변수에 있으니 `counts[fruit]`예요. `counts.fruit`로 쓰면 모든 답을 이름이 `fruit`인 속성 하나에 세요. 처음 나온 과일은 0을 넣어 속성을 만든 뒤 1을 더해요.'
+  - '**정리 먼저**: `trim()`과 `toLowerCase()`는 새 문자열을 돌려주고 원래 답은 그대로라서(모듈 7), 받은 배열은 바뀌지 않아요.'
+  - '**빈 답**: 공백만 있던 답은 `trim()` 뒤에 `""`가 되므로 `continue`로 건너뛰어요. 이 확인이 없으면 `{ "": 2, pear: 2 }`처럼 이름이 빈 문자열인 속성이 생겨요.'
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

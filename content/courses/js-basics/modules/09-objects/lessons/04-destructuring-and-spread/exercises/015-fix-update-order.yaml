@@ -1,0 +1,81 @@
+id: js-basics.objects.destructuring-and-spread.fix-update-order
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.obj.spread, weight: 1 }
+tags: [spread, object, merge, debugging]
+estimatedSeconds: 120
+prompt: |
+  `updateProfile(profile, changes)`는 프로필에 바뀐 내용(`changes`)을 반영한 **새 프로필**을 돌려줘야 해요. 그런데 아무리 바꿔도 예전 값이 그대로 나와요. 버그를 고치세요.
+
+  ```js
+  updateProfile({ nickname: "코코", level: 3 }, { level: 4 });
+  // { nickname: "코코", level: 4 }  ← 지금은 level이 3이에요
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function updateProfile(profile, changes) {
+            return { ...changes, ...profile };
+          }
+  entry: updateProfile
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function updateProfile(profile, changes) {
+            return { ...profile, ...changes };
+          }
+  bugDescription: 바뀐 내용을 넘겨도 돌려받은 프로필에는 예전 값이 그대로 있어요.
+  bugMisconception: js.mc.spread-order-irrelevant
+  checks:
+    - kind: call
+      id: level-up
+      args: [{ nickname: "코코", level: 3 }, { level: 4 }]
+      requirement: 바뀐 내용 반영
+      expect: { equals: { nickname: "코코", level: 4 } }
+      misconceptionIfFail: js.mc.spread-order-irrelevant
+    - kind: call
+      id: two-changes
+      visible: false
+      description: 여러 속성을 바꾸고 새 속성을 더해도 모두 반영되고, 바꾸지 않은 속성은 그대로 남아야 합니다.
+      requirement: 바뀐 내용 반영
+      args: [{ nickname: "라라", level: 9, city: "서울" }, { nickname: "라라킴", city: "부산", bio: "안녕" }]
+      expect: { equals: { nickname: "라라킴", level: 9, city: "부산", bio: "안녕" } }
+    - kind: call
+      id: new-object
+      visible: false
+      description: 받은 프로필을 그대로 돌려주지 말고 새 객체를 돌려줘야 합니다.
+      requirement: 새 프로필
+      args: [{ nickname: "코코", level: 3 }, { level: 4 }]
+      expect: { returnsNewReference: true }
+    - kind: call
+      id: no-change
+      visible: false
+      description: 받은 프로필과 바뀐 내용 객체를 바꾸면 안 됩니다.
+      requirement: 새 프로필
+      args: [{ nickname: "코코", level: 3 }, { level: 4 }]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.spread-order-irrelevant]
+hints:
+  - 두 객체에 모두 있는 키(`level`)는 어느 쪽 값이 남나요?
+  - 전개는 왼쪽부터 담고, 같은 키는 나중에 담은 값이 이겨요.
+  - 이기고 싶은 쪽(바뀐 내용)을 어디에 두어야 할까요?
+explanation: |
+  펼치는 순서를 바꾸면 돼요.
+
+  ```js
+  function updateProfile(profile, changes) {
+    return { ...profile, ...changes };
+  }
+  ```
+
+  `{ ...changes, ...profile }`은 바뀐 내용을 먼저 담고, 그 위에 원래 프로필을 덮어써서 바뀐 값이 모두 사라졌어요. 같은 키는 나중에 담은 값이 이기니, 기본(원래 프로필)을 앞에, 바꿀 값을 뒤에 둬요.
+
+  `profile.level = changes.level; return profile;`처럼 고치면 첫 테스트는 통과하지만, 원래 프로필이 바뀌고 같은 객체를 돌려줘서 숨긴 테스트에 실패해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

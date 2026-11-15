@@ -1,0 +1,125 @@
+id: js-basics.objects.destructuring-and-spread.impl-apply-order
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.obj.spread, weight: 1 }
+  - { id: js.obj.destructuring, weight: 0.5 }
+  - { id: js.obj.dot-bracket, weight: 0.5 }
+tags: [spread, destructuring, bracket, immutable, boundary, write-code]
+estimatedSeconds: 480
+prompt: |
+  분식집 재고는 `{ 품목이름: 남은 수량 }` 모양의 객체예요. 주문 하나를 반영한 재고를 돌려주는 함수 `applyOrder(stock, order)`를 만드세요.
+
+  - `order`는 `{ item, qty }` 모양이에요. `qty`가 없으면 1개예요.
+  - 재고에 있는 품목이고 수량이 충분하면, 그 품목만 줄인 **새 재고 객체**를 돌려줘요. 남은 수량이 0이 되어도 품목은 지우지 않아요.
+  - 재고에 없는 품목이거나 수량이 부족하면 주문을 받지 않고, 받은 `stock`을 그대로 돌려줘요.
+  - 받은 `stock` 객체는 어떤 경우에도 바꾸지 않아요.
+
+  ```js
+  const stock = { 김밥: 5, 라면: 2 };
+  applyOrder(stock, { item: "김밥", qty: 2 }); // { 김밥: 3, 라면: 2 }
+  applyOrder(stock, { item: "라면" });         // { 김밥: 5, 라면: 1 }
+  applyOrder(stock, { item: "라면", qty: 3 }); // { 김밥: 5, 라면: 2 } (부족해서 그대로)
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function applyOrder(stock, order) {
+          }
+  entry: applyOrder
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function applyOrder(stock, { item, qty = 1 }) {
+            const left = stock[item];
+            if (left === undefined || left < qty) {
+              return stock;
+            }
+            const next = { ...stock };
+            next[item] = left - qty;
+            return next;
+          }
+  checks:
+    - kind: call
+      id: two-gimbap
+      args: [{ "김밥": 5, "라면": 2 }, { item: "김밥", qty: 2 }]
+      requirement: 재고 줄이기
+      expect: { equals: { "김밥": 3, "라면": 2 } }
+    - kind: call
+      id: default-one
+      args: [{ "김밥": 5, "라면": 2 }, { item: "라면" }]
+      requirement: 수량이 없으면 1개
+      expect: { equals: { "김밥": 5, "라면": 1 } }
+    - kind: call
+      id: not-enough
+      args: [{ "김밥": 5, "라면": 2 }, { item: "라면", qty: 3 }]
+      requirement: 받을 수 없는 주문
+      expect: { equals: { "김밥": 5, "라면": 2 } }
+    - kind: call
+      id: unknown-item
+      visible: false
+      description: 재고에 없는 품목을 주문하면 재고가 그대로여야 하고, 없는 품목이 새로 생기면 안 됩니다.
+      requirement: 받을 수 없는 주문
+      args: [{ "김밥": 5, "라면": 2 }, { item: "튀김", qty: 1 }]
+      expect: { equals: { "김밥": 5, "라면": 2 } }
+    - kind: call
+      id: to-zero
+      visible: false
+      description: 남은 수량을 모두 주문하면 그 품목은 0으로 남아야 합니다.
+      requirement: 재고 줄이기
+      args: [{ "순대": 3, "어묵": 10, "떡볶이": 4 }, { qty: 4, item: "떡볶이" }]
+      expect: { equals: { "순대": 3, "어묵": 10, "떡볶이": 0 } }
+    - kind: call
+      id: sold-out-item
+      visible: false
+      description: 수량이 0인 품목은 1개도 주문할 수 없어 재고가 그대로여야 합니다.
+      requirement: 받을 수 없는 주문
+      args: [{ "김밥": 0, "라면": 2 }, { item: "김밥" }]
+      expect: { equals: { "김밥": 0, "라면": 2 } }
+    - kind: call
+      id: new-object
+      visible: false
+      description: 주문을 받으면 받은 재고 객체가 아니라 새 재고 객체를 돌려줘야 합니다.
+      requirement: 원래 재고 지키기
+      args: [{ "김밥": 5, "라면": 2 }, { item: "김밥", qty: 2 }]
+      expect: { returnsNewReference: true }
+    - kind: call
+      id: no-change
+      visible: false
+      description: 주문을 받아도 받은 재고 객체의 수량은 바뀌면 안 됩니다.
+      requirement: 원래 재고 지키기
+      args: [{ "김밥": 5, "라면": 2 }, { item: "김밥", qty: 2 }]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.object-param-copied
+misconceptions: [js.mc.object-param-copied, js.mc.spread-mutates-original, js.mc.dot-with-variable-key]
+hints:
+  - "`order`에서 품목과 수량을 꺼내면서 수량의 기본값을 정해 보세요. 품목 이름은 변수에 들어 있으니 재고에서 그 품목의 수량은 어떤 표기법으로 읽어야 할까요?"
+  - 받을 수 없는 경우(없는 품목, 부족한 수량)를 먼저 확인해서 바로 돌려주세요. 없는 품목의 수량을 읽으면 어떤 값이 나오나요?
+  - 받을 수 있는 경우에는 재고를 펼친 새 객체를 먼저 만든 뒤, 그 **새 객체**의 수량만 바꿔요. `stock[item] -= qty`처럼 받은 객체를 바로 고치면 원래 재고가 바뀌어요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function applyOrder(stock, { item, qty = 1 }) {
+    const left = stock[item];
+    if (left === undefined || left < qty) {
+      return stock;
+    }
+    const next = { ...stock };
+    next[item] = left - qty;
+    return next;
+  }
+  ```
+
+  - **구조 분해와 기본값**: 매개변수 자리에서 `order`를 풀고 `qty = 1`로 수량이 없을 때를 처리해요.
+  - **대괄호 표기법**: 품목 이름이 변수 `item`에 들어 있으니 `stock[item]`으로 읽어요. `stock.item`은 이름이 `"item"`인 속성을 찾아 늘 `undefined`예요.
+  - **받을 수 없는 주문**: 없는 품목은 `stock[item]`이 `undefined`예요. `undefined < 1`은 `false`라서 부족 검사만으로는 걸러지지 않으니 따로 확인해요. 확인하지 않으면 `undefined - 1`로 `튀김: NaN`이 생겨요. 수량이 0인 품목은 `0 < 1`이라 걸러져요.
+  - **새 객체**: `{ ...stock }`으로 새 객체를 만든 뒤 그 객체만 고쳐요. 재고 값이 숫자라 얕은 복사로 충분해요. `stock[item] -= qty; return stock;`은 결과는 맞아 보여도 원래 재고를 바꾸고 같은 객체를 돌려줘서 숨긴 테스트 두 개에 실패해요.
+  - `{ ...stock, [item]: left - qty }`처럼 대괄호로 키를 계산해 한 번에 써도 돼요(계산된 속성 이름).
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,43 @@
+id: js-basics.objects.object-basics.tf-duplicate-key
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.obj.add-delete, weight: 1 }
+tags: [object, literal, duplicate-key]
+estimatedSeconds: 60
+prompt: |
+  아래 코드를 보고, 설명이 맞는지 고른 뒤 그렇게 판단한 이유도 고르세요.
+code: |
+  const menu = { name: "라면", price: 4000, price: 4500 };
+  console.log(menu.price);
+spec:
+  statement: "`menu`를 만들 때 `price`를 두 번 썼으므로, 실행하면 같은 이름을 두 번 쓴 것에 대한 오류가 난다."
+  answer: false
+  misconceptionIfWrong: js.mc.duplicate-key-error
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 같은 키를 두 번 쓰면 오류 없이 뒤에 쓴 값이 남아 4500이 출력된다
+      correct: true
+    - id: r2
+      text: 같은 키를 두 번 쓰면 오류 없이 처음 쓴 값이 남아 4000이 출력된다
+      misconception: js.mc.duplicate-key-error
+    - id: r3
+      text: 같은 키를 두 번 쓰면 두 값이 합쳐져 8500이 출력된다
+hints:
+  - 변수를 `let`으로 두 번 만드는 것과 객체 키를 두 번 쓰는 것은 같은 규칙일까요?
+  - 객체에는 같은 이름의 서랍이 두 개 있을 수 없어요. 그렇다면 둘 중 하나만 남겠죠.
+  - 속성은 쓴 순서대로 채워져요. 같은 서랍에 두 번째 값을 넣으면 첫 번째 값은 어떻게 될까요?
+explanation: |
+  설명은 **거짓**이에요. 오류 없이 `4500`이 출력돼요.
+
+  객체 리터럴은 속성을 왼쪽부터 차례로 채워요. 같은 키가 다시 나오면 새 서랍을 만들지 않고, 이미 있는 `price` 서랍의 값을 **덮어써요**. 그래서 `menu`는 `{ name: "라면", price: 4500 }`과 같아요. 엄격 모드에서도 오류가 나지 않아요.
+
+  - "처음 쓴 값이 남는다": 덮어쓰기 순서를 반대로 본 거예요. 뒤에 쓴 값이 이겨요.
+  - "두 값이 합쳐진다": 같은 키는 하나만 남을 뿐 값을 더하지 않아요.
+
+  오류가 나지 않아서 실수로 값이 사라져도 알아차리기 어려워요. 긴 객체를 쓸 때는 키가 겹치지 않는지 확인해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

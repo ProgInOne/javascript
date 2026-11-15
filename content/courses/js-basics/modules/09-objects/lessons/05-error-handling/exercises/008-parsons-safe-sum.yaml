@@ -1,0 +1,81 @@
+id: js-basics.objects.error-handling.parsons-safe-sum
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.errors.try-catch, weight: 1 }
+  - { id: js.errors.throw, weight: 0.5 }
+tags: [try-catch, throw, parsons]
+estimatedSeconds: 160
+prompt: |
+  두 입력을 숫자로 바꿔 더하는 계산기예요. 숫자로 바꿀 수 없는 입력이 있으면 `toNumber`가 오류를 던지고, 계산하는 쪽이 그 오류를 잡아 안내해요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  계산 실패: 숫자가 아니에요: abc
+  계산기 종료
+  ```
+spec:
+  lines:
+    - { id: l1, code: "function toNumber(text) {" }
+    - { id: l2, code: "const n = Number(text);", indent: 1 }
+    - { id: l3, code: "if (Number.isNaN(n)) {", indent: 1 }
+    - { id: l4, code: 'throw new Error("숫자가 아니에요: " + text);', indent: 2 }
+    - { id: l5, code: "}", indent: 1 }
+    - { id: l6, code: "return n;", indent: 1 }
+    - { id: l7, code: "}" }
+    - { id: l8, code: "try {" }
+    - { id: l9, code: 'const total = toNumber("1500") + toNumber("abc");', indent: 1 }
+    - { id: l10, code: 'console.log("합계: " + total);', indent: 1 }
+    - { id: l11, code: "} catch (err) {" }
+    - { id: l12, code: 'console.log("계산 실패: " + err.message);', indent: 1 }
+    - { id: l13, code: "}" }
+    - { id: l14, code: 'console.log("계산기 종료");' }
+  distractors:
+    - { id: d1, code: 'console.log("숫자가 아니에요: " + text);', replaces: l4, misconception: js.mc.throw-just-logs }
+    - { id: d2, code: 'return new Error("숫자가 아니에요: " + text);', replaces: l4 }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 계산 실패 안내와 "계산기 종료"가 차례로 출력되어야 합니다.
+      requirement: 오류 안내 후 계속 실행
+      expect:
+        lines: ["계산 실패: 숫자가 아니에요: abc", "계산기 종료"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 잡히지 않은 오류 없이 끝나야 합니다.
+      requirement: 오류 안내 후 계속 실행
+      expect:
+        noError: true
+misconceptions: [js.mc.throw-just-logs]
+hints:
+  - 함수 `toNumber`를 먼저 완성하고, 그다음 `try...catch`와 마지막 줄을 놓아 보세요.
+  - 숫자가 아닐 때 비슷한 줄이 세 개 보여요. 함수를 그 자리에서 끝내고 `catch`로 오류를 보내는 줄은 어느 것일까요?
+  - 출력 예시에 `합계:` 줄이 없다는 점에 주목하세요. 오류가 난 뒤 `try`의 남은 줄은 어떻게 되나요? `계산기 종료`는 오류와 상관없이 나와야 해요.
+explanation: |
+  정답 순서예요.
+
+  ```js
+  function toNumber(text) {
+    const n = Number(text);
+    if (Number.isNaN(n)) {
+      throw new Error("숫자가 아니에요: " + text);
+    }
+    return n;
+  }
+  try {
+    const total = toNumber("1500") + toNumber("abc");
+    console.log("합계: " + total);
+  } catch (err) {
+    console.log("계산 실패: " + err.message);
+  }
+  console.log("계산기 종료");
+  ```
+
+  - `toNumber("abc")`에서 `throw`가 실행되어 함수가 끝나고, 오류가 `catch`로 가요. 그래서 `합계:` 줄은 건너뛰고 `계산 실패: ...`가 출력돼요.
+  - 오류는 잡혔으니 `계산기 종료`도 출력돼요.
+  - `console.log("숫자가 아니에요: " + text);`는 출력만 하고 함수가 계속돼서 `NaN`을 돌려줘요. 그 결과 `합계: NaN`이 나오고 `catch`는 실행되지 않아요.
+  - `return new Error(...)`는 오류를 던지지 않고 값으로 돌려줘요. 숫자와 더해져 `합계: 1500Error: 숫자가 아니에요: abc` 같은 엉뚱한 문장이 나와요. 오류는 `throw`로 던져야 `catch`가 받을 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

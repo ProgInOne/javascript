@@ -1,0 +1,59 @@
+id: js-basics.objects.destructuring-and-spread.multi-destructure-facts
+type: mcq_multi
+difficulty: 4
+concepts:
+  - { id: js.obj.destructuring, weight: 1 }
+  - { id: js.obj.spread, weight: 0.3 }
+tags: [destructuring, rename, default, rest, null-value]
+estimatedSeconds: 150
+prompt: |
+  아래 코드를 실행한 뒤의 상태로 **맞는 설명**을 모두 고르세요.
+code: |
+  const order = { menu: "라면", qty: 2, extra: null };
+  const { menu: food, qty = 1, extra = "없음", ...rest } = order;
+spec:
+  options:
+    - id: a
+      text: "`food`는 `\"라면\"`이다"
+      missedMisconception: js.mc.destructuring-rename-direction
+    - id: b
+      text: "`menu`라는 변수도 만들어져서 `\"라면\"`이 들어 있다"
+      misconception: js.mc.destructuring-rename-direction
+      rationale: "`menu: food`는 menu 속성을 food 변수로 받는다는 뜻이에요. 변수는 food 하나만 만들어져요."
+    - id: c
+      text: "`extra`는 `\"없음\"`이다"
+      misconception: js.mc.destructuring-default-on-null
+      rationale: 기본값은 값이 없거나 undefined일 때만 쓰여요. extra의 값은 null이라 그대로 null이에요.
+    - id: d
+      text: "`qty`는 `1`이다"
+      rationale: order에 qty 속성이 2로 있어서 기본값 1은 쓰이지 않아요.
+    - id: e
+      text: "`rest`는 빈 객체 `{}`이다"
+    - id: f
+      text: "`order`에는 여전히 속성이 3개 있다"
+      missedMisconception: js.mc.destructuring-removes-property
+  correct: [a, e, f]
+misconceptions: [js.mc.destructuring-rename-direction, js.mc.destructuring-default-on-null, js.mc.destructuring-removes-property]
+hints:
+  - 왼쪽 패턴의 항목 네 개가 각각 어느 속성을 어떤 변수로 꺼내는지 표로 적어 보세요.
+  - 기본값이 붙은 두 항목은 실제 값이 무엇인지 확인하세요. 기본값은 어떤 값일 때만 쓰였나요?
+  - "`...rest`에는 앞에서 꺼내지 **않은** 속성만 모여요. 그리고 구조 분해가 원본을 바꾸는지 떠올려 보세요."
+explanation: |
+  맞는 설명은 세 개예요: "`food`는 `\"라면\"`이다", "`rest`는 빈 객체 `{}`이다", "`order`에는 여전히 속성이 3개 있다".
+
+  | 패턴 항목 | 꺼내는 속성 | 만들어지는 변수 | 값 |
+  |---|---|---|---|
+  | `menu: food` | `menu` | `food` | `"라면"` |
+  | `qty = 1` | `qty` | `qty` | `2` (값이 있어 기본값 안 씀) |
+  | `extra = "없음"` | `extra` | `extra` | `null` (`null`에는 기본값 안 씀) |
+  | `...rest` | 남은 속성 | `rest` | `{}` (세 속성을 모두 꺼냄) |
+
+  - `menu` 변수는 만들어지지 않아요. 콜론 오른쪽의 `food`만 변수예요.
+  - `extra`는 `null`이에요. 기본값은 값이 없거나 `undefined`일 때만 쓰여요.
+  - `qty`는 실제 값 2예요.
+  - `rest`는 "앞에서 꺼내지 않은 속성"을 모은 새 객체인데, 세 속성을 모두 꺼냈으니 비어 있어요.
+  - 구조 분해와 나머지는 값을 읽기만 하므로 `order`는 그대로 속성 3개를 가져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

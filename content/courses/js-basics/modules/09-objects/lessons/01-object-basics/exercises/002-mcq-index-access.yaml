@@ -1,0 +1,46 @@
+id: js-basics.objects.object-basics.mcq-index-access
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.obj.literal, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.3 }
+tags: [object, literal, index, undefined]
+estimatedSeconds: 60
+prompt: |
+  아래 코드를 실행하면 무엇이 출력되나요?
+code: |
+  const drink = { name: "식혜", size: "L", price: 2000 };
+  console.log(drink[0]);
+spec:
+  options:
+    - id: a
+      text: "`식혜`"
+      misconception: js.mc.obj-access-by-index
+      rationale: 객체의 속성에는 순서 번호가 없어요. drink[0]은 이름이 "0"인 속성을 찾아요.
+    - id: b
+      text: "`undefined`"
+    - id: c
+      text: "`name`"
+      misconception: js.mc.obj-access-by-index
+      rationale: 키 목록에서 0번째를 꺼내는 것도 아니에요. drink[0]은 이름이 "0"인 속성의 값을 찾아요.
+    - id: d
+      text: "`TypeError`가 난다"
+      misconception: js.mc.missing-property-error
+      rationale: 없는 속성을 읽는 것은 오류가 아니에요. 값이 undefined일 뿐이에요.
+  correct: b
+misconceptions: [js.mc.obj-access-by-index, js.mc.missing-property-error]
+hints:
+  - 객체는 값을 무엇으로 찾나요? 순서 번호인가요, 이름(키)인가요?
+  - "`drink[0]`은 이름이 `\"0\"`인 속성을 찾아요. `drink`에 그런 키가 있나요?"
+  - 없는 속성을 읽었을 때 어떤 값이 나오는지 레슨의 두 번째 예제를 떠올려 보세요.
+explanation: |
+  `undefined`가 출력돼요.
+
+  객체는 서랍장처럼 **이름표(키)로** 값을 찾아요. 배열이나 문자열처럼 순서 번호가 붙어 있지 않아요. `drink[0]`은 대괄호 안의 `0`을 이름으로 써서 키가 `"0"`인 속성을 찾는데, `drink`에는 `name`, `size`, `price`뿐이라 없는 속성이에요. 없는 속성을 읽으면 오류 없이 `undefined`예요.
+
+  - `식혜`나 `name`이라고 생각했다면 객체에도 순서 번호가 있다고 본 거예요. 첫 번째 값을 꺼내려면 `drink.name`처럼 이름으로 읽어요.
+  - 오류를 예상했다면, 오류는 없는 속성을 읽을 때가 아니라 `undefined`에서 다시 속성을 읽을 때 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

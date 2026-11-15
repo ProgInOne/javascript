@@ -1,0 +1,38 @@
+id: js-basics.objects.reference-vs-value.predict-const-player
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.obj.const-mutation, weight: 1 }
+  - { id: js.obj.reference, weight: 0.5 }
+tags: [const, mutation, reference, value]
+estimatedSeconds: 100
+prompt: |
+  프로그램이 끝났을 때 `player`에 들어 있는 객체를 쓰세요. 객체 리터럴 모양(예: `{ name: "민지", hp: 0 }`)으로 쓰면 돼요.
+spec:
+  lang: js
+  code: |
+    const player = { name: "민지", hp: 100 };
+    const backup = player;
+
+    player.hp -= 30;
+    backup.items = ["포션"];
+  answerKind: value
+  expression: player
+  misconceptionByAnswer:
+    '{ name: "민지", hp: 100 }': js.mc.const-object-props-frozen
+    '{ name: "민지", hp: 70 }': js.mc.assign-copies-object
+hints:
+  - "`const`로 만든 객체의 속성을 바꾸거나 더할 수 있었나요?"
+  - "`backup`은 새 객체인가요, `player`와 같은 객체인가요?"
+  - 4번 줄과 5번 줄이 바꾸는 객체가 모두 같은 객체인지 확인하고, 그 객체의 최종 모습을 적어 보세요.
+explanation: |
+  `player`에는 `{ name: "민지", hp: 70, items: ["포션"] }`이 들어 있어요.
+
+  - `const`는 `player`에 다시 대입하는 것만 막아요. 4번 줄처럼 속성을 바꾸는 것은 오류 없이 돼요. 그래서 `hp`는 70이에요.
+  - 2번 줄은 참조 복사라서 `backup`과 `player`는 같은 객체예요. 5번 줄에서 `backup`으로 더한 `items`도 `player`에서 보여요.
+
+  `hp: 100`이라고 썼다면 `const` 객체의 속성은 바뀌지 않는다고 본 거예요. `items`를 빠뜨렸다면 `backup`이 복사본이라고 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

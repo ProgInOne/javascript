@@ -1,0 +1,104 @@
+id: js-basics.objects.object-basics.impl-describe-field
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.obj.dot-bracket, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [object, bracket, variable-key, undefined, write-code]
+estimatedSeconds: 200
+prompt: |
+  회원 정보 객체 `record`와 속성 이름 `field`를 받아, 그 속성을 설명하는 문장을 돌려주는 함수 `describe(record, field)`를 만드세요.
+
+  - '속성이 있으면 `"(속성 이름): (값)"`을 돌려줘요.'
+  - '속성이 없으면(값이 `undefined`이면) `"(속성 이름): 정보 없음"`을 돌려줘요.'
+
+  ```js
+  describe({ name: "하린", city: "대전" }, "city");   // "city: 대전"
+  describe({ name: "하린", city: "대전" }, "email");  // "email: 정보 없음"
+  ```
+
+  채점에서는 다른 회원 정보와 속성 이름으로도 호출해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function describe(record, field) {
+          }
+  entry: describe
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function describe(record, field) {
+            const value = record[field];
+            if (value === undefined) {
+              return field + ": 정보 없음";
+            }
+            return field + ": " + value;
+          }
+  checks:
+    - kind: call
+      id: city
+      args: [{ name: "하린", city: "대전" }, "city"]
+      requirement: 있는 속성 설명
+      expect: { equals: "city: 대전" }
+    - kind: call
+      id: missing
+      args: [{ name: "하린", city: "대전" }, "email"]
+      requirement: 없는 속성 처리
+      expect: { equals: "email: 정보 없음" }
+    - kind: call
+      id: number-value
+      visible: false
+      description: 값이 숫자인 속성도 같은 모양으로 설명해야 합니다.
+      requirement: 있는 속성 설명
+      args: [{ name: "도윤", age: 15 }, "age"]
+      expect: { equals: "age: 15" }
+    - kind: call
+      id: field-property
+      visible: false
+      description: 회원 정보에 이름이 field인 속성이 따로 있어도, 매개변수 field에 든 이름의 속성을 읽어야 합니다.
+      requirement: 있는 속성 설명
+      args: [{ field: "디자인", name: "서연" }, "name"]
+      expect: { equals: "name: 서연" }
+      misconceptionIfFail: js.mc.dot-with-variable-key
+    - kind: call
+      id: hyphen-key
+      visible: false
+      description: 하이픈이 든 속성 이름도 읽을 수 있어야 합니다.
+      requirement: 있는 속성 설명
+      args: [{ "nick-name": "별빛" }, "nick-name"]
+      expect: { equals: "nick-name: 별빛" }
+    - kind: call
+      id: falsy-value
+      visible: false
+      description: 값이 0이나 빈 문자열이어도 있는 속성이므로 정보 없음이 아니라 그 값을 보여 줘야 합니다.
+      requirement: 없는 속성 처리
+      args: [{ points: 0 }, "points"]
+      expect: { equals: "points: 0" }
+misconceptions: [js.mc.dot-with-variable-key]
+hints:
+  - 읽을 속성의 이름이 매개변수 `field`에 들어 있어요. 이름이 변수에 있을 때 쓰는 표기법은 무엇이었나요?
+  - 없는 속성을 읽으면 어떤 값이 나오나요? 그 값과 비교해서 두 경우를 나눠 보세요.
+  - 값이 `0`인 속성도 있는 속성이에요. "값이 거짓 같은지"가 아니라 "값이 정확히 `undefined`인지"로 나눠야 해요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function describe(record, field) {
+    const value = record[field];
+    if (value === undefined) {
+      return field + ": 정보 없음";
+    }
+    return field + ": " + value;
+  }
+  ```
+
+  - '**대괄호 표기법**: 어떤 속성을 읽을지는 호출할 때 정해지므로 `record[field]`로 읽어요. `record.field`는 이름이 `field`인 속성을 찾아서, 숨긴 검사 `field-property`처럼 그런 속성이 따로 있으면 엉뚱한 값을 돌려줘요.'
+  - '**없는 속성**: 없는 속성은 `undefined`라서 `=== undefined`로 확인해요.'
+  - '**`0`과 빈 문자열**: `if (!value)`처럼 쓰면 `0`도 거짓으로 보아 `points: 정보 없음`이 돼요. 있는 속성의 값이 우연히 `0`일 수 있으니 `undefined`와 정확히 비교해요.'
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

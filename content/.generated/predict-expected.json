@@ -676,6 +676,212 @@
         ]
       }
     },
+    "js-basics.objects.destructuring-and-spread.predict-defaults-null": {
+      "inputHash": "53c26ded98df68fbe5e4fa0c46e99361241ff8ce6c965fb2094a77a10192d0dc",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "0 / en / true",
+          "null / ko / false",
+          "50 / ko / true"
+        ]
+      }
+    },
+    "js-basics.objects.destructuring-and-spread.predict-skip-rest": {
+      "inputHash": "dd02d9b0e763add3debe3462c71a16a6b2b577b833e8bf8b035dea2ec9bade7f",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "90 undefined",
+          "90 [75, 88] 2",
+          "88"
+        ]
+      }
+    },
+    "js-basics.objects.destructuring-and-spread.predict-spread-trace": {
+      "inputHash": "a120dace3dda3be1ee0370706b0ee08b109c97b44127bdcc67ac93cd887714f3",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "5000 콜라",
+          "[\"감자\", \"샐러드\"]",
+          "[\"감자\", \"치즈\"]",
+          "false true"
+        ]
+      }
+    },
+    "js-basics.objects.error-handling.predict-finally-return": {
+      "inputHash": "9b615fb9a5a2684a795a47a5214ecde6d88d369ba97528a38b7f95551824c4f0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "쿠폰 확인 끝",
+          "4000",
+          "쿠폰 실패: 없는 쿠폰",
+          "쿠폰 확인 끝",
+          "5000"
+        ]
+      }
+    },
+    "js-basics.objects.error-handling.predict-throw-in-function": {
+      "inputHash": "df87be31287aef5e99aa45037230888ffb6f92f5093754c2a5459ccc4981799f",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "25세 확인",
+          "성인",
+          "입장 불가: 나이는 0 이상이어야 해요"
+        ]
+      }
+    },
+    "js-basics.objects.error-handling.predict-try-resume": {
+      "inputHash": "a2a08b790108f9d1ada5f38a197d02dda0b20294565c1f6a4274f537f5080fb0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "주문 확인",
+          "메뉴: 라면",
+          "손님 정보 없음 (TypeError)",
+          "주문 확인 끝"
+        ]
+      }
+    },
+    "js-basics.objects.object-basics.predict-cart-changes": {
+      "inputHash": "d6df35946cc526c3776dabeb6889e0e0e5d08aa17fe66f8537f1b5b3acf88fc6",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "{ milk: 3, bread: 1, item: 5, apple: undefined }"
+        ]
+      }
+    },
+    "js-basics.objects.object-basics.predict-missing-then-error": {
+      "inputHash": "c5acc5c36f10e8954cc2d1b113ca858b68a4101d9c99a6e0e08b445b855f605b",
+      "expected": {
+        "kind": "error",
+        "thrown": true,
+        "name": "TypeError"
+      }
+    },
+    "js-basics.objects.object-basics.predict-nested-access": {
+      "inputHash": "6fc00b8f8694ef649c0f8affb675ea6d614b7f78eba6718e922fea2dc5e395dc",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "과학",
+          "코딩부 301호",
+          "4",
+          "{ title: \"코딩부\", room: 301 }"
+        ]
+      }
+    },
+    "js-basics.objects.object-iteration.predict-for-in-dot": {
+      "inputHash": "9fa6e2985b026f373583317cf73317dbc0530eadbc16bde2f3180851759c5811",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "morning undefined",
+          "lunch undefined",
+          "evening undefined",
+          "합계 60000"
+        ]
+      }
+    },
+    "js-basics.objects.object-iteration.predict-optional-chaining": {
+      "inputHash": "864ce929c02a224141cecbfb90e39df2c3410ed3d150b9e674c020089c8ca294",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "부산",
+          "미입력",
+          "0",
+          "층 없음",
+          "false"
+        ]
+      }
+    },
+    "js-basics.objects.reference-vs-value.predict-alias-change": {
+      "inputHash": "819ce3abe48a826b439ce652a42d5aa53c295874e14b714e1390596578737c56",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3 4",
+          "강철 검 강철 검"
+        ]
+      }
+    },
+    "js-basics.objects.reference-vs-value.predict-const-player": {
+      "inputHash": "6450867076a9e225452a104cc4669235237beaa27db7625fb88c1f72e31bcb5d",
+      "expected": {
+        "kind": "value",
+        "value": {
+          "t": "object",
+          "className": "Object",
+          "entries": [
+            [
+              "name",
+              {
+                "t": "string",
+                "v": "민지"
+              }
+            ],
+            [
+              "hp",
+              {
+                "t": "number",
+                "v": 70
+              }
+            ],
+            [
+              "items",
+              {
+                "t": "array",
+                "items": [
+                  {
+                    "t": "string",
+                    "v": "포션"
+                  }
+                ],
+                "length": 1
+              }
+            ]
+          ]
+        }
+      }
+    },
+    "js-basics.objects.reference-vs-value.predict-equality-arrays": {
+      "inputHash": "0745c2a377ecf162a8842c75e57dc17667560b375fc88df2f263221a73a5a98f",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "false true",
+          "2 1",
+          "true"
+        ]
+      }
+    },
+    "js-basics.objects.reference-vs-value.predict-param-reassign": {
+      "inputHash": "9b9d947e7bba0f731da3fc14da8974093f8e86c70d627f4255c540771f13d612",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "지민 20",
+          "익명 99",
+          "false"
+        ]
+      }
+    },
+    "js-basics.objects.reference-vs-value.predict-shallow-nested": {
+      "inputHash": "a86cb3172e04bce1365d2d08ebaf3247db6343762533141963501bd5cdd18064",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "기본 세트 5000 3",
+          "3 7000",
+          "false true true"
+        ]
+      }
+    },
     "js-basics.operators.arithmetic.predict-compound-chain": {
       "inputHash": "6aa67c462d0122270567bce8bb68fff01b579659224a176b30db54a490f08d7b",
       "expected": {

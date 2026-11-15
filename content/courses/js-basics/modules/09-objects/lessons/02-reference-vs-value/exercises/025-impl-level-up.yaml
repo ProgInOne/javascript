@@ -1,0 +1,82 @@
+id: js-basics.objects.reference-vs-value.impl-level-up
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.obj.const-mutation, weight: 1 }
+  - { id: js.obj.add-delete, weight: 0.3 }
+tags: [const, mutation, write-code, program]
+estimatedSeconds: 180
+prompt: |
+  게임 캐릭터 `hero`가 레벨 업했어요. 시작 코드의 주석 자리에 코드를 써서 `hero`를 아래처럼 바꾸세요.
+
+  - `level`을 1 올려요.
+  - `hp`를 20 올려요.
+  - `skills` 배열 끝에 `"회오리 베기"`를 더해요.
+  - 새 속성 `title`에 `"견습 기사"`를 넣어요.
+
+  `hero`는 `const`로 만들어져 있어요. 1번 줄은 그대로 두고 풀어 보세요. 마지막 줄은 바뀐 `hero`를 출력해요.
+
+  ```text
+  { name: "용사", level: 2, hp: 70, skills: ["베기", "회오리 베기"], title: "견습 기사" }
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const hero = { name: "용사", level: 1, hp: 50, skills: ["베기"] };
+
+          // 여기에 레벨 업 코드를 쓰세요
+
+          console.log(hero);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const hero = { name: "용사", level: 1, hp: 50, skills: ["베기"] };
+
+          // 여기에 레벨 업 코드를 쓰세요
+          hero.level += 1;
+          hero.hp += 20;
+          hero.skills.push("회오리 베기");
+          hero.title = "견습 기사";
+
+          console.log(hero);
+  checks:
+    - kind: console
+      id: output
+      description: 바뀐 hero가 출력되어야 합니다.
+      requirement: 레벨 업 결과
+      expect:
+        lines: ['{ name: "용사", level: 2, hp: 70, skills: ["베기", "회오리 베기"], title: "견습 기사" }']
+    - kind: program
+      id: hero-updated
+      description: 프로그램이 오류 없이 끝나고 hero에 네 가지 변화가 모두 들어 있어야 합니다.
+      requirement: 레벨 업 결과
+      expect:
+        globals:
+          hero: { equals: { name: "용사", level: 2, hp: 70, skills: ["베기", "회오리 베기"], title: "견습 기사" } }
+        noError: true
+      misconceptionIfFail: js.mc.const-object-props-frozen
+misconceptions: [js.mc.const-object-props-frozen, js.mc.add-property-needs-declare]
+hints:
+  - "`hero`가 `const`여도 속성은 바꿀 수 있어요. `hero = { ... }`처럼 변수에 새 객체를 대입하면 어떻게 될까요?"
+  - 숫자 속성은 복합 대입 연산자로 올릴 수 있고, 배열 속성에는 끝에 값을 더하는 메서드를 쓸 수 있어요.
+  - 없는 속성에 값을 대입하면 새 속성이 생겨요. 네 가지 변화를 한 줄씩 써 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  hero.level += 1;
+  hero.hp += 20;
+  hero.skills.push("회오리 베기");
+  hero.title = "견습 기사";
+  ```
+
+  - `const`는 `hero`에 다시 대입하는 것만 막아요. 속성을 바꾸고(`level`, `hp`), 안쪽 배열을 바꾸고(`skills`), 새 속성을 더하는(`title`) 것은 모두 돼요.
+  - `hero = { name: "용사", level: 2, ... };`처럼 새 객체를 대입하면 `TypeError: Assignment to constant variable.`이 나요.
+  - `hero.level++;`처럼 증가 연산자를 써도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

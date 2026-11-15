@@ -1,0 +1,437 @@
+<Section kind="objectives">
+- 객체를 다른 변수에 대입하거나 함수에 넘긴 뒤 속성을 바꾼 결과를 예측할 수 있어요.
+- 속성을 바꾸는 것(`player.score = 0`)과 변수나 매개변수에 새 객체를 대입하는 것(`player = {}`)의 차이를 설명할 수 있어요.
+- `{ ...obj }`로 얕은 복사본을 만들고, 안쪽 객체·배열이 원본과 함께 쓰이는 결과를 예측해 고칠 수 있어요.
+- 객체를 `===`로 비교한 결과를 예측하고, `const`로 만든 객체의 속성을 바꿀 수 있는 이유를 설명할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+쇼핑몰에서 회원 정보 수정 화면을 만든다고 해 볼게요. 사용자가 이름을 고치다가 "취소"를 누르면 원래 정보로 돌아가야 해요. 그래서 원래 정보를 `saved`에 담아 두고, 화면에서는 `const draft = saved;`로 "복사한" 객체를 고치게 했어요. 그런데 취소를 눌러도 `saved`의 이름이 이미 바뀌어 있어요. 복사본만 고쳤는데 왜 원본까지 바뀌었을까요?
+
+모듈 6에서 숫자를 함수에 넘기고 함수 안에서 바꿨을 때는 바깥 변수가 그대로였어요. 그런데 객체는 다르게 움직여요. 변수에 객체가 **통째로 들어 있는 것이 아니라, 객체가 있는 곳을 가리키는 표시(참조)**가 들어 있기 때문이에요.
+
+이 단원에서는 이 "참조"가 무엇인지, 객체를 대입하거나 함수에 넘길 때 무슨 일이 생기는지, 진짜 복사본은 어떻게 만드는지, 객체를 `===`로 비교하면 무엇을 비교하는지 배워요. JavaScript 기초에서 가장 많은 버그를 만드는 주제라서, 여기서 확실히 익혀 두면 나중에 화면과 데이터를 다룰 때 "왜 이 값이 바뀌었지?"를 스스로 찾을 수 있어요.
+</Section>
+
+<Section kind="principle">
+### 원시 값은 값이 복사되고, 객체는 참조가 복사돼요
+
+숫자, 문자열, 불리언, `undefined`, `null` 같은 **원시 값**은 변수에 값 자체가 들어가요. 그래서 `let b = a;`를 하면 값이 하나 더 만들어져 `b`에 들어가요. 그 뒤에 `b`를 바꿔도 `a`는 그대로예요.
+
+객체(배열도 객체예요)는 달라요. `{ ... }`를 쓰는 순간 객체가 컴퓨터 메모리 어딘가에 하나 만들어지고, 변수에는 **그 객체가 있는 곳을 가리키는 참조**가 들어가요. `const b = a;`를 하면 **참조가 복사**되어, `a`와 `b`가 같은 객체 하나를 함께 가리켜요.
+
+```js
+let n1 = 70;
+let n2 = n1;          // 값 70이 복사됨
+n2 = 95;              // n2만 바뀜
+
+const p1 = { score: 70 };
+const p2 = p1;        // 참조가 복사됨 → 같은 객체
+p2.score = 95;        // 그 객체의 score가 바뀜 → p1.score도 95
+```
+
+### 첫 번째 관점: 변수는 객체를 가리키는 화살표예요
+
+위 코드를 그림으로 그리면 이래요.
+
+```text
+원시 값                     객체
+
+n1 [ 70 ]                  p1 ──┐
+n2 [ 95 ]                       ├──▶ { score: 95 }
+                           p2 ──┘
+변수마다 값이 따로 있어요    두 변수가 객체 하나를 가리켜요
+```
+
+- 원시 값 변수는 값이 든 상자예요. 상자가 둘이면 값도 둘이에요.
+- 객체 변수는 객체를 가리키는 화살표예요. `p2 = p1`은 화살표를 하나 더 그린 것이지 객체를 하나 더 만든 것이 아니에요.
+- `p2.score = 95`는 "`p2`가 가리키는 객체의 `score`를 바꿔라"예요. 그 객체를 `p1`도 가리키고 있으니 `p1.score`로 읽어도 95예요.
+
+### 두 번째 관점: 사물함 번호표
+
+객체를 사물함에 넣어 두고, 변수에는 **사물함 번호표**를 들고 있다고 생각해도 좋아요.
+
+- `const p2 = p1;`은 번호표를 복사해서 하나 더 갖는 거예요. 사물함은 여전히 하나예요.
+- `p2.score = 95`는 번호표를 들고 사물함에 가서 안의 물건을 바꾸는 거예요. `p1`의 번호표로 같은 사물함을 열면 바뀐 물건이 보여요.
+- `p2 = { score: 0 }`은 사물함 안을 바꾸는 게 아니라, **`p2`가 든 번호표를 새 사물함의 번호표로 바꾸는** 거예요. `p1`은 원래 사물함 번호표를 그대로 들고 있어요.
+
+마지막 줄이 중요해요. **"속성을 바꾸기"(`p2.score = ...`)와 "변수에 새 객체를 대입하기"(`p2 = {...}`)는 전혀 다른 일이에요.**
+
+| 코드 | 무엇이 바뀌나요 | 같은 객체를 가리키던 다른 변수 |
+|---|---|---|
+| `p2.score = 95` | 객체 안의 속성 | 바뀐 값이 보여요 |
+| `p2.tags.push("새싹")` | 객체 안의 배열 | 바뀐 값이 보여요 |
+| `p2 = { score: 0 }` | `p2`가 가리키는 곳 | 아무 영향 없어요 |
+
+### 함수에 객체를 넘길 때
+
+함수를 부르면 인수 값이 매개변수에 대입돼요(모듈 6). 객체를 넘기면 **참조가 대입**되므로, 매개변수와 바깥 변수가 같은 객체를 가리켜요.
+
+- 함수 안에서 `player.score += 10`처럼 **속성을 바꾸면** 바깥 객체가 바뀌어요.
+- 함수 안에서 `player = { ... }`처럼 **매개변수에 새 객체를 대입하면** 매개변수만 다른 객체를 가리키게 될 뿐, 바깥 변수는 그대로예요. 모듈 6에서 배운 "매개변수를 바꿔도 바깥 변수는 안 바뀐다"는 규칙이 여기서도 그대로 맞아요.
+
+그래서 함수가 받은 객체를 몰래 바꾸면 부르는 쪽은 놀라게 돼요. 원본을 지키려면 함수 안에서 **복사본을 만들어 바꾸고, 그 복사본을 돌려줘요.**
+
+### 복사본 만들기: 얕은 복사
+
+점 세 개를 쓴 `{ ...original }`은 `original`의 속성을 모두 담은 **새 객체**를 만들어요. 배열은 `[...list]`로 새 배열을 만들어요. 점 세 개 문법(전개 구문)은 "구조 분해와 전개" 단원에서 더 자세히 배우고, 여기서는 복사하는 방법으로만 써요.
+
+```js
+const original = { name: "민지", tags: ["새싹"] };
+const copy = { ...original };
+```
+
+```text
+original ──▶ { name: "민지", tags: ─┐ }
+                                     ├──▶ ["새싹"]
+copy     ──▶ { name: "민지", tags: ─┘ }
+```
+
+- `copy`는 새 객체라서 `copy.name = "준호"`는 `original`에 영향을 주지 않아요.
+- 그런데 `tags`의 값은 배열(객체)이에요. 복사할 때 **배열이 아니라 배열을 가리키는 참조가 복사**되어, 두 객체가 같은 배열을 함께 써요. 그래서 `copy.tags.push("우수")`는 `original.tags`도 바꿔요.
+
+이렇게 첫 단계 속성만 새로 담는 복사를 **얕은 복사(shallow copy)**라고 해요. 안쪽까지 따로 만들려면 두 가지 방법이 있어요.
+
+- 바꿀 안쪽 값도 복사해요: `{ ...original, tags: [...original.tags] }`
+- `structuredClone(original)`로 안쪽 객체와 배열까지 모두 새로 만든 **깊은 복사본**을 만들어요.
+
+### 객체 비교: `===`는 같은 객체인지 봐요
+
+원시 값의 `===`는 값을 비교해요. 객체의 `===`는 **두 참조가 같은 객체를 가리키는지**를 비교해요.
+
+- `const c = a;`라면 `a === c`는 `true`예요. 같은 객체니까요.
+- `{ x: 1 } === { x: 1 }`은 `false`예요. 내용은 같지만 따로 만든 두 객체예요.
+- `{ ...a } === a`도 `false`예요. 복사는 새 객체를 만들어요.
+
+내용이 같은지 알고 싶으면 필요한 속성을 하나씩 비교해요(`a.x === b.x && a.y === b.y`).
+
+### `const` 객체의 속성은 바꿀 수 있어요
+
+모듈 2에서 `const`에는 다시 대입할 수 없다고 배웠어요. 이제 정확히 말할 수 있어요. **`const`가 고정하는 것은 변수 안의 참조(화살표)**예요. 화살표가 가리키는 객체의 속성은 고정하지 않아요.
+
+- `const cart = { count: 0 };` 다음에 `cart.count = 3;`, `cart.coupon = "WELCOME";`은 오류 없이 돼요.
+- `cart = { count: 0 };`처럼 `cart`에 새 객체를 대입하면 `TypeError: Assignment to constant variable.`이 나요.
+
+그래서 객체와 배열은 보통 `const`로 만들어요. "이 변수는 끝까지 이 객체를 가리킨다"는 뜻이 되고, 내용은 필요에 따라 바꿔요.
+
+<Reveal title="내용까지 못 바꾸게 하려면? Object.freeze">
+
+`Object.freeze(obj)`는 객체를 얼려서 속성을 바꾸거나 더하지 못하게 해요. ProgInOne처럼 엄격 모드에서는 얼린 객체의 속성에 대입하면 `TypeError: Cannot assign to read only property 'count' of object '#<Object>'`처럼 오류가 나요. 이것도 얕게 동작해서, 안쪽 객체까지 얼리지는 않아요.
+</Reveal>
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 숫자와 객체를 각각 다른 변수에 대입한 뒤 한쪽만 바꿔요. 두 줄에 무엇이 나올지 예측해 보세요.
+
+<RunnableExample id="value-vs-reference" lang="js" predict predictKind="console" concepts={["js.obj.reference"]}>
+```js
+let myScore = 70;
+let yourScore = myScore;
+yourScore = 95;
+console.log(myScore, yourScore);
+
+const me = { score: 70 };
+const you = me;
+you.score = 95;
+console.log(me.score, you.score);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+70 95
+95 95
+```
+
+| 줄 | 일어난 일 | `myScore` | `yourScore` | `me`·`you`가 가리키는 객체 |
+|---|---|---|---|---|
+| 1~2 | 값 70이 복사됨 | 70 | 70 | |
+| 3 | `yourScore`만 바뀜 | 70 | 95 | |
+| 6 | 객체 하나가 만들어짐 | | | `{ score: 70 }` |
+| 7 | 참조가 복사됨 | | | (같은 객체) |
+| 8 | 그 객체의 `score`가 바뀜 | | | `{ score: 95 }` |
+
+- 숫자는 값이 복사돼서 `yourScore`를 바꿔도 `myScore`는 70이에요.
+- `you`와 `me`는 같은 객체를 가리켜요. 8번 줄은 그 객체 하나를 바꿨으니, `me.score`로 읽어도 95예요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 함수에 객체를 넘겨요. `addBonus`는 속성을 바꾸고, `resetPlayer`는 매개변수에 새 객체를 대입해요. 두 줄에 각각 어떤 숫자가 나올까요?
+
+<RunnableExample id="object-param" lang="js" predict predictKind="console" concepts={["js.obj.reference"]}>
+```js
+function addBonus(player) {
+  player.score += 10;
+}
+
+function resetPlayer(player) {
+  player = { name: player.name, score: 0 };
+}
+
+const minji = { name: "민지", score: 70 };
+
+addBonus(minji);
+console.log("보너스 뒤: " + minji.score);
+
+resetPlayer(minji);
+console.log("초기화 뒤: " + minji.score);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+보너스 뒤: 80
+초기화 뒤: 80
+```
+
+- 11번 줄에서 `player`에 `minji`의 참조가 들어가요. 2번 줄은 그 객체의 `score`를 바꾸니 바깥 `minji.score`가 80이 돼요.
+- 14번 줄에서도 `player`는 처음에 `minji`와 같은 객체를 가리켜요. 그런데 6번 줄은 **매개변수 `player`에 새 객체를 대입**해요. 화살표만 새 객체로 옮겨졌고, `minji`가 가리키는 원래 객체는 손대지 않았어요. 함수가 끝나면 새 객체는 아무도 쓰지 않고 사라져요.
+- 함수로 점수를 0으로 만들려면 `player.score = 0;`처럼 속성을 바꾸거나, 새 객체를 `return`하고 바깥에서 받아 써야 해요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `{ ...original }`로 복사본을 만들어요. 복사본의 이름과 태그를 바꾼 뒤 두 객체를 출력하면 어떻게 될까요?
+
+<RunnableExample id="shallow-copy" lang="js" predict predictKind="console" concepts={["js.obj.copy-shallow"]}>
+```js
+const original = { name: "민지", tags: ["새싹"] };
+const copy = { ...original };
+
+copy.name = "준호";
+copy.tags.push("우수");
+
+console.log(original);
+console.log(copy);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+{ name: "민지", tags: ["새싹", "우수"] }
+{ name: "준호", tags: ["새싹", "우수"] }
+```
+
+- `copy`는 새 객체예요. 4번 줄은 `copy`의 `name`만 바꿔서 `original.name`은 `"민지"` 그대로예요.
+- `tags`는 배열이라 복사할 때 참조만 복사됐어요. 두 객체의 `tags`는 같은 배열이에요. 5번 줄의 `push`(배열 끝에 값을 하나 더하기)는 그 배열 하나를 바꾸니 두 객체 모두에서 `"우수"`가 보여요.
+- 이것이 **얕은** 복사예요. 첫 단계(`name`, `tags`라는 칸)는 새로 만들었지만, 칸에 든 배열은 함께 써요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 안쪽까지 따로 만드는 두 가지 방법이에요. 실행해서 원본이 그대로인지 확인해 보세요.
+
+<RunnableExample id="deep-copy" lang="js" concepts={["js.obj.copy-shallow"]}>
+```js
+const original = { name: "민지", tags: ["새싹"] };
+
+const copy1 = { ...original, tags: [...original.tags] };
+copy1.tags.push("우수");
+
+const copy2 = structuredClone(original);
+copy2.tags.push("열정");
+
+console.log(original.tags);
+console.log(copy1.tags);
+console.log(copy2.tags);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+["새싹"]
+["새싹", "우수"]
+["새싹", "열정"]
+```
+
+- 3번 줄은 객체를 복사하면서 `tags`만 `[...original.tags]`로 **새 배열**을 만들어 넣어요. 뒤에 쓴 `tags`가 복사해 온 `tags`를 대신해요.
+- 6번 줄의 `structuredClone`은 안쪽 배열과 객체까지 모두 새로 만들어요. 어디가 중첩되어 있는지 몰라도 통째로 따로 만들 수 있어요.
+- 세 배열이 모두 다른 배열이라, 한쪽에 `push`해도 나머지는 그대로예요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 객체를 `===`로 비교해요. 네 줄에 `true`와 `false` 중 무엇이 나올지 예측해 보세요.
+
+<RunnableExample id="object-equality" lang="js" predict predictKind="console" concepts={["js.obj.equality"]}>
+```js
+const a = { x: 1 };
+const b = { x: 1 };
+const c = a;
+const d = { ...a };
+
+console.log(a === b);
+console.log(a === c);
+console.log(a === d);
+console.log(a.x === b.x);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+false
+true
+false
+true
+```
+
+| 비교 | 같은 객체인가요 | 결과 |
+|---|---|---|
+| `a === b` | 따로 만든 두 객체 | `false` |
+| `a === c` | `c`는 `a`의 참조를 복사함 | `true` |
+| `a === d` | `d`는 복사로 만든 새 객체 | `false` |
+| `a.x === b.x` | 숫자 1과 1을 비교 | `true` |
+
+- 객체의 `===`는 내용을 보지 않고 "같은 객체를 가리키는가"만 봐요.
+- 내용을 비교하고 싶으면 마지막 줄처럼 원시 값인 속성끼리 비교해요.
+</Section>
+
+<Section kind="examples">
+여섯 번째 예제는 `const`로 만든 객체를 바꿔요. 어디까지 실행되고 어디서 오류가 날까요?
+
+<RunnableExample id="const-object" lang="js" expectError concepts={["js.obj.const-mutation"]}>
+```js
+const cart = { count: 0 };
+
+cart.count = 3;
+cart.coupon = "WELCOME";
+console.log(cart);
+
+cart = { count: 0 };
+console.log("비웠어요");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+{ count: 3, coupon: "WELCOME" }
+TypeError: Assignment to constant variable.
+```
+
+- 3~4번 줄은 `cart`가 가리키는 객체의 속성을 바꾸고 더해요. `const`는 이것을 막지 않아요.
+- 7번 줄은 `cart` 변수에 새 객체를 **대입**해요. `const`가 막는 것이 바로 이것이라 `TypeError`가 나고, 8번 줄은 실행되지 않아요.
+- 장바구니를 비우고 싶다면 `cart.count = 0;`, `delete cart.coupon;`처럼 속성을 바꾸거나, 처음부터 `let`으로 만들어요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.assign-copies-object">
+<Wrong>`const draft = saved;`를 하면 `saved`와 똑같은 새 객체가 `draft`에 생기니, `draft`를 고쳐도 `saved`는 그대로다.</Wrong>
+<Actual>첫 번째 예제에서 `you.score`만 바꿨는데 `me.score`도 95였어요. 대입은 참조를 복사해서 두 변수가 객체 하나를 함께 가리켜요.</Actual>
+<Right>따로 고칠 복사본이 필요하면 `const draft = { ...saved };`처럼 새 객체를 만들어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.object-param-copied">
+<Wrong>모듈 6에서 매개변수를 바꿔도 바깥 변수는 안 바뀌었으니, 함수 안에서 `player.score += 10`을 해도 바깥 객체는 그대로다.</Wrong>
+<Actual>두 번째 예제의 `addBonus(minji)` 뒤에 `minji.score`는 80이었어요. 매개변수에 같은 객체의 참조가 들어오기 때문이에요.</Actual>
+<Right>함수 안에서 속성을 바꾸면 넘긴 객체가 바뀌어요. 원본을 지키려면 함수 안에서 `const result = { ...player };`처럼 복사해서 바꾸고 `result`를 돌려줘요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.param-reassign-replaces-object">
+<Wrong>함수 안에서 `player = { name: player.name, score: 0 };`을 하면 바깥 `minji`도 이 새 객체가 된다.</Wrong>
+<Actual>두 번째 예제의 `resetPlayer(minji)` 뒤에도 `minji.score`는 80이었어요. 매개변수에 대입하면 매개변수의 화살표만 옮겨져요.</Actual>
+<Right>바깥 객체를 바꾸려면 `player.score = 0;`처럼 **속성**을 바꿔요. 새 객체로 바꾸고 싶다면 `return`하고 바깥에서 `minji = resetPlayer(minji);`처럼 받아요(이때 `minji`는 다시 대입할 수 있게 `let`으로 만들어요).</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.shallow-copy-is-deep">
+<Wrong>`{ ...original }`로 복사했으니 안에 든 배열과 객체까지 모두 새로 만들어졌다.</Wrong>
+<Actual>세 번째 예제에서 `copy.tags.push("우수")`를 하자 `original.tags`에도 `"우수"`가 생겼어요. 안쪽 배열은 참조만 복사돼요.</Actual>
+<Right>안쪽 값을 바꿀 거라면 그 값도 복사하거나(`{ ...original, tags: [...original.tags] }`), `structuredClone(original)`로 깊은 복사본을 만들어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.array-assign-copies">
+<Wrong>`const backup = list;`로 배열을 백업해 두면, 그 뒤에 `list.push(...)`를 해도 `backup`은 그대로다.</Wrong>
+<Actual>
+
+배열도 객체라서 대입하면 참조가 복사돼요.
+
+```js
+const list = ["우유"];
+const backup = list;
+list.push("빵");
+console.log(backup); // ["우유", "빵"]
+```
+</Actual>
+<Right>배열의 복사본은 `const backup = [...list];`로 만들어요. 그러면 `list`에 더해도 `backup`은 `["우유"]` 그대로예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.same-content-objects-equal">
+<Wrong>`{ x: 1 } === { x: 1 }`은 속성과 값이 모두 같으니 `true`다.</Wrong>
+<Actual>다섯 번째 예제의 `a === b`는 `false`였어요. `===`는 같은 객체인지만 봐요.</Actual>
+<Right>내용이 같은지 확인하려면 `a.x === b.x`처럼 속성을 하나씩 비교해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.copy-equals-original">
+<Wrong>`const d = { ...a };`는 `a`와 내용이 똑같으니 `d === a`는 `true`다.</Wrong>
+<Actual>다섯 번째 예제의 `a === d`는 `false`였어요. 복사는 새 객체를 만들어요. 반대로 대입한 `c`는 `a === c`가 `true`예요.</Actual>
+<Right>`===`가 `true`이면 "같은 객체라서 한쪽을 바꾸면 다른 쪽도 바뀐다"는 뜻이고, `false`이면 "따로 바꿀 수 있는 다른 객체"라는 뜻으로 읽어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.const-object-props-frozen">
+<Wrong>`const cart = { count: 0 };`으로 만들었으니 `cart.count = 3;`도 `TypeError: Assignment to constant variable.`이 난다.</Wrong>
+<Actual>여섯 번째 예제의 3~4번 줄은 오류 없이 실행됐어요. 오류는 7번 줄처럼 `cart`에 새 객체를 대입할 때만 났어요.</Actual>
+<Right>`const`는 변수의 참조를 고정해요. 객체의 속성 바꾸기·추가·삭제는 막지 않아요. 내용까지 고정하려면 `Object.freeze`를 써요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+회원 정보 수정 화면으로 돌아가 볼게요. 사용자가 고치는 동안은 복사본(`draft`)을 바꾸고, "저장"을 누를 때만 원본을 바꾸고, "취소"를 누르면 원본으로 되돌려요.
+
+```js
+const saved = { name: "민지", email: "minji@example.com", tags: ["새싹"] };
+
+// 편집 시작: 안쪽 배열까지 따로 복사
+let draft = { ...saved, tags: [...saved.tags] };
+
+draft.name = "김민지";
+draft.tags.push("우수");
+console.log(saved.name, saved.tags);   // 민지 ["새싹"]  ← 원본은 그대로
+
+// 취소: 원본에서 다시 복사
+draft = { ...saved, tags: [...saved.tags] };
+console.log(draft.name);               // 민지
+```
+
+- `draft = saved`로 시작했다면 고치는 즉시 원본이 바뀌어 취소할 수 없어요.
+- `{ ...saved }`만 썼다면 이름은 지켜지지만 `tags`는 원본과 함께 바뀌어요.
+- `draft`는 취소할 때 새 객체를 다시 대입하므로 `let`으로 만들었어요. `saved`는 다른 객체로 바꿀 일이 없어서 `const`예요.
+
+실제 웹 개발에서도 "원본을 바꾸지 않고 바뀐 새 객체를 만든다"는 방식을 아주 많이 써요. 화면 라이브러리(React 등)는 `===`로 "객체가 바뀌었는지"를 빠르게 확인하는데, 원본 객체의 속성만 바꾸면 같은 객체라서 바뀐 것을 알아차리지 못하기 때문이에요.
+</Section>
+
+<Section kind="check">
+객체를 다른 변수에 대입한 뒤 바꾸면 어떻게 될까요?
+
+<InlineExercise ref="js-basics.objects.reference-vs-value.mcq-assign-shares" />
+
+함수에 넘긴 객체를 함수 안에서 바꾸면 어떻게 될까요?
+
+<InlineExercise ref="js-basics.objects.reference-vs-value.tf-param-object-copied" />
+
+얕은 복사본의 안쪽 배열을 바꾸면 원본은 어떻게 될까요?
+
+<InlineExercise ref="js-basics.objects.reference-vs-value.mcq-shallow-nested" />
+
+`const`로 만든 객체의 속성을 바꿀 수 있는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.objects.reference-vs-value.mcq-const-push" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 원시 값은 대입할 때 값이 복사되고, 객체와 배열은 참조(가리키는 곳)가 복사돼요.
+- 같은 객체를 가리키는 변수가 여럿이면, 한 변수로 속성을 바꾼 결과가 다른 변수에서도 보여요. 함수에 넘긴 객체도 마찬가지예요.
+- 속성을 바꾸는 것(`p.x = 1`)과 변수나 매개변수에 새 객체를 대입하는 것(`p = {}`)은 달라요. 뒤의 것은 다른 변수에 영향을 주지 않아요.
+- `{ ...obj }`와 `[...arr]`는 얕은 복사예요. 안쪽 객체·배열은 원본과 함께 쓰므로, 필요하면 안쪽도 복사하거나 `structuredClone`을 써요.
+- 객체의 `===`는 같은 객체인지를 봐요. 내용이 같아도 따로 만든 객체는 `false`예요.
+- `const`는 변수의 참조를 고정할 뿐, 객체의 속성을 바꾸는 것은 막지 않아요.
+</Section>
+
+<Section kind="next">
+다음 단원 "객체 순회"에서는 객체의 모든 속성을 하나씩 돌며 읽는 방법과, 속성이 있는지 안전하게 확인하는 방법을 배워요. 그 뒤 "구조 분해와 전개" 단원에서 이번에 복사에 쓴 점 세 개(`...`) 문법을 객체를 합치고 펼치는 데까지 넓혀요. <MdnLink path="Glossary/Shallow_copy" />
+</Section>

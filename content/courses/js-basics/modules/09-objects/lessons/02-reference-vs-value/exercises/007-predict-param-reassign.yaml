@@ -1,0 +1,61 @@
+id: js-basics.objects.reference-vs-value.predict-param-reassign
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+  - { id: js.obj.equality, weight: 0.3 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [reference, parameter, reassign, trace]
+estimatedSeconds: 140
+prompt: |
+  프로필 이름을 바꾸는 함수예요. 함수 안에서 매개변수의 속성도 바꾸고, 매개변수에 새 객체도 대입해요. 실행하면 콘솔에 무엇이 출력될까요? 세 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    function rename(profile, newName) {
+      profile.name = newName;
+      profile = { name: "익명", age: 0 };
+      profile.age = 99;
+      return profile;
+    }
+
+    const user = { name: "민지", age: 20 };
+    const result = rename(user, "지민");
+
+    console.log(user.name, user.age);
+    console.log(result.name, result.age);
+    console.log(user === result);
+  answerKind: console
+  misconceptionByAnswer:
+    "민지 20\n익명 99\nfalse": js.mc.object-param-copied
+    "익명 99\n익명 99\ntrue": js.mc.param-reassign-replaces-object
+    "지민 99\n익명 99\nfalse": js.mc.param-reassign-replaces-object
+hints:
+  - 9번 줄에서 `profile`은 처음에 어떤 객체를 가리키나요?
+  - 2번 줄과 3번 줄은 하는 일이 달라요. 하나는 가리키는 객체의 속성을 바꾸고, 하나는 `profile`이 가리키는 곳을 바꿔요.
+  - 3번 줄 다음부터 `profile`은 어떤 객체를 가리키나요? 4번 줄이 바꾸는 객체가 `user`와 같은 객체인지 따져 보세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  지민 20
+  익명 99
+  false
+  ```
+
+  | 줄 | `profile`이 가리키는 객체 | `user`가 가리키는 객체 |
+  |---|---|---|
+  | 9 (호출) | `user`의 객체 | `{ name: "민지", age: 20 }` |
+  | 2 | `user`의 객체 | `{ name: "지민", age: 20 }` |
+  | 3 | 새 객체 `{ name: "익명", age: 0 }` | 그대로 |
+  | 4 | 새 객체 `{ name: "익명", age: 99 }` | 그대로 |
+
+  - 2번 줄은 `user`와 같은 객체의 `name`을 바꿔요. 그래서 `user.name`은 `지민`이에요.
+  - 3번 줄은 매개변수 `profile`에 새 객체를 대입해요. 화살표만 옮겨졌을 뿐 `user`는 원래 객체를 그대로 가리켜요. 4번 줄은 새 객체를 바꾸므로 `user.age`는 20이에요.
+  - `result`는 함수가 돌려준 새 객체라서 `익명 99`이고, `user`와 다른 객체이므로 `user === result`는 `false`예요.
+
+  첫 줄을 `민지 20`이라고 썼다면 함수에 넘긴 객체가 복사본이라고 본 거예요. `익명 99`나 `지민 99`라고 썼다면 매개변수에 새 객체를 대입하면 바깥 `user`도 그 객체를 가리킨다고 본 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

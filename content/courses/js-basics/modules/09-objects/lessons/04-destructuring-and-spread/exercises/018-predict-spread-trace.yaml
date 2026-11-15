@@ -1,0 +1,58 @@
+id: js-basics.objects.destructuring-and-spread.predict-spread-trace
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.obj.spread, weight: 1 }
+  - { id: js.obj.copy-shallow, weight: 0.5 }
+  - { id: js.obj.equality, weight: 0.3 }
+tags: [spread, shallow-copy, equality, trace]
+estimatedSeconds: 200
+prompt: |
+  세트 메뉴 객체로 새 메뉴 두 개를 만들어요. 실행하면 콘솔에 무엇이 출력될까요? 네 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const basic = { title: "기본 세트", price: 5000, sides: ["감자"] };
+
+    const upgraded = { price: 7000, ...basic, drink: "콜라" };
+    const custom = { ...basic, sides: [...basic.sides, "치즈"] };
+
+    upgraded.sides.push("샐러드");
+
+    console.log(upgraded.price, upgraded.drink);
+    console.log(basic.sides);
+    console.log(custom.sides);
+    console.log(basic === upgraded, basic.sides === upgraded.sides);
+  answerKind: console
+  misconceptionByAnswer:
+    "7000 콜라\n[\"감자\"]\n[\"감자\", \"치즈\"]\nfalse false": js.mc.shallow-copy-is-deep
+    "5000 콜라\n[\"감자\"]\n[\"감자\", \"치즈\"]\nfalse false": js.mc.shallow-copy-is-deep
+    "7000 콜라\n[\"감자\", \"샐러드\"]\n[\"감자\", \"치즈\"]\nfalse true": js.mc.spread-order-irrelevant
+hints:
+  - "`upgraded`는 `price: 7000`을 먼저 쓰고 `basic`을 펼쳐요. 같은 키는 어느 값이 남나요?"
+  - "`upgraded.sides`와 `basic.sides`는 같은 배열일까요? `custom.sides`는 어떻게 만들었나요?"
+  - 6번 줄의 `push`가 영향을 주는 배열을 먼저 정하고, `custom`은 그 줄보다 **먼저** 만들어졌다는 점도 확인하세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  5000 콜라
+  ["감자", "샐러드"]
+  ["감자", "치즈"]
+  false true
+  ```
+
+  | 객체 | `price` | `sides`가 가리키는 배열 |
+  |---|---|---|
+  | `basic` | 5000 | 배열 A `["감자"]` |
+  | `upgraded` | `7000`을 담은 뒤 `basic`의 5000으로 덮어씀 → 5000 | 배열 A (얕은 복사) |
+  | `custom` | 5000 | 새 배열 B `["감자", "치즈"]` |
+
+  - 3번 줄: 같은 키는 나중에 담은 값이 이겨요. `price: 7000`을 앞에 썼으니 `...basic`의 5000이 덮어써요.
+  - 6번 줄: `upgraded.sides`는 얕은 복사로 `basic.sides`와 같은 배열 A예요. 그래서 `basic.sides`에도 `"샐러드"`가 보여요.
+  - `custom.sides`는 4번 줄에서 `[...basic.sides, "치즈"]`로 만든 새 배열 B라서 `push`의 영향을 받지 않아요. 만들어질 때 A에는 아직 `"감자"`만 있었어요.
+  - 마지막 줄: `upgraded`는 전개로 만든 새 객체라 `basic`과 다른 객체(`false`)지만, 안쪽 `sides`는 같은 배열(`true`)이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

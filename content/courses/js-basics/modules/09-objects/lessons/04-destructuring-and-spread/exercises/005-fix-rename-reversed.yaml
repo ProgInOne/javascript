@@ -1,0 +1,69 @@
+id: js-basics.objects.destructuring-and-spread.fix-rename-reversed
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.obj.destructuring, weight: 1 }
+tags: [destructuring, rename, reference-error, debugging]
+estimatedSeconds: 110
+prompt: |
+  프로필 객체의 `nickname` 속성을 꺼내 **`userName`이라는 변수**로 쓰려는 프로그램이에요. 실행하면 오류가 나요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  닉네임: 코코
+  레벨: 7
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const profile = { nickname: "코코", level: 7 };
+          const { userName: nickname, level } = profile;
+
+          console.log("닉네임: " + userName);
+          console.log("레벨: " + level);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const profile = { nickname: "코코", level: 7 };
+          const { nickname: userName, level } = profile;
+
+          console.log("닉네임: " + userName);
+          console.log("레벨: " + level);
+  bugDescription: "실행하면 `ReferenceError: userName is not defined` 오류가 나요."
+  bugMisconception: js.mc.destructuring-rename-direction
+  checks:
+    - kind: console
+      id: output
+      description: 닉네임과 레벨이 차례로 출력되어야 합니다.
+      requirement: 닉네임과 레벨 출력
+      expect:
+        lines: ["닉네임: 코코", "레벨: 7"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나고 userName 변수에 "코코"가 들어 있어야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        globals: { userName: { equals: "코코" } }
+        noError: true
+      misconceptionIfFail: js.mc.destructuring-rename-direction
+misconceptions: [js.mc.destructuring-rename-direction]
+hints:
+  - 오류 메시지는 `userName`이라는 변수가 없다고 해요. 2번 줄은 어떤 이름의 변수를 만들고 있나요?
+  - 이름을 바꾸는 구조 분해에서 콜론 왼쪽과 오른쪽은 각각 무엇이었나요?
+  - 콜론 왼쪽에는 `profile`에 실제로 있는 속성 이름이, 오른쪽에는 새로 만들 변수 이름이 와야 해요.
+explanation: |
+  2번 줄의 콜론 양쪽이 바뀌어 있었어요.
+
+  ```js
+  const { nickname: userName, level } = profile;
+  ```
+
+  구조 분해의 이름 바꾸기는 `{ 속성이름: 새변수이름 }` 순서예요. 원래 코드 `{ userName: nickname }`은 `profile.userName`(없음)을 찾아 `nickname` 변수에 `undefined`를 넣었어요. `userName`이라는 변수는 만들어지지 않아서 4번 줄에서 `ReferenceError`가 났어요.
+
+  4번 줄을 `nickname`으로 바꾸면 오류는 사라지지만 `닉네임: undefined`가 출력돼요. 원인은 변수를 쓰는 줄이 아니라 꺼내는 줄이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

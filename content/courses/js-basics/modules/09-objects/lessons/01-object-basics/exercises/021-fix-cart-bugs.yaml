@@ -1,0 +1,115 @@
+id: js-basics.objects.object-basics.fix-cart-bugs
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.obj.add-delete, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.5 }
+tags: [object, add, delete, bracket, nan, debugging]
+estimatedSeconds: 420
+prompt: |
+  장바구니 객체 `cart`(상품 이름 → 개수)를 다루는 프로그램이에요.
+
+  - '`addToCart(name, qty)`: 상품을 `qty`개 담고, `"(상품) (총 개수)개"`를 돌려줘요. 처음 담는 상품은 0개에서 시작해요.'
+  - '`removeFromCart(name)`: 상품을 장바구니에서 **완전히 빼요**.'
+
+  지금은 결과가 이상해요. 버그를 모두 고쳐서 아래처럼 출력되게 하세요. 버그는 하나가 아닐 수 있어요.
+
+  ```text
+  milk 2개
+  bread 1개
+  milk 3개
+  { milk: 3 }
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const cart = {};
+
+          function addToCart(name, qty) {
+            cart.name = cart.name + qty;
+            return name + " " + cart[name] + "개";
+          }
+
+          function removeFromCart(name) {
+            cart[name] = undefined;
+          }
+
+          console.log(addToCart("milk", 2));
+          console.log(addToCart("bread", 1));
+          console.log(addToCart("milk", 1));
+          removeFromCart("bread");
+          console.log(cart);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const cart = {};
+
+          function addToCart(name, qty) {
+            if (cart[name] === undefined) {
+              cart[name] = 0;
+            }
+            cart[name] = cart[name] + qty;
+            return name + " " + cart[name] + "개";
+          }
+
+          function removeFromCart(name) {
+            delete cart[name];
+          }
+
+          console.log(addToCart("milk", 2));
+          console.log(addToCart("bread", 1));
+          console.log(addToCart("milk", 1));
+          removeFromCart("bread");
+          console.log(cart);
+  bugDescription: "개수 자리에 `undefined`가 나오고, 마지막 줄의 장바구니도 기대와 달라요."
+  checks:
+    - kind: console
+      id: output
+      description: 담을 때마다 총 개수가, 마지막에 bread를 뺀 장바구니가 출력되어야 합니다.
+      requirement: 장바구니 출력
+      expect:
+        lines: ["milk 2개", "bread 1개", "milk 3개", "{ milk: 3 }"]
+    - kind: program
+      id: cart-state
+      description: 프로그램이 끝났을 때 cart에는 milk 3개만 있고, 뺀 bread 속성은 남아 있지 않아야 합니다.
+      requirement: 완전히 빼기
+      expect:
+        globals:
+          cart: { equals: { milk: 3 } }
+        noError: true
+misconceptions: [js.mc.dot-with-variable-key, js.mc.undefined-value-means-missing]
+hints:
+  - 4번 줄은 어떤 이름의 속성을 바꾸나요? 그 속성과 5번 줄이 읽는 속성은 같은가요?
+  - 그 줄을 고친 뒤에는 처음 담는 상품의 개수가 어떻게 계산되는지 생각해 보세요. 없는 속성의 값에 숫자를 더하면 무엇이 되나요?
+  - "\"완전히 빼기\"와 \"값을 `undefined`로 바꾸기\"는 같을까요? 값이 `undefined`여도 속성 자체는 남아 출력에 보여요."
+explanation: |
+  버그는 세 가지예요.
+
+  **1. 점 표기법 (4번 줄)**: `cart.name`은 매개변수 `name`의 값이 아니라 이름이 `name`인 속성을 바꿔요. 그래서 `cart[name]`은 계속 `undefined`였어요. `cart[name]`으로 고쳐요.
+
+  **2. 처음 담는 상품 (4번 줄)**: 1번을 고치면 이번에는 `milk NaN개`가 나와요. 처음에는 `cart["milk"]`가 `undefined`라서 `undefined + 2`가 `NaN`이기 때문이에요. 더하기 전에 없으면 0을 넣어요.
+
+  **3. 빼기 (10번 줄)**: `cart[name] = undefined`는 값만 비울 뿐 속성은 남아서 `{ milk: 3, bread: undefined }`가 출력돼요. 속성을 없애려면 `delete cart[name];`을 써요.
+
+  ```js
+  function addToCart(name, qty) {
+    if (cart[name] === undefined) {
+      cart[name] = 0;
+    }
+    cart[name] = cart[name] + qty;
+    return name + " " + cart[name] + "개";
+  }
+
+  function removeFromCart(name) {
+    delete cart[name];
+  }
+  ```
+
+  값이 `undefined`인 속성과 없는 속성의 차이는 단원 "객체 순회"에서 `in` 연산자와 함께 더 자세히 다뤄요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

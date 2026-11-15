@@ -1,0 +1,71 @@
+id: js-basics.objects.object-basics.find-bug-dot-variable
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.obj.dot-bracket, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [object, dot, bracket, variable-key, debugging]
+estimatedSeconds: 110
+prompt: |
+  카페 메뉴판 객체에서 메뉴 이름으로 가격을 찾는 함수예요. 없는 메뉴면 `없는 메뉴`라고 알려 줘야 해요. 그런데 결과가 이상해요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const prices = { coffee: 4000, tea: 3500, juice: 5000 };
+
+    function priceOf(item) {
+      const price = prices.item;
+      if (price === undefined) {
+        return item + ": 없는 메뉴";
+      }
+      return item + ": " + price + "원";
+    }
+
+    console.log(priceOf("tea"));
+    console.log(priceOf("cake"));
+  bugLines: [4]
+  symptom: "`cake`뿐 아니라 메뉴판에 있는 `tea`도 `tea: 없는 메뉴`로 나와요."
+  symptomCheck:
+    console: ["tea: 없는 메뉴", "cake: 없는 메뉴"]
+  fixedCode: |-
+    const prices = { coffee: 4000, tea: 3500, juice: 5000 };
+
+    function priceOf(item) {
+      const price = prices[item];
+      if (price === undefined) {
+        return item + ": 없는 메뉴";
+      }
+      return item + ": " + price + "원";
+    }
+
+    console.log(priceOf("tea"));
+    console.log(priceOf("cake"));
+  causeOptions:
+    - id: c1
+      text: 점 표기법은 매개변수 item의 값이 아니라 이름이 item인 속성을 찾아서 항상 undefined가 된다
+      correct: true
+    - id: c2
+      text: 없는 속성을 읽으면 오류가 나야 하는데 if가 오류를 막아서 결과가 이상해진다
+      misconception: js.mc.missing-property-error
+    - id: c3
+      text: 5번 줄에서 undefined와 비교하려면 ==를 써야 한다
+hints:
+  - 메뉴판에 분명히 있는 `tea`도 없는 메뉴가 돼요. `price`에 어떤 값이 들어가는지부터 확인해 보세요.
+  - "`prices.item`은 어떤 이름의 속성을 찾나요? `prices`에 그런 이름의 속성이 있나요?"
+  - 찾을 이름이 매개변수에 들어 있을 때 어떤 표기법을 써야 했는지 떠올려 보세요.
+explanation: |
+  원인은 **4번 줄**이에요.
+
+  `prices.item`의 `item`은 매개변수가 아니라 **속성 이름 그대로**예요. `prices`에는 이름이 `item`인 속성이 없어서 `price`는 어떤 메뉴를 넣든 항상 `undefined`가 되고, 5번 줄의 검사가 늘 참이 돼요. 그래서 `tea`도 없는 메뉴로 나와요.
+
+  매개변수에 든 이름으로 찾으려면 대괄호를 써요.
+
+  ```js
+  const price = prices[item];
+  ```
+
+  - "없는 속성을 읽으면 오류가 나야 한다": 없는 속성은 오류 없이 `undefined`예요. 그래서 5번 줄처럼 `undefined`와 비교해 없는 메뉴를 알아낼 수 있어요.
+  - "`==`를 써야 한다": `price === undefined`는 값이 `undefined`인지 정확히 확인하는 올바른 비교예요. 문제는 비교가 아니라 `price`에 늘 `undefined`가 들어간다는 것이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

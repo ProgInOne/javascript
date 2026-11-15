@@ -1,0 +1,96 @@
+id: js-basics.objects.destructuring-and-spread.fix-default-on-null
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.obj.destructuring, weight: 1 }
+  - { id: js.ops.nullish, weight: 0.5 }
+tags: [destructuring, default, null-value, nullish, debugging, boundary]
+estimatedSeconds: 180
+prompt: |
+  `getVolume(settings)`는 저장된 설정에서 음량을 돌려줘요.
+
+  - 음량이 저장되어 있으면 그 값을 돌려줘요. **`0`(음소거)도 저장된 값**이에요.
+  - 음량을 정한 적이 없으면 50을 돌려줘요. 서버는 정한 적 없는 음량을 `volume` 속성을 빼고 보내기도 하고, `volume: null`로 보내기도 해요.
+
+  ```js
+  getVolume({ volume: 30 });   // 30
+  getVolume({});               // 50
+  getVolume({ volume: null }); // 50  ← 지금은 null이 나와요
+  ```
+
+  버그를 고치세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function getVolume(settings) {
+            const { volume = 50 } = settings;
+            return volume;
+          }
+  entry: getVolume
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function getVolume(settings) {
+            const { volume } = settings;
+            return volume ?? 50;
+          }
+  bugDescription: "`volume: null`을 받으면 50 대신 `null`을 돌려줘요."
+  bugMisconception: js.mc.destructuring-default-on-null
+  checks:
+    - kind: call
+      id: saved
+      args: [{ volume: 30 }]
+      requirement: 저장된 음량
+      expect: { equals: 30 }
+    - kind: call
+      id: missing
+      args: [{}]
+      requirement: 정한 적 없으면 50
+      expect: { equals: 50 }
+    - kind: call
+      id: null-volume
+      args: [{ volume: null }]
+      requirement: 정한 적 없으면 50
+      expect: { equals: 50 }
+      misconceptionIfFail: js.mc.destructuring-default-on-null
+    - kind: call
+      id: muted
+      visible: false
+      description: 음소거(0)도 저장된 값이므로 0을 그대로 돌려줘야 합니다.
+      requirement: 저장된 음량
+      args: [{ volume: 0, lang: "ko" }]
+      expect: { equals: 0 }
+      misconceptionIfFail: js.mc.or-default-keeps-zero
+    - kind: call
+      id: no-change
+      visible: false
+      description: 받은 설정 객체를 바꾸면 안 됩니다.
+      requirement: 원본 유지
+      args: [{ volume: null }]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.destructuring-default-on-null, js.mc.or-default-keeps-zero]
+hints:
+  - 구조 분해 기본값은 값이 어떤 경우에 쓰였나요? `null`은 그 경우에 들어가나요?
+  - "`null`과 `undefined`일 때만 다른 값으로 바꾸는 연산자를 모듈 3에서 배웠어요."
+  - "`||`도 기본값을 줄 수 있지만, 숨긴 테스트에는 음소거(`0`)가 있어요. `0`을 그대로 두는 연산자를 고르세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function getVolume(settings) {
+    const { volume } = settings;
+    return volume ?? 50;
+  }
+  ```
+
+  - 구조 분해 기본값 `{ volume = 50 }`은 값이 **없거나 `undefined`일 때만** 쓰여요. `null`은 "값이 있다"로 봐서 그대로 돌아왔어요.
+  - `??`는 왼쪽이 `null`이나 `undefined`일 때만 오른쪽 값을 써요. 속성이 없을 때(`undefined`)와 `null`일 때 모두 50이 되고, `0`은 그대로 0이에요.
+  - `volume || 50`으로 고치면 `null` 문제는 풀리지만, `0`도 거짓 같은 값이라 음소거가 50으로 바뀌어요(숨긴 테스트 실패).
+  - `const { volume = 50 } = settings;`를 그대로 두고 `return volume ?? 50;`만 써도 정답이에요. 기본값은 `undefined`를, `??`는 남은 `null`을 맡아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

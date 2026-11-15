@@ -1,0 +1,102 @@
+id: js-basics.objects.object-iteration.impl-missing-fields
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.obj.in-optional-chaining, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [object, in, array, write-code, boundary]
+estimatedSeconds: 300
+prompt: |
+  설문지에서 사람마다 답한 항목이 객체로 들어와요. 함수 `missingFields(form, required)`를 만드세요.
+
+  - `required`는 꼭 있어야 하는 항목 이름의 배열이에요.
+  - `form`에 **항목 자체가 없는** 이름만 골라, `required`의 순서대로 배열에 담아 돌려줘요.
+  - 항목이 있으면 값이 비어 있어도(`""`, `0`, `null`, `undefined`) 빠진 것이 아니에요. 이 설문에서는 "답하지 않음"을 그런 값으로 저장하기 때문이에요.
+
+  ```js
+  missingFields({ name: "민지", age: 0 }, ["name", "age", "email"]); // ["email"]
+  missingFields({ name: "", email: "a@b.c" }, ["name", "email"]);   // []
+  ```
+
+  채점은 숨긴 입력으로도 해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function missingFields(form, required) {
+          }
+  entry: missingFields
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function missingFields(form, required) {
+            const missing = [];
+            for (const field of required) {
+              if (!(field in form)) {
+                missing.push(field);
+              }
+            }
+            return missing;
+          }
+  checks:
+    - kind: call
+      id: basic
+      requirement: 없는 항목 고르기
+      args: [{ "name": "민지", "age": 0 }, ["name", "age", "email"]]
+      expect: { equals: ["email"] }
+    - kind: call
+      id: empty-string
+      requirement: 값이 비어 있어도 있는 항목
+      args: [{ "name": "", "email": "a@b.c" }, ["name", "email"]]
+      expect: { equals: [] }
+    - kind: call
+      id: null-and-undefined
+      visible: false
+      description: 값이 null이나 undefined인 항목도 있는 항목으로 봐야 합니다.
+      requirement: 값이 비어 있어도 있는 항목
+      argsExpr: '[{ phone: null, memo: undefined }, ["phone", "memo", "name"]]'
+      expect: { equals: ["name"] }
+    - kind: call
+      id: empty-form
+      visible: false
+      description: 빈 설문이면 필요한 항목을 required 순서대로 모두 돌려줘야 합니다.
+      requirement: 없는 항목 고르기
+      args: [{}, ["email", "name"]]
+      expect: { equals: ["email", "name"] }
+    - kind: call
+      id: no-change
+      visible: false
+      description: 설문 객체와 항목 배열을 바꾸면 안 됩니다.
+      requirement: 입력 바꾸지 않기
+      args: [{ "name": "준호" }, ["name", "age"]]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.undefined-value-means-missing, js.mc.or-default-keeps-zero]
+hints:
+  - "`required`의 이름을 하나씩 돌면서, 그 이름이 `form`에 있는지 확인하면 돼요. 결과를 담을 빈 배열부터 만들어 두세요."
+  - "`form[field]`의 값으로 판단하면 `0`이나 `\"\"`, `undefined` 값이 문제가 돼요. 값이 아니라 속성이 있는지를 묻는 연산자가 있었어요."
+  - "있는지 묻는 식에 `!`를 붙여 \"없으면\"으로 만들 때는 괄호로 식 전체를 감싸야 해요. `!field`만 뒤집히지 않게 주의하세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function missingFields(form, required) {
+    const missing = [];
+    for (const field of required) {
+      if (!(field in form)) {
+        missing.push(field);
+      }
+    }
+    return missing;
+  }
+  ```
+
+  - `field in form`은 값과 상관없이 항목이 있는지만 봐요. 그래서 `age: 0`, `name: ""`, `memo: undefined`도 "있음"이에요.
+  - `if (!form[field])`로 판단하면 0과 빈 문자열이 거짓 같은 값이라 빠진 항목으로 잘못 들어가요. `if (form[field] === undefined)`로 판단하면 `memo: undefined`가 빠진 항목이 돼요.
+  - `!field in form`처럼 괄호를 빼면 `(!field) in form`, 즉 `false in form`이 되어 `"false"`라는 항목을 찾아요. `!(field in form)`처럼 감싸요.
+  - 결과는 새 배열 `missing`에 담고, `form`과 `required`는 바꾸지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,85 @@
+id: js-basics.objects.reference-vs-value.fix-reserved-check
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.obj.equality, weight: 1 }
+  - { id: js.obj.reference, weight: 0.3 }
+tags: [equality, function, debugging]
+estimatedSeconds: 180
+prompt: |
+  예약된 좌석인지 확인하는 함수 `isReserved(seat)`예요. C열 7번이 예약되어 있는데, 손님이 고른 C열 7번 좌석도 예약되지 않았다고 나와요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  true
+  false
+  ```
+
+  채점은 다른 좌석으로 `isReserved`를 직접 불러서도 해요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const reserved = { row: "C", num: 7 };
+
+          function isReserved(seat) {
+            return seat === reserved;
+          }
+
+          console.log(isReserved({ row: "C", num: 7 }));
+          console.log(isReserved({ row: "C", num: 8 }));
+  entry: isReserved
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const reserved = { row: "C", num: 7 };
+
+          function isReserved(seat) {
+            return seat.row === reserved.row && seat.num === reserved.num;
+          }
+
+          console.log(isReserved({ row: "C", num: 7 }));
+          console.log(isReserved({ row: "C", num: 8 }));
+  bugDescription: "C열 7번 좌석을 넣어도 `false`가 나와서 두 줄 모두 `false`가 출력돼요."
+  bugMisconception: js.mc.same-content-objects-equal
+  checks:
+    - kind: console
+      id: output
+      description: C열 7번은 true, C열 8번은 false가 출력되어야 합니다.
+      requirement: 예약 확인
+      expect:
+        lines: ["true", "false"]
+    - kind: call
+      id: same-seat
+      visible: false
+      description: 새로 만든 C열 7번 좌석 객체도 예약된 좌석으로 알아봐야 합니다.
+      requirement: 예약 확인
+      args: [{ row: "C", num: 7 }]
+      expect: { equals: true }
+    - kind: call
+      id: other-row
+      visible: false
+      description: 번호가 같아도 줄이 다르면(D열 7번) 예약되지 않은 좌석입니다.
+      requirement: 예약 확인
+      args: [{ row: "D", num: 7 }]
+      expect: { equals: false }
+misconceptions: [js.mc.same-content-objects-equal]
+hints:
+  - 7번 줄에서 넘긴 좌석 객체와 `reserved`는 같은 객체인가요?
+  - 객체의 `===`는 같은 객체인지를 봐요. 손님이 고른 좌석은 언제나 새로 만든 객체예요.
+  - 예약 여부는 줄과 번호가 같은지로 정해야 해요. 4번 줄에서 무엇을 비교해야 할지 바꿔 보세요.
+explanation: |
+  4번 줄을 고쳐요.
+
+  ```js
+  return seat.row === reserved.row && seat.num === reserved.num;
+  ```
+
+  - 원래 코드의 `seat === reserved`는 두 참조가 같은 객체를 가리키는지 비교해요. 7번 줄의 `{ row: "C", num: 7 }`은 새로 만든 객체라서 `reserved`와 내용이 같아도 `false`예요.
+  - 줄과 번호는 원시 값이라 `===`가 값을 비교해요. 둘 다 같을 때만 예약된 좌석이에요.
+  - `isReserved(reserved)`처럼 `reserved` 자체를 넘길 때만 원래 코드가 `true`를 내요. 실제 프로그램에서는 손님이 고른 좌석이 항상 새 객체라서 쓸모가 없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

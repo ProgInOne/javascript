@@ -1,0 +1,30 @@
+id: js-basics.objects.object-iteration.tf-undefined-means-missing
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.obj.in-optional-chaining, weight: 1 }
+tags: [object, in, undefined]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: "`user.nickname === undefined`가 `true`이면 `\"nickname\" in user`는 항상 `false`다."
+  answer: false
+  misconceptionIfWrong: js.mc.undefined-value-means-missing
+hints:
+  - 없는 속성을 읽으면 `undefined`가 나와요. `undefined`가 나오는 경우가 그것 하나뿐일까요?
+  - "`{ nickname: undefined }`처럼 값 자리에 `undefined`를 넣은 객체를 떠올려 보세요."
+  - "`in`은 값을 보지 않고 무엇을 확인하는 연산자였나요?"
+explanation: |
+  설명은 **거짓**이에요.
+
+  `user.nickname === undefined`는 두 경우 모두 `true`예요.
+
+  - `nickname` 속성이 **없을** 때: `"nickname" in user`는 `false`
+  - `nickname` 속성이 **있고 값이 `undefined`**일 때(예: `{ nickname: undefined }`): `"nickname" in user`는 `true`
+
+  그래서 값이 `undefined`라는 것만으로는 속성이 없다고 말할 수 없어요. 속성이 있는지 물을 때는 `in`을 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

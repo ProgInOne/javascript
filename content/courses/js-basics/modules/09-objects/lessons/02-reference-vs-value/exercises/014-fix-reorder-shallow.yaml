@@ -1,0 +1,112 @@
+id: js-basics.objects.reference-vs-value.fix-reorder-shallow
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.obj.copy-shallow, weight: 1 }
+  - { id: js.obj.reference, weight: 0.5 }
+tags: [copy, shallow, nested, function, debugging]
+estimatedSeconds: 300
+prompt: |
+  배달 앱의 "다시 주문하기" 기능이에요. `reorder(order)`는 지난 주문을 바탕으로 새 주문을 만들어요.
+
+  - 새 주문의 `id`는 지난 주문보다 1 커요.
+  - 새 주문의 `status`는 `"접수"`예요.
+  - 다시 주문하면 감사의 뜻으로 `"서비스 음료"`를 메뉴 끝에 하나 더 넣어 줘요.
+  - **지난 주문은 기록으로 남아야 하므로 바뀌면 안 돼요.**
+
+  지금은 지난 주문의 메뉴가 바뀌는 버그가 있어요. 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  100 배달 완료 치킨, 콜라
+  101 접수 치킨, 콜라, 서비스 음료
+  ```
+
+  채점은 숨긴 주문으로 `reorder`를 직접 불러서도 해요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function reorder(order) {
+            const copy = { ...order };
+            copy.id = order.id + 1;
+            copy.status = "접수";
+            copy.items.push("서비스 음료");
+            return copy;
+          }
+
+          const first = { id: 100, items: ["치킨", "콜라"], status: "배달 완료" };
+          const second = reorder(first);
+
+          console.log(first.id, first.status, first.items.join(", "));
+          console.log(second.id, second.status, second.items.join(", "));
+  entry: reorder
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function reorder(order) {
+            const copy = { ...order, items: [...order.items] };
+            copy.id = order.id + 1;
+            copy.status = "접수";
+            copy.items.push("서비스 음료");
+            return copy;
+          }
+
+          const first = { id: 100, items: ["치킨", "콜라"], status: "배달 완료" };
+          const second = reorder(first);
+
+          console.log(first.id, first.status, first.items.join(", "));
+          console.log(second.id, second.status, second.items.join(", "));
+  bugDescription: "새 주문은 맞게 나오지만, 지난 주문의 메뉴에도 `서비스 음료`가 붙어 있어요."
+  bugMisconception: js.mc.shallow-copy-is-deep
+  checks:
+    - kind: console
+      id: output
+      description: 지난 주문과 새 주문이 차례로 출력되어야 합니다.
+      requirement: 주문 출력
+      expect:
+        lines: ["100 배달 완료 치킨, 콜라", "101 접수 치킨, 콜라, 서비스 음료"]
+    - kind: call
+      id: other-order
+      visible: false
+      description: 다른 주문을 다시 주문해도 id, status, 메뉴가 규칙대로 만들어져야 합니다.
+      requirement: 새 주문 만들기
+      args: [{ id: 7, items: ["피자"], status: "배달 완료", address: "101동" }]
+      expect: { equals: { id: 8, items: ["피자", "서비스 음료"], status: "접수", address: "101동" } }
+    - kind: call
+      id: input-unchanged
+      visible: false
+      description: 지난 주문 객체와 그 안의 메뉴 배열을 바꾸면 안 됩니다.
+      requirement: 지난 주문은 그대로
+      args: [{ id: 7, items: ["피자", "콜라"], status: "배달 완료" }]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.shallow-copy-is-deep
+    - kind: program
+      id: first-kept
+      description: 프로그램이 끝난 뒤 first는 처음 그대로여야 합니다.
+      requirement: 지난 주문은 그대로
+      expect:
+        globals:
+          first: { equals: { id: 100, items: ["치킨", "콜라"], status: "배달 완료" } }
+        noError: true
+misconceptions: [js.mc.shallow-copy-is-deep, js.mc.array-assign-copies]
+hints:
+  - "`id`와 `status`는 지난 주문에서 바뀌지 않았어요. 바뀐 것은 무엇이고, 그것은 어떤 종류의 값인가요?"
+  - "`{ ...order }`는 얕은 복사예요. `copy.items`와 `order.items`는 같은 배열일까요, 다른 배열일까요?"
+  - 새 주문을 만들 때 메뉴 배열도 새로 만들어 `items` 칸에 넣어 주면, `push`가 새 배열에만 들어가요.
+explanation: |
+  2번 줄에서 메뉴 배열도 복사해요.
+
+  ```js
+  const copy = { ...order, items: [...order.items] };
+  ```
+
+  - `{ ...order }`는 새 객체를 만들기 때문에 `id`와 `status`를 바꿔도 지난 주문은 그대로였어요. 그래서 버그가 없어 보이기 쉬워요.
+  - 하지만 `items` 칸에는 배열의 **참조**가 복사돼요. `copy.items`와 `order.items`가 같은 배열이라 5번 줄의 `push`가 지난 주문의 메뉴에도 들어갔어요.
+  - `items: [...order.items]`로 새 배열을 넣으면 두 주문이 각자 배열을 가져요. `structuredClone(order)`로 복사해도 정답이에요.
+  - `push` 대신 `copy.items = [...order.items, "서비스 음료"];`처럼 새 배열을 대입해도 지난 주문은 바뀌지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

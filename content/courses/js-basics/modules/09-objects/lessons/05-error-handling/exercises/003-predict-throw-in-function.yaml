@@ -1,0 +1,55 @@
+id: js-basics.objects.error-handling.predict-throw-in-function
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.errors.throw, weight: 1 }
+  - { id: js.errors.try-catch, weight: 0.3 }
+tags: [throw, try-catch, trace]
+estimatedSeconds: 100
+prompt: |
+  나이를 확인해 입장권 종류를 정하는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 출력되는 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    function ticketFor(age) {
+      if (age < 0) {
+        throw new Error("나이는 0 이상이어야 해요");
+      }
+      console.log(age + "세 확인");
+      return age >= 19 ? "성인" : "청소년";
+    }
+
+    try {
+      console.log(ticketFor(25));
+      console.log(ticketFor(-3));
+    } catch (err) {
+      console.log("입장 불가: " + err.message);
+    }
+  answerKind: console
+  misconceptionByAnswer:
+    "25세 확인\n성인\n나이는 0 이상이어야 해요\n-3세 확인\n청소년": js.mc.throw-just-logs
+    "25세 확인\n성인\n-3세 확인\n청소년\n입장 불가: 나이는 0 이상이어야 해요": js.mc.throw-just-logs
+    "25세 확인\n성인\n입장 불가: 나이는 0 이상이어야 해요\n-3세 확인": js.mc.throw-just-logs
+misconceptions: [js.mc.throw-just-logs]
+hints:
+  - "`ticketFor(25)`부터 한 줄씩 따라가 보세요. 25는 3번 줄에 걸리나요?"
+  - "`ticketFor(-3)`은 3번 줄에서 오류를 던져요. 그 뒤의 5번·6번 줄은 실행될까요?"
+  - 던진 오류는 함수를 끝내고 가장 가까운 `catch`로 가요. `throw` 자체는 아무것도 출력하지 않는다는 점도 기억하세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  25세 확인
+  성인
+  입장 불가: 나이는 0 이상이어야 해요
+  ```
+
+  - `ticketFor(25)`: 3번 줄에 걸리지 않으니 `25세 확인`을 출력하고 `"성인"`을 돌려줘요. 10번 줄이 그 값을 출력해요.
+  - `ticketFor(-3)`: 3번 줄에서 오류를 던져요. `throw`는 출력하지 않고 함수를 그 자리에서 끝내요. 그래서 `-3세 확인`은 나오지 않고, 11번 줄의 `console.log`도 출력할 값을 받지 못해요.
+  - 던진 오류는 `catch`가 받아 `입장 불가: ...`를 출력해요.
+
+  `-3세 확인`이나 `청소년`을 썼다면 `throw` 뒤에도 함수가 계속 실행된다고 본 거예요. `throw`는 `return`처럼 함수를 끝내되, 값 대신 오류를 던져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,56 @@
+id: js-basics.objects.error-handling.multi-catchable-errors
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.errors.try-catch, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.5 }
+  - { id: js.obj.dot-bracket, weight: 0.3 }
+tags: [try-catch, syntax-error, reference-error, type-error]
+estimatedSeconds: 120
+prompt: |
+  다음 각 코드를 아래처럼 `try` 블록의 `/* 여기 */` 자리에 하나씩 넣어 **따로** 실행해요.
+
+  ```js
+  console.log("시작");
+  try {
+    /* 여기 */
+  } catch (err) {
+    console.log("잡음: " + err.name);
+  }
+  console.log("끝");
+  ```
+
+  `catch`가 오류를 잡아 `잡음: ...`과 `끝`이 출력되는 코드를 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: "`console.log(totl);` (`totl`이라는 변수는 어디에도 없음)"
+    - id: b
+      text: "`const user = undefined; console.log(user.name);`"
+    - id: c
+      text: "`throw new Error(\"재고 없음\");`"
+    - id: d
+      text: "`console.log(\"합계\";`"
+      misconception: js.mc.try-catch-catches-syntax-error
+      rationale: 닫는 괄호가 빠진 SyntaxError는 실행 전에 나서 프로그램이 시작되지 않아요. try...catch도 실행되지 않으니 잡을 수 없어요.
+    - id: e
+      text: "`const menu = { name: \"김밥\" }; menu.order();`"
+  correct: [a, b, c, e]
+misconceptions: [js.mc.try-catch-catches-syntax-error]
+hints:
+  - 각 코드가 내는 오류의 종류를 먼저 적어 보세요.
+  - 오류마다 "실행 전에 나는가, 실행 중에 나는가"를 구별해 보세요.
+  - "`try...catch`는 실행되는 문장이에요. 프로그램이 시작조차 하지 않는 오류가 하나 있어요. `menu.order()`는 `menu`에 `order`라는 메서드가 있는지 확인해 보세요."
+explanation: |
+  잡히는 코드는 네 개예요. 모두 **실행 중에** 나는 오류예요.
+
+  - `console.log(totl);`: 없는 이름이라 `ReferenceError`가 나요. 잡혀서 `잡음: ReferenceError`가 출력돼요.
+  - `user.name`: `undefined`의 속성을 읽어 `TypeError`가 나요. 잡혀서 `잡음: TypeError`예요.
+  - `throw new Error("재고 없음");`: 우리가 던진 오류도 잡혀요. `잡음: Error`예요.
+  - `menu.order();`: `menu`에는 `order` 속성이 없어서 `menu.order`는 `undefined`예요. `undefined`를 함수처럼 부르면 `TypeError: menu.order is not a function`이 나고 잡혀요.
+
+  잡히지 않는 코드는 `console.log("합계";` 하나예요. 닫는 괄호가 빠진 `SyntaxError`는 실행 전 문법 검사에서 나서, `시작`도 출력되지 않고 프로그램이 시작되지 않아요. `try...catch`도 실행되지 않으니 잡을 수 없어요. 문법 오류는 잡는 것이 아니라 고치는 오류예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

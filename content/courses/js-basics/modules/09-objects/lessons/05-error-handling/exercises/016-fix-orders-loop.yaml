@@ -1,0 +1,130 @@
+id: js-basics.objects.error-handling.fix-orders-loop
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.errors.try-catch, weight: 1 }
+  - { id: js.errors.finally, weight: 0.5 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [try-catch, finally, loop, debugging]
+estimatedSeconds: 480
+prompt: |
+  분식집의 주문 목록을 하나씩 접수하는 프로그램이에요. 수량이 0인 주문은 `orderTotal`이 오류를 던져요.
+
+  - 문제가 있는 주문은 `접수 실패: (오류 메시지)`를 출력하고 **건너뛰되, 다음 주문은 계속 접수**해요.
+  - 접수한 주문의 금액은 `sum`에, 실패한 주문 수는 `failed`에 세요.
+
+  지금은 실패한 주문 뒤의 주문이 접수되지 않아요. 버그를 고쳐서 아래처럼 출력되게 하세요. 버그는 하나가 아닐 수 있어요.
+
+  ```text
+  김밥 접수
+  접수 실패: 라면 수량이 0이에요
+  떡볶이 접수
+  합계: 10000원, 실패: 1건
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const prices = { kimbap: 3000, ramen: 4500, tteokbokki: 4000 };
+          const orders = [
+            { menu: "김밥", code: "kimbap", qty: 2 },
+            { menu: "라면", code: "ramen", qty: 0 },
+            { menu: "떡볶이", code: "tteokbokki", qty: 1 },
+          ];
+
+          function orderTotal(order) {
+            if (order.qty < 1) {
+              throw new Error(order.menu + " 수량이 0이에요");
+            }
+            return prices[order.code] * order.qty;
+          }
+
+          let sum = 0;
+          let failed = 0;
+          try {
+            for (const order of orders) {
+              sum += orderTotal(order);
+              console.log(order.menu + " 접수");
+            }
+          } catch (err) {
+            console.log("접수 실패: " + err.message);
+          } finally {
+            failed++;
+          }
+          console.log("합계: " + sum + "원, 실패: " + failed + "건");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const prices = { kimbap: 3000, ramen: 4500, tteokbokki: 4000 };
+          const orders = [
+            { menu: "김밥", code: "kimbap", qty: 2 },
+            { menu: "라면", code: "ramen", qty: 0 },
+            { menu: "떡볶이", code: "tteokbokki", qty: 1 },
+          ];
+
+          function orderTotal(order) {
+            if (order.qty < 1) {
+              throw new Error(order.menu + " 수량이 0이에요");
+            }
+            return prices[order.code] * order.qty;
+          }
+
+          let sum = 0;
+          let failed = 0;
+          for (const order of orders) {
+            try {
+              sum += orderTotal(order);
+              console.log(order.menu + " 접수");
+            } catch (err) {
+              console.log("접수 실패: " + err.message);
+              failed++;
+            }
+          }
+          console.log("합계: " + sum + "원, 실패: " + failed + "건");
+  bugDescription: "`떡볶이 접수`가 나오지 않고 합계가 `6000원`이에요."
+  bugMisconception: js.mc.try-resumes-after-catch
+  checks:
+    - kind: console
+      id: output
+      description: 실패한 주문을 건너뛰고 나머지 주문을 모두 접수한 뒤 합계와 실패 수가 출력되어야 합니다.
+      requirement: 실패해도 다음 주문 접수
+      expect:
+        lines: ["김밥 접수", "접수 실패: 라면 수량이 0이에요", "떡볶이 접수", "합계: 10000원, 실패: 1건"]
+    - kind: program
+      id: totals
+      description: 프로그램이 오류 없이 끝나고 sum이 10000, failed가 1이어야 합니다.
+      requirement: 금액과 실패 수 세기
+      expect:
+        globals: { sum: { equals: 10000 }, failed: { equals: 1 } }
+        noError: true
+misconceptions: [js.mc.try-resumes-after-catch, js.mc.finally-only-on-error]
+hints:
+  - "`라면`에서 오류가 나면 `try`의 나머지는 어떻게 되나요? 지금 `try`가 감싸고 있는 것은 반복 전체예요."
+  - 첫 버그를 고친 뒤 실패 수도 확인해 보세요. `finally`는 어떤 경우에 실행되는 블록이었나요?
+  - 주문 하나하나가 따로 성공하거나 실패해야 해요. 오류를 잡는 범위와, 실패했을 때만 해야 하는 일을 어느 블록에 둘지 다시 정해 보세요.
+explanation: |
+  버그는 두 개예요.
+
+  **1. 반복 전체를 감싼 `try` (18~23번 줄)**: `라면`에서 오류가 나면 `try`의 나머지, 즉 반복 전체를 건너뛰어요. `catch`가 끝나도 반복으로 돌아가지 않으니 `떡볶이`는 접수되지 않았어요. `try...catch`를 반복 **안으로** 옮겨서 주문마다 따로 잡아야 해요.
+
+  **2. `finally`에서 센 실패 수 (25~27번 줄)**: 원래 코드에서는 `finally`가 한 번만 실행되어 우연히 `실패: 1건`이었어요. 첫 버그를 고쳐 `try...catch...finally`를 반복 안으로 옮기면 `finally`가 주문마다 실행되어 `실패: 3건`이 돼요. `finally`는 오류가 없어도 실행되니까요. 실패했을 때만 셀 값은 `catch` 안에서 세요.
+
+  ```js
+  for (const order of orders) {
+    try {
+      sum += orderTotal(order);
+      console.log(order.menu + " 접수");
+    } catch (err) {
+      console.log("접수 실패: " + err.message);
+      failed++;
+    }
+  }
+  ```
+
+  `sum += orderTotal(order)`는 `orderTotal`이 오류를 던지면 더하기 전에 멈추므로, 실패한 주문의 금액은 `sum`에 들어가지 않아요. 합계는 김밥 6000원 + 떡볶이 4000원 = 10000원이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

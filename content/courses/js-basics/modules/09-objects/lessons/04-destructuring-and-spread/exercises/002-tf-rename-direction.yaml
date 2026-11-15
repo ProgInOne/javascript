@@ -1,0 +1,43 @@
+id: js-basics.objects.destructuring-and-spread.tf-rename-direction
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.obj.destructuring, weight: 1 }
+tags: [destructuring, rename]
+estimatedSeconds: 70
+prompt: |
+  아래 코드를 보고, 설명이 맞는지 고른 뒤 그렇게 판단한 이유도 고르세요.
+code: |
+  const book = { title: "어린 왕자", pages: 120 };
+  const { bookTitle: title } = book;
+spec:
+  statement: "2번 줄을 실행하면 `book.title`의 값 `\"어린 왕자\"`가 변수 `bookTitle`에 들어간다."
+  answer: false
+  misconceptionIfWrong: js.mc.destructuring-rename-direction
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 콜론 왼쪽은 꺼낼 속성 이름이라 bookTitle 속성을 찾고, 없으니 변수 title에 undefined가 들어간다
+      correct: true
+    - id: r2
+      text: 콜론 왼쪽이 새로 만들 변수 이름이고 오른쪽이 꺼낼 속성 이름이다
+      misconception: js.mc.destructuring-rename-direction
+    - id: r3
+      text: 구조 분해에서는 이름을 바꿀 수 없어서 SyntaxError가 난다
+hints:
+  - "이름을 바꾸는 구조 분해는 `{ ?: ? }` 모양이에요. 콜론 양쪽이 각각 무엇이었는지 떠올려 보세요."
+  - "객체 리터럴 `{ 키: 값 }`과 모양이 같아요. 키 자리는 속성 이름이에요."
+  - "`book`에 `bookTitle`이라는 속성이 있나요? 2번 줄이 만드는 변수 이름은 콜론의 어느 쪽에 있나요?"
+explanation: |
+  설명은 **거짓**이에요. 이유는 "콜론 왼쪽은 꺼낼 속성 이름이라 bookTitle 속성을 찾고, 없으니 변수 title에 undefined가 들어간다"예요.
+
+  구조 분해의 이름 바꾸기는 `{ 속성이름: 새변수이름 }` 순서예요. 2번 줄은 `book.bookTitle`을 찾아서 변수 `title`에 담아요. `book`에는 `bookTitle` 속성이 없으니 `title`은 `undefined`이고, `bookTitle`이라는 변수는 만들어지지 않아요.
+
+  `title` 속성을 `bookTitle` 변수로 받으려면 `const { title: bookTitle } = book;`이라고 써요.
+
+  - "콜론 왼쪽이 새로 만들 변수 이름": 방향을 거꾸로 본 거예요.
+  - "이름을 바꿀 수 없어서 SyntaxError": 구조 분해는 콜론으로 이름을 바꿀 수 있어요. 문법은 맞고, 찾는 속성이 없을 뿐이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

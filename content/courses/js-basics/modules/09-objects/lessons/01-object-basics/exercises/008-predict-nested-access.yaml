@@ -1,0 +1,49 @@
+id: js-basics.objects.object-basics.predict-nested-access
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.obj.literal, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.5 }
+tags: [object, literal, nested, array-property, console-format]
+estimatedSeconds: 100
+prompt: |
+  학생 한 명의 정보를 객체로 만들었어요. 실행하면 콘솔에 무엇이 출력될까요? 네 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const student = {
+      name: "서연",
+      grade: 2,
+      subjects: ["국어", "과학"],
+      club: { title: "코딩부", room: 301 },
+    };
+
+    console.log(student.subjects[1]);
+    console.log(student.club.title + " " + student.club.room + "호");
+    console.log(student.subjects.length + student.grade);
+    console.log(student.club);
+  answerKind: console
+  misconceptionByAnswer:
+    "국어\n코딩부 301호\n4\n{ title: \"코딩부\", room: 301 }": js.mc.index-starts-at-one
+hints:
+  - 속성 값이 배열이나 객체이면, 그 값에서 다시 인덱스나 점으로 안쪽을 꺼낼 수 있어요.
+  - "`student.subjects`는 배열이에요. `[1]`은 몇 번째 요소이고, `length`는 몇인가요?"
+  - 마지막 줄은 객체 하나를 통째로 출력해요. ProgInOne 콘솔이 객체를 한 줄로 보여 주는 모양과, 객체 안의 문자열에 붙는 따옴표를 떠올려 보세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  과학
+  코딩부 301호
+  4
+  { title: "코딩부", room: 301 }
+  ```
+
+  - `student.subjects`는 배열 `["국어", "과학"]`이고, `[1]`은 0부터 세어 두 번째 요소인 `"과학"`이에요.
+  - `student.club`은 안쪽 객체예요. 점을 이어서 `student.club.title`, `student.club.room`으로 안까지 들어가요.
+  - `student.subjects.length`는 요소 수 2이고, `student.grade`도 숫자 2라서 더하면 `4`예요.
+  - '객체를 통째로 출력하면 `{ title: "코딩부", room: 301 }`처럼 보여요. 맨 바깥에서 출력한 문자열(`과학`)과 달리, 객체 **안의** 문자열은 큰따옴표가 붙어요.'
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

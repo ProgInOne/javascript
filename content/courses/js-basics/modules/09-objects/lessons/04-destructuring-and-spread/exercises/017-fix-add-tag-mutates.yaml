@@ -1,0 +1,85 @@
+id: js-basics.objects.destructuring-and-spread.fix-add-tag-mutates
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.obj.spread, weight: 1 }
+  - { id: js.obj.copy-shallow, weight: 0.5 }
+tags: [spread, array, immutable, shallow-copy, debugging]
+estimatedSeconds: 200
+prompt: |
+  `addTag(post, tag)`는 글 객체에 태그 하나를 더한 결과를 돌려줘요. 결과는 맞게 나오는데, 이 함수를 부를 때마다 **원래 글 객체까지 바뀌어서** 화면의 "수정 전" 기록이 망가져요.
+
+  원래 글은 그대로 두고, 태그가 더해진 **새 글 객체**를 돌려주도록 고치세요.
+
+  ```js
+  addTag({ title: "첫 글", tags: ["일기"] }, "여행");
+  // { title: "첫 글", tags: ["일기", "여행"] }
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function addTag(post, tag) {
+            post.tags.push(tag);
+            return post;
+          }
+  entry: addTag
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function addTag(post, tag) {
+            return { ...post, tags: [...post.tags, tag] };
+          }
+  bugDescription: 돌려받은 글은 맞지만, 넘긴 원래 글 객체의 태그 목록도 함께 바뀌어요.
+  bugMisconception: js.mc.shallow-copy-is-deep
+  checks:
+    - kind: call
+      id: result
+      args: [{ title: "첫 글", tags: ["일기"] }, "여행"]
+      requirement: 태그 더하기
+      expect: { equals: { title: "첫 글", tags: ["일기", "여행"] } }
+    - kind: call
+      id: more-props
+      visible: false
+      description: 다른 속성이 있는 글도 모든 속성을 유지한 채 태그만 끝에 더해야 합니다.
+      requirement: 태그 더하기
+      args: [{ title: "맛집", likes: 12, tags: ["서울", "분식"] }, "떡볶이"]
+      expect: { equals: { title: "맛집", likes: 12, tags: ["서울", "분식", "떡볶이"] } }
+    - kind: call
+      id: new-post
+      visible: false
+      description: 받은 글 객체를 그대로 돌려주지 말고 새 글 객체를 돌려줘야 합니다.
+      requirement: 원래 글 지키기
+      args: [{ title: "첫 글", tags: ["일기"] }, "여행"]
+      expect: { returnsNewReference: true }
+    - kind: call
+      id: original-tags
+      visible: false
+      description: 원래 글 객체와 그 안의 태그 배열이 바뀌면 안 됩니다.
+      requirement: 원래 글 지키기
+      args: [{ title: "첫 글", tags: ["일기"] }, "여행"]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.shallow-copy-is-deep
+misconceptions: [js.mc.shallow-copy-is-deep, js.mc.spread-mutates-original]
+hints:
+  - "`push`는 어느 배열을 바꾸나요? 그 배열은 누구의 것인가요?"
+  - 새 글 객체는 `{ ...post }`로 만들 수 있어요. 그런데 그 새 객체의 `tags`는 원래 배열과 같은 배열일까요?
+  - 객체만 새로 만들지 말고, 끝에 태그가 더해진 새 배열도 만들어 `tags` 자리에 넣어 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function addTag(post, tag) {
+    return { ...post, tags: [...post.tags, tag] };
+  }
+  ```
+
+  - 원래 코드는 받은 글의 배열에 `push`하고 같은 객체를 돌려줘서, 원래 글이 바뀌었어요.
+  - **함정**: `const copy = { ...post }; copy.tags.push(tag); return copy;`로 고치면 새 객체를 돌려주긴 하지만, 얕은 복사라 `copy.tags`는 원래 배열과 같은 배열이에요. `push`가 원래 글의 태그도 바꿔서 마지막 숨긴 테스트에 실패해요.
+  - 그래서 안쪽 배열도 `[...post.tags, tag]`로 새로 만들고, 펼친 **뒤에** `tags`를 써서 덮어써요. `tags`를 앞에 쓰면 `...post`가 원래 배열로 다시 덮어써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

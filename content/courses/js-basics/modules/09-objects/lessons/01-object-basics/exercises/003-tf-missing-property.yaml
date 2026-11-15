@@ -1,0 +1,43 @@
+id: js-basics.objects.object-basics.tf-missing-property
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.obj.dot-bracket, weight: 1 }
+tags: [object, undefined, missing-property]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 보고, 설명이 맞는지 고른 뒤 그렇게 판단한 이유도 고르세요.
+code: |
+  const user = { nickname: "코코", level: 3 };
+  console.log(user.email);
+spec:
+  statement: "`user`에 `email` 속성이 없으므로 2번 줄에서 `ReferenceError`가 난다."
+  answer: false
+  misconceptionIfWrong: js.mc.missing-property-error
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 없는 속성을 읽으면 오류가 아니라 undefined가 나오므로 undefined가 출력된다
+      correct: true
+    - id: r2
+      text: 없는 이름을 쓰면 항상 ReferenceError가 난다
+      misconception: js.mc.missing-property-error
+    - id: r3
+      text: 없는 속성은 빈 문자열이라 아무것도 보이지 않는 줄이 출력된다
+hints:
+  - "`ReferenceError`는 무엇이 없을 때 나는 오류였나요? 변수인가요, 속성인가요?"
+  - "`user`라는 변수는 있어요. 없는 것은 `user` 안의 `email` 서랍이에요."
+  - 서랍장에 그 이름표가 없을 때 JavaScript가 돌려주는 값을 떠올려 보세요.
+explanation: |
+  설명은 **거짓**이에요. 2번 줄은 `undefined`를 출력해요.
+
+  `ReferenceError`는 **변수**가 없을 때 나요. 여기서 변수 `user`는 있고, 그 객체 안에 `email` 속성이 없을 뿐이에요. 객체에 없는 속성을 읽으면 오류 대신 "값이 없음"을 뜻하는 `undefined`가 나와요.
+
+  - "없는 이름을 쓰면 항상 `ReferenceError`가 난다": 변수 이름과 속성 이름을 같은 것으로 본 이유예요. 없는 속성은 `undefined`예요.
+  - "빈 문자열이 출력된다": 없는 속성은 빈 문자열 `""`이 아니라 `undefined`예요. 콘솔에도 `undefined`라는 글자가 보여요.
+
+  참고로 `user.email.length`처럼 `undefined`에서 다시 속성을 읽으면 그때는 `TypeError`가 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

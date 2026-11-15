@@ -1,0 +1,413 @@
+<Section kind="objectives">
+- 객체 구조 분해로 속성을 변수로 꺼내고, 다른 이름과 기본값을 지정할 수 있어요.
+- 배열 구조 분해로 위치에 따라 값을 꺼내고, 건너뛰기·나머지·두 값 바꾸기를 할 수 있어요.
+- 전개 구문으로 객체와 배열을 합친 새 값을 만들고, 같은 키가 있을 때의 결과를 예측할 수 있어요.
+- 함수 매개변수에서 구조 분해를 쓰고, 원본을 바꾸지 않고 새 객체를 돌려주는 함수를 만들 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+배달 앱에서 주문 하나를 받았다고 해 볼게요. 주문 객체에는 메뉴 이름, 수량, 가격, 요청 사항이 들어 있어요. 영수증을 만들려면 이 값을 하나씩 꺼내야 해요.
+
+```js
+const order = { menu: "떡볶이", qty: 2, price: 4000, memo: "덜 맵게" };
+
+const menu = order.menu;
+const qty = order.qty;
+const price = order.price;
+```
+
+같은 `order.`을 세 번 쓰고, 변수 이름과 속성 이름도 두 번씩 써요. 속성이 열 개라면 열 줄이 필요하고, 한 줄에서 `const qty = order.price;`처럼 짝을 잘못 맞추는 실수도 생기기 쉬워요.
+
+반대 방향의 일도 자주 해요. 기본 설정과 사용자가 고른 설정을 **합쳐** 새 설정을 만들거나, 주문 객체에서 수량만 바꾼 **새** 주문을 만들 때예요. 속성을 하나씩 옮겨 담으면 코드가 길어지고, 원래 객체를 직접 고치면 앞 단원에서 본 것처럼 같은 객체를 쓰는 다른 곳까지 바뀌어 버려요.
+
+이 단원에서는 객체와 배열에서 값을 한 번에 **꺼내는** 구조 분해(destructuring)와, 객체와 배열을 **펼쳐서 새로 담는** 전개 구문(spread syntax)을 배워요. 둘 다 요즘 JavaScript 코드 어디에서나 보이는 문법이라, 읽을 줄 알아야 남의 코드를 이해할 수 있어요.
+</Section>
+
+<Section kind="principle">
+### 객체 구조 분해: 같은 이름의 속성을 꺼내요
+
+```js
+const order = { menu: "떡볶이", qty: 2, price: 4000 };
+const { menu, qty } = order;
+```
+
+`=` 왼쪽의 `{ menu, qty }`는 객체를 만드는 것이 아니라 **"이 이름의 속성을 꺼내서 같은 이름의 변수를 만들어라"**라는 뜻이에요. 그래서 위의 두 번째 줄은 아래 두 줄과 똑같아요.
+
+```js
+const menu = order.menu;
+const qty = order.qty;
+```
+
+| 왼쪽에 쓴 것 | 뜻 | 위 `order`에서의 결과 |
+|---|---|---|
+| `{ menu }` | `menu` 속성 → 변수 `menu` | `menu`는 `"떡볶이"` |
+| `{ menu: food }` | `menu` 속성 → 변수 `food` (이름 바꾸기) | `food`는 `"떡볶이"`, 변수 `menu`는 생기지 않음 |
+| `{ memo = "없음" }` | `memo` 속성, 값이 `undefined`면 `"없음"` | `memo`는 `"없음"` |
+| `{ size }` | 없는 속성 | `size`는 `undefined` (오류 아님) |
+
+지켜야 할 규칙은 세 가지예요.
+
+- **이름 바꾸기는 `속성이름: 새변수이름` 순서**예요. 콜론 왼쪽은 "어느 속성에서", 오른쪽은 "어떤 변수로"예요. 객체 리터럴 `{ 키: 값 }`과 모양이 같아서 "키 자리에서 꺼내 값 자리의 이름에 담는다"고 기억하면 돼요.
+- **기본값은 값이 `undefined`일 때만** 쓰여요. 속성이 없거나 값이 `undefined`일 때예요. 값이 `null`이면 "값이 있다"고 봐서 기본값을 쓰지 않아요. <ConceptLink to="js.fn.default-params">기본값 매개변수</ConceptLink>와 같은 규칙이에요.
+- **원본은 그대로**예요. 구조 분해는 속성 값을 **읽어서** 변수에 담을 뿐, 객체에서 속성을 빼내지 않아요.
+
+구조 분해는 함수 매개변수 자리에도 쓸 수 있어요. 인수로 받은 객체를 바로 풀어서 필요한 속성만 변수로 받아요.
+
+```js
+function receipt({ menu, qty = 1 }) {
+  return menu + " " + qty + "개";
+}
+receipt({ menu: "김밥", qty: 3 }); // "김밥 3개"
+```
+
+이때 인수를 아예 넘기지 않으면 `undefined`를 풀려고 해서 `TypeError: Cannot destructure property 'menu' of 'undefined' as it is undefined.`가 나요. `null`을 풀 때도 같은 종류의 오류가 나요. 인수를 생략할 수도 있다면 `function receipt({ menu, qty = 1 } = {})`처럼 매개변수 전체에 빈 객체 기본값을 줘요.
+
+### 배열 구조 분해: 위치대로 꺼내요
+
+배열에는 이름 대신 순서가 있어요. 그래서 배열 구조 분해는 대괄호 `[ ]`를 쓰고, **위치대로** 값을 넣어요.
+
+```js
+const ranking = ["민지", "준호", "서연", "하린"];
+const [gold, silver] = ranking;      // gold는 "민지", silver는 "준호"
+```
+
+| 왼쪽에 쓴 것 | 뜻 | 위 `ranking`에서의 결과 |
+|---|---|---|
+| `[a, b]` | 0번 → `a`, 1번 → `b` | `"민지"`, `"준호"` |
+| `[, b]` | 0번은 건너뛰고 1번 → `b` | `"준호"` |
+| `[a, ...rest]` | 0번 → `a`, 나머지 전부 → 새 배열 `rest` | `"민지"`, `["준호", "서연", "하린"]` |
+| `[a, b, c, d, e]` | 4번은 없음 | `e`는 `undefined` |
+| `[a, b, c, d, e = "없음"]` | 4번이 없거나 `undefined`면 기본값 | `e`는 `"없음"` |
+
+변수 이름은 아무 상관이 없어요. `const [price, name] = ["떡볶이", 4000];`이라고 써도 `price`에는 0번 값 `"떡볶이"`가 들어가요. 이름이 뜻을 맞춰 주지 않으니, 배열에 어떤 순서로 값이 들어 있는지 확인하고 그 순서대로 이름을 지어요.
+
+배열 구조 분해는 대입에도 쓸 수 있어서, 임시 변수 없이 **두 변수의 값을 바꿀** 수 있어요.
+
+```js
+let left = "사과";
+let right = "배";
+[left, right] = [right, left];      // left는 "배", right는 "사과"
+```
+
+오른쪽 `[right, left]`가 먼저 새 배열 `["배", "사과"]`로 만들어지고, 그다음 그 배열을 위치대로 왼쪽 변수에 넣기 때문이에요.
+
+### 전개 구문: 펼쳐서 새로 담아요
+
+<ConceptLink to="js.obj.copy-shallow">얕은 복사</ConceptLink>에서 `{ ...obj }`로 복사본을 만들었어요. 점 세 개 `...`는 **객체나 배열의 내용을 그 자리에 펼쳐 놓는다**는 뜻이에요. 펼친 것을 새 `{ }`나 `[ ]`에 담으니 늘 **새** 객체·배열이 만들어지고, 원본은 바뀌지 않아요.
+
+```js
+const defaults = { theme: "light", fontSize: 16 };
+const saved = { theme: "dark" };
+const settings = { ...defaults, ...saved };   // { theme: "dark", fontSize: 16 }
+```
+
+전개는 **왼쪽부터 차례로** 속성을 담아요. 같은 키가 다시 나오면 나중에 담은 값으로 덮어써요. 위 코드를 한 단계씩 따라가면 이래요.
+
+| 단계 | 담는 것 | `settings`의 상태 |
+|---|---|---|
+| 1 | `...defaults` | `{ theme: "light", fontSize: 16 }` |
+| 2 | `...saved` | `theme`을 덮어씀 → `{ theme: "dark", fontSize: 16 }` |
+
+그래서 **기본값은 앞에, 바꿀 값은 뒤에** 써요. 펼친 뒤에 속성을 직접 써도 같은 규칙이에요. `{ ...order, qty: 3 }`은 `order`를 모두 담은 다음 `qty`만 3으로 덮어쓴 새 객체예요. 순서를 바꿔 `{ qty: 3, ...order }`라고 쓰면 `order.qty`가 나중에 담겨 3이 사라져요.
+
+배열도 같아요. `[...a, ...b]`는 `a`의 요소, `b`의 요소를 차례로 담은 새 배열이고, `[...list, "새 항목"]`은 끝에 항목을 더한 새 배열이에요.
+
+### 두 번째 관점: 같은 점 세 개, 반대 방향
+
+`...`는 쓰는 자리에 따라 두 가지 일을 해요. 모듈 6의 <ConceptLink to="js.fn.rest-params">나머지 매개변수</ConceptLink>를 떠올려 보세요.
+
+| 자리 | 이름 | 하는 일 | 예 |
+|---|---|---|---|
+| 값을 **만드는** 자리 (`=` 오른쪽, 호출의 인수) | 전개 | 하나의 객체·배열을 여러 개로 **펼침** | `{ ...user, age: 21 }`, `[...a, ...b]` |
+| 값을 **받는** 자리 (`=` 왼쪽, 매개변수) | 나머지 | 남은 여러 개를 하나로 **모음** | `const { password, ...info } = user;`, `function f(...nums)` |
+
+나머지는 구조 분해의 마지막에만 쓸 수 있어요. `const { password, ...info } = user;`는 `password`를 꺼내고, 남은 속성을 모두 담은 **새 객체** `info`를 만들어요. "어떤 속성만 뺀 객체"가 필요할 때 써요. 이때도 `user`에서는 아무것도 빠지지 않아요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제예요. 객체에서 값을 꺼내고, 이름을 바꾸고, 없는 속성에 기본값을 줘요. 마지막 줄의 `menu`는 어떻게 보일까요?
+
+<RunnableExample id="object-destructuring" lang="js" predict predictKind="console" concepts={["js.obj.destructuring"]}>
+```js
+const menu = { name: "떡볶이", price: 4000, spicy: true };
+
+const { name, price } = menu;
+console.log(name, price);
+
+const { name: menuName, size = "보통", spicy } = menu;
+console.log(menuName, size, spicy);
+
+console.log(menu);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+떡볶이 4000
+떡볶이 보통 true
+{ name: "떡볶이", price: 4000, spicy: true }
+```
+
+- 3번 줄은 `name`, `price` 속성을 꺼내 같은 이름의 변수 두 개를 만들어요.
+- 6번 줄의 `name: menuName`은 `name` 속성을 `menuName`이라는 **새 이름**의 변수로 받아요. 3번 줄에서 `name` 변수를 이미 만들었기 때문에, 같은 이름으로 또 만들 수 없어서 이름을 바꾼 거예요.
+- `size`는 `menu`에 없는 속성이라 원래는 `undefined`인데, 기본값 `"보통"`이 들어가요. `spicy`는 있는 속성이라 `true`예요.
+- 9번 줄에서 `menu`는 처음 모습 그대로예요. 구조 분해는 값을 읽어 올 뿐 속성을 빼내지 않아요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 매개변수 자리의 구조 분해와 기본값이에요. 세 번째 호출의 `level`에는 무엇이 들어갈까요?
+
+<RunnableExample id="param-defaults" lang="js" predict predictKind="console" concepts={["js.obj.destructuring", "js.fn.default-params"]}>
+```js
+function makeBadge({ name, level = 1, team = "없음" }) {
+  return name + " (Lv." + level + ", 팀: " + team + ")";
+}
+
+console.log(makeBadge({ name: "민지", level: 3 }));
+console.log(makeBadge({ name: "준호", team: undefined }));
+console.log(makeBadge({ name: "서연", level: null }));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+민지 (Lv.3, 팀: 없음)
+준호 (Lv.1, 팀: 없음)
+서연 (Lv.null, 팀: 없음)
+```
+
+| 호출 | 넘긴 `level` | 받은 `level` | 넘긴 `team` | 받은 `team` |
+|---|---|---|---|---|
+| 민지 | `3` | `3` | 없음 | `"없음"` (기본값) |
+| 준호 | 없음 | `1` (기본값) | `undefined` | `"없음"` (기본값) |
+| 서연 | `null` | `null` | 없음 | `"없음"` (기본값) |
+
+- 인수 객체를 매개변수 자리에서 바로 풀었어요. 함수 안에서는 `name`, `level`, `team`을 그냥 변수처럼 써요.
+- 기본값은 값이 **없거나 `undefined`일 때만** 들어가요. 준호의 `team: undefined`도 기본값이 쓰여요.
+- 서연의 `level: null`은 "값이 있다"로 봐서 기본값이 쓰이지 않고 `null`이 그대로 문자열에 붙어 `Lv.null`이 됐어요. `null`도 기본값으로 바꾸고 싶다면 모듈 3의 `??`를 써서 `const lv = level ?? 1;`처럼 따로 처리해요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 배열 구조 분해예요. 건너뛰기, 나머지 모으기, 두 값 바꾸기를 한 번에 봐요.
+
+<RunnableExample id="array-destructuring" lang="js" predict predictKind="console" concepts={["js.arr.destructuring"]}>
+```js
+const ranking = ["민지", "준호", "서연", "하린", "도윤"];
+
+const [gold, silver, bronze, ...others] = ranking;
+console.log(gold, silver, bronze);
+console.log(others);
+
+const [, second] = ranking;
+console.log(second);
+
+let left = "사과";
+let right = "배";
+[left, right] = [right, left];
+console.log(left, right);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+민지 준호 서연
+["하린", "도윤"]
+준호
+배 사과
+```
+
+- 3번 줄은 0·1·2번 값을 `gold`, `silver`, `bronze`에 넣고, 남은 3·4번 값을 **새 배열** `others`에 모아요.
+- 7번 줄은 쉼표 앞을 비워서 0번을 건너뛰고, 1번 값만 `second`에 넣어요.
+- 12번 줄은 오른쪽에서 먼저 새 배열 `["배", "사과"]`가 만들어지고, 그 배열을 위치대로 `left`, `right`에 넣어요. 그래서 두 값이 바뀌어요. 이미 있는 변수에 대입하는 것이니 `let`이어야 해요. `const`라면 `TypeError: Assignment to constant variable.`이 나요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 객체 전개예요. 같은 키가 있을 때 어느 값이 남는지 예측해 보세요.
+
+<RunnableExample id="object-spread" lang="js" predict predictKind="console" concepts={["js.obj.spread"]}>
+```js
+const defaults = { theme: "light", fontSize: 16, sound: true };
+const saved = { theme: "dark", fontSize: 20 };
+
+const settings = { ...defaults, ...saved };
+console.log(settings);
+
+const reversed = { ...saved, ...defaults };
+console.log(reversed);
+
+const quiet = { ...settings, sound: false };
+console.log(quiet.sound, settings.sound);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+{ theme: "dark", fontSize: 20, sound: true }
+{ theme: "light", fontSize: 16, sound: true }
+false true
+```
+
+| 줄 | 먼저 담은 것 | 나중에 담은 것 | 같은 키 `theme` |
+|---|---|---|---|
+| 4번 | `defaults` | `saved` | `saved`의 `"dark"`가 남음 |
+| 7번 | `saved` | `defaults` | `defaults`의 `"light"`가 남음 |
+
+- 같은 키는 **나중에 담은 값**이 이겨요. 7번 줄처럼 순서를 바꾸면 사용자가 저장한 설정이 기본값에 덮여서 사라져요.
+- 10번 줄은 `settings`를 모두 담은 뒤 `sound`만 `false`로 덮어쓴 **새 객체**예요. `settings.sound`는 여전히 `true`예요. 전개는 원본을 바꾸지 않아요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 배열 전개와, 구조 분해의 나머지로 "어떤 속성만 뺀 객체"를 만드는 방법이에요.
+
+<RunnableExample id="array-spread-rest" lang="js" concepts={["js.obj.spread", "js.obj.destructuring"]}>
+```js
+const morning = ["김밥", "우유"];
+const lunch = ["떡볶이"];
+const today = [...morning, ...lunch, "아이스크림"];
+console.log(today);
+console.log(morning);
+
+const user = { id: 7, name: "민지", password: "1234" };
+const { password, ...publicInfo } = user;
+console.log(publicInfo);
+console.log(Object.keys(user).length);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+["김밥", "우유", "떡볶이", "아이스크림"]
+["김밥", "우유"]
+{ id: 7, name: "민지" }
+3
+```
+
+- 3번 줄은 `morning`의 요소, `lunch`의 요소, `"아이스크림"`을 차례로 담은 새 배열이에요. `morning`은 그대로예요.
+- 8번 줄은 값을 **받는** 자리의 `...`라서 나머지예요. `password`를 꺼내고, 남은 `id`와 `name`을 담은 새 객체 `publicInfo`를 만들어요. 화면에 보여 줄 정보에서 비밀번호만 빼고 싶을 때 이렇게 해요.
+- 10번 줄에서 `user`의 속성은 여전히 3개예요. 나머지로 모아도 원본에서 빠지는 것은 없어요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.destructuring-removes-property">
+<Wrong>`const { name } = user;`를 하면 `name` 속성이 `user`에서 빠져나와 변수로 옮겨진다.</Wrong>
+<Actual>첫 번째 예제의 마지막 줄에서 `menu`는 처음 모습 그대로였어요. 구조 분해는 속성 값을 **읽어서** 변수에 담을 뿐이에요. 다섯 번째 예제처럼 나머지(`...publicInfo`)로 모아도 원본의 속성 수는 그대로예요.</Actual>
+<Right>구조 분해는 `const name = user.name;`을 짧게 쓴 것이라고 생각해요. 속성을 정말 없애려면 앞에서 배운 `delete`를 쓰거나, 나머지로 그 속성이 빠진 **새 객체**를 만들어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.destructuring-rename-direction">
+<Wrong>`const { userName: name } = user;`는 `user`의 `name` 속성을 `userName` 변수로 받는다.</Wrong>
+<Actual>
+
+콜론 왼쪽이 **속성 이름**, 오른쪽이 **새 변수 이름**이에요. 거꾸로 쓰면 `userName` 속성을 찾아요.
+
+```js
+const user = { name: "민지" };
+const { userName: name } = user;
+console.log(name); // undefined (userName 속성이 없음)
+```
+</Actual>
+<Right>`{ 어느속성: 어떤변수 }` 순서로 써요. `name` 속성을 `userName` 변수로 받으려면 `const { name: userName } = user;`예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.destructuring-default-on-null">
+<Wrong>`const { level = 1 } = player;`에서 `player.level`이 `null`이어도 기본값 1이 들어간다.</Wrong>
+<Actual>두 번째 예제의 서연처럼 `null`은 그대로 들어와 `Lv.null`이 됐어요. 기본값은 값이 없거나 `undefined`일 때만 쓰여요.</Actual>
+<Right>`null`도 기본값으로 바꿔야 하면 구조 분해 기본값 대신 `const level = player.level ?? 1;`처럼 `??`를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.array-destructuring-by-name">
+<Wrong>`const [price, name] = ["떡볶이", 4000];`이라고 쓰면 이름에 맞게 `price`에 4000, `name`에 `"떡볶이"`가 들어간다.</Wrong>
+<Actual>배열에는 이름이 없어요. 위치대로 넣으니 `price`는 `"떡볶이"`, `name`은 4000이에요.</Actual>
+<Right>배열에 어떤 순서로 값이 들어 있는지 먼저 확인하고 그 순서대로 이름을 지어요: `const [name, price] = ["떡볶이", 4000];`. 이름으로 꺼내고 싶다면 처음부터 배열 대신 객체에 담아요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.spread-order-irrelevant">
+<Wrong>`{ ...defaults, ...saved }`와 `{ ...saved, ...defaults }`는 담는 내용이 같으니 결과도 같다.</Wrong>
+<Actual>네 번째 예제에서 두 결과의 `theme`은 `"dark"`와 `"light"`로 달랐어요. 같은 키는 나중에 담은(오른쪽) 값이 덮어써요.</Actual>
+<Right>기본값은 앞에, 바꿀 값은 뒤에 써요. 직접 쓰는 속성도 마찬가지라서, 수량만 바꾼 새 주문은 `{ ...order, qty: 3 }`처럼 펼친 **뒤에** 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.spread-mutates-original">
+<Wrong>`const quiet = { ...settings, sound: false };`를 하면 `settings.sound`도 `false`로 바뀐다.</Wrong>
+<Actual>네 번째 예제의 마지막 줄에서 `quiet.sound`는 `false`, `settings.sound`는 `true`였어요. 전개는 늘 새 객체를 만들어요.</Actual>
+<Right>"원본은 그대로 두고 바뀐 새 객체를 만든다"가 전개 구문을 쓰는 이유예요. 다만 얕은 복사라서, 안쪽 객체나 배열은 원본과 함께 써요(아래 실전 사용 사례).</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+화면을 만드는 프로그램은 "지금 상태"를 객체 하나에 담아 두고, 버튼을 누를 때마다 **바뀐 새 상태 객체**를 만들어 바꿔 끼우는 방식을 자주 써요. 이전 상태를 고치지 않으니, 어떤 값이 언제 바뀌었는지 따라가기 쉽고 "되돌리기"도 만들기 쉬워요.
+
+```js
+let state = { user: "민지", qty: 1, options: ["포장"] };
+
+function addOne(current) {
+  return { ...current, qty: current.qty + 1 };
+}
+
+function addOption(current, option) {
+  return { ...current, options: [...current.options, option] };
+}
+
+const before = state;
+state = addOne(state);
+state = addOption(state, "수저 빼기");
+
+console.log(before);  // { user: "민지", qty: 1, options: ["포장"] }
+console.log(state);   // { user: "민지", qty: 2, options: ["포장", "수저 빼기"] }
+```
+
+- `addOne`은 `current`를 펼친 뒤 `qty`만 덮어쓴 새 객체를 돌려줘요.
+- `addOption`은 배열 속성까지 새로 만들어요(`[...current.options, option]`). `current.options.push(option)`을 하면 얕은 복사 때문에 `before`의 배열까지 바뀌어요. 안쪽 배열이나 객체를 바꿀 때는 그것도 펼쳐서 새로 만들어야 해요.
+
+함수가 받는 설정 객체를 매개변수 자리에서 구조 분해하는 것도 흔해요. 어떤 속성을 쓰는지가 함수 첫 줄에 드러나고, 기본값도 한곳에 모여요.
+
+```js
+function formatPrice(price, { currency = "원", comma = true } = {}) {
+  const text = comma ? price.toLocaleString("ko-KR") : String(price);
+  return text + currency;
+}
+
+console.log(formatPrice(12000));                    // 12,000원
+console.log(formatPrice(12000, { comma: false }));  // 12000원
+```
+</Section>
+
+<Section kind="check">
+구조 분해한 뒤 원래 객체는 어떻게 될까요?
+
+<InlineExercise ref="js-basics.objects.destructuring-and-spread.mcq-destructure-keeps-original" />
+
+이름을 바꿔서 꺼내는 문법의 방향을 확인해 보세요.
+
+<InlineExercise ref="js-basics.objects.destructuring-and-spread.tf-rename-direction" />
+
+배열 구조 분해는 무엇을 기준으로 값을 넣을까요?
+
+<InlineExercise ref="js-basics.objects.destructuring-and-spread.mcq-array-by-position" />
+
+전개 구문에서 같은 키가 겹치면 어느 값이 남을까요?
+
+<InlineExercise ref="js-basics.objects.destructuring-and-spread.mcq-spread-order" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `const { a, b } = obj;`는 같은 이름의 속성을 꺼내 변수를 만들어요. `{ a: x }`는 `a` 속성을 변수 `x`로 받아요(속성이름: 새이름).
+- 구조 분해 기본값(`{ a = 1 }`)은 값이 없거나 `undefined`일 때만 쓰이고, `null`에는 쓰이지 않아요.
+- 구조 분해는 값을 읽기만 해요. 원본 객체·배열은 바뀌지 않아요.
+- `const [x, y] = arr;`는 이름이 아니라 위치대로 넣어요. `[, y]`로 건너뛰고, `[x, ...rest]`로 나머지를 새 배열에 모으고, `[a, b] = [b, a]`로 두 값을 바꿔요.
+- `{ ...a, ...b }`, `[...a, ...b]`는 펼쳐서 새로 담은 새 객체·배열이에요. 같은 키는 나중에 담은 값이 이겨요.
+- 값을 만드는 자리의 `...`는 펼치는 전개, 값을 받는 자리의 `...`는 모으는 나머지예요. 둘 다 얕은 복사라서 안쪽 객체·배열은 원본과 함께 써요.
+</Section>
+
+<Section kind="next">
+다음 단원 "오류 처리 기초"에서는 잘못된 입력을 받았을 때 함수가 오류를 던지고, 그 오류를 `try...catch`로 받아 처리하는 방법을 배워요. 오류도 `name`과 `message` 속성을 가진 객체라서, 이번 단원의 구조 분해로 `const { name, message } = error;`처럼 꺼내 쓸 수 있어요. 구조 분해와 전개는 모듈 10에서 화면 상태를 다룰 때와 JavaScript 심화 과정의 불변성 단원에서 다시 만나요. <MdnLink path="Web/JavaScript/Reference/Operators/Destructuring" />
+</Section>

@@ -1,0 +1,52 @@
+id: js-basics.objects.object-basics.mcq-method-this
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.obj.methods-intro, weight: 1 }
+tags: [object, method, this]
+estimatedSeconds: 80
+prompt: |
+  `pet.introduce()`를 부르면 `"초코는 3살이에요"`를 돌려주도록 빈 줄을 채우려고 해요. 빈 줄에 들어갈 코드로 알맞은 것은 무엇인가요?
+code: |
+  const pet = {
+    nickname: "초코",
+    age: 3,
+    introduce() {
+      // 빈 줄
+    },
+  };
+  console.log(pet.introduce());
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: 'return this.nickname + "는 " + this.age + "살이에요";'
+    - id: b
+      text: 'return nickname + "는 " + age + "살이에요";'
+      misconception: js.mc.method-reads-props-by-name
+      rationale: 속성은 변수가 아니에요. 메서드 안에서 nickname이라고만 쓰면 변수 nickname을 찾다가 ReferenceError가 나요.
+    - id: c
+      text: 'console.log(this.nickname + "는 " + this.age + "살이에요");'
+      misconception: js.mc.return-is-log
+      rationale: 출력만 하고 돌려주지 않으면 pet.introduce()의 결과는 undefined라서 마지막 줄에 undefined가 한 번 더 출력돼요.
+    - id: d
+      text: 'return pet.introduce.nickname + "는 " + pet.introduce.age + "살이에요";'
+      rationale: pet.introduce는 함수 자체예요. 함수에는 nickname이나 age 속성이 없어서 "undefined는 undefined살이에요"가 돼요.
+  correct: a
+misconceptions: [js.mc.method-reads-props-by-name, js.mc.return-is-log]
+hints:
+  - 메서드 안에서 자기 객체의 속성을 가리키는 방법은 무엇이었나요?
+  - "`nickname`이라고만 쓰면 JavaScript는 속성이 아니라 무엇을 찾을까요?"
+  - "`pet.introduce()`로 불렀을 때 `this`는 점 앞의 객체예요. 그리고 결과를 `console.log`가 출력하려면 메서드가 문장을 돌려줘야 해요."
+explanation: |
+  정답은 `return this.nickname + "는 " + this.age + "살이에요";`예요.
+
+  `pet.introduce()`처럼 점을 찍어 부르면 메서드 안의 `this`는 점 앞의 `pet`이에요. 그래서 `this.nickname`은 `"초코"`, `this.age`는 `3`이고, 만든 문장을 `return`으로 돌려주면 마지막 줄이 출력해요.
+
+  - '`nickname`, `age`만 쓴 코드: 메서드가 객체 안에 있어도 속성이 변수가 되지는 않아요. `ReferenceError: nickname is not defined`가 나요.'
+  - '`console.log`로 출력만 하는 코드: 문장은 한 번 보이지만 반환값이 없어서 마지막 줄의 `console.log`가 `undefined`를 한 번 더 출력해요. 출력과 반환은 달라요(모듈 6).'
+  - '`pet.introduce.nickname` 같은 코드: `pet.introduce`는 메서드(함수) 자체를 가리켜요. 함수에는 그런 속성이 없어서 `"undefined는 undefined살이에요"`가 돼요. 우리가 원하는 것은 함수가 아니라 `pet`의 속성이에요.'
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,44 @@
+id: js-basics.objects.destructuring-and-spread.mcq-spread-order
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.obj.spread, weight: 1 }
+tags: [spread, object, merge]
+estimatedSeconds: 70
+prompt: |
+  기본 주문과 손님이 고른 옵션을 합쳐요. 아래 코드를 실행하면 무엇이 출력되나요?
+code: |
+  const base = { size: "M", color: "black", qty: 1 };
+  const choice = { color: "white", qty: 2 };
+  const order = { ...choice, ...base };
+  console.log(order.size, order.color, order.qty);
+spec:
+  options:
+    - id: a
+      text: "`M black 1`"
+    - id: b
+      text: "`M white 2`"
+      misconception: js.mc.spread-order-irrelevant
+      rationale: 같은 키는 나중에 담은 값이 남아요. 이 코드는 base를 나중에 펼쳐서 choice의 값이 덮였어요.
+    - id: c
+      text: "`undefined white 2`"
+      rationale: choice에 없는 size도 base를 펼칠 때 담겨요.
+    - id: d
+      text: "`TypeError`가 난다"
+      rationale: 같은 키가 겹쳐도 오류가 나지 않고 한쪽 값으로 덮어써요.
+  correct: a
+misconceptions: [js.mc.spread-order-irrelevant]
+hints:
+  - "`{ ...choice, ...base }`는 어느 객체의 속성을 먼저 담나요?"
+  - 같은 키가 다시 나오면 앞의 값은 어떻게 되나요?
+  - 두 객체에 모두 있는 키는 `color`와 `qty`예요. 이 두 키는 나중에 펼친 객체의 값이 남아요.
+explanation: |
+  `M black 1`이 출력돼요.
+
+  전개는 왼쪽부터 차례로 담아요. 먼저 `choice`의 `color: "white"`, `qty: 2`를 담고, 다음에 `base`를 펼치면서 `size`를 더하고 `color`와 `qty`를 `base`의 값으로 **덮어써요**. 그래서 손님이 고른 옵션이 모두 사라졌어요.
+
+  손님의 선택이 이기게 하려면 기본값을 앞에, 바꿀 값을 뒤에 써서 `{ ...base, ...choice }`로 합쳐야 해요. 그러면 `M white 2`가 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

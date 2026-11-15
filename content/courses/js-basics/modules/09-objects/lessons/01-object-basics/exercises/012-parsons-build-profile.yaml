@@ -1,0 +1,63 @@
+id: js-basics.objects.object-basics.parsons-build-profile
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.obj.literal, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.3 }
+tags: [object, literal, parsons]
+estimatedSeconds: 120
+prompt: |
+  게임 캐릭터의 프로필 객체를 만들고, 레벨을 1 올린 뒤 출력하는 프로그램이에요. 코드 조각을 순서대로 놓아 아래처럼 출력되게 하세요.
+
+  ```text
+  별빛 Lv.2
+  ```
+spec:
+  lines:
+    - { id: l1, code: "const profile = {" }
+    - { id: l2, code: 'nickname: "별빛",', indent: 1 }
+    - { id: l3, code: "level: 1,", indent: 1 }
+    - { id: l4, code: "};" }
+    - { id: l5, code: "profile.level = profile.level + 1;" }
+    - { id: l6, code: 'console.log(profile.nickname + " Lv." + profile.level);' }
+  distractors:
+    - { id: d1, code: 'nickname: "별빛";', replaces: l2, misconception: js.mc.obj-property-semicolon }
+    - { id: d2, code: "profile[level] = profile[level] + 1;", replaces: l5, misconception: js.mc.bracket-key-without-quotes }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: '"별빛 Lv.2"가 출력되어야 합니다.'
+      requirement: 프로필 출력
+      expect:
+        lines: ["별빛 Lv.2"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 프로필 출력
+      expect:
+        noError: true
+misconceptions: [js.mc.obj-property-semicolon, js.mc.bracket-key-without-quotes]
+hints:
+  - 객체를 먼저 만들어야 그 속성을 바꾸고 출력할 수 있어요. 객체 리터럴은 여는 줄, 속성 줄들, 닫는 줄로 이루어져요.
+  - 속성 줄이 두 가지씩 보여요. 객체 리터럴 안에서 속성 사이를 나누는 기호는 무엇이었나요?
+  - 레벨을 올리는 줄도 두 가지예요. 대괄호 안에 따옴표 없이 쓴 이름은 속성 이름일까요, 변수일까요?
+explanation: |
+  정답 순서의 예예요.
+
+  ```js
+  const profile = {
+    nickname: "별빛",
+    level: 1,
+  };
+  profile.level = profile.level + 1;
+  console.log(profile.nickname + " Lv." + profile.level);
+  ```
+
+  - '객체 리터럴 안의 속성은 쉼표로 나눠요. `nickname: "별빛";`처럼 세미콜론을 쓰면 실행 전에 `SyntaxError`가 나요.'
+  - `profile[level]`의 `level`은 따옴표가 없어서 변수로 읽혀요. 변수 `level`이 없으니 `ReferenceError`가 나요. `profile.level`이나 `profile["level"]`로 써요.
+  - 두 속성 줄의 순서를 바꿔도 출력이 같으므로 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

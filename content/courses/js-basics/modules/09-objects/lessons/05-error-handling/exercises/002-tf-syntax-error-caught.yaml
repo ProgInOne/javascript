@@ -1,0 +1,48 @@
+id: js-basics.objects.error-handling.tf-syntax-error-caught
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.errors.try-catch, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [try-catch, syntax-error]
+estimatedSeconds: 80
+prompt: |
+  아래 코드를 보고, 설명이 맞는지 고른 뒤 그렇게 판단한 이유도 고르세요.
+code: |
+  console.log("시작");
+  try {
+    console.log("합계: " + (1000 + 2000);
+  } catch (err) {
+    console.log("오류를 잡았어요");
+  }
+  console.log("끝");
+spec:
+  statement: "3번 줄의 괄호 오류는 `try` 블록 안에 있으므로 `catch`가 잡고, `시작`, `오류를 잡았어요`, `끝`이 출력된다."
+  answer: false
+  misconceptionIfWrong: js.mc.try-catch-catches-syntax-error
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 괄호 오류는 실행 전 문법 검사에서 나는 SyntaxError라서 프로그램이 시작되지 않고, try...catch도 실행되지 않는다
+      correct: true
+    - id: r2
+      text: catch는 오류가 난 줄을 고쳐서 다시 실행하므로 합계가 출력된다
+      misconception: js.mc.try-resumes-after-catch
+    - id: r3
+      text: 오류를 잡더라도 오류가 난 뒤에는 프로그램이 멈추므로 끝은 출력되지 않는다
+      misconception: js.mc.caught-error-stops-program
+hints:
+  - 3번 줄의 오류는 어떤 종류일까요? 괄호의 짝을 세어 보세요.
+  - 그 종류의 오류는 실행 전에 날까요, 실행 중에 날까요?
+  - "`try...catch`도 실행되어야 동작하는 문장이에요. 프로그램이 시작되지 않으면 어떻게 될지 생각해 보세요."
+explanation: |
+  설명은 **거짓**이에요. 이유는 "괄호 오류는 실행 전 문법 검사에서 나는 SyntaxError라서 프로그램이 시작되지 않고, try...catch도 실행되지 않는다"예요.
+
+  3번 줄은 여는 괄호 `(`가 두 개인데 닫는 괄호 `)`가 하나뿐이에요. Chrome에서는 `SyntaxError: missing ) after argument list`가 나요. 문법 오류는 실행하기 전에 코드 전체를 검사할 때 걸리므로, 1번 줄의 `시작`조차 출력되지 않아요. `try...catch`는 실행 중에 동작하는 문장이라 실행되지 않은 프로그램의 오류는 잡을 수 없어요.
+
+  - "catch가 오류 난 줄을 고쳐서 다시 실행한다": `catch`는 오류를 고치지 않고, `try`로 돌아가지도 않아요.
+  - "잡더라도 프로그램이 멈춘다": 실행 중 오류를 `catch`로 잡았다면 프로그램은 계속돼요. 이 코드에서 아무것도 출력되지 않는 이유는 오류를 잡지 못해서가 아니라 프로그램이 아예 시작되지 않아서예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

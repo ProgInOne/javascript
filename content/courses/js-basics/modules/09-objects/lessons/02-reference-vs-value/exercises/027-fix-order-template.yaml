@@ -1,0 +1,131 @@
+id: js-basics.objects.reference-vs-value.fix-order-template
+type: fix_bug
+difficulty: 5
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+  - { id: js.obj.copy-shallow, weight: 0.5 }
+  - { id: js.fn.side-effects, weight: 0.3 }
+tags: [reference, copy, shallow, template, function, debugging]
+estimatedSeconds: 600
+prompt: |
+  음식 주문 프로그램이에요. 모든 주문은 `template`(상태 `"대기"`, 토핑 없음)에서 시작해요.
+
+  - `createOrder(menu)`는 템플릿을 바탕으로 메뉴 이름이 붙은 **새 주문**을 만들어 돌려줘요.
+  - `addTopping(order, topping)`은 그 주문에 토핑을 하나 더해요.
+  - 템플릿은 다음 주문을 위해 **항상 처음 그대로** 남아야 해요.
+
+  지금은 주문끼리 서로 섞여요. 버그를 모두 고쳐서 아래처럼 출력되게 하세요. 버그는 하나가 아닐 수 있어요.
+
+  ```text
+  피자 토핑 1개
+  파스타 토핑 0개
+  템플릿 토핑 수: 0
+  ```
+
+  채점은 `createOrder`를 직접 불러서도 해요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const template = { status: "대기", toppings: [] };
+
+          function createOrder(menu) {
+            const order = template;
+            order.menu = menu;
+            return order;
+          }
+
+          function addTopping(order, topping) {
+            order.toppings.push(topping);
+          }
+
+          const order1 = createOrder("피자");
+          const order2 = createOrder("파스타");
+          addTopping(order1, "치즈");
+
+          console.log(order1.menu + " 토핑 " + order1.toppings.length + "개");
+          console.log(order2.menu + " 토핑 " + order2.toppings.length + "개");
+          console.log("템플릿 토핑 수: " + template.toppings.length);
+  entry: createOrder
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const template = { status: "대기", toppings: [] };
+
+          function createOrder(menu) {
+            const order = { ...template, toppings: [...template.toppings] };
+            order.menu = menu;
+            return order;
+          }
+
+          function addTopping(order, topping) {
+            order.toppings.push(topping);
+          }
+
+          const order1 = createOrder("피자");
+          const order2 = createOrder("파스타");
+          addTopping(order1, "치즈");
+
+          console.log(order1.menu + " 토핑 " + order1.toppings.length + "개");
+          console.log(order2.menu + " 토핑 " + order2.toppings.length + "개");
+          console.log("템플릿 토핑 수: " + template.toppings.length);
+  bugDescription: "두 주문이 모두 `파스타 토핑 1개`로 나오고, 템플릿에도 토핑이 1개 생겨요."
+  bugMisconception: js.mc.assign-copies-object
+  checks:
+    - kind: console
+      id: output
+      description: 피자 주문만 토핑이 1개이고, 파스타 주문과 템플릿은 토핑이 없어야 합니다.
+      requirement: 주문 출력
+      expect:
+        lines: ["피자 토핑 1개", "파스타 토핑 0개", "템플릿 토핑 수: 0"]
+    - kind: program
+      id: template-kept
+      description: 프로그램이 끝난 뒤 template은 처음 그대로(대기, 토핑 없음, menu 없음)여야 합니다.
+      requirement: 템플릿은 그대로
+      expect:
+        globals:
+          template: { equals: { status: "대기", toppings: [] } }
+          order2: { equals: { status: "대기", toppings: [], menu: "파스타" } }
+        noError: true
+      misconceptionIfFail: js.mc.shallow-copy-is-deep
+    - kind: call
+      id: new-order
+      visible: false
+      description: 프로그램이 끝난 뒤 createOrder("라면")을 불러도 토핑 없는 대기 상태의 라면 주문이 나와야 합니다.
+      requirement: 새 주문 만들기
+      args: ["라면"]
+      expect: { equals: { status: "대기", toppings: [], menu: "라면" } }
+misconceptions: [js.mc.assign-copies-object, js.mc.shallow-copy-is-deep]
+hints:
+  - "`order1`, `order2`, `template`이 몇 개의 객체를 가리키는지 그려 보세요. 4번 줄은 새 객체를 만드나요?"
+  - 4번 줄을 얕은 복사로 바꾸면 메뉴 이름은 따로 갖게 돼요. 그런데 `toppings`는 어떻게 될까요? 고친 뒤 다시 실행해서 출력을 확인해 보세요.
+  - 주문마다 따로 가져야 하는 것은 주문 객체 하나만이 아니에요. 주문 안에서 `push`로 바뀌는 값도 주문마다 새로 만들어야 해요.
+explanation: |
+  버그는 두 단계예요.
+
+  **1. 복사하지 않은 템플릿 (4번 줄)**: `const order = template;`은 참조 복사라서 모든 주문이 `template` 객체 그 자체예요. `createOrder("파스타")`가 같은 객체의 `menu`를 `"파스타"`로 덮어써서 두 주문 모두 파스타가 되고, 토핑도 템플릿에 쌓였어요.
+
+  **2. 얕은 복사로는 부족함**: 4번 줄을 `{ ...template }`으로만 고치면 메뉴는 `피자`, `파스타`로 나뉘지만, `toppings` 배열은 여전히 모든 주문과 템플릿이 함께 써요. 그래서 `파스타 토핑 1개`, `템플릿 토핑 수: 1`이 나와요. 첫 버그를 고쳐서 일부가 맞아지니 다 고쳤다고 착각하기 쉬운 함정이에요.
+
+  ```js
+  function createOrder(menu) {
+    const order = { ...template, toppings: [...template.toppings] };
+    order.menu = menu;
+    return order;
+  }
+  ```
+
+  | 고친 정도 | 출력 |
+  |---|---|
+  | 고치기 전 | `파스타 토핑 1개` / `파스타 토핑 1개` / `템플릿 토핑 수: 1` |
+  | `{ ...template }`만 | `피자 토핑 1개` / `파스타 토핑 1개` / `템플릿 토핑 수: 1` |
+  | 토핑 배열도 복사 | `피자 토핑 1개` / `파스타 토핑 0개` / `템플릿 토핑 수: 0` |
+
+  - `structuredClone(template)`으로 복사해도 정답이에요.
+  - `addTopping`이 받은 주문을 바꾸는 것은 이 프로그램에서 의도한 동작이에요. 문제는 주문들이 서로 같은 객체·배열을 함께 쓴 것이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

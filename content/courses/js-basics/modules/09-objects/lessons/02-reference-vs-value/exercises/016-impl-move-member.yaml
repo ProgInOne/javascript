@@ -1,0 +1,150 @@
+id: js-basics.objects.reference-vs-value.impl-move-member
+type: implement_function
+difficulty: 5
+concepts:
+  - { id: js.obj.copy-shallow, weight: 1 }
+  - { id: js.obj.reference, weight: 0.5 }
+  - { id: js.obj.dot-bracket, weight: 0.5 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [copy, nested, no-mutation, bracket, write-code, boundary]
+estimatedSeconds: 900
+prompt: |
+  동아리 앱에서 회원을 다른 조로 옮기는 함수 `moveMember(club, name, from, to)`를 만드세요. 동아리 정보는 이런 모양이에요.
+
+  ```js
+  const club = {
+    title: "코딩 동아리",
+    groups: { a: ["민지", "준호"], b: ["서연"] }
+  };
+  ```
+
+  - `name`을 `from` 조에서 빼고 `to` 조의 **끝**에 넣은 **새 동아리 객체**를 돌려줘요. `from`과 `to`는 조 이름(`"a"`, `"b"` 등)이 든 문자열이에요.
+  - `title`과 옮기지 않는 다른 조는 그대로 들어 있어야 해요.
+  - `from` 조에 `name`이 없으면 아무도 옮기지 않은 동아리(내용이 원래와 같은 객체)를 돌려줘요.
+  - 받은 `club`은 **어느 단계도 바꾸지 않아요**. 화면의 "되돌리기"가 원래 동아리 객체를 그대로 다시 쓰거든요.
+
+  ```text
+  moveMember(club, "준호", "a", "b")
+  → { title: "코딩 동아리", groups: { a: ["민지"], b: ["서연", "준호"] } }
+  ```
+
+  채점은 조가 세 개인 동아리 같은 숨긴 입력으로도 하고, 받은 객체가 바뀌었는지도 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function moveMember(club, name, from, to) {
+          }
+  entry: moveMember
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function moveMember(club, name, from, to) {
+            const oldFrom = club.groups[from];
+            const newFrom = [];
+            let found = false;
+            for (const member of oldFrom) {
+              if (member === name) {
+                found = true;
+              } else {
+                newFrom.push(member);
+              }
+            }
+            if (!found) {
+              return club;
+            }
+            const groups = { ...club.groups };
+            groups[from] = newFrom;
+            groups[to] = [...club.groups[to], name];
+            return { ...club, groups: groups };
+          }
+  checks:
+    - kind: call
+      id: basic
+      args: [{ title: "코딩 동아리", groups: { a: ["민지", "준호"], b: ["서연"] } }, "준호", "a", "b"]
+      requirement: 회원 옮기기
+      expect: { equals: { title: "코딩 동아리", groups: { a: ["민지"], b: ["서연", "준호"] } } }
+    - kind: call
+      id: three-groups
+      visible: false
+      description: 조가 세 개일 때 옮기지 않는 조와 title은 그대로이고, 옮긴 회원은 to 조의 끝에 있어야 합니다.
+      requirement: 회원 옮기기
+      args: [{ title: "독서 모임", groups: { a: ["하린"], b: ["도윤", "지우", "유나"], c: ["시우"] } }, "지우", "b", "c"]
+      expect: { equals: { title: "독서 모임", groups: { a: ["하린"], b: ["도윤", "유나"], c: ["시우", "지우"] } } }
+    - kind: call
+      id: to-empty
+      visible: false
+      description: 비어 있는 조로도 옮길 수 있고, from 조가 비게 되어도 빈 배열로 남아야 합니다.
+      requirement: 회원 옮기기
+      args: [{ title: "독서 모임", groups: { a: ["하린"], b: [] } }, "하린", "a", "b"]
+      expect: { equals: { title: "독서 모임", groups: { a: [], b: ["하린"] } } }
+    - kind: call
+      id: not-found
+      visible: false
+      description: from 조에 없는 이름이면 아무도 옮기지 않은 동아리를 돌려줘야 합니다.
+      requirement: 없는 회원
+      args: [{ title: "코딩 동아리", groups: { a: ["민지"], b: ["서연"] } }, "준호", "a", "b"]
+      expect: { equals: { title: "코딩 동아리", groups: { a: ["민지"], b: ["서연"] } } }
+    - kind: call
+      id: input-unchanged
+      visible: false
+      description: 받은 club 객체와 그 안의 groups 객체, 조 배열을 하나도 바꾸면 안 됩니다.
+      requirement: 원래 동아리는 그대로
+      args: [{ title: "코딩 동아리", groups: { a: ["민지", "준호"], b: ["서연"] } }, "준호", "a", "b"]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.shallow-copy-is-deep
+    - kind: call
+      id: new-object
+      visible: false
+      description: 회원을 옮겼다면 받은 club과 다른 새 객체를 돌려줘야 합니다.
+      requirement: 원래 동아리는 그대로
+      args: [{ title: "코딩 동아리", groups: { a: ["민지", "준호"], b: ["서연"] } }, "준호", "a", "b"]
+      expect: { returnsNewReference: true }
+      misconceptionIfFail: js.mc.assign-copies-object
+misconceptions: [js.mc.shallow-copy-is-deep, js.mc.object-param-copied, js.mc.dot-with-variable-key]
+hints:
+  - 받은 동아리는 `club` → `groups` → 조 배열, 세 단계로 되어 있어요. 이 중 내용이 바뀌는 단계는 어디어디인가요? 바뀌는 단계마다 새로 만들어야 해요.
+  - "`from`, `to`에는 조 이름이 문자열로 들어 있어요. `club.groups.from`은 이름이 `from`인 조를 찾아요. 변수에 든 이름으로 찾는 표기법을 쓰세요. `from` 조에서 뺀 새 배열은 반복으로 이름이 다른 회원만 담아 만들 수 있어요."
+  - "순서: ① `from` 조에서 `name`을 뺀 새 배열 만들기(없으면 바로 돌려주기) ② `groups`를 복사한 새 객체에 두 조의 새 배열 넣기 ③ `club`을 복사한 새 객체의 `groups` 칸에 ②를 넣어 돌려주기. `{ ...club }`만으로는 안쪽이 그대로 공유된다는 점을 잊지 마세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function moveMember(club, name, from, to) {
+    const oldFrom = club.groups[from];
+    const newFrom = [];
+    let found = false;
+    for (const member of oldFrom) {
+      if (member === name) {
+        found = true;
+      } else {
+        newFrom.push(member);
+      }
+    }
+    if (!found) {
+      return club;
+    }
+    const groups = { ...club.groups };
+    groups[from] = newFrom;
+    groups[to] = [...club.groups[to], name];
+    return { ...club, groups: groups };
+  }
+  ```
+
+  ```text
+  club ──▶ { title, groups: ─▶ { a: ─▶ ["민지", "준호"], b: ─▶ ["서연"] } }
+  결과 ──▶ { title, groups: ─▶ { a: ─▶ ["민지"],          b: ─▶ ["서연", "준호"] } }
+           (새 객체)          (새 객체)  (새 배열)            (새 배열)
+  ```
+
+  - **바뀌는 단계만 새로**: 내용이 바뀌는 것은 두 조 배열, 그 배열을 담은 `groups`, 그 `groups`를 담은 `club`이에요. 세 단계를 모두 새로 만들어야 받은 객체가 그대로 남아요. 옮기지 않는 조(숨긴 검사의 `a` 조)는 바뀌지 않으니 함께 써도 괜찮아요.
+  - **얕은 복사의 함정**: `const result = { ...club };` 다음에 `result.groups[to].push(name)`을 하면 `groups`와 조 배열이 원래 객체와 같아서 "받은 객체를 바꾸면 안 됩니다" 검사에서 실패해요. `{ ...club, groups: { ...club.groups } }`까지만 해도 조 배열은 여전히 공유돼요.
+  - **대괄호 표기법**: 조 이름이 변수에 들어 있으므로 `club.groups[from]`처럼 써야 해요. `club.groups.from`은 `undefined`예요.
+  - **없는 회원**: 반복 동안 찾았는지 `found`로 기억하고, 못 찾았으면 바로 돌려줘요. 원래 `club`을 돌려줘도 되고 복사본을 돌려줘도 돼요.
+  - `structuredClone(club)`로 통째로 복사한 뒤 복사본의 배열을 고쳐도 정답이에요. 이 방법은 쉽지만 바뀌지 않는 부분까지 모두 새로 만들어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

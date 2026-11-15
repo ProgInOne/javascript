@@ -1,0 +1,91 @@
+id: js-basics.objects.error-handling.fix-log-instead-of-throw
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.errors.throw, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [throw, debugging, function]
+estimatedSeconds: 150
+prompt: |
+  `pay(balance, price)`는 잔액에서 가격을 뺀 새 잔액을 돌려주는 함수예요. 가격이 잔액보다 크면 결제할 수 없으므로 **오류를 던져야** 해요. 오류 메시지는 `잔액이 부족해요`예요.
+
+  ```js
+  pay(10000, 3000);   // 7000
+  pay(2000, 5000);    // Error: 잔액이 부족해요 를 던짐
+  ```
+
+  지금은 잔액이 부족해도 결제가 되어 음수 잔액이 돌아와요. 버그를 고치세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function pay(balance, price) {
+            if (price > balance) {
+              console.log("잔액이 부족해요");
+            }
+            return balance - price;
+          }
+  entry: pay
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function pay(balance, price) {
+            if (price > balance) {
+              throw new Error("잔액이 부족해요");
+            }
+            return balance - price;
+          }
+  bugDescription: "`pay(2000, 5000)`이 오류를 던지지 않고 `-3000`을 돌려줘요."
+  bugMisconception: js.mc.throw-just-logs
+  checks:
+    - kind: call
+      id: normal
+      args: [10000, 3000]
+      requirement: 결제한 잔액 돌려주기
+      expect: { equals: 7000 }
+    - kind: call
+      id: not-enough
+      args: [2000, 5000]
+      requirement: 잔액 부족이면 오류 던지기
+      expect: { throws: { name: Error, messageIncludes: "잔액이 부족해요" } }
+      misconceptionIfFail: js.mc.throw-just-logs
+    - kind: call
+      id: exact
+      visible: false
+      description: 가격과 잔액이 같으면 결제할 수 있어 0을 돌려줘야 합니다.
+      requirement: 결제한 잔액 돌려주기
+      args: [4500, 4500]
+      expect: { equals: 0 }
+    - kind: call
+      id: one-over
+      visible: false
+      description: 가격이 잔액보다 1원만 커도 오류를 던져야 합니다.
+      requirement: 잔액 부족이면 오류 던지기
+      args: [4500, 4501]
+      expect: { throws: { name: Error, messageIncludes: "잔액이 부족해요" } }
+misconceptions: [js.mc.throw-just-logs]
+hints:
+  - 잔액이 부족할 때 3번 줄이 실행된 뒤에는 어느 줄이 실행되나요?
+  - "`console.log`는 보여 주기만 하고 함수를 끝내지 않아요. 함수를 그 자리에서 끝내면서 부른 쪽에 문제를 알리는 문장은 무엇이었나요?"
+  - 오류 객체는 `new Error(설명)`으로 만들어요. 만든 오류를 어떻게 해야 함수 밖으로 나가는지 생각해 보세요.
+explanation: |
+  3번 줄을 `throw new Error("잔액이 부족해요");`로 바꿔요.
+
+  ```js
+  function pay(balance, price) {
+    if (price > balance) {
+      throw new Error("잔액이 부족해요");
+    }
+    return balance - price;
+  }
+  ```
+
+  - 원래 코드의 `console.log`는 메시지를 보여 주기만 하고 함수를 끝내지 않아요. 그래서 5번 줄까지 실행되어 `-3000`이 돌아왔어요. 부른 쪽은 결제가 실패했다는 것을 알 방법이 없어요.
+  - `throw`는 그 자리에서 함수를 끝내고 오류를 던져요. 5번 줄은 실행되지 않고, 부른 쪽은 `try...catch`로 실패를 알아챌 수 있어요.
+  - 경계: 가격과 잔액이 같으면 `price > balance`가 거짓이라 결제되어 0이 돼요. `>=`로 쓰면 이 숨긴 검사에서 틀려요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

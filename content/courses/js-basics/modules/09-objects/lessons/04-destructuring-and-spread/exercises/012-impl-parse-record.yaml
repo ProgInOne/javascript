@@ -1,0 +1,84 @@
+id: js-basics.objects.destructuring-and-spread.impl-parse-record
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.arr.destructuring, weight: 1 }
+  - { id: js.str.split-join, weight: 0.5 }
+  - { id: js.conv.to-number, weight: 0.3 }
+tags: [destructuring, array, split, write-code]
+estimatedSeconds: 330
+prompt: |
+  회원 명단 파일의 한 줄은 `이름,나이,도시` 모양의 문자열이에요. 한 줄을 받아 회원 객체를 돌려주는 함수 `parseRecord(line)`을 만드세요.
+
+  - `name`은 이름(문자열), `age`는 나이(**숫자**), `city`는 도시(문자열)예요.
+  - 도시를 적지 않은 줄(`이름,나이`)도 있어요. 그때 `city`는 `"미정"`이에요.
+
+  ```js
+  parseRecord("민지,24,서울");  // { name: "민지", age: 24, city: "서울" }
+  parseRecord("준호,31");       // { name: "준호", age: 31, city: "미정" }
+  ```
+
+  `split`으로 나눈 결과를 **배열 구조 분해**로 꺼내 보세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function parseRecord(line) {
+          }
+  entry: parseRecord
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function parseRecord(line) {
+            const [name, age, city = "미정"] = line.split(",");
+            return { name: name, age: Number(age), city: city };
+          }
+  checks:
+    - kind: call
+      id: full
+      args: ["민지,24,서울"]
+      requirement: 회원 객체 만들기
+      expect: { equals: { name: "민지", age: 24, city: "서울" } }
+    - kind: call
+      id: no-city
+      args: ["준호,31"]
+      requirement: 도시가 없으면 "미정"
+      expect: { equals: { name: "준호", age: 31, city: "미정" } }
+    - kind: call
+      id: other
+      visible: false
+      description: 다른 줄도 그 줄의 이름·나이·도시로 객체를 만들어야 합니다.
+      requirement: 회원 객체 만들기
+      args: ["서연,19,부산"]
+      expect: { equals: { name: "서연", age: 19, city: "부산" } }
+    - kind: call
+      id: age-number
+      visible: false
+      description: 나이는 문자열이 아니라 숫자여야 합니다.
+      requirement: 나이는 숫자
+      args: ["하린,40"]
+      expect: { equals: { name: "하린", age: 40, city: "미정" } }
+misconceptions: [js.mc.array-destructuring-by-name, js.mc.split-result-is-string]
+hints:
+  - "`\"민지,24,서울\".split(\",\")`의 결과는 어떤 모양인가요? 몇 번 칸에 무엇이 들어 있나요?"
+  - 그 결과를 위치대로 세 변수에 꺼내 보세요. 배열 구조 분해에서도 `= 값`으로 기본값을 줄 수 있어요.
+  - 꺼낸 나이는 아직 문자열이에요. 객체를 만들 때 숫자로 바꾸는 것을 잊지 마세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function parseRecord(line) {
+    const [name, age, city = "미정"] = line.split(",");
+    return { name: name, age: Number(age), city: city };
+  }
+  ```
+
+  - `line.split(",")`은 `["민지", "24", "서울"]` 같은 배열이에요. 배열 구조 분해로 0·1·2번을 `name`, `age`, `city`에 꺼내요. 순서가 이름·나이·도시이니 변수도 그 순서로 써요.
+  - 도시가 없는 줄은 배열에 2번 칸이 없어서 `city`가 `undefined`예요. 객체 구조 분해처럼 배열 구조 분해에도 기본값을 줄 수 있어서 `city = "미정"`이 그 자리를 채워요. `city ?? "미정"`으로 따로 처리해도 돼요.
+  - `split`의 조각은 모두 문자열이라 `age`도 `"24"`예요. `Number(age)`로 바꾸지 않으면 숨긴 테스트(나이는 숫자)에서 `"40"`과 `40`이 달라 실패해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

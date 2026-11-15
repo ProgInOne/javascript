@@ -1,0 +1,120 @@
+id: js-basics.objects.object-iteration.fix-cart-summary
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.obj.in-optional-chaining, weight: 1 }
+  - { id: js.obj.for-in, weight: 0.5 }
+  - { id: js.obj.keys-values-entries, weight: 0.5 }
+  - { id: js.ops.nullish, weight: 0.3 }
+tags: [object, for-in, optional-chaining, keys, debugging]
+estimatedSeconds: 540
+prompt: |
+  `summarize(cart)`는 장바구니 객체를 받아 요약 문장을 돌려주는 함수예요. 장바구니의 키는 상품 이름이고, 값은 `{ price, qty }` 객체예요. 쿠폰을 받은 상품에만 `coupon: { amount }`가 있어요.
+
+  - 상품마다 `가격 × 수량`에서 쿠폰 금액을 한 번 빼요(쿠폰이 없으면 0원).
+  - `"상품 (종류 수)종, 합계 (합계)원"`을 돌려줘요.
+
+  ```js
+  summarize({
+    떡볶이: { price: 4000, qty: 2 },
+    김밥: { price: 3000, qty: 1, coupon: { amount: 500 } },
+    순대: { price: 5000, qty: 1 },
+  });
+  // "상품 3종, 합계 15500원"
+  ```
+
+  지금은 실행하면 오류가 나요. 버그를 모두 고치세요. 버그는 하나가 아니에요. 채점은 다른 장바구니(빈 장바구니 포함)로도 해요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function summarize(cart) {
+            let total = 0;
+            for (const name in cart) {
+              const item = cart.name;
+              const discount = item.coupon.amount;
+              total += item.price * item.qty - discount;
+            }
+            return "상품 " + cart.length + "종, 합계 " + total + "원";
+          }
+  entry: summarize
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function summarize(cart) {
+            let total = 0;
+            for (const name in cart) {
+              const item = cart[name];
+              const discount = item.coupon?.amount ?? 0;
+              total += item.price * item.qty - discount;
+            }
+            return "상품 " + Object.keys(cart).length + "종, 합계 " + total + "원";
+          }
+  bugDescription: "실행하면 `TypeError: Cannot read properties of undefined (reading 'coupon')` 오류가 나요."
+  bugMisconception: js.mc.optional-chaining-guards-rest
+  checks:
+    - kind: call
+      id: example
+      requirement: 합계 계산
+      args: [{ "떡볶이": { "price": 4000, "qty": 2 }, "김밥": { "price": 3000, "qty": 1, "coupon": { "amount": 500 } }, "순대": { "price": 5000, "qty": 1 } }]
+      expect: { equals: "상품 3종, 합계 15500원" }
+    - kind: call
+      id: empty
+      visible: false
+      description: 빈 장바구니는 "상품 0종, 합계 0원"이어야 합니다.
+      requirement: 종류 수 세기
+      args: [{}]
+      expect: { equals: "상품 0종, 합계 0원" }
+    - kind: call
+      id: no-coupon
+      visible: false
+      description: 쿠폰이 하나도 없는 장바구니도 오류 없이 계산해야 합니다.
+      requirement: 쿠폰이 없는 상품
+      args: [{ "어묵": { "price": 2500, "qty": 2 }, "튀김": { "price": 3000, "qty": 1 } }]
+      expect: { equals: "상품 2종, 합계 8000원" }
+    - kind: call
+      id: all-coupons
+      visible: false
+      description: 상품마다 쿠폰이 있으면 각 쿠폰 금액을 한 번씩 빼야 합니다.
+      requirement: 합계 계산
+      args: [{ "라면": { "price": 4500, "qty": 2, "coupon": { "amount": 1000 } }, "만두": { "price": 6000, "qty": 1, "coupon": { "amount": 0 } } }]
+      expect: { equals: "상품 2종, 합계 14000원" }
+misconceptions: [js.mc.dot-with-variable-key, js.mc.optional-chaining-guards-rest, js.mc.object-has-length, js.mc.missing-property-error]
+hints:
+  - 오류 메시지부터 읽으세요. `coupon`을 읽으려던 값, 즉 `item`이 왜 `undefined`일까요? `item`을 만드는 줄을 보세요.
+  - 첫 오류를 고치면 다음 오류가 나요. 쿠폰이 없는 상품에서 `item.coupon`은 무엇이고, 거기서 `amount`를 읽으면 어떻게 될까요? 쿠폰이 없으면 0원이어야 해요.
+  - 오류가 모두 사라져도 돌려주는 문장을 확인하세요. 종류 수 자리에 무엇이 나오나요? 객체의 속성 개수는 어떻게 세었나요?
+explanation: |
+  버그는 세 개예요.
+
+  **1. 4번 줄 `cart.name`**: `name`은 변수라서 `cart.name`은 이름이 `"name"`인 속성을 찾아 `undefined`예요. 그래서 5번 줄에서 `undefined`의 `coupon`을 읽다 오류가 났어요. `cart[name]`으로 고쳐요.
+
+  **2. 5번 줄 `item.coupon.amount`**: 쿠폰이 없는 상품은 `item.coupon`이 `undefined`라 `amount`를 읽을 때 `TypeError`가 나요. 없을 수 있는 `coupon` 바로 뒤에 `?.`를 붙이고, 없으면 0을 쓰도록 `??`를 붙여요.
+
+  ```js
+  const discount = item.coupon?.amount ?? 0;
+  ```
+
+  `?? 0`이 없으면 쿠폰 없는 상품의 할인이 `undefined`라 `8000 - undefined`가 `NaN`이 되고 합계 전체가 `NaN`이 돼요. 쿠폰 금액이 0인 경우는 `??`가 0을 그대로 쓰므로 문제없어요.
+
+  **3. 8번 줄 `cart.length`**: 객체에는 `length`가 없어서 `상품 undefined종`이 돼요. 오류가 나지 않아서 놓치기 쉬운 버그예요. `Object.keys(cart).length`로 세요.
+
+  ```js
+  function summarize(cart) {
+    let total = 0;
+    for (const name in cart) {
+      const item = cart[name];
+      const discount = item.coupon?.amount ?? 0;
+      total += item.price * item.qty - discount;
+    }
+    return "상품 " + Object.keys(cart).length + "종, 합계 " + total + "원";
+  }
+  ```
+
+  `item?.coupon.amount`처럼 `?.`를 `item` 뒤에 붙이면 `item`만 확인하므로 쿠폰 없는 상품에서 같은 오류가 그대로 나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

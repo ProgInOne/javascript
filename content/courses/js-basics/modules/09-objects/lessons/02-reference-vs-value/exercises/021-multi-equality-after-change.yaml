@@ -1,0 +1,61 @@
+id: js-basics.objects.reference-vs-value.multi-equality-after-change
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.obj.equality, weight: 1 }
+  - { id: js.obj.copy-shallow, weight: 0.5 }
+  - { id: js.obj.reference, weight: 0.5 }
+tags: [equality, copy, reference]
+estimatedSeconds: 120
+prompt: |
+  아래 코드를 끝까지 실행한 뒤, 결과가 `true`인 식을 **모두** 고르세요.
+code: |
+  const a = { n: 1 };
+  const b = a;
+  const c = { ...a };
+  const d = { n: 1 };
+  b.n = 2;
+spec:
+  options:
+    - id: a
+      text: "`a === b`"
+    - id: b
+      text: "`a === c`"
+      misconception: js.mc.copy-equals-original
+      rationale: c는 복사로 만든 새 객체라서 a와 다른 객체예요.
+    - id: c
+      text: "`c === d`"
+      misconception: js.mc.same-content-objects-equal
+      rationale: "c와 d는 내용이 `{ n: 1 }`로 같지만 따로 만든 두 객체예요."
+    - id: d
+      text: "`a.n === b.n`"
+    - id: e
+      text: "`c.n === d.n`"
+    - id: f
+      text: "`a.n === c.n`"
+      rationale: c는 5번 줄보다 먼저 복사한 별개의 객체라서 c.n은 1이고, a.n은 2예요.
+  correct: [a, d, e]
+misconceptions: [js.mc.copy-equals-original, js.mc.same-content-objects-equal]
+hints:
+  - "`a`, `b`, `c`, `d`가 가리키는 객체가 몇 개인지 먼저 세어 보세요."
+  - 5번 줄은 어느 객체를 바꾸나요? 그 객체를 가리키는 변수는 누구인가요?
+  - 객체끼리의 `===`는 같은 객체인지를, 숫자끼리의 `===`는 값을 비교해요. 5번 줄이 끝난 뒤 각 객체의 `n`을 적어 놓고 판단해 보세요.
+explanation: |
+  `true`인 식은 `a === b`, `a.n === b.n`, `c.n === d.n`이에요.
+
+  | 변수 | 가리키는 객체 | 5번 줄 뒤의 `n` |
+  |---|---|---|
+  | `a`, `b` | 1번 줄의 객체 | 2 |
+  | `c` | 3번 줄에서 복사한 새 객체 | 1 |
+  | `d` | 4번 줄의 새 객체 | 1 |
+
+  - `a === b`: 같은 객체라 `true`. 그래서 `a.n === b.n`도 2와 2로 `true`예요.
+  - `a === c`: 복사본은 새 객체라 `false`.
+  - `c === d`: 내용은 같아도 다른 객체라 `false`. 하지만 `c.n === d.n`은 숫자 1과 1의 비교라 `true`예요.
+  - `a.n === c.n`: `c`는 5번 줄보다 먼저 만든 별개의 객체라서 `b.n = 2`의 영향을 받지 않아요. 2와 1이라 `false`예요.
+
+  "객체끼리 비교"와 "속성 값끼리 비교"를 구별하는 것이 핵심이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

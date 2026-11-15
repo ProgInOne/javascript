@@ -1,0 +1,73 @@
+id: js-basics.objects.reference-vs-value.fix-array-alias
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.obj.copy-shallow, weight: 1 }
+  - { id: js.obj.reference, weight: 0.3 }
+tags: [copy, array, reference, debugging]
+estimatedSeconds: 120
+prompt: |
+  오늘 메뉴를 바탕으로 내일 메뉴를 만들고, 내일 메뉴에만 떡볶이를 더하려고 해요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  오늘: 김밥, 라면
+  내일: 김밥, 라면, 떡볶이
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const todayMenu = ["김밥", "라면"];
+          const tomorrowMenu = todayMenu;
+          tomorrowMenu.push("떡볶이");
+
+          console.log("오늘: " + todayMenu.join(", "));
+          console.log("내일: " + tomorrowMenu.join(", "));
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const todayMenu = ["김밥", "라면"];
+          const tomorrowMenu = [...todayMenu];
+          tomorrowMenu.push("떡볶이");
+
+          console.log("오늘: " + todayMenu.join(", "));
+          console.log("내일: " + tomorrowMenu.join(", "));
+  bugDescription: "오늘 메뉴에도 `떡볶이`가 붙어서 `오늘: 김밥, 라면, 떡볶이`가 출력돼요."
+  bugMisconception: js.mc.array-assign-copies
+  checks:
+    - kind: console
+      id: output
+      description: 오늘 메뉴와 내일 메뉴가 차례로 출력되어야 합니다.
+      requirement: 메뉴 출력
+      expect:
+        lines: ["오늘: 김밥, 라면", "내일: 김밥, 라면, 떡볶이"]
+    - kind: program
+      id: today-kept
+      description: 프로그램이 끝난 뒤 todayMenu는 김밥과 라면 두 개만 있어야 합니다.
+      requirement: 오늘 메뉴는 그대로
+      expect:
+        globals:
+          todayMenu: { equals: ["김밥", "라면"] }
+        noError: true
+      misconceptionIfFail: js.mc.array-assign-copies
+misconceptions: [js.mc.array-assign-copies]
+hints:
+  - 2번 줄에서 새 배열이 만들어졌나요? `[ ]`가 몇 번 나오는지 세어 보세요.
+  - 배열도 객체라서 대입하면 참조가 복사돼요. `tomorrowMenu`와 `todayMenu`는 같은 배열이에요.
+  - 2번 줄에서 `todayMenu`의 값을 모두 담은 새 배열을 만들어 보세요. 객체를 복사할 때 쓴 점 세 개 문법은 배열에도 쓸 수 있어요.
+explanation: |
+  2번 줄을 고쳐요.
+
+  ```js
+  const tomorrowMenu = [...todayMenu];
+  ```
+
+  - 원래 코드의 `const tomorrowMenu = todayMenu;`는 배열의 참조를 복사해요. 두 변수가 같은 배열 하나를 가리켜서, 3번 줄의 `push`가 오늘 메뉴에도 보였어요.
+  - `[...todayMenu]`는 같은 값을 담은 **새 배열**을 만들어요. 그 배열에 더한 떡볶이는 `todayMenu`에 영향을 주지 않아요.
+  - `todayMenu.slice()`처럼 새 배열을 돌려주는 다른 방법도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

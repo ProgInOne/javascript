@@ -1,0 +1,117 @@
+id: js-basics.objects.object-basics.impl-restock
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.obj.add-delete, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.5 }
+tags: [object, add, delete, bracket, write-code]
+estimatedSeconds: 300
+prompt: |
+  가게의 재고 객체 `stock`(상품 이름 → 개수)을 고치는 함수 `restock(stock, item, amount)`를 만드세요. `amount`는 들어온 개수(양수)이거나 팔린 개수(음수)예요.
+
+  - `item`이 재고에 없으면 0개에서 시작해요.
+  - 개수에 `amount`를 더해요.
+  - 더한 결과가 0 이하이면 그 상품을 재고 객체에서 **지워요**.
+  - 고친 `stock`을 돌려줘요.
+
+  ```js
+  restock({ milk: 2 }, "milk", 3);           // { milk: 5 }
+  restock({ milk: 2 }, "bread", 4);          // { milk: 2, bread: 4 }
+  restock({ milk: 2, egg: 1 }, "egg", -1);   // { milk: 2 }
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function restock(stock, item, amount) {
+          }
+  entry: restock
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function restock(stock, item, amount) {
+            if (stock[item] === undefined) {
+              stock[item] = 0;
+            }
+            stock[item] += amount;
+            if (stock[item] <= 0) {
+              delete stock[item];
+            }
+            return stock;
+          }
+  checks:
+    - kind: call
+      id: add-existing
+      args: [{ milk: 2 }, "milk", 3]
+      requirement: 개수 더하기
+      expect: { equals: { milk: 5 } }
+    - kind: call
+      id: add-new
+      args: [{ milk: 2 }, "bread", 4]
+      requirement: 없는 상품은 0개에서 시작
+      expect: { equals: { milk: 2, bread: 4 } }
+    - kind: call
+      id: sold-out
+      args: [{ milk: 2, egg: 1 }, "egg", -1]
+      requirement: 0 이하이면 지우기
+      expect: { equals: { milk: 2 } }
+    - kind: call
+      id: sell-some
+      visible: false
+      description: 일부만 팔리면 남은 개수만큼 줄어야 합니다.
+      requirement: 개수 더하기
+      args: [{ juice: 10 }, "juice", -4]
+      expect: { equals: { juice: 6 } }
+    - kind: call
+      id: below-zero
+      visible: false
+      description: 팔린 개수가 남은 개수보다 많아 0보다 작아지면 그 상품을 지워야 합니다.
+      requirement: 0 이하이면 지우기
+      args: [{ tea: 2, gum: 5 }, "tea", -3]
+      expect: { equals: { gum: 5 } }
+    - kind: call
+      id: new-negative
+      visible: false
+      description: 없는 상품에 음수가 들어오면 0 이하이므로 재고에 남지 않아야 합니다.
+      requirement: 없는 상품은 0개에서 시작
+      args: [{ gum: 5 }, "candy", -1]
+      expect: { equals: { gum: 5 } }
+    - kind: call
+      id: item-named-item
+      visible: false
+      description: 상품 이름이 무엇이든 그 이름의 속성을 고쳐야 합니다.
+      requirement: 개수 더하기
+      args: [{ item: 1, pen: 1 }, "pen", 2]
+      expect: { equals: { item: 1, pen: 3 } }
+      misconceptionIfFail: js.mc.dot-with-variable-key
+misconceptions: [js.mc.add-property-needs-declare, js.mc.dot-with-variable-key]
+hints:
+  - 상품 이름이 매개변수 `item`에 들어 있어요. 이 이름으로 속성을 읽고 바꾸려면 어떤 표기법이 필요할까요?
+  - 없는 상품의 값은 `undefined`예요. `undefined`에 숫자를 더하면 `NaN`이 되니, 더하기 전에 0을 넣어 두세요. 새 속성은 대입만 하면 생겨요.
+  - 더한 뒤에 개수를 확인하고, 0 이하이면 속성을 아예 없애는 연산자를 쓰세요. 값만 0으로 두면 속성은 남아요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function restock(stock, item, amount) {
+    if (stock[item] === undefined) {
+      stock[item] = 0;
+    }
+    stock[item] += amount;
+    if (stock[item] <= 0) {
+      delete stock[item];
+    }
+    return stock;
+  }
+  ```
+
+  - '**대괄호**: 상품 이름이 `item`에 들어 있으니 `stock[item]`으로 읽고 써요. `stock.item`은 이름이 `item`인 속성을 고쳐요.'
+  - '**추가**: 없는 상품은 `stock[item] = 0;`으로 그 자리에서 속성을 만든 뒤 더해요. 이 줄이 없으면 `undefined + 4`가 `NaN`이에요.'
+  - '**삭제**: 0 이하가 되면 `delete stock[item];`으로 속성을 없애요. `stock[item] = 0`으로 두면 `{ milk: 2, egg: 0 }`처럼 속성이 남아서 검사를 통과하지 못해요.'
+  - 없는 상품에 음수가 들어오면 0에서 시작해 음수가 되고, 곧바로 지워져서 재고에 남지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

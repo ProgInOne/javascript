@@ -1,0 +1,47 @@
+id: js-basics.objects.reference-vs-value.tf-param-object-copied
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [reference, function, parameter]
+estimatedSeconds: 70
+prompt: |
+  아래 코드를 보고, 설명이 맞는지 고른 뒤 그렇게 판단한 이유도 고르세요.
+code: |
+  function addPoint(member) {
+    member.point += 100;
+  }
+
+  const user = { name: "서연", point: 500 };
+  addPoint(user);
+  console.log(user.point);
+spec:
+  statement: "`addPoint` 안에서 바꾼 것은 매개변수 `member`이므로, 마지막 줄에는 `500`이 출력된다."
+  answer: false
+  misconceptionIfWrong: js.mc.object-param-copied
+  requireReason: true
+  reasons:
+    - id: r1
+      text: member에는 user와 같은 객체의 참조가 들어와서, 속성을 바꾸면 user가 가리키는 객체가 바뀐다
+      correct: true
+    - id: r2
+      text: 함수에 넘긴 객체는 복사본이라서 함수 안의 변경은 함수가 끝나면 사라진다
+      misconception: js.mc.object-param-copied
+    - id: r3
+      text: addPoint가 값을 return하지 않으면 함수 안에서 한 일은 모두 취소된다
+hints:
+  - 6번 줄에서 매개변수 `member`에 무엇이 들어가나요? 객체가 새로 만들어지나요?
+  - 객체를 넘기면 참조가 복사돼요. `member`와 `user`는 같은 객체를 가리킬까요?
+  - 2번 줄이 매개변수 자체에 새 값을 대입하는지, 가리키는 객체의 속성을 바꾸는지 구별해 보세요.
+explanation: |
+  설명은 **거짓**이에요. 마지막 줄에는 `600`이 출력돼요.
+
+  6번 줄에서 매개변수 `member`에는 `user`와 같은 객체의 **참조**가 들어가요. 2번 줄은 그 객체의 `point` 속성을 바꾸니, 함수가 끝난 뒤 `user.point`로 읽어도 600이에요.
+
+  - "함수에 넘긴 객체는 복사본이다": 숫자 같은 원시 값은 값이 복사되지만, 객체는 참조가 복사돼요. 모듈 6의 "매개변수를 바꿔도 바깥은 그대로"는 `member = ...`처럼 매개변수 자체에 대입할 때의 이야기예요.
+  - "return하지 않으면 모두 취소된다": `return`이 없어도 함수가 바꾼 객체의 속성은 그대로 남아요. 이런 변경을 부수 효과라고 했어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

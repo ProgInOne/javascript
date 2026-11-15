@@ -15,6 +15,7 @@ objectives:
   - 함수를 만들어 값을 주고받고, 반환값과 부수 효과, 변수의 스코프를 구분하며, 함수를 값으로 넘길 수 있다.
   - 문자열의 글자를 인덱스로 읽고, 문자열 메서드로 찾기·자르기·다듬기·나누기를 해서 원하는 모양으로 바꿀 수 있다.
   - 배열에 값을 담아 읽고 바꾸며, 반복과 map·filter·reduce 같은 고차 함수로 목록을 변환·검색·정렬할 수 있다.
+  - 객체로 관련된 값을 묶어 읽고 바꾸며, 참조와 복사의 차이를 예측하고, 구조 분해·전개 구문과 try...catch로 데이터와 오류를 다룰 수 있다.
 # 지금 있는 모듈만 나열합니다. 전체 목록: start, values, operators, control, loops,
 # functions, strings, arrays, objects, browser-intro
-modules: [start, values, operators, control, loops, functions, strings, arrays]
+modules: [start, values, operators, control, loops, functions, strings, arrays, objects]

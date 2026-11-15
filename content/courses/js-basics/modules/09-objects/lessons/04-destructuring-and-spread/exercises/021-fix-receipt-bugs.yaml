@@ -1,0 +1,110 @@
+id: js-basics.objects.destructuring-and-spread.fix-receipt-bugs
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.obj.destructuring, weight: 1 }
+  - { id: js.arr.destructuring, weight: 0.5 }
+  - { id: js.obj.spread, weight: 0.5 }
+tags: [destructuring, array, spread, rename, rest, debugging]
+estimatedSeconds: 420
+prompt: |
+  배달 주문 영수증의 요약 한 줄을 만드는 함수 `makeReceipt(order, options)`예요.
+
+  - `order`는 `{ buyer, items, subtotal }` 모양이에요. `buyer`는 주문한 사람, `items`는 메뉴 이름 배열, `subtotal`은 음식값 합계예요.
+  - `options`로 배달비 `fee`와 화폐 단위 `unit`을 바꿀 수 있어요. 넘기지 않은 항목은 `DEFAULTS`의 값(배달비 3000, 단위 `원`)을 써요.
+  - 결과 모양: `(주문한 사람)님: (첫 메뉴) 외 (나머지 메뉴 수)개, (음식값 + 배달비)(단위)`
+
+  ```js
+  makeReceipt({ buyer: "민지", items: ["떡볶이", "순대", "튀김", "김밥"], subtotal: 15000 }, { fee: 0 });
+  // "민지님: 떡볶이 외 3개, 15000원"
+  makeReceipt({ buyer: "준호", items: ["김밥", "라면"], subtotal: 8000 });
+  // "준호님: 김밥 외 1개, 11000원"
+  ```
+
+  지금은 실행하면 오류가 나요. 버그를 모두 고치세요. 버그는 하나가 아닐 수 있어요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const DEFAULTS = { fee: 3000, unit: "원" };
+
+          function makeReceipt(order, options = {}) {
+            const { customer: buyer, items, subtotal } = order;
+            const { fee, unit } = { ...options, ...DEFAULTS };
+            const [first, others] = items;
+            return customer + "님: " + first + " 외 " + others.length + "개, " + (subtotal + fee) + unit;
+          }
+  entry: makeReceipt
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const DEFAULTS = { fee: 3000, unit: "원" };
+
+          function makeReceipt(order, options = {}) {
+            const { buyer: customer, items, subtotal } = order;
+            const { fee, unit } = { ...DEFAULTS, ...options };
+            const [first, ...others] = items;
+            return customer + "님: " + first + " 외 " + others.length + "개, " + (subtotal + fee) + unit;
+          }
+  bugDescription: "실행하면 `ReferenceError: customer is not defined` 오류가 나요."
+  bugMisconception: js.mc.destructuring-rename-direction
+  checks:
+    - kind: call
+      id: free-delivery
+      args: [{ buyer: "민지", items: ["떡볶이", "순대", "튀김", "김밥"], subtotal: 15000 }, { fee: 0 }]
+      requirement: 영수증 요약
+      expect: { equals: "민지님: 떡볶이 외 3개, 15000원" }
+    - kind: call
+      id: defaults
+      args: [{ buyer: "준호", items: ["김밥", "라면"], subtotal: 8000 }]
+      requirement: 영수증 요약
+      expect: { equals: "준호님: 김밥 외 1개, 11000원" }
+    - kind: call
+      id: options-win
+      visible: false
+      description: 넘긴 options의 값(배달비, 단위)이 DEFAULTS보다 우선해야 합니다.
+      requirement: options 반영
+      args: [{ buyer: "서연", items: ["라면", "만두", "김밥"], subtotal: 9000 }, { fee: 1500, unit: "₩" }]
+      expect: { equals: "서연님: 라면 외 2개, 10500₩" }
+      misconceptionIfFail: js.mc.spread-order-irrelevant
+    - kind: call
+      id: one-item
+      visible: false
+      description: 메뉴가 하나뿐이면 "외 0개"여야 합니다.
+      requirement: 나머지 메뉴 수
+      args: [{ buyer: "하린", items: ["떡볶이"], subtotal: 4000 }, { unit: "원" }]
+      expect: { equals: "하린님: 떡볶이 외 0개, 7000원" }
+    - kind: call
+      id: no-change
+      visible: false
+      description: 받은 주문과 options 객체를 바꾸면 안 됩니다.
+      requirement: 영수증 요약
+      args: [{ buyer: "민지", items: ["떡볶이", "순대"], subtotal: 9000 }, { fee: 0 }]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.destructuring-rename-direction, js.mc.spread-order-irrelevant, js.mc.array-destructuring-by-name]
+hints:
+  - 오류 메시지부터 읽으세요. 4번 줄은 어떤 속성을 어떤 이름의 변수로 꺼내고 있나요?
+  - 첫 오류를 고치면 오류는 사라지지만 숫자가 틀려요. 5번 줄에서 같은 키가 겹치면 어느 쪽이 이기나요? 6번 줄의 `others`에는 배열의 무엇이 들어가나요?
+  - "\"나머지 메뉴 수\"를 구하려면 `others`가 첫 메뉴를 뺀 나머지를 모두 담은 배열이어야 해요. 지금 `others.length`는 무엇의 길이인지 따져 보세요."
+explanation: |
+  버그는 세 개예요.
+
+  **1. 이름 바꾸기 방향 (4번 줄)**: `{ customer: buyer }`는 `order.customer`(없음)를 `buyer` 변수로 꺼내요. `customer` 변수는 만들어지지 않아 7번 줄에서 `ReferenceError`가 나요. `{ buyer: customer }`로 고쳐요(속성이름: 새변수이름).
+
+  **2. 전개 순서 (5번 줄)**: `{ ...options, ...DEFAULTS }`는 `DEFAULTS`를 나중에 펼쳐서 넘긴 `fee: 0`을 3000으로 덮어써요. 첫 테스트가 `18000원`이 돼요. 기본값을 앞에 두는 `{ ...DEFAULTS, ...options }`로 고쳐요.
+
+  **3. 나머지 빠뜨림 (6번 줄)**: `[first, others]`는 1번 메뉴 **하나**만 `others`에 넣어요. `others`는 `"순대"` 같은 문자열이라 `others.length`가 글자 수(2)가 돼요. `[first, ...others]`로 나머지를 모두 담은 배열을 만들어요. 메뉴가 하나뿐이면 `others`는 빈 배열이라 `외 0개`예요.
+
+  ```js
+  const { buyer: customer, items, subtotal } = order;
+  const { fee, unit } = { ...DEFAULTS, ...options };
+  const [first, ...others] = items;
+  ```
+
+  1번만 고치면 오류는 사라지지만, 출력이 그럴듯해 보여서 2·3번을 놓치기 쉬워요. 공개된 예시의 숫자를 하나하나 비교해 보세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

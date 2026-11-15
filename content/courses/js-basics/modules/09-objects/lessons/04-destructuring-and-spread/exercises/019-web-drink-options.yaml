@@ -1,0 +1,238 @@
+id: js-basics.objects.destructuring-and-spread.web-drink-options
+type: web_task
+difficulty: 3
+concepts:
+  - { id: js.obj.spread, weight: 1 }
+  - { id: js.obj.reference, weight: 0.5 }
+  - { id: js.fn.callback, weight: 0.3 }
+tags: [spread, object, state, web, event]
+estimatedSeconds: 420
+prompt: |
+  카페 앱의 음료 주문 화면을 완성하세요. 주문 상태는 객체 하나(`state`)에 들어 있고, `render()`가 그 객체를 화면에 보여 줘요. 버튼 네 개의 함수를 채우면 돼요.
+
+  - **L 사이즈**(`makeLarge`): 사이즈를 `"L"`로 바꿔요.
+  - **샷 추가**(`addShot`): 샷 수를 1 늘려요.
+  - **시럽 넣기·빼기**(`toggleSyrup`): 시럽이 없으면 넣고, 있으면 빼요.
+  - **처음으로**(`resetOrder`): 기본 주문 `DEFAULT`로 되돌려요.
+
+  처음에는 `state`와 `DEFAULT`가 **같은 객체**예요. 그래서 `state.size = "L";`처럼 `state`를 직접 고치면 `DEFAULT`도 바뀌어 "처음으로"가 동작하지 않아요. 함수마다 `{ ...state, ... }`로 **바뀐 새 객체**를 만들어 `state`에 넣고, `render()`를 부르세요. 버튼 연결은 이미 되어 있어요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>음료 주문</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #summary { font-size: 22px; font-weight: bold; }
+                button { font-size: 16px; margin: 4px 8px 4px 0; }
+              </style>
+            </head>
+            <body>
+              <h1>아메리카노 주문</h1>
+              <p id="summary">M / 1샷 / 시럽 없음</p>
+              <button id="large">L 사이즈</button>
+              <button id="shot">샷 추가</button>
+              <button id="syrup">시럽 넣기·빼기</button>
+              <button id="reset">처음으로</button>
+              <script>
+                // 버튼(selector)을 누를 때마다 callback을 불러 주는 도우미예요(모듈 10에서 배워요).
+                function whenClicked(selector, callback) {
+                  document.querySelector(selector).addEventListener("click", callback);
+                }
+
+                // 주문 상태를 화면에 보여 줘요.
+                function render() {
+                  const syrupText = state.syrup ? "추가" : "없음";
+                  document.querySelector("#summary").textContent =
+                    state.size + " / " + state.shots + "샷 / 시럽 " + syrupText;
+                }
+
+                const DEFAULT = { size: "M", shots: 1, syrup: false };
+                let state = DEFAULT;
+
+                // state를 직접 고치지 말고, 바뀐 새 객체를 만들어 state에 넣은 뒤 render()를 부르세요.
+                function makeLarge() {
+                }
+
+                function addShot() {
+                }
+
+                function toggleSyrup() {
+                }
+
+                function resetOrder() {
+                }
+
+                whenClicked("#large", makeLarge);
+                whenClicked("#shot", addShot);
+                whenClicked("#syrup", toggleSyrup);
+                whenClicked("#reset", resetOrder);
+              </script>
+            </body>
+          </html>
+
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>음료 주문</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #summary { font-size: 22px; font-weight: bold; }
+                button { font-size: 16px; margin: 4px 8px 4px 0; }
+              </style>
+            </head>
+            <body>
+              <h1>아메리카노 주문</h1>
+              <p id="summary">M / 1샷 / 시럽 없음</p>
+              <button id="large">L 사이즈</button>
+              <button id="shot">샷 추가</button>
+              <button id="syrup">시럽 넣기·빼기</button>
+              <button id="reset">처음으로</button>
+              <script>
+                // 버튼(selector)을 누를 때마다 callback을 불러 주는 도우미예요(모듈 10에서 배워요).
+                function whenClicked(selector, callback) {
+                  document.querySelector(selector).addEventListener("click", callback);
+                }
+
+                // 주문 상태를 화면에 보여 줘요.
+                function render() {
+                  const syrupText = state.syrup ? "추가" : "없음";
+                  document.querySelector("#summary").textContent =
+                    state.size + " / " + state.shots + "샷 / 시럽 " + syrupText;
+                }
+
+                const DEFAULT = { size: "M", shots: 1, syrup: false };
+                let state = DEFAULT;
+
+                // state를 직접 고치지 말고, 바뀐 새 객체를 만들어 state에 넣은 뒤 render()를 부르세요.
+                function makeLarge() {
+                  state = { ...state, size: "L" };
+                  render();
+                }
+
+                function addShot() {
+                  state = { ...state, shots: state.shots + 1 };
+                  render();
+                }
+
+                function toggleSyrup() {
+                  state = { ...state, syrup: !state.syrup };
+                  render();
+                }
+
+                function resetOrder() {
+                  state = DEFAULT;
+                  render();
+                }
+
+                whenClicked("#large", makeLarge);
+                whenClicked("#shot", addShot);
+                whenClicked("#syrup", toggleSyrup);
+                whenClicked("#reset", resetOrder);
+              </script>
+            </body>
+          </html>
+
+  checks:
+    - kind: event
+      id: large
+      description: L 사이즈를 누르면 사이즈가 L로 보여야 합니다.
+      requirement: 사이즈 바꾸기
+      visible: true
+      steps:
+        - { action: click, selector: "#large" }
+      expect:
+        - { selector: "#summary", text: { equals: "L / 1샷 / 시럽 없음" } }
+    - kind: event
+      id: two-shots
+      description: 샷 추가를 두 번 누르면 3샷이어야 합니다.
+      requirement: 샷 추가
+      visible: true
+      steps:
+        - { action: click, selector: "#reset" }
+        - { action: click, selector: "#shot" }
+        - { action: click, selector: "#shot" }
+      expect:
+        - { selector: "#summary", text: { equals: "M / 3샷 / 시럽 없음" } }
+    - kind: event
+      id: syrup-toggle
+      description: 시럽 버튼을 한 번 누르면 추가, 두 번째에는 다시 없음이 되어야 합니다.
+      requirement: 시럽 넣기·빼기
+      steps:
+        - { action: click, selector: "#reset" }
+        - { action: click, selector: "#syrup" }
+        - { action: click, selector: "#syrup" }
+        - { action: click, selector: "#syrup" }
+      expect:
+        - { selector: "#summary", text: { equals: "M / 1샷 / 시럽 추가" } }
+    - kind: event
+      id: reset-after-changes
+      description: 사이즈·샷·시럽을 모두 바꾼 뒤 처음으로를 누르면 기본 주문(M / 1샷 / 시럽 없음)으로 돌아가야 합니다. DEFAULT가 바뀌지 않았는지 확인합니다.
+      requirement: 처음으로
+      steps:
+        - { action: click, selector: "#large" }
+        - { action: click, selector: "#shot" }
+        - { action: click, selector: "#syrup" }
+        - { action: click, selector: "#reset" }
+      expect:
+        - { selector: "#summary", text: { equals: "M / 1샷 / 시럽 없음" } }
+      misconceptionIfFail: js.mc.assign-copies-object
+    - kind: event
+      id: keep-others
+      description: 한 가지를 바꿀 때 다른 항목은 그대로 남아야 합니다(L 사이즈 뒤 샷 추가 → L / 2샷).
+      requirement: 사이즈 바꾸기
+      steps:
+        - { action: click, selector: "#reset" }
+        - { action: click, selector: "#large" }
+        - { action: click, selector: "#shot" }
+      expect:
+        - { selector: "#summary", text: { equals: "L / 2샷 / 시럽 없음" } }
+misconceptions: [js.mc.assign-copies-object, js.mc.spread-order-irrelevant]
+hints:
+  - 먼저 `makeLarge` 하나만 만들어 보세요. `state`를 펼친 새 객체에서 `size`만 다른 값으로 덮어쓰고, 그 객체를 `state`에 대입한 뒤 `render()`를 불러요.
+  - 펼친 **뒤에** 바꿀 속성을 써야 덮어써져요. 샷과 시럽은 지금 `state`의 값을 읽어서 새 값을 계산하면 돼요.
+  - '"처음으로"가 동작하려면 `DEFAULT` 객체가 끝까지 바뀌지 않아야 해요. 다른 함수에서 `state`가 가리키는 객체의 속성을 직접 고치지 않았는지 확인하세요.'
+explanation: |
+  예시 정답의 핵심이에요.
+
+  ```js
+  function makeLarge() {
+    state = { ...state, size: "L" };
+    render();
+  }
+
+  function addShot() {
+    state = { ...state, shots: state.shots + 1 };
+    render();
+  }
+
+  function toggleSyrup() {
+    state = { ...state, syrup: !state.syrup };
+    render();
+  }
+
+  function resetOrder() {
+    state = DEFAULT;
+    render();
+  }
+  ```
+
+  - 각 함수는 지금 `state`를 펼치고 한 속성만 덮어쓴 **새 객체**를 만들어 `state`에 넣어요. 다른 항목은 펼칠 때 그대로 담겨요.
+  - **왜 새 객체인가**: 처음에 `let state = DEFAULT;`라서 둘은 같은 객체예요. `state.size = "L";`로 고치면 `DEFAULT.size`도 `"L"`이 되어, "처음으로"를 눌러도 바뀐 주문이 그대로 보여요. 새 객체를 대입하면 `state`만 다른 객체를 가리키고 `DEFAULT`는 그대로예요.
+  - `resetOrder`에서 `state = DEFAULT;`는 괜찮아요. 다른 함수가 `state`를 직접 고치지 않으니 `DEFAULT`가 바뀔 일이 없어요. `state = { ...DEFAULT };`처럼 복사본을 넣으면 더 안전해요.
+  - `{ size: "L", ...state }`처럼 순서를 바꾸면 `state`의 `"M"`이 다시 덮어써서 사이즈가 바뀌지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,76 @@
+id: js-basics.objects.object-iteration.fill-count-filled
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.obj.keys-values-entries, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [object, values, for-of, fill]
+estimatedSeconds: 100
+prompt: |
+  `countPassed(scores)`는 과목별 점수 객체를 받아, 60점 이상인 과목이 몇 개인지 돌려줘요.
+
+  ```js
+  countPassed({ 국어: 90, 영어: 55, 수학: 72 }); // 2
+  countPassed({});                               // 0
+  ```
+
+  빈칸을 채워 함수를 완성하세요.
+spec:
+  mode: code
+  lang: js
+  entry: countPassed
+  template: |
+    function countPassed(scores) {
+      let passed = 0;
+      for (const score of {{blank:values}}) {
+        if (score >= 60) {
+          passed++;
+        }
+      }
+      return passed;
+    }
+  blanks:
+    - id: values
+      accept: ["Object.values(scores)"]
+      width: 22
+      misconceptionMap:
+        "scores": js.mc.for-of-object
+        "Object.keys(scores)": js.mc.for-in-gives-values
+  checks:
+    - kind: call
+      id: basic
+      requirement: 60점 이상 세기
+      args: [{ "국어": 90, "영어": 55, "수학": 72 }]
+      expect: { equals: 2 }
+    - kind: call
+      id: empty
+      requirement: 빈 객체
+      args: [{}]
+      expect: { equals: 0 }
+    - kind: call
+      id: boundary
+      visible: false
+      description: 정확히 60점도 통과로 세고, 과목이 넷이어도 맞게 세야 합니다.
+      requirement: 60점 이상 세기
+      args: [{ "과학": 60, "사회": 59, "음악": 100, "미술": 0 }]
+      expect: { equals: 2 }
+misconceptions: [js.mc.for-of-object]
+hints:
+  - "`for...of`는 객체를 바로 돌 수 없어요. 무엇을 돌아야 할까요?"
+  - 반복 안에서 `score >= 60`으로 비교하니, `score`에는 키와 값 중 무엇이 들어와야 하나요?
+  - 객체에서 값만 모아 배열로 돌려주는 함수에 `scores`를 넣어 보세요.
+explanation: |
+  빈칸은 `Object.values(scores)`예요.
+
+  ```js
+  for (const score of Object.values(scores)) {
+  ```
+
+  `Object.values`가 `[90, 55, 72]`처럼 점수만 담은 배열을 만들고, `for...of`가 그 배열을 하나씩 돌아요. 빈 객체면 빈 배열이라 반복이 한 번도 돌지 않고 0을 돌려줘요.
+
+  - `scores`를 그대로 쓰면 `TypeError: scores is not iterable`이 나요. 일반 객체는 `for...of`로 돌 수 없어요.
+  - `Object.keys(scores)`를 쓰면 `score`에 `"국어"` 같은 과목 이름이 들어와요. `"국어" >= 60`은 `"국어"`가 `NaN`으로 바뀌어 비교되므로 항상 `false`라 결과가 0이 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

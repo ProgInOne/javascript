@@ -1,0 +1,27 @@
+id: js-basics.objects.reference-vs-value.tf-same-content-equal
+type: true_false
+difficulty: 1
+concepts:
+  - { id: js.obj.equality, weight: 1 }
+tags: [equality, object]
+estimatedSeconds: 40
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: "`{ size: 270 } === { size: 270 }`의 결과는 `true`다."
+  answer: false
+  misconceptionIfWrong: js.mc.same-content-objects-equal
+hints:
+  - 이 식에서 객체는 몇 개 만들어졌나요?
+  - 객체끼리의 `===`는 내용을 비교할까요, 같은 객체인지를 비교할까요?
+  - 내용이 같아도 `{ }`를 두 번 쓰면 따로 만든 두 객체예요. 그 둘이 같은 객체인지 생각해 보세요.
+explanation: |
+  설명은 **거짓**이에요. 결과는 `false`예요.
+
+  `{ }`를 두 번 썼으니 객체가 두 개 만들어졌어요. 객체의 `===`는 내용이 아니라 **같은 객체(같은 참조)**인지를 비교해요. 내용이 같아도 따로 만든 두 객체는 같은 객체가 아니에요.
+
+  내용이 같은지 알고 싶으면 `a.size === b.size`처럼 원시 값인 속성끼리 비교해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

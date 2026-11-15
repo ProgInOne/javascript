@@ -1,0 +1,49 @@
+id: js-basics.objects.object-iteration.predict-for-in-dot
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.obj.for-in, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.5 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [object, for-in, dot-bracket, trace]
+estimatedSeconds: 120
+prompt: |
+  가게의 하루 매출을 합치는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 네 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    const sales = { morning: 12000, lunch: 30000, evening: 18000 };
+    let total = 0;
+    for (const time in sales) {
+      console.log(time + " " + sales.time);
+      total += sales[time];
+    }
+    console.log("합계 " + total);
+  answerKind: console
+  misconceptionByAnswer:
+    "morning 12000\nlunch 30000\nevening 18000\n합계 60000": js.mc.dot-with-variable-key
+    "12000 12000\n30000 30000\n18000 18000\n합계 60000": js.mc.for-in-gives-values
+misconceptions: [js.mc.dot-with-variable-key, js.mc.for-in-gives-values]
+hints:
+  - "`time`에는 무엇이 차례로 들어오나요? 키와 값 중 하나예요."
+  - 4번 줄과 5번 줄은 값을 읽는 방법이 달라요. `sales.time`은 이름이 무엇인 속성을 찾을까요?
+  - 객체에 그 이름의 속성이 없으면 어떤 값이 나오는지, 글자와 이어 붙이면 어떻게 보이는지 생각해 보세요. 합계는 5번 줄이 계산해요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  morning undefined
+  lunch undefined
+  evening undefined
+  합계 60000
+  ```
+
+  - `time`에는 키 `"morning"`, `"lunch"`, `"evening"`이 차례로 들어와요.
+  - 4번 줄의 `sales.time`은 변수 `time`과 상관없이 이름이 `"time"`인 속성을 찾아요. 그런 속성은 없으니 매번 `undefined`이고, 글자와 이어 붙여 `morning undefined`처럼 출력돼요. 오류는 나지 않아요.
+  - 5번 줄의 `sales[time]`은 변수에 든 키로 찾으므로 12000, 30000, 18000을 제대로 더해 합계는 60000이에요.
+
+  같은 반복 안에서도 점과 대괄호의 결과가 이렇게 달라요. 키가 변수에 들어 있으면 대괄호를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

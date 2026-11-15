@@ -1,0 +1,79 @@
+id: js-basics.objects.reference-vs-value.fix-const-clear-cart
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.obj.const-mutation, weight: 1 }
+tags: [const, mutation, debugging]
+estimatedSeconds: 120
+prompt: |
+  장바구니를 비우는 함수 `clearCart`를 부른 뒤 담은 개수와 합계를 출력하는 프로그램이에요. 실행하면 오류가 나요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  0 0
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const cart = { items: ["우유", "빵"], total: 5500 };
+
+          function clearCart() {
+            cart = { items: [], total: 0 };
+          }
+
+          clearCart();
+          console.log(cart.items.length, cart.total);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const cart = { items: ["우유", "빵"], total: 5500 };
+
+          function clearCart() {
+            cart.items = [];
+            cart.total = 0;
+          }
+
+          clearCart();
+          console.log(cart.items.length, cart.total);
+  bugDescription: "실행하면 아무것도 출력되지 않고 `TypeError: Assignment to constant variable.` 오류가 나요."
+  bugMisconception: js.mc.const-can-reassign
+  checks:
+    - kind: console
+      id: output
+      description: 비운 뒤의 개수와 합계가 출력되어야 합니다.
+      requirement: 장바구니 비우기
+      expect:
+        lines: ["0 0"]
+    - kind: program
+      id: cart-empty
+      description: 프로그램이 오류 없이 끝나고 cart는 빈 장바구니여야 합니다.
+      requirement: 장바구니 비우기
+      expect:
+        globals:
+          cart: { equals: { items: [], total: 0 } }
+        noError: true
+      misconceptionIfFail: js.mc.const-can-reassign
+misconceptions: [js.mc.const-can-reassign, js.mc.const-object-props-frozen]
+hints:
+  - 오류 메시지는 무엇에 다시 대입했다고 하나요? 4번 줄은 무엇에 대입하고 있나요?
+  - "`const`는 변수에 새 객체를 대입하는 것을 막지만, 객체의 속성을 바꾸는 것은 막지 않아요."
+  - 장바구니를 새 객체로 바꾸는 대신, 지금 객체의 두 속성을 빈 값으로 바꿔 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function clearCart() {
+    cart.items = [];
+    cart.total = 0;
+  }
+  ```
+
+  - 원래 4번 줄은 `const`로 만든 `cart` 변수에 새 객체를 **대입**해서 `TypeError`가 났어요.
+  - 속성을 바꾸는 것은 `const`가 막지 않아요. `cart`가 가리키는 객체는 그대로 두고, 그 안의 `items`와 `total`만 비워요.
+  - 1번 줄을 `let cart = ...`로 바꿔도 출력과 결과가 같아서 정답이에요. 다만 객체를 계속 같은 장바구니로 쓸 거라면 `const`로 두고 속성을 바꾸는 편이 의도가 분명해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

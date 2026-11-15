@@ -1,0 +1,249 @@
+id: js-basics.objects.object-basics.web-profile-field
+type: web_task
+difficulty: 4
+concepts:
+  - { id: js.obj.dot-bracket, weight: 1 }
+  - { id: js.obj.add-delete, weight: 0.5 }
+tags: [object, bracket, variable-key, add, web, event]
+estimatedSeconds: 480
+prompt: |
+  프로필 카드 화면을 완성하세요. 목록에서 항목(이름, 사는 곳, 좋아하는 음식, 이메일)을 고르고 **보기**를 누르면 그 항목이 보이고, 새 값을 입력하고 **바꾸기**를 누르면 그 항목이 바뀌어야 해요.
+
+  화면을 다루는 코드는 시작 코드에 모두 있어요. 목록에서 고른 항목의 **키**(`"name"`, `"city"`, `"favorite-food"`, `"email"` 중 하나)가 함수의 `key`로 들어와요. 할 일은 두 함수를 채우는 것이에요.
+
+  1. `describeField(key)`: `"(key): (값)"`을 돌려줘요. `profile`에 그 항목이 없으면 `"(key): 등록되지 않았어요"`를 돌려줘요.
+  1. `updateField(key, value)`: `profile`의 그 항목을 `value`로 바꿔요. 없던 항목이면 새로 생겨요.
+
+  예: 사는 곳을 고르고 보기 → `city: 대전`, 이메일을 고르고 보기 → `email: 등록되지 않았어요`
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>프로필 카드</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #result { font-size: 20px; font-weight: bold; margin-top: 12px; }
+                select, input, button { font-size: 16px; margin-right: 6px; }
+              </style>
+            </head>
+            <body>
+              <h1>프로필 카드</h1>
+              <select id="field">
+                <option value="name">이름</option>
+                <option value="city">사는 곳</option>
+                <option value="favorite-food">좋아하는 음식</option>
+                <option value="email">이메일</option>
+              </select>
+              <button id="show">보기</button>
+              <p>
+                <input id="new-value" placeholder="새 값" />
+                <button id="save">바꾸기</button>
+              </p>
+              <p id="result">항목을 고르고 보기를 누르세요</p>
+              <script>
+                // 버튼(selector)을 누를 때마다 callback을 불러 주는 도우미예요(모듈 10에서 배워요).
+                function whenClicked(selector, callback) {
+                  document.querySelector(selector).addEventListener("click", callback);
+                }
+                // 고른 항목의 키와 입력한 새 값을 읽어 주는 도우미예요.
+                function selectedKey() {
+                  return document.querySelector("#field").value;
+                }
+                function typedValue() {
+                  return document.querySelector("#new-value").value;
+                }
+                function show(text) {
+                  document.querySelector("#result").textContent = text;
+                }
+
+                const profile = {
+                  name: "하린",
+                  city: "대전",
+                  "favorite-food": "칼국수",
+                };
+
+                // 1) key에 해당하는 profile의 값으로 "(key): (값)" 문장을 돌려주세요.
+                //    값이 없으면 "(key): 등록되지 않았어요"를 돌려주세요.
+                function describeField(key) {
+                }
+
+                // 2) key 속성의 값을 value로 바꾸세요(없던 항목이면 새로 생겨요).
+                function updateField(key, value) {
+                }
+
+                whenClicked("#show", function () {
+                  show(describeField(selectedKey()));
+                });
+                whenClicked("#save", function () {
+                  updateField(selectedKey(), typedValue());
+                  show(describeField(selectedKey()));
+                });
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>프로필 카드</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #result { font-size: 20px; font-weight: bold; margin-top: 12px; }
+                select, input, button { font-size: 16px; margin-right: 6px; }
+              </style>
+            </head>
+            <body>
+              <h1>프로필 카드</h1>
+              <select id="field">
+                <option value="name">이름</option>
+                <option value="city">사는 곳</option>
+                <option value="favorite-food">좋아하는 음식</option>
+                <option value="email">이메일</option>
+              </select>
+              <button id="show">보기</button>
+              <p>
+                <input id="new-value" placeholder="새 값" />
+                <button id="save">바꾸기</button>
+              </p>
+              <p id="result">항목을 고르고 보기를 누르세요</p>
+              <script>
+                // 버튼(selector)을 누를 때마다 callback을 불러 주는 도우미예요(모듈 10에서 배워요).
+                function whenClicked(selector, callback) {
+                  document.querySelector(selector).addEventListener("click", callback);
+                }
+                // 고른 항목의 키와 입력한 새 값을 읽어 주는 도우미예요.
+                function selectedKey() {
+                  return document.querySelector("#field").value;
+                }
+                function typedValue() {
+                  return document.querySelector("#new-value").value;
+                }
+                function show(text) {
+                  document.querySelector("#result").textContent = text;
+                }
+
+                const profile = {
+                  name: "하린",
+                  city: "대전",
+                  "favorite-food": "칼국수",
+                };
+
+                // 1) key에 해당하는 profile의 값으로 "(key): (값)" 문장을 돌려주세요.
+                //    값이 없으면 "(key): 등록되지 않았어요"를 돌려주세요.
+                function describeField(key) {
+                  const value = profile[key];
+                  if (value === undefined) {
+                    return key + ": 등록되지 않았어요";
+                  }
+                  return key + ": " + value;
+                }
+
+                // 2) key 속성의 값을 value로 바꾸세요(없던 항목이면 새로 생겨요).
+                function updateField(key, value) {
+                  profile[key] = value;
+                }
+
+                whenClicked("#show", function () {
+                  show(describeField(selectedKey()));
+                });
+                whenClicked("#save", function () {
+                  updateField(selectedKey(), typedValue());
+                  show(describeField(selectedKey()));
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: show-city
+      description: '사는 곳을 고르고 보기를 누르면 "city: 대전"이 보여야 합니다.'
+      requirement: 항목 보기
+      visible: true
+      steps:
+        - { action: change, selector: "#field", value: city }
+        - { action: click, selector: "#show" }
+      expect:
+        - { selector: "#result", text: { equals: "city: 대전" } }
+    - kind: event
+      id: show-missing
+      description: '이메일을 고르고 보기를 누르면 "email: 등록되지 않았어요"가 보여야 합니다.'
+      requirement: 없는 항목 안내
+      visible: true
+      steps:
+        - { action: change, selector: "#field", value: email }
+        - { action: click, selector: "#show" }
+      expect:
+        - { selector: "#result", text: { equals: "email: 등록되지 않았어요" } }
+    - kind: event
+      id: show-hyphen
+      description: 좋아하는 음식(키에 하이픈이 있음)을 고르고 보기를 누르면 그 값이 보여야 합니다.
+      requirement: 항목 보기
+      steps:
+        - { action: change, selector: "#field", value: favorite-food }
+        - { action: click, selector: "#show" }
+      expect:
+        - { selector: "#result", text: { equals: "favorite-food: 칼국수" } }
+      misconceptionIfFail: js.mc.dot-with-variable-key
+    - kind: event
+      id: update-name
+      description: 이름을 고르고 새 값을 입력해 바꾸기를 누르면, 바뀐 이름이 보여야 합니다.
+      requirement: 항목 바꾸기
+      steps:
+        - { action: change, selector: "#field", value: name }
+        - { action: type, selector: "#new-value", value: 서연 }
+        - { action: click, selector: "#save" }
+      expect:
+        - { selector: "#result", text: { equals: "name: 서연" } }
+    - kind: event
+      id: add-email
+      description: 없던 이메일 항목에 값을 넣어 바꾸기를 누른 뒤, 다른 항목을 보고 다시 이메일을 보면 넣은 값이 남아 있어야 합니다.
+      requirement: 항목 바꾸기
+      steps:
+        - { action: change, selector: "#field", value: email }
+        - { action: type, selector: "#new-value", value: harin@example.com }
+        - { action: click, selector: "#save" }
+        - { action: change, selector: "#field", value: city }
+        - { action: click, selector: "#show" }
+        - { action: change, selector: "#field", value: email }
+        - { action: click, selector: "#show" }
+      expect:
+        - { selector: "#result", text: { equals: "email: harin@example.com" } }
+misconceptions: [js.mc.dot-with-variable-key, js.mc.add-property-needs-declare]
+hints:
+  - 어떤 항목을 읽을지는 사용자가 고를 때 정해져서 `key` 매개변수로 들어와요. 이름이 변수에 있을 때 쓰는 표기법을 떠올려 보세요.
+  - 없는 항목을 읽으면 어떤 값이 나오나요? 그 값과 비교해서 안내 문장을 고르세요. 키에 하이픈이 있어도 대괄호라면 문제없어요.
+  - 바꾸기는 대입 한 줄이면 돼요. 없던 속성도 대입하는 순간 생기니, 따로 확인할 필요가 없어요.
+explanation: |
+  두 함수의 예시 정답이에요.
+
+  ```js
+  function describeField(key) {
+    const value = profile[key];
+    if (value === undefined) {
+      return key + ": 등록되지 않았어요";
+    }
+    return key + ": " + value;
+  }
+
+  function updateField(key, value) {
+    profile[key] = value;
+  }
+  ```
+
+  - '**대괄호 표기법**: 고른 항목은 `key`에 문자열로 들어와요. `profile[key]`는 그 문자열을 이름으로 속성을 찾아요. `profile.key`는 이름이 `key`인 속성을 찾아서 언제나 `undefined`라 모든 항목이 "등록되지 않았어요"가 돼요. `"favorite-food"`처럼 하이픈이 든 키도 대괄호라서 읽을 수 있어요.'
+  - '**없는 항목**: 없는 속성은 `undefined`이므로 `=== undefined`로 확인해요.'
+  - '**추가와 수정은 같은 대입**: `profile[key] = value;`는 있는 항목이면 바꾸고, 없던 이메일이면 새로 만들어요. 객체에 남아 있어서 다른 항목을 보고 돌아와도 그대로예요.'
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

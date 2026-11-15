@@ -1,0 +1,45 @@
+id: js-basics.objects.object-basics.mcq-dot-variable-key
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.obj.dot-bracket, weight: 1 }
+tags: [object, dot, bracket, variable-key]
+estimatedSeconds: 70
+prompt: |
+  아래 코드를 실행하면 콘솔에 무엇이 출력되나요?
+code: |
+  const scores = { math: 90, english: 85, key: 70 };
+  const key = "english";
+  console.log(scores.key, scores[key]);
+spec:
+  options:
+    - id: a
+      text: "`85 85`"
+      misconception: js.mc.dot-with-variable-key
+      rationale: 점 표기법은 변수 key를 보지 않고 이름이 key인 속성을 찾아요.
+    - id: b
+      text: "`70 85`"
+    - id: c
+      text: "`70 70`"
+      rationale: 대괄호 안의 key는 변수라서 계산된 값 "english"가 속성 이름이 돼요.
+    - id: d
+      text: "`undefined 85`"
+      misconception: js.mc.dot-with-variable-key
+      rationale: scores에는 이름이 key인 속성이 실제로 있어요. 점 표기법은 그 속성을 읽어요.
+  correct: b
+misconceptions: [js.mc.dot-with-variable-key]
+hints:
+  - 점 뒤에 쓴 글자와 대괄호 안에 쓴 글자는 각각 무엇으로 해석되나요?
+  - "`scores.key`는 이름이 글자 그대로 `key`인 속성을 찾아요. `scores`에 그런 속성이 있나요?"
+  - "`scores[key]`는 대괄호 안의 식을 먼저 계산해요. 변수 `key`에는 무엇이 들어 있나요?"
+explanation: |
+  `70 85`가 출력돼요.
+
+  - '`scores.key`: 점 뒤의 `key`는 변수가 아니라 **속성 이름 그대로**예요. `scores`에는 이름이 `key`인 속성이 있으니 `70`이에요.'
+  - '`scores[key]`: 대괄호 안은 **식**이라서 변수 `key`를 계산해 `"english"`를 얻고, `english` 속성의 `85`를 읽어요.'
+
+  `85 85`나 `undefined 85`를 골랐다면 점 표기법도 변수에 든 이름으로 찾는다고 본 거예요. 이 문제는 일부러 `key`라는 속성을 넣어 두었어요. 그 속성이 없었다면 `scores.key`는 `undefined`였을 거예요. 어느 쪽이든 변수에 든 이름으로 찾으려면 대괄호를 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

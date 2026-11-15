@@ -1,0 +1,108 @@
+id: js-basics.objects.reference-vs-value.impl-apply-coupon
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+  - { id: js.obj.copy-shallow, weight: 0.5 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [reference, copy, function, write-code, no-mutation]
+estimatedSeconds: 300
+prompt: |
+  주문에 쿠폰을 적용하는 함수 `applyCoupon(order, discount)`를 만드세요.
+
+  - 받은 주문 `order`의 속성을 모두 가진 **새 주문 객체**를 돌려줘요.
+  - 새 주문의 `price`는 원래 가격에서 `discount`를 뺀 값이에요. 단, **0보다 작아지지 않아요**(작아지면 0).
+  - 새 주문에는 `discount` 속성(받은 할인 금액)을 더해요.
+  - 받은 `order`는 **바꾸지 않아요**. 쿠폰을 쓰기 전 주문도 화면에 남겨야 하거든요.
+
+  ```text
+  applyCoupon({ id: 7, item: "떡볶이 세트", price: 15000 }, 3000)
+  → { id: 7, item: "떡볶이 세트", price: 12000, discount: 3000 }
+  ```
+
+  채점은 숨긴 주문으로도 해요. 받은 주문을 바꿨는지, 새 객체를 돌려줬는지도 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function applyCoupon(order, discount) {
+          }
+  entry: applyCoupon
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function applyCoupon(order, discount) {
+            const result = { ...order };
+            result.price = order.price - discount;
+            if (result.price < 0) {
+              result.price = 0;
+            }
+            result.discount = discount;
+            return result;
+          }
+  checks:
+    - kind: call
+      id: basic
+      args: [{ id: 7, item: "떡볶이 세트", price: 15000 }, 3000]
+      requirement: 쿠폰 적용
+      expect: { equals: { id: 7, item: "떡볶이 세트", price: 12000, discount: 3000 } }
+    - kind: call
+      id: other-order
+      visible: false
+      description: 속성이 더 많은 다른 주문도 모든 속성을 유지한 채 쿠폰이 적용되어야 합니다.
+      requirement: 쿠폰 적용
+      args: [{ id: 12, item: "김밥", price: 4500, table: 3 }, 1000]
+      expect: { equals: { id: 12, item: "김밥", price: 3500, table: 3, discount: 1000 } }
+    - kind: call
+      id: not-below-zero
+      visible: false
+      description: 할인 금액이 가격보다 크면 가격은 0이어야 합니다.
+      requirement: 0보다 작아지지 않기
+      args: [{ id: 3, item: "음료", price: 2000 }, 3000]
+      expect: { equals: { id: 3, item: "음료", price: 0, discount: 3000 } }
+    - kind: call
+      id: input-unchanged
+      visible: false
+      description: 받은 주문 객체를 바꾸면 안 됩니다.
+      requirement: 원래 주문은 그대로
+      args: [{ id: 7, item: "떡볶이 세트", price: 15000 }, 3000]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.object-param-copied
+    - kind: call
+      id: new-object
+      visible: false
+      description: 받은 주문과 다른 새 객체를 돌려줘야 합니다.
+      requirement: 원래 주문은 그대로
+      args: [{ id: 7, item: "떡볶이 세트", price: 15000 }, 3000]
+      expect: { returnsNewReference: true }
+      misconceptionIfFail: js.mc.assign-copies-object
+misconceptions: [js.mc.object-param-copied, js.mc.assign-copies-object]
+hints:
+  - 돌려줄 객체는 받은 `order`와 다른 객체여야 해요. 함수 안에서 무엇을 먼저 만들어야 할까요?
+  - 받은 주문의 속성을 모두 담은 새 객체는 레슨에서 배운 점 세 개 문법으로 만들 수 있어요. 바꾸는 것은 그 새 객체의 속성이어야 해요.
+  - 가격을 뺀 뒤 0보다 작은지 `if`로 확인하세요. `order.price`를 직접 바꾸거나 `const result = order;`로 시작하면 숨긴 검사에서 실패해요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function applyCoupon(order, discount) {
+    const result = { ...order };
+    result.price = order.price - discount;
+    if (result.price < 0) {
+      result.price = 0;
+    }
+    result.discount = discount;
+    return result;
+  }
+  ```
+
+  - `{ ...order }`로 새 객체를 만들고 그 객체만 바꿔요. 받은 `order`는 그대로 남아요.
+  - `order.price -= discount;`처럼 받은 객체를 바꾸면 돌려주는 값은 맞아도 "받은 주문을 바꾸면 안 됩니다" 검사에서 실패해요. 함수를 부른 쪽이 쿠폰 전 가격을 잃어버리거든요.
+  - `const result = order;`는 새 객체가 아니라 같은 객체의 참조예요. 이렇게 시작하면 원래 주문도 바뀌고, "새 객체를 돌려줘야 합니다" 검사도 실패해요.
+  - 속성을 직접 적어 새 객체를 만들면 `table`처럼 다른 주문에만 있는 속성을 빠뜨리게 돼요. 복사한 뒤 바꾸면 어떤 주문이 와도 모든 속성이 유지돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

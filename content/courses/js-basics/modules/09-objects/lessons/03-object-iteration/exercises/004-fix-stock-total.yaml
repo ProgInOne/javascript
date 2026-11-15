@@ -1,0 +1,77 @@
+id: js-basics.objects.object-iteration.fix-stock-total
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.obj.keys-values-entries, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [object, values, for-of, debugging]
+estimatedSeconds: 120
+prompt: |
+  과일 가게의 재고를 모두 더하고, 과일 종류 수와 함께 출력하는 프로그램이에요. 실행하면 오류가 나요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  과일 3종, 재고 47개
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          const stock = { 사과: 12, 배: 5, 귤: 30 };
+          let total = 0;
+
+          for (const count of stock) {
+            total += count;
+          }
+
+          const kinds = Object.keys(stock).length;
+          console.log("과일 " + kinds + "종, 재고 " + total + "개");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const stock = { 사과: 12, 배: 5, 귤: 30 };
+          let total = 0;
+
+          for (const count of Object.values(stock)) {
+            total += count;
+          }
+
+          const kinds = Object.keys(stock).length;
+          console.log("과일 " + kinds + "종, 재고 " + total + "개");
+  bugDescription: "실행하면 아무것도 출력되지 않고 `TypeError: stock is not iterable` 오류가 나요."
+  bugMisconception: js.mc.for-of-object
+  checks:
+    - kind: console
+      id: output
+      description: 과일 종류 수와 재고 합계가 출력되어야 합니다.
+      requirement: 재고 합계 출력
+      expect:
+        lines: ["과일 3종, 재고 47개"]
+    - kind: program
+      id: total
+      description: 프로그램이 오류 없이 끝나고 total에 재고 합계 47이 들어 있어야 합니다.
+      requirement: 재고 합계 출력
+      expect:
+        globals: { total: { equals: 47 } }
+        noError: true
+      misconceptionIfFail: js.mc.for-of-object
+misconceptions: [js.mc.for-of-object]
+hints:
+  - 오류 메시지의 "is not iterable"은 "반복할 수 없다"는 뜻이에요. 무엇을 반복하려고 했나요?
+  - 일반 객체는 `for...of`로 바로 돌 수 없어요. 반복 안에서 `total += count`를 하니 `count`에는 무엇이 들어와야 할까요?
+  - 객체에서 값만 모은 배열을 만들어 그 배열을 돌게 바꿔 보세요.
+explanation: |
+  4번 줄을 이렇게 고쳐요.
+
+  ```js
+  for (const count of Object.values(stock)) {
+  ```
+
+  일반 객체는 `for...of`로 돌 수 없어서 `TypeError: stock is not iterable`이 났어요. `Object.values(stock)`은 `[12, 5, 30]` 배열이라 `for...of`로 돌 수 있고, 모두 더하면 47이에요.
+
+  `for (const name in stock) { total += stock[name]; }`처럼 `for...in`으로 키를 돌며 값을 읽어도 정답이에요. `Object.keys(stock)`을 돌면서 `total += count`를 그대로 두면 키(과일 이름)가 더해져 `"0사과배귤"`이 되니 주의하세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

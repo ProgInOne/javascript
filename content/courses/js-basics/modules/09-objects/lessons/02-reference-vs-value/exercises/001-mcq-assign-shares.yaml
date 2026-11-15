@@ -1,0 +1,46 @@
+id: js-basics.objects.reference-vs-value.mcq-assign-shares
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+tags: [reference, assignment, alias]
+estimatedSeconds: 50
+prompt: |
+  아래 코드를 실행하면 마지막 줄에서 무엇이 출력되나요?
+code: |
+  const saved = { name: "민지" };
+  const draft = saved;
+  draft.name = "준호";
+  console.log(saved.name);
+spec:
+  options:
+    - id: a
+      text: "`준호`"
+    - id: b
+      text: "`민지`"
+      misconception: js.mc.assign-copies-object
+      rationale: 2번 줄은 객체를 새로 만들지 않고 참조만 복사해요. draft와 saved는 같은 객체를 가리켜요.
+    - id: c
+      text: "`undefined`"
+      rationale: saved에는 name 속성이 있어요. 값이 바뀌었을 뿐 사라지지 않았어요.
+    - id: d
+      text: "`TypeError`가 난다"
+      misconception: js.mc.const-object-props-frozen
+      rationale: const는 변수에 다시 대입하는 것만 막아요. 3번 줄은 속성을 바꾸는 것이라 오류가 나지 않아요.
+  correct: a
+misconceptions: [js.mc.assign-copies-object]
+hints:
+  - 2번 줄에서 새 객체가 만들어졌나요? `{ }`가 몇 번 나오는지 세어 보세요.
+  - 객체를 대입하면 객체를 가리키는 참조가 복사돼요. `draft`와 `saved`는 몇 개의 객체를 가리키나요?
+  - 3번 줄은 `draft`가 가리키는 객체의 속성을 바꿔요. 그 객체를 `saved`로 읽으면 무엇이 보일지 생각해 보세요.
+explanation: |
+  `준호`가 출력돼요.
+
+  `{ name: "민지" }`는 1번 줄에서 한 번만 만들어졌어요. 2번 줄 `const draft = saved;`는 객체가 아니라 **참조**를 복사해서, `draft`와 `saved`가 같은 객체 하나를 가리켜요. 3번 줄은 그 객체의 `name`을 바꾸니 `saved.name`으로 읽어도 `준호`예요.
+
+  - `민지`라고 생각했다면: 대입하면 복사본이 생긴다고 본 거예요. 복사본이 필요하면 `const draft = { ...saved };`처럼 새 객체를 만들어요.
+  - `TypeError`라고 생각했다면: `const`는 `draft = ...`처럼 변수에 다시 대입할 때만 오류를 내요. 속성을 바꾸는 것은 막지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

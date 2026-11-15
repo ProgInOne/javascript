@@ -1,0 +1,16 @@
+id: js-basics.objects.destructuring-and-spread
+title: 구조 분해와 전개
+summary: 객체와 배열에서 값을 한 번에 꺼내는 구조 분해(이름 바꾸기, 기본값, 나머지)와, 객체·배열을 펼쳐 새로 합치는 전개 구문을 배웁니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 16, practice: 30 }
+concepts:
+  primary: [js.obj.destructuring, js.arr.destructuring, js.obj.spread]
+  reviewed: [js.obj.copy-shallow, js.obj.reference, js.fn.default-params, js.fn.rest-params]
+objectives:
+  - 객체 구조 분해로 속성을 변수로 꺼내고, 다른 이름과 기본값을 지정할 수 있다.
+  - 배열 구조 분해로 위치에 따라 값을 꺼내고, 건너뛰기·나머지·두 값 바꾸기를 할 수 있다.
+  - 전개 구문으로 객체와 배열을 합친 새 값을 만들고, 같은 키가 있을 때의 결과를 예측할 수 있다.
+  - 함수 매개변수에서 구조 분해를 쓰고, 원본을 바꾸지 않고 새 객체를 돌려주는 함수를 만들 수 있다.
+practice:
+  targetCount: 22

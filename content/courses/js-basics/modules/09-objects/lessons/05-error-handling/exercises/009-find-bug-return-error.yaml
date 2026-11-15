@@ -1,0 +1,70 @@
+id: js-basics.objects.error-handling.find-bug-return-error
+type: find_bug_line
+difficulty: 2
+concepts:
+  - { id: js.errors.throw, weight: 1 }
+  - { id: js.errors.try-catch, weight: 0.3 }
+tags: [throw, try-catch, debugging]
+estimatedSeconds: 110
+prompt: |
+  수량이 1보다 작으면 `주문 실패: 수량은 1 이상이어야 해요`를 출력하려는 프로그램이에요. 그런데 엉뚱한 문장이 나와요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    function getQuantity(text) {
+      const qty = Number(text);
+      if (qty < 1) {
+        return new Error("수량은 1 이상이어야 해요");
+      }
+      return qty;
+    }
+
+    try {
+      const qty = getQuantity("0");
+      console.log("주문 수량: " + qty);
+    } catch (err) {
+      console.log("주문 실패: " + err.message);
+    }
+  bugLines: [4]
+  symptom: "`주문 실패: ...` 대신 `주문 수량: Error: 수량은 1 이상이어야 해요`가 출력돼요."
+  symptomCheck:
+    console: ["주문 수량: Error: 수량은 1 이상이어야 해요"]
+  fixedCode: |-
+    function getQuantity(text) {
+      const qty = Number(text);
+      if (qty < 1) {
+        throw new Error("수량은 1 이상이어야 해요");
+      }
+      return qty;
+    }
+
+    try {
+      const qty = getQuantity("0");
+      console.log("주문 수량: " + qty);
+    } catch (err) {
+      console.log("주문 실패: " + err.message);
+    }
+  causeOptions:
+    - id: c1
+      text: 오류 객체를 return으로 돌려줘서 오류가 던져지지 않았고, 그 객체가 보통 값처럼 qty에 들어갔다
+      correct: true
+    - id: c2
+      text: catch의 매개변수 이름이 err라서 오류 객체가 전달되지 않았다
+    - id: c3
+      text: try...catch는 JavaScript가 낸 오류만 잡고, 직접 만든 오류는 잡지 못한다
+hints:
+  - 출력된 문장은 `try`의 어느 줄에서 나왔나요? 그렇다면 `catch`는 실행됐을까요?
+  - "`getQuantity`는 수량이 0일 때 무엇을 하나요? 오류를 던지나요, 돌려주나요?"
+  - "`catch`로 가려면 오류가 **던져져야** 해요. 오류 객체를 만드는 것과 던지는 것은 다른 일이에요."
+explanation: |
+  원인은 **4번 줄**이에요. `return new Error(...)`는 오류 객체를 만들어 보통 값처럼 **돌려줄** 뿐 던지지 않아요.
+
+  그래서 10번 줄의 `qty`에는 오류 객체가 들어가고, 11번 줄이 그대로 실행되어 `"주문 수량: " + qty`가 됐어요. 오류 객체를 문자열과 이으면 `Error: 수량은 1 이상이어야 해요`로 바뀌어서 엉뚱한 문장이 나왔어요. 아무것도 던져지지 않았으니 `catch`는 실행되지 않았어요.
+
+  4번 줄을 `throw new Error("수량은 1 이상이어야 해요");`로 고치면 함수가 그 자리에서 끝나고 오류가 `catch`로 가서 `주문 실패: 수량은 1 이상이어야 해요`가 출력돼요.
+
+  - `catch`의 매개변수 이름은 `err`, `error`, `e` 등 무엇이든 괜찮아요. 던져진 오류 객체가 그 이름으로 들어와요.
+  - `try...catch`는 `throw`로 직접 던진 오류도 잡아요. 여기서는 던지지 않은 것이 문제예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

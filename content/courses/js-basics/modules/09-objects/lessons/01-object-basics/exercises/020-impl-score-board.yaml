@@ -1,0 +1,119 @@
+id: js-basics.objects.object-basics.impl-score-board
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.obj.methods-intro, weight: 1 }
+  - { id: js.obj.literal, weight: 0.3 }
+tags: [object, method, this, write-code]
+estimatedSeconds: 300
+prompt: |
+  퀴즈 점수판 객체 `board`를 만드세요. 아래쪽에 이미 있는 코드는 그대로 두고, 그 위에 객체를 만들면 돼요.
+
+  - 속성 `team`은 `"파랑팀"`, 속성 `points`는 `0`으로 시작해요.
+  - '메서드 `add(n)`: `points`에 `n`을 더하고, 더한 뒤의 `points`를 돌려줘요.'
+  - '메서드 `summary()`: `"(팀 이름) (점수)점"` 문장을 돌려줘요.'
+  - '메서드 `reset()`: `points`를 0으로 되돌리고 `"초기화"`를 돌려줘요.'
+
+  아래처럼 출력되어야 해요.
+
+  ```text
+  10
+  25
+  파랑팀 25점
+  초기화
+  파랑팀 0점
+  파랑팀 7점
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 여기에 board 객체를 만드세요.
+
+
+          // 아래 코드는 그대로 두세요.
+          console.log(board.add(10));
+          console.log(board.add(15));
+          console.log(board.summary());
+          console.log(board.reset());
+          console.log(board.summary());
+          board.add(7);
+          console.log(board.summary());
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 여기에 board 객체를 만드세요.
+          const board = {
+            team: "파랑팀",
+            points: 0,
+            add(n) {
+              this.points += n;
+              return this.points;
+            },
+            summary() {
+              return this.team + " " + this.points + "점";
+            },
+            reset() {
+              this.points = 0;
+              return "초기화";
+            },
+          };
+
+          // 아래 코드는 그대로 두세요.
+          console.log(board.add(10));
+          console.log(board.add(15));
+          console.log(board.summary());
+          console.log(board.reset());
+          console.log(board.summary());
+          board.add(7);
+          console.log(board.summary());
+  checks:
+    - kind: console
+      id: output
+      description: 점수를 더하고, 요약하고, 초기화한 결과가 차례로 출력되어야 합니다.
+      requirement: 점수판 동작
+      expect:
+        lines: ["10", "25", "파랑팀 25점", "초기화", "파랑팀 0점", "파랑팀 7점"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 점수판 동작
+      expect:
+        noError: true
+      misconceptionIfFail: js.mc.method-reads-props-by-name
+misconceptions: [js.mc.method-reads-props-by-name, js.mc.return-is-log]
+hints:
+  - 객체 리터럴 안에 속성 두 개와 메서드 세 개를 넣어요. 메서드는 `add(n) { ... }`처럼 쓸 수 있어요.
+  - 메서드 안에서 자기 점수를 읽고 바꿀 때는 `points`만 쓰면 안 돼요. 점 앞의 객체를 가리키는 말이 필요해요.
+  - 아래 코드는 메서드의 **반환값**을 출력해요. 메서드 안에서 출력하지 말고 문장이나 숫자를 돌려주세요. 마지막 `board.add(7);`의 결과는 출력되지 않는 점도 확인하세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  const board = {
+    team: "파랑팀",
+    points: 0,
+    add(n) {
+      this.points += n;
+      return this.points;
+    },
+    summary() {
+      return this.team + " " + this.points + "점";
+    },
+    reset() {
+      this.points = 0;
+      return "초기화";
+    },
+  };
+  ```
+
+  - '**`this`**: `board.add(10)`처럼 부르면 메서드 안의 `this`는 `board`예요. `this.points`를 바꾸면 객체에 그대로 남아서 다음 호출이 이어서 계산해요. `points`만 쓰면 `ReferenceError`예요.'
+  - '**반환과 출력**: 아래 코드가 `console.log(board.add(10))`처럼 반환값을 출력해요. 메서드 안에서 `console.log`만 하면 바깥 `console.log`가 `undefined`를 출력해요.'
+  - `board`는 아래 코드보다 **위**에 만들어야 해요. `const`는 선언하기 전에 쓸 수 없어요(모듈 2).
+  - 이 문제는 출력만 검사해요. 정해진 줄을 그대로 출력해도 통과하지만, 그러면 메서드를 연습할 수 없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

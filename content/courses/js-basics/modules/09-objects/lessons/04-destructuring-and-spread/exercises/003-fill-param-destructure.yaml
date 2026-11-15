@@ -1,0 +1,61 @@
+id: js-basics.objects.destructuring-and-spread.fill-param-destructure
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.obj.destructuring, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [destructuring, parameter, fill]
+estimatedSeconds: 90
+prompt: |
+  `memberCard(member)`는 회원 객체를 받아 이름과 등급을 이어 붙인 문장을 돌려줘요. 함수 본문에서 `name`과 `grade`를 바로 쓸 수 있도록, 매개변수 자리를 **구조 분해**로 채우세요.
+
+  ```js
+  memberCard({ name: "민지", grade: "골드", point: 1200 }); // "민지님은 골드 회원이에요"
+  ```
+spec:
+  mode: code
+  lang: js
+  entry: memberCard
+  template: |
+    function memberCard({{blank:param}}) {
+      return name + "님은 " + grade + " 회원이에요";
+    }
+  blanks:
+    - id: param
+      accept: ["{ name, grade }", "{ grade, name }", "{name, grade}", "{grade, name}"]
+      width: 18
+  checks:
+    - kind: call
+      id: gold
+      description: 민지 골드 회원의 문장을 돌려줘야 합니다.
+      requirement: 이름과 등급
+      args: [{ name: "민지", grade: "골드", point: 1200 }]
+      expect: { equals: "민지님은 골드 회원이에요" }
+    - kind: call
+      id: silver
+      visible: false
+      description: 다른 회원(실버)도 그 회원의 이름과 등급으로 문장을 만들어야 합니다.
+      requirement: 이름과 등급
+      args: [{ grade: "실버", name: "준호" }]
+      expect: { equals: "준호님은 실버 회원이에요" }
+    - kind: call
+      id: no-change
+      visible: false
+      description: 받은 회원 객체를 바꾸면 안 됩니다.
+      requirement: 원본 유지
+      args: [{ name: "서연", grade: "브론즈" }]
+      expect: { argsUnchanged: true }
+hints:
+  - 함수 본문은 `name`과 `grade`라는 변수를 써요. 이 변수들은 어디에서 만들어져야 할까요?
+  - 매개변수 자리에서도 `=` 왼쪽처럼 객체를 풀 수 있어요.
+  - 인수 객체에서 꺼낼 속성 이름 두 개를 중괄호 안에 쉼표로 나열하면 돼요.
+explanation: |
+  예시 정답은 `function memberCard({ name, grade })`예요.
+
+  매개변수 자리의 `{ name, grade }`는 넘겨받은 객체에서 `name`과 `grade` 속성을 꺼내 같은 이름의 변수로 만들어요. 함수 안에서 `const { name, grade } = member;`를 쓴 것과 같아요. 속성 순서는 상관없어서 `{ grade, name }`도 정답이고, 쓰지 않는 `point`는 꺼내지 않아도 돼요.
+
+  빈칸에 `member`라고만 쓰면 객체 전체가 `member`에 들어가고 `name`, `grade`라는 변수는 만들어지지 않아요. 그래서 `ReferenceError: grade is not defined`가 나요. (`name`은 브라우저가 미리 만들어 둔 전역 이름이라 오류 대신 엉뚱한 빈 값을 읽어요. 변수를 만들지 않고 쓰면 이렇게 알아차리기 어려운 결과가 나오기도 해요.)
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,16 @@
+id: js-basics.objects.reference-vs-value
+title: 참조와 복사
+summary: 객체가 변수에 참조로 담긴다는 것을 배우고, 대입·함수 인수에서 같은 객체를 함께 쓰는 결과와 얕은 복사, ===로 객체를 비교한 결과, const 객체의 속성을 바꿀 수 있는 이유를 다룹니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 18, practice: 36 }
+concepts:
+  primary: [js.obj.reference, js.obj.copy-shallow, js.obj.equality, js.obj.const-mutation]
+  reviewed: [js.obj.dot-bracket, js.obj.add-delete, js.values.const, js.ops.strict-equality, js.fn.params-args, js.scope.shadowing]
+objectives:
+  - 객체를 다른 변수에 대입하거나 함수에 넘긴 뒤 속성을 바꾼 결과를 예측할 수 있다.
+  - 속성을 바꾸는 것과 변수(매개변수)에 새 객체를 대입하는 것의 차이를 설명할 수 있다.
+  - 전개 구문으로 얕은 복사본을 만들고, 중첩된 객체가 원본과 함께 쓰이는 결과를 예측해 고칠 수 있다.
+  - 객체의 === 비교 결과를 예측하고, const로 만든 객체의 속성을 바꿀 수 있는 이유를 설명할 수 있다.
+practice:
+  targetCount: 28

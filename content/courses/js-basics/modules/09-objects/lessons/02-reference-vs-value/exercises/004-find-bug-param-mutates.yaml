@@ -1,0 +1,69 @@
+id: js-basics.objects.reference-vs-value.find-bug-param-mutates
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [reference, function, parameter, debugging]
+estimatedSeconds: 110
+prompt: |
+  `withShipping`은 주문에 배송비 3,000원을 더한 **결제용 주문**을 돌려주는 함수예요. 장바구니 금액은 그대로 두고 싶은데, 실행해 보니 장바구니 금액까지 바뀌었어요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    function withShipping(order) {
+      const result = order;
+      result.total = order.total + 3000;
+      return result;
+    }
+
+    const cart = { item: "책", total: 12000 };
+    const finalOrder = withShipping(cart);
+    console.log("장바구니: " + cart.total);
+    console.log("결제: " + finalOrder.total);
+  bugLines: [2]
+  acceptLines: [3]
+  symptom: "장바구니 금액이 `12000`이어야 하는데 `장바구니: 15000`이 출력돼요."
+  symptomCheck:
+    console: ["장바구니: 15000", "결제: 15000"]
+  fixedCode: |-
+    function withShipping(order) {
+      const result = { ...order };
+      result.total = order.total + 3000;
+      return result;
+    }
+
+    const cart = { item: "책", total: 12000 };
+    const finalOrder = withShipping(cart);
+    console.log("장바구니: " + cart.total);
+    console.log("결제: " + finalOrder.total);
+  causeOptions:
+    - id: c1
+      text: result에 order의 참조가 들어가서 result와 cart가 같은 객체를 가리킨다
+      correct: true
+    - id: c2
+      text: 함수에 넘긴 cart는 복사본이라서 3번 줄은 cart에 영향을 줄 수 없고, 9번 줄이 잘못 읽고 있다
+      misconception: js.mc.object-param-copied
+    - id: c3
+      text: const로 만든 result의 속성을 바꾸면 원래 값이 함께 바뀐다
+      misconception: js.mc.const-object-props-frozen
+hints:
+  - 이 프로그램에서 `{ }`로 객체를 만드는 곳은 몇 군데인가요? 객체는 몇 개 있을까요?
+  - "`order`, `result`, `cart`가 각각 무엇을 가리키는지 화살표로 그려 보세요."
+  - 3번 줄이 바꾸는 객체가 `cart`와 다른 객체가 되려면, 어느 줄에서 새 객체를 만들어야 할지 생각해 보세요.
+explanation: |
+  원인은 **2번 줄**이에요(3번 줄을 골라도 정답으로 인정해요).
+
+  `withShipping(cart)`를 부르면 `order`에 `cart`의 참조가 들어가요. 2번 줄 `const result = order;`도 참조를 복사할 뿐이라, `order`, `result`, `cart`가 모두 같은 객체 하나를 가리켜요. 그래서 3번 줄이 `result.total`을 바꾸면 `cart.total`도 15000이 돼요.
+
+  2번 줄에서 새 객체를 만들면 고쳐져요.
+
+  ```js
+  const result = { ...order };
+  ```
+
+  - "`cart`는 복사본이라서 영향을 줄 수 없다": 객체를 넘기면 참조가 복사돼요. 함수 안에서 속성을 바꾸면 바깥 객체가 바뀌어요.
+  - "`const`로 만든 객체의 속성을 바꾸면 원래 값이 함께 바뀐다": `const`는 값을 함께 바꾸는 것과 상관이 없어요. `let result = order;`였어도 같은 버그가 나요. 문제는 새 객체를 만들지 않은 것이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

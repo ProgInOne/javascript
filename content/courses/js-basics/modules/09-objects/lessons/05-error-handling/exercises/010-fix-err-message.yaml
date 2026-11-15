@@ -1,0 +1,72 @@
+id: js-basics.objects.error-handling.fix-err-message
+type: fix_bug
+difficulty: 1
+concepts:
+  - { id: js.errors.try-catch, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.3 }
+tags: [try-catch, error-object, debugging]
+estimatedSeconds: 90
+prompt: |
+  회원의 프로필 이름을 읽다가 오류가 나면 오류의 종류와 설명을 보여 주는 프로그램이에요. 그런데 설명 자리에 `undefined`가 나와요. 버그를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  오류 종류: Error
+  오류 설명: 프로필이 없는 회원이에요
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function profileName(member) {
+            if (member.profile === undefined) {
+              throw new Error("프로필이 없는 회원이에요");
+            }
+            return member.profile.name;
+          }
+
+          try {
+            console.log(profileName({ id: 7 }));
+          } catch (err) {
+            console.log("오류 종류: " + err.name);
+            console.log("오류 설명: " + err.msg);
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function profileName(member) {
+            if (member.profile === undefined) {
+              throw new Error("프로필이 없는 회원이에요");
+            }
+            return member.profile.name;
+          }
+
+          try {
+            console.log(profileName({ id: 7 }));
+          } catch (err) {
+            console.log("오류 종류: " + err.name);
+            console.log("오류 설명: " + err.message);
+          }
+  bugDescription: "`오류 설명: undefined`가 출력돼요."
+  checks:
+    - kind: console
+      id: output
+      description: 오류의 종류와 설명이 출력되어야 합니다.
+      requirement: 오류 정보 출력
+      expect:
+        lines: ["오류 종류: Error", "오류 설명: 프로필이 없는 회원이에요"]
+hints:
+  - "`undefined`가 나온 줄에서 읽는 속성의 이름을 확인해 보세요."
+  - 오류 객체의 두 속성은 종류와 설명이에요. 종류를 읽는 `name`은 맞게 쓰였어요.
+  - 없는 속성을 읽으면 오류가 아니라 `undefined`가 나와요. 레슨에서 본 오류 객체의 "설명" 속성 이름을 정확히 떠올려 보세요.
+explanation: |
+  12번 줄의 `err.msg`를 `err.message`로 고쳐요.
+
+  `new Error("프로필이 없는 회원이에요")`로 만든 오류 객체에서 설명은 `message` 속성에 들어 있어요. `msg`라는 속성은 없어서 `err.msg`는 오류 없이 `undefined`가 됐어요. 없는 속성을 읽으면 오류가 아니라 `undefined`가 나온다는 객체 기초 단원의 규칙 그대로예요.
+
+  `catch`의 `err`에는 3번 줄에서 던진 바로 그 오류 객체가 들어와요. 그래서 `err.name`은 `"Error"`, `err.message`는 만들 때 넣은 문장이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

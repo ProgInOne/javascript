@@ -1,0 +1,112 @@
+id: js-basics.objects.object-iteration.impl-get-setting
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.obj.in-optional-chaining, weight: 1 }
+  - { id: js.ops.nullish, weight: 0.5 }
+  - { id: js.obj.dot-bracket, weight: 0.3 }
+tags: [object, optional-chaining, nullish, write-code, boundary]
+estimatedSeconds: 480
+prompt: |
+  앱 설정을 읽는 함수 `getSetting(settings, key, fallback)`을 만드세요.
+
+  - `settings`는 사용자가 바꾼 설정만 담긴 객체예요. 처음 쓰는 사용자는 설정 객체가 아예 없어서 `settings`가 `undefined`나 `null`일 수 있어요.
+  - 이름이 `key`(문자열)인 설정 값을 돌려줘요.
+  - 설정 객체가 없거나, 그 설정이 없거나, 값이 `null`·`undefined`이면 `fallback`을 돌려줘요.
+  - 사용자가 일부러 정한 `0`, `false`, `""`는 **그대로** 돌려줘야 해요. 음량 0, 알림 끄기(`false`)도 정당한 설정이에요.
+
+  ```js
+  getSetting({ volume: 0 }, "volume", 50);        // 0
+  getSetting({ theme: "dark" }, "volume", 50);    // 50
+  getSetting(undefined, "theme", "light");        // "light"
+  ```
+
+  채점은 숨긴 입력으로도 해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function getSetting(settings, key, fallback) {
+          }
+  entry: getSetting
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function getSetting(settings, key, fallback) {
+            return settings?.[key] ?? fallback;
+          }
+  checks:
+    - kind: call
+      id: zero
+      requirement: 0·false·빈 문자열은 그대로
+      args: [{ "volume": 0 }, "volume", 50]
+      expect: { equals: 0 }
+    - kind: call
+      id: missing-key
+      requirement: 없는 설정은 기본값
+      args: [{ "theme": "dark" }, "volume", 50]
+      expect: { equals: 50 }
+    - kind: call
+      id: no-settings
+      requirement: 설정 객체가 없으면 기본값
+      argsExpr: '[undefined, "theme", "light"]'
+      expect: { equals: "light" }
+    - kind: call
+      id: present
+      visible: false
+      description: 설정이 있으면 그 값을 돌려줘야 합니다(키는 변수로 받음).
+      requirement: 설정 값 돌려주기
+      args: [{ "theme": "dark", "volume": 30 }, "theme", "light"]
+      expect: { equals: "dark" }
+    - kind: call
+      id: false-value
+      visible: false
+      description: 알림을 끈 설정(false)은 기본값 true로 바꾸지 말고 false를 돌려줘야 합니다.
+      requirement: 0·false·빈 문자열은 그대로
+      args: [{ "notify": false }, "notify", true]
+      expect: { strictEquals: false }
+    - kind: call
+      id: empty-string
+      visible: false
+      description: 빈 문자열로 정한 설정은 빈 문자열을 그대로 돌려줘야 합니다.
+      requirement: 0·false·빈 문자열은 그대로
+      args: [{ "nickname": "" }, "nickname", "손님"]
+      expect: { strictEquals: "" }
+    - kind: call
+      id: null-value
+      visible: false
+      description: 값이 null인 설정은 기본값을 돌려줘야 합니다.
+      requirement: 없는 설정은 기본값
+      args: [{ "volume": null }, "volume", 50]
+      expect: { equals: 50 }
+    - kind: call
+      id: null-settings
+      visible: false
+      description: 설정 객체가 null이어도 오류 없이 기본값을 돌려줘야 합니다.
+      requirement: 설정 객체가 없으면 기본값
+      args: [null, "volume", 50]
+      expect: { equals: 50 }
+misconceptions: [js.mc.optional-chaining-guards-rest, js.mc.dot-with-variable-key, js.mc.or-default-keeps-zero, js.mc.nullish-same-as-or]
+hints:
+  - "경우를 나눠 보세요: 설정 객체가 없을 때, 설정은 있는데 그 키가 없을 때, 값이 `0`·`false`·`\"\"`일 때. 각각 무엇을 돌려줘야 하나요?"
+  - 키는 변수 `key`에 들어 있어요. 객체가 없을 수도 있을 때, 변수에 든 키로 오류 없이 읽는 표기(`?.`와 대괄호를 함께 쓰는 모양)가 레슨에 있었어요.
+  - 기본값을 고르는 연산자가 두 가지 있었어요. 하나는 `0`과 `false`에서도 오른쪽을 고르고, 하나는 `null`·`undefined`에서만 골라요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function getSetting(settings, key, fallback) {
+    return settings?.[key] ?? fallback;
+  }
+  ```
+
+  - **변수로 받은 키**: 키가 `key` 변수에 있으니 대괄호로 읽어요. `settings.key`는 이름이 `"key"`인 설정을 찾아 늘 기본값이 나와요.
+  - **설정 객체가 없을 때**: `settings[key]`는 `settings`가 `undefined`나 `null`이면 `TypeError`예요. `settings?.[key]`는 그때 `undefined`를 돌려줘요.
+  - **기본값 고르기**: `??`는 왼쪽이 `null`·`undefined`일 때만 `fallback`을 골라요. `||`를 쓰면 음량 0, 알림 `false`, 빈 문자열도 거짓 같은 값이라 기본값으로 바뀌어 버려요.
+  - 줄 수가 많은 풀이도 괜찮아요. 예를 들어 `if (settings === undefined || settings === null) { return fallback; }`로 먼저 걸러 내고, 그다음 `const value = settings[key];`가 `null`·`undefined`인지 확인해도 같은 결과예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
