@@ -745,6 +745,7 @@ AI가 생성한 문제는 학습자 고유 데이터이므로 `user.db`에 둡�
 | | `created_at` | INTEGER | N | | |
 
 - `exercise_stats`는 FR-EX-10의 문제별 통계입니다. `attempts`에서 재계산할 수 있습니다.
+  - 구현 메모 (v0.3, [D-051](/docs/decisions.md)): `exercise_stats` 테이블은 만들지 않고, `GET /exercises/:id/stats`가 읽을 때 `attempts`(엔진에 반영된 시도만)와 `practice_set_items`에서 계산합니다(`db/user/exercise-stats.ts`). 시도 수, 세트에 담긴 횟수(`timesServed`), 1차 시도(세트 항목 안의 첫 시도와 본문 확인 문제 시도)와 그 정답 수·정답률, 시도당 평균 활동 시간, 힌트를 연 채 낸 시도 수와 비율, 정답을 본 시도 수, 마지막 시도 시각입니다. 진행 중인 단원 평가의 시도는 빼서 감춘 결과가 정답률로 드러나지 않게 합니다. 학습자 한 명의 시도는 수천 건 수준이라 읽을 때 계산해도 충분하고, 복원·초기화·평가 종료 때 맞춰야 할 카운터가 없습니다. 해설의 "도움이 되지 않음"(`explanation_unhelpful_count`)은 생성 문제와 함께(P1) 다룹니다. 쓰기 경로 표의 `exercise_stats` 갱신은 없습니다.
 - `generated` 문제가 신고되면 같은 트랜잭션에서 `generated_exercises.status = 'quarantined'`로 바꿉니다(FR-EX-11). 사전 제작 문제의 신고는 `exercise_stats`와 함께 콘텐츠 수정 후보로 내보낼 수 있습니다(설정 화면, P1).
 
 #### tutor_threads, tutor_messages, session_summaries

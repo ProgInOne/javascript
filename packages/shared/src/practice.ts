@@ -725,3 +725,30 @@ export const weakConceptsSchema = z.object({
   suggested: z.array(z.string()),
 });
 export type WeakConcepts = z.infer<typeof weakConceptsSchema>;
+
+// ── Exercise statistics (FR-EX-10) ───────────────────────────────────────────
+
+/**
+ * `GET /exercises/:id/stats`: the learner's statistics for one exercise, derived from recorded
+ * attempts (D-051). Attempts of an assessment still in progress are left out (results withheld).
+ * Rates are null until there is something to divide by.
+ */
+export const exerciseStatsSchema = z.object({
+  exerciseId: z.string(),
+  /** Graded attempts (sandbox failures that were not applied are not counted). */
+  attempts: z.number().int().nonnegative(),
+  /** Times the exercise was put in a practice set. */
+  timesServed: z.number().int().nonnegative(),
+  /** First attempts within one serving (or outside any set), and how many were correct. */
+  firstTries: z.number().int().nonnegative(),
+  firstTryCorrect: z.number().int().nonnegative(),
+  firstTryCorrectRate: z.number().min(0).max(1).nullable(),
+  /** Average active time per attempt, in milliseconds. */
+  averageActiveMs: z.number().nonnegative().nullable(),
+  /** Attempts submitted with at least one hint open, and their share of all attempts. */
+  hintUsedAttempts: z.number().int().nonnegative(),
+  hintUsageRate: z.number().min(0).max(1).nullable(),
+  solutionViewedAttempts: z.number().int().nonnegative(),
+  lastAttemptAt: z.number().int().nullable(),
+});
+export type ExerciseStats = z.infer<typeof exerciseStatsSchema>;

@@ -50,12 +50,19 @@ interface TutorContextValue {
   drawerId: string;
   /** Callback ref for the header button (focus returns there when nothing else fits). */
   registerTrigger: (el: HTMLButtonElement | null) => void;
+  /**
+   * 선제 제안 (D-010, ui-ux.md 튜터 드로어): the header button shows a violet dot and "도움이
+   * 필요하면 물어보세요" until the learner opens the drawer. Never opens the drawer by itself.
+   */
+  nudge: boolean;
+  suggestHelp: () => void;
 }
 
 const TutorContext = createContext<TutorContextValue | null>(null);
-const TutorRegistry = createContext<Pick<TutorContextValue, 'setScope' | 'removeScope'> | null>(
-  null,
-);
+const TutorRegistry = createContext<Pick<
+  TutorContextValue,
+  'setScope' | 'removeScope' | 'suggestHelp'
+> | null>(null);
 
 /** The tutor drawer state of a learning screen, or null outside one. */
 export function useTutor(): TutorContextValue | null {
@@ -96,6 +103,16 @@ export function useTutorScope(scope: TutorScope | null) {
   );
 }
 
+/**
+ * Marks the tutor button with the proactive suggestion (repeated failure, a confident wrong
+ * answer). A no-op outside a learning screen. Callers check `tutor.proactiveSuggestions` first.
+ */
+export function useSuggestHelp(): () => void {
+  const registry = useContext(TutorRegistry);
+  return registry?.suggestHelp ?? noop;
+}
+const noop = () => undefined;
+
 /** Regions cycled with F6 / Shift+F6 (ui-ux.md 포커스 관리: non-modal drawer, no focus trap). */
 export const F6_REGION = 'data-f6-region';
 
@@ -114,6 +131,7 @@ function focusRegion(region: Element) {
  */
 export function TutorProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [nudge, setNudge] = useState(false);
   const [selection, setSelection] = useState<TutorSelection | null>(null);
   const [focusRequest, setFocusRequest] = useState(0);
   // Scope identity lives in state; the getters (latest code and run) in a ref read on send.
@@ -164,6 +182,7 @@ export function TutorProvider({ children }: { children: ReactNode }) {
     if (options.selection) setSelection(options.selection);
     openRef.current = true;
     setOpen(true);
+    setNudge(false);
     setFocusRequest((n) => n + 1);
   }, []);
 
@@ -178,6 +197,11 @@ export function TutorProvider({ children }: { children: ReactNode }) {
       if (target?.isConnected) target.focus();
       else triggerRef.current?.focus();
     });
+  }, []);
+
+  // While the drawer is open the learner already has the tutor at hand.
+  const suggestHelp = useCallback(() => {
+    if (!openRef.current) setNudge(true);
   }, []);
 
   const toggleTutor = useCallback(() => {
@@ -230,6 +254,8 @@ export function TutorProvider({ children }: { children: ReactNode }) {
       removeScope,
       drawerId,
       registerTrigger,
+      nudge,
+      suggestHelp,
     }),
     [
       open,
@@ -243,9 +269,14 @@ export function TutorProvider({ children }: { children: ReactNode }) {
       removeScope,
       drawerId,
       registerTrigger,
+      nudge,
+      suggestHelp,
     ],
   );
-  const registry = useMemo(() => ({ setScope, removeScope }), [setScope, removeScope]);
+  const registry = useMemo(
+    () => ({ setScope, removeScope, suggestHelp }),
+    [setScope, removeScope, suggestHelp],
+  );
   return (
     <TutorRegistry.Provider value={registry}>
       <TutorContext.Provider value={value}>{children}</TutorContext.Provider>

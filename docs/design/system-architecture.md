@@ -309,7 +309,7 @@ sequenceDiagram
 | 리소스 | 예시 |
 |---|---|
 | 커리큘럼 | `GET /courses`, `GET /lessons/:lessonId` |
-| 연습 | `POST /practice-sets` (단원·복습·약점 집중·단원 평가 `kind: 'assessment'`·오답 노트의 "다시 풀기" `kind: 'extra'`(v0.3). 평가 중 시도 응답은 결과를 감춘 `withheld` 형태이고 마지막 제출이 전체 결과를 돌려줌, v0.3), `POST /practice-sets/:id/items/:itemId/skip` (건너뛰기), `GET /weak-concepts` (약점 개념과 이유), `GET /exercises/:id` (공개 스펙), `POST /exercises/:id/run-plan` (샌드박스 실행 계획), `POST /attempts` (채점 결과와 해설), `POST /exercises/:id/inline-attempts` (레슨 본문 확인 문제: 연습 세트 밖 시도. 실행 없이 채점하는 유형만, 숙련도는 반영하고 FSRS 일정은 바꾸지 않음) |
+| 연습 | `POST /practice-sets` (단원·복습·약점 집중·단원 평가 `kind: 'assessment'`·오답 노트의 "다시 풀기" `kind: 'extra'`(v0.3). 평가 중 시도 응답은 결과를 감춘 `withheld` 형태이고 마지막 제출이 전체 결과를 돌려줌, v0.3), `POST /practice-sets/:id/items/:itemId/skip` (건너뛰기), `GET /weak-concepts` (약점 개념과 이유), `GET /exercises/:id` (공개 스펙), `GET /exercises/:id/stats` (문제별 풀이 통계, FR-EX-10, v0.3), `POST /exercises/:id/run-plan` (샌드박스 실행 계획), `POST /attempts` (채점 결과와 해설), `POST /exercises/:id/inline-attempts` (레슨 본문 확인 문제: 연습 세트 밖 시도. 실행 없이 채점하는 유형만, 숙련도는 반영하고 FSRS 일정은 바꾸지 않음) |
 | 프로젝트 | `GET /lessons/:id/project` (`kind: project` 단원의 마일스톤별 통과·채점 횟수·이어 할 코드), `POST /lessons/:id/project/attempts` (연습 세트 밖 채점. 응답은 채점 결과·이번에 새로 통과한 마일스톤·완료 여부·갱신된 진행 상태, 해설은 완성한 뒤에만), v0.3 |
 | 힌트·정답 | `POST /exercises/:id/hints` (다음 단계 요청), `POST /exercises/:id/solution` |
 | 학습 상태 | `GET /mastery` (과정 진도와 개념 지도), `GET /concepts/:id`, `GET /review-queue`, `GET /daily-plan` |
@@ -326,7 +326,7 @@ sequenceDiagram
 | 문제 생성 | `POST /generation-jobs`, `GET /generation-jobs/:id` |
 | 백업 | `GET /backups`, `POST /backups`, `GET /backups/:id/check` (복원 전 검사: 체크섬·무결성·스키마 호환, 마이그레이션 필요 여부. v0.3), `POST /backups/:id/restore`, `GET`·`PUT /backups/location` (백업 위치. 잘못된 경로는 `400 BACKUP_LOCATION_INVALID`, 환경 변수로 고정되면 `409 BACKUP_LOCATION_LOCKED`. v0.3) |
 | 데이터 | `POST /data/reset` (학습 데이터 초기화, 본문 `{ "confirm": "초기화" }`. `pre-reset` 백업 후 학습 기록 삭제, 실패 시 `RESET_FAILED`. v0.3) |
-| 클라이언트 오류 | `POST /client-errors` |
+| 클라이언트 오류 | `POST /client-errors` (오류 경계·`window` 오류·처리되지 않은 Promise 거부를 서버 로그로, `204`. v0.3) |
 | 설정 | `GET/PATCH /settings` |
 | 진단 | `GET /diagnostics` |
 
@@ -411,6 +411,7 @@ sequenceDiagram
 - **서버 로그**: `pino` 구조화 JSON 로그. 요청 ID를 모든 로그에 포함합니다. 개발 모드는 pretty 출력.
 - **AI 호출 기록**: 작업 이름, 제공자, 모델, 프롬프트 템플릿 버전, 입력·출력 토큰(제공되는 경우), 지연 시간, 결과 상태, 오류 코드를 `ai_calls` 테이블에 저장합니다. 프롬프트 원문은 DB에 저장하지 않고, 디버그 설정일 때만 `<dataDir>/logs/ai/`에 파일로 7일간 보관합니다.
 - **클라이언트 오류**: React 오류 경계와 `window.onerror`로 잡은 오류를 `/api/v1/client-errors`로 보내 서버 로그에 남깁니다.
+  - 구현 메모 (v0.3): 본문은 `{ source: 'boundary' | 'window' | 'unhandledrejection', name?, message, stack?, path }`(`packages/shared`의 `clientErrorReportSchema`, 길이 제한 이름 100·메시지 1,000·스택 4,000·경로 300자, 16KB 초과는 `413`)이고 서버는 `warn` 수준 `client error` 로그 한 줄로 남깁니다(DB에는 저장하지 않음). 경로는 쿼리 문자열 없이 화면 주소만 보내고, 학습자가 입력한 내용은 보내지 않습니다. 이미 서버가 기록한 API 오류(`ApiRequestError`)는 보내지 않고, 응답을 해석하지 못한 `BAD_RESPONSE`만 보냅니다. 렌더 반복이 로그를 채우지 않도록 웹은 같은 오류를 페이지당 한 번, 최대 20건만 보내고, 서버는 분당 30건까지 기록한 뒤 나머지는 세어 다음 기록에 `droppedBefore`로 붙입니다. 응답은 `204`입니다.
 - **진단 화면**: 앱·콘텐츠·스키마 버전, 데이터 위치, 최근 오류, AI 연결 상태(설정 화면, P1).
 
 ### 빌드와 개발 환경

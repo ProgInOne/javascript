@@ -1,5 +1,6 @@
 import { buildRunPlan, exerciseOriginOf, redactSpec } from '@proginone/exercise-kit';
 import {
+  type ExerciseStats,
   HINT_LEVELS,
   type ExerciseView,
   type HintPolicy,
@@ -14,6 +15,7 @@ import {
 import type { ContentExercise } from '../../db/content/repository.ts';
 import { countExerciseScopeAttempts } from '../../db/user/attempts.ts';
 import type { UserDb } from '../../db/user/connection.ts';
+import { exerciseStats } from '../../db/user/exercise-stats.ts';
 import {
   findItem,
   hintState,
@@ -253,6 +255,15 @@ export class ExerciseService {
    * (content-and-exercises.md#문제-신고-처리). Recomputing mastery for `wrong_answer` reports is
    * left to the recompute command (v0.2).
    */
+  /** `GET /exercises/:id/stats` (FR-EX-10): the learner's statistics, derived from attempts. */
+  stats(id: string): ExerciseStats {
+    this.#exercise(id);
+    const learnerId = ensureLearner(this.#userDb).id;
+    const stats = exerciseStats(this.#userDb.orm, learnerId, [id]).get(id);
+    if (!stats) throw new Error('exerciseStats returned no row for a requested exercise');
+    return stats;
+  }
+
   report(id: string, request: ReportRequest): ReportResponse {
     const exercise = this.#exercise(id);
     const learnerId = ensureLearner(this.#userDb).id;

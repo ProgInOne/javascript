@@ -212,6 +212,36 @@ describe('practice mode', () => {
     expect(await screen.findByText('첫 번째 힌트')).toBeVisible();
   });
 
+  it('marks the tutor button after a confident wrong answer until the tutor opens (선제 제안)', async () => {
+    const user = userEvent.setup();
+    renderApp(`/learn/${LESSON_ID}?mode=practice&set=${SET_ID}&i=1`, practiceApi());
+    const tutor = await screen.findByRole('button', { name: /^튜터($|:)/ });
+    expect(tutor).not.toHaveAccessibleName(/도움이 필요하면 물어보세요/);
+    await user.click(await screen.findByRole('radio', { name: /값을 저장한다/ }));
+    await user.click(screen.getByRole('button', { name: '확실해요' }));
+    expect(await screen.findByRole('heading', { name: '정답이 아니에요.' })).toBeVisible();
+    const marked = screen.getByRole('button', { name: /^튜터($|:)/ });
+    expect(marked).toHaveAccessibleName(/도움이 필요하면 물어보세요/);
+    expect(marked).toHaveAttribute('data-nudge', 'true');
+    // The drawer never opens by itself; opening it clears the mark.
+    expect(screen.queryByRole('complementary', { name: 'AI 튜터' })).not.toBeInTheDocument();
+    await user.click(marked);
+    expect(await screen.findByRole('complementary', { name: 'AI 튜터' })).toBeVisible();
+    expect(screen.getByRole('button', { name: /^튜터($|:)/ })).not.toHaveAttribute('data-nudge');
+  });
+
+  it('does not mark the tutor button when proactive suggestions are off or the guess was unsure', async () => {
+    const user = userEvent.setup();
+    renderApp(
+      `/learn/${LESSON_ID}?mode=practice&set=${SET_ID}&i=1`,
+      practiceApi(practiceSet(), { 'tutor.proactiveSuggestions': false }),
+    );
+    await user.click(await screen.findByRole('radio', { name: /값을 저장한다/ }));
+    await user.click(screen.getByRole('button', { name: '확실해요' }));
+    expect(await screen.findByRole('heading', { name: '정답이 아니에요.' })).toBeVisible();
+    expect(screen.getByRole('button', { name: /^튜터($|:)/ })).not.toHaveAttribute('data-nudge');
+  });
+
   it('runs code in the sandbox for grading and ends with the completion summary', async () => {
     const user = userEvent.setup();
     const first = practiceSet().items[0];

@@ -76,6 +76,20 @@
     font: var(--text-h3);
     color: var(--color-text-heading);
   }
+  .ai-data-scope {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .ai-data-scope .ai-settings__section-title {
+    margin: var(--space-2) 0 0;
+  }
+  .ai-data-scope__list {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding-left: 1.25em;
+    list-style: disc;
+  }
   .ai-settings__section-title {
     margin-bottom: var(--space-3);
     font: var(--text-ui);

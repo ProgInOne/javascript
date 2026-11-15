@@ -100,6 +100,16 @@ function api(_method: string, path: string) {
 }
 
 describe('curriculum screens', () => {
+  it('shows an empty state when the content pack has no courses (FR-UI-03)', async () => {
+    renderApp('/courses', (method, path) =>
+      path === '/courses' ? { body: { packVersion: 'v', tracks: [] } } : api(method, path),
+    );
+    expect(
+      await screen.findByRole('heading', { level: 2, name: '아직 과정이 없어요' }),
+    ).toBeVisible();
+    expect(screen.getByRole('heading', { level: 1, name: '과정' })).toBeInTheDocument();
+  });
+
   it('goes from the course list to the course and opens a lesson', async () => {
     const { router } = renderApp('/courses', api);
     await userEvent.click(await screen.findByRole('link', { name: /JavaScript 기초/ }));

@@ -62,7 +62,7 @@ import { AiHint } from '../tutor/AiHint.tsx';
 import { AiMistakeExplanation } from '../tutor/AiMistakeExplanation.tsx';
 import { codeFilesOf, runSummaryOf } from '../tutor/context.ts';
 import { SELECTABLE_ATTR } from '../tutor/selection.ts';
-import { useTutorScope } from '../tutor/TutorContext.tsx';
+import { useSuggestHelp, useTutorScope } from '../tutor/TutorContext.tsx';
 
 type Answer = AnswerByType[RenderableTypeId];
 
@@ -214,6 +214,14 @@ function ItemWorkspace({
         },
   );
 
+  // 선제 제안 (D-010, D-051): repeated failure (a relearning suggestion) or a confident wrong answer
+  // marks the tutor button. Off with 설정 > 학습 방식 > 튜터 선제 제안; never in an assessment.
+  const suggestHelp = useSuggestHelp();
+  const proactive = settings['tutor.proactiveSuggestions'] && !assessment;
+  useEffect(() => {
+    if (remediation && proactive) suggestHelp();
+  }, [remediation, proactive, suggestHelp]);
+
   // Problem change: focus the prompt heading (ui-ux.md 포커스 관리).
   useEffect(() => {
     if (autoFocus) headingRef.current?.focus();
@@ -293,6 +301,7 @@ function ItemWorkspace({
       }
       setResult(res);
       setConfidence(choice);
+      if (proactive && choice === 'sure' && res.attempt.outcome !== 'correct') suggestHelp();
       onAnswered(res);
       if (exercise.typeId === 'web_task') void runInteractive();
     } catch (e) {

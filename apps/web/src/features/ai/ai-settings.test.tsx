@@ -102,6 +102,19 @@ describe('settings AI section', () => {
     expect(screen.getByText('(기본)')).toBeVisible();
   });
 
+  it('explains what is sent to the AI, even before connecting (NFR-08)', async () => {
+    const api = aiApi(snapshot({ state: 'logged_out' }));
+    renderApp('/settings/ai', api.handler);
+    const scope = await screen.findByRole('region', { name: 'AI에 보내는 정보' });
+    expect(within(scope).getByText(/학습 기록은 이 컴퓨터에만 저장돼요/)).toBeVisible();
+    const [sent, notSent] = within(scope).getAllByRole('list');
+    if (!sent || !notSent) throw new Error('lists missing');
+    expect(within(sent).getByText(/내 코드와 마지막 실행 결과/)).toBeVisible();
+    expect(within(sent).getByText(/이미 열어 본 만큼만/)).toBeVisible();
+    expect(within(notSent).getByText(/계정 정보/)).toBeVisible();
+    expect(within(scope).getByText(/데이터 정책/)).toBeVisible();
+  });
+
   it('logs in through a new tab and closes the dialog on the login event', async () => {
     const user = userEvent.setup();
     const tab = { opener: {}, closed: false, location: { href: '' }, close: vi.fn() };

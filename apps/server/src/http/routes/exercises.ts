@@ -19,6 +19,10 @@ export function exerciseRoutes(service: ExerciseService, attempts: AttemptServic
       const ctx = practiceContextSchema.parse(c.req.query());
       return c.json(service.view(id, ctx));
     })
+    .get('/:id/stats', (c) => {
+      const id = contentIdParam(c.req.param('id'));
+      return c.json(service.stats(id));
+    })
     .post('/:id/run-plan', async (c) => {
       const id = contentIdParam(c.req.param('id'));
       const request = runPlanRequestSchema.parse(await jsonBody(c));

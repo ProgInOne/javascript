@@ -10,4 +10,5 @@ export * from './ai.ts';
 export * from './tutor.ts';
 export * from './learning.ts';
 export * from './review.ts';
+export * from './client-errors.ts';
 export * from './project.ts';

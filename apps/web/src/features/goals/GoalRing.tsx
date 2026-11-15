@@ -1,5 +1,6 @@
 import type { GoalStatus, WeekSummaryView } from '@proginone/shared';
 import { Check } from 'lucide-react';
+import { formatMinutes } from '../../lib/format.ts';
 
 /** Today's active minutes in a goal status (the week contains today). */
 export function todayMinutes(status: GoalStatus): number {
@@ -61,7 +62,7 @@ const WEEKDAYS = ['월', '화', '수', '목', '금', '토', '일'] as const;
 
 /**
  * WeekStrip (FR-GOAL-04): Monday to Sunday, studied days filled, today outlined, and the weekly
- * goal as "n / m일" (✓ once reached). No streak warnings (ui-ux.md 목표 달성 표현).
+ * goal as "n / m일" (✓ once reached) with the week's study time. No streak warnings (ui-ux.md 목표 달성 표현).
  */
 export function WeekStrip({
   week,
@@ -77,7 +78,7 @@ export function WeekStrip({
       className="week-strip"
       data-compact={compact || undefined}
       role="group"
-      aria-label={`이번 주 학습 현황: 목표 ${week.weeklyDays}일 중 ${week.studiedDays}일`}
+      aria-label={`이번 주 학습 현황: 목표 ${week.weeklyDays}일 중 ${week.studiedDays}일, ${formatMinutes(week.activeMinutes)} 학습`}
     >
       <ol className="week-strip__days">
         {week.days.map((day, i) => {
@@ -108,6 +109,7 @@ export function WeekStrip({
         <b className="tnum">
           {week.studiedDays} / {week.weeklyDays}일{week.achieved && ' ✓'}
         </b>
+        {!compact && <span className="tnum">{formatMinutes(week.activeMinutes)}</span>}
       </div>
     </div>
   );

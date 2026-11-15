@@ -16,6 +16,7 @@ import type { AppEnv } from './env.ts';
 import { AppError, errorResponse, handleError } from './errors.ts';
 import { aiRoutes } from './routes/ai.ts';
 import { backupRoutes, dataRoutes } from './routes/backups.ts';
+import { clientErrorRoutes } from './routes/client-errors.ts';
 import { curriculumRoutes } from './routes/curriculum.ts';
 import { exerciseRoutes } from './routes/exercises.ts';
 import { learningRoutes } from './routes/learning.ts';
@@ -103,6 +104,7 @@ export function createApp({
     .get('/health', (c) => c.json({ status: 'ok' as const, version }))
     .route('/backups', backupRoutes(backups, backupLocation))
     .route('/settings', settingsRoutes(settings))
+    .route('/client-errors', clientErrorRoutes(log))
     .route('/', curriculumRoutes(content))
     .route('/exercises', exerciseRoutes(practice.exercises, practice.attempts))
     .route('/practice-sets', practiceSetRoutes(practice.sets, practice.attempts))

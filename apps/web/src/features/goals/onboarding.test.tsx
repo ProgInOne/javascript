@@ -196,7 +196,7 @@ describe('헤더 목표 링', () => {
     const popover = await screen.findByRole('dialog', { name: '이번 주 학습 현황' });
     expect(within(popover).getByText('오늘 30분 중 18분 공부했어요.')).toBeInTheDocument();
     expect(
-      within(popover).getByRole('group', { name: '이번 주 학습 현황: 목표 5일 중 4일' }),
+      within(popover).getByRole('group', { name: /^이번 주 학습 현황: 목표 5일 중 4일, / }),
     ).toBeInTheDocument();
     expect(within(popover).getByText('화요일: 쉬었어요')).toBeInTheDocument();
     expect(within(popover).getByRole('link', { name: '목표 바꾸기' })).toHaveAttribute(

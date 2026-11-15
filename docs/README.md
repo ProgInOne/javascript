@@ -56,7 +56,7 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 
 ## 검토 기록
 
-콘텐츠 AI 교차 검토([D-027](/docs/decisions.md))의 판단과 수정 내용입니다.
+콘텐츠 AI 교차 검토([D-027](/docs/decisions.md))의 판단과 수정 내용, 요구사항 점검 기록입니다.
 
 | 문서 | 대상 |
 |---|---|
@@ -68,6 +68,7 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 | [JS 기초 모듈 5 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-m5-js-module-5-review.md) | 레슨 4개, 문제 70개 (`js-basics.loops`) |
 | [JS 기초 모듈 6 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-js-module-6-review.md) | 레슨 6개, 문제 124개 (`js-basics.functions`) |
 | [JS 기초 모듈 7과 단원 평가 4개 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-strings-and-assessments-review.md) | 레슨 2개, 문제 40개 (`js-basics.strings`), 평가 문항 50개 (`control-review`, `loops-review`, `html.semantics.review`, `css.layout.review`) |
+| [M6 P0 요구사항 점검 (2026-11-15)](/docs/reviews/2026-11-15-m6-p0-audit.md) | PRD P0 요구사항·비기능 요구사항·MVP 완료 정의의 구현 상태, v0.3 베타 must-fix와 M7 작업 목록 |
 | [JS 기초 모듈 8 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-js-module-8-review.md) | 레슨 5개, 문제 110개 (`js-basics.arrays`) |
 | [JS 기초 모듈 9 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-js-module-9-review.md) | 레슨 5개, 문제 108개 (`js-basics.objects`) |
 | [JS 기초 모듈 10 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-js-module-10-review.md) | 레슨 3개, 문제 46개 (`js-basics.browser-intro`, 최종 프로젝트 포함) |

@@ -1,12 +1,17 @@
 import { Button, ErrorState } from '@proginone/ui';
 import { useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import type { ErrorComponentProps } from '@tanstack/react-router';
 import { ApiRequestError } from '../api/client.ts';
+import { reportClientError } from '../lib/client-errors.ts';
 
 /** Page-level error (docs/design/ui-ux.md#공통-상태-디자인). Maintenance gets its own copy. */
 export function AppError({ error, reset }: ErrorComponentProps) {
   const client = useQueryClient();
   const api = error instanceof ApiRequestError ? error : null;
+  useEffect(() => {
+    reportClientError('boundary', error);
+  }, [error]);
   const retry = () => {
     void client.resetQueries().then(reset);
   };

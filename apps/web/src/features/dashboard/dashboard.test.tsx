@@ -268,9 +268,11 @@ describe('대시보드', () => {
       await screen.findByRole('heading', { level: 1, name: /오늘 12분 공부했어요/ }),
     ).toBeInTheDocument();
     expect(screen.getByText('오늘 목표 30분까지 18분 남았어요.')).toBeInTheDocument();
-    expect(
-      screen.getByRole('group', { name: '이번 주 학습 현황: 목표 5일 중 3일' }),
-    ).toBeInTheDocument();
+    const week = screen.getByRole('group', {
+      name: /^이번 주 학습 현황: 목표 5일 중 3일, (\d+시간 )?\d+분 학습$/,
+    });
+    // The week's study time is shown next to the studied days (FR-GOAL-04).
+    expect(week.querySelector('.week-strip__summary')).toHaveTextContent(/일\s*(\d+시간 )?\d+분$/);
 
     const plan = screen.getByRole('region', { name: '오늘의 학습' });
     const items = within(plan).getAllByRole('listitem');

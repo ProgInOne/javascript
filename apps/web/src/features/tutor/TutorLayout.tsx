@@ -46,12 +46,15 @@ export function TutorLayout({ children, top }: { children: ReactNode; top: numbe
   );
 }
 
+/** Proactive suggestion copy (ui-ux.md 튜터 드로어 "선제 제안"). */
+export const NUDGE_TEXT = '도움이 필요하면 물어보세요';
+
 /** "⌘J 튜터" in the learning header. Always usable: the drawer explains when AI is not. */
 export function TutorButton() {
   const tutor = useTutor();
   if (!tutor) return null;
-  const { registerTrigger, open, drawerId, toggleTutor } = tutor;
-  return (
+  const { registerTrigger, open, drawerId, toggleTutor, nudge } = tutor;
+  const button = (
     <Button
       ref={registerTrigger}
       className="tutor-trigger"
@@ -61,12 +64,21 @@ export function TutorButton() {
       aria-expanded={open}
       aria-controls={open ? drawerId : undefined}
       aria-keyshortcuts={ariaShortcut('J')}
+      data-nudge={nudge ? true : undefined}
       onClick={toggleTutor}
     >
       튜터
+      {nudge && (
+        <>
+          <span className="tutor-trigger__dot" aria-hidden="true" />
+          <span className="sr-only">: {NUDGE_TEXT}</span>
+        </>
+      )}
       <Kbd keys={[modKeyLabel(), 'J']} />
     </Button>
   );
+  // The tooltip only repeats the screen-reader text, so it never carries information alone.
+  return nudge ? <Tooltip content={NUDGE_TEXT}>{button}</Tooltip> : button;
 }
 
 interface Anchor {

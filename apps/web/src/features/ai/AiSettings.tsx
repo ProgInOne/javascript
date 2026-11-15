@@ -49,6 +49,46 @@ export function AiSettings() {
           <Skeleton height={96} />
         )}
       </div>
+      <AiDataScope />
+    </section>
+  );
+}
+
+/**
+ * "AI에 보내는 정보" (NFR-08, ai-system.md#개인정보): what the AI tasks send, and what never
+ * leaves the computer. Static copy; the per-call preview is P1. Shown whatever the connection
+ * state, so the learner can read it before connecting.
+ */
+export function AiDataScope() {
+  return (
+    <section aria-labelledby="ai-data-title" className={`${cardClass} ai-data-scope mt-4`}>
+      <h2 id="ai-data-title" className="type-h3 text-heading">
+        AI에 보내는 정보
+      </h2>
+      <p className="ai-settings__note">
+        학습 기록은 이 컴퓨터에만 저장돼요. AI 기능을 쓸 때만, 그 질문에 필요한 학습 맥락을 Codex를
+        거쳐 OpenAI로 보내요.
+      </p>
+      <h3 className="ai-settings__section-title">보내는 것 (AI를 쓸 때만)</h3>
+      <ul className="ai-data-scope__list">
+        <li>질문, 그리고 지금 보고 있는 레슨·문제의 내용</li>
+        <li>
+          내 코드와 마지막 실행 결과 (튜터 창의 &quot;내 코드&quot;·&quot;실행 결과&quot;를 빼면
+          보내지 않아요)
+        </li>
+        <li>관련 개념의 숙련도, 진행 중인 오개념, 이 문제의 최근 풀이 기록</li>
+        <li>이 문제·단원의 이전 대화와 지난 대화의 요약</li>
+        <li>힌트와 정답은 내가 이미 열어 본 만큼만 보내요. 단원 평가 중에는 AI를 쓸 수 없어요.</li>
+      </ul>
+      <h3 className="ai-settings__section-title">보내지 않는 것</h3>
+      <ul className="ai-data-scope__list">
+        <li>이름·이메일 같은 계정 정보 (로그인은 Codex가 관리해요)</li>
+        <li>다른 문제의 코드, 학습 목표와 학습 시간, 설정, 백업 파일</li>
+      </ul>
+      <p className="ai-settings__note">
+        보낸 내용은 OpenAI의 ChatGPT·Codex 데이터 정책을 따라요. AI를 연결하지 않으면 아무것도
+        보내지 않아요.
+      </p>
     </section>
   );
 }
