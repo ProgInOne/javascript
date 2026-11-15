@@ -37,11 +37,12 @@ explanation: |
 
   `flex-direction`은 주축, 즉 아이템이 늘어서는 방향을 정해요.
 
-  - `row`(기본값): 주축이 가로라서 왼쪽에서 오른쪽으로 놓여요(c).
+  - `row`(기본값): 주축이 가로라서 왼쪽에서 오른쪽으로 놓여요.
   - `column`: 주축이 세로라서 위에서 아래로 놓여요.
 
-  이름 때문에 "열(column)을 여러 개 만든다"고 생각하기 쉽지만(b), 실제로는 아이템들이 **하나의 세로 줄**을 이뤄요. 아이템이 겹치는 일도 없어요(d).
+  이름 때문에 "열(column)을 여러 개 만든다"고 생각하기 쉽지만, 실제로는 아이템들이 **하나의 세로 줄**을 이뤄요. 아이템이 겹치는 일도 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

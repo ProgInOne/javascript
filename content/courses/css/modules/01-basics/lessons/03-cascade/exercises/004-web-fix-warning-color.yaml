@@ -1,15 +1,20 @@
 id: css.basics.cascade.web-fix-warning-color
 type: web_task
-difficulty: 3
+difficulty: 4
 concepts:
   - { id: css.cascade.specificity, weight: 1 }
   - { id: css.selectors.combinators, weight: 0.3 }
+  - { id: css.cascade.order, weight: 0.3 }
 tags: [cascade, specificity, debugging, web-task]
-estimatedSeconds: 240
+estimatedSeconds: 360
 prompt: |
-  공지 상자 안의 문단은 회색이어야 하고, 그중 `class="warning"`인 문단만 빨간색(`#dc2626`)이어야 해요. 그런데 `.warning` 규칙을 맨 아래에 써도 경고 문단이 여전히 회색이에요.
+  도서관 일정표에서 휴관 안내(`class="warning"`)만 빨간색(`#dc2626`)으로 보이게 하려고 `.warning` 규칙을 썼어요. 그런데 `.warning` 규칙이 `#schedule li` 규칙보다 아래에 있는데도 휴관 안내가 진한 회색 그대로예요.
 
-  **선택자만 고쳐서** 경고 문단이 빨간색이 되게 하세요. 다른 문단은 회색 그대로여야 하고, HTML은 바꾸지 마세요.
+  `.warning` 규칙의 **선택자만 고쳐서** 아래 세 가지를 만족시키세요. HTML과 다른 규칙은 바꾸지 마세요.
+
+  1. 휴관 안내 두 개(수요일, 금요일)는 빨간색이에요.
+  1. 화요일 일정은 진한 회색(`#374151`) 그대로예요.
+  1. 이미 지난 일정(`class="past warning"`)은 맨 아래의 `#schedule li.past` 규칙대로 연한 회색(`#9ca3af`)이에요.
 spec:
   focus: css
   starter:
@@ -20,21 +25,28 @@ spec:
           <html lang="ko">
             <head>
               <meta charset="utf-8" />
-              <title>공지 상자</title>
+              <title>이번 주 일정</title>
               <style>
-                #notice p {
-                  color: #6b7280;
+                #schedule li {
+                  color: #374151;
                 }
                 .warning {
                   color: #dc2626;
                 }
+                /* 지난 일정은 연한 회색으로 */
+                #schedule li.past {
+                  color: #9ca3af;
+                }
               </style>
             </head>
             <body>
-              <div id="notice">
-                <p id="normal">이번 주 토요일은 휴관해요.</p>
-                <p class="warning">반납 기한을 꼭 확인하세요.</p>
-              </div>
+              <h1>도서관 이번 주 일정</h1>
+              <ul id="schedule">
+                <li class="past warning" id="past">지난 월요일: 휴관 (끝남)</li>
+                <li id="normal">화요일: 정상 운영</li>
+                <li class="warning" id="w1">수요일: 오후 휴관</li>
+                <li class="warning" id="w2">금요일: 전산 점검으로 휴관</li>
+              </ul>
             </body>
           </html>
   solution:
@@ -45,57 +57,82 @@ spec:
           <html lang="ko">
             <head>
               <meta charset="utf-8" />
-              <title>공지 상자</title>
+              <title>이번 주 일정</title>
               <style>
-                #notice p {
-                  color: #6b7280;
+                #schedule li {
+                  color: #374151;
                 }
-                #notice .warning {
+                #schedule .warning {
                   color: #dc2626;
+                }
+                /* 지난 일정은 연한 회색으로 */
+                #schedule li.past {
+                  color: #9ca3af;
                 }
               </style>
             </head>
             <body>
-              <div id="notice">
-                <p id="normal">이번 주 토요일은 휴관해요.</p>
-                <p class="warning">반납 기한을 꼭 확인하세요.</p>
-              </div>
+              <h1>도서관 이번 주 일정</h1>
+              <ul id="schedule">
+                <li class="past warning" id="past">지난 월요일: 휴관 (끝남)</li>
+                <li id="normal">화요일: 정상 운영</li>
+                <li class="warning" id="w1">수요일: 오후 휴관</li>
+                <li class="warning" id="w2">금요일: 전산 점검으로 휴관</li>
+              </ul>
             </body>
           </html>
   checks:
     - kind: css
-      id: warning-red
-      description: 경고 문단의 글자 색이 빨간색(#dc2626)이어야 합니다.
-      requirement: 경고 문단은 빨간색
+      id: warnings-red
+      description: 휴관 안내 두 개(수요일, 금요일)의 글자 색이 빨간색(#dc2626)이어야 합니다.
+      requirement: 휴관 안내는 빨간색
       visible: true
-      selector: .warning
+      selector: ".warning:not(.past)"
+      all: true
       expect:
         computed:
           color: { color: "#dc2626" }
       misconceptionIfFail: css.mc.last-rule-wins
     - kind: css
       id: normal-gray
-      description: 다른 문단은 회색(#6b7280) 그대로여야 합니다.
-      requirement: 다른 문단은 회색
+      description: 화요일 일정은 진한 회색(#374151) 그대로여야 합니다.
+      requirement: 보통 일정은 그대로
       visible: true
       selector: "#normal"
       expect:
         computed:
-          color: { color: "#6b7280" }
+          color: { color: "#374151" }
+    - kind: css
+      id: past-light-gray
+      description: "이미 지난 일정은 #schedule li.past 규칙대로 연한 회색(#9ca3af)이어야 합니다."
+      requirement: 지난 일정은 연한 회색
+      visible: true
+      selector: "#past"
+      expect:
+        computed:
+          color: { color: "#9ca3af" }
 misconceptions: [css.mc.last-rule-wins]
 hints:
-  - 두 규칙이 모두 경고 문단을 골라요. 두 선택자의 명시도를 세어 보세요.
-  - "`#notice p`는 (1, 0, 1), `.warning`은 (0, 1, 0)이에요. 아래에 있어도 `.warning`이 지는 이유가 여기 있어요."
-  - "`.warning` 선택자 앞에 ID를 붙여 명시도를 (1, 1, 0) 이상으로 만들어 보세요."
+  - 휴관 안내에는 규칙 두 개가 겹쳐요. 두 선택자의 명시도를 (ID, 클래스, 타입) 세 칸으로 세어 보세요.
+  - "`#schedule li`는 (1, 0, 1), `.warning`은 (0, 1, 0)이라 `.warning`이 아래에 있어도 져요. 맨 아래의 `#schedule li.past`는 (1, 1, 1)이에요."
+  - 새 선택자는 (1, 0, 1)보다 높아야 하고, 지난 일정이 연한 회색으로 남으려면 `#schedule li.past`를 이기면 안 돼요. 휴관 안내가 늘어나도 모두 빨간색이 되도록 클래스를 이용하세요.
 explanation: |
-  예시 정답은 `.warning`을 **`#notice .warning`**으로 바꾸는 거예요.
+  예시 정답은 `.warning`을 **`#schedule .warning`**으로 바꾸는 거예요.
 
-  처음에는 `#notice p` (1, 0, 1)가 `.warning` (0, 1, 0)보다 명시도가 높아서, `.warning`이 아래에 있어도 졌어요. 순서는 명시도가 같을 때만 쓰이기 때문이에요.
+  세 규칙의 명시도는 `#schedule li` (1, 0, 1), `#schedule .warning` (1, 1, 0), `#schedule li.past` (1, 1, 1)이에요.
 
-  `#notice .warning`은 (1, 1, 0)이에요. ID 칸이 같으니 클래스 칸을 비교하고, 1 대 0으로 이겨요. `#notice p.warning` (1, 1, 1)처럼 써도 정답이에요.
+  - 휴관 안내: `#schedule .warning` (1, 1, 0)은 ID 칸이 같은 `#schedule li` (1, 0, 1)를 클래스 칸에서 1 대 0으로 이겨서 빨간색이 돼요.
+  - 지난 일정: 세 규칙에 모두 해당하지만 `#schedule li.past` (1, 1, 1)가 가장 높아서 연한 회색으로 남아요.
 
-  `.warning` 규칙을 위로 옮기거나 클래스를 더 붙이는 것(`.warning.warning`)만으로는 ID가 있는 규칙을 이기지 못해요.
+  `#schedule li.warning` (1, 1, 1)처럼 써도 정답이에요. `#schedule li.past`와 명시도가 같지만 `.past` 규칙이 더 아래에 있어서 지난 일정은 연한 회색이 돼요.
+
+  처음 코드의 `.warning` (0, 1, 0)은 명시도가 낮아 아래에 있어도 졌어요. 순서는 명시도가 같을 때만 쓰이기 때문이에요.
+
+  - 클래스를 더 붙이는 것(`.warning.warning`)만으로는 ID가 있는 규칙을 이기지 못해요.
+  - `#schedule #w1, #schedule #w2`처럼 휴관 안내를 ID로 하나씩 고르면 체크는 통과하지만, 휴관 안내가 늘어날 때마다 선택자를 고쳐야 해요. 클래스로 고르면 새 안내에도 저절로 적용돼요.
+  - 값 뒤에 `!important`를 붙이면 명시도와 상관없이 이기게 돼요. 이 과정에서는 다루지 않는 방법이고, 여기서는 지난 일정까지 빨간색이 되어 세 번째 조건이 실패해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

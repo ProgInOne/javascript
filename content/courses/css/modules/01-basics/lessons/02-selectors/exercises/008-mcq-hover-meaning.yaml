@@ -40,4 +40,7 @@ explanation: |
   - `class="hover"`나 `id="hover"`는 필요 없어요. 점은 클래스, 샵은 ID, 콜론은 의사 클래스예요.
   - 클릭이나 페이지 이동과도 상관없어요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

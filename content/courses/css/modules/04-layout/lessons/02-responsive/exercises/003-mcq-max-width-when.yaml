@@ -38,10 +38,11 @@ explanation: |
 
   `max-width: 600px`는 "화면 너비가 **최대** 600px일 때"라는 조건이에요. 그래서 375px 휴대폰이나 600px 화면에서는 적용되고, 601px 이상의 넓은 화면에서는 적용되지 않아요.
 
-  - b: 600px 이상에 적용하려면 `min-width: 600px`(최소 600px)를 써요. max와 min의 방향을 반대로 읽기 쉬우니 "최대 ~까지", "최소 ~부터"로 소리 내어 읽어 보세요.
-  - c: 한 값이 아니라 범위 조건이에요.
-  - d: 미디어 쿼리 괄호 안의 max-width는 화면 너비 조건이에요. 요소의 최대 너비를 정하는 `max-width` 속성과는 쓰는 자리가 달라요.
+  - "600px 이상": 600px 이상에 적용하려면 `min-width: 600px`(최소 600px)를 써요. max와 min의 방향을 반대로 읽기 쉬우니 "최대 ~까지", "최소 ~부터"로 소리 내어 읽어 보세요.
+  - "정확히 600px일 때만": 한 값이 아니라 범위 조건이에요.
+  - "항상 적용되고 최대 너비를 정한다": 미디어 쿼리 괄호 안의 max-width는 화면 너비 조건이에요. 요소의 최대 너비를 정하는 `max-width` 속성과는 쓰는 자리가 달라요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

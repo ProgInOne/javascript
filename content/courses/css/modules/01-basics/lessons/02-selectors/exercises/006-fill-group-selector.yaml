@@ -56,7 +56,7 @@ misconceptions: [css.mc.descendant-vs-group]
 hints:
   - 선택자 여러 개에 같은 규칙을 주는 방법이 있어요.
   - 두 선택자를 "그리고"의 뜻으로 이어 주는 기호를 떠올려 보세요.
-  - 공백은 "안에 있는"이라는 뜻이 돼요. 두 선택자를 쉼표로 이어요.
+  - 공백으로 이으면 "안에 있는"이라는 뜻이 돼요. "그리고"를 뜻하는 기호는 따로 있어요.
 explanation: |
   정답 예시는 **`h1, h2`**예요.
 
@@ -64,4 +64,7 @@ explanation: |
 
   `h1 h2`처럼 공백으로 이으면 "h1 안에 있는 h2"를 찾는 자손 선택자가 되어, 이 문서에서는 아무것도 고르지 못해요. `body`나 `*`처럼 넓게 고르면 문단까지 파래져요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

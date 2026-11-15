@@ -42,5 +42,6 @@ explanation: |
   - 루트 글자 크기를 기준으로 하는 단위는 `rem`이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

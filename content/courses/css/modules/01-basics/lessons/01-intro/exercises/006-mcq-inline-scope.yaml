@@ -1,6 +1,6 @@
 id: css.basics.intro.mcq-inline-scope
 type: mcq_single
-difficulty: 2
+difficulty: 1
 concepts:
   - { id: css.intro.linking, weight: 1 }
 tags: [inline-style, style-attribute]
@@ -40,4 +40,7 @@ explanation: |
   - style 속성은 뒤에 오는 형제 요소로 이어지지 않아요.
   - style 속성은 head가 아니라 요소의 여는 태그에 쓰고, 그대로 동작해요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

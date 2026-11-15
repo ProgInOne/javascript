@@ -45,11 +45,12 @@ explanation: |
 
   `display: flex`를 준 `.menu`(ul)는 플렉스 컨테이너가 되고, 그 **바로 아래 자식**인 `li` 세 개만 플렉스 아이템이 되어 한 줄로 놓여요.
 
-  - `a`와 `span`은 `li` 안에 있는 손자 요소예요. 이 요소들은 자기 부모인 `li` 안에서 원래대로(인라인이라 글자처럼) 흘러요. 그래서 b와 c는 틀렸어요.
-  - `.menu` 자신은 아이템이 아니라 컨테이너예요(d).
+  - `a`와 `span`은 `li` 안에 있는 손자 요소예요. 이 요소들은 자기 부모인 `li` 안에서 원래대로(인라인이라 글자처럼) 흘러요. 그래서 a나 span을 아이템으로 고른 답은 틀렸어요.
+  - `.menu` 자신은 아이템이 아니라 컨테이너예요.
 
   손자 요소까지 플렉스 배치를 하고 싶다면, 그 부모(`li`)에도 따로 `display: flex`를 줘야 해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

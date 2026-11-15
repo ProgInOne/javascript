@@ -57,4 +57,7 @@ explanation: |
 
   `background: yellow;`처럼 써도 배경이 노란색이 되므로 정답으로 처리돼요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -103,7 +103,7 @@ misconceptions: [css.mc.value-in-quotes, css.mc.semicolon-optional]
 hints:
   - "실수는 두 군데예요. 선언 하나하나가 `속성: 값;` 모양을 정확히 지키는지 보세요."
   - 값 하나가 따옴표로 감싸져 있고, 선언 하나는 끝에 무언가가 빠져 있어요.
-  - "`\"white\"`의 따옴표를 지우고, `purple` 뒤에 빠진 기호를 붙여 보세요."
+  - "`color` 줄의 값과 `background-color` 줄의 끝을 보세요. 색 이름 값에는 따옴표를 쓰지 않고, 선언은 세미콜론으로 끝나요."
 explanation: |
   실수는 두 가지예요.
 
@@ -112,4 +112,7 @@ explanation: |
 
   브라우저는 잘못된 선언을 오류 없이 무시하기 때문에, 페이지는 잘 열려도 모양만 빠져 있어요. 모양이 안 바뀌면 그 선언과 바로 앞 선언의 문법을 먼저 확인하세요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

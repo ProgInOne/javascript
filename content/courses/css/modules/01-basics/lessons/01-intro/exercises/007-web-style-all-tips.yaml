@@ -1,6 +1,6 @@
 id: css.basics.intro.web-style-all-tips
 type: web_task
-difficulty: 3
+difficulty: 2
 concepts:
   - { id: css.intro.linking, weight: 1 }
   - { id: css.intro.rule-structure, weight: 0.5 }
@@ -9,7 +9,7 @@ estimatedSeconds: 240
 prompt: |
   공부 팁 세 개 중 **첫 번째 팁만** 초록색 글자로 보여요. 첫 번째 팁에 `style` 속성으로 색을 줬기 때문이에요.
 
-  `head`의 `style` 요소에 **규칙을 써서** 팁 세 개(`class="tip"`)가 모두 초록색(`green`) 글자로 보이게 하세요. 팁마다 `style` 속성을 하나씩 붙이는 대신 규칙 하나로 해결해 보세요.
+  `head`의 `style` 요소에 **규칙을 써서** 팁 세 개(`class="tip"`)가 모두 초록색(`green`) 글자로 보이게 하세요. 두 번째·세 번째 팁에 `style` 속성을 붙이지 말고, 규칙 하나로 해결하세요.
 spec:
   focus: css
   starter:
@@ -82,6 +82,15 @@ spec:
       selector: p.tip
       expect:
         count: 3
+    - kind: dom
+      id: no-new-inline-style
+      description: 두 번째·세 번째 팁에는 style 속성을 붙이지 않아야 합니다.
+      requirement: style 요소의 규칙으로 해결
+      visible: true
+      selector: "p.tip:not(:first-of-type)[style]"
+      expect:
+        count: 0
+      misconceptionIfFail: css.mc.inline-applies-to-all
 misconceptions: [css.mc.inline-applies-to-all]
 hints:
   - 지금은 첫 번째 팁의 `style` 속성만 색을 정하고 있어요. style 속성은 어디까지 적용될까요?
@@ -98,6 +107,9 @@ explanation: |
 
   `style` 속성은 그 속성을 쓴 요소 하나에만 적용돼서, 처음에는 첫 번째 팁만 초록색이었어요. `.tip` 선택자는 `class="tip"`인 요소를 모두 고르므로 규칙 하나로 세 팁에 같은 색을 줄 수 있어요.
 
-  첫 번째 팁의 `style` 속성은 지워도 되고 남겨 둬도 결과는 같아요. 하지만 같은 모양을 두 곳에서 정하면 나중에 색을 바꿀 때 한쪽을 빠뜨리기 쉬우니 지우는 편이 좋아요. 팁마다 `style` 속성을 붙여도 화면은 같지만, 팁이 100개라면 100번 써야 해요.
+  첫 번째 팁의 `style` 속성은 지워도 되고 남겨 둬도 결과는 같아요. 하지만 같은 모양을 두 곳에서 정하면 나중에 색을 바꿀 때 한쪽을 빠뜨리기 쉬우니 지우는 편이 좋아요. 팁마다 `style` 속성을 붙이는 방법은 화면은 같아도 팁이 100개라면 100번 써야 해서, 이 문제에서는 채점이 막아요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

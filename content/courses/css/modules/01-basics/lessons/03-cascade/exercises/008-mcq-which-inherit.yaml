@@ -45,5 +45,6 @@ explanation: |
   "아무것도 물려받지 않는다"는 상속 자체가 없다고 본 경우예요. 글자 관련 속성은 상속돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

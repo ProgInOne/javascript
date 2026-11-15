@@ -33,13 +33,9 @@ spec:
     - id: main
       accept: ["justify-content: center"]
       width: 28
-      misconceptionMap:
-        "align-items: center": css.mc.justify-align-swap
     - id: cross
       accept: ["align-items: center"]
       width: 28
-      misconceptionMap:
-        "justify-content: center": css.mc.justify-align-swap
   checks:
     - kind: layout
       id: center-x
@@ -70,8 +66,8 @@ spec:
 misconceptions: [css.mc.justify-align-swap]
 hints:
   - 가로는 주축, 세로는 교차축이에요. 축마다 정렬을 맡는 속성이 달라요.
-  - 주축 정렬은 `justify-content`, 교차축 정렬은 `align-items`예요.
-  - 두 속성 모두 가운데를 뜻하는 값 `center`를 써요. 첫 빈칸은 주축(가로)부터 채우세요.
+  - 축마다 정렬을 맡는 속성이 하나씩 있어요. 주축 정렬 속성은 `justify-`로, 교차축 정렬 속성은 `align-`으로 시작해요.
+  - 두 속성 모두 같은 값으로 가운데를 뜻해요. 첫 빈칸은 주축(가로) 정렬부터 채우세요.
 explanation: |
   정답은 **`justify-content: center`**와 **`align-items: center`**예요(두 빈칸의 순서를 바꿔 써도 결과는 같아요).
 
@@ -83,5 +79,6 @@ explanation: |
   Flexbox의 "가로·세로 정가운데"는 실무에서 아주 자주 쓰는 조합이에요. 축마다 속성이 하나씩이라고 기억하세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -12,7 +12,7 @@ prompt: |
 
   1. 로고(`.logo`)는 막대의 왼쪽, 메뉴 묶음(`.links`)은 막대의 오른쪽 끝에 놓여요.
   1. 메뉴 세 개(`.links` 안의 `a`)는 한 줄에 나란히 놓이고, 메뉴와 메뉴 **사이**는 정확히 `16px`이에요.
-  1. 막대의 왼쪽 가장자리와 로고 사이, 마지막 메뉴와 막대의 오른쪽 가장자리 사이는 각각 `24px`이에요.
+  1. 막대(`.nav`)의 왼쪽·오른쪽 안쪽 여백(padding)을 각각 `24px`로 해서, 막대 가장자리와 로고·마지막 메뉴 사이를 띄워요.
 
   메뉴는 모양만 확인하는 연습이라 링크 주소(`href`) 없이 두었어요.
 spec:
@@ -111,12 +111,20 @@ spec:
   checks:
     - kind: layout
       id: links-right-of-logo
-      description: 메뉴 묶음이 로고의 오른쪽, 같은 줄에 있어야 합니다.
+      description: 메뉴 묶음이 로고보다 오른쪽에 있어야 합니다.
       requirement: 로고는 왼쪽, 메뉴는 오른쪽
       visible: true
       a: .links
       b: .logo
       relation: right-of
+      tolerancePx: 1
+    - kind: layout
+      id: logo-links-same-row
+      description: 로고와 메뉴 묶음이 같은 줄에 있어야 합니다.
+      requirement: 로고는 왼쪽, 메뉴는 오른쪽
+      a: .links
+      b: .logo
+      relation: same-row
       tolerancePx: 1
     - kind: layout
       id: links-at-far-end
@@ -128,7 +136,7 @@ spec:
       gap: { axis: x, min: 200 }
     - kind: layout
       id: gap-1-2
-      description: 첫 번째와 두 번째 메뉴가 한 줄에 있고, 사이가 16px이어야 합니다.
+      description: 첫 번째와 두 번째 메뉴 사이가 가로로 16px이어야 합니다.
       requirement: 메뉴 사이 16px
       visible: true
       a: "#l1"
@@ -138,7 +146,7 @@ spec:
       misconceptionIfFail: css.mc.flex-affects-grandchildren
     - kind: layout
       id: gap-2-3
-      description: 두 번째와 세 번째 메뉴가 한 줄에 있고, 사이가 16px이어야 합니다.
+      description: 두 번째와 세 번째 메뉴 사이가 가로로 16px이어야 합니다.
       requirement: 메뉴 사이 16px
       visible: true
       a: "#l2"
@@ -163,6 +171,15 @@ spec:
         computed:
           padding-left: { px: { value: 24 } }
           padding-right: { px: { value: 24 } }
+      misconceptionIfFail: css.mc.gap-adds-outer-edges
+    - kind: css
+      id: no-trailing-margin
+      description: 마지막 메뉴 뒤에 오른쪽 margin이 없어야 합니다(그래야 오른쪽 가장자리 간격이 24px이에요).
+      requirement: 가장자리 24px
+      selector: "#l3"
+      expect:
+        computed:
+          margin-right: { px: { value: 0 } }
       misconceptionIfFail: css.mc.gap-adds-outer-edges
 misconceptions: [css.mc.gap-adds-outer-edges, css.mc.flex-affects-grandchildren]
 hints:
@@ -189,8 +206,9 @@ explanation: |
   - `justify-content: space-between`이 로고를 왼쪽, 메뉴 묶음을 오른쪽 끝에 붙여요. `align-items: center`는 높이가 다른 두 아이템을 세로 가운데로 맞춰 보기 좋게 해요(채점하지는 않아요).
   - `gap: 16px`은 메뉴와 메뉴 **사이**에만 16px을 만들어요. 막대 가장자리와의 24px은 gap이 만들지 않으므로 `.nav`의 좌우 padding으로 줘요.
 
-  메뉴에 `margin-right: 16px`처럼 margin으로 간격을 줘도 사이 간격은 맞지만, 마지막 메뉴 뒤에도 여백이 생겨 오른쪽 가장자리 간격이 24px보다 커 보여요. gap을 쓰면 이런 문제가 없어요.
+  메뉴에 `margin-right: 16px`처럼 margin으로 간격을 주면 사이 간격은 맞지만, 마지막 메뉴 뒤에도 16px이 생겨 오른쪽 가장자리 간격이 40px이 돼요. 그래서 "마지막 메뉴 뒤 margin" 체크가 실패해요. gap을 쓰면 이런 문제가 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

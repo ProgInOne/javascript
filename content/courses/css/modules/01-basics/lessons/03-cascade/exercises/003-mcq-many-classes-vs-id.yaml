@@ -45,5 +45,6 @@ explanation: |
   - **짧을수록 우선**: 길이가 아니라 어떤 종류의 선택자가 몇 개인지가 기준이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

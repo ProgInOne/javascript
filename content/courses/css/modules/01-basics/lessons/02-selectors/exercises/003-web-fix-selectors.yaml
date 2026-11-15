@@ -106,4 +106,7 @@ explanation: |
 
   `p.rating`이나 `h1#movie-title`처럼 요소 이름을 앞에 붙여도 같은 요소를 고르니 정답이에요. 줄거리 문단을 함께 바꾸는 `p` 선택자는 요구사항(다른 문단은 그대로)에 맞지 않아요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

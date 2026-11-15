@@ -1,6 +1,6 @@
 id: css.styling.typography.web-title-font
 type: web_task
-difficulty: 2
+difficulty: 1
 concepts:
   - { id: css.type.font-properties, weight: 1 }
   - { id: css.units.rem-em, weight: 0.3 }
@@ -106,5 +106,6 @@ explanation: |
   `font-size: 1.5em`도 이 문제에서는 24px이 돼요. 부모인 `body`가 16px이기 때문이에요. 하지만 부모의 글자 크기가 바뀌면 함께 바뀌므로, 루트를 기준으로 하는 `rem`이 더 예측하기 쉬워요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

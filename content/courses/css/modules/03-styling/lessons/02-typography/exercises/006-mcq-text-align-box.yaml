@@ -43,5 +43,6 @@ explanation: |
   - `text-align`은 상자의 너비를 바꾸지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

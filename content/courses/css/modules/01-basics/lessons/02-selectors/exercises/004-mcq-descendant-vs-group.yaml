@@ -43,4 +43,7 @@ explanation: |
 
   "nav 안의 링크만" 바꾸고 싶었다면 공백을 쓴 자손 선택자 `nav a`를 써야 해요. 공백은 "안에 있는", 쉼표는 "그리고"예요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

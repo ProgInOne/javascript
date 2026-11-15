@@ -3,13 +3,18 @@ type: web_task
 difficulty: 3
 concepts:
   - { id: css.type.line-height, weight: 1 }
-  - { id: css.type.font-properties, weight: 0.3 }
+  - { id: css.cascade.inheritance, weight: 0.3 }
 tags: [line-height, debugging, web-task]
-estimatedSeconds: 240
+estimatedSeconds: 300
 prompt: |
-  글자 크기 `18px`인 문단의 줄 간격을 넉넉하게 하려고 "줄 높이를 글자 크기의 1.5배로" 정했는데, 오히려 줄들이 겹쳐서 읽을 수가 없어요.
+  글 상자(`.article`)의 줄 간격을 넉넉하게 하려고 "줄 높이를 글자 크기의 1.5배로" 정했는데, 오히려 줄들이 겹쳐서 읽을 수가 없어요.
 
-  `.article` 규칙을 고쳐서 문단 한 줄의 높이가 **글자 크기의 1.5배(27px)**가 되게 하세요. 글자 크기 `18px`은 그대로 두세요.
+  `.article`의 `line-height`를 고쳐서, 글 상자 안의 문단과 제목이 각자 **자기 글자 크기의 1.5배** 줄 높이를 갖게 하세요.
+
+  - 문단(글자 크기 18px): 한 줄 27px
+  - 제목(글자 크기 24px): 한 줄 36px
+
+  글자 크기는 그대로 두세요.
 spec:
   focus: css
   starter:
@@ -20,7 +25,7 @@ spec:
           <html lang="ko">
             <head>
               <meta charset="utf-8" />
-              <title>읽기 좋은 문단</title>
+              <title>읽기 좋은 글</title>
               <style>
                 .article {
                   width: 320px;
@@ -28,13 +33,19 @@ spec:
                   line-height: 1.5px;
                   background: #fef3c7;
                 }
+                .article h2 {
+                  font-size: 24px;
+                }
               </style>
             </head>
             <body>
-              <p class="article">
-                줄 높이가 너무 좁으면 윗줄과 아랫줄이 겹쳐요. 줄 높이를 글자 크기에 맞게 정하면
-                긴 글도 편하게 읽을 수 있어요.
-              </p>
+              <div class="article">
+                <h2 id="title">줄 높이 이야기</h2>
+                <p id="body">
+                  줄 높이가 너무 좁으면 윗줄과 아랫줄이 겹쳐요. 줄 높이를 글자 크기에 맞게 정하면
+                  긴 글도 편하게 읽을 수 있어요.
+                </p>
+              </div>
             </body>
           </html>
   solution:
@@ -45,7 +56,7 @@ spec:
           <html lang="ko">
             <head>
               <meta charset="utf-8" />
-              <title>읽기 좋은 문단</title>
+              <title>읽기 좋은 글</title>
               <style>
                 .article {
                   width: 320px;
@@ -53,47 +64,74 @@ spec:
                   line-height: 1.5;
                   background: #fef3c7;
                 }
+                .article h2 {
+                  font-size: 24px;
+                }
               </style>
             </head>
             <body>
-              <p class="article">
-                줄 높이가 너무 좁으면 윗줄과 아랫줄이 겹쳐요. 줄 높이를 글자 크기에 맞게 정하면
-                긴 글도 편하게 읽을 수 있어요.
-              </p>
+              <div class="article">
+                <h2 id="title">줄 높이 이야기</h2>
+                <p id="body">
+                  줄 높이가 너무 좁으면 윗줄과 아랫줄이 겹쳐요. 줄 높이를 글자 크기에 맞게 정하면
+                  긴 글도 편하게 읽을 수 있어요.
+                </p>
+              </div>
             </body>
           </html>
   checks:
     - kind: css
-      id: line-height-27
-      description: 문단 한 줄의 높이가 글자 크기의 1.5배(27px)여야 합니다.
-      requirement: 줄 높이 1.5배
+      id: body-line-height
+      description: 문단 한 줄의 높이가 글자 크기(18px)의 1.5배인 27px이어야 합니다.
+      requirement: 줄 높이는 글자 크기의 1.5배
       visible: true
-      selector: .article
+      selector: "#body"
       expect:
         computed:
           line-height: { px: { value: 27 } }
       misconceptionIfFail: css.mc.line-height-unitless-px
     - kind: css
+      id: title-line-height
+      description: 제목 한 줄의 높이가 글자 크기(24px)의 1.5배인 36px이어야 합니다.
+      requirement: 줄 높이는 글자 크기의 1.5배
+      visible: true
+      selector: "#title"
+      expect:
+        computed:
+          line-height: { px: { value: 36 } }
+      misconceptionIfFail: css.mc.line-height-unitless-px
+    - kind: css
       id: font-size-kept
       description: 문단의 글자 크기는 18px 그대로여야 합니다.
       requirement: 글자 크기 유지
-      visible: true
-      selector: .article
+      selector: "#body"
       expect:
         computed:
           font-size: { px: { value: 18 } }
+    - kind: css
+      id: title-size-kept
+      description: 제목의 글자 크기는 24px 그대로여야 합니다.
+      requirement: 글자 크기 유지
+      selector: "#title"
+      expect:
+        computed:
+          font-size: { px: { value: 24 } }
 misconceptions: [css.mc.line-height-unitless-px]
 hints:
   - 지금 줄 높이가 실제로 몇 px인지 보세요. `1.5px`은 글자 크기의 1.5배일까요?
-  - "`1.5px`은 단위가 붙은 고정 길이라서 정말 1.5px이에요. 글자 크기에 곱하는 배수는 다르게 써요."
-  - 단위 없는 숫자는 글자 크기에 곱해져요. 단위를 빼거나, 18 × 1.5를 직접 계산해 px로 써 보세요.
+  - "`1.5px`은 단위가 붙은 고정 길이라서 정말 1.5px이에요. 글자 크기에 곱하는 배수는 단위 없이 써요."
+  - "`27px`처럼 직접 계산한 길이를 쓰면 제목도 27px을 그대로 물려받아요. 물려받은 뒤에도 각 요소의 글자 크기에 다시 곱해지는 값이 필요해요."
 explanation: |
   예시 정답은 `line-height: 1.5;`처럼 **단위를 빼는** 거예요.
 
-  `1.5px`은 단위가 붙은 고정 길이라서 줄 높이가 정말 1.5px이 돼요. 글자(18px)보다 훨씬 낮으니 줄들이 겹쳐 보였어요.
+  `1.5px`은 단위가 붙은 고정 길이라서 줄 높이가 정말 1.5px이 돼요. 글자보다 훨씬 낮으니 줄들이 겹쳐 보였어요.
 
-  단위 없는 `1.5`는 글자 크기에 곱하는 배수라서 `18 × 1.5 = 27px`이 돼요. `line-height: 27px`로 써도 체크는 통과하지만, 단위 없이 쓰면 나중에 글자 크기를 바꿔도 줄 높이가 같은 비율로 따라 바뀌어서 더 편해요.
+  단위 없는 `1.5`는 "글자 크기에 곱할 배수"로 물려져요. 그래서 문단은 `18 × 1.5 = 27px`, 글자 크기가 24px인 제목은 `24 × 1.5 = 36px`로 요소마다 다시 계산돼요.
+
+  - `line-height: 27px`이나 `1.5em`, `150%`로 쓰면 `.article`에서 27px로 계산된 **길이**가 물려져요. 문단은 27px로 맞지만, 제목도 27px이 되어 제목 체크가 실패해요.
+  - `.article h2`에 `line-height: 36px`을 따로 써도 체크는 통과해요. 하지만 글자 크기가 다른 요소가 늘어날 때마다 규칙을 더해야 해요. 단위 없는 값 하나면 모든 요소에 알맞게 적용돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

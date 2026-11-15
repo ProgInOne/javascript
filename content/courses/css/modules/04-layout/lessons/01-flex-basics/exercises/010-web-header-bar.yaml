@@ -151,5 +151,6 @@ explanation: |
   로고와 버튼에 `height: 40px`가 있어서 기본값 `stretch`로 늘어나지 않고 위쪽(교차축 시작점)에 붙어 있었어요. 로고에 `margin-right: auto`를 주는 방법으로 양 끝을 벌려도 정답이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

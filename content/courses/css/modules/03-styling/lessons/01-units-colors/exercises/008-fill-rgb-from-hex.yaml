@@ -51,5 +51,6 @@ explanation: |
   `100 50 0`처럼 0부터 100까지 범위로 생각해 채우면 훨씬 어두운 갈색이 돼요. rgb의 값은 0부터 255까지이고, 16진수 두 자리(`00`부터 `ff`까지)와 같은 범위예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

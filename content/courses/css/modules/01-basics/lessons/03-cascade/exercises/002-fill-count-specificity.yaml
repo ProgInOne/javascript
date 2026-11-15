@@ -29,15 +29,14 @@ hints:
 explanation: |
   정답은 **(1, 2, 1)**이에요.
 
-  | 조각 | 칸 |
-  |---|---|
-  | `#menu` | ID |
-  | `.item` | 클래스 |
-  | `a` | 타입 |
-  | `:hover` | 클래스(의사 클래스) |
+  - `#menu`: ID 칸
+  - `.item`: 클래스 칸
+  - `a`: 타입 칸
+  - `:hover`: 클래스 칸(의사 클래스)
 
   `:hover`를 빠뜨리면 클래스 칸이 1이 돼요. 의사 클래스도 클래스와 같은 무게로 세요. 공백(자손 선택자)은 명시도에 아무것도 더하지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,6 +1,6 @@
 id: css.layout.responsive.mcq-media-query-not-working
 type: mcq_single
-difficulty: 2
+difficulty: 3
 concepts:
   - { id: css.responsive.viewport-meta, weight: 1 }
   - { id: css.responsive.media-queries, weight: 0.3 }
@@ -48,10 +48,11 @@ explanation: |
 
   메타 태그가 없으면 휴대폰 브라우저는 페이지를 약 980px 너비로 그린 뒤 화면에 맞게 줄여요. 그리는 너비가 980px이니 `max-width: 600px` 조건에 맞지 않아 미디어 쿼리가 적용되지 않았어요. 메타 태그를 넣으면 375px 그대로 그려져 미디어 쿼리가 동작해요.
 
-  - b: 메타 태그는 배치를 바꾸지 않아요. 미디어 쿼리를 지우면 카드는 계속 가로로 놓여요. 반응형에는 메타 태그와 미디어 쿼리가 **둘 다** 필요해요.
-  - c: 조건을 980px로 늘리면 세로로 쌓이긴 하지만 화면은 여전히 축소된 상태라 글자가 아주 작아요.
-  - d: `@media`는 CSS라 style 요소나 CSS 파일 안에만 쓸 수 있어요.
+  - "미디어 쿼리를 지우고 메타 태그만 넣는다": 메타 태그는 배치를 바꾸지 않아요. 미디어 쿼리를 지우면 카드는 계속 가로로 놓여요. 반응형에는 메타 태그와 미디어 쿼리가 **둘 다** 필요해요.
+  - "`max-width: 980px`로 바꾼다": 조건을 980px로 늘리면 세로로 쌓이긴 하지만 화면은 여전히 축소된 상태라 글자가 아주 작아요.
+  - "`@media`를 `body` 안으로 옮긴다": `@media`는 CSS라 style 요소나 CSS 파일 안에만 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

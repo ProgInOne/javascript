@@ -37,4 +37,7 @@ explanation: |
 
   `src`는 이미지나 스크립트처럼 내용을 "끼워 넣는" 요소가 쓰는 속성이라 link 요소에서는 동작하지 않아요. `script` 요소는 JavaScript용이고, `style` 요소는 안에 CSS를 직접 쓸 때 써요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

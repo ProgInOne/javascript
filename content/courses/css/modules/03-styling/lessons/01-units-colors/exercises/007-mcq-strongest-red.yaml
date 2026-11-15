@@ -35,5 +35,6 @@ explanation: |
   - `#110000`: 두 자리씩 빨강·초록·파랑이에요. `11`은 10진수로 17이라 아주 어두운 빨강이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -40,10 +40,11 @@ explanation: |
 
   `div`는 블록 요소라 너비와 상관없이 항상 새 줄에서 시작해요. 너비를 200px로 줄여도 오른쪽 600px이 비어 보일 뿐, 2번 상자는 다음 줄에 놓여요.
 
-  - 나란히 놓인다(b)는 가장 흔한 오해예요. 나란히 놓으려면 `display: inline-block`이나 Flexbox를 써야 해요.
-  - 800px로 늘어난다(c)는 width를 정하지 않은 블록일 때예요.
-  - 겹친다(d)는 일반 흐름에서 일어나지 않아요.
+  - "나란히 놓인다"는 가장 흔한 오해예요. 나란히 놓으려면 `display: inline-block`이나 Flexbox를 써야 해요.
+  - "800px로 늘어난다"는 width를 정하지 않은 블록일 때예요.
+  - "겹친다"는 일반 흐름에서 일어나지 않아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

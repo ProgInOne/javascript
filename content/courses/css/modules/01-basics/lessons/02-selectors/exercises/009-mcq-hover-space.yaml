@@ -52,4 +52,7 @@ explanation: |
   - hover 클래스는 필요 없어요. 의사 클래스는 HTML과 상관없어요.
   - :hover는 어떤 요소에도 쓸 수 있어요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

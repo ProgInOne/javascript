@@ -71,5 +71,6 @@ explanation: |
   `inline-block`을 쓰면 위아래 padding은 들어가지만, 자리가 있는 한 같은 줄에 나란히 놓이고 너비도 글자만큼만 차지해서 요구사항을 만족하지 못해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

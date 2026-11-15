@@ -46,10 +46,11 @@ explanation: |
 
   `.danger`와 `.primary`는 둘 다 (0, 1, 0)이라 명시도가 같아요. 그래서 CSS에서 나중에 쓴 `.primary`가 이겨요.
 
-  두 버튼은 class 속성에 이름을 적은 순서만 다를 뿐, 둘 다 `primary`와 `danger` 클래스를 가진 같은 상태예요. class 속성의 순서는 승부에 영향을 주지 않아요. 그래서 b와 c처럼 버튼마다 결과가 달라지지 않아요.
+  두 버튼은 class 속성에 이름을 적은 순서만 다를 뿐, 둘 다 `primary`와 `danger` 클래스를 가진 같은 상태예요. class 속성의 순서는 승부에 영향을 주지 않아요. 그래서 버튼마다 결과가 달라지지 않아요.
 
   CSS에서 `.danger` 규칙을 `.primary` 아래로 옮기면 두 버튼 모두 red가 돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

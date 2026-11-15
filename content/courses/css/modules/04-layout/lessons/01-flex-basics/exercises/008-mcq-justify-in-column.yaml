@@ -45,10 +45,11 @@ explanation: |
   1. `justify-content: center`는 **주축(세로)** 방향 가운데로 모아요.
   1. `align-items: flex-start`는 **교차축(가로)** 방향의 시작점, 즉 왼쪽에 붙여요.
 
-  - b는 "justify-content는 항상 가로"라고 생각한 경우예요. 주축이 세로로 바뀌면 justify-content도 세로를 맡아요.
-  - c는 column이 아이템을 여러 열로 나란히 놓는다고 생각한 경우예요.
-  - d는 align-items 값을 놓쳤어요. 가로까지 가운데로 놓으려면 `align-items: center`가 필요해요.
+  - "가로로는 가운데, 세로로는 위쪽"은 "justify-content는 항상 가로"라고 생각한 경우예요. 주축이 세로로 바뀌면 justify-content도 세로를 맡아요.
+  - "가로로 나란히 놓인다"는 column이 아이템을 여러 열로 나란히 놓는다고 생각한 경우예요.
+  - "정가운데"는 align-items 값을 놓쳤어요. 가로까지 가운데로 놓으려면 `align-items: center`가 필요해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

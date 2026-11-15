@@ -114,5 +114,6 @@ explanation: |
   `display: flex`를 지워도 버튼(블록 요소)은 위아래로 쌓이지만, 이 문제는 Flexbox를 유지하는 조건이 있어요. Flexbox를 유지하면 나중에 `gap`이나 정렬 속성을 그대로 쓸 수 있어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

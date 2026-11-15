@@ -1,6 +1,6 @@
 id: css.styling.typography.fill-line-height-px
 type: fill_blank
-difficulty: 2
+difficulty: 1
 concepts:
   - { id: css.type.line-height, weight: 1 }
 tags: [line-height]
@@ -29,7 +29,7 @@ misconceptions: [css.mc.line-height-unitless-px]
 hints:
   - "`1.5` 뒤에 단위가 없어요. 단위 없는 `line-height`는 무엇을 뜻할까요?"
   - 단위 없는 `line-height`는 글자 크기에 곱하는 배수예요.
-  - 글자 크기 20px에 1.5를 곱해 보세요.
+  - 이 문단의 글자 크기가 몇 px인지 보고, 거기에 `line-height`의 숫자를 곱해 보세요.
 explanation: |
   정답은 **30px**이에요.
 
@@ -38,5 +38,6 @@ explanation: |
   `1.5`나 `1.5px`이라고 답했다면 숫자를 px 값으로 읽은 거예요. 줄 높이가 정말 1.5px이면 줄들이 겹쳐서 글을 읽을 수 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

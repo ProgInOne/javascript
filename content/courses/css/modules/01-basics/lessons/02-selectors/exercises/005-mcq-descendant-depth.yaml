@@ -48,4 +48,7 @@ explanation: |
 
   바로 아래 자식만 고르고 싶다면 `.menu > span`처럼 자식 선택자(`>`)를 써요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

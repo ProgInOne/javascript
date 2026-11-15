@@ -45,5 +45,6 @@ explanation: |
   `380`이라고 답했다면 컨테이너의 양 끝에도 gap이 생긴다고 생각한 거예요(사이 2 + 양 끝 2 = 4군데). `360`은 한쪽 끝에만 더한 경우예요. gap은 아이템 사이에만 생기고, 가장자리 여백이 필요하면 컨테이너에 padding을 따로 줘요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

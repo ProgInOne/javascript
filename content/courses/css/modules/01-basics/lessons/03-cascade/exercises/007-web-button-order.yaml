@@ -6,9 +6,9 @@ concepts:
 tags: [cascade, order, web-task]
 estimatedSeconds: 200
 prompt: |
-  모든 버튼에는 `.btn` 규칙으로 회색 배경을 주고, 중요한 버튼에만 `.btn-primary`로 파란 배경(`#2563eb`)을 주려고 해요. 그런데 "저장" 버튼도 회색으로 보여요.
+  모든 버튼에는 `.btn` 규칙으로 회색 배경을 주고, 중요한 버튼에만 `.btn-primary`로 파란 배경(`#2563eb`)을 주려고 해요. 그런데 중요한 버튼인 "저장"과 "게시"도 회색으로 보여요.
 
-  **선택자는 바꾸지 말고** CSS를 고쳐 "저장" 버튼만 파란 배경이 되게 하세요. "취소" 버튼은 회색(`#9ca3af`) 그대로여야 해요.
+  HTML은 그대로 두고 CSS를 고쳐 "저장"과 "게시" 버튼만 파란 배경이 되게 하세요. "취소" 버튼은 회색(`#9ca3af`) 그대로여야 해요. 선택자나 값을 새로 쓰지 않고도 고칠 수 있어요.
 spec:
   focus: css
   starter:
@@ -34,6 +34,7 @@ spec:
             </head>
             <body>
               <button class="btn-primary btn" id="save">저장</button>
+              <button class="btn btn-primary" id="publish">게시</button>
               <button class="btn" id="cancel">취소</button>
             </body>
           </html>
@@ -60,6 +61,7 @@ spec:
             </head>
             <body>
               <button class="btn-primary btn" id="save">저장</button>
+              <button class="btn btn-primary" id="publish">게시</button>
               <button class="btn" id="cancel">취소</button>
             </body>
           </html>
@@ -67,9 +69,19 @@ spec:
     - kind: css
       id: save-blue
       description: "\"저장\" 버튼의 배경이 파란색(#2563eb)이어야 합니다."
-      requirement: 저장 버튼은 파란색
+      requirement: 중요한 버튼은 파란색
       visible: true
       selector: "#save"
+      expect:
+        computed:
+          background-color: { color: "#2563eb" }
+      misconceptionIfFail: css.mc.class-attr-order-matters
+    - kind: css
+      id: publish-blue
+      description: "\"게시\" 버튼의 배경도 파란색(#2563eb)이어야 합니다."
+      requirement: 중요한 버튼은 파란색
+      visible: true
+      selector: "#publish"
       expect:
         computed:
           background-color: { color: "#2563eb" }
@@ -95,17 +107,20 @@ spec:
 misconceptions: [css.mc.class-attr-order-matters]
 hints:
   - "`.btn`과 `.btn-primary`의 명시도는 같아요. 그럼 무엇이 승부를 가를까요?"
-  - HTML의 class 속성 순서를 바꿔도 결과는 그대로예요. 바꿔야 할 곳은 CSS예요.
+  - '"저장"과 "게시"는 class 속성에 이름을 적은 순서가 서로 다른데도 둘 다 회색이에요. class 속성의 순서는 승부와 상관없어요. 바꿔야 할 곳은 CSS예요.'
   - CSS에서 두 규칙의 위아래 위치를 생각해 보세요. 이겨야 하는 규칙은 어디에 있어야 할까요?
 explanation: |
   예시 정답은 CSS에서 **`.btn-primary` 규칙을 `.btn` 규칙 아래로 옮기는** 거예요.
 
-  `.btn`과 `.btn-primary`는 둘 다 (0, 1, 0)이라 명시도가 같아요. 명시도가 같으면 CSS에서 나중에 쓴 규칙이 이기므로, 처음에는 아래에 있던 `.btn`의 회색이 "저장" 버튼에 적용됐어요.
+  `.btn`과 `.btn-primary`는 둘 다 (0, 1, 0)이라 명시도가 같아요. 명시도가 같으면 CSS에서 나중에 쓴 규칙이 이기므로, 처음에는 아래에 있던 `.btn`의 회색이 "저장"과 "게시" 버튼에 모두 적용됐어요.
 
-  HTML에서 `class="btn btn-primary"`로 순서를 바꿔 보면 아무 변화가 없어요. class 속성에 적은 순서는 캐스케이드와 상관없기 때문이에요.
+  "저장"(`class="btn-primary btn"`)과 "게시"(`class="btn btn-primary"`)는 class 속성의 순서가 반대인데도 처음에 둘 다 회색이었어요. class 속성에 적은 순서는 캐스케이드와 상관없기 때문이에요.
+
+  `#save { background: #2563eb; }`처럼 버튼 하나만 따로 고르면 "게시" 버튼이 회색으로 남아요. 중요한 버튼 모두에 적용되는 `.btn-primary` 규칙이 이기게 하는 것이 핵심이에요.
 
   `.btn-primary`를 아래로 옮겨도 "저장" 버튼은 여전히 `.btn`의 `padding`과 `border: none`을 받아요. 두 규칙이 겹치는 속성(`background`)에서만 승부가 나고, 겹치지 않는 속성은 모두 적용돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

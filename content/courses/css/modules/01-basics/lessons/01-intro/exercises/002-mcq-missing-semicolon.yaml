@@ -42,4 +42,7 @@ explanation: |
   - "세 선언이 모두 적용된다", "`background-color`는 적용된다"는 줄바꿈이 선언을 나눈다고 생각한 경우예요.
   - 브라우저는 잘못된 선언만 무시하고 나머지는 적용하므로, 규칙 전체가 무시되지도 않아요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

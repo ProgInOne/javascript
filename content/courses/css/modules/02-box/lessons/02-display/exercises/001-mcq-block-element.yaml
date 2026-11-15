@@ -33,5 +33,6 @@ explanation: |
   `span`, `a`, `strong`은 인라인 요소예요. 문장 속 단어처럼 앞뒤 글자와 같은 줄에 이어서 놓이고, 내용만큼의 너비만 차지해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

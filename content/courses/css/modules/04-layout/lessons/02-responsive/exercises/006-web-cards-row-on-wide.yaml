@@ -12,7 +12,7 @@ prompt: |
   채점은 두 화면 너비에서 해요.
 
   - 너비 `375px`(휴대폰): 카드가 위아래로 쌓여 있어야 해요.
-  - 너비 `1280px`(데스크톱): 카드가 한 줄에 나란히 놓여 있어야 해요.
+  - 너비 `600px`과 `1280px`: 카드가 한 줄에 나란히 놓여 있어야 해요.
 
   미리보기 창의 너비는 화면 배치에 따라 정해지고 직접 바꿀 수 없어요. 미리보기가 두 모습 중 하나만 보여 주더라도, 채점은 두 너비에서 따로 해요.
 spec:
@@ -34,7 +34,7 @@ spec:
                   gap: 16px;
                 }
                 .card {
-                  flex: 1;
+                  flex: 1; /* 가로로 놓일 때 남는 너비를 똑같이 나눠 가져요 */
                   padding: 16px;
                   border: 2px solid #9ca3af;
                   background: white;
@@ -67,7 +67,7 @@ spec:
                   gap: 16px;
                 }
                 .card {
-                  flex: 1;
+                  flex: 1; /* 가로로 놓일 때 남는 너비를 똑같이 나눠 가져요 */
                   padding: 16px;
                   border: 2px solid #9ca3af;
                   background: white;
@@ -110,7 +110,7 @@ spec:
       tolerancePx: 1
     - kind: layout
       id: row-on-desktop
-      description: 너비 1280px 화면에서 두 번째 카드가 첫 번째 카드 오른쪽, 같은 줄에 있어야 합니다.
+      description: 너비 1280px 화면에서 두 번째 카드가 첫 번째 카드보다 오른쪽에 있어야 합니다.
       requirement: 넓은 화면에서는 가로로
       visible: true
       viewport: 1280
@@ -121,18 +121,29 @@ spec:
       misconceptionIfFail: css.mc.max-width-means-above
     - kind: layout
       id: row-on-desktop-3
-      description: 너비 1280px 화면에서 세 번째 카드가 두 번째 카드 오른쪽, 같은 줄에 있어야 합니다.
+      description: 너비 1280px 화면에서 세 번째 카드가 두 번째 카드와 같은 줄에 있어야 합니다.
       requirement: 넓은 화면에서는 가로로
       viewport: 1280
       a: "#c3"
       b: "#c2"
       relation: same-row
       tolerancePx: 1
+    - kind: layout
+      id: row-at-600
+      description: 너비가 정확히 600px인 화면에서도 두 번째 카드가 첫 번째 카드보다 오른쪽에 있어야 합니다(600px 이상).
+      requirement: 넓은 화면에서는 가로로
+      visible: true
+      viewport: 600
+      a: "#c2"
+      b: "#c1"
+      relation: right-of
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.max-width-means-above
 misconceptions: [css.mc.max-width-means-above]
 hints:
   - 화면 너비가 어떤 값 "이상"일 때만 규칙을 적용하는 미디어 쿼리 조건이 무엇인지 떠올려 보세요.
   - "`@media (min-width: 600px) { ... }` 안에 넣은 규칙은 600px 이상에서만 적용돼요. 그 안에서 `.cards`의 주축 방향을 바꾸면 돼요."
-  - 미디어 쿼리 안에서 `.cards`의 `flex-direction`을 가로 방향 값으로 바꿔 보세요. 기본 규칙(세로)은 그대로 둬요.
+  - 미디어 쿼리 안에는 `.cards` 규칙을 한 번 더 쓰고, 넓은 화면에서 달라져야 하는 속성 하나만 넣어요. 기본 규칙(세로)은 그대로 둬요.
 explanation: |
   예시 정답은 기본 규칙 아래에 다음 미디어 쿼리를 추가하는 거예요.
 
@@ -147,8 +158,9 @@ explanation: |
   - `min-width: 600px`는 "화면 너비가 최소 600px일 때", 즉 600px 이상에서만 안쪽 규칙을 적용해요. 375px 화면에서는 적용되지 않으니 기본 규칙(`column`)대로 위아래로 쌓여요.
   - 1280px 화면에서는 조건에 맞으므로 `flex-direction: row`가 기본 규칙을 덮어써서 카드가 가로로 놓여요. 미디어 쿼리가 기본 규칙보다 **아래**에 있어야 명시도가 같은 두 규칙 중 뒤의 것이 이겨요.
 
-  `max-width: 600px`로 쓰면 반대로 좁은 화면에서 가로, 넓은 화면에서 세로가 돼요. max-width는 "최대 600px까지", 즉 이하라는 뜻이에요. 기본 규칙의 `column`을 지우고 `row`로 바꾸면 휴대폰에서도 가로가 되어 첫 번째 요구사항을 만족하지 못해요.
+  `min-width: 601px`처럼 경계를 잘못 잡으면 정확히 600px인 화면에서 세로로 남아 600px 체크가 실패해요. `max-width: 600px`로 쓰면 반대로 좁은 화면에서 가로, 넓은 화면에서 세로가 돼요. max-width는 "최대 600px까지", 즉 이하라는 뜻이에요. 기본 규칙의 `column`을 지우고 `row`로 바꾸면 휴대폰에서도 가로가 되어 첫 번째 요구사항을 만족하지 못해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

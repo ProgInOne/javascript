@@ -127,4 +127,7 @@ explanation: |
   - `ul li`는 준비물 목록의 li도 고르니 맞지 않아요.
   - `.sub`처럼 클래스를 따로 고르는 방법은 "안내", "예약" 항목을 빠뜨려요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

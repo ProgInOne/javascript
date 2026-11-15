@@ -36,4 +36,7 @@ explanation: |
   - `color: navy;`는 선언: 모양 하나를 정하는 한 줄이에요.
   - 선언 안에서 콜론 앞의 `color`가 속성(글자 색을 바꾼다), 콜론 뒤의 `navy`가 값(남색으로)이에요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

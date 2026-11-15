@@ -100,5 +100,6 @@ explanation: |
   같은 크기라면 다른 단위로 써도 정답이에요. 예를 들어 루트 글자 크기가 16px일 때 `padding: 1.25rem`도 20px이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

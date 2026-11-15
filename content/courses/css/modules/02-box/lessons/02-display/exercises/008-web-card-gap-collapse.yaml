@@ -112,5 +112,6 @@ explanation: |
   간격 체크가 여전히 실패한다면 두 margin을 더해서 생각하고 있지 않은지 확인해 보세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

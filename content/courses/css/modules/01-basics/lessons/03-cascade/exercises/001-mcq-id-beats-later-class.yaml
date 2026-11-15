@@ -48,5 +48,6 @@ explanation: |
   - **섞인 색**: 겹치는 규칙 중 이긴 하나의 값만 적용돼요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

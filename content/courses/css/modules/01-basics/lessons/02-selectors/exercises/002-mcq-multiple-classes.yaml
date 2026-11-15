@@ -1,6 +1,6 @@
 id: css.basics.selectors.mcq-multiple-classes
 type: mcq_single
-difficulty: 2
+difficulty: 1
 concepts:
   - { id: css.selectors.basic, weight: 1 }
 tags: [selector, class, multiple-classes]
@@ -41,4 +41,7 @@ explanation: |
 
   두 규칙은 서로 다른 속성(`border`, `color`)을 정하니 다툴 일도 없어요. "card sale"을 이름 하나로 보거나, 한쪽 클래스만 남는다고 생각하면 틀린 답을 고르게 돼요.
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

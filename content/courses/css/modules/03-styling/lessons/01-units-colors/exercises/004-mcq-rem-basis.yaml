@@ -34,5 +34,6 @@ explanation: |
   - `%`는 부모 요소, `vw`는 화면 너비가 기준이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

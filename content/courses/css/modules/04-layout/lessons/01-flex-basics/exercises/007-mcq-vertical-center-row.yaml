@@ -1,6 +1,6 @@
 id: css.layout.flex-basics.mcq-vertical-center-row
 type: mcq_single
-difficulty: 1
+difficulty: 2
 concepts:
   - { id: css.flex.justify-align, weight: 1 }
 tags: [flexbox, align-items, justify-content]
@@ -37,10 +37,11 @@ explanation: |
 
   기본값 `row`에서 주축은 가로, 교차축은 세로예요. 세로 위치를 바꾸는 것은 **교차축** 정렬이므로 `align-items`가 맡아요.
 
-  - `justify-content: center`(b)는 주축(가로) 방향으로 가운데에 모아요. 로고와 버튼이 가로 가운데로 이동할 뿐 여전히 위쪽에 붙어 있어요.
-  - `text-align`(c)은 블록 안의 글자를 정렬하는 속성이라 플렉스 아이템의 위치와 상관없어요.
-  - `flex-direction`(d)에는 center라는 값이 없어요.
+  - `justify-content: center`는 주축(가로) 방향으로 가운데에 모아요. 로고와 버튼이 가로 가운데로 이동할 뿐 여전히 위쪽에 붙어 있어요.
+  - `text-align`은 블록 안의 글자를 정렬하는 속성이라 플렉스 아이템의 위치와 상관없어요.
+  - `flex-direction`에는 center라는 값이 없어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

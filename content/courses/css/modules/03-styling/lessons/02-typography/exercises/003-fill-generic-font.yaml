@@ -1,6 +1,6 @@
 id: css.styling.typography.fill-generic-font
 type: fill_blank
-difficulty: 2
+difficulty: 1
 concepts:
   - { id: css.type.font-properties, weight: 1 }
 tags: [font-family, fallback]
@@ -37,5 +37,6 @@ explanation: |
   - 대안 없이 `"Noto Sans KR"`만 쓰면, 글꼴이 없는 기기에서는 브라우저 기본 글꼴(명조일 수도 있음)로 보여요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -53,5 +53,6 @@ explanation: |
   만약 `p` 규칙이 없었다면 문단은 부모의 red를 물려받았을 거예요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

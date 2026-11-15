@@ -1,6 +1,6 @@
 id: css.box.display.fill-margin-collapse
 type: fill_blank
-difficulty: 2
+difficulty: 1
 concepts:
   - { id: css.display.normal-flow, weight: 1 }
   - { id: css.box.areas, weight: 0.3 }
@@ -42,5 +42,6 @@ explanation: |
   - `24`라고 답했다면 위 상자의 margin만 본 거예요. 겹칠 때는 작은 값이 아니라 큰 값이 남아요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

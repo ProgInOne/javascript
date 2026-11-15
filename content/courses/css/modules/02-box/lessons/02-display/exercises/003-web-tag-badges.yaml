@@ -108,7 +108,7 @@ spec:
       misconceptionIfFail: css.mc.width-on-inline
     - kind: layout
       id: same-row-12
-      description: 두 번째 배지가 첫 번째 배지의 오른쪽, 같은 줄에 있어야 합니다.
+      description: 두 번째 배지가 첫 번째 배지보다 오른쪽에 있어야 합니다.
       requirement: 한 줄에 나란히
       visible: true
       a: "#t2"
@@ -118,12 +118,21 @@ spec:
       misconceptionIfFail: css.mc.inline-block-new-line
     - kind: layout
       id: same-row-23
-      description: 세 번째 배지가 두 번째 배지의 오른쪽, 같은 줄에 있어야 합니다.
+      description: 세 번째 배지가 두 번째 배지보다 오른쪽에 있어야 합니다.
       requirement: 한 줄에 나란히
       visible: true
       a: "#t3"
       b: "#t2"
       relation: right-of
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.inline-block-new-line
+    - kind: layout
+      id: same-row-13
+      description: 첫 번째와 세 번째 배지가 같은 줄(같은 높이)에 있어야 합니다.
+      requirement: 한 줄에 나란히
+      a: "#t3"
+      b: "#t1"
+      relation: same-row
       tolerancePx: 1
       misconceptionIfFail: css.mc.inline-block-new-line
 misconceptions: [css.mc.width-on-inline, css.mc.inline-block-new-line]
@@ -140,5 +149,6 @@ explanation: |
   - `inline-block`이 블록처럼 혼자 한 줄을 차지한다고 생각했다면, 이름의 앞부분(inline)이 바깥 배치를 뜻한다는 점을 기억하세요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

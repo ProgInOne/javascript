@@ -1,14 +1,21 @@
 id: css.styling.units-colors.web-rem-heading
 type: web_task
-difficulty: 2
+difficulty: 3
 concepts:
   - { id: css.units.rem-em, weight: 1 }
 tags: [units, rem, em, font-size, web-task]
-estimatedSeconds: 200
+estimatedSeconds: 240
 prompt: |
   카드 두 개의 본문 글자 크기가 서로 달라요(`.big`은 20px, `.small`은 14px). 그런데 카드 제목(`h2`)도 본문을 따라 크기가 제각각이 됐어요.
 
-  `h2` 규칙의 `font-size`를 고쳐서, 두 카드의 제목이 모두 **루트 글자 크기(16px)의 2배인 32px**이 되게 하세요. 카드 본문의 글자 크기는 그대로 두세요.
+  이 페이지는 루트(`html`)의 글자 크기를 좁은 화면에서는 16px, 넓은 화면(900px 이상)에서는 20px로 정해요(맨 위의 두 `html` 규칙). `h2` 규칙의 `font-size`를 고쳐서, 두 카드의 제목이 어느 화면에서나 **루트 글자 크기의 2배**가 되게 하세요. 카드 본문의 글자 크기는 그대로 두세요.
+
+  채점은 두 화면 너비에서 해요.
+
+  - 너비 `375px`(루트 16px): 두 제목 모두 32px
+  - 너비 `1280px`(루트 20px): 두 제목 모두 40px
+
+  `@media`로 시작하는 부분은 화면 너비에 따라 규칙을 바꾸는 미디어 쿼리예요. 레이아웃 모듈에서 배우니 지금은 "넓은 화면에서는 루트가 20px"이라고만 읽으면 돼요.
 spec:
   focus: css
   starter:
@@ -21,6 +28,15 @@ spec:
               <meta charset="utf-8" />
               <title>카드 제목</title>
               <style>
+                html {
+                  font-size: 16px;
+                }
+                /* 넓은 화면(900px 이상)에서는 루트 글자 크기를 20px로 */
+                @media (min-width: 900px) {
+                  html {
+                    font-size: 20px;
+                  }
+                }
                 .card {
                   border: 1px solid #9ca3af;
                   padding: 12px;
@@ -59,6 +75,15 @@ spec:
               <meta charset="utf-8" />
               <title>카드 제목</title>
               <style>
+                html {
+                  font-size: 16px;
+                }
+                /* 넓은 화면(900px 이상)에서는 루트 글자 크기를 20px로 */
+                @media (min-width: 900px) {
+                  html {
+                    font-size: 20px;
+                  }
+                }
                 .card {
                   border: 1px solid #9ca3af;
                   padding: 12px;
@@ -90,14 +115,27 @@ spec:
   checks:
     - kind: css
       id: heading-32
-      description: 두 카드의 제목(h2) 글자 크기가 모두 32px이어야 합니다.
-      requirement: 제목 32px
+      description: 너비 375px 화면(루트 16px)에서 두 카드의 제목(h2) 글자 크기가 모두 32px이어야 합니다.
+      requirement: 제목은 루트의 2배
       visible: true
+      viewport: 375
       selector: h2
       all: true
       expect:
         computed:
           font-size: { px: { value: 32 } }
+      misconceptionIfFail: css.mc.em-same-as-rem
+    - kind: css
+      id: heading-40
+      description: 너비 1280px 화면(루트 20px)에서 두 카드의 제목(h2) 글자 크기가 모두 40px이어야 합니다.
+      requirement: 제목은 루트의 2배
+      visible: true
+      viewport: 1280
+      selector: h2
+      all: true
+      expect:
+        computed:
+          font-size: { px: { value: 40 } }
       misconceptionIfFail: css.mc.em-same-as-rem
     - kind: css
       id: big-body-kept
@@ -118,17 +156,20 @@ spec:
 misconceptions: [css.mc.em-same-as-rem]
 hints:
   - 지금 두 제목은 각각 몇 px일까요? `2em`이 무엇을 기준으로 하는지 떠올려 보세요.
-  - "`font-size`의 `em`은 부모(카드)의 글자 크기를 기준으로 해서 `20 × 2 = 40px`, `14 × 2 = 28px`이 돼요."
-  - 부모와 상관없이 루트(`html`)를 기준으로 하는 단위로 바꾸면 두 제목이 같은 크기가 돼요.
+  - "`font-size`의 `em`은 부모(카드)의 글자 크기를 기준으로 해서 `20 × 2 = 40px`, `14 × 2 = 28px`이 돼요. 카드 본문은 px로 고정이라 화면이 넓어져도 제목이 그대로예요."
+  - 부모와 상관없이 루트(`html`)를 기준으로 하는 단위를 쓰면, 루트 글자 크기가 바뀔 때 제목도 함께 바뀌어요. 고정 길이(px)로 쓰면 두 화면 중 한쪽에서 맞지 않아요.
 explanation: |
   예시 정답은 `h2`의 `font-size`를 **`2rem`**으로 바꾸는 거예요.
 
   처음 코드의 `2em`은 부모인 카드의 글자 크기를 기준으로 해요. 그래서 큰 카드의 제목은 `20 × 2 = 40px`, 작은 카드의 제목은 `14 × 2 = 28px`로 달랐어요.
 
-  `rem`은 부모와 상관없이 루트의 글자 크기(16px)를 기준으로 하니 `2rem`은 어느 카드에서나 32px이에요.
+  `rem`은 부모와 상관없이 루트의 글자 크기를 기준으로 해요. `2rem`은 루트가 16px인 좁은 화면에서 32px, 루트가 20px인 넓은 화면에서 40px이 되어 언제나 루트의 2배예요.
 
-  `font-size: 32px`로 써도 체크는 통과해요. 다만 `rem`으로 쓰면 학습자가 브라우저의 기본 글자 크기를 키웠을 때 제목도 같은 비율로 커져서, 실제 사이트에서는 `rem`을 더 많이 써요.
+  - `2em`을 그대로 두면 큰 카드 제목이 40px, 작은 카드 제목이 28px이라 375px 체크부터 실패해요.
+  - `font-size: 32px`로 쓰면 좁은 화면에서는 맞지만, 루트가 20px로 커지는 넓은 화면에서도 32px에 머물러 1280px 체크가 실패해요.
+  - 실제 사이트에서도 같은 일이 생겨요. 사용자가 브라우저의 기본 글자 크기를 키우면 루트 글자 크기가 바뀌는데, `rem`으로 정한 제목만 같은 비율로 따라 커져요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

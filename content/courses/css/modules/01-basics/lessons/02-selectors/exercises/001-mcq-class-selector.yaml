@@ -42,4 +42,7 @@ explanation: |
   - `price`는 기호가 없어서 `<price>` 요소를 찾는 타입 선택자가 돼요. 그런 요소는 없어요.
   - `p.class`는 `class="class"`인 p를 찾아요. 점 뒤에는 실제 클래스 이름을 써요. (`p.price`라면 정답처럼 동작해요.)
 origin: authored
-review: { status: draft, draftedBy: ai:claude }
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

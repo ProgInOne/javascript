@@ -41,5 +41,6 @@ explanation: |
   - 없는 글꼴이 있어도 규칙 전체가 무시되지는 않아요. 그 이름만 건너뛰어요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

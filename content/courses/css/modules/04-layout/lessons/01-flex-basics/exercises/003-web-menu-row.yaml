@@ -82,7 +82,7 @@ spec:
       misconceptionIfFail: css.mc.flex-on-children
     - kind: layout
       id: second-right-of-first
-      description: "\"강의\"가 \"홈\"의 오른쪽, 같은 줄에 있어야 합니다."
+      description: "\"강의\"가 \"홈\"보다 오른쪽에 있어야 합니다."
       requirement: 세 메뉴가 한 줄에
       visible: true
       a: "#m2"
@@ -91,7 +91,7 @@ spec:
       tolerancePx: 1
     - kind: layout
       id: third-right-of-second
-      description: "\"문의\"가 \"강의\"의 오른쪽, 같은 줄에 있어야 합니다."
+      description: "\"문의\"가 \"강의\"보다 오른쪽에 있어야 합니다."
       requirement: 세 메뉴가 한 줄에
       visible: true
       a: "#m3"
@@ -110,7 +110,7 @@ misconceptions: [css.mc.flex-on-children]
 hints:
   - "`display: flex`는 그 요소의 자식들을 나란히 놓아요. 지금 `.item`의 자식은 무엇인가요?"
   - 나란히 놓고 싶은 것은 `.item` 세 개예요. 이 세 요소를 감싼 부모는 무엇인가요?
-  - "`display: flex`를 `.item`에서 빼고, 세 메뉴를 감싼 부모 규칙으로 옮겨 보세요."
+  - HTML에서 세 `.item`을 감싸고 있는 요소를 찾아, 그 요소의 class로 된 규칙을 보세요.
 explanation: |
   예시 정답은 `display: flex`를 `.item`에서 `.menu`로 옮기는 거예요.
 
@@ -119,5 +119,6 @@ explanation: |
   메뉴 세 칸을 감싼 `.menu`에 주어야 세 `.item`이 플렉스 아이템이 되어 왼쪽부터 나란히 놓여요. `.item`에 남겨 둬도 동작에는 문제가 없지만 필요 없는 선언이니 지우는 게 깔끔해요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

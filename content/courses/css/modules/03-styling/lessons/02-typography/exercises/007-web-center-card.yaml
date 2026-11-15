@@ -121,11 +121,12 @@ hints:
 explanation: |
   예시 정답은 `.card`에 `margin: 0 auto;`와 `text-align: center;`를 추가하는 거예요.
 
-  - **상자 가운데**: 카드는 너비가 280px인 블록이라 페이지(600px)에 320px이 남아요. 좌우 margin을 `auto`로 주면 남는 공간을 160px씩 나눠서 카드가 가운데에 와요. `margin-left: auto; margin-right: auto;`로 써도 같아요.
+  - **상자 가운데**: 카드가 화면에서 차지하는 너비는 `280 + 16 × 2(padding) + 2 × 2(border) = 316px`이라 페이지(600px)에 284px이 남아요. 좌우 margin을 `auto`로 주면 남는 공간을 142px씩 나눠서 카드가 가운데에 와요. `margin-left: auto; margin-right: auto;`로 써도 같아요.
   - **글자 가운데**: `text-align: center`는 카드 안의 글자를 가운데로 정렬해요. 상속되는 속성이라 카드에 주면 안쪽 문단에 모두 적용돼요.
 
   `text-align: center`만 주면 글자만 가운데로 가고 카드는 왼쪽에 남아요. 상자 체크가 실패했다면 이 경우예요. 반대로 `.page`에 `text-align: center`를 줘도 카드 상자는 움직이지 않아요. 블록 상자는 글자처럼 정렬되지 않기 때문이에요.
 origin: authored
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer
