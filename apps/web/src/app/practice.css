@@ -170,6 +170,13 @@
   .practice-md strong {
     font-weight: 700;
   }
+  /* Pipe tables reuse .lesson-table-wrap (lesson.css); only the column alignment is added. */
+  .practice-md__table [data-align='center'] {
+    text-align: center;
+  }
+  .practice-md__table [data-align='right'] {
+    text-align: right;
+  }
 
   .practice-response {
     display: grid;

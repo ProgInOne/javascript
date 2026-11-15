@@ -28,23 +28,66 @@ type Block =
   | { kind: 'ul' | 'ol'; items: string[] }
   | { kind: 'heading'; text: string }
   | { kind: 'quote'; text: string }
+  | { kind: 'table'; align: Align[]; head: string[]; rows: string[][] }
   | { kind: 'hr' };
+
+type Align = 'left' | 'center' | 'right' | null;
 
 const BULLET = /^\s*[-*]\s+(.*)$/;
 const ORDERED = /^\s*\d+[.)]\s+(.*)$/;
 const HEADING = /^\s{0,3}#{1,6}\s+(.*?)\s*#*\s*$/;
 const QUOTE = /^\s{0,3}>\s?(.*)$/;
 const RULE = /^\s{0,3}([-*_])(\s*\1){2,}\s*$/;
+const TABLE_DELIMITER = /^\s*:?-+:?\s*$/;
+
+/**
+ * Splits a GFM pipe-table row into cells: the outer pipes are optional, `\|` is a literal pipe
+ * (also inside code spans, as in GFM) and every other `|` separates cells.
+ */
+function tableCells(line: string): string[] {
+  let row = line.trim();
+  if (row.startsWith('|')) row = row.slice(1);
+  if (row.endsWith('|') && !row.endsWith('\\|')) row = row.slice(0, -1);
+  return row.split(/(?<!\\)\|/).map((cell) => cell.trim().replace(/\\\|/g, '|'));
+}
+
+/** A delimiter row (`|---|:--:|`) gives the alignment per column, or null if it is not one. */
+function tableAlign(line: string): Align[] | null {
+  if (!line.includes('-')) return null;
+  const cells = tableCells(line);
+  if (!cells.every((cell) => TABLE_DELIMITER.test(cell))) return null;
+  return cells.map((cell) =>
+    cell.startsWith(':')
+      ? cell.endsWith(':')
+        ? 'center'
+        : 'left'
+      : cell.endsWith(':')
+        ? 'right'
+        : null,
+  );
+}
 
 function parse(text: string, ai: boolean): Block[] {
   const out: Block[] = [];
   const lines = text.replace(/\r\n?/g, '\n').split('\n');
   const at = (n: number) => lines[n] ?? '';
-  const startsBlock = (line: string) =>
-    /^\s*```/.test(line) ||
-    BULLET.test(line) ||
-    ORDERED.test(line) ||
-    (ai && (HEADING.test(line) || QUOTE.test(line) || RULE.test(line)));
+  // A table starts at a row containing a pipe followed by a delimiter row with as many cells (so
+  // a table still streaming in renders as a paragraph until its delimiter row is complete).
+  const tableAt = (n: number): Align[] | null => {
+    if (!at(n).includes('|') || n + 1 >= lines.length) return null;
+    const align = tableAlign(at(n + 1));
+    return align?.length === tableCells(at(n)).length ? align : null;
+  };
+  const startsBlock = (n: number) => {
+    const line = at(n);
+    return (
+      /^\s*```/.test(line) ||
+      BULLET.test(line) ||
+      ORDERED.test(line) ||
+      tableAt(n) !== null ||
+      (ai && (HEADING.test(line) || QUOTE.test(line) || RULE.test(line)))
+    );
+  };
   let i = 0;
   while (i < lines.length) {
     const line = at(i);
@@ -80,6 +123,21 @@ function parse(text: string, ai: boolean): Block[] {
       out.push({ kind: 'quote', text: quoted.join('\n') });
       continue;
     }
+    const align = tableAt(i);
+    if (align) {
+      const width = align.length;
+      // Ragged rows: missing cells are empty, extra cells are dropped (as in GFM).
+      const fit = (cells: string[]) => Array.from({ length: width }, (_, c) => cells[c] ?? '');
+      const head = fit(tableCells(line));
+      const rows: string[][] = [];
+      i += 2;
+      // The table ends at a blank line, a line without a pipe or the start of another block.
+      while (i < lines.length && at(i).includes('|') && !startsBlock(i)) {
+        rows.push(fit(tableCells(at(i++))));
+      }
+      out.push({ kind: 'table', align, head, rows });
+      continue;
+    }
     const listKind = BULLET.test(line) ? 'ul' : ORDERED.test(line) ? 'ol' : null;
     if (listKind) {
       const re = listKind === 'ul' ? BULLET : ORDERED;
@@ -96,7 +154,7 @@ function parse(text: string, ai: boolean): Block[] {
       continue;
     }
     const para: string[] = [];
-    while (i < lines.length && at(i).trim() !== '' && !startsBlock(at(i))) {
+    while (i < lines.length && at(i).trim() !== '' && !startsBlock(i)) {
       para.push(at(i).trim());
       i++;
     }
@@ -152,6 +210,34 @@ function blocks(text: string, ai: boolean): ReactNode[] {
         );
       case 'quote':
         return <blockquote key={index}>{blocks(block.text, ai)}</blockquote>;
+      case 'table':
+        // Wide tables scroll inside their own box, never the page (same look as lesson tables).
+        return (
+          <div key={index} className="lesson-table-wrap practice-md__table">
+            <table>
+              <thead>
+                <tr>
+                  {block.head.map((cell, c) => (
+                    <th key={c} scope="col" data-align={block.align[c] ?? undefined}>
+                      {span(cell)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {block.rows.map((row, r) => (
+                  <tr key={r}>
+                    {row.map((cell, c) => (
+                      <td key={c} data-align={block.align[c] ?? undefined}>
+                        {span(cell)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
       case 'hr':
         return <hr key={index} />;
       case 'p':

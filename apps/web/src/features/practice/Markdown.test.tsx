@@ -56,6 +56,82 @@ describe('Markdown (AI variant)', () => {
   });
 });
 
+describe('Markdown tables', () => {
+  const cellTexts = (row: Element) =>
+    [...row.querySelectorAll('th, td')].map((cell) => cell.textContent);
+
+  it('renders a pipe table with column headers in a scrollable wrapper', () => {
+    const { container } = render(
+      <Markdown
+        text={'값이 네 개면:\n\n| 방향 | 값 |\n|---|---|\n| 위 | 5px |\n| 왼쪽 | 20px |\n\n끝'}
+      />,
+    );
+    const table = screen.getByRole('table');
+    expect(table.parentElement).toHaveClass('lesson-table-wrap');
+    const headers = screen.getAllByRole('columnheader');
+    expect(headers.map((th) => th.textContent)).toEqual(['방향', '값']);
+    for (const th of headers) expect(th).toHaveAttribute('scope', 'col');
+    const rows = table.querySelectorAll('tbody tr');
+    expect([...rows].map(cellTexts)).toEqual([
+      ['위', '5px'],
+      ['왼쪽', '20px'],
+    ]);
+    expect(container.querySelectorAll('p')).toHaveLength(2);
+  });
+
+  it('handles alignment, inline formatting, escaped pipes and ragged rows', () => {
+    const text = [
+      '식 | 결과 | 이유',
+      ':-- | :-: | --:',
+      '`0 \\|\\| 3000` | **`3000`** | 0은 falsy',
+      '`a` | b',
+      '| 1 | 2 | 3 | 4 |',
+    ].join('\n');
+    const { container } = render(<Markdown text={text} />);
+    const rows = [...container.querySelectorAll('tbody tr')];
+    const head = screen.getAllByRole('columnheader');
+    expect(head.map((th) => th.textContent)).toEqual(['식', '결과', '이유']);
+    expect(head.map((th) => th.getAttribute('data-align'))).toEqual(['left', 'center', 'right']);
+    expect(rows.map(cellTexts)).toEqual([
+      ['0 || 3000', '3000', '0은 falsy'],
+      ['a', 'b', ''],
+      ['1', '2', '3'],
+    ]);
+    expect(screen.getByText('0 || 3000').tagName).toBe('CODE');
+    expect(screen.getByText('3000').closest('strong')).not.toBeNull();
+  });
+
+  it('keeps an incomplete table as text while it streams in', () => {
+    for (const text of ['| a | b |', '| a | b |\n', '| a | b |\n|--']) {
+      const { container, unmount } = render(<Markdown text={text} variant="ai" />);
+      expect(container.querySelector('table')).toBeNull();
+      expect(container).toHaveTextContent('| a | b |');
+      unmount();
+    }
+    // A delimiter row with a different column count is not a table.
+    const { container, rerender } = render(<Markdown text={'| a | b |\n|---|\n| 1 | 2 |'} />);
+    expect(container.querySelector('table')).toBeNull();
+    // Once the delimiter row matches the header, the rows follow as they arrive.
+    rerender(<Markdown text={'| a | b |\n|---|---|\n| 1'} />);
+    expect([...container.querySelectorAll('td')].map((td) => td.textContent)).toEqual(['1', '']);
+  });
+
+  it('keeps AI tables free of raw HTML and headings', () => {
+    const { container } = render(
+      <Markdown
+        text={
+          '## 비교\n| <b>식</b> | [링크](javascript:alert(1)) |\n|---|---|\n| ## 아님 | *기울임* |'
+        }
+        variant="ai"
+      />,
+    );
+    expect(container.querySelector('h1, h2, h3, h4, h5, h6, b, a')).toBeNull();
+    expect(screen.getByRole('columnheader', { name: '<b>식</b>' })).toBeVisible();
+    expect(screen.getByText('기울임').tagName).toBe('EM');
+    expect(screen.getByRole('cell', { name: '## 아님' })).toBeVisible();
+  });
+});
+
 describe('announcements', () => {
   it('finds complete paragraphs outside code fences', () => {
     expect(completeParagraphsEnd('첫 문단')).toBe(0);

@@ -9,7 +9,7 @@ import type { Page } from '@playwright/test';
 export const PRACTICE_URL =
   '/learn/js-basics.start.first-program?mode=practice&set=01JD3Z8Q6V2K9M4T7R1X5W0BNC';
 
-const MCQ = 'js-basics.start.first-program.mcq-log-role';
+export const MCQ = 'js-basics.start.first-program.mcq-log-role';
 const FIX = 'js-basics.start.first-program.fix-total';
 const item = (position: number, exerciseId: string, type: string, difficulty: number) => ({
   id: `01JD3Z8Q6V2K9M4T7R1X5W0AT${position}`,
@@ -48,7 +48,7 @@ const common = {
   solutionViewed: false,
 };
 
-const views: Record<string, unknown> = {
+export const views: Record<string, Record<string, unknown>> = {
   [MCQ]: {
     ...common,
     id: MCQ,
