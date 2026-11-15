@@ -205,12 +205,39 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
       }
       if (ex.review.status === 'approved') approved++;
     }
+    checkAssessmentUnit(lesson, diag);
     const drafts = lesson.exercises.length - approved;
     if (drafts > 0) diag.warn(file, `검토되지 않은 문제 ${drafts}개는 빌드에서 제외됩니다`);
     const target = data.practice?.targetCount;
     if (target !== undefined && approved !== target)
       diag.warn(file, `승인된 문제 ${approved}개 / 목표 ${target}개`);
   });
+
+  // ── Modules: the declared unit assessment ──
+  for (const course of source.courses) {
+    for (const mod of course.modules) {
+      const { file, data } = mod.meta;
+      const units = mod.lessons.filter((l) => l.meta.data.kind === 'assessment');
+      if (units.length > 1)
+        diag.error(
+          file,
+          `단원 평가 단원은 모듈에 하나만 둘 수 있습니다: ${units.map((l) => l.meta.data.id).join(', ')}`,
+        );
+      if (data.assessment !== undefined) {
+        const target = mod.lessons.find((l) => l.meta.data.id === `${data.id}.${data.assessment}`);
+        if (!target)
+          diag.error(file, `assessment: 이 모듈의 lessons에 없는 단원입니다: ${data.assessment}`);
+        else if (target.meta.data.kind !== 'assessment')
+          diag.error(file, `assessment: ${data.assessment}은(는) kind: assessment 단원이 아닙니다`);
+      } else if (units.length === 1) {
+        const slug = units[0]?.meta.data.id.split('.').at(-1) ?? '';
+        diag.warn(
+          file,
+          `단원 평가 단원을 assessment: ${slug}로 선언하세요(지금은 자동으로 연결합니다)`,
+        );
+      }
+    }
+  }
 
   // Concepts must belong to a lesson; prerequisites should be introduced earlier.
   for (const { file, data } of source.concepts) {
@@ -265,6 +292,69 @@ function applyExpectation(
     : '실행 기대값이 아직 없습니다. pnpm content:check:run으로 계산하세요';
   if (ex.review.status === 'approved') diag.error(file, message);
   else diag.warn(file, message);
+}
+
+/** Item count range of a unit assessment (content-and-exercises.md#문제-수-산정-방식). */
+export const ASSESSMENT_ITEM_RANGE = { min: 10, max: 20 } as const;
+
+/**
+ * Rules of a `kind: assessment` unit (learning-engine.md#단원-평가-세트): it introduces nothing,
+ * assesses the concepts in `concepts.reviewed` with its own `usage: assessment` items (at least
+ * one per concept), and is configured by `assessment` rather than `practice.passRule`. Units of
+ * other kinds may not hold assessment items or settings.
+ */
+function checkAssessmentUnit(lesson: LessonNodeSource, diag: Diagnostics): void {
+  const { file, data } = lesson.meta;
+  if (data.kind !== 'assessment') {
+    if (data.assessment !== undefined)
+      diag.error(file, 'assessment 설정은 kind: assessment 단원에만 쓸 수 있습니다');
+    for (const { file: exFile, data: ex } of lesson.exercises) {
+      if (ex.usage === 'assessment')
+        diag.error(exFile, 'usage: assessment 문제는 단원 평가(kind: assessment) 단원에만 둡니다');
+    }
+    return;
+  }
+  if (data.concepts.primary.length > 0)
+    diag.error(
+      file,
+      '단원 평가는 새 개념을 소개하지 않습니다. 평가할 개념은 concepts.reviewed에 두세요',
+    );
+  const assessed = new Set(data.concepts.reviewed);
+  if (assessed.size === 0)
+    diag.error(file, '단원 평가에는 평가할 개념(concepts.reviewed)이 있어야 합니다');
+  if (data.practice?.passRule)
+    diag.error(
+      file,
+      '단원 평가는 practice.passRule 대신 assessment.passRatio로 통과 기준을 정합니다',
+    );
+
+  // Counted over every item (drafts included): unreviewed drafts are reported separately.
+  const covered = new Map<string, number>();
+  for (const { file: exFile, data: ex } of lesson.exercises) {
+    if (ex.usage !== 'assessment')
+      diag.error(exFile, `단원 평가 단원의 문제는 usage: assessment여야 합니다(지금: ${ex.usage})`);
+    const primary = ex.concepts.find((c) => c.weight === 1)?.id;
+    if (primary !== undefined && !assessed.has(primary))
+      diag.error(exFile, `주 개념 ${primary}이(가) 이 단원 평가의 concepts.reviewed에 없습니다`);
+    if (primary !== undefined) covered.set(primary, (covered.get(primary) ?? 0) + 1);
+  }
+  for (const c of assessed) {
+    if (!covered.has(c)) diag.warn(file, `평가 문항이 없는 개념입니다: ${c}`);
+  }
+  const items = lesson.exercises.length;
+  const { min, max } = ASSESSMENT_ITEM_RANGE;
+  if (items < min || items > max)
+    diag.warn(file, `단원 평가 문항은 ${min}~${max}개를 권장합니다(지금 ${items}개)`);
+  const itemCount = data.assessment?.itemCount;
+  if (itemCount !== undefined) {
+    if (itemCount > items)
+      diag.warn(file, `assessment.itemCount ${itemCount}가 문항 ${items}개보다 많습니다`);
+    if (itemCount < assessed.size)
+      diag.warn(
+        file,
+        `assessment.itemCount ${itemCount}로는 평가할 개념 ${assessed.size}개를 모두 다룰 수 없습니다`,
+      );
+  }
 }
 
 /** Returns each prerequisite cycle once (as a closed path). */

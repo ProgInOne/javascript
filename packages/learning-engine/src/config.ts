@@ -4,7 +4,7 @@ import type { ExerciseCategory, ExerciseOrigin, FsrsPort, Importance } from './t
  * Version of the formulas and coefficients. Bump it (and record it in CHANGELOG.md) whenever a
  * coefficient or rule changes; every stored result carries the version that computed it.
  */
-export const ENGINE_VERSION = '1.1.0';
+export const ENGINE_VERSION = '1.2.0';
 
 /** Weights for the correct (`o ≥ 0.5`) and incorrect branch of a factor. */
 export interface BranchWeights {
@@ -127,6 +127,15 @@ export interface EngineConfig {
     readonly itemsMin: number;
     readonly itemsMax: number;
     readonly extraItemBelowEffective: number;
+  };
+  /** Unit assessment sets (learning-engine.md#단원-평가-세트). */
+  readonly assessment: {
+    /** Pass bar when the content gives no `assessment.passRatio`. */
+    readonly defaultPassRatio: number;
+    /** Set size when the content gives no `assessment.itemCount` (and the upper bound). */
+    readonly maxItems: number;
+    /** Share of L1…L5 items (content-and-exercises.md 단원 평가 분포). */
+    readonly difficultyMix: readonly [number, number, number, number, number];
   };
   /** Active time (learning-engine.md#학습-시간-측정). */
   readonly activity: {
@@ -316,6 +325,11 @@ export const defaultEngineConfig: EngineConfig = {
     itemsMin: 3,
     itemsMax: 4,
     extraItemBelowEffective: 40,
+  },
+  assessment: {
+    defaultPassRatio: 0.8,
+    maxItems: 20,
+    difficultyMix: [0.1, 0.3, 0.35, 0.2, 0.05],
   },
   activity: {
     idleThresholdMs: 2 * 60_000,

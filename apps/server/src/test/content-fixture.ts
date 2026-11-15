@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { CONTENT_DDL } from '@proginone/content-schema/db';
+import { CONTENT_DB_SCHEMA_VERSION, CONTENT_DDL } from '@proginone/content-schema/db';
 import { leakFingerprints, redactSpec } from '@proginone/exercise-kit';
 import Database from 'better-sqlite3';
 import { tmpDir } from './helpers.ts';
@@ -37,7 +37,7 @@ export function writeContentDb(meta: Record<string, string> = {}): string {
     ).run(row);
   };
   for (const [key, value] of Object.entries({
-    schema_version: '1',
+    schema_version: String(CONTENT_DB_SCHEMA_VERSION),
     pack_version: '2026.11.14.1',
     ...meta,
   })) {

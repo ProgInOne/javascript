@@ -6,7 +6,14 @@ import Database from 'better-sqlite3';
 import { getTableConfig } from 'drizzle-orm/sqlite-core';
 import { describe, expect, it } from 'vitest';
 import { buildContent, type ExerciseKitHooks } from './build.ts';
-import { EXERCISE, EXERCISE_YAML, LESSON, writeContent } from './test/fixture.ts';
+import {
+  EXERCISE,
+  EXERCISE_YAML,
+  LESSON,
+  REVIEW,
+  withAssessment,
+  writeContent,
+} from './test/fixture.ts';
 
 const kit: ExerciseKitHooks = {
   validateSpec: () => ({ ok: true }),
@@ -61,7 +68,7 @@ describe('buildContent', () => {
     );
     expect(meta).toMatchObject({
       pack_version: '2026.11.14.1',
-      schema_version: '1',
+      schema_version: '2',
       built_at: '2026-11-14T00:00:00.000Z',
     });
     expect(meta['content_hash']).toMatch(/^[0-9a-f]{64}$/);
@@ -127,6 +134,34 @@ describe('buildContent', () => {
     expect(
       db.prepare("SELECT value FROM content_meta WHERE key = 'includes_drafts'").get(),
     ).toEqual({ value: '1' });
+    db.close();
+  });
+
+  it('writes unit assessments and links them to their module', () => {
+    const { out, result } = build(withAssessment);
+    expect(result.written).toBe(true);
+    const db = new Database(out, { readonly: true });
+    expect(db.prepare('SELECT * FROM assessments').all()).toEqual([
+      {
+        id: REVIEW,
+        scope_type: 'module',
+        scope_id: 'js-basics.start',
+        title: '시작하기 단원 평가',
+        exercise_ids_json: JSON.stringify([`${REVIEW}.mcq-log`]),
+        selection_rule_json: JSON.stringify({
+          v: 1,
+          itemCount: null,
+          conceptIds: ['js.basics.console-log'],
+        }),
+        pass_ratio: 0.7,
+      },
+    ]);
+    expect(db.prepare('SELECT assessment_id FROM modules').get()).toEqual({
+      assessment_id: REVIEW,
+    });
+    expect(db.prepare('SELECT kind FROM lessons WHERE id = ?').get(REVIEW)).toEqual({
+      kind: 'assessment',
+    });
     db.close();
   });
 

@@ -2,7 +2,11 @@ import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, renameSync, rmSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { mkdirSync } from 'node:fs';
-import type { ConceptSource, ExerciseSource } from '@proginone/content-schema';
+import {
+  DEFAULT_ASSESSMENT_PASS_RATIO,
+  type ConceptSource,
+  type ExerciseSource,
+} from '@proginone/content-schema';
 import { CONTENT_DB_SCHEMA_VERSION, CONTENT_DDL } from '@proginone/content-schema/db';
 import Database from 'better-sqlite3';
 import { checkContent, type SpecValidator } from './check.ts';
@@ -165,13 +169,17 @@ export function buildContent(root: string, outFile: string, options: BuildOption
 
         course.modules.forEach((mod, mi) => {
           const m = mod.meta.data;
+          // `module.yaml` `assessment`, or the module's `kind: assessment` lesson.
+          const assessmentId = m.assessment
+            ? `${m.id}.${m.assessment}`
+            : (mod.lessons.find((l) => l.meta.data.kind === 'assessment')?.meta.data.id ?? null);
           insert('modules', {
             id: m.id,
             course_id: c.id,
             title: m.title,
             summary: m.summary,
             order_index: mi,
-            assessment_id: m.assessment ? `${m.id}.${m.assessment}` : null,
+            assessment_id: assessmentId,
           });
           mod.lessons.forEach((lesson, li) => {
             const l = lesson.meta.data;
@@ -238,6 +246,7 @@ export function buildContent(root: string, outFile: string, options: BuildOption
           for (const [concept_id, role] of roles)
             insert('lesson_concepts', { lesson_id: l.id, concept_id, role });
 
+          const assessmentItems: string[] = [];
           for (const { data: ex } of lesson.exercises) {
             const isDraft = ex.review.status !== 'approved';
             if (isDraft && !includeDrafts) {
@@ -280,6 +289,22 @@ export function buildContent(root: string, outFile: string, options: BuildOption
             }
             search(ex.id, 'exercise', ex.prompt.slice(0, 80), ex.prompt);
             stats.exercises++;
+            if (ex.usage === 'assessment') assessmentItems.push(ex.id);
+          }
+          if (l.kind === 'assessment') {
+            insert('assessments', {
+              id: l.id,
+              scope_type: 'module',
+              scope_id: l.id.slice(0, l.id.lastIndexOf('.')),
+              title: l.title,
+              exercise_ids_json: JSON.stringify(assessmentItems),
+              selection_rule_json: JSON.stringify({
+                v: 1,
+                itemCount: l.assessment?.itemCount ?? null,
+                conceptIds: l.concepts.reviewed,
+              }),
+              pass_ratio: l.assessment?.passRatio ?? DEFAULT_ASSESSMENT_PASS_RATIO,
+            });
           }
         }
       }

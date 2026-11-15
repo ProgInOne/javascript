@@ -105,3 +105,47 @@ export const LESSON_YAML =
 export const LESSON_MDX = 'courses/js-basics/modules/01-start/lessons/01-first-program/lesson.mdx';
 export const EXERCISE_YAML =
   'courses/js-basics/modules/01-start/lessons/01-first-program/exercises/001-mcq.yaml';
+
+export const REVIEW = 'js-basics.start.start-review';
+export const REVIEW_YAML = 'courses/js-basics/modules/01-start/lessons/02-start-review/lesson.yaml';
+export const REVIEW_EXERCISE_YAML =
+  'courses/js-basics/modules/01-start/lessons/02-start-review/exercises/001-mcq.yaml';
+export const MODULE_YAML = 'courses/js-basics/modules/01-start/module.yaml';
+
+/** Adds a declared unit assessment (`kind: assessment`) with one item to the fixture module. */
+export function withAssessment(files: Record<string, unknown>): void {
+  const mod = files[MODULE_YAML] as Record<string, unknown>;
+  mod['lessons'] = ['first-program', 'start-review'];
+  mod['assessment'] = 'start-review';
+  files[REVIEW_YAML] = {
+    id: REVIEW,
+    title: '시작하기 단원 평가',
+    summary: '모듈 1을 확인합니다',
+    kind: 'assessment',
+    estimatedMinutes: { read: 1, practice: 10 },
+    concepts: { reviewed: ['js.basics.console-log'] },
+    objectives: ['출력을 설명할 수 있다'],
+    assessment: { passRatio: 0.7 },
+  };
+  files['courses/js-basics/modules/01-start/lessons/02-start-review/lesson.mdx'] = [
+    'objectives',
+    'practice',
+    'summary',
+    'next',
+  ]
+    .map((k) => `<Section kind="${k}">\n${k}.\n</Section>`)
+    .join('\n\n');
+  files[REVIEW_EXERCISE_YAML] = {
+    id: `${REVIEW}.mcq-log`,
+    type: 'mcq_single',
+    difficulty: 3,
+    concepts: [{ id: 'js.basics.console-log', weight: 1 }],
+    estimatedSeconds: 40,
+    usage: 'assessment',
+    prompt: '`console.log("a")`는 무엇을 하나요?',
+    spec: { options: [] },
+    hints: ['a', 'b', 'c'],
+    explanation: '출력합니다.',
+    review: { status: 'approved', draftedBy: 'ai:claude', reviewedBy: 'ai:reviewer' },
+  };
+}

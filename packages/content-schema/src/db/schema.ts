@@ -66,6 +66,26 @@ export const lessons = sqliteTable('lessons', {
   contentHash: text('content_hash').notNull(),
 });
 
+/** `selection_rule_json` of an assessment. */
+export interface AssessmentSelectionRule {
+  v: 1;
+  /** Items to ask; `null` = every item (up to the engine's maximum). */
+  itemCount: number | null;
+  /** Concepts the assessment covers (`concepts.reviewed`), in content order. */
+  conceptIds: string[];
+}
+
+/** Unit assessments. `id` is the `kind: assessment` lesson's ID. */
+export const assessments = sqliteTable('assessments', {
+  id: text('id').primaryKey(),
+  scopeType: text('scope_type', { enum: ['lesson', 'module'] }).notNull(),
+  scopeId: text('scope_id').notNull(),
+  title: text('title').notNull(),
+  exerciseIds: json<string[]>('exercise_ids_json').notNull(),
+  selectionRule: json<AssessmentSelectionRule>('selection_rule_json'),
+  passRatio: real('pass_ratio').notNull(),
+});
+
 export const concepts = sqliteTable('concepts', {
   id: text('id').primaryKey(),
   courseId: text('course_id').notNull(),

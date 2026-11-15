@@ -81,6 +81,15 @@ export type {
 export { buildLessonPracticeSet } from './practice/lesson-set.ts';
 export type { PassCheck, PassResult, PassRuleItem } from './practice/pass-rule.ts';
 export { evaluatePassRule, lessonPassRule } from './practice/pass-rule.ts';
+export type {
+  AssessmentResult,
+  AssessmentResultItem,
+  AssessmentSet,
+  AssessmentSetConcept,
+  AssessmentSetRationale,
+  AssessmentSetRequest,
+} from './practice/assessment-set.ts';
+export { buildAssessmentSet, evaluateAssessment } from './practice/assessment-set.ts';
 export type { ReviewSet, ReviewSetConcept, ReviewSetRequest } from './practice/review-set.ts';
 export { buildReviewSet } from './practice/review-set.ts';
 export type { Rng } from './util/rng.ts';

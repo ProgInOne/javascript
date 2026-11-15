@@ -43,6 +43,8 @@ export type PracticeItemReason =
   | 'interleave_review'
   | 'review_due'
   | 'review_reinforce'
+  // Unit assessments (practice/assessment-set.ts).
+  | 'assessment'
   // Weakness sets (practice/weakness-set.ts).
   | 'weak_concept'
   | 'misconception_target'

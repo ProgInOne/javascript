@@ -7,6 +7,8 @@
 
 ### Added
 
+- 단원 평가 콘텐츠와 문항 선택(M6, D-041): `kind: assessment` 단원의 `assessment: { itemCount, passRatio }` 설정과 `content-cli check` 규칙(평가 개념은 `concepts.reviewed`, 문항은 `usage: assessment`, 개념당 최소 1문항, 10~20문항 권장, `module.yaml` `assessment` 검증), content.db `assessments` 테이블(스키마 버전 2, `pnpm content:build`로 다시 만들어야 함). 학습 엔진 `buildAssessmentSet`(개념 포함 → 난이도 분포 → 쉬운 순서, 처음 보는 문항 우선)과 `evaluateAssessment`(통과 비율 기본 0.8, 틀린 개념 목록). 학습 엔진 `1.2.0`
+- JS 기초 모듈 3 "연산자와 형 변환" 초안(검토 전): 산술·비교·논리 연산, 명시적·암묵적 형 변환 레슨 5개와 단원 평가, 문제 134개(P0 유형 10종), 개념 18개·오개념 38개
 - 시각 회귀 기준 이미지를 CI와 같은 컨테이너에서 다시 만드는 수동 실행 워크플로 `visual-baselines` (로컬 Docker를 쓸 수 없을 때)
 - JS 기초 모듈 5 "반복문"(while 반복, for 반복, 반복 제어, 중첩 반복): 레슨 4개와 문제 70개, 개념 9개·오개념 19개. AI 교차 검토로 전부 승인([검토 기록](docs/reviews/2026-11-15-m5-js-module-5-review.md)): 핵심 단원 `for`에 요구사항 해석형 L4 문제 보강(다시 쓴 2개, 새 문제 1개), 난이도 6개 정정, 힌트 3단계 완화 12개, 오개념 연결 정정, 직접 쓴 답이 통하지 않는 숨김 체크 설계(`impl-multiples-of-three`). 단원 평가는 M6에서 추가
 - JS 기초 모듈 2 "값과 변수"의 나머지 단원(자료형, 비어 있는 값, var와 선언 전 사용)과 모듈 4 "조건문"(if와 else, switch 문, 조건 연산자): 레슨 6개와 문제 94개를 AI 교차 검토(D-027) 후 승인. 오개념 `assign-in-condition`을 `assign-as-compare`로 합치고, 조건문 개념에 비교·논리·형 변환 선수 개념 추가

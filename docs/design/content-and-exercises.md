@@ -589,6 +589,33 @@ practice:
 
 `passRule`의 정확한 판정은 [학습 엔진 설계](/docs/design/learning-engine.md)가 정의하며, 콘텐츠는 단원별로 값을 덮어쓸 수 있습니다.
 
+#### 단원 평가 단원 (`kind: assessment`)
+
+구현 메모 (M6, [D-041](/docs/decisions.md)): 단원 평가는 모듈 끝에 두는 `kind: assessment` 단원입니다.
+
+```yaml
+# courses/js-basics/modules/03-operators/module.yaml
+lessons: [arithmetic, comparison, logical, explicit-conversion, implicit-coercion, operators-review]
+assessment: operators-review       # 선택. 생략하면 모듈의 kind: assessment 단원을 자동으로 연결(경고)
+
+# .../lessons/06-operators-review/lesson.yaml
+id: js-basics.operators.operators-review
+kind: assessment
+concepts:
+  reviewed: [js.ops.arithmetic, js.ops.strict-equality, ...]   # 평가할 개념. primary는 비워 둠
+assessment:                        # 선택
+  itemCount: 15                    # 한 번에 낼 문항 수(1~20). 생략하면 승인된 문항 전부(최대 20)
+  passRatio: 0.8                   # 통과 정답 비율(기본 0.8)
+practice:
+  targetCount: 18                  # 목표 문항 수(빌드 경고용). passRule은 쓰지 않음
+```
+
+- 문항은 그 단원의 `exercises/`에 두고 모두 `usage: assessment`입니다. 문항의 주 개념은 `concepts.reviewed`에 있어야 합니다. `usage: assessment` 문항은 다른 단원에 둘 수 없습니다(평가 문항은 연습·복습 세트에 나오지 않음).
+- 본문(`lesson.mdx`)은 `objectives`, `practice`, `summary`, `next` 섹션만 필수입니다.
+- `content-cli check` 규칙: 오류 — `concepts.primary`가 있음, `concepts.reviewed`가 비어 있음, `practice.passRule`을 씀, `usage`가 `assessment`가 아닌 문항, 주 개념이 `reviewed`에 없는 문항, 다른 단원의 `usage: assessment` 문항, 일반 단원의 `assessment` 설정, `module.yaml`의 `assessment`가 그 모듈의 `kind: assessment` 단원이 아님, 한 모듈에 평가 단원이 둘 이상. 경고 — 문항이 없는 평가 개념(개념당 최소 1), 문항 수가 10~20개 밖, `itemCount`가 문항 수보다 크거나 평가 개념 수보다 작음, `module.yaml`에 `assessment` 선언이 없음.
+- content.db: `assessments` 행(ID는 평가 단원 ID, `scope_type: module`, 빌드에 포함된 평가 문항 목록, `selection_rule_json: { v, itemCount, conceptIds }`, `pass_ratio`)과 `modules.assessment_id`. content.db 스키마 버전 2.
+- 문항 선택(개념 포함 → 난이도 분포 → 쉬운 순서, 처음 보는 문항 우선)은 [학습 엔진 설계](/docs/design/learning-engine.md#구현-메모-v03)를 따릅니다.
+
 ### lesson.mdx 발췌
 
 ```mdx
