@@ -1,0 +1,109 @@
+id: css.basics.selectors.web-fix-selectors
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.selectors.basic, weight: 1 }
+tags: [selector, class, id, debugging, web-task]
+estimatedSeconds: 240
+prompt: |
+  영화 소개 페이지에 규칙을 두 개 썼는데, 둘 다 아무 요소도 바꾸지 못하고 있어요. **선택자만 고쳐서** 아래처럼 보이게 하세요. 선언과 HTML은 바꾸지 마세요.
+
+  1. 맨 위 제목(`id="movie-title"`)의 글자 색이 남색(`navy`)
+  2. 평점 문단 두 개(`class="rating"`)의 글자 색이 주황색(`orange`)
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>영화 소개</title>
+              <style>
+                .movie-title {
+                  color: navy;
+                }
+                rating {
+                  color: orange;
+                }
+              </style>
+            </head>
+            <body>
+              <h1 id="movie-title">별빛 기차</h1>
+              <p>밤하늘을 달리는 기차 여행 이야기예요.</p>
+              <p class="rating">관객 평점 9.1</p>
+              <p class="rating">평론가 평점 8.4</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>영화 소개</title>
+              <style>
+                #movie-title {
+                  color: navy;
+                }
+                .rating {
+                  color: orange;
+                }
+              </style>
+            </head>
+            <body>
+              <h1 id="movie-title">별빛 기차</h1>
+              <p>밤하늘을 달리는 기차 여행 이야기예요.</p>
+              <p class="rating">관객 평점 9.1</p>
+              <p class="rating">평론가 평점 8.4</p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: title-navy
+      description: 맨 위 제목의 글자 색이 남색이어야 합니다.
+      requirement: 제목 남색
+      visible: true
+      selector: "#movie-title"
+      expect:
+        computed:
+          color: { color: "#000080" }
+      misconceptionIfFail: css.mc.selector-symbol-mixup
+    - kind: css
+      id: ratings-orange
+      description: 평점 문단 두 개의 글자 색이 모두 주황색이어야 합니다.
+      requirement: 평점 주황색
+      visible: true
+      selector: .rating
+      all: true
+      expect:
+        computed:
+          color: { color: "#ffa500" }
+      misconceptionIfFail: css.mc.selector-symbol-mixup
+    - kind: css
+      id: intro-unchanged
+      description: 줄거리 문단의 글자 색은 바뀌지 않아야 합니다.
+      requirement: 다른 문단은 그대로
+      visible: true
+      selector: "p:not(.rating)"
+      expect:
+        computed:
+          color: { color: "#000000" }
+misconceptions: [css.mc.selector-symbol-mixup]
+hints:
+  - 각 이름이 HTML에서 `id` 속성에 있는지 `class` 속성에 있는지 확인해 보세요.
+  - "`movie-title`은 id 값이고, `rating`은 class 값이에요. 각각 어떤 기호로 시작해야 할까요?"
+  - 점(`.`)은 클래스, 샵(`#`)은 ID예요. 기호가 없으면 요소 이름으로 찾아요.
+explanation: |
+  선택자 두 개를 이렇게 고쳐요.
+
+  - `.movie-title` → **`#movie-title`**: `movie-title`은 `id` 속성 값이라 ID 선택자(샵)로 골라야 해요. 점을 쓰면 `class="movie-title"`인 요소를 찾아서 아무것도 고르지 못해요.
+  - `rating` → **`.rating`**: `rating`은 `class` 속성 값이에요. 기호 없이 쓰면 `<rating>`이라는 요소를 찾는 타입 선택자가 돼요.
+
+  `p.rating`이나 `h1#movie-title`처럼 요소 이름을 앞에 붙여도 같은 요소를 고르니 정답이에요. 줄거리 문단을 함께 바꾸는 `p` 선택자는 요구사항(다른 문단은 그대로)에 맞지 않아요.
+origin: authored
+review: { status: draft, draftedBy: ai:claude }

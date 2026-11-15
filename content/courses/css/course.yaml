@@ -1,12 +1,15 @@
 id: css
 title: CSS 핵심
-summary: 브라우저가 요소를 상자로 그리는 원리를 이해하고, 박스 모델과 Flexbox로 기본 레이아웃을 만듭니다.
+summary: 선택자와 캐스케이드로 스타일이 정해지는 원리를 이해하고, 박스 모델과 Flexbox로 기본 레이아웃을 만듭니다.
 language: css
 level: intro
 depth: core
 status: published
 objectives:
-  - 요소의 content·padding·border·margin 영역을 구분하고 원하는 여백을 줄 수 있다.
-  - box-sizing에 따라 요소의 실제 크기가 어떻게 계산되는지 설명할 수 있다.
-# v0.1 시범판에 있는 모듈만 나열합니다. 전체 목록: basics, box, styling, layout
-modules: [box]
+  - CSS 규칙을 HTML에 연결하고, 선택자로 원하는 요소를 골라 스타일을 줄 수 있다.
+  - 명시도·선언 순서·상속으로 어떤 스타일이 적용될지 예측할 수 있다.
+  - 요소의 content·padding·border·margin 영역을 구분하고, box-sizing과 display에 따라 상자의 크기와 배치를 설명할 수 있다.
+  - 단위·색·글꼴 속성으로 글자와 상자를 꾸밀 수 있다.
+  - Flexbox와 미디어 쿼리로 화면 너비에 맞는 기본 레이아웃을 만들 수 있다.
+# 단원 평가(layout.review)는 M6 평가 세트에서 추가합니다.
+modules: [basics, box, styling, layout]

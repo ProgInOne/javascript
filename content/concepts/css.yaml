@@ -1,10 +1,83 @@
-# CSS 개념 (v0.1: 박스 모델 단원)
+# CSS 개념 (v0.2: CSS 핵심 과정)
 # HTML/CSS 핵심은 얕은 과정(depth: core)이므로 개념을 모두 standard로 둡니다.
+
+# ---- css.basics.intro ----
+
+- id: css.intro.rule-structure
+  title: CSS 규칙의 구조
+  importance: standard
+  summary: 'CSS 규칙은 선택자와 중괄호 안의 선언들로 이루어져요. 선언은 `속성: 값;` 형태이고, 선언끼리는 세미콜론으로 나눠요.'
+  prerequisites: [html.doc.elements]
+  misconceptions: [css.mc.semicolon-optional, css.mc.value-in-quotes]
+  mdn: Web/CSS/CSS_syntax/Syntax
+
+- id: css.intro.linking
+  title: CSS를 HTML에 연결하기
+  importance: standard
+  summary: CSS는 `link` 요소로 외부 파일을 연결하거나, `style` 요소 안에 쓰거나, 요소의 `style` 속성에 직접 쓸 수 있어요. `style` 속성은 그 요소 하나에만 적용돼요.
+  prerequisites: [css.intro.rule-structure, html.doc.skeleton]
+  misconceptions: [css.mc.link-uses-src, css.mc.inline-applies-to-all]
+  mdn: Web/HTML/Reference/Elements/link
+
+# ---- css.basics.selectors ----
+
+- id: css.selectors.basic
+  title: 타입·클래스·ID 선택자
+  importance: standard
+  summary: 타입 선택자(`p`)는 요소 이름으로, 클래스 선택자(`.card`)는 class 속성으로, ID 선택자(`#logo`)는 id 속성으로 요소를 골라요.
+  prerequisites: [css.intro.rule-structure, html.doc.attributes]
+  misconceptions: [css.mc.selector-symbol-mixup, css.mc.multiple-classes-one-name]
+  mdn: Web/CSS/CSS_selectors
+
+- id: css.selectors.combinators
+  title: 자손 선택자와 그룹 선택자
+  importance: standard
+  summary: 공백으로 이은 자손 선택자(`nav a`)는 안쪽에 있는 요소를 깊이와 상관없이 고르고, 쉼표로 이은 그룹 선택자(`h1, h2`)는 여러 선택자에 같은 규칙을 줘요.
+  prerequisites: [css.selectors.basic, html.doc.dom-tree]
+  misconceptions: [css.mc.descendant-vs-group, css.mc.descendant-direct-child-only]
+  mdn: Web/CSS/Descendant_combinator
+
+- id: css.selectors.pseudo-class
+  title: 의사 클래스
+  importance: standard
+  summary: 의사 클래스(`:hover`, `:first-child`)는 요소의 상태나 위치로 요소를 골라요. 선택자 바로 뒤에 띄어 쓰지 않고 콜론을 붙여 써요.
+  prerequisites: [css.selectors.basic]
+  misconceptions: [css.mc.hover-space, css.mc.pseudo-class-is-class]
+  mdn: Web/CSS/Pseudo-classes
+
+# ---- css.basics.cascade ----
+
+- id: css.cascade.specificity
+  title: 명시도
+  importance: standard
+  summary: 같은 요소에 규칙이 겹치면 선택자가 더 구체적인(명시도가 높은) 규칙이 이겨요. ID > 클래스·의사 클래스 > 타입 순서이고, 낮은 쪽을 아무리 많이 모아도 높은 쪽 하나를 넘지 못해요.
+  prerequisites: [css.selectors.combinators, css.selectors.pseudo-class]
+  misconceptions: [css.mc.last-rule-wins, css.mc.specificity-adds-up]
+  mdn: Web/CSS/CSS_cascade/Specificity
+
+- id: css.cascade.order
+  title: 선언 순서
+  importance: standard
+  summary: 명시도가 같으면 CSS에서 나중에 쓴 규칙이 이겨요. HTML의 class 속성에 클래스 이름을 적은 순서는 상관없어요.
+  prerequisites: [css.selectors.basic]
+  misconceptions: [css.mc.class-attr-order-matters]
+  mdn: Web/CSS/CSS_cascade/Cascade
+
+- id: css.cascade.inheritance
+  title: 상속
+  importance: standard
+  summary: color·font 같은 글자 관련 속성은 부모의 값이 자식에게 물려지지만, margin·padding·border·width 같은 상자 속성은 물려지지 않아요. 요소에 직접 준 규칙은 물려받은 값보다 항상 우선해요.
+  prerequisites: [css.intro.rule-structure, html.doc.dom-tree]
+  misconceptions: [css.mc.all-props-inherit, css.mc.inherited-beats-direct]
+  mdn: Web/CSS/CSS_cascade/Inheritance
+
+# ---- css.box.model ----
 
 - id: css.box.areas
   title: 박스의 네 영역
   importance: standard
   summary: 모든 요소는 안쪽부터 content, padding, border, margin 네 영역으로 이루어진 상자로 그려져요.
+  prerequisites: [css.selectors.basic]
   misconceptions: [css.mc.margin-is-inside, css.mc.background-under-margin]
   mdn: Web/CSS/CSS_box_model/Introduction_to_the_CSS_box_model
 
@@ -31,3 +104,141 @@
   prerequisites: [css.box.size]
   misconceptions: [css.mc.border-box-includes-margin]
   mdn: Web/CSS/box-sizing
+
+# ---- css.box.display ----
+
+- id: css.display.block-inline
+  title: 블록과 인라인
+  importance: standard
+  summary: 블록 요소(`div`, `p`)는 새 줄에서 시작해 부모 너비를 채우고, 인라인 요소(`span`, `a`)는 글자처럼 줄 안에 놓여요. 인라인 요소에는 width·height와 위아래 margin이 적용되지 않아요.
+  prerequisites: [css.box.areas]
+  misconceptions: [css.mc.margin-on-inline, css.mc.width-on-inline]
+  mdn: Web/CSS/display
+
+- id: css.display.inline-block
+  title: inline-block
+  importance: standard
+  summary: inline-block 요소는 인라인처럼 한 줄에 나란히 놓이면서, 블록처럼 width·height와 위아래 margin을 받아요.
+  prerequisites: [css.display.block-inline]
+  misconceptions: [css.mc.inline-block-new-line]
+  mdn: Web/CSS/display
+
+- id: css.display.normal-flow
+  title: 일반 흐름
+  importance: standard
+  summary: 따로 배치를 정하지 않으면 블록 요소는 위에서 아래로 쌓이고, 인라인 요소는 왼쪽에서 오른쪽으로 흘러요. 위아래로 맞닿은 블록의 margin은 더해지지 않고 큰 쪽 하나로 겹쳐요.
+  prerequisites: [css.display.block-inline]
+  misconceptions: [css.mc.narrow-blocks-sit-side-by-side, css.mc.vertical-margins-add]
+  mdn: Web/CSS/CSS_display/Flow_layout
+
+# ---- css.styling.units-colors ----
+
+- id: css.units.length
+  title: 길이 단위 px·%·vw
+  importance: standard
+  summary: px는 고정된 크기, %는 부모(콘텐츠 영역) 크기에 대한 비율, vw는 화면(뷰포트) 너비의 1/100이에요. 0이 아닌 길이에는 단위를 꼭 붙여요.
+  prerequisites: [css.box.size]
+  misconceptions: [css.mc.percent-of-screen, css.mc.unitless-length]
+  mdn: Web/CSS/length
+
+- id: css.units.rem-em
+  title: rem과 em
+  importance: standard
+  summary: rem은 루트(html) 요소의 글자 크기, em은 그 요소의 글자 크기를 기준으로 해요. font-size에 쓴 em은 부모의 글자 크기가 기준이라, 중첩될수록 계속 곱해져요.
+  prerequisites: [css.units.length, css.cascade.inheritance]
+  misconceptions: [css.mc.em-same-as-rem]
+  mdn: Web/CSS/length
+
+- id: css.colors.notation
+  title: 색 표기
+  importance: standard
+  summary: 색은 이름(`red`), 16진수(`#ff0000`), `rgb(255 0 0)`처럼 쓸 수 있어요. 16진수는 빨강·초록·파랑을 두 자리씩, rgb는 0~255 숫자로 나타내요.
+  prerequisites: [css.intro.rule-structure]
+  misconceptions: [css.mc.rgb-max-100]
+  mdn: Web/CSS/color_value
+
+# ---- css.styling.typography ----
+
+- id: css.type.font-properties
+  title: 글꼴 속성
+  importance: standard
+  summary: font-family는 글꼴을 쉼표로 나열해 앞에서부터 쓸 수 있는 것을 고르고, font-size는 글자 크기, font-weight는 굵기를 정해요.
+  prerequisites: [css.units.rem-em]
+  misconceptions: [css.mc.font-family-guaranteed]
+  mdn: Web/CSS/font
+
+- id: css.type.line-height
+  title: 줄 높이
+  importance: standard
+  summary: line-height는 한 줄이 차지하는 높이예요. 단위 없이 `1.5`처럼 쓰면 글자 크기의 1.5배가 돼요.
+  prerequisites: [css.type.font-properties]
+  misconceptions: [css.mc.line-height-unitless-px]
+  mdn: Web/CSS/line-height
+
+- id: css.type.text-align
+  title: 텍스트 정렬
+  importance: standard
+  summary: text-align은 블록 요소 안에서 글자 같은 인라인 내용을 왼쪽·가운데·오른쪽으로 정렬해요. 블록 상자 자체를 옮기지는 않아요.
+  prerequisites: [css.display.block-inline]
+  misconceptions: [css.mc.text-align-centers-box]
+  mdn: Web/CSS/text-align
+
+# ---- css.layout.flex-basics ----
+
+- id: css.flex.container
+  title: 플렉스 컨테이너와 아이템
+  importance: standard
+  summary: '부모에 `display: flex`를 주면 부모는 플렉스 컨테이너가 되고, 바로 아래 자식들이 플렉스 아이템이 되어 한 줄로 나란히 놓여요.'
+  prerequisites: [css.display.normal-flow]
+  misconceptions: [css.mc.flex-on-children, css.mc.flex-affects-grandchildren]
+  mdn: Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox
+
+- id: css.flex.axes
+  title: 주축과 교차축
+  importance: standard
+  summary: 아이템이 놓이는 방향이 주축, 그와 수직인 방향이 교차축이에요. flex-direction이 row(기본값)면 주축이 가로, column이면 주축이 세로예요.
+  prerequisites: [css.flex.container]
+  misconceptions: [css.mc.column-means-columns]
+  mdn: Web/CSS/flex-direction
+
+- id: css.flex.justify-align
+  title: justify-content와 align-items
+  importance: standard
+  summary: justify-content는 주축 방향으로, align-items는 교차축 방향으로 아이템을 정렬해요. 주축이 바뀌면 두 속성이 움직이는 방향도 바뀌어요.
+  prerequisites: [css.flex.axes]
+  misconceptions: [css.mc.justify-is-horizontal, css.mc.justify-align-swap]
+  mdn: Web/CSS/justify-content
+
+- id: css.flex.gap
+  title: gap
+  importance: standard
+  summary: gap은 플렉스 아이템과 아이템 사이에만 간격을 만들어요. 컨테이너의 가장자리와 첫·마지막 아이템 사이에는 간격이 생기지 않아요.
+  prerequisites: [css.flex.container]
+  misconceptions: [css.mc.gap-adds-outer-edges]
+  mdn: Web/CSS/gap
+
+# ---- css.layout.responsive ----
+
+- id: css.responsive.viewport-meta
+  title: 뷰포트 메타 태그
+  importance: standard
+  summary: '`<meta name="viewport" content="width=device-width, initial-scale=1">`는 휴대폰 브라우저가 페이지를 넓은 화면처럼 그린 뒤 축소하지 않고, 기기 너비 그대로 그리게 해요.'
+  prerequisites: [html.doc.skeleton, css.units.length]
+  misconceptions: [css.mc.viewport-meta-makes-responsive]
+  mdn: Web/HTML/Reference/Elements/meta/name/viewport
+
+- id: css.responsive.media-queries
+  title: 미디어 쿼리
+  importance: standard
+  summary: '`@media (min-width: 600px) { ... }` 안의 규칙은 화면 너비가 조건에 맞을 때만 적용돼요. min-width는 "이 너비 이상", max-width는 "이 너비 이하"예요.'
+  prerequisites: [css.cascade.order]
+  misconceptions: [css.mc.max-width-means-above]
+  mdn: Web/CSS/CSS_media_queries/Using_media_queries
+
+- id: css.responsive.mobile-first
+  title: 모바일 우선
+  importance: standard
+  summary: 모바일 우선은 좁은 화면용 스타일을 기본으로 쓰고, min-width 미디어 쿼리로 넓은 화면에서 필요한 규칙만 덧붙이는 방식이에요.
+  prerequisites: [css.responsive.media-queries, css.flex.axes]
+  misconceptions: [css.mc.mobile-first-means-desktop-override]
+  mdn: Web/CSS/CSS_media_queries

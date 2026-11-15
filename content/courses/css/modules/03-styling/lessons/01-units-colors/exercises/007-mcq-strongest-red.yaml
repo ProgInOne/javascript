@@ -1,0 +1,39 @@
+id: css.styling.units-colors.mcq-strongest-red
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.colors.notation, weight: 1 }
+tags: [color, rgb, hex]
+estimatedSeconds: 45
+prompt: |
+  다음 중 **가장 진한(밝은) 순수한 빨강**을 나타내는 색은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`rgb(255 0 0)`"
+    - id: b
+      text: "`rgb(100 0 0)`"
+      misconception: css.mc.rgb-max-100
+      rationale: rgb의 값은 0부터 255까지예요. 100은 최댓값이 아니라서 어두운 빨강이 돼요.
+    - id: c
+      text: "`rgb(255 255 255)`"
+      rationale: 빨강·초록·파랑이 모두 가장 강하면 흰색이 돼요.
+    - id: d
+      text: "`#110000`"
+      rationale: 16진수 `11`은 17이라서 거의 검정에 가까운 빨강이에요. 가장 강한 값은 `ff`예요.
+  correct: a
+misconceptions: [css.mc.rgb-max-100]
+hints:
+  - "`rgb()`는 빨강·초록·파랑 순서로 빛의 양을 숫자로 써요. 초록과 파랑은 0이어야 순수한 빨강이에요."
+  - rgb 값의 범위는 0부터 몇까지인지 떠올려 보세요. 퍼센트처럼 100이 끝이 아니에요.
+  - 각 값의 최댓값은 255이고, 16진수로는 `ff`예요.
+explanation: |
+  정답은 **`rgb(255 0 0)`**이에요. 빨강 빛은 최댓값 255, 초록과 파랑은 0이라서 가장 진한 순수한 빨강이에요. 16진수로는 `#ff0000`, 이름으로는 `red`와 같아요.
+
+  - `rgb(100 0 0)`: 값의 범위가 0부터 100까지라고 생각하면 고르기 쉬워요. 실제 범위는 0부터 255까지라서 100은 어두운 빨강이에요.
+  - `rgb(255 255 255)`: 세 빛이 모두 최대면 흰색이에요.
+  - `#110000`: 두 자리씩 빨강·초록·파랑이에요. `11`은 10진수로 17이라 아주 어두운 빨강이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

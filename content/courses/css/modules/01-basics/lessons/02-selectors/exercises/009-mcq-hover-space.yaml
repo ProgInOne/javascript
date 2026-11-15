@@ -1,0 +1,55 @@
+id: css.basics.selectors.mcq-hover-space
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: css.selectors.pseudo-class, weight: 1 }
+  - { id: css.selectors.combinators, weight: 0.5 }
+tags: [selector, pseudo-class, hover, descendant]
+estimatedSeconds: 75
+prompt: |
+  카드에 마우스를 올리면 카드의 배경이 노랗게 바뀌게 하려고 아래 규칙을 썼는데, 카드의 빈 곳(padding 부분)에 마우스를 올려도 카드 배경이 바뀌지 않아요. 원인으로 알맞은 것은 무엇인가요?
+code: |
+  <style>
+    .card {
+      padding: 24px;
+      border: 1px solid gray;
+    }
+    .card :hover {
+      background-color: yellow;
+    }
+  </style>
+  <div class="card">
+    <p>오늘의 할 일</p>
+  </div>
+spec:
+  options:
+    - id: a
+      text: "`.card`와 `:hover` 사이의 공백 때문에 \"카드 안에 있는, 마우스가 올라간 요소\"를 고르게 되었다"
+    - id: b
+      text: HTML의 div에 `hover` 클래스를 붙이지 않았다
+      misconception: css.mc.pseudo-class-is-class
+      rationale: 의사 클래스는 HTML에 클래스를 붙이지 않아도 브라우저가 상태를 보고 판단해요.
+    - id: c
+      text: 띄어쓰기는 선택자의 뜻을 바꾸지 않으므로, 브라우저가 :hover를 지원하지 않는 것이다
+      misconception: css.mc.hover-space
+      rationale: 선택자 안의 공백은 자손 선택자예요. 뜻이 완전히 달라져요.
+    - id: d
+      text: div 요소에는 :hover를 쓸 수 없고 button에만 쓸 수 있다
+      rationale: ":hover는 div, p, li 등 어떤 요소에도 쓸 수 있어요."
+  correct: a
+misconceptions: [css.mc.hover-space, css.mc.pseudo-class-is-class]
+hints:
+  - 선택자 안의 공백은 언제나 어떤 뜻이었는지 떠올려 보세요.
+  - "`.card :hover`를 \"`.card` 안에 있는 ___\"라고 읽어 보세요."
+  - 카드 자체의 상태를 고르려면 의사 클래스를 선택자에 붙여 써야 해요.
+explanation: |
+  정답은 **공백 때문에 "카드 안에 있는, 마우스가 올라간 요소"를 고르게 되었다**예요.
+
+  선택자 안의 공백은 자손 선택자예요. `.card :hover`는 `.card` 안쪽의 요소(여기서는 p) 중 마우스가 올라간 것을 골라요. 그래서 문단 글자 위에 마우스를 올리면 **문단의** 배경만 노래지고, 카드의 빈 곳에 올리면 아무 변화가 없어요.
+
+  카드 자체를 고르려면 **`.card:hover`** 처럼 붙여 써요.
+
+  - hover 클래스는 필요 없어요. 의사 클래스는 HTML과 상관없어요.
+  - :hover는 어떤 요소에도 쓸 수 있어요.
+origin: authored
+review: { status: draft, draftedBy: ai:claude }

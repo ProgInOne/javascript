@@ -1,0 +1,49 @@
+id: css.box.display.mcq-inline-margin
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.display.block-inline, weight: 1 }
+  - { id: css.box.areas, weight: 0.3 }
+tags: [display, inline, margin]
+estimatedSeconds: 60
+prompt: |
+  문장 속 링크에 아래 규칙을 줬어요. 화면에서 어떤 변화가 생기나요?
+code: |
+  /* <p>자세한 내용은 <a class="more">여기</a>를 눌러 확인하세요.</p> */
+  .more {
+    margin: 20px;
+  }
+spec:
+  options:
+    - id: a
+      text: 링크 좌우의 글자와만 20px씩 떨어지고, 윗줄·아랫줄과의 간격은 그대로다
+    - id: b
+      text: 링크가 네 방향 모두 20px씩 떨어져서 윗줄·아랫줄과의 간격도 넓어진다
+      misconception: css.mc.margin-on-inline
+      rationale: 인라인 요소의 위아래 margin은 줄 배치에 영향을 주지 않아요.
+    - id: c
+      text: 링크가 새 줄로 내려가 혼자 한 줄을 차지한다
+      rationale: margin은 display를 바꾸지 않아요. 링크는 여전히 인라인이라 문장 안에 있어요.
+    - id: d
+      text: 인라인 요소라 margin이 전혀 적용되지 않아 아무 변화가 없다
+      rationale: 좌우 margin은 인라인 요소에도 적용되어 옆 글자를 밀어내요.
+  correct: a
+misconceptions: [css.mc.margin-on-inline]
+hints:
+  - 링크(a)는 블록일까요, 인라인일까요?
+  - 인라인 요소는 문장 속 단어처럼 놓여요. 단어를 위아래로 띄울 수 있을까요, 옆 단어와만 띄울 수 있을까요?
+  - 인라인 요소의 margin 중 실제로 자리를 밀어내는 방향은 두 방향뿐이에요.
+explanation: |
+  정답은 **좌우의 글자와만 떨어지고, 윗줄·아랫줄과의 간격은 그대로**예요.
+
+  `a`는 인라인 요소라 글자처럼 줄 안에 놓여요. 인라인 요소의 좌우 margin은 옆 글자를 밀어내지만, 위아래 margin은 줄 높이나 윗줄·아랫줄과의 간격을 바꾸지 않아요.
+
+  - 네 방향 모두 떨어진다(b)는 블록처럼 생각한 경우예요.
+  - 새 줄로 내려간다(c)는 margin이 배치 방식을 바꾼다고 본 거예요. 배치 방식은 `display`가 정해요.
+  - 아무 변화가 없다(d)는 지나친 일반화예요. 좌우 margin은 적용돼요.
+
+  위아래로도 띄우고 싶다면 `display: inline-block`으로 바꿔요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,5 +1,4 @@
 id: css.box
 title: 박스 모델
-summary: 모든 요소는 상자입니다. 상자의 영역과 크기가 정해지는 규칙을 배웁니다.
-# v0.1 시범판에 있는 단원만 나열합니다. 전체 목록: model, display
-lessons: [model]
+summary: 모든 요소는 상자입니다. 상자의 영역과 크기가 정해지는 규칙과, 상자들이 화면에 놓이는 흐름을 배웁니다.
+lessons: [model, display]

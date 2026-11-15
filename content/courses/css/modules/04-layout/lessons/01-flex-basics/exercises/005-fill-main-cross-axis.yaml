@@ -1,0 +1,46 @@
+id: css.layout.flex-basics.fill-main-cross-axis
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.flex.axes, weight: 1 }
+tags: [flexbox, main-axis, cross-axis]
+estimatedSeconds: 60
+prompt: |
+  아래 컨테이너의 **주축**과 **교차축**은 각각 어느 방향인가요? `가로` 또는 `세로`로 쓰세요.
+code: |
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+  }
+spec:
+  mode: text
+  template: |
+    주축: {{blank:main}}
+    교차축: {{blank:cross}}
+  blanks:
+    - id: main
+      accept: ["세로", "세로 방향", "위아래", "위에서 아래"]
+      width: 8
+      misconceptionMap:
+        "가로": css.mc.column-means-columns
+    - id: cross
+      accept: ["가로", "가로 방향", "좌우", "왼쪽에서 오른쪽"]
+      width: 8
+      misconceptionMap:
+        "세로": css.mc.column-means-columns
+misconceptions: [css.mc.column-means-columns]
+hints:
+  - 주축은 아이템이 늘어서는 방향이고, 교차축은 그와 수직인 방향이에요.
+  - "`flex-direction: column`이면 아이템이 어느 방향으로 늘어설까요?"
+  - column이면 아이템이 위에서 아래로 늘어서요. 교차축은 그와 수직이에요.
+explanation: |
+  정답은 **주축: 세로, 교차축: 가로**예요.
+
+  - 주축은 아이템이 늘어서는 방향이에요. `flex-direction: column`이면 아이템이 위에서 아래로 놓이므로 주축이 **세로**예요.
+  - 교차축은 주축과 수직인 방향이라 **가로**예요.
+
+  기본값 `row`에서는 반대로 주축이 가로, 교차축이 세로예요. 주축과 교차축은 고정된 방향이 아니라 `flex-direction`에 따라 바뀐다는 점이 중요해요. 뒤에서 배우는 `justify-content`와 `align-items`가 이 두 축을 기준으로 움직이거든요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

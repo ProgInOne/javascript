@@ -1,0 +1,57 @@
+id: css.layout.responsive.mcq-media-query-not-working
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.responsive.viewport-meta, weight: 1 }
+  - { id: css.responsive.media-queries, weight: 0.3 }
+tags: [responsive, viewport-meta, debugging]
+estimatedSeconds: 75
+prompt: |
+  아래 페이지를 너비 `375px`인 휴대폰에서 열었더니, 미디어 쿼리가 적용되지 않고 데스크톱 화면을 작게 줄여 놓은 것처럼 보여요. 가장 알맞은 해결 방법은 무엇인가요?
+code: |
+  <!doctype html>
+  <html lang="ko">
+    <head>
+      <meta charset="utf-8" />
+      <title>강의 목록</title>
+      <style>
+        .cards { display: flex; }
+        @media (max-width: 600px) {
+          .cards { flex-direction: column; }
+        }
+      </style>
+    </head>
+    <body>...</body>
+  </html>
+spec:
+  options:
+    - id: a
+      text: '`head`에 `<meta name="viewport" content="width=device-width, initial-scale=1">`을 추가한다'
+    - id: b
+      text: 미디어 쿼리를 지우고 뷰포트 메타 태그만 넣는다. 그러면 브라우저가 카드를 알아서 세로로 쌓는다
+      misconception: css.mc.viewport-meta-makes-responsive
+      rationale: 메타 태그는 배치를 바꾸지 않아요. 카드를 세로로 쌓는 일은 미디어 쿼리가 해요.
+    - id: c
+      text: "`max-width: 600px`를 `max-width: 980px`로 바꾼다"
+      rationale: 증상은 피할 수 있지만, 페이지가 여전히 축소된 채 그려져 글자가 아주 작게 보여요. 원인을 고친 것이 아니에요.
+    - id: d
+      text: "`@media`를 `<style>` 밖, `body` 안으로 옮긴다"
+      rationale: 미디어 쿼리는 CSS 문법이라 style 요소나 CSS 파일 안에 있어야 해요.
+  correct: a
+misconceptions: [css.mc.viewport-meta-makes-responsive]
+hints:
+  - 휴대폰 브라우저가 이 페이지를 몇 px 너비로 그리고 있을지 생각해 보세요. "작게 줄여 놓은 것처럼" 보인다는 점이 단서예요.
+  - "뷰포트 메타 태그가 없으면 휴대폰 브라우저는 약 980px 너비로 그린 뒤 축소해요. 그러면 `max-width: 600px` 조건은 어떻게 될까요?"
+  - 미디어 쿼리는 그대로 두고, 브라우저가 기기 너비 그대로 그리게 하는 태그를 head에 추가하세요.
+explanation: |
+  정답은 **뷰포트 메타 태그를 추가한다**예요.
+
+  메타 태그가 없으면 휴대폰 브라우저는 페이지를 약 980px 너비로 그린 뒤 화면에 맞게 줄여요. 그리는 너비가 980px이니 `max-width: 600px` 조건에 맞지 않아 미디어 쿼리가 적용되지 않았어요. 메타 태그를 넣으면 375px 그대로 그려져 미디어 쿼리가 동작해요.
+
+  - b: 메타 태그는 배치를 바꾸지 않아요. 미디어 쿼리를 지우면 카드는 계속 가로로 놓여요. 반응형에는 메타 태그와 미디어 쿼리가 **둘 다** 필요해요.
+  - c: 조건을 980px로 늘리면 세로로 쌓이긴 하지만 화면은 여전히 축소된 상태라 글자가 아주 작아요.
+  - d: `@media`는 CSS라 style 요소나 CSS 파일 안에만 쓸 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,118 @@
+id: css.layout.flex-basics.web-sidebar-column
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.flex.axes, weight: 1 }
+tags: [flexbox, flex-direction, web-task]
+estimatedSeconds: 180
+prompt: |
+  사이드바의 버튼 세 개가 지금은 가로로 나란히 놓여 있어요. `.sidebar`를 플렉스 컨테이너로 **그대로 둔 채**, 버튼이 위에서 아래로 세로 한 줄로 쌓이게 바꾸세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>사이드바</title>
+              <style>
+                .sidebar {
+                  display: flex;
+                  width: 200px;
+                  padding: 8px;
+                  background: #e5e7eb;
+                }
+                .btn {
+                  padding: 8px;
+                  border: 1px solid #6b7280;
+                  background: white;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="sidebar">
+                <div class="btn" id="b1">대시보드</div>
+                <div class="btn" id="b2">학습</div>
+                <div class="btn" id="b3">설정</div>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>사이드바</title>
+              <style>
+                .sidebar {
+                  display: flex;
+                  flex-direction: column;
+                  width: 200px;
+                  padding: 8px;
+                  background: #e5e7eb;
+                }
+                .btn {
+                  padding: 8px;
+                  border: 1px solid #6b7280;
+                  background: white;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="sidebar">
+                <div class="btn" id="b1">대시보드</div>
+                <div class="btn" id="b2">학습</div>
+                <div class="btn" id="b3">설정</div>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: layout
+      id: b2-below-b1
+      description: "\"학습\" 버튼이 \"대시보드\" 버튼 아래에 있어야 합니다."
+      requirement: 버튼이 세로로
+      visible: true
+      a: "#b2"
+      b: "#b1"
+      relation: below
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.column-means-columns
+    - kind: layout
+      id: b3-below-b2
+      description: "\"설정\" 버튼이 \"학습\" 버튼 아래에 있어야 합니다."
+      requirement: 버튼이 세로로
+      visible: true
+      a: "#b3"
+      b: "#b2"
+      relation: below
+      tolerancePx: 1
+    - kind: css
+      id: still-flex
+      description: .sidebar는 계속 플렉스 컨테이너여야 합니다.
+      requirement: Flexbox 유지
+      visible: true
+      selector: .sidebar
+      expect:
+        computed:
+          display: { equals: flex }
+misconceptions: [css.mc.column-means-columns]
+hints:
+  - 아이템이 늘어서는 방향(주축)을 정하는 속성을 떠올려 보세요.
+  - "`flex-direction`의 기본값은 `row`(가로)예요. 세로 방향을 뜻하는 값은 무엇일까요?"
+  - "`.sidebar`에 `flex-direction` 선언을 하나 추가하면 돼요. 이름이 \"열\"을 뜻하는 값이에요."
+explanation: |
+  예시 정답은 `.sidebar`에 `flex-direction: column;`을 추가하는 거예요.
+
+  `flex-direction`은 주축 방향을 정해요. 기본값 `row`는 주축이 가로라서 버튼이 옆으로 놓였어요. `column`으로 바꾸면 주축이 세로가 되어 버튼이 위에서 아래로 한 줄로 쌓여요.
+
+  `display: flex`를 지워도 버튼(블록 요소)은 위아래로 쌓이지만, 이 문제는 Flexbox를 유지하는 조건이 있어요. Flexbox를 유지하면 나중에 `gap`이나 정렬 속성을 그대로 쓸 수 있어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

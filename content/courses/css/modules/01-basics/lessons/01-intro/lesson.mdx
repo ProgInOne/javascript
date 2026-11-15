@@ -1,0 +1,199 @@
+<Section kind="objectives">
+- CSS 규칙에서 선택자·선언·속성·값을 각각 가리킬 수 있어요.
+- 세미콜론과 중괄호를 갖춘 올바른 CSS 규칙을 쓰고, 문법 실수로 무시되는 선언을 찾을 수 있어요.
+- `link` 요소·`style` 요소·`style` 속성으로 CSS를 연결하고, 각 방법이 어디에 적용되는지 구분할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+HTML만으로 만든 페이지는 모두 비슷하게 생겼어요. 글자는 검은색, 배경은 흰색, 제목은 그냥 크고 굵을 뿐이에요. "공지 문단만 노란 배경으로 칠하고 싶어요", "모든 제목을 남색으로 바꾸고 싶어요" 같은 일은 HTML로는 할 수 없어요.
+
+이럴 때 쓰는 언어가 **CSS**예요. HTML이 "이건 제목, 이건 문단"처럼 내용과 구조를 맡는다면, CSS는 "제목은 남색, 문단은 16px"처럼 **모양**을 맡아요. 이 단원에서는 CSS 규칙을 어떻게 쓰는지, 그리고 그 규칙을 HTML 문서에 어떻게 연결하는지 배워요.
+</Section>
+
+<Section kind="principle">
+### 규칙의 구조
+
+CSS는 **규칙(rule)** 을 여러 개 늘어놓은 거예요. 규칙 하나는 "어떤 요소에" "어떤 모양을" 줄지 적어요.
+
+```css
+h1 {
+  color: navy;
+  font-size: 32px;
+}
+```
+
+| 부분 | 이 예에서 | 뜻 |
+|---|---|---|
+| 선택자 | `h1` | 모양을 줄 요소를 고르는 부분 |
+| 선언 블록 | `{ ... }` | 중괄호로 감싼 선언 묶음 |
+| 선언 | `color: navy;` | 모양 하나를 정하는 한 줄 |
+| 속성 | `color` | 무엇을 바꿀지 (글자 색) |
+| 값 | `navy` | 어떻게 바꿀지 (남색) |
+
+선언은 항상 **`속성: 값;`** 모양이에요. 속성과 값 사이에는 콜론(`:`)을, 선언 끝에는 세미콜론(`;`)을 써요. 세미콜론은 "이 선언은 여기까지"라는 표시라서, 선언이 여러 개면 꼭 있어야 해요. 줄을 바꾸는 것만으로는 선언이 나뉘지 않아요.
+
+값은 `navy`, `32px`, `bold`처럼 **따옴표 없이** 써요. 따옴표는 글꼴 이름처럼 글자 그대로의 값에만 써요.
+
+브라우저는 규칙을 읽다가 이해할 수 없는 선언을 만나면 오류를 내지 않고 **그 선언만 조용히 무시**해요. 그래서 오타가 있어도 페이지는 열리지만, 그 모양만 적용되지 않아요.
+
+### CSS를 HTML에 연결하는 세 가지 방법
+
+| 방법 | 쓰는 곳 | 적용 범위 |
+|---|---|---|
+| 외부 파일 + `link` 요소 | `head` 안에 `<link rel="stylesheet" href="style.css">` | 이 파일을 연결한 모든 페이지 |
+| `style` 요소 | `head` 안에 `<style> ... </style>` | 이 페이지 한 장 |
+| `style` 속성(인라인 스타일) | 요소의 여는 태그에 `style="color: red"` | 그 요소 하나 |
+
+실제 사이트는 대부분 **외부 파일**을 써요. CSS 파일 하나를 여러 페이지가 함께 쓰니, 한 곳만 고치면 사이트 전체의 모양이 바뀌어요.
+
+```html
+<head>
+  <meta charset="utf-8" />
+  <title>내 블로그</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+```
+
+`rel="stylesheet"`는 "이 파일은 스타일시트예요"라는 뜻이고, `href`에는 파일 경로를 써요. 이미지처럼 `src`를 쓰지 않는다는 점을 기억하세요.
+
+이 과정의 예제와 실습은 파일 하나로 실행되므로 주로 **`style` 요소**를 써요. 규칙을 쓰는 법은 외부 파일과 똑같아요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 `style` 요소에 규칙 두 개를 썼어요. 실행한 뒤 `navy`를 `crimson`으로 바꿔 보세요.
+
+<RunnableExample id="first-rules" lang="web" concepts={["css.intro.rule-structure"]}>
+```html
+<style>
+  h1 {
+    color: navy;
+    font-size: 32px;
+  }
+  p {
+    color: gray;
+  }
+</style>
+<h1>오늘의 공지</h1>
+<p>도서관은 오후 6시에 문을 닫아요.</p>
+<p>반납함은 24시간 열려 있어요.</p>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- `h1` 규칙은 제목의 글자 색을 남색으로, 크기를 32px로 바꿔요.
+- `p` 규칙은 **모든** 문단을 회색으로 바꿔요. 선택자 `p`가 문서의 `p` 요소를 전부 고르기 때문이에요.
+- HTML에는 아무것도 덧붙이지 않았어요. 모양은 전부 CSS가 정했어요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제를 실행하기 전에, 문단의 글자 색과 배경색이 어떻게 보일지 예측해 보세요. `color` 선언 끝을 잘 보세요.
+
+<RunnableExample id="missing-semicolon" lang="web" predict predictKind="value" concepts={["css.intro.rule-structure"]}>
+```html
+<style>
+  .notice {
+    color: white
+    background-color: green;
+    padding: 12px;
+  }
+</style>
+<p class="notice">세미콜론이 빠지면 어떻게 될까요?</p>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+글자는 흰색이 아니라 검은색이고, 배경도 초록색이 아니에요. `padding`만 적용돼요.
+
+`color: white` 끝에 세미콜론이 없어서, 브라우저는 다음 줄까지 이어서 `color: white background-color: green`이라는 **하나의 선언**으로 읽어요. 이런 색 값은 없으니 이 선언 전체가 무시되고, 그 결과 `color`와 `background-color` **둘 다** 적용되지 않아요. 세미콜론이 있는 `padding`만 살아남아요. `white` 뒤에 `;`를 붙이고 다시 실행해 보세요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `style` 요소와 `style` 속성을 함께 썼어요. 어느 문단에 무엇이 적용되는지 보세요.
+
+<RunnableExample id="inline-style" lang="web" concepts={["css.intro.linking"]}>
+```html
+<style>
+  p {
+    font-size: 18px;
+  }
+</style>
+<p style="color: crimson;">첫 번째 문단</p>
+<p>두 번째 문단</p>
+<p>세 번째 문단</p>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- `style` 요소의 `p` 규칙은 세 문단 모두의 글자를 18px로 키워요.
+- `style` 속성은 그 속성을 쓴 **첫 번째 문단 하나**에만 적용돼요. 두 번째, 세 번째 문단은 빨간색이 아니에요.
+- `style` 속성에는 선택자와 중괄호 없이 선언만 써요. 그 요소 자신이 대상이기 때문이에요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="css.mc.semicolon-optional">
+<Wrong>선언을 줄마다 나눠 썼으니 중간에 세미콜론 하나쯤 빠져도 괜찮다.</Wrong>
+<Actual>세미콜론이 빠지면 다음 선언까지 하나로 이어 읽혀서, 두 선언이 **함께** 무시돼요.</Actual>
+<Right>선언마다 끝에 `;`를 붙여요. 마지막 선언의 세미콜론은 생략할 수 있지만, 붙이는 습관을 들이면 나중에 선언을 추가할 때 실수가 없어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.value-in-quotes">
+<Wrong>`color: "red";`처럼 값은 따옴표로 감싸야 한다.</Wrong>
+<Actual>따옴표로 감싼 `"red"`는 색 이름이 아니라 문자열이라 잘못된 값으로 무시돼요.</Actual>
+<Right>`red`, `20px`, `bold` 같은 값은 따옴표 없이 써요. 따옴표는 `"Noto Sans KR"` 같은 글꼴 이름에만 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.link-uses-src">
+<Wrong>CSS 파일은 `<link src="style.css">`나 `<script src="style.css">`로 연결한다.</Wrong>
+<Actual>`src`나 `script`로는 스타일시트가 연결되지 않아서 페이지에 아무 모양도 적용되지 않아요.</Actual>
+<Right>`<link rel="stylesheet" href="style.css">`로 연결해요. 주소는 `href`에, 파일의 종류는 `rel="stylesheet"`로 알려요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.inline-applies-to-all">
+<Wrong>문단 하나에 `style="color: red"`를 쓰면 모든 문단이 빨간색이 된다.</Wrong>
+<Actual>`style` 속성은 그 속성을 쓴 요소 하나에만 적용돼요.</Actual>
+<Right>여러 요소에 같은 모양을 주려면 `style` 요소나 CSS 파일에 선택자로 규칙을 써요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+실제 사이트의 HTML을 열어 보면 `head`에 이런 줄이 있어요.
+
+```html
+<link rel="stylesheet" href="/css/main.css" />
+```
+
+수십, 수백 개의 페이지가 같은 `main.css`를 연결해요. 디자이너가 "버튼 색을 바꿔 주세요"라고 하면 개발자는 이 파일의 규칙 한 줄만 고치면 돼요. 반대로 요소마다 `style` 속성을 쓰면 같은 수정을 수백 군데에서 해야 해요. 그래서 `style` 속성은 잠깐 시험해 볼 때나 아주 특별한 경우에만 써요.
+
+<Callout kind="tip" title="무시된 선언 찾기">
+<Key>F12</Key>로 개발자 도구를 열고 요소를 선택하면, 적용된 규칙 목록에서 잘못된 선언에 노란 경고 표시나 취소선이 붙어 있어요. 모양이 안 바뀔 때 가장 먼저 확인하는 곳이에요.
+</Callout>
+</Section>
+
+<Section kind="check">
+규칙의 각 부분 이름을 기억하는지 확인해 보세요.
+
+<InlineExercise ref="css.basics.intro.mcq-rule-parts" />
+
+`style` 속성이 어디까지 적용되는지도 확인해 보세요.
+
+<InlineExercise ref="css.basics.intro.mcq-inline-scope" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- CSS 규칙은 선택자와 중괄호 안의 선언들로 이루어져요.
+- 선언은 `속성: 값;` 모양이고, 선언과 선언은 세미콜론으로 나눠요.
+- 값은 따옴표 없이 써요. 브라우저는 잘못된 선언을 오류 없이 무시해요.
+- 외부 CSS 파일은 `<link rel="stylesheet" href="...">`로, 한 페이지용 CSS는 `style` 요소로 연결해요.
+- `style` 속성은 그 요소 하나에만 적용돼요.
+</Section>
+
+<Section kind="next">
+다음 단원 "선택자"에서는 `h1`, `p`처럼 요소 이름으로 고르는 것을 넘어, 클래스와 ID, 위치와 상태로 원하는 요소만 정확히 고르는 방법을 배워요. <MdnLink path="Web/CSS/CSS_syntax/Syntax" />
+</Section>

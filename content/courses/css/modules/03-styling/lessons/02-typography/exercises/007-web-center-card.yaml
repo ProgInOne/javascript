@@ -1,0 +1,131 @@
+id: css.styling.typography.web-center-card
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.type.text-align, weight: 1 }
+  - { id: css.box.spacing, weight: 0.5 }
+tags: [text-align, margin-auto, centering, web-task]
+estimatedSeconds: 300
+prompt: |
+  회색 페이지(`.page`) 안에 너비 `280px`인 초대장 카드(`.card`)가 있어요. 지금은 카드도, 카드 안의 글자도 왼쪽에 붙어 있어요.
+
+  `.card` 규칙에 속성을 추가해 아래 두 가지를 만족시키세요.
+
+  1. 카드 **상자 자체**가 회색 페이지의 가로 가운데에 오게 하세요.
+  2. 카드 **안의 글자**가 카드 안에서 가운데 정렬되게 하세요.
+
+  카드의 너비 `280px`은 그대로 두세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>초대장</title>
+              <style>
+                .page {
+                  width: 600px;
+                  padding: 24px 0;
+                  background: #e5e7eb;
+                }
+                .card {
+                  width: 280px;
+                  padding: 16px;
+                  background: white;
+                  border: 2px solid #6b7280;
+                  /* 여기에 속성을 추가하세요 */
+                }
+              </style>
+            </head>
+            <body>
+              <div class="page">
+                <div class="card">
+                  <p>생일 파티에 초대해요</p>
+                  <p>토요일 오후 3시</p>
+                </div>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>초대장</title>
+              <style>
+                .page {
+                  width: 600px;
+                  padding: 24px 0;
+                  background: #e5e7eb;
+                }
+                .card {
+                  width: 280px;
+                  padding: 16px;
+                  background: white;
+                  border: 2px solid #6b7280;
+                  margin: 0 auto;
+                  text-align: center;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="page">
+                <div class="card">
+                  <p>생일 파티에 초대해요</p>
+                  <p>토요일 오후 3시</p>
+                </div>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: layout
+      id: card-centered
+      description: 카드 상자가 회색 페이지의 가로 가운데에 있어야 합니다.
+      requirement: 카드 상자 가운데
+      visible: true
+      a: .card
+      container: .page
+      relation: centered-horizontally
+      tolerancePx: 2
+      misconceptionIfFail: css.mc.text-align-centers-box
+    - kind: css
+      id: text-centered
+      description: 카드 안의 글자가 가운데 정렬되어야 합니다.
+      requirement: 글자 가운데 정렬
+      visible: true
+      selector: .card p
+      all: true
+      expect:
+        computed:
+          text-align: { equals: center }
+    - kind: css
+      id: width-kept
+      description: 카드의 너비는 280px 그대로여야 합니다.
+      requirement: 카드 너비 유지
+      selector: .card
+      expect:
+        computed:
+          width: { px: { value: 280 } }
+misconceptions: [css.mc.text-align-centers-box]
+hints:
+  - 두 요구사항은 서로 다른 속성이 맡아요. 하나는 글자를, 하나는 상자를 움직여요.
+  - 글자 정렬은 `text-align`이에요. 너비가 정해진 블록 상자를 가운데에 놓는 것은 `margin`의 좌우 값이에요.
+  - 좌우 margin을 `auto`로 주면 브라우저가 남는 공간을 양쪽에 똑같이 나눠 줘요.
+explanation: |
+  예시 정답은 `.card`에 `margin: 0 auto;`와 `text-align: center;`를 추가하는 거예요.
+
+  - **상자 가운데**: 카드는 너비가 280px인 블록이라 페이지(600px)에 320px이 남아요. 좌우 margin을 `auto`로 주면 남는 공간을 160px씩 나눠서 카드가 가운데에 와요. `margin-left: auto; margin-right: auto;`로 써도 같아요.
+  - **글자 가운데**: `text-align: center`는 카드 안의 글자를 가운데로 정렬해요. 상속되는 속성이라 카드에 주면 안쪽 문단에 모두 적용돼요.
+
+  `text-align: center`만 주면 글자만 가운데로 가고 카드는 왼쪽에 남아요. 상자 체크가 실패했다면 이 경우예요. 반대로 `.page`에 `text-align: center`를 줘도 카드 상자는 움직이지 않아요. 블록 상자는 글자처럼 정렬되지 않기 때문이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

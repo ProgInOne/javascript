@@ -1,0 +1,123 @@
+id: css.layout.flex-basics.web-menu-row
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.flex.container, weight: 1 }
+tags: [flexbox, display-flex, debugging, web-task]
+estimatedSeconds: 200
+prompt: |
+  메뉴 세 칸을 가로로 나란히 놓으려고 `.item`에 `display: flex`를 줬는데, 메뉴가 여전히 위아래로 쌓여 있어요.
+
+  CSS를 고쳐 **Flexbox로** 세 메뉴가 한 줄에 왼쪽부터 차례로 놓이게 하세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>메뉴</title>
+              <style>
+                .menu {
+                  background: #e5e7eb;
+                }
+                .item {
+                  display: flex;
+                  padding: 8px 16px;
+                  background: #fde68a;
+                  border: 1px solid #92400e;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="menu">
+                <div class="item" id="m1">홈</div>
+                <div class="item" id="m2">강의</div>
+                <div class="item" id="m3">문의</div>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>메뉴</title>
+              <style>
+                .menu {
+                  display: flex;
+                  background: #e5e7eb;
+                }
+                .item {
+                  padding: 8px 16px;
+                  background: #fde68a;
+                  border: 1px solid #92400e;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="menu">
+                <div class="item" id="m1">홈</div>
+                <div class="item" id="m2">강의</div>
+                <div class="item" id="m3">문의</div>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: menu-is-flex
+      description: 메뉴들을 감싼 .menu가 플렉스 컨테이너여야 합니다.
+      requirement: Flexbox 사용
+      visible: true
+      selector: .menu
+      expect:
+        computed:
+          display: { equals: flex }
+      misconceptionIfFail: css.mc.flex-on-children
+    - kind: layout
+      id: second-right-of-first
+      description: "\"강의\"가 \"홈\"의 오른쪽, 같은 줄에 있어야 합니다."
+      requirement: 세 메뉴가 한 줄에
+      visible: true
+      a: "#m2"
+      b: "#m1"
+      relation: right-of
+      tolerancePx: 1
+    - kind: layout
+      id: third-right-of-second
+      description: "\"문의\"가 \"강의\"의 오른쪽, 같은 줄에 있어야 합니다."
+      requirement: 세 메뉴가 한 줄에
+      visible: true
+      a: "#m3"
+      b: "#m2"
+      relation: right-of
+      tolerancePx: 1
+    - kind: layout
+      id: same-row
+      description: 세 메뉴가 같은 줄에 있어야 합니다.
+      requirement: 세 메뉴가 한 줄에
+      a: "#m3"
+      b: "#m1"
+      relation: same-row
+      tolerancePx: 1
+misconceptions: [css.mc.flex-on-children]
+hints:
+  - "`display: flex`는 그 요소의 자식들을 나란히 놓아요. 지금 `.item`의 자식은 무엇인가요?"
+  - 나란히 놓고 싶은 것은 `.item` 세 개예요. 이 세 요소를 감싼 부모는 무엇인가요?
+  - "`display: flex`를 `.item`에서 빼고, 세 메뉴를 감싼 부모 규칙으로 옮겨 보세요."
+explanation: |
+  예시 정답은 `display: flex`를 `.item`에서 `.menu`로 옮기는 거예요.
+
+  `display: flex`는 그 요소를 플렉스 컨테이너로 만들고, **바로 아래 자식**들을 한 줄로 놓아요. `.item`에 주면 `.item` 안의 글자("홈")가 아이템이 될 뿐, `.item` 세 개는 여전히 블록처럼 위아래로 쌓여요.
+
+  메뉴 세 칸을 감싼 `.menu`에 주어야 세 `.item`이 플렉스 아이템이 되어 왼쪽부터 나란히 놓여요. `.item`에 남겨 둬도 동작에는 문제가 없지만 필요 없는 선언이니 지우는 게 깔끔해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

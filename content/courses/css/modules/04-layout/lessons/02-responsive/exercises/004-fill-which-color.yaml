@@ -1,0 +1,71 @@
+id: css.layout.responsive.fill-which-color
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.responsive.media-queries, weight: 1 }
+  - { id: css.cascade.order, weight: 0.3 }
+tags: [responsive, media-query, min-width, cascade]
+estimatedSeconds: 90
+prompt: |
+  아래 CSS에서 `.title`의 글자 색은 화면 너비에 따라 바뀌어요. 화면 너비가 각각 아래와 같을 때 글자 색은 무엇일까요? 색 이름(`black`, `green`, `purple`)으로 쓰세요.
+code: |
+  .title {
+    color: black;
+  }
+  @media (min-width: 768px) {
+    .title {
+      color: green;
+    }
+  }
+  @media (min-width: 1024px) {
+    .title {
+      color: purple;
+    }
+  }
+spec:
+  mode: text
+  template: |
+    너비 375px: {{blank:w375}}
+    너비 900px: {{blank:w900}}
+    너비 1280px: {{blank:w1280}}
+  blanks:
+    - id: w375
+      accept: ["black"]
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "green": css.mc.max-width-means-above
+        "purple": css.mc.max-width-means-above
+    - id: w900
+      accept: ["green"]
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "black": css.mc.max-width-means-above
+        "purple": css.mc.max-width-means-above
+    - id: w1280
+      accept: ["purple"]
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "black": css.mc.max-width-means-above
+misconceptions: [css.mc.max-width-means-above]
+hints:
+  - 너비마다 두 미디어 쿼리의 조건(최소 768px, 최소 1024px)에 맞는지 하나씩 따져 보세요.
+  - 375px은 두 조건 모두에 맞지 않아요. 900px은 첫 번째 조건에만 맞아요. 1280px은 두 조건 모두에 맞아요.
+  - 조건에 맞는 규칙이 여러 개면, 명시도가 같으니 CSS에서 더 아래에 쓴 규칙이 이겨요.
+explanation: |
+  정답은 **375px: black, 900px: green, 1280px: purple**이에요.
+
+  | 화면 너비 | min-width 768px | min-width 1024px | 결과 |
+  |---|---|---|---|
+  | 375px | 아니요 | 아니요 | 기본 규칙 `black` |
+  | 900px | 예 | 아니요 | `green` |
+  | 1280px | 예 | 예 | 둘 다 맞으면 뒤의 규칙이 이겨서 `purple` |
+
+  - 1280px에서는 green과 purple 규칙이 모두 적용 대상이에요. 세 규칙의 선택자가 모두 `.title`로 명시도가 같으니, CSS에서 **나중에 쓴** purple이 이겨요. 이게 모바일 우선 CSS에서 미디어 쿼리를 작은 너비부터 큰 너비 순서로 쓰는 이유예요.
+  - 375px에 green이나 purple을 답했다면 min-width를 "이하"로 읽은 거예요. min-width는 "최소 ~부터", 즉 이상이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

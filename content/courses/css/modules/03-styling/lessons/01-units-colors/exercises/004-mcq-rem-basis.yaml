@@ -1,0 +1,38 @@
+id: css.styling.units-colors.mcq-rem-basis
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.units.rem-em, weight: 1 }
+tags: [units, rem, em]
+estimatedSeconds: 40
+prompt: |
+  페이지 어디에 써도 **루트(`html`) 요소의 글자 크기**를 기준으로 크기가 정해지는 단위는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`rem`"
+    - id: b
+      text: "`em`"
+      misconception: css.mc.em-same-as-rem
+      rationale: "`em`은 가까운 곳(그 요소, `font-size`에서는 부모)의 글자 크기를 기준으로 해요. 위치에 따라 크기가 달라져요."
+    - id: c
+      text: "`%`"
+      rationale: "`%`는 부모 요소를 기준으로 해요."
+    - id: d
+      text: "`vw`"
+      rationale: "`vw`는 화면(뷰포트) 너비를 기준으로 해요."
+  correct: a
+misconceptions: [css.mc.em-same-as-rem]
+hints:
+  - 단위 이름에 "루트(root)"의 첫 글자가 들어 있는 것을 찾아보세요.
+  - "`em`과 `rem`은 비슷해 보이지만 기준이 달라요. 하나는 가까운 곳, 하나는 루트를 봐요."
+  - "`rem`은 \"root em\"의 줄임말이에요."
+explanation: |
+  정답은 **`rem`**이에요. "root em"의 줄임말로, 언제나 루트(`html`)의 글자 크기를 기준으로 해요. 루트가 16px이면 `2rem`은 어디서나 32px이에요.
+
+  - `em`은 그 요소(`font-size`에 쓰면 부모)의 글자 크기가 기준이라, 놓인 위치에 따라 크기가 달라져요.
+  - `%`는 부모 요소, `vw`는 화면 너비가 기준이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

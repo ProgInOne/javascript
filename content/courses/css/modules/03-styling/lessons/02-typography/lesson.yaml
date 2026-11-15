@@ -1,0 +1,15 @@
+id: css.styling.typography
+title: 글꼴과 텍스트
+summary: font-family·font-size·font-weight로 글꼴을 정하고, line-height와 text-align으로 읽기 좋은 문단을 만듭니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 10, practice: 12 }
+concepts:
+  primary: [css.type.font-properties, css.type.line-height, css.type.text-align]
+  practiced: [css.units.rem-em, css.cascade.inheritance]
+objectives:
+  - 대안 글꼴을 포함한 font-family 목록과 font-size·font-weight를 써서 글꼴을 정할 수 있다.
+  - 단위 없는 line-height가 실제로 몇 px이 되는지 계산할 수 있다.
+  - text-align이 정렬하는 대상을 설명하고, 글자 정렬과 상자 가운데 놓기를 구분할 수 있다.
+practice:
+  targetCount: 7

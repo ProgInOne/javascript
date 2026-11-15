@@ -1,0 +1,47 @@
+id: css.layout.flex-basics.mcq-flex-where
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.flex.container, weight: 1 }
+tags: [flexbox, display-flex]
+estimatedSeconds: 45
+prompt: |
+  아래 HTML에서 세 카드를 Flexbox로 **가로로 나란히** 놓으려고 해요. `display: flex`를 어느 규칙에 써야 할까요?
+code: |
+  <div class="list">
+    <div class="card">카드 1</div>
+    <div class="card">카드 2</div>
+    <div class="card">카드 3</div>
+  </div>
+spec:
+  options:
+    - id: a
+      text: "`.list { display: flex; }` — 카드들을 감싼 부모에 쓴다"
+    - id: b
+      text: "`.card { display: flex; }` — 나란히 놓을 카드 각각에 쓴다"
+      misconception: css.mc.flex-on-children
+      rationale: 카드에 쓰면 카드 안쪽의 글자가 배치될 뿐, 카드끼리는 여전히 위아래로 쌓여요.
+    - id: c
+      text: "`body { display: flex; }` — 페이지 전체에 쓴다"
+      rationale: body의 바로 아래 자식은 `.list` 하나뿐이라, 카드들은 나란히 놓이지 않아요.
+    - id: d
+      text: 부모와 카드 모두에 써야 한다
+      rationale: 카드에도 쓰면 카드 안쪽이 플렉스 컨테이너가 될 뿐, 나란히 놓는 데 필요한 것은 부모 쪽 하나예요.
+  correct: a
+misconceptions: [css.mc.flex-on-children]
+hints:
+  - "`display: flex`는 \"내 자식들을 어떻게 놓을지\"를 정하는 속성이에요."
+  - 나란히 놓고 싶은 요소들이 모두 들어 있는 공통 부모를 찾아보세요.
+  - 세 카드의 바로 위 부모는 class가 `list`인 div예요.
+explanation: |
+  정답은 **`.list { display: flex; }`**예요.
+
+  `display: flex`를 준 요소는 **플렉스 컨테이너**가 되고, 그 요소의 **바로 아래 자식**들이 플렉스 아이템이 되어 한 줄로 놓여요. 그래서 나란히 놓을 카드들을 감싼 부모(`.list`)에 써야 해요.
+
+  - 카드에 쓰면(b) 각 카드가 자기 안쪽(글자)의 컨테이너가 될 뿐, 카드들은 여전히 블록이라 위아래로 쌓여요.
+  - body에 쓰면(c) body의 바로 아래 자식인 `.list` 하나만 아이템이 돼요.
+  - 둘 다 쓸 필요는 없어요(d). 카드끼리의 배치는 부모 하나가 정해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

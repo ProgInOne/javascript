@@ -1,0 +1,196 @@
+id: css.layout.flex-basics.web-nav-gap
+type: web_task
+difficulty: 4
+concepts:
+  - { id: css.flex.gap, weight: 1 }
+  - { id: css.flex.container, weight: 0.5 }
+  - { id: css.flex.justify-align, weight: 0.5 }
+tags: [flexbox, gap, nested-flex, web-task]
+estimatedSeconds: 420
+prompt: |
+  사이트 위쪽의 내비게이션 막대를 완성하세요. 지금은 로고와 메뉴 세 개가 모두 위아래로 쌓여 있어요. CSS만 고쳐서 아래 조건을 모두 만족시키세요(HTML은 그대로 둬요).
+
+  1. 로고(`.logo`)는 막대의 왼쪽, 메뉴 묶음(`.links`)은 막대의 오른쪽 끝에 놓여요.
+  1. 메뉴 세 개(`.links` 안의 `a`)는 한 줄에 나란히 놓이고, 메뉴와 메뉴 **사이**는 정확히 `16px`이에요.
+  1. 막대의 왼쪽 가장자리와 로고 사이, 마지막 메뉴와 막대의 오른쪽 가장자리 사이는 각각 `24px`이에요.
+
+  메뉴는 모양만 확인하는 연습이라 링크 주소(`href`) 없이 두었어요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>내비게이션</title>
+              <style>
+                body {
+                  margin: 0;
+                }
+                .nav {
+                  width: 700px;
+                  padding: 12px 0;
+                  background: #1f2937;
+                }
+                .logo {
+                  color: white;
+                  font-weight: bold;
+                }
+                .links a {
+                  display: block;
+                  padding: 4px 8px;
+                  background: #374151;
+                  color: white;
+                  text-decoration: none;
+                }
+              </style>
+            </head>
+            <body>
+              <nav class="nav">
+                <div class="logo">ProgInOne</div>
+                <div class="links">
+                  <a id="l1">강의</a>
+                  <a id="l2">연습</a>
+                  <a id="l3">복습</a>
+                </div>
+              </nav>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>내비게이션</title>
+              <style>
+                body {
+                  margin: 0;
+                }
+                .nav {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  width: 700px;
+                  padding: 12px 24px;
+                  background: #1f2937;
+                }
+                .logo {
+                  color: white;
+                  font-weight: bold;
+                }
+                .links {
+                  display: flex;
+                  gap: 16px;
+                }
+                .links a {
+                  display: block;
+                  padding: 4px 8px;
+                  background: #374151;
+                  color: white;
+                  text-decoration: none;
+                }
+              </style>
+            </head>
+            <body>
+              <nav class="nav">
+                <div class="logo">ProgInOne</div>
+                <div class="links">
+                  <a id="l1">강의</a>
+                  <a id="l2">연습</a>
+                  <a id="l3">복습</a>
+                </div>
+              </nav>
+            </body>
+          </html>
+  checks:
+    - kind: layout
+      id: links-right-of-logo
+      description: 메뉴 묶음이 로고의 오른쪽, 같은 줄에 있어야 합니다.
+      requirement: 로고는 왼쪽, 메뉴는 오른쪽
+      visible: true
+      a: .links
+      b: .logo
+      relation: right-of
+      tolerancePx: 1
+    - kind: layout
+      id: links-at-far-end
+      description: 로고와 메뉴 묶음이 양 끝으로 떨어져 있어야 합니다(둘 사이가 200px 이상).
+      requirement: 로고는 왼쪽, 메뉴는 오른쪽
+      visible: true
+      a: .logo
+      b: .links
+      gap: { axis: x, min: 200 }
+    - kind: layout
+      id: gap-1-2
+      description: 첫 번째와 두 번째 메뉴가 한 줄에 있고, 사이가 16px이어야 합니다.
+      requirement: 메뉴 사이 16px
+      visible: true
+      a: "#l1"
+      b: "#l2"
+      gap: { axis: x, min: 16, max: 16 }
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.flex-affects-grandchildren
+    - kind: layout
+      id: gap-2-3
+      description: 두 번째와 세 번째 메뉴가 한 줄에 있고, 사이가 16px이어야 합니다.
+      requirement: 메뉴 사이 16px
+      visible: true
+      a: "#l2"
+      b: "#l3"
+      gap: { axis: x, min: 16, max: 16 }
+      tolerancePx: 1
+    - kind: layout
+      id: links-same-row
+      description: 세 메뉴가 같은 줄에 있어야 합니다.
+      requirement: 메뉴 사이 16px
+      a: "#l3"
+      b: "#l1"
+      relation: same-row
+      tolerancePx: 1
+    - kind: css
+      id: edge-space
+      description: 막대의 왼쪽·오른쪽 안쪽 여백이 24px이어야 합니다.
+      requirement: 가장자리 24px
+      visible: true
+      selector: .nav
+      expect:
+        computed:
+          padding-left: { px: { value: 24 } }
+          padding-right: { px: { value: 24 } }
+      misconceptionIfFail: css.mc.gap-adds-outer-edges
+misconceptions: [css.mc.gap-adds-outer-edges, css.mc.flex-affects-grandchildren]
+hints:
+  - 한 줄로 놓아야 하는 묶음이 두 단계예요. "로고와 메뉴 묶음"을 나란히 놓는 컨테이너와 "메뉴 세 개"를 나란히 놓는 컨테이너가 각각 무엇인지 찾아보세요.
+  - "`.nav`와 `.links` 둘 다 플렉스 컨테이너가 되어야 해요. 메뉴 사이 간격은 `.links`의 `gap`으로, 양 끝으로 벌리기는 `.nav`의 `justify-content`로 만들어요."
+  - gap은 가장자리에 간격을 만들지 않아요. 막대 가장자리의 24px은 `.nav`의 좌우 padding으로 따로 주세요.
+explanation: |
+  예시 정답은 이렇게 두 단계의 플렉스 컨테이너를 만드는 거예요.
+
+  ```css
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+  }
+  .links {
+    display: flex;
+    gap: 16px;
+  }
+  ```
+
+  - `.nav`에 `display: flex`를 주면 바로 아래 자식인 `.logo`와 `.links`만 아이템이 돼요. 메뉴 `a`는 손자라서 `.nav`의 flex로는 나란히 놓이지 않아요. 그래서 `.links`에도 `display: flex`가 필요해요.
+  - `justify-content: space-between`이 로고를 왼쪽, 메뉴 묶음을 오른쪽 끝에 붙여요. `align-items: center`는 높이가 다른 두 아이템을 세로 가운데로 맞춰 보기 좋게 해요(채점하지는 않아요).
+  - `gap: 16px`은 메뉴와 메뉴 **사이**에만 16px을 만들어요. 막대 가장자리와의 24px은 gap이 만들지 않으므로 `.nav`의 좌우 padding으로 줘요.
+
+  메뉴에 `margin-right: 16px`처럼 margin으로 간격을 줘도 사이 간격은 맞지만, 마지막 메뉴 뒤에도 여백이 생겨 오른쪽 가장자리 간격이 24px보다 커 보여요. gap을 쓰면 이런 문제가 없어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

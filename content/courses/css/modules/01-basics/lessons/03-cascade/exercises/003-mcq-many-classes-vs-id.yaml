@@ -1,0 +1,49 @@
+id: css.basics.cascade.mcq-many-classes-vs-id
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.cascade.specificity, weight: 1 }
+tags: [cascade, specificity]
+estimatedSeconds: 60
+prompt: |
+  아래 두 규칙이 모두 같은 버튼을 골라요. 버튼의 배경색은 무엇이고, 왜 그런가요?
+code: |
+  #buy {
+    background: gray;
+  }
+  .page .shop .list .card .footer .actions .btn {
+    background: green;
+  }
+spec:
+  options:
+    - id: a
+      text: gray. ID가 하나라도 있는 선택자가 클래스만 있는 선택자를 이기기 때문이에요.
+    - id: b
+      text: green. 클래스 7개가 ID 1개보다 점수가 높기 때문이에요.
+      misconception: css.mc.specificity-adds-up
+      rationale: 명시도는 더해서 비교하지 않아요. ID 칸이 0인 쪽은 ID 칸이 1인 쪽에 져요.
+    - id: c
+      text: green. 나중에 쓴 규칙이기 때문이에요.
+      misconception: css.mc.last-rule-wins
+      rationale: 순서는 명시도가 같을 때만 승부를 가려요.
+    - id: d
+      text: gray. 선택자가 짧을수록 우선하기 때문이에요.
+      rationale: 색은 맞지만 이유가 틀렸어요. 명시도는 선택자의 길이가 아니라 ID·클래스·타입이 각각 몇 개인지로 정해져요.
+  correct: a
+misconceptions: [css.mc.specificity-adds-up, css.mc.last-rule-wins]
+hints:
+  - 두 선택자의 명시도를 (ID, 클래스, 타입) 세 칸으로 적어 보세요.
+  - "`#buy`는 (1, 0, 0), 긴 선택자는 (0, 7, 0)이에요. 어느 칸부터 비교하나요?"
+  - 왼쪽 칸(ID)에서 차이가 나면 오른쪽 칸은 보지 않아요.
+explanation: |
+  정답은 **gray**이고, 이유는 ID 칸이 먼저 비교되기 때문이에요.
+
+  `#buy`는 (1, 0, 0), 긴 선택자는 (0, 7, 0)이에요. 명시도는 왼쪽 칸부터 비교하므로 ID 칸에서 1 대 0으로 이미 승부가 나요.
+
+  - **클래스 7개가 점수가 높다**: 명시도를 한 숫자로 더하는 오해예요. 클래스를 아무리 모아도 ID 하나를 넘지 못해요.
+  - **나중에 쓴 규칙**: 순서는 명시도가 같을 때만 쓰여요.
+  - **짧을수록 우선**: 길이가 아니라 어떤 종류의 선택자가 몇 개인지가 기준이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

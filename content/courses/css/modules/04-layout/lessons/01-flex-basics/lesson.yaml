@@ -1,0 +1,16 @@
+id: css.layout.flex-basics
+title: Flexbox 기초
+summary: display flex로 요소들을 한 줄에 나란히 놓고, 주축과 교차축을 기준으로 justify-content·align-items·gap으로 정렬과 간격을 정합니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 15, practice: 18 }
+concepts:
+  primary: [css.flex.container, css.flex.axes, css.flex.justify-align, css.flex.gap]
+  practiced: [css.display.normal-flow]
+objectives:
+  - 나란히 놓을 요소들의 부모에 display flex를 주어 플렉스 컨테이너를 만들 수 있다.
+  - flex-direction에 따라 주축과 교차축이 어느 방향인지 말할 수 있다.
+  - justify-content와 align-items로 아이템을 주축·교차축 방향으로 정렬할 수 있다.
+  - gap으로 아이템 사이의 간격을 정하고, 가장자리 간격과 구분할 수 있다.
+practice:
+  targetCount: 12

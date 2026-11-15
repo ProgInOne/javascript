@@ -1,4 +1,162 @@
-# CSS 오개념 (v0.1: 박스 모델 단원)
+# CSS 오개념 (v0.2: CSS 핵심 과정)
+
+# ---- css.basics.intro ----
+
+- id: css.mc.semicolon-optional
+  concept: css.intro.rule-structure
+  title: 선언 사이의 세미콜론을 빼도 된다고 생각함
+  statement: 선언을 줄마다 나눠 쓰면 중간 선언 끝의 세미콜론을 빼도 각 선언이 따로 적용된다고 생각한다.
+  reality: 세미콜론은 선언과 선언을 나누는 기호다. 중간에 빠지면 브라우저는 두 선언을 하나의 잘못된 값으로 읽어 둘 다 무시한다. 줄바꿈은 선언을 나누지 않는다.
+  diagnosticHint: 적용되지 않는 속성이 있으면 바로 앞 선언의 끝에 세미콜론이 있는지 본다.
+  remediation:
+    lessonSection: css.basics.intro#pitfalls
+    exercises: [css.basics.intro.mcq-missing-semicolon, css.basics.intro.web-fix-broken-rule, css.basics.intro.fill-declaration]
+
+- id: css.mc.value-in-quotes
+  concept: css.intro.rule-structure
+  title: 값을 따옴표로 감싸야 한다고 생각함
+  statement: "`color: \"red\";`처럼 CSS 값도 문자열처럼 따옴표로 감싸야 한다고 생각한다."
+  reality: red, 20px, bold 같은 키워드·길이 값은 따옴표 없이 쓴다. 따옴표로 감싸면 문자열이 되어 잘못된 값으로 무시된다. 따옴표는 글꼴 이름처럼 글자 그대로의 값에만 쓴다.
+  diagnosticHint: 개발자 도구에서 해당 선언에 취소선이나 경고 표시가 있는지 본다.
+  remediation:
+    lessonSection: css.basics.intro#pitfalls
+    exercises: [css.basics.intro.web-fix-broken-rule, css.basics.intro.fill-declaration]
+
+- id: css.mc.link-uses-src
+  concept: css.intro.linking
+  title: CSS 파일을 src 속성이나 script 요소로 연결한다고 생각함
+  statement: CSS 파일을 연결할 때 이미지처럼 `src` 속성을 쓰거나, `<script>` 요소로 불러온다고 생각한다.
+  reality: 외부 CSS 파일은 `<link rel="stylesheet" href="파일 경로">`로 연결한다. 주소는 `href`에 쓰고, `rel="stylesheet"`로 이 파일이 스타일시트임을 알린다.
+  diagnosticHint: link 요소에 rel과 href 두 속성이 모두 있는지 확인한다.
+  remediation:
+    lessonSection: css.basics.intro#pitfalls
+    exercises: [css.basics.intro.mcq-link-element]
+
+- id: css.mc.inline-applies-to-all
+  concept: css.intro.linking
+  title: style 속성이 같은 종류의 요소 전체에 적용된다고 생각함
+  statement: '문단 하나에 `style="color: red"`를 쓰면 페이지의 모든 문단이 빨간색이 된다고 생각한다.'
+  reality: style 속성(인라인 스타일)은 그 속성을 쓴 요소 하나에만 적용된다. 여러 요소에 같은 모양을 주려면 style 요소나 CSS 파일에 선택자로 규칙을 쓴다.
+  diagnosticHint: 다른 문단에도 같은 모양을 주려면 무엇을 반복해야 하는지 떠올려 본다.
+  remediation:
+    lessonSection: css.basics.intro#pitfalls
+    exercises: [css.basics.intro.mcq-inline-scope, css.basics.intro.web-style-all-tips]
+
+# ---- css.basics.selectors ----
+
+- id: css.mc.selector-symbol-mixup
+  concept: css.selectors.basic
+  title: 클래스와 ID 선택자의 기호를 혼동함
+  statement: 클래스를 고를 때 `#`을 쓰거나 점을 빼먹고 `card { }`처럼 쓰고, ID를 고를 때 점을 쓴다.
+  reality: 클래스 선택자는 점(`.card`), ID 선택자는 샵(`#logo`)으로 시작한다. 기호 없이 `card`라고 쓰면 `<card>`라는 요소를 찾는 타입 선택자가 된다.
+  diagnosticHint: HTML에서 그 이름이 class 속성에 있는지 id 속성에 있는지 먼저 확인한다.
+  remediation:
+    lessonSection: css.basics.selectors#pitfalls
+    exercises: [css.basics.selectors.mcq-class-selector, css.basics.selectors.web-fix-selectors]
+
+- id: css.mc.multiple-classes-one-name
+  concept: css.selectors.basic
+  title: 공백이 든 class 값을 클래스 하나로 생각함
+  statement: "`class=\"card big\"`이 \"card big\"이라는 이름의 클래스 하나라서 `.card`로는 고를 수 없다고 생각한다."
+  reality: class 속성 값은 공백으로 나뉜 클래스 이름 목록이다. `class="card big"`인 요소는 card와 big 두 클래스를 모두 가지므로 `.card`로도 `.big`으로도 고를 수 있다.
+  diagnosticHint: class 값을 공백 기준으로 나눠 이름을 하나씩 세어 본다.
+  remediation:
+    lessonSection: css.basics.selectors#pitfalls
+    exercises: [css.basics.selectors.mcq-multiple-classes]
+
+- id: css.mc.descendant-vs-group
+  concept: css.selectors.combinators
+  title: 자손 선택자와 그룹 선택자를 혼동함
+  statement: "`nav a`(공백)와 `nav, a`(쉼표)가 같은 요소를 고른다고 생각한다."
+  reality: "`nav a`는 nav 안에 있는 a만 고른다. `nav, a`는 nav 요소 전체와 페이지의 모든 a를 각각 고른다. 공백은 \"안에 있는\", 쉼표는 \"그리고\"라는 뜻이다."
+  diagnosticHint: 선택자를 소리 내어 "nav 안의 a"와 "nav 그리고 a"로 읽어 본다.
+  remediation:
+    lessonSection: css.basics.selectors#pitfalls
+    exercises: [css.basics.selectors.mcq-descendant-vs-group, css.basics.selectors.fill-group-selector, css.basics.selectors.web-menu-only]
+
+- id: css.mc.descendant-direct-child-only
+  concept: css.selectors.combinators
+  title: 자손 선택자가 바로 아래 자식만 고른다고 생각함
+  statement: "`.menu a`는 .menu의 바로 아래 자식인 a만 고르고, li 안에 한 번 더 들어 있는 a는 고르지 않는다고 생각한다."
+  reality: 자손 선택자는 깊이와 상관없이 안쪽에 있는 모든 요소를 고른다. 바로 아래 자식만 고르는 것은 `>`를 쓰는 자식 선택자다.
+  diagnosticHint: DOM 트리에서 바깥 요소부터 안쪽 요소까지 거슬러 올라가며 이어지는지 본다.
+  remediation:
+    lessonSection: css.basics.selectors#pitfalls
+    exercises: [css.basics.selectors.mcq-descendant-depth, css.basics.selectors.web-menu-only]
+
+- id: css.mc.hover-space
+  concept: css.selectors.pseudo-class
+  title: 의사 클래스 앞에 공백을 넣어도 된다고 생각함
+  statement: "`.button :hover`처럼 선택자와 콜론 사이를 띄어 써도 `.button:hover`와 같다고 생각한다."
+  reality: 공백은 자손 선택자다. `.button :hover`는 버튼 안에 있는 자손 요소에 마우스가 올라갔을 때를 고른다. 버튼 자체의 상태를 고르려면 `.button:hover`처럼 붙여 쓴다.
+  diagnosticHint: 선택자 안의 공백은 항상 "안에 있는"이라는 뜻이라는 점을 떠올린다.
+  remediation:
+    lessonSection: css.basics.selectors#pitfalls
+    exercises: [css.basics.selectors.mcq-hover-space]
+
+- id: css.mc.pseudo-class-is-class
+  concept: css.selectors.pseudo-class
+  title: 의사 클래스를 쓰려면 HTML에 클래스를 붙여야 한다고 생각함
+  statement: "`a:hover`가 동작하려면 HTML의 a 요소에 `class=\"hover\"`를 붙여야 한다고 생각한다."
+  reality: 의사 클래스는 브라우저가 요소의 상태(마우스가 올라감 등)나 위치(첫째 자식 등)를 보고 스스로 판단한다. HTML에는 아무것도 추가하지 않는다.
+  diagnosticHint: 이름 앞의 기호가 점(클래스)인지 콜론(의사 클래스)인지 본다.
+  remediation:
+    lessonSection: css.basics.selectors#pitfalls
+    exercises: [css.basics.selectors.mcq-hover-meaning, css.basics.selectors.mcq-hover-space, css.basics.selectors.web-first-child]
+
+# ---- css.basics.cascade ----
+
+- id: css.mc.last-rule-wins
+  concept: css.cascade.specificity
+  title: 항상 뒤에 쓴 규칙이 이긴다고 생각함
+  statement: 명시도와 상관없이 CSS에서 나중에 쓴 규칙이 항상 앞의 규칙을 이긴다고 생각한다.
+  reality: 순서는 명시도가 같을 때만 승부를 가른다. 명시도가 높은 규칙(예를 들어 ID 선택자)은 앞에 있어도 뒤의 클래스·타입 선택자 규칙을 이긴다.
+  diagnosticHint: 겹치는 두 규칙의 선택자를 ID·클래스·타입 개수로 먼저 비교하고, 같을 때만 순서를 본다.
+  remediation:
+    lessonSection: css.basics.cascade#pitfalls
+    exercises: [css.basics.cascade.mcq-id-beats-later-class, css.basics.cascade.web-fix-warning-color, css.basics.cascade.mcq-many-classes-vs-id]
+
+- id: css.mc.specificity-adds-up
+  concept: css.cascade.specificity
+  title: 낮은 선택자를 여러 개 모으면 높은 선택자를 이긴다고 생각함
+  statement: 클래스 선택자를 많이 이어 붙이면(예를 들어 11개) ID 선택자 하나를 이길 수 있다고 생각한다.
+  reality: 명시도는 ID 개수, 클래스 개수, 타입 개수를 따로 세어 자리별로 비교한다. 앞자리(ID)가 많은 쪽이 이기므로 클래스를 아무리 모아도 ID 하나를 넘지 못한다.
+  diagnosticHint: 명시도를 한 숫자로 더하지 말고 (ID, 클래스, 타입) 세 칸으로 적어 왼쪽 칸부터 비교한다.
+  remediation:
+    lessonSection: css.basics.cascade#pitfalls
+    exercises: [css.basics.cascade.mcq-many-classes-vs-id]
+
+- id: css.mc.class-attr-order-matters
+  concept: css.cascade.order
+  title: class 속성에 적은 순서가 우선순위를 정한다고 생각함
+  statement: "`class=\"red blue\"`면 뒤에 적은 blue가, `class=\"blue red\"`면 red가 이긴다고 생각한다."
+  reality: 명시도가 같은 두 클래스 규칙의 승부는 CSS에서 규칙을 쓴 순서로 정해진다. HTML의 class 속성에 이름을 적은 순서는 아무 영향이 없다.
+  diagnosticHint: HTML이 아니라 CSS 파일에서 두 규칙 중 어느 것이 아래에 있는지 본다.
+  remediation:
+    lessonSection: css.basics.cascade#pitfalls
+    exercises: [css.basics.cascade.mcq-class-attr-order, css.basics.cascade.web-button-order]
+
+- id: css.mc.all-props-inherit
+  concept: css.cascade.inheritance
+  title: 모든 속성이 상속된다고 생각함
+  statement: 부모에 준 padding·border·margin·width도 color처럼 자식들에게 물려진다고 생각한다.
+  reality: 상속되는 것은 color, font-size, font-family, line-height, text-align 같은 글자 관련 속성이다. padding, border, margin, width, background 같은 상자 관련 속성은 상속되지 않는다.
+  diagnosticHint: 그 속성이 "글자의 모양"인지 "상자의 모양"인지 나눠 본다.
+  remediation:
+    lessonSection: css.basics.cascade#pitfalls
+    exercises: [css.basics.cascade.mcq-which-inherit, css.basics.cascade.web-inherit-card-color]
+
+- id: css.mc.inherited-beats-direct
+  concept: css.cascade.inheritance
+  title: 명시도가 높은 부모 규칙이 상속으로 자식 규칙을 이긴다고 생각함
+  statement: "`#main { color: red; }`가 `p { color: blue; }`보다 명시도가 높으니, #main 안의 문단은 빨간색이 된다고 생각한다."
+  reality: 요소에 직접 적용되는 규칙은 명시도와 상관없이 부모에게서 물려받은 값보다 우선한다. 명시도 비교는 같은 요소를 고르는 규칙끼리만 한다. 그래서 문단은 파란색이다.
+  diagnosticHint: 두 규칙이 같은 요소를 고르는지, 하나는 부모를 고르는지 먼저 확인한다.
+  remediation:
+    lessonSection: css.basics.cascade#pitfalls
+    exercises: [css.basics.cascade.mcq-inherited-vs-direct]
+
+# ---- css.box.model ----
 
 - id: css.mc.margin-is-inside
   concept: css.box.areas
@@ -49,3 +207,223 @@
   remediation:
     lessonSection: css.box.model#pitfalls
     exercises: [css.box.model.mcq-border-box-meaning, css.box.model.fill-border-box-content]
+
+# ---- css.box.display ----
+
+- id: css.mc.margin-on-inline
+  concept: css.display.block-inline
+  title: 인라인 요소에 위아래 margin이 적용된다고 생각함
+  statement: 'span이나 a 같은 인라인 요소에 `margin: 20px`를 주면 위아래에도 20px 간격이 생긴다고 생각한다.'
+  reality: 인라인 요소의 위아래 margin은 줄 배치에 영향을 주지 않는다. 좌우 margin만 옆 글자와의 간격을 벌린다. 위아래 간격이 필요하면 display를 inline-block이나 block으로 바꾼다.
+  diagnosticHint: 그 요소가 글자처럼 줄 안에 놓이는지(인라인), 새 줄에서 시작하는지(블록) 먼저 본다.
+  remediation:
+    lessonSection: css.box.display#pitfalls
+    exercises: [css.box.display.mcq-inline-margin]
+
+- id: css.mc.width-on-inline
+  concept: css.display.block-inline
+  title: 인라인 요소에 width·height가 적용된다고 생각함
+  statement: 'span에 `width: 200px; height: 50px;`를 주면 그 크기의 상자가 된다고 생각한다.'
+  reality: 인라인 요소의 크기는 내용(글자)이 정한다. width와 height는 무시된다. 크기를 정하려면 display를 inline-block이나 block으로 바꾼다.
+  diagnosticHint: 배경색을 주고 상자가 글자 길이만큼만 칠해지는지 본다.
+  remediation:
+    lessonSection: css.box.display#pitfalls
+    exercises: [css.box.display.web-tag-badges, css.box.display.mcq-inline-block-line]
+
+- id: css.mc.inline-block-new-line
+  concept: css.display.inline-block
+  title: inline-block이 블록처럼 새 줄에서 시작한다고 생각함
+  statement: display를 inline-block으로 바꾸면 width를 받을 수 있는 대신 블록처럼 한 줄을 혼자 차지한다고 생각한다.
+  reality: inline-block은 바깥에서 보면 인라인이라 자리가 있으면 옆 요소와 같은 줄에 놓인다. 안쪽은 블록처럼 width·height·위아래 margin을 받는다.
+  diagnosticHint: 이름의 앞부분(inline)은 바깥의 배치, 뒷부분(block)은 상자 안쪽의 성질이라고 나눠 읽는다.
+  remediation:
+    lessonSection: css.box.display#pitfalls
+    exercises: [css.box.display.mcq-inline-block-line, css.box.display.web-tag-badges]
+
+- id: css.mc.narrow-blocks-sit-side-by-side
+  concept: css.display.normal-flow
+  title: 블록 요소의 너비를 줄이면 옆으로 나란히 놓인다고 생각함
+  statement: 'div 두 개에 `width: 100px`를 주면 자리가 남으니 한 줄에 나란히 놓인다고 생각한다.'
+  reality: 블록 요소는 너비와 상관없이 항상 새 줄에서 시작한다. 너비를 줄이면 오른쪽이 비어 보일 뿐 아래로 쌓인다. 나란히 놓으려면 inline-block이나 Flexbox를 쓴다.
+  diagnosticHint: 그 요소의 display 값이 block인지 확인한다. block이면 너비와 상관없이 위아래로 쌓인다.
+  remediation:
+    lessonSection: css.box.display#pitfalls
+    exercises: [css.box.display.mcq-narrow-blocks]
+
+- id: css.mc.vertical-margins-add
+  concept: css.display.normal-flow
+  title: 위아래로 맞닿은 margin이 더해진다고 생각함
+  statement: '위 블록에 `margin-bottom: 30px`, 아래 블록에 `margin-top: 20px`를 주면 두 블록 사이가 50px이 된다고 생각한다.'
+  reality: 일반 흐름에서 위아래로 맞닿은 블록의 margin은 겹쳐서 둘 중 큰 값(30px)만 남는다. 이를 마진 상쇄라고 한다. 좌우 margin과 Flexbox 아이템의 margin은 겹치지 않는다.
+  diagnosticHint: 두 margin 중 큰 값과 합한 값 중 어느 쪽이 실제 간격인지 개발자 도구로 재 본다.
+  remediation:
+    lessonSection: css.box.display#pitfalls
+    exercises: [css.box.display.fill-margin-collapse, css.box.display.web-card-gap-collapse]
+
+# ---- css.styling.units-colors ----
+
+- id: css.mc.percent-of-screen
+  concept: css.units.length
+  title: "%가 항상 화면 너비를 기준으로 한다고 생각함"
+  statement: "`width: 50%`는 항상 화면(브라우저 창) 너비의 절반이라고 생각한다."
+  reality: width의 %는 부모 요소의 콘텐츠 영역 너비를 기준으로 한다. 화면 너비를 기준으로 하는 단위는 vw다.
+  diagnosticHint: 부모 요소의 너비를 먼저 확인하고 거기에 비율을 곱해 본다.
+  remediation:
+    lessonSection: css.styling.units-colors#pitfalls
+    exercises: [css.styling.units-colors.mcq-percent-parent, css.styling.units-colors.fill-percent-width]
+
+- id: css.mc.unitless-length
+  concept: css.units.length
+  title: 길이에 단위를 빼도 px로 처리된다고 생각함
+  statement: "`width: 200;`처럼 단위 없이 써도 브라우저가 200px로 알아서 처리한다고 생각한다."
+  reality: 0이 아닌 길이 값에 단위가 없으면 잘못된 값으로 무시된다. `200px`처럼 단위를 붙여야 한다. 단위를 빼도 되는 것은 0과, line-height처럼 단위 없는 숫자를 받는 속성뿐이다.
+  diagnosticHint: 적용되지 않는 길이 값 뒤에 px·%·rem 같은 단위가 붙어 있는지 본다.
+  remediation:
+    lessonSection: css.styling.units-colors#pitfalls
+    exercises: [css.styling.units-colors.web-fix-missing-units]
+
+- id: css.mc.em-same-as-rem
+  concept: css.units.rem-em
+  title: em이 rem처럼 항상 루트 글자 크기를 기준으로 한다고 생각함
+  statement: em과 rem은 같은 단위라서 `2em`은 어디서나 32px(루트 16px의 2배)이라고 생각한다.
+  reality: rem은 루트(html)의 글자 크기를 기준으로 해서 어디서나 같다. font-size에 쓴 em은 부모의 글자 크기를 기준으로 하므로, em을 쓴 요소가 중첩되면 크기가 계속 곱해진다.
+  diagnosticHint: 그 요소의 부모 글자 크기가 몇 px인지 먼저 계산해 본다.
+  remediation:
+    lessonSection: css.styling.units-colors#pitfalls
+    exercises: [css.styling.units-colors.mcq-rem-basis, css.styling.units-colors.fill-nested-em, css.styling.units-colors.web-rem-heading]
+
+- id: css.mc.rgb-max-100
+  concept: css.colors.notation
+  title: rgb의 각 값이 0~100이라고 생각함
+  statement: "`rgb()`의 빨강·초록·파랑 값을 퍼센트처럼 0~100으로 쓰고, `rgb(100 0 0)`이 가장 진한 빨강이라고 생각한다."
+  reality: rgb의 숫자 값은 0~255다. 가장 진한 빨강은 `rgb(255 0 0)`이고, `rgb(100 0 0)`은 어두운 빨강이다. 16진수 두 자리(00~ff)도 같은 0~255 범위다.
+  diagnosticHint: 16진수 ff가 10진수로 몇인지 떠올려 본다.
+  remediation:
+    lessonSection: css.styling.units-colors#pitfalls
+    exercises: [css.styling.units-colors.mcq-strongest-red, css.styling.units-colors.fill-rgb-from-hex]
+
+# ---- css.styling.typography ----
+
+- id: css.mc.font-family-guaranteed
+  concept: css.type.font-properties
+  title: font-family에 쓴 글꼴이 항상 보인다고 생각함
+  statement: "`font-family: \"나눔고딕\";`이라고 쓰면 어떤 컴퓨터에서든 나눔고딕으로 보인다고 생각한다."
+  reality: 그 글꼴이 학습자의 기기에 없거나 불러오지 못하면 다른 글꼴로 보인다. 그래서 쉼표로 대안 글꼴을 나열하고 마지막에 `sans-serif` 같은 일반 글꼴 이름을 둔다.
+  diagnosticHint: font-family 목록의 마지막에 sans-serif나 serif 같은 일반 글꼴 이름이 있는지 본다.
+  remediation:
+    lessonSection: css.styling.typography#pitfalls
+    exercises: [css.styling.typography.mcq-font-fallback, css.styling.typography.fill-generic-font]
+
+- id: css.mc.line-height-unitless-px
+  concept: css.type.line-height
+  title: 단위 없는 line-height를 px로 생각함
+  statement: "`line-height: 1.5`는 줄 높이가 1.5px이라는 뜻이라고 생각한다."
+  reality: '단위 없는 line-height는 글자 크기에 곱하는 배수다. 글자 크기가 16px이면 `line-height: 1.5`는 24px이다.'
+  diagnosticHint: 그 요소의 font-size에 그 숫자를 곱해 본다.
+  remediation:
+    lessonSection: css.styling.typography#pitfalls
+    exercises: [css.styling.typography.fill-line-height-px, css.styling.typography.web-fix-line-height]
+
+- id: css.mc.text-align-centers-box
+  concept: css.type.text-align
+  title: text-align이 상자 자체를 가운데로 옮긴다고 생각함
+  statement: "`width: 300px`인 div에 `text-align: center`를 주면 div 상자가 화면 가운데로 옮겨진다고 생각한다."
+  reality: 'text-align은 상자 안의 글자 같은 인라인 내용을 정렬할 뿐, 상자는 그대로 왼쪽에 있다. 너비가 정해진 블록 상자를 가운데에 놓으려면 `margin: 0 auto`(좌우 margin auto)를 쓴다.'
+  diagnosticHint: 상자에 배경색을 주고 상자가 움직였는지, 글자만 움직였는지 본다.
+  remediation:
+    lessonSection: css.styling.typography#pitfalls
+    exercises: [css.styling.typography.mcq-text-align-box, css.styling.typography.web-center-card]
+
+# ---- css.layout.flex-basics ----
+
+- id: css.mc.flex-on-children
+  concept: css.flex.container
+  title: 나란히 놓을 자식들에 display flex를 준다고 생각함
+  statement: '카드들을 가로로 나란히 놓으려면 각 카드(.card)에 `display: flex`를 줘야 한다고 생각한다.'
+  reality: "`display: flex`는 나란히 놓을 요소들을 감싼 부모(컨테이너)에 준다. 자식에 주면 그 자식의 안쪽 내용이 배치될 뿐, 자식들끼리는 여전히 위아래로 쌓인다."
+  diagnosticHint: 나란히 놓고 싶은 요소들을 감싸고 있는 공통 부모를 찾는다.
+  remediation:
+    lessonSection: css.layout.flex-basics#pitfalls
+    exercises: [css.layout.flex-basics.mcq-flex-where, css.layout.flex-basics.web-menu-row]
+
+- id: css.mc.flex-affects-grandchildren
+  concept: css.flex.container
+  title: display flex가 모든 자손에 적용된다고 생각함
+  statement: '컨테이너에 `display: flex`를 주면 안쪽의 손자 요소들까지 모두 플렉스 아이템이 되어 한 줄로 늘어선다고 생각한다.'
+  reality: 플렉스 아이템이 되는 것은 컨테이너의 바로 아래 자식뿐이다. 손자 요소는 자기 부모(플렉스 아이템) 안에서 일반 흐름대로 배치된다.
+  diagnosticHint: DOM 트리에서 컨테이너의 바로 아래 단계만 세어 본다.
+  remediation:
+    lessonSection: css.layout.flex-basics#pitfalls
+    exercises: [css.layout.flex-basics.mcq-flex-items-which, css.layout.flex-basics.web-nav-gap]
+
+- id: css.mc.column-means-columns
+  concept: css.flex.axes
+  title: flex-direction column이 아이템을 세로 단(열)으로 나란히 놓는다고 생각함
+  statement: "`flex-direction: column`은 아이템을 신문의 단처럼 여러 열로 나란히 놓는다고 생각한다."
+  reality: column은 주축을 세로로 바꿔 아이템을 위에서 아래로 한 줄로 쌓는다. 가로로 나란히 놓는 것은 row(기본값)다.
+  diagnosticHint: column을 "아이템이 놓이는 방향이 세로"라고 읽는다.
+  remediation:
+    lessonSection: css.layout.flex-basics#pitfalls
+    exercises: [css.layout.flex-basics.mcq-column-direction, css.layout.flex-basics.fill-main-cross-axis, css.layout.flex-basics.web-sidebar-column]
+
+- id: css.mc.justify-is-horizontal
+  concept: css.flex.justify-align
+  title: justify-content가 항상 가로 정렬이라고 생각함
+  statement: 'justify-content는 언제나 가로 방향 정렬이라서, `flex-direction: column`에서도 아이템을 가로 가운데로 옮긴다고 생각한다.'
+  reality: justify-content는 주축 방향 정렬이다. column에서는 주축이 세로이므로 justify-content가 세로 위치를, align-items가 가로 위치를 정한다.
+  diagnosticHint: 먼저 flex-direction으로 주축이 어느 방향인지 정하고, justify는 주축이라고 떠올린다.
+  remediation:
+    lessonSection: css.layout.flex-basics#pitfalls
+    exercises: [css.layout.flex-basics.mcq-justify-in-column]
+
+- id: css.mc.justify-align-swap
+  concept: css.flex.justify-align
+  title: justify-content와 align-items의 역할을 반대로 기억함
+  statement: '기본 가로 배치(row)에서 아이템을 세로 가운데로 맞추려고 `justify-content: center`를 쓴다.'
+  reality: row에서 세로는 교차축이므로 align-items가 맡는다. justify-content는 주축(row에서는 가로) 방향으로 아이템을 정렬한다.
+  diagnosticHint: 옮기려는 방향이 아이템이 늘어선 방향(주축)인지, 그와 수직인 방향(교차축)인지 나눠 본다.
+  remediation:
+    lessonSection: css.layout.flex-basics#pitfalls
+    exercises: [css.layout.flex-basics.mcq-vertical-center-row, css.layout.flex-basics.fill-center-both, css.layout.flex-basics.web-header-bar]
+
+- id: css.mc.gap-adds-outer-edges
+  concept: css.flex.gap
+  title: gap이 컨테이너 가장자리에도 간격을 만든다고 생각함
+  statement: "`gap: 20px`를 주면 아이템 사이뿐 아니라 컨테이너의 양 끝과 첫·마지막 아이템 사이에도 20px이 생긴다고 생각한다."
+  reality: gap은 아이템과 아이템 사이에만 생긴다. 컨테이너 가장자리와의 간격이 필요하면 컨테이너에 padding을 준다.
+  diagnosticHint: 아이템이 3개일 때 gap이 몇 군데 생기는지 세어 본다(2군데).
+  remediation:
+    lessonSection: css.layout.flex-basics#pitfalls
+    exercises: [css.layout.flex-basics.fill-gap-total-width, css.layout.flex-basics.web-nav-gap]
+
+# ---- css.layout.responsive ----
+
+- id: css.mc.viewport-meta-makes-responsive
+  concept: css.responsive.viewport-meta
+  title: 뷰포트 메타 태그만 넣으면 반응형이 된다고 생각함
+  statement: viewport 메타 태그를 넣으면 브라우저가 레이아웃을 알아서 화면 크기에 맞게 바꿔 준다고 생각한다.
+  reality: 메타 태그는 휴대폰 브라우저가 페이지를 축소하지 않고 기기 너비로 그리게 할 뿐이다. 좁은 화면에서 배치를 바꾸는 일은 미디어 쿼리와 유연한 단위로 직접 해야 한다.
+  diagnosticHint: 메타 태그를 넣은 뒤에도 고정 너비(예를 들어 width 900px) 요소가 그대로인지 본다.
+  remediation:
+    lessonSection: css.layout.responsive#pitfalls
+    exercises: [css.layout.responsive.mcq-viewport-meta-role, css.layout.responsive.mcq-media-query-not-working]
+
+- id: css.mc.max-width-means-above
+  concept: css.responsive.media-queries
+  title: max-width와 min-width의 방향을 반대로 읽음
+  statement: "`@media (max-width: 600px)`가 \"화면이 600px보다 넓을 때\" 적용된다고 생각한다."
+  reality: "max-width: 600px은 \"화면 너비가 최대 600px일 때\", 즉 600px 이하인 좁은 화면에서 적용된다. 넓은 화면에 적용하려면 min-width를 쓴다."
+  diagnosticHint: max는 "최대 ~까지", min은 "최소 ~부터"라고 소리 내어 읽어 본다.
+  remediation:
+    lessonSection: css.layout.responsive#pitfalls
+    exercises: [css.layout.responsive.mcq-max-width-when, css.layout.responsive.fill-which-color, css.layout.responsive.web-cards-row-on-wide, css.layout.responsive.fill-mobile-first-query]
+
+- id: css.mc.mobile-first-means-desktop-override
+  concept: css.responsive.mobile-first
+  title: 모바일 우선을 넓은 화면 스타일을 먼저 쓰는 것으로 생각함
+  statement: 모바일 우선은 넓은 화면용 스타일을 기본으로 쓰고, max-width 미디어 쿼리로 휴대폰용 규칙을 덮어쓰는 방식이라고 생각한다.
+  reality: 모바일 우선은 좁은 화면용 스타일을 미디어 쿼리 없이 기본으로 쓰고, min-width 미디어 쿼리로 넓은 화면에서 필요한 규칙만 더하는 방식이다.
+  diagnosticHint: 미디어 쿼리 밖의 기본 스타일이 좁은 화면용인지, 미디어 쿼리가 min-width인지 확인한다.
+  remediation:
+    lessonSection: css.layout.responsive#pitfalls
+    exercises: [css.layout.responsive.mcq-which-mobile-first, css.layout.responsive.web-mobile-first-page]

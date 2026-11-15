@@ -1,0 +1,59 @@
+id: css.layout.responsive.mcq-which-mobile-first
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.responsive.mobile-first, weight: 1 }
+tags: [responsive, mobile-first, media-query]
+estimatedSeconds: 75
+prompt: |
+  좁은 화면에서는 메뉴를 세로로 쌓고, 넓은 화면(600px 이상)에서는 가로로 놓으려고 해요. 아래 중 **모바일 우선** 방식으로 쓴 CSS는 무엇인가요?
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: |
+        .menu { display: flex; flex-direction: column; }
+        @media (min-width: 600px) {
+          .menu { flex-direction: row; }
+        }
+    - id: b
+      text: |
+        .menu { display: flex; flex-direction: row; }
+        @media (max-width: 599px) {
+          .menu { flex-direction: column; }
+        }
+      misconception: css.mc.mobile-first-means-desktop-override
+      rationale: 결과는 같지만, 넓은 화면 스타일을 기본으로 두고 좁은 화면을 덮어쓰는 데스크톱 우선 방식이에요.
+    - id: c
+      text: |
+        .menu { display: flex; flex-direction: column; }
+        @media (max-width: 600px) {
+          .menu { flex-direction: row; }
+        }
+      misconception: css.mc.max-width-means-above
+      rationale: max-width 600px은 600px 이하라서, 좁은 화면에서 가로가 되고 넓은 화면에서는 세로로 남아요.
+    - id: d
+      text: |
+        @media (min-width: 600px) {
+          .menu { display: flex; flex-direction: row; }
+        }
+        .menu { display: flex; flex-direction: column; }
+      rationale: 미디어 쿼리가 기본 규칙보다 앞에 있어서, 명시도가 같은 뒤의 기본 규칙(column)이 넓은 화면에서도 이겨요.
+  correct: a
+misconceptions: [css.mc.mobile-first-means-desktop-override, css.mc.max-width-means-above]
+hints:
+  - 모바일 우선이라면 미디어 쿼리 밖의 기본 스타일은 어떤 화면을 위한 것이어야 할까요?
+  - 기본 스타일이 좁은 화면용(column)이고, 넓은 화면에서 필요한 것만 "최소 600px부터" 조건으로 더하는 코드를 찾으세요.
+  - 순서도 확인하세요. 미디어 쿼리가 기본 규칙보다 뒤에 있어야 넓은 화면에서 덮어쓸 수 있어요.
+explanation: |
+  정답은 **a**예요.
+
+  모바일 우선은 ① 미디어 쿼리 없이 쓴 기본 스타일을 **좁은 화면용**으로 두고 ② `min-width` 미디어 쿼리로 **넓은 화면에서 필요한 규칙만 더하는** 방식이에요. a는 기본이 `column`이고, 600px 이상에서 `row`를 덧붙여요.
+
+  - b는 화면에 보이는 결과는 같지만, 넓은 화면용 `row`를 기본으로 두고 `max-width`로 좁은 화면을 덮어쓰는 **데스크톱 우선** 방식이에요.
+  - c는 `max-width`를 "이상"으로 읽은 경우예요. 600px 이하에서 row가 되어 원하는 것과 반대예요.
+  - d는 조건은 맞지만 순서가 틀렸어요. 명시도가 같으면 뒤에 쓴 규칙이 이기므로, 미디어 쿼리는 기본 규칙 **뒤에** 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

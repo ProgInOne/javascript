@@ -1,0 +1,4 @@
+id: css.basics
+title: CSS의 원리
+summary: CSS 규칙을 HTML에 연결하고, 선택자로 요소를 고르고, 여러 규칙이 겹칠 때 어떤 스타일이 적용되는지 배웁니다.
+lessons: [intro, selectors, cascade]

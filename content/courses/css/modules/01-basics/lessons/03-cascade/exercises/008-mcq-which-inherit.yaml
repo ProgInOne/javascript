@@ -1,0 +1,49 @@
+id: css.basics.cascade.mcq-which-inherit
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.cascade.inheritance, weight: 1 }
+tags: [cascade, inheritance]
+estimatedSeconds: 50
+prompt: |
+  아래처럼 `.box`에만 규칙을 줬어요. `.box` 안의 문단(`p`)이 **물려받는** 속성은 무엇인가요? 문단에는 따로 준 규칙이 없어요.
+code: |
+  .box {
+    color: navy;
+    border: 3px solid black;
+    padding: 20px;
+    width: 300px;
+  }
+spec:
+  options:
+    - id: a
+      text: color만 물려받는다
+    - id: b
+      text: color, border, padding, width를 모두 물려받는다
+      misconception: css.mc.all-props-inherit
+      rationale: 상자 관련 속성(border, padding, width)은 상속되지 않아요.
+    - id: c
+      text: color와 width를 물려받는다
+      misconception: css.mc.all-props-inherit
+      rationale: width는 상자의 크기를 정하는 속성이라 상속되지 않아요.
+    - id: d
+      text: 아무것도 물려받지 않는다
+      rationale: color처럼 글자 관련 속성은 부모의 값이 자식에게 물려져요.
+  correct: a
+misconceptions: [css.mc.all-props-inherit]
+hints:
+  - 상속되는 속성과 아닌 속성은 "글자의 모양"인지 "상자의 모양"인지로 나눌 수 있어요.
+  - border, padding, width가 상속된다면 문단마다 테두리와 여백이 겹겹이 생길 거예요.
+  - 네 속성 중 글자에 관한 것은 하나뿐이에요.
+explanation: |
+  정답은 **color만 물려받는다**예요.
+
+  `color`는 글자 관련 속성이라 부모의 값이 자식에게 상속돼요. 그래서 문단 글자도 navy가 돼요.
+
+  `border`, `padding`, `width`는 상자 관련 속성이라 상속되지 않아요. 만약 상속된다면 안쪽 문단에도 3px 테두리와 20px 여백이 생기고, 너비도 300px로 고정될 거예요. 실제로는 테두리와 여백이 `.box` 하나에만 생겨요.
+
+  "아무것도 물려받지 않는다"는 상속 자체가 없다고 본 경우예요. 글자 관련 속성은 상속돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

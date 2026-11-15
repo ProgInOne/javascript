@@ -1,0 +1,242 @@
+<Section kind="objectives">
+- HTML의 요소 이름·`class`·`id`를 보고 그 요소를 고르는 선택자를 쓸 수 있어요.
+- 자손 선택자와 그룹 선택자가 고르는 요소를 구분하고, 원하는 요소만 고르는 선택자를 쓸 수 있어요.
+- `:hover` 같은 의사 클래스로 요소의 상태나 위치에 따라 스타일을 줄 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+앞 단원에서는 `p { color: gray; }`처럼 요소 이름으로 규칙을 썼어요. 그런데 이 규칙은 페이지의 **모든** 문단을 바꿔요. 실제로는 이런 일이 더 많아요.
+
+- 문단 중에서 "가격" 문단만 빨간색으로 하고 싶어요.
+- 메뉴 안의 목록만 굵게 하고, 본문의 목록은 그대로 두고 싶어요.
+- 버튼 위에 마우스를 올렸을 때만 색을 바꾸고 싶어요.
+
+CSS 규칙의 앞부분인 **선택자**를 잘 쓰면 이런 요소만 골라낼 수 있어요. 선택자는 "어떤 요소에 이 모양을 줄까?"에 대한 답이에요.
+</Section>
+
+<Section kind="principle">
+### 기본 선택자 세 가지
+
+| 선택자 | 쓰는 법 | 고르는 요소 | 예 |
+|---|---|---|---|
+| 타입 선택자 | 요소 이름 그대로 | 그 이름의 모든 요소 | `p` → 모든 `<p>` |
+| 클래스 선택자 | 점(`.`) + 클래스 이름 | `class` 속성에 그 이름이 있는 요소 | `.price` → `<p class="price">` |
+| ID 선택자 | 샵(`#`) + id | `id` 속성이 그 값인 요소 | `#logo` → `<img id="logo">` |
+
+기호를 꼭 기억하세요. **점은 클래스, 샵은 ID**예요. 기호 없이 `price`라고 쓰면 `<price>`라는 요소를 찾는 타입 선택자가 되어 아무것도 고르지 못해요.
+
+클래스는 여러 요소가 함께 쓸 수 있고, 한 요소가 여러 클래스를 가질 수도 있어요. `class="card sale"`처럼 **공백으로 나눠** 쓰면 이 요소는 `card`와 `sale` 두 클래스를 가져요. 그래서 `.card`로도, `.sale`로도 고를 수 있어요. 반면 `id`는 문서 안에서 한 요소만 가지는 고유한 이름이에요.
+
+### 선택자 잇기: 자손과 그룹
+
+| 선택자 | 쓰는 법 | 읽는 법 | 고르는 요소 |
+|---|---|---|---|
+| 자손 선택자 | `A B` (공백) | "A **안에 있는** B" | A 안쪽에 있는 B. 깊이와 상관없음 |
+| 그룹 선택자 | `A, B` (쉼표) | "A **그리고** B" | A도 고르고 B도 고름 |
+
+`.menu li`는 `.menu` 안에 있는 `li`를 모두 골라요. `li`가 `.menu`의 바로 아래 자식이든, 몇 단계 안쪽에 있든 상관없어요. 반대로 `h1, h2`는 "h1 안의 h2"가 아니라 h1과 h2 **둘 다**예요. 같은 규칙을 두 번 쓰지 않으려고 묶은 거예요.
+
+공백 하나와 쉼표 하나로 뜻이 완전히 달라진다는 점을 기억하세요.
+
+### 의사 클래스: 상태와 위치로 고르기
+
+**의사 클래스**는 콜론(`:`)으로 시작하고, 요소의 **상태**나 **위치**를 보고 골라요. HTML에 아무것도 붙이지 않아도 브라우저가 스스로 판단해요.
+
+| 의사 클래스 | 고르는 때 |
+|---|---|
+| `:hover` | 마우스 포인터가 요소 위에 올라가 있을 때 |
+| `:first-child` | 형제 중 첫 번째 자식일 때 |
+| `:last-child` | 형제 중 마지막 자식일 때 |
+
+의사 클래스는 선택자에 **띄우지 않고 붙여** 써요. `.button:hover`는 "마우스가 올라간 `.button`"이에요. `.button :hover`처럼 띄우면 공백이 자손 선택자가 되어 "`.button` **안에 있는**, 마우스가 올라간 요소"라는 전혀 다른 뜻이 돼요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 기본 선택자 세 가지를 함께 썼어요. 각 규칙이 어느 요소를 바꾸는지 보세요.
+
+<RunnableExample id="basic-selectors" lang="web" concepts={["css.selectors.basic"]}>
+```html
+<style>
+  p {
+    color: #374151;
+  }
+  .sale {
+    color: crimson;
+    font-weight: bold;
+  }
+  #shop-name {
+    color: navy;
+  }
+</style>
+<h1 id="shop-name">동네 빵집</h1>
+<p>식빵 3,000원</p>
+<p class="item sale">크루아상 2,000원 (할인)</p>
+<p>바게트 4,000원</p>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- `p` 규칙은 문단 세 개를 모두 진한 회색으로 바꿔요.
+- `.sale` 규칙은 `class="item sale"`인 두 번째 문단을 골라요. class 값에 공백으로 나뉜 `sale`이 들어 있기 때문이에요. 이 문단은 `p` 규칙과 `.sale` 규칙에 모두 해당하는데, 빨간색이 이겨요. 왜 그런지는 다음 단원 "캐스케이드와 명시도"에서 배워요.
+- `#shop-name` 규칙은 `id="shop-name"`인 제목 하나만 골라요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제를 실행하기 전에, **굵게 보이는 항목이 몇 개**일지 예측해 보세요. 링크 목록 두 개가 있어요.
+
+<RunnableExample id="descendant-vs-group" lang="web" predict predictKind="value" concepts={["css.selectors.combinators"]}>
+```html
+<style>
+  .menu li {
+    font-weight: bold;
+  }
+  h2, h3 {
+    color: teal;
+  }
+</style>
+<h2>메뉴</h2>
+<ul class="menu">
+  <li>처음으로</li>
+  <li>
+    소개
+    <ul>
+      <li>연혁</li>
+      <li>오시는 길</li>
+    </ul>
+  </li>
+</ul>
+<h3>본문 목록</h3>
+<ul>
+  <li>첫째 이야기</li>
+  <li>둘째 이야기</li>
+</ul>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+굵은 항목은 **4개**예요: 처음으로, 소개, 연혁, 오시는 길.
+
+- `.menu li`는 `.menu` 안에 있는 `li`를 **깊이와 상관없이** 모두 골라요. "연혁"과 "오시는 길"은 `.menu`의 바로 아래 자식이 아니라 한 단계 더 안쪽 목록에 있지만, 여전히 `.menu` 안에 있으니 골라져요.
+- 본문 목록의 `li`는 `.menu` 밖에 있어서 굵어지지 않아요.
+- `h2, h3`는 쉼표로 묶은 그룹 선택자라 `h2`와 `h3`가 **둘 다** 청록색이 돼요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 의사 클래스예요. 실행한 뒤 버튼 위에 마우스를 올려 보세요. 목록의 첫 항목도 보세요.
+
+<RunnableExample id="pseudo-classes" lang="web" concepts={["css.selectors.pseudo-class"]}>
+```html
+<style>
+  .button {
+    background: #2563eb;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+  }
+  .button:hover {
+    background: #1e3a8a;
+  }
+  li:first-child {
+    color: crimson;
+  }
+</style>
+<button class="button">저장하기</button>
+<ol>
+  <li>재료를 준비해요.</li>
+  <li>반죽을 해요.</li>
+  <li>오븐에 구워요.</li>
+</ol>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- `.button:hover`는 마우스가 버튼 위에 있는 동안에만 적용돼서, 배경이 더 진한 파란색으로 바뀌어요. 마우스를 치우면 원래 색으로 돌아와요.
+- `li:first-child`는 형제 중 첫 번째인 `li`, 즉 "재료를 준비해요."만 빨간색으로 바꿔요.
+- 두 경우 모두 HTML에는 `hover`나 `first` 같은 클래스를 붙이지 않았어요. 브라우저가 상태와 위치를 보고 스스로 골라요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="css.mc.selector-symbol-mixup">
+<Wrong>`class="price"`인 문단을 고르려고 `price { color: red; }`나 `#price { ... }`를 쓴다.</Wrong>
+<Actual>`price`는 `<price>` 요소를, `#price`는 `id="price"`인 요소를 찾아서 아무것도 고르지 못해요.</Actual>
+<Right>클래스는 점(`.price`), ID는 샵(`#price`)이에요. HTML에서 그 이름이 `class`에 있는지 `id`에 있는지 먼저 확인하세요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.multiple-classes-one-name">
+<Wrong>`class="card big"`은 "card big"이라는 클래스 하나라서 `.card`로는 고를 수 없다.</Wrong>
+<Actual>class 값은 공백으로 나뉜 이름 목록이에요. 이 요소는 `card`와 `big` 두 클래스를 가져요.</Actual>
+<Right>`.card`로도 `.big`으로도 고를 수 있어요. 공통 모양은 `.card`에, 특별한 모양은 `.big`에 나눠 쓰는 것이 흔한 방법이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.descendant-vs-group">
+<Wrong>`nav a`와 `nav, a`는 같은 요소를 고른다.</Wrong>
+<Actual>`nav a`는 nav 안의 a만 고르지만, `nav, a`는 nav 요소 전체와 페이지의 **모든** a를 골라요.</Actual>
+<Right>공백은 "안에 있는", 쉼표는 "그리고"로 읽어요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.descendant-direct-child-only">
+<Wrong>`.menu li`는 `.menu`의 바로 아래 자식인 li만 고른다.</Wrong>
+<Actual>자손 선택자는 몇 단계 안쪽에 있든 `.menu` 안에 있는 li를 모두 골라요.</Actual>
+<Right>바로 아래 자식만 고르려면 `.menu > li`처럼 `>`를 쓰는 자식 선택자를 써요. 공백은 깊이를 따지지 않아요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.hover-space">
+<Wrong>`.button :hover`와 `.button:hover`는 띄어쓰기만 다른 같은 선택자다.</Wrong>
+<Actual>공백은 자손 선택자라서 `.button :hover`는 "버튼 안에 있는 요소에 마우스가 올라갔을 때"를 골라요. 버튼 자체의 색은 바뀌지 않아요.</Actual>
+<Right>의사 클래스는 선택자에 붙여 써요. `.button:hover`예요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.pseudo-class-is-class">
+<Wrong>`a:hover`가 동작하려면 HTML에 `class="hover"`를 붙여야 한다.</Wrong>
+<Actual>의사 클래스는 HTML의 class 속성과 상관없어요. 브라우저가 마우스 위치나 형제 순서를 보고 스스로 판단해요.</Actual>
+<Right>HTML은 그대로 두고 CSS에 `:hover`, `:first-child`만 쓰면 돼요. 점(`.`)은 클래스, 콜론(`:`)은 의사 클래스예요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+실제 사이트의 CSS는 대부분 **클래스 선택자** 로 이루어져요. 같은 모양의 카드가 여러 개 있으면 모두 `class="card"`를 붙이고, `.card` 규칙 하나로 모양을 정해요. 그중 강조할 카드에는 `class="card featured"`처럼 클래스를 하나 더 붙여 차이만 따로 써요.
+
+```css
+.card {
+  padding: 16px;
+  border: 1px solid #d1d5db;
+}
+.card.featured {
+  border-color: #f59e0b;
+}
+.nav a:hover {
+  text-decoration: underline;
+}
+```
+
+`.card.featured`처럼 점 두 개를 **붙여** 쓰면 "두 클래스를 모두 가진 요소"라는 뜻이에요. 띄어 쓰면 자손 선택자가 되니 조심하세요. ID 선택자는 페이지에 하나뿐인 요소에만 쓰고, 모양을 줄 때는 클래스를 더 자주 써요. 그 이유는 다음 단원의 명시도에서 알 수 있어요.
+</Section>
+
+<Section kind="check">
+클래스 선택자의 기호를 기억하는지 확인해 보세요.
+
+<InlineExercise ref="css.basics.selectors.mcq-class-selector" />
+
+공백과 쉼표의 차이도 확인해 보세요.
+
+<InlineExercise ref="css.basics.selectors.mcq-descendant-vs-group" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 타입 선택자는 요소 이름(`p`), 클래스 선택자는 점(`.price`), ID 선택자는 샵(`#logo`)으로 요소를 골라요.
+- `class="card sale"`은 클래스 두 개예요. `.card`로도 `.sale`로도 고를 수 있어요.
+- 자손 선택자 `A B`(공백)는 A 안에 있는 B를 깊이와 상관없이 모두 골라요.
+- 그룹 선택자 `A, B`(쉼표)는 A와 B에 같은 규칙을 줘요.
+- 의사 클래스(`:hover`, `:first-child`)는 상태나 위치로 골라요. 선택자에 붙여 쓰고, HTML에는 아무것도 붙이지 않아요.
+</Section>
+
+<Section kind="next">
+첫 번째 예제에서 문단 하나에 `p` 규칙과 `.sale` 규칙이 함께 해당했어요. 다음 단원 "캐스케이드와 명시도"에서는 이렇게 여러 규칙이 겹칠 때 어떤 규칙이 이기는지 배워요. <MdnLink path="Web/CSS/CSS_selectors" />
+</Section>

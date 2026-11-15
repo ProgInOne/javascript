@@ -1,0 +1,15 @@
+id: css.styling.units-colors
+title: 단위와 색
+summary: px·%·vw·rem·em 단위가 무엇을 기준으로 크기를 정하는지 구분하고, 이름·16진수·rgb로 색을 씁니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 12, practice: 12 }
+concepts:
+  primary: [css.units.length, css.units.rem-em, css.colors.notation]
+  practiced: [css.box.size]
+objectives:
+  - px·%·vw로 정한 길이가 실제로 몇 px이 되는지 계산할 수 있다.
+  - rem과 em이 기준으로 삼는 글자 크기를 구분하고, 중첩된 em의 크기를 계산할 수 있다.
+  - 이름·16진수·rgb 표기로 원하는 색을 쓰고, 서로 다른 표기가 같은 색인지 판단할 수 있다.
+practice:
+  targetCount: 8

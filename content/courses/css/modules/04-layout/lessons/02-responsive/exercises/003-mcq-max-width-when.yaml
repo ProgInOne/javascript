@@ -1,0 +1,47 @@
+id: css.layout.responsive.mcq-max-width-when
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.responsive.media-queries, weight: 1 }
+tags: [responsive, media-query, max-width]
+estimatedSeconds: 45
+prompt: |
+  아래 미디어 쿼리 안의 규칙은 화면 너비가 어떨 때 적용될까요?
+code: |
+  @media (max-width: 600px) {
+    .menu {
+      flex-direction: column;
+    }
+  }
+spec:
+  options:
+    - id: a
+      text: 화면 너비가 600px 이하일 때
+    - id: b
+      text: 화면 너비가 600px 이상일 때
+      misconception: css.mc.max-width-means-above
+      rationale: max-width는 "최대 600px까지"라는 뜻이에요. 600px보다 넓은 화면에는 적용되지 않아요.
+    - id: c
+      text: 화면 너비가 정확히 600px일 때만
+      rationale: 600px 하나가 아니라 0px부터 600px까지의 범위 전체에서 적용돼요.
+    - id: d
+      text: 화면 너비와 상관없이 항상 적용되고, .menu의 최대 너비를 600px로 정한다
+      rationale: "`@media` 괄호 안의 max-width는 요소의 크기가 아니라 화면(뷰포트) 너비 조건이에요."
+  correct: a
+misconceptions: [css.mc.max-width-means-above]
+hints:
+  - "`@media` 괄호 안은 \"이 조건일 때만 적용\"이라는 조건이에요."
+  - max는 "최대", min은 "최소"라는 뜻이에요. 화면 너비가 최대 600px이라는 건 어떤 범위일까요?
+  - "\"너비가 최대 600px\"은 600px보다 넓지 않다는 뜻이에요."
+explanation: |
+  정답은 **화면 너비가 600px 이하일 때**예요.
+
+  `max-width: 600px`는 "화면 너비가 **최대** 600px일 때"라는 조건이에요. 그래서 375px 휴대폰이나 600px 화면에서는 적용되고, 601px 이상의 넓은 화면에서는 적용되지 않아요.
+
+  - b: 600px 이상에 적용하려면 `min-width: 600px`(최소 600px)를 써요. max와 min의 방향을 반대로 읽기 쉬우니 "최대 ~까지", "최소 ~부터"로 소리 내어 읽어 보세요.
+  - c: 한 값이 아니라 범위 조건이에요.
+  - d: 미디어 쿼리 괄호 안의 max-width는 화면 너비 조건이에요. 요소의 최대 너비를 정하는 `max-width` 속성과는 쓰는 자리가 달라요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

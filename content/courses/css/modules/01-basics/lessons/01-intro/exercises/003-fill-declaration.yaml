@@ -1,0 +1,60 @@
+id: css.basics.intro.fill-declaration
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.intro.rule-structure, weight: 1 }
+tags: [css-rule, declaration, background-color]
+estimatedSeconds: 70
+prompt: |
+  휴관 안내 문단의 **배경색을 노란색(`yellow`)** 으로 바꾸려고 해요. 빈칸에 **선언 하나**를 완성해서 쓰세요. 배경색을 정하는 속성은 `background-color`예요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <style>
+      .notice {
+        {{blank:decl}}
+        padding: 8px;
+      }
+    </style>
+    <p class="notice">오늘은 휴관일이에요.</p>
+  blanks:
+    - id: decl
+      accept: ["background-color: yellow;"]
+      width: 32
+  checks:
+    - kind: css
+      id: yellow-bg
+      description: 안내 문단의 배경색이 노란색이어야 합니다.
+      requirement: 노란 배경
+      visible: true
+      selector: .notice
+      expect:
+        computed:
+          background-color: { color: "#ffff00" }
+      misconceptionIfFail: css.mc.value-in-quotes
+    - kind: css
+      id: padding-kept
+      description: 아래 줄의 padding 선언(8px)도 그대로 적용되어야 합니다.
+      requirement: 다음 선언 유지
+      visible: true
+      selector: .notice
+      expect:
+        computed:
+          padding-top: { px: { value: 8 } }
+      misconceptionIfFail: css.mc.semicolon-optional
+misconceptions: [css.mc.semicolon-optional, css.mc.value-in-quotes]
+hints:
+  - "선언은 `속성: 값;` 모양이에요."
+  - 속성은 `background-color`, 값은 `yellow`예요. 값은 따옴표 없이 써요.
+  - 선언 끝에 세미콜론을 붙이지 않으면 아래 줄의 `padding`까지 함께 무시돼요.
+explanation: |
+  정답 예시는 **`background-color: yellow;`**예요.
+
+  - 속성과 값 사이에는 콜론, 끝에는 세미콜론을 써요.
+  - `yellow`는 색 이름이라 따옴표 없이 써요. `"yellow"`처럼 감싸면 잘못된 값으로 무시돼요.
+  - 끝의 세미콜론을 빠뜨리면 다음 줄의 `padding: 8px;`와 이어져 한 선언으로 읽히고, 배경색과 padding이 둘 다 적용되지 않아요.
+
+  `background: yellow;`처럼 써도 배경이 노란색이 되므로 정답으로 처리돼요.
+origin: authored
+review: { status: draft, draftedBy: ai:claude }

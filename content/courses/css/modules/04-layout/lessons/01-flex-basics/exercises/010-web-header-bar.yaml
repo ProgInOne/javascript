@@ -1,0 +1,155 @@
+id: css.layout.flex-basics.web-header-bar
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.flex.justify-align, weight: 1 }
+  - { id: css.flex.axes, weight: 0.3 }
+tags: [flexbox, justify-content, align-items, debugging, web-task]
+estimatedSeconds: 300
+prompt: |
+  높이 `80px`인 헤더 막대에 로고와 "로그인" 버튼이 있어요. 원하는 모습은 이래요.
+
+  1. 로고는 막대의 **왼쪽 끝**, 버튼은 **오른쪽 끝**에 놓여요.
+  1. 둘 다 막대의 **세로 가운데**에 놓여요.
+
+  그런데 지금은 두 요소가 가로 가운데에 붙어 있고, 막대의 위쪽에 붙어 있어요. `.header` 규칙의 정렬 선언을 고쳐 두 조건을 만족시키세요. 로고와 버튼의 크기는 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>헤더</title>
+              <style>
+                .header {
+                  display: flex;
+                  justify-content: center;
+                  width: 600px;
+                  height: 80px;
+                  background: #1f2937;
+                }
+                .logo,
+                .login {
+                  height: 40px;
+                  padding: 0 12px;
+                  line-height: 40px;
+                  color: white;
+                }
+                .logo {
+                  background: #2563eb;
+                }
+                .login {
+                  background: #059669;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <div class="logo">ProgInOne</div>
+                <div class="login">로그인</div>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>헤더</title>
+              <style>
+                .header {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  width: 600px;
+                  height: 80px;
+                  background: #1f2937;
+                }
+                .logo,
+                .login {
+                  height: 40px;
+                  padding: 0 12px;
+                  line-height: 40px;
+                  color: white;
+                }
+                .logo {
+                  background: #2563eb;
+                }
+                .login {
+                  background: #059669;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <div class="logo">ProgInOne</div>
+                <div class="login">로그인</div>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: layout
+      id: ends-apart
+      description: 로고와 버튼이 막대의 양 끝에 떨어져 있어야 합니다(둘 사이가 300px 이상).
+      requirement: 왼쪽 끝과 오른쪽 끝
+      visible: true
+      a: .logo
+      b: .login
+      gap: { axis: x, min: 300 }
+    - kind: layout
+      id: logo-middle
+      description: 로고가 막대의 세로 가운데에 있어야 합니다.
+      requirement: 세로 가운데
+      visible: true
+      a: .logo
+      container: .header
+      relation: centered-vertically
+      tolerancePx: 2
+      misconceptionIfFail: css.mc.justify-align-swap
+    - kind: layout
+      id: login-middle
+      description: 버튼이 막대의 세로 가운데에 있어야 합니다.
+      requirement: 세로 가운데
+      visible: true
+      a: .login
+      container: .header
+      relation: centered-vertically
+      tolerancePx: 2
+      misconceptionIfFail: css.mc.justify-align-swap
+    - kind: css
+      id: size-kept
+      description: 로고와 버튼의 높이는 40px 그대로여야 합니다.
+      requirement: 크기 유지
+      selector: .logo, .login
+      all: true
+      expect:
+        computed:
+          height: { px: { value: 40 } }
+misconceptions: [css.mc.justify-align-swap]
+hints:
+  - 이 막대의 주축은 가로(row)예요. 요구사항 두 개가 각각 주축과 교차축 중 어느 쪽 정렬인지 나눠 보세요.
+  - 양 끝으로 벌리는 것은 주축(가로) 정렬이라 `justify-content`, 세로 가운데는 교차축 정렬이라 `align-items`예요.
+  - "`justify-content`에는 남는 공간을 아이템 사이에 몰아주는 값(`space-` 로 시작)을, `align-items`에는 가운데 값을 써 보세요."
+explanation: |
+  예시 정답은 `.header`의 정렬 선언을 이렇게 바꾸는 거예요.
+
+  ```css
+  justify-content: space-between;
+  align-items: center;
+  ```
+
+  - **양 끝으로 벌리기**: 막대의 주축은 가로예요. `justify-content: space-between`은 첫 아이템을 시작점(왼쪽), 마지막 아이템을 끝점(오른쪽)에 붙이고 남는 공간을 사이에 몰아줘요. `center`는 둘을 가운데로 모을 뿐이에요.
+  - **세로 가운데**: 세로는 교차축이라 `align-items: center`가 맡아요. `justify-content`를 아무리 바꿔도 세로 위치는 바뀌지 않아요.
+
+  로고와 버튼에 `height: 40px`가 있어서 기본값 `stretch`로 늘어나지 않고 위쪽(교차축 시작점)에 붙어 있었어요. 로고에 `margin-right: auto`를 주는 방법으로 양 끝을 벌려도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

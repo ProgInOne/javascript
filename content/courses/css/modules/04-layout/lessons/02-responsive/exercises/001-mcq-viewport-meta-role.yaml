@@ -1,0 +1,43 @@
+id: css.layout.responsive.mcq-viewport-meta-role
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.responsive.viewport-meta, weight: 1 }
+tags: [responsive, viewport-meta]
+estimatedSeconds: 50
+prompt: |
+  `head`에 아래 메타 태그를 넣었어요. 이 태그가 하는 일로 가장 알맞은 것은 무엇인가요?
+code: |
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+spec:
+  options:
+    - id: a
+      text: 휴대폰 브라우저가 페이지를 넓은 화면처럼 그려 축소하지 않고, 기기 너비 그대로 그리게 한다
+    - id: b
+      text: 화면 크기에 맞게 레이아웃을 알아서 바꿔 준다(예를 들어 가로로 놓인 카드를 세로로 쌓아 준다)
+      misconception: css.mc.viewport-meta-makes-responsive
+      rationale: 메타 태그는 그리는 너비만 정해요. 배치를 바꾸는 것은 미디어 쿼리로 직접 해야 해요.
+    - id: c
+      text: 모든 글자 크기를 화면 너비에 비례해 키우거나 줄인다
+      rationale: 글자 크기를 비례해서 바꾸는 기능은 없어요. initial-scale=1은 처음 확대 배율을 1배로 둔다는 뜻이에요.
+    - id: d
+      text: 페이지를 휴대폰에서만 보이게 하고 데스크톱에서는 숨긴다
+      rationale: 메타 태그는 아무것도 숨기지 않아요. 데스크톱 브라우저는 이 태그를 사실상 무시해요.
+  correct: a
+misconceptions: [css.mc.viewport-meta-makes-responsive]
+hints:
+  - 이 태그가 없으면 휴대폰 브라우저는 페이지를 980px 정도의 넓은 화면처럼 그린 뒤 작게 줄여서 보여 줘요.
+  - "`width=device-width`는 \"그리는 너비를 기기의 실제 너비로\"라는 뜻이에요."
+  - 이 태그는 배치를 바꾸지 않아요. 기기 너비 그대로 그리게만 해요.
+explanation: |
+  정답은 **기기 너비 그대로 그리게 한다**예요.
+
+  뷰포트 메타 태그가 없으면 휴대폰 브라우저는 데스크톱용 페이지를 위해 약 980px 너비로 그린 뒤 화면에 맞게 축소해요. 그러면 글자가 아주 작아지고, `max-width: 600px` 같은 미디어 쿼리도 적용되지 않아요. `width=device-width`는 그리는 너비를 기기의 실제 너비(예를 들어 375px)로 맞추고, `initial-scale=1`은 처음 배율을 1배로 둬요.
+
+  - b: 메타 태그만으로는 배치가 바뀌지 않아요. 좁은 화면용 배치는 미디어 쿼리로 직접 써야 해요.
+  - c: 글자 크기를 비례해서 바꾸는 기능은 없어요.
+  - d: 무언가를 숨기는 태그가 아니에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

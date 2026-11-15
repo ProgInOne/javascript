@@ -1,0 +1,44 @@
+id: css.basics.selectors.mcq-multiple-classes
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.selectors.basic, weight: 1 }
+tags: [selector, class, multiple-classes]
+estimatedSeconds: 60
+prompt: |
+  아래 코드를 실행하면 "운동화" 카드는 어떻게 보이나요?
+code: |
+  <style>
+    .card { border: 2px solid gray; }
+    .sale { color: red; }
+  </style>
+  <div class="card sale">운동화 30% 할인</div>
+spec:
+  options:
+    - id: a
+      text: 회색 테두리가 있고, 글자가 빨간색이다
+    - id: b
+      text: 두 규칙 모두 적용되지 않는다
+      misconception: css.mc.multiple-classes-one-name
+      rationale: "`class=\"card sale\"`은 \"card sale\"이라는 이름 하나가 아니라 card와 sale 두 클래스예요."
+    - id: c
+      text: 회색 테두리만 있고, 글자는 검은색이다
+      misconception: css.mc.multiple-classes-one-name
+      rationale: 공백 뒤의 sale도 이 요소의 클래스예요. `.sale` 규칙도 적용돼요.
+    - id: d
+      text: 글자만 빨간색이고, 테두리는 없다
+      rationale: 클래스를 여러 개 가지면 마지막 클래스만 남는 게 아니에요. card도 이 요소의 클래스예요.
+  correct: a
+misconceptions: [css.mc.multiple-classes-one-name]
+hints:
+  - class 속성 값에 있는 공백은 무엇을 뜻할까요?
+  - "`class=\"card sale\"`의 값을 공백으로 나누면 이름이 몇 개인지 세어 보세요."
+  - 이 요소는 `.card`로도, `.sale`로도 골라져요.
+explanation: |
+  정답은 **회색 테두리가 있고, 글자가 빨간색이다**예요.
+
+  class 속성 값은 공백으로 나뉜 클래스 이름 목록이에요. `class="card sale"`인 요소는 `card`와 `sale` 두 클래스를 모두 가지므로 `.card` 규칙(테두리)과 `.sale` 규칙(빨간 글자)이 함께 적용돼요.
+
+  두 규칙은 서로 다른 속성(`border`, `color`)을 정하니 다툴 일도 없어요. "card sale"을 이름 하나로 보거나, 한쪽 클래스만 남는다고 생각하면 틀린 답을 고르게 돼요.
+origin: authored
+review: { status: draft, draftedBy: ai:claude }

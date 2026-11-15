@@ -1,0 +1,43 @@
+id: css.basics.cascade.fill-count-specificity
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.cascade.specificity, weight: 1 }
+  - { id: css.selectors.combinators, weight: 0.3 }
+tags: [cascade, specificity]
+estimatedSeconds: 80
+prompt: |
+  선택자 `#menu .item a:hover`의 명시도를 (ID, 클래스·의사 클래스, 타입) 세 칸으로 세어 각 칸에 숫자를 쓰세요.
+spec:
+  mode: text
+  template: |
+    ID: {{blank:a}}   클래스·의사 클래스: {{blank:b}}   타입: {{blank:c}}
+  blanks:
+    - id: a
+      accept: ["1"]
+      width: 3
+    - id: b
+      accept: ["2"]
+      width: 3
+    - id: c
+      accept: ["1"]
+      width: 3
+hints:
+  - 선택자를 공백 기준으로 나눠, 각 조각에 `#`, `.`, `:`이 붙어 있는지 보세요.
+  - "`#menu`는 ID, `.item`은 클래스, `a`는 타입이에요. `:hover`는 어느 칸에 들어갈까요?"
+  - 의사 클래스(`:hover`)는 클래스와 같은 칸에서 세요.
+explanation: |
+  정답은 **(1, 2, 1)**이에요.
+
+  | 조각 | 칸 |
+  |---|---|
+  | `#menu` | ID |
+  | `.item` | 클래스 |
+  | `a` | 타입 |
+  | `:hover` | 클래스(의사 클래스) |
+
+  `:hover`를 빠뜨리면 클래스 칸이 1이 돼요. 의사 클래스도 클래스와 같은 무게로 세요. 공백(자손 선택자)은 명시도에 아무것도 더하지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

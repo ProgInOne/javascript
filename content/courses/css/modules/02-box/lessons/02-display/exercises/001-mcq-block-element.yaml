@@ -1,0 +1,37 @@
+id: css.box.display.mcq-block-element
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.display.block-inline, weight: 1 }
+tags: [display, block, inline]
+estimatedSeconds: 40
+prompt: |
+  CSS를 따로 주지 않았을 때, 앞뒤 내용과 상관없이 **항상 새 줄에서 시작하는** 요소는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`p`"
+    - id: b
+      text: "`span`"
+      rationale: span은 인라인 요소라 글자처럼 줄 안에 이어서 놓여요.
+    - id: c
+      text: "`a`"
+      rationale: 링크(a)는 인라인 요소라 문장 안에 이어서 놓여요.
+    - id: d
+      text: "`strong`"
+      rationale: strong은 문장 속 일부를 강조하는 인라인 요소예요.
+  correct: a
+hints:
+  - 블록 요소와 인라인 요소 중 새 줄에서 시작하는 쪽은 어느 것일까요?
+  - 문장 속 단어처럼 쓰이는 요소는 인라인, 문단·제목처럼 덩어리를 이루는 요소는 블록이에요.
+  - 네 요소 중 "문단"을 뜻하는 요소를 찾아보세요.
+explanation: |
+  정답은 **`p`**예요.
+
+  `p`(문단)는 블록 요소라 항상 새 줄에서 시작하고 부모의 너비를 꽉 채워요. `div`, `h1`~`h6`, `ul`, `li`도 블록이에요.
+
+  `span`, `a`, `strong`은 인라인 요소예요. 문장 속 단어처럼 앞뒤 글자와 같은 줄에 이어서 놓이고, 내용만큼의 너비만 차지해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

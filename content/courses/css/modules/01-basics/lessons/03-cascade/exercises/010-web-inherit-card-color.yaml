@@ -1,0 +1,124 @@
+id: css.basics.cascade.web-inherit-card-color
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.cascade.inheritance, weight: 1 }
+tags: [cascade, inheritance, web-task]
+estimatedSeconds: 200
+prompt: |
+  안내 카드 안의 **모든 글자**(제목, 문단, 목록)를 진한 파란색(`#1d4ed8`)으로 바꾸려고 해요.
+
+  `.card` 규칙에 **선언 하나만** 추가해서 카드 안의 글자가 모두 파란색이 되게 하세요. 카드의 테두리는 카드 바깥 상자에만 있어야 해요(안쪽 요소에는 테두리가 없어야 해요).
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>안내 카드</title>
+              <style>
+                .card {
+                  border: 2px solid #1d4ed8;
+                  padding: 16px;
+                  /* 여기에 선언 하나를 추가하세요 */
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <h2>도서관 이용 안내</h2>
+                <p>열람실은 오전 9시에 열어요.</p>
+                <ul>
+                  <li>음식은 반입할 수 없어요.</li>
+                  <li>휴대폰은 무음으로 해 주세요.</li>
+                </ul>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>안내 카드</title>
+              <style>
+                .card {
+                  border: 2px solid #1d4ed8;
+                  padding: 16px;
+                  color: #1d4ed8;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <h2>도서관 이용 안내</h2>
+                <p>열람실은 오전 9시에 열어요.</p>
+                <ul>
+                  <li>음식은 반입할 수 없어요.</li>
+                  <li>휴대폰은 무음으로 해 주세요.</li>
+                </ul>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: heading-blue
+      description: 카드 제목의 글자 색이 #1d4ed8이어야 합니다.
+      requirement: 카드 안 글자가 모두 파란색
+      visible: true
+      selector: .card h2
+      expect:
+        computed:
+          color: { color: "#1d4ed8" }
+    - kind: css
+      id: text-blue
+      description: 카드 문단의 글자 색이 #1d4ed8이어야 합니다.
+      requirement: 카드 안 글자가 모두 파란색
+      visible: true
+      selector: .card p
+      expect:
+        computed:
+          color: { color: "#1d4ed8" }
+    - kind: css
+      id: items-blue
+      description: 카드 목록 항목의 글자 색이 모두 #1d4ed8이어야 합니다.
+      requirement: 카드 안 글자가 모두 파란색
+      visible: true
+      selector: .card li
+      all: true
+      expect:
+        computed:
+          color: { color: "#1d4ed8" }
+    - kind: css
+      id: no-inner-border
+      description: 카드 안쪽 문단에는 테두리가 없어야 합니다.
+      requirement: 테두리는 카드에만
+      selector: .card p
+      expect:
+        computed:
+          border-top-width: { px: { value: 0 } }
+      misconceptionIfFail: css.mc.all-props-inherit
+misconceptions: [css.mc.all-props-inherit]
+hints:
+  - 부모에 한 번만 주면 안쪽 요소들이 저절로 물려받는 속성이 있어요.
+  - 글자 색은 상속되는 속성이에요. 카드의 테두리처럼 상자 속성은 상속되지 않으니 걱정하지 않아도 돼요.
+  - "`.card`에 글자 색을 정하는 속성을 `#1d4ed8` 값으로 추가해 보세요."
+explanation: |
+  예시 정답은 `.card`에 **`color: #1d4ed8;`**를 추가하는 거예요.
+
+  `color`는 상속되는 속성이라, 카드에 한 번만 주면 안쪽의 제목·문단·목록 항목이 모두 그 값을 물려받아요. 요소마다 규칙을 따로 쓰지 않아도 돼요.
+
+  반대로 `.card`의 `border`와 `padding`은 상속되지 않아요. 그래서 안쪽 요소에 테두리가 겹겹이 생기지 않고, 카드 바깥 상자에만 테두리가 있어요.
+
+  `.card h2, .card p, .card li { color: #1d4ed8; }`처럼 각각 골라도 화면은 같지만, 상속을 쓰면 나중에 카드에 새 요소를 넣어도 저절로 같은 색이 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

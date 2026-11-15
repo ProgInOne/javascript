@@ -1,0 +1,55 @@
+id: css.basics.cascade.mcq-class-attr-order
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.cascade.order, weight: 1 }
+  - { id: css.selectors.basic, weight: 0.3 }
+tags: [cascade, order, class]
+estimatedSeconds: 60
+prompt: |
+  아래 CSS와 HTML에서 두 버튼의 배경색을 바르게 짝지은 것은 무엇인가요?
+code: |
+  /* CSS */
+  .danger {
+    background: red;
+  }
+  .primary {
+    background: blue;
+  }
+
+  <!-- HTML -->
+  <button class="primary danger">버튼 1</button>
+  <button class="danger primary">버튼 2</button>
+spec:
+  options:
+    - id: a
+      text: 버튼 1은 blue, 버튼 2는 blue
+    - id: b
+      text: 버튼 1은 red, 버튼 2는 blue
+      misconception: css.mc.class-attr-order-matters
+      rationale: class 속성에서 뒤에 적은 클래스가 이긴다고 본 경우예요. 적은 순서는 상관없어요.
+    - id: c
+      text: 버튼 1은 blue, 버튼 2는 red
+      misconception: css.mc.class-attr-order-matters
+      rationale: class 속성에서 앞에 적은 클래스가 이긴다고 본 경우예요. 적은 순서는 상관없어요.
+    - id: d
+      text: 버튼 1은 red, 버튼 2는 red
+      rationale: "`.danger`가 CSS에서 먼저 나오므로 같은 명시도의 `.primary`에 져요."
+  correct: a
+misconceptions: [css.mc.class-attr-order-matters]
+hints:
+  - "`.danger`와 `.primary`의 명시도를 비교해 보세요."
+  - 명시도가 같다면, 승부는 HTML이 아니라 어디에서 정해질까요?
+  - CSS 파일에서 두 규칙 중 아래에 있는 것을 찾아보세요. 두 버튼 모두 같은 두 클래스를 가지고 있어요.
+explanation: |
+  정답은 **두 버튼 모두 blue**예요.
+
+  `.danger`와 `.primary`는 둘 다 (0, 1, 0)이라 명시도가 같아요. 그래서 CSS에서 나중에 쓴 `.primary`가 이겨요.
+
+  두 버튼은 class 속성에 이름을 적은 순서만 다를 뿐, 둘 다 `primary`와 `danger` 클래스를 가진 같은 상태예요. class 속성의 순서는 승부에 영향을 주지 않아요. 그래서 b와 c처럼 버튼마다 결과가 달라지지 않아요.
+
+  CSS에서 `.danger` 규칙을 `.primary` 아래로 옮기면 두 버튼 모두 red가 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

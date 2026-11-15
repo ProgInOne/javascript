@@ -1,0 +1,103 @@
+id: css.basics.intro.web-style-all-tips
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.intro.linking, weight: 1 }
+  - { id: css.intro.rule-structure, weight: 0.5 }
+tags: [style-element, inline-style, web-task]
+estimatedSeconds: 240
+prompt: |
+  공부 팁 세 개 중 **첫 번째 팁만** 초록색 글자로 보여요. 첫 번째 팁에 `style` 속성으로 색을 줬기 때문이에요.
+
+  `head`의 `style` 요소에 **규칙을 써서** 팁 세 개(`class="tip"`)가 모두 초록색(`green`) 글자로 보이게 하세요. 팁마다 `style` 속성을 하나씩 붙이는 대신 규칙 하나로 해결해 보세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공부 팁</title>
+              <style>
+                /* 여기에 규칙을 쓰세요 */
+              </style>
+            </head>
+            <body>
+              <h1>공부 팁</h1>
+              <p class="tip" style="color: green;">매일 같은 시간에 공부해요.</p>
+              <p class="tip">배운 내용을 소리 내어 설명해 봐요.</p>
+              <p class="tip">틀린 문제는 다음 날 다시 풀어요.</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공부 팁</title>
+              <style>
+                .tip {
+                  color: green;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>공부 팁</h1>
+              <p class="tip">매일 같은 시간에 공부해요.</p>
+              <p class="tip">배운 내용을 소리 내어 설명해 봐요.</p>
+              <p class="tip">틀린 문제는 다음 날 다시 풀어요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: all-tips-green
+      description: 팁 세 개가 모두 초록색 글자여야 합니다.
+      requirement: 모든 팁이 초록색
+      visible: true
+      selector: .tip
+      all: true
+      expect:
+        computed:
+          color: { color: "#008000" }
+      misconceptionIfFail: css.mc.inline-applies-to-all
+    - kind: css
+      id: title-unchanged
+      description: 제목(h1)의 색은 바뀌지 않아야 합니다.
+      requirement: 제목은 그대로
+      visible: true
+      selector: h1
+      expect:
+        computed:
+          color: { color: "#000000" }
+    - kind: dom
+      id: three-tips
+      description: 팁 문단 세 개는 그대로 있어야 합니다.
+      requirement: 팁 문단 유지
+      selector: p.tip
+      expect:
+        count: 3
+misconceptions: [css.mc.inline-applies-to-all]
+hints:
+  - 지금은 첫 번째 팁의 `style` 속성만 색을 정하고 있어요. style 속성은 어디까지 적용될까요?
+  - "`style` 요소 안에 세 팁을 한꺼번에 고르는 선택자로 규칙을 써요. 세 팁은 같은 클래스를 가지고 있어요."
+  - "클래스 선택자는 클래스 이름 앞에 점을 붙여요. 규칙 안에는 `color` 선언을 하나 쓰면 돼요."
+explanation: |
+  예시 정답은 `style` 요소에 아래 규칙을 쓰는 거예요.
+
+  ```css
+  .tip {
+    color: green;
+  }
+  ```
+
+  `style` 속성은 그 속성을 쓴 요소 하나에만 적용돼서, 처음에는 첫 번째 팁만 초록색이었어요. `.tip` 선택자는 `class="tip"`인 요소를 모두 고르므로 규칙 하나로 세 팁에 같은 색을 줄 수 있어요.
+
+  첫 번째 팁의 `style` 속성은 지워도 되고 남겨 둬도 결과는 같아요. 하지만 같은 모양을 두 곳에서 정하면 나중에 색을 바꿀 때 한쪽을 빠뜨리기 쉬우니 지우는 편이 좋아요. 팁마다 `style` 속성을 붙여도 화면은 같지만, 팁이 100개라면 100번 써야 해요.
+origin: authored
+review: { status: draft, draftedBy: ai:claude }

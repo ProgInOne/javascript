@@ -1,0 +1,116 @@
+id: css.box.display.web-card-gap-collapse
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.display.normal-flow, weight: 1 }
+  - { id: css.box.spacing, weight: 0.5 }
+tags: [normal-flow, margin-collapse, debugging, web-task]
+estimatedSeconds: 240
+prompt: |
+  카드 세 개 사이를 `40px`씩 띄우려고, 카드마다 위아래에 `margin: 20px 0`을 줬어요. "20px + 20px = 40px"이라고 생각했는데, 화면에서 재 보니 카드 사이가 `20px`밖에 안 돼요.
+
+  `.card` 규칙의 margin을 고쳐서 **카드와 카드 사이가 정확히 40px**이 되게 하세요. 카드의 안쪽 여백(`padding: 16px`)은 그대로 두세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>카드 간격</title>
+              <style>
+                body {
+                  background: #f3f4f6;
+                }
+                .card {
+                  margin: 20px 0;
+                  padding: 16px;
+                  background: white;
+                  border: 1px solid #d1d5db;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card" id="c1">1단원: 박스 모델</div>
+              <div class="card" id="c2">2단원: display와 흐름</div>
+              <div class="card" id="c3">3단원: 단위와 색</div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>카드 간격</title>
+              <style>
+                body {
+                  background: #f3f4f6;
+                }
+                .card {
+                  margin: 40px 0;
+                  padding: 16px;
+                  background: white;
+                  border: 1px solid #d1d5db;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card" id="c1">1단원: 박스 모델</div>
+              <div class="card" id="c2">2단원: display와 흐름</div>
+              <div class="card" id="c3">3단원: 단위와 색</div>
+            </body>
+          </html>
+  checks:
+    - kind: layout
+      id: gap-12
+      description: 첫 번째와 두 번째 카드 사이가 40px이어야 합니다.
+      requirement: 카드 사이 40px
+      visible: true
+      a: "#c1"
+      b: "#c2"
+      gap: { axis: y, min: 40, max: 40 }
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.vertical-margins-add
+    - kind: layout
+      id: gap-23
+      description: 두 번째와 세 번째 카드 사이가 40px이어야 합니다.
+      requirement: 카드 사이 40px
+      visible: true
+      a: "#c2"
+      b: "#c3"
+      gap: { axis: y, min: 40, max: 40 }
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.vertical-margins-add
+    - kind: css
+      id: padding-kept
+      description: 카드의 안쪽 여백은 16px 그대로여야 합니다.
+      requirement: padding 유지
+      selector: .card
+      all: true
+      expect:
+        computed:
+          padding-top: { px: { value: 16 } }
+          padding-left: { px: { value: 16 } }
+misconceptions: [css.mc.vertical-margins-add]
+hints:
+  - 위 카드의 아래 margin(20px)과 아래 카드의 위 margin(20px)은 일반 흐름에서 맞닿아 있어요. 맞닿은 위아래 margin은 어떻게 되나요?
+  - 맞닿은 margin은 더해지지 않고 큰 값 하나만 남아요. 그래서 20px이에요.
+  - 겹친 뒤에 남는 큰 값이 40px이 되도록 margin 값을 바꿔 보세요.
+explanation: |
+  예시 정답은 `margin: 20px 0;`을 **`margin: 40px 0;`**으로 바꾸는 거예요.
+
+  일반 흐름에서 위아래로 맞닿은 블록의 margin은 더해지지 않고 겹쳐서 큰 값만 남아요(마진 상쇄). 처음에는 20px과 20px이 겹쳐 20px이 됐어요. 둘 다 40px으로 바꾸면 겹쳐도 40px이에요.
+
+  `margin-bottom: 40px; margin-top: 0;`처럼 한쪽에만 40px을 줘도 정답이에요. 실무에서는 이렇게 **한 방향에만 margin을 주면** 겹침을 신경 쓰지 않아도 돼서 간격을 계산하기 쉬워요.
+
+  간격 체크가 여전히 실패한다면 두 margin을 더해서 생각하고 있지 않은지 확인해 보세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,54 @@
+id: css.layout.flex-basics.mcq-justify-in-column
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: css.flex.justify-align, weight: 1 }
+  - { id: css.flex.axes, weight: 0.5 }
+tags: [flexbox, justify-content, flex-direction]
+estimatedSeconds: 75
+prompt: |
+  너비 `400px`, 높이 `300px`인 컨테이너 안에 작은 버튼 두 개가 있어요. 아래 CSS를 적용하면 버튼들은 컨테이너 안의 어디에 놓일까요? (아이템의 너비는 내용만큼이라고 생각하세요.)
+code: |
+  .panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 400px;
+    height: 300px;
+  }
+spec:
+  options:
+    - id: a
+      text: 위아래로 쌓인 채, 세로로는 가운데이고 가로로는 왼쪽에 붙는다
+    - id: b
+      text: 위아래로 쌓인 채, 가로로는 가운데이고 세로로는 위쪽에 붙는다
+      misconception: css.mc.justify-is-horizontal
+      rationale: column에서는 주축이 세로라서 justify-content가 세로 위치를 정해요. 가로 위치는 align-items가 맡아요.
+    - id: c
+      text: 가로로 나란히 놓인 채, 가로·세로 모두 가운데에 놓인다
+      misconception: css.mc.column-means-columns
+      rationale: column은 아이템을 위에서 아래로 쌓아요. 가로로 나란히 놓이지 않아요.
+    - id: d
+      text: 위아래로 쌓인 채, 컨테이너의 정가운데에 놓인다
+      rationale: align-items가 flex-start라서 교차축(가로)으로는 시작점인 왼쪽에 붙어요.
+  correct: a
+misconceptions: [css.mc.justify-is-horizontal, css.mc.column-means-columns]
+hints:
+  - 먼저 flex-direction으로 주축이 가로인지 세로인지 정하세요.
+  - column이면 주축이 세로, 교차축이 가로예요. justify-content와 align-items는 각각 어느 축을 맡나요?
+  - justify-content는 주축(여기서는 세로)을, align-items는 교차축(여기서는 가로)을 정렬해요. flex-start는 축의 시작점이에요.
+explanation: |
+  정답은 **위아래로 쌓인 채, 세로로는 가운데이고 가로로는 왼쪽에 붙는다**예요.
+
+  1. `flex-direction: column`이라 주축은 세로, 교차축은 가로예요. 버튼은 위에서 아래로 쌓여요.
+  1. `justify-content: center`는 **주축(세로)** 방향 가운데로 모아요.
+  1. `align-items: flex-start`는 **교차축(가로)** 방향의 시작점, 즉 왼쪽에 붙여요.
+
+  - b는 "justify-content는 항상 가로"라고 생각한 경우예요. 주축이 세로로 바뀌면 justify-content도 세로를 맡아요.
+  - c는 column이 아이템을 여러 열로 나란히 놓는다고 생각한 경우예요.
+  - d는 align-items 값을 놓쳤어요. 가로까지 가운데로 놓으려면 `align-items: center`가 필요해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

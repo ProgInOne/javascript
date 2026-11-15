@@ -1,0 +1,52 @@
+id: css.basics.cascade.mcq-id-beats-later-class
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.cascade.specificity, weight: 1 }
+  - { id: css.cascade.order, weight: 0.3 }
+tags: [cascade, specificity]
+estimatedSeconds: 50
+prompt: |
+  아래 CSS에서 `<p id="intro" class="lead">`인 문단의 글자 색은 무엇인가요?
+code: |
+  #intro {
+    color: green;
+  }
+  .lead {
+    color: orange;
+  }
+  p {
+    color: purple;
+  }
+spec:
+  options:
+    - id: a
+      text: green
+    - id: b
+      text: purple
+      misconception: css.mc.last-rule-wins
+      rationale: 맨 아래에 있지만 타입 선택자 `p`는 명시도가 가장 낮아요.
+    - id: c
+      text: orange
+      rationale: 클래스 선택자는 타입 선택자보다 높지만 ID 선택자보다는 낮아요.
+    - id: d
+      text: 세 색이 섞인 색
+      rationale: CSS는 값을 섞지 않고 이기는 규칙 하나의 값만 써요.
+  correct: a
+misconceptions: [css.mc.last-rule-wins]
+hints:
+  - 세 규칙 모두 이 문단을 골라요. 이럴 때 무엇부터 비교하는지 떠올려 보세요.
+  - ID 선택자, 클래스 선택자, 타입 선택자 중 명시도가 가장 높은 것은 무엇일까요?
+  - 명시도가 다르면 순서는 보지 않아요. 가장 구체적인 선택자의 값이 쓰여요.
+explanation: |
+  정답은 **green**이에요.
+
+  세 규칙의 명시도는 `#intro` (1, 0, 0), `.lead` (0, 1, 0), `p` (0, 0, 1)이에요. 왼쪽 칸(ID)이 있는 `#intro`가 가장 높아서 이겨요.
+
+  - **purple**: `p` 규칙이 맨 아래에 있지만, 순서는 명시도가 같을 때만 쓰여요.
+  - **orange**: 클래스는 타입보다는 이기지만 ID에는 져요.
+  - **섞인 색**: 겹치는 규칙 중 이긴 하나의 값만 적용돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

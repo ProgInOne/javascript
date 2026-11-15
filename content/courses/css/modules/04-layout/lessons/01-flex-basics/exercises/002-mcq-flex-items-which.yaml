@@ -1,0 +1,55 @@
+id: css.layout.flex-basics.mcq-flex-items-which
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.flex.container, weight: 1 }
+  - { id: css.display.normal-flow, weight: 0.3 }
+tags: [flexbox, flex-item, dom-tree]
+estimatedSeconds: 60
+prompt: |
+  아래 코드에서 `.menu`에만 `display: flex`를 줬어요. **플렉스 아이템이 되는 요소**를 바르게 고른 것은 무엇인가요?
+code: |
+  <style>
+    .menu {
+      display: flex;
+    }
+  </style>
+  <ul class="menu">
+    <li><a href="#">홈</a> <span>NEW</span></li>
+    <li><a href="#">강의</a></li>
+    <li><a href="#">문의</a></li>
+  </ul>
+spec:
+  options:
+    - id: a
+      text: "`li` 세 개"
+    - id: b
+      text: "`li` 세 개와 그 안의 `a`, `span` 모두"
+      misconception: css.mc.flex-affects-grandchildren
+      rationale: 플렉스 아이템은 컨테이너의 바로 아래 자식뿐이에요. a와 span은 손자 요소예요.
+    - id: c
+      text: "`a` 세 개"
+      misconception: css.mc.flex-affects-grandchildren
+      rationale: a는 li 안에 있는 손자 요소라 아이템이 아니에요. 아이템은 ul의 바로 아래 자식이에요.
+    - id: d
+      text: "`.menu` 자신"
+      rationale: "`.menu`는 플렉스 컨테이너예요. 아이템은 그 안의 자식들이에요."
+  correct: a
+misconceptions: [css.mc.flex-affects-grandchildren]
+hints:
+  - 플렉스 컨테이너는 `.menu`예요. 아이템은 컨테이너와 어떤 관계인 요소일까요?
+  - DOM 트리에서 `ul` 바로 한 단계 아래에 있는 요소만 세어 보세요.
+  - "`a`와 `span`은 `li` 안에 들어 있으니 `ul`의 손자예요."
+explanation: |
+  정답은 **`li` 세 개**예요.
+
+  `display: flex`를 준 `.menu`(ul)는 플렉스 컨테이너가 되고, 그 **바로 아래 자식**인 `li` 세 개만 플렉스 아이템이 되어 한 줄로 놓여요.
+
+  - `a`와 `span`은 `li` 안에 있는 손자 요소예요. 이 요소들은 자기 부모인 `li` 안에서 원래대로(인라인이라 글자처럼) 흘러요. 그래서 b와 c는 틀렸어요.
+  - `.menu` 자신은 아이템이 아니라 컨테이너예요(d).
+
+  손자 요소까지 플렉스 배치를 하고 싶다면, 그 부모(`li`)에도 따로 `display: flex`를 줘야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

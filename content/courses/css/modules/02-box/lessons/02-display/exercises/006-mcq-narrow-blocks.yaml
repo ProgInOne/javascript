@@ -1,0 +1,49 @@
+id: css.box.display.mcq-narrow-blocks
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.display.normal-flow, weight: 1 }
+  - { id: css.display.block-inline, weight: 0.3 }
+tags: [normal-flow, block]
+estimatedSeconds: 45
+prompt: |
+  너비 `800px`인 화면에 아래 `div` 두 개를 차례로 넣었어요. 두 상자는 어떻게 놓이나요?
+code: |
+  .card {
+    width: 200px;
+    height: 100px;
+    background: lightblue;
+  }
+  /* <div class="card">1</div> <div class="card">2</div> */
+spec:
+  options:
+    - id: a
+      text: 1번 아래에 2번이 쌓이고, 두 상자의 오른쪽은 비어 있다
+    - id: b
+      text: 자리가 남으니 1번 오른쪽에 2번이 나란히 놓인다
+      misconception: css.mc.narrow-blocks-sit-side-by-side
+      rationale: div는 블록이라 너비와 상관없이 항상 새 줄에서 시작해요.
+    - id: c
+      text: 두 상자가 각각 800px로 늘어나 위아래로 쌓인다
+      rationale: width를 200px로 정했으니 200px이에요. 부모를 채우는 것은 width가 없을 때예요.
+    - id: d
+      text: 두 상자가 같은 자리에 겹쳐 보인다
+      rationale: 일반 흐름에서는 상자가 서로 겹치지 않고 차례로 놓여요.
+  correct: a
+misconceptions: [css.mc.narrow-blocks-sit-side-by-side]
+hints:
+  - div는 블록 요소예요. 블록은 어디서 시작하나요?
+  - 너비를 줄이면 상자가 좁아질 뿐, 놓이는 방식(display)은 그대로예요.
+  - 블록은 일반 흐름에서 위에서 아래로 쌓여요.
+explanation: |
+  정답은 **1번 아래에 2번이 쌓이고, 오른쪽은 비어 있다**예요.
+
+  `div`는 블록 요소라 너비와 상관없이 항상 새 줄에서 시작해요. 너비를 200px로 줄여도 오른쪽 600px이 비어 보일 뿐, 2번 상자는 다음 줄에 놓여요.
+
+  - 나란히 놓인다(b)는 가장 흔한 오해예요. 나란히 놓으려면 `display: inline-block`이나 Flexbox를 써야 해요.
+  - 800px로 늘어난다(c)는 width를 정하지 않은 블록일 때예요.
+  - 겹친다(d)는 일반 흐름에서 일어나지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

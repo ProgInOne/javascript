@@ -1,0 +1,115 @@
+id: css.basics.intro.web-fix-broken-rule
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.intro.rule-structure, weight: 1 }
+tags: [css-rule, debugging, web-task]
+estimatedSeconds: 240
+prompt: |
+  `.badge` 규칙에는 선언이 네 개 있는데, 미리보기를 보면 **글자 크기(`font-size: 24px`)만** 적용되고 나머지가 적용되지 않아요.
+
+  규칙 안의 **문법 실수를 찾아 고쳐서** 네 선언이 모두 적용되게 하세요. 속성과 값의 뜻은 바꾸지 마세요.
+
+  - 글자 색: 흰색(`white`)
+  - 배경색: 보라색(`purple`)
+  - 안쪽 여백: `10px`
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>배지</title>
+              <style>
+                .badge {
+                  font-size: 24px;
+                  color: "white";
+                  background-color: purple
+                  padding: 10px;
+                }
+              </style>
+            </head>
+            <body>
+              <p class="badge">새 글 3개</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>배지</title>
+              <style>
+                .badge {
+                  font-size: 24px;
+                  color: white;
+                  background-color: purple;
+                  padding: 10px;
+                }
+              </style>
+            </head>
+            <body>
+              <p class="badge">새 글 3개</p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: text-white
+      description: 배지의 글자 색이 흰색이어야 합니다.
+      requirement: 흰 글자
+      visible: true
+      selector: .badge
+      expect:
+        computed:
+          color: { color: "#ffffff" }
+      misconceptionIfFail: css.mc.value-in-quotes
+    - kind: css
+      id: bg-purple
+      description: 배지의 배경색이 보라색(purple)이어야 합니다.
+      requirement: 보라 배경
+      visible: true
+      selector: .badge
+      expect:
+        computed:
+          background-color: { color: "#800080" }
+      misconceptionIfFail: css.mc.semicolon-optional
+    - kind: css
+      id: padding-10
+      description: 배지의 안쪽 여백이 네 방향 모두 10px이어야 합니다.
+      requirement: 안쪽 여백 10px
+      visible: true
+      selector: .badge
+      expect:
+        computed:
+          padding-top: { px: { value: 10 } }
+          padding-left: { px: { value: 10 } }
+      misconceptionIfFail: css.mc.semicolon-optional
+    - kind: css
+      id: size-kept
+      description: 글자 크기 24px은 그대로여야 합니다.
+      requirement: 글자 크기 유지
+      selector: .badge
+      expect:
+        computed:
+          font-size: { px: { value: 24 } }
+misconceptions: [css.mc.value-in-quotes, css.mc.semicolon-optional]
+hints:
+  - "실수는 두 군데예요. 선언 하나하나가 `속성: 값;` 모양을 정확히 지키는지 보세요."
+  - 값 하나가 따옴표로 감싸져 있고, 선언 하나는 끝에 무언가가 빠져 있어요.
+  - "`\"white\"`의 따옴표를 지우고, `purple` 뒤에 빠진 기호를 붙여 보세요."
+explanation: |
+  실수는 두 가지예요.
+
+  1. **`color: "white";`** — 값을 따옴표로 감싸면 색 이름이 아니라 문자열이 되어 무시돼요. `color: white;`로 고쳐요.
+  1. **`background-color: purple`** — 끝에 세미콜론이 없어서 다음 줄과 이어져 `purple padding: 10px`이라는 값이 돼요. 그래서 배경색과 padding이 함께 무시됐어요. `purple;`로 고쳐요.
+
+  브라우저는 잘못된 선언을 오류 없이 무시하기 때문에, 페이지는 잘 열려도 모양만 빠져 있어요. 모양이 안 바뀌면 그 선언과 바로 앞 선언의 문법을 먼저 확인하세요.
+origin: authored
+review: { status: draft, draftedBy: ai:claude }

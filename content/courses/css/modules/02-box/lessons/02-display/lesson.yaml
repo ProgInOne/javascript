@@ -1,0 +1,15 @@
+id: css.box.display
+title: display와 흐름
+summary: 블록·인라인·인라인 블록 요소가 화면에 놓이는 방식을 구분하고, 요소들이 위아래로 쌓이고 줄 안에서 흐르는 일반 흐름을 이해합니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 12, practice: 12 }
+concepts:
+  primary: [css.display.block-inline, css.display.inline-block, css.display.normal-flow]
+  practiced: [css.box.areas, css.box.spacing]
+objectives:
+  - 요소가 블록인지 인라인인지 보고 화면에 어떻게 놓일지 예측할 수 있다.
+  - 인라인 요소에 적용되지 않는 속성을 알고, inline-block으로 바꿔 크기와 간격을 줄 수 있다.
+  - 일반 흐름에서 블록이 쌓이는 방향과 위아래 margin이 겹치는 규칙으로 요소 사이의 간격을 계산할 수 있다.
+practice:
+  targetCount: 8

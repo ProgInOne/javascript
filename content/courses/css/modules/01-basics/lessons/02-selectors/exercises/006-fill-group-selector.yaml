@@ -1,0 +1,67 @@
+id: css.basics.selectors.fill-group-selector
+type: fill_blank
+difficulty: 1
+concepts:
+  - { id: css.selectors.combinators, weight: 1 }
+tags: [selector, group]
+estimatedSeconds: 60
+prompt: |
+  `h1`과 `h2` **둘 다** 파란색(`#1d4ed8`)으로 바꾸려고 해요. 규칙을 두 번 쓰지 않고, 빈칸에 **선택자 하나**를 써서 완성하세요. 문단(`p`)의 색은 바뀌면 안 돼요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <style>
+      {{blank:sel}} {
+        color: #1d4ed8;
+      }
+    </style>
+    <h1>여행 일기</h1>
+    <h2>첫째 날</h2>
+    <p>바다를 보러 갔어요.</p>
+  blanks:
+    - id: sel
+      accept: ["h1, h2"]
+      width: 16
+  checks:
+    - kind: css
+      id: h1-blue
+      description: h1의 글자 색이 파란색이어야 합니다.
+      requirement: h1과 h2가 파란색
+      visible: true
+      selector: h1
+      expect:
+        computed:
+          color: { color: "#1d4ed8" }
+    - kind: css
+      id: h2-blue
+      description: h2의 글자 색이 파란색이어야 합니다.
+      requirement: h1과 h2가 파란색
+      visible: true
+      selector: h2
+      expect:
+        computed:
+          color: { color: "#1d4ed8" }
+      misconceptionIfFail: css.mc.descendant-vs-group
+    - kind: css
+      id: p-unchanged
+      description: 문단의 글자 색은 바뀌지 않아야 합니다.
+      requirement: 문단은 그대로
+      visible: true
+      selector: p
+      expect:
+        computed:
+          color: { color: "#000000" }
+misconceptions: [css.mc.descendant-vs-group]
+hints:
+  - 선택자 여러 개에 같은 규칙을 주는 방법이 있어요.
+  - 두 선택자를 "그리고"의 뜻으로 이어 주는 기호를 떠올려 보세요.
+  - 공백은 "안에 있는"이라는 뜻이 돼요. 두 선택자를 쉼표로 이어요.
+explanation: |
+  정답 예시는 **`h1, h2`**예요.
+
+  쉼표로 이은 그룹 선택자는 "h1 그리고 h2"라는 뜻이라, 두 요소에 같은 규칙을 한 번에 줘요. `h2, h1`처럼 순서를 바꾸거나 쉼표 뒤 공백을 빼도(`h1,h2`) 같은 뜻이에요.
+
+  `h1 h2`처럼 공백으로 이으면 "h1 안에 있는 h2"를 찾는 자손 선택자가 되어, 이 문서에서는 아무것도 고르지 못해요. `body`나 `*`처럼 넓게 고르면 문단까지 파래져요.
+origin: authored
+review: { status: draft, draftedBy: ai:claude }

@@ -1,0 +1,46 @@
+id: css.styling.units-colors.mcq-percent-parent
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.units.length, weight: 1 }
+tags: [units, percent]
+estimatedSeconds: 40
+prompt: |
+  아래 CSS에서 `.child`의 `width: 50%`는 **무엇의** 50%인가요?
+code: |
+  .parent {
+    width: 400px;
+  }
+  .child {
+    width: 50%;
+  }
+spec:
+  options:
+    - id: a
+      text: 부모 `.parent`의 content 너비(400px)의 50%
+    - id: b
+      text: 화면(브라우저 창) 너비의 50%
+      misconception: css.mc.percent-of-screen
+      rationale: 화면 너비를 기준으로 하는 단위는 `vw`예요. `%`는 부모를 기준으로 해요.
+    - id: c
+      text: "`.child` 안에 든 글자 길이의 50%"
+      rationale: "`%` 너비는 자기 내용이 아니라 바깥의 부모를 기준으로 해요."
+    - id: d
+      text: 루트(`html`) 요소 글자 크기의 50%
+      rationale: 루트 글자 크기를 기준으로 하는 단위는 `rem`이에요.
+  correct: a
+misconceptions: [css.mc.percent-of-screen]
+hints:
+  - "`%`는 \"무엇에 대한 비율\"이에요. `.child`를 감싸고 있는 것이 무엇인지 보세요."
+  - 화면 너비를 기준으로 하는 단위는 따로 있어요(`vw`). `%`는 그것과 달라요.
+  - "`width`의 `%`는 바로 바깥 요소의 content 너비를 기준으로 해요."
+explanation: |
+  정답은 **부모 `.parent`의 content 너비의 50%**예요. 그래서 `.child`는 `400 × 0.5 = 200px`이 돼요.
+
+  - 화면 너비의 50%가 필요하면 `50vw`를 써요. `%`와 `vw`는 기준이 달라요.
+  - `%` 너비는 자기 내용(글자)의 길이와 상관없어요.
+  - 루트 글자 크기를 기준으로 하는 단위는 `rem`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

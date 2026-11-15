@@ -1,0 +1,99 @@
+id: css.styling.typography.web-fix-line-height
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.type.line-height, weight: 1 }
+  - { id: css.type.font-properties, weight: 0.3 }
+tags: [line-height, debugging, web-task]
+estimatedSeconds: 240
+prompt: |
+  글자 크기 `18px`인 문단의 줄 간격을 넉넉하게 하려고 "줄 높이를 글자 크기의 1.5배로" 정했는데, 오히려 줄들이 겹쳐서 읽을 수가 없어요.
+
+  `.article` 규칙을 고쳐서 문단 한 줄의 높이가 **글자 크기의 1.5배(27px)**가 되게 하세요. 글자 크기 `18px`은 그대로 두세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>읽기 좋은 문단</title>
+              <style>
+                .article {
+                  width: 320px;
+                  font-size: 18px;
+                  line-height: 1.5px;
+                  background: #fef3c7;
+                }
+              </style>
+            </head>
+            <body>
+              <p class="article">
+                줄 높이가 너무 좁으면 윗줄과 아랫줄이 겹쳐요. 줄 높이를 글자 크기에 맞게 정하면
+                긴 글도 편하게 읽을 수 있어요.
+              </p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>읽기 좋은 문단</title>
+              <style>
+                .article {
+                  width: 320px;
+                  font-size: 18px;
+                  line-height: 1.5;
+                  background: #fef3c7;
+                }
+              </style>
+            </head>
+            <body>
+              <p class="article">
+                줄 높이가 너무 좁으면 윗줄과 아랫줄이 겹쳐요. 줄 높이를 글자 크기에 맞게 정하면
+                긴 글도 편하게 읽을 수 있어요.
+              </p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: line-height-27
+      description: 문단 한 줄의 높이가 글자 크기의 1.5배(27px)여야 합니다.
+      requirement: 줄 높이 1.5배
+      visible: true
+      selector: .article
+      expect:
+        computed:
+          line-height: { px: { value: 27 } }
+      misconceptionIfFail: css.mc.line-height-unitless-px
+    - kind: css
+      id: font-size-kept
+      description: 문단의 글자 크기는 18px 그대로여야 합니다.
+      requirement: 글자 크기 유지
+      visible: true
+      selector: .article
+      expect:
+        computed:
+          font-size: { px: { value: 18 } }
+misconceptions: [css.mc.line-height-unitless-px]
+hints:
+  - 지금 줄 높이가 실제로 몇 px인지 보세요. `1.5px`은 글자 크기의 1.5배일까요?
+  - "`1.5px`은 단위가 붙은 고정 길이라서 정말 1.5px이에요. 글자 크기에 곱하는 배수는 다르게 써요."
+  - 단위 없는 숫자는 글자 크기에 곱해져요. 단위를 빼거나, 18 × 1.5를 직접 계산해 px로 써 보세요.
+explanation: |
+  예시 정답은 `line-height: 1.5;`처럼 **단위를 빼는** 거예요.
+
+  `1.5px`은 단위가 붙은 고정 길이라서 줄 높이가 정말 1.5px이 돼요. 글자(18px)보다 훨씬 낮으니 줄들이 겹쳐 보였어요.
+
+  단위 없는 `1.5`는 글자 크기에 곱하는 배수라서 `18 × 1.5 = 27px`이 돼요. `line-height: 27px`로 써도 체크는 통과하지만, 단위 없이 쓰면 나중에 글자 크기를 바꿔도 줄 높이가 같은 비율로 따라 바뀌어서 더 편해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

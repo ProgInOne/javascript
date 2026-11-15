@@ -1,0 +1,101 @@
+id: css.basics.cascade.web-fix-warning-color
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.cascade.specificity, weight: 1 }
+  - { id: css.selectors.combinators, weight: 0.3 }
+tags: [cascade, specificity, debugging, web-task]
+estimatedSeconds: 240
+prompt: |
+  공지 상자 안의 문단은 회색이어야 하고, 그중 `class="warning"`인 문단만 빨간색(`#dc2626`)이어야 해요. 그런데 `.warning` 규칙을 맨 아래에 써도 경고 문단이 여전히 회색이에요.
+
+  **선택자만 고쳐서** 경고 문단이 빨간색이 되게 하세요. 다른 문단은 회색 그대로여야 하고, HTML은 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공지 상자</title>
+              <style>
+                #notice p {
+                  color: #6b7280;
+                }
+                .warning {
+                  color: #dc2626;
+                }
+              </style>
+            </head>
+            <body>
+              <div id="notice">
+                <p id="normal">이번 주 토요일은 휴관해요.</p>
+                <p class="warning">반납 기한을 꼭 확인하세요.</p>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공지 상자</title>
+              <style>
+                #notice p {
+                  color: #6b7280;
+                }
+                #notice .warning {
+                  color: #dc2626;
+                }
+              </style>
+            </head>
+            <body>
+              <div id="notice">
+                <p id="normal">이번 주 토요일은 휴관해요.</p>
+                <p class="warning">반납 기한을 꼭 확인하세요.</p>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: warning-red
+      description: 경고 문단의 글자 색이 빨간색(#dc2626)이어야 합니다.
+      requirement: 경고 문단은 빨간색
+      visible: true
+      selector: .warning
+      expect:
+        computed:
+          color: { color: "#dc2626" }
+      misconceptionIfFail: css.mc.last-rule-wins
+    - kind: css
+      id: normal-gray
+      description: 다른 문단은 회색(#6b7280) 그대로여야 합니다.
+      requirement: 다른 문단은 회색
+      visible: true
+      selector: "#normal"
+      expect:
+        computed:
+          color: { color: "#6b7280" }
+misconceptions: [css.mc.last-rule-wins]
+hints:
+  - 두 규칙이 모두 경고 문단을 골라요. 두 선택자의 명시도를 세어 보세요.
+  - "`#notice p`는 (1, 0, 1), `.warning`은 (0, 1, 0)이에요. 아래에 있어도 `.warning`이 지는 이유가 여기 있어요."
+  - "`.warning` 선택자 앞에 ID를 붙여 명시도를 (1, 1, 0) 이상으로 만들어 보세요."
+explanation: |
+  예시 정답은 `.warning`을 **`#notice .warning`**으로 바꾸는 거예요.
+
+  처음에는 `#notice p` (1, 0, 1)가 `.warning` (0, 1, 0)보다 명시도가 높아서, `.warning`이 아래에 있어도 졌어요. 순서는 명시도가 같을 때만 쓰이기 때문이에요.
+
+  `#notice .warning`은 (1, 1, 0)이에요. ID 칸이 같으니 클래스 칸을 비교하고, 1 대 0으로 이겨요. `#notice p.warning` (1, 1, 1)처럼 써도 정답이에요.
+
+  `.warning` 규칙을 위로 옮기거나 클래스를 더 붙이는 것(`.warning.warning`)만으로는 ID가 있는 규칙을 이기지 못해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

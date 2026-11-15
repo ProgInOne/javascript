@@ -1,0 +1,104 @@
+id: css.styling.units-colors.web-fix-missing-units
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.units.length, weight: 1 }
+tags: [units, px, debugging, web-task]
+estimatedSeconds: 180
+prompt: |
+  안내 상자의 너비를 `300px`, 안쪽 여백을 네 방향 모두 `20px`로 정하려고 아래처럼 썼어요. 그런데 상자가 화면 너비를 꽉 채우고, 글자도 테두리에 붙어 있어요.
+
+  `.notice` 규칙을 고쳐서 상자의 `width`가 300px, `padding`이 네 방향 모두 20px이 되게 하세요. 테두리와 배경색은 그대로 두세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>안내 상자</title>
+              <style>
+                .notice {
+                  width: 300;
+                  padding: 20;
+                  border: 2px solid #2563eb;
+                  background: #eff6ff;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="notice">내일은 단원 평가가 있어요.</div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>안내 상자</title>
+              <style>
+                .notice {
+                  width: 300px;
+                  padding: 20px;
+                  border: 2px solid #2563eb;
+                  background: #eff6ff;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="notice">내일은 단원 평가가 있어요.</div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: width-300
+      description: 상자의 width가 300px이어야 합니다.
+      requirement: 너비 300px
+      visible: true
+      selector: .notice
+      expect:
+        computed:
+          width: { px: { value: 300 } }
+      misconceptionIfFail: css.mc.unitless-length
+    - kind: css
+      id: padding-20
+      description: 상자의 안쪽 여백이 네 방향 모두 20px이어야 합니다.
+      requirement: 안쪽 여백 20px
+      visible: true
+      selector: .notice
+      expect:
+        computed:
+          padding-top: { px: { value: 20 } }
+          padding-right: { px: { value: 20 } }
+          padding-bottom: { px: { value: 20 } }
+          padding-left: { px: { value: 20 } }
+      misconceptionIfFail: css.mc.unitless-length
+    - kind: css
+      id: border-kept
+      description: 테두리는 2px 두께 그대로 있어야 합니다.
+      requirement: 테두리 유지
+      selector: .notice
+      expect:
+        computed:
+          border-top-width: { px: { value: 2 } }
+misconceptions: [css.mc.unitless-length]
+hints:
+  - "`border` 선언은 잘 적용되는데 `width`와 `padding`만 적용되지 않아요. 두 값과 `border`의 값을 비교해 보세요."
+  - "`300`과 `20`에는 무엇의 300, 무엇의 20인지 알려 주는 것이 빠져 있어요."
+  - 0이 아닌 길이에는 단위가 필요해요. 문제에서 원하는 단위를 숫자 뒤에 붙여 보세요.
+explanation: |
+  예시 정답은 `width: 300px;`, `padding: 20px;`처럼 **단위를 붙이는** 거예요.
+
+  0이 아닌 길이 값에 단위가 없으면 브라우저는 무엇의 300인지 알 수 없어서 그 선언을 통째로 무시해요. 그래서 처음 코드는 `width`가 기본값(부모 너비를 꽉 채움)이 되고, `padding`도 0이 됐어요. `border: 2px ...`는 단위가 있어서 잘 적용됐던 거예요.
+
+  같은 크기라면 다른 단위로 써도 정답이에요. 예를 들어 루트 글자 크기가 16px일 때 `padding: 1.25rem`도 20px이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

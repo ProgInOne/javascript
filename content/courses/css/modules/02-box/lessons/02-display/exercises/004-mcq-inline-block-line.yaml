@@ -1,0 +1,48 @@
+id: css.box.display.mcq-inline-block-line
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.display.inline-block, weight: 1 }
+tags: [display, inline-block]
+estimatedSeconds: 60
+prompt: |
+  너비 `600px`인 부모 안에 아래 규칙의 상자 세 개를 차례로 넣었어요. 세 상자는 어떻게 놓이나요?
+code: |
+  .item {
+    display: inline-block;
+    width: 150px;
+    height: 60px;
+  }
+spec:
+  options:
+    - id: a
+      text: 세 상자가 150px 너비로 한 줄에 나란히 놓인다
+    - id: b
+      text: 세 상자가 150px 너비로 위에서 아래로 쌓인다
+      misconception: css.mc.inline-block-new-line
+      rationale: 블록처럼 한 줄을 혼자 차지한다고 본 경우예요. inline-block은 바깥이 인라인이라 자리가 있으면 같은 줄에 놓여요.
+    - id: c
+      text: 세 상자가 한 줄에 놓이지만 width가 무시되어 내용 너비만큼만 차지한다
+      misconception: css.mc.width-on-inline
+      rationale: width가 무시되는 것은 inline일 때예요. inline-block은 width와 height를 받아요.
+    - id: d
+      text: 세 상자가 각각 부모 너비(600px)를 꽉 채우며 쌓인다
+      rationale: 부모 너비를 채우는 것은 width가 없는 블록의 성질이에요.
+  correct: a
+misconceptions: [css.mc.inline-block-new-line, css.mc.width-on-inline]
+hints:
+  - inline-block을 "바깥"과 "안쪽"으로 나눠 생각해 보세요.
+  - 바깥(inline)은 놓이는 방식을, 안쪽(block)은 크기·여백이 적용되는지를 정해요.
+  - "150px × 3 = 450px은 600px 안에 들어가요. 인라인처럼 놓이면 어떻게 될까요?"
+explanation: |
+  정답은 **150px 너비로 한 줄에 나란히**예요.
+
+  `inline-block`은 바깥에서 보면 인라인이라 자리가 있으면 같은 줄에 이어서 놓여요. 세 상자 너비를 합쳐도 450px이라 600px 부모의 한 줄에 들어가요. 안쪽은 블록처럼 `width`와 `height`가 적용돼요.
+
+  - 위아래로 쌓인다(b)는 `display: block`일 때의 모습이에요.
+  - width가 무시된다(c)는 `display: inline`일 때의 모습이에요.
+  - 600px을 채운다(d)는 width를 정하지 않은 블록의 모습이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

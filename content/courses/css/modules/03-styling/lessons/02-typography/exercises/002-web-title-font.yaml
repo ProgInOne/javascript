@@ -1,0 +1,110 @@
+id: css.styling.typography.web-title-font
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.type.font-properties, weight: 1 }
+  - { id: css.units.rem-em, weight: 0.3 }
+tags: [font-size, font-weight, web-task]
+estimatedSeconds: 180
+prompt: |
+  행사 안내문의 제목(`.title`)이 본문과 똑같아 보여서 눈에 띄지 않아요. `.title` 규칙에 속성을 추가해 아래 두 가지를 만족시키세요.
+
+  1. 제목의 글자 크기를 `24px`(루트 글자 크기 16px의 1.5배)로 만드세요.
+  2. 제목을 **굵게**(`bold`, 숫자로 700) 만드세요.
+
+  본문(`.desc`)은 그대로 두세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>행사 안내</title>
+              <style>
+                body {
+                  font-family: sans-serif;
+                }
+                .title {
+                  color: #1d4ed8;
+                  /* 여기에 속성을 추가하세요 */
+                }
+              </style>
+            </head>
+            <body>
+              <p class="title">가을 코딩 캠프</p>
+              <p class="desc">토요일 오전 10시, 도서관 2층에서 열려요.</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>행사 안내</title>
+              <style>
+                body {
+                  font-family: sans-serif;
+                }
+                .title {
+                  color: #1d4ed8;
+                  font-size: 1.5rem;
+                  font-weight: bold;
+                }
+              </style>
+            </head>
+            <body>
+              <p class="title">가을 코딩 캠프</p>
+              <p class="desc">토요일 오전 10시, 도서관 2층에서 열려요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: title-size
+      description: 제목의 글자 크기가 24px이어야 합니다.
+      requirement: 제목 크기 24px
+      visible: true
+      selector: .title
+      expect:
+        computed:
+          font-size: { px: { value: 24 } }
+    - kind: css
+      id: title-bold
+      description: 제목이 굵게(700 이상) 보여야 합니다.
+      requirement: 제목 굵게
+      visible: true
+      selector: .title
+      expect:
+        computed:
+          font-weight: { numeric: { min: 700 } }
+    - kind: css
+      id: desc-kept
+      description: 본문의 글자 크기는 16px, 굵기는 보통(400) 그대로여야 합니다.
+      requirement: 본문 유지
+      selector: .desc
+      expect:
+        computed:
+          font-size: { px: { value: 16 } }
+          font-weight: { numeric: { max: 400 } }
+misconceptions: []
+hints:
+  - 글자 크기와 굵기는 각각 다른 `font-` 속성으로 정해요.
+  - 크기는 `font-size`, 굵기는 `font-weight`예요. 크기는 `px`이나 `rem`으로 쓸 수 있어요.
+  - "`1.5rem`은 루트 16px의 1.5배예요. 굵기는 키워드 `bold`나 숫자 `700`으로 써요."
+explanation: |
+  예시 정답은 `.title`에 `font-size: 1.5rem;`과 `font-weight: bold;`를 추가하는 거예요.
+
+  - `font-size: 1.5rem`은 루트 16px의 1.5배라서 24px이에요. `font-size: 24px`로 써도 정답이에요.
+  - `font-weight: bold`는 숫자 `700`과 같아요. `font-weight: 700`으로 써도 돼요.
+
+  `font-size: 1.5em`도 이 문제에서는 24px이 돼요. 부모인 `body`가 16px이기 때문이에요. 하지만 부모의 글자 크기가 바뀌면 함께 바뀌므로, 루트를 기준으로 하는 `rem`이 더 예측하기 쉬워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

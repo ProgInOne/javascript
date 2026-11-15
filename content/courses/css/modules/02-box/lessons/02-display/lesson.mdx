@@ -1,0 +1,202 @@
+<Section kind="objectives">
+- 요소가 블록인지 인라인인지 보고 화면에 어떻게 놓일지 예측할 수 있어요.
+- 인라인 요소에 적용되지 않는 속성을 알고, `inline-block`으로 바꿔 크기와 간격을 줄 수 있어요.
+- 일반 흐름에서 블록이 쌓이는 방향과 위아래 margin이 겹치는 규칙으로 요소 사이의 간격을 계산할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+박스 모델을 배웠으니 상자의 크기는 계산할 수 있어요. 그런데 이런 일이 생겨요.
+
+- 링크(`a`)에 `margin: 20px`를 줬는데, 위아래로는 전혀 떨어지지 않아요.
+- 태그 배지(`span`)에 `width: 80px`를 줬는데 너비가 그대로예요.
+- `div` 두 개를 `width: 100px`로 좁혔는데도 나란히 놓이지 않고 아래로 쌓여요.
+- 카드 위아래에 `margin: 20px`씩 줬는데, 카드 사이가 40px이 아니라 20px이에요.
+
+모두 상자의 크기가 아니라 **상자가 놓이는 방식**에 관한 문제예요. 상자가 놓이는 방식은 `display` 속성과 **일반 흐름(normal flow)** 이라는 기본 배치 규칙이 정해요.
+</Section>
+
+<Section kind="principle">
+### 블록과 인라인
+
+요소는 기본 `display` 값에 따라 크게 두 가지로 놓여요.
+
+<CompareTable columns={["block (블록)", "inline (인라인)"]}>
+<Row label="대표 요소">`div`, `p`, `h1`~`h6`, `ul`, `li`, `section` | `span`, `a`, `strong`, `em`</Row>
+<Row label="놓이는 방식">항상 새 줄에서 시작해요 | 글자처럼 줄 안에 이어서 놓여요</Row>
+<Row label="기본 너비">부모의 너비를 꽉 채워요 | 내용(글자)만큼만 차지해요</Row>
+<Row label="width·height">적용돼요 | 무시돼요</Row>
+<Row label="margin·padding">네 방향 모두 적용돼요 | 좌우만 자리를 밀어내요. 위아래 margin은 무시되고, 위아래 padding은 배경만 커지고 줄 간격은 그대로예요</Row>
+</CompareTable>
+
+인라인 요소는 "문장 속의 단어"처럼 생각하면 쉬워요. 단어 하나에 너비를 정하거나 위아래로 띄울 수는 없죠.
+
+### inline-block: 두 성질을 섞기
+
+`display: inline-block`은 **바깥은 인라인, 안쪽은 블록**이에요.
+
+- 바깥에서 보면 인라인이라 자리가 있으면 옆 요소와 **같은 줄에** 놓여요.
+- 안쪽은 블록처럼 `width`, `height`, 위아래 `margin`·`padding`이 모두 적용돼요.
+
+버튼 모양 링크나 태그 배지처럼 "줄 안에 나란히 있지만 크기와 여백이 필요한" 요소에 써요. `display: block`으로 바꾸면 크기는 받지만 새 줄에서 시작해요.
+
+### 일반 흐름
+
+`display`만 정하고 따로 배치를 정하지 않으면, 브라우저는 요소를 **일반 흐름**대로 놓아요.
+
+- 블록은 **위에서 아래로** 하나씩 쌓여요. 너비를 줄여도 오른쪽이 빌 뿐, 다음 블록은 아래 줄에서 시작해요.
+- 인라인(과 inline-block)은 **왼쪽에서 오른쪽으로** 흐르다가 줄이 꽉 차면 다음 줄로 넘어가요.
+
+### 마진 상쇄
+
+일반 흐름에서 **위아래로 맞닿은 블록의 margin은 더해지지 않고 겹쳐요.** 두 값 중 큰 쪽 하나만 남아요. 이것을 **마진 상쇄(margin collapsing)** 라고 해요.
+
+```text
+위 상자  margin-bottom: 30px  ┐
+                              ├─ 실제 간격 = 30px (큰 값)
+아래 상자 margin-top: 20px    ┘   (30 + 20 = 50px 아님)
+```
+
+좌우 margin은 겹치지 않고 더해져요. 나중에 배울 Flexbox 안의 아이템도 margin이 겹치지 않아요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 블록과 인라인에 같은 규칙을 줬을 때의 차이를 보여 줘요. 실행한 뒤 `.inline`의 `display`를 `inline-block`으로 바꿔 보세요.
+
+<RunnableExample id="block-vs-inline" lang="web" concepts={["css.display.block-inline", "css.display.inline-block"]}>
+```html
+<style>
+  .block,
+  .inline {
+    width: 120px;
+    margin: 16px;
+    padding: 4px;
+    background: #fde68a;
+    border: 2px solid #1f2937;
+  }
+</style>
+<div class="block">div (블록)</div>
+<p>
+  문장 안의 <span class="inline">span (인라인)</span> 요소예요.
+  인라인은 위아래로 떨어지지 않아요.
+</p>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- `div`는 `width: 120px`가 적용되고, 위아래 16px margin으로 주변과 떨어져 있어요. 블록이라 혼자 한 줄을 차지해요.
+- `span`은 글자 길이만큼만 칠해지고 `width: 120px`가 무시돼요. 좌우 margin 16px은 옆 글자를 밀어내지만, 위아래 margin은 윗줄·아랫줄과의 간격을 바꾸지 않아요.
+- `display: inline-block`으로 바꾸면 `span`이 문장 안에 그대로 있으면서 120px 너비를 받고, 위아래 margin도 줄 높이를 밀어내요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제를 실행하기 전에, 노란 상자와 파란 상자 사이가 몇 px일지 먼저 예측해 보세요.
+
+<RunnableExample id="margin-collapse" lang="web" predict predictKind="value" concepts={["css.display.normal-flow"]}>
+```html
+<style>
+  .box {
+    width: 100px;
+    height: 40px;
+  }
+  .yellow {
+    background: #fde68a;
+    margin-bottom: 30px;
+  }
+  .blue {
+    background: #bfdbfe;
+    margin-top: 20px;
+  }
+</style>
+<div class="box yellow"></div>
+<div class="box blue"></div>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+두 상자 사이는 **30px**이에요.
+
+| 확인할 것 | 결과 |
+|---|---|
+| 두 상자의 배치 | 둘 다 블록이라 너비가 100px로 좁아도 위아래로 쌓여요 |
+| 맞닿은 margin | 위 상자의 `margin-bottom` 30px, 아래 상자의 `margin-top` 20px |
+| 실제 간격 | 겹쳐서 큰 값 30px만 남아요(50px 아님) |
+
+너비를 100px로 줄였지만 두 상자가 나란히 놓이지 않는다는 점도 보세요. 블록은 너비와 상관없이 항상 새 줄에서 시작해요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="css.mc.margin-on-inline">
+<Wrong>링크(`a`)에 `margin: 20px`를 주면 위아래로도 20px 떨어진다.</Wrong>
+<Actual>인라인 요소의 위아래 margin은 줄 배치에 영향을 주지 않아요. 좌우만 떨어져요.</Actual>
+<Right>위아래 간격이 필요하면 `display: inline-block`(줄 안에 유지)이나 `display: block`(새 줄)으로 바꿔요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.width-on-inline">
+<Wrong>`span`에 `width: 80px`를 주면 80px 상자가 된다.</Wrong>
+<Actual>인라인 요소의 크기는 내용이 정해요. `width`와 `height`는 무시돼요.</Actual>
+<Right>크기를 정하려면 `display`를 `inline-block`이나 `block`으로 바꿔요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.inline-block-new-line">
+<Wrong>`inline-block`은 블록처럼 혼자 한 줄을 차지한다.</Wrong>
+<Actual>`inline-block`은 바깥이 인라인이라 자리가 있으면 옆 요소와 같은 줄에 놓여요.</Actual>
+<Right>이름의 앞부분(inline)은 바깥 배치, 뒷부분(block)은 안쪽 성질이에요. 새 줄에서 시작하게 하려면 `block`을 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.narrow-blocks-sit-side-by-side">
+<Wrong>`div` 두 개를 `width: 100px`로 좁히면 자리가 남으니 나란히 놓인다.</Wrong>
+<Actual>블록은 너비와 상관없이 새 줄에서 시작해요. 오른쪽이 비어 보일 뿐 아래로 쌓여요.</Actual>
+<Right>나란히 놓으려면 `inline-block`으로 바꾸거나, 레이아웃 모듈에서 배울 Flexbox를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.vertical-margins-add">
+<Wrong>위 상자 `margin-bottom: 30px`, 아래 상자 `margin-top: 20px`이면 사이가 50px이다.</Wrong>
+<Actual>위아래로 맞닿은 margin은 겹쳐서 큰 값 30px만 남아요.</Actual>
+<Right>일반 흐름의 블록 사이 간격은 "맞닿은 margin 중 큰 값"이에요. 원하는 간격이 있으면 한쪽 margin에만 그 값을 주는 것이 가장 알기 쉬워요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+웹 사이트의 메뉴는 보통 링크(`a`)로 만들어요. 링크는 인라인이라 그대로 두면 누를 수 있는 영역이 글자 크기만큼밖에 안 돼요. 그래서 실무에서는 이렇게 바꾸는 경우가 많아요.
+
+```css
+.menu a {
+  display: inline-block;
+  padding: 8px 16px;
+}
+```
+
+`inline-block`으로 바꾸면 메뉴 항목이 한 줄에 나란히 있으면서, 위아래 padding까지 실제 크기에 들어가 누르기 쉬운 버튼 모양이 돼요. 세로 메뉴를 만들 때는 `display: block`으로 바꿔 항목마다 한 줄을 꽉 채우게 해요.
+
+<Callout kind="tip" title="요소의 display 값 확인하기">
+개발자 도구(<Key>F12</Key>)의 Computed 패널에서 `display`를 찾으면 그 요소가 지금 block인지 inline인지 바로 알 수 있어요. 크기나 margin이 이상하게 무시될 때 가장 먼저 확인해 보세요.
+</Callout>
+</Section>
+
+<Section kind="check">
+인라인 요소에 margin을 주면 어떻게 되는지 확인해 보세요.
+
+<InlineExercise ref="css.box.display.mcq-inline-margin" />
+
+마진 상쇄로 간격을 계산해 보세요.
+
+<InlineExercise ref="css.box.display.fill-margin-collapse" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 블록 요소는 새 줄에서 시작해 부모 너비를 채우고, 인라인 요소는 글자처럼 줄 안에 놓여요.
+- 인라인 요소에는 `width`·`height`와 위아래 margin이 적용되지 않아요.
+- `inline-block`은 줄 안에 나란히 놓이면서 크기와 위아래 여백을 받아요.
+- 일반 흐름에서 블록은 너비와 상관없이 위에서 아래로 쌓여요.
+- 위아래로 맞닿은 블록의 margin은 더해지지 않고 큰 값 하나로 겹쳐요(마진 상쇄).
+</Section>
+
+<Section kind="next">
+다음 모듈 "꾸미기"에서는 px 말고도 %, rem 같은 단위로 크기를 정하고 색과 글꼴을 다뤄요. 블록 상자를 나란히 놓는 더 편한 방법은 "레이아웃 기초" 모듈의 Flexbox에서 배워요. <MdnLink path="Web/CSS/CSS_display/Flow_layout" />
+</Section>

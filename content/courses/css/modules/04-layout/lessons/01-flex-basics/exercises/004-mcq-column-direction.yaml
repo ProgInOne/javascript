@@ -1,0 +1,47 @@
+id: css.layout.flex-basics.mcq-column-direction
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.flex.axes, weight: 1 }
+tags: [flexbox, flex-direction]
+estimatedSeconds: 45
+prompt: |
+  아이템이 세 개 있는 플렉스 컨테이너에 아래 규칙을 줬어요. 아이템은 어떻게 놓일까요?
+code: |
+  .box {
+    display: flex;
+    flex-direction: column;
+  }
+spec:
+  options:
+    - id: a
+      text: 위에서 아래로 한 줄(세로 방향)로 쌓인다
+    - id: b
+      text: 신문의 단처럼 여러 열로 나뉘어 가로로 나란히 놓인다
+      misconception: css.mc.column-means-columns
+      rationale: column은 "열을 여러 개 만든다"가 아니라 "주축을 세로로 한다"는 뜻이에요.
+    - id: c
+      text: 왼쪽에서 오른쪽으로 한 줄로 나란히 놓인다
+      rationale: 그건 기본값 `row`일 때의 배치예요.
+    - id: d
+      text: 아이템이 모두 같은 자리에 겹쳐진다
+      rationale: flex-direction은 아이템이 늘어서는 방향을 정할 뿐 겹치게 하지 않아요.
+  correct: a
+misconceptions: [css.mc.column-means-columns]
+hints:
+  - flex-direction은 아이템이 늘어서는 방향(주축)을 정해요.
+  - 기본값 `row`는 가로 방향이에요. `column`은 그와 다른 방향이에요.
+  - "`column`이면 주축이 세로가 돼요."
+explanation: |
+  정답은 **위에서 아래로 한 줄로 쌓인다**예요.
+
+  `flex-direction`은 주축, 즉 아이템이 늘어서는 방향을 정해요.
+
+  - `row`(기본값): 주축이 가로라서 왼쪽에서 오른쪽으로 놓여요(c).
+  - `column`: 주축이 세로라서 위에서 아래로 놓여요.
+
+  이름 때문에 "열(column)을 여러 개 만든다"고 생각하기 쉽지만(b), 실제로는 아이템들이 **하나의 세로 줄**을 이뤄요. 아이템이 겹치는 일도 없어요(d).
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

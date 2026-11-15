@@ -1,0 +1,57 @@
+id: css.basics.cascade.mcq-inherited-vs-direct
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: css.cascade.inheritance, weight: 1 }
+  - { id: css.cascade.specificity, weight: 0.5 }
+tags: [cascade, inheritance, specificity]
+estimatedSeconds: 80
+prompt: |
+  아래 CSS와 HTML에서 "안녕하세요" 문단의 글자 색은 무엇인가요?
+code: |
+  /* CSS */
+  #main {
+    color: red;
+  }
+  p {
+    color: blue;
+  }
+
+  <!-- HTML -->
+  <div id="main">
+    <p>안녕하세요</p>
+  </div>
+spec:
+  options:
+    - id: a
+      text: blue
+    - id: b
+      text: red
+      misconception: css.mc.inherited-beats-direct
+      rationale: "`#main`의 명시도가 높지만, 이 규칙은 문단이 아니라 부모 div를 골라요. 문단에는 물려받은 값으로만 전해져요."
+    - id: c
+      text: 검은색(기본 글자 색)
+      rationale: 문단을 직접 고르는 `p` 규칙이 있으니 기본값이 아니라 그 규칙의 색이 쓰여요.
+    - id: d
+      text: purple(red와 blue가 섞인 색)
+      rationale: CSS는 색을 섞지 않아요. 하나의 값만 적용돼요.
+  correct: a
+misconceptions: [css.mc.inherited-beats-direct]
+hints:
+  - 두 규칙이 각각 어떤 요소를 고르는지 먼저 보세요. 둘 다 문단을 고르나요?
+  - "`#main`은 div를, `p`는 문단을 골라요. 문단 입장에서 red는 직접 받은 값인가요, 물려받은 값인가요?"
+  - 명시도는 같은 요소를 고르는 규칙끼리만 비교해요. 물려받은 값과 직접 받은 값 중 어느 쪽이 우선할까요?
+explanation: |
+  정답은 **blue**예요.
+
+  `#main` 규칙은 div를 고르고, `p` 규칙은 문단을 골라요. 문단에게 red는 부모에게서 **물려받을 수 있는 값**이고, blue는 **직접 해당하는 규칙의 값**이에요. 직접 해당하는 규칙은 명시도와 상관없이 물려받은 값보다 우선해요.
+
+  - **red**: `#main`의 명시도 (1, 0, 0)가 `p` (0, 0, 1)보다 높으니 이긴다고 생각한 경우예요. 명시도 비교는 같은 요소를 고르는 규칙끼리만 해요. 문단을 고르는 규칙은 `p` 하나뿐이에요.
+  - **검은색**: 문단에 직접 해당하는 규칙이 있으니 기본값은 쓰이지 않아요.
+  - **섞인 색**: CSS는 값을 섞지 않아요.
+
+  만약 `p` 규칙이 없었다면 문단은 부모의 red를 물려받았을 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

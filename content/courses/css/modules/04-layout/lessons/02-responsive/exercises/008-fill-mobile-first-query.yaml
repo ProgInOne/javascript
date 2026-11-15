@@ -1,0 +1,84 @@
+id: css.layout.responsive.fill-mobile-first-query
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.responsive.mobile-first, weight: 1 }
+  - { id: css.responsive.media-queries, weight: 0.5 }
+tags: [responsive, mobile-first, media-query, min-width]
+estimatedSeconds: 80
+prompt: |
+  모바일 우선 CSS를 완성하세요. 기본 규칙은 메뉴를 세로로 쌓아요. 빈칸에 미디어 쿼리 **조건**을 채워, 화면 너비가 **`600px` 이상**일 때만 메뉴가 가로로 놓이게 하세요.
+
+  채점은 너비 `375px`(세로로 쌓여야 함)과 `1280px`(가로로 놓여야 함) 두 화면에서 해요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <style>
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      @media ({{blank:cond}}) {
+        .menu {
+          flex-direction: row;
+        }
+      }
+    </style>
+    <div class="menu">
+      <div id="m1">홈</div>
+      <div id="m2">강의</div>
+      <div id="m3">문의</div>
+    </div>
+  blanks:
+    - id: cond
+      accept: ["min-width: 600px"]
+      width: 20
+      misconceptionMap:
+        "max-width: 600px": css.mc.max-width-means-above
+        "max-width:600px": css.mc.max-width-means-above
+  checks:
+    - kind: layout
+      id: stacked-on-phone
+      description: 너비 375px 화면에서 "강의"가 "홈" 아래에 있어야 합니다.
+      requirement: 좁은 화면에서는 세로로
+      visible: true
+      viewport: 375
+      a: "#m2"
+      b: "#m1"
+      relation: below
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.max-width-means-above
+    - kind: layout
+      id: row-on-desktop
+      description: 너비 1280px 화면에서 "강의"가 "홈"의 오른쪽, 같은 줄에 있어야 합니다.
+      requirement: 넓은 화면에서는 가로로
+      visible: true
+      viewport: 1280
+      a: "#m2"
+      b: "#m1"
+      relation: right-of
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.max-width-means-above
+misconceptions: [css.mc.max-width-means-above]
+hints:
+  - "미디어 쿼리 조건은 `(특성: 값)` 모양이에요. 화면 너비 조건에 쓰는 특성은 `min-width`와 `max-width`예요."
+  - "\"600px 이상\"은 \"최소 600px부터\"라는 뜻이에요. min과 max 중 어느 쪽일까요?"
+  - 괄호 안에는 `min-width` 또는 `max-width` 중 하나와 콜론, 그리고 `600px`를 써요.
+explanation: |
+  정답은 **`min-width: 600px`**예요.
+
+  ```css
+  @media (min-width: 600px) {
+    .menu { flex-direction: row; }
+  }
+  ```
+
+  `min-width: 600px`는 "화면 너비가 최소 600px일 때", 즉 600px 이상에서만 안쪽 규칙을 적용해요. 375px 화면에서는 기본 규칙(`column`)대로 세로로 쌓이고, 1280px 화면에서는 `row`로 가로로 놓여요.
+
+  `max-width: 600px`로 쓰면 반대로 600px **이하**에서 가로가 되어 두 체크가 모두 실패해요. 모바일 우선 CSS에서는 좁은 화면이 기본이므로, 넓은 화면 규칙을 더하는 `min-width`를 주로 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

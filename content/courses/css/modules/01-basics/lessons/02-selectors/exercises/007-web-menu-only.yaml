@@ -1,0 +1,130 @@
+id: css.basics.selectors.web-menu-only
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.selectors.combinators, weight: 1 }
+  - { id: css.selectors.basic, weight: 0.3 }
+tags: [selector, descendant, web-task]
+estimatedSeconds: 300
+prompt: |
+  지금 규칙은 페이지의 **모든 목록 항목**을 굵은 글씨에 연한 청록 배경으로 바꾸고 있어요. 그런데 원하는 것은 **메뉴(`class="menu"`) 안의 항목만** 굵은 글씨에 연한 청록 배경이 되고, 본문의 준비물 목록은 원래 모양 그대로인 거예요.
+
+  **선택자만 고쳐서** 요구사항을 만족시키세요. HTML은 바꾸지 마세요. 메뉴 안의 "하위 메뉴" 항목도 메뉴 안에 있으니 굵은 글씨에 연한 청록 배경이어야 해요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>캠핑 안내</title>
+              <style>
+                li {
+                  background-color: #ccfbf1;
+                  font-weight: bold;
+                }
+              </style>
+            </head>
+            <body>
+              <ul class="menu">
+                <li>안내</li>
+                <li>
+                  예약
+                  <ul>
+                    <li class="sub">예약하기</li>
+                    <li class="sub">예약 확인</li>
+                  </ul>
+                </li>
+              </ul>
+              <h1>캠핑 준비물</h1>
+              <ul class="checklist">
+                <li>텐트</li>
+                <li>침낭</li>
+              </ul>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>캠핑 안내</title>
+              <style>
+                .menu li {
+                  background-color: #ccfbf1;
+                  font-weight: bold;
+                }
+              </style>
+            </head>
+            <body>
+              <ul class="menu">
+                <li>안내</li>
+                <li>
+                  예약
+                  <ul>
+                    <li class="sub">예약하기</li>
+                    <li class="sub">예약 확인</li>
+                  </ul>
+                </li>
+              </ul>
+              <h1>캠핑 준비물</h1>
+              <ul class="checklist">
+                <li>텐트</li>
+                <li>침낭</li>
+              </ul>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: menu-items
+      description: 메뉴 안의 모든 항목(하위 메뉴 포함)이 굵은 글씨에 연한 청록 배경이어야 합니다.
+      requirement: 메뉴 항목은 굵은 글씨에 연한 청록 배경
+      visible: true
+      selector: .menu li
+      all: true
+      expect:
+        computed:
+          background-color: { color: "#ccfbf1" }
+          font-weight: { numeric: { min: 700 } }
+      misconceptionIfFail: css.mc.descendant-direct-child-only
+    - kind: css
+      id: checklist-plain
+      description: 준비물 목록의 항목은 원래 모양(검은색, 보통 굵기)이어야 합니다.
+      requirement: 준비물 목록은 그대로
+      visible: true
+      selector: .checklist li
+      all: true
+      expect:
+        computed:
+          color: { color: "#000000" }
+          font-weight: { numeric: { max: 400 } }
+      misconceptionIfFail: css.mc.descendant-vs-group
+    - kind: dom
+      id: html-kept
+      description: 목록 항목 여섯 개는 그대로 있어야 합니다.
+      requirement: HTML 유지
+      selector: li
+      expect:
+        count: 6
+misconceptions: [css.mc.descendant-direct-child-only, css.mc.descendant-vs-group]
+hints:
+  - "`li` 선택자는 위치와 상관없이 모든 li를 골라요. \"메뉴 안의\"라는 조건을 선택자에 담아야 해요."
+  - 두 선택자를 공백으로 이으면 "앞 요소 안에 있는 뒤 요소"라는 뜻이 돼요.
+  - 메뉴는 `class="menu"`예요. 메뉴를 고르는 선택자와 `li`를 공백으로 이어 보세요.
+explanation: |
+  예시 정답은 선택자를 **`.menu li`**로 바꾸는 거예요.
+
+  `.menu li`는 "`.menu` 안에 있는 li"를 골라요. 자손 선택자는 깊이를 따지지 않으므로, ul 안에 한 번 더 들어 있는 하위 메뉴 항목("예약하기", "예약 확인")도 골라져요. 준비물 목록은 `.menu` 밖이라 원래 모양 그대로예요.
+
+  - `.menu > li`(자식 선택자)를 쓰면 하위 메뉴 항목이 빠져서 배경 체크를 통과하지 못해요. 하위 항목이 부모 li의 굵기는 물려받아 굵게 보이지만, 배경색은 물려받지 않아요. 무엇이 물려지고 무엇이 아닌지는 다음 단원 "캐스케이드와 명시도"에서 배워요.
+  - `.menu, li`(쉼표)를 쓰면 "메뉴 그리고 모든 li"라서 준비물 목록까지 바뀌어요.
+  - `ul li`는 준비물 목록의 li도 고르니 맞지 않아요.
+  - `.sub`처럼 클래스를 따로 고르는 방법은 "안내", "예약" 항목을 빠뜨려요.
+origin: authored
+review: { status: draft, draftedBy: ai:claude }

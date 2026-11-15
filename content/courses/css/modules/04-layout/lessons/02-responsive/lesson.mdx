@@ -1,0 +1,211 @@
+<Section kind="objectives">
+- 뷰포트 메타 태그가 하는 일과 하지 않는 일을 설명할 수 있어요.
+- `min-width`·`max-width` 미디어 쿼리가 어떤 화면 너비에서 적용되는지 판단할 수 있어요.
+- 좁은 화면용 기본 스타일에 `min-width` 미디어 쿼리를 더하는 모바일 우선 CSS를 쓸 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+"Flexbox 기초" 단원에서 카드 세 장을 가로로 나란히 놓는 법을 배웠어요. 넓은 모니터에서는 보기 좋지만, 같은 페이지를 휴대폰(너비 약 375px)으로 열면 문제가 생겨요.
+
+- 카드 한 장의 너비가 100px 남짓으로 줄어들어 글자가 한두 글자씩 줄바꿈돼요.
+- `width: 900px`처럼 고정 너비를 준 상자는 화면 밖으로 넘쳐서 옆으로 밀어 봐야 보여요.
+- 아예 페이지 전체가 개미만 하게 축소되어 보이기도 해요.
+
+같은 HTML로 휴대폰에서는 세로로 쌓고, 넓은 화면에서는 가로로 놓을 수 있으면 좋겠죠. 화면 너비에 맞춰 배치가 바뀌는 페이지를 **반응형** 페이지라고 해요. 이 단원에서는 반응형에 필요한 세 가지, 뷰포트 메타 태그·미디어 쿼리·모바일 우선 방식을 배워요.
+</Section>
+
+<Section kind="principle">
+### 뷰포트 메타 태그
+
+휴대폰 브라우저는 옛날 데스크톱용 페이지도 깨지지 않게 보여 주려고, 기본적으로 페이지를 **약 980px 너비로 그린 뒤 화면에 맞게 축소**해요. 그래서 글자가 아주 작아지고, CSS 입장에서는 화면 너비가 980px인 것처럼 보여요.
+
+`head`에 아래 태그를 넣으면 이 축소를 끄고 **기기의 실제 너비 그대로** 그려요.
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+```
+
+- `width=device-width`: 그리는 너비를 기기 너비(예: 375px)로 맞춰요.
+- `initial-scale=1`: 처음 배율을 1배(확대·축소 없음)로 둬요.
+
+이 태그는 "몇 px 너비로 그릴지"만 정해요. 좁은 화면에서 배치를 바꾸는 일은 하지 않아요. 그건 다음에 배울 미디어 쿼리가 맡아요.
+
+### 미디어 쿼리
+
+`@media (조건) { ... }` 안에 쓴 규칙은 **조건에 맞을 때만** 적용돼요. 반응형에서 가장 많이 쓰는 조건은 화면(뷰포트) 너비예요.
+
+```css
+@media (min-width: 600px) {
+  .cards {
+    flex-direction: row;
+  }
+}
+```
+
+<CompareTable columns={["min-width: 600px", "max-width: 600px"]}>
+<Row label="읽는 법">최소 600px부터 | 최대 600px까지</Row>
+<Row label="적용되는 화면">600px **이상** (넓은 화면) | 600px **이하** (좁은 화면)</Row>
+<Row label="375px 휴대폰">적용 안 됨 | 적용됨</Row>
+<Row label="1280px 모니터">적용됨 | 적용 안 됨</Row>
+</CompareTable>
+
+미디어 쿼리 안의 규칙도 보통의 규칙과 똑같이 캐스케이드를 따라요. 선택자가 같으면 명시도가 같으니, **나중에 쓴 규칙이 이겨요.** 그래서 미디어 쿼리는 덮어쓸 기본 규칙보다 **뒤에** 써요.
+
+### 모바일 우선
+
+같은 결과를 두 가지 방식으로 쓸 수 있어요.
+
+<CompareTable columns={["모바일 우선", "데스크톱 우선"]}>
+<Row label="미디어 쿼리 밖의 기본 스타일">좁은 화면용 | 넓은 화면용</Row>
+<Row label="주로 쓰는 조건">`min-width` (넓어지면 규칙을 더함) | `max-width` (좁아지면 규칙을 덮어씀)</Row>
+<Row label="좁은 화면이 읽는 CSS">기본 스타일만 | 기본 스타일 + 덮어쓰는 규칙</Row>
+</CompareTable>
+
+**모바일 우선**은 단순한 좁은 화면 배치(대개 위아래로 쌓기)를 먼저 쓰고, 화면이 넓어질 때 필요한 것만 `min-width`로 덧붙이는 방식이에요. 블록 요소는 원래 위아래로 쌓이니 좁은 화면 스타일이 짧고, 넓은 화면 규칙이 "추가"로만 쌓여서 덮어쓰기가 덜 엉켜요. 그래서 요즘 많은 사이트가 이 방식을 써요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제를 실행하기 전에 글자 색을 예측해 보세요. 미리보기 창의 너비는 300px보다 넓고, 200px보다는 당연히 넓어요.
+
+<RunnableExample id="which-rule" lang="web" predict predictKind="value" concepts={["css.responsive.media-queries"]}>
+```html
+<style>
+  .title {
+    color: black;
+  }
+  @media (min-width: 300px) {
+    .title {
+      color: green;
+    }
+  }
+  @media (max-width: 200px) {
+    .title {
+      color: red;
+    }
+  }
+</style>
+<p class="title">이 글자는 무슨 색일까요?</p>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+글자는 **초록색(green)**이에요.
+
+| 규칙 | 조건 | 미리보기(300px보다 넓음)에서 |
+|---|---|---|
+| `color: black` | 없음 (항상) | 적용 대상 |
+| `min-width: 300px` 안의 `green` | 300px 이상 | 적용 대상 |
+| `max-width: 200px` 안의 `red` | 200px 이하 | 적용 안 됨 |
+
+적용 대상인 두 규칙은 선택자가 `.title`로 같아서, 뒤에 쓴 `green`이 이겨요. `max-width: 200px`를 "200px 이상"으로 읽으면 빨간색을 예상하게 되는데, max-width는 "최대 200px까지"예요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 모바일 우선으로 쓴 카드 목록이에요. 기본은 위아래로 쌓고, 화면이 `600px` 이상이면 가로로 놓아요.
+
+<RunnableExample id="mobile-first" lang="web" concepts={["css.responsive.mobile-first", "css.responsive.media-queries"]}>
+```html
+<style>
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .card {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #9ca3af;
+  }
+  @media (min-width: 600px) {
+    .cards {
+      flex-direction: row;
+    }
+  }
+</style>
+<div class="cards">
+  <div class="card">HTML 핵심</div>
+  <div class="card">CSS 핵심</div>
+  <div class="card">JavaScript 기초</div>
+</div>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- 미디어 쿼리 밖의 `.cards` 규칙은 좁은 화면용이에요. `column`이라 카드가 위아래로 쌓여요.
+- 화면 너비가 600px 이상이면 미디어 쿼리 안의 규칙이 더해져 `row`가 `column`을 덮어써요. 미디어 쿼리가 기본 규칙 **뒤**에 있어서 이길 수 있어요.
+- 미리보기에서 어떤 모습이 보일지는 미리보기 창의 너비에 따라 달라요. 미리보기 창은 학습 화면의 배치에 따라 너비가 정해지고 직접 바꿀 수 없어요. 그래서 이 과정의 반응형 실습은 너비 `375px`와 `1280px`처럼 정해진 두 화면에서 따로 채점해요.
+- 실제 브라우저에서는 이 코드를 파일로 저장해 열고 창 너비를 줄였다 늘렸다 하면, 600px을 경계로 배치가 바뀌는 모습을 볼 수 있어요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="css.mc.viewport-meta-makes-responsive">
+<Wrong>뷰포트 메타 태그를 넣었으니 휴대폰에서 카드가 알아서 세로로 쌓일 것이다.</Wrong>
+<Actual>메타 태그는 페이지를 기기 너비 그대로 그리게 할 뿐이에요. 가로로 놓인 카드는 좁은 화면에서도 그대로 가로로 놓여서 더 비좁아 보여요.</Actual>
+<Right>반응형에는 둘 다 필요해요. 메타 태그로 실제 너비를 쓰게 하고, 배치는 미디어 쿼리로 직접 바꿔요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.max-width-means-above">
+<Wrong>`@media (max-width: 600px)`는 화면이 600px보다 넓을 때 적용된다.</Wrong>
+<Actual>600px **이하**인 좁은 화면에서 적용돼요.</Actual>
+<Right>max는 "최대 ~까지", min은 "최소 ~부터"로 소리 내어 읽어요. 넓은 화면에 규칙을 더하려면 `min-width`를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.mobile-first-means-desktop-override">
+<Wrong>모바일 우선은 넓은 화면 스타일을 먼저 완성하고, 휴대폰용 규칙을 `max-width`로 덮어쓰는 것이다.</Wrong>
+<Actual>그건 데스크톱 우선 방식이에요. 화면에 보이는 결과가 같아도 기본 스타일이 넓은 화면용이에요.</Actual>
+<Right>모바일 우선은 미디어 쿼리 밖의 기본 스타일을 좁은 화면용으로 쓰고, `min-width` 미디어 쿼리로 넓은 화면에 필요한 규칙만 더하는 방식이에요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+실제 사이트의 CSS에서는 같은 너비 경계를 여러 번 쓰기 때문에, 몇 가지 기준 너비(브레이크포인트)를 정해 두고 작은 것부터 차례로 써요.
+
+```css
+/* 기본: 휴대폰 */
+.cards { display: flex; flex-direction: column; gap: 12px; }
+
+/* 태블릿 이상 */
+@media (min-width: 768px) {
+  .cards { flex-direction: row; }
+}
+
+/* 데스크톱 이상 */
+@media (min-width: 1024px) {
+  .cards { gap: 24px; }
+}
+```
+
+1024px 화면에서는 두 미디어 쿼리가 모두 적용되고, 각자 맡은 속성(`flex-direction`, `gap`)을 더해요. 작은 너비부터 순서대로 쓰면 넓은 화면일수록 뒤의 규칙이 덧붙여지므로 결과를 예측하기 쉬워요.
+
+<Callout kind="tip" title="개발자 도구의 기기 모드">
+브라우저 개발자 도구(<Key>F12</Key>)에서 기기 툴바(휴대폰 모양 아이콘)를 켜면 375px, 768px 같은 화면 너비를 골라 페이지를 볼 수 있어요. 반응형 페이지를 만들 때 가장 자주 쓰는 기능이에요.
+</Callout>
+</Section>
+
+<Section kind="check">
+미디어 쿼리 조건을 바르게 읽는지 확인해 보세요.
+
+<InlineExercise ref="css.layout.responsive.mcq-max-width-when" />
+
+이번에는 모바일 우선 방식을 골라 보세요.
+
+<InlineExercise ref="css.layout.responsive.mcq-which-mobile-first" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 뷰포트 메타 태그는 휴대폰 브라우저가 페이지를 축소하지 않고 기기 너비 그대로 그리게 해요. 배치를 바꾸지는 않아요.
+- `@media (조건) { ... }` 안의 규칙은 조건에 맞을 때만 적용돼요.
+- `min-width`는 "이 너비 이상", `max-width`는 "이 너비 이하"예요.
+- 미디어 쿼리 안의 규칙도 캐스케이드를 따르므로, 덮어쓸 기본 규칙보다 뒤에 써요.
+- 모바일 우선은 좁은 화면용 기본 스타일에 `min-width` 미디어 쿼리로 넓은 화면 규칙을 더하는 방식이에요.
+</Section>
+
+<Section kind="next">
+이것으로 CSS 핵심 과정의 단원을 모두 마쳤어요. 뒤에 이어질 단원 평가 "카드 목록 레이아웃"에서는 선택자, 박스 모델, Flexbox, 미디어 쿼리를 함께 써서 화면 너비에 맞는 카드 목록을 만들어 봐요. <MdnLink path="Web/CSS/CSS_media_queries/Using_media_queries" />
+</Section>

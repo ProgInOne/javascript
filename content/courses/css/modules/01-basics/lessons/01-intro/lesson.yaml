@@ -1,0 +1,15 @@
+id: css.basics.intro
+title: CSS 연결과 규칙 구조
+summary: CSS 규칙을 선택자·선언·속성·값으로 나눠 읽고 쓰며, link·style 요소와 style 속성으로 CSS를 HTML에 연결합니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 10, practice: 12 }
+concepts:
+  primary: [css.intro.rule-structure, css.intro.linking]
+  reviewed: [html.doc.skeleton]
+objectives:
+  - CSS 규칙에서 선택자·선언·속성·값을 각각 가리킬 수 있다.
+  - 세미콜론과 중괄호를 갖춘 올바른 CSS 규칙을 쓰고, 문법 실수로 무시되는 선언을 찾을 수 있다.
+  - link 요소·style 요소·style 속성으로 CSS를 연결하고, 각 방법이 어디에 적용되는지 구분할 수 있다.
+practice:
+  targetCount: 7

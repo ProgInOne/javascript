@@ -1,0 +1,39 @@
+id: css.basics.intro.mcq-rule-parts
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: css.intro.rule-structure, weight: 1 }
+tags: [css-rule, property, value]
+estimatedSeconds: 40
+prompt: |
+  아래 CSS 규칙에서 **속성(property)** 에 해당하는 것은 무엇인가요?
+code: |
+  .title {
+    color: navy;
+  }
+spec:
+  options:
+    - id: a
+      text: "`color`"
+    - id: b
+      text: "`.title`"
+      rationale: "`.title`은 모양을 줄 요소를 고르는 선택자예요."
+    - id: c
+      text: "`navy`"
+      rationale: "`navy`는 속성에 넣는 값이에요."
+    - id: d
+      text: "`color: navy;`"
+      rationale: 속성과 값을 합친 한 줄 전체는 선언이라고 불러요.
+  correct: a
+hints:
+  - 선언은 "무엇을 바꿀지"와 "어떻게 바꿀지" 두 부분으로 되어 있어요.
+  - 콜론(`:`)을 기준으로 앞부분과 뒷부분을 나눠 보세요.
+  - 콜론 앞이 속성, 콜론 뒤가 값이에요.
+explanation: |
+  정답은 **`color`**예요.
+
+  - `.title`은 선택자: 어떤 요소에 모양을 줄지 골라요.
+  - `color: navy;`는 선언: 모양 하나를 정하는 한 줄이에요.
+  - 선언 안에서 콜론 앞의 `color`가 속성(글자 색을 바꾼다), 콜론 뒤의 `navy`가 값(남색으로)이에요.
+origin: authored
+review: { status: draft, draftedBy: ai:claude }

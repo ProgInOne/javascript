@@ -1,0 +1,222 @@
+<Section kind="objectives">
+- 선택자의 명시도를 ID·클래스·타입 개수로 계산해, 겹치는 두 규칙 중 이기는 쪽을 고를 수 있어요.
+- 명시도가 같은 규칙이 겹칠 때 선언 순서로 적용되는 값을 예측할 수 있어요.
+- 상속되는 속성과 상속되지 않는 속성을 구분하고, 물려받은 값과 직접 준 값 중 무엇이 적용될지 설명할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+CSS를 조금 쓰다 보면 이런 일을 겪어요.
+
+- 경고 문단을 빨간색으로 만들려고 `.warning { color: red; }`를 맨 아래에 썼는데, 여전히 회색이에요.
+- `body`에 글자 색을 줬더니 안쪽의 문단과 제목까지 모두 그 색이 됐어요. 그런데 `body`에 준 테두리는 안쪽 요소에 생기지 않았어요.
+
+한 요소에 여러 규칙이 동시에 해당하는 일은 아주 흔해요. 이때 브라우저는 "어떤 값을 쓸지"를 정해진 순서로 결정해요. 이 결정 과정을 **캐스케이드(cascade, 폭포처럼 차례로 떨어진다는 뜻)** 라고 불러요. 규칙을 알면 "왜 내 CSS가 안 먹지?"를 추측 대신 계산으로 풀 수 있어요.
+</Section>
+
+<Section kind="principle">
+### 겹치는 규칙의 승부: 명시도 → 순서
+
+같은 요소의 같은 속성에 규칙이 두 개 이상 해당하면, 브라우저는 다음 순서로 이기는 규칙을 골라요.
+
+1. **명시도(specificity)** 가 높은 규칙이 이겨요. 명시도는 "선택자가 얼마나 구체적인가"예요.
+1. 명시도가 같으면, CSS에서 **나중에 쓴 규칙**이 이겨요.
+
+순서는 두 번째 기준이에요. 명시도가 다르면 순서는 보지도 않아요.
+
+### 명시도 계산하기
+
+선택자에 들어 있는 것을 세 칸으로 세요.
+
+| 칸 | 세는 것 | 예 |
+|---|---|---|
+| A | ID 선택자 | `#logo` |
+| B | 클래스 선택자, 의사 클래스 | `.card`, `:hover` |
+| C | 타입 선택자 | `p`, `a`, `li` |
+
+<CompareTable columns={["선택자", "(A, B, C)"]}>
+<Row label="p">`p` | (0, 0, 1)</Row>
+<Row label=".warning">`.warning` | (0, 1, 0)</Row>
+<Row label="#notice p">`#notice p` | (1, 0, 1)</Row>
+<Row label="nav .menu a:hover">`nav .menu a:hover` | (0, 2, 2)</Row>
+</CompareTable>
+
+비교할 때는 **왼쪽 칸부터** 봐요. A가 큰 쪽이 이기고, A가 같으면 B, B도 같으면 C를 비교해요. 세 칸을 한 숫자로 더하지 않는다는 점이 중요해요. (0, 11, 0)과 (1, 0, 0)을 비교하면 A칸에서 1이 이기므로 ID 하나짜리가 이겨요.
+
+### 상속: 부모에게서 물려받는 값
+
+어떤 속성은 요소에 규칙이 없어도 **부모의 값을 물려받아요**. 이를 상속이라고 해요.
+
+<CompareTable columns={["상속돼요", "상속되지 않아요"]}>
+<Row label="종류">글자 관련 속성 | 상자 관련 속성</Row>
+<Row label="예">`color`, `font-size`, `font-family`, `line-height`, `text-align` | `margin`, `padding`, `border`, `width`, `background`</Row>
+</CompareTable>
+
+글자 색을 `body`에 한 번 주면 페이지 전체 글자가 그 색이 되는 게 상속 덕분이에요. 반대로 테두리가 상속된다면 안쪽 요소마다 테두리가 겹겹이 생기겠죠. 그래서 상자 속성은 상속되지 않아요.
+
+하나 더 기억할 규칙이 있어요. **요소에 직접 해당하는 규칙은 물려받은 값보다 항상 우선**해요. 물려받은 값은 그 요소를 고르는 규칙이 하나도 없을 때만 쓰여요. 명시도 비교는 같은 요소를 고르는 규칙끼리만 해요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제를 실행하기 전에, "공지를 확인하세요" 문단이 무슨 색일지 먼저 예측해 보세요. `.warning` 규칙이 더 아래에 있어요.
+
+<RunnableExample id="specificity-predict" lang="web" predict predictKind="value" concepts={["css.cascade.specificity"]}>
+```html
+<style>
+  #notice p {
+    color: gray;
+  }
+  .warning {
+    color: red;
+  }
+</style>
+<div id="notice">
+  <p>오늘은 휴관일이에요.</p>
+  <p class="warning">공지를 확인하세요.</p>
+</div>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+두 문단 모두 **회색**이에요.
+
+| 규칙 | 명시도 (A, B, C) | 경고 문단에 해당하나요 |
+|---|---|---|
+| `#notice p` | (1, 0, 1) | 네 |
+| `.warning` | (0, 1, 0) | 네 |
+
+두 규칙 모두 경고 문단을 고르지만, A칸(ID)에서 `#notice p`가 1로 앞서요. `.warning`이 아래에 있어도 순서는 명시도가 같을 때만 쓰이므로 소용없어요. 경고 문단을 빨갛게 하려면 `#notice .warning`처럼 명시도를 (1, 1, 0)으로 높이면 돼요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 명시도가 같은 두 클래스 규칙이에요. HTML의 `class` 속성에 이름을 적은 순서를 바꿔 가며 실행해 보세요.
+
+<RunnableExample id="order" lang="web" concepts={["css.cascade.order"]}>
+```html
+<style>
+  .blue {
+    color: blue;
+  }
+  .red {
+    color: red;
+  }
+</style>
+<p class="red blue">class="red blue"</p>
+<p class="blue red">class="blue red"</p>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+두 문단 모두 **빨간색**이에요.
+
+- `.blue`와 `.red`는 둘 다 (0, 1, 0)으로 명시도가 같아요. 그래서 CSS에서 나중에 쓴 `.red`가 이겨요.
+- HTML의 `class="red blue"`와 `class="blue red"`는 "이 요소는 두 클래스를 가진다"는 같은 뜻이에요. 적은 순서는 승부에 영향을 주지 않아요.
+- CSS에서 `.red` 규칙을 `.blue` 위로 옮기면 두 문단 모두 파란색이 돼요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 상속이에요. `.card`에만 규칙을 줬는데 안쪽 요소는 어떻게 보이는지 확인해 보세요.
+
+<RunnableExample id="inheritance" lang="web" concepts={["css.cascade.inheritance"]}>
+```html
+<style>
+  .card {
+    color: #1d4ed8;
+    border: 2px solid #1f2937;
+    padding: 12px;
+  }
+  .note {
+    color: #6b7280;
+  }
+</style>
+<div class="card">
+  <h2>오늘의 메뉴</h2>
+  <p>김밥과 라면</p>
+  <p class="note">재료가 떨어지면 일찍 마감해요.</p>
+</div>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- 제목과 첫 문단은 규칙이 없지만 파란색이에요. `color`가 상속되어 `.card`의 값을 물려받았어요.
+- 테두리와 안쪽 여백은 카드 바깥 상자에만 있어요. `border`와 `padding`은 상속되지 않아서 제목과 문단에는 생기지 않아요.
+- `.note` 문단은 회색이에요. 이 문단을 직접 고르는 `.note` 규칙이 있으니 물려받은 파란색보다 우선해요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="css.mc.last-rule-wins">
+<Wrong>`.warning`을 맨 아래에 썼으니 무조건 `.warning`이 이긴다.</Wrong>
+<Actual>위에 있는 `#notice p`가 이겨요. 명시도 (1, 0, 1)이 (0, 1, 0)보다 높아요.</Actual>
+<Right>먼저 명시도를 비교하고, 명시도가 같을 때만 나중에 쓴 규칙이 이겨요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.specificity-adds-up">
+<Wrong>클래스를 11개 이어 붙이면 11점이라서 ID 하나(10점쯤)를 이긴다.</Wrong>
+<Actual>명시도는 한 숫자로 더하지 않아요. (0, 11, 0)은 A칸이 0이라 (1, 0, 0)에 져요.</Actual>
+<Right>명시도는 (ID, 클래스, 타입) 세 칸을 왼쪽부터 비교해요. 클래스를 아무리 모아도 ID 하나를 넘지 못해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.class-attr-order-matters">
+<Wrong>`class="blue red"`처럼 뒤에 적은 클래스가 이긴다.</Wrong>
+<Actual>class 속성에 적은 순서는 아무 영향이 없어요. 두 문단 모두 CSS에서 나중에 쓴 규칙의 색이 돼요.</Actual>
+<Right>명시도가 같은 규칙의 승부는 **CSS 안에서 규칙을 쓴 순서**로 정해져요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.all-props-inherit">
+<Wrong>`.card`에 준 `border`와 `padding`도 안쪽 제목과 문단에 물려진다.</Wrong>
+<Actual>테두리와 안쪽 여백은 카드에만 생기고, 제목과 문단에는 생기지 않아요.</Actual>
+<Right>상속되는 것은 `color`, `font-size` 같은 글자 관련 속성이에요. `margin`, `padding`, `border`, `width`, `background` 같은 상자 속성은 상속되지 않아요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.inherited-beats-direct">
+<Wrong>`#main { color: red; }`가 `p { color: blue; }`보다 명시도가 높으니, `#main` 안의 문단은 빨간색이다.</Wrong>
+<Actual>문단은 파란색이에요. `#main` 규칙은 문단이 아니라 부모를 고르는 규칙이라, 문단에는 물려받은 값으로만 전해져요.</Actual>
+<Right>요소를 직접 고르는 규칙은 명시도와 상관없이 물려받은 값보다 우선해요. 명시도는 같은 요소를 고르는 규칙끼리만 비교해요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+실무에서는 페이지 전체의 기본 글자 모양을 `body`에 한 번만 정해 두는 경우가 많아요.
+
+```css
+body {
+  font-family: sans-serif;
+  color: #1f2937;
+  line-height: 1.6;
+}
+```
+
+상속 덕분에 모든 요소가 이 값을 물려받고, 필요한 곳에서만 클래스로 덮어써요. 또 명시도 경쟁을 피하려고 ID 선택자 대신 클래스 선택자를 주로 써요. 명시도가 비슷하게 낮으면 "나중에 쓴 규칙이 이긴다"는 단순한 규칙만으로 스타일을 관리할 수 있기 때문이에요.
+
+<Callout kind="tip" title="개발자 도구로 승부 확인하기">
+<Key>F12</Key>로 개발자 도구를 열고 요소를 선택하면 Styles 패널에 그 요소에 해당하는 규칙이 명시도 순서로 보여요. 진 선언에는 취소선이 그어져 있고, 물려받은 값은 "Inherited from ..." 아래에 따로 보여요.
+</Callout>
+</Section>
+
+<Section kind="check">
+명시도와 순서의 관계를 확인해 보세요.
+
+<InlineExercise ref="css.basics.cascade.mcq-id-beats-later-class" />
+
+상속되는 속성을 구분해 보세요.
+
+<InlineExercise ref="css.basics.cascade.mcq-which-inherit" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 한 요소에 규칙이 겹치면 명시도가 높은 규칙이 이기고, 명시도가 같을 때만 CSS에서 나중에 쓴 규칙이 이겨요.
+- 명시도는 (ID, 클래스·의사 클래스, 타입) 세 칸으로 세고 왼쪽 칸부터 비교해요. 더해서 한 숫자로 만들지 않아요.
+- HTML class 속성에 클래스를 적은 순서는 승부와 상관없어요.
+- `color`, `font-size` 같은 글자 속성은 상속되고, `margin`, `padding`, `border` 같은 상자 속성은 상속되지 않아요.
+- 요소를 직접 고르는 규칙은 물려받은 값보다 항상 우선해요.
+</Section>
+
+<Section kind="next">
+다음 모듈 "박스 모델"에서는 모든 요소가 그려지는 상자의 구조를 배워요. 오늘 배운 "상자 속성은 상속되지 않는다"를 거기서 다시 만나게 돼요. <MdnLink path="Web/CSS/CSS_cascade/Specificity" />
+</Section>

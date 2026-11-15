@@ -1,0 +1,15 @@
+id: css.basics.cascade
+title: 캐스케이드와 명시도
+summary: 한 요소에 여러 규칙이 겹칠 때 명시도와 선언 순서로 이기는 규칙을 정하고, 상속되는 속성과 아닌 속성을 구분합니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 14, practice: 15 }
+concepts:
+  primary: [css.cascade.specificity, css.cascade.order, css.cascade.inheritance]
+  practiced: [css.selectors.basic, css.selectors.combinators]
+objectives:
+  - 선택자의 명시도를 ID·클래스·타입 개수로 계산해 두 규칙 중 이기는 쪽을 고를 수 있다.
+  - 명시도가 같은 규칙이 겹칠 때 선언 순서로 적용되는 값을 예측할 수 있다.
+  - 상속되는 속성과 상속되지 않는 속성을 구분하고, 물려받은 값과 직접 준 값 중 무엇이 적용될지 설명할 수 있다.
+practice:
+  targetCount: 10

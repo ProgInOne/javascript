@@ -1,0 +1,47 @@
+id: css.styling.typography.mcq-text-align-box
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.type.text-align, weight: 1 }
+tags: [text-align, centering]
+estimatedSeconds: 60
+prompt: |
+  너비가 `300px`인 카드에 아래 규칙을 줬어요. 화면이 카드보다 훨씬 넓을 때, 어떻게 보이나요?
+code: |
+  .card {
+    width: 300px;
+    background: #e0f2fe;
+    text-align: center;
+  }
+spec:
+  options:
+    - id: a
+      text: 카드는 왼쪽에 그대로 있고, 카드 안의 글자만 가운데로 정렬된다
+    - id: b
+      text: 카드가 화면 가운데로 옮겨지고, 글자도 카드 가운데에 놓인다
+      misconception: css.mc.text-align-centers-box
+      rationale: text-align은 상자 안의 내용을 정렬할 뿐 상자 자체를 옮기지 않아요.
+    - id: c
+      text: 카드가 화면 가운데로 옮겨지고, 글자는 카드 안에서 왼쪽에 놓인다
+      misconception: css.mc.text-align-centers-box
+      rationale: 상자를 옮기는 것도 아니고, 글자 정렬이 빠지지도 않아요. 반대로 생각한 경우예요.
+    - id: d
+      text: 카드의 너비가 화면 전체로 늘어나고 글자가 가운데에 놓인다
+      rationale: "text-align은 너비를 바꾸지 않아요. 카드는 `width: 300px` 그대로예요."
+  correct: a
+misconceptions: [css.mc.text-align-centers-box]
+hints:
+  - text-align의 "text"가 무엇을 정렬하는지 힌트예요.
+  - text-align은 블록 상자 안에 들어 있는 인라인 내용(글자)을 정렬해요.
+  - 상자 자체를 가운데에 놓는 일은 좌우 margin `auto`가 해요. 이 규칙에는 margin이 없어요.
+explanation: |
+  정답은 **카드는 왼쪽에 그대로 있고, 카드 안의 글자만 가운데로 정렬된다**예요.
+
+  `text-align`은 블록 요소 **안의** 글자 같은 인라인 내용을 정렬해요. 카드라는 상자는 일반 흐름대로 왼쪽에 놓여요.
+
+  - 카드를 화면 가운데로 옮기려면 카드에 `margin: 0 auto`(좌우 margin `auto`)를 줘야 해요.
+  - `text-align`은 상자의 너비를 바꾸지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

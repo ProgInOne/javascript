@@ -1,0 +1,51 @@
+id: css.basics.selectors.mcq-descendant-depth
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.selectors.combinators, weight: 1 }
+tags: [selector, descendant, dom-tree]
+estimatedSeconds: 60
+prompt: |
+  아래 문서에 `.menu span { font-weight: bold; }` 규칙을 적용하면 **굵게 보이는 글자**는 무엇인가요?
+code: |
+  <div class="menu">
+    <span>홈</span>
+    <ul>
+      <li><span>공지</span></li>
+      <li><span>자료실</span></li>
+    </ul>
+  </div>
+  <span>저작권 안내</span>
+spec:
+  options:
+    - id: a
+      text: 홈, 공지, 자료실
+    - id: b
+      text: 홈만
+      misconception: css.mc.descendant-direct-child-only
+      rationale: 자손 선택자는 바로 아래 자식만이 아니라 몇 단계 안쪽에 있든 모두 골라요.
+    - id: c
+      text: 홈, 공지, 자료실, 저작권 안내
+      misconception: css.mc.descendant-vs-group
+      rationale: "\"저작권 안내\"는 .menu 밖에 있어요. 공백은 \"안에 있는\"이라는 뜻이에요."
+    - id: d
+      text: 공지, 자료실
+      rationale: "\"홈\"도 .menu 안에 있는 span이에요."
+  correct: a
+misconceptions: [css.mc.descendant-direct-child-only, css.mc.descendant-vs-group]
+hints:
+  - 각 span에서 위로 거슬러 올라가며 `.menu`를 만나는지 확인해 보세요.
+  - "\"공지\"의 span은 li 안, ul 안, 그리고 `.menu` 안에 있어요."
+  - 자손 선택자는 깊이를 따지지 않아요. `.menu` 안에만 있으면 골라져요.
+explanation: |
+  정답은 **홈, 공지, 자료실**이에요.
+
+  `.menu span`은 "`.menu` 안에 있는 span"이에요. 바로 아래 자식이든 몇 단계 안쪽이든 상관없어요.
+
+  - "홈"은 `.menu`의 바로 아래 자식이라 골라져요.
+  - "공지"와 "자료실"은 ul과 li를 거쳐 더 안쪽에 있지만 여전히 `.menu` 안에 있어서 골라져요.
+  - "저작권 안내"는 `.menu` 밖에 있어서 골라지지 않아요.
+
+  바로 아래 자식만 고르고 싶다면 `.menu > span`처럼 자식 선택자(`>`)를 써요.
+origin: authored
+review: { status: draft, draftedBy: ai:claude }

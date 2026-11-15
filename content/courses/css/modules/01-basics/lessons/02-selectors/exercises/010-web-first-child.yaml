@@ -1,0 +1,118 @@
+id: css.basics.selectors.web-first-child
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.selectors.pseudo-class, weight: 1 }
+tags: [selector, pseudo-class, first-child, web-task]
+estimatedSeconds: 240
+prompt: |
+  라면 끓이는 순서 목록에서 **첫 번째 단계만** 굵게(`font-weight: bold`) 보이게 하려고 해요.
+
+  - HTML은 바꾸지 마세요. 항목에 클래스나 id를 붙이지 않고, **의사 클래스**로 첫 번째 항목을 고르세요.
+  - 나머지 단계는 보통 굵기 그대로여야 해요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>라면 끓이기</title>
+              <style>
+                /* 여기에 규칙을 쓰세요 */
+              </style>
+            </head>
+            <body>
+              <h1>라면 끓이기</h1>
+              <ol class="steps">
+                <li>물 550ml를 끓여요.</li>
+                <li>면과 스프를 넣어요.</li>
+                <li>4분 30초 더 끓여요.</li>
+              </ol>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>라면 끓이기</title>
+              <style>
+                .steps li:first-child {
+                  font-weight: bold;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>라면 끓이기</h1>
+              <ol class="steps">
+                <li>물 550ml를 끓여요.</li>
+                <li>면과 스프를 넣어요.</li>
+                <li>4분 30초 더 끓여요.</li>
+              </ol>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: first-bold
+      description: 첫 번째 단계가 굵게 보여야 합니다.
+      requirement: 첫 단계만 굵게
+      visible: true
+      selector: ".steps li:nth-of-type(1)"
+      expect:
+        computed:
+          font-weight: { numeric: { min: 700 } }
+    - kind: css
+      id: second-normal
+      description: 두 번째 단계는 보통 굵기여야 합니다.
+      requirement: 첫 단계만 굵게
+      visible: true
+      selector: ".steps li:nth-of-type(2)"
+      expect:
+        computed:
+          font-weight: { numeric: { max: 400 } }
+    - kind: css
+      id: third-normal
+      description: 세 번째 단계는 보통 굵기여야 합니다.
+      requirement: 첫 단계만 굵게
+      visible: true
+      selector: ".steps li:nth-of-type(3)"
+      expect:
+        computed:
+          font-weight: { numeric: { max: 400 } }
+    - kind: dom
+      id: no-class-added
+      description: 목록 항목에 class나 id를 붙이지 않아야 합니다.
+      requirement: HTML은 그대로
+      visible: true
+      selector: "li[class], li[id], li[style]"
+      expect:
+        count: 0
+      misconceptionIfFail: css.mc.pseudo-class-is-class
+misconceptions: [css.mc.pseudo-class-is-class, css.mc.hover-space]
+hints:
+  - 형제 중 몇 번째인지로 요소를 고르는 의사 클래스가 있어요.
+  - "\"첫 번째 자식\"을 영어로 쓰면 의사 클래스 이름이 돼요. 콜론으로 시작해요."
+  - "`li` 바로 뒤에 띄우지 않고 `:first-child`를 붙여 선택자를 만들어 보세요."
+explanation: |
+  예시 정답은 아래 규칙이에요.
+
+  ```css
+  .steps li:first-child {
+    font-weight: bold;
+  }
+  ```
+
+  `li:first-child`는 "형제 중 첫 번째인 li"를 골라요. HTML에 클래스를 붙이지 않아도 브라우저가 위치를 보고 판단해요. `li:first-child`만 써도, `li:nth-child(1)`을 써도 정답이에요.
+
+  - `li :first-child`처럼 띄어 쓰면 "li 안에 있는 첫째 자식"이라는 뜻이 되어 아무것도 고르지 못해요(li 안에는 글자만 있어요).
+  - `li { font-weight: bold; }`는 세 단계를 모두 굵게 만들어요.
+  - 첫 항목에 `class="first"`를 붙여 고를 수도 있지만, 이 문제는 HTML을 그대로 두고 위치로 고르는 연습이에요.
+origin: authored
+review: { status: draft, draftedBy: ai:claude }

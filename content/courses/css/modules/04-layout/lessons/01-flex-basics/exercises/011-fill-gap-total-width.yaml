@@ -1,0 +1,49 @@
+id: css.layout.flex-basics.fill-gap-total-width
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.flex.gap, weight: 1 }
+tags: [flexbox, gap]
+estimatedSeconds: 70
+prompt: |
+  플렉스 컨테이너 안에 너비 `100px`인 아이템이 **세 개** 있고, 컨테이너에 `gap: 20px`를 줬어요(padding은 없어요). 첫 아이템의 왼쪽 끝부터 마지막 아이템의 오른쪽 끝까지는 몇 px인가요? 숫자만 써도 돼요.
+code: |
+  .row {
+    display: flex;
+    gap: 20px;
+  }
+  .item {
+    width: 100px;
+  }
+spec:
+  mode: text
+  template: |
+    첫 아이템 왼쪽 끝 ~ 마지막 아이템 오른쪽 끝: {{blank:w}}
+  blanks:
+    - id: w
+      accept: ["340px", "340"]
+      acceptRegex: "340 ?(?:px)?"
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "380": css.mc.gap-adds-outer-edges
+        "380px": css.mc.gap-adds-outer-edges
+        "360": css.mc.gap-adds-outer-edges
+        "360px": css.mc.gap-adds-outer-edges
+misconceptions: [css.mc.gap-adds-outer-edges]
+hints:
+  - 아이템 세 개의 너비를 먼저 더해 보세요.
+  - gap은 아이템과 아이템 "사이"에만 생겨요. 아이템이 세 개면 사이는 몇 군데인가요?
+  - "`100 × 3`에 사이 개수만큼 20px을 더하세요. 양 끝에는 gap이 없어요."
+explanation: |
+  정답은 **340px**이에요.
+
+  - 아이템 너비 합: `100 × 3 = 300px`
+  - gap: 아이템이 세 개면 사이는 두 군데라 `20 × 2 = 40px`
+  - 합계: `300 + 40 = 340px`
+
+  `380`이라고 답했다면 컨테이너의 양 끝에도 gap이 생긴다고 생각한 거예요(사이 2 + 양 끝 2 = 4군데). `360`은 한쪽 끝에만 더한 경우예요. gap은 아이템 사이에만 생기고, 가장자리 여백이 필요하면 컨테이너에 padding을 따로 줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

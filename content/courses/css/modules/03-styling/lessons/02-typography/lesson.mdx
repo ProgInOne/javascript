@@ -1,0 +1,218 @@
+<Section kind="objectives">
+- 대안 글꼴을 포함한 `font-family` 목록과 `font-size`·`font-weight`로 글꼴을 정할 수 있어요.
+- 단위 없는 `line-height`가 실제로 몇 px이 되는지 계산할 수 있어요.
+- `text-align`이 정렬하는 대상을 설명하고, 글자 정렬과 상자 가운데 놓기를 구분할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+같은 글이라도 글꼴과 줄 간격에 따라 읽기 편한 정도가 크게 달라요.
+
+- 줄 사이가 너무 좁으면 윗줄과 아랫줄 글자가 붙어서 어디를 읽고 있는지 놓쳐요.
+- 멋진 글꼴을 골랐는데, 친구 컴퓨터에서는 전혀 다른 글꼴로 보여요.
+- 제목을 가운데로 옮기려고 `text-align: center`를 줬더니, 글자만 움직이고 카드는 그대로 왼쪽에 있어요.
+
+이 단원에서는 글꼴을 정하는 `font-*` 속성, 줄 높이를 정하는 `line-height`, 정렬을 정하는 `text-align`을 배워요. 셋 다 앞 단원에서 배운 대로 **상속되는** 속성이라, 부모에 한 번 주면 안쪽 글자에 모두 적용돼요.
+</Section>
+
+<Section kind="principle">
+### 글꼴 속성
+
+| 속성 | 하는 일 | 예 |
+|---|---|---|
+| `font-family` | 글꼴 종류. 쉼표로 여러 개를 나열해요 | `font-family: "Noto Sans KR", Arial, sans-serif;` |
+| `font-size` | 글자 크기 | `font-size: 1.25rem;` |
+| `font-weight` | 굵기. `normal`(400), `bold`(700) 또는 100부터 900까지의 숫자 | `font-weight: bold;` |
+
+`font-family`는 **앞에서부터 차례로** 찾아서, 학습자의 기기에서 쓸 수 있는 첫 번째 글꼴을 써요. 그래서 원하는 글꼴이 없을 때를 대비해 대안을 나열하고, 마지막에는 `sans-serif`(고딕 계열)나 `serif`(명조 계열) 같은 **일반 글꼴 이름**을 둬요. 일반 글꼴 이름은 어느 기기에나 있어요. 띄어쓰기가 있는 글꼴 이름은 `"Noto Sans KR"`처럼 따옴표로 감싸요.
+
+### 줄 높이: line-height
+
+`line-height`는 글자 한 줄이 차지하는 **높이**예요. 글자는 그 높이의 가운데에 놓이고, 남는 공간이 위아래로 나뉘어 줄 사이 간격이 돼요.
+
+```text
+font-size: 20px; line-height: 1.5;
+
+┌────────────────┐  ┐
+│   (여백 5px)    │  │
+│   글자 20px     │  │ 한 줄 = 20 × 1.5 = 30px
+│   (여백 5px)    │  │
+└────────────────┘  ┘
+```
+
+`line-height`는 단위 없이 숫자만 쓰는 경우가 많아요. 단위 없는 숫자는 **글자 크기에 곱하는 배수**예요. 글자 크기가 20px이고 `line-height: 1.5`면 한 줄은 30px이에요. 읽기 편한 본문은 보통 1.4에서 1.8 정도를 써요.
+
+### 텍스트 정렬: text-align
+
+`text-align`은 블록 요소 **안에 있는** 글자 같은 인라인 내용을 정렬해요. 값은 `left`, `center`, `right`, `justify`(양쪽 맞춤)예요.
+
+<CompareTable columns={["text-align: center", "margin: 0 auto"]}>
+<Row label="움직이는 것">상자 안의 글자(인라인 내용) | 너비가 정해진 블록 상자 자체</Row>
+<Row label="어디에 주나요">글자를 담은 블록 요소 | 가운데에 놓을 상자</Row>
+<Row label="상속">돼요 | 안 돼요</Row>
+</CompareTable>
+
+상자 자체를 가운데에 놓으려면 그 상자에 `width`를 정하고 좌우 `margin`을 `auto`로 줘요. 브라우저가 남는 공간을 좌우에 똑같이 나눠 줘서 상자가 가운데에 와요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 같은 문단을 줄 높이만 다르게 보여 줘요. 실행하기 전에, 아래 문단의 한 줄 높이가 몇 px일지 먼저 계산해 보세요.
+
+<RunnableExample id="line-height-predict" lang="web" predict predictKind="value" concepts={["css.type.line-height"]}>
+```html
+<style>
+  p {
+    width: 260px;
+    font-size: 20px;
+    background: #fef3c7;
+  }
+  .tight {
+    line-height: 1;
+  }
+  .comfy {
+    line-height: 1.5;
+  }
+</style>
+<p class="tight">줄 높이가 1이면 윗줄과 아랫줄의 글자가 거의 붙어 보여요.</p>
+<p class="comfy">줄 높이가 1.5면 줄 사이에 여유가 생겨 읽기 편해요.</p>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- 두 번째 문단(`.comfy`)의 한 줄 높이는 `20 × 1.5 =` **30px**이에요. 1.5px이 아니에요.
+- 첫 번째 문단은 `20 × 1 = 20px`이라 글자 크기와 줄 높이가 같아서 줄 사이 여백이 거의 없어요.
+- 노란 배경의 높이를 비교해 보면, 같은 줄 수라도 `.comfy`가 더 높아요. 줄마다 10px씩 더 차지하기 때문이에요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 `font-family` 목록과 `font-weight`를 보여 줘요. 첫 번째 글꼴 이름은 일부러 없는 글꼴로 적었어요.
+
+<RunnableExample id="font-fallback" lang="web" concepts={["css.type.font-properties"]}>
+```html
+<style>
+  .title {
+    font-family: "없는 글꼴", Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  .body {
+    font-family: "없는 글꼴", sans-serif;
+    font-weight: normal;
+  }
+</style>
+<p class="title">제목은 명조 계열로 굵게</p>
+<p class="body">본문은 고딕 계열로 보통 굵기</p>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- 브라우저는 `"없는 글꼴"`을 찾지 못하니 다음 이름으로 넘어가요. 제목은 `Georgia`가 있으면 Georgia로, 없으면 `serif`(기기의 기본 명조 계열)로 보여요.
+- 본문은 바로 `sans-serif`로 넘어가 기기의 기본 고딕 계열로 보여요.
+- 그래서 어떤 글꼴로 보일지는 **기기마다 다를 수 있어요.** 목록 끝의 일반 글꼴 이름이 있어야 최소한 원하는 계열(명조·고딕)은 지킬 수 있어요.
+- `font-size: 1.5rem`은 루트 16px의 1.5배인 24px, `bold`는 숫자로 700이에요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `text-align: center`와 `margin: 0 auto`를 비교해요. 실행한 뒤 노란 상자가 어디에 있는지 보세요.
+
+<RunnableExample id="center-text-vs-box" lang="web" concepts={["css.type.text-align"]}>
+```html
+<style>
+  .box {
+    width: 240px;
+    padding: 8px;
+    margin-bottom: 12px;
+    background: #fde68a;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .box-center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+<div class="box text-center">글자만 가운데</div>
+<div class="box box-center">상자가 가운데</div>
+<div class="box text-center box-center">둘 다 가운데</div>
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+- 첫 번째 상자는 왼쪽에 그대로 있고, 상자 **안의 글자만** 가운데로 갔어요. `text-align`은 내용을 정렬할 뿐 상자를 옮기지 않아요.
+- 두 번째 상자는 좌우 margin이 `auto`라서 상자 자체가 가운데로 왔지만, 글자는 상자 안에서 왼쪽에 있어요.
+- 세 번째 상자처럼 둘을 함께 쓰면 상자도 글자도 가운데에 와요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="css.mc.font-family-guaranteed">
+<Wrong>`font-family: "나눔고딕";`이라고 쓰면 어떤 컴퓨터에서든 나눔고딕으로 보인다.</Wrong>
+<Actual>그 글꼴이 기기에 없거나 불러오지 못하면 브라우저의 기본 글꼴로 보여요. 목록에 대안이 없으면 명조로 보일 수도 있어요.</Actual>
+<Right>`font-family: "나눔고딕", "Noto Sans KR", sans-serif;`처럼 대안을 나열하고, 마지막에 `sans-serif`나 `serif` 같은 일반 글꼴 이름을 둬요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.line-height-unitless-px">
+<Wrong>`line-height: 1.5`는 줄 높이가 1.5px이라는 뜻이다.</Wrong>
+<Actual>단위 없는 숫자는 글자 크기에 곱하는 배수예요. 글자 크기가 16px이면 줄 높이는 24px이에요. 정말 `1.5px`이라고 쓰면 줄이 겹쳐 버려요.</Actual>
+<Right>`line-height`는 단위 없이 `1.5`처럼 쓰고, 실제 높이는 "글자 크기 × 숫자"로 계산해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="css.mc.text-align-centers-box">
+<Wrong>`width: 300px`인 카드에 `text-align: center`를 주면 카드가 화면 가운데로 간다.</Wrong>
+<Actual>카드는 왼쪽에 그대로 있고, 카드 안의 글자만 가운데로 정렬돼요.</Actual>
+<Right>상자를 가운데에 놓으려면 그 상자에 `margin: 0 auto`(좌우 margin `auto`)를 줘요. 글자 정렬은 `text-align`, 상자 위치는 `margin`이에요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+블로그나 문서 사이트의 CSS는 보통 `body`에 글꼴과 줄 높이를 한 번 정하고 시작해요.
+
+```css
+body {
+  font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.article {
+  max-width: 680px;
+  margin: 0 auto;
+}
+.article h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+}
+```
+
+- `font-family`·`font-size`·`line-height`는 상속되므로 `body`에만 정해도 페이지 전체 글자에 적용돼요.
+- `line-height`를 단위 없이 쓰면, 제목처럼 글자 크기가 다른 요소에서도 "그 요소의 글자 크기 × 1.6"으로 알맞게 다시 계산돼요.
+- 본문 상자는 `margin: 0 auto`로 가운데에 놓고, 제목 글자는 `text-align: center`로 가운데 정렬해요.
+</Section>
+
+<Section kind="check">
+`font-family` 목록이 어떻게 동작하는지 확인해 보세요.
+
+<InlineExercise ref="css.styling.typography.mcq-font-fallback" />
+
+이번에는 줄 높이를 직접 계산해 보세요.
+
+<InlineExercise ref="css.styling.typography.fill-line-height-px" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `font-family`는 쉼표로 나열한 글꼴 중 쓸 수 있는 첫 번째를 고르고, 마지막에 `sans-serif` 같은 일반 글꼴 이름을 둬요.
+- `font-size`는 글자 크기, `font-weight`는 굵기(`normal` 400, `bold` 700)예요.
+- `line-height`는 한 줄의 높이이고, 단위 없는 숫자는 글자 크기에 곱하는 배수예요.
+- `text-align`은 상자 안의 글자를 정렬할 뿐 상자를 옮기지 않아요. 상자를 가운데에 놓으려면 `margin: 0 auto`를 써요.
+- 글꼴·줄 높이·정렬은 상속되므로 부모에 한 번 정하면 안쪽 글자에 모두 적용돼요.
+</Section>
+
+<Section kind="next">
+다음 모듈 "레이아웃 기초"에서는 Flexbox로 상자들을 가로로 나란히 놓고 정렬해요. 오늘 배운 "글자 정렬"과 "상자 정렬"의 구분이 그때 다시 중요해져요. <MdnLink path="Web/CSS/font" />
+</Section>

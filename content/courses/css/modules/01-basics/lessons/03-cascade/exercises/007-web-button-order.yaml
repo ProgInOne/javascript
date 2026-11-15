@@ -1,0 +1,111 @@
+id: css.basics.cascade.web-button-order
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.cascade.order, weight: 1 }
+tags: [cascade, order, web-task]
+estimatedSeconds: 200
+prompt: |
+  모든 버튼에는 `.btn` 규칙으로 회색 배경을 주고, 중요한 버튼에만 `.btn-primary`로 파란 배경(`#2563eb`)을 주려고 해요. 그런데 "저장" 버튼도 회색으로 보여요.
+
+  **선택자는 바꾸지 말고** CSS를 고쳐 "저장" 버튼만 파란 배경이 되게 하세요. "취소" 버튼은 회색(`#9ca3af`) 그대로여야 해요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>버튼</title>
+              <style>
+                .btn-primary {
+                  background: #2563eb;
+                  color: white;
+                }
+                .btn {
+                  background: #9ca3af;
+                  border: none;
+                  padding: 8px 16px;
+                }
+              </style>
+            </head>
+            <body>
+              <button class="btn-primary btn" id="save">저장</button>
+              <button class="btn" id="cancel">취소</button>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>버튼</title>
+              <style>
+                .btn {
+                  background: #9ca3af;
+                  border: none;
+                  padding: 8px 16px;
+                }
+                .btn-primary {
+                  background: #2563eb;
+                  color: white;
+                }
+              </style>
+            </head>
+            <body>
+              <button class="btn-primary btn" id="save">저장</button>
+              <button class="btn" id="cancel">취소</button>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: save-blue
+      description: "\"저장\" 버튼의 배경이 파란색(#2563eb)이어야 합니다."
+      requirement: 저장 버튼은 파란색
+      visible: true
+      selector: "#save"
+      expect:
+        computed:
+          background-color: { color: "#2563eb" }
+      misconceptionIfFail: css.mc.class-attr-order-matters
+    - kind: css
+      id: cancel-gray
+      description: "\"취소\" 버튼의 배경은 회색(#9ca3af) 그대로여야 합니다."
+      requirement: 취소 버튼은 회색
+      visible: true
+      selector: "#cancel"
+      expect:
+        computed:
+          background-color: { color: "#9ca3af" }
+    - kind: css
+      id: save-padding
+      description: "\"저장\" 버튼에도 .btn의 안쪽 여백(8px 16px)이 그대로 적용되어야 합니다."
+      requirement: 버튼 공통 모양 유지
+      selector: "#save"
+      expect:
+        computed:
+          padding-top: { px: { value: 8 } }
+          padding-left: { px: { value: 16 } }
+misconceptions: [css.mc.class-attr-order-matters]
+hints:
+  - "`.btn`과 `.btn-primary`의 명시도는 같아요. 그럼 무엇이 승부를 가를까요?"
+  - HTML의 class 속성 순서를 바꿔도 결과는 그대로예요. 바꿔야 할 곳은 CSS예요.
+  - CSS에서 두 규칙의 위아래 위치를 생각해 보세요. 이겨야 하는 규칙은 어디에 있어야 할까요?
+explanation: |
+  예시 정답은 CSS에서 **`.btn-primary` 규칙을 `.btn` 규칙 아래로 옮기는** 거예요.
+
+  `.btn`과 `.btn-primary`는 둘 다 (0, 1, 0)이라 명시도가 같아요. 명시도가 같으면 CSS에서 나중에 쓴 규칙이 이기므로, 처음에는 아래에 있던 `.btn`의 회색이 "저장" 버튼에 적용됐어요.
+
+  HTML에서 `class="btn btn-primary"`로 순서를 바꿔 보면 아무 변화가 없어요. class 속성에 적은 순서는 캐스케이드와 상관없기 때문이에요.
+
+  `.btn-primary`를 아래로 옮겨도 "저장" 버튼은 여전히 `.btn`의 `padding`과 `border: none`을 받아요. 두 규칙이 겹치는 속성(`background`)에서만 승부가 나고, 겹치지 않는 속성은 모두 적용돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

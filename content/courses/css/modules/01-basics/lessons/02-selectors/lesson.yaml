@@ -1,0 +1,15 @@
+id: css.basics.selectors
+title: 선택자
+summary: 타입·클래스·ID 선택자로 요소를 고르고, 자손·그룹 선택자와 의사 클래스로 원하는 요소만 정확히 고릅니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 12, practice: 15 }
+concepts:
+  primary: [css.selectors.basic, css.selectors.combinators, css.selectors.pseudo-class]
+  practiced: [css.intro.rule-structure]
+objectives:
+  - HTML의 요소 이름·class·id를 보고 그 요소를 고르는 선택자를 쓸 수 있다.
+  - 자손 선택자와 그룹 선택자가 고르는 요소를 구분하고, 원하는 요소만 고르는 선택자를 쓸 수 있다.
+  - ":hover 같은 의사 클래스로 요소의 상태나 위치에 따라 스타일을 줄 수 있다."
+practice:
+  targetCount: 10

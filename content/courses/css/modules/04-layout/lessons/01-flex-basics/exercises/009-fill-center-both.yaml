@@ -1,0 +1,87 @@
+id: css.layout.flex-basics.fill-center-both
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.flex.justify-align, weight: 1 }
+tags: [flexbox, justify-content, align-items, centering]
+estimatedSeconds: 90
+prompt: |
+  회색 상자 안의 "알림" 배지를 상자의 **가로·세로 정가운데**에 놓으려고 해요. 빈칸 두 곳에 선언을 하나씩 채우세요. (`.stage`의 주축은 기본값 `row`, 즉 가로예요.)
+spec:
+  mode: code
+  lang: html
+  template: |
+    <style>
+      .stage {
+        display: flex;
+        {{blank:main}};
+        {{blank:cross}};
+        width: 300px;
+        height: 160px;
+        background: #e5e7eb;
+      }
+      .badge {
+        padding: 8px 12px;
+        background: #2563eb;
+        color: white;
+      }
+    </style>
+    <div class="stage">
+      <div class="badge">알림</div>
+    </div>
+  blanks:
+    - id: main
+      accept: ["justify-content: center"]
+      width: 28
+      misconceptionMap:
+        "align-items: center": css.mc.justify-align-swap
+    - id: cross
+      accept: ["align-items: center"]
+      width: 28
+      misconceptionMap:
+        "justify-content: center": css.mc.justify-align-swap
+  checks:
+    - kind: layout
+      id: center-x
+      description: 배지가 회색 상자의 가로 가운데에 있어야 합니다.
+      requirement: 가로 가운데
+      visible: true
+      a: .badge
+      container: .stage
+      relation: centered-horizontally
+      tolerancePx: 2
+    - kind: layout
+      id: center-y
+      description: 배지가 회색 상자의 세로 가운데에 있어야 합니다.
+      requirement: 세로 가운데
+      visible: true
+      a: .badge
+      container: .stage
+      relation: centered-vertically
+      tolerancePx: 2
+    - kind: css
+      id: badge-not-stretched
+      description: 배지는 늘어나지 않고 내용 크기여야 합니다(세로로 꽉 차면 안 됩니다).
+      requirement: 세로 가운데
+      selector: .badge
+      expect:
+        computed:
+          height: { px: { max: 60 } }
+misconceptions: [css.mc.justify-align-swap]
+hints:
+  - 가로는 주축, 세로는 교차축이에요. 축마다 정렬을 맡는 속성이 달라요.
+  - 주축 정렬은 `justify-content`, 교차축 정렬은 `align-items`예요.
+  - 두 속성 모두 가운데를 뜻하는 값 `center`를 써요. 첫 빈칸은 주축(가로)부터 채우세요.
+explanation: |
+  정답은 **`justify-content: center`**와 **`align-items: center`**예요(두 빈칸의 순서를 바꿔 써도 결과는 같아요).
+
+  - `.stage`는 row라서 주축이 가로예요. `justify-content: center`가 배지를 가로 가운데로 옮겨요.
+  - 교차축은 세로예요. `align-items: center`가 배지를 세로 가운데로 옮겨요.
+
+  `align-items`를 쓰지 않으면 기본값 `stretch` 때문에 배지가 세로로 상자 높이만큼 늘어나 버려요. 그래서 "배지가 늘어나지 않는다"는 체크도 함께 확인해요.
+
+  Flexbox의 "가로·세로 정가운데"는 실무에서 아주 자주 쓰는 조합이에요. 축마다 속성이 하나씩이라고 기억하세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
