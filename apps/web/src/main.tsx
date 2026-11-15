@@ -8,6 +8,7 @@ import './app/ai.css';
 import './app/tutor.css';
 import './app/learning.css';
 import './app/dashboard.css';
+import './app/review.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRouter, RouterProvider } from '@tanstack/react-router';

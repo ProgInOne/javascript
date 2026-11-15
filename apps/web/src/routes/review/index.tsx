@@ -6,8 +6,9 @@ import { CalendarCheck } from 'lucide-react';
 import { useState } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
 import { createPracticeSet, practiceSetQuery, reviewQueueQuery } from '../../api/queries.ts';
-import { cardClass, pageClass, pageTitleClass } from '../../app/layout.ts';
+import { cardClass } from '../../app/layout.ts';
 import { QueryState } from '../../app/QueryState.tsx';
+import { ReviewHub } from '../../features/review/ReviewHub.tsx';
 import { formatMinutes } from '../../lib/format.ts';
 
 export const Route = createFileRoute('/review/')({
@@ -18,12 +19,11 @@ export const Route = createFileRoute('/review/')({
 function ReviewPage() {
   const query = useQuery(reviewQueueQuery);
   return (
-    <div className={pageClass}>
-      <h1 className={pageTitleClass}>복습</h1>
+    <ReviewHub>
       <QueryState query={query} notFoundTitle="복습을 찾을 수 없어요">
         {(queue) => <TodayReview queue={queue} />}
       </QueryState>
-    </div>
+    </ReviewHub>
   );
 }
 
@@ -32,11 +32,19 @@ function NothingDue() {
     <EmptyState
       icon={CalendarCheck}
       title="오늘 복습할 개념이 없어요"
-      description="연습한 개념은 잊을 즈음 다시 여기에 나와요. 새 단원을 학습해 보세요."
+      description="연습한 개념은 잊을 즈음 다시 여기에 나와요. 새 단원을 학습하거나 약점을 연습해 보세요."
       action={
-        <Link to="/courses" className="pi-button pi-button--secondary pi-button--md no-underline">
-          과정 보기
-        </Link>
+        <div className="flex flex-wrap justify-center gap-2">
+          <Link
+            to="/review/weak"
+            className="pi-button pi-button--secondary pi-button--md no-underline"
+          >
+            약점 집중
+          </Link>
+          <Link to="/courses" className="pi-button pi-button--secondary pi-button--md no-underline">
+            과정 보기
+          </Link>
+        </div>
       }
     />
   );

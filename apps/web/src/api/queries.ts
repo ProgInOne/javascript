@@ -32,6 +32,10 @@ import {
   conceptDetailSchema,
   masteryOverviewSchema,
   weakConceptsSchema,
+  masteryChangesSchema,
+  mistakeDetailSchema,
+  mistakeListSchema,
+  type MistakeListQuery,
   type GoalRequest,
   type LearnerPatch,
 } from '@proginone/shared';
@@ -281,6 +285,37 @@ export const conceptQuery = (id: string, evidenceLimit?: number) =>
     staleTime: 30_000,
   });
 
+// ── Review screen: mistake notes and mastery changes ──
+
+/** `GET /mistakes` with only the filters that are set (stable keys for the cache). */
+export const mistakesQuery = (query: MistakeListQuery) => {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(query) as [string, string | number | undefined][]) {
+    if (value !== undefined && value !== '') params.set(key, String(value));
+  }
+  const search = params.toString();
+  return queryOptions({
+    queryKey: ['mistakes', 'list', search],
+    queryFn: ({ signal }) =>
+      api(`/mistakes${search ? `?${search}` : ''}`, { schema: mistakeListSchema, signal }),
+    staleTime: 30_000,
+  });
+};
+
+export const mistakeQuery = (exerciseId: string) =>
+  queryOptions({
+    queryKey: ['mistakes', 'detail', exerciseId],
+    queryFn: ({ signal }) =>
+      api(`/mistakes/${encodeURIComponent(exerciseId)}`, { schema: mistakeDetailSchema, signal }),
+    staleTime: 30_000,
+  });
+
+export const masteryChangesQuery = queryOptions({
+  queryKey: ['mastery-changes'],
+  queryFn: ({ signal }) => api('/mastery-changes', { schema: masteryChangesSchema, signal }),
+  staleTime: 30_000,
+});
+
 /** Learning state shown on the dashboard, refreshed after attempts and finished sets. */
 export const LEARNING_STATE_KEYS = [
   ['dashboard'],
@@ -290,4 +325,6 @@ export const LEARNING_STATE_KEYS = [
   ['mastery'],
   ['weak-concepts'],
   ['concepts'],
+  ['mistakes'],
+  ['mastery-changes'],
 ] as const;

@@ -17,11 +17,15 @@ import { Route as CoursesIndexRouteImport } from './routes/courses/index'
 import { Route as CoursesCourseIdRouteImport } from './routes/courses/$courseId'
 import { Route as LearnLessonIdRouteImport } from './routes/learn/$lessonId'
 import { Route as ReviewIndexRouteImport } from './routes/review/index'
+import { Route as ReviewProgressRouteImport } from './routes/review/progress'
+import { Route as ReviewWeakRouteImport } from './routes/review/weak'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as SettingsAiRouteImport } from './routes/settings/ai'
 import { Route as SettingsAppearanceRouteImport } from './routes/settings/appearance'
 import { Route as SettingsDataRouteImport } from './routes/settings/data'
 import { Route as SettingsGoalsRouteImport } from './routes/settings/goals'
+import { Route as ReviewMistakesIndexRouteImport } from './routes/review/mistakes/index'
+import { Route as ReviewMistakesExerciseIdRouteImport } from './routes/review/mistakes/$exerciseId'
 import { Route as ReviewSessionSetIdRouteImport } from './routes/review/session/$setId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -64,6 +68,16 @@ const ReviewIndexRoute = ReviewIndexRouteImport.update({
   path: '/review/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewProgressRoute = ReviewProgressRouteImport.update({
+  id: '/review/progress',
+  path: '/review/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewWeakRoute = ReviewWeakRouteImport.update({
+  id: '/review/weak',
+  path: '/review/weak',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsIndexRoute = SettingsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -89,6 +103,17 @@ const SettingsGoalsRoute = SettingsGoalsRouteImport.update({
   path: '/goals',
   getParentRoute: () => SettingsRouteRoute,
 } as any)
+const ReviewMistakesIndexRoute = ReviewMistakesIndexRouteImport.update({
+  id: '/review/mistakes/',
+  path: '/review/mistakes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewMistakesExerciseIdRoute =
+  ReviewMistakesExerciseIdRouteImport.update({
+    id: '/review/mistakes/$exerciseId',
+    path: '/review/mistakes/$exerciseId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ReviewSessionSetIdRoute = ReviewSessionSetIdRouteImport.update({
   id: '/review/session/$setId',
   path: '/review/session/$setId',
@@ -102,6 +127,8 @@ export interface FileRoutesByFullPath {
   '/concepts/$conceptId': typeof ConceptsConceptIdRoute
   '/courses/$courseId': typeof CoursesCourseIdRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
+  '/review/progress': typeof ReviewProgressRoute
+  '/review/weak': typeof ReviewWeakRoute
   '/settings/ai': typeof SettingsAiRoute
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/data': typeof SettingsDataRoute
@@ -109,7 +136,9 @@ export interface FileRoutesByFullPath {
   '/courses/': typeof CoursesIndexRoute
   '/review/': typeof ReviewIndexRoute
   '/settings/': typeof SettingsIndexRoute
+  '/review/mistakes/$exerciseId': typeof ReviewMistakesExerciseIdRoute
   '/review/session/$setId': typeof ReviewSessionSetIdRoute
+  '/review/mistakes/': typeof ReviewMistakesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -117,6 +146,8 @@ export interface FileRoutesByTo {
   '/concepts/$conceptId': typeof ConceptsConceptIdRoute
   '/courses/$courseId': typeof CoursesCourseIdRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
+  '/review/progress': typeof ReviewProgressRoute
+  '/review/weak': typeof ReviewWeakRoute
   '/settings/ai': typeof SettingsAiRoute
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/data': typeof SettingsDataRoute
@@ -124,7 +155,9 @@ export interface FileRoutesByTo {
   '/courses': typeof CoursesIndexRoute
   '/review': typeof ReviewIndexRoute
   '/settings': typeof SettingsIndexRoute
+  '/review/mistakes/$exerciseId': typeof ReviewMistakesExerciseIdRoute
   '/review/session/$setId': typeof ReviewSessionSetIdRoute
+  '/review/mistakes': typeof ReviewMistakesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -134,6 +167,8 @@ export interface FileRoutesById {
   '/concepts/$conceptId': typeof ConceptsConceptIdRoute
   '/courses/$courseId': typeof CoursesCourseIdRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
+  '/review/progress': typeof ReviewProgressRoute
+  '/review/weak': typeof ReviewWeakRoute
   '/settings/ai': typeof SettingsAiRoute
   '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/data': typeof SettingsDataRoute
@@ -141,7 +176,9 @@ export interface FileRoutesById {
   '/courses/': typeof CoursesIndexRoute
   '/review/': typeof ReviewIndexRoute
   '/settings/': typeof SettingsIndexRoute
+  '/review/mistakes/$exerciseId': typeof ReviewMistakesExerciseIdRoute
   '/review/session/$setId': typeof ReviewSessionSetIdRoute
+  '/review/mistakes/': typeof ReviewMistakesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -152,6 +189,8 @@ export interface FileRouteTypes {
     | '/concepts/$conceptId'
     | '/courses/$courseId'
     | '/learn/$lessonId'
+    | '/review/progress'
+    | '/review/weak'
     | '/settings/ai'
     | '/settings/appearance'
     | '/settings/data'
@@ -159,7 +198,9 @@ export interface FileRouteTypes {
     | '/courses/'
     | '/review/'
     | '/settings/'
+    | '/review/mistakes/$exerciseId'
     | '/review/session/$setId'
+    | '/review/mistakes/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -167,6 +208,8 @@ export interface FileRouteTypes {
     | '/concepts/$conceptId'
     | '/courses/$courseId'
     | '/learn/$lessonId'
+    | '/review/progress'
+    | '/review/weak'
     | '/settings/ai'
     | '/settings/appearance'
     | '/settings/data'
@@ -174,7 +217,9 @@ export interface FileRouteTypes {
     | '/courses'
     | '/review'
     | '/settings'
+    | '/review/mistakes/$exerciseId'
     | '/review/session/$setId'
+    | '/review/mistakes'
   id:
     | '__root__'
     | '/'
@@ -183,6 +228,8 @@ export interface FileRouteTypes {
     | '/concepts/$conceptId'
     | '/courses/$courseId'
     | '/learn/$lessonId'
+    | '/review/progress'
+    | '/review/weak'
     | '/settings/ai'
     | '/settings/appearance'
     | '/settings/data'
@@ -190,7 +237,9 @@ export interface FileRouteTypes {
     | '/courses/'
     | '/review/'
     | '/settings/'
+    | '/review/mistakes/$exerciseId'
     | '/review/session/$setId'
+    | '/review/mistakes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -200,9 +249,13 @@ export interface RootRouteChildren {
   ConceptsConceptIdRoute: typeof ConceptsConceptIdRoute
   CoursesCourseIdRoute: typeof CoursesCourseIdRoute
   LearnLessonIdRoute: typeof LearnLessonIdRoute
+  ReviewProgressRoute: typeof ReviewProgressRoute
+  ReviewWeakRoute: typeof ReviewWeakRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
   ReviewIndexRoute: typeof ReviewIndexRoute
+  ReviewMistakesExerciseIdRoute: typeof ReviewMistakesExerciseIdRoute
   ReviewSessionSetIdRoute: typeof ReviewSessionSetIdRoute
+  ReviewMistakesIndexRoute: typeof ReviewMistakesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -263,6 +316,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReviewIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/review/progress': {
+      id: '/review/progress'
+      path: '/review/progress'
+      fullPath: '/review/progress'
+      preLoaderRoute: typeof ReviewProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review/weak': {
+      id: '/review/weak'
+      path: '/review/weak'
+      fullPath: '/review/weak'
+      preLoaderRoute: typeof ReviewWeakRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/': {
       id: '/settings/'
       path: '/'
@@ -297,6 +364,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings/goals'
       preLoaderRoute: typeof SettingsGoalsRouteImport
       parentRoute: typeof SettingsRouteRoute
+    }
+    '/review/mistakes/': {
+      id: '/review/mistakes/'
+      path: '/review/mistakes'
+      fullPath: '/review/mistakes/'
+      preLoaderRoute: typeof ReviewMistakesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review/mistakes/$exerciseId': {
+      id: '/review/mistakes/$exerciseId'
+      path: '/review/mistakes/$exerciseId'
+      fullPath: '/review/mistakes/$exerciseId'
+      preLoaderRoute: typeof ReviewMistakesExerciseIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/review/session/$setId': {
       id: '/review/session/$setId'
@@ -335,9 +416,13 @@ const rootRouteChildren: RootRouteChildren = {
   ConceptsConceptIdRoute: ConceptsConceptIdRoute,
   CoursesCourseIdRoute: CoursesCourseIdRoute,
   LearnLessonIdRoute: LearnLessonIdRoute,
+  ReviewProgressRoute: ReviewProgressRoute,
+  ReviewWeakRoute: ReviewWeakRoute,
   CoursesIndexRoute: CoursesIndexRoute,
   ReviewIndexRoute: ReviewIndexRoute,
+  ReviewMistakesExerciseIdRoute: ReviewMistakesExerciseIdRoute,
   ReviewSessionSetIdRoute: ReviewSessionSetIdRoute,
+  ReviewMistakesIndexRoute: ReviewMistakesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

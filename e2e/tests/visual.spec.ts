@@ -313,3 +313,206 @@ for (const viewport of VIEWPORTS) {
     });
   }
 }
+
+// Review hub sections (ui-ux.md 오답 노트, FR-DASH-04 숙련도 변화) with fixed API responses: the
+// mistake notes, one note's detail and the weekly mastery changes.
+const P = 'js-basics.start.first-program.';
+const consoleLog = { id: 'js.basics.console-log', title: 'console.log로 출력하기' };
+const statement = { id: 'js.basics.statement', title: '문장과 실행 순서' };
+const startModule = { id: 'js-basics.start', title: '시작하기' };
+const jsBasics = { id: 'js-basics', title: 'JavaScript 기초' };
+const at = (day: number) => Date.UTC(2026, 10, day, 3);
+const note = (over: object) => ({
+  exerciseId: `${P}mcq-log-role`,
+  type: 'mcq_single',
+  difficulty: 1,
+  prompt: '`console.log("완료");`를 실행하면 어떤 일이 일어나나요?',
+  concept: consoleLog,
+  module: startModule,
+  course: jsBasics,
+  lastWrongAt: at(14),
+  lastWrongOutcome: 'incorrect',
+  lastWrongContext: 'lesson',
+  wrongCount: 2,
+  confidentWrong: true,
+  misconceptions: [{ id: 'js.mc.log-is-return', title: '출력을 반환으로 착각함' }],
+  status: 'open',
+  resolvedAt: null,
+  archived: false,
+  retry: { available: true, blockedBy: null },
+  ...over,
+});
+const MISTAKES = {
+  items: [
+    note({}),
+    note({
+      exerciseId: `${P}tf-order`,
+      type: 'true_false',
+      difficulty: 2,
+      prompt: '프로그램은 아래 줄부터 위로 실행된다.',
+      concept: statement,
+      lastWrongAt: at(12),
+      wrongCount: 1,
+      confidentWrong: false,
+      misconceptions: [],
+      status: 'resolved',
+      resolvedAt: at(13),
+    }),
+    note({
+      exerciseId: 'js-basics.values.values-review.mcq-reassign',
+      difficulty: 2,
+      prompt: '`let n = 1; n = n + 1;` 뒤의 `n`은?',
+      concept: { id: 'js.basics.reassign', title: '다시 대입하기' },
+      module: { id: 'js-basics.values', title: '값과 변수' },
+      lastWrongAt: at(11),
+      lastWrongContext: 'assessment',
+      wrongCount: 1,
+      misconceptions: [],
+      retry: { available: false, blockedBy: 'assessment_only' },
+    }),
+  ],
+  total: 3,
+  counts: { all: 3, open: 2, resolved: 1 },
+  facets: {
+    courses: [jsBasics],
+    modules: [
+      { ...startModule, courseId: 'js-basics' },
+      { id: 'js-basics.values', title: '값과 변수', courseId: 'js-basics' },
+    ],
+    concepts: [
+      { ...consoleLog, moduleId: 'js-basics.start' },
+      { ...statement, moduleId: 'js-basics.start' },
+    ],
+  },
+};
+const MISTAKE = {
+  note: note({}),
+  code: null,
+  codeLanguage: 'javascript',
+  attempts: [
+    {
+      id: 'a2',
+      submittedAt: at(14),
+      outcome: 'incorrect',
+      confidence: 'sure',
+      context: 'lesson',
+      answer: {
+        kind: 'choice',
+        choiceId: 'b',
+        text: '`완료`라는 값이 저장되어 다음 줄에서 다시 쓸 수 있다',
+      },
+      misconceptions: [{ id: 'js.mc.log-is-return', title: '출력을 반환으로 착각함' }],
+      feedback: ['console.log는 보여 주기만 하고 값을 저장하지 않아요.'],
+      hintLevelMax: 0,
+      solutionViewed: false,
+    },
+    {
+      id: 'a1',
+      submittedAt: at(12),
+      outcome: 'incorrect',
+      confidence: 'unsure',
+      context: 'review',
+      answer: { kind: 'choice', choiceId: 'c', text: '프로그램이 끝난다' },
+      misconceptions: [],
+      feedback: ['console.log는 출력만 할 뿐이에요.'],
+      hintLevelMax: 1,
+      solutionViewed: false,
+    },
+  ],
+  explanation:
+    '정답은 **콘솔에 `완료`라는 글자가 보인다**예요. console.log는 값을 콘솔에 보여 줄 뿐 저장하지 않아요.',
+  solution: null,
+  solutionSource: null,
+};
+const change = (id: string, day: number, concept: object, before: string, after: string) => ({
+  id,
+  at: at(day),
+  date: `2026-11-${String(day)}`,
+  concept,
+  stageBefore: before,
+  stageAfter: after,
+  direction:
+    ['not_started', 'introduced', 'practicing', 'proficient', 'mastered'].indexOf(after) >
+    ['not_started', 'introduced', 'practicing', 'proficient', 'mastered'].indexOf(before)
+      ? 'up'
+      : 'down',
+  scoreBefore: 40,
+  scoreAfter: 52,
+});
+const weekStarts = [
+  '2026-09-21',
+  '2026-09-28',
+  '2026-10-05',
+  '2026-10-12',
+  '2026-10-19',
+  '2026-10-26',
+  '2026-11-02',
+  '2026-11-09',
+];
+const perWeek: [number, number][] = [
+  [0, 0],
+  [2, 0],
+  [3, 1],
+  [1, 0],
+  [4, 1],
+  [2, 2],
+  [5, 0],
+  [3, 1],
+];
+const MASTERY_CHANGES = {
+  date: '2026-11-15',
+  weeks: weekStarts.map((weekStart, i) => ({
+    weekStart,
+    promotions: perWeek[i]?.[0] ?? 0,
+    demotions: perWeek[i]?.[1] ?? 0,
+    concepts: (perWeek[i]?.[0] ?? 0) + (perWeek[i]?.[1] ?? 0),
+  })),
+  recent: [
+    change('e4', 14, consoleLog, 'introduced', 'practicing'),
+    change('e3', 13, statement, 'practicing', 'introduced'),
+    change('e2', 12, statement, 'introduced', 'practicing'),
+    change(
+      'e1',
+      10,
+      { id: 'js.basics.let', title: 'let으로 변수 선언하기' },
+      'not_started',
+      'introduced',
+    ),
+  ],
+  totals: { promotions: 20, demotions: 5 },
+};
+
+const REVIEW_SCREENS = [
+  { name: 'review-mistakes', path: '/review/mistakes' },
+  {
+    name: 'review-mistake-detail',
+    path: `/review/mistakes/${encodeURIComponent(`${P}mcq-log-role`)}`,
+  },
+  { name: 'review-progress', path: '/review/progress' },
+] as const;
+
+for (const viewport of VIEWPORTS) {
+  for (const scheme of ['light', 'dark'] as const) {
+    for (const screen of REVIEW_SCREENS) {
+      const name = `${screen.name}-${scheme}-${viewport.width}`;
+      test(`${name} @visual`, async ({ page }) => {
+        await page.setViewportSize(viewport);
+        await page.route('**/api/v1/review-queue', (route) => route.fulfill({ json: QUEUE }));
+        await page.route('**/api/v1/goals', (route) => route.fulfill({ json: GOALS }));
+        await page.route('**/api/v1/dashboard', (route) => route.fulfill({ json: DASHBOARD }));
+        await page.route(/\/api\/v1\/mistakes(\?.*)?$/, (route) =>
+          route.fulfill({ json: MISTAKES }),
+        );
+        await page.route(/\/api\/v1\/mistakes\/[^?]+$/, (route) =>
+          route.fulfill({ json: MISTAKE }),
+        );
+        await page.route('**/api/v1/mastery-changes', (route) =>
+          route.fulfill({ json: MASTERY_CHANGES }),
+        );
+        await openScreen(page, screen.path, '복습', scheme);
+        await expect(page.locator('.pi-skeleton')).toHaveCount(0);
+        await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
+      });
+    }
+  }
+}

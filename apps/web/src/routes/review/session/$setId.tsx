@@ -19,10 +19,14 @@ export const Route = createFileRoute('/review/session/$setId')({
   component: ReviewSession,
 });
 
-/** Title of a set opened here: review sets and weakness sets (from the dashboard). */
-const HEADINGS: Partial<Record<string, string>> = { review: '오늘의 복습', weakness: '약점 집중' };
+/** Title of a set opened here: review, weakness and "다시 풀기" (extra) sets. */
+const HEADINGS: Partial<Record<string, string>> = {
+  review: '오늘의 복습',
+  weakness: '약점 집중',
+  extra: '다시 풀기',
+};
 
-/** 복습·약점 집중 세트 진행: the practice layout (ui-ux.md 복습 화면, 약점 집중). */
+/** 복습·약점 집중·다시 풀기 세트 진행: the practice layout (ui-ux.md 복습 화면, 약점 집중). */
 function ReviewSession() {
   const { setId } = Route.useParams();
   const { i } = Route.useSearch();
@@ -49,12 +53,21 @@ function ReviewSession() {
                 lessonTitle={null}
                 summaryActions={() => (
                   <>
-                    <Link
-                      to="/review"
-                      className="pi-button pi-button--secondary pi-button--md no-underline"
-                    >
-                      복습 화면으로
-                    </Link>
+                    {set.kind === 'extra' ? (
+                      <Link
+                        to="/review/mistakes"
+                        className="pi-button pi-button--secondary pi-button--md no-underline"
+                      >
+                        오답 노트로
+                      </Link>
+                    ) : (
+                      <Link
+                        to="/review"
+                        className="pi-button pi-button--secondary pi-button--md no-underline"
+                      >
+                        복습 화면으로
+                      </Link>
+                    )}
                     <Link
                       to="/"
                       className="pi-button pi-button--primary pi-button--md no-underline"
