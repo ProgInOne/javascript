@@ -1,0 +1,85 @@
+id: js-basics.arrays.array-hof.impl-passed-scores
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.arr.filter, weight: 1 }
+tags: [filter, boundary, write-code]
+estimatedSeconds: 200
+prompt: |
+  점수 목록과 합격 기준 점수를 받아, **기준 점수 이상**인 점수만 원래 순서대로 담은 새 배열을 돌려주는 함수 `passedScores(scores, cut)`을 `filter`로 완성하세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `passedScores([72, 95, 58, 88], 80)` | `[95, 88]` |
+  | `passedScores([40, 55], 60)` | `[]` |
+
+  받은 `scores` 배열은 바꾸지 마세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function passedScores(scores, cut) {
+            // 여기에 작성하세요
+          }
+  entry: passedScores
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function passedScores(scores, cut) {
+            return scores.filter((score) => score >= cut);
+          }
+  checks:
+    - { kind: call, id: some-pass, args: [[72, 95, 58, 88], 80], expect: { equals: [95, 88] }, requirement: 기준 이상만 고르기 }
+    - { kind: call, id: none-pass, args: [[40, 55], 60], expect: { equals: [] }, requirement: 기준 이상만 고르기, misconceptionIfFail: js.mc.filter-empty-is-undefined }
+    - kind: call
+      id: equal-cut
+      visible: false
+      description: 기준 점수와 같은 점수도 합격이라 남아야 합니다.
+      requirement: 기준 점수 포함
+      args: [[60, 59, 61, 60], 60]
+      expect: { equals: [60, 61, 60] }
+    - kind: call
+      id: all-pass
+      visible: false
+      description: 모두 합격이면 모든 점수가 원래 순서대로 들어 있어야 합니다.
+      requirement: 기준 이상만 고르기
+      args: [[90, 100, 85], 70]
+      expect: { equals: [90, 100, 85] }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 점수 배열을 바꾸지 않아야 합니다.
+      requirement: 원래 배열 지키기
+      args: [[72, 95, 58, 88], 80]
+      expect: { argsUnchanged: true }
+    - kind: call
+      id: new-array
+      visible: false
+      description: 모두 합격이어도 받은 배열이 아닌 새 배열을 돌려줘야 합니다.
+      requirement: 원래 배열 지키기
+      args: [[90, 100], 70]
+      expect: { returnsNewReference: true }
+misconceptions: [js.mc.filter-removes-matching, js.mc.filter-empty-is-undefined]
+hints:
+  - 조건에 맞는 요소만 남긴 새 배열을 만드는 메서드는 `filter`예요.
+  - "`filter`의 콜백에는 \"남길 조건\"을 써요. 점수 하나를 받아 합격이면 참을 돌려주게 하세요."
+  - "\"기준 점수 이상\"에는 기준 점수와 같은 점수도 들어가요. 비교 연산자를 고를 때 이 경우를 따져 보세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function passedScores(scores, cut) {
+    return scores.filter((score) => score >= cut);
+  }
+  ```
+
+  - `filter`는 콜백이 참을 돌려준 점수를 **남긴** 새 배열을 원래 순서대로 돌려줘요.
+  - "이상"이므로 `>=`예요. `>`로 쓰면 기준 점수와 같은 60점이 빠져요.
+  - 합격자가 없으면 `filter`가 빈 배열 `[]`을 돌려주므로 따로 처리하지 않아도 돼요.
+  - 모두 합격일 때 `return scores;`처럼 받은 배열을 그대로 돌려주는 코드는 "새 배열" 테스트에서 실패해요. 돌려받은 쪽이 결과를 바꾸면 원래 목록까지 바뀌기 때문이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

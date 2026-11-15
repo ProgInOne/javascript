@@ -1,0 +1,47 @@
+id: js-basics.arrays.array-iteration.mcq-for-of-element
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.for-of, weight: 1 }
+tags: [for-of, element]
+estimatedSeconds: 45
+prompt: |
+  아래 반복의 두 번째 바퀴에서 `item`에 들어 있는 값은 무엇인가요?
+code: |
+  const fruits = ["사과", "배", "귤"];
+  for (const item of fruits) {
+    console.log(item);
+  }
+spec:
+  options:
+    - id: a
+      text: '`"배"`'
+    - id: b
+      text: "`1`"
+      misconception: js.mc.for-of-gives-index
+      rationale: 1은 두 번째 요소의 인덱스예요. for...of의 변수에는 인덱스가 아니라 요소가 들어와요.
+    - id: c
+      text: '`"1"`'
+      misconception: js.mc.for-in-array-values
+      rationale: 인덱스를 문자열로 꺼내는 것은 for...in이에요. 이 코드는 for...of예요.
+    - id: d
+      text: '`["사과", "배", "귤"]`'
+      rationale: 배열 전체는 fruits예요. for...of는 바퀴마다 요소를 하나씩 꺼내 줘요.
+  correct: a
+misconceptions: [js.mc.for-of-gives-index]
+hints:
+  - "`for...of`는 배열에서 무엇을 하나씩 꺼내 주는 반복인지 떠올려 보세요."
+  - 첫 번째 바퀴에서 `item`이 `"사과"`라면, 두 번째 바퀴에는 무엇이 올까요?
+  - 인덱스는 `for` 반복의 `i`처럼 직접 세야 얻을 수 있어요. `for...of`의 변수는 그것과 달라요.
+explanation: |
+  정답은 `"배"`예요.
+
+  `for (const item of fruits)`는 `fruits`의 요소를 앞에서부터 하나씩 꺼내 `item`에 담아요. 첫 바퀴는 `"사과"`, 두 번째 바퀴는 `"배"`, 세 번째 바퀴는 `"귤"`이에요.
+
+  - `1`: 두 번째 요소의 인덱스예요. 인덱스가 필요하면 `for (let i = 0; i < fruits.length; i++)`를 써요.
+  - `"1"`: `for...in`이 꺼내는 인덱스 문자열이에요. 배열에는 `for...in`을 쓰지 않아요.
+  - 배열 전체: 배열 전체는 `fruits`이고, `item`은 그중 하나예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,77 @@
+id: js-basics.arrays.array-hof.fix-reduce-no-return
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.arr.reduce, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [reduce, return, accumulator, debugging]
+estimatedSeconds: 200
+prompt: |
+  공부한 시간(분) 목록을 받아 전체 공부 시간을 돌려주는 함수 `totalMinutes(sessions)`예요. 기록이 없을 때는 0이 잘 나오는데, 기록이 있으면 결과가 이상해요. 고쳐 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `totalMinutes([30, 45, 20])` | `95` |
+  | `totalMinutes([])` | `0` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function totalMinutes(sessions) {
+            return sessions.reduce((acc, minutes) => {
+              acc += minutes;
+            }, 0);
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function totalMinutes(sessions) {
+            return sessions.reduce((acc, minutes) => {
+              return acc + minutes;
+            }, 0);
+          }
+  entry: totalMinutes
+  bugDescription: "`totalMinutes([30, 45, 20])`가 `95`가 아니라 `undefined`를 돌려줘요. 빈 배열에서는 0이 나와요."
+  checks:
+    - { kind: call, id: three, args: [[30, 45, 20]], expect: { equals: 95 }, requirement: 전체 시간 구하기, misconceptionIfFail: js.mc.reduce-callback-no-return }
+    - { kind: call, id: empty, args: [[]], expect: { equals: 0 }, requirement: 전체 시간 구하기 }
+    - kind: call
+      id: single
+      visible: false
+      description: 기록이 하나뿐이어도 그 시간을 돌려줘야 합니다.
+      requirement: 전체 시간 구하기
+      args: [[60]]
+      expect: { equals: 60 }
+    - kind: call
+      id: many
+      visible: false
+      description: 기록이 여러 개여도 모두 더해야 합니다.
+      requirement: 전체 시간 구하기
+      args: [[15, 0, 120, 5, 40]]
+      expect: { equals: 180 }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 기록 배열을 바꾸지 않아야 합니다.
+      requirement: 원래 배열 지키기
+      args: [[30, 45, 20]]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.reduce-callback-no-return]
+hints:
+  - 빈 배열에서는 콜백이 한 번도 불리지 않아요. 그런데 왜 기록이 있을 때만 틀릴까요? 콜백에 문제가 있다는 뜻이에요.
+  - "`reduce`는 다음 호출의 `acc`를 어디에서 가져오나요? 콜백 안에서 `acc`에 대입한 값일까요?"
+  - 콜백이 끝날 때 무엇을 돌려주고 있는지 확인하세요. 중괄호 본문의 화살표 함수는 저절로 값을 돌려주지 않아요.
+explanation: |
+  콜백이 다음 누적값을 **돌려주지 않아서** 생긴 버그예요.
+
+  `reduce`는 콜백이 돌려준 값을 다음 호출의 `acc`로 써요. 버그 코드는 `acc += minutes;`로 매개변수 `acc`만 바꾸고 아무것도 돌려주지 않아요. 그래서 첫 호출이 `undefined`를 돌려주고, 다음 호출의 `acc`는 `undefined`가 돼요. 마지막 호출도 `undefined`를 돌려주므로 결과는 `undefined`예요.
+
+  빈 배열에서 0이 나온 것은 콜백이 한 번도 불리지 않아 초기값 `0`이 그대로 결과가 되었기 때문이에요.
+
+  고친 콜백은 `return acc + minutes;`예요. 식 하나뿐이라 `(acc, minutes) => acc + minutes`처럼 중괄호 없이 써도 돼요. `acc += minutes;` 다음 줄에 `return acc;`를 더해도 동작하지만, 누적값은 바꾸는 대상이 아니라 **새로 돌려줄 값**이라고 생각하는 편이 `reduce`를 이해하기 쉬워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

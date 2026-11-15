@@ -1,0 +1,80 @@
+id: js-basics.arrays.array-hof.impl-price-labels
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.arr.map, weight: 1 }
+  - { id: js.str.template-literal, weight: 0.3 }
+tags: [map, template-literal, write-code]
+estimatedSeconds: 200
+prompt: |
+  가격 목록을 받아 화면에 보여 줄 글자 목록을 돌려주는 함수 `toLabels(prices)`를 `map`으로 완성하세요. 가격 뒤에 `원`을 붙이면 돼요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `toLabels([3000, 12000])` | `["3000원", "12000원"]` |
+  | `toLabels([])` | `[]` |
+
+  받은 `prices` 배열은 바꾸지 말고 새 배열을 돌려주세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function toLabels(prices) {
+            // 여기에 작성하세요
+          }
+  entry: toLabels
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function toLabels(prices) {
+            return prices.map((price) => `${price}원`);
+          }
+  checks:
+    - { kind: call, id: two, args: [[3000, 12000]], expect: { equals: ["3000원", "12000원"] }, requirement: 가격 글자 만들기 }
+    - { kind: call, id: empty, args: [[]], expect: { equals: [] }, requirement: 가격 글자 만들기 }
+    - kind: call
+      id: four
+      visible: false
+      description: 가격이 몇 개든 같은 순서로 모두 바꿔야 합니다.
+      requirement: 가격 글자 만들기
+      args: [[500, 0, 99000, 1200]]
+      expect: { equals: ["500원", "0원", "99000원", "1200원"] }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 가격 배열을 바꾸지 않아야 합니다.
+      requirement: 원래 배열 지키기
+      args: [[3000, 12000]]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.map-mutates-original
+    - kind: call
+      id: new-array
+      visible: false
+      description: 받은 배열이 아닌 새 배열을 돌려줘야 합니다.
+      requirement: 원래 배열 지키기
+      args: [[7000]]
+      expect: { returnsNewReference: true }
+misconceptions: [js.mc.map-mutates-original, js.mc.map-callback-no-return]
+hints:
+  - 요소마다 바꾼 값으로 같은 길이의 새 배열을 만드는 메서드는 `map`이에요.
+  - "`map`에 넘기는 콜백은 가격 하나를 받아 그 자리에 들어갈 글자를 돌려줘야 해요."
+  - 숫자 뒤에 `원`을 붙인 문자열은 템플릿 리터럴이나 `+`로 만들 수 있어요. 함수도 `map`의 결과를 돌려줘야 해요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function toLabels(prices) {
+    return prices.map((price) => `${price}원`);
+  }
+  ```
+
+  - `map`은 콜백이 돌려준 문자열을 같은 자리에 담은 새 배열을 돌려줘요. 빈 배열이면 콜백이 한 번도 불리지 않아 `[]`이에요.
+  - `price + "원"`으로 써도 같아요.
+  - `return`을 빠뜨리면 함수는 `undefined`를 돌려줘요. `map`의 결과를 함수 밖으로 돌려줘야 해요.
+  - 반복 안에서 `prices[i] = prices[i] + "원"`처럼 원래 배열을 바꾸면 숨겨진 테스트가 실패해요. 함수에 넘긴 배열은 호출한 쪽의 배열과 같은 배열이라 바깥 목록까지 바뀌어요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,91 @@
+id: js-basics.arrays.array-search-sort.impl-page
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.arr.slice-concat, weight: 1 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+tags: [slice, pagination, boundary, write-code]
+estimatedSeconds: 300
+prompt: |
+  게시판은 글을 한 쪽(페이지)에 `size`개씩 나눠 보여 줘요. 글 목록 `items`, 쪽 번호 `pageNumber`(1부터 시작), 한 쪽의 글 수 `size`를 받아 **그 쪽에 보일 글들**을 새 배열로 돌려주는 함수 `page(items, pageNumber, size)`를 완성하세요.
+
+  - 1쪽은 처음 `size`개, 2쪽은 그다음 `size`개예요.
+  - 마지막 쪽은 남은 글만큼만, 글이 없는 쪽은 빈 배열이에요.
+  - `items`는 바꾸지 마세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `page(["a", "b", "c", "d", "e", "f", "g"], 1, 3)` | `["a", "b", "c"]` |
+  | `page(["a", "b", "c", "d", "e", "f", "g"], 3, 3)` | `["g"]` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function page(items, pageNumber, size) {
+            // 여기에 작성하세요
+          }
+  entry: page
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function page(items, pageNumber, size) {
+            const start = (pageNumber - 1) * size;
+            return items.slice(start, start + size);
+          }
+  checks:
+    - { kind: call, id: first, args: [["a", "b", "c", "d", "e", "f", "g"], 1, 3], expect: { equals: ["a", "b", "c"] }, requirement: 쪽 나누기 }
+    - { kind: call, id: last, args: [["a", "b", "c", "d", "e", "f", "g"], 3, 3], expect: { equals: ["g"] }, requirement: 마지막 쪽 }
+    - kind: call
+      id: middle
+      visible: false
+      description: 2쪽은 처음 size개 바로 다음부터 size개여야 합니다(겹치거나 빠지는 글 없이).
+      requirement: 쪽 나누기
+      args: [[10, 20, 30, 40, 50, 60, 70, 80, 90], 2, 4]
+      expect: { equals: [50, 60, 70, 80] }
+      misconceptionIfFail: js.mc.slice-end-inclusive
+    - kind: call
+      id: beyond
+      visible: false
+      description: 글이 없는 쪽은 빈 배열이어야 합니다.
+      requirement: 마지막 쪽
+      args: [["a", "b", "c"], 3, 2]
+      expect: { equals: [] }
+    - kind: call
+      id: keep-items
+      visible: false
+      description: 글 목록 배열을 바꾸면 안 됩니다.
+      requirement: 목록 지키기
+      args: [["a", "b", "c", "d", "e"], 2, 2]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.array-slice-mutates
+misconceptions: [js.mc.slice-end-inclusive]
+hints:
+  - 쪽마다 "몇 번 인덱스부터 몇 번 인덱스 앞까지"를 표로 적어 보세요. `size`가 3이면 1쪽은 0~3 앞, 2쪽은?
+  - 시작 인덱스는 쪽 번호와 `size`로 계산할 수 있어요. 쪽 번호가 1부터 시작한다는 점에 주의하세요.
+  - 원래 배열을 그대로 두고 일부를 복사하는 메서드는 끝 인덱스의 요소를 넣지 않아요. 끝 인덱스는 시작에서 `size`만큼 떨어진 곳이에요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function page(items, pageNumber, size) {
+    const start = (pageNumber - 1) * size;
+    return items.slice(start, start + size);
+  }
+  ```
+
+  | 쪽 (`size` 3) | 시작 | 끝 (들어가지 않음) | 결과 |
+  |---|---|---|---|
+  | 1 | 0 | 3 | `["a", "b", "c"]` |
+  | 2 | 3 | 6 | `["d", "e", "f"]` |
+  | 3 | 6 | 9 | `["g"]` |
+
+  - 쪽 번호가 1부터라서 시작은 `(pageNumber - 1) * size`예요. `pageNumber * size`로 쓰면 1쪽이 두 번째 묶음이 돼요.
+  - `slice`는 끝 인덱스의 요소를 넣지 않으므로 끝은 `start + size`예요. `start + size - 1`이면 한 개가 모자라요.
+  - 끝이 배열 길이를 넘어도 `slice`는 있는 데까지만 잘라요. 시작이 길이 이상이면 빈 배열이에요. 그래서 마지막 쪽과 글이 없는 쪽을 따로 처리하지 않아도 돼요.
+  - `splice`로 자르면 결과는 같아도 `items`에서 글이 사라져요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,123 @@
+id: js-basics.arrays.array-hof.impl-best-day
+type: implement_function
+difficulty: 5
+concepts:
+  - { id: js.arr.reduce, weight: 1 }
+  - { id: js.arr.literal-index, weight: 0.3 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [reduce, index-param, max, empty-array, tie, write-code]
+estimatedSeconds: 600
+prompt: |
+  가게의 하루 손익 목록(원)이 있어요. 손익이 **가장 큰 날의 인덱스**를 돌려주는 함수 `bestDay(profits)`를 완성하세요.
+
+  - 가장 큰 값이 여러 날이면 **가장 앞의 날** 인덱스를 돌려줘요.
+  - 손익은 음수(손해)일 수도 있어요.
+  - 목록이 비어 있으면 `-1`을 돌려줘요.
+  - 받은 `profits` 배열은 바꾸지 마세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `bestDay([120, 340, 90, 200])` | `1` |
+  | `bestDay([])` | `-1` |
+
+  `reduce`로 풀어 보세요. 누적값으로 "지금까지 가장 좋았던 날의 인덱스"를 들고 다니면 돼요. 콜백의 세 번째 매개변수로 현재 인덱스를 받을 수 있어요. 숨겨진 테스트는 다른 목록으로 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function bestDay(profits) {
+            // 여기에 작성하세요
+          }
+  entry: bestDay
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function bestDay(profits) {
+            if (profits.length === 0) {
+              return -1;
+            }
+            return profits.reduce((best, amount, i) => {
+              if (amount > profits[best]) {
+                return i;
+              }
+              return best;
+            }, 0);
+          }
+  checks:
+    - { kind: call, id: basic, args: [[120, 340, 90, 200]], expect: { equals: 1 }, requirement: 가장 좋은 날 찾기 }
+    - { kind: call, id: empty, args: [[]], expect: { equals: -1 }, requirement: 빈 목록, misconceptionIfFail: js.mc.reduce-initial-optional-safe }
+    - kind: call
+      id: all-negative
+      visible: false
+      description: 모든 날이 손해여도 손해가 가장 적은(값이 가장 큰) 날을 찾아야 합니다.
+      requirement: 가장 좋은 날 찾기
+      args: [[-500, -120, -900]]
+      expect: { equals: 1 }
+    - kind: call
+      id: tie-first
+      visible: false
+      description: 가장 큰 값이 여러 날이면 가장 앞의 날 인덱스여야 합니다.
+      requirement: 같으면 앞의 날
+      args: [[70, 300, 50, 300]]
+      expect: { equals: 1 }
+    - kind: call
+      id: first-is-best
+      visible: false
+      description: 첫날이 가장 좋으면 0을 돌려줘야 합니다.
+      requirement: 가장 좋은 날 찾기
+      args: [[800, 10, 799]]
+      expect: { equals: 0 }
+    - kind: call
+      id: last-is-best
+      visible: false
+      description: 마지막 날이 가장 좋으면 마지막 인덱스를 돌려줘야 합니다.
+      requirement: 가장 좋은 날 찾기
+      args: [[0, -3, 5, 2, 9]]
+      expect: { equals: 4 }
+    - kind: call
+      id: single
+      visible: false
+      description: 하루뿐이면 그날(0)이 가장 좋은 날입니다.
+      requirement: 가장 좋은 날 찾기
+      args: [[-40]]
+      expect: { equals: 0 }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 손익 배열을 바꾸지 않아야 합니다(정렬하면 순서가 바뀌어요).
+      requirement: 원래 배열 지키기
+      args: [[120, 340, 90, 200]]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.reduce-initial-optional-safe, js.mc.reduce-callback-no-return, js.mc.reduce-params-swapped]
+hints:
+  - 누적값이 "값"이 아니라 "인덱스"라는 점이 핵심이에요. 처음에는 어느 날을 가장 좋은 날로 두면 될까요? 빈 목록은 그 전에 따로 처리해요.
+  - 콜백은 `(지금까지 가장 좋은 날의 인덱스, 오늘 손익, 오늘 인덱스)`를 받아요. 지금까지 가장 좋은 날의 손익은 인덱스로 배열에서 읽을 수 있어요.
+  - 오늘이 **더 클 때만** 누적값을 바꾸고, 아니면 원래 누적값을 그대로 돌려줘요. 같을 때 바꾸면 어떤 날이 남을지 생각해 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function bestDay(profits) {
+    if (profits.length === 0) {
+      return -1;
+    }
+    return profits.reduce((best, amount, i) => {
+      if (amount > profits[best]) {
+        return i;
+      }
+      return best;
+    }, 0);
+  }
+  ```
+
+  - **누적값 = 인덱스**: 초기값 `0`은 "일단 첫날이 가장 좋다"는 뜻이에요. 콜백은 오늘 손익이 지금까지 가장 좋은 날의 손익(`profits[best]`)보다 크면 오늘 인덱스 `i`를, 아니면 `best`를 그대로 돌려줘요. 두 경우 모두 `return`이 있어야 누적값이 이어져요.
+  - **같으면 앞의 날**: `>`로 비교하므로 같은 값을 만나도 바꾸지 않아 앞의 날이 남아요. `>=`로 쓰면 `[70, 300, 50, 300]`에서 3이 나와요.
+  - **음수**: 가장 큰 값을 `0`부터 비교하면(`let max = 0` 같은 방식) 모두 음수일 때 아무 날도 0보다 크지 않아 틀린 답이 나와요. 첫날 값에서 비교를 시작하면 이 문제가 없어요.
+  - **빈 목록**: 초기값 `0`을 그대로 돌려주면 없는 날의 인덱스가 되므로, 먼저 `-1`을 돌려줘요. 초기값을 빼면 첫 요소의 **값**이 누적값이 되어 인덱스와 섞이고, 빈 배열에서는 `TypeError`가 나요.
+  - 정렬해서 찾으면 원래 순서(날짜)를 잃고 배열도 바뀌어요. `for` 반복으로 같은 비교를 해서 푼 답도 정답으로 인정돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

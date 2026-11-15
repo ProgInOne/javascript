@@ -1,0 +1,46 @@
+id: js-basics.arrays.array-hof.mcq-filter-keeps
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.filter, weight: 1 }
+tags: [filter, keep]
+estimatedSeconds: 45
+prompt: |
+  `[3, 12, 7, 20].filter((n) => n > 10)`의 결과는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`[12, 20]`"
+    - id: b
+      text: "`[3, 7]`"
+      misconception: js.mc.filter-removes-matching
+      rationale: "`filter`는 콜백이 참을 돌려준 요소를 지우는 게 아니라 남겨요."
+    - id: c
+      text: "`12`"
+      misconception: js.mc.filter-returns-first
+      rationale: "`filter`는 맞는 첫 요소 하나가 아니라 맞는 요소를 모두 담은 배열을 돌려줘요. 첫 하나만 돌려주는 것은 `find`예요."
+    - id: d
+      text: "`[false, true, false, true]`"
+      rationale: 콜백이 돌려준 참·거짓을 그대로 담는 것은 `map`이에요. `filter`는 참·거짓을 보고 요소를 고를 뿐이에요.
+    - id: e
+      text: "`true`"
+      rationale: 하나라도 맞는지 `true`/`false`로 알려 주는 것은 `some`이에요.
+  correct: a
+misconceptions: [js.mc.filter-removes-matching, js.mc.filter-returns-first]
+hints:
+  - 요소마다 콜백 `n > 10`을 계산해 참인지 거짓인지 적어 보세요.
+  - "`filter`는 콜백이 참을 돌려준 요소를 어떻게 하나요? 지우나요, 남기나요?"
+  - "`filter`는 언제나 배열을 돌려줘요."
+explanation: |
+  정답은 `[12, 20]`이에요.
+
+  콜백 `n > 10`은 3 → 거짓, 12 → 참, 7 → 거짓, 20 → 참이에요. `filter`는 참을 돌려준 요소를 **남긴** 새 배열을 돌려주므로 `[12, 20]`이에요.
+
+  - `[3, 7]`: 조건에 맞는 것을 지운다고 생각하면 나오는 답이에요. `filter`의 콜백에는 "남길 조건"을 써요.
+  - `12`: 맞는 첫 요소 하나는 `find`가 돌려줘요.
+  - `[false, true, false, true]`: 콜백의 결과를 그대로 담는 것은 `map`이에요.
+  - `true`: 하나라도 맞는지는 `some`이 알려 줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

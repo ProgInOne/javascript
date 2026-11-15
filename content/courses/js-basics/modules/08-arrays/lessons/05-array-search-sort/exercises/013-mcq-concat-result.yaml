@@ -1,0 +1,42 @@
+id: js-basics.arrays.array-search-sort.mcq-concat-result
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.slice-concat, weight: 1 }
+tags: [concat, new-array]
+estimatedSeconds: 45
+prompt: |
+  `[1, 2].concat([3, 4])`의 결과는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`[1, 2, 3, 4]`"
+    - id: b
+      text: "`[1, 2, [3, 4]]`"
+      misconception: js.mc.concat-adds-nested
+      rationale: concat은 넘긴 배열의 요소를 풀어서 이어 붙여요. 배열 자체를 요소 하나로 넣는 것은 push예요.
+    - id: c
+      text: "`4`"
+      misconception: js.mc.push-returns-new-array
+      rationale: 새 길이(숫자)를 돌려주는 것은 push예요. concat은 이어 붙인 새 배열을 돌려줘요.
+    - id: d
+      text: "`[3, 4, 1, 2]`"
+      rationale: concat은 원래 배열 뒤에 넘긴 배열의 요소를 붙여요. 순서가 바뀌지 않아요.
+  correct: a
+misconceptions: [js.mc.concat-adds-nested]
+hints:
+  - "`concat`은 두 배열을 \"잇는\" 메서드예요. 결과는 숫자일까요, 배열일까요?"
+  - 넘긴 배열 `[3, 4]`가 결과 안에서 배열째 들어갈까요, 요소 `3`과 `4`로 풀려서 들어갈까요?
+  - 배열 자체를 요소 하나로 넣는 메서드는 따로 있었어요. `concat`은 그 메서드와 다르게 동작해요.
+explanation: |
+  정답은 `[1, 2, 3, 4]`예요.
+
+  `concat`은 원래 배열의 요소 뒤에, 넘긴 배열의 요소들을 **풀어서** 이어 붙인 새 배열을 돌려줘요. 원래 배열 `[1, 2]`는 바뀌지 않아요.
+
+  - `[1, 2, [3, 4]]`: 배열 자체가 요소 하나로 들어간 모양이에요. `const arr = [1, 2]; arr.push([3, 4]);`를 하면 `arr`이 이렇게 돼요.
+  - `4`: `push`가 돌려주는 새 길이와 헷갈린 거예요. `concat`은 길이가 아니라 새 배열을 돌려줘요.
+  - `[3, 4, 1, 2]`: 넘긴 배열은 뒤에 붙어요. 앞에 붙이려면 `[3, 4].concat([1, 2])`처럼 순서를 바꿔 불러요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

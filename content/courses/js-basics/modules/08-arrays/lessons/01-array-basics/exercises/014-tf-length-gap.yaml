@@ -1,0 +1,43 @@
+id: js-basics.arrays.array-basics.tf-length-gap
+type: true_false
+difficulty: 3
+concepts:
+  - { id: js.arr.length, weight: 1 }
+  - { id: js.arr.element-update, weight: 0.3 }
+tags: [length, gap]
+estimatedSeconds: 80
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: '`const arr = [5, 6, 7];` 다음에 `arr[9] = 1;`을 실행하면 요소가 하나 늘었으므로 `arr.length`는 `4`다.'
+  answer: false
+  misconceptionIfWrong: js.mc.array-length-counts-filled
+  requireReason: true
+  reasons:
+    - id: r1
+      text: length는 가장 큰 인덱스 + 1이라 10이 되고, 값을 넣지 않은 3~8번 자리는 비어 있다
+      correct: true
+    - id: r2
+      text: 범위 밖 인덱스에 대입하면 오류가 나서 arr.length는 그대로 3이다
+      misconception: js.mc.array-out-of-range-throws
+    - id: r3
+      text: 범위 밖 인덱스에 대입하면 무시되어 arr.length는 그대로 3이다
+    - id: r4
+      text: length는 실제로 값을 넣은 칸의 개수를 세므로 4가 맞다
+      misconception: js.mc.array-length-counts-filled
+hints:
+  - 대입한 인덱스 9는 지금 배열의 마지막 인덱스보다 얼마나 큰가요?
+  - 인덱스 9에 요소가 있다면, 인덱스 0~8의 자리도 배열 안에 있는 셈이에요. 그 사이 자리에는 무엇이 들어 있을까요?
+  - "`length`와 마지막 인덱스의 관계를 떠올려 보세요. 이제 마지막 인덱스는 몇인가요?"
+explanation: |
+  정답은 **거짓**이에요. 이유는 "length는 가장 큰 인덱스 + 1이라 10이 되고, 값을 넣지 않은 3~8번 자리는 비어 있다"예요.
+
+  `length`는 들어 있는 값의 개수가 아니라 "마지막 인덱스 + 1"이에요. `arr[9] = 1`로 마지막 인덱스가 9가 되었으니 `length`는 10이에요. 3~8번 자리는 비어 있어서 `arr[5]`를 읽으면 `undefined`예요.
+
+  - 범위 밖 인덱스에 대입해도 오류는 나지 않아요. 배열이 그만큼 늘어나요.
+  - 대입이 무시되지도 않아요. `arr[9]`를 읽으면 `1`이에요.
+  - 끝에 하나만 덧붙이려면 `arr[arr.length] = 1`처럼 `length`번 자리에 넣어야 `length`가 4가 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

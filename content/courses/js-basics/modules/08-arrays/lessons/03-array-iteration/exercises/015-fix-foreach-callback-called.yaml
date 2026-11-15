@@ -1,0 +1,76 @@
+id: js-basics.arrays.array-iteration.fix-foreach-callback-called
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.arr.foreach, weight: 1 }
+  - { id: js.fn.callback, weight: 0.5 }
+tags: [foreach, callback, debugging]
+estimatedSeconds: 150
+prompt: |
+  손님 명단을 한 줄씩 출력한 뒤 인원수를 출력하는 프로그램이에요. 실행하면 이상한 줄이 하나 나오고 오류가 나요. 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  - 민지
+  - 서준
+  - 하린
+  총 3명
+  ```
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function printLine(name) {
+            console.log("- " + name);
+          }
+
+          const guests = ["민지", "서준", "하린"];
+          guests.forEach(printLine());
+          console.log("총 " + guests.length + "명");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function printLine(name) {
+            console.log("- " + name);
+          }
+
+          const guests = ["민지", "서준", "하린"];
+          guests.forEach(printLine);
+          console.log("총 " + guests.length + "명");
+  bugDescription: "`- undefined`가 한 줄 나온 뒤 `TypeError: undefined is not a function`이 나요."
+  bugMisconception: js.mc.callback-called-when-passed
+  checks:
+    - kind: console
+      id: output
+      description: 손님 세 명이 한 줄씩 출력되고, 마지막에 인원수가 출력되어야 합니다.
+      requirement: 명단 출력
+      expect:
+        lines: ["- 민지", "- 서준", "- 하린", "총 3명"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 명단 출력
+      expect:
+        noError: true
+misconceptions: [js.mc.callback-called-when-passed]
+hints:
+  - 첫 줄에 나온 `- undefined`는 `printLine`이 언제, 어떤 인수로 불려서 나왔을까요?
+  - "`forEach`에 넘겨야 하는 것은 함수 자체일까요, 함수를 부른 결과일까요?"
+  - 모듈 6에서 배운 "콜백은 넘길 때 이름만"을 떠올려 보세요. 괄호는 부르는 표시예요.
+explanation: |
+  6번 줄 `guests.forEach(printLine());`이 원인이에요.
+
+  `printLine()`처럼 괄호를 붙이면 `forEach`가 시작되기 **전에** `printLine`이 인수 없이 한 번 실행돼요. 그래서 `- undefined`가 출력되고, 반환값 `undefined`가 `forEach`에 넘어가요. `forEach`는 받은 것을 함수로 부르려다 `TypeError: undefined is not a function`을 내요.
+
+  괄호를 빼고 함수 자체를 넘기면 `forEach`가 요소마다 `printLine("민지")`, `printLine("서준")`, `printLine("하린")`처럼 불러 줘요.
+
+  ```js
+  guests.forEach(printLine);
+  ```
+
+  `guests.forEach((name) => printLine(name));`처럼 화살표 함수로 감싸도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,50 @@
+id: js-basics.arrays.array-search-sort.predict-search-values
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.arr.includes-indexof, weight: 1 }
+  - { id: js.ops.strict-equality, weight: 0.3 }
+tags: [includes, indexof, type, not-found]
+estimatedSeconds: 100
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요? 다섯 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const tags = ["js", "css", "html", "js"];
+    console.log(tags.indexOf("js"));
+    console.log(tags.includes("JS"));
+    console.log(tags.indexOf("htm"));
+
+    const answers = [3, 1, 4];
+    console.log(answers.includes(Number("4")));
+    console.log(answers.indexOf("1"));
+  answerKind: console
+  misconceptionByAnswer:
+    "0\nfalse\n2\ntrue\n-1": js.mc.array-includes-partial
+    "0\nfalse\n-1\ntrue\n1": js.mc.includes-loose-match
+    "3\nfalse\n-1\ntrue\n-1": js.mc.indexof-as-boolean
+hints:
+  - "`indexOf`는 같은 요소가 여러 개면 어느 것의 위치를 알려 줄까요?"
+  - 배열에서 찾을 때는 요소 전체가 같아야 해요. 대소문자, 글자 일부, 자료형이 다르면 어떻게 될지 줄마다 따져 보세요.
+  - "`Number(\"4\")`는 어떤 자료형의 값을 만들까요? 배열 `answers`의 요소와 자료형이 같은지 비교해 보세요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  0
+  false
+  -1
+  true
+  -1
+  ```
+
+  - `tags.indexOf("js")`: `"js"`는 0번과 3번에 있지만 **처음** 나오는 0을 돌려줘요.
+  - `tags.includes("JS")`: 대문자 `"JS"`와 소문자 `"js"`는 다른 값이라 `false`예요.
+  - `tags.indexOf("htm")`: `"html"`에 `htm`이 들어 있어도 배열은 요소 전체를 비교해요. `"htm"`이라는 요소가 없어서 `-1`이에요.
+  - `answers.includes(Number("4"))`: `Number("4")`는 숫자 `4`라서 배열의 `4`와 같아요. `true`예요.
+  - `answers.indexOf("1")`: 배열에는 숫자 `1`이 있고 찾는 값은 문자열 `"1"`이에요. 자료형이 달라 `-1`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

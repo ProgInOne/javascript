@@ -1,0 +1,76 @@
+id: js-basics.arrays.array-hof.impl-all-passed
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.arr.some-every, weight: 1 }
+tags: [every, boundary, write-code]
+estimatedSeconds: 180
+prompt: |
+  팀원들의 점수 목록과 기준 점수를 받아, **모든** 점수가 기준 점수 이상이면 `true`, 하나라도 미달이면 `false`를 돌려주는 함수 `allPassed(scores, cut)`을 완성하세요. 점수가 하나도 없으면 `true`예요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `allPassed([80, 92, 75], 70)` | `true` |
+  | `allPassed([80, 65, 75], 70)` | `false` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function allPassed(scores, cut) {
+            // 여기에 작성하세요
+          }
+  entry: allPassed
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function allPassed(scores, cut) {
+            return scores.every((score) => score >= cut);
+          }
+  checks:
+    - { kind: call, id: all-ok, args: [[80, 92, 75], 70], expect: { strictEquals: true }, requirement: 모두 기준 이상인지 }
+    - { kind: call, id: one-fail, args: [[80, 65, 75], 70], expect: { strictEquals: false }, requirement: 모두 기준 이상인지 }
+    - kind: call
+      id: equal-cut
+      visible: false
+      description: 기준 점수와 같은 점수는 미달이 아닙니다.
+      requirement: 기준 점수 포함
+      args: [[70, 70, 90], 70]
+      expect: { strictEquals: true }
+    - kind: call
+      id: last-fail
+      visible: false
+      description: 마지막 점수만 미달이어도 false여야 합니다.
+      requirement: 모두 기준 이상인지
+      args: [[100, 95, 88, 59], 60]
+      expect: { strictEquals: false }
+    - kind: call
+      id: empty
+      visible: false
+      description: 점수가 하나도 없으면 true여야 합니다.
+      requirement: 모두 기준 이상인지
+      args: [[], 60]
+      expect: { strictEquals: true }
+misconceptions: [js.mc.every-empty-false, js.mc.some-returns-element]
+hints:
+  - "\"모두 조건에 맞는가?\"를 `true`/`false`로 알려 주는 배열 메서드가 있어요."
+  - 콜백은 점수 하나를 받아 그 점수가 통과인지 참·거짓으로 돌려주면 돼요.
+  - "\"이상\"에는 기준과 같은 점수도 들어가요. 함수는 메서드의 결과를 그대로 돌려주면 돼요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function allPassed(scores, cut) {
+    return scores.every((score) => score >= cut);
+  }
+  ```
+
+  - `every`는 모든 요소에서 콜백이 참이면 `true`, 하나라도 거짓이면 그 자리에서 멈추고 `false`를 돌려줘요.
+  - 기준 점수와 같은 점수도 통과라서 `>=`예요.
+  - 빈 배열이면 `every`는 `true`를 돌려줘요. 미달인 점수가 하나도 없기 때문이에요. 그래서 따로 처리하지 않아도 요구사항과 맞아요.
+  - `some((score) => score >= cut)`는 "한 명이라도 통과했나?"라서 두 번째 예에서 `true`가 되어 틀려요. 반대로 `!scores.some((score) => score < cut)`("미달이 아무도 없다")는 `every`와 같은 뜻이라 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

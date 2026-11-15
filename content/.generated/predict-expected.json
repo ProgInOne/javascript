@@ -1,6 +1,219 @@
 {
   "v": 1,
   "entries": {
+    "js-basics.arrays.array-basics.predict-length-gap": {
+      "inputHash": "462b81d38e25b7d02e4ce2f0e497d784f26a00b8159cfe6b6cbb62ba0086c54f",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "5",
+          "undefined",
+          "NaN"
+        ]
+      }
+    },
+    "js-basics.arrays.array-basics.predict-read-elements": {
+      "inputHash": "8338f06bf792682a16273c06d57fcc4879c62a34de2dc685242f62ef429e91d9",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "민지",
+          "18",
+          "undefined",
+          "끝"
+        ]
+      }
+    },
+    "js-basics.arrays.array-basics.predict-swap": {
+      "inputHash": "f17de09accf7ce9cda7b95b2d05403697e6b1991299c309a781b0264398af8c4",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[\"나\", \"나\", \"다\"]",
+          "[\"다\", \"나\", \"가\"]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.predict-chain-order": {
+      "inputHash": "1c708ade0fa279111fa468874d07f3b5c6ef5c99cf5da917ab67181a9db05ece",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[62, 90, 100, 68]",
+          "[90, 100]",
+          "2",
+          "[\"0:45\", \"1:80\", \"2:58\"]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.predict-filter-one-none": {
+      "inputHash": "7e3d46dbd41db312183fb37fc499f8e6d1441d99a1af51deb61baaf11c77cc5a",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[\"서준\"]",
+          "[]",
+          "0",
+          "지우님 예약 있음"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.predict-find-vs-filter": {
+      "inputHash": "9f03a5ea2b481005b12c80c11e0f7e10b6e558638d1926fce165056a7ebc14c7",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "12",
+          "[12, 30]",
+          "-1",
+          "바로 입장 없음",
+          "false"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.predict-map-original": {
+      "inputHash": "3f99893988b22a95409bcf2b0a146449d5cce070d6ee6369fc5480e92ccf32e9",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[\"s\", \"m\", \"l\"]",
+          "[\"S\", \"M\", \"L\"]",
+          "[\"0s\", \"1m\", \"2l\"]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.predict-reduce-trace": {
+      "inputHash": "cd732b573ee46418f9099036df1e22261a396f47700a294f0e0a4b06ea8f1eb2",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3",
+          "smss",
+          "moon"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.predict-some-every-stop": {
+      "inputHash": "d2d6bd478a150c29fbbcd45b1634ae92e2ffdcbde1f4e2155abcc3237b36ca37",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "some: 22",
+          "some: 35",
+          "true",
+          "every: 22",
+          "every: 35",
+          "every: 18",
+          "false",
+          "false true"
+        ]
+      }
+    },
+    "js-basics.arrays.array-iteration.predict-for-in-index": {
+      "inputHash": "7b9d1f4670f231d192b954456602a896a9cd8de2ace8cb5da66692e955f53b42",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "01",
+          "11",
+          "A1",
+          "B1",
+          "2"
+        ]
+      }
+    },
+    "js-basics.arrays.array-iteration.predict-foreach-index": {
+      "inputHash": "e732622c52deb4651b52e30c93cec635e20c62d81456af8cb6d6e599608c14b6",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "0: 월",
+          "1: 화",
+          "2: 수"
+        ]
+      }
+    },
+    "js-basics.arrays.array-iteration.predict-foreach-return": {
+      "inputHash": "4c583ad6237778d5dc940ecdcbe1af5a4b82aaff83298e8f8ec687d589d08020",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "4 확인",
+          "7 확인",
+          "-5"
+        ]
+      }
+    },
+    "js-basics.arrays.array-mutation.predict-function-arg": {
+      "inputHash": "355ab69cc109928ae17d209c6f4504d677281a0a4219cbfd1fbb21668d09d8c8",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "2",
+          "[70, 80, 100]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-mutation.predict-push-pop": {
+      "inputHash": "e97857d2ab610657762b851574e30c832ca56c6f714a1aee372676ef4cb7744b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3",
+          "밑줄",
+          "[\"글자 입력\", \"굵게\"]",
+          "2"
+        ]
+      }
+    },
+    "js-basics.arrays.array-mutation.predict-splice-steps": {
+      "inputHash": "5160ae9fa1cff9e9b1199ad9533b6fb02dd76bafd65911b2843458a4123161cb",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[20, 30]",
+          "[50]",
+          "[]",
+          "[10, 99, 7, 8, 40]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-search-sort.predict-copy-or-change": {
+      "inputHash": "e1dfa5b185d6b330970f67352094fdd3324cd625649b9c3856dd9bd1dc9a8b0e",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[2, 3]",
+          "5",
+          "3",
+          "[1]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-search-sort.predict-search-values": {
+      "inputHash": "2a9ea6ca907fe4c8cf0951e5177ed8d3d3979c4a36e320372a41a228e23c4e72",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "0",
+          "false",
+          "-1",
+          "true",
+          "-1"
+        ]
+      }
+    },
+    "js-basics.arrays.array-search-sort.predict-sort-same-array": {
+      "inputHash": "1f2dcacbce98efb0287ddd13c1ebd07040608e9e0d993871fb603af7df2d9b7c",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[100, 95, 80, 60]",
+          "4",
+          "100"
+        ]
+      }
+    },
     "js-basics.control.control-review.predict-chained-ternary-stock": {
       "inputHash": "51924478a782574848648d2b368a3bfa31868a3df904175919c5b9264b2320d2",
       "expected": {

@@ -1,0 +1,44 @@
+id: js-basics.arrays.array-hof.tf-every-empty
+type: true_false
+difficulty: 3
+concepts:
+  - { id: js.arr.some-every, weight: 1 }
+tags: [every, empty-array]
+estimatedSeconds: 80
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: '`const done = [];`일 때 `done.every((task) => task === "완료")`의 결과는 `false`다.'
+  answer: false
+  misconceptionIfWrong: js.mc.every-empty-false
+  requireReason: true
+  reasons:
+    - id: r1
+      text: every는 조건에 맞지 않는 요소를 하나라도 찾으면 false인데, 빈 배열에는 그런 요소가 없으므로 true다
+      correct: true
+    - id: r2
+      text: 확인할 요소가 하나도 없으니 조건을 만족한 요소도 없어서 false다
+      misconception: js.mc.every-empty-false
+    - id: r3
+      text: 빈 배열에 every를 쓰면 TypeError가 나므로 결과가 없다
+    - id: r4
+      text: every는 요소를 돌려주는데 요소가 없으므로 undefined다
+      misconception: js.mc.some-returns-element
+hints:
+  - "`every`가 `false`를 돌려주는 때는 언제인가요? 어떤 요소를 만나야 하나요?"
+  - 빈 배열에는 조건에 맞지 않는 요소가 있나요?
+  - 레슨 세 번째 예제의 마지막 줄을 다시 확인해 보세요.
+explanation: |
+  정답은 **거짓**이에요. 실제 결과는 `true`예요.
+
+  `every`는 요소를 차례로 보다가 조건에 맞지 않는 요소를 **하나라도 만나면** `false`를 돌려줘요. 끝까지 그런 요소를 만나지 않으면 `true`예요. 빈 배열에는 조건에 맞지 않는 요소가 없으므로 `true`예요. 반대로 `some`은 맞는 요소를 만나야 `true`라서, 빈 배열에서는 `false`예요.
+
+  - "만족한 요소도 없어서 `false`"라는 이유: `every`는 "틀린 요소가 없는가"를 물어요. 맞는 요소의 개수를 세지 않아요.
+  - "`TypeError`"라는 이유: 빈 배열에서 오류가 나는 것은 초기값 없는 `reduce`예요. `every`는 오류 없이 `true`예요.
+  - "요소를 돌려준다"는 이유: `every`는 항상 `true`나 `false`를 돌려줘요.
+
+  "할 일이 하나도 없으면 완료가 아니다" 같은 요구사항이 있으면 `done.length > 0 && done.every(...)`처럼 길이를 함께 확인해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

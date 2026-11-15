@@ -1,0 +1,45 @@
+id: js-basics.arrays.array-iteration.multi-foreach-facts
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.arr.foreach, weight: 1 }
+tags: [foreach, callback, return, break]
+estimatedSeconds: 100
+prompt: |
+  `arr.forEach(콜백)`에 대한 설명으로 옳은 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: 콜백은 요소마다 한 번씩, (요소, 인덱스) 순서의 인수로 불린다
+    - id: b
+      text: forEach 자체는 항상 undefined를 돌려준다
+      missedMisconception: js.mc.foreach-returns-array
+    - id: c
+      text: 콜백 안에서 return하면 그 뒤의 요소는 처리하지 않고 forEach가 끝난다
+      misconception: js.mc.foreach-return-stops
+      rationale: 콜백 안의 return은 그 요소에 대한 콜백 한 번만 끝내요. forEach는 다음 요소로 계속 진행해요.
+    - id: d
+      text: 콜백이 돌려준 값들을 모아 새 배열로 돌려준다
+      misconception: js.mc.foreach-returns-array
+      rationale: forEach는 콜백의 반환값을 버리고 undefined를 돌려줘요.
+    - id: e
+      text: 콜백 안에 break를 쓰면 반복을 중간에 멈출 수 있다
+      rationale: break는 반복문 안에서만 쓸 수 있어요. 콜백 함수 안의 break는 실행 전에 SyntaxError가 나요.
+  correct: [a, b]
+misconceptions: [js.mc.foreach-return-stops, js.mc.foreach-returns-array]
+hints:
+  - "`forEach`는 반복문이 아니라 메서드이고, 요소마다 콜백 **함수**를 불러요. 함수 안에서 쓰는 `return`과 `break`가 어떻게 동작할지 생각해 보세요."
+  - 레슨의 다섯 번째 예제에서 31도에 `return`한 뒤 27도는 어떻게 되었나요?
+  - 콜백이 돌려준 값을 `forEach`가 쓰는지는 네 번째 예제의 `result`에서 확인할 수 있어요.
+explanation: |
+  옳은 설명은 "콜백은 요소마다 한 번씩, (요소, 인덱스) 순서의 인수로 불린다"와 "forEach 자체는 항상 undefined를 돌려준다" 두 가지예요.
+
+  - **(요소, 인덱스)**: `menu.forEach((food, index) => ...)`처럼 첫 번째가 요소, 두 번째가 인덱스예요.
+  - **항상 `undefined`**: `forEach`는 무언가를 하기 위한 메서드라 결과를 돌려주지 않아요.
+  - **`return`하면 끝난다(틀림)**: `return`은 콜백 한 번만 끝내요. 다섯 번째 예제에서 31도 뒤의 27도도 처리됐어요.
+  - **새 배열을 돌려준다(틀림)**: 콜백의 반환값은 버려져요. 이 일을 하는 것은 다음 단원의 `map`이에요.
+  - **`break`로 멈춘다(틀림)**: `break`는 `for`·`while` 같은 반복문 안에서만 쓸 수 있어요. 콜백 함수 안에 쓰면 `SyntaxError: Illegal break statement`가 나서 아예 실행되지 않아요. 중간에 멈춰야 하면 `for...of`와 `break`를 써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

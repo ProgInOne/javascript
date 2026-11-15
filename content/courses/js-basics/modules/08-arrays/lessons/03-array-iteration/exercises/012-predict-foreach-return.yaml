@@ -1,0 +1,59 @@
+id: js-basics.arrays.array-iteration.predict-foreach-return
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.arr.foreach, weight: 1 }
+  - { id: js.fn.return, weight: 0.5 }
+  - { id: js.scope.function, weight: 0.3 }
+tags: [foreach, return, trace]
+estimatedSeconds: 180
+prompt: |
+  첫 번째 음수를 찾으려고 만든 함수예요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    function findFirstNegative(nums) {
+      let found = "없음";
+      nums.forEach((n) => {
+        if (n < 0) {
+          found = n;
+          return;
+        }
+        console.log(n + " 확인");
+      });
+      return found;
+    }
+    console.log(findFirstNegative([4, -2, 7, -5]));
+  answerKind: console
+  misconceptionByAnswer:
+    "4 확인\n-2": js.mc.foreach-return-stops
+    "4 확인\n없음": js.mc.foreach-return-stops
+hints:
+  - "`forEach`는 요소 네 개에 대해 콜백을 몇 번 부를까요? `return`이 그 횟수를 바꿀까요?"
+  - 콜백 안의 `return`은 어떤 함수를 끝낼까요? `findFirstNegative`일까요, 콜백 한 번일까요?
+  - "`found`에 값이 대입되는 순간을 모두 찾아, 마지막에 남는 값을 따라가 보세요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  4 확인
+  7 확인
+  -5
+  ```
+
+  | 콜백 호출 | `n` | 하는 일 | `found` |
+  |---|---|---|---|
+  | 1 | 4 | `4 확인` 출력 | `"없음"` |
+  | 2 | -2 | `found = -2` 후 `return`(이 콜백만 끝남) | `-2` |
+  | 3 | 7 | `7 확인` 출력 | `-2` |
+  | 4 | -5 | `found = -5` 후 `return` | `-5` |
+
+  - 콜백 안의 `return`은 **콜백 한 번**만 끝내요. `forEach`는 멈추지 않고 7과 -5에 대해서도 콜백을 불러요.
+  - 그래서 `found`는 첫 번째 음수 -2가 아니라 **마지막** 음수 -5로 덮어써져요. 함수 이름과 달리 "첫 번째"를 찾지 못해요.
+  - `return found;`는 `forEach`가 모두 끝난 뒤에 실행돼요.
+
+  첫 번째를 찾고 멈추려면 `for (const n of nums) { if (n < 0) { return n; } }`처럼 `for...of` 안에서 `return`해요. 이때는 `findFirstNegative` 자체가 끝나요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

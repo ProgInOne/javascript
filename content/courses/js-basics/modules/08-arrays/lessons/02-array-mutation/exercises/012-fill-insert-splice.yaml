@@ -1,0 +1,48 @@
+id: js-basics.arrays.array-mutation.fill-insert-splice
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.arr.splice, weight: 1 }
+tags: [splice, insert]
+estimatedSeconds: 100
+prompt: |
+  계절 재생 목록에서 `"여름"`과 `"겨울"` 사이에 `"가을"`을 끼워 넣으려고 해요. 다른 곡은 지우지 않아야 해요. 빈칸에 한 줄을 채워 아래처럼 출력되게 하세요.
+
+  ```text
+  ["봄", "여름", "가을", "겨울"]
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    const playlist = ["봄", "여름", "겨울"];
+    {{blank:line}}
+    console.log(playlist);
+  blanks:
+    - id: line
+      accept: ['playlist.splice(2, 0, "가을");']
+      width: 32
+  checks:
+    - kind: console
+      id: output
+      description: 여름과 겨울 사이에 가을이 들어가고, 나머지 곡은 그대로 있어야 합니다.
+      requirement: 가운데에 끼워 넣기
+      expect:
+        lines: ['["봄", "여름", "가을", "겨울"]']
+misconceptions: [js.mc.splice-second-arg-end]
+hints:
+  - 중간에 넣으려면 `splice`를 써요. 먼저 `"가을"`이 들어갈 자리의 인덱스를 정해 보세요.
+  - 들어갈 자리는 지금 `"겨울"`이 있는 인덱스예요. 그 자리에 넣으면 `"겨울"`은 뒤로 밀려요.
+  - 두 번째 인수는 지울 개수예요. 아무것도 지우지 않으려면 몇이어야 할까요? 넣을 값은 그 뒤에 써요.
+explanation: |
+  예시 정답은 `playlist.splice(2, 0, "가을");`이에요.
+
+  - 첫 번째 인수 `2`: `"가을"`이 들어갈 인덱스예요. 지금 2번인 `"겨울"`은 한 칸 뒤로 밀려요.
+  - 두 번째 인수 `0`: 지울 개수예요. 0이면 아무것도 지우지 않고 넣기만 해요.
+  - 세 번째 인수 `"가을"`: 끼워 넣을 값이에요.
+
+  `splice(2, 1, "가을")`로 쓰면 `"겨울"` 1개를 지우고 그 자리에 넣어서 `["봄", "여름", "가을"]`이 돼요. `playlist[2] = "가을"`도 `"겨울"`을 덮어써요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

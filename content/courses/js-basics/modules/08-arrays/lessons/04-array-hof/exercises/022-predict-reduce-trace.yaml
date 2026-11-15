@@ -1,0 +1,46 @@
+id: js-basics.arrays.array-hof.predict-reduce-trace
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.arr.reduce, weight: 1 }
+  - { id: js.control.ternary, weight: 0.3 }
+tags: [reduce, count, string-accumulator, max]
+estimatedSeconds: 180
+prompt: |
+  `reduce`로 세 가지 값을 모으는 코드예요. 실행하면 콘솔에 무엇이 출력될까요? 세 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const words = ["sun", "moon", "sky", "star"];
+    const count = words.reduce((acc, word) => {
+      if (word.startsWith("s")) {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
+    console.log(count);
+    const initials = words.reduce((acc, word) => acc + word[0], "");
+    console.log(initials);
+    const longest = words.reduce((acc, word) => (word.length > acc.length ? word : acc), "");
+    console.log(longest);
+  answerKind: console
+hints:
+  - 단계마다 `acc`에 무엇이 들어오고 콜백이 무엇을 돌려주는지 표로 적어 보세요. 초기값이 첫 `acc`예요.
+  - 두 번째 `reduce`의 초기값은 빈 문자열이에요. 문자열에 글자를 `+`로 이으면 어떻게 되나요?
+  - 세 번째 `reduce`는 길이가 **더 길 때만** 누적값을 바꿔요. 길이가 같은 단어를 만나면 누적값은 그대로예요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  3
+  smss
+  moon
+  ```
+
+  - `count`: `s`로 시작하는 `sun`, `sky`, `star`에서만 `acc + 1`을 돌려주고, `moon`에서는 `acc`를 그대로 돌려줘요. 0 → 1 → 1 → 2 → 3이에요. 조건에 맞지 않을 때도 `return acc;`가 있어야 누적값이 이어져요.
+  - `initials`: 초기값 `""`에 단어의 첫 글자를 차례로 이어 `"s"` → `"sm"` → `"sms"` → `"smss"`예요.
+  - `longest`: `""` → `"sun"`(3 > 0) → `"moon"`(4 > 3) → `"moon"`(`sky`는 3) → `"moon"`(`star`도 4라서 `4 > 4`가 거짓)이에요. 길이가 같으면 먼저 나온 단어가 남아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

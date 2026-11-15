@@ -1,0 +1,81 @@
+id: js-basics.arrays.array-basics.impl-route-text
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.arr.length, weight: 1 }
+  - { id: js.arr.literal-index, weight: 0.5 }
+  - { id: js.str.template-literal, weight: 0.3 }
+tags: [length, last-element, template-literal, function, write-code]
+estimatedSeconds: 200
+prompt: |
+  기차 노선의 역 이름 배열을 받아 출발역, 도착역, 역 개수를 한 줄로 보여 주는 함수 `routeText(stations)`를 완성하세요. 역 배열에는 역이 1개 이상 들어 있어요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `routeText(["서울", "천안", "대전", "대구", "부산"])` | `"서울 → 부산 (5개 역)"` |
+  | `routeText(["용산", "광명", "익산"])` | `"용산 → 익산 (3개 역)"` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function routeText(stations) {
+            // 여기에 작성하세요
+          }
+  entry: routeText
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function routeText(stations) {
+            const first = stations[0];
+            const last = stations[stations.length - 1];
+            return `${first} → ${last} (${stations.length}개 역)`;
+          }
+  checks:
+    - { kind: call, id: five, args: [["서울", "천안", "대전", "대구", "부산"]], expect: { equals: "서울 → 부산 (5개 역)" }, requirement: 노선 안내 }
+    - { kind: call, id: three, args: [["용산", "광명", "익산"]], expect: { equals: "용산 → 익산 (3개 역)" }, requirement: 노선 안내 }
+    - kind: call
+      id: two
+      visible: false
+      description: 역이 2개여도 첫 역과 마지막 역을 써야 합니다.
+      requirement: 노선 안내
+      args: [["강릉", "정동진"]]
+      expect: { equals: "강릉 → 정동진 (2개 역)" }
+      misconceptionIfFail: js.mc.array-last-index-is-length
+    - kind: call
+      id: one
+      visible: false
+      description: 역이 하나뿐이면 출발역과 도착역이 같습니다.
+      requirement: 노선 안내
+      args: [["순천"]]
+      expect: { equals: "순천 → 순천 (1개 역)" }
+    - kind: call
+      id: keep-stations
+      visible: false
+      description: 역 배열을 바꾸면 안 됩니다.
+      args: [["서울", "천안", "대전"]]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.array-last-index-is-length]
+hints:
+  - 필요한 값은 세 가지예요. 첫 번째 역, 마지막 역, 역의 개수예요.
+  - 역의 개수가 매번 달라요. 마지막 역의 인덱스를 숫자로 적지 말고 개수로 계산해야 해요.
+  - 세 값을 구했으면 템플릿 리터럴로 `→`와 괄호, `개 역`을 예시와 똑같이 붙여요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function routeText(stations) {
+    const first = stations[0];
+    const last = stations[stations.length - 1];
+    return `${first} → ${last} (${stations.length}개 역)`;
+  }
+  ```
+
+  - 첫 역은 언제나 `stations[0]`이에요.
+  - 마지막 역은 `stations[stations.length - 1]`이에요. `stations[4]`처럼 숫자로 적으면 역이 5개일 때만 맞고, `stations[stations.length]`는 범위 밖이라 `undefined`예요.
+  - 역이 하나면 0번이 첫 역이자 마지막 역이라 `"순천 → 순천 (1개 역)"`이 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,42 @@
+id: js-basics.arrays.array-hof.mcq-reduce-params
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.reduce, weight: 1 }
+tags: [reduce, accumulator, parameters]
+estimatedSeconds: 50
+prompt: |
+  `nums.reduce((first, second) => first + second, 0)`에서 콜백의 첫 번째 매개변수 `first`에는 무엇이 들어오나요?
+spec:
+  options:
+    - id: a
+      text: 누적값. 처음에는 초기값 `0`, 그다음부터는 콜백이 바로 전에 돌려준 값
+    - id: b
+      text: 지금 처리하고 있는 요소
+      misconception: js.mc.reduce-params-swapped
+      rationale: 현재 요소는 두 번째 매개변수 `second`에 들어와요. 첫 번째 자리는 언제나 누적값이에요.
+    - id: c
+      text: 배열의 첫 번째 요소. 모든 호출에서 같은 값
+      misconception: js.mc.reduce-initial-optional-safe
+      rationale: 초기값 `0`을 적었으므로 첫 호출의 누적값은 `0`이에요. 또 누적값은 호출마다 콜백이 돌려준 값으로 바뀌어요.
+    - id: d
+      text: 지금 처리하고 있는 요소의 인덱스
+      rationale: "`reduce` 콜백에서 인덱스는 세 번째 매개변수예요."
+  correct: a
+misconceptions: [js.mc.reduce-params-swapped]
+hints:
+  - 매개변수 이름은 아무 뜻이 없어요. 자리의 순서가 무엇이 들어올지 정해요.
+  - "`reduce` 콜백은 \"지금까지 모은 값\"과 \"이번 요소\"를 받아 새로 모은 값을 돌려줘요. 둘 중 어느 것이 먼저 올까요?"
+  - 레슨의 `reduce` 단계 표에서 `acc` 열의 값이 어떻게 바뀌었는지 보세요.
+explanation: |
+  정답은 "누적값. 처음에는 초기값 `0`, 그다음부터는 콜백이 바로 전에 돌려준 값"이에요.
+
+  `reduce` 콜백의 매개변수는 자리로 뜻이 정해져요. 첫 번째는 **누적값**, 두 번째는 **현재 요소**, 세 번째는 현재 요소의 인덱스예요. 이름을 `first`, `second`로 지어도 마찬가지예요. 그래서 보통 `(acc, item)`, `(sum, price)`처럼 순서에 맞는 이름을 붙여요.
+
+  - 현재 요소는 두 번째 매개변수예요.
+  - 초기값을 적었으므로 첫 호출의 누적값은 배열의 첫 요소가 아니라 `0`이에요. 누적값은 호출마다 바뀌어요.
+  - 인덱스는 세 번째 매개변수예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

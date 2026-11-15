@@ -1,0 +1,98 @@
+id: js-basics.arrays.array-hof.impl-first-vip
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.arr.find, weight: 1 }
+  - { id: js.str.split-join, weight: 0.5 }
+  - { id: js.conv.to-number, weight: 0.5 }
+tags: [find, split, number-conversion, not-found, write-code]
+estimatedSeconds: 420
+prompt: |
+  회원 목록은 `"이름:포인트"` 모양의 문자열 배열이에요. 포인트가 `minPoint` **이상**인 회원 중 목록에서 **가장 먼저 나오는** 회원의 이름을 돌려주는 함수 `firstVip(members, minPoint)`를 완성하세요. 그런 회원이 없으면 `"없음"`을 돌려줘요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `firstVip(["민지:1200", "서준:300", "하린:5000"], 1000)` | `"민지"` |
+  | `firstVip(["민지:1200", "서준:300", "하린:5000"], 3000)` | `"하린"` |
+  | `firstVip(["서준:300"], 1000)` | `"없음"` |
+
+  숨겨진 테스트는 다른 회원 목록과 다른 기준으로 확인해요. 받은 `members` 배열은 바꾸지 마세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function firstVip(members, minPoint) {
+            // 여기에 작성하세요
+          }
+  entry: firstVip
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function firstVip(members, minPoint) {
+            const vip = members.find((member) => Number(member.split(":")[1]) >= minPoint);
+            if (vip === undefined) {
+              return "없음";
+            }
+            return vip.split(":")[0];
+          }
+  checks:
+    - { kind: call, id: first, args: [["민지:1200", "서준:300", "하린:5000"], 1000], expect: { equals: "민지" }, requirement: 첫 VIP 이름 }
+    - { kind: call, id: later, args: [["민지:1200", "서준:300", "하린:5000"], 3000], expect: { equals: "하린" }, requirement: 첫 VIP 이름 }
+    - { kind: call, id: none, args: [["서준:300"], 1000], expect: { equals: "없음" }, requirement: 없을 때 "없음", misconceptionIfFail: js.mc.find-not-found-minus-one }
+    - kind: call
+      id: number-compare
+      visible: false
+      description: 포인트는 숫자로 비교해야 합니다(글자로 비교하면 "900"이 "1000"보다 크다고 나와요).
+      requirement: 포인트를 숫자로 비교
+      args: [["도윤:900", "지아:15000"], 1000]
+      expect: { equals: "지아" }
+    - kind: call
+      id: exact-min
+      visible: false
+      description: 포인트가 minPoint와 같은 회원도 VIP입니다.
+      requirement: 첫 VIP 이름
+      args: [["가람:499", "나래:500", "다온:800"], 500]
+      expect: { equals: "나래" }
+    - kind: call
+      id: empty
+      visible: false
+      description: 회원이 한 명도 없으면 "없음"이어야 합니다.
+      requirement: 없을 때 "없음"
+      args: [[], 100]
+      expect: { equals: "없음" }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 회원 배열을 바꾸지 않아야 합니다.
+      requirement: 원래 배열 지키기
+      args: [["민지:1200", "서준:300"], 1000]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.find-not-found-minus-one, js.mc.find-returns-all]
+hints:
+  - 조건에 맞는 **첫** 요소 하나를 찾는 메서드를 쓰면 돼요. 찾은 것은 `"민지:1200"` 같은 문자열 전체예요.
+  - 콜백 안에서 문자열을 `:`로 나누면 포인트 조각을 꺼낼 수 있어요. 그런데 그 조각은 문자열이에요. 크기를 비교하기 전에 무엇을 해야 할까요?
+  - 못 찾은 경우를 먼저 처리하세요. 찾았다면 찾은 문자열을 다시 나눠 이름 조각을 돌려줘요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function firstVip(members, minPoint) {
+    const vip = members.find((member) => Number(member.split(":")[1]) >= minPoint);
+    if (vip === undefined) {
+      return "없음";
+    }
+    return vip.split(":")[0];
+  }
+  ```
+
+  - **첫 회원 하나**: `find`는 콜백이 참을 돌려준 첫 요소를 돌려줘요. `filter`를 쓰면 배열이 나와서 `[0]`으로 꺼내야 하고, 없을 때 처리도 달라져요.
+  - **숫자로 비교**: `member.split(":")[1]`은 `"900"` 같은 **문자열**이에요. 문자열끼리 비교하면 사전순이라 `"900" >= "1000"`이 `true`가 돼요(모듈 3). `Number()`로 바꾼 뒤 `minPoint`와 비교해요.
+  - **없을 때**: `find`는 못 찾으면 `-1`이 아니라 `undefined`를 돌려줘요. 그래서 `vip === undefined`로 확인해요. 확인하지 않고 `vip.split(...)`을 부르면 `TypeError`가 나요.
+  - **이상**: 기준과 같은 포인트도 VIP라서 `>=`예요.
+  - 반복으로 직접 찾아도 정답이에요. 맞는 회원을 찾는 즉시 이름을 돌려주고, 반복이 끝나면 `"없음"`을 돌려주면 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

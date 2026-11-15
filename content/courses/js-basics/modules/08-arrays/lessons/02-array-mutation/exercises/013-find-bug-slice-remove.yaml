@@ -1,0 +1,67 @@
+id: js-basics.arrays.array-mutation.find-bug-slice-remove
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.arr.splice, weight: 1 }
+  - { id: js.arr.mutating-vs-not, weight: 0.5 }
+tags: [splice, slice, indexof, debugging]
+estimatedSeconds: 140
+prompt: |
+  장바구니에서 품절된 물건을 지우는 프로그램이에요. `"달걀"`이 품절이라 지웠는데, 남은 물건이 그대로 4개이고 달걀도 남아 있어요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const cart = ["우유", "빵", "달걀", "사과"];
+    const soldOut = "달걀";
+    const index = cart.indexOf(soldOut);
+    if (index !== -1) {
+      cart.slice(index, 1);
+    }
+    console.log("남은 물건: " + cart.length + "개");
+    console.log(cart.join(", "));
+  bugLines: [5]
+  symptom: "`남은 물건: 4개`와 `우유, 빵, 달걀, 사과`가 출력돼요. 달걀이 지워지지 않았어요."
+  symptomCheck:
+    console: ["남은 물건: 4개", "우유, 빵, 달걀, 사과"]
+  fixedCode: |-
+    const cart = ["우유", "빵", "달걀", "사과"];
+    const soldOut = "달걀";
+    const index = cart.indexOf(soldOut);
+    if (index !== -1) {
+      cart.splice(index, 1);
+    }
+    console.log("남은 물건: " + cart.length + "개");
+    console.log(cart.join(", "));
+  causeOptions:
+    - id: c1
+      text: slice는 원래 배열을 바꾸지 않고 일부를 복사한 새 배열을 돌려줄 뿐이라, cart에서 아무것도 지워지지 않았다
+      correct: true
+    - id: c2
+      text: indexOf가 달걀을 찾지 못해 -1을 돌려줬으므로 if 블록이 실행되지 않았다
+      misconception: js.mc.indexof-as-boolean
+    - id: c3
+      text: slice와 splice는 같은 일을 하지만, 결과를 cart에 다시 대입하지 않아서 반영되지 않았다
+      misconception: js.mc.splice-slice-same
+    - id: c4
+      text: length는 배열을 처음 만들 때 정해져서, 요소를 지워도 4로 남는다
+hints:
+  - 3번 줄의 `index`는 몇일까요? `if` 블록은 실행될까요?
+  - "`if` 블록 안의 메서드는 원래 배열을 바꾸는 쪽일까요, 바꾸지 않는 쪽일까요?"
+  - 이름이 한 글자 다른 두 메서드를 떠올려 보세요. 둘 중 원래 배열에서 요소를 지우는 것은 어느 쪽인가요?
+explanation: |
+  원인은 **5번 줄**이에요.
+
+  `"달걀"`은 2번에 있으므로 `index`는 2이고, `if` 블록도 실행돼요. 그런데 `cart.slice(index, 1)`은 원래 배열을 그대로 두고 일부를 복사한 새 배열을 돌려주는 메서드예요. 돌려받은 값을 아무 데도 쓰지 않았으니 아무 일도 일어나지 않은 것과 같아요.
+
+  원래 배열에서 요소를 지우는 메서드는 `splice`예요.
+
+  ```js
+  cart.splice(index, 1);
+  ```
+
+  - `indexOf`는 `"달걀"`을 찾아 2를 돌려줘요. `-1`이 아니라서 `if` 블록이 실행돼요.
+  - `slice`와 `splice`는 다른 메서드예요. `cart`를 `let`으로 만들어 `cart = cart.slice(index, 1)`처럼 다시 대입해도 지워지지 않고, 오히려 `slice(2, 1)`이 끝(1)이 시작(2)보다 앞이라 빈 배열이 되어 장바구니가 텅 비어요.
+  - `length`는 요소가 바뀌면 함께 바뀌어요. 지워지지 않았기 때문에 4가 나온 거예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

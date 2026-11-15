@@ -14,6 +14,7 @@ objectives:
   - 반복문으로 같은 일을 여러 번 실행하고, 반복 횟수와 변수 값의 변화를 추적할 수 있다.
   - 함수를 만들어 값을 주고받고, 반환값과 부수 효과, 변수의 스코프를 구분하며, 함수를 값으로 넘길 수 있다.
   - 문자열의 글자를 인덱스로 읽고, 문자열 메서드로 찾기·자르기·다듬기·나누기를 해서 원하는 모양으로 바꿀 수 있다.
+  - 배열에 값을 담아 읽고 바꾸며, 반복과 map·filter·reduce 같은 고차 함수로 목록을 변환·검색·정렬할 수 있다.
 # 지금 있는 모듈만 나열합니다. 전체 목록: start, values, operators, control, loops,
 # functions, strings, arrays, objects, browser-intro
-modules: [start, values, operators, control, loops, functions, strings]
+modules: [start, values, operators, control, loops, functions, strings, arrays]

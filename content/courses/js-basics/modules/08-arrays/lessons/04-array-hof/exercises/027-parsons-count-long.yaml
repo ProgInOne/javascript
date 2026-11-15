@@ -1,0 +1,74 @@
+id: js-basics.arrays.array-hof.parsons-count-long
+type: parsons
+difficulty: 3
+concepts:
+  - { id: js.arr.reduce, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [reduce, count, parsons]
+estimatedSeconds: 200
+prompt: |
+  단어 목록에서 글자 수가 `min` 이상인 단어가 몇 개인지 `reduce`로 세는 함수 `countLong`과, 이 함수를 두 번 부르는 프로그램이에요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  2
+  0
+  ```
+spec:
+  lines:
+    - { id: l1, code: "function countLong(words, min) {" }
+    - { id: l2, code: "return words.reduce((count, word) => {", indent: 1 }
+    - { id: l3, code: "if (word.length >= min) {", indent: 2 }
+    - { id: l4, code: "return count + 1;", indent: 3 }
+    - { id: l5, code: "}", indent: 2 }
+    - { id: l6, code: "return count;", indent: 2 }
+    - { id: l7, code: "}, 0);", indent: 1 }
+    - { id: l8, code: "}" }
+    - { id: l9, code: 'console.log(countLong(["apple", "fig", "banana"], 4));' }
+    - { id: l10, code: "console.log(countLong([], 4));" }
+  distractors:
+    - { id: d1, code: "});", replaces: l7, misconception: js.mc.reduce-initial-optional-safe }
+    - { id: d2, code: "count + 1;", replaces: l4, misconception: js.mc.reduce-callback-no-return }
+    - { id: d3, code: "return words.reduce((word, count) => {", replaces: l2, misconception: js.mc.reduce-params-swapped }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 글자 수가 4 이상인 단어 2개를 세고, 빈 목록에서는 0이 출력되어야 합니다.
+      requirement: 긴 단어 세기
+      expect:
+        lines: ["2", "0"]
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 긴 단어 세기
+      expect:
+        noError: true
+misconceptions: [js.mc.reduce-initial-optional-safe, js.mc.reduce-callback-no-return, js.mc.reduce-params-swapped]
+hints:
+  - 함수 틀(`function ... {`와 마지막 `}`) 안에 `reduce` 호출이 하나 있고, 그 콜백 안에 `if`가 있어요. 바깥에서 안쪽으로 채워 보세요.
+  - 콜백의 매개변수는 누적값이 먼저예요. 조건에 맞을 때도, 맞지 않을 때도 콜백은 다음 누적값을 **돌려줘야** 해요.
+  - 빈 목록에서 0이 나오려면 `reduce`에 무엇이 꼭 있어야 하는지 생각해 보세요. 닫는 줄이 두 가지 보여요.
+explanation: |
+  정답 순서예요.
+
+  ```js
+  function countLong(words, min) {
+    return words.reduce((count, word) => {
+      if (word.length >= min) {
+        return count + 1;
+      }
+      return count;
+    }, 0);
+  }
+  console.log(countLong(["apple", "fig", "banana"], 4));
+  console.log(countLong([], 4));
+  ```
+
+  - 누적값 `count`는 초기값 `0`에서 시작해, 긴 단어를 만날 때만 1 늘어난 값을 돌려받아요. `apple`(5), `banana`(6)가 4 이상이라 2예요.
+  - `});`로 닫으면 초기값이 없어서 첫 단어 `"apple"`이 누적값이 되고, 결과가 `"apple1"`처럼 엉뚱해져요. 빈 목록에서는 `TypeError`가 나요.
+  - `count + 1;`은 계산만 하고 돌려주지 않아서, 긴 단어를 만나도 `if` 아래의 `return count;`로 넘어가 개수가 늘지 않아요.
+  - `(word, count)`처럼 매개변수 순서를 바꾸면 `word`에 누적값이, `count`에 단어가 들어가요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

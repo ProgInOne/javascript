@@ -1,0 +1,17 @@
+id: js-basics.arrays.array-hof
+title: "고차 함수: map·filter·reduce"
+summary: 콜백을 받는 배열 메서드 map(바꾸기)·filter(고르기)·find(첫 요소 찾기)·some·every(조건 확인)·reduce(하나로 모으기)를 쓰고, 여러 메서드를 이어 써서 목록을 원하는 결과로 바꾸는 법을 배웁니다.
+kind: lesson
+importance: core
+estimatedMinutes: { read: 20, practice: 40 }
+concepts:
+  primary: [js.arr.map, js.arr.filter, js.arr.find, js.arr.some-every, js.arr.reduce, js.arr.chaining]
+  practiced: [js.arr.foreach, js.arr.mutating-vs-not, js.fn.callback, js.fn.arrow]
+  reviewed: [js.fn.return, js.loops.accumulator-pattern, js.conv.truthy-falsy, js.str.case-trim]
+objectives:
+  - map으로 요소마다 바꾼 같은 길이의 새 배열을 만들고, 콜백이 값을 돌려줘야 한다는 것을 알고 쓸 수 있다.
+  - filter·find·some·every 중 요구사항에 맞는 메서드를 골라, 각각이 돌려주는 값(배열·요소·불리언)을 예측할 수 있다.
+  - reduce로 합계·개수·최댓값처럼 값 하나를 모으고, 초기값과 누적값 반환의 역할을 설명할 수 있다.
+  - filter·map·reduce를 이어 써서 여러 단계의 목록 처리를 하고, 순서에 따라 결과가 달라지는 것을 예측할 수 있다.
+practice:
+  targetCount: 32

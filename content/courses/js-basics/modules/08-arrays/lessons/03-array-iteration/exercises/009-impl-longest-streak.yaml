@@ -1,0 +1,123 @@
+id: js-basics.arrays.array-iteration.impl-longest-streak
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.arr.for-of, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.5 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [for-of, streak, max, boundary, write-code]
+estimatedSeconds: 480
+prompt: |
+  공부 기록 앱이 날마다 공부한 시간(분)을 배열에 담아 둬요. `0`은 공부를 쉰 날이에요. 공부를 **며칠 연속으로** 했는지 중 가장 긴 기록을 돌려주는 함수 `longestStreak(minutes)`를 완성하세요.
+
+  | 호출 | 돌려줄 값 | 이유 |
+  |---|---|---|
+  | `longestStreak([30, 45, 0, 20, 10, 50, 0, 15])` | `3` | 20·10·50분을 공부한 사흘 |
+  | `longestStreak([0, 0])` | `0` | 공부한 날이 없음 |
+
+  숨겨진 테스트는 다른 기록으로도 확인해요. 받은 배열은 바꾸지 않아요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function longestStreak(minutes) {
+            // 여기에 작성하세요
+          }
+  entry: longestStreak
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function longestStreak(minutes) {
+            let best = 0;
+            let current = 0;
+            for (const m of minutes) {
+              if (m > 0) {
+                current++;
+                if (current > best) {
+                  best = current;
+                }
+              } else {
+                current = 0;
+              }
+            }
+            return best;
+          }
+  checks:
+    - { kind: call, id: basic, args: [[30, 45, 0, 20, 10, 50, 0, 15]], expect: { equals: 3 }, requirement: 가장 긴 연속 기록 }
+    - { kind: call, id: no-study, args: [[0, 0]], expect: { equals: 0 }, requirement: 공부한 날이 없을 때 }
+    - kind: call
+      id: empty
+      visible: false
+      description: 기록이 하나도 없으면 0이어야 합니다.
+      requirement: 공부한 날이 없을 때
+      args: [[]]
+      expect: { equals: 0 }
+    - kind: call
+      id: all-days
+      visible: false
+      description: 쉰 날 없이 끝까지 공부했으면 기록 전체가 연속 기록이어야 합니다.
+      requirement: 마지막까지 이어진 기록
+      args: [[10, 20, 30]]
+      expect: { equals: 3 }
+    - kind: call
+      id: ends-with-streak
+      visible: false
+      description: 가장 긴 연속 기록이 배열 끝에 있어도 세어야 합니다.
+      requirement: 마지막까지 이어진 기록
+      args: [[5, 0, 5, 5, 5, 5, 0, 5, 5, 5, 5, 5]]
+      expect: { equals: 5 }
+    - kind: call
+      id: reset-after-rest
+      visible: false
+      description: 쉰 날이 있으면 연속 기록은 처음부터 다시 세야 합니다(앞뒤 기록을 합치지 않아요).
+      requirement: 쉬면 다시 세기
+      args: [[5, 5, 0, 5, 5, 5, 0, 5]]
+      expect: { equals: 3 }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 기록 배열을 바꾸면 안 됩니다.
+      requirement: 원래 배열 지키기
+      args: [[30, 0, 20]]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.accumulator-reset-in-loop]
+hints:
+  - 변수가 두 개 필요해요. 지금 이어지고 있는 연속 일수와, 지금까지의 가장 긴 기록이에요.
+  - 하루씩 꺼내면서, 공부한 날과 쉰 날에 지금의 연속 일수가 각각 어떻게 바뀌어야 할지 정해 보세요.
+  - 가장 긴 기록을 쉰 날에만 확인하면, 쉬는 날 없이 배열이 끝나는 기록을 놓쳐요. 확인하는 시점을 다시 생각해 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function longestStreak(minutes) {
+    let best = 0;
+    let current = 0;
+    for (const m of minutes) {
+      if (m > 0) {
+        current++;
+        if (current > best) {
+          best = current;
+        }
+      } else {
+        current = 0;
+      }
+    }
+    return best;
+  }
+  ```
+
+  | `m` | 30 | 45 | 0 | 20 | 10 | 50 | 0 | 15 |
+  |---|---|---|---|---|---|---|---|---|
+  | `current` | 1 | 2 | 0 | 1 | 2 | 3 | 0 | 1 |
+  | `best` | 1 | 2 | 2 | 2 | 2 | 3 | 3 | 3 |
+
+  - **두 개의 누적 변수**: `current`는 지금 이어지는 연속 일수, `best`는 지금까지의 최고 기록이에요. 둘 다 반복 앞에서 0으로 만들어요.
+  - **쉰 날에는 다시 세기**: 0을 만나면 `current`를 0으로 돌려요. 돌리지 않으면 쉰 날 앞뒤의 기록이 합쳐져요.
+  - **끝에서 이어진 기록**: `best`를 쉰 날에만 갱신하면 `[10, 20, 30]`처럼 쉬는 날 없이 끝나는 기록을 놓쳐 0이 나와요. 공부한 날마다 바로 비교하거나, 반복이 끝난 뒤 한 번 더 비교해요.
+  - 빈 배열과 `[0, 0]`은 반복 안에서 `best`가 한 번도 바뀌지 않아 0이 돌아가요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

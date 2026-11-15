@@ -1,0 +1,73 @@
+id: js-basics.arrays.array-basics.fix-cart-total
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.arr.length, weight: 1 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [length, loop, off-by-one, nan, debugging]
+estimatedSeconds: 200
+prompt: |
+  장바구니의 가격 배열을 받아 합계를 돌려주는 함수 `cartTotal(prices)`예요. 합계가 숫자가 아니라 이상한 값으로 나와요. 고쳐 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `cartTotal([3000, 4500, 1200])` | `8700` |
+  | `cartTotal([])` | `0` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function cartTotal(prices) {
+            let total = 0;
+            for (let i = 0; i <= prices.length; i++) {
+              total += prices[i];
+            }
+            return total;
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function cartTotal(prices) {
+            let total = 0;
+            for (let i = 0; i < prices.length; i++) {
+              total += prices[i];
+            }
+            return total;
+          }
+  entry: cartTotal
+  bugDescription: '`cartTotal([3000, 4500, 1200])`가 `8700`이 아니라 `NaN`을 돌려줘요.'
+  bugMisconception: js.mc.array-last-index-is-length
+  checks:
+    - { kind: call, id: three, args: [[3000, 4500, 1200]], expect: { equals: 8700 }, requirement: 합계 }
+    - { kind: call, id: empty, args: [[]], expect: { equals: 0 }, requirement: 빈 장바구니 }
+    - kind: call
+      id: one-item
+      visible: false
+      description: 상품이 하나뿐이면 그 가격이 합계입니다.
+      requirement: 합계
+      args: [[9900]]
+      expect: { equals: 9900 }
+    - kind: call
+      id: five-items
+      visible: false
+      description: 상품이 다섯 개여도 모든 가격을 한 번씩 더해야 합니다.
+      requirement: 합계
+      args: [[100, 200, 300, 400, 500]]
+      expect: { equals: 1500 }
+misconceptions: [js.mc.array-last-index-is-length]
+hints:
+  - "`NaN`은 숫자에 숫자가 아닌 값을 더했을 때 생겨요. 반복에서 어떤 요소를 더할 때 그런 값이 들어올까요?"
+  - 가격이 3개면 인덱스는 0, 1, 2예요. 지금 반복에서 `i`는 몇까지 가나요?
+  - 마지막 인덱스와 `length`의 관계를 떠올리고, 반복 조건의 비교 연산자를 다시 고르세요.
+explanation: |
+  반복 조건 `i <= prices.length`가 원인이에요.
+
+  가격이 3개면 인덱스는 0~2인데, 이 조건은 `i`가 3일 때도 반복해요. `prices[3]`은 범위 밖이라 `undefined`이고, `8700 + undefined`는 `NaN`이에요. 빈 배열에서도 `prices[0]`(`undefined`)을 한 번 더해서 `NaN`이 돼요.
+
+  마지막 인덱스는 `length - 1`이므로 조건은 `i < prices.length`예요. 이렇게 고치면 빈 배열은 반복을 한 번도 돌지 않고 `0`을 돌려줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

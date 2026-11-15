@@ -1,0 +1,374 @@
+<Section kind="objectives">
+- `for...of`로 배열의 요소를 차례로 꺼내 합계·개수·최댓값을 구하고, 원하는 요소를 찾으면 `break`로 멈출 수 있어요.
+- 인덱스가 필요할 때는 `for` 반복을 고르고, `for...in`이 배열에서 값이 아니라 인덱스 문자열을 준다는 것을 설명할 수 있어요.
+- `forEach`에 콜백을 넘겨 요소와 인덱스를 받고, 콜백 안의 `return`이 반복을 멈추지 않는다는 것을 알고 결과를 예측할 수 있어요.
+- 반복 변수에 다른 값을 대입해도 배열은 바뀌지 않는다는 것을 알고, 요소를 바꾸려면 `arr[i] = 값`처럼 인덱스로 대입할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+반 친구 네 명의 점수를 배열에 담았어요. 합계를 구하려고 `scores[0] + scores[1] + scores[2] + scores[3]`이라고 썼어요. 그런데 다음 달에 친구가 한 명 더 들어오면 이 줄을 고쳐야 하고, 친구가 서른 명이면 서른 개를 이어 써야 해요.
+
+배열을 다루는 프로그램은 대부분 "요소 하나하나에 같은 일을 한다"는 모양이에요. 점수를 모두 더하고, 60점 이상인 사람을 세고, 메뉴를 한 줄씩 출력하고, 장바구니의 가격을 모두 확인해요. 요소가 몇 개든 같은 코드로 처리하려면 **배열을 처음부터 끝까지 한 번씩 도는 반복**이 필요해요. 이것을 배열 **순회**라고 해요.
+
+모듈 5의 `for` 반복으로도 순회할 수 있지만, JavaScript에는 배열 순회만을 위한 더 짧은 방법이 두 가지 더 있어요. 요소를 바로 꺼내 주는 `for...of`와, 요소마다 콜백을 불러 주는 `forEach`예요.
+</Section>
+
+<Section kind="principle">
+### 배열을 도는 세 가지 방법
+
+같은 배열 `const scores = [72, 95, 58];`를 세 가지 방법으로 돌아 볼게요. 세 코드 모두 점수를 한 줄씩 출력해요.
+
+```js
+// 1. 인덱스로 도는 for
+for (let i = 0; i < scores.length; i++) {
+  console.log(scores[i]);
+}
+
+// 2. 요소를 꺼내 주는 for...of
+for (const score of scores) {
+  console.log(score);
+}
+
+// 3. 요소마다 콜백을 불러 주는 forEach
+scores.forEach((score) => {
+  console.log(score);
+});
+```
+
+| 방법 | 한 바퀴마다 받는 것 | 중간에 멈추기 | 이럴 때 써요 |
+|---|---|---|---|
+| `for (let i = 0; ...)` | 인덱스 `i` (요소는 `scores[i]`로 읽음) | `break`로 가능 | 몇 번째인지 필요하거나, 요소를 바꿀 때 |
+| `for (const x of arr)` | 요소 `x` | `break`로 가능 | 요소만 필요할 때 (가장 자주 씀) |
+| `arr.forEach(콜백)` | 콜백의 인수로 요소와 인덱스 | **불가능** | 요소마다 같은 일을 끝까지 할 때 |
+
+### for...of: 상자에서 하나씩 꺼내기
+
+`for (const score of scores)`는 "`scores`에서 요소를 하나씩 꺼내 `score`라는 이름으로 부르고, 본문을 실행한다"는 뜻이에요. 요소가 3개면 본문이 3번 실행되고, 바퀴마다 `score`에 다음 요소가 들어가요.
+
+두 가지 방법으로 이해할 수 있어요.
+
+1. **꺼내기로 보기**: 줄 서 있는 요소를 앞에서부터 하나씩 꺼내 손에 쥐어 주는 거예요. 인덱스를 세거나 `length`와 비교할 필요가 없어서, 하나 차이(off-by-one) 실수가 생기지 않아요.
+1. **인덱스 반복과 같다고 보기**: `for...of`는 아래 표처럼 인덱스 반복이 하는 일을 대신 해 줘요.
+
+| 바퀴 | 인덱스 반복의 `i` | `scores[i]` | `for...of`의 `score` |
+|---|---|---|---|
+| 1 | 0 | 72 | 72 |
+| 2 | 1 | 95 | 95 |
+| 3 | 2 | 58 | 58 |
+
+반복 변수는 바퀴마다 새로 만들어지므로 `const`로 써도 돼요. 다만 이 변수는 요소의 값을 **복사해 담은 이름**이라서, 이 변수에 다른 값을 대입해도 배열은 바뀌지 않아요. 요소를 바꾸려면 인덱스 반복에서 `scores[i] = 값`처럼 대입해요.
+
+<Callout kind="warning" title="for...in은 배열에 쓰지 않아요">
+`of` 대신 `in`을 쓴 `for (const x in scores)`는 요소가 아니라 인덱스를 **문자열**로 꺼내요(`"0"`, `"1"`, `"2"`). 그래서 `x + 1`이 `1`이 아니라 `"01"`이 돼요. `for...in`은 모듈 9에서 객체에 쓰는 반복이에요. 배열의 값을 꺼낼 때는 `of`예요.
+</Callout>
+
+### forEach: 요소마다 콜백 불러 주기
+
+모듈 6에서 콜백을 배웠어요. 함수를 인수로 넘기면, 받은 함수가 알맞은 때에 불러 주는 것이었죠. `arr.forEach(콜백)`은 배열의 요소마다 콜백을 한 번씩 불러 주는 메서드예요.
+
+```js
+const menu = ["김밥", "라면"];
+menu.forEach((food, index) => {
+  console.log(index, food);
+});
+// 0 김밥
+// 1 라면
+```
+
+- 콜백은 `(요소, 인덱스)` 순서로 인수를 받아요. 인덱스가 필요 없으면 `(food) => ...`처럼 첫 번째만 써도 돼요.
+- 콜백은 화살표 함수로 그 자리에서 만들거나, 이미 만든 함수의 **이름**을 넘겨요. `menu.forEach(printFood)`처럼 괄호 없이 넘겨야 해요. `printFood()`라고 쓰면 그 자리에서 한 번 실행되고 반환값(`undefined`)이 넘어가서 오류가 나요.
+
+`forEach`에는 꼭 기억할 성질이 두 가지 있어요.
+
+1. **콜백 안의 `return`은 그 요소에 대한 콜백 한 번만 끝내요.** 반복은 다음 요소로 계속되고, `forEach`를 부른 바깥 함수도 끝나지 않아요. `forEach`에는 `break`도 쓸 수 없어서, 중간에 멈출 방법이 없어요.
+1. **`forEach`는 항상 `undefined`를 돌려줘요.** 콜백이 무엇을 돌려주든 버려요. `forEach`는 "요소마다 무언가를 **하는**" 메서드이지, 새 값을 **만드는** 메서드가 아니에요.
+
+그래서 찾으면 멈춰야 하는 일(첫 번째 음수 찾기 등)은 `for...of`와 `break`(또는 함수 안이면 `return`)로 써요.
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 `for...of`로 점수의 합계와 최고점을 구하는 코드예요. 세 줄의 출력을 예측해 보세요.
+
+<RunnableExample id="sum-best" lang="js" predict predictKind="console" concepts={["js.arr.for-of"]}>
+```js
+const scores = [72, 95, 58, 81];
+let total = 0;
+let best = scores[0];
+
+for (const score of scores) {
+  total += score;
+  if (score > best) {
+    best = score;
+  }
+}
+
+console.log(total);
+console.log(best);
+console.log(total / scores.length);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+306
+95
+76.5
+```
+
+| 바퀴 | `score` | `total` (바퀴 끝) | `best` (바퀴 끝) |
+|---|---|---|---|
+| 1 | 72 | 72 | 72 |
+| 2 | 95 | 167 | 95 |
+| 3 | 58 | 225 | 95 |
+| 4 | 81 | 306 | 95 |
+
+- `total`은 반복 **앞**에서 0으로 만들어요. 모듈 5의 누적 패턴과 같아요.
+- `best`는 첫 요소로 시작해요. 0으로 시작하면 점수가 모두 음수인 배열에서 틀린 답이 나와요.
+- 평균은 합계를 개수 `scores.length`로 나눠요. 요소가 늘어도 코드를 고칠 필요가 없어요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 **몇 번째인지**가 필요한 경우예요. 이럴 때는 인덱스로 도는 `for`를 써요.
+
+<RunnableExample id="ranking" lang="js" concepts={["js.arr.for-of"]}>
+```js
+const runners = ["민지", "서준", "하린"];
+for (let i = 0; i < runners.length; i++) {
+  console.log(`${i + 1}등: ${runners[i]}`);
+}
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+1등: 민지
+2등: 서준
+3등: 하린
+```
+
+- 등수는 사람이 읽는 번호라 1부터, 인덱스는 0부터예요. 그래서 `i + 1`을 출력해요.
+- 조건은 `i < runners.length`예요. `<=`로 쓰면 마지막 바퀴에서 `runners[3]`을 읽어 `4등: undefined`가 한 줄 더 나와요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 가격을 두 배로 바꾸려는 코드예요. 두 번의 `console.log`가 각각 무엇을 출력할지 예측해 보세요.
+
+<RunnableExample id="double-prices" lang="js" predict predictKind="console" concepts={["js.arr.for-of", "js.arr.element-update"]}>
+```js
+const prices = [1000, 2500, 4000];
+
+for (let price of prices) {
+  price = price * 2;
+}
+console.log(prices);
+
+for (let i = 0; i < prices.length; i++) {
+  prices[i] = prices[i] * 2;
+}
+console.log(prices);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+[1000, 2500, 4000]
+[2000, 5000, 8000]
+```
+
+- 첫 번째 반복의 `price`는 요소의 값을 담은 **따로 있는 변수**예요. `price = price * 2`는 이 변수만 바꾸고, 배열의 칸은 그대로예요. 그래서 처음 그대로 출력돼요.
+- 두 번째 반복은 `prices[i] = ...`로 **배열의 칸에 직접** 대입해요. 그래서 요소가 모두 두 배가 돼요.
+- 요소를 바꿀 때는 인덱스가 필요하므로 인덱스 반복을 써요. 원래 배열은 두고 두 배가 된 새 배열을 만드는 방법은 다음 단원의 `map`에서 배워요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 `forEach`예요. 콜백이 받는 두 번째 인수와, 마지막 줄의 `result`에 무엇이 들어 있는지 예측해 보세요.
+
+<RunnableExample id="foreach-menu" lang="js" predict predictKind="console" concepts={["js.arr.foreach"]}>
+```js
+const menu = ["김밥", "라면", "떡볶이"];
+
+menu.forEach((food, index) => {
+  console.log(`${index + 1}. ${food}`);
+});
+
+const result = menu.forEach((food) => food + "!");
+console.log(result);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+1. 김밥
+2. 라면
+3. 떡볶이
+undefined
+```
+
+- `forEach`는 요소마다 콜백을 `(요소, 인덱스)`로 불러요. 첫 번째 호출은 `("김밥", 0)`, 두 번째는 `("라면", 1)`이에요.
+- 두 번째 `forEach`의 콜백은 `"김밥!"` 같은 값을 돌려주지만, `forEach`는 그 값을 버려요. `forEach` 자체는 항상 `undefined`를 돌려주므로 `result`는 `undefined`예요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 `forEach` 안의 `return`이에요. 30도가 넘는 날을 만나면 `return`해요. 출력이 몇 줄일지 세어 보세요.
+
+<RunnableExample id="foreach-return" lang="js" concepts={["js.arr.foreach"]}>
+```js
+const temps = [18, 23, 31, 27];
+
+temps.forEach((t) => {
+  if (t > 30) {
+    console.log(`${t}도: 폭염!`);
+    return;
+  }
+  console.log(`${t}도: 괜찮아요`);
+});
+
+console.log("확인 끝");
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+18도: 괜찮아요
+23도: 괜찮아요
+31도: 폭염!
+27도: 괜찮아요
+확인 끝
+```
+
+- 31도에서 `return`하자 **그 콜백 한 번**이 끝나서 `괜찮아요` 줄을 건너뛰었어요. 하지만 `forEach`는 멈추지 않고 27도에 대해 콜백을 또 불렀어요.
+- 콜백 안의 `return`은 반복문의 `continue`와 비슷하게 동작해요. "첫 폭염에서 멈추기"를 하려면 `for...of`와 `break`를 써요.
+
+```js
+for (const t of temps) {
+  if (t > 30) {
+    console.log(`첫 폭염: ${t}도`);
+    break;
+  }
+}
+```
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.for-in-array-values">
+<Wrong>`for (const x in arr)`를 쓰면 `x`에 배열의 요소가 차례로 들어온다.</Wrong>
+<Actual>
+
+`for...in`은 인덱스를 **문자열**로 꺼내요. 그래서 더하면 숫자 덧셈이 아니라 글자 이어 붙이기가 돼요.
+
+```js
+const nums = [5, 7, 9];
+let total = 0;
+for (const x in nums) {
+  total += x; // x는 "0", "1", "2"
+}
+console.log(total); // 0012
+```
+</Actual>
+<Right>배열의 값은 `for (const x of nums)`로 꺼내요. `in`과 `of` 한 글자 차이라 헷갈리기 쉬우니, 배열에는 늘 `of`라고 기억해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.for-of-gives-index">
+<Wrong>`for (const i of scores)`에서 `i`는 0, 1, 2 같은 인덱스라서 요소는 `scores[i]`로 읽어야 한다.</Wrong>
+<Actual>`for...of`의 변수에는 요소 자체(72, 95, ...)가 들어와요. `scores[i]`라고 쓰면 `scores[72]`를 읽게 되어 `undefined`가 나와요.</Actual>
+<Right>`for...of`의 변수는 요소예요. 이름도 `i` 대신 `score`처럼 요소를 뜻하는 이름을 붙이면 헷갈리지 않아요. 인덱스가 필요하면 `for (let i = 0; i < scores.length; i++)`를 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.for-of-var-updates-array">
+<Wrong>`for (let n of nums) { n = n * 2; }`를 실행하면 `nums`의 요소가 모두 두 배가 된다.</Wrong>
+<Actual>세 번째 예제에서 첫 번째 반복 뒤에도 `prices`는 `[1000, 2500, 4000]` 그대로였어요. 반복 변수는 요소의 값을 담은 별도의 변수일 뿐이에요.</Actual>
+<Right>요소를 바꾸려면 인덱스 반복에서 `nums[i] = nums[i] * 2;`처럼 배열의 칸에 직접 대입해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.foreach-return-stops">
+<Wrong>`forEach` 콜백 안에서 `return`하면 반복이 멈추고, 그 값이 바깥 함수의 반환값이 된다.</Wrong>
+<Actual>
+
+다섯 번째 예제에서 31도에 `return`해도 27도가 계속 처리됐어요. 바깥 함수에서 쓰면 더 헷갈려요.
+
+```js
+function hasHeatwave(temps) {
+  temps.forEach((t) => {
+    if (t > 30) {
+      return true; // 콜백 한 번만 끝남
+    }
+  });
+  return false;
+}
+console.log(hasHeatwave([18, 31])); // false
+```
+
+`return true`는 콜백의 반환값이라 `forEach`가 버리고, `hasHeatwave`는 계속 실행되어 `false`를 돌려줘요.
+</Actual>
+<Right>찾으면 멈춰야 하는 일은 `for (const t of temps) { if (t > 30) { return true; } }`처럼 `for...of` 안에서 `return`하거나 `break`해요. 이때의 `return`은 바깥 함수를 끝내요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.foreach-returns-array">
+<Wrong>`const doubled = nums.forEach((n) => n * 2);`라고 쓰면 `doubled`에 두 배가 된 배열이 들어간다.</Wrong>
+<Actual>네 번째 예제에서 `result`는 `undefined`였어요. `forEach`는 콜백의 반환값을 모으지 않고 버려요.</Actual>
+<Right>새 배열이 필요하면 빈 배열을 만들고 반복 안에서 `push`로 하나씩 넣어요. 다음 단원에서 배울 `map`은 이 일을 한 줄로 해 줘요.</Right>
+</Pitfall>
+
+<Callout kind="tip" title="콜백은 괄호 없이 넘겨요">
+`names.forEach(greet)`는 `greet`를 넘겨 요소마다 불러 달라고 맡겨요. `names.forEach(greet())`는 `greet`를 그 자리에서 한 번 부르고 반환값 `undefined`를 넘겨서 `TypeError: undefined is not a function`이 나요. 모듈 6에서 배운 "넘길 때는 이름만" 규칙이 그대로예요.
+</Callout>
+</Section>
+
+<Section kind="in-practice">
+쇼핑몰 화면은 상품 목록, 장바구니, 검색 결과처럼 대부분 배열을 순회해서 만들어요. 예를 들어 블로그 글의 태그 배열로 해시태그 문자열을 만들 때는 빈 배열을 준비하고, 순회하면서 `push`로 하나씩 채워요.
+
+```js
+const tags = ["html", "css", "javascript"];
+const hashTags = [];
+
+for (const tag of tags) {
+  hashTags.push("#" + tag);
+}
+
+console.log(hashTags.join(" ")); // #html #css #javascript
+console.log(tags); // ["html", "css", "javascript"] (원래 배열은 그대로)
+```
+
+- 원래 배열 `tags`는 그대로 두고, 결과는 새 배열 `hashTags`에 모아요. 원본을 다른 곳에서도 쓸 수 있어서 안전해요.
+- 목록을 화면에 한 줄씩 그리는 일(할 일 목록, 댓글 목록)도 같은 모양이에요. 요소마다 화면에 줄을 하나 더하는 일을 `forEach`나 `for...of`로 해요. 화면을 직접 다루는 방법은 모듈 10에서 배워요.
+</Section>
+
+<Section kind="check">
+`for...of`의 반복 변수에 무엇이 들어오는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.arrays.array-iteration.mcq-for-of-element" />
+
+`for...in`과 `for...of`의 차이를 확인해 보세요.
+
+<InlineExercise ref="js-basics.arrays.array-iteration.tf-for-in-values" />
+
+`forEach`가 돌려주는 값을 확인해 보세요.
+
+<InlineExercise ref="js-basics.arrays.array-iteration.mcq-foreach-return-value" />
+
+`forEach`의 성질을 정리해 보세요.
+
+<InlineExercise ref="js-basics.arrays.array-iteration.multi-foreach-facts" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- 배열 순회는 요소마다 같은 일을 하는 반복이에요. 요소가 몇 개든 같은 코드로 처리할 수 있어요.
+- `for (const x of arr)`는 요소를 하나씩 꺼내 주고, `break`로 멈출 수 있어요. 요소만 필요할 때 가장 자주 써요.
+- 몇 번째인지 필요하거나 요소를 바꿀 때는 `for (let i = 0; i < arr.length; i++)`와 `arr[i]`를 써요.
+- `for...in`은 배열에서 인덱스를 문자열로 꺼내요. 배열의 값은 `for...of`로 꺼내요.
+- 반복 변수에 대입해도 배열은 바뀌지 않아요. 배열의 칸을 바꾸려면 `arr[i] = 값`으로 대입해요.
+- `arr.forEach((요소, 인덱스) => { ... })`는 요소마다 콜백을 불러 줘요. 콜백 안의 `return`은 반복을 멈추지 않고, `forEach`는 항상 `undefined`를 돌려줘요.
+</Section>
+
+<Section kind="next">
+다음 단원 "고차 함수: map·filter·reduce"에서는 이 단원에서 반복과 `push`로 직접 하던 일, 즉 요소마다 바꾼 새 배열 만들기·조건에 맞는 요소만 고르기·합계 하나로 모으기를 콜백 하나로 해 주는 메서드를 배워요. `forEach`처럼 요소마다 콜백을 부르지만, 결과를 새 값으로 **돌려준다**는 점이 달라요. <MdnLink path="Web/JavaScript/Reference/Statements/for...of" />
+</Section>

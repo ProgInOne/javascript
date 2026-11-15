@@ -1,0 +1,63 @@
+id: js-basics.arrays.array-search-sort.find-bug-indexof-zero
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.arr.includes-indexof, weight: 1 }
+  - { id: js.conv.truthy-falsy, weight: 0.5 }
+tags: [indexof, truthy-falsy, if, debugging]
+estimatedSeconds: 120
+prompt: |
+  VIP 명단에 있는 회원인지 확인하는 프로그램이에요. `minji`는 명단에 있는데 "일반 회원"이라고 나와요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const vipList = ["minji", "jisoo", "hana"];
+    const user = "minji";
+    const position = vipList.indexOf(user);
+    if (position) {
+      console.log(user + "님은 VIP예요");
+    } else {
+      console.log(user + "님은 일반 회원이에요");
+    }
+  bugLines: [4]
+  symptom: 명단에 있는 `minji`인데 `minji님은 일반 회원이에요`가 나와요.
+  symptomCheck:
+    console: ["minji님은 일반 회원이에요"]
+  fixedCode: |-
+    const vipList = ["minji", "jisoo", "hana"];
+    const user = "minji";
+    const position = vipList.indexOf(user);
+    if (position !== -1) {
+      console.log(user + "님은 VIP예요");
+    } else {
+      console.log(user + "님은 일반 회원이에요");
+    }
+  causeOptions:
+    - id: c1
+      text: minji는 0번에 있어서 indexOf가 0을 돌려주는데, 0은 조건에서 거짓(falsy)으로 취급된다
+      correct: true
+    - id: c2
+      text: indexOf는 찾으면 true를 돌려줘야 하는데 명단이 배열이라 false를 돌려줬다
+      misconception: js.mc.indexof-as-boolean
+    - id: c3
+      text: 배열의 indexOf는 글자 일부만 비교해서 minji를 찾지 못했다
+      misconception: js.mc.array-includes-partial
+    - id: c4
+      text: 3번 줄에서 user를 따옴표 없이 넘겨서 변수 이름 자체를 찾았다
+hints:
+  - 3번 줄에서 `position`에 들어가는 값을 직접 구해 보세요. `minji`는 명단의 몇 번 인덱스인가요?
+  - 그 숫자가 4번 줄의 `if` 조건에 그대로 들어가요. 모듈 3에서 배운 falsy 값 목록에 그 숫자가 있나요?
+  - "`indexOf`가 \"못 찾음\"을 알릴 때 돌려주는 값을 떠올리고, 조건이 그 값과 다른지를 묻게 바꿔 보세요."
+explanation: |
+  원인은 **4번 줄**의 조건이에요.
+
+  `minji`는 명단의 맨 앞, 0번에 있어서 `indexOf`가 `0`을 돌려줘요. 그런데 `if (position)`은 숫자를 참·거짓으로 바꿔 판단하고, `0`은 falsy예요. 그래서 찾았는데도 `else` 블록이 실행됐어요. 반대로 명단에 없는 회원이면 `-1`이 나오는데, `-1`은 truthy라서 "VIP예요"가 나와요. 두 경우가 모두 거꾸로예요.
+
+  고친 조건은 `position !== -1`이에요. 위치가 필요 없다면 `if (vipList.includes(user))`가 더 읽기 쉬워요.
+
+  - `indexOf`는 `true`·`false`를 돌려주지 않아요. 찾으면 인덱스(여기서는 0), 못 찾으면 `-1`이에요.
+  - 배열의 `indexOf`는 요소 전체를 비교하고, `"minji"`와 완전히 같은 요소가 있어서 제대로 찾았어요.
+  - `user`는 변수라서 따옴표 없이 넘기는 것이 맞아요. 변수에 든 `"minji"`를 찾아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

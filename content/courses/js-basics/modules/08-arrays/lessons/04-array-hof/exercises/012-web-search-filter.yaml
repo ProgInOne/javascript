@@ -1,0 +1,205 @@
+id: js-basics.arrays.array-hof.web-search-filter
+type: web_task
+difficulty: 3
+concepts:
+  - { id: js.arr.filter, weight: 1 }
+  - { id: js.str.search, weight: 0.3 }
+  - { id: js.fn.callback, weight: 0.3 }
+tags: [filter, includes, trim, web, callback]
+estimatedSeconds: 360
+prompt: |
+  분식집 메뉴 검색창을 완성하세요. 검색창에 글자를 입력하면, 그 글자가 **들어 있는** 메뉴만 목록에 보여야 해요.
+
+  - `떡`을 입력하면 `떡볶이`, `치즈떡볶이`만 보여요.
+  - 검색어 **앞뒤의 공백은 무시**해요. `  김밥 `을 입력해도 `김밥`으로 검색해요.
+  - 맞는 메뉴가 없으면 목록이 비고 "검색 결과가 없어요"가 보여요. 검색창을 비우면 메뉴가 모두 보여요.
+
+  시작 코드에는 도우미 함수 두 개가 있어요(안의 코드는 모듈 10에서 배워요).
+
+  - `whenTyped(callback)`: 입력이 바뀔 때마다 `callback(입력한 글자)`를 불러 줘요.
+  - `showList(items)`: 배열 `items`를 목록으로 보여 줘요. 빈 배열이면 "검색 결과가 없어요"를 보여 줘요.
+
+  할 일은 검색어가 들어 있는 메뉴만 고른 배열을 돌려주는 함수 `search(word)`를 만들고, `whenTyped`로 연결하는 거예요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>메뉴 검색</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #search { font-size: 18px; padding: 4px 8px; }
+                #empty { color: #b91c1c; }
+              </style>
+            </head>
+            <body>
+              <h1>분식집 메뉴 검색</h1>
+              <input id="search" placeholder="메뉴 이름" />
+              <ul id="list"></ul>
+              <p id="empty"></p>
+              <script>
+                // 검색창에 글자를 입력할 때마다 callback(입력한 글자)을 불러 주는 도우미예요(모듈 10에서 배워요).
+                function whenTyped(callback) {
+                  const input = document.querySelector("#search");
+                  input.addEventListener("input", () => callback(input.value));
+                }
+
+                // 배열 items의 요소를 목록으로 보여 주는 도우미예요. 빈 배열이면 "검색 결과가 없어요"를 보여 줘요.
+                function showList(items) {
+                  const list = document.querySelector("#list");
+                  list.textContent = "";
+                  for (const item of items) {
+                    const li = document.createElement("li");
+                    li.textContent = item;
+                    list.appendChild(li);
+                  }
+                  document.querySelector("#empty").textContent = items.length === 0 ? "검색 결과가 없어요" : "";
+                }
+
+                const menu = ["김밥", "참치김밥", "라면", "떡볶이", "치즈떡볶이", "순대"];
+                showList(menu);
+
+                // 1) 검색어 word가 들어 있는 메뉴만 담은 배열을 돌려주는 search 함수를 만드세요.
+                //    검색어 앞뒤의 공백은 무시해요.
+
+                // 2) whenTyped로 입력이 바뀔 때마다 search의 결과를 showList로 보여 주세요.
+              </script>
+            </body>
+          </html>
+
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>메뉴 검색</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #search { font-size: 18px; padding: 4px 8px; }
+                #empty { color: #b91c1c; }
+              </style>
+            </head>
+            <body>
+              <h1>분식집 메뉴 검색</h1>
+              <input id="search" placeholder="메뉴 이름" />
+              <ul id="list"></ul>
+              <p id="empty"></p>
+              <script>
+                // 검색창에 글자를 입력할 때마다 callback(입력한 글자)을 불러 주는 도우미예요(모듈 10에서 배워요).
+                function whenTyped(callback) {
+                  const input = document.querySelector("#search");
+                  input.addEventListener("input", () => callback(input.value));
+                }
+
+                // 배열 items의 요소를 목록으로 보여 주는 도우미예요. 빈 배열이면 "검색 결과가 없어요"를 보여 줘요.
+                function showList(items) {
+                  const list = document.querySelector("#list");
+                  list.textContent = "";
+                  for (const item of items) {
+                    const li = document.createElement("li");
+                    li.textContent = item;
+                    list.appendChild(li);
+                  }
+                  document.querySelector("#empty").textContent = items.length === 0 ? "검색 결과가 없어요" : "";
+                }
+
+                const menu = ["김밥", "참치김밥", "라면", "떡볶이", "치즈떡볶이", "순대"];
+                showList(menu);
+
+                function search(word) {
+                  const keyword = word.trim();
+                  return menu.filter((food) => food.includes(keyword));
+                }
+
+                whenTyped((word) => {
+                  showList(search(word));
+                });
+              </script>
+            </body>
+          </html>
+
+  checks:
+    - kind: event
+      id: two-results
+      description: "`떡`을 입력하면 떡볶이와 치즈떡볶이 두 개만 보여야 합니다."
+      requirement: 검색어가 들어 있는 메뉴만 보이기
+      visible: true
+      steps:
+        - { action: type, selector: "#search", value: "떡" }
+      expect:
+        - { selector: "#list li", count: 2 }
+        - { selector: "#list li", text: { equals: "떡볶이" } }
+    - kind: event
+      id: no-result
+      description: "`피자`를 입력하면 목록이 비고 \"검색 결과가 없어요\"가 보여야 합니다."
+      requirement: 결과가 없을 때
+      visible: true
+      steps:
+        - { action: type, selector: "#search", value: "피자" }
+      expect:
+        - { selector: "#list li", count: 0 }
+        - { selector: "#empty", text: { equals: "검색 결과가 없어요" } }
+    - kind: event
+      id: trim-keyword
+      description: 검색어 앞뒤에 공백이 있어도 공백을 뺀 글자로 검색해야 합니다.
+      requirement: 앞뒤 공백 무시
+      steps:
+        - { action: type, selector: "#search", value: "  김밥 " }
+      expect:
+        - { selector: "#list li", count: 2 }
+        - { selector: "#list li", text: { equals: "김밥" } }
+    - kind: event
+      id: middle-match
+      description: 검색어가 메뉴 이름의 가운데에 있어도 찾아야 합니다.
+      requirement: 검색어가 들어 있는 메뉴만 보이기
+      steps:
+        - { action: type, selector: "#search", value: "즈" }
+      expect:
+        - { selector: "#list li", count: 1 }
+        - { selector: "#list li", text: { equals: "치즈떡볶이" } }
+    - kind: event
+      id: clear-shows-all
+      description: 검색창을 비우면 메뉴 6개가 모두 다시 보여야 합니다.
+      requirement: 결과가 없을 때
+      steps:
+        - { action: type, selector: "#search", value: "피자" }
+        - { action: type, selector: "#search", value: "" }
+      expect:
+        - { selector: "#list li", count: 6 }
+        - { selector: "#empty", text: { equals: "" } }
+misconceptions: [js.mc.filter-removes-matching, js.mc.callback-called-when-passed]
+hints:
+  - 메뉴 중 일부만 고른 새 배열이 필요해요. 이 단원에서 "고르기"를 하는 메서드는 무엇이었나요?
+  - "고르는 콜백은 메뉴 이름 하나를 받아, 그 이름에 검색어가 들어 있으면 참을 돌려줘야 해요. 모듈 7의 문자열 메서드 중 \"들어 있나?\"를 알려 주는 것을 떠올려 보세요."
+  - "`whenTyped`에는 입력한 글자를 받는 함수를 넘겨요. 그 함수 안에서 고른 결과를 `showList`에 넘기면 돼요. 공백은 고르기 전에 정리해요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function search(word) {
+    const keyword = word.trim();
+    return menu.filter((food) => food.includes(keyword));
+  }
+
+  whenTyped((word) => {
+    showList(search(word));
+  });
+  ```
+
+  - **고르기**: `filter`는 콜백이 참을 돌려준 메뉴만 남긴 새 배열을 돌려줘요. 콜백 `food.includes(keyword)`는 메뉴 이름에 검색어가 들어 있으면 참이에요. 원래 `menu` 배열은 그대로라서 다음 검색도 전체 메뉴에서 해요.
+  - **결과 없음**: 맞는 메뉴가 없으면 `filter`가 빈 배열을 돌려주고, `showList`가 빈 배열을 보고 안내 문구를 보여 줘요.
+  - **빈 검색어**: 모든 문자열은 빈 문자열을 포함하므로(`"김밥".includes("")`는 `true`) 검색창을 비우면 모든 메뉴가 다시 보여요. 따로 처리하지 않아도 돼요.
+  - **공백**: `trim()`으로 앞뒤 공백을 지운 뒤 찾아요. 지우지 않으면 `"  김밥 "`이 들어 있는 메뉴가 없어서 결과가 비어요.
+  - `whenTyped(showList(search(word)))`처럼 괄호를 붙여 넘기면 그 자리에서 한 번 실행되고, 입력할 때마다 불릴 함수가 넘어가지 않아요. 입력한 글자를 받는 함수를 넘겨야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

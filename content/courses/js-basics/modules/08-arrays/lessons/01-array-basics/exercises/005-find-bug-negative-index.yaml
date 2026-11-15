@@ -1,0 +1,59 @@
+id: js-basics.arrays.array-basics.find-bug-negative-index
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.arr.literal-index, weight: 1 }
+  - { id: js.arr.length, weight: 0.5 }
+tags: [negative-index, undefined, nan, debugging]
+estimatedSeconds: 120
+prompt: |
+  일주일 기온 기록에서 첫날과 마지막 날의 기온, 그리고 그 차이를 출력하는 프로그램이에요. 마지막 날 기온이 제대로 나오지 않아요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const temps = [12, 15, 9, 18];
+    const first = temps[0];
+    const last = temps[-1];
+    console.log("첫날: " + first + "도");
+    console.log("마지막 날: " + last + "도");
+    console.log("차이: " + (last - first) + "도");
+  bugLines: [3]
+  symptom: "`마지막 날: undefined도`와 `차이: NaN도`가 나와요."
+  symptomCheck:
+    console: ["첫날: 12도", "마지막 날: undefined도", "차이: NaN도"]
+  fixedCode: |-
+    const temps = [12, 15, 9, 18];
+    const first = temps[0];
+    const last = temps[temps.length - 1];
+    console.log("첫날: " + first + "도");
+    console.log("마지막 날: " + last + "도");
+    console.log("차이: " + (last - first) + "도");
+  causeOptions:
+    - id: c1
+      text: 대괄호 안의 -1에는 요소가 없어서 undefined가 last에 들어갔다
+      correct: true
+    - id: c2
+      text: -1은 뒤에서 첫 번째지만, 숫자 배열에서는 음수 인덱스를 쓸 수 없어 오류 대신 undefined가 됐다
+      misconception: js.mc.array-negative-index-last
+    - id: c3
+      text: 6번 줄의 괄호 때문에 뺄셈이 문자열 연결보다 늦게 계산되어 NaN이 됐다
+    - id: c4
+      text: 2번 줄의 temps[0]이 첫 요소가 아니라 두 번째 요소를 읽었다
+      misconception: js.mc.index-starts-at-one
+hints:
+  - 5번 줄에서 `last`가 `undefined`로 출력됐어요. `last`에 값이 들어가는 줄은 어디인가요?
+  - 대괄호 안에 음수를 쓰면 "뒤에서부터"라는 뜻이 될까요? 레슨의 "흔한 실수"를 떠올려 보세요.
+  - 마지막 요소의 인덱스는 배열 길이로 계산할 수 있어요. 요소가 4개면 마지막 인덱스는 몇인가요?
+explanation: |
+  원인은 **3번 줄**이에요.
+
+  `temps[-1]`은 "뒤에서 첫 번째"가 아니라 `-1`이라는 인덱스를 읽어요. 그런 인덱스에는 요소가 없어서 `undefined`가 `last`에 들어가요. 그 결과 5번 줄은 `undefined도`, 6번 줄은 `undefined - 12`가 `NaN`이라 `NaN도`를 출력해요.
+
+  고친 줄은 `const last = temps[temps.length - 1];`이에요. 요소가 4개라 `temps[3]`, 즉 `18`이고 차이는 `6도`예요.
+
+  - 음수 인덱스는 숫자 배열이든 문자열 배열이든 똑같이 `undefined`예요. "뒤에서부터"라는 뜻은 원래 없어요.
+  - 6번 줄의 괄호는 뺄셈을 먼저 하게 하는 올바른 코드예요. `NaN`은 `last`가 `undefined`라서 생겼어요.
+  - `temps[0]`은 첫 요소 `12`가 맞아요. 4번 줄 출력이 정상이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

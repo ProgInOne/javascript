@@ -1,0 +1,49 @@
+id: js-basics.arrays.array-basics.predict-length-gap
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.arr.length, weight: 1 }
+  - { id: js.arr.element-update, weight: 0.5 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [length, gap, undefined, nan, loop]
+estimatedSeconds: 180
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요? 세 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const marks = [3, 7];
+    marks[4] = 5;
+    console.log(marks.length);
+    console.log(marks[3]);
+    let total = 0;
+    for (let i = 0; i < marks.length; i++) {
+      total += marks[i];
+    }
+    console.log(total);
+  answerKind: console
+  misconceptionByAnswer:
+    "3\nundefined\n15": js.mc.array-length-counts-filled
+    "3\nundefined\nNaN": js.mc.array-length-counts-filled
+hints:
+  - 2번 줄은 인덱스 4에 값을 넣어요. 그 전에 배열에는 인덱스 몇 번까지 요소가 있었나요?
+  - "`length`는 들어 있는 값의 개수가 아니라 가장 큰 인덱스와 관계가 있어요. 인덱스 2와 3에는 무엇이 들어 있을까요?"
+  - 반복이 `marks[2]`를 더할 때 `total`이 어떻게 되는지, 그다음에 숫자를 더해도 되돌아오는지 따져 보세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  5
+  undefined
+  NaN
+  ```
+
+  - `marks[4] = 5`는 인덱스 4에 값을 넣어요. `length`는 "가장 큰 인덱스 + 1"이라 5가 돼요. 값을 넣은 칸은 3개뿐이지만 4가 아니에요.
+  - 값을 넣지 않은 인덱스 2와 3은 비어 있어서, `marks[3]`을 읽으면 `undefined`예요.
+  - 반복은 `i`가 0~4일 때 돌아요. `3 + 7 = 10`까지는 괜찮지만, `marks[2]`(`undefined`)를 더하는 순간 `10 + undefined`는 `NaN`이 돼요. `NaN`에 무엇을 더해도 `NaN`이라 마지막 결과도 `NaN`이에요.
+
+  끝에 값을 덧붙이려면 인덱스를 어림하지 말고 `marks[marks.length] = 5`처럼 정확히 `length`번 자리에 넣어요(다음 단원의 `push`가 이 일을 해요).
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

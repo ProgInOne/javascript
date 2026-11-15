@@ -1,0 +1,58 @@
+id: js-basics.arrays.array-search-sort.predict-copy-or-change
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.arr.slice-concat, weight: 1 }
+  - { id: js.arr.splice, weight: 0.5 }
+  - { id: js.arr.push-pop, weight: 0.3 }
+  - { id: js.arr.mutating-vs-not, weight: 0.5 }
+tags: [slice, concat, splice, push, mutation, trace]
+estimatedSeconds: 200
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요? 네 줄을 차례로 적어 보세요. 줄마다 `base`가 바뀌는지 따져 보세요.
+spec:
+  lang: js
+  code: |
+    const base = [1, 2, 3];
+    const a = base.slice(1);
+    const b = base.concat([4, 5]);
+    base.push([6, 7]);
+    const c = base.splice(0, 1);
+    console.log(a);
+    console.log(b.length);
+    console.log(base.length);
+    console.log(c);
+  answerKind: console
+  misconceptionByAnswer:
+    "[2, 3]\n5\n4\n[1]": js.mc.concat-adds-nested
+    "[2, 3]\n5\n4\n1": js.mc.splice-slice-same
+    "[2, 3]\n4\n3\n[1]": js.mc.concat-adds-nested
+    "[2, 3]\n5\n2\n[1]": js.mc.array-slice-mutates
+hints:
+  - 2~5번 줄의 메서드를 "원본을 바꾸는 것"과 "새 배열을 돌려주는 것"으로 나눠 보세요.
+  - "`concat`과 `push`는 배열을 받았을 때 다르게 동작해요. 하나는 요소를 풀어서, 하나는 배열째 넣어요."
+  - "`splice`가 돌려주는 값은 지운 요소들을 담은 배열이에요. 줄마다 `base`의 모습을 적어 내려가 보세요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  [2, 3]
+  5
+  3
+  [1]
+  ```
+
+  | 줄 | 하는 일 | `base` |
+  |---|---|---|
+  | 2 | `slice(1)`: 1번부터 끝까지 복사 → `a`는 `[2, 3]` | `[1, 2, 3]` (그대로) |
+  | 3 | `concat([4, 5])`: 요소를 풀어 이은 새 배열 → `b`는 5개 | `[1, 2, 3]` (그대로) |
+  | 4 | `push([6, 7])`: 배열을 요소 하나로 넣음 | `[1, 2, 3, [6, 7]]` (4개) |
+  | 5 | `splice(0, 1)`: 0번부터 1개를 지우고 지운 요소를 배열로 돌려줌 → `c`는 `[1]` | `[2, 3, [6, 7]]` (3개) |
+
+  - `slice`와 `concat`은 원본을 바꾸지 않아요. `a`와 `b`를 만든 뒤에도 `base`는 3개예요.
+  - `push([6, 7])`은 요소를 하나만 더해서 4개가 돼요. `concat`처럼 풀어 넣었다고 생각하면 5개로 세게 돼요.
+  - `splice`는 원본에서 지우고, 지운 요소를 **배열**로 돌려줘요. 그래서 `c`는 `1`이 아니라 `[1]`이고, `base`는 3개가 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

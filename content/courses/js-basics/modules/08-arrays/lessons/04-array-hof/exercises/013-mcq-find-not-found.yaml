@@ -1,0 +1,46 @@
+id: js-basics.arrays.array-hof.mcq-find-not-found
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.find, weight: 1 }
+tags: [find, not-found, undefined]
+estimatedSeconds: 45
+prompt: |
+  `[4, 8, 15].find((n) => n > 20)`의 결과는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`undefined`"
+    - id: b
+      text: "`-1`"
+      misconception: js.mc.find-not-found-minus-one
+      rationale: "`-1`은 인덱스를 찾는 `indexOf`와 `findIndex`가 못 찾았을 때 돌려주는 값이에요. `find`는 요소를 돌려주는 메서드예요."
+    - id: c
+      text: "`[]`"
+      misconception: js.mc.find-returns-all
+      rationale: 맞는 요소가 없을 때 빈 배열을 돌려주는 것은 `filter`예요. `find`는 배열이 아니라 요소 하나를 돌려줘요.
+    - id: d
+      text: "`false`"
+      rationale: "`true`/`false`를 돌려주는 것은 `some`과 `every`예요."
+    - id: e
+      text: 오류가 난다
+      rationale: 못 찾는 것은 오류가 아니에요. 찾지 못했다는 결과를 값으로 돌려줘요.
+  correct: a
+misconceptions: [js.mc.find-not-found-minus-one, js.mc.find-returns-all]
+hints:
+  - 20보다 큰 요소가 배열에 있나요?
+  - "`find`는 찾으면 요소 자체를 돌려줘요. 요소가 없을 때는 \"아무 값도 없음\"을 뜻하는 값이 필요해요."
+  - 범위 밖 인덱스를 읽었을 때 나오던 값을 떠올려 보세요.
+explanation: |
+  정답은 `undefined`예요.
+
+  `find`는 콜백이 참을 돌려준 **첫 요소 하나**를 돌려주고, 끝까지 찾지 못하면 `undefined`를 돌려줘요. 4, 8, 15 모두 20보다 크지 않아서 `undefined`예요.
+
+  - `-1`: 인덱스를 돌려주는 `indexOf`와 `findIndex`가 못 찾았을 때의 값이에요. `[4, 8, 15].findIndex((n) => n > 20)`이 `-1`이에요.
+  - `[]`: 맞는 것을 모두 담는 `filter`가 못 찾았을 때의 값이에요.
+  - `false`: 조건을 확인만 하는 `some`의 결과예요.
+  - 오류: 못 찾는 것은 정상적인 결과라 오류가 나지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

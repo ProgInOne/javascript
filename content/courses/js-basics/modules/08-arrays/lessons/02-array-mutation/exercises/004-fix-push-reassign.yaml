@@ -1,0 +1,68 @@
+id: js-basics.arrays.array-mutation.fix-push-reassign
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.arr.push-pop, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [push, return-value, reassign, debugging]
+estimatedSeconds: 150
+prompt: |
+  할 일 목록 `todos` 끝에 새 할 일 `text`를 넣고, 바뀐 목록을 돌려주는 함수 `addTodo(todos, text)`예요. 목록 대신 엉뚱한 값이 돌아와요. 고쳐서 아래처럼 동작하게 하세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `addTodo(["빨래"], "청소")` | `["빨래", "청소"]` |
+  | `addTodo([], "운동")` | `["운동"]` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function addTodo(todos, text) {
+            todos = todos.push(text);
+            return todos;
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function addTodo(todos, text) {
+            todos.push(text);
+            return todos;
+          }
+  entry: addTodo
+  bugDescription: '`addTodo(["빨래"], "청소")`가 목록 대신 숫자 `2`를 돌려줘요.'
+  bugMisconception: js.mc.push-returns-new-array
+  checks:
+    - { kind: call, id: one-more, args: [["빨래"], "청소"], expect: { equals: ["빨래", "청소"] }, requirement: 목록 돌려주기 }
+    - { kind: call, id: from-empty, args: [[], "운동"], expect: { equals: ["운동"] }, requirement: 목록 돌려주기 }
+    - kind: call
+      id: longer
+      visible: false
+      description: 할 일이 여러 개 있어도 맨 끝에 새 할 일을 넣은 목록을 돌려줘야 합니다.
+      requirement: 목록 돌려주기
+      args: [["장보기", "숙제", "독서"], "산책"]
+      expect: { equals: ["장보기", "숙제", "독서", "산책"] }
+      misconceptionIfFail: js.mc.push-returns-new-array
+misconceptions: [js.mc.push-returns-new-array]
+hints:
+  - "돌아온 숫자 `2`는 어디서 왔을까요? `push`가 돌려주는 값이 무엇인지 떠올려 보세요."
+  - "`push`는 `todos`를 이미 직접 바꿔요. 그런데 2번 줄은 그 결과로 `todos`를 덮어써요."
+  - 2번 줄에서 `push`를 부르는 일은 그대로 두고, `todos`에 무엇을 다시 대입하는 부분이 정말 필요한지 따져 보세요.
+explanation: |
+  2번 줄의 다시 대입이 원인이에요.
+
+  `todos.push(text)`는 `todos` 끝에 `text`를 넣어 배열을 직접 바꾸고, 새 **길이**를 돌려줘요. 그 길이를 `todos`에 다시 대입하는 바람에 `todos`가 숫자가 되었고, 함수는 그 숫자를 돌려줬어요.
+
+  ```js
+  function addTodo(todos, text) {
+    todos.push(text);
+    return todos;
+  }
+  ```
+
+  `push`처럼 원래 배열을 바꾸는 메서드는 결과를 담지 않고 한 줄로 불러요. 바뀐 배열은 `todos` 자신이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

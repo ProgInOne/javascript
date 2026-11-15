@@ -1,0 +1,100 @@
+id: js-basics.arrays.array-hof.impl-coupon-sum
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.arr.chaining, weight: 1 }
+  - { id: js.arr.filter, weight: 0.5 }
+  - { id: js.arr.map, weight: 0.5 }
+  - { id: js.arr.reduce, weight: 0.5 }
+tags: [chaining, filter, map, reduce, order, write-code]
+estimatedSeconds: 420
+prompt: |
+  장바구니 상품 가격 목록에 쿠폰을 적용하는 함수 `couponSum(prices, minPrice, discount)`를 완성하세요.
+
+  - 쿠폰 대상은 **원래 가격**이 `minPrice` **이상**인 상품이에요.
+  - 쿠폰 대상 상품마다 `discount`원을 깎아요.
+  - 함수는 **쿠폰 대상 상품들의 할인 후 가격 합계**를 돌려줘요. 대상이 없으면 0이에요.
+  - 받은 `prices` 배열은 바꾸지 마세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `couponSum([12000, 8000, 30000, 5000], 10000, 2000)` | `38000` |
+  | `couponSum([3000], 5000, 500)` | `0` |
+
+  `filter`·`map`·`reduce`를 이어 써 보세요. 숨겨진 테스트는 다른 가격과 기준으로 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function couponSum(prices, minPrice, discount) {
+            // 여기에 작성하세요
+          }
+  entry: couponSum
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function couponSum(prices, minPrice, discount) {
+            return prices
+              .filter((price) => price >= minPrice)
+              .map((price) => price - discount)
+              .reduce((acc, price) => acc + price, 0);
+          }
+  checks:
+    - { kind: call, id: basic, args: [[12000, 8000, 30000, 5000], 10000, 2000], expect: { equals: 38000 }, requirement: 쿠폰 대상 합계 }
+    - { kind: call, id: none, args: [[3000], 5000, 500], expect: { equals: 0 }, requirement: 대상이 없을 때 }
+    - kind: call
+      id: order-matters
+      visible: false
+      description: 쿠폰 대상은 할인 전 원래 가격으로 정해야 합니다(정확히 minPrice인 상품도 대상이에요).
+      requirement: 원래 가격으로 대상 고르기
+      args: [[10000, 11000, 9000], 10000, 1000]
+      expect: { equals: 19000 }
+      misconceptionIfFail: js.mc.chain-order-irrelevant
+    - kind: call
+      id: empty
+      visible: false
+      description: 장바구니가 비어 있으면 0이어야 합니다.
+      requirement: 대상이 없을 때
+      args: [[], 10000, 1000]
+      expect: { equals: 0 }
+    - kind: call
+      id: all-target
+      visible: false
+      description: 모든 상품이 대상이면 모두 할인한 합계여야 합니다.
+      requirement: 쿠폰 대상 합계
+      args: [[5000, 7000, 6000], 5000, 500]
+      expect: { equals: 16500 }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 가격 배열을 바꾸지 않아야 합니다.
+      requirement: 원래 배열 지키기
+      args: [[12000, 8000, 30000], 10000, 2000]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.chain-order-irrelevant, js.mc.reduce-initial-optional-safe]
+hints:
+  - 할 일을 세 단계로 나눠 보세요. 대상 고르기, 할인하기, 더하기예요. 각 단계에 맞는 메서드가 있어요.
+  - 단계의 순서가 중요해요. 쿠폰 대상인지는 할인 **전** 가격과 할인 **후** 가격 중 무엇으로 정한다고 했나요?
+  - 대상이 하나도 없을 때도 합계가 0이 되려면, 마지막 단계에 무엇을 꼭 적어야 할까요?
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function couponSum(prices, minPrice, discount) {
+    return prices
+      .filter((price) => price >= minPrice)
+      .map((price) => price - discount)
+      .reduce((acc, price) => acc + price, 0);
+  }
+  ```
+
+  - **순서**: 쿠폰 대상은 원래 가격으로 정하므로 `filter`가 먼저예요. `map`을 먼저 하면 `filter`가 할인된 가격으로 검사해서, 원래 10000원인 상품이 9000원이 되어 대상에서 빠져요. 첫 번째 예에서는 우연히 결과가 같지만 숨겨진 테스트에서 19000 대신 10000이 나와요.
+  - **이상**: 정확히 `minPrice`인 상품도 대상이라 `>=`예요.
+  - **초기값**: 대상이 없으면 `filter`가 빈 배열을 돌려주고, `reduce`는 초기값 `0`을 그대로 돌려줘요. 초기값이 없으면 `TypeError`가 나요.
+  - `filter`·`map`·`reduce`는 모두 원래 배열을 바꾸지 않아서 `prices`는 그대로예요. `for...of`와 `if`로 한 번에 계산한 답도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

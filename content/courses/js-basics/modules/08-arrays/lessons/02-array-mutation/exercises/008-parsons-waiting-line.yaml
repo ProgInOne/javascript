@@ -1,0 +1,61 @@
+id: js-basics.arrays.array-mutation.parsons-waiting-line
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.arr.shift-unshift, weight: 1 }
+  - { id: js.arr.push-pop, weight: 0.3 }
+tags: [shift, unshift, push, queue, parsons]
+estimatedSeconds: 150
+prompt: |
+  식당 대기열 프로그램이에요. 처음 줄에는 민지와 준호가 서 있어요. 서연이 줄 끝에 서고, 예약 손님은 맨 앞에 끼워 준 다음, 맨 앞 손님을 불러요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  예약 손님 들어오세요
+  ["민지", "준호", "서연"]
+  ```
+spec:
+  lines:
+    - { id: l1, code: 'const line = ["민지", "준호"];' }
+    - { id: l2, code: 'line.push("서연");' }
+    - { id: l3, code: 'line.unshift("예약 손님");' }
+    - { id: l4, code: "const next = line.shift();" }
+    - { id: l5, code: 'console.log(next + " 들어오세요");' }
+    - { id: l6, code: "console.log(line);" }
+  distractors:
+    - { id: d1, code: 'line.shift("예약 손님");', replaces: l3, misconception: js.mc.shift-unshift-swapped }
+    - { id: d2, code: "const next = line.unshift();", replaces: l4, misconception: js.mc.shift-unshift-swapped }
+    - { id: d3, code: "const next = line.pop();", replaces: l4 }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 예약 손님을 먼저 부르고, 남은 줄에 민지·준호·서연이 차례로 서 있어야 합니다.
+      requirement: 대기열 순서
+      expect:
+        lines: ["예약 손님 들어오세요", '["민지", "준호", "서연"]']
+misconceptions: [js.mc.shift-unshift-swapped]
+hints:
+  - 배열을 만든 다음, 줄에 사람을 넣는 두 줄을 먼저 놓고, 그다음 손님을 부르는 줄을 놓아 보세요.
+  - 맨 앞에 넣는 메서드와 맨 앞에서 꺼내는 메서드는 이름이 비슷해요. 각각 무엇을 돌려주는지 떠올려 보세요.
+  - 꺼낸 손님을 담는 줄은 꺼낸 **요소**를 돌려주는 메서드여야 해요. 넣는 메서드는 길이를 돌려줘요.
+explanation: |
+  정답 순서의 예예요.
+
+  ```js
+  const line = ["민지", "준호"];
+  line.push("서연");
+  line.unshift("예약 손님");
+  const next = line.shift();
+  console.log(next + " 들어오세요");
+  console.log(line);
+  ```
+
+  - `push("서연")`은 끝에, `unshift("예약 손님")`은 맨 앞에 넣어요. 이 두 줄은 순서를 바꿔도 결과가 같아요.
+  - `shift()`는 맨 앞의 `"예약 손님"`을 꺼내 돌려줘요. 그래서 남은 줄은 `["민지", "준호", "서연"]`이에요.
+  - `line.shift("예약 손님")`은 넣지 않고 맨 앞의 `"민지"`를 꺼내 버려요. `shift`는 인수를 쓰지 않아요.
+  - `const next = line.unshift();`는 아무것도 꺼내지 않고 새 길이(숫자)를 돌려줘요.
+  - `const next = line.pop();`은 맨 끝의 `"서연"`을 꺼내요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

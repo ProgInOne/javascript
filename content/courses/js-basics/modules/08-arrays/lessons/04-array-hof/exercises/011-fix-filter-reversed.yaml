@@ -1,0 +1,65 @@
+id: js-basics.arrays.array-hof.fix-filter-reversed
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.arr.filter, weight: 1 }
+tags: [filter, keep-condition, debugging]
+estimatedSeconds: 150
+prompt: |
+  설문 답변 목록에서 아무것도 쓰지 않은 답(빈 문자열 `""`)을 빼고, 쓴 답만 남기는 함수 `removeBlank(answers)`예요. 그런데 결과가 거꾸로 나와요. 고쳐 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `removeBlank(["좋아요", "", "보통"])` | `["좋아요", "보통"]` |
+  | `removeBlank(["", ""])` | `[]` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function removeBlank(answers) {
+            // 빈 답("")을 걸러 낸다
+            return answers.filter((answer) => answer === "");
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function removeBlank(answers) {
+            // 쓴 답만 남긴다
+            return answers.filter((answer) => answer !== "");
+          }
+  entry: removeBlank
+  bugDescription: "`removeBlank([\"좋아요\", \"\", \"보통\"])`가 `[\"좋아요\", \"보통\"]`이 아니라 `[\"\"]`를 돌려줘요."
+  checks:
+    - { kind: call, id: mixed, args: [["좋아요", "", "보통"]], expect: { equals: ["좋아요", "보통"] }, requirement: 쓴 답만 남기기, misconceptionIfFail: js.mc.filter-removes-matching }
+    - { kind: call, id: all-blank, args: [["", ""]], expect: { equals: [] }, requirement: 쓴 답만 남기기 }
+    - kind: call
+      id: none-blank
+      visible: false
+      description: 빈 답이 없으면 모든 답이 원래 순서대로 남아야 합니다.
+      requirement: 쓴 답만 남기기
+      args: [["네", "아니요", "모름"]]
+      expect: { equals: ["네", "아니요", "모름"] }
+    - kind: call
+      id: blank-edges
+      visible: false
+      description: 빈 답이 맨 앞과 맨 끝에 있어도 쓴 답만 남아야 합니다.
+      requirement: 쓴 답만 남기기
+      args: [["", "최고", "", "괜찮음", ""]]
+      expect: { equals: ["최고", "괜찮음"] }
+misconceptions: [js.mc.filter-removes-matching]
+hints:
+  - 결과 `[""]`에는 빼려던 답만 남았어요. `filter`는 콜백이 참인 요소를 어떻게 하나요?
+  - 주석은 "걸러 낸다"라고 했지만, `filter`의 콜백에는 무엇을 쓰는 게 맞을까요? 남길 조건인가요, 뺄 조건인가요?
+  - 남겨야 하는 것은 "빈 문자열이 아닌 답"이에요. 비교 연산자를 그 뜻에 맞게 바꿔 보세요.
+explanation: |
+  `filter`가 조건에 맞는 요소를 **지운다**고 생각하고 쓴 코드예요.
+
+  `filter`는 콜백이 참을 돌려준 요소를 **남겨요.** 버그 코드의 콜백 `answer === ""`는 빈 답일 때 참이라, 빈 답만 남고 쓴 답이 모두 빠졌어요.
+
+  고친 콜백은 "남길 조건"인 `answer !== ""`예요. `answer.length > 0`으로 써도 같아요. 빈 문자열이 falsy라는 것을 이용해 `answers.filter((answer) => answer)`라고 써도 동작하지만, 뜻이 잘 드러나는 비교식을 권해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

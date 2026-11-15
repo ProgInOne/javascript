@@ -1,0 +1,75 @@
+id: js-basics.arrays.array-mutation.fix-join-discarded
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.arr.mutating-vs-not, weight: 1 }
+  - { id: js.str.split-join, weight: 0.3 }
+tags: [join, non-mutating, return-value, debugging]
+estimatedSeconds: 160
+prompt: |
+  태그 목록 `tags`를 `"#html #css"`처럼 앞에 `#`를 붙여 공백으로 이은 문자열로 만드는 함수 `makeTagLine(tags)`예요. 결과가 이상하게 나와요. 고쳐 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `makeTagLine(["html", "css"])` | `"#html #css"` |
+  | `makeTagLine(["js"])` | `"#js"` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function makeTagLine(tags) {
+            tags.join(" #");
+            return "#" + tags;
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function makeTagLine(tags) {
+            const line = tags.join(" #");
+            return "#" + line;
+          }
+  entry: makeTagLine
+  bugDescription: '`makeTagLine(["html", "css"])`가 `"#html #css"`가 아니라 `"#html,css"`를 돌려줘요.'
+  bugMisconception: js.mc.non-mutating-method-changes-original
+  checks:
+    - { kind: call, id: two-tags, args: [["html", "css"]], expect: { equals: "#html #css" }, requirement: 태그 문장 }
+    - { kind: call, id: one-tag, args: [["js"]], expect: { equals: "#js" }, requirement: 태그 문장 }
+    - kind: call
+      id: three-tags
+      visible: false
+      description: 태그가 세 개여도 모두 앞에 #를 붙여 공백으로 이어야 합니다.
+      requirement: 태그 문장
+      args: [["여행", "제주", "바다"]]
+      expect: { equals: "#여행 #제주 #바다" }
+      misconceptionIfFail: js.mc.non-mutating-method-changes-original
+    - kind: call
+      id: keep-tags
+      visible: false
+      description: 받은 태그 배열을 바꾸면 안 됩니다.
+      requirement: 태그 목록 지키기
+      args: [["a", "b"]]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.non-mutating-method-changes-original, js.mc.join-default-no-separator]
+hints:
+  - "결과의 `html,css`처럼 쉼표로 이어진 모양은 어디서 나왔을까요? 3번 줄에서 `+` 뒤에 있는 `tags`는 무엇인가요?"
+  - "`join`은 원래 배열을 바꾸는 메서드일까요, 새 값을 돌려주는 메서드일까요? 2번 줄은 돌려받은 값을 어떻게 했나요?"
+  - 2번 줄이 만든 결과를 이름 붙여 담고, 3번 줄에서 배열 대신 그 결과를 쓰세요.
+explanation: |
+  2번 줄이 `join`의 결과를 버리고 있어요.
+
+  `join`은 원래 배열을 바꾸지 않고, 이어 붙인 **새 문자열**을 돌려줘요. 2번 줄은 그 문자열을 아무 데도 담지 않아서, 3번 줄의 `tags`는 여전히 배열 `["html", "css"]`예요. 문자열에 배열을 `+`로 이으면 배열이 쉼표로 이어진 글자로 바뀌어서 `"#html,css"`가 됐어요.
+
+  ```js
+  function makeTagLine(tags) {
+    const line = tags.join(" #");
+    return "#" + line;
+  }
+  ```
+
+  `return "#" + tags.join(" #");`처럼 한 줄로 바로 써도 돼요. 원래 배열을 바꾸지 않는 메서드는 결과를 담거나 바로 써야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

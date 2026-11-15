@@ -1,0 +1,52 @@
+id: js-basics.arrays.array-hof.predict-chain-order
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.arr.chaining, weight: 1 }
+  - { id: js.arr.map, weight: 0.5 }
+  - { id: js.arr.filter, weight: 0.5 }
+tags: [chaining, order, index-param, trace]
+estimatedSeconds: 240
+prompt: |
+  같은 점수 목록에 `map`과 `filter`를 다른 순서로 이어 썼어요. 실행하면 콘솔에 무엇이 출력될까요? 네 줄을 차례로 적어 보세요. 배열은 콘솔에 `[1, 2]`, `["a", "b"]`처럼 보여요.
+spec:
+  lang: js
+  code: |
+    const scores = [45, 52, 80, 90, 58];
+    const bonusFirst = scores.map((s) => s + 10).filter((s) => s >= 60);
+    const passFirst = scores.filter((s) => s >= 60).map((s) => s + 10);
+    console.log(bonusFirst);
+    console.log(passFirst);
+    console.log(bonusFirst.length - passFirst.length);
+    const picked = scores.filter((s, i) => i % 2 === 0).map((s, i) => `${i}:${s}`);
+    console.log(picked);
+  answerKind: console
+  misconceptionByAnswer:
+    "[90, 100]\n[90, 100]\n0\n[\"0:45\", \"1:80\", \"2:58\"]": js.mc.chain-order-irrelevant
+    "[62, 90, 100, 68]\n[62, 90, 100, 68]\n0\n[\"0:45\", \"1:80\", \"2:58\"]": js.mc.chain-order-irrelevant
+hints:
+  - 이어 쓴 메서드는 왼쪽부터 실행되고, 뒤 메서드는 앞 메서드가 **돌려준 배열**을 받아요. 단계마다 중간 배열을 적어 보세요.
+  - "`bonusFirst`의 `filter`는 10점을 더한 점수로 검사해요. 52점과 58점은 어떻게 될까요?"
+  - 마지막 줄의 `map`이 받는 배열은 `scores`가 아니라 `filter`가 돌려준 새 배열이에요. 그 배열에서 각 요소의 인덱스는 몇인가요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  [62, 90, 100, 68]
+  [90, 100]
+  2
+  ["0:45", "1:80", "2:58"]
+  ```
+
+  | 식 | 첫 메서드 결과 | 둘째 메서드 결과 |
+  |---|---|---|
+  | `bonusFirst` | `map` → `[55, 62, 90, 100, 68]` | `filter` → `[62, 90, 100, 68]` |
+  | `passFirst` | `filter` → `[80, 90]` | `map` → `[90, 100]` |
+  | `picked` | `filter`(인덱스 0, 2, 4) → `[45, 80, 58]` | `map` → `["0:45", "1:80", "2:58"]` |
+
+  - `bonusFirst`는 10점을 먼저 더해서 52점(→ 62)과 58점(→ 68)도 60점을 넘어요. `passFirst`는 원래 점수로 고르므로 80, 90만 남아요. 그래서 길이 차이는 4 − 2 = 2예요.
+  - `picked`의 `map`은 `filter`가 만든 새 배열 `[45, 80, 58]`을 받아요. 콜백의 인덱스도 이 새 배열의 인덱스라서 0, 1, 2예요. 원래 배열의 인덱스 0, 2, 4가 아니에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

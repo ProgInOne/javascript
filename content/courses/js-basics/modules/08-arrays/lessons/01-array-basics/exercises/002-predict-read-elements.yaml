@@ -1,0 +1,43 @@
+id: js-basics.arrays.array-basics.predict-read-elements
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.arr.literal-index, weight: 1 }
+tags: [index, out-of-range, undefined, mixed-types]
+estimatedSeconds: 90
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요? 네 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const profile = ["민지", 17, true];
+    console.log(profile[0]);
+    console.log(profile[1] + 1);
+    console.log(profile[3]);
+    console.log("끝");
+  answerKind: console
+  misconceptionByAnswer:
+    "민지\n18": js.mc.array-out-of-range-throws
+    "17\n2\nundefined\n끝": js.mc.index-starts-at-one
+hints:
+  - 요소가 몇 개인지, 각 요소의 인덱스가 몇 번인지 먼저 적어 보세요.
+  - 이 배열에는 문자열, 숫자, 불리언이 섞여 있어요. 섞어 담는 것 자체는 괜찮을까요?
+  - 요소가 3개인 배열에서 인덱스 3을 읽으면 오류가 날까요, 아니면 어떤 값이 나올까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  민지
+  18
+  undefined
+  끝
+  ```
+
+  - 배열에는 자료형이 다른 값을 섞어 담을 수 있어요. 오류가 나지 않아요.
+  - `profile[0]`은 첫 요소 `민지`예요.
+  - `profile[1]`은 숫자 `17`이라 `17 + 1`은 `18`이에요.
+  - `profile[3]`은 범위 밖이에요(인덱스는 0~2). 오류 대신 `undefined`가 나오고, 프로그램은 계속 실행되어 `끝`까지 출력돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,48 @@
+id: js-basics.arrays.array-mutation.mcq-push-returns
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.push-pop, weight: 1 }
+tags: [push, return-value]
+estimatedSeconds: 45
+prompt: |
+  다음 코드를 실행한 뒤 `result`에 들어 있는 값은 무엇인가요?
+code: |
+  const fruits = ["사과", "배"];
+  const result = fruits.push("귤");
+spec:
+  options:
+    - id: a
+      text: "`3`"
+    - id: b
+      text: '`["사과", "배", "귤"]`'
+      misconception: js.mc.push-returns-new-array
+      rationale: "`push`는 배열을 돌려주지 않아요. 바뀐 배열은 `fruits` 자신이고, 돌려주는 값은 따로 있어요."
+    - id: c
+      text: '`"귤"`'
+      rationale: 넣은 값을 돌려주지 않아요. 요소 하나를 돌려주는 것은 꺼내는 메서드인 `pop`이에요.
+    - id: d
+      text: "`2`"
+      rationale: 넣기 전의 길이가 아니라 넣은 뒤의 길이를 돌려줘요.
+    - id: e
+      text: "`undefined`"
+      rationale: "`push`는 결과로 숫자 하나를 돌려줘요. 아무것도 돌려주지 않는 메서드가 아니에요."
+  correct: a
+misconceptions: [js.mc.push-returns-new-array]
+hints:
+  - "`push`가 하는 일은 두 가지예요. 배열을 바꾸는 일과, 값을 하나 돌려주는 일이에요."
+  - 배열은 `fruits` 자신이 직접 바뀌어요. 그러니 돌려주는 값은 배열이 아닌 다른 정보예요.
+  - 레슨 첫 번째 예제에서 `count`에 무엇이 들어 있었는지 떠올려 보세요.
+explanation: |
+  정답은 `3`이에요.
+
+  `push`는 `fruits` 끝에 `"귤"`을 넣어 `fruits`를 직접 바꾸고, 넣은 뒤의 **새 길이**를 돌려줘요. 요소가 2개에서 3개가 되었으니 3이에요.
+
+  - `["사과", "배", "귤"]`: 바뀐 배열은 `fruits`에 있어요. `result`에 배열이 들어가는 것이 아니에요. 그래서 `fruits = fruits.push("귤")`처럼 쓰면 `fruits`가 숫자가 되어 버려요.
+  - `"귤"`: 요소 하나를 돌려주는 것은 꺼내는 메서드 `pop`·`shift`예요.
+  - `2`: 넣기 **전** 길이가 아니라 넣은 **뒤** 길이예요.
+  - `undefined`: `push`는 숫자를 돌려줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

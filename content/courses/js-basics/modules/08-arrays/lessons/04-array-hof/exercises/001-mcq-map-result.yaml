@@ -1,0 +1,48 @@
+id: js-basics.arrays.array-hof.mcq-map-result
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.map, weight: 1 }
+tags: [map, return-value]
+estimatedSeconds: 45
+prompt: |
+  다음 코드를 실행한 뒤 `result`에 들어 있는 값은 무엇인가요?
+code: |
+  const nums = [1, 2, 3];
+  const result = nums.map((n) => n * 10);
+spec:
+  options:
+    - id: a
+      text: "`[10, 20, 30]`"
+    - id: b
+      text: "`60`"
+      rationale: 값을 하나로 모으는 것은 `reduce`예요. `map`은 요소마다 바꾼 값을 배열에 담아요.
+    - id: c
+      text: "`undefined`"
+      misconception: js.mc.foreach-returns-array
+      rationale: "`undefined`를 돌려주는 것은 `forEach`예요. `map`은 콜백이 돌려준 값으로 새 배열을 만들어 돌려줘요."
+    - id: d
+      text: "`[1, 2, 3]`"
+      rationale: 콜백이 돌려준 `n * 10`이 각 자리에 들어가요. 원래 배열 `nums`가 `[1, 2, 3]` 그대로인 것과 헷갈리지 마세요.
+    - id: e
+      text: "`10`"
+      rationale: 콜백은 첫 요소에만 불리지 않아요. `map`은 모든 요소에 콜백을 불러요.
+  correct: a
+misconceptions: [js.mc.foreach-returns-array]
+hints:
+  - "`map`은 요소마다 콜백을 한 번씩 불러요. 콜백은 무엇을 돌려주나요?"
+  - 콜백이 돌려준 값들은 어디에, 어떤 순서로 담길까요?
+  - "`map`의 결과는 원래 배열과 길이가 같아요."
+explanation: |
+  정답은 `[10, 20, 30]`이에요.
+
+  `map`은 요소 1, 2, 3마다 콜백을 불러 `n * 10`이 돌려준 10, 20, 30을 같은 자리에 담은 **새 배열**을 돌려줘요. 그래서 결과는 원래 배열과 길이가 같아요.
+
+  - `60`처럼 값 하나로 모으는 메서드는 `reduce`예요.
+  - `undefined`를 돌려주는 것은 `forEach`예요.
+  - `[1, 2, 3]`은 `nums`의 값이에요. `map`은 원래 배열을 바꾸지 않으므로 `nums`는 그대로지만, `result`에는 새 배열이 들어 있어요.
+  - 콜백은 첫 요소뿐 아니라 모든 요소에 불려요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

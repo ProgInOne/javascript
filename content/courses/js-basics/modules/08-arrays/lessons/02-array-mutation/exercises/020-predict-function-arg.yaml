@@ -1,0 +1,57 @@
+id: js-basics.arrays.array-mutation.predict-function-arg
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.arr.mutating-vs-not, weight: 1 }
+  - { id: js.scope.function, weight: 0.3 }
+  - { id: js.arr.push-pop, weight: 0.3 }
+tags: [function-argument, mutating, param-reassign, trace]
+estimatedSeconds: 180
+prompt: |
+  함수 안에서 매개변수 배열에 `push`도 하고, 다른 배열을 다시 대입하기도 해요. 실행하면 콘솔에 무엇이 출력될까요? 두 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    function addBonus(scores) {
+      scores.push(100);
+      scores = [0];
+      scores.push(50);
+      return scores.length;
+    }
+
+    const myScores = [70, 80];
+    const result = addBonus(myScores);
+    console.log(result);
+    console.log(myScores);
+  answerKind: console
+  misconceptionByAnswer:
+    "2\n[70, 80]": js.mc.function-arg-array-copied
+    "2\n[0, 50]": js.mc.param-reassign-changes-outer
+hints:
+  - "함수를 부를 때 `scores`와 `myScores`는 같은 배열을 가리켜요. 2번 줄은 그 배열에 무슨 일을 하나요?"
+  - 3번 줄은 매개변수 `scores`에 새 배열을 대입해요. 모듈 6에서 매개변수에 다시 대입하면 바깥 변수가 어떻게 되었는지 떠올려 보세요.
+  - 3번 줄 다음부터 `scores`가 가리키는 배열과 `myScores`가 가리키는 배열을 따로 적어 두고 4번, 5번 줄을 따라가 보세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  2
+  [70, 80, 100]
+  ```
+
+  | 줄 | `scores` | `myScores` |
+  |---|---|---|
+  | 함수 시작 | `[70, 80]` (같은 배열) | `[70, 80]` |
+  | 2번 `scores.push(100)` | `[70, 80, 100]` (같은 배열) | `[70, 80, 100]` |
+  | 3번 `scores = [0]` | `[0]` (새 배열) | `[70, 80, 100]` |
+  | 4번 `scores.push(50)` | `[0, 50]` | `[70, 80, 100]` |
+
+  - 2번 줄: `scores`와 `myScores`는 같은 배열이라 `push(100)`은 바깥 배열도 바꿔요. 함수에 넘긴 배열은 복사본이 아니에요.
+  - 3번 줄: 매개변수에 **새 배열을 대입**하면 `scores`만 다른 배열을 가리키게 돼요. 바깥의 `myScores`는 영향을 받지 않아요(모듈 6의 매개변수 재할당과 같은 규칙).
+  - 4~5번 줄: 새 배열 `[0]`에 50을 넣어 `[0, 50]`이 되고, 그 길이 2를 돌려줘요.
+
+  배열 메서드로 **요소를 바꾸면** 바깥에도 보이지만, 변수에 **다른 배열을 대입하면** 바깥과 연결이 끊겨요. 왜 그런지는 모듈 9에서 자세히 배워요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

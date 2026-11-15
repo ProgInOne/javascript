@@ -1,0 +1,134 @@
+id: js-basics.arrays.array-basics.impl-reserve-seat
+type: implement_function
+difficulty: 4
+concepts:
+  - { id: js.arr.element-update, weight: 1 }
+  - { id: js.arr.literal-index, weight: 0.5 }
+  - { id: js.arr.length, weight: 0.5 }
+  - { id: js.control.else-if, weight: 0.3 }
+tags: [element-update, boundary, validation, function, write-code]
+estimatedSeconds: 420
+prompt: |
+  공연장 좌석표는 좌석마다 `"빈자리"` 또는 예약한 사람의 이름을 담은 배열이에요. 손님은 좌석을 **1번부터** 번호로 골라요. 좌석을 예약하는 함수 `reserveSeat(seats, number, name)`를 완성하세요.
+
+  - 없는 좌석 번호(1보다 작거나 좌석 수보다 큰 번호)이면 좌석표를 바꾸지 않고 `"없는 좌석이에요"`를 돌려줘요.
+  - 이미 다른 이름이 있는 좌석이면 좌석표를 바꾸지 않고 `"이미 예약된 좌석이에요"`를 돌려줘요.
+  - 빈자리이면 그 자리에 `name`을 넣고 `"<번호>번 좌석 예약 완료"`(예: `"2번 좌석 예약 완료"`)를 돌려줘요.
+
+  시작 코드 아래쪽의 확인용 줄은 그대로 두세요. 채점이 이 줄의 결과도 확인해요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function reserveSeat(seats, number, name) {
+            // 여기에 작성하세요
+          }
+
+          // 확인용 (그대로 두세요)
+          const hall = ["빈자리", "빈자리", "준호", "빈자리"];
+          const result1 = reserveSeat(hall, 2, "민지");
+          const result2 = reserveSeat(hall, 3, "서연");
+          console.log(hall, result1, result2);
+  entry: reserveSeat
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function reserveSeat(seats, number, name) {
+            if (number < 1 || number > seats.length) {
+              return "없는 좌석이에요";
+            }
+            const index = number - 1;
+            if (seats[index] !== "빈자리") {
+              return "이미 예약된 좌석이에요";
+            }
+            seats[index] = name;
+            return number + "번 좌석 예약 완료";
+          }
+
+          // 확인용 (그대로 두세요)
+          const hall = ["빈자리", "빈자리", "준호", "빈자리"];
+          const result1 = reserveSeat(hall, 2, "민지");
+          const result2 = reserveSeat(hall, 3, "서연");
+          console.log(hall, result1, result2);
+  checks:
+    - kind: program
+      id: hall
+      description: 확인용 줄을 실행한 뒤 hall은 ["빈자리", "민지", "준호", "빈자리"], result1은 "2번 좌석 예약 완료", result2는 "이미 예약된 좌석이에요"여야 합니다.
+      requirement: 빈자리 예약
+      expect:
+        globals:
+          hall: { equals: ["빈자리", "민지", "준호", "빈자리"] }
+          result1: { equals: "2번 좌석 예약 완료" }
+          result2: { equals: "이미 예약된 좌석이에요" }
+        noError: true
+    - { kind: call, id: first-seat, args: [["빈자리", "빈자리"], 1, "가은"], expect: { equals: "1번 좌석 예약 완료" }, requirement: 빈자리 예약 }
+    - { kind: call, id: too-big, args: [["빈자리", "빈자리"], 3, "가은"], expect: { equals: "없는 좌석이에요" }, requirement: 없는 좌석 }
+    - kind: call
+      id: last-seat
+      visible: false
+      description: 마지막 좌석(좌석 수와 같은 번호)도 예약할 수 있어야 합니다.
+      requirement: 빈자리 예약
+      args: [["준", "빈자리", "빈자리"], 3, "솔"]
+      expect: { equals: "3번 좌석 예약 완료" }
+      misconceptionIfFail: js.mc.array-last-index-is-length
+    - kind: call
+      id: zero
+      visible: false
+      description: 0번은 없는 좌석입니다.
+      requirement: 없는 좌석
+      args: [["빈자리", "빈자리"], 0, "가은"]
+      expect: { equals: "없는 좌석이에요" }
+    - kind: call
+      id: too-big-unchanged
+      visible: false
+      description: 없는 좌석 번호이면 좌석표를 바꾸면 안 됩니다(배열이 늘어나도 안 돼요).
+      requirement: 없는 좌석
+      args: [["빈자리", "빈자리"], 5, "가은"]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.array-length-counts-filled
+    - kind: call
+      id: taken
+      visible: false
+      description: 이미 예약된 좌석이면 안내 문구를 돌려줘야 합니다.
+      requirement: 이미 예약된 좌석
+      args: [["빈자리", "현"], 2, "윤"]
+      expect: { equals: "이미 예약된 좌석이에요" }
+    - kind: call
+      id: taken-unchanged
+      visible: false
+      description: 이미 예약된 좌석이면 좌석표를 바꾸면 안 됩니다.
+      requirement: 이미 예약된 좌석
+      args: [["빈자리", "현"], 2, "윤"]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.index-starts-at-one, js.mc.array-length-counts-filled, js.mc.array-last-index-is-length]
+hints:
+  - 할 일을 순서대로 나눠요. 번호가 올바른지 확인 → 그 좌석이 비었는지 확인 → 예약. 앞의 확인에 걸리면 바로 돌려주고 끝내요.
+  - 손님의 번호와 배열의 인덱스는 하나 차이가 나요. 올바른 번호의 범위는 좌석 수(`length`)로 정할 수 있어요.
+  - 범위를 확인하지 않고 큰 번호의 자리에 이름을 대입하면 배열이 늘어나요. 대입은 두 확인을 모두 통과한 뒤에만 해야 해요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function reserveSeat(seats, number, name) {
+    if (number < 1 || number > seats.length) {
+      return "없는 좌석이에요";
+    }
+    const index = number - 1;
+    if (seats[index] !== "빈자리") {
+      return "이미 예약된 좌석이에요";
+    }
+    seats[index] = name;
+    return number + "번 좌석 예약 완료";
+  }
+  ```
+
+  - **번호와 인덱스**: 1번 좌석은 인덱스 0이라 `number - 1`을 써요. 좌석이 3개면 올바른 번호는 1~3이고, 3번 좌석은 인덱스 2예요.
+  - **확인 순서**: 번호 확인을 먼저 해야 해요. 범위를 확인하지 않고 `seats[5 - 1]`이 `"빈자리"`가 아니라는 이유로 "이미 예약됨"을 돌려주면 안내가 틀리고, 확인 없이 대입하면 `seats[4] = name`으로 배열이 늘어나 `length`가 5가 돼요.
+  - **바꾸지 않기**: 두 안내 문구를 돌려줄 때는 좌석표를 그대로 둬야 해요. 대입은 마지막에 한 번만 해요.
+  - `seats`는 함수 밖의 `hall`과 같은 배열이라 함수 안에서 바꾼 결과가 `hall`에도 보여요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

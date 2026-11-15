@@ -1,0 +1,57 @@
+id: js-basics.arrays.array-basics.fill-week-literal
+type: fill_blank
+difficulty: 1
+concepts:
+  - { id: js.arr.literal-index, weight: 1 }
+tags: [literal, syntax]
+estimatedSeconds: 60
+prompt: |
+  `"월"`, `"화"`, `"수"` 세 요일을 이 순서대로 담은 배열을 만들어 `week`에 넣으세요. 빈칸을 채워 아래처럼 출력되게 하세요.
+
+  ```text
+  월
+  수
+  3
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    const week = {{blank:arr}};
+    console.log(week[0]);
+    console.log(week[2]);
+    console.log(week.length);
+  blanks:
+    - id: arr
+      accept: ['["월", "화", "수"]']
+      width: 22
+  checks:
+    - kind: console
+      id: output
+      description: 첫 요소 월, 세 번째 요소 수, 개수 3이 차례로 출력되어야 합니다.
+      requirement: 세 요일 배열
+      expect:
+        lines: ["월", "수", "3"]
+    - kind: program
+      id: week-value
+      visible: false
+      description: week에 "월", "화", "수"가 이 순서대로 들어 있어야 합니다.
+      requirement: 세 요일 배열
+      expect:
+        globals: { week: { equals: ["월", "화", "수"] } }
+        noError: true
+hints:
+  - 배열은 어떤 괄호로 감싸서 만들었나요?
+  - 요소와 요소 사이에는 무엇을 넣어 구분하나요? 요일은 글자이니 따옴표도 필요해요.
+  - 대괄호 안에 세 문자열을 적힌 순서대로 쉼표로 나열해요.
+explanation: |
+  예시 정답은 `["월", "화", "수"]`예요.
+
+  - 배열은 대괄호 `[]`로 감싸고, 요소 사이를 쉼표로 구분해요.
+  - 요일은 문자열이라 따옴표로 감싸요. 따옴표가 없으면 `월`이라는 변수를 찾다가 `ReferenceError`가 나요.
+  - 적은 순서대로 인덱스 0, 1, 2가 붙어서 `week[0]`은 `월`, `week[2]`는 `수`예요.
+  - `"월화수"`처럼 문자열 하나로 쓰면 `week[2]`는 `수`지만 `length`는 3, `week`는 배열이 아니라 문자열이라 숨김 체크를 통과하지 못해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

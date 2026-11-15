@@ -1,0 +1,46 @@
+id: js-basics.arrays.array-iteration.mcq-foreach-return-value
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.foreach, weight: 1 }
+tags: [foreach, return-value]
+estimatedSeconds: 45
+prompt: |
+  아래 코드를 실행한 뒤 `result`에 들어 있는 값은 무엇인가요?
+code: |
+  const nums = [1, 2, 3];
+  const result = nums.forEach((n) => n * 2);
+spec:
+  options:
+    - id: a
+      text: "`undefined`"
+    - id: b
+      text: "`[2, 4, 6]`"
+      misconception: js.mc.foreach-returns-array
+      rationale: forEach는 콜백의 반환값을 모으지 않고 버려요. 두 배가 된 새 배열을 만드는 것은 다음 단원의 map이에요.
+    - id: c
+      text: "`[1, 2, 3]`"
+      rationale: forEach는 원래 배열을 돌려주지도 않아요.
+    - id: d
+      text: "`6`"
+      rationale: 마지막 콜백이 돌려준 값이 6이지만, forEach는 콜백의 반환값을 돌려주지 않아요.
+  correct: a
+misconceptions: [js.mc.foreach-returns-array]
+hints:
+  - "`forEach`는 요소마다 무언가를 **하는** 메서드예요. 무언가를 만들어 돌려주는 메서드일까요?"
+  - 콜백 `(n) => n * 2`가 돌려준 2, 4, 6은 어디에 담길까요? `forEach`가 그 값을 모아 줄까요?
+  - 레슨 네 번째 예제의 마지막 줄 출력을 떠올려 보세요.
+explanation: |
+  정답은 `undefined`예요.
+
+  `forEach`는 요소마다 콜백을 불러 주기만 하고, 자신은 항상 `undefined`를 돌려줘요. 콜백이 돌려준 2, 4, 6은 버려져요.
+
+  - `[2, 4, 6]`: 콜백의 반환값으로 새 배열을 만드는 메서드는 다음 단원에서 배울 `map`이에요.
+  - `[1, 2, 3]`: `forEach`는 원래 배열을 돌려주지도 않아요. `nums`는 그대로 `[1, 2, 3]`이지만 `result`와는 관계없어요.
+  - `6`: 마지막 콜백 호출의 반환값이지만, `forEach`는 콜백의 반환값을 쓰지 않아요.
+
+  두 배가 된 배열이 필요하면 지금은 빈 배열에 `push`로 모아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,48 @@
+id: js-basics.arrays.array-basics.predict-swap
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.arr.element-update, weight: 1 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [element-update, swap, assignment]
+estimatedSeconds: 150
+prompt: |
+  두 배열에서 각각 요소의 자리를 바꾸려고 해요. 실행하면 콘솔에 무엇이 출력될까요? 두 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const line = ["가", "나", "다"];
+    line[0] = line[1];
+    line[1] = line[0];
+    console.log(line);
+
+    const order = ["가", "나", "다"];
+    const temp = order[0];
+    order[0] = order[2];
+    order[2] = temp;
+    console.log(order);
+  answerKind: console
+hints:
+  - 대입은 한 줄씩 차례로 실행되고, 오른쪽을 계산할 때는 그 순간의 배열 값을 읽어요.
+  - 2번 줄이 끝난 뒤 `line[0]`에는 무엇이 들어 있나요? 3번 줄은 그 값을 읽어요.
+  - 아래 배열은 바꾸기 전에 `order[0]`의 값을 `temp`에 따로 담아 두었어요. 덮어쓴 뒤에도 그 값을 쓸 수 있을까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  ["나", "나", "다"]
+  ["다", "나", "가"]
+  ```
+
+  | 줄 | 실행 후 `line` |
+  |---|---|
+  | 2번 `line[0] = line[1]` | `["나", "나", "다"]` |
+  | 3번 `line[1] = line[0]` | `["나", "나", "다"]` |
+
+  - 2번 줄에서 `"가"`가 `"나"`로 덮어써져 사라져요. 3번 줄은 이미 `"나"`가 된 `line[0]`을 읽으므로 아무것도 바뀌지 않아요. 대입은 바로 그 순간의 값을 복사할 뿐, 나중에 다시 계산되지 않아요.
+  - 아래 배열은 덮어쓰기 전에 `order[0]`의 `"가"`를 `temp`에 담아 두었어요. 그래서 0번에 `"다"`를 넣은 뒤에도 2번에 `"가"`를 넣을 수 있어요. 두 요소를 바꿀 때는 이렇게 임시 변수를 써요.
+  - `order`는 `const`지만 요소를 바꾸는 것은 괜찮아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

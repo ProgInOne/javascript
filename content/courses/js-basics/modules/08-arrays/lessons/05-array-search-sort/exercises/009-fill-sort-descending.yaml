@@ -1,0 +1,47 @@
+id: js-basics.arrays.array-search-sort.fill-sort-descending
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.arr.sort, weight: 1 }
+tags: [sort, compare-function, descending]
+estimatedSeconds: 90
+prompt: |
+  쇼핑몰의 "높은 가격순" 정렬이에요. 빈칸에 비교 함수가 돌려줄 식을 채워 아래처럼 출력되게 하세요.
+
+  ```text
+  45000 > 12000 > 3500 > 800
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    const prices = [12000, 3500, 800, 45000];
+    prices.sort((a, b) => {{blank:cmp}});
+    console.log(prices.join(" > "));
+  blanks:
+    - id: cmp
+      accept: ["b - a"]
+      width: 12
+  checks:
+    - kind: console
+      id: output
+      description: 가격이 높은 것부터 " > "로 이어져 출력되어야 합니다.
+      requirement: 높은 가격순
+      expect:
+        lines: ["45000 > 12000 > 3500 > 800"]
+misconceptions: [js.mc.sort-compare-boolean]
+hints:
+  - 비교 함수가 음수를 돌려주면 `a`가 앞, 양수를 돌려주면 `b`가 앞이에요.
+  - 큰 수가 앞에 와야 해요. `a`가 `b`보다 클 때 비교 함수는 음수와 양수 중 무엇을 돌려줘야 할까요?
+  - 오름차순 비교 함수 `a - b`와 비교해서, 무엇을 바꾸면 순서가 뒤집힐지 생각해 보세요.
+explanation: |
+  예시 정답은 `b - a`예요.
+
+  - `a`가 12000, `b`가 45000이면 `b - a`는 양수라서 `b`(45000)가 앞으로 가요. 큰 수가 앞에 오는 내림차순이에요.
+  - `a - b`라고 쓰면 작은 수부터 정렬되어 `800 > 3500 > 12000 > 45000`이 나와요.
+  - `a < b`처럼 `true`·`false`를 돌려주면 음수가 나오지 않아 제대로 정렬되지 않아요. 비교 함수는 음수·0·양수를 돌려줘야 해요.
+  - `-(a - b)`처럼 같은 값을 돌려주는 다른 식도 실행 결과가 같아서 정답으로 채점돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

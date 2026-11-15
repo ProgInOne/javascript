@@ -1,0 +1,92 @@
+id: js-basics.arrays.array-iteration.impl-count-passed
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.arr.for-of, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [for-of, count, write-code]
+estimatedSeconds: 200
+prompt: |
+  점수 배열 `scores`와 합격 기준 점수 `passLine`을 받아, 합격한 사람이 몇 명인지 돌려주는 함수 `countPassed(scores, passLine)`를 완성하세요. 점수가 `passLine` **이상**이면 합격이에요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `countPassed([72, 45, 60, 88], 60)` | `3` |
+  | `countPassed([50, 40], 60)` | `0` |
+
+  `for...of`로 점수를 하나씩 꺼내 확인해 보세요. 받은 배열은 바꾸지 않아요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function countPassed(scores, passLine) {
+            // 여기에 작성하세요
+          }
+  entry: countPassed
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function countPassed(scores, passLine) {
+            let count = 0;
+            for (const score of scores) {
+              if (score >= passLine) {
+                count++;
+              }
+            }
+            return count;
+          }
+  checks:
+    - { kind: call, id: basic, args: [[72, 45, 60, 88], 60], expect: { equals: 3 }, requirement: 합격자 세기 }
+    - { kind: call, id: none, args: [[50, 40], 60], expect: { equals: 0 }, requirement: 합격자 세기 }
+    - kind: call
+      id: empty
+      visible: false
+      description: 점수가 하나도 없으면 0명이어야 합니다.
+      requirement: 합격자 세기
+      args: [[], 60]
+      expect: { equals: 0 }
+    - kind: call
+      id: other-line
+      visible: false
+      description: 합격 기준이 달라지면 그 기준으로 세어야 합니다.
+      requirement: 기준 점수 사용
+      args: [[100, 90, 80, 85, 70], 85]
+      expect: { equals: 3 }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 점수 배열을 바꾸면 안 됩니다.
+      requirement: 원래 배열 지키기
+      args: [[72, 45, 60, 88], 60]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.accumulator-reset-in-loop]
+hints:
+  - 합격자 수를 셀 변수가 필요해요. 반복이 시작되기 전에 0으로 만들어 두세요.
+  - "`for (const score of scores)`로 점수를 하나씩 꺼내, 기준과 비교해 보세요."
+  - "\"이상\"은 기준과 같은 점수도 포함해요. 조건이 참일 때만 세는 변수를 1 늘리고, 반복이 끝난 뒤 돌려줘요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function countPassed(scores, passLine) {
+    let count = 0;
+    for (const score of scores) {
+      if (score >= passLine) {
+        count++;
+      }
+    }
+    return count;
+  }
+  ```
+
+  - `count`는 반복 **앞**에서 0으로 만들어요. 반복 안에서 만들면 바퀴마다 0으로 돌아가요.
+  - "이상"이므로 `>=`예요. `>`로 쓰면 첫 번째 예의 60점이 빠져 2가 나와요.
+  - 기준을 60으로 고정하지 말고 `passLine`을 써야 기준이 85인 숨겨진 테스트도 통과해요.
+  - 빈 배열이면 반복이 돌지 않아 0이 그대로 돌아가요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

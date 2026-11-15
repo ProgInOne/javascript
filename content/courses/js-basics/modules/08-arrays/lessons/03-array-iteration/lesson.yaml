@@ -1,0 +1,17 @@
+id: js-basics.arrays.array-iteration
+title: 배열 순회
+summary: for...of로 배열의 요소를 하나씩 꺼내고, 인덱스가 필요할 때는 for 반복을 쓰고, forEach로 요소마다 콜백을 부르는 법과, for...in과 forEach의 return이 배열 순회에서 어떻게 동작하는지 배웁니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 14, practice: 26 }
+concepts:
+  primary: [js.arr.for-of, js.arr.foreach]
+  practiced: [js.arr.length, js.arr.element-update, js.loops.accumulator-pattern, js.fn.callback]
+  reviewed: [js.loops.for, js.loops.break, js.fn.arrow, js.arr.push-pop]
+objectives:
+  - for...of로 배열의 요소를 차례로 꺼내 누적·세기·찾기를 할 수 있다.
+  - 인덱스가 필요할 때 for 반복을 고르고, for...in이 배열에서 인덱스 문자열을 준다는 것을 설명할 수 있다.
+  - forEach에 콜백을 넘겨 요소와 인덱스를 받고, forEach 안의 return이 반복을 멈추지 않는다는 것을 알고 결과를 예측할 수 있다.
+  - 반복 변수에 대입해도 배열이 바뀌지 않는다는 것을 알고, 요소를 바꾸려면 인덱스로 대입할 수 있다.
+practice:
+  targetCount: 18

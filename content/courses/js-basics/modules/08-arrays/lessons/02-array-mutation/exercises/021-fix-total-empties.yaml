@@ -1,0 +1,90 @@
+id: js-basics.arrays.array-mutation.fix-total-empties
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.arr.mutating-vs-not, weight: 1 }
+  - { id: js.arr.push-pop, weight: 0.5 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [pop, side-effect, function-argument, accumulator, debugging]
+estimatedSeconds: 300
+prompt: |
+  장바구니 가격 목록 `prices`의 합계를 돌려주는 함수 `totalPrice(prices)`예요. 합계는 맞게 나오는데, 이 함수를 부른 뒤로 장바구니 화면의 목록이 텅 비어 버리고, 합계를 한 번 더 계산하면 0원이 나와요.
+
+  함수가 합계를 바르게 돌려주면서, 받은 가격 목록은 **그대로 두도록** 고치세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `totalPrice([1000, 2500, 500])` | `4000` |
+  | `totalPrice([])` | `0` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function totalPrice(prices) {
+            let total = 0;
+            while (prices.length > 0) {
+              total += prices.pop();
+            }
+            return total;
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function totalPrice(prices) {
+            let total = 0;
+            for (let i = 0; i < prices.length; i++) {
+              total += prices[i];
+            }
+            return total;
+          }
+  entry: totalPrice
+  bugDescription: 합계는 맞지만, 부른 뒤 장바구니의 가격 목록이 텅 비고, 같은 목록으로 다시 계산하면 0원이 나와요.
+  bugMisconception: js.mc.function-arg-array-copied
+  checks:
+    - { kind: call, id: basic, args: [[1000, 2500, 500]], expect: { equals: 4000 }, requirement: 합계 }
+    - { kind: call, id: empty, args: [[]], expect: { equals: 0 }, requirement: 합계 }
+    - kind: call
+      id: keep-prices
+      description: 함수를 부른 뒤에도 받은 가격 목록이 그대로 남아 있어야 합니다.
+      requirement: 가격 목록 지키기
+      args: [[1200, 3000]]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.function-arg-array-copied
+    - kind: call
+      id: other-total
+      visible: false
+      description: 처음 보는 가격 목록도 모두 더해야 합니다.
+      requirement: 합계
+      args: [[990, 10, 4500, 500, 1]]
+      expect: { equals: 6001 }
+misconceptions: [js.mc.function-arg-array-copied, js.mc.mutating-method-keeps-original]
+hints:
+  - 목록이 비는 일은 함수 안의 어느 메서드 때문일까요? 그 메서드는 배열을 바꾸는 쪽인가요?
+  - 함수에 넘긴 배열은 복사본이 아니라 장바구니의 그 배열이에요. 함수 안에서 요소를 꺼내면 장바구니에서도 사라져요.
+  - 요소를 꺼내지 말고 읽기만 하면 돼요. 인덱스를 0부터 차례로 늘리며 각 요소를 더하는 반복으로 바꿔 보세요.
+explanation: |
+  4번 줄의 `prices.pop()`이 원인이에요.
+
+  `pop`은 요소를 꺼내면서 배열에서 **지워요**. 그리고 함수에 넘긴 `prices`는 장바구니의 가격 배열과 **같은 배열**이에요. 그래서 합계를 구하는 동안 장바구니 목록의 요소가 하나씩 지워져 결국 텅 비고, 다시 계산하면 더할 것이 없어 0이 나왔어요.
+
+  합계는 요소를 **읽기만** 하면 구할 수 있어요.
+
+  ```js
+  function totalPrice(prices) {
+    let total = 0;
+    for (let i = 0; i < prices.length; i++) {
+      total += prices[i];
+    }
+    return total;
+  }
+  ```
+
+  - `prices[i]`로 읽기만 하므로 배열은 그대로예요. 몇 번을 불러도 같은 합계가 나와요.
+  - 반복 조건을 `prices.length > 0`으로 둔 채 `pop`만 지우면 끝나지 않는 반복이 돼요. 길이가 줄지 않기 때문이에요.
+  - "읽기만 하는 함수는 입력을 바꾸지 않는다"는 것이 함수의 약속이에요. 합계·개수·최댓값을 구하는 함수에서는 배열을 바꾸는 메서드를 쓰지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

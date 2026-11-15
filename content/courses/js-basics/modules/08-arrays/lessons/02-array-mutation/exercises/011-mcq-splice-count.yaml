@@ -1,0 +1,54 @@
+id: js-basics.arrays.array-mutation.mcq-splice-count
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.arr.splice, weight: 1 }
+tags: [splice, delete-count]
+estimatedSeconds: 70
+prompt: |
+  다음 코드를 실행한 뒤 `seats`에는 무엇이 들어 있나요?
+code: |
+  const seats = ["A", "B", "C", "D", "E", "F"];
+  seats.splice(2, 3);
+spec:
+  options:
+    - id: a
+      text: '`["A", "B", "F"]`'
+    - id: b
+      text: '`["A", "B", "D", "E", "F"]`'
+      misconception: js.mc.splice-second-arg-end
+      rationale: 두 번째 인수 3은 끝 위치가 아니라 지울 개수예요. 2번부터 3개를 지워요.
+    - id: c
+      text: '`["A", "B", "C", "D", "E", "F"]`'
+      misconception: js.mc.mutating-method-keeps-original
+      rationale: "`splice`는 원래 배열을 직접 바꾸는 메서드예요. 결과를 담지 않아도 `seats`가 바뀌어요."
+    - id: d
+      text: '`["C", "D", "E"]`'
+      rationale: 이것은 `splice`가 돌려주는 값(지운 요소들)이에요. `seats`에는 지우고 남은 요소들이 있어요.
+    - id: e
+      text: '`["A", "B"]`'
+      rationale: 두 번째 인수를 생략하면 끝까지 지워서 이렇게 돼요. 여기서는 지울 개수 3을 정했어요.
+  correct: a
+misconceptions: [js.mc.splice-second-arg-end]
+hints:
+  - "`splice`의 두 인수가 각각 무슨 뜻인지 떠올려 보세요. 첫 번째는 시작 인덱스예요."
+  - 두 번째 인수는 끝 위치일까요, 지울 개수일까요? 레슨의 `splice(1, 2)` 예를 다시 보세요.
+  - 배열 아래에 인덱스를 적고, 시작 인덱스에서부터 정한 개수만큼 지워 보세요.
+explanation: |
+  정답은 `["A", "B", "F"]`예요.
+
+  `splice(2, 3)`은 2번 인덱스부터 **3개**를 지워요.
+
+  | 인덱스 | 0 | 1 | 2 | 3 | 4 | 5 |
+  |---|---|---|---|---|---|---|
+  | 요소 | A | B | C | D | E | F |
+  | 결과 | 남음 | 남음 | 지움 | 지움 | 지움 | 남음 |
+
+  - `["A", "B", "D", "E", "F"]`: 두 번째 인수를 끝 위치로 읽어 2번 하나만 지운 결과예요. 끝 위치를 받는 것은 `slice`예요.
+  - 원래 그대로인 배열: `splice`는 원래 배열을 바꿔요.
+  - `["C", "D", "E"]`: `splice`가 **돌려주는** 지운 요소들이에요. 이 코드는 돌려받은 값을 쓰지 않았어요.
+  - `["A", "B"]`: `seats.splice(2)`처럼 개수를 생략했을 때의 결과예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

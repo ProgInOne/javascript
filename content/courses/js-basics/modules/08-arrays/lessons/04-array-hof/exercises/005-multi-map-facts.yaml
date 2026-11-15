@@ -1,0 +1,49 @@
+id: js-basics.arrays.array-hof.multi-map-facts
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.arr.map, weight: 1 }
+tags: [map, facts]
+estimatedSeconds: 100
+prompt: |
+  `const result = nums.map(콜백);`에 대한 설명으로 맞는 것을 모두 고르세요. `nums`는 숫자 배열이에요.
+spec:
+  options:
+    - id: a
+      text: "`result`의 길이는 항상 `nums`의 길이와 같다"
+      missedMisconception: js.mc.map-can-skip-items
+    - id: b
+      text: "`map`을 부른 뒤에도 `nums`의 요소는 그대로다"
+      missedMisconception: js.mc.map-mutates-original
+    - id: c
+      text: 콜백이 아무 값도 돌려주지 않으면 `result`의 그 자리에는 `undefined`가 들어간다
+      missedMisconception: js.mc.map-callback-no-return
+    - id: d
+      text: 콜백이 아무 값도 돌려주지 않은 요소는 `result`에서 빠진다
+      misconception: js.mc.map-can-skip-items
+      rationale: "`map`은 빼지 않아요. 아무것도 돌려주지 않은 자리에는 `undefined`가 들어가요. 고르는 일은 `filter`가 해요."
+    - id: e
+      text: "`map`은 `nums`의 각 요소를 콜백이 돌려준 값으로 바꾸고, 바뀐 `nums`를 돌려준다"
+      misconception: js.mc.map-mutates-original
+      rationale: "`map`은 원래 배열을 그대로 두고 새 배열을 만들어 돌려줘요."
+  correct: [a, b, c]
+misconceptions: [js.mc.map-can-skip-items, js.mc.map-mutates-original, js.mc.map-callback-no-return]
+hints:
+  - "`map`이 새 배열을 만드는 방법을 떠올려 보세요. 요소마다 무엇을 받아 어디에 담나요?"
+  - 콜백이 값을 돌려주지 않으면 그 콜백의 결과는 무엇일까요? 모듈 6에서 배운 내용이에요.
+  - 레슨 첫 번째 예제에서 `map`을 부른 뒤 `prices`가 어떻게 출력됐는지 다시 확인해 보세요.
+explanation: |
+  맞는 설명은 세 가지예요.
+
+  - **길이가 같다**: `map`은 요소마다 콜백을 불러 돌려받은 값을 같은 자리에 담아요. 그래서 결과의 길이는 원래 배열과 항상 같아요.
+  - **원래 배열은 그대로다**: `map`은 새 배열을 만들어 돌려줄 뿐 `nums`를 바꾸지 않아요.
+  - **돌려주지 않으면 `undefined`**: `return`이 없는 함수는 `undefined`를 돌려주므로, 그 자리에는 `undefined`가 들어가요.
+
+  틀린 설명:
+
+  - "돌려주지 않은 요소는 빠진다": `map`은 요소를 빼지 않아요. 고르려면 `filter`를 써요.
+  - "`nums`를 바꾸고 돌려준다": `map`의 결과는 새 배열이에요. `result`와 `nums`는 서로 다른 배열이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

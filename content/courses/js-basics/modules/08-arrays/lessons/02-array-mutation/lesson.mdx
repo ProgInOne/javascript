@@ -1,0 +1,388 @@
+<Section kind="objectives">
+- `push`·`pop`으로 배열 끝에, `unshift`·`shift`로 배열 앞에 요소를 넣고 빼며, 각 메서드가 돌려주는 값을 예측할 수 있어요.
+- `splice(시작, 지울 개수, 넣을 값)`으로 중간 요소를 지우거나 넣고, 두 번째 인수가 **개수**라는 것을 알고 쓸 수 있어요.
+- 원래 배열을 바꾸는 메서드와 새 값을 돌려주는 메서드를 구별하고, 결과를 다시 대입해서 생기는 버그를 고칠 수 있어요.
+- 입력 배열을 바꾸지 말아야 하는 함수와 바꿔야 하는 함수를 요구사항에 맞게 작성할 수 있어요.
+</Section>
+
+<Section kind="prerequisites" />
+
+<Section kind="intro">
+장보기 목록 앱을 만든다고 해 볼게요. 사용자는 목록 끝에 새 물건을 적고, 다 산 물건은 지우고, 급한 물건은 맨 앞에 끼워 넣어요. 목록은 계속 바뀌어요.
+
+앞 단원에서는 `list[3] = "우유"`처럼 인덱스를 직접 정해서 요소를 바꿨어요. 하지만 "맨 끝에 하나 더"를 하려면 매번 `list.length`를 계산해야 하고, 중간의 요소를 지우려면 뒤의 요소를 한 칸씩 당기는 반복을 직접 써야 해요. 실수하기 쉬운 일이에요.
+
+배열에는 이런 일을 해 주는 메서드가 미리 들어 있어요. 모듈 7의 문자열 메서드는 원래 문자열을 그대로 두고 새 문자열을 돌려줬죠. 배열은 **바꿀 수 있는 값**이라서, 이 단원의 메서드 대부분은 원래 배열을 **직접** 바꿔요. 이 단원에서는 끝·앞·중간에서 요소를 넣고 빼는 메서드와, 어떤 메서드가 원래 배열을 바꾸는지 구별하는 법을 배워요.
+</Section>
+
+<Section kind="principle">
+### 끝에서 넣고 빼기: push와 pop
+
+| 메서드 | 하는 일 | 돌려주는 값 |
+|---|---|---|
+| `arr.push(값)` | 배열 **끝**에 값을 넣어요 | 넣은 뒤의 **새 길이**(숫자) |
+| `arr.pop()` | 배열 **끝**의 요소를 꺼내 배열에서 지워요 | **꺼낸 요소** 하나 |
+
+```js
+const stack = ["책1", "책2"];
+const length = stack.push("책3"); // stack: ["책1", "책2", "책3"], length: 3
+const taken = stack.pop();        // stack: ["책1", "책2"], taken: "책3"
+```
+
+책을 쌓는 모습을 떠올리면 쉬워요. 새 책은 맨 위(끝)에 올리고, 꺼낼 때도 맨 위(끝)에서 꺼내요.
+
+- `push`는 배열을 돌려주지 **않아요**. 돌려받는 값은 길이라서, `stack = stack.push("책3")`처럼 다시 대입하면 `stack`에 숫자가 들어가 버려요.
+- `pop`은 인수를 받지 않아요. `pop("책1")`처럼 넣어도 무시하고 항상 **마지막** 요소를 꺼내요.
+- 빈 배열에서 `pop()`을 부르면 꺼낼 것이 없어서 `undefined`를 돌려줘요. 오류는 나지 않아요.
+
+### 앞에서 넣고 빼기: unshift와 shift
+
+| 메서드 | 하는 일 | 돌려주는 값 |
+|---|---|---|
+| `arr.unshift(값)` | 배열 **맨 앞**에 값을 넣어요 | 넣은 뒤의 **새 길이** |
+| `arr.shift()` | 배열 **맨 앞**의 요소를 꺼내 지워요 | **꺼낸 요소** 하나 |
+
+줄 서기를 떠올려 보세요. 새로 온 사람은 줄 끝에 서고(`push`), 차례가 된 사람은 줄 맨 앞에서 빠져요(`shift`). 맨 앞에 넣으면(`unshift`) 원래 있던 요소들의 인덱스가 하나씩 **뒤로 밀리고**, 맨 앞을 빼면(`shift`) 하나씩 **앞으로 당겨져요**.
+
+이름이 헷갈리면 짝으로 기억해요. 넣는 메서드(`push`·`unshift`)는 **새 길이**를, 빼는 메서드(`pop`·`shift`)는 **꺼낸 요소**를 돌려줘요. 그리고 이름이 긴 `unshift`가 넣는 쪽이에요.
+
+### 중간에서 지우고 넣기: splice
+
+`arr.splice(시작, 지울 개수, 넣을 값1, 넣을 값2, ...)`는 시작 인덱스부터 **정한 개수만큼** 요소를 지우고, 그 자리에 넣을 값들을 끼워 넣어요. 그리고 **지운 요소들을 배열로** 돌려줘요.
+
+| 호출 (`days`가 `["월", "화", "수", "목"]`일 때) | 바뀐 `days` | 돌려주는 값 |
+|---|---|---|
+| `days.splice(1, 2)` | `["월", "목"]` | `["화", "수"]` |
+| `days.splice(1, 0, "공휴일")` | `["월", "공휴일", "화", "수", "목"]` | `[]` |
+| `days.splice(2, 1, "쉬는 날")` | `["월", "화", "쉬는 날", "목"]` | `["수"]` |
+
+두 가지 관점으로 이해할 수 있어요.
+
+1. **지우기 + 끼워 넣기로 보기**: "1번부터 2개를 지워라", "1번 자리에 0개를 지우고 하나를 끼워 넣어라"처럼 읽어요. 지울 개수를 0으로 하면 아무것도 지우지 않고 넣기만 해요.
+1. **가위와 풀로 보기**: 시작 위치에 가위를 대고 정한 개수만큼 오려 내요(오린 조각이 돌려주는 값). 그 빈자리에 새 조각을 풀로 붙이면, 뒤의 요소들은 알아서 당겨지거나 밀려요.
+
+두 번째 인수는 끝 **위치**가 아니라 지울 **개수**예요. 문자열의 `slice(시작, 끝)`과 헷갈리지 않게 조심해요.
+
+특정 값을 지우고 싶으면 먼저 위치를 찾아요. 문자열처럼 배열에도 `indexOf`가 있어서, 값이 처음 나오는 인덱스를, 없으면 `-1`을 돌려줘요(자세히는 "찾기와 정렬" 단원에서 배워요). 찾은 위치로 `splice(위치, 1)`을 부르면 그 요소 하나가 지워져요.
+
+### 배열을 바꾸는 메서드와 바꾸지 않는 메서드
+
+배열 메서드는 두 무리로 나뉘어요. 어느 무리인지에 따라 결과를 쓰는 방법이 달라요.
+
+| 메서드 | 원래 배열 | 돌려주는 값 | 결과를 쓰는 법 |
+|---|---|---|---|
+| `push`, `unshift` | **바뀜** | 새 길이 | 원래 배열을 그대로 씀 |
+| `pop`, `shift` | **바뀜** | 꺼낸 요소 | 원래 배열을 그대로 씀 |
+| `splice` | **바뀜** | 지운 요소들의 배열 | 원래 배열을 그대로 씀 |
+| `join` (모듈 7) | 그대로 | 이어 붙인 문자열 | 변수에 담아서 씀 |
+| `slice`, `concat` ("찾기와 정렬" 단원) | 그대로 | 새 배열 | 변수에 담아서 씀 |
+| `includes`, `indexOf` | 그대로 | 불리언, 인덱스 | 바로 쓰거나 변수에 담음 |
+
+- **바꾸는 메서드**는 이미 원래 배열에 결과를 남겼어요. 돌려주는 값은 덤이에요. 그래서 `arr = arr.push(x)`처럼 다시 대입하면 안 돼요.
+- **바꾸지 않는 메서드**는 문자열 메서드처럼 결과를 새 값으로 돌려줄 뿐이에요. 돌려받은 값을 담지 않으면 결과는 사라져요.
+- 다음 단원들에서 배울 `map`·`filter`는 바꾸지 않는 쪽, `sort`는 바꾸는 쪽이에요.
+
+<Callout kind="warning" title="함수에 넘긴 배열도 같은 배열이에요">
+배열을 함수에 인수로 넘기면 복사본이 아니라 **같은 배열**이 넘어가요. 그래서 함수 안에서 `push`·`pop`·`splice`를 하면 함수 밖의 배열도 바뀌어요. 입력을 바꾸지 말아야 하는 함수라면, 바꾸는 메서드를 쓰지 않거나 먼저 복사본을 만들어 그 복사본을 바꿔요. 왜 같은 배열이 되는지는 모듈 9에서 자세히 배워요.
+</Callout>
+</Section>
+
+<Section kind="examples">
+첫 번째 예제는 `push`와 `pop`이 돌려주는 값이에요. 네 줄을 예측해 보세요.
+
+<RunnableExample id="push-pop" lang="js" predict predictKind="console" concepts={["js.arr.push-pop"]}>
+```js
+const plates = ["흰 접시", "파란 접시"];
+const count = plates.push("빨간 접시");
+console.log(count);
+console.log(plates);
+const taken = plates.pop();
+console.log(taken);
+console.log(plates.length);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+3
+["흰 접시", "파란 접시", "빨간 접시"]
+빨간 접시
+2
+```
+
+| 줄 | `plates` | 돌려받은 값 |
+|---|---|---|
+| 2번 `push("빨간 접시")` | `["흰 접시", "파란 접시", "빨간 접시"]` | `count`: `3` (새 길이) |
+| 5번 `pop()` | `["흰 접시", "파란 접시"]` | `taken`: `"빨간 접시"` (꺼낸 요소) |
+
+- `count`에는 배열이 아니라 숫자 3이 들어 있어요. `push`는 넣은 뒤의 길이를 돌려줘요.
+- `push`는 `plates`를 직접 바꿨어요. 그래서 4번 줄에서 `plates`를 출력하면 세 번째 접시가 보여요.
+- `pop`은 마지막 요소 `"빨간 접시"`를 꺼내 돌려주고, `plates`에서는 지워요. 그래서 길이는 2예요.
+</Section>
+
+<Section kind="examples">
+두 번째 예제는 줄 서기예요. `push`로 줄 끝에 서고, `shift`로 맨 앞 사람이 빠지고, `unshift`로 맨 앞에 끼워 넣어요.
+
+<RunnableExample id="queue" lang="js" predict predictKind="console" concepts={["js.arr.shift-unshift"]}>
+```js
+const line = ["민지", "준호"];
+line.push("서연");
+const first = line.shift();
+console.log(first);
+const size = line.unshift("할머니");
+console.log(size);
+console.log(line);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+민지
+3
+["할머니", "준호", "서연"]
+```
+
+| 줄 | `line` | 돌려받은 값 |
+|---|---|---|
+| 2번 `push("서연")` | `["민지", "준호", "서연"]` | (쓰지 않음) |
+| 3번 `shift()` | `["준호", "서연"]` | `first`: `"민지"` |
+| 5번 `unshift("할머니")` | `["할머니", "준호", "서연"]` | `size`: `3` |
+
+- `shift`는 맨 앞의 `"민지"`를 꺼내 돌려줘요. 남은 `"준호"`는 0번으로, `"서연"`은 1번으로 당겨져요.
+- `unshift`는 맨 앞에 넣고 새 길이 3을 돌려줘요. 원래 요소들은 한 칸씩 뒤로 밀려요.
+</Section>
+
+<Section kind="examples">
+세 번째 예제는 `splice`로 지우기, 넣기, 바꾸기를 차례로 해 보는 코드예요. 돌려받은 값과 바뀐 배열을 함께 보세요.
+
+<RunnableExample id="splice" lang="js" concepts={["js.arr.splice"]}>
+```js
+const days = ["월", "화", "수", "목", "금"];
+const removed = days.splice(1, 2);
+console.log(removed);
+console.log(days);
+days.splice(1, 0, "화");
+console.log(days);
+const replaced = days.splice(2, 1, "수", "목");
+console.log(replaced);
+console.log(days);
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+["화", "수"]
+["월", "목", "금"]
+["월", "화", "목", "금"]
+["목"]
+["월", "화", "수", "목", "금"]
+```
+
+- 2번 줄 `splice(1, 2)`: 1번부터 **2개**(`"화"`, `"수"`)를 지우고, 지운 요소들을 배열로 돌려줘요. `days`에는 `["월", "목", "금"]`이 남아요.
+- 5번 줄 `splice(1, 0, "화")`: 1번 자리에서 0개를 지우고 `"화"`를 끼워 넣어요. 원래 1번이던 `"목"`부터 뒤로 밀려요.
+- 7번 줄 `splice(2, 1, "수", "목")`: 2번의 `"목"` 1개를 지우고 그 자리에 `"수"`, `"목"` 두 개를 넣어요. 지운 개수와 넣는 개수가 달라도 돼요. 그래서 길이가 4에서 5로 늘어요.
+</Section>
+
+<Section kind="examples">
+네 번째 예제는 바꾸는 메서드와 바꾸지 않는 메서드를 한 코드에 섞었어요. 함수 안의 `push`가 밖의 `snacks`에 어떤 영향을 주는지, `join`의 결과가 언제 만들어졌는지 생각하며 예측해 보세요.
+
+<RunnableExample id="mutate-or-not" lang="js" predict predictKind="console" concepts={["js.arr.mutating-vs-not"]}>
+```js
+function addSnack(list, snack) {
+  list.push(snack);
+}
+
+const snacks = ["과자", "젤리"];
+const text = snacks.join(" + ");
+addSnack(snacks, "초콜릿");
+console.log(text);
+console.log(snacks);
+console.log(snacks.join(" + "));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+과자 + 젤리
+["과자", "젤리", "초콜릿"]
+과자 + 젤리 + 초콜릿
+```
+
+- 6번 줄 `join`은 `snacks`를 바꾸지 않고, 그 순간의 요소로 만든 **새 문자열** `"과자 + 젤리"`를 돌려줘요. `text`에는 이 문자열이 담겨 있어서, 나중에 `snacks`가 바뀌어도 그대로예요.
+- 7번 줄에서 `snacks`를 `addSnack`에 넘기면, 함수 안의 `list`는 `snacks`와 **같은 배열**이에요. `list.push("초콜릿")`은 바로 그 배열을 바꿔요. 그래서 함수가 아무것도 돌려주지 않았는데도 9번 줄의 `snacks`에 `"초콜릿"`이 보여요.
+- 10번 줄은 바뀐 `snacks`로 `join`을 새로 불러서 세 요소가 모두 이어져요.
+</Section>
+
+<Section kind="examples">
+다섯 번째 예제는 할 일 목록에서 끝낸 일을 지우는 코드예요. `indexOf`로 위치를 찾고 `splice`로 지워요.
+
+<RunnableExample id="remove-done" lang="js" concepts={["js.arr.splice", "js.arr.mutating-vs-not"]}>
+```js
+const todos = ["빨래", "장보기", "청소"];
+const done = "장보기";
+const index = todos.indexOf(done);
+
+if (index !== -1) {
+  todos.splice(index, 1);
+}
+
+console.log(todos);
+console.log(todos.indexOf("숙제"));
+```
+</RunnableExample>
+</Section>
+
+<Section kind="walkthrough">
+```text
+["빨래", "청소"]
+-1
+```
+
+- `todos.indexOf("장보기")`는 1이에요. `splice(1, 1)`은 1번부터 1개를 지워요.
+- 목록에 없는 값이면 `indexOf`가 `-1`이에요. 확인 없이 `splice(-1, 1)`을 부르면 `-1`이 "뒤에서 첫 번째"라는 뜻이 되어 **마지막 요소**가 지워져요. 그래서 `index !== -1`로 먼저 확인했어요.
+- 마지막 줄처럼 없는 값을 찾으면 `-1`이 나와요. 모듈 7의 문자열 `indexOf`와 같은 규칙이에요.
+</Section>
+
+<Section kind="pitfalls">
+<Pitfall misconception="js.mc.push-returns-new-array">
+<Wrong>`push`는 값을 넣은 새 배열을 돌려주니까, `cart = cart.push("우유");`처럼 다시 대입해야 목록이 바뀐다.</Wrong>
+<Actual>
+
+첫 번째 예제에서 `count`에는 배열이 아니라 길이 3이 들어 있었어요. 다시 대입하면 배열이 숫자로 바뀌어 버려요.
+
+```js
+let cart = ["빵"];
+cart = cart.push("우유");
+console.log(cart); // 2
+```
+</Actual>
+<Right>`push`는 원래 배열을 직접 바꿔요. `cart.push("우유");`처럼 결과를 담지 않고 한 줄로 쓰면 돼요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.pop-removes-given-value">
+<Wrong>`list.pop("우유")`처럼 인수를 넣으면 목록에서 `"우유"`를 찾아 지운다.</Wrong>
+<Actual>`["우유", "빵", "달걀"].pop("우유")`는 인수를 무시하고 마지막 요소 `"달걀"`을 지워요. 목록은 `["우유", "빵"]`이 돼요.</Actual>
+<Right>`pop`은 항상 마지막 요소를 꺼내요. 특정 값을 지우려면 다섯 번째 예제처럼 `indexOf`로 위치를 찾아 `splice(위치, 1)`을 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.pop-returns-rest">
+<Wrong>`const rest = plates.pop();`이면 `rest`에 마지막 요소가 빠진 나머지 배열이 들어간다.</Wrong>
+<Actual>첫 번째 예제에서 `taken`에는 꺼낸 요소 `"빨간 접시"` 하나가 들어 있었어요. 나머지는 원래 배열 `plates`에 남아 있어요.</Actual>
+<Right>`pop`과 `shift`는 **꺼낸 요소**를 돌려줘요. 남은 요소가 필요하면 원래 배열을 그대로 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.shift-unshift-swapped">
+<Wrong>`shift("할머니")`가 맨 앞에 넣고, `unshift()`가 맨 앞 요소를 꺼낸다.</Wrong>
+<Actual>두 번째 예제에서 맨 앞의 `"민지"`를 꺼낸 것은 `shift()`, 맨 앞에 `"할머니"`를 넣은 것은 `unshift("할머니")`였어요.</Actual>
+<Right>넣는 쪽은 `push`(끝)와 `unshift`(앞), 빼는 쪽은 `pop`(끝)과 `shift`(앞)예요. 이름이 긴 `unshift`가 넣는 쪽이라고 기억해요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.splice-slice-same">
+<Wrong>`arr.splice(1, 2)`와 `arr.slice(1, 2)`는 이름이 비슷하니 같은 일을 한다.</Wrong>
+<Actual>
+
+`splice`는 원래 배열에서 요소를 **지우고** 지운 요소들을 돌려줘요. `slice`는 원래 배열을 그대로 두고 일부를 **복사**한 새 배열을 돌려줘요.
+
+```js
+const a = ["가", "나", "다", "라"];
+const b = ["가", "나", "다", "라"];
+console.log(a.splice(1, 2)); // ["나", "다"]
+console.log(b.slice(1, 2));  // ["나"]
+console.log(a);              // ["가", "라"]
+console.log(b);              // ["가", "나", "다", "라"]
+```
+</Actual>
+<Right>요소를 지우거나 끼워 넣을 때는 `splice`, 원래 배열을 지키며 일부를 꺼낼 때는 `slice`를 써요. `slice`는 "찾기와 정렬" 단원에서 자세히 배워요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.splice-second-arg-end">
+<Wrong>`arr.splice(2, 4)`는 문자열의 `slice`처럼 2번부터 4번 앞까지, 즉 2개를 지운다.</Wrong>
+<Actual>`["a", "b", "c", "d", "e", "f"].splice(2, 4)`는 2번부터 **4개** `["c", "d", "e", "f"]`를 지워요. 배열에는 `["a", "b"]`만 남아요.</Actual>
+<Right>`splice`의 두 번째 인수는 지울 **개수**예요. 하나만 지우려면 `splice(위치, 1)`, 지우지 않고 넣기만 하려면 `splice(위치, 0, 값)`이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.mutating-method-keeps-original">
+<Wrong>문자열 메서드처럼 `push`·`pop`·`splice`도 원래 배열은 그대로 두고, 바뀐 결과만 돌려준다.</Wrong>
+<Actual>세 번째 예제에서 `days.splice(1, 2)`를 부른 뒤 `days`를 출력하자 `"화"`, `"수"`가 사라져 있었어요. 메서드가 원래 배열을 직접 바꿨어요.</Actual>
+<Right>배열은 바꿀 수 있는 값이에요. `push`·`pop`·`shift`·`unshift`·`splice`는 원래 배열을 바꾸고, 돌려주는 값은 길이나 꺼낸 요소 같은 덤이에요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.non-mutating-method-changes-original">
+<Wrong>`words.join("-");`만 실행해도 `words`가 `"-"`로 이어진 문자열로 바뀐다.</Wrong>
+<Actual>
+
+`join`은 원래 배열을 바꾸지 않는 쪽이에요. 결과를 담지 않으면 버려져요.
+
+```js
+const words = "봄 여름 가을".split(" ");
+words.join("-");
+console.log(words); // ["봄", "여름", "가을"]
+```
+</Actual>
+<Right>바꾸지 않는 메서드(`join`, `slice`, `concat`, `includes`, `indexOf`)는 결과를 `const text = words.join("-");`처럼 변수에 담거나 바로 써요.</Right>
+</Pitfall>
+
+<Pitfall misconception="js.mc.function-arg-array-copied">
+<Wrong>함수에 배열을 넘기면 복사본이 넘어가니까, 함수 안에서 `push`를 해도 밖의 배열은 그대로다.</Wrong>
+<Actual>네 번째 예제에서 `addSnack(snacks, "초콜릿")`을 부르자 밖의 `snacks`에 `"초콜릿"`이 생겼어요. 함수 안의 `list`와 밖의 `snacks`가 같은 배열이기 때문이에요.</Actual>
+<Right>함수 안에서 바꾸는 메서드를 쓰면 넘겨준 배열이 바뀌어요. 입력을 지켜야 하는 함수는 새 배열을 만들어 그 배열에 `push`하고, 그 새 배열을 돌려줘요.</Right>
+</Pitfall>
+</Section>
+
+<Section kind="in-practice">
+웹 사이트의 "최근 본 상품"은 새로 본 상품을 맨 앞에 넣고, 개수가 넘치면 가장 오래된 상품(맨 끝)을 지워요. `unshift`와 `pop`을 함께 쓰는 전형적인 모습이에요.
+
+```js
+const recent = ["운동화", "모자", "가방"];
+
+function viewItem(item) {
+  recent.unshift(item);
+  if (recent.length > 3) {
+    recent.pop();
+  }
+}
+
+viewItem("양말");
+console.log(recent); // ["양말", "운동화", "모자"]
+```
+
+- 장바구니 담기(`push`), 실행 취소 기록 되돌리기(`pop`), 대기열에서 다음 차례 부르기(`shift`), 할 일 목록에서 끝낸 일 지우기(`indexOf` + `splice`)도 모두 이 단원의 메서드로 만들어요.
+- 반대로 "합계 계산"이나 "목록 보여 주기"처럼 목록을 **읽기만** 하는 함수는 입력 배열을 바꾸면 안 돼요. 그런 함수가 `pop`으로 요소를 꺼내 쓰면, 한 번 부른 뒤 화면의 목록이 텅 비는 버그가 생겨요.
+</Section>
+
+<Section kind="check">
+`push`가 무엇을 돌려주는지 확인해 보세요.
+
+<InlineExercise ref="js-basics.arrays.array-mutation.mcq-push-returns" />
+
+앞에서 넣고 빼는 메서드를 확인해 보세요.
+
+<InlineExercise ref="js-basics.arrays.array-mutation.mcq-shift-unshift" />
+
+`splice`의 두 번째 인수를 확인해 보세요.
+
+<InlineExercise ref="js-basics.arrays.array-mutation.mcq-splice-count" />
+
+배열 메서드와 문자열 메서드의 차이를 확인해 보세요.
+
+<InlineExercise ref="js-basics.arrays.array-mutation.tf-push-new-array" />
+</Section>
+
+<Section kind="practice" />
+
+<Section kind="summary">
+- `push(값)`은 끝에, `unshift(값)`은 맨 앞에 넣고 새 길이를 돌려줘요.
+- `pop()`은 끝에서, `shift()`는 맨 앞에서 요소를 꺼내 그 요소를 돌려줘요. 빈 배열이면 `undefined`예요.
+- `splice(시작, 지울 개수, 넣을 값...)`은 중간 요소를 지우고 끼워 넣으며, 지운 요소들을 배열로 돌려줘요. 두 번째 인수는 끝 위치가 아니라 개수예요.
+- `push`·`pop`·`shift`·`unshift`·`splice`는 원래 배열을 바꾸므로 결과를 다시 대입하지 않아요.
+- `join`·`slice`·`concat`·`includes`·`indexOf`는 원래 배열을 그대로 두고 결과를 새 값으로 돌려주므로, 결과를 담아서 써요.
+- 함수에 넘긴 배열은 같은 배열이라, 함수 안에서 바꾸면 밖에서도 바뀌어요. 입력을 지켜야 하면 새 배열을 만들어요.
+</Section>
+
+<Section kind="next">
+다음 단원 "배열 순회"에서는 배열의 요소를 처음부터 끝까지 하나씩 꺼내는 `for...of`와, 요소마다 콜백을 불러 주는 `forEach`를 배워요. 이 단원의 `push`는 순회하면서 결과를 새 배열에 모을 때 계속 쓰게 돼요. <MdnLink path="Web/JavaScript/Reference/Global_Objects/Array/splice" />
+</Section>

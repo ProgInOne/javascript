@@ -1,0 +1,63 @@
+id: js-basics.arrays.array-basics.parsons-average
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.arr.length, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [length, loop, average, parsons]
+estimatedSeconds: 150
+prompt: |
+  점수 배열을 받아 평균을 돌려주는 함수 `average`를 만들고, 두 반의 평균을 출력하는 프로그램이에요. 점수가 몇 개든 동작해야 해요. 코드 조각을 순서대로 배열해서 아래처럼 출력되게 하세요.
+
+  ```text
+  90
+  72.5
+  ```
+spec:
+  lines:
+    - { id: l1, code: "function average(scores) {" }
+    - { id: l2, code: "let sum = 0;", indent: 1 }
+    - { id: l3, code: "for (let i = 0; i < scores.length; i++) {", indent: 1 }
+    - { id: l4, code: "sum += scores[i];", indent: 2 }
+    - { id: l5, code: "}", indent: 1 }
+    - { id: l6, code: "return sum / scores.length;", indent: 1 }
+    - { id: l7, code: "}" }
+    - { id: l8, code: "console.log(average([80, 90, 100]));" }
+    - { id: l9, code: "console.log(average([70, 75]));" }
+  distractors:
+    - { id: d1, code: "for (let i = 0; i <= scores.length; i++) {", replaces: l3, misconception: js.mc.array-last-index-is-length }
+    - { id: d2, code: "return sum / 3;", replaces: l6 }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 두 반의 평균 90과 72.5가 차례로 출력되어야 합니다.
+      requirement: 평균 구하기
+      expect:
+        lines: ["90", "72.5"]
+misconceptions: [js.mc.array-last-index-is-length]
+hints:
+  - 함수 안에서는 합계를 담을 변수를 먼저 만들고, 반복으로 요소를 하나씩 더한 뒤, 평균을 돌려줘요.
+  - 반복 머리가 두 개 보여요. 요소가 3개면 `i`는 몇까지 가야 하나요? 인덱스 3을 읽으면 무엇이 더해질까요?
+  - 평균을 구할 때 나누는 수가 두 가지 보여요. 두 번째 반은 점수가 2개라는 점을 떠올려 보세요.
+explanation: |
+  정답 순서예요.
+
+  ```js
+  function average(scores) {
+    let sum = 0;
+    for (let i = 0; i < scores.length; i++) {
+      sum += scores[i];
+    }
+    return sum / scores.length;
+  }
+  console.log(average([80, 90, 100]));
+  console.log(average([70, 75]));
+  ```
+
+  - 인덱스는 0부터 `length - 1`까지라 조건은 `i < scores.length`예요. `i <= scores.length`로 쓰면 마지막에 범위 밖 요소(`undefined`)를 더해서 평균이 `NaN`이 돼요.
+  - 나누는 수는 점수의 개수 `scores.length`예요. `3`으로 고정하면 첫 반은 90으로 맞지만 두 번째 반은 `145 / 3`이 되어 틀려요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

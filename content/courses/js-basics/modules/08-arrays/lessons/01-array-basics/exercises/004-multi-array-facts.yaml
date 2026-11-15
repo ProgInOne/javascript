@@ -1,0 +1,52 @@
+id: js-basics.arrays.array-basics.multi-array-facts
+type: mcq_multi
+difficulty: 2
+concepts:
+  - { id: js.arr.literal-index, weight: 1 }
+tags: [literal, index, negative-index, mixed-types]
+estimatedSeconds: 120
+prompt: |
+  `const items = ["연필", 3, "지우개"];`에 대한 설명으로 맞는 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: 문자열과 숫자를 섞어 담았지만 오류 없이 배열이 만들어진다
+      missedMisconception: js.mc.array-same-type-only
+    - id: b
+      text: '`items[2]`는 `"지우개"`다'
+      missedMisconception: js.mc.index-starts-at-one
+    - id: c
+      text: '`items[-1]`은 `undefined`다'
+      missedMisconception: js.mc.array-negative-index-last
+    - id: d
+      text: '`items[-1]`은 마지막 요소 `"지우개"`다'
+      misconception: js.mc.array-negative-index-last
+      rationale: 대괄호 안의 음수 인덱스에는 요소가 없어서 `undefined`예요.
+    - id: e
+      text: '`items[3]`은 첫 요소 `"연필"`로 돌아간다'
+      rationale: 범위 밖 인덱스는 처음으로 돌아가지 않고 `undefined`예요.
+    - id: f
+      text: 숫자 `3`이 섞여 있어서 `items[0]`을 읽으면 오류가 난다
+      misconception: js.mc.array-same-type-only
+      rationale: 자료형을 섞어 담아도 요소를 읽는 데 아무 문제가 없어요. `items[0]`은 `"연필"`이에요.
+  correct: [a, b, c]
+misconceptions: [js.mc.array-same-type-only, js.mc.array-negative-index-last]
+hints:
+  - 세 요소의 인덱스를 0부터 차례로 적어 보세요.
+  - 배열에 서로 다른 자료형을 섞어 담을 수 있는지 레슨의 "흔한 실수"를 떠올려 보세요.
+  - 대괄호 안의 음수와 범위 밖 인덱스에는 요소가 있을까요? 요소가 없는 자리를 읽으면 어떤 값이 나오나요?
+explanation: |
+  정답은 세 가지예요. 섞어 담아도 배열이 만들어진다는 설명, `items[2]`가 `"지우개"`라는 설명, `items[-1]`이 `undefined`라는 설명이에요.
+
+  | 인덱스 | 0 | 1 | 2 |
+  |---|---|---|---|
+  | 요소 | `"연필"` | `3` | `"지우개"` |
+
+  - JavaScript 배열은 자료형을 섞어 담을 수 있어요. 읽을 때도 오류가 나지 않아요.
+  - `items[2]`는 세 번째 요소 `"지우개"`예요.
+  - `items[-1]`: 인덱스 `-1`에는 요소가 없어서 `undefined`예요. 마지막 요소는 `items[items.length - 1]`로 읽어요.
+  - `items[3]`: 범위 밖이라 `undefined`예요. 처음으로 돌아가지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

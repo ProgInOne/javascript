@@ -1,0 +1,52 @@
+id: js-basics.arrays.array-iteration.fill-sum-for-of
+type: fill_blank
+difficulty: 1
+concepts:
+  - { id: js.arr.for-of, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [for-of, accumulator, sum]
+estimatedSeconds: 70
+prompt: |
+  일주일 동안 걸은 걸음 수를 모두 더해 출력하는 코드예요. 빈칸에 반복의 머리 부분을 채워 `총 걸음: 48500`이 출력되게 하세요. `steps`의 요소를 하나씩 꺼내 `step`이라는 이름으로 써요.
+spec:
+  mode: code
+  lang: js
+  template: |
+    const steps = [6000, 8200, 7300, 5000, 9100, 6400, 6500];
+    let total = 0;
+    for ({{blank:head}}) {
+      total += step;
+    }
+    console.log("총 걸음: " + total);
+  blanks:
+    - id: head
+      accept: ["const step of steps", "let step of steps"]
+      width: 22
+  checks:
+    - kind: console
+      id: output
+      description: 일주일 걸음 수의 합계가 출력되어야 합니다.
+      requirement: 합계 출력
+      expect:
+        lines: ["총 걸음: 48500"]
+misconceptions: [js.mc.for-in-array-values]
+hints:
+  - 본문에서 `step`이라는 변수를 쓰고 있어요. 반복의 머리에서 이 변수를 만들어야 해요.
+  - 요소를 하나씩 꺼내 주는 반복은 `for (변수 ... 배열)` 모양이에요. 가운데에 어떤 낱말이 들어갈까요?
+  - "`in`을 쓰면 요소 대신 인덱스 문자열이 꺼내져서 합계가 숫자가 아니게 돼요."
+explanation: |
+  예시 정답은 `const step of steps`예요.
+
+  ```js
+  for (const step of steps) {
+    total += step;
+  }
+  ```
+
+  - `for...of`는 `steps`의 요소를 하나씩 꺼내 `step`에 담아요. 일곱 바퀴 동안 `total`에 걸음 수가 차례로 더해져 48500이 돼요.
+  - `step`은 바퀴마다 새로 만들어지므로 `const`로 써도 되고, `let`도 돼요.
+  - `const step in steps`로 쓰면 `step`이 `"0"`, `"1"`, ... 같은 문자열이라 `total`이 `"00123456"`처럼 글자를 이어 붙인 값이 돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

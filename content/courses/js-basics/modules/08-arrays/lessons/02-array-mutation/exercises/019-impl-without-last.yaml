@@ -1,0 +1,97 @@
+id: js-basics.arrays.array-mutation.impl-without-last
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.arr.mutating-vs-not, weight: 1 }
+  - { id: js.arr.push-pop, weight: 0.5 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [non-mutating, new-array, push, write-code]
+estimatedSeconds: 300
+prompt: |
+  게임 화면에 "마지막 판을 뺀 점수 기록"을 보여 주려고 해요. 점수 배열 `scores`에서 마지막 요소를 뺀 **새 배열**을 돌려주는 함수 `withoutLast(scores)`를 완성하세요.
+
+  - 원래 배열 `scores`는 다른 화면에서도 쓰니까 **바꾸면 안 돼요.**
+  - 빈 배열이 들어오면 빈 배열을 돌려줘요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `withoutLast([80, 95, 70])` | `[80, 95]` |
+  | `withoutLast([50])` | `[]` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function withoutLast(scores) {
+            // 여기에 작성하세요
+          }
+  entry: withoutLast
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function withoutLast(scores) {
+            const result = [];
+            for (let i = 0; i < scores.length - 1; i++) {
+              result.push(scores[i]);
+            }
+            return result;
+          }
+  checks:
+    - { kind: call, id: three, args: [[80, 95, 70]], expect: { equals: [80, 95] }, requirement: 마지막 점수 빼기 }
+    - { kind: call, id: one, args: [[50]], expect: { equals: [] }, requirement: 마지막 점수 빼기 }
+    - kind: call
+      id: longer
+      visible: false
+      description: 점수가 많아도 마지막 하나만 빼야 합니다.
+      requirement: 마지막 점수 빼기
+      args: [[10, 20, 30, 40, 50, 60]]
+      expect: { equals: [10, 20, 30, 40, 50] }
+    - kind: call
+      id: empty
+      visible: false
+      description: 빈 배열이면 빈 배열을 돌려줘야 합니다.
+      requirement: 마지막 점수 빼기
+      args: [[]]
+      expect: { equals: [] }
+    - kind: call
+      id: keep-input
+      visible: false
+      description: 받은 점수 배열을 바꾸면 안 됩니다.
+      requirement: 원래 배열 지키기
+      args: [[1, 2, 3]]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.function-arg-array-copied
+    - kind: call
+      id: new-array
+      visible: false
+      description: 받은 배열을 그대로 돌려주지 말고 새 배열을 만들어 돌려줘야 합니다.
+      requirement: 원래 배열 지키기
+      args: [[7, 8]]
+      expect: { returnsNewReference: true }
+misconceptions: [js.mc.function-arg-array-copied, js.mc.mutating-method-keeps-original]
+hints:
+  - "`scores.pop()`을 쓰면 마지막 점수가 빠지긴 하지만, 그 배열은 바깥의 점수 배열과 같은 배열이에요."
+  - 빈 배열을 하나 새로 만들고, 원래 배열의 요소를 앞에서부터 옮겨 담아 보세요.
+  - 옮겨 담는 반복은 마지막 요소 바로 앞에서 멈춰야 해요. 반복 조건의 끝을 길이로 어떻게 표현할지 생각해 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function withoutLast(scores) {
+    const result = [];
+    for (let i = 0; i < scores.length - 1; i++) {
+      result.push(scores[i]);
+    }
+    return result;
+  }
+  ```
+
+  - **새 배열에 옮겨 담기**: `result`는 새로 만든 배열이라, 여기에 `push`해도 `scores`는 바뀌지 않아요.
+  - **범위**: `i < scores.length - 1`이라 마지막 인덱스(`length - 1`) 바로 앞까지만 옮겨요. 빈 배열이면 `0 < -1`이 거짓이라 반복이 돌지 않고 `[]`가 돼요.
+  - `scores.pop(); return scores;`는 결과는 맞아 보여도, 함수에 넘긴 배열은 같은 배열이라 바깥의 점수 배열에서도 마지막 점수가 사라져요. 또 새 배열이 아니라 받은 배열을 그대로 돌려줘요.
+  - 다음 단원들에서 배울 `slice`를 쓰면 `return scores.slice(0, -1);` 한 줄로도 쓸 수 있어요. `slice`는 원래 배열을 바꾸지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

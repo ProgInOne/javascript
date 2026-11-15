@@ -1,0 +1,102 @@
+id: js-basics.arrays.array-iteration.fix-has-negative
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.arr.foreach, weight: 1 }
+  - { id: js.arr.for-of, weight: 0.5 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [foreach, return, early-exit, debugging]
+estimatedSeconds: 240
+prompt: |
+  가계부 금액 배열에 음수(지출 오류)가 하나라도 있는지 확인하는 함수 `hasNegative(nums)`예요. 음수가 있으면 `true`, 없으면 `false`를 돌려줘야 해요. 그런데 음수가 있어도 늘 `false`가 나와요. 고쳐 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `hasNegative([3000, -1500, 4000])` | `true` |
+  | `hasNegative([1000, 2000])` | `false` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function hasNegative(nums) {
+            nums.forEach((n) => {
+              if (n < 0) {
+                return true;
+              }
+            });
+            return false;
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function hasNegative(nums) {
+            for (const n of nums) {
+              if (n < 0) {
+                return true;
+              }
+            }
+            return false;
+          }
+  entry: hasNegative
+  bugDescription: "`hasNegative([3000, -1500, 4000])`가 `true`가 아니라 `false`를 돌려줘요."
+  bugMisconception: js.mc.foreach-return-stops
+  checks:
+    - { kind: call, id: has, args: [[3000, -1500, 4000]], expect: { equals: true }, requirement: 음수가 있으면 true }
+    - { kind: call, id: none, args: [[1000, 2000]], expect: { equals: false }, requirement: 음수가 없으면 false }
+    - kind: call
+      id: only-negative
+      visible: false
+      description: 음수 하나만 있는 배열도 true여야 합니다.
+      requirement: 음수가 있으면 true
+      args: [[-5]]
+      expect: { equals: true }
+      misconceptionIfFail: js.mc.foreach-return-stops
+    - kind: call
+      id: last-negative
+      visible: false
+      description: 음수가 맨 끝에 있어도 찾아야 합니다.
+      requirement: 음수가 있으면 true
+      args: [[0, 10, 20, -0.5]]
+      expect: { equals: true }
+    - kind: call
+      id: empty
+      visible: false
+      description: 빈 배열에는 음수가 없으므로 false여야 합니다.
+      requirement: 음수가 없으면 false
+      args: [[]]
+      expect: { equals: false }
+    - kind: call
+      id: zero-not-negative
+      visible: false
+      description: 0은 음수가 아니므로 false여야 합니다.
+      requirement: 음수가 없으면 false
+      args: [[0, 0]]
+      expect: { equals: false }
+misconceptions: [js.mc.foreach-return-stops]
+hints:
+  - 4번 줄의 `return true`는 어떤 함수 안에 있나요? 중괄호와 화살표를 따라가 보세요.
+  - 콜백이 `true`를 돌려주면 `forEach`는 그 값으로 무엇을 할까요? 그다음 `hasNegative`는 몇 번 줄을 실행할까요?
+  - 찾는 즉시 바깥 함수를 끝내려면 `return`이 콜백이 아니라 `hasNegative` 바로 안의 반복문 안에 있어야 해요.
+explanation: |
+  4번 줄의 `return true`는 `hasNegative`가 아니라 **콜백**의 반환값이에요. `forEach`는 콜백의 반환값을 버리고 다음 요소로 계속 진행하고, 끝나면 `hasNegative`는 7번 줄 `return false`까지 내려가요. 그래서 음수가 있어도 늘 `false`예요.
+
+  `forEach`는 중간에 멈출 수도, 바깥 함수의 값을 돌려줄 수도 없어요. 반복문 `for...of`로 바꾸면 그 안의 `return`이 `hasNegative`를 바로 끝내요.
+
+  ```js
+  function hasNegative(nums) {
+    for (const n of nums) {
+      if (n < 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+  ```
+
+  `forEach`를 그대로 두고 바깥 변수 `let found = false;`를 콜백 안에서 `true`로 바꾼 뒤 마지막에 `return found;`해도 결과는 맞아요. 다만 음수를 찾은 뒤에도 끝까지 돌아요. 다음 단원에서 배울 `some`은 이 일을 한 줄로 해 줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

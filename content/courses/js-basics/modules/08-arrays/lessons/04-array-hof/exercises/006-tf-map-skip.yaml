@@ -1,0 +1,43 @@
+id: js-basics.arrays.array-hof.tf-map-skip
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.arr.map, weight: 1 }
+  - { id: js.arr.filter, weight: 0.3 }
+tags: [map, filter, length]
+estimatedSeconds: 70
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: '`[72, 58, 90].map((s) => { if (s >= 60) { return s; } })`의 결과는 `[72, 90]`이다.'
+  answer: false
+  misconceptionIfWrong: js.mc.map-can-skip-items
+  requireReason: true
+  reasons:
+    - id: r1
+      text: map의 결과는 원래 배열과 길이가 같고, 콜백이 아무것도 돌려주지 않은 58의 자리에는 undefined가 들어간다
+      correct: true
+    - id: r2
+      text: 콜백이 return하지 않은 요소는 map이 결과에서 빼 준다
+      misconception: js.mc.map-can-skip-items
+    - id: r3
+      text: map 콜백 안에는 if를 쓸 수 없어서 오류가 난다
+    - id: r4
+      text: map은 원래 배열을 바꾸므로 결과는 원래 배열과 같은 [72, 58, 90]이다
+      misconception: js.mc.map-mutates-original
+hints:
+  - "`map`의 결과 배열은 원래 배열과 길이가 같나요, 다를 수 있나요?"
+  - 58일 때 콜백은 `if` 블록을 건너뛰어요. 그러면 콜백은 무엇을 돌려주나요?
+  - 요소를 빼서 고르는 일을 하는 메서드는 따로 있어요.
+explanation: |
+  정답은 **거짓**이에요. 실제 결과는 `[72, undefined, 90]`이에요.
+
+  `map`은 요소마다 콜백이 돌려준 값을 같은 자리에 담으므로, 결과는 언제나 원래 배열과 길이가 같아요. 58일 때는 `if` 블록이 실행되지 않아 콜백이 아무것도 돌려주지 않고, 그 자리에는 `undefined`가 들어가요.
+
+  - "`map`이 빼 준다"는 이유: `map`은 요소를 빼지 않아요. 60점 이상만 고르려면 `[72, 58, 90].filter((s) => s >= 60)`을 써요.
+  - "`if`를 쓸 수 없다"는 이유: 콜백도 함수라서 본문에 `if`를 쓸 수 있어요. 오류는 나지 않아요.
+  - "원래 배열을 바꾼다"는 이유: `map`은 원래 배열을 바꾸지 않고 새 배열을 돌려줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

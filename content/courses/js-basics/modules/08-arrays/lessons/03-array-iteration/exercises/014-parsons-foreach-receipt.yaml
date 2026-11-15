@@ -1,0 +1,65 @@
+id: js-basics.arrays.array-iteration.parsons-foreach-receipt
+type: parsons
+difficulty: 2
+concepts:
+  - { id: js.arr.foreach, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [foreach, index, accumulator, parsons]
+estimatedSeconds: 150
+prompt: |
+  분식집 영수증을 출력하는 프로그램이에요. 메뉴 이름과 가격이 같은 순서로 두 배열에 들어 있어요. `forEach`로 메뉴마다 한 줄씩 출력하면서 합계를 모으고, 마지막에 합계를 출력해요. 코드 조각을 순서대로 배열해 아래처럼 출력되게 하세요.
+
+  ```text
+  김밥: 3500
+  라면: 4000
+  만두: 5000
+  합계: 12500
+  ```
+spec:
+  lines:
+    - { id: l1, code: 'const items = ["김밥", "라면", "만두"];' }
+    - { id: l2, code: "const prices = [3500, 4000, 5000];" }
+    - { id: l3, code: "let total = 0;" }
+    - { id: l4, code: "items.forEach((item, i) => {" }
+    - { id: l5, code: 'console.log(item + ": " + prices[i]);', indent: 1 }
+    - { id: l6, code: "total += prices[i];", indent: 1 }
+    - { id: l7, code: "});" }
+    - { id: l8, code: 'console.log("합계: " + total);' }
+  distractors:
+    - { id: d1, code: "items.forEach((i, item) => {", replaces: l4 }
+    - { id: d2, code: "let total = prices[i];", replaces: l6, misconception: js.mc.accumulator-overwrite }
+  gradeIndent: false
+  checks:
+    - kind: console
+      id: output
+      description: 메뉴 세 줄과 합계 한 줄이 차례로 출력되어야 합니다.
+      requirement: 영수증 출력
+      expect:
+        lines: ["김밥: 3500", "라면: 4000", "만두: 5000", "합계: 12500"]
+misconceptions: [js.mc.accumulator-overwrite]
+hints:
+  - 배열 두 개와 합계 변수를 먼저 만들고, 그다음 `forEach`, 마지막에 합계 출력이 와요.
+  - 콜백의 매개변수는 (요소, 인덱스) 순서예요. 가격은 인덱스로 `prices`에서 꺼내요.
+  - 합계는 바퀴마다 덮어쓰는 것이 아니라 더해 가야 해요. 콜백 안에서 새 변수를 만들면 바깥의 합계는 그대로예요.
+explanation: |
+  정답 순서의 예예요.
+
+  ```js
+  const items = ["김밥", "라면", "만두"];
+  const prices = [3500, 4000, 5000];
+  let total = 0;
+  items.forEach((item, i) => {
+    console.log(item + ": " + prices[i]);
+    total += prices[i];
+  });
+  console.log("합계: " + total);
+  ```
+
+  - 콜백은 `(요소, 인덱스)`로 불리므로 `item`은 메뉴 이름, `i`는 0, 1, 2예요. 같은 인덱스로 `prices[i]`를 읽으면 그 메뉴의 가격이에요.
+  - `(i, item)`으로 순서를 바꾸면 이름과 관계없이 첫 번째 매개변수에 요소가 들어와서, `i`가 `"김밥"`이 되고 `prices["김밥"]`은 `undefined`예요.
+  - `let total = prices[i];`는 콜백 안에 새 변수를 만들어 바깥의 `total`을 가려요. 바깥 `total`은 0 그대로라 `합계: 0`이 나와요.
+  - 두 배열을 만드는 줄은 서로 순서를 바꿔도 정답이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

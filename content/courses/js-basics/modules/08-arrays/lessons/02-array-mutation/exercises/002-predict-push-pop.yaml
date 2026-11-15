@@ -1,0 +1,52 @@
+id: js-basics.arrays.array-mutation.predict-push-pop
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.arr.push-pop, weight: 1 }
+tags: [push, pop, return-value, stack]
+estimatedSeconds: 100
+prompt: |
+  실행 취소 기록을 배열에 쌓는 코드예요. 실행하면 콘솔에 무엇이 출력될까요? 네 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const history = ["글자 입력"];
+    history.push("굵게");
+    const size = history.push("밑줄");
+    const undone = history.pop();
+    console.log(size);
+    console.log(undone);
+    console.log(history);
+    console.log(history.length);
+  answerKind: console
+  misconceptionByAnswer:
+    "[\"글자 입력\", \"굵게\", \"밑줄\"]\n밑줄\n[\"글자 입력\", \"굵게\"]\n2": js.mc.push-returns-new-array
+    "3\n[\"글자 입력\", \"굵게\"]\n[\"글자 입력\", \"굵게\"]\n2": js.mc.pop-returns-rest
+    "3\n밑줄\n[\"글자 입력\", \"굵게\", \"밑줄\"]\n3": js.mc.mutating-method-keeps-original
+hints:
+  - "`history`가 줄마다 어떻게 바뀌는지 종이에 적으면서 따라가 보세요."
+  - "`push`가 돌려주는 값은 넣은 뒤의 길이예요. 3번 줄에서 `size`에 담기는 것은 무엇일까요?"
+  - "`pop`은 꺼낸 요소를 돌려주고, 꺼낸 요소는 `history`에서 사라져요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  3
+  밑줄
+  ["글자 입력", "굵게"]
+  2
+  ```
+
+  | 줄 | `history` | 돌려받은 값 |
+  |---|---|---|
+  | 2번 `push("굵게")` | `["글자 입력", "굵게"]` | (쓰지 않음) |
+  | 3번 `push("밑줄")` | `["글자 입력", "굵게", "밑줄"]` | `size`: `3` |
+  | 4번 `pop()` | `["글자 입력", "굵게"]` | `undone`: `"밑줄"` |
+
+  - `size`는 배열이 아니라 새 길이 3이에요.
+  - `undone`은 꺼낸 요소 하나 `"밑줄"`이에요. 남은 요소들은 `history`에 있어요.
+  - `pop`이 `history`를 직접 바꿨으므로 마지막 줄의 길이는 2예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

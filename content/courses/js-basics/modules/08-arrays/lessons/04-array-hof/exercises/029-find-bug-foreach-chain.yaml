@@ -1,0 +1,59 @@
+id: js-basics.arrays.array-hof.find-bug-foreach-chain
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.arr.chaining, weight: 1 }
+  - { id: js.arr.foreach, weight: 0.5 }
+tags: [chaining, foreach, typeerror, debugging]
+estimatedSeconds: 150
+prompt: |
+  기온 목록을 화씨에서 섭씨로 바꾼 뒤, 25도 이상인 날만 골라 출력하려는 프로그램이에요. 실행하면 오류가 나요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const fahrenheit = [68, 86, 95, 59];
+    console.log("더운 날 찾기");
+    const hotDays = fahrenheit
+      .forEach((f) => Math.round((f - 32) * 5 / 9))
+      .filter((c) => c >= 25);
+    console.log(hotDays);
+  bugLines: [4]
+  symptom: "`더운 날 찾기`가 출력된 뒤 `TypeError: Cannot read properties of undefined (reading 'filter')`가 나요."
+  symptomCheck:
+    error: TypeError
+  fixedCode: |-
+    const fahrenheit = [68, 86, 95, 59];
+    console.log("더운 날 찾기");
+    const hotDays = fahrenheit
+      .map((f) => Math.round((f - 32) * 5 / 9))
+      .filter((c) => c >= 25);
+    console.log(hotDays);
+  acceptLines: [5]
+  causeOptions:
+    - id: c1
+      text: forEach는 undefined를 돌려주므로, 그 뒤에 이어 쓴 filter를 undefined에서 찾다가 오류가 난다
+      correct: true
+    - id: c2
+      text: filter는 forEach 뒤에 쓸 수 있지만, 콜백 매개변수 이름 c가 앞의 f와 달라서 오류가 난다
+    - id: c3
+      text: 메서드를 여러 줄에 나눠 쓰면 줄마다 따로 실행되어 오류가 난다
+    - id: c4
+      text: forEach는 바꾼 값으로 새 배열을 돌려주지만, 그 배열이 원래 배열을 바꿔서 filter가 읽을 수 없다
+      misconception: js.mc.foreach-returns-array
+hints:
+  - "오류 메시지는 `undefined`에서 `filter`를 읽으려 했다고 말해요. `filter` 바로 앞의 메서드는 무엇을 돌려주나요?"
+  - 앞 단원에서 `forEach`가 돌려주는 값을 배웠어요. 그 값에도 배열 메서드가 있을까요?
+  - 요소마다 바꾼 값으로 **새 배열**을 만들어 다음 메서드로 넘겨 주는 메서드를 떠올려 보세요.
+explanation: |
+  원인은 **4번 줄**의 `forEach`예요.
+
+  `forEach`는 요소마다 콜백을 불러 줄 뿐, 콜백의 반환값을 버리고 항상 `undefined`를 돌려줘요. 그래서 5번 줄의 `.filter(...)`는 `undefined.filter(...)`가 되어 `TypeError: Cannot read properties of undefined (reading 'filter')`가 나요. 오류는 5번 줄에서 보고될 수 있지만, 원인은 배열 대신 `undefined`를 넘긴 4번 줄이에요.
+
+  `forEach`를 `map`으로 바꾸면 섭씨 배열 `[20, 30, 35, 15]`가 `filter`로 넘어가고, 출력은 `[30, 35]`예요.
+
+  - 콜백 매개변수 이름은 콜백마다 따로 정해서 `f`와 `c`가 달라도 괜찮아요.
+  - 점을 줄 앞에 찍어 여러 줄로 나눠 써도 하나의 식이에요.
+  - `forEach`는 새 배열을 돌려주지 않아요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

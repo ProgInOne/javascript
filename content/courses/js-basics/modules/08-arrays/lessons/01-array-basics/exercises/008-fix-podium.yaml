@@ -1,0 +1,59 @@
+id: js-basics.arrays.array-basics.fix-podium
+type: fix_bug
+difficulty: 2
+concepts:
+  - { id: js.arr.literal-index, weight: 1 }
+tags: [index, off-by-one, function, debugging]
+estimatedSeconds: 150
+prompt: |
+  달리기 결과 배열은 들어온 순서대로 이름을 담고 있어요. 1등부터 3등까지를 문장으로 만드는 함수 `podium(names)`가 이상한 결과를 돌려줘요. 고쳐 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `podium(["가은", "나래", "다솜"])` | `"1등 가은, 2등 나래, 3등 다솜"` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function podium(names) {
+            return "1등 " + names[1] + ", 2등 " + names[2] + ", 3등 " + names[3];
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function podium(names) {
+            return "1등 " + names[0] + ", 2등 " + names[1] + ", 3등 " + names[2];
+          }
+  entry: podium
+  bugDescription: '`podium(["가은", "나래", "다솜"])`가 `"1등 나래, 2등 다솜, 3등 undefined"`를 돌려줘요.'
+  bugMisconception: js.mc.index-starts-at-one
+  checks:
+    - { kind: call, id: three, args: [["가은", "나래", "다솜"]], expect: { equals: "1등 가은, 2등 나래, 3등 다솜" }, requirement: 순서대로 1~3등 }
+    - kind: call
+      id: four-runners
+      visible: false
+      description: 네 명이 들어와도 앞의 세 명만 1~3등으로 써야 합니다.
+      requirement: 순서대로 1~3등
+      args: [["준", "솔", "윤", "현"]]
+      expect: { equals: "1등 준, 2등 솔, 3등 윤" }
+misconceptions: [js.mc.index-starts-at-one]
+hints:
+  - 결과에서 1등 자리에 누가 나왔나요? 배열에서 그 사람은 몇 번째에 있나요?
+  - 3등 자리에 `undefined`가 나왔어요. 요소가 3개인 배열에서 `undefined`가 나오는 인덱스는 어디인가요?
+  - 1등은 배열의 첫 요소예요. 첫 요소의 인덱스부터 차례로 다시 세어 보세요.
+explanation: |
+  인덱스를 1부터 센 것이 원인이에요. 배열의 인덱스는 0부터 시작해서 1등(첫 요소)은 `names[0]`이에요.
+
+  | 등수 | 버그 코드 | 고친 코드 |
+  |---|---|---|
+  | 1등 | `names[1]` → 나래 | `names[0]` → 가은 |
+  | 2등 | `names[2]` → 다솜 | `names[1]` → 나래 |
+  | 3등 | `names[3]` → `undefined` | `names[2]` → 다솜 |
+
+  `names[3]`은 요소가 3개인 배열의 범위 밖이라 오류 없이 `undefined`가 되어 문장에 그대로 들어갔어요. "n등"은 인덱스 `n - 1`이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

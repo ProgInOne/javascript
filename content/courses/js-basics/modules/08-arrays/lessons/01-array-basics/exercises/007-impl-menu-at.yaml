@@ -1,0 +1,95 @@
+id: js-basics.arrays.array-basics.impl-menu-at
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.arr.literal-index, weight: 1 }
+  - { id: js.arr.length, weight: 0.5 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [index, boundary, function, write-code]
+estimatedSeconds: 240
+prompt: |
+  분식집 키오스크에서 손님은 메뉴를 **1번부터** 번호로 골라요. 메뉴 배열과 손님이 고른 번호를 받아 메뉴 이름을 돌려주는 함수 `menuAt(menu, number)`를 완성하세요.
+
+  - 1번은 첫 번째 메뉴예요.
+  - 없는 번호(0 이하이거나 메뉴 개수보다 큰 번호)를 고르면 `"없는 번호예요"`를 돌려줘요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `menuAt(["김밥", "라면", "떡볶이"], 1)` | `"김밥"` |
+  | `menuAt(["김밥", "라면", "떡볶이"], 3)` | `"떡볶이"` |
+  | `menuAt(["김밥", "라면", "떡볶이"], 4)` | `"없는 번호예요"` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function menuAt(menu, number) {
+            // 여기에 작성하세요
+          }
+  entry: menuAt
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function menuAt(menu, number) {
+            if (number < 1 || number > menu.length) {
+              return "없는 번호예요";
+            }
+            return menu[number - 1];
+          }
+  checks:
+    - { kind: call, id: first, args: [["김밥", "라면", "떡볶이"], 1], expect: { equals: "김밥" }, requirement: 번호로 메뉴 고르기, misconceptionIfFail: js.mc.index-starts-at-one }
+    - { kind: call, id: last, args: [["김밥", "라면", "떡볶이"], 3], expect: { equals: "떡볶이" }, requirement: 번호로 메뉴 고르기 }
+    - { kind: call, id: too-big, args: [["김밥", "라면", "떡볶이"], 4], expect: { equals: "없는 번호예요" }, requirement: 없는 번호 }
+    - kind: call
+      id: zero
+      visible: false
+      description: 0번은 없는 번호입니다.
+      requirement: 없는 번호
+      args: [["김밥", "라면", "떡볶이"], 0]
+      expect: { equals: "없는 번호예요" }
+    - kind: call
+      id: other-menu
+      visible: false
+      description: 메뉴 개수가 달라도 번호로 맞는 메뉴를 돌려줘야 합니다.
+      requirement: 번호로 메뉴 고르기
+      args: [["아메리카노", "라테"], 2]
+      expect: { equals: "라테" }
+    - kind: call
+      id: other-too-big
+      visible: false
+      description: 메뉴가 2개면 3번은 없는 번호입니다.
+      requirement: 없는 번호
+      args: [["아메리카노", "라테"], 3]
+      expect: { equals: "없는 번호예요" }
+      misconceptionIfFail: js.mc.array-out-of-range-throws
+    - kind: call
+      id: keep-menu
+      visible: false
+      description: 메뉴 배열을 바꾸면 안 됩니다.
+      args: [["김밥", "라면", "떡볶이"], 2]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.index-starts-at-one, js.mc.array-out-of-range-throws]
+hints:
+  - 손님의 번호는 1부터, 배열의 인덱스는 0부터 시작해요. 두 번호 사이에는 일정한 차이가 있어요.
+  - 범위 밖 번호로 배열을 읽으면 오류 대신 어떤 값이 나오나요? 그 값을 그대로 돌려주면 안 되니 먼저 번호를 확인해야 해요.
+  - 가장 작은 올바른 번호와 가장 큰 올바른 번호를 메뉴 개수(`length`)로 표현해 보고, 그 범위를 벗어나면 안내 문구를 돌려주세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function menuAt(menu, number) {
+    if (number < 1 || number > menu.length) {
+      return "없는 번호예요";
+    }
+    return menu[number - 1];
+  }
+  ```
+
+  - **번호와 인덱스**: 1번 메뉴는 인덱스 0이라 `menu[number - 1]`이에요. `menu[number]`로 쓰면 1번에서 `"라면"`이 나와요.
+  - **없는 번호**: 범위 밖 인덱스는 오류가 아니라 `undefined`예요. 확인하지 않으면 4번에서 `undefined`를 돌려줘요. 올바른 번호는 1부터 `menu.length`까지예요.
+  - `menu[number - 1] === undefined`인지 확인하는 방법도 이 문제에서는 같은 결과예요. 다만 번호 범위를 직접 확인하는 편이 의도가 분명해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

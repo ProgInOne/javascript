@@ -1,0 +1,100 @@
+id: js-basics.arrays.array-mutation.fix-recent-first
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.arr.shift-unshift, weight: 1 }
+  - { id: js.arr.push-pop, weight: 0.5 }
+tags: [unshift, pop, recent-items, debugging]
+estimatedSeconds: 240
+prompt: |
+  쇼핑몰의 "최근 본 상품" 목록을 갱신하는 함수 `addRecent(recent, item)`이에요. 요구사항은 이래요.
+
+  - 방금 본 상품 `item`은 목록 **맨 앞**에 와요.
+  - 목록은 최대 3개예요. 넘치면 **가장 오래전에 본** 상품(맨 끝)을 지워요.
+  - 갱신한 목록을 돌려줘요.
+
+  지금은 순서가 거꾸로예요. 고쳐 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `addRecent(["운동화", "모자", "가방"], "양말")` | `["양말", "운동화", "모자"]` |
+  | `addRecent(["모자"], "양말")` | `["양말", "모자"]` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function addRecent(recent, item) {
+            recent.push(item);
+            if (recent.length > 3) {
+              recent.shift();
+            }
+            return recent;
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function addRecent(recent, item) {
+            recent.unshift(item);
+            if (recent.length > 3) {
+              recent.pop();
+            }
+            return recent;
+          }
+  entry: addRecent
+  bugDescription: '`addRecent(["운동화", "모자", "가방"], "양말")`이 `["양말", "운동화", "모자"]`가 아니라 `["모자", "가방", "양말"]`을 돌려줘요.'
+  checks:
+    - kind: call
+      id: full-list
+      args: [["운동화", "모자", "가방"], "양말"]
+      expect: { equals: ["양말", "운동화", "모자"] }
+      requirement: 최근 상품을 맨 앞에
+    - { kind: call, id: short-list, args: [["모자"], "양말"], expect: { equals: ["양말", "모자"] }, requirement: 최근 상품을 맨 앞에 }
+    - kind: call
+      id: empty-list
+      visible: false
+      description: 빈 목록에 넣으면 그 상품 하나만 있어야 합니다.
+      requirement: 최근 상품을 맨 앞에
+      args: [[], "장갑"]
+      expect: { equals: ["장갑"] }
+    - kind: call
+      id: exactly-three
+      visible: false
+      description: 2개짜리 목록에 넣어 3개가 되면 아무것도 지우지 않아야 합니다.
+      requirement: 최대 3개
+      args: [["가방", "시계"], "우산"]
+      expect: { equals: ["우산", "가방", "시계"] }
+    - kind: call
+      id: drop-oldest
+      visible: false
+      description: 넘칠 때는 가장 오래전에 본 상품(맨 끝)을 지워야 합니다.
+      requirement: 최대 3개
+      args: [["셔츠", "바지", "벨트"], "넥타이"]
+      expect: { equals: ["넥타이", "셔츠", "바지"] }
+      misconceptionIfFail: js.mc.shift-unshift-swapped
+misconceptions: [js.mc.shift-unshift-swapped]
+hints:
+  - 지금 코드는 새 상품을 어느 쪽에 넣고, 넘칠 때 어느 쪽에서 지우나요? 요구사항과 하나씩 비교해 보세요.
+  - 새 상품이 맨 앞으로 오면, 가장 오래전에 본 상품은 목록의 어느 쪽에 있게 될까요?
+  - 고칠 곳은 두 줄이에요. 넣는 쪽과 지우는 쪽이 둘 다 반대로 되어 있어요.
+explanation: |
+  2번 줄과 4번 줄이 모두 반대쪽을 다루고 있어요.
+
+  ```js
+  function addRecent(recent, item) {
+    recent.unshift(item);
+    if (recent.length > 3) {
+      recent.pop();
+    }
+    return recent;
+  }
+  ```
+
+  - **넣기**: 방금 본 상품은 맨 앞에 와야 하므로 끝에 넣는 `push` 대신 맨 앞에 넣는 `unshift`를 써요.
+  - **지우기**: 새 상품을 앞에 넣으면 가장 오래전에 본 상품은 맨 **끝**으로 밀려나요. 그래서 맨 앞을 지우는 `shift` 대신 끝을 지우는 `pop`을 써요.
+  - 한 줄만 고치면 안 돼요. `unshift`만 바꾸고 `shift`를 그대로 두면, 방금 넣은 상품을 바로 지워 버려요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

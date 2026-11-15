@@ -1,0 +1,50 @@
+id: js-basics.arrays.array-hof.predict-find-vs-filter
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.arr.find, weight: 1 }
+  - { id: js.arr.filter, weight: 0.5 }
+  - { id: js.ops.short-circuit, weight: 0.3 }
+tags: [find, findindex, filter, falsy-zero, or-default]
+estimatedSeconds: 200
+prompt: |
+  식당 대기 시간(분) 목록을 다루는 코드예요. 실행하면 콘솔에 무엇이 출력될까요? 다섯 줄을 차례로 적어 보세요. 배열은 콘솔에 `[1, 2]`처럼 보여요.
+spec:
+  lang: js
+  code: |
+    const waits = [0, 12, 5, 30, 8];
+    console.log(waits.find((m) => m > 10));
+    console.log(waits.filter((m) => m > 10));
+    console.log(waits.findIndex((m) => m > 40));
+    const shortest = waits.find((m) => m < 3);
+    console.log(shortest || "바로 입장 없음");
+    console.log(waits.find((m) => m > 40) === -1);
+  answerKind: console
+  misconceptionByAnswer:
+    "[12, 30]\n[12, 30]\n-1\n0\nfalse": js.mc.find-returns-all
+    "12\n[12, 30]\n-1\n0\ntrue": js.mc.find-not-found-minus-one
+    "12\n[12, 30]\n-1\n바로 입장 없음\ntrue": js.mc.find-not-found-minus-one
+hints:
+  - "`find`와 `filter`의 차이를 떠올려 보세요. 하나는 요소 하나를, 하나는 배열을 돌려줘요."
+  - 5번 줄의 `find`가 찾은 값은 무엇인가요? 모듈 3에서 배운 대로, 그 값은 `||` 앞에서 truthy인가요, falsy인가요?
+  - 마지막 줄의 `find`는 아무것도 찾지 못해요. 그때 `find`가 돌려주는 값은 `-1`과 같을까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  12
+  [12, 30]
+  -1
+  바로 입장 없음
+  false
+  ```
+
+  - 2번 줄: `find`는 10보다 큰 첫 요소 `12` 하나만 돌려줘요.
+  - 3번 줄: `filter`는 10보다 큰 요소를 모두 담은 배열 `[12, 30]`을 돌려줘요.
+  - 4번 줄: 40보다 큰 요소가 없어서 `findIndex`는 `-1`이에요.
+  - 5~6번 줄: `find((m) => m < 3)`은 첫 요소 `0`을 **찾았어요.** 그런데 `0`은 falsy라서 `0 || "바로 입장 없음"`은 오른쪽 값이 돼요. 찾았는데도 "없음"이 나오는 함정이에요. 찾았는지는 `shortest !== undefined`로 확인해야 해요.
+  - 7번 줄: 못 찾은 `find`는 `-1`이 아니라 `undefined`를 돌려줘요. `undefined === -1`은 `false`예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

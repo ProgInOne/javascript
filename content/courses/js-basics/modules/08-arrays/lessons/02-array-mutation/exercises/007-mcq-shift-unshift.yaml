@@ -1,0 +1,48 @@
+id: js-basics.arrays.array-mutation.mcq-shift-unshift
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.shift-unshift, weight: 1 }
+tags: [shift, unshift, queue]
+estimatedSeconds: 45
+prompt: |
+  은행 대기열 배열 `waiting`에서 **맨 앞**에 선 사람을 꺼내 차례를 부르려고 해요. 어떤 메서드를 써야 할까요?
+spec:
+  options:
+    - id: a
+      text: "`waiting.shift()`"
+    - id: b
+      text: "`waiting.unshift()`"
+      misconception: js.mc.shift-unshift-swapped
+      rationale: "`unshift`는 맨 앞에 값을 **넣는** 메서드예요. 꺼내는 쪽과 반대예요."
+    - id: c
+      text: "`waiting.pop()`"
+      rationale: "`pop`은 맨 **끝** 요소를 꺼내요. 줄의 마지막에 선 사람이 먼저 불려요."
+    - id: d
+      text: "`waiting.push()`"
+      rationale: "`push`는 끝에 값을 넣는 메서드예요. 아무것도 꺼내지 않아요."
+  correct: a
+misconceptions: [js.mc.shift-unshift-swapped]
+hints:
+  - 넣는 메서드와 빼는 메서드, 끝에서 일하는 메서드와 앞에서 일하는 메서드로 나눠 보세요.
+  - 끝에서 빼는 것이 `pop`이라면, 앞에서 빼는 짝은 무엇일까요?
+  - 이름이 긴 쪽이 넣는 메서드라고 기억하면, 짧은 쪽이 빼는 메서드예요.
+explanation: |
+  정답은 `waiting.shift()`예요.
+
+  `shift()`는 배열 맨 앞의 요소를 꺼내 돌려주고, 남은 요소들을 한 칸씩 앞으로 당겨요. 줄 서기에서 차례가 된 사람이 빠지는 모습과 같아요.
+
+  | 메서드 | 위치 | 하는 일 |
+  |---|---|---|
+  | `push` | 끝 | 넣기 |
+  | `pop` | 끝 | 빼기 |
+  | `unshift` | 앞 | 넣기 |
+  | `shift` | 앞 | 빼기 |
+
+  - `unshift()`는 맨 앞에 넣는 메서드라 반대예요. 넣을 값 없이 부르면 아무것도 넣지 않고 길이만 돌려줘요.
+  - `pop()`은 맨 끝, 즉 가장 늦게 온 사람을 꺼내요.
+  - `push()`는 끝에 넣는 메서드예요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

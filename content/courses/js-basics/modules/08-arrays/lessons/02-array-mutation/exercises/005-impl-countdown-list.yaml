@@ -1,0 +1,90 @@
+id: js-basics.arrays.array-mutation.impl-countdown-list
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.arr.push-pop, weight: 1 }
+  - { id: js.loops.for, weight: 0.5 }
+tags: [push, for, build-array, boundary, write-code]
+estimatedSeconds: 240
+prompt: |
+  로켓 발사 화면에 보여 줄 카운트다운 숫자 목록을 만드는 함수 `countdown(n)`을 완성하세요. `n`부터 1까지 1씩 줄어드는 수를 차례로 담은 배열을 돌려줘요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `countdown(3)` | `[3, 2, 1]` |
+  | `countdown(5)` | `[5, 4, 3, 2, 1]` |
+
+  - 빈 배열에서 시작해 수를 하나씩 넣어 보세요.
+  - `n`이 0이면 셀 수가 없으니 빈 배열 `[]`을 돌려줘요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function countdown(n) {
+            // 여기에 작성하세요
+          }
+  entry: countdown
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function countdown(n) {
+            const numbers = [];
+            for (let i = n; i >= 1; i--) {
+              numbers.push(i);
+            }
+            return numbers;
+          }
+  checks:
+    - { kind: call, id: three, args: [3], expect: { equals: [3, 2, 1] }, requirement: 카운트다운 목록 }
+    - { kind: call, id: five, args: [5], expect: { equals: [5, 4, 3, 2, 1] }, requirement: 카운트다운 목록 }
+    - kind: call
+      id: one
+      visible: false
+      description: n이 1이면 1 하나만 담긴 배열이어야 합니다(1도 포함).
+      requirement: 끝 수 포함
+      args: [1]
+      expect: { equals: [1] }
+    - kind: call
+      id: ten
+      visible: false
+      description: 처음 보는 n(10)에서도 n부터 1까지 모두 담아야 합니다.
+      requirement: 카운트다운 목록
+      args: [10]
+      expect: { equals: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1] }
+      misconceptionIfFail: js.mc.for-off-by-one
+    - kind: call
+      id: zero
+      visible: false
+      description: n이 0이면 빈 배열을 돌려줘야 합니다.
+      requirement: 끝 수 포함
+      args: [0]
+      expect: { equals: [] }
+misconceptions: [js.mc.for-off-by-one, js.mc.push-returns-new-array]
+hints:
+  - 결과를 모을 빈 배열을 반복 앞에서 하나 만들어 두세요.
+  - 반복 변수가 `n`에서 시작해 1씩 줄어들게 하고, 돌 때마다 그 값을 배열 끝에 넣어요.
+  - 반복 조건이 1을 포함하는지, 그리고 `n`이 0일 때 반복이 한 번도 돌지 않는지 확인해 보세요.
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  function countdown(n) {
+    const numbers = [];
+    for (let i = n; i >= 1; i--) {
+      numbers.push(i);
+    }
+    return numbers;
+  }
+  ```
+
+  - 빈 배열 `numbers`에 `push`로 하나씩 넣으면 넣은 순서대로 쌓여요. 큰 수부터 넣으니 `[n, ..., 1]`이 돼요.
+  - 조건 `i >= 1`이라 1까지 들어가요. `i > 1`로 쓰면 1이 빠지고, `countdown(1)`이 `[]`가 돼요.
+  - `n`이 0이면 `0 >= 1`이 처음부터 거짓이라 반복이 돌지 않고 빈 배열이 그대로 반환돼요.
+  - `return numbers.push(i)`처럼 `push`의 결과를 돌려주면 배열이 아니라 길이가 돌아가요.
+  - 1부터 `n`까지 넣은 뒤 순서를 뒤집는 방법도 있지만, 처음부터 큰 수부터 넣으면 더 간단해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -1,0 +1,17 @@
+id: js-basics.arrays.array-basics
+title: 배열 기초
+summary: 여러 값을 순서대로 담는 배열을 대괄호로 만들고, 0부터 세는 인덱스로 요소를 읽고, length로 개수와 마지막 요소를 구하고, 인덱스에 대입해 요소를 바꾸는 법을 배웁니다.
+kind: lesson
+importance: standard
+estimatedMinutes: { read: 14, practice: 25 }
+concepts:
+  primary: [js.arr.literal-index, js.arr.length, js.arr.element-update]
+  practiced: [js.loops.for, js.str.index-length]
+  reviewed: [js.values.const, js.types.undefined, js.loops.accumulator-pattern]
+objectives:
+  - 대괄호로 배열을 만들고, arr[i]로 원하는 위치의 요소를 읽을 수 있다.
+  - 범위 밖 인덱스와 음수 인덱스가 undefined가 된다는 것을 알고, 그 결과를 예측할 수 있다.
+  - length로 요소의 개수와 마지막 요소(arr[arr.length - 1])를 구하고, 반복의 범위를 맞게 정할 수 있다.
+  - 인덱스에 대입해 요소를 바꾸고, const로 만든 배열도 요소는 바꿀 수 있다는 것을 설명할 수 있다.
+practice:
+  targetCount: 20

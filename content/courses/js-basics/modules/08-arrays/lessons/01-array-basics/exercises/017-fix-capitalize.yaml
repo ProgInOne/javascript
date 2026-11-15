@@ -1,0 +1,78 @@
+id: js-basics.arrays.array-basics.fix-capitalize
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.arr.element-update, weight: 1 }
+  - { id: js.str.immutability, weight: 0.5 }
+  - { id: js.str.split-join, weight: 0.3 }
+tags: [element-update, string-immutability, split-join, debugging]
+estimatedSeconds: 220
+prompt: |
+  영어 단어의 첫 글자만 대문자로 바꾸는 함수 `capitalize(word)`예요. 문자열은 바꿀 수 없어서 `split("")`으로 글자 배열을 만든 뒤 고치려고 했는데, 실행하면 오류가 나요. 고쳐 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `capitalize("java")` | `"Java"` |
+  | `capitalize("hello")` | `"Hello"` |
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function capitalize(word) {
+            const letters = word.split("");
+            word[0] = letters[0].toUpperCase();
+            return letters.join("");
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function capitalize(word) {
+            const letters = word.split("");
+            letters[0] = letters[0].toUpperCase();
+            return letters.join("");
+          }
+  entry: capitalize
+  bugDescription: '`capitalize("java")`를 부르면 `TypeError`가 나요.'
+  bugMisconception: js.mc.array-immutable-like-string
+  checks:
+    - { kind: call, id: java, args: ["java"], expect: { equals: "Java" }, requirement: 첫 글자 대문자 }
+    - { kind: call, id: hello, args: ["hello"], expect: { equals: "Hello" }, requirement: 첫 글자 대문자 }
+    - kind: call
+      id: one-letter
+      visible: false
+      description: 한 글자 단어도 대문자로 바꿔야 합니다.
+      requirement: 첫 글자 대문자
+      args: ["a"]
+      expect: { equals: "A" }
+    - kind: call
+      id: already-upper
+      visible: false
+      description: 이미 대문자로 시작하면 그대로 돌려줘야 합니다.
+      requirement: 첫 글자 대문자
+      args: ["Seoul"]
+      expect: { equals: "Seoul" }
+misconceptions: [js.mc.string-index-assign, js.mc.array-immutable-like-string]
+hints:
+  - 오류가 나는 줄은 어디인가요? 그 줄은 무엇의 0번 자리에 대입하려고 하나요?
+  - 모듈 7에서 배운 대로 문자열의 글자는 인덱스로 바꿀 수 없어요. 그렇다면 바꿀 수 있는 것은 이 함수에서 무엇인가요?
+  - 마지막 줄은 글자 배열을 합쳐서 돌려줘요. 대문자로 바뀐 글자가 결과에 들어가려면 어느 쪽의 0번 자리를 바꿔야 할까요?
+explanation: |
+  3번 줄이 원인이에요. `word[0] = ...`은 **문자열**의 글자를 바꾸려고 해요. 문자열은 바꿀 수 없어서 엄격 모드에서는 `TypeError: Cannot assign to read only property '0' of string 'java'`가 나요.
+
+  바꿀 수 있는 것은 `split("")`이 만든 **배열** `letters`예요. 배열은 요소를 바꿀 수 있으므로 `letters[0] = letters[0].toUpperCase();`로 고치면 돼요. 마지막 줄의 `join("")`이 바뀐 글자 배열을 다시 문자열로 합쳐요.
+
+  ```js
+  function capitalize(word) {
+    const letters = word.split("");
+    letters[0] = letters[0].toUpperCase();
+    return letters.join("");
+  }
+  ```
+
+  `letters`는 `const`지만 요소를 바꾸는 것은 문제없어요. `word.toUpperCase()`처럼 전체를 바꾸면 `"JAVA"`가 되어 틀려요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

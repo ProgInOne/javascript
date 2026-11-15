@@ -1,0 +1,48 @@
+id: js-basics.arrays.array-hof.mcq-some-returns
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.some-every, weight: 1 }
+tags: [some, boolean]
+estimatedSeconds: 45
+prompt: |
+  다음 코드를 실행한 뒤 `hasMinus`에 들어 있는 값은 무엇인가요?
+code: |
+  const changes = [500, -3000, 1200, -700];
+  const hasMinus = changes.some((n) => n < 0);
+spec:
+  options:
+    - id: a
+      text: "`true`"
+    - id: b
+      text: "`-3000`"
+      misconception: js.mc.some-returns-element
+      rationale: 조건에 맞는 첫 요소를 돌려주는 것은 `find`예요. `some`은 하나라도 맞는지 `true`/`false`로만 알려 줘요.
+    - id: c
+      text: "`[-3000, -700]`"
+      rationale: 맞는 요소를 모두 담은 배열은 `filter`가 돌려줘요.
+    - id: d
+      text: "`false`"
+      rationale: "`some`은 모든 요소가 아니라 하나라도 맞으면 `true`예요. 모두 맞아야 `true`인 것은 `every`예요."
+    - id: e
+      text: "`1`"
+      rationale: 맞는 요소의 인덱스를 돌려주는 것은 `findIndex`예요.
+  correct: a
+misconceptions: [js.mc.some-returns-element]
+hints:
+  - 0보다 작은 수가 배열에 하나라도 있나요?
+  - "`some`이 돌려주는 값은 어떤 자료형인가요?"
+  - 요소나 배열을 돌려주는 메서드는 따로 있어요.
+explanation: |
+  정답은 `true`예요.
+
+  `some`은 콜백이 참을 돌려주는 요소가 **하나라도** 있으면 `true`, 없으면 `false`를 돌려줘요. `-3000`이 0보다 작아서 `true`이고, 그 순간 확인을 멈춰요.
+
+  - `-3000`: 찾은 첫 요소는 `find`가 돌려줘요.
+  - `[-3000, -700]`: 맞는 요소를 모두 담은 배열은 `filter`의 결과예요.
+  - `false`: 모든 요소가 음수인지 묻는 `every`라면 `false`예요.
+  - `1`: `-3000`의 인덱스는 `findIndex`가 돌려줘요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

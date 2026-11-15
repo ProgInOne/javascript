@@ -1,0 +1,52 @@
+id: js-basics.arrays.array-mutation.predict-splice-steps
+type: predict_output
+difficulty: 4
+concepts:
+  - { id: js.arr.splice, weight: 1 }
+  - { id: js.arr.mutating-vs-not, weight: 0.3 }
+tags: [splice, negative-index, return-value, trace]
+estimatedSeconds: 200
+prompt: |
+  `splice`를 세 번 이어서 부르는 코드예요. 실행하면 콘솔에 무엇이 출력될까요? 네 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const nums = [10, 20, 30, 40, 50];
+    const a = nums.splice(1, 2, 99);
+    const b = nums.splice(-1, 1);
+    const c = nums.splice(2, 0, 7, 8);
+    console.log(a);
+    console.log(b);
+    console.log(c);
+    console.log(nums);
+  answerKind: console
+  misconceptionByAnswer:
+    "[20]\n[]\n[]\n[10, 99, 7, 8, 30, 40, 50]": js.mc.splice-second-arg-end
+hints:
+  - 줄마다 `nums`가 어떻게 바뀌는지 표로 적어 보세요. 다음 `splice`는 바뀐 `nums`에서 시작해요.
+  - "`splice`가 돌려주는 것은 바뀐 배열이 아니라 지운 요소들의 배열이에요. 아무것도 지우지 않으면 무엇이 돌아올까요?"
+  - 시작 위치가 음수이면 뒤에서부터 센 위치예요. 3번 줄을 실행할 때 `nums`의 마지막 요소는 무엇인가요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  [20, 30]
+  [50]
+  []
+  [10, 99, 7, 8, 40]
+  ```
+
+  | 줄 | 호출 | 바뀐 `nums` | 돌려받은 값 |
+  |---|---|---|---|
+  | 2번 | `splice(1, 2, 99)` | `[10, 99, 40, 50]` | `a`: `[20, 30]` |
+  | 3번 | `splice(-1, 1)` | `[10, 99, 40]` | `b`: `[50]` |
+  | 4번 | `splice(2, 0, 7, 8)` | `[10, 99, 7, 8, 40]` | `c`: `[]` |
+
+  - 2번 줄: 1번부터 **2개**(20, 30)를 지우고 그 자리에 99를 넣어요.
+  - 3번 줄: `-1`은 마지막 요소 자리예요. 이때 `nums`의 마지막은 50이라 50 하나를 지워요.
+  - 4번 줄: 2번 자리에 0개를 지우고 7, 8을 넣어요. 지운 것이 없으니 돌려주는 값은 빈 배열 `[]`이에요.
+  - 돌려받은 값(`a`, `b`, `c`)은 언제나 지운 요소들의 배열이에요. 바뀐 배열은 `nums` 자신이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

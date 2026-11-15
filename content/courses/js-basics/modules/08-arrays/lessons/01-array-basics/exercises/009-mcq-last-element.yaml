@@ -1,0 +1,42 @@
+id: js-basics.arrays.array-basics.mcq-last-element
+type: mcq_single
+difficulty: 1
+concepts:
+  - { id: js.arr.length, weight: 1 }
+tags: [length, last-element]
+estimatedSeconds: 50
+prompt: |
+  배열 `arr`의 길이가 얼마든 항상 **마지막 요소**를 읽는 식은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`arr[arr.length - 1]`'
+    - id: b
+      text: '`arr[arr.length]`'
+      misconception: js.mc.array-last-index-is-length
+      rationale: 인덱스는 0부터라 `length`번 자리는 마지막 요소 바로 다음, 범위 밖이에요. `undefined`가 나와요.
+    - id: c
+      text: '`arr[-1]`'
+      misconception: js.mc.array-negative-index-last
+      rationale: 대괄호 안의 음수 인덱스에는 요소가 없어서 `undefined`예요.
+    - id: d
+      text: '`arr.length - 1`'
+      rationale: 이 식은 마지막 요소의 인덱스(숫자)예요. 요소를 읽으려면 대괄호로 배열에서 꺼내야 해요.
+  correct: a
+misconceptions: [js.mc.array-last-index-is-length, js.mc.array-negative-index-last]
+hints:
+  - 요소가 4개인 배열이라면 인덱스는 몇 번부터 몇 번까지인가요?
+  - 마지막 인덱스를 `length`로 나타내 보세요. `length`와 마지막 인덱스는 얼마나 차이 나나요?
+  - 인덱스를 구했으면 그 인덱스로 배열에서 요소를 꺼내야 해요.
+explanation: |
+  정답은 `arr[arr.length - 1]`이에요.
+
+  요소가 4개면 인덱스는 0~3이라 마지막 인덱스는 `4 - 1 = 3`이에요. 길이가 얼마든 마지막 인덱스는 `length - 1`이므로, 이 인덱스로 요소를 꺼내면 항상 마지막 요소예요.
+
+  - `arr[arr.length]`: 마지막 요소의 바로 다음 자리라 범위 밖, `undefined`예요.
+  - `arr[-1]`: 음수 인덱스에는 요소가 없어서 `undefined`예요.
+  - `arr.length - 1`: 마지막 요소의 **인덱스**일 뿐 요소가 아니에요. `[3, 9]`라면 9가 아니라 1이에요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

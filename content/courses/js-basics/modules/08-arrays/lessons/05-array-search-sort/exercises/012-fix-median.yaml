@@ -1,0 +1,104 @@
+id: js-basics.arrays.array-search-sort.fix-median
+type: fix_bug
+difficulty: 4
+concepts:
+  - { id: js.arr.sort, weight: 1 }
+  - { id: js.arr.slice-concat, weight: 0.5 }
+  - { id: js.arr.mutating-vs-not, weight: 0.5 }
+tags: [sort, compare-function, slice, no-mutation, median, debugging]
+estimatedSeconds: 360
+prompt: |
+  반 학생들의 점수 배열을 받아 **중앙값**(크기 순으로 놓았을 때 가운데 값)을 돌려주는 함수 `median(nums)`예요.
+
+  - 점수가 홀수 개면 가운데 값을, 짝수 개면 가운데 두 값의 평균을 돌려줘요.
+  - 점수 배열은 다른 화면에서 **들어온 순서대로** 다시 쓰므로, 함수가 받은 배열의 순서를 바꾸면 안 돼요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `median([10, 9, 1])` | `9` |
+  | `median([100, 20, 5, 40])` | `30` |
+
+  이 함수에는 문제가 두 가지 있어요. 모두 고쳐 보세요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function median(nums) {
+            nums.sort();
+            const count = nums.length;
+            if (count % 2 === 1) {
+              return nums[(count - 1) / 2];
+            }
+            return (nums[count / 2 - 1] + nums[count / 2]) / 2;
+          }
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function median(nums) {
+            const sorted = nums.slice().sort((a, b) => a - b);
+            const count = sorted.length;
+            if (count % 2 === 1) {
+              return sorted[(count - 1) / 2];
+            }
+            return (sorted[count / 2 - 1] + sorted[count / 2]) / 2;
+          }
+  entry: median
+  bugDescription: "`median([10, 9, 1])`가 `9`가 아니라 `10`을 돌려줘요. 또 `median`을 부른 뒤에는 넘긴 점수 배열의 순서가 바뀌어 있어요."
+  checks:
+    - { kind: call, id: odd, args: [[10, 9, 1]], expect: { equals: 9 }, requirement: 크기 순 가운데 값 }
+    - { kind: call, id: even, args: [[100, 20, 5, 40]], expect: { equals: 30 }, requirement: 크기 순 가운데 값 }
+    - kind: call
+      id: odd-hidden
+      visible: false
+      description: 자릿수가 다른 점수가 섞여도 크기 순으로 놓고 가운데 값을 골라야 합니다.
+      requirement: 크기 순 가운데 값
+      args: [[7, 300, 25]]
+      expect: { equals: 25 }
+      misconceptionIfFail: js.mc.sort-numeric-default
+    - kind: call
+      id: even-hidden
+      visible: false
+      description: 짝수 개면 크기 순으로 가운데 두 점수의 평균이어야 합니다.
+      requirement: 크기 순 가운데 값
+      args: [[9, 100, 80, 10]]
+      expect: { equals: 45 }
+      misconceptionIfFail: js.mc.sort-numeric-default
+    - kind: call
+      id: keep-order
+      visible: false
+      description: 함수가 받은 점수 배열의 순서를 바꾸면 안 됩니다.
+      requirement: 받은 배열 지키기
+      args: [[10, 9, 1]]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.sort-returns-new-array
+misconceptions: [js.mc.sort-numeric-default, js.mc.sort-returns-new-array]
+hints:
+  - "`[10, 9, 1]`에 `sort()`를 하면 어떤 순서가 되는지 직접 적어 보세요. 그 가운데 값이 `10`인가요?"
+  - "`sort`는 받은 배열을 직접 바꿔요. 함수를 부른 쪽에서도 같은 배열을 쓰고 있다는 점을 떠올려 보세요."
+  - 정렬은 원본이 아니라 원본을 복사한 배열에 해야 해요. 그리고 숫자를 크기 순으로 놓는 비교 함수를 넘기세요.
+explanation: |
+  문제는 2번 줄 `nums.sort();` 하나에 두 가지가 겹쳐 있어요.
+
+  1. **비교 함수가 없어요.** 숫자를 문자열로 바꿔 사전순으로 정렬해서 `[10, 9, 1]`이 `[1, 10, 9]`가 됐어요. 가운데 값이 `10`으로 나온 이유예요.
+  1. **받은 배열을 직접 정렬해요.** `sort`는 원본을 바꾸므로, 함수를 부른 쪽의 점수 배열 순서까지 바뀌어요.
+
+  ```js
+  function median(nums) {
+    const sorted = nums.slice().sort((a, b) => a - b);
+    const count = sorted.length;
+    if (count % 2 === 1) {
+      return sorted[(count - 1) / 2];
+    }
+    return (sorted[count / 2 - 1] + sorted[count / 2]) / 2;
+  }
+  ```
+
+  - `nums.slice()`로 복사본을 만들고 그것을 정렬해요. `nums`는 들어온 순서 그대로예요.
+  - `(a, b) => a - b`로 작은 수부터 정렬해요. `[9, 100, 80, 10]`은 `[9, 10, 80, 100]`이 되고, 가운데 두 값 `10`과 `80`의 평균은 `45`예요.
+  - 비교 함수만 고치면 값은 맞지만 원본이 바뀌고, 복사만 하면 원본은 지키지만 값이 틀려요. 두 가지를 모두 고쳐야 해요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

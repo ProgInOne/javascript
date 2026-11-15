@@ -1,0 +1,41 @@
+id: js-basics.arrays.array-basics.tf-out-of-range
+type: true_false
+difficulty: 2
+concepts:
+  - { id: js.arr.literal-index, weight: 1 }
+tags: [out-of-range, undefined]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: '`const nums = [4, 8, 15];`일 때 `console.log(nums[5]);`를 실행하면 오류가 나서 프로그램이 멈춘다.'
+  answer: false
+  misconceptionIfWrong: js.mc.array-out-of-range-throws
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 범위 밖 인덱스를 읽으면 오류 없이 undefined가 나오고 프로그램은 계속 실행된다
+      correct: true
+    - id: r2
+      text: 없는 인덱스를 읽으면 배열이 자동으로 늘어나 0이 나온다
+    - id: r3
+      text: 범위 밖 인덱스는 마지막 요소로 바뀌어 15가 나온다
+    - id: r4
+      text: 범위 밖 인덱스를 읽으면 RangeError가 나기 때문에 맞는 설명이다
+      misconception: js.mc.array-out-of-range-throws
+hints:
+  - "`nums`의 인덱스는 몇 번부터 몇 번까지인가요?"
+  - 모듈 7에서 문자열의 범위 밖 인덱스를 읽었을 때 어떤 값이 나왔는지 떠올려 보세요.
+  - 배열도 같은 규칙을 따라요. "그 자리에 아무것도 없다"는 뜻의 값을 생각해 보세요.
+explanation: |
+  정답은 **거짓**이에요. 이유는 "범위 밖 인덱스를 읽으면 오류 없이 undefined가 나오고 프로그램은 계속 실행된다"예요.
+
+  `nums`의 인덱스는 0, 1, 2뿐이라 `nums[5]`는 범위 밖이에요. JavaScript는 이때 오류를 내지 않고 `undefined`를 돌려줘요.
+
+  - 배열이 자동으로 늘어나는 일은 읽을 때 일어나지 않아요. 읽기만 하면 배열은 그대로예요.
+  - 마지막 요소로 바뀌지 않아요. 마지막 요소는 `nums[nums.length - 1]`로 읽어요.
+  - `RangeError`는 나지 않아요. 오류가 나지 않기 때문에 인덱스 실수를 알아차리기 어렵다는 점을 기억해 두세요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude
