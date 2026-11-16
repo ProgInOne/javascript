@@ -31,6 +31,25 @@ export async function openScreen(page: Page, path: string, heading: string, sche
 
 /** WCAG 2.2 A/AA in a real browser (contrast included, unlike jsdom). */
 export async function expectNoA11yViolations(page: Page) {
+  // Contrast is checked on computed colors: let finite animations and transitions (dialog
+  // fade-in, a button turning enabled) end first, or a slow run sees mid-transition colors.
+  // Polled from the test side for at most 2 s: under a fake page clock (page.clock) the
+  // document timeline does not advance, so waiting on `finished` would never return.
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            document
+              .getAnimations()
+              .filter(
+                (a) => a.playState === 'running' && a.effect?.getTiming().iterations !== Infinity,
+              ).length,
+        ),
+      { timeout: 2_000, intervals: [50, 100, 200] },
+    )
+    .toBe(0)
+    .catch(() => undefined);
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .analyze();

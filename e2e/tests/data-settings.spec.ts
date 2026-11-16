@@ -74,7 +74,7 @@ test('backup → change → restore brings the data back', async ({ page, reques
   await page.getByRole('button', { name: '지금 백업' }).click();
   await expect(page.getByText('백업을 만들었어요').first()).toBeVisible();
   await expect(manual).toHaveCount(before + 1);
-  await expect(manual.first()).toContainText(/v\d+\.\d+\.\d+ · DB \d{4}/);
+  await expect(manual.first()).toContainText(/v\d+\.\d+\.\d+(?:-[0-9A-Za-z.]+)? · DB \d{4}/);
 
   // Change the data after the backup.
   await api.send('PUT', '/goals', { dailyMinutes: 60, weeklyDays: 3 });

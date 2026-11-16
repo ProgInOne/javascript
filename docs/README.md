@@ -77,6 +77,9 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 | [함수·배열·객체 단원 평가 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-assessments-6-8-9-review.md) | 평가 문항 72개 (`functions-review`, `arrays-review`, `objects-review`) |
 | [M7 성능 점검 (2026-11-16)](/docs/reviews/2026-11-16-m7-performance.md) | NFR-01~03 측정(`pnpm perf`): 첫 화면, 화면 전환, 채점, 콘솔 첫 출력, 무한 루프 응답성, 첫 화면 번들 예산 |
 | [M7 호환성 점검 (2026-11-16)](/docs/reviews/2026-11-16-m7-compatibility.md) | NFR-10: Firefox·WebKit의 샌드박스 정책·핵심 흐름, macOS에서 v0.3.0 릴리스 번들 설치·실행 |
+| [M7 HTML/CSS 보충 문제 검토 (2026-11-16)](/docs/reviews/2026-11-16-m7-htmlcss-review.md) | 유형 구성비 경고 13곳을 없앤 HTML/CSS 문제 34개 |
+| [M7 JS 단계적 풀이 예제 검토 (2026-11-16)](/docs/reviews/2026-11-16-m7-worked-examples-review.md) | JS 기초 모듈 2~5의 풀이 예제 48개 (`usage: worked_example`) |
+| [M7 릴리스 준비 점검 (2026-11-16)](/docs/reviews/2026-11-16-m7-release-readiness.md) | MVP 완료 정의별 상태, 릴리스 전 확인 결과, 사람이 해야 하는 점검, 알려진 제약(`v1.0.0-rc.1`) |
 
 ## 예정 문서
 

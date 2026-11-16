@@ -60,5 +60,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           version="${GITHUB_REF_NAME#v}"
+          # A SemVer pre-release (`1.0.0-rc.1`) is published as a GitHub pre-release (D-075).
+          pre=()
+          if [[ "$version" == *-* ]]; then pre=(--prerelease); fi
           gh release create "$GITHUB_REF_NAME" --title "ProgInOne ${version}" --notes-file notes.md \
-            "proginone-${version}.tar.gz" "proginone-${version}.tar.gz.sha256"
+            "${pre[@]}" "proginone-${version}.tar.gz" "proginone-${version}.tar.gz.sha256"

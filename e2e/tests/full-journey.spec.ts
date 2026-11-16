@@ -172,7 +172,12 @@ test('one learner: onboarding → lesson → practice → assessment → review 
     await expect(note.getByText('오개념: 출력을 반환으로 착각함')).toBeVisible();
     await expectNoA11yViolations(page);
     await note.getByRole('link', { name: '풀이 다시 보기' }).click();
-    await page.getByRole('button', { name: '다시 풀기' }).click();
+    // The list has a "다시 풀기" per note: wait for the detail page before using its button.
+    await expect(page).toHaveURL(/\/review\/mistakes\/[^/?]+$/);
+    await page
+      .getByRole('article', { name: /./ })
+      .getByRole('button', { name: '다시 풀기' })
+      .click();
     await expectHeading(page, '다시 풀기');
     const exerciseId =
       (await page.locator('.practice-layout').getAttribute('data-exercise-id')) ?? '';
