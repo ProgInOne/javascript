@@ -18,7 +18,8 @@ jobs:
   check:
     name: lint · typecheck · test · build
     runs-on: ${{ vars.CI_RUNNER == 'self-hosted' && fromJSON('["self-hosted","proginone"]') || 'ubuntu-latest' }}
-    timeout-minutes: 15
+    # ~10 min alone; on the shared Mac next to a Docker E2E job it passed 15 min and was cut off.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
 

@@ -157,4 +157,5 @@ SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chr
 - runner는 같은 Mac에 두 개(`mac-proginone` = `~/actions-runner`, `mac-proginone-2` = `~/actions-runner-2`)이고 작업이 동시에 두 개 돕니다. 두 runner가 `$HOME`을 같이 쓰므로 `pnpm/action-setup`은 runner별 임시 폴더(`runner.temp`)에 설치합니다.
 - CI를 기다릴 때는 `gh run watch <id> --interval 120 --exit-status`처럼 간격을 넓힙니다. 기본 3초 간격으로 여러 곳에서 기다리면 GitHub API 한도(시간당 5,000회)를 금방 넘습니다.
 - runner 관리: 각 runner 폴더(`~/actions-runner`, `~/actions-runner-2`)에서 `./svc.sh status`·`./svc.sh stop`·`./svc.sh start`. 제거는 `./svc.sh uninstall` 후 `./config.sh remove --token <GitHub에서 받은 제거 토큰>`.
+- 제한 시간: 검사 작업(lint·typecheck·test·build)은 30분, self-hosted E2E는 45분입니다. 같은 Mac에서 Docker E2E와 함께 돌면 검사 작업이 혼자 돌 때(약 10분)보다 크게 느려져, 15분 제한에 걸려 취소된 적이 있습니다. 작업이 "cancelled"로 끝나면 먼저 시작·종료 시각이 제한 시간과 맞는지 확인합니다.
 - 저장소를 공개로 바꾸기 전에는 self-hosted runner를 반드시 제거합니다.

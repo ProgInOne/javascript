@@ -10,7 +10,7 @@ permissions:
 jobs:
   release:
     runs-on: ${{ vars.CI_RUNNER == 'self-hosted' && fromJSON('["self-hosted","proginone"]') || 'ubuntu-latest' }}
-    timeout-minutes: 20
+    timeout-minutes: 30 # same checks as CI on a possibly busy self-hosted Mac
     steps:
       - uses: actions/checkout@v7
 
