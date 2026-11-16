@@ -315,6 +315,28 @@ export const lessonPrerequisitesSchema = z.object({
 });
 export type LessonPrerequisites = z.infer<typeof lessonPrerequisitesSchema>;
 
+/**
+ * `GET /courses/:id/prerequisite-warnings` (FR-CUR-05, ui-ux.md 과정 상세 `!` 아이콘, D-073): the
+ * unfinished lessons of a course whose direct `required` prerequisites are weak (the D-052 rule),
+ * in course order. Empty until the learner has started the course: before that every lesson after
+ * the first would be flagged.
+ */
+export const coursePrerequisiteWarningsSchema = z.object({
+  courseId: z.string(),
+  lessons: z.array(
+    z.object({
+      lessonId: z.string(),
+      /** The weak prerequisites; `lesson` is the lesson that introduces each (null if none). */
+      concepts: z.array(
+        conceptRefSchema.extend({
+          lesson: z.object({ id: z.string(), title: z.string() }).nullable(),
+        }),
+      ),
+    }),
+  ),
+});
+export type CoursePrerequisiteWarnings = z.infer<typeof coursePrerequisiteWarningsSchema>;
+
 /** `GET /concepts/:id?evidenceLimit=`. */
 export const conceptDetailQuerySchema = z
   .object({ evidenceLimit: z.coerce.number().int().min(1).max(200).optional() })

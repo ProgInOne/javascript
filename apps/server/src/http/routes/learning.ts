@@ -15,7 +15,7 @@ import type { AppEnv } from '../env.ts';
 import { contentIdParam, jsonBody, limitBody } from './input.ts';
 
 /**
- * Reading progress, lesson prerequisites, review queue, activity heartbeat and recent activity,
+ * Reading progress, lesson and course prerequisite warnings, review queue, activity heartbeat and recent activity,
  * the dashboard summary, goals, the concept detail and its related exercises, the learner
  * profile, the mistake notes and mastery changes
  * (docs/design/system-architecture.md#api-규약).
@@ -55,6 +55,9 @@ export function learningRoutes(services: PracticeServices) {
     })
     .get('/concepts/:id/exercises', (c) =>
       c.json(services.relatedExercises.list(contentIdParam(c.req.param('id')))),
+    )
+    .get('/courses/:id/prerequisite-warnings', (c) =>
+      c.json(services.concepts.coursePrerequisiteWarnings(contentIdParam(c.req.param('id')))),
     )
     .get('/lessons/:id/prerequisites', (c) =>
       c.json(services.concepts.lessonPrerequisites(contentIdParam(c.req.param('id')))),

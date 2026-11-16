@@ -10,6 +10,7 @@ import {
 } from '@proginone/learning-engine';
 import type {
   ConceptDetail,
+  CoursePrerequisiteWarnings,
   LessonPrerequisite,
   LessonPrerequisites,
   MasteryEvidenceView,
@@ -18,6 +19,7 @@ import type { UserDb } from '../../db/user/connection.ts';
 import { listEvidence, loadConceptStates, recentReviews } from '../../db/user/learning-state.ts';
 import { listObservationsForConcepts } from '../../db/user/misconceptions.ts';
 import { activeAssessmentAttemptIds } from '../../db/user/practice-sets.ts';
+import { listLessonStatuses } from '../../db/user/progress.ts';
 import { AppError } from '../../http/errors.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
@@ -257,6 +259,70 @@ export class ConceptService {
       warnings: prerequisites
         .filter((p) => p.strength === 'required' && p.weak)
         .map((p) => p.concept.id),
+    };
+  }
+
+  /**
+   * `GET /courses/:id/prerequisite-warnings` (FR-CUR-05, D-073): the course detail's `!` icons.
+   * Same rule as the lesson warning (D-052: weak direct `required` prerequisites of the concepts
+   * a lesson introduces), but only for lessons not completed yet, and only once the learner has
+   * started the course — for a new learner every lesson after the first would carry the icon.
+   */
+  coursePrerequisiteWarnings(courseId: string): CoursePrerequisiteWarnings {
+    const repo = this.#content.repo;
+    if (!repo.listCourseIds().includes(courseId)) {
+      throw new AppError('NOT_FOUND', 404, '과정을 찾을 수 없습니다.', {
+        details: { id: courseId },
+      });
+    }
+    // Assessments and projects introduce no concepts, so they never warn (D-052).
+    const lessons = repo.listCourseLessons(courseId, ['lesson']);
+    const { learnerId } = learnerContext(this.#userDb);
+    const statuses = listLessonStatuses(
+      this.#userDb.orm,
+      learnerId,
+      repo.listCourseLessons(courseId, ['lesson', 'assessment', 'project']).map((l) => l.id),
+    );
+    const started = [...statuses.values()].some((s) => s !== 'not_started');
+    if (!started) return { courseId, lessons: [] };
+
+    const edges = repo.listPrerequisites();
+    const perLesson = lessons
+      .filter((l) => statuses.get(l.id) !== 'completed')
+      .map((l) => {
+        const own = new Set(repo.getLessonPlan(l.id)?.introduces ?? []);
+        const required = new Set(
+          edges
+            .filter(
+              (e) =>
+                e.strength === 'required' && own.has(e.conceptId) && !own.has(e.prerequisiteId),
+            )
+            .map((e) => e.prerequisiteId),
+        );
+        return { lessonId: l.id, required: [...required] };
+      })
+      .filter((l) => l.required.length > 0);
+    const ids = [...new Set(perLesson.flatMap((l) => l.required))];
+    const concepts = repo.getConceptsWithLesson(ids);
+    const states = loadConceptStates(this.#userDb.orm, learnerId, ids, this.#engine.fsrs);
+    const now = this.#now();
+    const weak = new Set(
+      ids.filter(
+        (id) =>
+          assessPrerequisite(this.#engine, states.get(id) ?? initialConceptState(id), now).weak,
+      ),
+    );
+    return {
+      courseId,
+      lessons: perLesson.flatMap((l) => {
+        const list = l.required.flatMap((id) => {
+          const concept = concepts.get(id);
+          if (!concept || !weak.has(id)) return [];
+          const lesson = concept.lesson && concept.lesson.id !== l.lessonId ? concept.lesson : null;
+          return [{ id, title: concept.title, lesson }];
+        });
+        return list.length > 0 ? [{ lessonId: l.lessonId, concepts: list }] : [];
+      }),
     };
   }
 }

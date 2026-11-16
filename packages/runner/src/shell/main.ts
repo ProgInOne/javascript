@@ -76,10 +76,14 @@ window.addEventListener('message', (e: MessageEvent) => {
     (e.data as { type?: unknown } | null)?.type === 'pg-harness-hello'
   ) {
     run.harnessPortGiven = true;
+    if (run.frame) run.frame.dataset['hello'] = '1';
     learner.postMessage({ type: 'pg-port' }, '*', [run.channel.port2]);
     return;
   }
-  if (isPreviewWindow(e.source)) forwardNotice(e.data);
+  if (isPreviewWindow(e.source)) {
+    if ((e.data as { type?: unknown } | null)?.type === 'pg-left') showLeftPreview(e.source);
+    else forwardNotice(e.data);
+  }
   // Everything else, including learner code posting fake results to its parent, is ignored.
 });
 
@@ -90,6 +94,52 @@ function isPreviewWindow(source: MessageEventSource | null): boolean {
   if (source === null) return false;
   if (previewFrame?.contentWindow === source) return true;
   return current?.request.mode === 'preview' && current.frame?.contentWindow === source;
+}
+
+/**
+ * Shown in place of the browser's error page when a preview document navigates anyway (D-074).
+ * Static and script-free; it inherits the shell CSP like the learner document.
+ */
+const LEFT_PREVIEW_DOC =
+  '<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="color-scheme" content="light dark">' +
+  '<style>body{margin:0;min-height:100vh;display:grid;place-items:center;font:15px/1.6 system-ui,sans-serif;' +
+  'color:CanvasText;background:Canvas}div{max-width:28rem;padding:24px;text-align:center}' +
+  'p{margin:0 0 8px}p+p{opacity:.75;font-size:14px}</style>' +
+  '<div role="status"><p><strong>미리보기는 다른 페이지로 이동할 수 없어요.</strong></p>' +
+  '<p>코드에서 <code>location</code>을 바꾸거나 <code>form.submit()</code>을 부르면 이 안내가 보여요. ' +
+  '코드를 다시 실행하면 처음 화면으로 돌아와요.</p></div></html>';
+
+/** Replaces a preview document that is leaving (`pg-left`) with {@link LEFT_PREVIEW_DOC}. */
+function showLeftPreview(source: MessageEventSource | null) {
+  const frame =
+    previewFrame?.contentWindow === source
+      ? previewFrame
+      : current?.frame?.contentWindow === source
+        ? current.frame
+        : null;
+  if (frame) replaceLeftPreview(frame);
+}
+
+/**
+ * Also catches a departure that sent no `pg-left` (the browser may drop a message posted while
+ * the document unloads): any `load` after the first one is a navigation of the preview frame.
+ */
+function watchPreviewLoads(frame: HTMLIFrameElement) {
+  let loads = 0;
+  frame.addEventListener('load', () => {
+    // Count from the learner document on (`pg-harness-hello` arrives while it parses), so an
+    // initial `about:blank` load never counts.
+    if (frame.dataset['hello'] !== '1') return;
+    loads++;
+    if (loads > 1) replaceLeftPreview(frame);
+  });
+}
+
+function replaceLeftPreview(frame: HTMLIFrameElement) {
+  if (frame.dataset['left'] === '1') return;
+  frame.dataset['left'] = '1';
+  frame.srcdoc = LEFT_PREVIEW_DOC;
+  forwardNotice({ type: 'pg-notice', notice: 'navigation-blocked' });
 }
 
 function forwardNotice(data: unknown) {
@@ -211,6 +261,7 @@ function startRun(request: RunRequest) {
   const source = request.document ?? '';
   const at = Math.min(request.harnessAt ?? 0, source.length);
   frame.srcdoc = source.slice(0, at) + harnessTag + source.slice(at);
+  if (request.mode === 'preview' && !request.syntaxOnly) watchPreviewLoads(frame);
   run.frame = frame;
   document.body.appendChild(frame);
 }

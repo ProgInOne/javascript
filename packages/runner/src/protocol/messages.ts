@@ -234,3 +234,14 @@ export interface HarnessNoticeMessage {
   type: 'pg-notice';
   notice: RunnerNotice;
 }
+
+/**
+ * Preview document → shell over `window.postMessage` on `pagehide`: the document is leaving
+ * through a navigation the harness cannot cancel (`location` assignment, `form.submit()`,
+ * `<meta refresh>`). The shell CSP blocks it and the browser would show its error page, so the
+ * shell swaps in a short explanation instead (D-074). Learner code can send this too; it only
+ * ever replaces its own preview with that explanation.
+ */
+export interface HarnessLeftMessage {
+  type: 'pg-left';
+}

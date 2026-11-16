@@ -16,6 +16,7 @@ import type { ConsoleEntry, ConsoleLevel } from '@proginone/shared';
 import type {
   BlockedRequest,
   HarnessConfig,
+  HarnessLeftMessage,
   HarnessNoticeMessage,
   HarnessToShell,
 } from '../protocol/messages.ts';
@@ -977,6 +978,15 @@ function start(config: HarnessConfig) {
         message: '실행 중에는 다른 페이지로 이동하거나 폼을 전송할 수 없습니다.',
       });
       finish();
+      // Preview: also after the run (a click handler assigning `location`). The shell replaces
+      // the browser's error page with an explanation (D-074).
+      if (config.interceptNavigation) {
+        try {
+          parentWindow.postMessage({ type: 'pg-left' } satisfies HarnessLeftMessage, '*');
+        } catch {
+          // ignore
+        }
+      }
     });
   }
 }

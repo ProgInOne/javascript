@@ -1,7 +1,7 @@
 import type { RunnerHost } from '@proginone/runner';
 import type { RunPlan, RunResult } from '@proginone/shared';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { consoleRunner, previewRunner } from '../runner/runner.ts';
+import { consoleRunner, previewRunner, warmRunner } from '../runner/runner.ts';
 
 /**
  * Runner hosts for one exercise: the shared hidden host for console runs and grading (layout is
@@ -19,6 +19,7 @@ export function useExerciseRunner() {
     },
     [],
   );
+  useEffect(() => warmRunner(), []);
   const hidden = useCallback((plan: RunPlan): Promise<RunResult> => consoleRunner().run(plan), []);
   /** Runs a `dom` plan as `preview`, so the document stays on screen after the run. */
   const preview = useCallback((plan: RunPlan): Promise<RunResult> => {

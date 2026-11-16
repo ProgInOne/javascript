@@ -198,7 +198,10 @@ export async function solveSet(page: Page, firstSet: boolean) {
   const seen = new Set<string>();
   for (let n = 0; n < total; n++) {
     const layout = page.locator('.practice-layout');
-    seen.add((await layout.getAttribute('data-type')) ?? '');
+    const type = (await layout.getAttribute('data-type')) ?? '';
+    seen.add(type);
+    // The web task gets its own two-panel ratio (the class was once glued to `--code`).
+    if (type === 'web_task') await expect(layout).toHaveClass(/(^| )practice-layout--web( |$)/);
     await answer(page, (await layout.getAttribute('data-exercise-id')) ?? '', firstSet);
     await expect(progress).toContainText(`${n + 1} / ${total}`);
     await page

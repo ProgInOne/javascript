@@ -39,6 +39,7 @@ import {
   learnerProfileSchema,
   conceptDetailSchema,
   lessonPrerequisitesSchema,
+  coursePrerequisiteWarningsSchema,
   masteryOverviewSchema,
   weakConceptsSchema,
   masteryChangesSchema,
@@ -189,6 +190,18 @@ export const lessonPrerequisitesQuery = (id: string) =>
     queryFn: ({ signal }) =>
       api(`/lessons/${encodeURIComponent(id)}/prerequisites`, {
         schema: lessonPrerequisitesSchema,
+        signal,
+      }),
+    staleTime: 30_000,
+  });
+
+/** Unfinished lessons of a course with weak prerequisites: the course detail's `!` (D-073). */
+export const coursePrerequisiteWarningsQuery = (id: string) =>
+  queryOptions({
+    queryKey: ['course-prerequisite-warnings', id],
+    queryFn: ({ signal }) =>
+      api(`/courses/${encodeURIComponent(id)}/prerequisite-warnings`, {
+        schema: coursePrerequisiteWarningsSchema,
         signal,
       }),
     staleTime: 30_000,

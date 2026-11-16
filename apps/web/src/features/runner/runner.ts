@@ -1,4 +1,9 @@
-import { createRunnerHost, type RunnerHost, type RunnerNotice } from '@proginone/runner';
+import {
+  createRunnerHost,
+  preloadRunner,
+  type RunnerHost,
+  type RunnerNotice,
+} from '@proginone/runner';
 import type { RunPlan, RunResult } from '@proginone/shared';
 
 /**
@@ -14,6 +19,28 @@ let hidden: RunnerHost | null = null;
 export function consoleRunner(): RunnerHost {
   hidden ??= createRunnerHost({ serverOrigin: SERVER_ORIGIN, placement: 'hidden' });
   return hidden;
+}
+
+/**
+ * Gets the first run of a screen ready while the browser is idle (D-074): loads the prepare step
+ * and connects the shared hidden shell, which otherwise both happen on the first "실행". Call it
+ * from screens that can run code; returns a cleanup that cancels a warm-up not started yet.
+ * Browsers without `requestIdleCallback` (and jsdom) skip it: it only saves time.
+ */
+export function warmRunner(): () => void {
+  if (typeof requestIdleCallback !== 'function') return () => undefined;
+  const id = requestIdleCallback(
+    () => {
+      void preloadRunner();
+      consoleRunner()
+        .ready()
+        .catch(() => undefined); // the first run reports a shell that cannot start
+    },
+    { timeout: 2_000 },
+  );
+  return () => {
+    cancelIdleCallback(id);
+  };
 }
 
 const NOTICE_MESSAGES: Record<RunnerNotice, string> = {

@@ -90,9 +90,9 @@ v0.3.0 GitHub Release의 번들을 임시 폴더에 받아 [설치와 업그레�
 
 | 번호 | 내용 | 영향 | 예상 규모 |
 |---|---|---|---|
-| 1 | 러너가 Firefox의 `InternalError: too much recursion`을 `RangeError`처럼 설명("함수가 자기 자신을 끝없이 부르고 있어요")하도록 콘솔 설명 대응표에 추가 | Firefox 학습자의 오류 설명 | 1시간 |
+| 1 | 러너가 Firefox의 `InternalError: too much recursion`을 `RangeError`처럼 설명("함수가 자기 자신을 끝없이 부르고 있어요")하도록 콘솔 설명 대응표에 추가 | Firefox 학습자의 오류 설명 | 반영함(D-074) |
 | 2 | 하네스가 중첩 문서의 `pagehide`/`unload`도 탐색으로 보고해, Firefox·WebKit의 S11이 시간 초과 대신 즉시 `NavigationError`가 되게 | 학습자가 받는 결과의 정확성 | 반나절(엔진별 확인 포함) |
-| 3 | 콘솔의 학습자 언어 설명이 V8 문구(`is not defined`, `Assignment to constant variable` 등)에 맞춰져 있음. Firefox·WebKit 문구도 대응 | 다른 브라우저의 오류 설명 | 2시간 |
+| 3 | 콘솔의 학습자 언어 설명이 V8 문구(`is not defined`, `Assignment to constant variable` 등)에 맞춰져 있음. Firefox·WebKit 문구도 대응 | 다른 브라우저의 오류 설명 | 반영함(D-074) |
 | 4 | Firefox·WebKit 호환성 실행을 CI에 넣기(설계의 브라우저 매트릭스) | 회귀 조기 발견 | GitHub 호스트 runner 복귀 뒤 결정(D-064) |
 
 보장 범위는 macOS + 최신 Chrome이므로(NFR-10) 위 항목은 v1.0 출시를 막지 않습니다. 알려진 문제로 릴리스 노트에 적습니다.

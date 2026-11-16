@@ -76,6 +76,35 @@ function formatSeconds(ms: number): string {
 }
 
 /**
+ * Engine wordings of the errors explained below (D-074). The original message is shown as the
+ * engine wrote it (D-030); only the explanation underneath is matched, so Chrome (V8), Firefox
+ * (SpiderMonkey) and Safari (JavaScriptCore) learners get the same explanation.
+ */
+const ENGINE_MESSAGES = {
+  /** V8 and SpiderMonkey `x is not defined`, JSC `Can't find variable: x`, SpiderMonkey strict
+   * `assignment to undeclared variable x`. */
+  undefinedName: [
+    /^(\S+) is not defined/,
+    /^Can't find variable: (\S+)/,
+    /^assignment to undeclared variable (\S+)/,
+  ],
+  /** V8 `Cannot access 'x' before initialization`, SpiderMonkey `can't access lexical declaration
+   * 'x' before initialization`, JSC `Cannot access uninitialized variable.` */
+  beforeInit: /before initialization|uninitialized variable/i,
+  /** V8 `Cannot read properties of undefined`, SpiderMonkey `x is undefined` / `can't access
+   * property "y", x is null`, JSC `undefined is not an object (evaluating 'x.y')`. */
+  nullish:
+    /Cannot (read|set) properties of (undefined|null)|^(undefined|null) is not an object|(^|, )\S+ is (undefined|null)$|can't access property .*, \S+ is (undefined|null)/,
+  /** V8 `Assignment to constant variable.`, SpiderMonkey `invalid assignment to const 'x'`, JSC
+   * `Attempted to assign to readonly property.` */
+  constAssign:
+    /Assignment to constant variable|invalid assignment to const|Attempted to assign to readonly property/,
+  /** V8 and JSC `Maximum call stack size exceeded` (RangeError), SpiderMonkey `too much recursion`
+   * (InternalError). */
+  recursion: /Maximum call stack size exceeded|too much recursion/i,
+} as const;
+
+/**
  * Learner-language explanation shown under the original error (마이크로카피 원칙 4). The original
  * message stays visible so learners learn to read real errors.
  */
@@ -86,8 +115,14 @@ export function explainRunError(
     return '코드를 읽을 수 없어요(문법 오류). 표시된 줄 근처를 확인해 보세요.';
   if (error.phase === 'loop_limit')
     return '끝나지 않는 반복문이 있는지 확인해 보세요. 반복 조건이 언젠가 거짓이 되어야 해요.';
+  if (ENGINE_MESSAGES.recursion.test(error.message))
+    return '함수가 자기 자신을 끝없이 부르고 있어요. 재귀가 멈추는 조건이 있는지 확인해 보세요.';
   if (error.name === 'ReferenceError') {
-    const name = /^(\S+) is not defined/.exec(error.message)?.[1];
+    if (ENGINE_MESSAGES.beforeInit.test(error.message))
+      return '`let`이나 `const`로 선언하기 전에 그 이름을 썼어요. 선언을 사용하는 곳보다 위로 옮겨 보세요.';
+    const name = ENGINE_MESSAGES.undefinedName
+      .map((re) => re.exec(error.message)?.[1])
+      .find((n) => n !== undefined);
     if (name)
       return `\`${name}\`라는 이름을 찾을 수 없어요. 선언하기 전에 썼거나 철자가 다를 수 있어요.`;
     return '아직 쓸 수 없는 이름을 썼어요. 선언 위치와 철자를 확인해 보세요.';
@@ -95,9 +130,9 @@ export function explainRunError(
   if (error.name === 'TypeError') {
     if (error.message.includes('is not a function'))
       return '함수가 아닌 값을 호출했어요. 이름과 값의 종류를 확인해 보세요.';
-    if (/Cannot read properties of (undefined|null)/.test(error.message))
+    if (ENGINE_MESSAGES.nullish.test(error.message))
       return '`undefined`나 `null`에서 속성을 읽으려고 했어요. 값이 있는지 먼저 확인해 보세요.';
-    if (error.message.includes('Assignment to constant variable'))
+    if (ENGINE_MESSAGES.constAssign.test(error.message))
       return '`const`로 선언한 변수에는 다시 값을 넣을 수 없어요. 바뀌는 값이면 `let`을 쓰세요.';
     return '값의 종류가 이 동작에 맞지 않아요. 어떤 값이 들어 있는지 확인해 보세요.';
   }

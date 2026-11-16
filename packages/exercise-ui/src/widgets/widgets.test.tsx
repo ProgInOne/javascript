@@ -521,4 +521,46 @@ describe('ConsoleView', () => {
     ).toMatch(/함수가 아닌 값/);
     expect(explainRunError({ phase: 'runtime', name: 'Error', message: 'boom' })).toBeNull();
   });
+
+  it('gives the same explanation for V8, SpiderMonkey and JSC wordings (D-074)', () => {
+    const explain = (name: string, ...messages: string[]) =>
+      messages.map((message) => explainRunError({ phase: 'runtime', name, message }));
+    expect(
+      explain(
+        'ReferenceError',
+        'nickname is not defined',
+        "Can't find variable: nickname",
+        'assignment to undeclared variable nickname',
+      ),
+    ).toEqual(Array(3).fill(expect.stringContaining('`nickname`라는 이름을 찾을 수 없어요')));
+    expect(
+      explain(
+        'ReferenceError',
+        "Cannot access 'total' before initialization",
+        "can't access lexical declaration 'total' before initialization",
+        'Cannot access uninitialized variable.',
+      ),
+    ).toEqual(Array(3).fill(expect.stringContaining('선언하기 전에')));
+    expect(
+      explain(
+        'TypeError',
+        "Cannot read properties of undefined (reading 'name')",
+        'user is undefined',
+        `can't access property "name", user is null`,
+        "undefined is not an object (evaluating 'user.name')",
+      ),
+    ).toEqual(Array(4).fill(expect.stringContaining('`undefined`나 `null`에서')));
+    expect(
+      explain(
+        'TypeError',
+        'Assignment to constant variable.',
+        "invalid assignment to const 'price'",
+        'Attempted to assign to readonly property.',
+      ),
+    ).toEqual(Array(3).fill(expect.stringContaining('`const`로 선언한')));
+    expect([
+      ...explain('RangeError', 'Maximum call stack size exceeded'),
+      ...explain('InternalError', 'too much recursion'),
+    ]).toEqual(Array(2).fill(expect.stringContaining('자기 자신을 끝없이')));
+  });
 });

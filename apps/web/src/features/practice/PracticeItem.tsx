@@ -691,7 +691,14 @@ function ItemWorkspace({
     return (
       <div
         {...{ [SELECTABLE_ATTR]: '' }}
-        className={`practice-layout practice-layout--code${exercise.typeId === 'web_task' ? 'practice-layout--web' : ''}`}
+        // Joined, not concatenated: prettier-plugin-tailwindcss trims a leading space inside a
+        // class string literal, which once glued the two classes together.
+        className={[
+          'practice-layout practice-layout--code',
+          exercise.typeId === 'web_task' ? 'practice-layout--web' : null,
+        ]
+          .filter(Boolean)
+          .join(' ')}
         data-type={exercise.typeId}
         data-exercise-id={view.id}
       >

@@ -14,7 +14,32 @@ import {
   shellHelloSchema,
 } from '../protocol/messages.ts';
 import { resolveLimits } from '../protocol/limits.ts';
-import { mapErrors, nativeSyntaxErrors, prepareRun } from '../prepare/index.ts';
+// Type only: the module itself loads with `import()` below.
+import type * as PrepareExports from '../prepare/index.ts';
+
+type PrepareModule = typeof PrepareExports;
+let prepareModule: Promise<PrepareModule> | null = null;
+
+/**
+ * The prepare step (HTML/JS parsing with parse5 and acorn, about half a megabyte) loads on first
+ * use, so a page that only shows a runner does not pay for it up front (D-074). `ready()` and
+ * `preloadRunner()` start it early; a failed load is retried on the next call.
+ */
+function loadPrepare(): Promise<PrepareModule> {
+  prepareModule ??= import('../prepare/index.ts').catch((e: unknown) => {
+    prepareModule = null;
+    throw e;
+  });
+  return prepareModule;
+}
+
+/** Starts loading the prepare step without creating a shell (e.g. while the screen is idle). */
+export function preloadRunner(): Promise<void> {
+  return loadPrepare().then(
+    () => undefined,
+    () => undefined,
+  );
+}
 
 /**
  * RunnerHost: the app side of the sandbox (docs/design/code-execution-sandbox.md#메시지-프로토콜).
@@ -334,6 +359,9 @@ export function createRunnerHost(options: RunnerHostOptions = {}): RunnerHost {
   const run = async (input: RunPlanInput): Promise<RunResult> => {
     const plan = runnablePlanSchema.parse(input);
     const runId = crypto.randomUUID();
+    // Connect the shell while the prepare step loads (both are needed on a page's first run).
+    if (!disposed) ensureShell().catch(() => undefined);
+    const { mapErrors, nativeSyntaxErrors, prepareRun } = await loadPrepare();
     const prepared = prepareRun(plan);
     const limits = resolveLimits(plan.purpose, plan.limits);
     const base = {
@@ -384,7 +412,10 @@ export function createRunnerHost(options: RunnerHostOptions = {}): RunnerHost {
   return {
     run,
     abort,
-    ready: () => ensureShell(),
+    ready: () => {
+      void preloadRunner();
+      return ensureShell();
+    },
     dispose() {
       abort();
       disposed = true;

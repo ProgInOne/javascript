@@ -1,5 +1,6 @@
 import {
   conceptDetailSchema,
+  coursePrerequisiteWarningsSchema,
   dailyPlanSchema,
   goalStatusSchema,
   lessonPrerequisitesSchema,
@@ -340,5 +341,53 @@ describe('GET /lessons/:id/prerequisites (FR-CUR-02, FR-CUR-05)', () => {
     ]);
     expect(result.warnings).toEqual([]);
     expect((await ctx.call('GET', '/lessons/js-basics.nope/prerequisites')).status).toBe(404);
+  });
+});
+
+describe('GET /courses/:id/prerequisite-warnings (FR-CUR-05, D-073)', () => {
+  const warnings = async (ctx: Ctx, id = 'js-basics') =>
+    coursePrerequisiteWarningsSchema.parse(
+      (await ctx.call('GET', `/courses/${id}/prerequisite-warnings`)).json,
+    );
+  const progress = (ctx: Ctx, lessonId: string, status: string) =>
+    ctx.userDb.sqlite
+      .prepare(
+        `INSERT INTO lesson_progress (learner_id, lesson_id, status, updated_at)
+         VALUES ('01JD3Z8Q6V2K9M4T7R1X5W0BNC', ?, ?, ?)
+         ON CONFLICT (learner_id, lesson_id) DO UPDATE SET status = excluded.status`,
+      )
+      .run(lessonId, status, ctx.clock.now);
+
+  it('flags nothing before the course is started', async () => {
+    const ctx = await practiceApp();
+    expect(await warnings(ctx)).toEqual({ courseId: 'js-basics', lessons: [] });
+  });
+
+  it('flags unfinished lessons with a weak required prerequisite once started', async () => {
+    const ctx = await practiceApp();
+    progress(ctx, 'js-basics.start.reading-errors', 'reading');
+    // `first-program` introduces js.basics.statement, which requires js.basics.comment.
+    expect(await warnings(ctx)).toEqual({
+      courseId: 'js-basics',
+      lessons: [
+        {
+          lessonId: LESSON,
+          concepts: [
+            {
+              id: 'js.basics.comment',
+              title: 'js.basics.comment',
+              lesson: { id: 'js-basics.start.reading-errors', title: '단원 1' },
+            },
+          ],
+        },
+      ],
+    });
+    progress(ctx, LESSON, 'completed');
+    expect((await warnings(ctx)).lessons).toEqual([]);
+  });
+
+  it('404 for an unknown course', async () => {
+    const ctx = await practiceApp();
+    expect((await ctx.call('GET', '/courses/nope/prerequisite-warnings')).status).toBe(404);
   });
 });

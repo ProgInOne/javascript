@@ -5,7 +5,13 @@ import { Pencil, Play, RotateCcw } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { deleteExampleDraft } from '../../api/queries.ts';
 import { clearLocalDraft, loadLocalDraft, pickDraft, useDraftSaver } from '../drafts/drafts.ts';
-import { consoleRunner, examplePlan, previewRunner, statusMessage } from '../runner/runner.ts';
+import {
+  consoleRunner,
+  examplePlan,
+  previewRunner,
+  statusMessage,
+  warmRunner,
+} from '../runner/runner.ts';
 
 const LANG_LABELS: Record<string, string> = {
   js: 'JavaScript',
@@ -108,6 +114,7 @@ export function RunnableExampleBlock({
     },
     [],
   );
+  useEffect(() => warmRunner(), []);
 
   const canRun = kind !== null && (!predict || skipped || prediction.trim() !== '');
 

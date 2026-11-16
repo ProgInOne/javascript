@@ -6,6 +6,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./prepare": "./src/prepare/index.ts",
     "./protocol": "./src/protocol/index.ts",
     "./shell-build": "./src/shell/build.ts"
   },

@@ -125,6 +125,42 @@ describe('curriculum screens', () => {
     expect(router.state.location.pathname).toBe(`/learn/${lesson.id}`);
   });
 
+  it('marks lessons with weak prerequisites with a named, tooltipped link (D-073)', async () => {
+    const { router } = renderApp('/courses/js-basics', (method, path) =>
+      path === '/courses/js-basics/prerequisite-warnings'
+        ? {
+            body: {
+              courseId: 'js-basics',
+              lessons: [
+                {
+                  lessonId: lesson.id,
+                  concepts: [
+                    {
+                      id: 'js.basics.comment',
+                      title: '주석',
+                      lesson: { id: 'js-basics.start.reading-errors', title: '오류 읽기' },
+                    },
+                  ],
+                },
+              ],
+            },
+          }
+        : api(method, path),
+    );
+    const mark = await screen.findByRole('link', {
+      name: '선수 개념 안내: 먼저 ‘주석’부터 확인하면 더 쉬워요. ‘오류 읽기’ 단원 보기',
+    });
+    // One mark: the other lesson has no weak prerequisite. The row link stays separate.
+    expect(screen.getAllByRole('link', { name: /선수 개념 안내/ })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: /첫 프로그램/ })).not.toContainElement(mark);
+    mark.focus();
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(
+      '먼저 ‘주석’부터 확인하면 더 쉬워요',
+    );
+    await userEvent.click(mark);
+    expect(router.state.location.pathname).toBe('/learn/js-basics.start.reading-errors');
+  });
+
   it('shows the lesson with a focused header, table of contents, and next link', async () => {
     renderApp(`/learn/${lesson.id}`, api);
     expect(await screen.findByText('목표 본문')).toBeInTheDocument();

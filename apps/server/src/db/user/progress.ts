@@ -16,6 +16,25 @@ export function getLessonProgress(orm: Orm, learnerId: string, lessonId: string)
   );
 }
 
+/** Progress status of the given lessons (lessons without a row are left out). */
+export function listLessonStatuses(
+  orm: Orm,
+  learnerId: string,
+  lessonIds: readonly string[],
+): Map<string, LessonProgressRow['status']> {
+  if (lessonIds.length === 0) return new Map();
+  return new Map(
+    orm
+      .select({ lessonId: lessonProgress.lessonId, status: lessonProgress.status })
+      .from(lessonProgress)
+      .where(
+        and(eq(lessonProgress.learnerId, learnerId), inArray(lessonProgress.lessonId, lessonIds)),
+      )
+      .all()
+      .map((r) => [r.lessonId, r.status]),
+  );
+}
+
 /**
  * Writes a lesson's progress. `active_ms` is not part of the row: a new row starts measuring at 0
  * and an update leaves the time to the heartbeats (`addLessonActiveTime`), so a read-modify-write

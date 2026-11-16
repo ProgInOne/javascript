@@ -34,9 +34,20 @@
 
 - `type-mix`(유형 구성비)를 JS 과정에서 오류로 전환(D-069). JS 수량 규칙 중 경고는 범위 초과(`unit-count-over`)만 남음
 - 단원 평가의 10~20 권장은 승인된 문항 풀이 아니라 한 번 출제 수 `min(승인 풀, itemCount ?? 20)`로 판단하고, `content-cli report`의 평가 행 기준 열에 `출제 18 / 10~20`처럼 표시(D-070)
+- 과정 상세의 선수 개념 `!` 아이콘(FR-CUR-05, D-073): 과정을 시작한 뒤, 완료하지 않은 단원 중 직계 필수 선수 개념이 약한 단원(단원 경고와 같은 기준) 행 끝에 표시. 툴팁과 접근 가능한 이름 "먼저 ‘…’부터 확인하면 더 쉬워요", 누르면 그 개념을 소개하는 단원으로 이동. API `GET /courses/:id/prerequisite-warnings`
+- 미리보기 문서가 `location` 대입·`form.submit()`으로 페이지를 떠나면 브라우저 오류 화면 대신 "미리보기는 다른 페이지로 이동할 수 없어요" 안내를 표시(D-074)
+
+### Changed
+
+- 학습 화면 코드 조각을 1,015KB(gzip 330KB)에서 724KB(gzip 246KB)로 줄임: 러너 준비 단계(parse5·acorn)를 첫 실행 때 받는 별도 조각으로 나누고, 코드를 실행할 수 있는 화면이 뜨면 유휴 시간에 준비 단계와 실행 환경을 미리 준비(D-074). `@proginone/runner` 진입점은 준비 단계를 다시 내보내지 않음(`@proginone/runner/prepare`)
+- 콘솔 오류 설명이 Firefox·Safari 오류 문구(`Can't find variable`, `x is undefined`, `invalid assignment to const`, `too much recursion` 등)도 알아보고, 초기화 전 접근과 무한 재귀 설명을 추가(D-074)
 - CI를 저장소 변수 `CI_RUNNER`로 self-hosted runner와 GitHub 호스트 runner 사이에서 전환할 수 있게 함(D-055). self-hosted(macOS)에서는 e2e·시각 회귀를 Docker로 같은 Playwright 이미지에서 실행하고, 릴리스 묶기가 bsdtar에서도 동작
 - content.db 스키마 버전 4. 기존 content.db는 `pnpm content:build`(개발은 `content:build:dev`)로 다시 만드세요.
 - 프로젝트 화면의 이어 하기 안내를 "저장해 둔 작성 중인 코드에서 이어서 해요"로 바꾸고, 채점 뒤에도 초안을 지우지 않음(D-063)
+
+### Fixed
+
+- 웹 실습(`web_task`)의 레이아웃 클래스 공백이 빠져(`practice-layout--codepractice-layout--web`) 1280px 이상에서도 한 열로 보이던 문제. 이제 문제 2 : 작업 5 두 패널(#80의 수정은 `pnpm format`의 prettier-plugin-tailwindcss가 클래스 문자열 앞 공백을 지워 되돌아갔음. 이제 배열을 합쳐 만들고 E2E가 클래스를 확인)
 
 ## [0.3.0] - 2026-11-15
 

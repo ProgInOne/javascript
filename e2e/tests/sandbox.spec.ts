@@ -566,6 +566,34 @@ document.getElementById('plain').addEventListener('submit', (e) => {
     await expectNoLeaks();
   });
 
+  test('preview explains a navigation it cannot cancel instead of an error page (D-074)', async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName === 'firefox', FISSION_FRAMES);
+    const { expectNoLeaks } = await setup(page, { placement: 'visible' });
+    // `location` assignment from a click handler, after the run has finished.
+    const doc = `<!doctype html><button id="go">이동</button>
+<script>document.getElementById('go').addEventListener('click', () => { location.href = 'other.html'; });</script>`;
+    const result = await run(page, { ...html(doc), mode: 'preview' });
+    expect(result.status).toBe('completed');
+    const learner = page
+      .frameLocator('iframe[title="코드 실행 결과"]')
+      .frameLocator('iframe[title="학습자 문서"]');
+    await learner.locator('#go').click();
+    // WebKit does not replace a blocked navigation with an error page: the document stays.
+    if (browserName === 'chromium') {
+      await expect(learner.getByRole('status')).toContainText(
+        '미리보기는 다른 페이지로 이동할 수 없어요.',
+      );
+      await expect.poll(() => notices(page)).toEqual(['navigation-blocked']);
+    }
+    // The next run shows the learner document again.
+    await run(page, { ...html('<!doctype html><p id="p">다시</p>'), mode: 'preview' });
+    await expect(learner.locator('#p')).toHaveText('다시');
+    await expectNoLeaks();
+  });
+
   test('dialogs never block and read stdin (S20)', async ({ page }) => {
     await setup(page);
     const code = 'alert("a"); console.log(confirm("b"), prompt("c", "def"));';

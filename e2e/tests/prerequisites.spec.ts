@@ -59,7 +59,26 @@ test('a weak prerequisite warns without blocking, with links back and weakness p
 
   // Reading the first lesson introduces the concept, but it is not practised yet: still no
   // weakness practice (a weakness set ranks only practised concepts).
+  // Course detail (D-073): no `!` before the course is started.
+  const marks = page.getByRole('link', { name: /^선수 개념 안내: / });
+  await page.goto('/courses/js-basics');
+  await expect(page.getByRole('heading', { level: 1, name: 'JavaScript 기초' })).toBeVisible();
+  await expect(marks).toHaveCount(0);
+
   await readLesson(api, FIRST);
+
+  // Started: the unfinished lesson whose prerequisite is weak carries a named `!` link.
+  await page.reload();
+  await page.getByText('2. 값과 변수').click(); // only the first module starts open
+  const row = page.getByRole('listitem').filter({ hasText: '변수 선언' });
+  const mark = row.getByRole('link', {
+    name: `선수 개념 안내: ${WARNING}. ‘첫 프로그램’ 단원 보기`,
+  });
+  await expect(mark).toBeVisible();
+  await mark.focus();
+  await expect(page.getByRole('tooltip')).toHaveText(WARNING);
+  await expectNoA11yViolations(page);
+
   await page.goto(SECOND);
   await expect(warning.getByText(/입문/)).toBeVisible();
   await expect(warning.getByRole('button', { name: /약점 연습/ })).toHaveCount(0);
