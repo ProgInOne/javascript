@@ -1,6 +1,7 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { openScreen, SCREENS } from './fixtures.ts';
 import { mockPractice, mockRemediation, mockTutor, PRACTICE_URL } from './practice-mocks.ts';
+import { failApi, holdLearningApi, mockEmptyReview, WEAK } from './state-mocks.ts';
 
 // Fixed backup list so the data screen looks the same regardless of what earlier tests did.
 const BACKUPS = {
@@ -130,11 +131,27 @@ const VIEWPORTS = [
   { width: 1280, height: 800 },
   { width: 1440, height: 900 },
 ] as const;
+interface Viewport {
+  readonly width: number;
+  readonly height: number;
+}
+const NARROW: Viewport = { width: 1024, height: 768 };
+const WIDE: Viewport = { width: 1920, height: 1080 };
 
-for (const viewport of VIEWPORTS) {
-  for (const scheme of ['light', 'dark'] as const) {
-    // The dashboard's states are covered with real learning data in journey.spec.ts.
-    for (const { path, heading } of SCREENS.filter((s) => s.path !== '/')) {
+/**
+ * Widths beyond 1280/1440 (D-065): 1920 once for each main screen of PRD MVP 완료 정의 3, and
+ * 1024 for the learning screens only (ui-ux.md 시각 회귀 매트릭스).
+ */
+const EXTRA_VIEWPORTS: Readonly<Record<string, readonly Viewport[]>> = {
+  '/learn/js-basics.start.first-program': [NARROW, WIDE],
+  '/review': [WIDE],
+  '/settings/data': [WIDE],
+};
+
+for (const scheme of ['light', 'dark'] as const) {
+  // The dashboard's states are covered with real learning data in journey.spec.ts.
+  for (const { path, heading } of SCREENS.filter((s) => s.path !== '/')) {
+    for (const viewport of [...VIEWPORTS, ...(EXTRA_VIEWPORTS[path] ?? [])]) {
       const slug = path.slice(1).replaceAll('/', '-').replaceAll('.', '_');
       const name = `${slug}-${scheme}-${viewport.width}`;
       test(`${name} @visual`, async ({ page }) => {
@@ -208,7 +225,12 @@ for (const viewport of VIEWPORTS) {
         fullPage: true,
       });
     });
+  }
+}
 
+// The code item at every width the learning screens are checked at (D-065).
+for (const viewport of [...VIEWPORTS, NARROW, WIDE]) {
+  for (const scheme of ['light', 'dark'] as const) {
     test(`practice-code-${scheme}-${viewport.width} @visual`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await mockPractice(page);
@@ -503,6 +525,7 @@ const REVIEW_SCREENS = [
     path: `/review/mistakes/${encodeURIComponent(`${P}mcq-log-role`)}`,
   },
   { name: 'review-progress', path: '/review/progress' },
+  { name: 'review-weak', path: '/review/weak' },
 ] as const;
 
 for (const viewport of VIEWPORTS) {
@@ -523,10 +546,68 @@ for (const viewport of VIEWPORTS) {
         await page.route('**/api/v1/mastery-changes', (route) =>
           route.fulfill({ json: MASTERY_CHANGES }),
         );
+        await page.route('**/api/v1/weak-concepts', (route) => route.fulfill({ json: WEAK }));
         await openScreen(page, screen.path, '복습', scheme);
         await expect(page.locator('.pi-skeleton')).toHaveCount(0);
         await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
       });
     }
   }
+}
+
+// Empty, error and loading states (ui-ux.md 시각 회귀 매트릭스 상태 축, D-065): one representative
+// screen each, at 1280 only. The header goal ring keeps its fixed data.
+const STATES = [
+  {
+    name: 'review-empty',
+    path: '/review',
+    heading: '복습',
+    ready: '오늘 복습할 개념이 없어요',
+    mock: mockEmptyReview,
+  },
+  {
+    name: 'review-mistakes-empty',
+    path: '/review/mistakes',
+    heading: '복습',
+    ready: '아직 틀린 문제가 없어요',
+    mock: mockEmptyReview,
+  },
+  {
+    name: 'review-error',
+    path: '/review',
+    heading: '불러오지 못했어요',
+    ready: '불러오지 못했어요',
+    mock: (page: Page) => failApi(page, '/review-queue'),
+  },
+] as const;
+
+for (const scheme of ['light', 'dark'] as const) {
+  for (const state of STATES) {
+    const name = `${state.name}-${scheme}-1280`;
+    test(`${name} @visual`, async ({ page }) => {
+      await page.setViewportSize(VIEWPORTS[0]);
+      await page.route('**/api/v1/goals', (route) => route.fulfill({ json: GOALS }));
+      await state.mock(page);
+      await openScreen(page, state.path, state.heading, scheme);
+      await expect(page.getByRole('heading', { name: state.ready })).toBeVisible();
+      await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
+    });
+  }
+
+  test(`dashboard-loading-${scheme}-1280 @visual`, async ({ page }) => {
+    await page.setViewportSize(VIEWPORTS[0]);
+    const release = await holdLearningApi(page);
+    await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
+    await page.goto('/');
+    await expect(page.locator('.pi-skeleton').first()).toBeVisible();
+    await expect(page.locator('[data-ai-state]').first()).not.toHaveAttribute(
+      'data-ai-state',
+      'loading',
+    );
+    await page.evaluate(() => document.fonts.ready);
+    await expect(page).toHaveScreenshot(`dashboard-loading-${scheme}-1280.png`, {
+      fullPage: true,
+    });
+    await release();
+  });
 }

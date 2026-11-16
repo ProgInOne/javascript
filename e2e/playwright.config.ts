@@ -59,6 +59,21 @@ if (process.env['E2E_TEMPLATES_CONTENT_DB'] !== templatesContentDb) {
   process.env['E2E_TEMPLATES_CONTENT_DB'] = templatesContentDb;
 }
 
+// A sixth server for the whole learning journey (tests/full-journey.spec.ts, M7): one fresh
+// learner goes from onboarding through reading, practice, the unit assessment, reviews and goals
+// to a backup restore. It uses the mastery content (module 1 ends with an assessment) and its own
+// clock, and the restore rewrites its learner, so it shares state with no other spec.
+const FULL_JOURNEY_PORT = PORT + 5;
+const fullJourneyDir =
+  process.env['E2E_FULL_JOURNEY_DATA_DIR'] ?? mkdtempSync(join(tmpdir(), 'proginone-e2e-full-'));
+process.env['E2E_FULL_JOURNEY_DATA_DIR'] = fullJourneyDir;
+process.env['E2E_FULL_JOURNEY_URL'] = `http://127.0.0.1:${FULL_JOURNEY_PORT}`;
+const fullJourneyContentDb = join(fullJourneyDir, 'content.db');
+if (process.env['E2E_FULL_JOURNEY_CONTENT_DB'] !== fullJourneyContentDb) {
+  buildFixtureContent(fullJourneyContentDb, 'content-mastery');
+  process.env['E2E_FULL_JOURNEY_CONTENT_DB'] = fullJourneyContentDb;
+}
+
 const serverEnv = (port: number, dir: string, content = contentDb) => ({
   NODE_ENV: 'production',
   PROGINONE_PORT: String(port),
@@ -165,6 +180,13 @@ export default defineConfig({
       reuseExistingServer: false,
       timeout: 30_000,
       env: serverEnv(TEMPLATES_PORT, templatesDir, templatesContentDb),
+    },
+    {
+      command: 'node ../apps/server/src/main.ts',
+      url: `http://127.0.0.1:${FULL_JOURNEY_PORT}/`,
+      reuseExistingServer: false,
+      timeout: 30_000,
+      env: serverEnv(FULL_JOURNEY_PORT, fullJourneyDir, fullJourneyContentDb),
     },
   ],
 });

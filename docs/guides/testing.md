@@ -49,8 +49,9 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 | 파일 | 내용 |
 |---|---|
 | `tests/flows.spec.ts` | 핵심 흐름: 내비게이션·포커스, 테마 유지, 백업 생성·복원, 로컬 서버 보안(토큰·Host) |
-| `tests/a11y.spec.ts` | 화면 × 라이트/다크에서 axe-core WCAG 2.2 AA 위반 0건(실제 브라우저라 색 대비 포함) |
-| `tests/visual.spec.ts` | 화면 × 테마 × 1280/1440 전체 페이지 스크린샷 비교(`@visual`) |
+| `tests/a11y.spec.ts` | 화면 × 라이트/다크에서 axe-core WCAG 2.2 AA 위반 0건(실제 브라우저라 색 대비 포함). 주요 화면, 복습 허브의 각 구역(오답 노트·약점 집중·숙련도 변화), 개념 상세, 빈 상태(복습 네 구역), 오류 상태, 로딩(스켈레톤) 상태, 실습 화면의 문제·피드백·재학습·튜터 |
+| `tests/visual.spec.ts` | 화면 × 테마 × 1280/1440 전체 페이지 스크린샷 비교(`@visual`). 주요 화면은 1920, 학습 화면은 1024도. 빈·오류·로딩 상태는 대표 화면 하나씩 1280에서([아래 매트릭스](#시각-회귀-매트릭스-범위)) |
+| `tests/state-mocks.ts` | 빈·오류·로딩 상태용 고정 응답(`mockEmptyReview`, `failApi`, `holdLearningApi`)과 약점 개념 목록. 시각 회귀와 접근성 검사가 함께 씀 |
 | `tests/sandbox.spec.ts` | 코드 실행 샌드박스: 실행·관측값, 보안 스위트(S1~S49 중 브라우저 항목), 셸 교체·대체 경로 |
 | `tests/sandbox-grading.spec.ts` | 러너 ↔ 채점기 계약: `exercise-kit`이 만든 실행 계획을 실제 러너로 돌려 채점(`preventDefault()` 없는 폼 제출이 매번 같은 결과인지 포함) |
 | `tests/practice.spec.ts` | 실습 흐름: 레슨 → 연습 세트의 모든 유형 풀이(코드는 실제 러너로 채점) → 힌트 → 단원 통과 |
@@ -58,16 +59,16 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 | `tests/prerequisites.spec.ts` | 설정 > 데이터 전용 서버에서 초기화한 학습자로 단원 선수 개념 경고(막지 않음, 개념·앞 단원 링크, 읽기만 했을 때와 한 번 푼 뒤의 약점 연습)와 선수 개념 숙련도, axe |
 | `tests/review.spec.ts` | 대시보드와 다음 날 복습: 테스트 시계를 하루 넘겨 복습 세트를 풀고 끝냄 |
 | `tests/ai-unavailable.spec.ts` | AI 비가용 상태: 실패한 답변의 오류 표시(모의 제공자의 `[mock:error:AI_*]`), 연결 해제 시 AI 진입점 비활성·서버 거부·오답 설명 대체, 다시 연결 |
-| `tests/journey.spec.ts` | 첫 실행 전용 서버에서 새 학습자의 흐름: 온보딩 → 대시보드, 온보딩 목표 단계 시각 회귀 |
 | `tests/data-settings.spec.ts` | 설정 > 데이터 전용 서버에서 백업 → 데이터 변경 → 복원으로 복구, 학습 데이터 초기화(온보딩으로) → "초기화 전" 백업으로 되돌리기, 백업 위치 변경(잘못된 경로 거부, 새 위치에 증명 백업, 원래 위치로 복귀) |
-| `tests/journey.spec.ts` | 첫 실행 전용 서버에서 새 학습자의 흐름: 온보딩 → 빈 대시보드 → 첫날(단원 연습) → 한 달(복습·약점, 테스트 시계) → 약점 집중 세트. 온보딩 목표 단계와 대시보드 빈·신규·장기 상태 시각 회귀 |
+| `tests/journey.spec.ts` | 첫 실행 전용 서버에서 새 학습자의 흐름: 온보딩 → 빈 대시보드 → 첫날(단원 연습) → 한 달(복습·약점, 테스트 시계) → 약점 집중 세트. 온보딩 목표 단계와 대시보드 빈·신규·장기 상태 시각 회귀(장기 상태는 1920도), 빈·장기 대시보드의 다크 모드 axe |
+| `tests/full-journey.spec.ts` | 전체 학습 흐름 전용 서버에서 한 학습자가 처음부터 끝까지(M7, PRD MVP 완료 정의 4, D-066): 온보딩 → 대시보드에서 첫 단원 읽기(본문 확인 문제, 끝까지 스크롤) → 연습 세트 12문제(오답·힌트 포함, 코드는 실제 러너) → 단원 평가(규칙, 문항당 한 번, 통과) → 테스트 시계로 첫 복습일 → 복습 큐 세트 → 오답 노트에서 다시 풀기 → 학습 목표 변경 → 백업 → 목표 다시 변경 → 복원으로 되돌림(학습 기록 유지). 단계마다 axe |
 | `tests/seed.ts` | API로 학습 기록 만들기: 실행이 필요 없는 문제는 답하고 나머지는 건너뛰어 세트를 끝냄, 하트비트로 학습 시간 |
 | `tests/mastered.spec.ts` | `mastered` 게이트 전용 서버에서 3주(테스트 시계): 단원 연습 → 숙련과 "숙달까지" 조건 목록 → 예정일 복습 → 1주 뒤 단원 평가 → 1주 뒤 다시 연습 → 개념 상세·개념 지도에 숙달 |
 | `tests/templates.spec.ts` | 템플릿 전용 서버에서 파라메트릭 템플릿 변형: 단원 연습이 변형을 일반 문제처럼 내고 채점, "한 번 더 연습"과 기한이 된 복습이 새 변형을 냄, 변형의 "문제 신고" |
 | `tests/onboarded.setup.ts` | 준비 단계(`setup` 프로젝트): 주 서버의 학습자를 온보딩 완료 상태로 둠 |
 
 - 처음 한 번 `pnpm --filter @proginone/e2e exec playwright install chromium`으로 브라우저를 설치합니다.
-- **서버 다섯 개**: 주 서버(`E2E_PORT`), 첫 실행 전용 서버(`E2E_PORT + 1`, 데이터 위치 `E2E_JOURNEY_DATA_DIR`), 설정 > 데이터 전용 서버(`E2E_PORT + 2`, 데이터 위치 `E2E_DATA_SETTINGS_DIR`), `mastered` 게이트 전용 서버(`E2E_PORT + 3`, 데이터 위치 `E2E_MASTERY_DATA_DIR`, 주소 `E2E_MASTERY_URL`), 파라메트릭 템플릿 전용 서버(`E2E_PORT + 4`, 데이터 위치 `E2E_TEMPLATES_DATA_DIR`, 주소 `E2E_TEMPLATES_URL`, 콘텐츠는 기본 픽스처 + `fixtures/content-templates`)를 띄웁니다. 주 서버의 학습자는 `setup` 프로젝트가 먼저 온보딩을 마친 상태로 만듭니다. 새 학습자가 필요한 테스트는 `test.use({ baseURL: process.env['E2E_JOURNEY_URL'] })`로 두 번째 서버를 씁니다(D-034). 복원·초기화·백업 위치 변경처럼 학습자 전체를 바꾸는 테스트는 `E2E_DATA_SETTINGS_URL`의 세 번째 서버를 씁니다(D-045).
+- **서버 여섯 개**: 주 서버(`E2E_PORT`), 첫 실행 전용 서버(`E2E_PORT + 1`, 데이터 위치 `E2E_JOURNEY_DATA_DIR`), 설정 > 데이터 전용 서버(`E2E_PORT + 2`, 데이터 위치 `E2E_DATA_SETTINGS_DIR`), `mastered` 게이트 전용 서버(`E2E_PORT + 3`, 데이터 위치 `E2E_MASTERY_DATA_DIR`, 주소 `E2E_MASTERY_URL`), 파라메트릭 템플릿 전용 서버(`E2E_PORT + 4`, 데이터 위치 `E2E_TEMPLATES_DATA_DIR`, 주소 `E2E_TEMPLATES_URL`, 콘텐츠는 기본 픽스처 + `fixtures/content-templates`), 전체 학습 흐름 전용 서버(`E2E_PORT + 5`, 데이터 위치 `E2E_FULL_JOURNEY_DATA_DIR`, 주소 `E2E_FULL_JOURNEY_URL`, 콘텐츠는 기본 픽스처 + `fixtures/content-mastery`)를 띄웁니다. 주 서버의 학습자는 `setup` 프로젝트가 먼저 온보딩을 마친 상태로 만듭니다. 새 학습자가 필요한 테스트는 `test.use({ baseURL: process.env['E2E_JOURNEY_URL'] })`로 두 번째 서버를 씁니다(D-034). 복원·초기화·백업 위치 변경처럼 학습자 전체를 바꾸는 테스트는 `E2E_DATA_SETTINGS_URL`의 세 번째 서버를 씁니다(D-045).
 - 테스트는 서버를 공유하며 순서대로 실행됩니다(`workers: 1`). 앞 테스트가 만든 상태(예: 백업)를 뒤 테스트가 가정하지 않도록, 각 테스트는 필요한 상태를 직접 만들거나 확인합니다.
 - 샌드박스 테스트는 앱 화면이 아직 러너를 쓰지 않으므로, `packages/runner`의 호스트 모듈을 테스트에서 번들해 앱 페이지에 `page.evaluate`로 넣고 실행합니다(DevTools 평가는 페이지 CSP를 받지 않음). 앱 문서와 CSP, 서버의 `/sandbox/runner.html`, 셸·하네스는 모두 실제 프로덕션 빌드입니다. 공격 코드가 노린 요청이 서버에 닿았는지는 테스트가 띄운 탐지용 서버와 페이지의 응답 기록으로 확인합니다.
 - E2E 콘텐츠는 `e2e/fixtures/content`(문제는 draft로 저작, `includeDrafts`로 빌드)입니다. 한 서버만 더 많은 콘텐츠가 필요하면 공유 콘텐츠를 바꾸지 않고 덮어쓰기 디렉터리를 둡니다(`buildFixtureContent(out, 'content-mastery')`: `e2e/fixtures/content-mastery`를 픽스처 위에 복사해 모듈 1 단원 평가를 더함, `mastered` 게이트 서버 전용). 예측 문제의 기대값은 `node tools/content-cli/src/cli.ts check --dir e2e/fixtures/content --run`으로 `.generated/predict-expected.json`에 기록해 커밋합니다. 실제 `content/`가 바뀌어도 E2E와 시각 기준 이미지가 흔들리지 않게 따로 둡니다.
@@ -110,10 +111,37 @@ SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chr
 ## 시각 회귀
 
 - 기준 이미지는 `e2e/tests/__screenshots__/`에 커밋합니다. 글꼴 렌더링이 OS마다 달라서 **반드시 Docker(`pnpm test:e2e:visual`)에서 만들고 비교**합니다. 로컬 `pnpm test:e2e`는 `@visual` 테스트를 건너뜁니다.
-- 매번 바뀌는 값(백업 시각·크기 등)은 `mask`로 가립니다.
+- 매번 바뀌는 값(백업 시각·크기 등)은 고정 응답(`page.route`)으로 바꾸거나 `mask`로 가립니다.
+- 빈·오류·로딩 상태는 `tests/state-mocks.ts`의 고정 응답으로 만듭니다. 로딩은 학습 API 응답을 붙잡아 두어(`holdLearningApi`) 스켈레톤을 고정하고, `animations: 'disabled'`로 반짝임을 멈춥니다.
 - 화면을 의도적으로 바꿨다면 `pnpm test:e2e:visual --update`로 다시 만들고, PR에서 이미지 차이를 직접 확인한 뒤 커밋합니다.
 - 로컬 Docker를 쓸 수 없으면 GitHub Actions의 `visual-baselines` 워크플로로 같은 이미지에서 기준 이미지를 만듭니다: `gh workflow run visual-baselines.yml --ref <브랜치>`로 실행하고, 끝나면 `gh run download <실행 ID> -n visual-baselines -D e2e/tests/__screenshots__`로 받아 차이를 확인한 뒤 커밋합니다. 워크플로는 커밋하거나 푸시하지 않습니다.
 - CI가 실패하면 `playwright-report` 아티팩트의 차이 이미지를 확인합니다.
+
+### 시각 회귀 매트릭스 범위
+
+[UI/UX 설계의 매트릭스](/docs/design/ui-ux.md#시각-회귀-매트릭스) 가운데 기준 이미지가 있는 칸입니다(2026-11-16, 118장). 모든 칸은 라이트·다크 두 장입니다. 우선순위와 이유는 [D-065](/docs/decisions.md)에 있습니다.
+
+| 화면 | 1280·1440 | 1920 | 1024 | 상태 |
+|---|---|---|---|---|
+| 대시보드 | 빈·신규·장기(`journey`) | 장기 | — | 로딩(1280) |
+| 온보딩(목표 단계) | 정상 | — | — | — |
+| 과정 목록·과정 상세 | 정상 | — | — | — |
+| 읽기 모드 | 정상(첫 방문) | 정상 | 정상 | — |
+| 실습 모드 | 객관식 피드백·재학습 카드·코드 문제 | 코드 문제 | 코드 문제 | — |
+| 튜터 드로어 | 열림 | — | — | — |
+| 단원 평가 | 시작·결과 | — | — | — |
+| 프로젝트 | 진행 중(`project`) | — | — | — |
+| 복습 허브 | 오늘의 복습 | 오늘의 복습 | — | 빈·오류(1280) |
+| 오답 노트 | 목록·상세 | — | — | 빈(1280) |
+| 약점 집중·숙련도 변화 | 정상 | — | — | — |
+| 설정(AI·학습 방식·화면·데이터·학습 목표) | 정상 | 데이터 | — | — |
+
+아직 없는 칸(후속 과제):
+
+- 1920: 과정, 단원 평가, 튜터 드로어, 오답 노트, 설정의 나머지 화면. 이 화면들은 최대 너비가 정해진 한 단 배치라 1440과 차이가 여백뿐입니다.
+- 1024: 튜터 드로어, 객관식·파슨스 문제, 단원 평가. 1024 배치는 `responsive.spec.ts`가 기능으로 확인합니다(가로 스크롤 없음, 드로어 겹침).
+- 상태: 화면별 오류·로딩(공통 컴포넌트 `QueryState`·`ErrorState`·`Skeleton`이라 대표 하나로 봄), 실습 모드의 예측·파슨스 유형(1280·1440).
+- 컴포넌트 단위 촬영: 설계의 컴포넌트 카탈로그 페이지(`/__catalog`)가 아직 없습니다. 컴포넌트 상태는 `packages/ui`의 Vitest 테스트가 확인합니다.
 
 ## 관련 문서
 

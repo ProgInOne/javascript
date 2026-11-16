@@ -32,7 +32,7 @@ const WEB_ANSWER = `<!doctype html>
 const P = 'js-basics.start.first-program.';
 
 /** Answers one item correctly. The first time through, also exercises wrong answers and hints. */
-async function answer(page: Page, exerciseId: string, firstSet: boolean) {
+export async function answer(page: Page, exerciseId: string, firstSet: boolean) {
   const main = page.getByRole('main');
   const submitSure = () => page.keyboard.press('ControlOrMeta+Enter');
   switch (exerciseId.replace(P, '')) {

@@ -7,6 +7,7 @@ export const SCREENS = [
   { path: '/settings/learning', heading: '학습 방식' },
   { path: '/settings/appearance', heading: '화면' },
   { path: '/settings/data', heading: '데이터' },
+  { path: '/settings/goals', heading: '학습 목표' },
   { path: '/courses', heading: '과정' },
   { path: '/review', heading: '복습' },
   { path: '/courses/js-basics', heading: 'JavaScript 기초' },

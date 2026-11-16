@@ -90,11 +90,16 @@ async function pinActivityTimes(page: Page) {
  * Screenshots of the dashboard in the current state. `responses` replaces the learning-state
  * API with recorded responses (path → JSON) where the seeded history is not pixel-stable.
  */
-function dashboardShots(state: string, responses?: Record<string, unknown>) {
-  for (const width of [1280, 1440] as const) {
+const HEIGHT: Readonly<Record<number, number>> = { 1280: 800, 1440: 900, 1920: 1080 };
+function dashboardShots(
+  state: string,
+  responses?: Record<string, unknown>,
+  widths: readonly number[] = [1280, 1440],
+) {
+  for (const width of widths) {
     for (const scheme of ['light', 'dark'] as const) {
       test(`dashboard-${state}-${scheme}-${width} @visual`, async ({ page }) => {
-        await page.setViewportSize({ width, height: width === 1280 ? 800 : 900 });
+        await page.setViewportSize({ width, height: HEIGHT[width] ?? 900 });
         await prepare(page, scheme);
         await pinActivityTimes(page);
         for (const [path, json] of Object.entries(responses ?? {})) {
@@ -186,6 +191,9 @@ test('empty dashboard: the first lesson and an unfilled concept map', async ({ p
     page.getByRole('region', { name: '최근 활동' }).getByText(/아직 활동이 없어요/),
   ).toBeVisible();
   await expectNoA11yViolations(page);
+  // The empty states in dark mode too (D-065).
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await expectNoA11yViolations(page);
 });
 dashboardShots('empty');
 
@@ -259,13 +267,16 @@ test('long-term learner: a month of lessons, reviews and rest days', async ({ pa
   const weak = page.getByRole('region', { name: '약점 개념' });
   await expect(weak.getByRole('checkbox', { name: /const 선언/ })).toBeVisible();
   await expectNoA11yViolations(page);
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await expectNoA11yViolations(page);
 });
 // Practice and review sets are built with a per-set random seed, so a month of seeded history
 // differs in details (which exercises, so scores and review dates) from run to run. The
 // long-term screenshots use responses recorded from this journey on 2026-12-16, with the
 // `const` misconception kept confirmed so the 약점 marker is covered. Its `/activity/recent`
 // entry (최근 활동, added later) is written by hand to match that month: daily review sets.
-dashboardShots('long', LONG_TERM);
+// The long-term state is also the dashboard's 1920 shot (D-065).
+dashboardShots('long', LONG_TERM, [1280, 1440, 1920]);
 test('concept detail: sheet from the concept map, then the full page', async ({ page }) => {
   await prepare(page);
   await openDashboard(page);
