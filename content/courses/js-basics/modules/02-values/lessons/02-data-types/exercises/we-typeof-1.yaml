@@ -1,0 +1,78 @@
+id: js-basics.values.data-types.we-typeof-1
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.types.typeof, weight: 1 }
+tags: [typeof, worked-example]
+estimatedSeconds: 90
+usage: worked_example
+workedExampleStage: 1
+prompt: |
+  **풀이 예제 2단계: 빈칸 채우기**
+
+  앞 단계와 같은 방식의 문제예요. 이번에는 `typeof` 결과가 정해져 있고, 거기에 맞는 값과 코드를 채워야 해요. 주석을 읽고 빈칸 세 개를 채우세요. 실행하면 아래처럼 나와야 해요.
+
+  ```text
+  string
+  object
+  string
+  true
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    // 1. 내용은 true처럼 보이지만 typeof 결과가 "string"인 값을 써요.
+    const answer = {{blank:a}};
+    console.log(typeof answer);
+    // 2. typeof 결과가 "object"인 "일부러 비워 둔 값"을 써요(typeof의 예외).
+    const comment = {{blank:b}};
+    console.log(typeof comment);
+    // 3. typeof 결과 자체의 자료형을 확인하도록 연산자를 하나 더 붙여요.
+    console.log({{blank:c}} typeof 3.5);
+    console.log(answer);
+  blanks:
+    - id: a
+      accept: ['"true"', "'true'"]
+      width: 8
+    - id: b
+      accept: ["null"]
+      width: 8
+    - id: c
+      accept: ["typeof"]
+      width: 8
+  checks:
+    - kind: console
+      id: output
+      description: "\"string\", \"object\", \"string\", \"true\"가 차례로 출력되어야 합니다."
+      requirement: typeof 결과
+      expect:
+        lines: ["string", "object", "string", "true"]
+      misconceptionIfFail: js.mc.typeof-reads-content
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, answer는 문자열 "true", comment는 null이어야 합니다.
+      requirement: 알맞은 값
+      expect:
+        globals:
+          answer: { equals: "true" }
+          comment: { equals: null }
+        noError: true
+misconceptions: [js.mc.typeof-reads-content, js.mc.typeof-null-is-null, js.mc.typeof-result-not-string]
+hints:
+  - "앞 단계 풀이에서 `\"true\"`, `null`, `typeof typeof 42`의 결과가 각각 무엇이었는지 떠올려 보세요."
+  - 첫 빈칸은 따옴표, 두 번째 빈칸은 다음 단원에서 배울 "비어 있는 값", 세 번째 빈칸은 연산자 이름이에요.
+  - "빈칸은 차례로 `\"true\"`, `null`, `typeof`예요."
+explanation: |
+  예시 정답은 `"true"`, `null`, `typeof`예요.
+
+  - `"true"`: 따옴표로 감쌌으니 내용과 관계없이 `string`이에요. 따옴표 없이 `true`를 쓰면 `boolean`이 나와요.
+  - `null`: 설계 실수로 남은 예외라서 `typeof null`은 `object`예요.
+  - `typeof typeof 3.5`: 안쪽 `typeof 3.5`가 문자열 `"number"`이고, 문자열의 자료형은 `string`이에요.
+
+  앞 단계 풀이의 세 가지 핵심(내용이 아니라 자료형, `typeof null`의 예외, 결과는 문자열)을 거꾸로 써 본 거예요. 다음 단계에서는 처음부터 직접 써 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,72 @@
+id: js-basics.loops.for.we-for-1
+type: fill_blank
+difficulty: 2
+usage: worked_example
+workedExampleStage: 1
+concepts:
+  - { id: js.loops.for, weight: 1 }
+  - { id: js.loops.loop-variable, weight: 0.3 }
+tags: [for, worked-example, fill]
+estimatedSeconds: 100
+prompt: |
+  **일부 빈칸을 채우는 단계예요.** 앞 단계의 출석 부르기 풀이에서 숫자만 바꿨어요. 이번에는 1번부터 **6번**까지 학생을 불러요.
+
+  `for` 문 머리의 시작값과 조건이 비어 있어요. 빈칸을 채워 아래처럼 출력되게 하세요.
+
+  ```text
+  1번 학생
+  2번 학생
+  3번 학생
+  4번 학생
+  5번 학생
+  6번 학생
+  출석 확인 끝
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    // 1. 시작값: 1번 학생부터 / 2. 조건: 6번까지 포함 / 3. 갱신: 본문 뒤에 1 늘리기
+    for ({{blank:init}}; {{blank:cond}}; i++) {
+      // 4. 본문: 회차마다 바뀌는 i로 번호를 불러요
+      console.log(i + "번 학생");
+    }
+
+    // 5. 반복이 끝나면 다음 줄로
+    console.log("출석 확인 끝");
+  blanks:
+    - id: init
+      accept: ["let i = 1"]
+      width: 12
+      misconceptionMap:
+        "let i = 0": js.mc.for-off-by-one
+    - id: cond
+      accept: ["i <= 6", "i < 7"]
+      width: 10
+      misconceptionMap:
+        "i < 6": js.mc.for-off-by-one
+  checks:
+    - kind: console
+      id: output
+      description: 1번부터 6번 학생까지 부른 뒤 "출석 확인 끝"이 출력되어야 합니다.
+      requirement: 출석 부르기 출력
+      expect:
+        lines: ["1번 학생", "2번 학생", "3번 학생", "4번 학생", "5번 학생", "6번 학생", "출석 확인 끝"]
+misconceptions: [js.mc.for-off-by-one]
+hints:
+  - 앞 단계 풀이의 `for (let i = 1; i <= 4; i++)`에서 무엇을 바꾸면 될까요?
+  - 첫 번째 빈칸은 반복 변수를 만드는 시작값, 두 번째 빈칸은 본문을 실행할지 정하는 조건이에요.
+  - "시작값은 `let i = 1`, 조건은 6을 포함하도록 `i <= 6`이에요."
+explanation: |
+  예시 정답은 `for (let i = 1; i <= 6; i++)`예요.
+
+  - 앞 단계 풀이와 같은 뼈대에서 조건의 끝 숫자만 4에서 6으로 바꿨어요.
+  - 시작값을 `let i = 0`으로 쓰면 `0번 학생`부터 나와요. 번호가 1번부터라면 1에서 시작해요.
+  - 조건을 `i < 6`으로 쓰면 6번 학생이 빠져요. 6을 포함하려면 `i <= 6`(또는 `i < 7`)이에요.
+
+  다음 단계에서는 새 상황에서 `for` 문을 처음부터 써 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

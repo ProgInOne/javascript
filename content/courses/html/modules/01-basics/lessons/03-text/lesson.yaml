@@ -12,4 +12,4 @@ objectives:
   - 코드의 줄바꿈과 공백이 화면에서 어떻게 보일지 예측하고, 문단을 p 요소로 나눌 수 있다.
   - 중요한 내용과 말의 강세를 strong과 em으로 구분해 표시할 수 있다.
 practice:
-  targetCount: 8
+  targetCount: 10

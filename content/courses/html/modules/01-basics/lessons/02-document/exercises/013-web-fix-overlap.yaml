@@ -1,0 +1,96 @@
+id: html.basics.document.web-fix-overlap
+type: web_task
+difficulty: 2
+concepts:
+  - { id: html.doc.nesting, weight: 1 }
+  - { id: html.doc.dom-tree, weight: 0.3 }
+tags: [nesting, closing-tag, web-task]
+estimatedSeconds: 180
+prompt: |
+  "꼭"이라는 낱말만 중요하다고 표시하려고 `strong`을 썼는데, 태그를 엇갈려 닫았어요. 시작 코드를 실행하면 문장 뒷부분까지 굵게 보이고, 문단도 중간에서 끊겨요.
+
+  태그를 올바르게 중첩해서 아래 두 가지를 만족시키세요.
+
+  1. 문장 전체 "내일은 꼭 체육복을 챙겨요."가 **문단 하나**(`p`) 안에 있어야 해요.
+  1. `strong`은 문단 **안에서** "꼭"만 감싸야 해요.
+
+  글자는 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>준비물</title>
+            </head>
+            <body>
+              <p>내일은 <strong>꼭</p> 체육복을 챙겨요.</strong>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>준비물</title>
+            </head>
+            <body>
+              <p>내일은 <strong>꼭</strong> 체육복을 챙겨요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: one-paragraph
+      description: "문장 전체 \"내일은 꼭 체육복을 챙겨요.\"가 p 요소 하나 안에 있어야 합니다."
+      requirement: 문단 하나
+      visible: true
+      selector: body p
+      expect:
+        count: 1
+        text: { equals: 내일은 꼭 체육복을 챙겨요. }
+      misconceptionIfFail: html.mc.overlapping-tags
+    - kind: dom
+      id: strong-inside
+      description: "strong은 문단 안에서 \"꼭\"만 감싸야 합니다."
+      requirement: 문단 안의 strong
+      visible: true
+      selector: p > strong
+      expect:
+        count: 1
+        text: { equals: 꼭 }
+    - kind: dom
+      id: no-stray-strong
+      description: 문단 밖(body 바로 아래)에 strong 요소가 생기지 않아야 합니다.
+      requirement: 문단 안의 strong
+      visible: true
+      selector: body > strong
+      expect:
+        count: 0
+      misconceptionIfFail: html.mc.overlapping-tags
+misconceptions: [html.mc.overlapping-tags]
+hints:
+  - 여는 태그와 닫는 태그를 선으로 이어 보세요. 선이 서로 엇갈리면 잘못된 중첩이에요.
+  - 나중에 연 요소를 먼저 닫아요. `p` 안에서 `strong`을 열었으니 `strong`을 먼저 닫아야 해요.
+  - "`strong`은 강조할 낱말이 끝나는 곳에서 닫아야 해요. 문장 맨 끝에는 문단을 닫는 태그 하나만 남겨요."
+explanation: |
+  예시 정답은 이래요.
+
+  ```html
+  <p>내일은 <strong>꼭</strong> 체육복을 챙겨요.</p>
+  ```
+
+  `p`를 열고 그 안에서 `strong`을 열었으니, 나중에 연 `strong`을 먼저 닫고 `p`를 나중에 닫아요.
+
+  시작 코드처럼 엇갈리게 닫으면 브라우저가 나름대로 구조를 고쳐요. 이 경우 `</p>`에서 문단을 끝내고, 남은 " 체육복을 챙겨요."를 문단 밖의 새 `strong`으로 감싸서 DOM 트리를 만들었어요. 그래서 문장 뒷부분까지 굵게 보이고 문단이 끊겼어요. 브라우저의 추측이 늘 의도와 맞지는 않으니, 태그는 직접 올바르게 중첩해야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

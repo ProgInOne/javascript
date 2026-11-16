@@ -1,0 +1,83 @@
+id: css.basics.selectors.fill-class-and-id
+type: fill_blank
+difficulty: 1
+concepts:
+  - { id: css.selectors.basic, weight: 1 }
+tags: [selector, class, id]
+estimatedSeconds: 70
+prompt: |
+  쇼핑몰 페이지에서 두 가지를 바꾸려고 해요. 빈칸에 알맞은 **선택자**를 쓰세요.
+
+  1. 사이트 이름(`id="site-name"`)을 남색으로
+  1. 할인 상품 두 개(`class="sale"`)를 빨간색으로
+spec:
+  mode: code
+  lang: html
+  template: |
+    <style>
+      {{blank:id}} {
+        color: navy;
+      }
+      {{blank:cls}} {
+        color: red;
+      }
+    </style>
+    <h1 id="site-name">하루마켓</h1>
+    <p class="sale">운동화 30% 할인</p>
+    <p>모자</p>
+    <p class="sale">가방 20% 할인</p>
+  blanks:
+    - id: id
+      accept: ["#site-name"]
+      width: 14
+    - id: cls
+      accept: [".sale"]
+      width: 14
+  checks:
+    - kind: css
+      id: name-navy
+      description: 사이트 이름의 글자 색이 남색이어야 합니다.
+      requirement: 사이트 이름 남색
+      visible: true
+      selector: "#site-name"
+      expect:
+        computed:
+          color: { color: "#000080" }
+      misconceptionIfFail: css.mc.selector-symbol-mixup
+    - kind: css
+      id: sale-red
+      description: 할인 상품 두 개의 글자 색이 모두 빨간색이어야 합니다.
+      requirement: 할인 상품 빨간색
+      visible: true
+      selector: .sale
+      all: true
+      expect:
+        computed:
+          color: { color: "#ff0000" }
+      misconceptionIfFail: css.mc.selector-symbol-mixup
+    - kind: css
+      id: hat-unchanged
+      description: 할인하지 않는 상품(모자)의 글자 색은 바뀌지 않아야 합니다.
+      requirement: 다른 상품은 그대로
+      visible: true
+      selector: "p:not(.sale)"
+      expect:
+        computed:
+          color: { color: "#000000" }
+misconceptions: [css.mc.selector-symbol-mixup]
+hints:
+  - "`id`로 고를 때와 `class`로 고를 때 붙이는 기호가 달라요."
+  - 기호 없이 이름만 쓰면 그 이름의 **요소**를 찾는 타입 선택자가 돼요.
+  - "ID는 샵(`#`), 클래스는 점(`.`)을 이름 앞에 붙여요."
+explanation: |
+  정답 예시는 **`#site-name`** 과 **`.sale`** 이에요.
+
+  - `id="site-name"`인 요소는 샵(`#`)을 붙인 `#site-name`으로 골라요.
+  - `class="sale"`인 요소는 점(`.`)을 붙인 `.sale`로 골라요. 같은 클래스를 가진 요소를 모두 고르므로 할인 상품 두 개가 함께 빨개져요.
+
+  기호를 바꿔 쓰면(`.site-name`, `#sale`) 해당하는 요소가 없어 아무것도 바뀌지 않아요. `h1`이나 `p.sale`처럼 써도 이 문서에서는 같은 요소를 고르므로 정답으로 처리돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

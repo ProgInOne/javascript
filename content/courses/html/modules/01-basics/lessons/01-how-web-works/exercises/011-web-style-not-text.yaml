@@ -1,0 +1,110 @@
+id: html.basics.how-web-works.web-style-not-text
+type: web_task
+difficulty: 2
+concepts:
+  - { id: html.web.three-languages, weight: 1 }
+  - { id: html.web.rendering, weight: 0.3 }
+tags: [html-css-js, style, web-task]
+estimatedSeconds: 180
+prompt: |
+  제목을 파란색으로 만들려고 CSS 규칙 `h1 { color: blue; }`를 썼는데, 시작 코드를 실행하면 제목은 그대로 검은색이고 규칙이 **글자로** 화면에 보여요. 브라우저가 이 줄을 CSS가 아니라 HTML의 내용(글자)으로 읽었기 때문이에요.
+
+  레슨의 두 번째 예제처럼 이 규칙을 **CSS 자리**에 옮겨서 아래 두 가지를 만족시키세요.
+
+  1. 제목 "우리 동네 날씨"가 파란색으로 보여야 해요.
+  1. 화면에는 제목과 문단만 보이고, 규칙 글자는 보이지 않아야 해요.
+
+  CSS 규칙은 `head` 안에 두세요. 제목과 문단의 글자는 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>날씨</title>
+            </head>
+            <body>
+              h1 { color: blue; }
+              <h1>우리 동네 날씨</h1>
+              <p>내일은 비가 와요.</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>날씨</title>
+              <style>
+                h1 {
+                  color: blue;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>우리 동네 날씨</h1>
+              <p>내일은 비가 와요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: heading-blue
+      description: 제목 "우리 동네 날씨"의 글자 색이 파란색이어야 합니다.
+      requirement: 파란 제목
+      visible: true
+      selector: h1
+      expect:
+        computed:
+          color: { color: "#0000ff" }
+    - kind: dom
+      id: style-in-head
+      description: CSS 규칙이 head 안의 style 요소에 있어야 합니다.
+      requirement: CSS 자리
+      visible: true
+      selector: head > style
+      expect:
+        count: 1
+    - kind: dom
+      id: body-text-only
+      description: 화면(body)에는 제목과 문단 글자만 보여야 합니다.
+      requirement: 규칙 글자가 보이지 않음
+      visible: true
+      selector: body
+      expect:
+        text: { equals: 우리 동네 날씨 내일은 비가 와요. }
+      misconceptionIfFail: html.mc.code-shown-as-is
+misconceptions: [html.mc.code-shown-as-is]
+hints:
+  - HTML 문서 안에서 "여기부터는 CSS예요"라고 브라우저에게 알려 주는 요소가 있었어요. 레슨의 두 번째 예제 맨 위를 보세요.
+  - "`<style>` 요소 안에 쓴 내용만 CSS로 읽혀요. 이 요소는 화면에 그리지 않는 정보를 넣는 `head` 안에 둘 수 있어요."
+  - "body에 있는 `h1 { color: blue; }` 줄을 지우고, head 안 `title` 다음 줄에 `<style>`과 `</style>`을 쓴 뒤 그 사이에 규칙을 옮기세요."
+explanation: |
+  예시 정답은 규칙을 `head` 안의 `<style>` 요소로 옮기는 거예요.
+
+  ```html
+  <head>
+    <meta charset="utf-8" />
+    <title>날씨</title>
+    <style>
+      h1 {
+        color: blue;
+      }
+    </style>
+  </head>
+  ```
+
+  한 HTML 파일 안에 세 언어를 함께 쓸 수 있지만, 브라우저는 **자리**를 보고 어느 언어인지 알아요. `<style>` 안은 CSS(모양), `<script>` 안은 JavaScript(동작), 나머지는 HTML(내용과 구조)로 읽어요.
+
+  시작 코드에서는 규칙이 body 안의 맨 글자로 있어서, 브라우저가 그것을 HTML의 내용으로 보고 화면에 그대로 그렸어요. `<style>` 안으로 옮기면 CSS로 해석되어 제목이 파란색이 되고, 규칙 글자는 화면에서 사라져요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

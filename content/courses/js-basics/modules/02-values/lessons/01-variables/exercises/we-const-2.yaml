@@ -1,0 +1,88 @@
+id: js-basics.values.variables.we-const-2
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.values.const, weight: 1 }
+  - { id: js.values.let, weight: 0.5 }
+tags: [const, let, worked-example, write-code]
+estimatedSeconds: 240
+usage: worked_example
+workedExampleStage: 2
+prompt: |
+  **풀이 예제 3단계: 직접 풀기**
+
+  놀이공원 입장권은 한 장에 8000원이에요. 처음에 2명이 왔다가 2명이 더 왔어요.
+
+  1. 입장권 한 장 값을 담는 변수 `ticket`을 만드세요(바뀌지 않는 값).
+  1. 사람 수를 담는 변수 `people`을 만들어 2를 넣고, 2명이 더 온 것을 대입으로 반영하세요.
+  1. `ticket`과 `people`을 곱한 총액을 변수 `total`에 담아 출력하세요(한 번 계산한 뒤 바꾸지 않는 값).
+
+  바뀌지 않는 값은 `const`, 다시 대입하는 값은 `let`으로 만드세요. 실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  총액: 32000
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1. 입장권 한 장 값(바뀌지 않음)
+
+          // 2. 사람 수(2명이 왔다가 2명이 더 옴)
+
+          // 3. 총액을 계산해 출력
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 1. 입장권 한 장 값(바뀌지 않음)
+          const ticket = 8000;
+          // 2. 사람 수(2명이 왔다가 2명이 더 옴)
+          let people = 2;
+          people = people + 2;
+          // 3. 총액을 계산해 출력
+          const total = ticket * people;
+          console.log("총액:", total);
+  checks:
+    - kind: console
+      id: output
+      description: "\"총액: 32000\"이 출력되어야 합니다."
+      requirement: 총액 출력
+      expect:
+        lines: ["총액: 32000"]
+      misconceptionIfFail: js.mc.const-can-reassign
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, ticket은 8000, people은 4, total은 32000이어야 합니다.
+      requirement: 세 변수의 값
+      expect:
+        globals:
+          ticket: { equals: 8000 }
+          people: { equals: 4 }
+          total: { equals: 32000 }
+        noError: true
+misconceptions: [js.mc.const-can-reassign]
+hints:
+  - 앞 단계의 사과·책 대여 풀이와 같은 순서(한 개 값 → 개수 → 다시 대입 → 총액)로 써 보세요.
+  - 세 변수 중 다시 대입하는 것은 people 하나뿐이에요.
+  - "`const ticket = 8000;`, `let people = 2;`, `people = people + 2;`, `const total = ticket * people;` 다음에 total을 출력해요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const ticket = 8000;
+  let people = 2;
+  people = people + 2;
+  const total = ticket * people;
+  console.log("총액:", total);
+  ```
+
+  앞 두 단계와 같은 기준이에요. `ticket`과 `total`은 다시 대입하지 않으니 `const`, `people`만 `let`이에요. `people`을 `const`로 만들면 `people = people + 2;`에서 `TypeError: Assignment to constant variable.`이 나요.
+
+  모두 `let`으로 써도 출력은 같지만, 바뀌면 안 되는 값을 `const`로 지켜 두는 습관이 이 연습의 목표예요. 원래 연습으로 돌아가 다시 풀어 보세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

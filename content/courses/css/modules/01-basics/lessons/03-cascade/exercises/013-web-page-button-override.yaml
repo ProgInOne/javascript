@@ -1,0 +1,147 @@
+id: css.basics.cascade.web-page-button-override
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.cascade.order, weight: 1 }
+  - { id: css.cascade.specificity, weight: 0.3 }
+tags: [cascade, order, web-task]
+estimatedSeconds: 220
+prompt: |
+  첫 번째 `style` 요소에는 여러 페이지가 함께 쓰는 **공용 버튼 규칙**이 있어요. 이 페이지에서만 버튼을 파란 배경(`#2563eb`)과 흰 글자(`white`)로 바꾸고 싶어요.
+
+  공용 규칙은 **고치지 말고**, 두 번째 `style` 요소에 `.btn` 선택자로 규칙을 하나 써서 아래를 만족시키세요.
+
+  1. 버튼 두 개의 배경은 파란색(`#2563eb`), 글자는 흰색이에요.
+  1. 공용 규칙의 안쪽 여백(`8px 16px`)은 그대로 적용돼요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>회원 가입</title>
+              <style>
+                /* 공용 버튼 규칙 (고치지 마세요) */
+                .btn {
+                  background: #9ca3af;
+                  color: black;
+                  border: none;
+                  padding: 8px 16px;
+                }
+              </style>
+              <style>
+                /* 이 페이지 전용 규칙을 여기에 쓰세요 */
+              </style>
+            </head>
+            <body>
+              <h1>회원 가입</h1>
+              <button class="btn" id="join">가입하기</button>
+              <button class="btn" id="later">나중에</button>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>회원 가입</title>
+              <style>
+                /* 공용 버튼 규칙 (고치지 마세요) */
+                .btn {
+                  background: #9ca3af;
+                  color: black;
+                  border: none;
+                  padding: 8px 16px;
+                }
+              </style>
+              <style>
+                /* 이 페이지 전용 규칙을 여기에 쓰세요 */
+                .btn {
+                  background: #2563eb;
+                  color: white;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>회원 가입</h1>
+              <button class="btn" id="join">가입하기</button>
+              <button class="btn" id="later">나중에</button>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: buttons-blue
+      description: 버튼 두 개의 배경이 모두 파란색(#2563eb)이어야 합니다.
+      requirement: 파란 배경, 흰 글자
+      visible: true
+      selector: .btn
+      all: true
+      expect:
+        computed:
+          background-color: { color: "#2563eb" }
+    - kind: css
+      id: buttons-white-text
+      description: 버튼 두 개의 글자가 모두 흰색이어야 합니다.
+      requirement: 파란 배경, 흰 글자
+      visible: true
+      selector: .btn
+      all: true
+      expect:
+        computed:
+          color: { color: "#ffffff" }
+    - kind: css
+      id: padding-kept
+      description: 버튼에 공용 규칙의 안쪽 여백(위아래 8px, 좌우 16px)이 그대로 적용되어야 합니다.
+      requirement: 공용 여백 유지
+      visible: true
+      selector: "#join"
+      expect:
+        computed:
+          padding-top: { px: { value: 8 } }
+          padding-left: { px: { value: 16 } }
+    - kind: dom
+      id: shared-rule-kept
+      description: 첫 번째 style 요소의 공용 버튼 규칙은 고치지 않아야 합니다.
+      requirement: 공용 규칙은 그대로
+      visible: true
+      selector: "head > style:first-of-type"
+      expect:
+        text: { equals: "/* 공용 버튼 규칙 (고치지 마세요) */ .btn { background: #9ca3af; color: black; border: none; padding: 8px 16px; }" }
+    - kind: dom
+      id: two-buttons
+      description: 버튼 두 개는 그대로 있어야 합니다.
+      requirement: HTML은 그대로
+      selector: button.btn
+      expect:
+        count: 2
+misconceptions: []
+hints:
+  - 공용 규칙과 새 규칙의 선택자가 둘 다 `.btn`이면 명시도가 같아요. 그럼 어느 규칙이 이길까요?
+  - 두 번째 `style` 요소는 첫 번째보다 **나중에** 있어요. 명시도가 같으면 나중에 쓴 규칙이 이겨요.
+  - "새 규칙에는 바꿀 속성(`background`, `color`)만 쓰면 돼요. 쓰지 않은 `padding`은 공용 규칙의 값이 그대로 남아요."
+explanation: |
+  예시 정답은 두 번째 `style` 요소에 아래 규칙을 쓰는 거예요.
+
+  ```css
+  .btn {
+    background: #2563eb;
+    color: white;
+  }
+  ```
+
+  - 두 규칙 모두 `.btn`이라 명시도가 (0, 1, 0)으로 같아요. 명시도가 같으면 **나중에 쓴 규칙**이 이기는데, 두 번째 `style` 요소의 규칙이 첫 번째보다 뒤에 있으니 파란 배경과 흰 글자가 이겨요.
+  - 승부는 두 규칙이 모두 정한 속성(`background`, `color`)에서만 나요. 새 규칙에 없는 `padding`과 `border`는 공용 규칙의 값이 그대로 적용돼요. 그래서 바꿀 것만 덧쓰면 돼요.
+
+  같은 규칙을 공용 규칙보다 **앞**에 두면 공용 규칙이 나중이 되어 회색이 이겨요. 여러 CSS 파일을 연결할 때도 마찬가지라서, 페이지 전용 CSS는 보통 공용 CSS 뒤에 연결해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

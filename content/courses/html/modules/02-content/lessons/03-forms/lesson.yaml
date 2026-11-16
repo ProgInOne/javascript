@@ -13,4 +13,4 @@ objectives:
   - label의 for와 input의 id로 설명 글자와 입력칸을 연결할 수 있다.
   - form 안의 button이 type에 따라 폼을 보내는지 예측할 수 있다.
 practice:
-  targetCount: 10
+  targetCount: 12

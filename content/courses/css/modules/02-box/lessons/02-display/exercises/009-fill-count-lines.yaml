@@ -1,0 +1,53 @@
+id: css.box.display.fill-count-lines
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.display.inline-block, weight: 1 }
+  - { id: css.display.normal-flow, weight: 0.5 }
+tags: [display, inline-block, block, normal-flow]
+estimatedSeconds: 90
+prompt: |
+  아래 코드에서 링크 두 개와 문단 하나는 화면에서 **모두 몇 줄**에 걸쳐 놓이나요? `.wrap`은 너비가 충분히 넓고, 글자는 한 줄에 다 들어간다고 생각하세요. 숫자만 쓰세요.
+code: |
+  <style>
+    .wrap { width: 600px; }
+    .btn {
+      display: inline-block;
+      width: 80px;
+      padding: 8px;
+    }
+    .note { width: 100px; }
+  </style>
+  <div class="wrap">
+    <a class="btn" href="#">이전</a>
+    <a class="btn" href="#">다음</a>
+    <p class="note">1/5쪽</p>
+  </div>
+spec:
+  mode: text
+  template: |
+    줄 수: {{blank:lines}}
+  blanks:
+    - id: lines
+      accept: ["2"]
+      width: 4
+      misconceptionMap:
+        "1": css.mc.narrow-blocks-sit-side-by-side
+        "3": css.mc.inline-block-new-line
+misconceptions: [css.mc.narrow-blocks-sit-side-by-side, css.mc.inline-block-new-line]
+hints:
+  - 요소마다 바깥에서 보면 인라인처럼 놓이는지, 블록처럼 놓이는지 나눠 보세요.
+  - "`inline-block`은 바깥이 인라인이라 자리가 있으면 같은 줄에 놓여요. `p`는 블록이에요."
+  - 블록은 너비를 줄여도 항상 새 줄에서 시작해요. 오른쪽이 비어도 그 자리를 다른 요소가 쓰지 않아요.
+explanation: |
+  정답은 **2줄**이에요.
+
+  - 첫째 줄: `이전`과 `다음` 링크. `display: inline-block`은 바깥이 인라인이라, `width`를 받아도 옆 요소와 **같은 줄에** 나란히 놓여요.
+  - 둘째 줄: `.note` 문단. `p`는 블록이라 **새 줄에서** 시작해요. `width: 100px`로 좁혀도 오른쪽이 빌 뿐, 링크 옆으로 올라가지 않아요.
+
+  3줄이라고 답했다면 `inline-block`도 블록처럼 새 줄에서 시작한다고 생각한 거예요. 1줄이라고 답했다면 좁은 블록이 빈자리에 옆으로 붙는다고 생각한 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

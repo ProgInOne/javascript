@@ -1,0 +1,87 @@
+id: js-basics.operators.logical.we-logical-and-or-not-2
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.ops.logical-and-or-not, weight: 1 }
+tags: [logical, worked-example, write-code]
+estimatedSeconds: 240
+usage: worked_example
+workedExampleStage: 2
+prompt: |
+  **풀이 예제 3단계: 직접 풀기**
+
+  놀이기구 탑승 조건을 확인하려고 해요. 시작 코드의 변수를 이용해 이어서 쓰세요.
+
+  1. 키가 120 이상**이고** 나이가 8살 이상이면 탈 수 있어요. 결과를 변수 `canRide`에 담으세요.
+  1. 나이가 6살 이하**이거나** 65살 이상이면 무료예요. 결과를 변수 `isFree`에 담으세요.
+  1. 탈 수 **없으면** 안내가 필요해요. `canRide`를 뒤집은 결과를 변수 `needsGuide`에 담으세요.
+  1. 세 변수를 한 줄에 출력하세요.
+
+  true/false를 직접 쓰지 말고 변수와 연산자로 계산하세요. 실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  true false false
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const height = 130;
+          const age = 9;
+
+          // 여기에 canRide, isFree, needsGuide를 만들고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const height = 130;
+          const age = 9;
+
+          // 여기에 canRide, isFree, needsGuide를 만들고 출력하세요.
+          const canRide = height >= 120 && age >= 8;
+          const isFree = age <= 6 || age >= 65;
+          const needsGuide = !canRide;
+          console.log(canRide, isFree, needsGuide);
+  checks:
+    - kind: console
+      id: output
+      description: "\"true false false\"가 출력되어야 합니다."
+      requirement: 조건 결과 출력
+      expect:
+        lines: ["true false false"]
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, canRide는 true, isFree는 false, needsGuide는 false여야 합니다.
+      requirement: 조건식의 값
+      expect:
+        globals:
+          canRide: { equals: true }
+          isFree: { equals: false }
+          needsGuide: { equals: false }
+        noError: true
+misconceptions: [js.mc.or-is-exclusive]
+hints:
+  - 앞 단계처럼 조건마다 비교식을 먼저 쓰고, "~이고"는 `&&`, "~이거나"는 `||`로 이어요.
+  - "비교식은 양쪽에 모두 변수를 써야 해요. `age <= 6 || >= 65`처럼 줄여 쓰면 `SyntaxError`가 나요."
+  - "`height >= 120 && age >= 8`, `age <= 6 || age >= 65`, `!canRide`를 각각 변수에 담아 출력해요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const canRide = height >= 120 && age >= 8;
+  const isFree = age <= 6 || age >= 65;
+  const needsGuide = !canRide;
+  console.log(canRide, isFree, needsGuide);
+  ```
+
+  - `height >= 120 && age >= 8`: `true && true`라서 `true`예요.
+  - `age <= 6 || age >= 65`: `false || false`라서 `false`예요.
+  - `!canRide`: `true`를 뒤집어 `false`예요.
+
+  앞 두 단계와 같은 방법이에요. 비교식을 하나씩 true/false로 만들고 논리 연산자로 이어요. 원래 연습으로 돌아가 다시 풀어 보세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

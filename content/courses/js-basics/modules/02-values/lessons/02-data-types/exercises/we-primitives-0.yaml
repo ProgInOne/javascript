@@ -1,0 +1,58 @@
+id: js-basics.values.data-types.we-primitives-0
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.types.primitives, weight: 1 }
+  - { id: js.types.typeof, weight: 0.3 }
+tags: [primitives, typeof, worked-example]
+estimatedSeconds: 75
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "상품 코드 `"7"`과 수량 `7`을 변수에 담아 출력하고, 두 값의 자료형을 확인하세요. 그다음 상품 코드 변수에 숫자 7을 다시 넣고 자료형을 다시 확인하세요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    // 1. 따옴표로 감싼 "7"은 글자(string) 값이에요.
+    let code = "7";
+    // 2. 따옴표가 없는 7은 숫자(number) 값이에요.
+    let amount = 7;
+    // 3. 콘솔은 문자열을 따옴표 없이 보여 주니까, 두 값은 겉모습이 똑같아요.
+    console.log(code, amount);
+    // 4. 자료형은 겉모습이 아니라 값에 붙어 있어요. typeof로 확인해요.
+    console.log(typeof code, typeof amount);
+    // 5. 자료형은 변수가 아니라 값의 것이에요. 숫자를 넣으면 typeof code도 바뀌어요.
+    code = 7;
+    console.log(typeof code);
+  answerKind: console
+  misconceptionByAnswer:
+    "7 7\nnumber number\nnumber": js.mc.quoted-number-is-number
+    "7 7\nstring number\nstring": js.mc.type-belongs-to-variable
+misconceptions: [js.mc.quoted-number-is-number, js.mc.type-belongs-to-variable, js.mc.same-output-same-type]
+hints:
+  - 콘솔은 문자열을 출력할 때 따옴표를 빼고 보여 줘요. 첫 줄은 두 값이 똑같아 보여요.
+  - 자료형을 가르는 것은 따옴표예요. 따옴표로 감싼 값은 안의 내용이 숫자여도 문자열이에요.
+  - 5번 줄에서 code에 숫자 7을 넣었어요. typeof는 변수가 처음 받은 값이 아니라 지금 든 값의 자료형을 알려 줘요.
+explanation: |
+  정답은 다음 세 줄이에요.
+
+  ```text
+  7 7
+  string number
+  number
+  ```
+
+  - 1번 출력: 콘솔은 문자열을 따옴표 없이 보여 줘서 `"7"`과 `7`이 똑같이 `7`로 보여요. **겉모습이 같아도 자료형이 같다는 뜻은 아니에요.**
+  - 2번 출력: `"7"`은 따옴표로 감쌌으니 `string`, `7`은 `number`예요.
+  - 3번 출력: `code`에 숫자 7을 다시 넣었으니 이제 `number`예요. 자료형은 **변수가 아니라 값**에 붙어 있어서, 한 변수에 다른 자료형의 값을 넣으면 `typeof`의 결과도 바뀌어요.
+
+  다음 단계에서는 원하는 자료형이 되도록 값을 직접 써 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

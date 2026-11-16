@@ -1,0 +1,70 @@
+id: js-basics.values.variables.we-const-1
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.values.const, weight: 1 }
+  - { id: js.values.let, weight: 0.5 }
+tags: [const, let, worked-example]
+estimatedSeconds: 90
+usage: worked_example
+workedExampleStage: 1
+prompt: |
+  **풀이 예제 2단계: 빈칸 채우기**
+
+  앞 단계와 같은 방식의 문제예요. "책 한 권 대여료는 500원이에요. 1권을 빌렸다가 2권을 더 빌렸어요. 대여 요금을 출력하세요."
+
+  풀이의 나머지는 완성되어 있어요. 주석을 읽고 빈칸에 `const` 또는 `let`을 쓰세요. 코드 전체가 오류 없이 실행되어 아래처럼 나와야 해요.
+
+  ```text
+  요금: 1500
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    // 1. 한 권 대여료는 프로그램에서 바뀌지 않아요.
+    {{blank:fee}} fee = 500;
+    // 2. 빌린 권수는 아래에서 다시 대입해요.
+    {{blank:books}} books = 1;
+    books = books + 2;
+    // 3. 요금은 한 번 계산한 뒤 바꾸지 않아요.
+    const cost = fee * books;
+    console.log("요금:", cost);
+  blanks:
+    - id: fee
+      accept: ["const"]
+      width: 6
+    - id: books
+      accept: ["let"]
+      width: 6
+  checks:
+    - kind: console
+      id: output
+      description: "\"요금: 1500\"이 출력되어야 합니다."
+      requirement: 요금 출력
+      expect:
+        lines: ["요금: 1500"]
+      misconceptionIfFail: js.mc.const-can-reassign
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다(다시 대입하는 변수를 const로 만들면 TypeError가 납니다).
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+misconceptions: [js.mc.const-can-reassign]
+hints:
+  - 앞 단계 풀이에서 price와 count에 각각 const와 let을 고른 이유를 떠올려 보세요.
+  - 두 변수 중 아래에서 다시 대입되는 것은 어느 쪽인가요?
+  - 다시 대입되는 books는 let, 바뀌지 않는 fee는 규칙대로 const예요.
+explanation: |
+  예시 정답은 `const fee`, `let books`예요.
+
+  - `fee`는 다시 대입하지 않으니 앞 단계의 `price`처럼 `const`로 만들어요.
+  - `books`는 `books = books + 2;`에서 다시 대입하니 앞 단계의 `count`처럼 `let`이어야 해요. `const`로 만들면 그 줄에서 `TypeError: Assignment to constant variable.`이 나요.
+
+  `fee`에 `let`을 써도 실행은 되지만, "먼저 `const`로 쓰고, 다시 대입해야 할 때만 `let`"이 이 풀이의 기준이에요. 다음 단계에서는 처음부터 직접 써 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

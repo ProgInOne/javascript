@@ -1,0 +1,90 @@
+id: js-basics.operators.logical.we-short-circuit-2
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+  - { id: js.ops.nullish, weight: 0.3 }
+tags: [short-circuit, default-value, worked-example, write-code]
+estimatedSeconds: 240
+usage: worked_example
+workedExampleStage: 2
+prompt: |
+  **풀이 예제 3단계: 직접 풀기**
+
+  게임 설정을 불러왔어요. 시작 코드의 변수를 이용해 이어서 쓰세요.
+
+  1. 플레이어 이름 `player`가 비어 있으면 `"플레이어1"`을 쓰도록 변수 `displayName`을 만드세요.
+  1. 저장된 난이도 `level`은 0일 수도 있어요. 0은 지키고 `null`·`undefined`일 때만 1을 쓰도록 변수 `startLevel`을 만드세요.
+  1. `displayName`과 `startLevel`을 한 줄에 출력하세요.
+  1. 음소거 여부 `muted`가 truthy일 때만 `"소리 꺼짐"`을 출력하세요. `&&`의 단락 평가를 이용해 한 줄로 쓰세요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요(`muted`가 false라서 "소리 꺼짐"은 나오지 않아요).
+
+  ```text
+  플레이어1 0
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const player = "";
+          const level = 0;
+          const muted = false;
+
+          // 여기에 이어서 쓰세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const player = "";
+          const level = 0;
+          const muted = false;
+
+          // 여기에 이어서 쓰세요.
+          const displayName = player || "플레이어1";
+          const startLevel = level ?? 1;
+          console.log(displayName, startLevel);
+          muted && console.log("소리 꺼짐");
+  checks:
+    - kind: console
+      id: output
+      description: "\"플레이어1 0\" 한 줄만 출력되어야 합니다(muted가 false라 \"소리 꺼짐\"은 출력되지 않음)."
+      requirement: 기본값 출력
+      expect:
+        lines: ["플레이어1 0"]
+      misconceptionIfFail: js.mc.or-default-keeps-zero
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, displayName은 "플레이어1", startLevel은 0이어야 합니다.
+      requirement: 기본값 식의 값
+      expect:
+        globals:
+          displayName: { equals: "플레이어1" }
+          startLevel: { equals: 0 }
+        noError: true
+misconceptions: [js.mc.or-default-keeps-zero, js.mc.right-side-always-runs]
+hints:
+  - 앞 단계처럼 빈 문자열을 바꾸는 기본값은 `||`, 0을 지키는 기본값은 `??`예요.
+  - "`muted && 출력`은 muted가 falsy면 오른쪽을 계산하지 않아요."
+  - "`const displayName = player || \"플레이어1\";`, `const startLevel = level ?? 1;`, 출력, 그리고 `muted && console.log(\"소리 꺼짐\");`을 써요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const displayName = player || "플레이어1";
+  const startLevel = level ?? 1;
+  console.log(displayName, startLevel);
+  muted && console.log("소리 꺼짐");
+  ```
+
+  - `player || "플레이어1"`: 빈 문자열은 falsy라서 `"플레이어1"`을 골라요.
+  - `level ?? 1`: 0은 `null`·`undefined`가 아니라서 0을 그대로 둬요. `level || 1`을 쓰면 1이 돼 버려요.
+  - `muted && console.log(...)`: `muted`가 false라서 오른쪽을 계산하지 않아요. 그래서 "소리 꺼짐"은 출력되지 않아요.
+
+  앞 두 단계와 같은 원리예요. 원래 연습으로 돌아가 다시 풀어 보세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

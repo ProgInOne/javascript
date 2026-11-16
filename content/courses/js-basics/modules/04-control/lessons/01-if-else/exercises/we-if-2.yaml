@@ -1,0 +1,82 @@
+id: js-basics.control.if-else.we-if-2
+type: implement_function
+difficulty: 2
+usage: worked_example
+workedExampleStage: 2
+concepts:
+  - { id: js.control.if, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [if, else, worked-example, write-code]
+estimatedSeconds: 240
+prompt: |
+  **직접 푸는 단계예요.** 앞 단계의 교통카드 풀이와 같은 뼈대로, 놀이기구 탑승 안내 프로그램을 처음부터 작성하세요.
+
+  - 키(`height`)가 **130cm 이상**이면 `탑승할 수 있어요`를 출력해요.
+  - 아니면 몇 cm가 모자란지 계산해서 `키가 2cm 모자라요`처럼 출력해요(130에서 키를 뺀 값).
+  - 판단이 끝나면 항상 `다음 손님 차례예요.`를 출력해요.
+  - 시작 코드의 `height` 줄은 그대로 두세요. 키가 128cm이면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  키가 2cm 모자라요
+  다음 손님 차례예요.
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const height = 128; // 손님의 키(cm)
+
+          // if … else로 탑승 가능 여부를 출력하고, 마지막에 다음 손님 안내를 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const height = 128; // 손님의 키(cm)
+
+          // if … else로 탑승 가능 여부를 출력하고, 마지막에 다음 손님 안내를 출력하세요.
+          if (height >= 130) {
+            console.log("탑승할 수 있어요");
+          } else {
+            console.log("키가 " + (130 - height) + "cm 모자라요");
+          }
+          console.log("다음 손님 차례예요.");
+  checks:
+    - kind: console
+      id: output
+      description: 모자란 키 안내와 다음 손님 안내가 차례로 출력되어야 합니다.
+      requirement: 탑승 안내 출력
+      expect:
+        lines: ["키가 2cm 모자라요", "다음 손님 차례예요."]
+      misconceptionIfFail: js.mc.else-has-condition
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+misconceptions: [js.mc.else-has-condition, js.mc.false-if-stops-program]
+hints:
+  - 앞 단계의 교통카드 풀이를 떠올려 보세요. 조건 → 참일 때 블록 → 거짓일 때 블록 → 이어지는 코드 순서예요.
+  - 조건은 `height >= 130`이에요. 모자란 키는 `130 - height`로 계산해서 글자와 `+`로 이어 붙여요.
+  - "`else` 블록에서 `console.log(\"키가 \" + (130 - height) + \"cm 모자라요\");`처럼 계산 부분을 괄호로 묶고, `if … else`가 끝난 뒤에 다음 손님 안내를 출력해요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  if (height >= 130) {
+    console.log("탑승할 수 있어요");
+  } else {
+    console.log("키가 " + (130 - height) + "cm 모자라요");
+  }
+  console.log("다음 손님 차례예요.");
+  ```
+
+  - 앞 단계 풀이와 같은 뼈대예요. 조건 `128 >= 130`이 거짓이라 `else` 블록만 실행돼요.
+  - `(130 - height)`를 괄호로 묶어야 먼저 계산돼요. 괄호 없이 `"키가 " + 130 - height`라고 쓰면 글자를 먼저 이어 붙인 뒤 빼기를 해서 `NaN`이 나와요.
+  - 다음 손님 안내는 블록 **밖**, `if … else` 뒤에 써야 어느 쪽이든 실행돼요. 두 블록 안에 똑같이 넣어도 결과는 같지만 중복이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,68 @@
+id: js-basics.operators.implicit-coercion.we-plus-concat-0
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.conv.plus-concat, weight: 1 }
+tags: [plus-concat, coercion, worked-example]
+estimatedSeconds: 90
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "입력창에서 받은 수량 `"2"`(글자)로 여러 계산을 해 보고, `+`가 언제 더하고 언제 이어 붙이는지 확인하세요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    // 1. +는 한쪽이라도 문자열이면 글자를 이어 붙여요. "2" + 1은 "2" 뒤에 1을 붙여요.
+    const qty = "2";
+    console.log(qty + 1);
+    // 2. 왼쪽부터 하나씩 계산해요. 1 + 2는 숫자끼리라 3, 그다음 3 + "3"은 이어 붙이기예요.
+    console.log(1 + 2 + "3");
+    // 3. 문자열이 앞에 있으면 첫 계산부터 이어 붙이기라서, 뒤로도 계속 이어 붙여요.
+    console.log("3" + 1 + 2);
+    // 4. -, *, /는 이어 붙이기가 없어서 문자열을 숫자로 바꿔 계산해요.
+    console.log(qty * 3, qty - 1);
+    // 5. 숫자로 더하고 싶으면 먼저 Number로 바꿔요.
+    console.log(Number(qty) + 1);
+  answerKind: console
+  misconceptionByAnswer:
+    "3\n6\n6\n6 1\n3": js.mc.plus-string-adds
+    "21\n123\n312\n6 1\n3": js.mc.concat-whole-expression
+misconceptions: [js.mc.plus-string-adds, js.mc.concat-whole-expression, js.mc.minus-string-fails]
+hints:
+  - "`+`가 나올 때마다, 그 순간 왼쪽과 오른쪽 값 중 문자열이 있는지 확인하세요."
+  - "`1 + 2 + \"3\"`은 `(1 + 2) + \"3\"`처럼 왼쪽부터 계산해요. 처음 `+`는 숫자끼리예요."
+  - "`*`와 `-`는 글자를 이어 붙이는 기능이 없어서 `\"2\"`를 숫자 2로 바꿔 계산해요."
+explanation: |
+  정답은 다음 다섯 줄이에요.
+
+  ```text
+  21
+  33
+  312
+  6 1
+  3
+  ```
+
+  | 식 | 계산 순서 | 결과 |
+  |---|---|---|
+  | `qty + 1` | `"2" + 1` → 이어 붙이기 | `"21"` |
+  | `1 + 2 + "3"` | `1 + 2` = 3 → `3 + "3"` | `"33"` |
+  | `"3" + 1 + 2` | `"3" + 1` = `"31"` → `"31" + 2` | `"312"` |
+  | `qty * 3`, `qty - 1` | `"2"`를 숫자로 바꿔 계산 | `6`, `1` |
+  | `Number(qty) + 1` | `2 + 1` | `3` |
+
+  이 풀이의 핵심은 두 가지예요.
+
+  - `+`는 **그 순간** 한쪽이라도 문자열이면 이어 붙이고, 식은 왼쪽부터 하나씩 계산해요. 식 어딘가에 문자열이 있다고 처음부터 모두 이어 붙이는 게 아니에요.
+  - 입력창의 글자를 숫자로 더하려면 `Number()`로 먼저 바꿔요.
+
+  다음 단계에서는 이 두 가지를 직접 채워 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

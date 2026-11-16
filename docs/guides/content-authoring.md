@@ -635,6 +635,43 @@ spec:
 - `with`, `010` 같은 8진수 리터럴, 중복 매개변수는 실행 전 `SyntaxError`입니다.
 - 예측 문제의 기대값도 엄격 모드 실행 결과입니다.
 
+## 단계적 풀이 예제 (worked_example)
+
+같은 개념을 반복해서 틀리면 학습 엔진이 재학습을 제안합니다. 선수 개념이 정상이면 그 개념의 **단계적 풀이 예제**를 세트 끝에 붙입니다([학습 엔진 설계 재학습 규칙](/docs/design/learning-engine.md#재학습-규칙)).
+풀이 예제는 단원 연습·복습에는 나오지 않고 이 경로로만 나옵니다([D-072](/docs/decisions.md)).
+
+한 개념의 풀이 예제는 **같은 대표 문제를 세 단계로 푸는 문제 3개**입니다. 단계마다 정해진 유형을 씁니다.
+
+| 단계 | `workedExampleStage` | 유형 | 내용 |
+|---|---|---|---|
+| 완전한 풀이 | `0` | `predict_output` | 대표 문제의 완성된 풀이 코드에 줄마다 이유를 주석으로 달고, 출력을 예측하게 합니다 |
+| 일부 빈칸 | `1` | `fill_blank`(code 모드) | 같은 풀이에서 핵심 줄 1~2개만 비웁니다. 나머지 줄과 주석은 남깁니다 |
+| 직접 풀기 | `2` | `implement_function`(`entry` 없는 프로그램 모드) | 비슷한 새 상황을 처음부터 작성합니다 |
+
+```yaml
+# courses/js-basics/modules/05-loops/lessons/02-for/exercises/we-for-0.yaml
+id: js-basics.loops.for.we-for-0
+type: predict_output
+difficulty: 1
+concepts:
+  - { id: js.loops.for, weight: 1 }
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  완성된 풀이를 주석과 함께 한 줄씩 읽고, 실행하면 무엇이 출력될지 예측해 보세요. ...
+spec:
+  lang: js
+  code: |
+    // i를 1부터 시작해요. 첫 학생 번호가 1번이니까요.
+    for (let i = 1; i <= 4; i++) { ... }
+  answerKind: console
+```
+
+- 그 개념을 **소개하는 단원**(`concepts.primary`)의 `exercises/`에 둡니다. 파일 이름은 `we-<개념 slug 끝>-<단계>.yaml`, id는 `<단원 id>.we-<개념 slug 끝>-<단계>`입니다.
+- 주 개념(가중치 1)이 그 개념이어야 엔진이 찾습니다. 단계마다 하나씩, 0·1·2를 모두 둡니다. `content:check`는 빠진 단계나 같은 단계가 두 개인 개념, 다른 단원에 둔 풀이 예제를 경고합니다.
+- 그 단원까지 배운 문법만 씁니다. 해설에는 앞 단계와의 연결("앞 단계 풀이에서 …")을 씁니다.
+- 풀이 예제는 단원 문제 수(`practice.targetCount`)와 수량 규칙(FR-EX-09)에 세지 않습니다.
+
 ## 파라메트릭 템플릿
 
 템플릿은 매개변수만 바꾼 변형 문제를 만드는 문제 원본입니다([FR-EX-08](/docs/product/prd.md), [설계](/docs/design/content-and-exercises.md#파라메트릭-템플릿)).

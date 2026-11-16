@@ -1,0 +1,45 @@
+id: html.basics.how-web-works.fill-request-response
+type: fill_blank
+difficulty: 1
+concepts:
+  - { id: html.web.client-server, weight: 1 }
+tags: [client-server, request, response]
+estimatedSeconds: 60
+prompt: |
+  주소창에 주소를 입력했을 때 일어나는 일을 순서대로 적었어요. 레슨에서 배운 낱말로 빈칸을 채우세요.
+spec:
+  mode: text
+  template: |
+    1. 브라우저가 주소를 보고 그 주소의 서버에 "index.html을 보내 주세요"라고 {{blank:req}}해요.
+    2. 서버가 index.html 파일을 {{blank:res}}(으)로 보내 줘요.
+    3. 받은 HTML 파일을 읽고 화면에 그리는 쪽은 {{blank:who}}예요. (브라우저 / 서버)
+  blanks:
+    - id: req
+      accept: ["요청", "request"]
+      caseSensitive: false
+      width: 8
+    - id: res
+      accept: ["응답", "response"]
+      caseSensitive: false
+      width: 8
+    - id: who
+      accept: ["브라우저", "클라이언트"]
+      width: 8
+misconceptions: [html.mc.page-lives-in-browser]
+hints:
+  - 파일을 "달라고 하는 일"과 "보내 주는 일"을 부르는 두 낱말을 레슨에서 찾아보세요.
+  - 음식점 비유에서 손님이 주문하는 것이 1단계, 주방이 음식을 내어 주는 것이 2단계예요.
+  - 1단계 낱말은 "요", 2단계 낱말은 "응"으로 시작해요. 서버는 파일을 보내 줄 뿐이고, 받은 파일을 그리는 일은 내 컴퓨터의 프로그램이 해요.
+explanation: |
+  정답은 차례로 **요청**, **응답**, **브라우저**예요.
+
+  1. 브라우저(클라이언트)가 서버에 파일을 **요청**해요.
+  1. 서버가 파일을 **응답**으로 보내 줘요.
+  1. **브라우저**가 받은 HTML을 읽고 화면에 그려요.
+
+  서버가 화면을 그린다고 생각했다면, 서버는 파일을 가지고 있다가 보내 주는 컴퓨터라는 점을 떠올려 보세요. 그리는 일은 내 컴퓨터의 브라우저가 해요. 그래서 웹 페이지 파일은 브라우저 안에 들어 있는 것이 아니라, 매번 서버에 요청해서 받아 와야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

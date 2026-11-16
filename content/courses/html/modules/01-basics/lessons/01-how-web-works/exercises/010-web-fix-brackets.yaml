@@ -1,0 +1,98 @@
+id: html.basics.how-web-works.web-fix-brackets
+type: web_task
+difficulty: 1
+concepts:
+  - { id: html.web.rendering, weight: 1 }
+tags: [rendering, tags, h1, p, web-task]
+estimatedSeconds: 150
+prompt: |
+  친구가 태그를 꺾쇠(`<`, `>`) 대신 둥근 괄호로 써서, 시작 코드를 실행하면 `(h1)` 같은 글자가 화면에 그대로 보여요. 브라우저는 꺾쇠로 쓴 것만 태그로 알아보기 때문이에요.
+
+  괄호를 고쳐서 브라우저가 아래처럼 그리게 만드세요.
+
+  1. "오늘의 할 일"은 **가장 큰 제목**(`h1`)으로 보여야 해요.
+  1. "숙제를 먼저 끝내요."는 **문단**(`p`)으로 보여야 해요.
+
+  문장의 글자는 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>할 일</title>
+            </head>
+            <body>
+              (h1)오늘의 할 일(/h1)
+              (p)숙제를 먼저 끝내요.(/p)
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>할 일</title>
+            </head>
+            <body>
+              <h1>오늘의 할 일</h1>
+              <p>숙제를 먼저 끝내요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: has-heading
+      description: "\"오늘의 할 일\"이 h1 요소 안에 있어야 합니다."
+      requirement: 가장 큰 제목
+      visible: true
+      selector: body h1
+      expect:
+        count: 1
+        text: { equals: 오늘의 할 일 }
+      misconceptionIfFail: html.mc.code-shown-as-is
+    - kind: dom
+      id: has-paragraph
+      description: "\"숙제를 먼저 끝내요.\"가 p 요소 안에 있어야 합니다."
+      requirement: 문단
+      visible: true
+      selector: body p
+      expect:
+        count: 1
+        text: { equals: 숙제를 먼저 끝내요. }
+    - kind: dom
+      id: no-leftover-text
+      description: 화면에 괄호로 쓴 태그 글자가 남아 있지 않아야 합니다.
+      requirement: 태그 글자가 보이지 않음
+      visible: true
+      selector: body
+      expect:
+        text: { equals: 오늘의 할 일 숙제를 먼저 끝내요. }
+      misconceptionIfFail: html.mc.code-shown-as-is
+misconceptions: [html.mc.code-shown-as-is]
+hints:
+  - 화면에 `(h1)`이 글자로 보인다는 것은, 브라우저가 그것을 태그로 알아보지 못했다는 뜻이에요.
+  - 태그는 꺾쇠로 감싸서 써요. 닫는 태그는 요소 이름 앞에 `/`를 붙여요.
+  - 여는 둥근 괄호 `(`는 `<`로, 닫는 둥근 괄호 `)`는 `>`로 바꿔요. 태그 네 개를 모두 고쳐야 해요.
+explanation: |
+  예시 정답은 괄호를 꺾쇠로 바꾸는 거예요.
+
+  ```html
+  <h1>오늘의 할 일</h1>
+  <p>숙제를 먼저 끝내요.</p>
+  ```
+
+  브라우저는 꺾쇠로 감싼 `<h1>`, `</h1>`만 태그로 해석해요. 둥근 괄호로 쓴 `(h1)`은 그냥 글자라서 화면에 그대로 그려졌어요.
+
+  꺾쇠로 고치면 브라우저가 태그의 뜻을 해석해 "오늘의 할 일"을 크고 굵은 제목으로, "숙제를 먼저 끝내요."를 문단으로 그리고, 태그 자체는 감춰요. 이것이 렌더링이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

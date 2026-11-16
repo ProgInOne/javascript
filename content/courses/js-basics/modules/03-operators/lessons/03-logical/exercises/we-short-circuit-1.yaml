@@ -1,0 +1,83 @@
+id: js-basics.operators.logical.we-short-circuit-1
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+  - { id: js.ops.nullish, weight: 0.3 }
+tags: [short-circuit, default-value, worked-example]
+estimatedSeconds: 100
+usage: worked_example
+workedExampleStage: 1
+prompt: |
+  **풀이 예제 2단계: 빈칸 채우기**
+
+  앞 단계와 같은 방식의 문제예요. 프로필 화면에 이름을 보여 주는데, 이름이 비어 있으면 `"익명"`을 보여 줘요. 저장된 글자 크기는 0일 수도 있어서, 0이면 그대로 지키고 `null`일 때만 기본값 16을 써요.
+
+  풀이의 나머지는 완성되어 있어요. 주석을 읽고 빈칸 두 곳에 **기본값 식**을 쓰세요. 실행하면 아래처럼 나와야 해요.
+
+  ```text
+  익명
+  0 16
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    // 1. 이름이 빈 문자열이면 "익명"을 골라요. ""은 falsy예요.
+    const userName = "";
+    const shownName = {{blank:name}};
+    console.log(shownName);
+    // 2. 저장된 글자 크기예요. savedSize는 0, otherSize는 null이에요.
+    const savedSize = 0;
+    const otherSize = null;
+    // 3. 0은 지키고 null일 때만 16을 골라요.
+    const size1 = {{blank:size}};
+    const size2 = otherSize ?? 16;
+    console.log(size1, size2);
+  blanks:
+    - id: name
+      accept: ['userName || "익명"', "userName || '익명'"]
+      width: 20
+    - id: size
+      accept: ["savedSize ?? 16"]
+      width: 20
+  checks:
+    - kind: console
+      id: output
+      description: "\"익명\"과 \"0 16\"이 차례로 출력되어야 합니다."
+      requirement: 기본값 출력
+      expect:
+        lines: ["익명", "0 16"]
+      misconceptionIfFail: js.mc.or-default-keeps-zero
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, shownName은 "익명", size1은 0이어야 합니다.
+      requirement: 기본값 식의 값
+      expect:
+        globals:
+          shownName: { equals: "익명" }
+          size1: { equals: 0 }
+        noError: true
+misconceptions: [js.mc.or-default-keeps-zero]
+hints:
+  - "앞 단계 풀이에서 `nickname || \"손님\"`과 `volume ?? 50`이 무엇을 골랐는지 떠올려 보세요."
+  - "빈 문자열을 기본값으로 바꾸려면 `||`, 0은 지키고 null만 바꾸려면 `??`예요."
+  - "첫 빈칸은 `userName || \"익명\"`, 두 번째 빈칸은 `savedSize ?? 16`이에요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const shownName = userName || "익명";
+  const size1 = savedSize ?? 16;
+  ```
+
+  - `userName || "익명"`: 왼쪽 `""`이 falsy라서 오른쪽 `"익명"`을 골라요.
+  - `savedSize ?? 16`: 0은 `null`도 `undefined`도 아니라서 `??`는 0을 그대로 둬요.
+  - `otherSize ?? 16`: `null`이라서 16을 골라요.
+
+  두 번째 빈칸에 `savedSize || 16`을 쓰면 0이 falsy라서 16이 돼요. 사용자가 고른 0이 사라지는 거예요. 앞 단계의 음량 예와 같은 함정이에요. 다음 단계에서는 처음부터 직접 써 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

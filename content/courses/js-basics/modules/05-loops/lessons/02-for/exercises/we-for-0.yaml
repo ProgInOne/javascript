@@ -1,0 +1,60 @@
+id: js-basics.loops.for.we-for-0
+type: predict_output
+difficulty: 1
+usage: worked_example
+workedExampleStage: 0
+concepts:
+  - { id: js.loops.for, weight: 1 }
+  - { id: js.loops.loop-variable, weight: 0.3 }
+tags: [for, worked-example]
+estimatedSeconds: 90
+prompt: |
+  **완성된 풀이를 읽는 단계예요.** 아래 문제를 푼 코드가 있어요. 주석과 함께 한 줄씩 읽고, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+
+  > 1번부터 4번까지 학생 번호를 차례로 부르고, 다 부르면 "출석 확인 끝"을 출력하세요.
+spec:
+  lang: js
+  code: |
+    // for (시작값; 조건; 갱신) { 본문 }
+    // 1. 시작값: let i = 1 → 반복 변수 i를 1번 학생부터 시작해요 (맨 처음 한 번만 실행)
+    // 2. 조건:   i <= 4    → 4번까지 불러야 하므로 4를 포함해요 (본문 전에 매번 검사)
+    // 3. 갱신:   i++       → 본문을 실행한 "뒤에" i를 1 늘려요
+    for (let i = 1; i <= 4; i++) {
+      // 4. 본문: 회차마다 바뀌는 i로 번호를 불러요
+      console.log(i + "번 학생");
+    }
+
+    // 5. 조건이 거짓(i가 5)이 되면 반복을 끝내고 다음 줄로 이어져요
+    console.log("출석 확인 끝");
+  answerKind: console
+  misconceptionByAnswer:
+    "2번 학생\n3번 학생\n4번 학생\n5번 학생\n출석 확인 끝": js.mc.for-update-before-body
+    "1번 학생\n2번 학생\n3번 학생\n4번 학생\n5번 학생\n출석 확인 끝": js.mc.for-off-by-one
+misconceptions: [js.mc.for-update-before-body, js.mc.for-off-by-one]
+hints:
+  - 첫 회차의 `i`는 시작값에서 정한 값이에요.
+  - "`i++`는 본문을 실행한 **뒤에** 실행되고, 그다음 조건을 다시 검사해요."
+  - "`i`가 1, 2, 3, 4일 때 본문이 실행되고, 5가 되면 `5 <= 4`가 거짓이라 반복이 끝나요. 그다음 마지막 줄이 실행돼요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  1번 학생
+  2번 학생
+  3번 학생
+  4번 학생
+  출석 확인 끝
+  ```
+
+  이 풀이의 뼈대는 **"시작값 → (조건 검사 → 본문 → 갱신) 반복 → 조건이 거짓이면 다음 줄"**이에요.
+
+  1. 시작값으로 `i`가 1이 돼요. `1 <= 4`가 참이라 본문에서 `1번 학생`을 출력해요.
+  1. 본문 뒤에 `i++`로 `i`가 2가 되고, 다시 조건을 검사해요. 이렇게 4번 학생까지 출력해요.
+  1. `i`가 5가 되면 `5 <= 4`가 거짓이라 반복이 끝나고 `출석 확인 끝`을 출력해요.
+
+  "1번부터 4번까지"라서 시작값은 1, 조건은 `<= 4`예요. 다음 단계에서는 이 풀이의 머리 부분을 직접 채워 볼 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

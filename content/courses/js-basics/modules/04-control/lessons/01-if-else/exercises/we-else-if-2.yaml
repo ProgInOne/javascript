@@ -1,0 +1,92 @@
+id: js-basics.control.if-else.we-else-if-2
+type: implement_function
+difficulty: 3
+usage: worked_example
+workedExampleStage: 2
+concepts:
+  - { id: js.control.else-if, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [else-if, worked-example, write-code]
+estimatedSeconds: 270
+prompt: |
+  **직접 푸는 단계예요.** 앞 단계의 미세먼지 풀이와 같은 뼈대로, 택배 무게(kg)에 따라 요금을 하나만 출력하는 프로그램을 처음부터 작성하세요.
+
+  | 무게 | 출력 |
+  |---|---|
+  | 2kg 이하 | `요금: 3000원` |
+  | 5kg 이하 | `요금: 4000원` |
+  | 10kg 이하 | `요금: 6000원` |
+  | 10kg 초과 | `접수할 수 없어요` |
+
+  - `if … else if … else` 체인으로 하나만 출력하세요.
+  - 시작 코드의 `weight` 줄은 그대로 두세요. 무게가 7kg이면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  요금: 6000원
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const weight = 7; // 택배 무게(kg)
+
+          // if … else if … else 체인으로 요금을 하나만 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const weight = 7; // 택배 무게(kg)
+
+          // if … else if … else 체인으로 요금을 하나만 출력하세요.
+          if (weight <= 2) {
+            console.log("요금: 3000원");
+          } else if (weight <= 5) {
+            console.log("요금: 4000원");
+          } else if (weight <= 10) {
+            console.log("요금: 6000원");
+          } else {
+            console.log("접수할 수 없어요");
+          }
+  checks:
+    - kind: console
+      id: output
+      description: 7kg 택배의 요금 한 줄만 출력되어야 합니다.
+      requirement: 요금 출력
+      expect:
+        lines: ["요금: 6000원"]
+      misconceptionIfFail: js.mc.else-if-runs-all
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝나야 합니다.
+      requirement: 오류 없이 실행
+      expect:
+        noError: true
+misconceptions: [js.mc.else-if-runs-all, js.mc.else-if-order-irrelevant]
+hints:
+  - 앞 단계의 미세먼지 풀이처럼, 가장 좁은 범위(2kg 이하)부터 조건을 차례로 써요.
+  - 갈래는 네 개예요. `if (weight <= 2)`, `else if (weight <= 5)`, `else if (weight <= 10)`, 그리고 조건 없는 `else`예요.
+  - "각 갈래 블록 안에서 표의 출력을 `console.log`로 써요. 예를 들어 세 번째 갈래는 `} else if (weight <= 10) { console.log(\"요금: 6000원\"); }`예요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  if (weight <= 2) {
+    console.log("요금: 3000원");
+  } else if (weight <= 5) {
+    console.log("요금: 4000원");
+  } else if (weight <= 10) {
+    console.log("요금: 6000원");
+  } else {
+    console.log("접수할 수 없어요");
+  }
+  ```
+
+  - 앞 단계 풀이와 같은 뼈대예요. `7 <= 2`, `7 <= 5`가 거짓이고 `7 <= 10`이 처음으로 참이라 `"요금: 6000원"`만 출력돼요.
+  - `weight <= 10`을 맨 위에 쓰면 2kg 택배도 6000원이 돼요. 체인은 처음 참인 갈래에서 멈추므로 좁은 범위부터 써야 해요.
+  - `else if` 대신 `if`를 따로따로 쓰면 7kg에서는 우연히 한 줄만 나오지만, 1kg 택배는 세 조건이 모두 참이라 요금이 세 줄 출력돼요. 하나만 고를 때는 체인으로 이어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

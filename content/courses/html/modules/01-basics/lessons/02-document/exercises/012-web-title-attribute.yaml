@@ -1,0 +1,93 @@
+id: html.basics.document.web-title-attribute
+type: web_task
+difficulty: 2
+concepts:
+  - { id: html.doc.attributes, weight: 1 }
+tags: [attribute, title, web-task]
+estimatedSeconds: 180
+prompt: |
+  공지 문단 끝에 괄호로 덧붙인 설명 "(회의실은 2층이에요)"가 화면에 글자로 보여요. 이 설명은 문단 위에 **마우스를 올렸을 때만** 나타나게 하고 싶어요.
+
+  문단을 고쳐서 아래 두 가지를 만족시키세요.
+
+  1. 화면에 보이는 문단 글자는 "회의는 3시에 시작해요."뿐이어야 해요.
+  1. 문단에 마우스를 올리면 "회의실은 2층이에요"라는 설명이 나타나야 해요(`title` 속성).
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공지</title>
+            </head>
+            <body>
+              <h1>오늘의 공지</h1>
+              <p>회의는 3시에 시작해요. (회의실은 2층이에요)</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공지</title>
+            </head>
+            <body>
+              <h1>오늘의 공지</h1>
+              <p title="회의실은 2층이에요">회의는 3시에 시작해요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: paragraph-text
+      description: "문단에 보이는 글자는 \"회의는 3시에 시작해요.\"뿐이어야 합니다."
+      requirement: 보이는 글자
+      visible: true
+      selector: body p
+      expect:
+        count: 1
+        text: { equals: 회의는 3시에 시작해요. }
+    - kind: dom
+      id: paragraph-title
+      description: "문단의 title 속성 값이 \"회의실은 2층이에요\"여야 합니다."
+      requirement: 마우스를 올리면 보이는 설명
+      visible: true
+      selector: body p
+      expect:
+        attr: { name: title, equals: 회의실은 2층이에요 }
+      misconceptionIfFail: html.mc.attribute-shown-on-page
+    - kind: dom
+      id: heading-kept
+      description: 제목은 그대로 있어야 합니다.
+      requirement: 제목 유지
+      selector: body h1
+      expect:
+        text: { equals: 오늘의 공지 }
+misconceptions: [html.mc.attribute-shown-on-page]
+hints:
+  - 화면에 글자로 그려지는 것은 태그 사이의 내용이에요. 반대로 화면에 그리지 않고 브라우저에게만 주는 추가 정보는 어디에 썼나요?
+  - 속성은 여는 태그 안, 요소 이름 뒤에 `이름="값"` 형태로 써요. 마우스를 올렸을 때 보이는 설명은 `title` 속성이 맡아요.
+  - 문단 내용에서 괄호 부분을 지우고, 그 설명을 문단의 여는 태그 안으로 옮겨 `title` 속성의 값으로 쓰세요. 괄호는 옮기지 않아요.
+explanation: |
+  예시 정답은 설명을 내용에서 빼서 `title` 속성으로 옮기는 거예요.
+
+  ```html
+  <p title="회의실은 2층이에요">회의는 3시에 시작해요.</p>
+  ```
+
+  - 태그 사이의 **내용**은 화면에 글자로 그려져요. 그래서 괄호 안의 설명이 보였어요.
+  - **속성**은 여는 태그 안에 쓰는 추가 정보라서 화면에 글자로 나오지 않아요. 브라우저는 `title`의 값을 마우스를 올렸을 때 작은 상자로 보여 줘요.
+
+  속성은 여는 태그에만 써요. `</p title="…">`처럼 닫는 태그에 쓰면 브라우저가 무시해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

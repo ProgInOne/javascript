@@ -1,0 +1,58 @@
+id: js-basics.operators.arithmetic.we-arithmetic-0
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.ops.arithmetic, weight: 1 }
+tags: [arithmetic, division, precedence, worked-example]
+estimatedSeconds: 75
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "네 번의 쪽지 시험 점수 80, 95, 70, 88의 평균을 구해 출력하세요. 그리고 계산식이 변수의 값을 바꾸는지 확인하세요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    // 1. 네 번의 점수를 변수에 담아요.
+    const test1 = 80;
+    const test2 = 95;
+    const test3 = 70;
+    const test4 = 88;
+    // 2. 합계를 먼저 구해야 하니 덧셈을 괄호로 묶어요. 괄호가 없으면 test4 / 4를 먼저 계산해요.
+    // 3. /는 몫만 남기지 않고 소수까지 계산해요.
+    const average = (test1 + test2 + test3 + test4) / 4;
+    console.log("평균:", average);
+    // 4. 계산식은 새 값을 만들 뿐이에요. test1 + 10을 출력해도 test1은 그대로예요.
+    console.log(test1 + 10);
+    console.log(test1);
+  answerKind: console
+  misconceptionByAnswer:
+    "평균: 83\n90\n80": js.mc.division-truncates
+    "평균: 83.25\n90\n90": js.mc.expression-changes-variable
+misconceptions: [js.mc.division-truncates, js.mc.expression-changes-variable]
+hints:
+  - 괄호 안의 합계부터 계산해 보세요. 80 + 95 + 70 + 88은 얼마인가요?
+  - 합계를 4로 나눌 때 JavaScript의 `/`는 소수점 아래를 버리지 않아요.
+  - "`test1 + 10`은 새 값 90을 만들어 출력할 뿐, test1에 대입하지 않아요."
+explanation: |
+  정답은 다음 세 줄이에요.
+
+  ```text
+  평균: 83.25
+  90
+  80
+  ```
+
+  - 합계: 괄호 덕분에 `80 + 95 + 70 + 88 = 333`을 먼저 계산해요. 괄호가 없으면 곱셈·나눗셈이 먼저라서 `88 / 4`부터 계산해 전혀 다른 값이 나와요.
+  - 평균: `333 / 4`는 몫 83이 아니라 **83.25**예요. `/`는 소수까지 계산해요.
+  - `test1 + 10`은 새 값 90을 만들어 출력할 뿐이에요. 대입(`=`)이 없으니 `test1`은 여전히 80이에요.
+
+  이 풀이의 핵심은 "필요한 계산 순서는 괄호로 정하기", "`/`는 소수까지", "계산식은 변수를 바꾸지 않음" 세 가지예요. 다음 단계에서는 계산식을 직접 채워 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

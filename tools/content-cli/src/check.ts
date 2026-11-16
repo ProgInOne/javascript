@@ -228,11 +228,16 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
     }
     checkAssessmentUnit(lesson, diag);
     checkProjectUnit(lesson, diag);
+    checkWorkedExamples(lesson, diag);
     const drafts = lesson.exercises.length - approved;
     if (drafts > 0) diag.warn(file, `검토되지 않은 문제 ${drafts}개는 빌드에서 제외됩니다`);
+    // Worked examples are served only by the relearning path, never in the unit's sets (D-072).
     const target = data.practice?.targetCount;
-    if (target !== undefined && approved !== target)
-      diag.warn(file, `승인된 문제 ${approved}개 / 목표 ${target}개`);
+    const counted = lesson.exercises.filter(
+      (x) => x.data.review.status === 'approved' && x.data.usage !== 'worked_example',
+    ).length;
+    if (target !== undefined && counted !== target)
+      diag.warn(file, `승인된 문제 ${counted}개 / 목표 ${target}개`);
   });
 
   // ── Modules: the declared unit assessment ──
@@ -344,6 +349,41 @@ function applyExpectation(
     : '실행 기대값이 아직 없습니다. pnpm content:check:run으로 계산하세요';
   if (ex.review.status === 'approved') diag.error(file, message);
   else diag.warn(file, message);
+}
+
+/**
+ * Worked examples (`usage: worked_example`, FR-LRN-05, D-072): the relearning path suggests a
+ * concept's stages 0 (full solution) → 1 (blanks) → 2 (solve). They live in the `kind: lesson`
+ * unit that introduces their primary concept, and each concept's approved set holds every stage
+ * exactly once (the engine takes the first exercise of a stage, so a duplicate is never served).
+ */
+function checkWorkedExamples(lesson: LessonNodeSource, diag: Diagnostics): void {
+  const { file, data } = lesson.meta;
+  const stages = new Map<string, number[]>();
+  for (const { file: exFile, data: ex } of lesson.exercises) {
+    if (ex.usage !== 'worked_example') continue;
+    if (data.kind !== 'lesson') {
+      diag.error(exFile, 'usage: worked_example 문제는 일반 단원(kind: lesson)에만 둡니다');
+      continue;
+    }
+    const primary = ex.concepts.find((c) => c.weight === 1)?.id;
+    if (primary === undefined) continue; // reported by the schema
+    if (!data.concepts.primary.includes(primary))
+      diag.warn(exFile, `풀이 예제는 주 개념 ${primary}을(를) 소개하는 단원에 둡니다`);
+    if (ex.review.status !== 'approved' || ex.workedExampleStage === null) continue;
+    stages.set(primary, [...(stages.get(primary) ?? []), ex.workedExampleStage]);
+  }
+  for (const [concept, list] of stages) {
+    const missing = [0, 1, 2].filter((s) => !list.includes(s));
+    const repeated = [...new Set(list.filter((s, i) => list.indexOf(s) !== i))];
+    if (missing.length > 0)
+      diag.warn(file, `${concept}의 풀이 예제에 단계 ${missing.join('·')}이(가) 없습니다`);
+    if (repeated.length > 0)
+      diag.warn(
+        file,
+        `${concept}의 풀이 예제 단계 ${repeated.join('·')}이(가) 두 개 이상입니다(앞의 것만 쓰입니다)`,
+      );
+  }
 }
 
 /**

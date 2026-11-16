@@ -1,0 +1,79 @@
+id: js-basics.control.if-else.we-if-1
+type: fill_blank
+difficulty: 2
+usage: worked_example
+workedExampleStage: 1
+concepts:
+  - { id: js.control.if, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [if, else, worked-example, fill]
+estimatedSeconds: 100
+prompt: |
+  **일부 빈칸을 채우는 단계예요.** 앞 단계의 교통카드 풀이에서 숫자만 바꿨어요. 이번에는 잔액 8000원으로 4500원짜리 고속버스 요금을 결제해요.
+
+  빈칸 두 곳을 채워 아래처럼 출력되게 하세요.
+
+  ```text
+  결제 완료
+  남은 잔액: 3500원
+  다음 손님 차례예요.
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    let balance = 8000; // 카드 잔액
+    const fare = 4500;  // 요금
+
+    // 1. 조건: "잔액이 요금 이상인가?"
+    if ({{blank:cond}}) {
+      // 2. 참일 때: 잔액에서 요금을 빼서 다시 저장
+      {{blank:pay}}
+      console.log("결제 완료");
+      console.log("남은 잔액: " + balance + "원");
+    } else {
+      // 3. 거짓일 때
+      console.log("잔액이 부족해요");
+    }
+
+    // 4. 어느 쪽이든 이어서 실행
+    console.log("다음 손님 차례예요.");
+  blanks:
+    - id: cond
+      accept: ["balance >= fare", "fare <= balance"]
+      width: 18
+      misconceptionMap:
+        "balance = fare": js.mc.assign-as-compare
+    - id: pay
+      accept: ["balance = balance - fare;", "balance -= fare;"]
+      width: 26
+  checks:
+    - kind: console
+      id: output
+      description: 결제 완료, 남은 잔액 3500원, 다음 손님 안내가 차례로 출력되어야 합니다.
+      requirement: 결제 결과 출력
+      expect:
+        lines: ["결제 완료", "남은 잔액: 3500원", "다음 손님 차례예요."]
+misconceptions: [js.mc.assign-as-compare]
+hints:
+  - 앞 단계 풀이와 구조가 똑같아요. 주석 1과 2에 해당하는 코드가 비어 있어요.
+  - 첫 번째 빈칸은 "잔액이 요금 이상"을 비교 연산자로 쓴 조건이에요. 두 번째 빈칸은 잔액을 줄여서 다시 저장하는 대입문이에요.
+  - "조건은 `balance >= fare`, 대입문은 `balance = balance - fare;`예요. `=` 하나는 비교가 아니라 대입이라는 점에 주의하세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  if (balance >= fare) {
+    balance = balance - fare;
+    // ...
+  }
+  ```
+
+  - 조건 자리에는 참·거짓이 나오는 **비교**를 써요. `8000 >= 4500`은 참이라 `if` 블록이 실행돼요. `balance = fare`처럼 `=` 하나를 쓰면 비교가 아니라 대입이 돼요.
+  - `balance = balance - fare;`는 "지금 잔액에서 요금을 뺀 값을 다시 잔액에 넣어라"예요. `balance -= fare;`로 줄여 써도 같아요.
+  - 앞 단계 풀이와 같은 뼈대(조건 → 참 블록 → 거짓 블록 → 이어지는 코드)예요. 다음 단계에서는 새 상황에서 이 뼈대를 처음부터 써 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

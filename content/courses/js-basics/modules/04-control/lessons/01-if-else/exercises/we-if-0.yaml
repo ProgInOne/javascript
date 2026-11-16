@@ -1,0 +1,64 @@
+id: js-basics.control.if-else.we-if-0
+type: predict_output
+difficulty: 1
+usage: worked_example
+workedExampleStage: 0
+concepts:
+  - { id: js.control.if, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [if, else, worked-example]
+estimatedSeconds: 90
+prompt: |
+  **완성된 풀이를 읽는 단계예요.** 아래 문제를 푼 코드가 있어요. 주석과 함께 한 줄씩 읽고, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+
+  > 교통카드 잔액이 요금 이상이면 요금을 빼고 "결제 완료"와 남은 잔액을 출력하고, 아니면 "잔액이 부족해요"를 출력하세요. 결제를 시도한 뒤에는 항상 "다음 손님 차례예요."를 출력하세요.
+spec:
+  lang: js
+  code: |
+    let balance = 5000; // 카드 잔액. 결제하면 바뀌므로 let
+    const fare = 1500;  // 요금. 바뀌지 않으므로 const
+
+    // 1. 조건: "잔액이 요금 이상인가?" → 참이면 결제할 수 있어요
+    if (balance >= fare) {
+      // 2. 조건이 참일 때만 실행되는 블록
+      balance = balance - fare; // 잔액에서 요금을 빼서 다시 저장
+      console.log("결제 완료");
+      console.log("남은 잔액: " + balance + "원");
+    } else {
+      // 3. 조건이 거짓일 때만 실행되는 블록 (else에는 조건을 쓰지 않아요)
+      console.log("잔액이 부족해요");
+    }
+
+    // 4. if … else가 끝나면 어느 쪽을 실행했든 다음 줄로 이어져요
+    console.log("다음 손님 차례예요.");
+  answerKind: console
+  misconceptionByAnswer:
+    "결제 완료\n남은 잔액: 3500원\n잔액이 부족해요\n다음 손님 차례예요.": js.mc.else-has-condition
+    "결제 완료\n남은 잔액: 3500원": js.mc.false-if-stops-program
+misconceptions: [js.mc.else-has-condition, js.mc.false-if-stops-program]
+hints:
+  - 먼저 조건 `balance >= fare`에 실제 값을 넣어 보세요. 참인가요, 거짓인가요?
+  - "`5000 >= 1500`은 참이에요. 그러면 `if` 블록과 `else` 블록 중 어느 한쪽만 실행돼요."
+  - "`if` 블록에서 잔액이 `5000 - 1500`으로 바뀐 뒤 두 줄을 출력하고, `else`는 건너뛰고, 마지막 줄은 항상 실행돼요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  결제 완료
+  남은 잔액: 3500원
+  다음 손님 차례예요.
+  ```
+
+  이 풀이의 뼈대는 **"조건 → 참일 때 블록 → 거짓일 때 블록 → 이어지는 코드"**예요.
+
+  1. 조건 `balance >= fare`는 `5000 >= 1500`이라 참이에요.
+  1. 그래서 `if` 블록만 실행돼요. 잔액을 `3500`으로 바꾸고 두 줄을 출력해요.
+  1. `else` 블록은 조건이 거짓일 때만 실행되므로 건너뛰어요. 두 블록이 함께 실행되는 일은 없어요.
+  1. `if … else`가 끝나면 프로그램은 멈추지 않고 다음 줄 `"다음 손님 차례예요."`로 이어져요.
+
+  다음 단계에서는 이 풀이의 핵심 줄 일부를 직접 채워 볼 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

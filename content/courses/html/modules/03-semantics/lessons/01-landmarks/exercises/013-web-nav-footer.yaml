@@ -1,0 +1,141 @@
+id: html.semantics.landmarks.web-nav-footer
+type: web_task
+difficulty: 2
+concepts:
+  - { id: html.semantics.page-landmarks, weight: 1 }
+tags: [landmark, nav, footer, web-task]
+estimatedSeconds: 200
+prompt: |
+  꽃집 페이지에 `header`와 `main`은 있지만, 주요 메뉴와 꼬리말은 랜드마크로 표시되어 있지 않아요. 화면 낭독기 사용자가 "주요 메뉴로", "꼬리말로" 바로 건너뛸 수 있게 고치세요.
+
+  1. 머리말 안의 메뉴 목록(`ul`)을 **주요 메뉴** 요소로 감싸세요. 메뉴는 머리말 안에 그대로 있어야 해요.
+  1. `main` 뒤의 연락처 문단을 **꼬리말** 요소로 감싸세요.
+
+  안의 내용과 순서는 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>봄날 꽃집</title>
+            </head>
+            <body>
+              <header>
+                <h1>봄날 꽃집</h1>
+                <ul>
+                  <li><a href="index.html">처음으로</a></li>
+                  <li><a href="flowers.html">꽃 고르기</a></li>
+                </ul>
+              </header>
+              <main>
+                <h2>이번 주 추천 꽃</h2>
+                <p>노란 프리지어가 들어왔어요.</p>
+              </main>
+              <p>연락처: 02-000-0000</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>봄날 꽃집</title>
+            </head>
+            <body>
+              <header>
+                <h1>봄날 꽃집</h1>
+                <nav>
+                  <ul>
+                    <li><a href="index.html">처음으로</a></li>
+                    <li><a href="flowers.html">꽃 고르기</a></li>
+                  </ul>
+                </nav>
+              </header>
+              <main>
+                <h2>이번 주 추천 꽃</h2>
+                <p>노란 프리지어가 들어왔어요.</p>
+              </main>
+              <footer>
+                <p>연락처: 02-000-0000</p>
+              </footer>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: nav-in-header
+      description: 메뉴 목록이 머리말(header) 안의 주요 메뉴 요소 바로 안에 있어야 합니다.
+      requirement: 주요 메뉴
+      visible: true
+      selector: header > nav > ul
+      expect:
+        count: 1
+    - kind: dom
+      id: one-nav
+      description: 주요 메뉴 요소는 하나만 있어야 합니다.
+      requirement: 주요 메뉴
+      visible: true
+      selector: nav
+      expect:
+        count: 1
+    - kind: dom
+      id: footer-contact
+      description: 연락처 문단이 body 바로 아래의 꼬리말 요소 안에 있어야 합니다.
+      requirement: 꼬리말
+      visible: true
+      selector: body > footer > p
+      expect:
+        count: 1
+        text: { equals: "연락처: 02-000-0000" }
+    - kind: dom
+      id: landmark-order
+      description: 구역 순서는 머리말, 핵심 내용, 꼬리말이어야 합니다.
+      requirement: 꼬리말
+      selector: body
+      expect:
+        order: [header, main, footer]
+    - kind: dom
+      id: main-kept
+      description: 핵심 내용(main)은 하나 그대로 있어야 합니다.
+      requirement: 내용 유지
+      selector: main
+      expect:
+        count: 1
+      misconceptionIfFail: html.mc.many-mains
+misconceptions: [html.mc.many-mains]
+hints:
+  - 페이지의 큰 구역 네 가지 중 지금 빠진 것은 무엇인지, 레슨의 구역 그림과 비교해 보세요.
+  - 사이트의 주요 링크 묶음은 `nav`, 연락처·저작권이 들어가는 맨 아래 구역은 `footer`예요.
+  - "`ul` 목록 전체를 주요 메뉴 요소로 감싸되 `header` 안에 그대로 두고, `main` 뒤의 연락처 문단은 꼬리말 요소로 감싸세요. 둘 다 여는 태그와 닫는 태그가 필요해요."
+explanation: |
+  예시 정답은 이래요.
+
+  ```html
+  <header>
+    <h1>봄날 꽃집</h1>
+    <nav>
+      <ul>…</ul>
+    </nav>
+  </header>
+  <main>…</main>
+  <footer>
+    <p>연락처: 02-000-0000</p>
+  </footer>
+  ```
+
+  - 사이트의 다른 페이지로 가는 **주요** 링크 묶음은 `nav`로 감싸요. 머리말 안에 두어도 돼요.
+  - 연락처처럼 페이지 맨 아래에 오는 정보는 꼬리말 `footer`에 넣어요.
+
+  모양은 전혀 바뀌지 않지만, 화면 낭독기는 이제 `header`, `nav`, `main`, `footer` 네 랜드마크를 모두 알려 줘요. `main`은 여전히 하나뿐이어야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

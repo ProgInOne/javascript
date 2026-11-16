@@ -139,6 +139,46 @@ describe('checkContent', () => {
     expect(messages(patch)).toContain(expected);
   });
 
+  describe('worked examples (D-072)', () => {
+    const DIR = 'courses/js-basics/modules/01-start/lessons/01-first-program/exercises';
+    const addStages = (f: Files, stages: number[], concept = 'js.basics.console-log') => {
+      for (const [i, stage] of stages.entries()) {
+        f[`${DIR}/we-${String(i)}.yaml`] = {
+          ...obj(f, EXERCISE_YAML),
+          id: `js-basics.start.first-program.we-log-${String(i)}`,
+          concepts: [{ id: concept, weight: 1 }],
+          usage: 'worked_example',
+          workedExampleStage: stage,
+        };
+      }
+    };
+
+    it('accepts a full set and keeps it out of the target count', () => {
+      const out = messages((f) => {
+        addStages(f, [0, 1, 2]);
+      });
+      expect(out).toBe('');
+    });
+
+    it('reports missing and repeated stages', () => {
+      const out = messages((f) => {
+        addStages(f, [0, 0]);
+      });
+      expect(out).toContain('단계 1·2이(가) 없습니다');
+      expect(out).toContain('단계 0이(가) 두 개 이상입니다');
+    });
+
+    it('reports a worked example outside its concept unit', () => {
+      const out = messages((f) => {
+        obj(f, LESSON_YAML)['concepts'] = { primary: ['js.basics.statement'] };
+        addStages(f, [0, 1, 2]);
+      });
+      expect(out).toContain(
+        '풀이 예제는 주 개념 js.basics.console-log을(를) 소개하는 단원에 둡니다',
+      );
+    });
+  });
+
   it('runs the type-specific spec validator', () => {
     const { diagnostics } = checkContent(writeContent(), {
       validateSpec: (type) =>

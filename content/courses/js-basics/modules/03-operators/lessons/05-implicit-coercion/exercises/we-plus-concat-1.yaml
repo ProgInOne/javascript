@@ -1,0 +1,82 @@
+id: js-basics.operators.implicit-coercion.we-plus-concat-1
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.conv.plus-concat, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.3 }
+tags: [plus-concat, coercion, worked-example]
+estimatedSeconds: 100
+usage: worked_example
+workedExampleStage: 1
+prompt: |
+  **풀이 예제 2단계: 빈칸 채우기**
+
+  앞 단계와 같은 방식의 문제예요. 입력창에서 받은 상품 가격 `"1500"`(글자)에 배송비 3000원을 더해 합계 문장을 만들려고 해요.
+
+  풀이의 나머지는 완성되어 있어요. 주석을 읽고 빈칸 두 곳에 **식**을 쓰세요(결과를 직접 쓰지 말고 변수로 계산하세요). 실행하면 아래처럼 나와야 해요.
+
+  ```text
+  합계: 4500원
+  15003000
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    // 입력창에서 받은 가격(글자)과 배송비(숫자)예요.
+    const priceText = "1500";
+    const shipping = 3000;
+    // 1. 글자를 숫자로 바꾼 뒤 배송비를 더해 합계를 만들어요.
+    const total = {{blank:total}};
+    // 2. "합계: ", total, "원"을 +로 이어 붙여 문장을 만들어요.
+    const message = {{blank:message}};
+    console.log(message);
+    // 3. 바꾸지 않고 더하면 글자가 이어 붙어요.
+    console.log(priceText + shipping);
+  blanks:
+    - id: total
+      accept: ["Number(priceText) + shipping"]
+      width: 30
+    - id: message
+      accept: ['"합계: " + total + "원"']
+      width: 30
+  checks:
+    - kind: console
+      id: output
+      description: "\"합계: 4500원\"과 \"15003000\"이 차례로 출력되어야 합니다."
+      requirement: 합계 문장 출력
+      expect:
+        lines: ["합계: 4500원", "15003000"]
+      misconceptionIfFail: js.mc.plus-string-adds
+    - kind: program
+      id: values
+      description: "프로그램이 오류 없이 끝나고, total은 숫자 4500, message는 \"합계: 4500원\"이어야 합니다."
+      requirement: 계산한 값
+      expect:
+        globals:
+          total: { equals: 4500 }
+          message: { equals: "합계: 4500원" }
+        noError: true
+misconceptions: [js.mc.plus-string-adds]
+hints:
+  - "앞 단계 풀이에서 `qty + 1`과 `Number(qty) + 1`의 결과가 어떻게 달랐는지 떠올려 보세요."
+  - 합계는 글자를 숫자로 먼저 바꿔야 더해져요. 문장은 문자열이 끼어 있으니 +가 이어 붙여요.
+  - "첫 빈칸은 `Number(priceText) + shipping`, 두 번째 빈칸은 `\"합계: \" + total + \"원\"`이에요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const total = Number(priceText) + shipping;
+  const message = "합계: " + total + "원";
+  ```
+
+  - `Number(priceText) + shipping`: `1500 + 3000`이라 숫자 `4500`이에요.
+  - `"합계: " + total + "원"`: 왼쪽부터 `"합계: " + 4500`이 `"합계: 4500"`, 그 뒤에 `"원"`을 붙여 `"합계: 4500원"`이에요.
+  - `priceText + shipping`: 바꾸지 않으면 `"1500" + 3000`이라 이어 붙여 `"15003000"`이 돼요.
+
+  앞 단계의 핵심 그대로예요. 더하고 싶으면 숫자로 먼저 바꾸고, 문장을 만들 때는 +의 이어 붙이기를 이용해요. 다음 단계에서는 처음부터 직접 써 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

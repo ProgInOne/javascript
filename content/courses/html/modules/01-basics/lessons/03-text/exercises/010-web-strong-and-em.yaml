@@ -1,0 +1,112 @@
+id: html.basics.text.web-strong-and-em
+type: web_task
+difficulty: 2
+concepts:
+  - { id: html.text.emphasis, weight: 1 }
+tags: [strong, em, emphasis, web-task]
+estimatedSeconds: 200
+prompt: |
+  수영장 안내문의 두 문단에 뜻을 표시하려고 해요. 아래 두 가지를 만족시키세요.
+
+  1. 첫 번째 문단에서 **"뛰지 마세요"** 는 안전과 관련된 **중요한 내용**이에요.
+  1. 두 번째 문단은 "수영모는 *빨간색*을 쓰세요(다른 색이 아니라)."라는 뜻이에요. **"빨간색"** 에 말할 때 힘을 주는 **강세**를 표시하세요.
+
+  각 문단에서 해당 낱말만 감싸고, 문장의 글자는 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>수영장 안내</title>
+            </head>
+            <body>
+              <h1>수영장 안내</h1>
+              <p>물기가 있는 바닥에서는 뛰지 마세요.</p>
+              <p>수영모는 빨간색을 쓰세요.</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>수영장 안내</title>
+            </head>
+            <body>
+              <h1>수영장 안내</h1>
+              <p>물기가 있는 바닥에서는 <strong>뛰지 마세요</strong>.</p>
+              <p>수영모는 <em>빨간색</em>을 쓰세요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: strong-warning
+      description: "첫 번째 문단의 \"뛰지 마세요\"가 중요한 내용을 뜻하는 요소로 감싸져 있어야 합니다."
+      requirement: 중요한 내용
+      visible: true
+      selector: p:first-of-type > strong
+      expect:
+        count: 1
+        text: { equals: 뛰지 마세요 }
+      misconceptionIfFail: html.mc.strong-is-bold
+    - kind: dom
+      id: em-stress
+      description: "두 번째 문단의 \"빨간색\"이 강세를 뜻하는 요소로 감싸져 있어야 합니다."
+      requirement: 강세
+      visible: true
+      selector: p:last-of-type > em
+      expect:
+        count: 1
+        text: { equals: 빨간색 }
+    - kind: dom
+      id: only-two-marks
+      description: 강조 요소는 문서 전체에 strong 하나, em 하나만 있어야 합니다.
+      requirement: 해당 낱말만 감싸기
+      visible: true
+      selector: "body strong, body em"
+      expect:
+        count: 2
+    - kind: dom
+      id: first-sentence-kept
+      description: 첫 번째 문단의 문장은 그대로여야 합니다.
+      requirement: 문장 유지
+      selector: p:first-of-type
+      expect:
+        text: { equals: 물기가 있는 바닥에서는 뛰지 마세요. }
+    - kind: dom
+      id: sentences-kept
+      description: 두 번째 문단의 문장은 그대로여야 합니다.
+      requirement: 문장 유지
+      selector: p:last-of-type
+      expect:
+        text: { equals: 수영모는 빨간색을 쓰세요. }
+misconceptions: [html.mc.strong-is-bold]
+hints:
+  - 두 낱말에 붙일 뜻이 서로 달라요. 하나는 "중요하다", 다른 하나는 "말할 때 힘을 준다"예요.
+  - 중요도는 `strong`, 강세는 `em`이 나타내요. 굵게·기울게 보이는 모양은 브라우저가 붙인 기본 모양일 뿐이에요.
+  - 각 문단에서 해당 낱말의 바로 앞에 여는 태그, 바로 뒤에 닫는 태그를 써요. 마침표나 조사 "을"은 감싸지 않아요.
+explanation: |
+  예시 정답은 이래요.
+
+  ```html
+  <p>물기가 있는 바닥에서는 <strong>뛰지 마세요</strong>.</p>
+  <p>수영모는 <em>빨간색</em>을 쓰세요.</p>
+  ```
+
+  - "뛰지 마세요"는 다치지 않으려면 꼭 지켜야 하는 **중요한 내용**이라서 `strong`이에요.
+  - "빨간색"은 다른 색과 비교해 그 낱말에 **힘을 주어 말하는** 부분이라서 `em`이에요. 강세를 다른 낱말에 두면 문장의 뜻이 달라져요.
+
+  `strong`을 "굵게 만드는 태그"로만 알고 있었다면, 모양이 아니라 뜻을 고르는 요소라는 점을 떠올려 보세요. 뜻 없이 모양만 바꾸고 싶을 때는 CSS를 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

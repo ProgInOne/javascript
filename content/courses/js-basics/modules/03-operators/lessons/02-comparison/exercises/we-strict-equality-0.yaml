@@ -1,0 +1,63 @@
+id: js-basics.operators.comparison.we-strict-equality-0
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.ops.strict-equality, weight: 1 }
+tags: [strict-equality, worked-example]
+estimatedSeconds: 75
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "입력창에 쓴 비밀번호 `"1234"`(글자)가 저장된 비밀번호 `1234`(숫자)와 같은지 `===`로 확인하세요. 같은 자료형끼리도 비교해 보고, 다른지 확인하는 `!==`도 써 보세요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    // 1. 입력창에서 받은 값은 글자예요(따옴표).
+    const input = "1234";
+    // 2. 저장된 비밀번호는 숫자예요.
+    const saved = 1234;
+    // 3. ===는 자료형과 값이 모두 같아야 true예요. 글자와 숫자는 자료형이 달라요.
+    console.log(input === saved);
+    // 4. 같은 자료형(숫자)의 같은 값끼리 비교하면 true예요.
+    const typed = 1234;
+    console.log(typed === saved);
+    // 5. !==는 ===의 반대예요. 자료형이나 값이 다르면 true예요.
+    console.log(input !== saved);
+    // 6. 비교 결과도 값(true/false)이라서 변수에 담을 수 있어요. =는 대입, ===는 비교예요.
+    const isSame = typed === saved;
+    console.log(isSame);
+  answerKind: console
+  misconceptionByAnswer:
+    "true\ntrue\nfalse\ntrue": js.mc.strict-equality-ignores-type
+misconceptions: [js.mc.strict-equality-ignores-type, js.mc.assign-as-compare]
+hints:
+  - 비교하는 두 값의 자료형부터 확인하세요. 따옴표가 있으면 문자열이에요.
+  - "`===`는 값이 같아 보여도 자료형이 다르면 false예요."
+  - "`!==`는 `===`의 결과를 뒤집은 것과 같아요. 6번 줄은 오른쪽 비교를 먼저 계산한 뒤 그 결과를 isSame에 넣어요."
+explanation: |
+  정답은 다음 네 줄이에요.
+
+  ```text
+  false
+  true
+  true
+  true
+  ```
+
+  | 식 | 결과 | 이유 |
+  |---|---|---|
+  | `input === saved` | `false` | `"1234"`는 문자열, `1234`는 숫자라 자료형이 달라요 |
+  | `typed === saved` | `true` | 둘 다 숫자 1234예요 |
+  | `input !== saved` | `true` | 자료형이 달라 "다르다"가 참이에요 |
+  | `isSame` | `true` | `typed === saved`의 결과 true를 담았어요 |
+
+  이 풀이의 핵심은 "`===`는 **자료형까지** 같아야 true"라는 것이에요. 화면에 같은 1234로 보여도 글자와 숫자는 달라요. 그리고 비교에는 `=`(대입)가 아니라 `===`를 써요. 다음 단계에서는 비교식을 직접 채워 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,62 @@
+id: js-basics.values.data-types.we-typeof-0
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.types.typeof, weight: 1 }
+tags: [typeof, worked-example]
+estimatedSeconds: 75
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "설문 응답 세 가지(`"true"`, `false`, `null`)의 자료형을 `typeof`로 확인하고, `typeof`의 결과 자체는 어떤 자료형인지도 확인하세요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    // 1. 따옴표로 감싼 "true"는 내용이 true처럼 보여도 글자예요. typeof는 내용이 아니라 자료형을 봐요.
+    const answer = "true";
+    console.log(typeof answer);
+    // 2. 따옴표 없는 false는 참/거짓 값(불리언)이에요.
+    const agreed = false;
+    console.log(typeof agreed);
+    // 3. null은 "일부러 비워 둔 값"이지만, typeof null은 오래된 설계 실수로 "object"예요.
+    const comment = null;
+    console.log(typeof comment);
+    // 4. typeof 42의 결과 "number"도 하나의 값이고, 그 값은 문자열이에요.
+    console.log(typeof typeof 42);
+  answerKind: console
+  misconceptionByAnswer:
+    "boolean\nboolean\nobject\nstring": js.mc.typeof-reads-content
+    "string\nboolean\nnull\nstring": js.mc.typeof-null-is-null
+    "string\nboolean\nobject\nnumber": js.mc.typeof-result-not-string
+misconceptions: [js.mc.typeof-reads-content, js.mc.typeof-null-is-null, js.mc.typeof-result-not-string]
+hints:
+  - 줄마다 값에 따옴표가 있는지부터 확인해 보세요. typeof는 값의 내용이 아니라 자료형을 알려 줘요.
+  - "`typeof null`은 레슨에서 \"주의!\"로 표시한 예외예요."
+  - "`typeof typeof 42`는 안쪽부터 계산해요. `typeof 42`의 결과는 문자열 \"number\"예요. 그 문자열에 다시 typeof를 하면?"
+explanation: |
+  정답은 다음 네 줄이에요.
+
+  ```text
+  string
+  boolean
+  object
+  string
+  ```
+
+  | 값 | `typeof` 결과 | 이유 |
+  |---|---|---|
+  | `"true"` | `string` | 따옴표로 감쌌으니 글자예요. 내용이 true처럼 보여도 상관없어요 |
+  | `false` | `boolean` | 따옴표 없는 참/거짓 값이에요 |
+  | `null` | `object` | JavaScript 초기의 설계 실수예요. null이 객체라는 뜻은 아니에요 |
+  | `typeof 42` → `"number"` | `string` | typeof의 결과는 항상 문자열이에요 |
+
+  이 풀이의 핵심은 "typeof는 **값의 자료형 이름을 문자열로** 돌려준다"는 것과 `typeof null`이라는 예외 하나예요. 다음 단계에서는 typeof 결과를 직접 써 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

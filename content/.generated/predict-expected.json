@@ -415,6 +415,27 @@
         ]
       }
     },
+    "js-basics.control.if-else.we-else-if-0": {
+      "inputHash": "db2c723e1fc0275141043537fbb9256a235d028ffd3ef3dc9347761d21698cab",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "보통",
+          "확인 끝"
+        ]
+      }
+    },
+    "js-basics.control.if-else.we-if-0": {
+      "inputHash": "8007f94aba18ab7e3bc23f77e520d036374527d67489e75cb2e4fb727ab3dbc5",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "결제 완료",
+          "남은 잔액: 3500원",
+          "다음 손님 차례예요."
+        ]
+      }
+    },
     "js-basics.control.switch.predict-missing-break": {
       "inputHash": "0f3a938827f75c6fa273be5d427f89a242cab3b3e2afd3805551d54c90cec3af",
       "expected": {
@@ -805,6 +826,28 @@
           "1일째 저금통: 1000원",
           "2일째 저금통: 1000원",
           "3일째 저금통: 1000원"
+        ]
+      }
+    },
+    "js-basics.loops.for.we-accumulator-pattern-0": {
+      "inputHash": "dfa7f70baa328f763896253bfd13122011b95a38916859df7ad2836f314c25d9",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "4일 동안 모은 돈: 10000원"
+        ]
+      }
+    },
+    "js-basics.loops.for.we-for-0": {
+      "inputHash": "08624adf27392118f4cf08d1e6368f5c490a20844905a78ab04ed5d106b59e05",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1번 학생",
+          "2번 학생",
+          "3번 학생",
+          "4번 학생",
+          "출석 확인 끝"
         ]
       }
     },
@@ -1235,6 +1278,17 @@
         ]
       }
     },
+    "js-basics.operators.arithmetic.we-arithmetic-0": {
+      "inputHash": "8e250b5618492638d130c08206c76ad3874edc23fa083ee77021eec805213b8b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "평균: 83.25",
+          "90",
+          "80"
+        ]
+      }
+    },
     "js-basics.operators.comparison.predict-mixed-compare": {
       "inputHash": "5284717119963d6af82e88e01a5367895212494ccaac05723d4561d885cd0247",
       "expected": {
@@ -1267,6 +1321,30 @@
           "true",
           "false",
           "false"
+        ]
+      }
+    },
+    "js-basics.operators.comparison.we-relational-0": {
+      "inputHash": "07b8a9d92a196dd130cd51d46366e22fa92eba69fee66f0860d8c4c7577d3495",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "true",
+          "false",
+          "true",
+          "true"
+        ]
+      }
+    },
+    "js-basics.operators.comparison.we-strict-equality-0": {
+      "inputHash": "9ee2b58bf7fd2743048a3fbdf14d381a51c23a16b578823c5b7db3c8466a42f9",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "false",
+          "true",
+          "true",
+          "true"
         ]
       }
     },
@@ -1333,6 +1411,31 @@
         ]
       }
     },
+    "js-basics.operators.implicit-coercion.we-plus-concat-0": {
+      "inputHash": "044b58cf388c407fedba968230df04f36f530f55714d60b83c2c4b838ccf98b0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "21",
+          "33",
+          "312",
+          "6 1",
+          "3"
+        ]
+      }
+    },
+    "js-basics.operators.implicit-coercion.we-truthy-falsy-0": {
+      "inputHash": "2147c9609902c98379bba3edc6af15eb7bb9e25aa91deaadff0fbbcc1571bd4b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "false true",
+          "false true",
+          "true false",
+          "true"
+        ]
+      }
+    },
     "js-basics.operators.logical.predict-and-or-precedence": {
       "inputHash": "b92843672586693f069327cdaf3d909edf5a916b2dc294fcc44f0a82dac371c7",
       "expected": {
@@ -1376,6 +1479,30 @@
           "쿠폰 할인 적용",
           "회원 가입 안내",
           "계산 끝"
+        ]
+      }
+    },
+    "js-basics.operators.logical.we-logical-and-or-not-0": {
+      "inputHash": "1e474972befeb329db3b3564b626bb889271a1239b86eab275619667f3a53356",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "false",
+          "true",
+          "true",
+          "true"
+        ]
+      }
+    },
+    "js-basics.operators.logical.we-short-circuit-0": {
+      "inputHash": "3b735de2c43ef86d24cc83182290ef0789e627649c17c65a3af4615149336b15",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "손님",
+          "코코",
+          "입장",
+          "50 0"
         ]
       }
     },
@@ -1590,6 +1717,29 @@
         }
       }
     },
+    "js-basics.values.data-types.we-primitives-0": {
+      "inputHash": "9d688865f86751318c5826d2ecd9b9f63c0ce779250a2444d2618d1a17c828f3",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "7 7",
+          "string number",
+          "number"
+        ]
+      }
+    },
+    "js-basics.values.data-types.we-typeof-0": {
+      "inputHash": "510a829dd96169189c69ab50643d203811c11e16458ce14f46240401ffd9f4ff",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "string",
+          "boolean",
+          "object",
+          "string"
+        ]
+      }
+    },
     "js-basics.values.null-undefined.predict-error-typo-vs-undefined": {
       "inputHash": "8cc1b9e701a0d5aeab833e41130a9297be9d55174475ab9c0b3e937d6716c374",
       "expected": {
@@ -1675,6 +1825,34 @@
         "lines": [
           "4",
           "3000"
+        ]
+      }
+    },
+    "js-basics.values.variables.we-assignment-0": {
+      "inputHash": "c3c31e271dba8bbb3b867da8cfb5ca7b8b4733377986a4167a102af11a257551",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "저금통: 1200"
+        ]
+      }
+    },
+    "js-basics.values.variables.we-const-0": {
+      "inputHash": "65b1d99dec4014395235efa69dc1d2df006ce31e3cffd55d2259ccd3c7a6833e",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "총액: 3600"
+        ]
+      }
+    },
+    "js-basics.values.variables.we-let-0": {
+      "inputHash": "cb616cf1edd631399f1f14e23602f1d970f6dddef03983b64c32cb7759e1c9d2",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "점수: 0",
+          "점수: 10"
         ]
       }
     }

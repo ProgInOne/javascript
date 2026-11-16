@@ -1,0 +1,77 @@
+id: css.basics.selectors.fill-last-child
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.selectors.pseudo-class, weight: 1 }
+  - { id: css.selectors.combinators, weight: 0.3 }
+tags: [selector, pseudo-class, last-child]
+estimatedSeconds: 80
+prompt: |
+  할 일 목록에서 **마지막 항목만** 회색(`gray`) 글자로 바꾸려고 해요. HTML에 클래스를 붙이지 않고, 빈칸에 **의사 클래스를 쓴 선택자**를 써서 완성하세요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <style>
+      {{blank:sel}} {
+        color: gray;
+      }
+    </style>
+    <ul class="todo">
+      <li>장보기</li>
+      <li>빨래하기</li>
+      <li>(나중에) 책장 정리</li>
+    </ul>
+  blanks:
+    - id: sel
+      accept: ["li:last-child"]
+      width: 22
+      misconceptionMap:
+        "li :last-child": css.mc.hover-space
+        ".last-child": css.mc.pseudo-class-is-class
+        "li.last-child": css.mc.pseudo-class-is-class
+  checks:
+    - kind: css
+      id: last-gray
+      description: 마지막 항목의 글자 색이 회색이어야 합니다.
+      requirement: 마지막 항목만 회색
+      visible: true
+      selector: "li:nth-child(3)"
+      expect:
+        computed:
+          color: { color: "#808080" }
+    - kind: css
+      id: others-black
+      description: 첫 번째와 두 번째 항목의 글자 색은 바뀌지 않아야 합니다.
+      requirement: 마지막 항목만 회색
+      visible: true
+      selector: "li:not(:nth-child(3))"
+      all: true
+      expect:
+        computed:
+          color: { color: "#000000" }
+    - kind: dom
+      id: no-class-added
+      description: 목록 항목에 클래스를 붙이지 않아야 합니다.
+      requirement: HTML은 그대로
+      selector: "li[class]"
+      expect:
+        count: 0
+misconceptions: [css.mc.hover-space, css.mc.pseudo-class-is-class]
+hints:
+  - 의사 클래스는 요소의 상태나 **위치**를 보고 골라요. 형제 중 마지막인지 판단하는 의사 클래스가 있어요.
+  - "`:last-child`는 형제 중 마지막 자식일 때 골라요. 어떤 요소에 붙여야 할까요?"
+  - "의사 클래스는 고를 요소 이름에 띄우지 않고 붙여 써요. 띄우면 공백이 자손 선택자가 되어 \"그 요소 안에 있는 마지막 자식\"을 찾아요."
+explanation: |
+  정답 예시는 **`li:last-child`** 예요.
+
+  - `:last-child`는 형제 중 **마지막 자식**인 요소를 골라요. HTML에 아무것도 붙이지 않아도 브라우저가 위치를 보고 판단해요.
+  - 의사 클래스는 선택자에 **붙여** 써요. `li :last-child`처럼 띄우면 공백이 자손 선택자가 되어 "li 안에 있는 마지막 자식 요소"를 찾게 되고, 이 목록의 `li` 안에는 요소가 없어서 아무것도 바뀌지 않아요.
+  - `.last-child`처럼 점을 쓰면 `class="last-child"`인 요소를 찾는 클래스 선택자가 돼요.
+
+  `.todo li:last-child`처럼 앞에 목록을 붙여도 같은 항목을 고르므로 정답으로 처리돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

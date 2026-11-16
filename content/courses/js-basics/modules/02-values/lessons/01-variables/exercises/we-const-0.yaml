@@ -1,0 +1,57 @@
+id: js-basics.values.variables.we-const-0
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.values.const, weight: 1 }
+  - { id: js.values.let, weight: 0.5 }
+tags: [const, let, worked-example]
+estimatedSeconds: 75
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "사과 한 개 값은 1200원이에요. 장바구니에 사과 2개를 담았다가 1개를 더 담았어요. 바뀌지 않는 값은 `const`, 다시 대입할 값은 `let`으로 만들어 총액을 출력하세요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    // 1. 사과 한 개 값은 프로그램에서 바뀌지 않아요. 그래서 const로 만들어요.
+    const price = 1200;
+    // 2. 담은 개수는 아래에서 다시 대입해야 해요. 그래서 let으로 만들어요.
+    let count = 2;
+    // 3. 한 개를 더 담아요. count는 let이라 다시 대입할 수 있어요.
+    count = count + 1;
+    // 4. 총액은 한 번 계산한 뒤 바꾸지 않으니 const로 담아요.
+    const total = price * count;
+    console.log("총액:", total);
+  answerKind: console
+  misconceptionByAnswer:
+    "총액: 2400": js.mc.assign-is-equality
+misconceptions: [js.mc.assign-is-equality]
+hints:
+  - 줄마다 price, count, total에 든 값을 표로 적어 보세요.
+  - total을 계산하는 4번 줄이 실행될 때 count에는 몇이 들어 있나요?
+  - 1200 × 3을 계산해 보세요.
+explanation: |
+  정답은 **총액: 3600**이에요.
+
+  | 실행한 줄 | `price` | `count` | `total` |
+  |---|---|---|---|
+  | `const price = 1200;` | 1200 | | |
+  | `let count = 2;` | 1200 | 2 | |
+  | `count = count + 1;` | 1200 | 3 | |
+  | `const total = price * count;` | 1200 | 3 | 3600 |
+
+  이 풀이의 핵심은 **변수마다 const와 let을 고르는 기준**이에요.
+
+  - 다시 대입하지 않는 값(`price`, `total`)은 `const`. 실수로 바꾸려 하면 `TypeError: Assignment to constant variable.`로 바로 알려 줘요.
+  - 다시 대입해야 하는 값(`count`)만 `let`. `count`를 `const`로 만들면 3번 줄에서 오류가 나요.
+
+  `총액: 2400`이라고 답했다면 3번 줄 `count = count + 1;`이 count를 바꾸지 못한다고 본 거예요. 이 줄은 지금 값 2에 1을 더한 3을 count에 다시 넣고, total은 4번 줄이 실행되는 순간의 count(3)로 계산돼요. 다음 단계에서는 const와 let을 직접 골라 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

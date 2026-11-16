@@ -1,0 +1,66 @@
+id: js-basics.operators.implicit-coercion.we-truthy-falsy-0
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.conv.truthy-falsy, weight: 1 }
+tags: [truthy-falsy, worked-example]
+estimatedSeconds: 90
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "회원 가입 폼에서 받은 값들이 참·거짓이 필요한 자리에서 truthy인지 falsy인지 확인하세요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    // falsy 값은 여섯 개뿐이에요: false, 0, "", null, undefined, NaN. 나머지는 모두 truthy예요.
+    // !!값은 값을 같은 뜻의 true/false로 바꿔요(! 두 번: 뒤집고 다시 뒤집기).
+    // 1. 숫자 0은 falsy, 글자 "0"은 비어 있지 않은 문자열이라 truthy예요.
+    console.log(!!0, !!"0");
+    // 2. 빈 문자열은 falsy, 공백 한 칸도 글자 하나라서 truthy예요.
+    console.log(!!"", !!" ");
+    // 3. "false"라는 글자도 내용과 관계없이 비어 있지 않은 문자열이라 truthy예요. NaN은 falsy예요.
+    console.log(!!"false", !!NaN);
+    // 4. 메모 입력칸이 비어 있는지 확인해요. ""은 falsy라서 !memo는 true예요.
+    const memo = "";
+    console.log(!memo);
+  answerKind: console
+  misconceptionByAnswer:
+    "false false\nfalse true\ntrue false\ntrue": js.mc.string-zero-falsy
+    "false true\nfalse false\ntrue false\ntrue": js.mc.space-string-falsy
+    "false true\nfalse true\nfalse false\ntrue": js.mc.boolean-reads-string-content
+misconceptions: [js.mc.string-zero-falsy, js.mc.space-string-falsy, js.mc.boolean-reads-string-content]
+hints:
+  - 주석의 falsy 여섯 개 목록에 있는 값인지 하나씩 확인해 보세요.
+  - 따옴표로 감싼 값은 안에 글자가 하나라도 있으면(공백, "0", "false" 포함) truthy예요.
+  - "`!memo`는 memo의 truthy·falsy를 뒤집어요. 빈 문자열은 falsy예요."
+explanation: |
+  정답은 다음 네 줄이에요.
+
+  ```text
+  false true
+  false true
+  true false
+  true
+  ```
+
+  | 값 | 판단 | 이유 |
+  |---|---|---|
+  | `0` | falsy | falsy 여섯 개 중 하나 |
+  | `"0"` | truthy | 글자 "0"이 들어 있는 문자열 |
+  | `""` | falsy | 빈 문자열 |
+  | `" "` | truthy | 공백도 글자 하나 |
+  | `"false"` | truthy | 내용과 관계없이 비어 있지 않은 문자열 |
+  | `NaN` | falsy | falsy 여섯 개 중 하나 |
+
+  `!memo`는 빈 문자열(falsy)을 뒤집어 `true`예요. "입력칸이 비었는가"를 확인할 때 쓰는 모양이에요.
+
+  이 풀이의 핵심은 **falsy 여섯 개만 외우고, 나머지는 모두 truthy**로 판단하는 거예요. 문자열은 비어 있을 때만 falsy예요. 다음 단계에서는 직접 판단식을 채워 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,138 @@
+id: css.box.display.web-card-link-bar
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.display.block-inline, weight: 1 }
+  - { id: css.box.spacing, weight: 0.3 }
+tags: [display, block, inline, web-task]
+estimatedSeconds: 240
+prompt: |
+  공연 카드 맨 아래의 "예매하기" 링크를 **카드 너비를 꽉 채우는 파란 막대**로 만들고 싶어요. 그런데 지금은 링크가 글자 길이만큼만 칠해져요.
+
+  `.buy` 규칙에 **선언 하나를 추가**해서 다음을 모두 만족시키세요.
+
+  1. 링크의 파란 배경이 카드 안쪽 너비를 **꽉 채워요**(파란 안내선과 같은 너비).
+  1. 링크는 지금처럼 날짜 문단 **아래**에 있어요.
+
+  다른 규칙과 HTML은 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공연 카드</title>
+              <style>
+                .card {
+                  width: 260px;
+                  padding: 16px;
+                  border: 1px solid #94a3b8;
+                }
+                .ruler {
+                  height: 6px;
+                  background: #3b82f6;
+                }
+                .buy {
+                  padding: 12px;
+                  background: #2563eb;
+                  color: white;
+                  text-align: center;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <div class="ruler"></div>
+                <h2>여름밤 재즈 공연</h2>
+                <p class="info">8월 15일 저녁 7시</p>
+                <a class="buy" href="#">예매하기</a>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공연 카드</title>
+              <style>
+                .card {
+                  width: 260px;
+                  padding: 16px;
+                  border: 1px solid #94a3b8;
+                }
+                .ruler {
+                  height: 6px;
+                  background: #3b82f6;
+                }
+                .buy {
+                  display: block;
+                  padding: 12px;
+                  background: #2563eb;
+                  color: white;
+                  text-align: center;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <div class="ruler"></div>
+                <h2>여름밤 재즈 공연</h2>
+                <p class="info">8월 15일 저녁 7시</p>
+                <a class="buy" href="#">예매하기</a>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: layout
+      id: fills-card
+      description: 예매하기 링크의 너비(배경이 칠해진 부분)가 파란 안내선과 같아야 합니다.
+      requirement: 카드 너비를 꽉 채움
+      visible: true
+      a: .buy
+      container: .ruler
+      relation: fills-width
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.width-on-inline
+    - kind: layout
+      id: below-info
+      description: 예매하기 링크가 날짜 문단 아래에 있어야 합니다.
+      requirement: 문단 아래에 그대로
+      visible: true
+      a: .buy
+      b: .info
+      relation: below
+      tolerancePx: 1
+    - kind: css
+      id: padding-kept
+      description: 링크의 안쪽 여백(12px)은 그대로여야 합니다.
+      requirement: 다른 선언은 그대로
+      selector: .buy
+      expect:
+        computed:
+          padding-top: { px: { value: 12 } }
+          padding-left: { px: { value: 12 } }
+misconceptions: [css.mc.width-on-inline, css.mc.margin-on-inline]
+hints:
+  - "`a`는 기본으로 어떤 `display` 값을 가질까요? 그 값의 요소는 너비를 얼마나 차지하나요?"
+  - 인라인 요소는 글자만큼만 차지해요. 따로 너비를 정하지 않아도 부모 너비를 꽉 채우는 쪽은 블록이에요.
+  - "`.buy`의 `display`를 부모 너비를 채우는 종류로 바꾸는 선언 하나면 돼요. 그 종류는 `width`를 따로 주지 않아도 부모 너비를 꽉 채워요."
+explanation: |
+  예시 정답은 `.buy` 규칙에 **`display: block;`** 을 추가하는 거예요.
+
+  - `a`는 기본이 **인라인**이라 글자 길이만큼만 차지해요. 그래서 파란 배경이 "예매하기" 글자 주변에만 칠해졌어요.
+  - `display: block`으로 바꾸면 **부모(카드)의 안쪽 너비를 꽉** 채워요. 위아래 padding도 줄 간격을 밀어내며 자리를 차지해요.
+
+  `width: 260px`를 추가하는 방법은 인라인 요소에는 적용되지 않아서 실패해요. `display: inline-block`은 크기와 위아래 여백은 받지만 너비를 따로 정하지 않으면 글자만큼만 차지하므로 안내선과 같은 너비가 되지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

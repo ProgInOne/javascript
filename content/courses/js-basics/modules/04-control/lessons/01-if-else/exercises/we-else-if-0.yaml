@@ -1,0 +1,67 @@
+id: js-basics.control.if-else.we-else-if-0
+type: predict_output
+difficulty: 2
+usage: worked_example
+workedExampleStage: 0
+concepts:
+  - { id: js.control.else-if, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [else-if, worked-example]
+estimatedSeconds: 100
+prompt: |
+  **완성된 풀이를 읽는 단계예요.** 아래 문제를 푼 코드가 있어요. 주석과 함께 한 줄씩 읽고, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+
+  > 미세먼지 농도(`dust`)로 등급을 하나만 출력하세요. 30 이하는 "좋음", 80 이하는 "보통", 150 이하는 "나쁨", 그보다 크면 "매우 나쁨"이에요. 등급을 출력한 뒤에는 "확인 끝"을 출력하세요.
+spec:
+  lang: js
+  code: |
+    const dust = 65; // 오늘의 미세먼지 농도
+
+    // 여러 갈래 중 "하나만" 골라야 하므로 if … else if … else 체인을 써요.
+    // 위에서부터 조건을 차례로 검사하고, 처음으로 참인 갈래 하나만 실행해요.
+    if (dust <= 30) {
+      // 1. 가장 좁은 범위(30 이하)부터 검사해요
+      console.log("좋음");
+    } else if (dust <= 80) {
+      // 2. 여기까지 왔다면 30보다 크다는 뜻이라, "80 이하"만 확인하면 돼요
+      console.log("보통");
+    } else if (dust <= 150) {
+      // 3. 여기까지 왔다면 80보다 커요. 앞에서 참인 갈래가 있으면 여기는 검사하지 않아요
+      console.log("나쁨");
+    } else {
+      // 4. 앞의 조건이 모두 거짓일 때만 실행돼요
+      console.log("매우 나쁨");
+    }
+
+    // 5. 체인이 끝나면 다음 줄로 이어져요
+    console.log("확인 끝");
+  answerKind: console
+  misconceptionByAnswer:
+    "보통\n나쁨\n확인 끝": js.mc.else-if-runs-all
+    "보통\n나쁨\n매우 나쁨\n확인 끝": js.mc.else-if-runs-all
+misconceptions: [js.mc.else-if-runs-all, js.mc.else-if-order-irrelevant]
+hints:
+  - 조건을 위에서부터 하나씩 `65`를 넣어 검사해 보세요.
+  - "`65 <= 30`은 거짓, `65 <= 80`은 참이에요. 처음으로 참인 갈래를 찾으면 그다음은 어떻게 될까요?"
+  - "`65 <= 150`도 참이지만, 체인에서는 처음으로 참인 갈래 하나만 실행하고 나머지는 건너뛰어요. 그다음 마지막 줄이 실행돼요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  보통
+  확인 끝
+  ```
+
+  이 풀이의 뼈대는 **"좁은 범위부터 조건을 차례로 → 처음 참인 갈래 하나만 실행 → 나머지는 건너뛰기"**예요.
+
+  1. `dust <= 30`은 `65 <= 30`이라 거짓이에요. 다음 조건으로 넘어가요.
+  1. `dust <= 80`은 참이에요. `"보통"`을 출력하고 체인을 빠져나가요.
+  1. `dust <= 150`도 참이지만 검사하지 않아요. `else if` 체인은 처음으로 참인 갈래 **하나만** 실행하기 때문이에요.
+  1. 체인이 끝나면 `"확인 끝"`을 출력해요.
+
+  조건을 좁은 범위부터 쓴 것도 중요해요. `dust <= 150`을 맨 위에 두면 65도 "나쁨"이 돼 버려요. 다음 단계에서는 이 풀이의 조건 하나를 직접 채워 볼 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,47 @@
+id: css.basics.cascade.fill-later-rule-result
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.cascade.order, weight: 1 }
+tags: [cascade, order]
+estimatedSeconds: 80
+prompt: |
+  아래 CSS를 `<p class="note">`에 적용하면 이 문단의 글자 색과 안쪽 여백은 어떻게 되나요? 빈칸에 값을 쓰세요(색은 이름으로, 여백은 px 값으로).
+code: |
+  .note {
+    color: blue;
+    padding: 8px;
+  }
+  .note {
+    color: orange;
+  }
+spec:
+  mode: text
+  template: |
+    글자 색: {{blank:color}}   안쪽 여백(padding): {{blank:pad}}
+  blanks:
+    - id: color
+      accept: ["orange"]
+      caseSensitive: false
+      width: 10
+    - id: pad
+      accept: ["8px", "8"]
+      acceptRegex: "8 ?(?:px)?"
+      caseSensitive: false
+      width: 8
+hints:
+  - 두 규칙의 선택자가 똑같으니 명시도도 같아요. 이럴 때 승부는 무엇으로 정해질까요?
+  - 명시도가 같으면 CSS에서 나중에 쓴 규칙이 이겨요. 그런데 승부는 **두 규칙이 모두 정한 속성**에서만 나요.
+  - "`color`는 두 규칙이 모두 정했고, `padding`은 첫 번째 규칙만 정했어요."
+explanation: |
+  정답은 **글자 색 `orange`, 안쪽 여백 `8px`** 이에요.
+
+  - `color`: 두 규칙 모두 `.note`라서 명시도가 (0, 1, 0)으로 같아요. 명시도가 같으면 나중에 쓴 규칙이 이기므로 `orange`예요.
+  - `padding`: 두 번째 규칙은 `padding`을 정하지 않았어요. 겹치지 않는 속성은 승부할 일이 없어서 첫 번째 규칙의 `8px`가 그대로 적용돼요.
+
+  나중 규칙이 앞 규칙을 **통째로** 지운다고 생각하면 padding을 0으로 답하게 돼요. 캐스케이드는 규칙 단위가 아니라 **속성 하나하나**마다 이기는 값을 골라요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

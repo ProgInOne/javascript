@@ -1,0 +1,85 @@
+id: css.styling.typography.fill-receipt-align
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.type.text-align, weight: 1 }
+  - { id: css.cascade.inheritance, weight: 0.3 }
+tags: [text-align, inheritance]
+estimatedSeconds: 80
+prompt: |
+  영수증 상자(`.receipt`) 안의 글자를 **모두 가운데 정렬**하되, 구매 목록(`.items`)의 글자만 **오른쪽 정렬**하려고 해요. 빈칸에 알맞은 `text-align` 값을 쓰세요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <style>
+      .receipt {
+        width: 240px;
+        border: 1px dashed gray;
+        text-align: {{blank:outer}};
+      }
+      .items {
+        text-align: {{blank:inner}};
+      }
+    </style>
+    <div class="receipt">
+      <h2>동네 빵집</h2>
+      <ul class="items">
+        <li>소금빵 2,500원</li>
+        <li>단팥빵 2,000원</li>
+      </ul>
+      <p>감사합니다</p>
+    </div>
+  blanks:
+    - id: outer
+      accept: ["center"]
+      width: 8
+    - id: inner
+      accept: ["right"]
+      width: 8
+  checks:
+    - kind: css
+      id: title-center
+      description: 영수증 제목이 가운데 정렬이어야 합니다.
+      requirement: 영수증 글자는 가운데
+      visible: true
+      selector: .receipt h2
+      expect:
+        computed:
+          text-align: { equals: center }
+    - kind: css
+      id: thanks-center
+      description: 맨 아래 인사 문단도 가운데 정렬이어야 합니다.
+      requirement: 영수증 글자는 가운데
+      visible: true
+      selector: .receipt p
+      expect:
+        computed:
+          text-align: { equals: center }
+    - kind: css
+      id: items-right
+      description: 구매 목록 항목은 오른쪽 정렬이어야 합니다.
+      requirement: 목록만 오른쪽
+      visible: true
+      selector: .items li
+      all: true
+      expect:
+        computed:
+          text-align: { equals: right }
+misconceptions: []
+hints:
+  - "`text-align`은 상속되는 속성이에요. 바깥 상자에 한 번 주면 안쪽 요소들이 물려받아요."
+  - 안쪽의 `.items`에 직접 준 값은 물려받은 값보다 우선해요. 그 안의 `li`는 `.items`의 값을 물려받아요.
+  - 바깥 빈칸에는 가운데를 뜻하는 값, 안쪽 빈칸에는 오른쪽을 뜻하는 값을 써요.
+explanation: |
+  정답은 **`center`** 와 **`right`** 예요.
+
+  - `.receipt`에 준 `text-align: center`는 **상속**돼요. 그래서 제목(`h2`)과 인사 문단(`p`)이 따로 규칙 없이도 가운데 정렬돼요.
+  - `.items`에 직접 준 `text-align: right`는 물려받은 `center`보다 우선해요. 목록 안의 `li`는 가까운 부모인 `.items`의 `right`를 물려받아 오른쪽 정렬돼요.
+
+  `text-align`은 상자 안의 글자를 정렬할 뿐, `.receipt` 상자 자체를 화면 가운데로 옮기지는 않아요. 상자는 왼쪽에 그대로 있어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

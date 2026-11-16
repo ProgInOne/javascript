@@ -1,0 +1,68 @@
+id: html.semantics.landmarks.fill-footer-landmark
+type: fill_blank
+difficulty: 1
+concepts:
+  - { id: html.semantics.page-landmarks, weight: 1 }
+tags: [landmark, footer]
+estimatedSeconds: 60
+prompt: |
+  빵집 페이지의 맨 아래 구역에는 연락처와 저작권 안내가 들어가요. 두 빈칸에 이 구역의 뜻에 맞는 **시맨틱 요소** 이름을 쓰세요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <header>
+      <h1>동네 빵집</h1>
+    </header>
+    <main>
+      <h2>오늘의 빵</h2>
+      <p>단팥빵과 식빵이 나왔어요.</p>
+    </main>
+    <{{blank:open}}>
+      <p>전화: 02-000-0000</p>
+      <p>© 동네 빵집</p>
+    </{{blank:close}}>
+  blanks:
+    - id: open
+      accept: ["footer"]
+      width: 10
+    - id: close
+      accept: ["footer"]
+      width: 10
+  checks:
+    - kind: dom
+      id: page-footer
+      description: 연락처와 저작권 안내가 페이지의 꼬리말 요소 안에 있어야 합니다.
+      requirement: 꼬리말
+      visible: true
+      selector: footer > p
+      expect:
+        count: 2
+    - kind: dom
+      id: footer-after-main
+      description: 꼬리말은 main 다음에 와야 합니다.
+      requirement: 꼬리말
+      selector: body
+      expect:
+        order: [header, main, footer]
+misconceptions: []
+hints:
+  - 페이지의 큰 구역 네 가지(머리말, 주요 메뉴, 핵심 내용, 꼬리말) 중 연락처와 저작권은 어디에 들어갈까요?
+  - 맨 위의 머리말은 `header`예요. 맨 아래의 꼬리말을 뜻하는 요소는 무엇일까요?
+  - 꼬리말은 영어로 footer예요. 여는 태그와 닫는 태그에 같은 이름을 써요.
+explanation: |
+  정답은 두 칸 모두 **footer**예요.
+
+  ```html
+  <footer>
+    <p>전화: 02-000-0000</p>
+    <p>© 동네 빵집</p>
+  </footer>
+  ```
+
+  `footer`는 페이지의 **꼬리말**로, 연락처·저작권·관련 링크가 들어가요. 화면 낭독기는 `header`, `nav`, `main`, `footer`를 랜드마크로 알려 줘서 사용자가 원하는 구역으로 바로 건너뛸 수 있어요. 모양은 `div`와 똑같고, 바뀌는 것은 뜻뿐이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

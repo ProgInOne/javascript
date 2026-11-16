@@ -1,0 +1,60 @@
+id: js-basics.operators.comparison.we-relational-0
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.ops.relational, weight: 1 }
+tags: [relational, string-compare, worked-example]
+estimatedSeconds: 75
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "내 점수 9점이 최고 점수 10점보다 낮은지 비교하세요. 점수가 글자로 저장되어 있을 때 비교 결과가 어떻게 달라지는지도 확인하세요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    // 1. 숫자끼리는 크기를 비교해요.
+    const myScore = 9;
+    const best = 10;
+    console.log(myScore < best);
+    // 2. 문자열끼리는 크기가 아니라 사전 순서로 비교해요. 첫 글자 "9"와 "1"부터 비교해요.
+    console.log("9" < "10");
+    // 3. 한쪽이 숫자면 문자열을 숫자로 바꿔 비교해요. 그래서 다시 크기 비교가 돼요.
+    console.log("9" < best);
+    // 4. >=는 "크거나 같다"예요. 같은 값도 true예요.
+    console.log(best >= 10);
+  answerKind: console
+  misconceptionByAnswer:
+    "true\ntrue\ntrue\ntrue": js.mc.string-compare-numeric
+    "true\nfalse\nfalse\ntrue": js.mc.mixed-compare-as-string
+misconceptions: [js.mc.string-compare-numeric, js.mc.mixed-compare-as-string]
+hints:
+  - 줄마다 비교하는 두 값이 숫자끼리인지, 문자열끼리인지, 섞였는지부터 나눠 보세요.
+  - 문자열끼리는 사전에서 단어를 찾듯 첫 글자부터 하나씩 비교해요. "1"은 "9"보다 앞에 있어요.
+  - 숫자와 문자열을 비교하면 문자열을 숫자로 바꿔요. `"9" < 10`은 `9 < 10`이 돼요.
+explanation: |
+  정답은 다음 네 줄이에요.
+
+  ```text
+  true
+  false
+  true
+  true
+  ```
+
+  | 식 | 비교 방식 | 결과 |
+  |---|---|---|
+  | `myScore < best` | 숫자 9 < 10 | `true` |
+  | `"9" < "10"` | 문자열끼리: 첫 글자 `"9"`와 `"1"` 비교, `"9"`가 뒤 | `false` |
+  | `"9" < best` | 섞임: `"9"`를 숫자 9로 바꿔 9 < 10 | `true` |
+  | `best >= 10` | 10은 10보다 크거나 같음 | `true` |
+
+  이 풀이의 핵심은 **비교하는 값의 자료형에 따라 비교 방식이 바뀐다**는 것이에요. 숫자로 된 글자끼리 비교하면 크기가 아니라 사전 순서라서 `"9" < "10"`이 `false`가 돼요. 다음 단계에서는 비교식을 직접 채워 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

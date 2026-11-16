@@ -1,0 +1,94 @@
+id: js-basics.operators.arithmetic.we-arithmetic-2
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.ops.arithmetic, weight: 1 }
+tags: [arithmetic, power, division, worked-example, write-code]
+estimatedSeconds: 240
+usage: worked_example
+workedExampleStage: 2
+prompt: |
+  **풀이 예제 3단계: 직접 풀기**
+
+  화단 두 곳의 넓이를 계산하려고 해요. 시작 코드의 변수를 이용해 이어서 쓰세요.
+
+  1. 직사각형 화단의 넓이(가로 × 세로)를 변수 `bed`에 담으세요.
+  1. 정사각형 화단의 넓이(한 변의 **제곱**)를 거듭제곱 연산자로 계산해 변수 `square`에 담으세요.
+  1. 두 넓이의 평균을 변수 `average`에 담으세요.
+  1. 세 값을 아래처럼 출력하세요.
+
+  ```text
+  직사각형: 13.5
+  정사각형: 16
+  평균: 14.75
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const width = 4.5;
+          const height = 3;
+          const side = 4;
+
+          // 여기에 bed, square, average를 계산하고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const width = 4.5;
+          const height = 3;
+          const side = 4;
+
+          // 여기에 bed, square, average를 계산하고 출력하세요.
+          const bed = width * height;
+          const square = side ** 2;
+          const average = (bed + square) / 2;
+          console.log("직사각형:", bed);
+          console.log("정사각형:", square);
+          console.log("평균:", average);
+  checks:
+    - kind: console
+      id: output
+      description: "\"직사각형: 13.5\", \"정사각형: 16\", \"평균: 14.75\"가 차례로 출력되어야 합니다."
+      requirement: 넓이 출력
+      expect:
+        lines: ["직사각형: 13.5", "정사각형: 16", "평균: 14.75"]
+      misconceptionIfFail: js.mc.caret-is-power
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, bed는 13.5, square는 16, average는 14.75여야 합니다.
+      requirement: 계산한 값
+      expect:
+        globals:
+          bed: { equals: 13.5 }
+          square: { equals: 16 }
+          average: { equals: 14.75 }
+        noError: true
+misconceptions: [js.mc.caret-is-power]
+hints:
+  - 앞 단계처럼 값마다 변수를 하나씩 만들고, 평균은 합계를 먼저 구한 뒤 나눠요.
+  - "제곱은 `^`가 아니라 `**`예요. `side ^ 2`는 오류 없이 엉뚱한 값을 내요."
+  - "`const bed = width * height;`, `const square = side ** 2;`, `const average = (bed + square) / 2;` 다음에 세 값을 출력해요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const bed = width * height;
+  const square = side ** 2;
+  const average = (bed + square) / 2;
+  console.log("직사각형:", bed);
+  console.log("정사각형:", square);
+  console.log("평균:", average);
+  ```
+
+  - `4.5 * 3`은 13.5, `4 ** 2`는 16이에요. `side ^ 2`를 쓰면 거듭제곱이 아닌 다른 연산이라 6이 나와요.
+  - 평균은 앞 두 단계처럼 합계를 먼저 구해야 하니 괄호로 묶어요. `bed + square / 2`는 `square / 2`를 먼저 계산해 21.5가 돼요.
+  - `29.5 / 2`는 소수까지 계산해 14.75예요.
+
+  원래 연습으로 돌아가 다시 풀어 보세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

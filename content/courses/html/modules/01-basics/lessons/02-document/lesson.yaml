@@ -13,4 +13,4 @@ objectives:
   - doctype·html·head·body로 이루어진 문서의 뼈대를 작성하고, head와 body에 들어갈 내용을 구분할 수 있다.
   - HTML 코드를 보고 DOM 트리에서 요소 사이의 부모·자식 관계를 말할 수 있다.
 practice:
-  targetCount: 10
+  targetCount: 12

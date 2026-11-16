@@ -1,0 +1,85 @@
+id: html.content.lists-tables.fill-table-header-row
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: html.content.tables, weight: 1 }
+tags: [table, th, thead]
+estimatedSeconds: 90
+prompt: |
+  시험 점수 표에 **제목 행**이 빠져 있어요. 빈칸에 한 줄을 써서 `thead` 안에 제목 칸 두 개("과목", "점수")로 된 행을 만드세요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <table>
+      <thead>
+        {{blank:row}}
+      </thead>
+      <tbody>
+        <tr><td>국어</td><td>90</td></tr>
+        <tr><td>수학</td><td>85</td></tr>
+      </tbody>
+    </table>
+  blanks:
+    - id: row
+      accept: ["<tr><th>과목</th><th>점수</th></tr>"]
+      width: 44
+      misconceptionMap:
+        "<tr><td>과목</td><td>점수</td></tr>": html.mc.th-is-bold-td
+  checks:
+    - kind: dom
+      id: header-row
+      description: thead 안에 행(tr)이 하나 있어야 합니다.
+      requirement: 제목 행
+      visible: true
+      selector: thead > tr
+      expect:
+        count: 1
+    - kind: dom
+      id: header-cells
+      description: 제목 행의 칸 두 개가 제목 칸(th)이어야 합니다.
+      requirement: 제목 칸
+      visible: true
+      selector: thead > tr > th
+      expect:
+        count: 2
+      misconceptionIfFail: html.mc.th-is-bold-td
+    - kind: dom
+      id: header-first
+      description: "첫 번째 제목 칸은 \"과목\"이어야 합니다."
+      requirement: 제목 칸
+      visible: true
+      selector: thead th:first-child
+      expect:
+        text: { equals: 과목 }
+    - kind: dom
+      id: header-second
+      description: "두 번째 제목 칸은 \"점수\"여야 합니다."
+      requirement: 제목 칸
+      visible: true
+      selector: thead th:last-child
+      expect:
+        text: { equals: 점수 }
+misconceptions: [html.mc.th-is-bold-td]
+hints:
+  - 표의 한 행은 어떤 요소로 감쌌는지, 그리고 그 안의 칸은 무엇으로 썼는지 아래 tbody를 참고하세요.
+  - 이 행의 칸은 아래 데이터의 "제목"이에요. 데이터 칸(`td`)이 아니라 제목 칸 요소를 써요.
+  - 아래 `tbody`의 행 한 줄을 본보기로 삼되, 칸 요소를 제목 칸 요소로 바꾸고 글자를 "과목", "점수"로 쓰세요.
+explanation: |
+  예시 정답은 `<tr><th>과목</th><th>점수</th></tr>`예요.
+
+  ```html
+  <thead>
+    <tr><th>과목</th><th>점수</th></tr>
+  </thead>
+  ```
+
+  - 행은 `tr`로 감싸요. 제목 행도 행이니 `tr`이 필요해요.
+  - "과목"과 "점수"는 아래 칸들이 무엇인지 알려 주는 **제목 칸**이라서 `th`예요. 화면 낭독기는 `th`를 보고 "국어" 칸을 읽을 때 "과목"이라는 제목도 함께 알려 줘요.
+
+  `td`로 쓴 뒤 굵게만 보이게 하면 된다고 생각했다면, `th`는 굵은 글씨 칸이 아니라 "이 칸은 제목"이라는 뜻을 가진 요소라는 점을 떠올려 보세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

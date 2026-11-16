@@ -20,7 +20,7 @@
   diagnosticHint: 개발자 도구에서 해당 선언에 취소선이나 경고 표시가 있는지 본다.
   remediation:
     lessonSection: css.basics.intro#pitfalls
-    exercises: [css.basics.intro.web-fix-broken-rule, css.basics.intro.fill-declaration]
+    exercises: [css.basics.intro.web-fix-broken-rule, css.basics.intro.fill-declaration, css.basics.intro.fill-inline-style]
 
 - id: css.mc.link-uses-src
   concept: css.intro.linking
@@ -30,7 +30,7 @@
   diagnosticHint: link 요소에 rel과 href 두 속성이 모두 있는지 확인한다.
   remediation:
     lessonSection: css.basics.intro#pitfalls
-    exercises: [css.basics.intro.mcq-link-element]
+    exercises: [css.basics.intro.mcq-link-element, css.basics.intro.fill-style-element]
 
 - id: css.mc.inline-applies-to-all
   concept: css.intro.linking
@@ -52,7 +52,7 @@
   diagnosticHint: HTML에서 그 이름이 class 속성에 있는지 id 속성에 있는지 먼저 확인한다.
   remediation:
     lessonSection: css.basics.selectors#pitfalls
-    exercises: [css.basics.selectors.mcq-class-selector, css.basics.selectors.web-fix-selectors]
+    exercises: [css.basics.selectors.mcq-class-selector, css.basics.selectors.web-fix-selectors, css.basics.selectors.fill-class-and-id]
 
 - id: css.mc.multiple-classes-one-name
   concept: css.selectors.basic
@@ -92,7 +92,7 @@
   diagnosticHint: 선택자 안의 공백은 항상 "안에 있는"이라는 뜻이라는 점을 떠올린다.
   remediation:
     lessonSection: css.basics.selectors#pitfalls
-    exercises: [css.basics.selectors.mcq-hover-space]
+    exercises: [css.basics.selectors.mcq-hover-space, css.basics.selectors.fill-last-child]
 
 - id: css.mc.pseudo-class-is-class
   concept: css.selectors.pseudo-class
@@ -102,7 +102,7 @@
   diagnosticHint: 이름 앞의 기호가 점(클래스)인지 콜론(의사 클래스)인지 본다.
   remediation:
     lessonSection: css.basics.selectors#pitfalls
-    exercises: [css.basics.selectors.mcq-hover-meaning, css.basics.selectors.mcq-hover-space, css.basics.selectors.web-first-child]
+    exercises: [css.basics.selectors.mcq-hover-space, css.basics.selectors.web-first-child, css.basics.selectors.fill-last-child]
 
 # ---- css.basics.cascade ----
 
@@ -144,7 +144,7 @@
   diagnosticHint: 그 속성이 "글자의 모양"인지 "상자의 모양"인지 나눠 본다.
   remediation:
     lessonSection: css.basics.cascade#pitfalls
-    exercises: [css.basics.cascade.mcq-which-inherit, css.basics.cascade.web-inherit-card-color]
+    exercises: [css.basics.cascade.mcq-which-inherit, css.basics.cascade.web-inherit-card-color, css.basics.cascade.fill-inherited-props]
 
 - id: css.mc.inherited-beats-direct
   concept: css.cascade.inheritance
@@ -228,7 +228,7 @@
   diagnosticHint: 배경색을 주고 상자가 글자 길이만큼만 칠해지는지 본다.
   remediation:
     lessonSection: css.box.display#pitfalls
-    exercises: [css.box.display.web-tag-badges, css.box.display.mcq-inline-block-line]
+    exercises: [css.box.display.web-tag-badges, css.box.display.mcq-inline-block-line, css.box.display.web-card-link-bar]
 
 - id: css.mc.inline-block-new-line
   concept: css.display.inline-block
@@ -238,7 +238,7 @@
   diagnosticHint: 이름의 앞부분(inline)은 바깥의 배치, 뒷부분(block)은 상자 안쪽의 성질이라고 나눠 읽는다.
   remediation:
     lessonSection: css.box.display#pitfalls
-    exercises: [css.box.display.mcq-inline-block-line, css.box.display.web-tag-badges]
+    exercises: [css.box.display.mcq-inline-block-line, css.box.display.web-tag-badges, css.box.display.fill-count-lines]
 
 - id: css.mc.narrow-blocks-sit-side-by-side
   concept: css.display.normal-flow
@@ -248,7 +248,7 @@
   diagnosticHint: 그 요소의 display 값이 block인지 확인한다. block이면 너비와 상관없이 위아래로 쌓인다.
   remediation:
     lessonSection: css.box.display#pitfalls
-    exercises: [css.box.display.mcq-narrow-blocks]
+    exercises: [css.box.display.mcq-narrow-blocks, css.box.display.fill-count-lines]
 
 - id: css.mc.vertical-margins-add
   concept: css.display.normal-flow
@@ -322,7 +322,7 @@
   diagnosticHint: 그 요소의 font-size에 그 숫자를 곱해 본다.
   remediation:
     lessonSection: css.styling.typography#pitfalls
-    exercises: [css.styling.typography.fill-line-height-px, css.styling.typography.web-fix-line-height]
+    exercises: [css.styling.typography.fill-line-height-px, css.styling.typography.web-fix-line-height, css.styling.typography.mcq-line-height-value]
 
 - id: css.mc.text-align-centers-box
   concept: css.type.text-align
@@ -406,7 +406,7 @@
   diagnosticHint: 메타 태그를 넣은 뒤에도 고정 너비(예를 들어 width 900px) 요소가 그대로인지 본다.
   remediation:
     lessonSection: css.layout.responsive#pitfalls
-    exercises: [css.layout.responsive.mcq-viewport-meta-role, css.layout.responsive.mcq-media-query-not-working]
+    exercises: [css.layout.responsive.mcq-viewport-meta-role, css.layout.responsive.mcq-media-query-not-working, css.layout.responsive.web-viewport-and-title]
 
 - id: css.mc.max-width-means-above
   concept: css.responsive.media-queries

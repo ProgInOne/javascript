@@ -1,0 +1,59 @@
+id: js-basics.values.variables.we-let-0
+type: predict_output
+difficulty: 1
+concepts:
+  - { id: js.values.let, weight: 1 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [let, worked-example]
+estimatedSeconds: 60
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "게임 점수를 담을 변수를 만들어 0을 넣고 출력한 뒤, 점수를 10으로 바꿔 다시 출력하세요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    // 1. 값을 담을 상자(변수)를 let으로 만들고, 처음 값 0을 넣어요.
+    let score = 0;
+    // 2. 지금 상자에 든 값을 확인해요.
+    console.log("점수:", score);
+    // 3. score는 이미 만든 변수예요. let을 다시 쓰지 않고 이름에 새 값만 대입해요.
+    score = 10;
+    // 4. 같은 상자에 든 바뀐 값을 확인해요.
+    console.log("점수:", score);
+  answerKind: console
+misconceptions: [js.mc.let-again-to-change]
+hints:
+  - "\"이름 → 값\" 표를 그려 두고, 줄마다 score에 든 값을 적어 보세요."
+  - "3번 줄 `score = 10;`은 이미 있는 상자 score의 값을 10으로 바꿔요."
+  - 첫 번째 출력은 바꾸기 전의 값, 두 번째 출력은 바꾼 뒤의 값이에요.
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  점수: 0
+  점수: 10
+  ```
+
+  | 실행한 줄 | `score` |
+  |---|---|
+  | `let score = 0;` | 0 |
+  | `console.log("점수:", score);` | 0 → "점수: 0" 출력 |
+  | `score = 10;` | 10 |
+  | `console.log("점수:", score);` | 10 → "점수: 10" 출력 |
+
+  이 풀이의 핵심은 두 가지예요.
+
+  - 변수는 **처음 한 번만** `let`으로 만들어요.
+  - 값을 바꿀 때는 `let` 없이 `이름 = 새 값;`으로 대입해요. `let score = 10;`처럼 다시 쓰면 같은 이름을 또 만들려는 것이라 `SyntaxError`가 나요.
+
+  다음 단계에서는 이 풀이의 핵심 두 줄을 직접 채워 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

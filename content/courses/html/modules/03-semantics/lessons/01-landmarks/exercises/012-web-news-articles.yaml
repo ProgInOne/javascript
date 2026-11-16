@@ -1,0 +1,138 @@
+id: html.semantics.landmarks.web-news-articles
+type: web_task
+difficulty: 3
+concepts:
+  - { id: html.semantics.sectioning, weight: 1 }
+  - { id: html.semantics.div-vs-semantic, weight: 0.3 }
+tags: [section, article, web-task]
+estimatedSeconds: 240
+prompt: |
+  동네 소식 페이지의 본문이 `div`로만 묶여 있어요. 각 묶음의 뜻에 맞게 `div` 세 개를 **section** 또는 **article**로 바꾸세요.
+
+  - 바깥 `div`: "최신 기사"라는 소제목이 붙은, 이 페이지 안의 **주제별 구역**이에요.
+  - 안쪽 `div` 두 개: 각각 다른 사이트에 옮겨 실어도 뜻이 통하는 **기사 한 편**이에요.
+
+  안의 제목과 문단, 순서는 바꾸지 마세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>동네 소식</title>
+            </head>
+            <body>
+              <main>
+                <h1>동네 소식</h1>
+                <div>
+                  <h2>최신 기사</h2>
+                  <div>
+                    <h3>공원에 새 놀이터가 생겼어요</h3>
+                    <p>다음 주 월요일부터 누구나 이용할 수 있어요.</p>
+                  </div>
+                  <div>
+                    <h3>도서관이 일요일에도 문을 열어요</h3>
+                    <p>이번 달부터 일요일 오후 6시까지 열어요.</p>
+                  </div>
+                </div>
+              </main>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>동네 소식</title>
+            </head>
+            <body>
+              <main>
+                <h1>동네 소식</h1>
+                <section>
+                  <h2>최신 기사</h2>
+                  <article>
+                    <h3>공원에 새 놀이터가 생겼어요</h3>
+                    <p>다음 주 월요일부터 누구나 이용할 수 있어요.</p>
+                  </article>
+                  <article>
+                    <h3>도서관이 일요일에도 문을 열어요</h3>
+                    <p>이번 달부터 일요일 오후 6시까지 열어요.</p>
+                  </article>
+                </section>
+              </main>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: topic-section
+      description: "\"최신 기사\" 소제목이 붙은 구역이 main 안의 주제별 구역 요소여야 합니다."
+      requirement: 주제별 구역
+      visible: true
+      selector: main > section > h2
+      expect:
+        count: 1
+        text: { equals: 최신 기사 }
+      misconceptionIfFail: html.mc.section-article-same
+    - kind: dom
+      id: two-articles
+      description: 기사 두 편이 각각 독립된 글 요소로, 주제별 구역 안에 있어야 합니다.
+      requirement: 독립된 글
+      visible: true
+      selector: section > article
+      expect:
+        count: 2
+      misconceptionIfFail: html.mc.section-article-same
+    - kind: dom
+      id: article-titles
+      description: 각 기사 안에 h3 제목이 있어야 합니다.
+      requirement: 독립된 글
+      visible: true
+      selector: article > h3
+      expect:
+        count: 2
+    - kind: dom
+      id: no-div-left
+      description: 본문에 div가 남아 있지 않아야 합니다.
+      requirement: div 바꾸기
+      visible: true
+      selector: main div
+      expect:
+        count: 0
+misconceptions: [html.mc.section-article-same]
+hints:
+  - 묶음마다 레슨의 확인 질문을 해 보세요. "이것만 잘라서 다른 사이트에 붙여도 이해될까?", "이 묶음에 붙일 소제목이 있을까?"
+  - 기사 한 편은 혼자서도 뜻이 통하니 독립된 글이고, 기사들을 모은 "최신 기사"는 페이지 안의 주제별 구역이에요.
+  - 기사들을 모은 바깥 묶음 하나와, 기사 한 편씩인 안쪽 묶음 두 개에 서로 다른 요소가 들어가요. `div`를 바꿀 때는 여는 태그와 닫는 태그를 모두 바꿔야 해요.
+explanation: |
+  예시 정답은 이래요.
+
+  ```html
+  <section>
+    <h2>최신 기사</h2>
+    <article>
+      <h3>공원에 새 놀이터가 생겼어요</h3>
+      <p>다음 주 월요일부터 누구나 이용할 수 있어요.</p>
+    </article>
+    <article>
+      <h3>도서관이 일요일에도 문을 열어요</h3>
+      <p>이번 달부터 일요일 오후 6시까지 열어요.</p>
+    </article>
+  </section>
+  ```
+
+  - 기사 한 편은 다른 사이트에 그대로 옮겨도 뜻이 통하는 **독립된 글**이라서 `article`이에요.
+  - "최신 기사"는 이 페이지 안에서 기사들을 모은 **주제별 구역**이고 소제목이 있어서 `section`이에요. 이 묶음만 떼어 내면 "어느 사이트의 최신 기사인지" 알 수 없으니 article은 아니에요.
+
+  section과 article을 같은 것으로 보면 둘을 바꿔 쓰기 쉬워요. "독립된 글인가, 문서 안의 구역인가"를 묻는 것이 구분하는 열쇠예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

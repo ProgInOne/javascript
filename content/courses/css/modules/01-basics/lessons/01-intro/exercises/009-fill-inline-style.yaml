@@ -1,0 +1,58 @@
+id: css.basics.intro.fill-inline-style
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.intro.linking, weight: 1 }
+  - { id: css.intro.rule-structure, weight: 0.3 }
+tags: [inline-style, linking]
+estimatedSeconds: 70
+prompt: |
+  메뉴 세 개 중 **"오늘의 추천"만** 글자를 빨간색(`red`)으로 바꾸려고 해요. 빈칸에 `style` 속성을 써서 그 문단 하나에만 색을 주세요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <p>김밥</p>
+    <p {{blank:attr}}>오늘의 추천: 떡볶이</p>
+    <p>라면</p>
+  blanks:
+    - id: attr
+      accept: ['style="color: red;"']
+      width: 28
+  checks:
+    - kind: css
+      id: pick-red
+      description: "\"오늘의 추천\" 문단의 글자가 빨간색이어야 합니다."
+      requirement: 추천 메뉴만 빨간색
+      visible: true
+      selector: "p:nth-of-type(2)"
+      expect:
+        computed:
+          color: { color: "#ff0000" }
+      misconceptionIfFail: css.mc.value-in-quotes
+    - kind: css
+      id: others-black
+      description: 다른 두 메뉴의 글자 색은 바뀌지 않아야 합니다.
+      requirement: 추천 메뉴만 빨간색
+      visible: true
+      selector: "p:not(:nth-of-type(2))"
+      all: true
+      expect:
+        computed:
+          color: { color: "#000000" }
+misconceptions: [css.mc.value-in-quotes]
+hints:
+  - "`style` 속성은 여는 태그 안에 쓰고, 그 요소 하나에만 적용돼요."
+  - 속성 값(큰따옴표 안)에는 선택자와 중괄호 없이 **선언만** 써요.
+  - "`style=\"속성: 값;\"` 모양이에요. 속성은 `color`, 값은 `red`예요."
+explanation: |
+  정답 예시는 **`style="color: red;"`** 예요.
+
+  - `style` 속성은 그 속성을 쓴 요소 하나에만 적용돼요. 그래서 김밥과 라면은 그대로 검은색이에요.
+  - 속성 값 안에는 선택자도 중괄호도 쓰지 않아요. 대상이 이미 그 요소 자신이기 때문이에요.
+  - 큰따옴표는 HTML 속성 값을 감싸는 것이고, CSS 값 `red` 자체는 따옴표 없이 써요. `style="color: 'red';"`처럼 값을 또 감싸면 잘못된 값으로 무시돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

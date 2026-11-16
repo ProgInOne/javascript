@@ -13,4 +13,4 @@ objectives:
   - 표의 행(tr), 제목 칸(th), 데이터 칸(td), 제목 행 묶음(thead), 본문 행 묶음(tbody)을 구분해 쓸 수 있다.
   - 주어진 데이터를 제목 칸이 있는 표로 작성할 수 있다.
 practice:
-  targetCount: 8
+  targetCount: 10

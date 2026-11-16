@@ -1,0 +1,74 @@
+id: js-basics.operators.implicit-coercion.we-truthy-falsy-1
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: js.conv.truthy-falsy, weight: 1 }
+tags: [truthy-falsy, worked-example]
+estimatedSeconds: 100
+usage: worked_example
+workedExampleStage: 1
+prompt: |
+  **풀이 예제 2단계: 빈칸 채우기**
+
+  앞 단계와 같은 방식의 문제예요. 폼에서 별명 `" "`(공백 한 칸), 전화번호 `""`, 수량 `"0"`(글자)을 받았어요.
+
+  풀이의 나머지는 완성되어 있어요. 주석을 읽고 빈칸 두 곳에 **식**을 쓰세요(true/false를 직접 쓰지 말고 변수로 계산하세요). 실행하면 아래처럼 나와야 해요.
+
+  ```text
+  true false false
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    const nickname = " ";
+    const phone = "";
+    const count = "0";
+    // 1. 별명이 truthy인지 같은 뜻의 true/false로 바꿔요(!를 두 번 써요).
+    const hasNickname = {{blank:has}};
+    const hasPhone = !!phone;
+    // 2. 수량이 비어 있는지(falsy인지) 확인해요(!를 한 번 써요).
+    const isEmpty = {{blank:empty}};
+    console.log(hasNickname, hasPhone, isEmpty);
+  blanks:
+    - id: has
+      accept: ["!!nickname", "Boolean(nickname)"]
+      width: 18
+    - id: empty
+      accept: ["!count"]
+      width: 18
+  checks:
+    - kind: console
+      id: output
+      description: "\"true false false\"가 출력되어야 합니다."
+      requirement: truthy·falsy 판단
+      expect:
+        lines: ["true false false"]
+      misconceptionIfFail: js.mc.string-zero-falsy
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, hasNickname은 true, isEmpty는 false여야 합니다.
+      requirement: 판단식의 값
+      expect:
+        globals:
+          hasNickname: { equals: true }
+          isEmpty: { equals: false }
+        noError: true
+misconceptions: [js.mc.string-zero-falsy, js.mc.space-string-falsy]
+hints:
+  - "앞 단계 풀이에서 `!!\" \"`와 `!!\"0\"`의 결과가 무엇이었는지 떠올려 보세요."
+  - "`!!값`은 값의 truthy·falsy를 그대로 true/false로, `!값`은 뒤집어서 알려 줘요."
+  - "첫 빈칸은 `!!nickname`, 두 번째 빈칸은 `!count`예요."
+explanation: |
+  예시 정답은 `!!nickname`과 `!count`예요.
+
+  - `!!nickname`: 공백 한 칸도 글자라서 truthy, 결과는 `true`예요.
+  - `!!phone`: 빈 문자열이라 falsy, 결과는 `false`예요.
+  - `!count`: `"0"`은 비어 있지 않은 문자열이라 truthy이고, 뒤집으면 `false`예요. "수량이 비어 있다"는 판단이 거짓이라는 뜻이에요.
+
+  `"0"`을 숫자 0처럼 falsy로 생각하면 마지막 값을 `true`로 예상하게 돼요. 앞 단계의 핵심처럼 문자열은 비어 있을 때만 falsy예요. 다음 단계에서는 처음부터 직접 써 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

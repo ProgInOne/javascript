@@ -1,0 +1,81 @@
+id: js-basics.values.variables.we-let-2
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.values.let, weight: 1 }
+  - { id: js.values.assignment, weight: 0.3 }
+tags: [let, worked-example, write-code]
+estimatedSeconds: 180
+usage: worked_example
+workedExampleStage: 2
+prompt: |
+  **풀이 예제 3단계: 직접 풀기**
+
+  이번에는 처음부터 직접 써 보세요.
+
+  1. 레벨을 담을 변수 `level`을 만들고 1을 넣은 뒤 출력하세요.
+  1. 같은 변수 `level`의 값을 3으로 바꾸고 다시 출력하세요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  레벨: 1
+  레벨: 3
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1. level 변수를 만들고 1을 넣은 뒤 출력하세요.
+
+          // 2. 같은 변수 level의 값을 3으로 바꾸고 다시 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 1. level 변수를 만들고 1을 넣은 뒤 출력하세요.
+          let level = 1;
+          console.log("레벨:", level);
+          // 2. 같은 변수 level의 값을 3으로 바꾸고 다시 출력하세요.
+          level = 3;
+          console.log("레벨:", level);
+  checks:
+    - kind: console
+      id: output
+      description: "\"레벨: 1\"과 \"레벨: 3\"이 차례로 출력되어야 합니다."
+      requirement: 레벨 출력
+      expect:
+        lines: ["레벨: 1", "레벨: 3"]
+      misconceptionIfFail: js.mc.let-again-to-change
+    - kind: program
+      id: final
+      description: 프로그램이 오류 없이 끝나고, 끝났을 때 level에는 3이 들어 있어야 합니다.
+      requirement: 같은 변수의 값 바꾸기
+      expect:
+        globals:
+          level: { equals: 3 }
+        noError: true
+misconceptions: [js.mc.let-again-to-change]
+hints:
+  - 앞 단계 풀이의 모양(만들기 → 출력 → 바꾸기 → 출력)을 그대로 따라 해 보세요.
+  - "출력은 `console.log(\"레벨:\", level);`처럼 글자와 변수를 쉼표로 나눠 넘기면 돼요."
+  - "변수를 만들 때만 `let`을 쓰고, 값을 바꿀 때는 `level = 3;`처럼 대입만 해요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  let level = 1;
+  console.log("레벨:", level);
+  level = 3;
+  console.log("레벨:", level);
+  ```
+
+  앞 두 단계에서 본 풀이와 같은 모양이에요. 변수는 `let`으로 한 번만 만들고, 바꿀 때는 이름에 새 값을 대입해요. 두 번째로 `let level = 3;`을 쓰면 `SyntaxError`가 나요.
+
+  여기까지 스스로 썼다면 "변수 만들기와 값 바꾸기"를 구분할 수 있게 된 거예요. 원래 연습으로 돌아가 다시 풀어 보세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

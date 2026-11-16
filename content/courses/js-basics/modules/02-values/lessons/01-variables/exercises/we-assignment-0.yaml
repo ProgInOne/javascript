@@ -1,0 +1,54 @@
+id: js-basics.values.variables.we-assignment-0
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.values.assignment, weight: 1 }
+tags: [assignment, trace, worked-example]
+estimatedSeconds: 75
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "저금통에 1000원이 있어요. 500원을 넣고, 300원을 꺼낸 뒤 남은 돈을 출력하세요. 변수의 **지금 값**을 이용해 다시 대입하세요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    // 1. 처음 저금통에 든 돈을 money에 넣어요.
+    let money = 1000;
+    // 2. 오른쪽 money + 500을 먼저 계산하고(지금 값 1000 + 500), 그 결과를 다시 money에 넣어요.
+    money = money + 500;
+    // 3. 이번에도 오른쪽부터: 지금 값(2번 줄에서 바뀐 값)에서 300을 뺀 결과를 money에 넣어요.
+    money = money - 300;
+    // 4. 마지막에 money에 든 값을 출력해요.
+    console.log("저금통:", money);
+  answerKind: console
+  misconceptionByAnswer:
+    "저금통: 1000": js.mc.assign-is-equality
+misconceptions: [js.mc.assign-is-equality]
+hints:
+  - "\"이름 → 값\" 표를 그려 두고, 대입이 있을 때마다 money의 값을 새로 적어 보세요."
+  - 대입은 오른쪽을 먼저 계산해요. 오른쪽의 money는 바로 앞 줄까지 반영된 지금 값이에요.
+  - 1000에서 시작해 +500, −300을 차례로 적용해 보세요.
+explanation: |
+  정답은 **저금통: 1200**이에요.
+
+  | 실행한 줄 | 오른쪽 계산 | 대입 후 `money` |
+  |---|---|---|
+  | `let money = 1000;` | 1000 | 1000 |
+  | `money = money + 500;` | 1000 + 500 | 1500 |
+  | `money = money - 300;` | 1500 − 300 | 1200 |
+
+  이 풀이의 핵심은 `money = money + 500;`을 읽는 순서예요.
+
+  1. 오른쪽 `money + 500`을 지금 값으로 계산해요.
+  1. 계산한 결과를 왼쪽 변수 `money`에 넣어요(원래 값은 덮어써져요).
+
+  `=`는 수학의 "같다"가 아니라 "오른쪽 값을 왼쪽에 넣어라"라는 명령이에요. `저금통: 1000`이라고 답했다면 이 줄이 값을 바꾸지 못한다고 본 거예요. 다음 단계에서는 이런 대입 줄을 직접 채워 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

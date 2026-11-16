@@ -1,0 +1,88 @@
+id: js-basics.values.data-types.we-primitives-2
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.types.primitives, weight: 1 }
+  - { id: js.types.typeof, weight: 0.3 }
+tags: [primitives, typeof, worked-example, write-code]
+estimatedSeconds: 200
+usage: worked_example
+workedExampleStage: 2
+prompt: |
+  **풀이 예제 3단계: 직접 풀기**
+
+  1. 계산에 쓸 가격 3000을 **숫자**로 변수 `price`에 담으세요.
+  1. 가격표에 붙일 글자 3000을 **문자열**로 변수 `label`에 담으세요.
+  1. 두 값을 한 줄에 출력하고, 다음 줄에 두 값의 자료형을 `typeof`로 출력하세요.
+  1. `price`에 문자열 `"무료"`를 다시 넣고, `price`의 자료형을 출력하세요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  3000 3000
+  number string
+  string
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1~2. price(숫자)와 label(문자열)을 만드세요.
+
+          // 3. 두 값과 두 자료형을 출력하세요.
+
+          // 4. price에 "무료"를 넣고 자료형을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 1~2. price(숫자)와 label(문자열)을 만드세요.
+          let price = 3000;
+          let label = "3000";
+          // 3. 두 값과 두 자료형을 출력하세요.
+          console.log(price, label);
+          console.log(typeof price, typeof label);
+          // 4. price에 "무료"를 넣고 자료형을 출력하세요.
+          price = "무료";
+          console.log(typeof price);
+  checks:
+    - kind: console
+      id: output
+      description: "\"3000 3000\", \"number string\", \"string\"이 차례로 출력되어야 합니다."
+      requirement: 값과 자료형 출력
+      expect:
+        lines: ["3000 3000", "number string", "string"]
+      misconceptionIfFail: js.mc.type-belongs-to-variable
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, label은 문자열 "3000", price는 문자열 "무료"여야 합니다.
+      requirement: 알맞은 자료형의 값
+      expect:
+        globals:
+          label: { equals: "3000" }
+          price: { equals: "무료" }
+        noError: true
+misconceptions: [js.mc.type-belongs-to-variable]
+hints:
+  - 앞 단계 풀이처럼 따옴표 유무로 숫자와 문자열을 나눠요.
+  - "`price`는 다시 대입하니 `let`으로 만들어요. 자료형 출력은 `console.log(typeof price, typeof label);`처럼 쓸 수 있어요."
+  - "`let price = 3000;`, `let label = \"3000\";`를 만들고, 마지막에 `price = \"무료\";` 다음 `console.log(typeof price);`를 써요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  let price = 3000;
+  let label = "3000";
+  console.log(price, label);
+  console.log(typeof price, typeof label);
+  price = "무료";
+  console.log(typeof price);
+  ```
+
+  앞 두 단계와 같은 원리예요. 겉모습이 같은 `3000`과 `"3000"`도 자료형은 `number`와 `string`으로 달라요. 그리고 `price`에 문자열을 넣으면 `typeof price`도 `string`이 돼요. 자료형은 변수가 아니라 지금 든 값에 붙어 있기 때문이에요. 원래 연습으로 돌아가 다시 풀어 보세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

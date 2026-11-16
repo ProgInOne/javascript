@@ -1,0 +1,65 @@
+id: js-basics.operators.logical.we-logical-and-or-not-0
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.ops.logical-and-or-not, weight: 1 }
+tags: [logical, precedence, worked-example]
+estimatedSeconds: 90
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "15살 관람객이 보호자와 함께 왔고, 아직 표는 없어요. 입장 조건 여러 가지를 논리 연산자로 확인하세요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    const age = 15;
+    const withParent = true;
+    const hasTicket = false;
+    // 1. &&는 둘 다 참일 때만 참이에요. 12살 이상이면서 표가 있어야 입장해요.
+    console.log(age >= 12 && hasTicket);
+    // 2. ||는 하나라도 참이면 참이에요. 18살 이상이거나 보호자와 함께면 관람할 수 있어요.
+    console.log(age >= 18 || withParent);
+    // 3. !는 참과 거짓을 뒤집어요. 표가 "없는지"를 물어요.
+    console.log(!hasTicket);
+    // 4. 우선순위는 ! → && → || 예요. 왼쪽부터가 아니라 &&를 먼저 묶어서 withParent || (age >= 12 && hasTicket) 순서로 계산해요.
+    console.log(withParent || age >= 12 && hasTicket);
+  answerKind: console
+  misconceptionByAnswer:
+    "false\ntrue\ntrue\nfalse": js.mc.and-or-same-precedence
+misconceptions: [js.mc.and-or-same-precedence, js.mc.or-is-exclusive]
+hints:
+  - 비교식(`age >= 12` 같은 것)을 먼저 true/false로 바꿔 적어 두세요.
+  - "`&&`는 하나라도 거짓이면 거짓, `||`는 하나라도 참이면 참이에요."
+  - "4번 줄은 `&&`를 먼저 묶어요. `age >= 12 && hasTicket`이 false이고, 그다음 `withParent || false`를 계산해요."
+explanation: |
+  정답은 다음 네 줄이에요.
+
+  ```text
+  false
+  true
+  true
+  true
+  ```
+
+  | 식 | 계산 | 결과 |
+  |---|---|---|
+  | `age >= 12 && hasTicket` | `true && false` | `false` |
+  | `age >= 18 \|\| withParent` | `false \|\| true` | `true` |
+  | `!hasTicket` | `!false` | `true` |
+  | `withParent \|\| age >= 12 && hasTicket` | `true \|\| (true && false)` → `true \|\| false` | `true` |
+
+  이 풀이의 핵심은 두 가지예요.
+
+  - 비교식을 먼저 true/false로 바꾼 뒤, `&&`(둘 다), `||`(하나라도), `!`(뒤집기)를 적용해요.
+  - 섞여 있으면 `!` → `&&` → `||` 순서로 계산해요. 4번 줄을 왼쪽부터 `(withParent || age >= 12) && hasTicket`처럼 계산하면 `false`가 나와 틀려요. 헷갈리면 괄호를 직접 써서 의도를 분명히 해요.
+
+  다음 단계에서는 조건식을 직접 채워 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

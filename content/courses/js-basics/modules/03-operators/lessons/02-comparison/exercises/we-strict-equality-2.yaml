@@ -1,0 +1,87 @@
+id: js-basics.operators.comparison.we-strict-equality-2
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.ops.strict-equality, weight: 1 }
+tags: [strict-equality, worked-example, write-code]
+estimatedSeconds: 200
+usage: worked_example
+workedExampleStage: 2
+prompt: |
+  **풀이 예제 3단계: 직접 풀기**
+
+  쿠폰 코드와 수량을 확인하려고 해요. 시작 코드의 변수를 이용해 이어서 쓰세요.
+
+  1. 입력한 쿠폰 `entered`가 발급한 쿠폰 `coupon`과 **자료형까지** 같은지 비교한 결과를 변수 `isValid`에 담으세요.
+  1. 입력창에서 받은 수량 `countText`(글자)가 장바구니 수량 `count`(숫자)와 자료형까지 같은지 비교한 결과를 변수 `sameCount`에 담으세요.
+  1. 두 변수를 한 줄에 출력하세요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  true false
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const entered = "A100";
+          const coupon = "A100";
+          const countText = "3";
+          const count = 3;
+
+          // 여기에 isValid와 sameCount를 만들고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const entered = "A100";
+          const coupon = "A100";
+          const countText = "3";
+          const count = 3;
+
+          // 여기에 isValid와 sameCount를 만들고 출력하세요.
+          const isValid = entered === coupon;
+          const sameCount = countText === count;
+          console.log(isValid, sameCount);
+  checks:
+    - kind: console
+      id: output
+      description: "\"true false\"가 출력되어야 합니다."
+      requirement: 비교 결과 출력
+      expect:
+        lines: ["true false"]
+      misconceptionIfFail: js.mc.strict-equality-ignores-type
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, isValid는 true, sameCount는 false여야 합니다.
+      requirement: 비교 결과 담기
+      expect:
+        globals:
+          isValid: { equals: true }
+          sameCount: { equals: false }
+        noError: true
+misconceptions: [js.mc.strict-equality-ignores-type]
+hints:
+  - 앞 단계처럼 비교식의 결과(true/false)를 변수에 담으면 돼요.
+  - 두 쿠폰은 모두 문자열이고 글자도 같아요. 수량은 한쪽이 문자열, 한쪽이 숫자예요.
+  - "`const isValid = entered === coupon;`, `const sameCount = countText === count;` 다음 `console.log(isValid, sameCount);`를 써요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const isValid = entered === coupon;
+  const sameCount = countText === count;
+  console.log(isValid, sameCount);
+  ```
+
+  - `entered === coupon`: 둘 다 문자열 `"A100"`이라 `true`예요.
+  - `countText === count`: `"3"`은 문자열, `3`은 숫자라 `false`예요.
+
+  앞 두 단계와 같은 원리예요. 화면에 같은 3으로 보여도 `===`는 자료형까지 비교해요. 원래 연습으로 돌아가 다시 풀어 보세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

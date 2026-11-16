@@ -1,0 +1,63 @@
+id: html.basics.text.fill-heading-outline
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: html.text.headings, weight: 1 }
+tags: [headings, outline]
+estimatedSeconds: 80
+prompt: |
+  요리책 페이지의 제목들을 목차처럼 짰어요. 페이지 전체 제목은 "우리 집 반찬", 장(章)은 "볶음 요리"와 "무침 요리", "볶음 요리" 아래 소제목이 "멸치볶음"이에요. 코드에서 이 순서대로 쓸 때, 단계를 건너뛰지 않도록 각 제목에 쓸 요소 이름(`h1`~`h6`)을 빈칸에 쓰세요.
+spec:
+  mode: text
+  template: |
+    우리 집 반찬 (페이지 전체 제목): h1
+    볶음 요리 (장): {{blank:chapter1}}
+    멸치볶음 ("볶음 요리"의 소제목): {{blank:sub}}
+    무침 요리 (장): {{blank:chapter2}}
+  blanks:
+    - id: chapter1
+      accept: ["h2"]
+      caseSensitive: false
+      width: 4
+      misconceptionMap:
+        "h3": html.mc.heading-skip-levels
+        "h4": html.mc.heading-skip-levels
+    - id: sub
+      accept: ["h3"]
+      caseSensitive: false
+      width: 4
+      misconceptionMap:
+        "h4": html.mc.heading-skip-levels
+        "h5": html.mc.heading-skip-levels
+        "h6": html.mc.heading-skip-levels
+    - id: chapter2
+      accept: ["h2"]
+      caseSensitive: false
+      width: 4
+      misconceptionMap:
+        "h3": html.mc.heading-skip-levels
+        "h4": html.mc.heading-skip-levels
+misconceptions: [html.mc.heading-skip-levels]
+hints:
+  - 레슨의 제주 여행 목차처럼, 각 제목이 목차에서 몇 번째 단계인지 먼저 정해 보세요.
+  - 페이지 전체 제목이 `h1`이면, 그 바로 아래 단계인 장은 몇 번일까요? 장 아래의 소제목은요?
+  - 장은 h1 바로 아래 단계, 소제목은 장 바로 아래 단계예요. 두 장은 같은 단계라서 같은 요소를 써요. 숫자를 건너뛰지 마세요.
+explanation: |
+  정답은 차례로 **h2**, **h3**, **h2**예요.
+
+  ```text
+  h1  우리 집 반찬
+  ├── h2  볶음 요리
+  │   └── h3  멸치볶음
+  └── h2  무침 요리
+  ```
+
+  - 장은 페이지 전체 제목(`h1`) 바로 아래 단계라서 `h2`예요. "볶음 요리"와 "무침 요리"는 같은 단계이니 둘 다 `h2`예요.
+  - "멸치볶음"은 "볶음 요리" 안의 소제목이라서 `h2` 바로 아래 단계인 `h3`예요.
+
+  `h4`나 `h5`를 고른 칸이 있다면 단계를 건너뛴 거예요. 제목의 숫자는 글자 크기가 아니라 목차의 단계라서, 한 단계씩 내려가야 화면 낭독기 사용자도 목차를 바르게 들을 수 있어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

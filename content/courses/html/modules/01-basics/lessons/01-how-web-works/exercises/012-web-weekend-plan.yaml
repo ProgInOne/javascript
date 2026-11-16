@@ -1,0 +1,108 @@
+id: html.basics.how-web-works.web-weekend-plan
+type: web_task
+difficulty: 2
+concepts:
+  - { id: html.web.rendering, weight: 1 }
+tags: [rendering, h1, p, web-task]
+estimatedSeconds: 200
+prompt: |
+  `body` 안이 비어 있는 문서가 있어요. 브라우저가 아래처럼 그리도록 `body` 안을 직접 채우세요.
+
+  1. 맨 위에 **가장 큰 제목**(`h1`)으로 "주말 계획"
+  1. 그 아래에 **문단**(`p`) 두 개: "토요일에는 도서관에 가요."와 "일요일에는 자전거를 타요."(이 순서로)
+
+  글자는 위와 똑같이 쓰세요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>주말 계획</title>
+            </head>
+            <body>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>주말 계획</title>
+            </head>
+            <body>
+              <h1>주말 계획</h1>
+              <p>토요일에는 도서관에 가요.</p>
+              <p>일요일에는 자전거를 타요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: has-heading
+      description: "\"주말 계획\"이 h1 요소 하나로 있어야 합니다."
+      requirement: 가장 큰 제목
+      visible: true
+      selector: body h1
+      expect:
+        count: 1
+        text: { equals: 주말 계획 }
+    - kind: dom
+      id: two-paragraphs
+      description: body 안에 p 요소가 두 개 있어야 합니다.
+      requirement: 문단 두 개
+      visible: true
+      selector: body p
+      expect:
+        count: 2
+    - kind: dom
+      id: first-paragraph
+      description: "첫 번째 문단은 \"토요일에는 도서관에 가요.\"여야 합니다."
+      requirement: 문단 두 개
+      visible: true
+      selector: body p:first-of-type
+      expect:
+        text: { equals: 토요일에는 도서관에 가요. }
+    - kind: dom
+      id: second-paragraph
+      description: "두 번째 문단은 \"일요일에는 자전거를 타요.\"여야 합니다."
+      requirement: 문단 두 개
+      visible: true
+      selector: body p:last-of-type
+      expect:
+        text: { equals: 일요일에는 자전거를 타요. }
+    - kind: dom
+      id: order
+      description: 제목이 먼저, 문단 두 개가 그 뒤에 와야 합니다.
+      requirement: 순서
+      selector: body
+      expect:
+        order: [h1, p, p]
+misconceptions: []
+hints:
+  - 화면에 보일 세 줄이 각각 어떤 뜻(제목인지, 문단인지)인지 먼저 정하세요.
+  - 제목은 `<h1>`과 `</h1>` 사이에, 문단은 하나씩 `<p>`와 `</p>` 사이에 써요.
+  - 제목 한 줄과 문단 두 줄, 모두 세 줄을 `body` 안에 쓰고, 줄마다 따로 여는 태그와 닫는 태그로 감싸세요. 두 문장을 `p` 하나에 함께 넣으면 안 돼요.
+explanation: |
+  예시 정답은 이래요.
+
+  ```html
+  <body>
+    <h1>주말 계획</h1>
+    <p>토요일에는 도서관에 가요.</p>
+    <p>일요일에는 자전거를 타요.</p>
+  </body>
+  ```
+
+  브라우저는 HTML을 위에서부터 읽으면서 태그의 뜻에 맞게 그려요. `h1`은 크고 굵은 제목으로, `p`는 각각 따로 한 덩어리의 문단으로 그려서 두 문장이 서로 다른 줄에 보여요. 두 문장을 `p` 하나에 함께 넣으면 한 문단으로 이어져 그려지니, 문단마다 따로 감싸야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -22,6 +22,8 @@
 - 성능 측정 `pnpm perf`(M7, NFR-01~03, D-064): 프로덕션 빌드와 실제 콘텐츠 팩으로 첫 화면, 화면 전환, 결정론적 채점, 콘솔 첫 출력, 무한 루프 중 UI 응답성을 페이지 안에서 측정하고 중앙값이 목표를 넘으면 실패. `PERF_CPU_THROTTLE`로 CPU 감속 측정. 결과는 [성능 점검 기록](docs/reviews/2026-11-16-m7-performance.md)(모든 목표 통과)
 - 첫 화면 번들 예산 `pnpm check:bundle`(D-064): 첫 화면 JS·CSS의 gzip 크기를 예산(JS 220KiB, CSS 45KiB)과 비교. CI `check` 작업에서 빌드 직후 실행
 - 호환성 점검 `pnpm test:e2e:compat`(M7, NFR-10, D-064): Firefox(사이트 격리 켬)·WebKit에서 샌드박스 정책·핵심 흐름 E2E. 결과와 브라우저별 차이는 [호환성 점검 기록](docs/reviews/2026-11-16-m7-compatibility.md)
+- 단계적 풀이 예제 콘텐츠(M7, FR-LRN-05, D-072): JS 기초 모듈 2~5의 `core` 개념 16개마다 재학습용 풀이 예제 3단계(주석 단 완성 풀이를 읽고 출력 예측 → 핵심 줄 빈칸 → 직접 작성), 48문제. 반복 실패 시 재학습 제안의 "풀이 예제 보기"가 실제로 나옴. `content-cli check`가 풀이 예제의 위치(일반 단원, 주 개념을 소개하는 단원)와 개념별 단계 0·1·2 구성을 검사하고, 단원 `practice.targetCount`는 풀이 예제를 세지 않음
+- HTML/CSS 보충 문제(M7, FR-EX-09, D-071): 유형 구성비 경고가 있던 HTML 6단원·CSS 7단원에 빈칸·웹 실습·선택 문제 34개를 더하고(AI 교차 검토 승인), 상한 12개 때문에 개념 확인 비율을 맞출 수 없던 4단원에서 겹치는 개념 문제 1개씩을 덜어 냄. HTML/CSS 수량 경고 0건
 - 설치된 앱 스모크 테스트 `pnpm --filter @proginone/e2e smoke`(`SMOKE_URL`): 실제 콘텐츠로 토큰 검사, 과정 → 레슨, 샌드박스 실행·채점, 백업 목록. Chromium·Firefox·WebKit
 - [설치와 업그레이드 가이드](docs/guides/install-and-upgrade.md)(요구 사항, 체크섬 확인, 설치, 첫 실행, 데이터 위치, 백업, 업그레이드와 마이그레이션·콘텐츠 팩 교체, 백업으로 되돌리기, 제거)와 [릴리스 절차 가이드](docs/guides/release.md)(버전 체계, CHANGELOG, 릴리스 PR, 태그, GitHub 호스트·self-hosted 릴리스 워크플로, v0.3.0에 쓴 로컬 대체 절차, 산출물 확인)
 - JS 기초 유형 구성비 충족(M7, FR-EX-09, PRD MVP 완료 정의 2, [D-069](docs/decisions.md)): `start.reading-errors`에 오류 종류 구분 프로그램 작성 문제, `arrays.array-hof`에 `reduce` 초기값 구현 문제를 더하고 겹치는 3문제를 지워 30문제로 맞춤. 버그가 있는 시작 페이지를 고치는 웹 실습은 스펙의 `debugging: true`로 디버깅 범주에 셈(모듈 10의 `web-fix-*` 6개에 표시). JS 기초의 `type-mix` 위반 0

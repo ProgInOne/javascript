@@ -1,0 +1,48 @@
+id: html.content.forms.fill-form-scope
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: html.forms.form, weight: 1 }
+  - { id: html.forms.buttons, weight: 0.3 }
+tags: [form, action, name]
+estimatedSeconds: 90
+prompt: |
+  아래 코드에서 "검색" 버튼을 눌러 폼을 보냈어요. 코드를 읽고 빈칸을 채우세요.
+code: |
+  <form action="/books">
+    <label for="title">책 제목</label>
+    <input id="title" name="title" type="search" />
+    <button>검색</button>
+  </form>
+  <label for="memo">메모</label>
+  <input id="memo" name="memo" type="text" />
+spec:
+  mode: text
+  template: |
+    입력값을 보내는 주소: {{blank:action}}
+    폼을 보낼 때 함께 가지 않는 입력칸의 name: {{blank:outside}}
+  blanks:
+    - id: action
+      accept: ["/books"]
+      width: 12
+    - id: outside
+      accept: ["memo"]
+      caseSensitive: false
+      width: 10
+misconceptions: []
+hints:
+  - 폼의 입력값을 어디로 보낼지는 `form` 여는 태그의 속성이 정해요.
+  - 폼을 보내면 `form` 상자 **안에** 있는 입력칸의 값만 함께 가요. 두 입력칸이 각각 어디에 있는지 `</form>`의 위치를 기준으로 보세요.
+  - 주소는 `action`의 값이에요. `</form>` 아래에 있는 입력칸은 폼 밖이에요.
+explanation: |
+  정답은 **/books**와 **memo**예요.
+
+  - `action="/books"`가 입력값을 보낼 주소예요. "검색" 버튼은 `type`을 쓰지 않았으니 기본값 `submit`이라서, 누르면 폼을 이 주소로 보내요.
+  - `form`은 입력 요소들을 묶어 보내는 상자예요. `title` 입력칸은 `form` 안에 있어서 `title=…`으로 함께 가지만, `memo` 입력칸은 `</form>` 뒤, 즉 폼 **밖**에 있어서 함께 가지 않아요.
+
+  `title`을 썼다면 폼 안팎을 헷갈린 거예요. 입력칸이 화면에서 폼 가까이에 있어도, `<form>`과 `</form>` 사이에 있지 않으면 함께 가지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

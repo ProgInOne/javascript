@@ -1,0 +1,63 @@
+id: js-basics.loops.for.we-accumulator-pattern-0
+type: predict_output
+difficulty: 2
+usage: worked_example
+workedExampleStage: 0
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [accumulator, worked-example]
+estimatedSeconds: 100
+prompt: |
+  **완성된 풀이를 읽는 단계예요.** 아래 문제를 푼 코드가 있어요. 주석과 함께 한 줄씩 읽고, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+
+  > 저금통에 1일째는 1000원, 2일째는 2000원, … 처럼 날마다 (날짜 × 1000)원을 넣어요. 4일 동안 모은 돈의 합계를 출력하세요.
+spec:
+  lang: js
+  code: |
+    // 누적 패턴의 세 단계: 반복 앞에서 시작값 → 본문에서 쌓기 → 반복 뒤에서 결과 사용
+    // 1. 반복 "앞"에서 누적 변수를 0으로 만들어요 (아직 아무것도 모으지 않았으니까)
+    let total = 0;
+
+    // day를 1부터 4까지 1씩 늘리며 본문을 4번 실행해요 (1일째 ~ 4일째)
+    for (let day = 1; day <= 4; day++) {
+      // 2. 본문에서 이번 회차의 금액을 "더해서 다시 넣어요" (덮어쓰기가 아니에요)
+      total += day * 1000;
+    }
+
+    // 3. 반복이 모두 끝난 "뒤"에 합계를 한 번만 출력해요
+    console.log("4일 동안 모은 돈: " + total + "원");
+  answerKind: console
+  misconceptionByAnswer:
+    "4일 동안 모은 돈: 4000원": js.mc.accumulator-overwrite
+misconceptions: [js.mc.accumulator-overwrite, js.mc.accumulator-reset-in-loop, js.mc.accumulator-no-init]
+hints:
+  - 회차마다 `total`에 얼마가 더해지는지 표로 적어 보세요. `day`는 1, 2, 3, 4로 바뀌어요.
+  - "`+=`는 이전 값에 더해서 다시 넣어요. 1회차 뒤 `total`은 1000, 2회차 뒤에는 1000 + 2000이에요."
+  - "1000 + 2000 + 3000 + 4000을 계산하고, `console.log`는 반복 뒤에 한 번만 실행된다는 점을 기억하세요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  4일 동안 모은 돈: 10000원
+  ```
+
+  이 풀이의 뼈대는 **누적 패턴의 세 단계**예요.
+
+  | 회차 | `day` | 더하는 금액 | 회차 뒤 `total` |
+  |---|---|---|---|
+  | 1 | 1 | 1000 | 1000 |
+  | 2 | 2 | 2000 | 3000 |
+  | 3 | 3 | 3000 | 6000 |
+  | 4 | 4 | 4000 | 10000 |
+
+  1. `total`을 반복 **앞**에서 `0`으로 만들어요. 본문 안에서 만들면 회차마다 0으로 돌아가요.
+  1. 본문에서 `total += day * 1000`으로 이전 합계에 더해요. `total = day * 1000`이라고 쓰면 덮어써서 마지막 금액 4000만 남아요.
+  1. 반복이 끝난 **뒤** 합계를 한 번 출력해요.
+
+  다음 단계에서는 이 풀이의 핵심 줄을 직접 채워 볼 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,73 @@
+id: js-basics.operators.logical.we-short-circuit-0
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+  - { id: js.ops.nullish, weight: 0.3 }
+tags: [short-circuit, default-value, worked-example]
+estimatedSeconds: 90
+usage: worked_example
+workedExampleStage: 0
+prompt: |
+  **풀이 예제 1단계: 완성된 풀이 읽기**
+
+  문제: "별명이 비어 있으면 `"손님"`을 보여 주고, 로그인하지 않았으면 환영 문구를 출력하지 않으세요. 음량 0은 그대로 지켜야 해요."
+
+  아래는 이 문제를 푼 완성된 코드예요. 주석을 따라 한 줄씩 읽으면서, 실행하면 콘솔에 무엇이 출력될지 예측해 보세요.
+spec:
+  lang: js
+  code: |
+    // 1. 별명이 빈 문자열이에요. ""은 falsy라서 ||는 오른쪽 "손님"을 골라요.
+    const nickname = "";
+    const shown = nickname || "손님";
+    console.log(shown);
+    // 2. ||의 결과는 true/false가 아니라 고른 값 그 자체예요. 왼쪽이 truthy면 왼쪽을 골라요.
+    console.log("코코" || "손님");
+    // 3. &&는 왼쪽이 falsy면 오른쪽을 아예 계산하지 않아요. 그래서 오른쪽의 console.log가 실행되지 않아요.
+    const loggedIn = false;
+    loggedIn && console.log("환영해요!");
+    // 4. 왼쪽이 truthy면 &&는 오른쪽 값을 골라요.
+    console.log(true && "입장");
+    // 5. ||는 0도 falsy로 보고 기본값으로 바꿔요. 0을 지키려면 ??를 써요.
+    const volume = 0;
+    console.log(volume || 50, volume ?? 50);
+  answerKind: console
+  misconceptionByAnswer:
+    "손님\n코코\n환영해요!\n입장\n50 0": js.mc.right-side-always-runs
+    "true\ntrue\ntrue\n50 0": js.mc.logical-returns-boolean
+    "손님\n코코\n입장\n0 0": js.mc.or-default-keeps-zero
+misconceptions: [js.mc.logical-returns-boolean, js.mc.right-side-always-runs, js.mc.or-default-keeps-zero]
+hints:
+  - "falsy 값은 `false`, `0`, `\"\"`, `null`, `undefined`, `NaN`이에요. 줄마다 왼쪽 값이 truthy인지 falsy인지 먼저 정하세요."
+  - "`||`는 왼쪽이 truthy면 왼쪽, falsy면 오른쪽을 골라요. `&&`는 그 반대예요."
+  - "3번의 `loggedIn`은 false라서 `&&`가 오른쪽을 계산하지 않아요. 출력이 하나 줄어들어요."
+explanation: |
+  정답은 다음 네 줄이에요.
+
+  ```text
+  손님
+  코코
+  입장
+  50 0
+  ```
+
+  | 식 | 왼쪽 | 고른 값 |
+  |---|---|---|
+  | `nickname \|\| "손님"` | `""` (falsy) | 오른쪽 `"손님"` |
+  | `"코코" \|\| "손님"` | `"코코"` (truthy) | 왼쪽 `"코코"` |
+  | `loggedIn && console.log(...)` | `false` (falsy) | 왼쪽 `false`. 오른쪽은 **실행하지 않음** |
+  | `true && "입장"` | `true` (truthy) | 오른쪽 `"입장"` |
+  | `volume \|\| 50` / `volume ?? 50` | `0` | `50` / `0` |
+
+  이 풀이의 핵심은 세 가지예요.
+
+  - `&&`와 `||`는 왼쪽만 보고 결과가 정해지면 **오른쪽을 계산하지 않아요**(단락 평가). 그래서 "환영해요!"는 출력되지 않아요.
+  - 결과는 true/false가 아니라 왼쪽이나 오른쪽 **값 그 자체**예요.
+  - `||` 기본값은 0과 `""`도 바꿔 버려요. 0을 지키려면 `??`를 써요.
+
+  다음 단계에서는 기본값 식을 직접 채워 봐요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

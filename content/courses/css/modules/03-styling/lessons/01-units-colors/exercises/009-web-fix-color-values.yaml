@@ -1,0 +1,122 @@
+id: css.styling.units-colors.web-fix-color-values
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.colors.notation, weight: 1 }
+tags: [color, hex, rgb, web-task]
+estimatedSeconds: 220
+prompt: |
+  디자이너가 정해 준 색으로 머리말 띠를 꾸미려고 했는데, 배경도 글자 색도 적용되지 않았어요. 색 값을 쓰는 방법이 틀렸기 때문이에요.
+
+  `.header` 규칙의 **두 색 값만 고쳐서** 아래처럼 보이게 하세요. 속성 이름과 다른 선언은 바꾸지 마세요.
+
+  - 배경색: 빨강 37, 초록 99, 파랑 235를 섞은 파란색 (16진수로는 `#2563eb`)
+  - 글자 색: 흰색 (세 자리 16진수로 쓰려고 했어요)
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>우리 동네 도서관</title>
+              <style>
+                .header {
+                  background-color: #rgb(37 99 235);
+                  color: fff;
+                  padding: 16px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <h1>우리 동네 도서관</h1>
+              </div>
+              <p>오늘은 오후 6시까지 문을 열어요.</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>우리 동네 도서관</title>
+              <style>
+                .header {
+                  background-color: rgb(37 99 235);
+                  color: #fff;
+                  padding: 16px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <h1>우리 동네 도서관</h1>
+              </div>
+              <p>오늘은 오후 6시까지 문을 열어요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: header-blue
+      description: 머리말 띠의 배경색이 파란색(rgb(37 99 235), #2563eb)이어야 합니다.
+      requirement: 파란 배경
+      visible: true
+      selector: .header
+      expect:
+        computed:
+          background-color: { color: "#2563eb" }
+    - kind: css
+      id: title-white
+      description: 머리말 제목의 글자 색이 흰색이어야 합니다.
+      requirement: 흰 글자
+      visible: true
+      selector: .header h1
+      expect:
+        computed:
+          color: { color: "#ffffff" }
+    - kind: css
+      id: body-unchanged
+      description: 머리말 밖의 문단 글자 색은 검은색 그대로여야 합니다.
+      requirement: 다른 곳은 그대로
+      visible: true
+      selector: body > p
+      expect:
+        computed:
+          color: { color: "#000000" }
+    - kind: css
+      id: padding-kept
+      description: 머리말 띠의 안쪽 여백(16px)은 그대로여야 합니다.
+      requirement: 다른 선언은 그대로
+      selector: .header
+      expect:
+        computed:
+          padding-top: { px: { value: 16 } }
+misconceptions: []
+hints:
+  - 브라우저는 이해할 수 없는 색 값을 오류 없이 무시해요. 두 값이 각각 어떤 표기법을 쓰려고 한 것인지 보세요.
+  - "`rgb()` 표기는 앞에 아무 기호도 붙이지 않아요. 16진수 표기는 반드시 `#`로 시작해요."
+  - "배경색 값에서는 기호 하나를 지우고, 글자 색 값에는 기호 하나를 붙이면 돼요."
+explanation: |
+  예시 정답은 두 값을 아래처럼 고치는 거예요.
+
+  ```css
+  background-color: rgb(37 99 235);
+  color: #fff;
+  ```
+
+  - `#rgb(37 99 235)`는 16진수 표기의 `#`와 `rgb()` 표기를 섞어서 어느 쪽으로도 읽을 수 없어요. `rgb(37 99 235)`처럼 `#` 없이 쓰거나, 같은 색을 16진수 `#2563eb`로 써요(37 = 25, 99 = 63, 235 = eb).
+  - `fff`는 `#`가 없어서 색 이름도 16진수도 아니에요. `#fff`라고 쓰면 각 자리를 두 번씩 쓴 `#ffffff`, 곧 흰색이에요. `white`라고 써도 같아요.
+
+  색 값이 잘못되면 그 선언만 조용히 무시되므로, 색이 안 바뀌면 표기법부터 확인해 보세요. 글자 색은 상속되므로 `.header`에 준 흰색을 안쪽 `h1`이 물려받아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

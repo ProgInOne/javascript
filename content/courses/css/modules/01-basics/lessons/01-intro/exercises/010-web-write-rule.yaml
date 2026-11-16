@@ -1,0 +1,124 @@
+id: css.basics.intro.web-write-rule
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.intro.rule-structure, weight: 1 }
+tags: [css-rule, declaration, web-task]
+estimatedSeconds: 200
+prompt: |
+  빵집 안내 페이지의 가격 문단(`class="price"`)을 눈에 띄게 꾸미려고 해요. `style` 요소 안에 **규칙 하나**를 써서 가격 문단 두 개가 아래처럼 보이게 하세요.
+
+  1. 글자 색: 주황색(`orange`)
+  1. 글자 크기: `24px`
+
+  HTML(`body`)은 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>동네 빵집</title>
+              <style>
+                /* 여기에 규칙을 쓰세요 */
+              </style>
+            </head>
+            <body>
+              <h1>동네 빵집</h1>
+              <p>소금빵</p>
+              <p class="price">2,500원</p>
+              <p>단팥빵</p>
+              <p class="price">2,000원</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>동네 빵집</title>
+              <style>
+                .price {
+                  color: orange;
+                  font-size: 24px;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>동네 빵집</h1>
+              <p>소금빵</p>
+              <p class="price">2,500원</p>
+              <p>단팥빵</p>
+              <p class="price">2,000원</p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: price-orange
+      description: 가격 문단 두 개의 글자 색이 모두 주황색이어야 합니다.
+      requirement: 주황색 글자
+      visible: true
+      selector: .price
+      all: true
+      expect:
+        computed:
+          color: { color: "#ffa500" }
+      misconceptionIfFail: css.mc.semicolon-optional
+    - kind: css
+      id: price-size
+      description: 가격 문단 두 개의 글자 크기가 모두 24px이어야 합니다.
+      requirement: 24px 글자
+      visible: true
+      selector: .price
+      all: true
+      expect:
+        computed:
+          font-size: { px: { value: 24 } }
+      misconceptionIfFail: css.mc.value-in-quotes
+    - kind: css
+      id: names-unchanged
+      description: 빵 이름 문단의 글자 색은 바뀌지 않아야 합니다.
+      requirement: 다른 문단은 그대로
+      visible: true
+      selector: "p:not(.price)"
+      all: true
+      expect:
+        computed:
+          color: { color: "#000000" }
+    - kind: dom
+      id: body-kept
+      description: 가격 문단 두 개는 그대로 있어야 합니다.
+      requirement: HTML은 그대로
+      selector: p.price
+      expect:
+        count: 2
+misconceptions: [css.mc.semicolon-optional, css.mc.value-in-quotes]
+hints:
+  - 규칙은 "선택자 + 중괄호 안의 선언들"이에요. 가격 문단 두 개는 같은 클래스를 가지고 있어요.
+  - "선택자는 `.price`예요. 중괄호 안에 `color`와 `font-size` 선언을 하나씩 써요."
+  - "선언은 `속성: 값;` 모양이고, 두 선언 모두 끝에 세미콜론을 붙여요. 값은 따옴표 없이 `orange`, `24px`로 써요."
+explanation: |
+  예시 정답은 아래 규칙이에요.
+
+  ```css
+  .price {
+    color: orange;
+    font-size: 24px;
+  }
+  ```
+
+  - 선택자 `.price`가 `class="price"`인 문단 두 개를 모두 골라요.
+  - 선언 두 개는 각각 `속성: 값;` 모양이에요. 첫 선언 끝의 세미콜론을 빠뜨리면 두 선언이 하나로 이어 읽혀 **둘 다** 무시돼요.
+  - `"orange"`처럼 값을 따옴표로 감싸거나 `24`처럼 단위를 빼면 그 선언은 잘못된 값으로 무시돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

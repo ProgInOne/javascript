@@ -12,4 +12,4 @@ objectives:
   - rem과 em이 기준으로 삼는 글자 크기를 구분하고, 중첩된 em의 크기를 계산할 수 있다.
   - 이름·16진수·rgb 표기로 원하는 색을 쓰고, 서로 다른 표기가 같은 색인지 판단할 수 있다.
 practice:
-  targetCount: 8
+  targetCount: 9

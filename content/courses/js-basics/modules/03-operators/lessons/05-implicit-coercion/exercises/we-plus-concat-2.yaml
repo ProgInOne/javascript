@@ -1,0 +1,94 @@
+id: js-basics.operators.implicit-coercion.we-plus-concat-2
+type: implement_function
+difficulty: 3
+concepts:
+  - { id: js.conv.plus-concat, weight: 1 }
+  - { id: js.conv.to-number, weight: 0.3 }
+tags: [plus-concat, coercion, worked-example, write-code]
+estimatedSeconds: 240
+usage: worked_example
+workedExampleStage: 2
+prompt: |
+  **풀이 예제 3단계: 직접 풀기**
+
+  입력창에서 받은 `aText`(글자 `"7"`)와 숫자 `b`(3)로 계산하려고 해요. 시작 코드의 변수를 이용해 이어서 쓰세요.
+
+  1. 두 값을 **숫자로 더한** 결과를 변수 `sum`에 담으세요.
+  1. 두 값을 `+`로 **이어 붙인** 결과를 변수 `joined`에 담으세요.
+  1. 두 값을 `*`로 곱한 결과를 변수 `product`에 담으세요.
+  1. 세 값을 아래처럼 문장으로 출력하세요. 문장은 `+`로 이어 붙여 만드세요.
+
+  ```text
+  합: 10
+  붙이기: 73
+  곱: 21
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const aText = "7";
+          const b = 3;
+
+          // 여기에 sum, joined, product를 만들고 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const aText = "7";
+          const b = 3;
+
+          // 여기에 sum, joined, product를 만들고 출력하세요.
+          const sum = Number(aText) + b;
+          const joined = aText + b;
+          const product = aText * b;
+          console.log("합: " + sum);
+          console.log("붙이기: " + joined);
+          console.log("곱: " + product);
+  checks:
+    - kind: console
+      id: output
+      description: "\"합: 10\", \"붙이기: 73\", \"곱: 21\"이 차례로 출력되어야 합니다."
+      requirement: 세 문장 출력
+      expect:
+        lines: ["합: 10", "붙이기: 73", "곱: 21"]
+      misconceptionIfFail: js.mc.plus-string-adds
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고, sum은 숫자 10, joined는 문자열 "73", product는 숫자 21이어야 합니다.
+      requirement: 계산한 값
+      expect:
+        globals:
+          sum: { equals: 10 }
+          joined: { equals: "73" }
+          product: { equals: 21 }
+        noError: true
+misconceptions: [js.mc.plus-string-adds, js.mc.minus-string-fails]
+hints:
+  - 앞 단계처럼 더하기 전에 글자를 숫자로 바꿀지, 그대로 이어 붙일지 먼저 정하세요.
+  - "`*`는 문자열을 숫자로 바꿔 계산하니 그대로 곱해도 돼요. `+`만 이어 붙이기가 될 수 있어요."
+  - "`Number(aText) + b`, `aText + b`, `aText * b`를 각각 변수에 담고, `\"합: \" + sum`처럼 문장을 만들어 출력해요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  const sum = Number(aText) + b;
+  const joined = aText + b;
+  const product = aText * b;
+  console.log("합: " + sum);
+  console.log("붙이기: " + joined);
+  console.log("곱: " + product);
+  ```
+
+  - `Number(aText) + b`: `7 + 3`이라 숫자 `10`이에요.
+  - `aText + b`: `"7" + 3`이라 이어 붙여 문자열 `"73"`이에요.
+  - `aText * b`: `*`는 `"7"`을 숫자 7로 바꿔 계산해 `21`이에요.
+  - `"합: " + sum`: 문자열이 끼어 있으니 이어 붙여 `"합: 10"`이에요.
+
+  앞 두 단계와 같은 원리예요. 원래 연습으로 돌아가 다시 풀어 보세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

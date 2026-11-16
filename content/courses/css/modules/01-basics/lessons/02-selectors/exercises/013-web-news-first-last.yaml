@@ -1,0 +1,149 @@
+id: css.basics.selectors.web-news-first-last
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.selectors.pseudo-class, weight: 1 }
+  - { id: css.selectors.combinators, weight: 0.5 }
+tags: [selector, pseudo-class, first-child, last-child, web-task]
+estimatedSeconds: 300
+prompt: |
+  학교 소식 상자(`class="news"`)에 문단이 세 개 있어요. HTML은 바꾸지 말고, `style` 요소에 규칙을 써서 아래처럼 보이게 하세요.
+
+  1. 소식 상자의 **첫 번째 문단**: 글자 크기 `20px`
+  1. 소식 상자의 **마지막 문단**: 회색(`gray`) 글자
+
+  상자 밖의 문단(맨 아래 안내)은 바뀌면 안 돼요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>학교 소식</title>
+              <style>
+                .news {
+                  border: 1px solid #94a3b8;
+                  padding: 12px;
+                }
+                /* 여기에 규칙을 쓰세요 */
+              </style>
+            </head>
+            <body>
+              <div class="news">
+                <p>다음 주 수요일은 체육대회예요.</p>
+                <p>운동복을 꼭 챙겨 오세요.</p>
+                <p>비가 오면 다음 날로 미뤄요.</p>
+              </div>
+              <p>문의는 교무실로 해 주세요.</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>학교 소식</title>
+              <style>
+                .news {
+                  border: 1px solid #94a3b8;
+                  padding: 12px;
+                }
+                .news p:first-child {
+                  font-size: 20px;
+                }
+                .news p:last-child {
+                  color: gray;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="news">
+                <p>다음 주 수요일은 체육대회예요.</p>
+                <p>운동복을 꼭 챙겨 오세요.</p>
+                <p>비가 오면 다음 날로 미뤄요.</p>
+              </div>
+              <p>문의는 교무실로 해 주세요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: first-big
+      description: 소식 상자의 첫 번째 문단 글자 크기가 20px이어야 합니다.
+      requirement: 첫 문단은 크게
+      visible: true
+      selector: ".news p:nth-child(1)"
+      expect:
+        computed:
+          font-size: { px: { value: 20 } }
+      misconceptionIfFail: css.mc.hover-space
+    - kind: css
+      id: last-gray
+      description: 소식 상자의 마지막 문단 글자 색이 회색이어야 합니다.
+      requirement: 마지막 문단은 회색
+      visible: true
+      selector: ".news p:nth-child(3)"
+      expect:
+        computed:
+          color: { color: "#808080" }
+      misconceptionIfFail: css.mc.hover-space
+    - kind: css
+      id: middle-unchanged
+      description: 소식 상자의 가운데 문단은 기본 크기(16px)와 검은색 그대로여야 합니다.
+      requirement: 가운데 문단은 그대로
+      visible: true
+      selector: ".news p:nth-child(2)"
+      expect:
+        computed:
+          font-size: { px: { value: 16 } }
+          color: { color: "#000000" }
+    - kind: css
+      id: outside-unchanged
+      description: 상자 밖의 안내 문단은 기본 크기(16px)와 검은색 그대로여야 합니다.
+      requirement: 상자 밖은 그대로
+      visible: true
+      selector: "body > p"
+      expect:
+        computed:
+          font-size: { px: { value: 16 } }
+          color: { color: "#000000" }
+      misconceptionIfFail: css.mc.descendant-vs-group
+    - kind: dom
+      id: html-kept
+      description: 문단에 클래스를 붙이지 않아야 합니다.
+      requirement: HTML은 그대로
+      selector: "p[class]"
+      expect:
+        count: 0
+      misconceptionIfFail: css.mc.pseudo-class-is-class
+misconceptions: [css.mc.hover-space, css.mc.pseudo-class-is-class, css.mc.descendant-vs-group]
+hints:
+  - 위치로 고르는 의사 클래스 두 개가 필요해요. 형제 중 첫 번째, 형제 중 마지막을 고르는 것이에요.
+  - "상자 밖에도 문단이 있어요. `p:last-child`만 쓰면 상자 밖 안내 문단도 골라져요. 그 문단도 `body` 안에서 마지막 자식이거든요. 상자 **안에 있는** 문단만 고르려면 자손 선택자를 써요."
+  - "규칙은 두 개예요. 하나는 \"소식 상자 안의, 형제 중 첫째인 p\", 다른 하나는 \"소식 상자 안의, 형제 중 마지막인 p\"를 골라요. 의사 클래스는 `p`에 띄우지 않고 붙여요."
+explanation: |
+  예시 정답은 아래 두 규칙이에요.
+
+  ```css
+  .news p:first-child {
+    font-size: 20px;
+  }
+  .news p:last-child {
+    color: gray;
+  }
+  ```
+
+  - `.news p`는 "소식 상자 안에 있는 p"예요. 앞에 `.news`를 붙이지 않으면 문서 어디서든 형제 중 마지막인 문단을 모두 골라요. 이 페이지에서는 상자 밖 안내 문단도 `body`의 마지막 자식이라 함께 회색이 되어 실패해요.
+  - `:first-child`, `:last-child`는 `p`에 **붙여** 써야 "첫째인 p", "마지막인 p"가 돼요. `.news p :first-child`처럼 띄우면 "p 안에 있는 첫 자식"을 찾아서 아무것도 고르지 못해요.
+  - 문단마다 클래스를 붙여도 화면은 같지만, 의사 클래스는 HTML을 고치지 않고 위치만으로 고를 수 있다는 게 장점이라 이 문제에서는 채점이 막아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

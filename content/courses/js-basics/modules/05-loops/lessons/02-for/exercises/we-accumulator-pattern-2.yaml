@@ -1,0 +1,76 @@
+id: js-basics.loops.for.we-accumulator-pattern-2
+type: implement_function
+difficulty: 3
+usage: worked_example
+workedExampleStage: 2
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+  - { id: js.loops.for, weight: 0.5 }
+tags: [accumulator, worked-example, write-code]
+estimatedSeconds: 270
+prompt: |
+  **직접 푸는 단계예요.** 앞 단계의 저금통 풀이와 같은 누적 패턴으로, 타일 개수를 세는 프로그램을 처음부터 작성하세요.
+
+  - 정사각형 타일 판을 1 × 1, 2 × 2, 3 × 3, 4 × 4, 5 × 5 크기로 하나씩 만들어요. 크기가 n인 판에는 타일이 n × n개 들어가요.
+  - `for` 문과 누적 변수 `tiles`로 필요한 타일 수를 모두 더하세요. 합계를 미리 계산해 숫자로 쓰지 마세요.
+  - 반복이 끝난 뒤 콘솔에 아래처럼 한 줄만 출력해요.
+
+  ```text
+  필요한 타일: 55개
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 누적 변수 tiles를 만들고, for 문으로 1 x 1부터 5 x 5까지 타일 수를 더하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 누적 변수 tiles를 만들고, for 문으로 1 x 1부터 5 x 5까지 타일 수를 더하세요.
+          let tiles = 0;
+          for (let n = 1; n <= 5; n++) {
+            tiles += n * n;
+          }
+          console.log("필요한 타일: " + tiles + "개");
+  checks:
+    - kind: console
+      id: output
+      description: 필요한 타일 수 55개가 한 줄로 출력되어야 합니다.
+      requirement: 합계 출력
+      expect:
+        lines: ["필요한 타일: 55개"]
+      misconceptionIfFail: js.mc.accumulator-reset-in-loop
+    - kind: program
+      id: tiles-variable
+      description: 반복이 끝난 뒤 tiles 변수에 합계가 들어 있어야 합니다.
+      requirement: 누적 변수 tiles
+      expect:
+        globals: { tiles: { equals: 55 } }
+        noError: true
+misconceptions: [js.mc.accumulator-reset-in-loop, js.mc.accumulator-overwrite, js.mc.accumulator-no-init]
+hints:
+  - 앞 단계의 저금통 풀이처럼 세 단계로 써요. 반복 앞에서 시작값, 본문에서 쌓기, 반복 뒤에서 출력.
+  - "`let tiles = 0;`을 반복 앞에 두고, 반복 변수를 1부터 5까지 바꾸면서 본문에서 그 크기의 타일 수(`n * n`)를 더해요."
+  - "본문은 `tiles += n * n;`, 반복 뒤에는 `console.log(\"필요한 타일: \" + tiles + \"개\");`예요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  let tiles = 0;
+  for (let n = 1; n <= 5; n++) {
+    tiles += n * n;
+  }
+  console.log("필요한 타일: " + tiles + "개");
+  ```
+
+  - 앞 단계 풀이와 같은 누적 패턴이에요. 1 + 4 + 9 + 16 + 25 = 55예요.
+  - `tiles`를 본문 안에서 만들면 회차마다 0으로 돌아가고, 반복 뒤에서 쓸 수도 없어요(블록 밖에서는 보이지 않아요).
+  - `tiles = n * n;`처럼 덮어쓰면 마지막 판의 25만 남아요.
+  - 출력을 본문 안에 두면 중간 합계가 다섯 줄 나와요. 결과는 반복 뒤에 한 번만 출력해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

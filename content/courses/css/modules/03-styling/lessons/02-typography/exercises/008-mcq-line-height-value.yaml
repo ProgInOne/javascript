@@ -1,0 +1,48 @@
+id: css.styling.typography.mcq-line-height-value
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: css.type.line-height, weight: 1 }
+tags: [line-height, typography]
+estimatedSeconds: 60
+prompt: |
+  글자 크기가 `18px`인 본문의 줄 사이를 넉넉하게 해서, **한 줄의 높이가 글자 크기의 1.6배**가 되게 하려고 해요. 알맞은 선언은 무엇인가요?
+code: |
+  .article {
+    font-size: 18px;
+    /* 여기에 줄 높이 선언 */
+  }
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: "line-height: 1.6;"
+    - id: b
+      text: "line-height: 1.6px;"
+      misconception: css.mc.line-height-unitless-px
+      rationale: 단위를 붙이면 배수가 아니라 실제 길이 1.6px이 돼요. 한 줄이 1.6px밖에 안 되어 줄이 서로 겹쳐요.
+    - id: c
+      text: "line-height: 18px;"
+      rationale: 한 줄의 높이가 글자 크기와 같은 18px이 되어 줄 사이 여유가 거의 없어요. 1.6배는 28.8px이에요.
+    - id: d
+      text: "font-size: 1.6;"
+      rationale: "`font-size`는 글자 크기를 바꾸는 속성이고, 단위 없는 숫자를 받지 않아 무시돼요. 줄 높이는 `line-height`로 정해요."
+  correct: a
+misconceptions: [css.mc.line-height-unitless-px]
+hints:
+  - 한 줄이 차지하는 높이를 정하는 속성은 `line-height`예요.
+  - "`line-height`에 단위 없는 숫자를 쓰면 무엇을 뜻할까요?"
+  - 단위 없는 숫자는 글자 크기에 곱하는 **배수**예요. `px`를 붙이면 실제 길이가 돼요.
+explanation: |
+  정답은 **`line-height: 1.6;`** 이에요.
+
+  `line-height`에 단위 없는 숫자를 쓰면 글자 크기에 곱하는 배수가 돼요. 18px × 1.6 = 28.8px이 한 줄의 높이예요.
+
+  - `1.6px`처럼 단위를 붙이면 배수가 아니라 1.6픽셀이라는 실제 길이예요. 한 줄이 너무 낮아져 글자가 위아래로 겹쳐요.
+  - `18px`는 글자 크기와 똑같은 줄 높이라 줄 사이가 빽빽해요.
+  - `font-size`는 줄 높이가 아니라 글자 크기를 정하는 속성이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -10,7 +10,7 @@
   diagnosticHint: 인터넷 연결을 끊으면 처음 가 보는 사이트가 열리지 않는 이유를 떠올려 본다.
   remediation:
     lessonSection: html.basics.how-web-works#pitfalls
-    exercises: [html.basics.how-web-works.tf-page-in-browser, html.basics.how-web-works.mcq-request-response]
+    exercises: [html.basics.how-web-works.tf-page-in-browser, html.basics.how-web-works.mcq-request-response, html.basics.how-web-works.fill-request-response]
 
 - id: html.mc.html-is-programming
   concept: html.web.three-languages
@@ -20,7 +20,7 @@
   diagnosticHint: 하려는 일이 "무엇인가(내용)", "어떻게 보이나(모양)", "무엇을 하나(동작)" 중 어디에 속하는지 나눠 본다.
   remediation:
     lessonSection: html.basics.how-web-works#pitfalls
-    exercises: [html.basics.how-web-works.mcq-who-does-it, html.basics.how-web-works.multi-html-roles]
+    exercises: [html.basics.how-web-works.mcq-who-does-it, html.basics.how-web-works.multi-html-roles, html.basics.how-web-works.fill-three-languages]
 
 - id: html.mc.code-shown-as-is
   concept: html.web.rendering
@@ -30,7 +30,7 @@
   diagnosticHint: 태그는 브라우저에게 주는 표시이고, 사람에게 보여 줄 글자는 태그 사이의 내용이라는 점을 떠올린다.
   remediation:
     lessonSection: html.basics.how-web-works#pitfalls
-    exercises: [html.basics.how-web-works.mcq-tags-not-shown]
+    exercises: [html.basics.how-web-works.mcq-tags-not-shown, html.basics.how-web-works.fill-render-result]
 
 # ---- html.basics.document ----
 
@@ -42,7 +42,7 @@
   diagnosticHint: "\"요소 = 여는 태그 + 내용 + 닫는 태그\"로 나눠서 각 부분을 가리켜 본다."
   remediation:
     lessonSection: html.basics.document#pitfalls
-    exercises: [html.basics.document.mcq-element-parts]
+    exercises: [html.basics.document.mcq-element-parts, html.basics.document.fill-count-tags]
 
 - id: html.mc.attribute-shown-on-page
   concept: html.doc.attributes
@@ -52,7 +52,7 @@
   diagnosticHint: 화면에 보이는 글자가 태그 사이에 있는지, 태그 꺾쇠 안에 있는지 확인한다.
   remediation:
     lessonSection: html.basics.document#pitfalls
-    exercises: [html.basics.document.tf-attribute-shown]
+    exercises: [html.basics.document.tf-attribute-shown, html.basics.document.web-title-attribute]
 
 - id: html.mc.overlapping-tags
   concept: html.doc.nesting
@@ -62,7 +62,7 @@
   diagnosticHint: 여는 태그와 닫는 태그를 선으로 이어 봤을 때 선이 서로 엇갈리면 잘못된 중첩이다.
   remediation:
     lessonSection: html.basics.document#pitfalls
-    exercises: [html.basics.document.mcq-nesting-order, html.basics.document.fill-close-nested]
+    exercises: [html.basics.document.fill-close-nested, html.basics.document.web-fix-overlap]
 
 - id: html.mc.head-is-visible
   concept: html.doc.skeleton
@@ -104,7 +104,7 @@
   diagnosticHint: 책의 목차에서 "1장" 아래에 "1.1절" 없이 바로 "1.1.1"이 나오면 어색한 것과 같다.
   remediation:
     lessonSection: html.basics.text#pitfalls
-    exercises: [html.basics.text.mcq-heading-levels, html.basics.text.web-heading-outline]
+    exercises: [html.basics.text.mcq-heading-levels, html.basics.text.web-heading-outline, html.basics.text.fill-heading-outline]
 
 - id: html.mc.newline-in-source
   concept: html.text.paragraphs
@@ -124,7 +124,7 @@
   diagnosticHint: 화면 낭독기가 읽어 줄 때도 그 강조가 필요한지 생각해 본다.
   remediation:
     lessonSection: html.basics.text#pitfalls
-    exercises: [html.basics.text.mcq-strong-or-em]
+    exercises: [html.basics.text.mcq-strong-or-em, html.basics.text.web-strong-and-em]
 
 # ---- html.content.links-images ----
 
@@ -178,7 +178,7 @@
   diagnosticHint: 항목들을 묶는 "목록 상자"가 코드 어디에 있는지 찾아본다.
   remediation:
     lessonSection: html.content.lists-tables#pitfalls
-    exercises: [html.content.lists-tables.fill-wrap-list, html.content.lists-tables.web-recipe-steps]
+    exercises: [html.content.lists-tables.fill-wrap-list, html.content.lists-tables.web-recipe-steps, html.content.lists-tables.web-picnic-list]
 
 - id: html.mc.th-is-bold-td
   concept: html.content.tables
@@ -188,7 +188,7 @@
   diagnosticHint: 그 칸이 다른 칸들의 "이름표" 역할을 하는지 생각해 본다.
   remediation:
     lessonSection: html.content.lists-tables#pitfalls
-    exercises: [html.content.lists-tables.mcq-th-meaning, html.content.lists-tables.multi-table-parts]
+    exercises: [html.content.lists-tables.mcq-th-meaning, html.content.lists-tables.multi-table-parts, html.content.lists-tables.fill-table-header-row]
 
 # ---- html.content.forms ----
 
@@ -230,7 +230,7 @@
   diagnosticHint: 버튼을 눌렀더니 입력한 내용이 사라지고 페이지가 다시 열렸다면 폼이 보내진 것이다.
   remediation:
     lessonSection: html.content.forms#pitfalls
-    exercises: [html.content.forms.tf-button-submits, html.content.forms.fill-button-type]
+    exercises: [html.content.forms.tf-button-submits, html.content.forms.fill-button-type, html.content.forms.web-button-types]
 
 # ---- html.semantics.landmarks (lesson) ----
 
@@ -262,7 +262,7 @@
   diagnosticHint: 그 묶음만 잘라서 다른 사이트에 붙여도 혼자서 뜻이 통하는지 생각해 본다. 통하면 article이다.
   remediation:
     lessonSection: html.semantics.landmarks#pitfalls
-    exercises: [html.semantics.landmarks.mcq-article-or-section, html.semantics.landmarks.multi-article-candidates]
+    exercises: [html.semantics.landmarks.mcq-article-or-section, html.semantics.landmarks.web-news-articles]
 
 - id: html.mc.div-is-wrong
   concept: html.semantics.div-vs-semantic

@@ -1,0 +1,89 @@
+id: js-basics.values.data-types.we-typeof-2
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.types.typeof, weight: 1 }
+tags: [typeof, worked-example, write-code]
+estimatedSeconds: 200
+usage: worked_example
+workedExampleStage: 2
+prompt: |
+  **풀이 예제 3단계: 직접 풀기**
+
+  시작 코드에 변수 세 개가 있어요. 그 아래에 이어서 쓰세요.
+
+  1. `height`, `nickname`, `isAdult` 세 값의 자료형을 **한 줄에** `typeof`로 출력하세요.
+  1. `typeof height`의 결과를 변수 `kind`에 담고, `kind`의 자료형을 출력하세요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  number string boolean
+  string
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const height = 172.5;
+          const nickname = "true";
+          const isAdult = true;
+
+          // 1. 세 값의 자료형을 한 줄에 출력하세요.
+
+          // 2. typeof height의 결과를 kind에 담고, kind의 자료형을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const height = 172.5;
+          const nickname = "true";
+          const isAdult = true;
+
+          // 1. 세 값의 자료형을 한 줄에 출력하세요.
+          console.log(typeof height, typeof nickname, typeof isAdult);
+          // 2. typeof height의 결과를 kind에 담고, kind의 자료형을 출력하세요.
+          const kind = typeof height;
+          console.log(typeof kind);
+  checks:
+    - kind: console
+      id: output
+      description: "\"number string boolean\"과 \"string\"이 차례로 출력되어야 합니다."
+      requirement: typeof 결과 출력
+      expect:
+        lines: ["number string boolean", "string"]
+      misconceptionIfFail: js.mc.typeof-reads-content
+    - kind: program
+      id: kind
+      description: 프로그램이 오류 없이 끝나고, kind에는 문자열 "number"가 들어 있어야 합니다.
+      requirement: typeof 결과 담기
+      expect:
+        globals:
+          kind: { equals: "number" }
+        noError: true
+      misconceptionIfFail: js.mc.typeof-result-not-string
+misconceptions: [js.mc.typeof-reads-content, js.mc.typeof-result-not-string]
+hints:
+  - 앞 단계 풀이처럼 `typeof 값`을 쓰면 자료형 이름을 얻어요. 쉼표로 나눠 console.log에 여러 개를 넘길 수 있어요.
+  - "nickname은 내용이 true처럼 보여도 따옴표로 감싼 글자예요. 172.5 같은 소수도 따로 자료형이 있지 않아요."
+  - "`console.log(typeof height, typeof nickname, typeof isAdult);`를 쓰고, `const kind = typeof height;` 다음 `console.log(typeof kind);`를 써요."
+explanation: |
+  예시 정답은 다음과 같아요.
+
+  ```js
+  console.log(typeof height, typeof nickname, typeof isAdult);
+  const kind = typeof height;
+  console.log(typeof kind);
+  ```
+
+  - `172.5`는 소수지만 정수와 같은 `number`예요.
+  - `"true"`는 따옴표로 감쌌으니 `string`, `true`는 `boolean`이에요.
+  - `kind`에는 문자열 `"number"`가 들어 있어서 `typeof kind`는 `string`이에요.
+
+  앞 두 단계와 같은 원리예요. 원래 연습으로 돌아가 다시 풀어 보세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

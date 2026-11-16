@@ -12,4 +12,4 @@ objectives:
   - min-width·max-width 미디어 쿼리가 어떤 화면 너비에서 적용되는지 판단할 수 있다.
   - 좁은 화면용 기본 스타일에 min-width 미디어 쿼리를 더하는 모바일 우선 CSS를 쓸 수 있다.
 practice:
-  targetCount: 8
+  targetCount: 10
