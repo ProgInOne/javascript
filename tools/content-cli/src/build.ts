@@ -9,6 +9,7 @@ import {
 } from '@proginone/content-schema';
 import { CONTENT_DB_SCHEMA_VERSION, CONTENT_DDL } from '@proginone/content-schema/db';
 import Database from 'better-sqlite3';
+import { writePublishedSlugs } from './aliases.ts';
 import { checkContent, projectExerciseOf, type SpecValidator } from './check.ts';
 import type { Diagnostics } from './diagnostics.ts';
 import { canonical, sha256 } from './hash.ts';
@@ -31,6 +32,13 @@ export interface BuildOptions {
    * before human review. Never use for a release build (D-004: only approved content ships).
    */
   includeDrafts?: boolean;
+  /** Also run the quantity rules (`CheckOptions.quantity`). */
+  quantity?: boolean;
+  /**
+   * Rewrite `<root>/.published-slugs.txt` after a successful build (aliases.ts). The CLI does
+   * this for release builds; never with `includeDrafts`.
+   */
+  updatePublishedSlugs?: boolean;
 }
 
 export interface BuildResult {
@@ -87,7 +95,8 @@ export function buildContent(root: string, outFile: string, options: BuildOption
     source,
     diagnostics,
     lessons: compiled,
-  } = checkContent(root, { validateSpec: kit.validateSpec });
+    aliases,
+  } = checkContent(root, { validateSpec: kit.validateSpec, quantity: options.quantity ?? false });
   const stats = {
     courses: 0,
     lessons: 0,
@@ -314,6 +323,8 @@ export function buildContent(root: string, outFile: string, options: BuildOption
         }
       }
 
+      for (const row of aliases) insert('content_id_aliases', { ...row });
+
       for (const { data: m } of source.misconceptions) {
         insert('misconceptions', {
           id: m.id,
@@ -343,6 +354,7 @@ export function buildContent(root: string, outFile: string, options: BuildOption
     if (fk.length > 0) throw new Error(`content.db foreign key violations: ${fk.length}`);
     db.close();
     renameSync(tmp, outFile);
+    if (options.updatePublishedSlugs && !includeDrafts) writePublishedSlugs(source);
     return { diagnostics, written: true, stats };
   } catch (e) {
     if (db.open) db.close();

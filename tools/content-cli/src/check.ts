@@ -4,6 +4,7 @@ import {
   type ConceptSource,
   type ExerciseSource,
 } from '@proginone/content-schema';
+import { checkAliases, type AliasRow } from './aliases.ts';
 import { parseDiagrams } from './diagram.ts';
 import { Diagnostics } from './diagnostics.ts';
 import {
@@ -14,6 +15,7 @@ import {
 } from './expectations.ts';
 import { loadContent, type ContentSource, type LessonNodeSource } from './load.ts';
 import { compileLessonMdx, type CompiledLesson } from './mdx.ts';
+import { checkQuantities } from './quantity.ts';
 
 /** Validates a type-specific exercise spec. Supplied by exercise-kit's registry. */
 export type SpecValidator = (
@@ -37,6 +39,11 @@ export interface CheckOptions {
   expectations?: ExpectationStore;
   /** Leave `spec.expected` empty and report nothing about it (first pass of `check --run`). */
   skipExpectations?: boolean;
+  /**
+   * Also run the FR-EX-09 quantity and type-mix rules (quantity.ts). The CLI turns this on;
+   * library callers (unit tests with one-exercise fixtures) leave it off.
+   */
+  quantity?: boolean;
 }
 
 export interface CheckResult {
@@ -44,6 +51,8 @@ export interface CheckResult {
   diagnostics: Diagnostics;
   /** Compiled lesson bodies keyed by lesson id (reused by `build`). */
   lessons: Map<string, CompiledLesson>;
+  /** `content_id_aliases` rows from `aliases.yaml` (aliases.ts). */
+  aliases: AliasRow[];
 }
 
 /**
@@ -271,6 +280,9 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
       );
   }
 
+  if (options.quantity) checkQuantities(source, diag);
+  const aliases = checkAliases(source, diag);
+
   // Mermaid syntax of every <Diagram>, in one child process (diagram.ts).
   parseDiagrams(diagrams.map((d) => d.code)).forEach(({ error }, i) => {
     const d = diagrams[i];
@@ -281,7 +293,7 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
       );
   });
 
-  return { source, diagnostics: diag, lessons };
+  return { source, diagnostics: diag, lessons, aliases };
 }
 
 /**

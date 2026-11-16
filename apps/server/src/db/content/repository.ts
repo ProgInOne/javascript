@@ -11,6 +11,7 @@ import type {
 import { and, asc, count, desc, eq, inArray, or, sql } from 'drizzle-orm';
 import { drizzle, type BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { openSqlite } from '../user/connection.ts';
+import type { ContentAlias } from '../user/content-aliases.ts';
 
 export class ContentDbError extends Error {
   constructor(message: string) {
@@ -155,6 +156,21 @@ export class ContentRepository {
 
   close(): void {
     this.#close();
+  }
+
+  /** Old slug → current slug mappings (FR-CUR-06, db/user/content-aliases.ts). */
+  aliases(): ContentAlias[] {
+    return this.#db
+      .select({
+        oldId: t.contentIdAliases.oldId,
+        newId: t.contentIdAliases.newId,
+        aliasKind: t.contentIdAliases.aliasKind,
+        isPrimary: t.contentIdAliases.isPrimary,
+        entityKind: t.contentIdAliases.entityKind,
+      })
+      .from(t.contentIdAliases)
+      .orderBy(asc(t.contentIdAliases.oldId), asc(t.contentIdAliases.newId))
+      .all();
   }
 
   /**

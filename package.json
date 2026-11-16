@@ -23,6 +23,7 @@
     "content:check:run": "node tools/content-cli/src/cli.ts check --dir content --run",
     "content:build": "node tools/content-cli/src/cli.ts build --dir content --out content/dist/content.db",
     "content:build:dev": "node tools/content-cli/src/cli.ts build --dir content --out content/dist/content.db --include-drafts",
+    "content:report": "node tools/content-cli/src/cli.ts report --dir content",
     "build": "pnpm -r --if-present build",
     "check:deps": "depcruise apps packages tools --config .dependency-cruiser.cjs",
     "check:links": "node tools/check-links.mjs",

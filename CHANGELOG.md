@@ -5,6 +5,13 @@
 
 ## [Unreleased]
 
+### Added
+
+- 문제 수량·유형 구성비 검사(M7, FR-EX-09, D-056): `content-cli check`·`check --run`·`build`가 PRD 문제 수량 기준을 단원마다 검사. 승인된 문제만 세고, 규칙은 단원 문항 수(JS `core` 20~30·그 밖의 JS 10~20·HTML/CSS 6~12), 주 개념당 최솟값(JS `core` 6·`standard` 4·`minor` 3, HTML/CSS 2), 범주 구성비(±10%p, 난이도 4 이상의 구현·디버깅은 응용), 유형 다양성(4종 이상·한 유형 50% 이하, HTML/CSS 핵심 면제), 단원 평가의 모듈 개념 포함. HTML/CSS는 경고, JS는 현재 콘텐츠가 통과하는 규칙만 오류이고 유형 구성비는 위반 4단원이 남아 경고(고친 뒤 오류로 전환). 범위를 넘는 단원은 늘 경고
+- `content-cli report`(`pnpm content:report`, `--markdown`): 단원별 승인 수/기준, 범주별 수·비율, 난이도 1~5 분포, 유형 수, 초안 수, 수량 기준 위반 목록
+- 콘텐츠 별칭(M7, FR-CUR-06, D-057): `content/aliases.yaml`(`rename`·`merge`·`split`)을 검사해 content.db `content_id_aliases`에 기록. 앱이 시작할 때와 백업을 복원한 뒤 이전 slug를 가리키는 학습 기록(시도·힌트·숙련도·기억·복습 기록·오답 노트·진도·오개념 관찰·목표·튜터 범위)을 새 slug로 옮김(바꿀 기록이 있을 때만 먼저 백업, 같은 별칭 집합은 한 번만 적용). 숙련도·기억처럼 개념마다 한 행인 기록은 새 slug에 기록이 없을 때만 옮김
+- 공개 slug 목록 `content/.published-slugs.txt`(D-057): `content-cli build`(초안 제외)가 갱신하고, `content-cli check`는 목록에 있던 slug가 별칭 없이 사라지거나 승인됐던 문제가 초안으로 돌아가면 경고
+
 ### Changed
 
 - CI를 저장소 변수 `CI_RUNNER`로 self-hosted runner와 GitHub 호스트 runner 사이에서 전환할 수 있게 함(D-055). self-hosted(macOS)에서는 e2e·시각 회귀를 Docker로 같은 Playwright 이미지에서 실행하고, 릴리스 묶기가 bsdtar에서도 동작

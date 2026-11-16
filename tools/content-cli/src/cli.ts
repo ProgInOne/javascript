@@ -3,8 +3,10 @@ import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { buildContent } from './build.ts';
 import { checkContent } from './check.ts';
-import type { Diagnostics } from './diagnostics.ts';
+import { Diagnostics } from './diagnostics.ts';
 import { exerciseKit } from './kit.ts';
+import { loadContent } from './load.ts';
+import { renderReport } from './report.ts';
 import { runCheck, type RunCheckItem } from './run-check.ts';
 import { BrowserMissingError, startBrowserRunner } from './verify/browser.ts';
 
@@ -13,7 +15,10 @@ const USAGE = `사용법: content-cli <명령> [옵션]
 명령
   check    콘텐츠 스키마와 참조 무결성을 검사합니다
            --run을 붙이면 헤드리스 Chromium에서 앱과 같은 러너로 실행 검증도 합니다
-  build    검사 후 content.db를 만듭니다
+  build    검사 후 content.db를 만듭니다. --include-drafts 없이 빌드하면 공개 slug 목록
+           (<dir>/.published-slugs.txt)도 갱신합니다
+  report   단원별 문제 수·유형 구성비·난이도 분포 표와 수량 기준 위반 목록을 출력합니다
+           (FR-EX-09, 검토용. 항상 종료 코드 0)
 
 옵션
   --dir <경로>   콘텐츠 디렉터리 (기본: ./content)
@@ -24,6 +29,7 @@ const USAGE = `사용법: content-cli <명령> [옵션]
                  check --run: 동시에 실행할 브라우저 페이지 수 (기본: 4)
   --out <경로>   build 결과 파일 (기본: ./content/dist/content.db)
   --strict       경고도 실패로 처리합니다
+  --markdown     report: 표를 Markdown으로 출력합니다(PR 설명에 붙이기용)
   --include-drafts
                  build에 검토되지 않은(draft) 문제도 넣습니다. 개발 전용이며
                  배포용 content.db에는 쓰지 않습니다`;
@@ -38,6 +44,7 @@ const { positionals, values } = parseArgs({
     frozen: { type: 'boolean', default: false },
     concurrency: { type: 'string', default: '4' },
     'include-drafts': { type: 'boolean', default: false },
+    markdown: { type: 'boolean', default: false },
     help: { type: 'boolean', short: 'h', default: false },
   },
 });
@@ -100,6 +107,7 @@ async function checkWithRun(): Promise<boolean> {
       runner,
       frozen: values.frozen,
       concurrency,
+      quantity: true,
     });
     if (!result.ran) {
       console.log('스키마 검사에서 오류가 나서 실행 검증을 하지 않았습니다.\n');
@@ -123,6 +131,7 @@ if (command === 'check' && values.run) {
 if (command === 'check') {
   const { diagnostics } = checkContent(resolve(values.dir), {
     validateSpec: exerciseKit.validateSpec,
+    quantity: true,
   });
   process.exit(report(diagnostics) ? 1 : 0);
 }
@@ -136,7 +145,12 @@ if (command === 'build') {
         '      개발용 빌드입니다. 배포·실사용 content.db는 이 옵션 없이 빌드하세요.\n',
     );
   }
-  const result = buildContent(resolve(values.dir), out, { kit: exerciseKit, includeDrafts });
+  const result = buildContent(resolve(values.dir), out, {
+    kit: exerciseKit,
+    includeDrafts,
+    quantity: true,
+    updatePublishedSlugs: !includeDrafts,
+  });
   const failed = report(result.diagnostics);
   if (result.written) {
     const s = result.stats;
@@ -147,6 +161,18 @@ if (command === 'build') {
       console.warn(`경고  미검토(draft) 문제 ${s.includedDrafts}개가 포함된 개발용 빌드입니다.`);
   }
   process.exit(failed || !result.written ? 1 : 0);
+}
+
+if (command === 'report') {
+  const diagnostics = new Diagnostics(resolve(values.dir));
+  const source = loadContent(resolve(values.dir), diagnostics);
+  if (diagnostics.errorCount > 0) {
+    console.log('콘텐츠를 읽다가 오류가 났습니다. 먼저 content-cli check로 고치세요.\n');
+    report(diagnostics);
+    process.exit(1);
+  }
+  console.log(renderReport(source, values.markdown ? 'markdown' : 'text'));
+  process.exit(0);
 }
 
 console.error(`알 수 없는 명령입니다: ${command}\n\n${USAGE}`);

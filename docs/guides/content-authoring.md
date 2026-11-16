@@ -13,7 +13,8 @@
 
 | 명령 | 무엇을 | 언제 |
 |---|---|---|
-| `pnpm content:check` | 스키마, ID·참조 무결성, 레슨 섹션·MDX 컴포넌트, 유형별 스펙 정적 검사 | 파일을 고칠 때마다 |
+| `pnpm content:check` | 스키마, ID·참조 무결성, 레슨 섹션·MDX 컴포넌트, 유형별 스펙, 문제 수량·유형 구성비, 별칭·사라진 slug 정적 검사 | 파일을 고칠 때마다 |
+| `pnpm content:report` | 단원별 문제 수·유형 구성비·난이도 분포 표와 수량 기준 위반 목록 | 검토할 때, 무엇을 더 만들지 정할 때 |
 | `pnpm content:check:run` | 헤드리스 Chromium에서 앱과 같은 러너로 문제와 예제를 실행해 검증하고, 예측 문제의 기대값을 기록 | 코드가 있는 문제·예제를 쓰거나 고친 뒤, 커밋 전 |
 | `pnpm content:build` | 검사 후 승인된(`approved`) 문제만 담은 `content/dist/content.db` 생성 | 배포·실사용 빌드 |
 | `pnpm content:build:dev` | 검토 전(`draft`) 문제까지 담은 개발용 `content.db` 생성 | 앱에서 초안을 확인할 때 |
@@ -52,6 +53,8 @@ content/
 │                           └── 002-predict-quoted-expression.yaml
 ├── .generated/
 │   └── predict-expected.json         # content:check:run이 만듦. 직접 고치지 않음
+├── aliases.yaml                      # 바꾼 slug의 별칭 (필요할 때만)
+├── .published-slugs.txt              # content:build가 갱신하는 공개 slug 목록. 직접 고치지 않음
 └── dist/                             # 빌드 결과 (git에 올리지 않음)
 ```
 
@@ -76,7 +79,45 @@ content/
 
 - 모듈·단원 ID의 마지막 조각은 숫자 접두사를 뺀 디렉터리 이름과 같아야 합니다.
 - 문제 ID는 자기 단원 ID로 시작해야 합니다.
-- ID는 학습 기록(`user.db`)이 가리키므로 **공개한 뒤에는 바꾸지 않습니다.**
+- ID는 학습 기록(`user.db`)이 가리키므로 **공개한 뒤에는 바꾸지 않습니다.** 꼭 바꿔야 하면 아래 [slug를 바꿀 때](#slug를-바꿀-때-aliasesyaml)대로 별칭을 남깁니다.
+
+### slug를 바꿀 때 (aliases.yaml)
+
+커리큘럼을 고치다 개념 이름을 바로잡거나 단원을 나누고 합쳐야 하면, 이전 slug와 새 slug를 `content/aliases.yaml`에 적습니다([D-057](/docs/decisions.md)).
+앱은 시작할 때 학습 기록(시도, 숙련도, 복습 일정, 오답 노트, 진도)을 새 slug로 옮기므로 기록이 끊기지 않습니다.
+
+```yaml
+# content/aliases.yaml
+- from: js.fn.returns            # 이전 slug(콘텐츠에서 사라진 것)
+  to: js.fn.return               # 현재 slug
+  kind: rename                   # rename | merge | split
+- from: js.conv.to-number-a      # 합쳐진 slug마다 한 항목
+  to: js.conv.to-number
+  kind: merge
+- from: js.conv.to-number-b
+  to: js.conv.to-number
+  kind: merge
+- from: js-basics.functions.basics
+  to: [js-basics.functions.function-basics, js-basics.functions.return-and-side-effects]
+  kind: split
+  primary: js-basics.functions.function-basics   # 진도를 이어받을 단원
+  since: 2026.12.01.1            # 선택. 생략하면 빌드하는 pack.yaml 버전
+```
+
+- `from`은 콘텐츠에 더는 없어야 하고, `to`는 현재 콘텐츠에 있어야 합니다. 대상 종류(과정·모듈·단원·개념·오개념·문제)는 `to`로 정해지며, `from`도 그 종류의 slug 형식이어야 합니다.
+- 이미 있는 별칭의 대상 이름을 또 바꾸면 이전 항목의 `to`도 최종 slug로 고칩니다(별칭은 이어서 따라가지 않습니다).
+- 숙련도처럼 개념마다 한 행인 기록은 새 slug에 기록이 없을 때만 옮겨집니다. `merge`로 합칠 때 두 개념의 숙련도를 다시 계산하는 기능은 아직 없습니다(시도 기록은 모두 옮겨짐).
+
+**공개 slug 목록**: `content/.published-slugs.txt`는 마지막 `pnpm content:build`가 공개한 slug 목록입니다(`<종류> <slug>` 한 줄씩).
+`content:check`는 이 목록에 있던 slug가 콘텐츠에서 사라졌는데 별칭이 없으면 경고합니다.
+
+```text
+경고  .published-slugs.txt  공개했던 개념 js.fn.returns이(가) 사라졌습니다. 이름을 바꿨다면 aliases.yaml에 기록하고, 의도한 삭제라면 pnpm content:build로 목록을 갱신하세요
+```
+
+- 이름을 바꿨다면 `aliases.yaml`에 기록합니다.
+- 정말 지운 것이라면(예: 잘못 만든 문제) `pnpm content:build`로 목록을 갱신해 원본과 함께 커밋합니다. 목록 diff가 "무엇을 지웠는지"의 검토 기록입니다.
+- 목록은 `content:build`(초안 제외 빌드)만 갱신합니다. `content:build:dev`와 `content:check`는 쓰지 않습니다. 목록 파일이 없으면 비교하지 않습니다.
 
 자세한 근거는 설계 문서의 [slug 규칙](/docs/design/content-and-exercises.md#slug-규칙)을 봅니다.
 
@@ -602,6 +643,26 @@ spec:
 오류 0개, 경고 8개
 ```
 
+### 문제 수량과 유형 구성비 (FR-EX-09)
+
+`content:check`(와 `check:run`, `build`)는 [PRD 문제 수량 기준](/docs/product/prd.md#문제-수량-기준)을 단원마다 검사합니다([D-056](/docs/decisions.md)).
+**승인된 문제만** 셉니다. 초안은 세지 않으므로 검토가 끝나야 수량을 채운 것입니다.
+
+| 규칙 | 기준 | JavaScript | HTML/CSS |
+|---|---|---|---|
+| `unit-count` | 단원 연습 문항 수: JS `core` 단원 20~30, 그 밖의 JS 단원 10~20, HTML/CSS 6~12 (`lesson.yaml`의 `importance`) | 오류 | 경고 |
+| `unit-count-over` | 위 범위를 넘음 | 경고 | 경고 |
+| `concept-min` | 주 개념(가중치 1)으로 태깅된 연습 문항 수: JS `core` 6·`standard` 4·`minor` 3, HTML/CSS 2. 부 개념 태그는 세지 않음 | 오류 | 경고 |
+| `type-mix` | 범주 비율이 목표 ±10%p 안: JS 개념 확인 25·코드 이해 25·디버깅 20·구현 20·응용 10, HTML/CSS 35·25·10·30·0~5 | **경고**(콘텐츠를 고친 뒤 오류로 전환) | 경고 |
+| `type-diversity` | 유형 4종 이상, 한 유형이 50% 이하(HTML/CSS 핵심 과정은 면제, D-028) | 오류 | — |
+| `assessment-coverage` | 단원 평가에 그 모듈이 소개한 개념마다 승인된 평가 문항 1개 이상 | 오류 | 경고 |
+
+- 범주: 단일·복수 선택, 참/거짓 = 개념 확인 / 실행 결과 예측, 빈칸, 파슨스, 오류 줄 찾기 = 코드 이해 / 버그 수정 = 디버깅 / 함수 구현, 웹 실습 = 구현 / **난이도 4 이상의 구현·디버깅 = 응용**(구현·디버깅 대신 응용으로 셈).
+- 평가 단원의 한 번 출제 문항 수(10~20 권장)는 단원 평가 검사가, 프로젝트 단원은 프로젝트 검사가 따로 봅니다. 수량 규칙은 일반 단원(`kind: lesson`)에 적용합니다.
+- 메시지는 규칙 이름으로 시작합니다: `[type-mix] 유형 구성비가 ±10%p를 벗어났습니다: 디버깅 0개 0% (목표 20%)`.
+
+`pnpm content:report`는 단원별 표(승인 수/기준, 범주별 수·비율, 난이도 1~5 분포, 유형 수, 초안 수, 기준 충족)와 위반 목록을 출력합니다. 검토할 때나 무엇을 더 만들지 정할 때 씁니다. `--markdown`을 붙이면(`node tools/content-cli/src/cli.ts report --dir content --markdown`) PR 설명에 붙일 수 있는 표가 나옵니다.
+
 ### content:check:run (실행 검증)
 
 헤드리스 Chromium을 띄우고 웹 앱과 **같은 러너**(`packages/runner`의 셸·하네스, 셸별 `*.localhost` 사이트)로 실행합니다.
@@ -649,6 +710,7 @@ spec:
 `content:build`는 검사를 통과하면 `content/dist/content.db`를 원자적으로(임시 파일 후 이름 바꾸기) 만듭니다. 검사 오류가 있으면 아무것도 쓰지 않습니다.
 
 - 승인된 문제만 들어갑니다([D-004](/docs/decisions.md)).
+- `aliases.yaml`의 별칭을 `content_id_aliases`에 쓰고, 성공하면 공개 slug 목록(`content/.published-slugs.txt`)을 갱신합니다. 바뀌었으면 커밋합니다.
 - `content:build:dev`(`--include-drafts`)는 초안도 넣은 개발용 빌드입니다. `content_meta`에 `includes_drafts = 1`이 기록됩니다. 배포·실사용에는 쓰지 않습니다.
 
 ## 검토와 승인

@@ -8,6 +8,7 @@ import { createProvider } from './ai/provider.ts';
 import { ConfigError, loadConfig } from './config/load.ts';
 import { ENV_KEYS } from './config/schema.ts';
 import { UserDb } from './db/user/connection.ts';
+import { resolveContentAliases } from './db/user/content-aliases.ts';
 import { ensureLearner } from './db/user/learners.ts';
 import { appMeta } from './db/user/schema.ts';
 import { markInterruptedMessages } from './db/user/tutor.ts';
@@ -73,7 +74,11 @@ const backups = new BackupService({
   appVersion: APP_VERSION,
   log,
   maintenance,
-  migrate: (backup) => migrateUserDb(userDb, { backup }),
+  // A restored backup may predate content renames: resolve aliases after migrating it.
+  migrate: async (backup) => {
+    await migrateUserDb(userDb, { backup });
+    await applyContentAliases(backup);
+  },
   // Restore and reset stop running tutor turns first (data-model.md#복원-절차).
   interrupt: () => tutorRef?.cancelAll(),
 });
@@ -112,12 +117,27 @@ if (content.available) {
     .onConflictDoUpdate({ target: appMeta.key, set: { value: packVersion } })
     .run();
   log.info({ packVersion }, 'content.db loaded');
+  await applyContentAliases(() => backups.create('pre-migration').then((b) => b.path));
 } else {
   log.warn(
     { path: config.contentDbPath },
     '학습 콘텐츠(content.db)가 없습니다. `pnpm content:build`를 실행하세요.',
   );
 }
+/**
+ * Moves user.db records from renamed/merged/split content slugs to the current ones (FR-CUR-06,
+ * D-057). A failure is logged and leaves the records as they were (they show as archived).
+ */
+async function applyContentAliases(backup: () => Promise<string>): Promise<void> {
+  if (!content.available) return;
+  try {
+    const result = await resolveContentAliases(() => userDb.sqlite, content.repo.aliases(), backup);
+    if (result) log.info(result, 'content aliases applied to user.db');
+  } catch (e) {
+    log.error({ err: e }, 'content alias resolution failed; records keep their old slugs');
+  }
+}
+
 // Replies left `streaming` by an abnormal exit (docs/design/system-architecture.md#앱-시작-절차).
 const interrupted = markInterruptedMessages(userDb.orm);
 if (interrupted > 0) log.info({ interrupted }, 'tutor messages marked interrupted');

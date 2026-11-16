@@ -1661,6 +1661,13 @@ PRD [FR-EX-09](/docs/product/prd.md)의 목표를 다음과 같이 셉니다.
 1.  **빌드 보고서**: `content-cli check`는 개념·단원별 "목표 / 실제 / 부족" 표와 난이도·유형 분포를 출력합니다. JavaScript 기초에서 목표 미달은 **오류**, HTML/CSS 핵심에서는 **경고** 입니다.
 1.  **"더 풀기" 재고**: 학습자가 단원 풀을 소진해도 템플릿 변형과 런타임 생성으로 계속 문제를 제공할 수 있으므로, 사전 제작 수량은 "첫 학습 + 첫 2회 복습"에 충분한 양을 목표로 합니다.
 
+구현 메모 (M7, [D-056](/docs/decisions.md)):
+
+- `tools/content-cli/src/quantity.ts`가 규칙 6개(`unit-count`, `unit-count-over`, `concept-min`, `type-mix`, `type-diversity`, `assessment-coverage`)를 검사하고, `content-cli check`·`check --run`·`build`가 켭니다. 승인된 문제만 세고, 단원 풀은 연습 문항(평가·프로젝트·풀이 예제 제외), 개념별 수는 주 개념 태그로 모든 단원에서 셉니다. 단원 범위는 단원 `importance`로 고릅니다.
+- 범주 "응용"은 난이도 4 이상의 구현·디버깅이고, 그 문제는 구현·디버깅이 아니라 응용으로 셉니다(범주 합 100%).
+- 수준은 규칙마다 따로 둡니다(`QUANTITY_LEVELS`). HTML/CSS는 모두 경고, JS는 현재 콘텐츠가 통과하는 규칙만 오류이고 `type-mix`는 위반 4곳이 남아 경고입니다. 범위를 넘는 단원(`unit-count-over`)은 늘 경고입니다. 위 6번의 "목표 미달은 오류"는 이 전환이 끝나면 완전히 맞습니다.
+- 보고서는 `content-cli report [--markdown]`(`pnpm content:report`)로 따로 출력합니다. `check` 출력에는 위반만 나옵니다. 개념별 "목표 / 실제 / 부족" 중 목표는 PRD 최솟값만 검사하고, 남는 수를 중요도 비율로 나눈 목표는 검사하지 않습니다.
+
 ## 콘텐츠 제작 파이프라인
 
 결정 [D-004](/docs/decisions.md)에 따라, 초안은 AI가 대량으로 만듭니다.
@@ -1938,6 +1945,12 @@ slug는 바꾸지 않는 것이 원칙이지만, 커리큘럼 재구성(단원 �
 - `split`: 개념이 나뉘면 기존 시도를 각 문제의 새 개념 태그로 재배분해 다시 계산합니다. 단원 진도는 `primary`가 이어받습니다.
 - 콘텐츠에서 사라졌고 alias도 없는 ID를 참조하는 기록은 삭제하지 않고 "보관됨"으로 표시합니다([시스템 아키텍처 설계](/docs/design/system-architecture.md#데이터베이스-분리-원칙)).
 - 빌드는 이전 콘텐츠 팩의 slug 목록(`content/.published-slugs.txt`, 빌드가 갱신)과 비교해, alias 없이 사라진 slug가 있으면 **오류** 를 냅니다.
+
+구현 메모 (M7, [D-057](/docs/decisions.md)):
+
+- `aliases.yaml` 형식은 위 예시와 같습니다(`packages/content-schema/src/aliases.ts`). `entity_kind`는 쓰지 않고 `to`가 현재 콘텐츠에서 무엇인지로 정합니다. `since`는 생략하면 빌드하는 팩 버전입니다. 검사는 `tools/content-cli/src/aliases.ts`이고, 빌드가 `content_id_aliases`에 행을 씁니다(split은 대상마다 한 행).
+- 사라진 slug는 **경고** 로 시작합니다(위 문장의 "오류" 대신). 목록 파일은 `<종류> <slug>` 줄의 정렬된 텍스트이고, `content-cli build`(초안 제외)만 갱신합니다. 의도한 삭제는 목록을 갱신해 커밋하면 경고가 사라지고, 그 diff가 검토 기록입니다. 목록 파일이 없으면 비교하지 않습니다.
+- 서버는 앱 시작과 백업 복원 뒤 user.db의 콘텐츠 참조 열을 한 번에 새 slug로 갱신합니다(`apps/server/src/db/user/content-aliases.ts`, 바꿀 행이 있을 때만 사전 백업, 적용한 별칭 집합의 지문을 `app_meta`에 기록). `merge`·`split`의 숙련도·기억 재계산과 시도 재배분은 아직 없습니다: 키가 겹치는 행(학습자·개념마다 한 행)은 옮기지 않고 고아로 남기며, 이력 행(시도·증거·복습 기록)은 모두 옮깁니다. `rename`의 "데이터 마이그레이션"은 이 갱신입니다.
 
 ## 검토한 대안
 

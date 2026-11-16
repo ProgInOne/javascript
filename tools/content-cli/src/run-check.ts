@@ -44,6 +44,8 @@ export interface RunCheckOptions {
   frozen?: boolean;
   /** Verifications in flight at once. Default 4. */
   concurrency?: number;
+  /** Also run the quantity rules in the final check (`CheckOptions.quantity`). */
+  quantity?: boolean;
 }
 
 export interface RunCheckResult {
@@ -146,7 +148,11 @@ export async function runCheck(root: string, options: RunCheckOptions): Promise<
   let wrote: string | null = null;
   if (expectationsChanged && !options.frozen) wrote = writeExpectations(root, store);
 
-  const final = checkContent(root, { validateSpec: options.validateSpec, expectations: store });
+  const final = checkContent(root, {
+    validateSpec: options.validateSpec,
+    expectations: store,
+    quantity: options.quantity ?? false,
+  });
   if (expectationsChanged && options.frozen) {
     final.diagnostics.error(
       file,

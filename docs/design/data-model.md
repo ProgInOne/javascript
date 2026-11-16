@@ -92,7 +92,7 @@ flowchart LR
 | 학습자 | ULID. MVP는 단일 행 | | 다중 사용자 대비. 모든 학습 기록 테이블에 `learner_id` |
 
 - slug 규칙: `^[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+(?:-[a-z0-9]+)*)*$`, 최대 120자.
-- slug는 한 번 공개되면 바꾸지 않습니다. 이름을 바꾸거나 합치거나 나눠야 하면 `content/aliases.yaml`에 기록하고([콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#slug-변경과-alias)), 빌드가 `content_id_aliases` 테이블을 생성합니다. 서버는 참조를 해석할 때 별칭을 먼저 확인합니다.
+- slug는 한 번 공개되면 바꾸지 않습니다. 이름을 바꾸거나 합치거나 나눠야 하면 `content/aliases.yaml`에 기록하고([콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#slug-변경과-alias)), 빌드가 `content_id_aliases` 테이블을 생성합니다. 서버는 앱 시작 시 이전 slug를 가리키는 `user.db` 참조를 새 slug로 갱신합니다(아래 [콘텐츠 참조와 고아 처리](#콘텐츠-참조와-고아-처리)).
 - ULID는 서버에서 `ulid` 패키지의 monotonic 팩토리로 생성합니다. 같은 밀리초 안에서도 정렬이 보장됩니다.
 
 #### 시간 저장 형식
@@ -156,6 +156,8 @@ flowchart LR
 1. 각 ID를 `content_id_aliases`로 해석합니다. `rename`이면 `user.db`의 해당 값을 새 ID로 **갱신** 합니다(한 트랜잭션, 사전 백업 후). `merge`·`split`이면 참조를 갱신한 뒤(진도는 `is_primary` 대상이 이어받음) 해당 개념의 숙련도·기억 상태를 원본 시도에서 **재계산** 합니다([재계산](#재계산)).
 1. 해석되지 않는 ID는 `orphan_refs` 테이블에 기록합니다. 행은 지우지 않습니다.
 1. UI는 고아 참조를 가진 기록을 "보관된 콘텐츠"로 표시합니다. 숙련도 계산에서 고아 개념은 제외하되 기록은 유지합니다.
+
+구현 메모 (M7, [D-057](/docs/decisions.md)): 2단계는 `apps/server/src/db/user/content-aliases.ts`입니다. 팩 버전과 관계없이 앱 시작과 백업 복원 뒤마다 돌지만, 적용한 별칭 집합의 지문(`app_meta.content_aliases_applied`)이 같으면 건너뜁니다. 갱신할 열은 `CONTENT_REF_COLUMNS`에 모아 두고(새 테이블에 콘텐츠 ID 열을 더하면 여기에도 더함), 별칭의 `entity_kind`에 맞는 열만 바꿉니다. 바꿀 행이 있을 때만 `pre-migration` 백업을 먼저 만듭니다. 키가 겹치는 행은 `UPDATE OR IGNORE`로 옮기지 않고 남기며, `merge`·`split`의 재계산과 `orphan_refs` 기록(3단계)은 아직 없습니다. JSON 열 안의 ID는 바꾸지 않습니다.
 
 ### content.db 설계
 
