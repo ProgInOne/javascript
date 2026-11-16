@@ -110,7 +110,7 @@ jobs:
     name: e2e · visual · a11y
     if: vars.CI_RUNNER == 'self-hosted'
     runs-on: [self-hosted, proginone]
-    timeout-minutes: 30
+    timeout-minutes: 45 # Docker image start + full suite on a shared Mac; ~30 min under load
     steps:
       - uses: actions/checkout@v7
 
