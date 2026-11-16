@@ -58,6 +58,10 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # First-load bundle budget (D-064): byte counts, so not flaky like a timing threshold.
+      - name: Bundle budget
+        run: pnpm check:bundle
+
       - name: Docs links
         run: pnpm check:links
 

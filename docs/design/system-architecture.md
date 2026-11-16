@@ -482,9 +482,11 @@ sequenceDiagram
 릴리스 절차 (`v*` 태그 푸시 시 릴리스 워크플로가 실행):
 
 1.  CI 전체 통과 확인
-1.  `pnpm build`로 배포 번들 생성: 서버 번들, 웹 정적 파일, `content.db`, `package.json`(런타임 의존성만)
-1.  `proginone-<version>.tar.gz`와 SHA-256 체크섬 생성
+1.  `pnpm build`(웹 정적 파일)와 `pnpm content:build`(`content.db`). 서버는 TypeScript 소스를 Node가 직접 실행하므로 따로 묶지 않습니다
+1.  태그 커밋의 추적 파일(`git archive`)에 빌드 결과물을 더해 `proginone-<version>.tar.gz`와 SHA-256 체크섬 생성. 설치할 때 `pnpm install --prod`가 런타임 의존성만 받습니다
 1.  GitHub Release 생성, `CHANGELOG.md`의 해당 버전 섹션을 본문으로 사용
+
+상세 절차와 로컬 대체 절차는 [릴리스 절차 가이드](/docs/guides/release.md)에 있습니다.
 
 [conventional-commits]: https://www.conventionalcommits.org/ko/v1.0.0/
 [keep-a-changelog]: https://keepachangelog.com/ko/1.1.0/
@@ -502,7 +504,7 @@ sequenceDiagram
 - 새 버전이 처음 시작될 때 마이그레이션 전 백업을 만들고, 실패하면 자동 복구합니다.
 - 다운그레이드는 지원하지 않습니다. 대신 업그레이드 직전 백업으로 복원하는 방법을 가이드에 문서화합니다.
 
-설치, 업그레이드, 문제 해결 절차는 구현 단계에서 `docs/guides/`에 작성합니다.
+설치, 업그레이드, 되돌리기, 제거 절차는 [설치와 업그레이드 가이드](/docs/guides/install-and-upgrade.md)에 있습니다.
 
 ## 검토한 대안
 

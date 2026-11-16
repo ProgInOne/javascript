@@ -15,7 +15,10 @@ test.describe('practice mode', () => {
   test('reads a lesson, solves every type in the set and passes the lesson', async ({
     page,
     request,
+    browserName,
   }) => {
+    // Twelve items with real sandbox runs take ~25 s in Chromium; other engines are slower.
+    test.slow(browserName !== 'chromium');
     await page.goto(LESSON);
     await expect(page.getByRole('heading', { level: 1, name: '첫 프로그램' })).toBeVisible();
     await page.getByRole('link', { name: '연습 시작' }).click();
@@ -46,10 +49,14 @@ test.describe('practice mode', () => {
     await expect(summary.getByText(/→ 연습 중/).first()).toBeVisible();
     await expect(summary.getByText('이 단원의 개념을 모두 기준만큼 연습했어요')).toBeVisible();
     await expect(summary.getByRole('link', { name: '다음 단원: 변수 선언' })).toBeVisible();
-    await expectNoA11yViolations(page);
+    // Firefox with Fission: axe crashes the page while walking the runner's frames, and
+    // Playwright does not finish a reload of a page that had out-of-process frames
+    // (docs/reviews/2026-11-16-m7-compatibility.md). NFR-13 is checked in Chromium.
+    const fission = browserName === 'firefox';
+    if (!fission) await expectNoA11yViolations(page);
 
     // The URL holds the state: a reload shows the finished set again.
-    await page.reload();
+    if (!fission) await page.reload();
     await expect(page.getByRole('region', { name: /마쳤어요/ })).toBeVisible();
 
     // "한 번 더 연습" builds the next set.

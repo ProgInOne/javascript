@@ -73,6 +73,31 @@ const serverEnv = (port: number, dir: string, content = contentDb) => ({
 });
 const browser = { ...devices['Desktop Chrome'], channel: 'chromium' };
 
+// Compatibility check (NFR-10, docs/reviews/2026-11-16-m7-compatibility.md): the sandbox policy
+// suite and the core flows in Firefox and WebKit. Opt-in (`pnpm test:e2e:compat`), one browser
+// per run so each starts from fresh servers: the flows change the shared learner.
+const COMPAT_SPECS = [
+  /sandbox\.spec\.ts$/,
+  /sandbox-grading\.spec\.ts$/,
+  /flows\.spec\.ts$/,
+  /reading\.spec\.ts$/,
+  /practice\.spec\.ts$/,
+];
+const compatBrowsers = {
+  // Playwright's Firefox ships with site isolation (Fission) off; release Firefox has it on.
+  firefox: {
+    ...devices['Desktop Firefox'],
+    launchOptions: {
+      firefoxUserPrefs: { 'fission.autostart': true, 'fission.webContentIsolationStrategy': 1 },
+    },
+  },
+  webkit: devices['Desktop Safari'],
+};
+const compat = process.env['PW_COMPAT'] as keyof typeof compatBrowsers | undefined;
+if (compat !== undefined && !(compat in compatBrowsers)) {
+  throw new Error(`PW_COMPAT must be one of ${Object.keys(compatBrowsers).join(', ')}`);
+}
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: false,
@@ -91,10 +116,20 @@ export default defineConfig({
     timezoneId: 'Asia/Seoul',
     trace: 'retain-on-failure',
   },
-  projects: [
-    { name: 'setup', testMatch: /\.setup\.ts$/, use: browser },
-    { name: 'chromium', use: browser, dependencies: ['setup'] },
-  ],
+  projects: compat
+    ? [
+        { name: 'setup', testMatch: /\.setup\.ts$/, use: compatBrowsers[compat] },
+        {
+          name: compat,
+          testMatch: COMPAT_SPECS,
+          use: compatBrowsers[compat],
+          dependencies: ['setup'],
+        },
+      ]
+    : [
+        { name: 'setup', testMatch: /\.setup\.ts$/, use: browser },
+        { name: 'chromium', use: browser, dependencies: ['setup'] },
+      ],
   webServer: [
     {
       command: 'node ../apps/server/src/main.ts',

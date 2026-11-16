@@ -19,6 +19,8 @@
     "test:watch": "vitest",
     "test:e2e": "pnpm build && pnpm --filter @proginone/e2e test",
     "test:e2e:visual": "bash tools/e2e-docker.sh",
+    "test:e2e:compat": "pnpm build && PW_COMPAT=firefox pnpm --filter @proginone/e2e test && PW_COMPAT=webkit pnpm --filter @proginone/e2e test",
+    "perf": "pnpm build && pnpm --filter @proginone/e2e perf",
     "content:check": "node tools/content-cli/src/cli.ts check --dir content",
     "content:check:run": "node tools/content-cli/src/cli.ts check --dir content --run",
     "content:build": "node tools/content-cli/src/cli.ts build --dir content --out content/dist/content.db",
@@ -27,6 +29,7 @@
     "build": "pnpm -r --if-present build",
     "check:deps": "depcruise apps packages tools --config .dependency-cruiser.cjs",
     "check:links": "node tools/check-links.mjs",
+    "check:bundle": "node tools/check-bundle.mjs",
     "check:contrast": "pnpm --filter @proginone/ui check:contrast",
     "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm check:deps && pnpm check:contrast && pnpm test && pnpm check:links"
   },

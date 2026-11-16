@@ -2,6 +2,8 @@ import { expect, test, type Page } from '@playwright/test';
 import type { ObservationStep } from '../../packages/shared/src/run-protocol.ts';
 import {
   blockedRequests,
+  FISSION_FRAMES,
+  forEngine,
   consoleText,
   hostStats,
   html,
@@ -82,6 +84,7 @@ function attackReport(result: Awaited<ReturnType<typeof run>>): Record<string, s
 test.describe('runner: execution and observations', () => {
   test('js-console keeps value structure, observes functions and maps errors to files', async ({
     page,
+    browserName,
   }) => {
     await setup(page);
     const result = await run(page, {
@@ -170,11 +173,13 @@ test.describe('runner: execution and observations', () => {
     // The error is in b.js line 3 even though a loop guard was inserted before it on that line.
     const line = 'function boom() { for (const x of [1]) { null.y; } }';
     expect(result.errors).toHaveLength(1);
-    expect(result.errors[0]).toMatchObject({
-      phase: 'runtime',
-      name: 'TypeError',
-      position: { file: 'b.js', line: 3, column: line.indexOf('null.y') + 6 },
-    });
+    expect(result.errors[0]).toMatchObject(
+      forEngine(browserName, {
+        phase: 'runtime',
+        name: 'TypeError',
+        position: { file: 'b.js', line: 3, column: line.indexOf('null.y') + 6 },
+      }),
+    );
     expect(result.observations.map((o) => [o.id, o.status])).toEqual(
       [
         'settle',
@@ -305,39 +310,48 @@ test.describe('runner: execution and observations', () => {
     });
   });
 
-  test('dom mode maps errors to document lines', async ({ page }) => {
+  test('dom mode maps errors to document lines', async ({ page, browserName }) => {
     await setup(page);
     const result = await run(
       page,
       html('<!doctype html>\n<p>x</p>\n<script>\nconst a = 1;\nundefinedFn();\n</script>'),
     );
     expect(result.status).toBe('error');
-    expect(result.errors[0]).toMatchObject({
-      phase: 'runtime',
-      name: 'ReferenceError',
-      position: { file: 'index.html', line: 5, column: 1 },
-    });
+    expect(result.errors[0]).toMatchObject(
+      forEngine(browserName, {
+        phase: 'runtime',
+        name: 'ReferenceError',
+        position: { file: 'index.html', line: 5, column: 1 },
+      }),
+    );
   });
 
-  test('learner code runs in strict mode with learner line numbers (D-026)', async ({ page }) => {
+  test('learner code runs in strict mode with learner line numbers (D-026)', async ({
+    page,
+    browserName,
+  }) => {
     await setup(page);
     // Assigning to an undeclared variable throws instead of creating a global (V8 points at `=`).
     const undeclared = await run(page, js('let a = 1;\nnickname = "코코";\nconsole.log("after");'));
     expect(undeclared.status).toBe('error');
-    expect(undeclared.errors[0]).toMatchObject({
-      phase: 'runtime',
-      name: 'ReferenceError',
-      message: expect.stringContaining('nickname is not defined'),
-      position: { file: 'main.js', line: 2, column: 10 },
-    });
+    expect(undeclared.errors[0]).toMatchObject(
+      forEngine(browserName, {
+        phase: 'runtime',
+        name: 'ReferenceError',
+        message: expect.stringContaining('nickname is not defined'),
+        position: { file: 'main.js', line: 2, column: 10 },
+      }),
+    );
     expect(consoleText(undeclared)).toEqual([]);
 
     // Line 1 columns are not shifted by the directive.
     const lineOne = await run(page, js('let b = 1; missingName;'));
-    expect(lineOne.errors[0]).toMatchObject({
-      name: 'ReferenceError',
-      position: { file: 'main.js', line: 1, column: 12 },
-    });
+    expect(lineOne.errors[0]).toMatchObject(
+      forEngine(browserName, {
+        name: 'ReferenceError',
+        position: { file: 'main.js', line: 1, column: 12 },
+      }),
+    );
 
     // `this` in a plain function call is undefined; top-level `this` is still the global.
     const thisCheck = await run(
@@ -360,11 +374,13 @@ test.describe('runner: execution and observations', () => {
       page,
       html('<!doctype html>\n<p>x</p>\n<script>\nconst a = 1;\ncount = 2;\n</script>'),
     );
-    expect(dom.errors[0]).toMatchObject({
-      phase: 'runtime',
-      name: 'ReferenceError',
-      position: { file: 'index.html', line: 5, column: 7 },
-    });
+    expect(dom.errors[0]).toMatchObject(
+      forEngine(browserName, {
+        phase: 'runtime',
+        name: 'ReferenceError',
+        position: { file: 'index.html', line: 5, column: 7 },
+      }),
+    );
   });
 
   test('syntax errors come back before anything runs', async ({ page }) => {
@@ -377,9 +393,13 @@ test.describe('runner: execution and observations', () => {
     });
   });
 
-  test('syntax errors carry the browser engine message and position (D-030)', async ({ page }) => {
+  test('syntax errors carry the browser engine message and position (D-030)', async ({
+    page,
+    browserName,
+  }) => {
     const { expectNoLeaks } = await setup(page);
-    // CI runs Chromium, so V8's wording is asserted; other engines word these differently.
+    // CI runs Chromium, so V8's wording is asserted; other engines word these differently and
+    // report other columns (forEngine keeps file, line and kind there).
     const cases: [code: string, message: string, line: number, column: number][] = [
       ['console.log("하나");\nconsole.log("셋";', 'missing ) after argument list', 2, 13],
       ['let x = 1;\nlet y = x x;', "Unexpected identifier 'x'", 2, 11],
@@ -392,18 +412,20 @@ test.describe('runner: execution and observations', () => {
     ];
     for (const [code, message, line, column] of cases) {
       const result = await run(page, js(code));
-      expect(result, code).toMatchObject({
-        status: 'error',
-        console: [],
-        errors: [
-          {
-            phase: 'syntax',
-            name: 'SyntaxError',
-            message,
-            position: { file: 'main.js', line, column },
-          },
-        ],
-      });
+      expect(result, code).toMatchObject(
+        forEngine(browserName, {
+          status: 'error',
+          console: [],
+          errors: [
+            {
+              phase: 'syntax',
+              name: 'SyntaxError',
+              message,
+              position: { file: 'main.js', line, column },
+            },
+          ],
+        }),
+      );
       expect(result.errors, code).toHaveLength(1);
     }
 
@@ -416,18 +438,20 @@ test.describe('runner: execution and observations', () => {
         { path: 'b.js', language: 'js', content: 'function f() {\n  return 1;\n' },
       ],
     });
-    expect(files).toMatchObject({
-      status: 'error',
-      console: [],
-      errors: [
-        { phase: 'syntax', message: "Unexpected token '{'", position: { file: 'a.js', line: 2 } },
-        {
-          phase: 'syntax',
-          message: 'Unexpected end of input',
-          position: { file: 'b.js', line: 3 },
-        },
-      ],
-    });
+    expect(files).toMatchObject(
+      forEngine(browserName, {
+        status: 'error',
+        console: [],
+        errors: [
+          { phase: 'syntax', message: "Unexpected token '{'", position: { file: 'a.js', line: 2 } },
+          {
+            phase: 'syntax',
+            message: 'Unexpected end of input',
+            position: { file: 'b.js', line: 3 },
+          },
+        ],
+      }),
+    );
 
     // DOM mode: inline scripts map to document lines; handlers to their attribute.
     const dom = await run(
@@ -444,22 +468,24 @@ test.describe('runner: execution and observations', () => {
         ].join('\n'),
       ),
     );
-    expect(dom).toMatchObject({
-      status: 'error',
-      console: [],
-      errors: [
-        {
-          phase: 'syntax',
-          message: 'missing ) after argument list',
-          position: { file: 'index.html', line: 5, column: 13 },
-        },
-        {
-          phase: 'syntax',
-          message: 'missing ) after argument list',
-          position: { file: 'index.html', line: 7 },
-        },
-      ],
-    });
+    expect(dom).toMatchObject(
+      forEngine(browserName, {
+        status: 'error',
+        console: [],
+        errors: [
+          {
+            phase: 'syntax',
+            message: 'missing ) after argument list',
+            position: { file: 'index.html', line: 5, column: 13 },
+          },
+          {
+            phase: 'syntax',
+            message: 'missing ) after argument list',
+            position: { file: 'index.html', line: 7 },
+          },
+        ],
+      }),
+    );
 
     // Code around the error never runs: no request leaves the sandbox.
     const leak = await run(
@@ -475,7 +501,8 @@ test.describe('runner: execution and observations', () => {
     expect(consoleText(after)).toEqual(['ok']);
   });
 
-  test('a syntax check keeps the last preview on screen (D-030)', async ({ page }) => {
+  test('a syntax check keeps the last preview on screen (D-030)', async ({ page, browserName }) => {
+    test.skip(browserName === 'firefox', FISSION_FRAMES);
     await setup(page, { placement: 'visible' });
     const preview = (content: string) => ({ ...html(content), mode: 'preview' as const });
     await run(page, preview('<!doctype html><p id="p">미리보기</p>'));
@@ -489,7 +516,9 @@ test.describe('runner: execution and observations', () => {
 
   test('preview cancels links and form submissions with a notice instead of an error page', async ({
     page,
+    browserName,
   }) => {
+    test.skip(browserName === 'firefox', FISSION_FRAMES);
     const { appOrigin, expectNoLeaks } = await setup(page, { placement: 'visible' });
     const doc = `<!doctype html>
 <a id="away" href="other.html">다른 페이지</a> <a id="jump" href="#end">아래로</a>
@@ -644,7 +673,7 @@ report();
         '<script>f.addEventListener("submit", () => console.log("submit handler ran")); f.requestSubmit();</script>',
     ],
   ] as const) {
-    test(`nested document cannot navigate: ${name}`, async ({ page }) => {
+    test(`nested document cannot navigate: ${name}`, async ({ page, browserName }) => {
       const { appOrigin, expectNoLeaks } = await setup(page);
       const result = await run(
         page,
@@ -657,18 +686,25 @@ report();
         expect(result.errors.map((e) => e.name)).toEqual(['NavigationError']);
       }
       // Either the browser drops the navigation, or it swaps in an error page, which the
-      // harness reports as a NavigationError right away.
-      if (result.status !== 'completed') {
-        expect(result.status).toBe('error');
-        expect(result.errors.map((e) => e.name)).toContain('NavigationError');
+      // harness reports as a NavigationError right away. Firefox and WebKit instead leave the
+      // blocked script navigation (S11) pending until the run's time limit: still no request,
+      // only a slower, less specific result (docs/reviews/2026-11-16-m7-compatibility.md).
+      if (browserName !== 'chromium' && name.includes('S11')) {
+        expect(['completed', 'error', 'timeout']).toContain(result.status);
+      } else {
+        if (result.status !== 'completed') {
+          expect(result.status).toBe('error');
+          expect(result.errors.map((e) => e.name)).toContain('NavigationError');
+        }
+        expect(result.durationMs).toBeLessThan(2_000);
       }
-      expect(result.durationMs).toBeLessThan(2_000);
       await expectNoLeaks();
     });
   }
 
   test('grading fails an uncancelled form submission at once, the same way every run (S49)', async ({
     page,
+    browserName,
   }) => {
     const { expectNoLeaks } = await setup(page);
     // A form whose submit handler forgets preventDefault(), then steps that would pass if the
@@ -689,6 +725,7 @@ f.addEventListener('submit', (e) => { ${handler} document.getElementById('list')
 </script>`,
         { steps },
       );
+    let firstObservations: unknown;
     for (let i = 0; i < 5; i++) {
       const r = await run(page, doc(''));
       expect(r.status, `run ${String(i)}`).toBe('error');
@@ -699,8 +736,15 @@ f.addEventListener('submit', (e) => { ${handler} document.getElementById('list')
           message: expect.stringContaining('event.preventDefault()'),
         }),
       ]);
-      // Nothing after the submission is observed: the same observations every run.
-      expect(r.observations).toEqual([]);
+      // Nothing after the submission is observed: the same observations every run. WebKit
+      // records the dispatch step itself before the navigation is caught; still the same each run.
+      if (browserName === 'webkit') {
+        firstObservations ??= r.observations;
+        expect(r.observations).toEqual(firstObservations);
+        expect(r.observations.map((o) => o.id)).not.toContain('ev#e0');
+      } else {
+        expect(r.observations).toEqual([]);
+      }
     }
     // Clicking the submit button submits too.
     const click = await run(
@@ -745,6 +789,7 @@ f.dispatchEvent(new Event('submit', { cancelable: true }));
 
   test('cannot reach the app document, storage, top window, popups or downloads (S14–S19, S21–S23)', async ({
     page,
+    browserName,
   }) => {
     const { expectNoLeaks } = await setup(page);
     await page.evaluate(() => {
@@ -774,7 +819,9 @@ report();
     expect(out['topCookie']).toBe('blocked:SecurityError');
     expect(out['parentStorage']).toBe('blocked:SecurityError');
     expect(out['ownStorage']).toBe('ok:v'); // the in-memory shim
-    expect(out['open']).toBe('ok:null');
+    // Firefox throws InvalidAccessError instead of returning null; either way no window opens.
+    if (browserName === 'firefox') expect(out['open']).toMatch(/^(ok:null|blocked:)/);
+    else expect(out['open']).toBe('ok:null');
     expect(out['clipboard']).toMatch(/^(blocked|ok:none)/);
     expect(out['fullscreen']).toMatch(/^blocked/);
     expect(out['serviceWorker']).toMatch(/^(blocked|ok:none)/);
@@ -874,13 +921,14 @@ test.describe('runner: loops, output and integrity', () => {
     }
   });
 
-  test('infinite recursion reports a RangeError (S31)', async ({ page }) => {
+  test('infinite recursion reports a RangeError (S31)', async ({ page, browserName }) => {
     await setup(page);
     const code = 'function f() { f(); }\nf();';
     for (const plan of [js(code), html(`<script>${code}</script>`)]) {
       const r = await run(page, plan);
       expect(r.status).toBe('error');
-      expect(r.errors[0]?.name).toBe('RangeError');
+      // Firefox names it InternalError ("too much recursion").
+      expect(r.errors[0]?.name).toBe(browserName === 'firefox' ? 'InternalError' : 'RangeError');
     }
   });
 
@@ -968,7 +1016,15 @@ test.describe('runner: loops, output and integrity', () => {
 });
 
 test.describe('runner: shell lifecycle', () => {
-  test('a stuck shell is replaced on a new site and the next run works (S48)', async ({ page }) => {
+  test('a stuck shell is replaced on a new site and the next run works (S48)', async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(
+      browserName === 'webkit',
+      'WebKit runs the shell on the app thread: an uninstrumented loop freezes the app and the ' +
+        'watchdog with it, so there is nothing to recover (code-execution-sandbox.md).',
+    );
     await setup(page);
     await startFrameMonitor(page);
     const before = (await hostStats(page)).shellsCreated;
@@ -988,11 +1044,19 @@ test.describe('runner: shell lifecycle', () => {
     expect(await maxFrameGap(page)).toBeLessThan(200);
   });
 
-  test('per-shell sites are used, and the same-site shell is the fallback', async ({ page }) => {
+  test('per-shell sites are used, and the same-site shell is the fallback', async ({
+    page,
+    browserName,
+  }) => {
     await setup(page);
     expect(await hostStats(page)).toEqual({ shellsCreated: 1, usingFallback: false });
-    const shellFrame = page.frames().find((f) => f.url().includes('/sandbox/runner.html'));
-    expect(shellFrame?.url()).toMatch(/^http:\/\/[a-z0-9]+\.localhost:\d+\/sandbox\/runner\.html/);
+    // Playwright does not list Firefox's out-of-process frames (FISSION_FRAMES).
+    if (browserName !== 'firefox') {
+      const shellFrame = page.frames().find((f) => f.url().includes('/sandbox/runner.html'));
+      expect(shellFrame?.url()).toMatch(
+        /^http:\/\/[a-z0-9]+\.localhost:\d+\/sandbox\/runner\.html/,
+      );
+    }
 
     const other = await page.context().newPage();
     // Simulate a browser that does not resolve *.localhost.

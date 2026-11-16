@@ -37,3 +37,5 @@ e2e/**/*-diff.png
 e2e/test-results/
 e2e/playwright-report/
 content/dist/
+e2e/perf-results/
+e2e/test-results-*/

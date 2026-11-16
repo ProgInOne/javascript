@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "playwright test",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "perf": "playwright test -c perf.config.ts",
+    "smoke": "playwright test -c smoke.config.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",

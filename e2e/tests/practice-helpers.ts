@@ -154,13 +154,15 @@ async function answer(page: Page, exerciseId: string, firstSet: boolean) {
       await replaceCode(page, WEB_ANSWER);
       if (firstSet) {
         await main.getByRole('button', { name: /^실행/ }).click();
-        // The visible preview keeps the rendered document (sandboxed, opaque origin).
-        await expect(
-          page
-            .frameLocator('.pi-ex-preview__mount iframe')
-            .frameLocator('iframe')
-            .getByText('안녕하세요'),
-        ).toBeVisible();
+        // The visible preview keeps the rendered document (sandboxed, opaque origin). Playwright
+        // cannot look into Firefox's out-of-process frames (FISSION_FRAMES); grading still runs.
+        if (page.context().browser()?.browserType().name() !== 'firefox')
+          await expect(
+            page
+              .frameLocator('.pi-ex-preview__mount iframe')
+              .frameLocator('iframe')
+              .getByText('안녕하세요'),
+          ).toBeVisible();
       }
       await main.getByRole('button', { name: /확실해요|^제출/ }).click();
       break;

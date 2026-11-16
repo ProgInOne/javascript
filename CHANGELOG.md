@@ -19,6 +19,11 @@
 - 단원별 실제 학습 시간과 페이스 보정(M7, FR-GOAL-02, D-062): 하트비트에 화면의 단원(`lessonId`)을 실어, 진행 중인 단원의 읽기·실습 활동 시간을 `lesson_progress.active_ms`에 기록(마이그레이션 `0006`, 이전에 시작한 단원은 "모름"으로 두고 보정에서 뺌). 시간이 기록된 완료 단원이 5개 이상이면 실제/예상 비율의 중앙값(0.5~2.0)으로 목표 페이스의 남은 시간·제안 목표일과 오늘의 학습의 단원 블록 시간을 보정(목표 과정이 없어도 오늘의 학습은 보정). 가짜 시계 시나리오 테스트
 - 코드 초안의 서버 보관(M7, FR-CODE-06·NFR-04, D-063): 코드 문제·프로젝트·레슨 예제의 작성 중인 코드를 브라우저에 즉시, 서버에 2초 디바운스와 화면을 떠날 때 저장(`code_drafts`, 마이그레이션 `0006`; `GET·PUT·DELETE /code-drafts/exercises/:id`, `GET /lessons/:id/example-drafts`, `PUT·DELETE /lessons/:id/example-drafts/:exampleId`). 다시 열면 브라우저·서버 중 더 최근 편집으로 복원하고, 제출·채점 뒤에도 유지. 연습 세트 항목에서 쓴 초안은 그 항목에만 복원(복습에서는 시작 코드). 상태 문구 "저장됨 · 이 브라우저" → "저장됨". 크기 제한(파일 20개, 합계 256KiB)과 경로 검증, 서버는 코드를 실행하지 않음. 초기화에서 지워지고 백업에 포함, 복원·초기화 뒤 브라우저 초안 정리. E2E: 편집 → 브라우저 초안 없이 새로 고침 → 복원
 - 레슨 예제 수정(M7, D-063): 수정 가능한 `<RunnableExample>`(설계의 `editable` 기본값)에 "코드 수정"·"원래 코드로". 수정한 코드로 실행하고, 다시 열면 수정한 코드를 편집기로 보여 줌
+- 성능 측정 `pnpm perf`(M7, NFR-01~03, D-064): 프로덕션 빌드와 실제 콘텐츠 팩으로 첫 화면, 화면 전환, 결정론적 채점, 콘솔 첫 출력, 무한 루프 중 UI 응답성을 페이지 안에서 측정하고 중앙값이 목표를 넘으면 실패. `PERF_CPU_THROTTLE`로 CPU 감속 측정. 결과는 [성능 점검 기록](docs/reviews/2026-11-16-m7-performance.md)(모든 목표 통과)
+- 첫 화면 번들 예산 `pnpm check:bundle`(D-064): 첫 화면 JS·CSS의 gzip 크기를 예산(JS 220KiB, CSS 45KiB)과 비교. CI `check` 작업에서 빌드 직후 실행
+- 호환성 점검 `pnpm test:e2e:compat`(M7, NFR-10, D-064): Firefox(사이트 격리 켬)·WebKit에서 샌드박스 정책·핵심 흐름 E2E. 결과와 브라우저별 차이는 [호환성 점검 기록](docs/reviews/2026-11-16-m7-compatibility.md)
+- 설치된 앱 스모크 테스트 `pnpm --filter @proginone/e2e smoke`(`SMOKE_URL`): 실제 콘텐츠로 토큰 검사, 과정 → 레슨, 샌드박스 실행·채점, 백업 목록. Chromium·Firefox·WebKit
+- [설치와 업그레이드 가이드](docs/guides/install-and-upgrade.md)(요구 사항, 체크섬 확인, 설치, 첫 실행, 데이터 위치, 백업, 업그레이드와 마이그레이션·콘텐츠 팩 교체, 백업으로 되돌리기, 제거)와 [릴리스 절차 가이드](docs/guides/release.md)(버전 체계, CHANGELOG, 릴리스 PR, 태그, GitHub 호스트·self-hosted 릴리스 워크플로, v0.3.0에 쓴 로컬 대체 절차, 산출물 확인)
 
 ### Changed
 

@@ -29,6 +29,8 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 | [테스트 가이드](/docs/guides/testing.md) | 테스트 종류, 실행 방법, 작성 규칙, 시각 회귀 |
 | [콘텐츠 작성 가이드](/docs/guides/content-authoring.md) | 디렉터리 구조, 파일 형식, MDX 컴포넌트, 검사·실행 검증·빌드, 검토 |
 | [디버깅 가이드](/docs/guides/debugging.md) | 로그, 데이터 위치, AI·Codex 진단, 샌드박스·러너, DB·백업·마이그레이션, 자주 보는 오류 |
+| [설치와 업그레이드](/docs/guides/install-and-upgrade.md) | 릴리스 번들 내려받기·체크섬 확인·설치, 첫 실행, 데이터 위치, 백업, 업그레이드, 되돌리기, 제거 |
+| [릴리스 절차](/docs/guides/release.md) | 버전 체계, CHANGELOG, 릴리스 PR, 태그와 릴리스 워크플로, 로컬 대체 절차, 산출물 확인 |
 
 ## 제품 문서
 
@@ -73,6 +75,8 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 | [JS 기초 모듈 9 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-js-module-9-review.md) | 레슨 5개, 문제 108개 (`js-basics.objects`) |
 | [JS 기초 모듈 10 콘텐츠 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-js-module-10-review.md) | 레슨 3개, 문제 46개 (`js-basics.browser-intro`, 최종 프로젝트 포함) |
 | [함수·배열·객체 단원 평가 검토 (2026-11-15)](/docs/reviews/2026-11-15-m6-assessments-6-8-9-review.md) | 평가 문항 72개 (`functions-review`, `arrays-review`, `objects-review`) |
+| [M7 성능 점검 (2026-11-16)](/docs/reviews/2026-11-16-m7-performance.md) | NFR-01~03 측정(`pnpm perf`): 첫 화면, 화면 전환, 채점, 콘솔 첫 출력, 무한 루프 응답성, 첫 화면 번들 예산 |
+| [M7 호환성 점검 (2026-11-16)](/docs/reviews/2026-11-16-m7-compatibility.md) | NFR-10: Firefox·WebKit의 샌드박스 정책·핵심 흐름, macOS에서 v0.3.0 릴리스 번들 설치·실행 |
 
 ## 예정 문서
 
@@ -80,8 +84,4 @@ ProgInOne의 모든 문서 목록과 읽는 순서입니다.
 
 | 문서 | 작성 시점 |
 |---|---|
-| `docs/guides/getting-started.md`: 개발 환경 준비와 실행 | M1 (기반 구축) |
-| `docs/guides/testing.md`: 테스트 실행, 시각 회귀 기준 갱신 | M1 |
-| `docs/guides/install-and-upgrade.md`: 설치, 업그레이드, 백업 복원 | 첫 릴리스 전 |
-| `docs/guides/release.md`: 릴리스 절차 | 첫 릴리스 전 |
 | 패키지별 `README.md` | 각 패키지 생성 시 |

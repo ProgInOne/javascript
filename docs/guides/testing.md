@@ -3,7 +3,7 @@
 ProgInOne의 테스트 종류, 실행 방법, 작성 규칙입니다.
 
 - 대상: 기여자
-- 최종 수정: 2026-11-15
+- 최종 수정: 2026-11-16
 - 전략의 원천: [시스템 아키텍처 설계 테스트 전략](/docs/design/system-architecture.md#테스트-전략)
 
 ## 한눈에 보기
@@ -16,6 +16,9 @@ ProgInOne의 테스트 종류, 실행 방법, 작성 규칙입니다.
 | `pnpm test:e2e` | 빌드 후 Playwright 기능·접근성 테스트(로컬 Chromium) | UI·흐름을 바꿨을 때 |
 | `pnpm test:e2e:visual` | Docker 안에서 기능·접근성·시각 회귀 전체 | 화면 모습을 바꿨을 때 |
 | `pnpm test:e2e:visual --update` | 시각 회귀 기준 이미지 다시 만들기 | 의도한 화면 변경 후 |
+| `pnpm test:e2e:compat` | Firefox·WebKit에서 샌드박스 정책·핵심 흐름 | 러너·샌드박스를 바꿨을 때, 릴리스 전 |
+| `pnpm perf` | NFR-01~03 성능 측정(실제 콘텐츠, 목표 미달이면 실패) | 화면·러너 성능에 영향이 있을 때, 릴리스 전 |
+| `pnpm check:bundle` | 첫 화면 JS·CSS 번들 크기 예산(`pnpm build` 뒤) | 의존성을 추가했을 때. CI가 항상 실행 |
 
 CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Playwright Docker 이미지)를 실행합니다. 둘 다 통과해야 병합합니다.
 
@@ -70,6 +73,39 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 - E2E 콘텐츠는 `e2e/fixtures/content`(문제는 draft로 저작, `includeDrafts`로 빌드)입니다. 한 서버만 더 많은 콘텐츠가 필요하면 공유 콘텐츠를 바꾸지 않고 덮어쓰기 디렉터리를 둡니다(`buildFixtureContent(out, 'content-mastery')`: `e2e/fixtures/content-mastery`를 픽스처 위에 복사해 모듈 1 단원 평가를 더함, `mastered` 게이트 서버 전용). 예측 문제의 기대값은 `node tools/content-cli/src/cli.ts check --dir e2e/fixtures/content --run`으로 `.generated/predict-expected.json`에 기록해 커밋합니다. 실제 `content/`가 바뀌어도 E2E와 시각 기준 이미지가 흔들리지 않게 따로 둡니다.
 - **테스트 시계**: E2E 서버는 `PROGINONE_TEST_CLOCK_FILE=<데이터 위치>/clock-offset-ms`로 시작합니다. 서버의 학습 서비스(복습 일정, 하루 경계, 활동 시간)는 이 파일의 밀리초만큼 미래로 옮긴 시각을 씁니다(`tests/clock.ts`의 `shiftServerClock`). 학습 상태를 찍는 시각 회귀는 `setServerTime(고정 시각, 'journey')`으로 서버 시각을 고정해 날짜·요일이 실행일과 상관없이 같게 합니다. 이 환경 변수는 E2E 설정에서만 쓰며, 일반 실행에서는 설정하지 않습니다(설정되면 시작 로그에 경고).
 - 실패하면 `e2e/test-results/`의 트레이스를 `pnpm --filter @proginone/e2e exec playwright show-trace <trace.zip>`으로 엽니다.
+
+## 호환성 점검 (Firefox·WebKit)
+
+PRD NFR-10의 점검 범위 브라우저에서 샌드박스 정책 계열과 핵심 흐름을 확인합니다([호환성 점검 기록](/docs/reviews/2026-11-16-m7-compatibility.md)).
+
+```shell
+pnpm --filter @proginone/e2e exec playwright install firefox webkit   # 처음 한 번
+pnpm test:e2e:compat
+```
+
+- `PW_COMPAT=firefox|webkit`이면 E2E 설정이 그 브라우저의 프로젝트 하나만 만들고, `sandbox`·`sandbox-grading`·`flows`·`reading`·`practice` 스펙만 실행합니다. 흐름 테스트가 학습자 상태를 바꾸므로 브라우저마다 서버를 새로 띄웁니다(명령이 두 번 실행).
+- Firefox는 출시판처럼 사이트 격리(Fission)를 켠 설정으로 실행합니다.
+- 브라우저별로 알려진 차이로 판단해 건너뛰는 테스트는 `test.skip(browserName === …, '이유')`로 표시하고 호환성 점검 기록에 남깁니다.
+
+## 성능 측정
+
+```shell
+pnpm perf                      # 빌드 후 측정
+PERF_CPU_THROTTLE=4 pnpm --filter @proginone/e2e perf   # 4배 느린 CPU로(여유 확인)
+```
+
+- 프로덕션 빌드, 실제 콘텐츠 팩(승인된 문제만), 임시 데이터 위치의 새 학습자, 포트 4660(`PERF_PORT`)으로 Chromium에서 측정합니다(`e2e/perf.config.ts`, `e2e/perf/`).
+- 측정 구간은 페이지 안에서 잽니다: 시작은 클릭·키 입력 이벤트 또는 내비게이션 시작, 끝은 기대한 요소가 문서에 있는 첫 애니메이션 프레임입니다. Playwright 왕복 시간은 들어가지 않습니다.
+- 항목마다 여러 번(`PERF_ROUNDS`, 기본 5) 재고 중앙값을 목표와 비교합니다. 결과 JSON은 `e2e/perf-results/`(git 무시)에 남고 표로 출력됩니다.
+- 시간 측정은 기계 상태에 따라 흔들리므로 CI에서 돌리지 않습니다. CI는 결정론적인 첫 화면 번들 크기 예산(`pnpm check:bundle`)만 검사합니다(D-064).
+
+## 설치된 앱 스모크 테스트
+
+이미 실행 중인 앱(릴리스 번들 등)을 검사합니다. 서버를 띄우지 않으며 학습자 상태를 바꾸므로 임시 데이터 위치로 띄운 앱에만 씁니다. 절차는 [릴리스 산출물 확인](/docs/guides/release.md#릴리스-산출물-확인)에 있습니다.
+
+```shell
+SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chromium
+```
 
 ## 시각 회귀
 

@@ -155,6 +155,35 @@ export function blockedRequests(page: Page) {
   });
 }
 
+/**
+ * Expected error details for this browser engine. CI asserts V8's (Chromium's) wording and
+ * columns; Firefox and WebKit word errors differently and count columns differently (D-030), so
+ * outside Chromium every `message` and `column` is dropped and the file, line and kind remain.
+ */
+export function forEngine<T>(browserName: string, expected: T): T {
+  if (browserName === 'chromium') return expected;
+  const strip = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(strip);
+    if (
+      value === null ||
+      typeof value !== 'object' ||
+      Object.getPrototypeOf(value) !== Object.prototype
+    )
+      return value;
+    return Object.fromEntries(
+      Object.entries(value)
+        .filter(([key]) => key !== 'message' && key !== 'column')
+        .map(([key, v]) => [key, strip(v)]),
+    );
+  };
+  return strip(expected) as T;
+}
+
+/** Skip reason for checks that look inside the runner's nested frames in Firefox. */
+export const FISSION_FRAMES =
+  'Playwright cannot reach out-of-process iframes in Firefox with site isolation (Fission) on; ' +
+  'passes with Fission off (docs/reviews/2026-11-16-m7-compatibility.md)';
+
 /** Text of every console entry with string/number arguments, for quick assertions. */
 export function consoleText(result: RunResult): string[] {
   return result.console.map((e) =>

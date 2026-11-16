@@ -853,7 +853,7 @@ Playwright로 실행하며, CI 필수 항목입니다. 각 케이스는 "차단�
 | S43 | 매우 큰 `RunRequest`(파일 20개 × 200KB 초과) | — | Host·셸의 스키마 검증에서 거부 |
 | S44 | `<base href="http://evil.example/">` | dom | `base-uri` 위반 |
 
-- 브라우저 매트릭스: CI는 Chromium 필수, Firefox·WebKit은 S1~S25(정책 계열)와 S27~S31(계측 계열)을 실행합니다. 프로세스 분리에 의존하는 S26 UI 지연, S33은 Chromium에서만 필수로 판정합니다.
+- 브라우저 매트릭스: CI는 Chromium으로 전체를 실행합니다. Firefox·WebKit은 `pnpm test:e2e:compat`(`PW_COMPAT`)으로 정책·계측 계열과 핵심 흐름을 실행하며, 지금은 CI가 아니라 릴리스 전 점검에서 돌립니다(D-064, [호환성 점검](/docs/reviews/2026-11-16-m7-compatibility.md)). 엔진마다 다른 오류 문구·열은 Chromium에서만 검사하고, WebKit의 S48(메인 스레드 공유)은 건너뜁니다.
 - CI의 Chromium은 Playwright의 `channel: 'chromium'`(new headless)을 씁니다. 기본 headless shell은 sandbox iframe을 별도 프로세스로 나누지 않아 실제 Chrome과 결과가 다릅니다. Firefox는 출시판과 같게 `fission.autostart`를 켭니다(Playwright Firefox 기본값은 꺼짐).
 - PoC에서 추가된 항목:
 
