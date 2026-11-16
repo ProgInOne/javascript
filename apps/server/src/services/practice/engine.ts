@@ -4,6 +4,7 @@ import {
   defaultEngineConfig,
   type DayBoundary,
   type Difficulty,
+  type EngineConfig,
   type EngineDeps,
   type ExerciseCandidate,
   type PassRule,
@@ -13,8 +14,10 @@ import type { UserDb } from '../../db/user/connection.ts';
 import { ensureLearner } from '../../db/user/learners.ts';
 
 /** Engine dependencies. The ts-fsrs scheduler is created once at startup (its only async step). */
-export async function createEngine(): Promise<EngineDeps> {
-  return { config: defaultEngineConfig, fsrs: await createTsFsrsPort(defaultEngineConfig.fsrs) };
+export async function createEngine(
+  config: EngineConfig = defaultEngineConfig,
+): Promise<EngineDeps> {
+  return { config, fsrs: await createTsFsrsPort(config.fsrs) };
 }
 
 /** The single learner and how their day is cut (time zone + 04:00 day start by default). */

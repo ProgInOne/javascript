@@ -148,6 +148,26 @@ describe('buildDailyPlan', () => {
     expect(calm.blocks.map((b) => b.kind)).toEqual(['continue']);
   });
 
+  it('plans lessons with the calibrated estimate', () => {
+    const calibrated = { ...pace('on_track'), calibration: 1.5 };
+    const p = plan({
+      continueLesson: lesson('l1', 20, { status: 'reading', readProgress: 0.5 }), // 15 → 22.5
+      pace: calibrated,
+    });
+    expect(p.blocks[0]).toMatchObject({
+      kind: 'continue',
+      minutes: 23, // blocks round up
+      reason: { code: 'continue_lesson', remainingMinutes: 23 },
+    });
+    // A new lesson that waits for later is calibrated as well.
+    const later = plan({
+      continueLesson: lesson('l1', 20, { status: 'reading', readProgress: 0 }), // 30 minutes
+      nextLesson: lesson('l2', 20),
+      pace: { ...pace('behind'), calibration: 1.5 },
+    });
+    expect(later.later.find((b) => b.lessonId === 'l2')?.minutes).toBe(30);
+  });
+
   it('offers weakness practice when the weakest concept is below 60', () => {
     expect(plan({ weakConcepts: [weak('w', 65)] }).blocks).toEqual([]);
     const p = plan({ weakConcepts: [weak('w1', 30), weak('w2', 80)] });

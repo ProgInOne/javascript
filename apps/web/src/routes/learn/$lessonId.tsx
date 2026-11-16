@@ -1,12 +1,13 @@
-import type { LessonDetail, PracticeSetView } from '@proginone/shared';
+import type { CodeDraft, LessonDetail, PracticeSetView } from '@proginone/shared';
 import { ErrorState, Skeleton } from '@proginone/ui';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, ArrowRight, ChevronLeft } from 'lucide-react';
-import { useCallback, useEffect, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, type ReactNode } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
 import {
   createPracticeSet,
+  exampleDraftsQuery,
   lessonPrerequisitesQuery,
   lessonQuery,
   practiceSetQuery,
@@ -353,6 +354,17 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
   const predictFirst = useSettings().data?.['lesson.predictFirst'] ?? 'recommended';
   // Learner state: a failure only hides the mastery and the warning, never the lesson.
   const prerequisites = useQuery(lessonPrerequisitesQuery(lesson.id)).data;
+  // Edited examples (D-063). A failure restores only the browser drafts.
+  const drafts = useQuery(exampleDraftsQuery(lesson.id));
+  const exampleDrafts = useMemo(
+    () =>
+      drafts.data
+        ? new Map(drafts.data.drafts.map((d) => [d.id, d]))
+        : drafts.isError
+          ? new Map<string, CodeDraft>()
+          : undefined,
+    [drafts.data, drafts.isError],
+  );
   return (
     <div className="min-h-screen bg-canvas">
       <LearnHeader lesson={lesson} mode="read" />
@@ -384,6 +396,7 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
               concepts={lesson.concepts}
               predictFirst={predictFirst}
               prerequisites={prerequisites?.prerequisites}
+              exampleDrafts={exampleDrafts}
             />
 
             {(lesson.previous ?? lesson.next) && (

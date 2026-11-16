@@ -6,15 +6,22 @@ import {
 } from '@proginone/learning-engine';
 import type { HeartbeatRequest, HeartbeatResponse } from '@proginone/shared';
 import type { UserDb } from '../../db/user/connection.ts';
-import { addDailyActivity, getDailyActivity, markGoalMet } from '../../db/user/progress.ts';
+import {
+  addDailyActivity,
+  addLessonActiveTime,
+  getDailyActivity,
+  markGoalMet,
+} from '../../db/user/progress.ts';
 import type { Clock } from '../clock.ts';
 import { learnerContext } from '../practice/engine.ts';
 import { loadGoal } from './planning-input.ts';
 
 /**
- * Active learning time from 30-second heartbeats into `daily_activity.active_ms`. The previous
- * heartbeat is kept in memory: after a restart the first interval is not counted, which loses at
- * most one heartbeat interval. `study_sessions` (session boundaries, idle close) is v0.2.
+ * Active learning time from 30-second heartbeats into `daily_activity.active_ms`, and into the
+ * lesson on screen (`lesson_progress.active_ms`, FR-GOAL-02) while that lesson is in progress.
+ * The previous heartbeat is kept in memory: after a restart the first interval is not counted,
+ * which loses at most one heartbeat interval. `study_sessions` (session boundaries, idle close)
+ * is not implemented yet.
  */
 export class ActivityService {
   readonly #userDb: UserDb;
@@ -59,6 +66,12 @@ export class ActivityService {
           // The goal of the day (FR-GOAL-04): today's goal for every segment of this heartbeat.
           const total = getDailyActivity(orm, learnerId, s.date)?.activeMs ?? 0;
           if (total >= goal.dailyMinutes * 60_000) markGoalMet(orm, learnerId, s.date);
+        }
+        // The interval belongs to the lesson on screen now (one heartbeat of attribution lag
+        // when the learner switches pages). Unknown or untouched lessons have no row: no-op.
+        if (request.lessonId !== undefined) {
+          const ms = segments.reduce((sum, s) => sum + s.ms, 0);
+          addLessonActiveTime(orm, learnerId, request.lessonId, ms);
         }
       });
     }

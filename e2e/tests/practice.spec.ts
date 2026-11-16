@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { expectNoA11yViolations } from './fixtures.ts';
 
 import { solveSet } from './practice-helpers.ts';
+import { apiFor } from './seed.ts';
 
 /**
  * The practice flow on the production build with the fixture lesson's exercises (one per type),
@@ -11,7 +12,10 @@ import { solveSet } from './practice-helpers.ts';
 const LESSON = '/learn/js-basics.start.first-program';
 
 test.describe('practice mode', () => {
-  test('reads a lesson, solves every type in the set and passes the lesson', async ({ page }) => {
+  test('reads a lesson, solves every type in the set and passes the lesson', async ({
+    page,
+    request,
+  }) => {
     await page.goto(LESSON);
     await expect(page.getByRole('heading', { level: 1, name: '첫 프로그램' })).toBeVisible();
     await page.getByRole('link', { name: '연습 시작' }).click();
@@ -54,5 +58,26 @@ test.describe('practice mode', () => {
     await expect(page).toHaveURL(/i=1$/);
     expect(new URL(page.url()).searchParams.get('set')).not.toBe(finished);
     await expect(page.getByRole('navigation', { name: '연습 진행' })).toContainText('0 / 12');
+
+    // FR-CODE-06 / NFR-04: an edit in a code item reaches the server and comes back after a
+    // reload even without this browser's copy (another browser, cleared site data).
+    const api = await apiFor(page, request);
+    const setId = new URL(page.url()).searchParams.get('set') ?? '';
+    const next = (await api.get(`/practice-sets/${setId}`)) as {
+      items: { exerciseId: string }[];
+    };
+    const fix = next.items.findIndex((i) => i.exerciseId.endsWith('.fix-total'));
+    expect(fix).toBeGreaterThanOrEqual(0);
+    await page.goto(`${LESSON}?mode=practice&set=${setId}&i=${String(fix + 1)}`);
+    const editor = page.locator('.cm-content').first();
+    await editor.click();
+    await page.keyboard.press('ControlOrMeta+a');
+    await page.keyboard.insertText('// 고치는 중\nconsole.log("김밥 2줄");\n');
+    await expect(page.getByRole('main').getByText('저장됨', { exact: true })).toBeVisible();
+    await page.evaluate(() => {
+      localStorage.clear();
+    });
+    await page.reload();
+    await expect(page.locator('.cm-content').first()).toContainText('// 고치는 중');
   });
 });

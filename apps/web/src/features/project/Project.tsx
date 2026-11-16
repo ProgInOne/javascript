@@ -9,6 +9,7 @@ import {
   type RenderableExercise,
 } from '@proginone/exercise-ui';
 import type {
+  CodeDraft,
   ExerciseView,
   LessonDetail,
   OpenedHint,
@@ -51,12 +52,14 @@ import { codeFilesOf, runSummaryOf } from '../tutor/context.ts';
 import { SELECTABLE_ATTR } from '../tutor/selection.ts';
 import { useTutorScope } from '../tutor/TutorContext.tsx';
 import {
-  clearDraft,
-  loadDraft,
-  saveDraft,
-  useActiveTime,
-  useExerciseRunner,
-} from '../practice/hooks.ts';
+  loadLegacyDraft,
+  loadLocalDraft,
+  pickDraft,
+  sameFiles,
+  useDraftSaver,
+  useServerExerciseDraft,
+} from '../drafts/drafts.ts';
+import { useActiveTime, useExerciseRunner } from '../practice/hooks.ts';
 import { Markdown } from '../practice/Markdown.tsx';
 import {
   feedbackResultOf,
@@ -71,7 +74,7 @@ import {
 
 type WebAnswer = AnswerByType['web_task'];
 
-/** Browser draft of the project's code (newer than the last submission while editing). */
+/** v0.3 browser draft key of a project's code (read once; drafts now live per exercise). */
 export const projectDraftKey = (lessonId: string) => `project:${lessonId}`;
 
 /** Practice mode of a project unit: the brief, milestone progress and the workspace. */
@@ -79,6 +82,7 @@ export function ProjectScreen({ lesson }: { lesson: LessonDetail }) {
   const project = useQuery(projectQuery(lesson.id));
   const exerciseId = lesson.project?.exerciseId ?? null;
   const exercise = useQuery({ ...exerciseQuery(exerciseId ?? '', null), enabled: !!exerciseId });
+  const serverDraft = useServerExerciseDraft(exerciseId ?? '', !!exerciseId);
 
   if (
     !exerciseId ||
@@ -98,7 +102,8 @@ export function ProjectScreen({ lesson }: { lesson: LessonDetail }) {
       />
     );
   }
-  if (project.isPending || exercise.isPending) return <Skeleton variant="card" height={480} />;
+  if (project.isPending || exercise.isPending || !serverDraft.ready)
+    return <Skeleton variant="card" height={480} />;
   if (project.isError || exercise.isError) {
     const e = [project.error, exercise.error].find(
       (x): x is ApiRequestError => x instanceof ApiRequestError,
@@ -141,19 +146,34 @@ export function ProjectScreen({ lesson }: { lesson: LessonDetail }) {
       project={project.data}
       view={exercise.data}
       exercise={renderable}
+      serverDraft={serverDraft.draft}
     />
   );
 }
 
-/** Where the editor starts: the browser draft, else the last submission, else the starter. */
+/**
+ * Where the editor starts: the newest draft (this browser or the server, D-063), else the last
+ * submission, else the starter. A draft equal to the last submission counts as the submission.
+ */
 function startingAnswer(
   lessonId: string,
   project: ProjectView,
+  exerciseId: string,
   exercise: RenderableExercise,
+  serverDraft: CodeDraft | null,
 ): { answer: WebAnswer; from: 'draft' | 'saved' | 'starter' } {
-  const draft = loadDraft(projectDraftKey(lessonId)) as WebAnswer | undefined;
-  if (draft && Array.isArray(draft.files)) return { answer: draft, from: 'draft' };
-  if (project.savedAnswer) return { answer: project.savedAnswer, from: 'saved' };
+  const draft = pickDraft(
+    [
+      loadLocalDraft({ kind: 'exercise', exerciseId }),
+      serverDraft,
+      loadLegacyDraft(projectDraftKey(lessonId), null),
+    ],
+    null,
+  );
+  const saved = project.savedAnswer;
+  if (draft && !(saved && sameFiles(draft.files, saved.files)))
+    return { answer: { files: draft.files }, from: 'draft' };
+  if (saved) return { answer: saved, from: 'saved' };
   return { answer: initialAnswer(exercise) as WebAnswer, from: 'starter' };
 }
 
@@ -167,21 +187,24 @@ export function ProjectWorkspace({
   project: initialProject,
   view,
   exercise,
+  serverDraft = null,
 }: {
   lesson: LessonDetail;
   project: ProjectView;
   view: ExerciseView;
   exercise: RenderableExercise;
+  serverDraft?: CodeDraft | null;
 }) {
   const client = useQueryClient();
   const promptId = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const draftKey = projectDraftKey(lesson.id);
-  const [start] = useState(() => startingAnswer(lesson.id, initialProject, exercise));
+  const [start] = useState(() =>
+    startingAnswer(lesson.id, initialProject, view.id, exercise, serverDraft),
+  );
   const [answer, setAnswer] = useState<WebAnswer>(start.answer);
   const [project, setProject] = useState(initialProject);
   const [result, setResult] = useState<ProjectAttemptResponse | null>(null);
-  const [saved, setSaved] = useState<number | null>(null);
+  const drafts = useDraftSaver({ kind: 'exercise', exerciseId: view.id }, null);
   const [submitting, setSubmitting] = useState(false);
   const [running, setRunning] = useState(false);
   const [run, setRun] = useState<RunResult | null>(null);
@@ -224,7 +247,7 @@ export function ProjectWorkspace({
 
   const changeAnswer = (next: WebAnswer) => {
     setAnswer(next);
-    if (saveDraft(draftKey, next)) setSaved(Date.now());
+    drafts.save(next.files);
   };
 
   const runPreview = async () => {
@@ -268,7 +291,6 @@ export function ProjectWorkspace({
         setError('실행 환경 문제로 이번 채점은 결과를 내지 못했어요. 다시 채점해 주세요.');
         return;
       }
-      clearDraft(draftKey);
       void runPreview();
     } catch (e) {
       setError(errorText(e));
@@ -344,7 +366,7 @@ export function ProjectWorkspace({
           {start.from !== 'starter' && project.runCount + (start.from === 'draft' ? 1 : 0) > 0 && (
             <p className="project-resume m-0" role="note">
               {start.from === 'draft'
-                ? '이 브라우저에 저장된 코드에서 이어서 해요.'
+                ? '저장해 둔 작성 중인 코드에서 이어서 해요.'
                 : '마지막으로 채점한 코드에서 이어서 해요.'}
             </p>
           )}
@@ -458,7 +480,7 @@ export function ProjectWorkspace({
           onStop={runner.abort}
           running={running || submitting}
           run={run}
-          {...(saved !== null ? { saveStatus: '저장됨 · 이 브라우저' } : {})}
+          {...(drafts.statusText === undefined ? {} : { saveStatus: drafts.statusText })}
           preview={{
             mountRef: runner.previewMount,
             status: previewStatus,

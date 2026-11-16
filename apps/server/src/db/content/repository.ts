@@ -728,6 +728,23 @@ export class ContentRepository {
       .map((l) => ({ ...l, courseId }));
   }
 
+  /** Time estimates of the given lessons (any course; unknown IDs are left out). */
+  getLessonEstimates(ids: readonly string[]): Map<string, { kind: LessonKind; estimatedMinutes: number }> {
+    if (ids.length === 0) return new Map();
+    return new Map(
+      this.#db
+        .select({
+          id: t.lessons.id,
+          kind: t.lessons.kind,
+          estimatedMinutes: t.lessons.estimatedMinutes,
+        })
+        .from(t.lessons)
+        .where(inArray(t.lessons.id, [...ids]))
+        .all()
+        .map((l) => [l.id, { kind: l.kind, estimatedMinutes: l.estimatedMinutes }]),
+    );
+  }
+
   /** Course of a lesson, or null. */
   courseOfLesson(lessonId: string): string | null {
     return (
@@ -918,6 +935,40 @@ export class ContentRepository {
         description: row.description,
         correction: row.correction,
       }));
+  }
+
+  /**
+   * IDs of a lesson's editable `<RunnableExample>`s (runnable `js`/`html`/`web`, not
+   * `editable={false}`), or null for an unknown lesson. Example drafts are kept only for these.
+   */
+  lessonEditableExampleIds(id: string): Set<string> | null {
+    const lesson = this.#db
+      .select({ body: t.lessons.bodyCompiled })
+      .from(t.lessons)
+      .where(eq(t.lessons.id, id))
+      .get();
+    if (!lesson) return null;
+    const out = new Set<string>();
+    const visit = (n: unknown) => {
+      if (!n || typeof n !== 'object') return;
+      if (Array.isArray(n)) {
+        for (const c of n) visit(c);
+        return;
+      }
+      const node = n as { type?: unknown; name?: unknown; props?: unknown; children?: unknown };
+      if (node.type === 'component' && node.name === 'RunnableExample') {
+        const p = (node.props ?? {}) as { id?: unknown; lang?: unknown; editable?: unknown };
+        if (
+          typeof p.id === 'string' &&
+          (p.lang === 'js' || p.lang === 'html' || p.lang === 'web') &&
+          p.editable !== false
+        )
+          out.add(p.id);
+      }
+      visit(node.children);
+    };
+    visit(lesson.body);
+    return out;
   }
 
   getLesson(id: string): LessonDetail | null {

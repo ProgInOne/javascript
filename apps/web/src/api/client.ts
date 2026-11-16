@@ -38,6 +38,8 @@ interface RequestOptions<T> {
   /** Response schema. Server output is validated like any other untrusted input. */
   schema: z.ZodType<T>;
   signal?: AbortSignal;
+  /** Lets the request outlive the page (a last save on `pagehide`; bodies up to 64 KB). */
+  keepalive?: boolean;
 }
 
 interface ClientConfig {
@@ -57,7 +59,13 @@ async function send(
     fetchImpl = (...args: Parameters<typeof fetch>) => fetch(...args),
   }: ClientConfig,
   path: string,
-  options: { method?: string; body?: unknown; signal?: AbortSignal | undefined; accept?: string },
+  options: {
+    method?: string;
+    body?: unknown;
+    signal?: AbortSignal | undefined;
+    accept?: string;
+    keepalive?: boolean | undefined;
+  },
 ): Promise<Response> {
   try {
     return await fetchImpl(baseUrl + path, {
@@ -69,6 +77,7 @@ async function send(
       },
       ...(options.body === undefined ? {} : { body: JSON.stringify(options.body) }),
       ...(options.signal ? { signal: options.signal } : {}),
+      ...(options.keepalive ? { keepalive: true } : {}),
     });
   } catch (e) {
     if ((e as Error).name === 'AbortError') throw e;

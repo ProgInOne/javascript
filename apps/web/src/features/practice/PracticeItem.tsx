@@ -18,6 +18,7 @@ import {
   isWithheldAttempt,
   type AssessmentAttemptResponse,
   type AttemptResponse,
+  type CodeDraft,
   type ExerciseView,
   type OpenedHint,
   type PracticeItemView,
@@ -41,7 +42,14 @@ import {
   viewSolution,
 } from '../../api/queries.ts';
 import { examplePlan, statusMessage } from '../runner/runner.ts';
-import { clearDraft, loadDraft, saveDraft, useActiveTime, useExerciseRunner } from './hooks.ts';
+import {
+  loadLegacyDraft,
+  loadLocalDraft,
+  pickDraft,
+  useDraftSaver,
+  useServerExerciseDraft,
+} from '../drafts/drafts.ts';
+import { useActiveTime, useExerciseRunner } from './hooks.ts';
 import { Markdown } from './Markdown.tsx';
 import { CODE_TYPES, TYPE_LABELS } from './model.ts';
 import {
@@ -98,7 +106,10 @@ export interface PracticeItemProps {
 /** One practice set item: the exercise, submission, feedback and hints (ui-ux.md 실습 모드). */
 export function PracticeItem(props: PracticeItemProps) {
   const query = useQuery(exerciseQuery(props.item.exerciseId, props.item.id));
-  if (query.isPending) return <Skeleton variant="card" height={360} />;
+  // Code exercises wait for the server draft too (FR-CODE-06): the editor starts from it.
+  const isCode = query.data !== undefined && CODE_TYPES.has(query.data.type);
+  const serverDraft = useServerExerciseDraft(props.item.exerciseId, isCode);
+  if (query.isPending || !serverDraft.ready) return <Skeleton variant="card" height={360} />;
   if (query.isError) {
     const e = query.error instanceof ApiRequestError ? query.error : null;
     return (
@@ -122,7 +133,14 @@ export function PracticeItem(props: PracticeItemProps) {
       />
     );
   }
-  return <ItemWorkspace {...props} view={query.data} exercise={exercise} />;
+  return (
+    <ItemWorkspace
+      {...props}
+      view={query.data}
+      exercise={exercise}
+      serverDraft={serverDraft.draft}
+    />
+  );
 }
 
 /** Types whose renderer already shows the exercise code (from the spec). */
@@ -152,16 +170,31 @@ function ItemWorkspace({
   workedExample = null,
   view,
   exercise,
-}: PracticeItemProps & { view: ExerciseView; exercise: RenderableExercise }) {
+  serverDraft,
+}: PracticeItemProps & {
+  view: ExerciseView;
+  exercise: RenderableExercise;
+  serverDraft: CodeDraft | null;
+}) {
   const promptId = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const isCode = CODE_TYPES.has(exercise.typeId);
-  const draftKey = `${set.id}:${item.id}`;
+  const draftTarget = { kind: 'exercise', exerciseId: view.id } as const;
+  // The newest draft written in this item: browser, server, or a v0.3 browser draft.
   const [answer, setAnswer] = useState<Answer>(() => {
-    const draft = isCode ? loadDraft(draftKey) : undefined;
-    return (draft as Answer | undefined) ?? initialAnswer(exercise);
+    const draft = isCode
+      ? pickDraft(
+          [
+            loadLocalDraft(draftTarget),
+            serverDraft,
+            loadLegacyDraft(`${set.id}:${item.id}`, item.id),
+          ],
+          item.id,
+        )
+      : null;
+    return draft ? { files: draft.files } : initialAnswer(exercise);
   });
-  const [saved, setSaved] = useState<number | null>(null);
+  const drafts = useDraftSaver(draftTarget, item.id);
   const [result, setResult] = useState<AttemptResponse | null>(null);
   // An assessment in progress: hints, the solution and the tutor are locked, each item takes one
   // submission and its result is withheld until the end (learning-engine.md#단원-평가-세트).
@@ -247,7 +280,8 @@ function ItemWorkspace({
 
   const changeAnswer = (next: Answer) => {
     setAnswer(next);
-    if (isCode && saveDraft(draftKey, next)) setSaved(Date.now());
+    const files = isCode ? codeFilesOfAnswer(next) : null;
+    if (files) drafts.save(files);
   };
 
   const runInteractive = async () => {
@@ -292,7 +326,6 @@ function ItemWorkspace({
         activeMs: timing.readActiveMs(),
       });
       setAttemptsHere(res.item.attempts);
-      if (res.attempt.engineApplied) clearDraft(draftKey);
       if (isWithheldAttempt(res)) {
         if (res.attempt.engineApplied) setSubmitted(res);
         else setError('실행 환경 문제로 이번 제출은 기록하지 않았어요. 다시 제출해 주세요.');
@@ -463,7 +496,7 @@ function ItemWorkspace({
           }
         : {})}
       {...(graded && runActual ? { onRunActual: () => void runActual(), actual } : {})}
-      {...(saved !== null ? { saveStatus: '저장됨 · 이 브라우저' } : {})}
+      {...(drafts.statusText === undefined ? {} : { saveStatus: drafts.statusText })}
       {...(exercise.typeId === 'web_task'
         ? {
             preview: {
@@ -682,4 +715,16 @@ function ItemWorkspace({
       {response}
     </div>
   );
+}
+
+/** Editor files of a code answer (`{ files }`), or null for other answer shapes. */
+function codeFilesOfAnswer(answer: unknown): { path: string; content: string }[] | null {
+  if (!answer || typeof answer !== 'object' || !('files' in answer)) return null;
+  const files = answer.files;
+  if (!Array.isArray(files)) return null;
+  return files.flatMap((f: unknown) => {
+    if (!f || typeof f !== 'object') return [];
+    const { path, content } = f as { path?: unknown; content?: unknown };
+    return typeof path === 'string' && typeof content === 'string' ? [{ path, content }] : [];
+  });
 }

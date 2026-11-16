@@ -35,38 +35,6 @@ export function useExerciseRunner() {
   return { previewMount, previewNotice, hidden, preview, abort };
 }
 
-const DRAFT_PREFIX = 'proginone:draft:';
-
-/**
- * Code answers are auto-saved per practice item in this browser (ui-ux.md EditorPane "저장됨").
- * Storage can be unavailable (private mode); then drafts are simply not kept.
- */
-export function loadDraft(key: string): unknown {
-  try {
-    const raw = localStorage.getItem(DRAFT_PREFIX + key);
-    return raw === null ? undefined : (JSON.parse(raw) as unknown);
-  } catch {
-    return undefined;
-  }
-}
-
-export function saveDraft(key: string, value: unknown): boolean {
-  try {
-    localStorage.setItem(DRAFT_PREFIX + key, JSON.stringify(value));
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-export function clearDraft(key: string): void {
-  try {
-    localStorage.removeItem(DRAFT_PREFIX + key);
-  } catch {
-    // ignore
-  }
-}
-
 const IDLE_AFTER_MS = 60_000;
 const TICK_MS = 1_000;
 

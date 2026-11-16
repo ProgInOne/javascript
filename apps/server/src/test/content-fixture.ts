@@ -29,6 +29,25 @@ const body = [
       },
     ],
   },
+  // Examples: editable JS, one marked not editable, and CSS (no run, so no draft).
+  {
+    type: 'component',
+    name: 'RunnableExample',
+    props: { id: 'hello', lang: 'js', code: "console.log('hi');" },
+    children: [],
+  },
+  {
+    type: 'component',
+    name: 'RunnableExample',
+    props: { id: 'fixed', lang: 'js', code: '1;', editable: false },
+    children: [],
+  },
+  {
+    type: 'component',
+    name: 'RunnableExample',
+    props: { id: 'style', lang: 'css', code: 'p { color: red; }' },
+    children: [],
+  },
 ];
 
 /** A tiny content.db (2 lessons, 2 concepts, 7 exercises of all 6 types) written with the real DDL. */

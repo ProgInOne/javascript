@@ -3,6 +3,7 @@ import {
   computePace,
   daysBetween,
   localDateOf,
+  paceCalibration,
   summarizeWeek,
   weekStartOf,
   weeklyStreak,
@@ -18,7 +19,13 @@ import { AppError } from '../../http/errors.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
 import { learnerContext } from '../practice/engine.ts';
-import { courseLessonEstimates, goalOnDate, goalView, loadGoal } from './planning-input.ts';
+import {
+  completedLessonTimings,
+  courseLessonEstimates,
+  goalOnDate,
+  goalView,
+  loadGoal,
+} from './planning-input.ts';
 
 /** Weeks looked back for the weekly streak. */
 const STREAK_WEEKS = 104;
@@ -49,11 +56,20 @@ export class GoalService {
       lessons: courseLessonEstimates(this.#content.repo, orm, learnerId, goal.targetCourseId).map(
         (l) => l.estimate,
       ),
-      // Per-lesson actual time is not recorded yet; estimates stay uncalibrated (D-033).
-      completedTimings: [],
+      // Actual time of completed lessons calibrates the estimates (FR-GOAL-02).
+      completedTimings: completedLessonTimings(this.#content.repo, orm, learnerId),
       today,
       todayGoalMet: activeMs >= goal.dailyMinutes * 60_000,
     });
+  }
+
+  /** The learner's actual/estimated lesson time ratio (1 until enough lessons are timed). */
+  calibration(): number {
+    const { learnerId } = learnerContext(this.#userDb);
+    return paceCalibration(
+      this.#engine,
+      completedLessonTimings(this.#content.repo, this.#userDb.orm, learnerId),
+    );
   }
 
   get(): GoalStatus {

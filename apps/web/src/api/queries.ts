@@ -49,9 +49,14 @@ import {
   type LearnerPatch,
   recentActivityListSchema,
   relatedExercisesSchema,
+  codeDraftPutResponseSchema,
+  codeDraftResponseSchema,
+  exampleDraftListSchema,
+  type CodeDraftPut,
 } from '@proginone/shared';
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
+import { clearAllLocalDrafts } from '../features/drafts/local.ts';
 import { api } from './client.ts';
 
 export const settingsQuery = queryOptions({
@@ -101,8 +106,12 @@ export function useRestoreBackup() {
         schema: z.object({ restored: backupSummarySchema }),
       }),
     // Every cached server state may have changed (docs/design/data-model.md#복원-절차). Reset,
-    // not invalidate: some queries are cached as static (the learner profile).
-    onSuccess: () => client.resetQueries(),
+    // not invalidate: some queries are cached as static (the learner profile). Browser drafts
+    // would win over the restored server drafts (they are newer), so they go too (D-063).
+    onSuccess: () => {
+      clearAllLocalDrafts();
+      return client.resetQueries();
+    },
   });
 }
 
@@ -144,7 +153,10 @@ export function useResetLearningData() {
         body: { confirm: RESET_CONFIRM_TEXT },
         schema: resetResponseSchema,
       }),
-    onSuccess: () => client.resetQueries(),
+    onSuccess: () => {
+      clearAllLocalDrafts();
+      return client.resetQueries();
+    },
   });
 }
 
@@ -434,3 +446,57 @@ export const LEARNING_STATE_KEYS = [
   ['mastery-changes'],
   ['activity'],
 ] as const;
+
+// ── Code drafts (FR-CODE-06, NFR-04) ──
+
+const exerciseDraftPath = (exerciseId: string) =>
+  `/code-drafts/exercises/${encodeURIComponent(exerciseId)}`;
+const exampleDraftsPath = (lessonId: string) =>
+  `/lessons/${encodeURIComponent(lessonId)}/example-drafts`;
+
+/** The server draft of a code exercise. Always refetched: another tab may have saved since. */
+export const exerciseDraftQuery = (exerciseId: string) =>
+  queryOptions({
+    queryKey: ['code-drafts', 'exercise', exerciseId],
+    queryFn: ({ signal }) =>
+      api(exerciseDraftPath(exerciseId), { schema: codeDraftResponseSchema, signal }),
+    staleTime: 0,
+    gcTime: 0,
+  });
+
+/** Every edited example of a lesson (one request for the whole lesson body). */
+export const exampleDraftsQuery = (lessonId: string) =>
+  queryOptions({
+    queryKey: ['code-drafts', 'example', lessonId],
+    queryFn: ({ signal }) =>
+      api(exampleDraftsPath(lessonId), { schema: exampleDraftListSchema, signal }),
+    staleTime: 0,
+    gcTime: 0,
+  });
+
+export const putExerciseDraft = (exerciseId: string, body: CodeDraftPut, keepalive = false) =>
+  api(exerciseDraftPath(exerciseId), {
+    method: 'PUT',
+    body,
+    schema: codeDraftPutResponseSchema,
+    keepalive,
+  });
+
+export const putExampleDraft = (
+  lessonId: string,
+  exampleId: string,
+  body: CodeDraftPut,
+  keepalive = false,
+) =>
+  api(`${exampleDraftsPath(lessonId)}/${encodeURIComponent(exampleId)}`, {
+    method: 'PUT',
+    body,
+    schema: codeDraftPutResponseSchema,
+    keepalive,
+  });
+
+export const deleteExampleDraft = (lessonId: string, exampleId: string) =>
+  api(`${exampleDraftsPath(lessonId)}/${encodeURIComponent(exampleId)}`, {
+    method: 'DELETE',
+    schema: z.unknown(),
+  });

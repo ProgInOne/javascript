@@ -74,6 +74,11 @@ export interface DailyPlanInput {
   /** Ranked weak concepts (`rankWeakConcepts`); the top ones become the weakness block. */
   readonly weakConcepts: readonly WeakConceptEntry[];
   readonly pace: PaceResult | null;
+  /**
+   * Actual/estimated time ratio (`paceCalibration`) for lesson blocks. Defaults to the pace's
+   * calibration; given separately so the plan adapts without a target course too.
+   */
+  readonly calibration?: number;
   /** No practice record at all yet (first run): the plan only starts the first lesson. */
   readonly firstRun: boolean;
 }
@@ -175,12 +180,14 @@ export function buildDailyPlan(deps: EngineDeps, input: DailyPlanInput): DailyPl
   }
 
   // 2. Continue the lesson in progress. A lesson longer than what is left is planned in part.
+  // Estimates are scaled by the learner's actual/estimated ratio (pace calibration).
+  const calibration = input.calibration ?? input.pace?.calibration ?? 1;
   const lessonBlock = (
     lesson: LessonEstimate,
     kind: 'continue' | 'new_lesson',
     reason: DailyBlockReason,
   ) => {
-    const minutes = remainingLessonMinutes(lesson, input.pace?.calibration ?? 1);
+    const minutes = remainingLessonMinutes(lesson, calibration);
     if (minutes <= 0) return;
     if (left >= minutes) {
       blocks.push(block(kind, minutes, reason, { lessonId: lesson.lessonId }));
@@ -203,7 +210,7 @@ export function buildDailyPlan(deps: EngineDeps, input: DailyPlanInput): DailyPl
   if (input.continueLesson !== null) {
     lessonBlock(input.continueLesson, 'continue', {
       code: 'continue_lesson',
-      remainingMinutes: Math.ceil(remainingLessonMinutes(input.continueLesson)),
+      remainingMinutes: Math.ceil(remainingLessonMinutes(input.continueLesson, calibration)),
     });
   }
 
@@ -223,7 +230,7 @@ export function buildDailyPlan(deps: EngineDeps, input: DailyPlanInput): DailyPl
       later.push(
         block(
           'new_lesson',
-          remainingLessonMinutes(input.nextLesson),
+          remainingLessonMinutes(input.nextLesson, calibration),
           { code: 'new_lesson', why },
           {
             lessonId: input.nextLesson.lessonId,

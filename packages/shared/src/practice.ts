@@ -657,6 +657,11 @@ export const heartbeatRequestSchema = z
     lastInputAt: z.number().int().min(0),
     visible: z.boolean(),
     focused: z.boolean(),
+    /**
+     * Lesson on screen (reading or practising it): the counted time is added to that lesson's
+     * actual time while it is in progress (FR-GOAL-02 pace calibration).
+     */
+    lessonId: z.string().min(1).max(200).optional(),
   })
   .strict();
 export type HeartbeatRequest = z.infer<typeof heartbeatRequestSchema>;

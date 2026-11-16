@@ -251,7 +251,7 @@ describe('project unit', () => {
     );
     const user = userEvent.setup();
     const { calls } = renderApp(`/learn/${PROJECT_ID}?mode=practice`, projectApi(projectView(1)));
-    expect(await screen.findByText(/이 브라우저에 저장된 코드에서 이어서 해요/)).toBeVisible();
+    expect(await screen.findByText(/저장해 둔 작성 중인 코드에서 이어서 해요/)).toBeVisible();
     await user.click(screen.getByRole('button', { name: '채점하기' }));
     await waitFor(() => {
       expect(calls.find((c) => c.path.endsWith('/project/attempts'))?.body).toMatchObject({

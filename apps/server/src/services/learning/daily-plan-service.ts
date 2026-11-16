@@ -104,6 +104,7 @@ export class DailyPlanService {
       nextLesson: next ? next.estimate : null,
       weakConcepts: weak,
       pace,
+      calibration: pace?.calibration ?? this.#goals.calibration(),
       firstRun: progress.length === 0 && listMasteryConceptIds(orm, learnerId).length === 0,
     });
 

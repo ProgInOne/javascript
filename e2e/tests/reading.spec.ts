@@ -27,7 +27,11 @@ test.describe('reading mode', () => {
     await page.mouse.move(10, 10);
     await page.keyboard.press('Shift');
     await page.clock.fastForward(30_000);
-    expect((await heartbeat).postDataJSON()).toMatchObject({ visible: true });
+    // The lesson on screen also gets the time (per-lesson actual time, FR-GOAL-02).
+    expect((await heartbeat).postDataJSON()).toMatchObject({
+      visible: true,
+      lessonId: 'js-basics.start.first-program',
+    });
 
     // Scrolling saves the position (debounced); the next visit offers to resume there.
     await page

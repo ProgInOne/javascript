@@ -5,6 +5,7 @@ import {
   type EngineDeps,
   type Goal,
   type LessonEstimate,
+  type LessonTiming,
 } from '@proginone/learning-engine';
 import type { GoalView } from '@proginone/shared';
 import {
@@ -17,7 +18,11 @@ import type { Orm } from '../../db/user/connection.ts';
 import { currentGoal, goalHistory, type GoalRow } from '../../db/user/goals.ts';
 import { listItems } from '../../db/user/practice-sets.ts';
 import { latestGradedRun } from '../../db/user/project-attempts.ts';
-import { listLessonProgress, type LessonProgressRow } from '../../db/user/progress.ts';
+import {
+  listCompletedLessonTimes,
+  listLessonProgress,
+  type LessonProgressRow,
+} from '../../db/user/progress.ts';
 import { progressOf } from '../practice/views.ts';
 
 // Inputs of the planning functions (goals, pace, today's plan) read from user.db/content.db.
@@ -148,4 +153,23 @@ export function courseLessonEstimates(
     progress: progress.get(lesson.id),
     estimate: lessonEstimate(orm, lesson, progress.get(lesson.id), { repo, learnerId }),
   }));
+}
+
+/**
+ * Estimated and actual minutes of every completed lesson with a recorded time, in any course
+ * (FR-GOAL-02): the calibration reflects the learner's speed, not one course. Only `kind: lesson`
+ * units count, like the pace itself; lessons gone from content.db are left out.
+ */
+export function completedLessonTimings(
+  repo: ContentRepository,
+  orm: Orm,
+  learnerId: string,
+): LessonTiming[] {
+  const times = listCompletedLessonTimes(orm, learnerId);
+  const estimates = repo.getLessonEstimates(times.map((t) => t.lessonId));
+  return times.flatMap((t) => {
+    const lesson = estimates.get(t.lessonId);
+    if (lesson?.kind !== 'lesson') return [];
+    return [{ estimatedMinutes: lesson.estimatedMinutes, actualMinutes: t.activeMs / 60_000 }];
+  });
 }

@@ -96,6 +96,25 @@ describe('scenario 18: pace with 600 minutes left, 30 days, 5 days a week, 30 mi
     expect(paceCalibration(deps, [t(30), t(30), t(30), t(30)])).toBe(1);
     expect(paceCalibration(deps, [t(10), t(30), t(30), t(40), t(60)])).toBe(1.5);
     expect(paceCalibration(deps, [t(100), t(100), t(100), t(100), t(100)])).toBe(2);
+    expect(paceCalibration(deps, [t(2), t(2), t(2), t(2), t(2)])).toBe(0.5);
+    // Even count: mean of the two middle ratios. Lessons without measured time are left out.
+    expect(paceCalibration(deps, [t(20), t(20), t(30), t(30), t(40), t(40)])).toBe(1.5);
+    expect(paceCalibration(deps, [t(30), t(30), t(30), t(30), t(0)])).toBe(1);
+  });
+
+  it('scales what is left by the calibration (FR-GOAL-02)', () => {
+    const slow = Array.from({ length: 5 }, () => ({ estimatedMinutes: 20, actualMinutes: 30 }));
+    const pace = computePace(deps, {
+      goal: goal(),
+      lessons: lessons(300),
+      completedTimings: slow,
+      today: TODAY,
+      todayGoalMet: false,
+    });
+    // 300 × 1.5 = 450 over 22 study days ≈ 20.5 > 18: an uncalibrated 300 would be on track.
+    expect(pace).toMatchObject({ calibration: 1.5, remainingMinutes: 450, status: 'behind' });
+    // At 18 minutes a day: 25 study days → 35 calendar days, today included.
+    expect(pace?.suggestedTargetDate).toBe(addDays(TODAY, 34));
   });
 });
 

@@ -1,5 +1,6 @@
 import {
   ATTEMPT_OUTCOMES,
+  CODE_DRAFT_KINDS,
   EXPERIENCE_LEVELS,
   CONFIDENCES,
   EVIDENCE_KINDS,
@@ -114,6 +115,12 @@ export const lessonProgress = sqliteTable(
     contentHashSeen: text('content_hash_seen'),
     /** Last read/practice activity; orders "이어서 학습" (added to the table sketch). */
     updatedAt: at('updated_at').notNull(),
+    /**
+     * Active reading + practice time while the lesson was in progress, from the activity
+     * heartbeats (FR-GOAL-02 pace calibration, migration 0006). NULL: the lesson was started
+     * before time was recorded, so its time is unknown and it is left out of the calibration.
+     */
+    activeMs: integer('active_ms'),
   },
   (t) => [
     primaryKey({ columns: [t.learnerId, t.lessonId] }),
@@ -751,5 +758,34 @@ export const goals = sqliteTable(
       'goals_target_date',
       sql`${t.targetDate} IS NULL OR ${t.targetDate} GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'`,
     ),
+  ],
+);
+
+// ── Code drafts (M7, migration 0006) ─────────────────────────────────────────
+// docs/design/data-model.md#code_drafts.
+
+/**
+ * The latest editor contents of a code exercise or a lesson example (one row each, overwritten;
+ * FR-CODE-06, NFR-04). Kept after submission; submissions keep the history. Learner text that
+ * the server never runs.
+ */
+export const codeDrafts = sqliteTable(
+  'code_drafts',
+  {
+    learnerId: learnerId(),
+    kind: text('kind', { enum: CODE_DRAFT_KINDS }).notNull(),
+    /** Exercise ID, or `<lessonId>#<exampleId>` for a lesson example. */
+    refId: text('ref_id').notNull(),
+    /** `{ v: 1, files: [{ path, content }] }`. */
+    filesJson: text('files_json', { mode: 'json' }).notNull(),
+    /** Practice set item the draft was written in (exercises in a set). */
+    practiceSetItemId: text('practice_set_item_id'),
+    /** Browser edit time; the newest edit wins (stale writes are ignored). */
+    updatedAt: at('updated_at').notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.learnerId, t.kind, t.refId] }),
+    check('code_drafts_kind', inList(t.kind, CODE_DRAFT_KINDS)),
+    check('code_drafts_files_json', jsonValid(t.filesJson)),
   ],
 );

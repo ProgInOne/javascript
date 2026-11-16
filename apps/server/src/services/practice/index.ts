@@ -17,6 +17,7 @@ import { MasteryChangeService } from '../review/mastery-change-service.ts';
 import { MistakeService } from '../review/mistake-service.ts';
 import { ReviewService } from '../review/review-service.ts';
 import { AttemptService } from './attempt-service.ts';
+import { CodeDraftService } from './code-draft-service.ts';
 import { ExerciseService } from './exercise-service.ts';
 import { PracticeSetService } from './practice-set-service.ts';
 import { ProjectService } from './project-service.ts';
@@ -38,6 +39,7 @@ export interface PracticeServices {
   sets: PracticeSetService;
   attempts: AttemptService;
   projects: ProjectService;
+  drafts: CodeDraftService;
   lessons: LessonProgressService;
   review: ReviewService;
   activity: ActivityService;
@@ -63,6 +65,7 @@ export function createPracticeServices(deps: PracticeDeps): PracticeServices {
     sets: new PracticeSetService({ ...deps, review, weakness }),
     attempts: new AttemptService(deps),
     projects: new ProjectService(deps),
+    drafts: new CodeDraftService(deps),
     lessons: new LessonProgressService(deps),
     review,
     activity: new ActivityService(deps),

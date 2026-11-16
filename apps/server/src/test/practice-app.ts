@@ -1,4 +1,5 @@
 import { MockProvider, TaskRunner } from '@proginone/ai';
+import { defaultEngineConfig, type EngineConfig } from '@proginone/learning-engine';
 import { createApp } from '../http/app.ts';
 import { TOKEN_HEADER } from '../http/security.ts';
 import { ContentAccess } from '../services/curriculum/content-access.ts';
@@ -25,7 +26,9 @@ let engine: ReturnType<typeof createEngine> | undefined;
  * clock (`clock.now`) and a learner in Asia/Seoul. AI routes use a `MockProvider` (`ai.provider`).
  * `templates: true` adds the parametric template unit (`addTemplateFixture`; pool in `pool`).
  */
-export async function practiceApp(options: { templates?: boolean } = {}) {
+export async function practiceApp(
+  options: { templates?: boolean; engineConfig?: (config: EngineConfig) => EngineConfig } = {},
+) {
   const ctx = await setupDb();
   const contentPath = writeContentDb();
   const pool = options.templates ? addTemplateFixture(contentPath) : [];
@@ -36,7 +39,9 @@ export async function practiceApp(options: { templates?: boolean } = {}) {
   const practice = createPracticeServices({
     userDb: ctx.userDb,
     content,
-    engine: await (engine ??= createEngine()),
+    engine: await (options.engineConfig
+      ? createEngine(options.engineConfig(defaultEngineConfig))
+      : (engine ??= createEngine())),
     now,
     hintPolicy: () => settings.get()['hints.policy'],
   });

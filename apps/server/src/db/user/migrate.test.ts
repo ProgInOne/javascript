@@ -35,10 +35,11 @@ describe('migrateUserDb', () => {
       '0003_engine_v02',
       '0004_goals',
       '0005_session_summaries',
+      '0006_lesson_time_code_drafts',
     ]);
     expect(backup).not.toHaveBeenCalled();
     expect(schemaState(userDb.sqlite)).toMatchObject({
-      current: '0005_session_summaries',
+      current: '0006_lesson_time_code_drafts',
       pending: [],
     });
   });
@@ -79,7 +80,7 @@ describe('migrateUserDb', () => {
     const marker = reopened.sqlite.prepare("SELECT value FROM app_meta WHERE key = 'marker'").get();
     expect(marker).toEqual({ value: 'before' });
     expect(schemaState(reopened.sqlite)).toMatchObject({
-      current: '0005_session_summaries',
+      current: '0006_lesson_time_code_drafts',
       pending: [],
     });
     const oops = reopened.sqlite
@@ -101,6 +102,7 @@ describe('migrateUserDb', () => {
       '0003_engine_v02',
       '0004_goals',
       '0005_session_summaries',
+      '0006_lesson_time_code_drafts',
     ]);
     userDb.sqlite
       .prepare(
@@ -128,6 +130,7 @@ describe('migrateUserDb', () => {
       '0003_engine_v02',
       '0004_goals',
       '0005_session_summaries',
+      '0006_lesson_time_code_drafts',
     ]);
 
     expect(backup).toHaveBeenCalledOnce();
@@ -198,6 +201,7 @@ describe('migrateUserDb', () => {
       '0003_engine_v02',
       '0004_goals',
       '0005_session_summaries',
+      '0006_lesson_time_code_drafts',
     ]);
     expect(backup).toHaveBeenCalledOnce();
     expect(userDb.sqlite.prepare('SELECT id FROM hint_events').all()).toEqual([{ id: 'H1' }]);
@@ -239,6 +243,7 @@ describe('migrateUserDb', () => {
       '0003_engine_v02',
       '0004_goals',
       '0005_session_summaries',
+      '0006_lesson_time_code_drafts',
     ]);
     expect(backup).toHaveBeenCalledOnce();
     const insert = (id: string, mc: string, status: string, evidence: string, extra = '') =>
@@ -288,6 +293,7 @@ describe('migrateUserDb', () => {
     expect(await migrateUserDb(userDb, { backup })).toEqual([
       '0004_goals',
       '0005_session_summaries',
+      '0006_lesson_time_code_drafts',
     ]);
     const insert = (id: string, minutes: number, to: number | null, date: string | null = null) =>
       userDb.sqlite
@@ -330,7 +336,10 @@ describe('migrateUserDb', () => {
       )
       .run();
     const backup = vi.fn(() => Promise.resolve(join(dataDir, 'unused')));
-    expect(await migrateUserDb(userDb, { backup })).toEqual(['0005_session_summaries']);
+    expect(await migrateUserDb(userDb, { backup })).toEqual([
+      '0005_session_summaries',
+      '0006_lesson_time_code_drafts',
+    ]);
     const insert = (id: string, source: string, json: string) =>
       userDb.sqlite
         .prepare(
@@ -345,5 +354,41 @@ describe('migrateUserDb', () => {
       .run();
     userDb.sqlite.prepare("DELETE FROM session_summaries WHERE id = 'S1'").run();
     expect(userDb.sqlite.prepare('SELECT * FROM session_summary_concepts').all()).toEqual([]);
+  });
+
+  it('upgrades a 0005 database to 0006 (lesson time unknown for old rows, code drafts)', async () => {
+    const dataDir = tmpDir();
+    const userDb = new UserDb(join(dataDir, 'user.db')).open();
+    await migrateUserDb(userDb, {
+      backup: () => Promise.resolve(''),
+      migrationsDir: migrationsUpTo('0005_session_summaries'),
+    });
+    userDb.sqlite
+      .prepare(
+        "INSERT INTO learners (id, timezone, day_start_hour, created_at) VALUES ('L1', 'Asia/Seoul', 4, 1)",
+      )
+      .run();
+    userDb.sqlite
+      .prepare(
+        "INSERT INTO lesson_progress (learner_id, lesson_id, status, updated_at) VALUES ('L1', 'js.l1', 'completed', 1)",
+      )
+      .run();
+    const backup = vi.fn(() => Promise.resolve(join(dataDir, 'unused')));
+    expect(await migrateUserDb(userDb, { backup })).toEqual(['0006_lesson_time_code_drafts']);
+    // Lessons from before the migration have no measured time (left out of the calibration).
+    expect(userDb.sqlite.prepare('SELECT active_ms FROM lesson_progress').get()).toEqual({
+      active_ms: null,
+    });
+    const insert = (kind: string, ref: string, json: string) =>
+      userDb.sqlite
+        .prepare(
+          "INSERT INTO code_drafts (learner_id, kind, ref_id, files_json, updated_at) VALUES ('L1', ?, ?, ?, 1)",
+        )
+        .run(kind, ref, json);
+    insert('exercise', 'js.l1.impl-x', '{"v":1,"files":[]}');
+    insert('example', 'js.l1#hello', '{"v":1,"files":[]}');
+    expect(() => insert('exercise', 'js.l1.impl-x', '{}')).toThrow(/UNIQUE|PRIMARY/);
+    expect(() => insert('lesson', 'js.l1', '{}')).toThrow(/CHECK/);
+    expect(() => insert('exercise', 'js.l1.impl-y', 'not json')).toThrow(/CHECK/);
   });
 });

@@ -115,5 +115,94 @@ describe('RunnableExampleBlock', () => {
   it('shows CSS-only snippets without a run button', () => {
     render(<RunnableExampleBlock id="c" lang="css" code="p { color: red; }" predict={false} />);
     expect(screen.queryByRole('button', { name: '실행' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '코드 수정' })).not.toBeInTheDocument();
+  });
+});
+
+describe('RunnableExampleBlock editing and drafts (D-063)', () => {
+  const LESSON = 'js-basics.start.first-program';
+  const draft = (content: string, updatedAt: number) => ({
+    kind: 'example' as const,
+    id: 'hello',
+    files: [{ path: 'main.js', content }],
+    updatedAt,
+    practiceSetItemId: null,
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    localStorage.clear();
+  });
+
+  it('opens an editor on "코드 수정" only for editable examples', async () => {
+    const { rerender } = render(
+      <RunnableExampleBlock id="hello" lang="js" code="1;" predict={false} />,
+    );
+    expect(screen.queryByRole('button', { name: '코드 수정' })).not.toBeInTheDocument();
+    rerender(<RunnableExampleBlock id="hello" lang="js" code="1;" predict={false} editable />);
+    await userEvent.click(screen.getByRole('button', { name: '코드 수정' }));
+    expect(screen.getByRole('textbox', { name: /예제 코드 편집/ })).toHaveTextContent('1;');
+    expect(screen.getByText('원래 코드')).toBeInTheDocument();
+  });
+
+  it('restores the newer draft, runs it, and deletes it with "원래 코드로"', async () => {
+    const calls: { method: string; url: string }[] = [];
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url: string, init: RequestInit = {}) => {
+        calls.push({ method: init.method ?? 'GET', url });
+        return Promise.resolve(new Response(null, { status: 204 }));
+      }),
+    );
+    localStorage.setItem(
+      `proginone:draft:example:${LESSON}#hello`,
+      JSON.stringify({ v: 2, ...draft('console.log("browser");', 9) }),
+    );
+    run.mockResolvedValue(result());
+    render(
+      <RunnableExampleBlock
+        id="hello"
+        lang="js"
+        code={'console.log("원래");'}
+        predict={false}
+        editable
+        lessonId={LESSON}
+        serverDraft={draft('console.log("server");', 5)}
+      />,
+    );
+    const editor = screen.getByRole('textbox', { name: /예제 코드 편집/ });
+    expect(editor).toHaveTextContent('console.log("browser");');
+    expect(screen.getByText('수정한 코드')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: '실행' }));
+    expect(run).toHaveBeenCalledWith(
+      expect.objectContaining({
+        files: [expect.objectContaining({ content: 'console.log("browser");' })],
+      }),
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: '원래 코드로' }));
+    expect(screen.queryByRole('textbox', { name: /예제 코드 편집/ })).not.toBeInTheDocument();
+    expect(screen.getByText('console.log("원래");')).toBeInTheDocument();
+    expect(localStorage.getItem(`proginone:draft:example:${LESSON}#hello`)).toBeNull();
+    expect(calls).toContainEqual({
+      method: 'DELETE',
+      url: `/api/v1/lessons/${LESSON}/example-drafts/hello`,
+    });
+  });
+
+  it('uses a server draft that arrives after the first render', () => {
+    const props = {
+      id: 'hello',
+      lang: 'js',
+      code: '1;',
+      predict: false,
+      editable: true,
+      lessonId: LESSON,
+    };
+    const { rerender } = render(<RunnableExampleBlock {...props} serverDraft={undefined} />);
+    expect(screen.queryByRole('textbox', { name: /예제 코드 편집/ })).not.toBeInTheDocument();
+    rerender(<RunnableExampleBlock {...props} serverDraft={draft('2;', 1)} />);
+    expect(screen.getByRole('textbox', { name: /예제 코드 편집/ })).toHaveTextContent('2;');
   });
 });

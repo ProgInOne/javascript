@@ -339,7 +339,7 @@ M6 구현(D-048): `projects` 테이블은 만들지 않습니다. 프로젝트�
 스키마는 `apps/server/src/db/user/schema.ts`, 마이그레이션은 `apps/server/src/db/user/migrations/`에 있습니다.
 모든 학습 기록 테이블은 `learner_id TEXT NOT NULL REFERENCES learners(id)`를 가집니다. 아래 표에서는 반복을 줄이기 위해 생략합니다. 예외: `app_meta`, `variant_cache`, `exercise_snapshots`는 학습자와 무관한 캐시·메타이므로 `learner_id`가 없습니다.
 
-구현 현황: 0000(M3)은 `app_meta`, `learners`, `settings`, 0001(M4)은 `lesson_progress`, `practice_sets`, `practice_set_items`, `attempts`, `submissions`, `hint_events`, `exercise_snapshots`, `concept_mastery`, `mastery_evidence`, `concept_memory`, `review_logs`, `pending_ratings`(M4에서 추가), `exercise_reports`, `daily_activity`를 만듭니다. 0002(M4)는 튜터 테이블, 0003(M5)은 `misconception_observations`, `remediation_suggestions`(M5에서 추가), 0004(M5)는 `goals`를 만듭니다. 나머지 테이블은 해당 기능과 함께 추가합니다. 0001에서 표와 달라진 점: `lesson_progress.updated_at` 추가, `pending_ratings` 추가. 열거형·0/1·`json_valid` 외에 범위 `CHECK`(점수 0~1·0~100, 힌트 단계 0~3, `daily_activity.date` 형식)를 더했습니다.
+구현 현황: 0000(M3)은 `app_meta`, `learners`, `settings`, 0001(M4)은 `lesson_progress`, `practice_sets`, `practice_set_items`, `attempts`, `submissions`, `hint_events`, `exercise_snapshots`, `concept_mastery`, `mastery_evidence`, `concept_memory`, `review_logs`, `pending_ratings`(M4에서 추가), `exercise_reports`, `daily_activity`를 만듭니다. 0002(M4)는 튜터 테이블, 0003(M5)은 `misconception_observations`, `remediation_suggestions`(M5에서 추가), 0004(M5)는 `goals`, 0006(M7)은 `code_drafts`를 만들고 `lesson_progress.active_ms`를 더합니다. 나머지 테이블은 해당 기능과 함께 추가합니다. 0001에서 표와 달라진 점: `lesson_progress.updated_at` 추가, `pending_ratings` 추가. 열거형·0/1·`json_valid` 외에 범위 `CHECK`(점수 0~1·0~100, 힌트 단계 0~3, `daily_activity.date` 형식)를 더했습니다.
 
 #### 연결 설정 (PRAGMA)
 
@@ -429,8 +429,11 @@ PRAGMA cache_size = -20000;       -- 약 20MB
 | `completed_at` | INTEGER | Y | | |
 | `content_hash_seen` | TEXT | Y | | 학습자가 본 본문 해시. 콘텐츠 갱신 표시용 |
 | `updated_at` | INTEGER | N | | 마지막 읽기·연습 활동 시각. "이어서 학습"의 최근순 정렬에 사용(M4에서 추가) |
+| `active_ms` | INTEGER | Y | | 진행 중(`reading`·`practicing`)일 때 이 단원 화면에서 센 활동 시간(읽기 + 실습). 페이스 보정의 실제 시간. NULL은 기록 전에 시작한 단원(M7에서 추가, [D-062](/docs/decisions.md)) |
 
 PK `(learner_id, lesson_id)`. 인덱스 `(learner_id, status)`.
+
+- `active_ms`는 하트비트(`POST /activity/heartbeat`의 `lessonId`)만 원자적으로 더합니다(`UPDATE … SET active_ms = active_ms + ?`). 진도 갱신(upsert)은 이 열을 건드리지 않고 새 행만 0으로 시작합니다. 마이그레이션 `0006`은 기본값 없이 열을 더해 기존 행을 NULL(모름)로 둡니다.
 
 #### practice_sets, practice_set_items
 
@@ -529,6 +532,21 @@ PK `(learner_id, lesson_id)`. 인덱스 `(learner_id, status)`.
 | `client_rev` | INTEGER | N | 클라이언트 증가 번호. 오래된 쓰기 무시 |
 
 - 웹은 IndexedDB에 즉시 저장하고, 서버에는 2초 디바운스로 `PUT`합니다([시스템 아키텍처 설계](/docs/design/system-architecture.md#웹-앱-내부-구조)).
+
+구현(M7, 마이그레이션 `0006`, [D-063](/docs/decisions.md))에서 달라진 점:
+
+| 컬럼 | 타입 | Null | 설명 |
+|---|---|---|---|
+| `kind` | TEXT | N | PK 일부. `exercise`(코드 문제·프로젝트) / `example`(레슨의 수정 가능한 `<RunnableExample>`) |
+| `ref_id` | TEXT | N | PK 일부. 문제 ID, 또는 `<lessonId>#<exampleId>` |
+| `files_json` | TEXT | N | `{ v: 1, files: [{ path, content }] }`. 읽고 쓸 때 zod 검증 |
+| `practice_set_item_id` | TEXT | Y | 초안을 쓴 연습 세트 항목. 웹은 이 항목에만 복원합니다(복습에서 이전 답을 채우지 않음) |
+| `updated_at` | INTEGER | N | **브라우저의 편집 시각**. 저장된 것보다 오래된 쓰기는 무시(`ON CONFLICT … WHERE excluded.updated_at >= updated_at`) |
+
+- PK `(learner_id, kind, ref_id)`, `CHECK`(`kind` 열거형, `json_valid`). `client_rev`는 두지 않았습니다(`updated_at` 비교가 같은 일을 함).
+- 웹은 IndexedDB 대신 localStorage에 즉시 저장합니다(동기 API, 초안은 문제당 수 KB). 서버에는 2초 디바운스와 화면을 떠날 때(`keepalive`) `PUT`합니다.
+- 제한: 파일 1~20개, 파일당 200,000자, 합계 256KiB(UTF-8), 요청 본문 320KB. 서버는 코드를 실행·해석하지 않습니다.
+- 초기화는 제외 목록 방식이라 이 테이블도 지웁니다. 백업에는 user.db 전체로 들어갑니다.
 
 #### exercise_snapshots, variant_cache
 

@@ -155,6 +155,10 @@ for (const width of [1280, 1440] as const) {
       await page.route(`**/api/v1/lessons/${PROJECT}/project`, (route) =>
         route.fulfill({ json: PROGRESS }),
       );
+      // No server draft: the flow above left its last code as one (D-063).
+      await page.route(`**/api/v1/code-drafts/exercises/${EXERCISE}`, (route) =>
+        route.fulfill({ json: { draft: null } }),
+      );
       await page.addInitScript(() => {
         localStorage.clear();
       });

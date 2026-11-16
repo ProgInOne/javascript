@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gte, inArray, lte, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, inArray, isNotNull, lte, sql } from 'drizzle-orm';
 import type { Orm } from './connection.ts';
 import { dailyActivity, lessonProgress } from './schema.ts';
 
@@ -16,13 +16,61 @@ export function getLessonProgress(orm: Orm, learnerId: string, lessonId: string)
   );
 }
 
-export function upsertLessonProgress(orm: Orm, row: LessonProgressRow): void {
+/**
+ * Writes a lesson's progress. `active_ms` is not part of the row: a new row starts measuring at 0
+ * and an update leaves the time to the heartbeats (`addLessonActiveTime`), so a read-modify-write
+ * here never loses time counted in between.
+ */
+export function upsertLessonProgress(orm: Orm, row: Omit<LessonProgressRow, 'activeMs'>): void {
   const { learnerId: _l, lessonId: _id, ...set } = row;
   orm
     .insert(lessonProgress)
-    .values(row)
+    .values({ ...row, activeMs: 0 })
     .onConflictDoUpdate({ target: [lessonProgress.learnerId, lessonProgress.lessonId], set })
     .run();
+}
+
+/**
+ * Adds heartbeat time to a lesson in progress (`reading`/`practicing`). Completed lessons keep
+ * the time it took to complete them, and rows started before time was recorded (NULL) stay
+ * unknown. Returns whether a row was updated.
+ */
+export function addLessonActiveTime(
+  orm: Orm,
+  learnerId: string,
+  lessonId: string,
+  ms: number,
+): boolean {
+  if (ms <= 0) return false;
+  const res = orm
+    .update(lessonProgress)
+    .set({ activeMs: sql`${lessonProgress.activeMs} + ${Math.round(ms)}` })
+    .where(
+      and(
+        eq(lessonProgress.learnerId, learnerId),
+        eq(lessonProgress.lessonId, lessonId),
+        inArray(lessonProgress.status, ['reading', 'practicing']),
+        isNotNull(lessonProgress.activeMs),
+      ),
+    )
+    .run();
+  return res.changes > 0;
+}
+
+/** Completed lessons with a recorded actual time (pace calibration). */
+export function listCompletedLessonTimes(orm: Orm, learnerId: string) {
+  return orm
+    .select({ lessonId: lessonProgress.lessonId, activeMs: lessonProgress.activeMs })
+    .from(lessonProgress)
+    .where(
+      and(
+        eq(lessonProgress.learnerId, learnerId),
+        eq(lessonProgress.status, 'completed'),
+        isNotNull(lessonProgress.activeMs),
+      ),
+    )
+    .all()
+    .map((r) => ({ lessonId: r.lessonId, activeMs: r.activeMs ?? 0 }));
 }
 
 export interface ActivityDelta {

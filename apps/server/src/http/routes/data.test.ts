@@ -362,6 +362,8 @@ describe('learning data reset', () => {
     ).map((r) => r.name);
     const wiped = learningTables(userDb.sqlite);
     expect([...wiped, ...KEPT_TABLES].sort()).toEqual(all.sort());
-    expect(wiped).toEqual(expect.arrayContaining(['attempts', 'goals', 'tutor_messages']));
+    expect(wiped).toEqual(
+      expect.arrayContaining(['attempts', 'goals', 'tutor_messages', 'code_drafts']),
+    );
   });
 });

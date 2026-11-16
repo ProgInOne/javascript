@@ -374,7 +374,7 @@ function nextProgress(
   progress: LessonProgressRow | null,
   completedNow: boolean,
   now: number,
-): LessonProgressRow {
+): Omit<LessonProgressRow, 'activeMs'> {
   const completed = completedNow || progress?.status === 'completed';
   return {
     learnerId,

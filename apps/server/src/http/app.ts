@@ -18,6 +18,7 @@ import { aiRoutes } from './routes/ai.ts';
 import { backupRoutes, dataRoutes } from './routes/backups.ts';
 import { clientErrorRoutes } from './routes/client-errors.ts';
 import { curriculumRoutes } from './routes/curriculum.ts';
+import { draftRoutes } from './routes/drafts.ts';
 import { exerciseRoutes } from './routes/exercises.ts';
 import { learningRoutes } from './routes/learning.ts';
 import { projectRoutes } from './routes/project.ts';
@@ -110,6 +111,7 @@ export function createApp({
     .route('/practice-sets', practiceSetRoutes(practice.sets, practice.attempts))
     .route('/attempts', attemptRoutes(practice.attempts))
     .route('/', projectRoutes(practice.projects))
+    .route('/', draftRoutes(practice.drafts))
     .route('/', learningRoutes(practice));
   if (dataReset) api.route('/data', dataRoutes(dataReset));
   if (ai) {

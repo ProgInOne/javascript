@@ -7,7 +7,7 @@ import { AppHeader } from '../app/AppHeader.tsx';
 import { RouteAnnouncer } from '../app/RouteAnnouncer.tsx';
 import { ThemeSync } from '../app/ThemeSync.tsx';
 import { sendHeartbeat } from '../api/queries.ts';
-import { useActivityHeartbeat } from '../features/activity/useActivityHeartbeat.ts';
+import { lessonIdOfPath, useActivityHeartbeat } from '../features/activity/useActivityHeartbeat.ts';
 import { AiEventsSync } from '../features/ai/api.ts';
 
 export interface RouterContext {
@@ -55,7 +55,9 @@ function Shell({ children }: { children: React.ReactNode }) {
 }
 
 function ActivityHeartbeat() {
-  useActivityHeartbeat(sendHeartbeat);
+  // Reading or practising a lesson: its time also counts as the lesson's actual time (FR-GOAL-02).
+  const lessonId = useRouterState({ select: (s) => lessonIdOfPath(s.location.pathname) });
+  useActivityHeartbeat(sendHeartbeat, lessonId);
   return null;
 }
 

@@ -43,6 +43,13 @@
       "when": 1794685106761,
       "tag": "0005_session_summaries",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1794789726615,
+      "tag": "0006_lesson_time_code_drafts",
+      "breakpoints": true
     }
   ]
 }

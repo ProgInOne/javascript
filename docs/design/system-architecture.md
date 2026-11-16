@@ -225,7 +225,7 @@ apps/web/src/
 
 - **서버 상태**(진도, 문제, 시도)는 TanStack Query 캐시가 유일한 클라이언트 측 원천입니다. 별도 전역 스토어에 복사하지 않습니다.
 - **UI 상태**(패널 크기, 모드, 열린 드로어)는 컴포넌트 상태 또는 작은 스토어(Zustand)에 두고, 기억할 값만 `localStorage`에 저장합니다.
-- **편집 중인 코드**는 IndexedDB에 즉시 저장하고 서버에 디바운스(2초)로 동기화합니다. 서버가 원천이며, 충돌 시 최신 수정 시각이 이깁니다(단일 사용자이므로 충분).
+- **편집 중인 코드**는 IndexedDB에 즉시 저장하고 서버에 디바운스(2초)로 동기화합니다. 서버가 원천이며, 충돌 시 최신 수정 시각이 이깁니다(단일 사용자이므로 충분). 구현(M7, [D-063](/docs/decisions.md))은 IndexedDB 대신 localStorage를 쓰고, 화면을 떠날 때도 서버에 보내며, 수정 시각은 브라우저의 편집 시각입니다.
 
 ### 주요 데이터 흐름
 
@@ -321,7 +321,7 @@ sequenceDiagram
 | AI | `GET /ai/status`, `POST /ai/login`, `POST /ai/login/cancel`, `POST /ai/logout`, `POST /ai/reconnect`, `GET /ai/models`, `GET /ai/events` (SSE: 연결 상태·사용량·로그인 완료) |
 | 튜터 | `POST /tutor/threads`, `GET /tutor/threads`, `GET /tutor/threads/:id/messages`, `POST /tutor/threads/:id/messages` (SSE), `POST /tutor/threads/:id/messages/:messageId/cancel`, `GET`·`POST /tutor/threads/:id/summary` (`session.summarize`, v0.2), `POST /exercises/:id/ai-hint` (`tutor.hint`), `POST /attempts/:id/explanation` (`evaluator.explainMistake`, v0.2. 맞힌 시도는 `409 ATTEMPT_CORRECT`) |
 | AI | `GET /ai/status`, `POST /ai/login`, `POST /ai/login/cancel`, `POST /ai/logout`, `POST /ai/reconnect`, `GET /ai/models`, `GET /ai/events` (SSE: 연결 상태·사용량·로그인 완료), `GET /ai/calls` (AI 호출 기록, 프롬프트 없음. v0.2) |
-| 코드 초안 | `PUT /code-drafts/:exerciseId` (자동 저장 동기화) |
+| 코드 초안 | `PUT /code-drafts/:exerciseId` (자동 저장 동기화). 구현: `GET·PUT·DELETE /code-drafts/exercises/:id`, 레슨 예제는 `GET /lessons/:id/example-drafts`, `PUT·DELETE /lessons/:id/example-drafts/:exampleId` ([D-063](/docs/decisions.md)) |
 | 문제 신고 | `POST /exercises/:id/reports` |
 | 문제 생성 | `POST /generation-jobs`, `GET /generation-jobs/:id` |
 | 백업 | `GET /backups`, `POST /backups`, `GET /backups/:id/check` (복원 전 검사: 체크섬·무결성·스키마 호환, 마이그레이션 필요 여부. v0.3), `POST /backups/:id/restore`, `GET`·`PUT /backups/location` (백업 위치. 잘못된 경로는 `400 BACKUP_LOCATION_INVALID`, 환경 변수로 고정되면 `409 BACKUP_LOCATION_LOCKED`. v0.3) |

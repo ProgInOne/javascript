@@ -1,4 +1,4 @@
-import type { LessonConcept, LessonPrerequisite, Settings } from '@proginone/shared';
+import type { CodeDraft, LessonConcept, LessonPrerequisite, Settings } from '@proginone/shared';
 import { Badge } from '@proginone/ui';
 import { Link } from '@tanstack/react-router';
 import {
@@ -33,6 +33,8 @@ interface LessonContextValue {
   predictFirst: Settings['lesson.predictFirst'];
   /** `GET /lessons/:id/prerequisites`; undefined while loading or when it failed. */
   prerequisites: readonly LessonPrerequisite[] | undefined;
+  /** Server drafts of edited examples by example ID; undefined while loading (D-063). */
+  exampleDrafts: ReadonlyMap<string, CodeDraft> | undefined;
 }
 const LessonContext = createContext<LessonContextValue | null>(null);
 const useLesson = () => {
@@ -325,14 +327,19 @@ function PracticeSection() {
 }
 
 function RunnableExample({ p }: { p: Record<string, unknown> }) {
-  const { predictFirst } = useLesson();
+  const { predictFirst, lessonId, exampleDrafts } = useLesson();
+  const id = str(p['id']) ?? '';
   return (
     <RunnableExampleBlock
-      id={str(p['id']) ?? ''}
+      id={id}
       lang={str(p['lang']) ?? 'js'}
       code={str(p['code']) ?? ''}
       predict={p['predict'] === true}
       allowSkip={predictFirst !== 'required'}
+      // `editable` defaults to true (content-and-exercises.md MDX 컴포넌트).
+      editable={p['editable'] !== false && id !== ''}
+      lessonId={lessonId}
+      serverDraft={exampleDrafts === undefined ? undefined : (exampleDrafts.get(id) ?? null)}
     />
   );
 }
@@ -474,6 +481,7 @@ export function LessonBody({
   concepts,
   predictFirst = 'recommended',
   prerequisites,
+  exampleDrafts,
 }: {
   lessonId: string;
   kind?: LessonContextValue['kind'];
@@ -481,6 +489,7 @@ export function LessonBody({
   concepts: readonly LessonConcept[];
   predictFirst?: LessonContextValue['predictFirst'];
   prerequisites?: readonly LessonPrerequisite[] | undefined;
+  exampleDrafts?: ReadonlyMap<string, CodeDraft> | undefined;
 }) {
   const value = {
     lessonId,
@@ -488,6 +497,7 @@ export function LessonBody({
     concepts: new Map(concepts.map((c) => [c.id, c])),
     predictFirst,
     prerequisites,
+    exampleDrafts,
   };
   return (
     <LessonContext.Provider value={value}>
