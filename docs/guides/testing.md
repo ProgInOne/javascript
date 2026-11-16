@@ -89,5 +89,7 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 - 기본은 GitHub 호스트 runner입니다. 저장소 변수 `CI_RUNNER`가 `self-hosted`이면 같은 검사를 소유자 Mac의 self-hosted runner(`mac-proginone`)에서 돌립니다([D-055](/docs/decisions.md)).
 - self-hosted에서는 e2e·시각 회귀를 `tools/e2e-docker.sh`로 CI와 같은 Playwright 이미지에서 실행하므로 기준 이미지가 호환됩니다. Mac에서 Docker(Docker Desktop)가 켜져 있어야 합니다.
 - 전환: `gh variable set CI_RUNNER --body self-hosted`, 복귀: `gh variable delete CI_RUNNER`.
-- runner 관리: `~/actions-runner`에서 `./svc.sh status`·`./svc.sh stop`·`./svc.sh start`. 제거는 `./svc.sh uninstall` 후 `./config.sh remove --token <GitHub에서 받은 제거 토큰>`.
+- runner는 같은 Mac에 두 개(`mac-proginone` = `~/actions-runner`, `mac-proginone-2` = `~/actions-runner-2`)이고 작업이 동시에 두 개 돕니다. 두 runner가 `$HOME`을 같이 쓰므로 `pnpm/action-setup`은 runner별 임시 폴더(`runner.temp`)에 설치합니다.
+- CI를 기다릴 때는 `gh run watch <id> --interval 120 --exit-status`처럼 간격을 넓힙니다. 기본 3초 간격으로 여러 곳에서 기다리면 GitHub API 한도(시간당 5,000회)를 금방 넘습니다.
+- runner 관리: 각 runner 폴더(`~/actions-runner`, `~/actions-runner-2`)에서 `./svc.sh status`·`./svc.sh stop`·`./svc.sh start`. 제거는 `./svc.sh uninstall` 후 `./config.sh remove --token <GitHub에서 받은 제거 토큰>`.
 - 저장소를 공개로 바꾸기 전에는 self-hosted runner를 반드시 제거합니다.
