@@ -12,8 +12,8 @@ params:
   op: { kind: choice, values: ["*", "+"] }
   arr: { kind: identifier, pool: [nums, prices, scores, points] }
   out: { kind: identifier, pool: [result, changed, mapped, updated] }
-  # map이 원래 배열을 바꾼다고 생각할 때의 오답에 쓰는 값 (정답 계산이 아님)
-  mappedGuess:
+  # map이 돌려줄 새 배열. 해설과 오답 키에만 쓴다 (정답 키는 실행으로 계산)
+  mappedValues:
     kind: derived
     expr: "op === '*' ? [nums[0] * k, nums[1] * k, nums[2] * k] : [nums[0] + k, nums[1] + k, nums[2] + k]"
 render:
@@ -28,22 +28,25 @@ spec:
     console.log({{out}});
   answerKind: console
   misconceptionByAnswer:
-    "{{mappedGuess}}\n{{mappedGuess}}": js.mc.map-mutates-original
+    # map이 원래 배열도 바꾼다고 생각한 오답: 두 줄 모두 새 배열
+    "{{mappedValues}}\n{{mappedValues}}": js.mc.map-mutates-original
+# 배열·숫자 바로 뒤에는 받침에 따라 달라지는 조사를 쓰지 않는다.
 hints:
   - "`map`은 `{{arr}}`를 직접 바꿀까요, 새 배열을 만들어 돌려줄까요?"
   - "3번 줄은 `{{arr}}`, 4번 줄은 `map`이 돌려준 `{{out}}`를 출력해요."
-  - "콜백 `(n) => n {{op}} {{k}}`를 요소마다 한 번씩 불러 그 결과로 새 배열을 채워요."
+  - "`map`은 요소마다 콜백을 한 번씩 불러 `n {{op}} {{k}}`의 값으로 새 배열을 채워요."
 explanation: |
-  `map`은 원래 배열을 바꾸지 않고, 콜백이 돌려준 값으로 **새 배열** 을 만들어 돌려줘요.
+  `map`은 원래 배열을 바꾸지 않고, 콜백이 돌려준 값으로 **새 배열**을 만들어 돌려줘요.
 
-  - 3번 줄의 `{{arr}}`는 처음 그대로 `{{nums}}`이에요.
-  - 4번 줄의 `{{out}}`에는 요소마다 `n {{op}} {{k}}`를 계산한 값이 같은 순서로 들어 있어요.
+  - 3번 줄: `{{arr}}`는 바뀌지 않았으므로 처음 값 `{{nums}}` 그대로 출력돼요.
+  - 4번 줄: `{{out}}`에는 요소마다 `n {{op}} {{k}}`의 값을 계산한 새 배열이 들어 있어요. `{{nums}}` → `{{mappedValues}}`
 
-  두 줄이 모두 바뀐 배열이라고 답했다면 `map`이 원래 배열을 바꾼다고 생각한 거예요. 결과를 쓰려면 `const {{out}} = {{arr}}.map(...)`처럼 변수에 담아야 해요.
+  두 줄이 모두 바뀐 배열이라고 답했다면 `map`이 원래 배열을 바꾼다고 생각한 거예요. 원래 배열 `{{arr}}`는 그대로이고, 바뀐 값은 `map`이 돌려준 새 배열 `{{out}}`에만 있어요.
 misconceptions: [js.mc.map-mutates-original]
 variantPolicy:
   sampleSize: 30
   minDistinctFromRecent: 3
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

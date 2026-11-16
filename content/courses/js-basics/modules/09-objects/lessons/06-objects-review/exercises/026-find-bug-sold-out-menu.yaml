@@ -1,0 +1,61 @@
+id: js-basics.objects.objects-review.find-bug-sold-out-menu
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.obj.add-delete, weight: 1 }
+  - { id: js.obj.in-optional-chaining, weight: 0.3 }
+  - { id: js.obj.for-in, weight: 0.3 }
+tags: [object, delete, undefined, for-in, object-keys, debugging, assessment]
+estimatedSeconds: 120
+usage: assessment
+prompt: |
+  분식집 메뉴판 프로그램이에요. 라면이 품절되어 메뉴에서 빼고, 새 메뉴 쫄면을 더한 뒤 메뉴판을 출력해요. 그런데 품절된 라면이 메뉴판에 남아 있어요. 원인이 되는 줄을 찾고, 왜 그런지도 고르세요.
+spec:
+  code: |-
+    const menu = { gimbap: 3500, ramen: 4000, tteokbokki: 4500 };
+    menu.ramen = undefined;
+    menu.jjolmyeon = 5000;
+    console.log("메뉴 " + Object.keys(menu).length + "개");
+    for (const name in menu) {
+      console.log(name + ": " + menu[name] + "원");
+    }
+  bugLines: [2]
+  symptom: "`메뉴 4개`가 출력되고, 메뉴판에 `ramen: undefined원`이라는 줄이 남아 있어요."
+  symptomCheck:
+    console: ["메뉴 4개", "gimbap: 3500원", "ramen: undefined원", "tteokbokki: 4500원", "jjolmyeon: 5000원"]
+  fixedCode: |-
+    const menu = { gimbap: 3500, ramen: 4000, tteokbokki: 4500 };
+    delete menu.ramen;
+    menu.jjolmyeon = 5000;
+    console.log("메뉴 " + Object.keys(menu).length + "개");
+    for (const name in menu) {
+      console.log(name + ": " + menu[name] + "원");
+    }
+  causeOptions:
+    - id: c1
+      text: 속성에 undefined를 대입하면 값만 바뀌고 속성은 객체에 남는다. 속성을 없애려면 delete menu.ramen을 써야 한다
+      correct: true
+    - id: c2
+      text: 값이 undefined인 속성은 객체에 없는 것으로 치는데, for...in과 Object.keys만 예외로 그런 속성까지 보여 준다
+      misconception: js.mc.undefined-value-means-missing
+    - id: c3
+      text: jjolmyeon은 객체 리터럴에 처음부터 적지 않았으므로, 3번 줄처럼 나중에 대입하면 속성 개수가 잘못 세진다
+      misconception: js.mc.add-property-needs-declare
+misconceptions: [js.mc.undefined-value-means-missing, js.mc.add-property-needs-declare]
+hints:
+  - 메뉴는 원래 3개였어요. 하나를 빼고 하나를 더했는데 왜 4개일까요? 어느 쪽이 제대로 되지 않았을까요?
+  - "`menu.ramen = undefined;`를 실행한 뒤에도 `\"ramen\" in menu`가 `true`일지 생각해 보세요."
+  - 속성의 값을 바꾸는 것과 속성 자체를 지우는 것은 다른 일이에요. 속성을 지우는 연산자를 떠올려 보세요.
+explanation: |
+  원인은 **2번 줄**의 `menu.ramen = undefined;`예요.
+
+  - 속성에 `undefined`를 대입하면 **값만** `undefined`로 바뀌고 `ramen` 속성은 객체에 그대로 남아요. 그래서 `Object.keys(menu)`에 `"ramen"`이 들어 있어 4개로 세지고, `for...in`도 `ramen`을 돌아 `ramen: undefined원`이 나와요.
+  - 속성을 없애려면 `delete menu.ramen;`을 써요. 그러면 키가 `gimbap`, `tteokbokki`, `jjolmyeon` 세 개만 남아 `메뉴 3개`가 나와요.
+
+  - "값이 `undefined`인 속성은 없는 것으로 친다"는 이유는 틀렸어요. 값이 `undefined`여도 속성은 있는 것이라 `"ramen" in menu`도 `true`예요. `for...in`과 `Object.keys`가 예외인 것이 아니에요.
+  - "리터럴에 미리 적지 않은 속성은 잘못 세진다"도 틀렸어요. 없는 속성에 대입하면 그 자리에서 새 속성이 생기고, 다른 속성과 똑같이 세져요. 3번 줄은 의도대로 동작했어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

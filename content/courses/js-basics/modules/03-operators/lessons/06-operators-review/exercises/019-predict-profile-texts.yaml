@@ -1,0 +1,56 @@
+id: js-basics.operators.operators-review.predict-profile-texts
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.conv.to-string, weight: 1 }
+  - { id: js.conv.plus-concat, weight: 0.5 }
+  - { id: js.ops.precedence, weight: 0.3 }
+tags: [to-string, plus-concat, review]
+estimatedSeconds: 90
+usage: assessment
+prompt: |
+  게임 프로필 화면에 보여 줄 글자를 만드는 코드예요. 닉네임은 아직 정하지 않아서 `undefined`예요. 실행하면 콘솔에 무엇이 출력되나요? 나오는 줄을 모두 순서대로 쓰세요.
+spec:
+  lang: js
+  code: |
+    const level = 3;
+    const nickname = undefined;
+    const isVip = false;
+    console.log(String(level) + 1);
+    console.log("닉네임: " + String(nickname));
+    console.log(String(isVip) === "false");
+    console.log(String(level + 1) + level);
+  answerKind: console
+  misconceptionByAnswer:
+    "31\n닉네임: \ntrue\n43": js.mc.string-of-null-empty
+    "4\n닉네임: undefined\ntrue\n7": js.mc.plus-string-adds
+misconceptions: [js.mc.string-of-null-empty, js.mc.plus-string-adds]
+hints:
+  - "`String(값)`의 결과는 언제나 문자열이에요. 줄마다 `+`의 양쪽이 숫자인지 문자열인지 먼저 적어 보세요."
+  - "`String`은 값을 보이는 모습 그대로 글자로 바꿔요. `undefined`와 `false`는 어떤 글자가 될까요?"
+  - "마지막 줄은 괄호 안 `level + 1`(숫자끼리 덧셈)을 먼저 계산한 뒤 문자열로 바꾸고, 그다음에 `level`을 붙여요."
+explanation: |
+  정답은 아래 네 줄이에요.
+
+  ```text
+  31
+  닉네임: undefined
+  true
+  43
+  ```
+
+  | 줄 | 계산 | 결과 |
+  |---|---|---|
+  | 4 | `String(3)` → `"3"`, `"3" + 1` → 이어 붙이기 | `31` |
+  | 5 | `String(undefined)` → `"undefined"` | `닉네임: undefined` |
+  | 6 | `String(false)` → `"false"`, `"false" === "false"` | `true` |
+  | 7 | `3 + 1` → `4`, `String(4)` → `"4"`, `"4" + 3` → 이어 붙이기 | `43` |
+
+  - 1번 답을 `4`라고 했다면 `String`으로 바꾼 뒤에도 덧셈이 된다고 생각한 거예요. `+`는 한쪽이 문자열이면 이어 붙여요. 같은 이유로 마지막 줄도 `7`이 아니라 `43`이에요.
+  - 2번 답에서 `닉네임:` 뒤를 비워 두었다면 `undefined`가 빈 문자열이 된다고 생각한 거예요. `String`은 뜻을 해석하지 않고 `"undefined"`라는 글자로 바꿔요. 화면에 `undefined`가 그대로 찍히는 버그가 여기서 생겨요.
+  - 마지막 줄의 괄호 안은 숫자끼리라서 먼저 `4`가 돼요. 문자열로 바뀌는 것은 그다음이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

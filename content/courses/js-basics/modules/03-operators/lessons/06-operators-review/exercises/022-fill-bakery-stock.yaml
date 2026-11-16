@@ -1,0 +1,87 @@
+id: js-basics.operators.operators-review.fill-bakery-stock
+type: fill_blank
+difficulty: 3
+concepts:
+  - { id: js.ops.increment, weight: 1 }
+  - { id: js.ops.compound-assignment, weight: 0.3 }
+tags: [increment, decrement, review]
+estimatedSeconds: 100
+usage: assessment
+prompt: |
+  빵집의 남은 소금빵 개수(`stock`)를 관리하는 코드예요. 소금빵이 하나 팔릴 때마다 `stock`을 1씩 줄여요.
+
+  - `shown`: 첫 번째 손님에게는 **줄이기 전** 재고를 보여 주고, 재고는 1 줄여요.
+  - `left`: 두 번째 손님이 사면 재고를 1 더 줄이고, **줄인 뒤** 재고를 기록해요.
+
+  두 빈칸에 `stock`과 `--`를 쓴 식을 하나씩 넣어 아래처럼 출력되게 하세요.
+
+  ```text
+  판매 전 재고: 5
+  두 번째 판매 후: 3
+  현재 재고: 3
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    let stock = 5;
+    const shown = {{blank:first}};
+    const left = {{blank:second}};
+    console.log("판매 전 재고:", shown);
+    console.log("두 번째 판매 후:", left);
+    console.log("현재 재고:", stock);
+  blanks:
+    - id: first
+      accept: ["stock--"]
+      width: 8
+      misconceptionMap:
+        "--stock": js.mc.postfix-prefix-same
+    - id: second
+      accept: ["--stock"]
+      width: 8
+      misconceptionMap:
+        "stock--": js.mc.postfix-prefix-same
+  checks:
+    - kind: console
+      id: output
+      description: 판매 전 재고 5, 두 번째 판매 후 3, 현재 재고 3이 차례로 출력되어야 합니다.
+      expect:
+        lines: ["판매 전 재고: 5", "두 번째 판매 후: 3", "현재 재고: 3"]
+    - kind: program
+      id: values
+      description: shown에는 줄이기 전 재고 5, left와 stock에는 두 번 줄인 재고 3이 들어 있어야 합니다.
+      expect:
+        globals:
+          shown: { equals: 5 }
+          left: { equals: 3 }
+          stock: { equals: 3 }
+        noError: true
+      misconceptionIfFail: js.mc.postfix-prefix-same
+misconceptions: [js.mc.postfix-prefix-same]
+hints:
+  - "`--`는 변수 앞에도, 뒤에도 붙일 수 있어요. 두 경우 모두 stock을 1 줄이지만 식의 값이 달라요."
+  - 뒤에 붙이면(`stock--`) 줄이기 **전** 값이 식의 값이고, 앞에 붙이면(`--stock`) 줄인 **뒤** 값이 식의 값이에요.
+  - "첫 줄은 \"보여 주고 나서 줄이기\", 둘째 줄은 \"줄이고 나서 기록하기\"예요. 각각 `--`를 어느 쪽에 붙여야 할까요?"
+explanation: |
+  첫 번째 빈칸은 **`stock--`**, 두 번째 빈칸은 **`--stock`**이에요.
+
+  ```js
+  let stock = 5;
+  const shown = stock--;   // 식의 값은 줄이기 전 5, stock은 4
+  const left = --stock;    // stock을 3으로 줄이고, 식의 값도 3
+  ```
+
+  | 실행한 줄 | `stock` | `shown` | `left` |
+  |---|---|---|---|
+  | `let stock = 5;` | 5 | | |
+  | `const shown = stock--;` | 4 | 5 | |
+  | `const left = --stock;` | 3 | 5 | 3 |
+
+  - 첫 칸에 `--stock`을 쓰면 shown에 줄인 뒤 값 4가 들어가요. 손님에게 보여 줄 값은 줄이기 전 5예요.
+  - 두 번째 칸에 `stock--`를 쓰면 left에 줄이기 전 값 4가 들어가요. stock은 3이 되지만 기록이 어긋나요.
+  - 두 경우 모두 `stock`은 똑같이 1씩 줄어요. 다른 것은 **식이 돌려주는 값**뿐이에요. 헷갈리면 `stock--;`를 따로 한 줄에 쓰고, 다음 줄에서 stock을 읽는 편이 안전해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

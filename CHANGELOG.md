@@ -24,9 +24,14 @@
 - 호환성 점검 `pnpm test:e2e:compat`(M7, NFR-10, D-064): Firefox(사이트 격리 켬)·WebKit에서 샌드박스 정책·핵심 흐름 E2E. 결과와 브라우저별 차이는 [호환성 점검 기록](docs/reviews/2026-11-16-m7-compatibility.md)
 - 설치된 앱 스모크 테스트 `pnpm --filter @proginone/e2e smoke`(`SMOKE_URL`): 실제 콘텐츠로 토큰 검사, 과정 → 레슨, 샌드박스 실행·채점, 백업 목록. Chromium·Firefox·WebKit
 - [설치와 업그레이드 가이드](docs/guides/install-and-upgrade.md)(요구 사항, 체크섬 확인, 설치, 첫 실행, 데이터 위치, 백업, 업그레이드와 마이그레이션·콘텐츠 팩 교체, 백업으로 되돌리기, 제거)와 [릴리스 절차 가이드](docs/guides/release.md)(버전 체계, CHANGELOG, 릴리스 PR, 태그, GitHub 호스트·self-hosted 릴리스 워크플로, v0.3.0에 쓴 로컬 대체 절차, 산출물 확인)
+- JS 기초 유형 구성비 충족(M7, FR-EX-09, PRD MVP 완료 정의 2, [D-069](docs/decisions.md)): `start.reading-errors`에 오류 종류 구분 프로그램 작성 문제, `arrays.array-hof`에 `reduce` 초기값 구현 문제를 더하고 겹치는 3문제를 지워 30문제로 맞춤. 버그가 있는 시작 페이지를 고치는 웹 실습은 스펙의 `debugging: true`로 디버깅 범주에 셈(모듈 10의 `web-fix-*` 6개에 표시). JS 기초의 `type-mix` 위반 0
+- 단원 평가 문항 풀 보강(M7, [D-070](docs/decisions.md)): JS 단원 평가 6개에 21문항(모듈 3·4·5에 4개, 6·8·9에 3개)을 더해 풀이 한 번 출제 수보다 커짐(22·19·19·27·27·27). 재응시 때 문항 일부가 바뀜
+- 파라메트릭 템플릿 3개(계산 우선순위, for 누적, map) AI 교차 검토 승인
 
 ### Changed
 
+- `type-mix`(유형 구성비)를 JS 과정에서 오류로 전환(D-069). JS 수량 규칙 중 경고는 범위 초과(`unit-count-over`)만 남음
+- 단원 평가의 10~20 권장은 승인된 문항 풀이 아니라 한 번 출제 수 `min(승인 풀, itemCount ?? 20)`로 판단하고, `content-cli report`의 평가 행 기준 열에 `출제 18 / 10~20`처럼 표시(D-070)
 - CI를 저장소 변수 `CI_RUNNER`로 self-hosted runner와 GitHub 호스트 runner 사이에서 전환할 수 있게 함(D-055). self-hosted(macOS)에서는 e2e·시각 회귀를 Docker로 같은 Playwright 이미지에서 실행하고, 릴리스 묶기가 bsdtar에서도 동작
 - content.db 스키마 버전 4. 기존 content.db는 `pnpm content:build`(개발은 `content:build:dev`)로 다시 만드세요.
 - 프로젝트 화면의 이어 하기 안내를 "저장해 둔 작성 중인 코드에서 이어서 해요"로 바꾸고, 채점 뒤에도 초안을 지우지 않음(D-063)

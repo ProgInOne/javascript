@@ -32,4 +32,4 @@ assessment:
   itemCount: 20                    # 평가 개념 18개를 한 문항씩 모두 확인하고 2문항을 더 냄
   passRatio: 0.8
 practice:
-  targetCount: 24                  # itemCount보다 4문항 많아 다시 응시하면 다른 문항이 섞임
+  targetCount: 27                  # itemCount보다 7문항 많아 다시 응시하면 다른 문항이 섞임

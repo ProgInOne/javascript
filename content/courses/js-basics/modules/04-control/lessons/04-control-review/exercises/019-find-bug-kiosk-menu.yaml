@@ -1,0 +1,84 @@
+id: js-basics.control.control-review.find-bug-kiosk-menu
+type: find_bug_line
+difficulty: 3
+concepts:
+  - { id: js.control.switch, weight: 1 }
+  - { id: js.ops.strict-equality, weight: 0.5 }
+  - { id: js.conv.to-number, weight: 0.3 }
+tags: [switch, strict-equality, to-number, review]
+estimatedSeconds: 100
+usage: assessment
+prompt: |
+  분식집 키오스크의 메뉴 안내 프로그램이에요. 누른 버튼의 번호는 입력창에서 읽은 것처럼 **문자열**로 들어와요. 3번을 눌렀는데 안내가 이상해요. 원인이 되는 줄을 찾고, 이유도 고르세요.
+spec:
+  code: |-
+    const buttonText = "3";
+    const menuNo = buttonText;
+    let food = "";
+    switch (menuNo) {
+      case 1:
+        food = "김밥";
+        break;
+      case 2:
+        food = "라면";
+        break;
+      case 3:
+        food = "떡볶이";
+        break;
+      default:
+        food = "없는 메뉴";
+    }
+    console.log(menuNo + "번: " + food);
+  bugLines: [2]
+  acceptLines: [4]
+  symptom: "`3번: 떡볶이` 대신 `3번: 없는 메뉴`가 출력돼요."
+  symptomCheck:
+    console: ["3번: 없는 메뉴"]
+  fixedCode: |-
+    const buttonText = "3";
+    const menuNo = Number(buttonText);
+    let food = "";
+    switch (menuNo) {
+      case 1:
+        food = "김밥";
+        break;
+      case 2:
+        food = "라면";
+        break;
+      case 3:
+        food = "떡볶이";
+        break;
+      default:
+        food = "없는 메뉴";
+    }
+    console.log(menuNo + "번: " + food);
+  causeOptions:
+    - id: c1
+      text: 'switch는 값을 ===로 비교하는데, menuNo에 문자열 "3"이 그대로 들어가서 숫자 3인 case와 같지 않다'
+      correct: true
+    - id: c2
+      text: 'switch는 ==처럼 "3"을 3으로 바꿔 비교하지만, case 3 블록의 break 때문에 default까지 내려갔다'
+      misconception: js.mc.switch-loose-compare
+    - id: c3
+      text: default는 맞는 case가 있어도 항상 마지막에 실행되어서 food를 "없는 메뉴"로 덮어썼다
+misconceptions: [js.mc.switch-loose-compare]
+hints:
+  - "switch는 괄호 안의 값과 case의 값을 어떤 연산자로 비교했나요? `==`일까요, `===`일까요?"
+  - "menuNo에 들어 있는 값의 자료형을 확인해 보세요. `typeof menuNo`는 무엇일까요?"
+  - '`"3" === 3`은 false예요. 그렇다면 menuNo를 만들 때 무엇을 해 줘야 했을까요?'
+explanation: |
+  원인은 **2번 줄**이고, 이유는 **switch가 `===`로 비교하는데 menuNo가 문자열이기 때문**이에요.
+
+  - switch는 괄호 안의 값과 case의 값을 `===`로 비교해요. `===`는 자료형도 같아야 같다고 봐요.
+  - 2번 줄에서 menuNo에 문자열 `"3"`을 그대로 넣었어요. `"3" === 3`은 `false`라서 어느 case와도 같지 않고 `default`로 가요.
+  - 고치려면 2번 줄에서 `Number(buttonText)`로 숫자로 바꿔 넣어요. 4번 줄을 `switch (Number(menuNo))`로 고쳐도 같은 결과예요.
+
+  - "`==`처럼 바꿔 비교한다": switch는 값을 바꾸지 않아요. 만약 바꿔 비교했다면 case 3에서 `떡볶이`를 넣고 break로 바로 끝났을 거예요.
+  - "default는 항상 마지막에 실행된다": default는 맞는 case가 없을 때 가는 곳이에요. 맞는 case에서 break를 만나면 default는 실행되지 않아요.
+
+  출력이 `3번`으로 보여서 숫자처럼 느껴지지만, 문자열 `"3"`도 이어 붙이면 똑같이 `3번`이 돼요. 입력값은 switch에 넣기 전에 자료형을 맞춰요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

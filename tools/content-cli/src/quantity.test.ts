@@ -56,6 +56,8 @@ interface LessonSpec {
   importance?: 'core' | 'standard' | 'minor';
   primary?: string[];
   reviewed?: string[];
+  /** Assessment units: `assessment.itemCount`. */
+  itemCount?: number;
   exercises: ExerciseSource[];
 }
 
@@ -80,6 +82,7 @@ function source(
         estimatedMinutes: { read: 1, practice: 1 },
         concepts: { primary: l.primary ?? [], reviewed: l.reviewed ?? [] },
         objectives: ['o'],
+        ...(l.itemCount !== undefined ? { assessment: { itemCount: l.itemCount } } : {}),
       }),
     },
     mdxFile: `/c/${l.slug}/lesson.mdx`,
@@ -152,6 +155,36 @@ describe('categoryOf', () => {
     expect(categoryOf({ type: 'web_task', difficulty: 2 })).toBe('implement');
     expect(categoryOf({ type: 'web_task', difficulty: 5 })).toBe('apply');
     expect(categoryOf({ type: 'explain_code', difficulty: 2 })).toBeNull();
+  });
+
+  it('counts a web_task with a buggy starter page as 디버깅 (D-069)', () => {
+    const web = (spec: Record<string, unknown>, difficulty = 3) => ({
+      type: 'web_task',
+      difficulty,
+      spec,
+    });
+    expect(categoryOf(web({ focus: 'dom', debugging: true }))).toBe('debug');
+    expect(categoryOf(web({ focus: 'dom', debugging: true }, 4))).toBe('apply');
+    expect(categoryOf(web({ focus: 'dom', debugging: false }))).toBe('implement');
+    expect(categoryOf(web({ focus: 'dom' }))).toBe('implement');
+    // Only web_task: other types keep their category whatever the spec says.
+    expect(
+      categoryOf({ type: 'implement_function', difficulty: 2, spec: { debugging: true } }),
+    ).toBe('implement');
+  });
+});
+
+describe('quantity levels', () => {
+  it('makes every JS shortfall an error and HTML/CSS rules warnings (D-056, D-069)', () => {
+    expect(QUANTITY_LEVELS.js).toEqual({
+      'unit-count': 'error',
+      'unit-count-over': 'warning',
+      'concept-min': 'error',
+      'type-mix': 'error',
+      'type-diversity': 'error',
+      'assessment-coverage': 'error',
+    });
+    expect(new Set(Object.values(QUANTITY_LEVELS.markup))).toEqual(new Set(['warning']));
   });
 });
 
@@ -441,5 +474,38 @@ describe('renderReport', () => {
     const md = renderReport(s, 'markdown');
     expect(md).toContain(`| ${L} | 단원 | standard | 9 | 10~20 |`);
     expect(md).toContain('| unit-count | 오류 |');
+  });
+
+  it('judges an assessment by the items one sitting asks, not the pool size (D-070)', () => {
+    const assessment = (itemCount: number | undefined, pool: number) =>
+      renderReport(
+        source(
+          'javascript',
+          [{ id: 'js.x.a', importance: 'standard' }],
+          [
+            { slug: 'a', primary: ['js.x.a'], exercises: balancedJs() },
+            {
+              slug: 'r',
+              kind: 'assessment',
+              reviewed: ['js.x.a'],
+              ...(itemCount !== undefined ? { itemCount } : {}),
+              exercises: exercises(
+                'js-basics.m.r',
+                'js.x.a',
+                { mcq_single: pool },
+                { usage: 'assessment' },
+              ).map((ex, i) => ({ ...ex, id: `${ex.id}-${i}` })),
+            },
+          ],
+        ),
+        'markdown',
+      );
+    // A pool of 25 asking 18 per sitting is in range: retakes draw other items.
+    expect(assessment(18, 25)).toContain('| js-basics.m.r | 평가 | - | 25 | 출제 18 / 10~20 |');
+    expect(assessment(18, 25)).toMatch(/\| js-basics\.m\.r \|.*\| ✓ \|$/m);
+    // Without itemCount the engine asks at most 20.
+    expect(assessment(undefined, 25)).toContain('| 25 | 출제 20 / 10~20 |');
+    // Too few per sitting.
+    expect(assessment(5, 12)).toMatch(/\| js-basics\.m\.r \|.*출제 5 \/ 10~20.*\| ✗ \|$/m);
   });
 });

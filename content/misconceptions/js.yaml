@@ -1755,7 +1755,7 @@
   reality: '화살표 함수에 중괄호를 쓰면 return을 써야 값을 돌려준다. return이 없으면 콜백은 undefined를 돌려주므로 결과는 [undefined, undefined, ...]다. 중괄호를 빼고 (n) => n * 2로 쓰거나 return을 쓴다.'
   remediation:
     lessonSection: js-basics.arrays.array-hof#pitfalls
-    exercises: [js-basics.arrays.array-hof.fix-map-no-return, js-basics.arrays.array-hof.multi-map-facts, js-basics.arrays.array-hof.mcq-chain-which]
+    exercises: [js-basics.arrays.array-hof.fix-map-no-return, js-basics.arrays.array-hof.multi-map-facts]
 
 - id: js.mc.map-can-skip-items
   concept: js.arr.map
@@ -1836,7 +1836,7 @@
   reality: '초기값을 생략하면 첫 요소가 초기값이 되고 두 번째 요소부터 콜백이 불린다. 그래서 빈 배열에서는 TypeError(Reduce of empty array with no initial value)가 나고, 첫 요소를 가공하는 콜백(예: acc + n * 2)은 첫 요소만 가공되지 않은 엉뚱한 결과를 낸다. 초기값은 항상 적는다.'
   remediation:
     lessonSection: js-basics.arrays.array-hof#pitfalls
-    exercises: [js-basics.arrays.array-hof.multi-reduce-initial, js-basics.arrays.array-hof.fill-reduce-total, js-basics.arrays.array-hof.impl-best-day]
+    exercises: [js-basics.arrays.array-hof.multi-reduce-initial, js-basics.arrays.array-hof.impl-goal-days, js-basics.arrays.array-hof.impl-best-day]
 
 - id: js.mc.reduce-callback-no-return
   concept: js.arr.reduce
@@ -1845,7 +1845,7 @@
   reality: 'reduce는 콜백이 돌려준 값을 다음 누적값으로 쓴다. 중괄호 본문에 return이 없으면 다음 acc는 undefined가 되고, 결과는 undefined나 NaN이 된다.'
   remediation:
     lessonSection: js-basics.arrays.array-hof#pitfalls
-    exercises: [js-basics.arrays.array-hof.fix-reduce-no-return, js-basics.arrays.array-hof.parsons-count-long]
+    exercises: [js-basics.arrays.array-hof.fix-reduce-no-return]
 
 - id: js.mc.reduce-params-swapped
   concept: js.arr.reduce
@@ -1854,7 +1854,7 @@
   reality: 'reduce 콜백의 첫 번째 매개변수가 누적값, 두 번째가 현재 요소다. 이름은 마음대로 지을 수 있지만 순서가 뜻을 정하므로 (acc, item)처럼 순서에 맞는 이름을 쓴다.'
   remediation:
     lessonSection: js-basics.arrays.array-hof#pitfalls
-    exercises: [js-basics.arrays.array-hof.mcq-reduce-params, js-basics.arrays.array-hof.parsons-count-long]
+    exercises: [js-basics.arrays.array-hof.mcq-reduce-params]
 
 - id: js.mc.chain-order-irrelevant
   concept: js.arr.chaining
@@ -1863,7 +1863,7 @@
   reality: '이어 쓴 메서드는 왼쪽부터 차례로 실행되고, 뒤 메서드는 앞 메서드가 돌려준 배열을 받는다. map 뒤의 filter는 바뀐 값으로 조건을 검사하므로 순서를 바꾸면 결과가 달라질 수 있다.'
   remediation:
     lessonSection: js-basics.arrays.array-hof#pitfalls
-    exercises: [js-basics.arrays.array-hof.predict-chain-order, js-basics.arrays.array-hof.impl-coupon-sum, js-basics.arrays.array-hof.mcq-chain-which]
+    exercises: [js-basics.arrays.array-hof.predict-chain-order, js-basics.arrays.array-hof.impl-coupon-sum]
 
 - id: js.mc.chain-after-foreach
   concept: js.arr.chaining
@@ -1872,7 +1872,7 @@
   reality: 'forEach는 undefined를 돌려주므로 뒤에 메서드를 이으면 TypeError(Cannot read properties of undefined)가 난다. 이어 쓸 수 있는 것은 새 배열을 돌려주는 map·filter·slice 같은 메서드다.'
   remediation:
     lessonSection: js-basics.arrays.array-hof#pitfalls
-    exercises: [js-basics.arrays.array-hof.find-bug-foreach-chain, js-basics.arrays.array-hof.mcq-chain-which]
+    exercises: [js-basics.arrays.array-hof.find-bug-foreach-chain]
 
 # ── 모듈 8. array-search-sort ──
 

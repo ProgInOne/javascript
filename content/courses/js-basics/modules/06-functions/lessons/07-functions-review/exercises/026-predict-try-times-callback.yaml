@@ -1,0 +1,65 @@
+id: js-basics.functions.functions-review.predict-try-times-callback
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.fn.callback, weight: 1 }
+  - { id: js.fn.return, weight: 0.5 }
+  - { id: js.fn.arrow, weight: 0.3 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [callback, return, arrow, for, trace, assessment]
+estimatedSeconds: 170
+usage: assessment
+prompt: |
+  성공할 때까지 정해진 횟수만큼 다시 시도하는 함수 `tryTimes`예요. 한 번 시도하는 방법은 콜백 `attempt`로 받아요. 실행하면 콘솔에 무엇이 출력될까요? 여덟 줄을 모두 쓰세요.
+spec:
+  lang: js
+  code: |
+    function tryTimes(times, attempt) {
+      for (let i = 1; i <= times; i++) {
+        if (attempt(i)) {
+          return i + "번째에 성공";
+        }
+      }
+      return "모두 실패";
+    }
+
+    const isBig = (n) => {
+      console.log("시도 " + n);
+      return n * n > 10;
+    };
+
+    console.log(tryTimes(5, isBig));
+    console.log(tryTimes(2, isBig));
+  answerKind: console
+  misconceptionByAnswer:
+    "시도 1\n시도 2\n시도 3\n시도 4\n시도 5\n4번째에 성공\n시도 1\n시도 2\n모두 실패": js.mc.code-after-return-runs
+    "시도 1\n4번째에 성공\n시도 1\n모두 실패": js.mc.callback-runs-at-pass-time
+misconceptions: [js.mc.code-after-return-runs, js.mc.callback-runs-at-pass-time]
+hints:
+  - "`isBig`는 넘기는 순간이 아니라 `tryTimes` 안에서 `attempt(i)`가 실행될 때마다 불려요. 그때마다 `시도 n`이 출력돼요."
+  - "`n * n > 10`이 처음으로 참이 되는 `n`은 얼마인가요? 그 회차에서 `return`을 만나면 반복은 어떻게 되나요?"
+  - 두 번째 호출은 `times`가 2라서 `i`가 1, 2일 때만 시도해요. 두 번 다 실패하면 반복이 끝나고 무엇을 돌려주나요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  시도 1
+  시도 2
+  시도 3
+  시도 4
+  4번째에 성공
+  시도 1
+  시도 2
+  모두 실패
+  ```
+
+  - 첫 호출 `tryTimes(5, isBig)`: 반복이 `i` 1부터 돌며 회차마다 콜백 `attempt(i)`, 즉 `isBig(i)`를 불러요. 부를 때마다 `시도 i`가 출력되고 `i * i > 10`의 결과를 돌려줘요. 1, 4, 9는 10보다 크지 않아 `false`이고, 4에서 `16 > 10`이 `true`예요.
+  - 4번째 회차에서 `return "4번째에 성공"`을 만나면 함수가 그 자리에서 끝나요. 반복도 함께 끝나므로 `시도 5`는 출력되지 않아요. 돌려준 글자를 바깥의 `console.log`가 출력해요.
+  - 두 번째 호출 `tryTimes(2, isBig)`: `i`가 1, 2일 때 두 번 시도하지만 모두 `false`예요. 반복이 끝까지 돌고 나서 마지막 줄의 `return "모두 실패"`가 실행돼요.
+
+  `시도 5`까지 나온다고 생각했다면 `return` 뒤에도 반복이 계속된다고 본 거예요. `return`은 반복 안에 있어도 함수 전체를 끝내요. 호출마다 `시도 1`만 나온다고 생각했다면 콜백이 넘기는 순간 한 번만 실행된다고 본 거예요. 콜백은 받은 함수가 부를 때마다, 부르는 횟수만큼 실행돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

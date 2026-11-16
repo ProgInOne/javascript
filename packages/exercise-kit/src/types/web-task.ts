@@ -37,6 +37,12 @@ const singleHtmlSchema = z.object({
 export const webTaskSpecSchema = z
   .object({
     focus: z.enum(['html', 'css', 'dom', 'project']),
+    /**
+     * The starter is a buggy page the learner fixes (D-069). Content metadata only: it makes the
+     * task count as 디버깅 in the type mix (`content-cli` quantity rules), the same as `fix_bug`,
+     * which runs without a DOM. Not sent to the client.
+     */
+    debugging: z.boolean().optional(),
     starter: singleHtmlSchema,
     /** Reference result (answer key; shown side by side only after the hint ladder). */
     solution: singleHtmlSchema,

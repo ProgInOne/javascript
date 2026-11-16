@@ -1,0 +1,52 @@
+id: js-basics.functions.functions-review.multi-pure-parcel
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.fn.pure, weight: 1 }
+  - { id: js.fn.side-effects, weight: 0.5 }
+  - { id: js.scope.shadowing, weight: 0.3 }
+tags: [pure-function, side-effects, parameter, assessment]
+estimatedSeconds: 160
+usage: assessment
+prompt: |
+  택배 프로그램에 쓰는 함수들이에요. 이 중 **순수 함수**를 모두 고르세요. (`packed`는 프로그램 위쪽에서 `let packed = 0;`으로 만든 바깥 변수예요.)
+spec:
+  options:
+    - id: a
+      text: "`function nextFloor(floor) { floor = floor + 1; return floor; }`"
+      missedMisconception: js.mc.param-reassign-changes-outer
+    - id: b
+      text: '`const sizeLabel = (cm) => cm >= 100 ? "큰 상자" : "작은 상자";`'
+    - id: c
+      text: "`function boxFee(count) { let fee = 0; for (let i = 1; i <= count; i++) { fee += 500; } return fee; }`"
+    - id: d
+      text: "`function packBox(count) { packed += count; return packed; }`"
+      misconception: js.mc.same-args-same-result-always
+      rationale: 바깥 변수 packed를 바꾸는 부수 효과가 있어요. packBox(2)를 두 번 부르면 2, 4처럼 같은 인수에 다른 값이 나와요.
+    - id: e
+      text: '`function checkWeight(kg) { if (kg > 20) { console.log("너무 무거워요"); } return kg <= 20; }`'
+      rationale: 돌려주는 값은 kg만으로 정해지지만, 20kg을 넘으면 콘솔에 출력하는 부수 효과가 있어요. 출력이 가끔만 일어나도 순수 함수가 아니에요.
+  correct: [a, b, c]
+misconceptions: [js.mc.same-args-same-result-always, js.mc.param-reassign-changes-outer]
+hints:
+  - 순수 함수의 두 조건을 떠올려 보세요. 같은 인수면 항상 같은 값을 돌려주는가, 그리고 함수 바깥에 흔적(바깥 변수 바꾸기, 출력 등)을 남기지 않는가.
+  - 함수 안에서 값을 바꾸더라도, 바뀌는 것이 매개변수나 함수 안에서 만든 변수라면 함수 바깥에는 영향이 없어요.
+  - "`console.log`는 조건에 따라 가끔만 실행되어도 부수 효과예요. 바깥 변수에 `+=`를 쓰는 것도 마찬가지예요."
+explanation: |
+  순수 함수는 `nextFloor`, `sizeLabel`, `boxFee` 세 개예요.
+
+  - `nextFloor`: 매개변수 `floor`에 새 값을 넣지만, 매개변수는 함수 안에서만 쓰는 변수예요. `nextFloor(myFloor)`처럼 불러도 바깥의 `myFloor`는 바뀌지 않아요. 같은 인수면 항상 같은 값을 돌려주고 바깥을 바꾸지 않으므로 순수 함수예요.
+  - `sizeLabel`: 인수 `cm`만 보고 글자를 돌려줘요. 바깥 값을 읽지도 바꾸지도 않아요.
+  - `boxFee`: 반복과 `+=`를 쓰지만 바뀌는 `fee`는 함수 안에서 호출마다 새로 만드는 변수예요. 같은 `count`면 항상 같은 값이에요.
+
+  순수 함수가 아닌 것:
+
+  - `packBox`: 바깥 변수 `packed`를 바꿔요. 부를 때마다 결과가 커져서 같은 인수에도 다른 값을 돌려줘요.
+  - `checkWeight`: 반환값은 인수만으로 정해지지만, 무거운 짐에서는 콘솔에 출력해요. 출력도 함수 바깥에 남는 부수 효과예요.
+
+  "함수 안에서 무언가를 바꾸면 순수 함수가 아니다"라고 생각해 `nextFloor`나 `boxFee`를 빼면 안 돼요. 기준은 **함수 바깥**에 영향이 있느냐예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

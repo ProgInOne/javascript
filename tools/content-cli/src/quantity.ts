@@ -11,7 +11,12 @@
  * - A concept's count is the practice items whose primary concept (weight 1) it is, across all
  *   units. Secondary tags never count.
  */
-import type { ConceptSource, ExerciseSource, LessonSource } from '@proginone/content-schema';
+import {
+  ASSESSMENT_MAX_ITEMS,
+  type ConceptSource,
+  type ExerciseSource,
+  type LessonSource,
+} from '@proginone/content-schema';
 import type { Diagnostics } from './diagnostics.ts';
 import type { ContentSource, CourseNodeSource, LessonNodeSource } from './load.ts';
 
@@ -48,9 +53,19 @@ const BASE_CATEGORY: Readonly<Record<string, Exclude<Category, 'apply'>>> = {
 /** Difficulty from which implementation and debugging items count as 응용 (L4+). */
 export const APPLY_MIN_DIFFICULTY = 4;
 
+/**
+ * A `web_task` whose starter is a buggy page to fix (`spec.debugging: true`) is a bug fix like
+ * `fix_bug`. `find_bug_line` and `fix_bug` run without a DOM, so DOM debugging can only be a
+ * `web_task` (D-069).
+ */
+const isWebDebugging = (ex: Pick<ExerciseSource, 'type'> & { spec?: ExerciseSource['spec'] }) =>
+  ex.type === 'web_task' && ex.spec?.['debugging'] === true;
+
 /** The category an exercise counts toward, or null for a type outside the table. */
-export function categoryOf(ex: Pick<ExerciseSource, 'type' | 'difficulty'>): Category | null {
-  const base = BASE_CATEGORY[ex.type];
+export function categoryOf(
+  ex: Pick<ExerciseSource, 'type' | 'difficulty'> & { spec?: ExerciseSource['spec'] },
+): Category | null {
+  const base = isWebDebugging(ex) ? 'debug' : BASE_CATEGORY[ex.type];
   if (base === undefined) return null;
   if ((base === 'debug' || base === 'implement') && ex.difficulty >= APPLY_MIN_DIFFICULTY)
     return 'apply';
@@ -117,16 +132,15 @@ export type Level = 'error' | 'warning';
 /**
  * Severity of each rule. The PRD makes every JavaScript shortfall an error and every HTML/CSS
  * one a warning. A unit with more items than its range only warns (more practice never blocks a
- * build). JavaScript rules the current content does not meet yet stay warnings until the
- * content is fixed (D-056); flip each to 'error' when `content-cli check` shows no violation.
+ * build). JavaScript rules were warnings until the content met them (D-056); `type-mix` became
+ * an error once the JS units met the type mix (D-069).
  */
 export const QUANTITY_LEVELS: Record<Family, Record<QuantityRule, Level>> = {
   js: {
     'unit-count': 'error',
     'unit-count-over': 'warning',
     'concept-min': 'error',
-    // TODO(D-056): flip to 'error' once the JS units meet the type mix (`pnpm content:report`).
-    'type-mix': 'warning',
+    'type-mix': 'error',
     'type-diversity': 'error',
     'assessment-coverage': 'error',
   },
@@ -153,8 +167,13 @@ export interface UnitQuantity {
   count: number;
   /** Unapproved items of the unit (not counted). */
   drafts: number;
-  /** null: no range for this kind of unit (project units). */
+  /**
+   * null: no range for this kind of unit (project units). Assessment units: the range of the
+   * items asked per sitting (`asked`), not of the pool.
+   */
   range: Range | null;
+  /** Assessment units: items one sitting asks (`assessmentAsked`); null for other units. */
+  asked: number | null;
   byCategory: Record<Category, number>;
   /** Items whose type is outside the category table. */
   uncategorized: number;
@@ -224,8 +243,12 @@ function measureUnit(course: CourseNodeSource, lesson: LessonNodeSource): UnitQu
       data.kind === 'lesson'
         ? UNIT_RANGES[family][data.importance]
         : data.kind === 'assessment' && family === 'js'
-          ? ASSESSMENT_RANGE
+          ? ASSESSMENT_ITEM_RANGE
           : null,
+    asked:
+      data.kind === 'assessment'
+        ? assessmentAsked(counted.length, data.assessment?.itemCount)
+        : null,
     byCategory,
     uncategorized,
     byType,
@@ -233,8 +256,17 @@ function measureUnit(course: CourseNodeSource, lesson: LessonNodeSource): UnitQu
   };
 }
 
-/** Items one JavaScript unit assessment asks (prd.md; counted per sitting by check.ts, D-054). */
-const ASSESSMENT_RANGE: Range = { min: 10, max: 20 };
+/** Item count range of one unit assessment sitting (content-and-exercises.md#문제-수-산정-방식). */
+export const ASSESSMENT_ITEM_RANGE = { min: 10, max: 20 } as const satisfies Range;
+
+/**
+ * Items one sitting of an assessment asks: `itemCount` items of the approved pool (the pool may
+ * hold more so that retakes see other items), or without it the whole pool up to the engine's
+ * cap. The 10~20 advice is about this number, not the pool size (D-070).
+ */
+export function assessmentAsked(pool: number, itemCount: number | undefined): number {
+  return Math.min(pool, itemCount ?? ASSESSMENT_MAX_ITEMS);
+}
 
 /** Per-unit and per-concept numbers of the whole content tree. */
 export function measureQuantities(source: ContentSource): QuantityReport {

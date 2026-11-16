@@ -1,0 +1,76 @@
+id: js-basics.control.control-review.predict-picnic-items
+type: predict_output
+difficulty: 3
+concepts:
+  - { id: js.control.block, weight: 1 }
+  - { id: js.control.if, weight: 0.5 }
+tags: [block, nested-if, indentation, review]
+estimatedSeconds: 100
+usage: assessment
+prompt: |
+  날씨에 따라 소풍 준비물을 정하는 코드예요. 중괄호를 빠뜨린 곳이 있어요. 들여쓰기가 아니라 중괄호를 기준으로 읽고, 실행하면 콘솔에 무엇이 나올지 쓰세요.
+spec:
+  lang: js
+  code: |
+    const temp = 31;
+    const isRaining = true;
+    let items = "물";
+    if (temp >= 30) {
+      if (isRaining) {
+        items = items + ", 우산";
+      } else
+        items = items + ", 모자";
+        items = items + ", 선크림";
+    }
+    if (temp < 10)
+      items = items + ", 목도리";
+      console.log("준비물: " + items);
+  answerKind: console
+  misconceptionByAnswer:
+    "준비물: 물, 우산": js.mc.indent-makes-block
+    "준비물: 물, 우산, 모자, 선크림": js.mc.else-if-runs-all
+misconceptions: [js.mc.indent-makes-block, js.mc.else-if-runs-all]
+hints:
+  - 중괄호 없이 쓴 `else`와 `if`에는 바로 다음 **한 문장**만 딸려요. 들여쓰기는 사람이 보기 위한 표시일 뿐이에요.
+  - "`, 선크림`을 붙이는 줄은 `else`에 딸리지 않아요. 그 줄은 어느 블록 안에 있나요? 바깥 if의 중괄호를 찾아보세요."
+  - "마지막 `console.log`도 `if (temp < 10)`에 딸리지 않아요. 조건과 상관없이 실행돼요."
+explanation: |
+  정답은 아래 한 줄이에요.
+
+  ```text
+  준비물: 물, 우산, 선크림
+  ```
+
+  중괄호를 기준으로 다시 들여 쓰면 이렇게 읽혀요.
+
+  ```js
+  if (temp >= 30) {
+    if (isRaining) {
+      items = items + ", 우산";
+    } else
+      items = items + ", 모자";   // else에는 이 한 문장만 딸림
+    items = items + ", 선크림";   // 바깥 if 블록 안. 비가 와도 실행
+  }
+  if (temp < 10)
+    items = items + ", 목도리";   // if에는 이 한 문장만 딸림
+  console.log("준비물: " + items); // 조건과 상관없이 실행
+  ```
+
+  | 줄 | 실행? | `items` |
+  |---|---|---|
+  | `items = items + ", 우산";` | 예 (비가 옴) | `"물, 우산"` |
+  | `items = items + ", 모자";` | 아니요 (else 갈래) | |
+  | `items = items + ", 선크림";` | 예 (바깥 if 블록 안) | `"물, 우산, 선크림"` |
+  | `items = items + ", 목도리";` | 아니요 (31 < 10은 거짓) | |
+  | `console.log(...)` | 예 | |
+
+  - `준비물: 물, 우산`이라고 했다면 `, 선크림` 줄이 들여쓰기 때문에 else에 딸린다고 생각한 거예요. 중괄호가 없는 else에는 바로 다음 한 문장만 딸려요.
+  - 아무것도 나오지 않는다고 생각했다면 마지막 `console.log`가 `if (temp < 10)`에 딸린다고 본 거예요. 이것도 들여쓰기만 그렇게 보일 뿐이에요.
+  - `모자`까지 붙였다면 if와 else가 모두 실행된다고 본 거예요. 둘 중 하나만 실행돼요.
+
+  이런 실수를 막으려면 조건에 딸린 문장이 한 줄이어도 언제나 중괄호를 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

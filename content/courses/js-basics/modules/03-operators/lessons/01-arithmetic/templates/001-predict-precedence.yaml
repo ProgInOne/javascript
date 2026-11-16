@@ -12,6 +12,10 @@ params:
   c: { kind: int, min: 2, max: 6 }
   op: { kind: choice, values: ["+", "-"] }
   name: { kind: identifier, pool: [total, result, score, price, answer] }
+  # 해설에 쓰는 값 (정답 키는 실행으로 계산)
+  product: { kind: derived, expr: "b * c" }
+  correct: { kind: derived, expr: "op === '+' ? a + product : a - product" }
+  leftFirst: { kind: derived, expr: "op === '+' ? (a + b) * c : (a - b) * c" }
 constraints:
   # 뺄셈일 때 결과가 음수가 되지 않게 (가독성)
   - "op === '+' || a > b * c"
@@ -26,22 +30,26 @@ spec:
   answerKind: console
   misconceptionByAnswer:
     # 왼쪽부터 계산한 오답: (a op b) * c
-    "{{op === '+' ? (a + b) * c : (a - b) * c}}": js.mc.always-left-to-right
+    "{{leftFirst}}": js.mc.always-left-to-right
+# 숫자가 바뀌어도 조사가 어긋나지 않게, 숫자 바로 뒤에는 받침에 따라 달라지는 조사를 쓰지 않는다.
 hints:
   - "`{{op}}`와 `*` 중 어느 쪽을 먼저 계산할까요?"
   - "곱셈 `*`는 덧셈·뺄셈보다 먼저예요. `{{b}} * {{c}}`부터 값으로 바꿔 보세요."
-  - "`{{b}} * {{c}}`는 `{{b * c}}`이에요. 이제 `{{a}} {{op}} {{b * c}}`를 계산하면 돼요."
+  - "`{{b}} * {{c}}` → `{{product}}`. 이제 `{{a}} {{op}} {{product}}`의 값을 구하면 돼요."
 explanation: |
   `*`는 `{{op}}`보다 우선순위가 높아서 먼저 계산해요.
 
-  1. `{{b}} * {{c}}` → `{{b * c}}`
-  1. `{{a}} {{op}} {{b * c}}`를 계산한 값이 `{{name}}`에 담기고 출력돼요.
+  1. `{{b}} * {{c}}` → `{{product}}`
+  1. `{{a}} {{op}} {{product}}` → `{{correct}}`
 
-  왼쪽부터 `({{a}} {{op}} {{b}}) * {{c}}`로 계산해 `{{op === '+' ? (a + b) * c : (a - b) * c}}`라고 답했다면, 곱셈이 먼저라는 규칙을 다시 확인하세요. 먼저 {{op === '+' ? '더하고' : '빼고'}} 싶을 때는 괄호를 써요.
+  그래서 `{{name}}`에 담긴 값(`{{correct}}`)이 출력돼요.
+
+  왼쪽부터 `({{a}} {{op}} {{b}}) * {{c}}` 순서로 계산한 값(`{{leftFirst}}`)을 답했다면, 곱셈이 먼저라는 규칙을 다시 확인하세요. 먼저 {{op === '+' ? '더하고' : '빼고'}} 싶을 때는 괄호를 써요.
 misconceptions: [js.mc.always-left-to-right]
 variantPolicy:
   sampleSize: 30
   minDistinctFromRecent: 3
 review:
-  status: draft
+  status: approved
   draftedBy: ai:claude
+  reviewedBy: ai:reviewer

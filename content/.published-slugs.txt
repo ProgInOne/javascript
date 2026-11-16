@@ -354,7 +354,6 @@ exercise js-basics.arrays.array-basics.predict-read-elements
 exercise js-basics.arrays.array-basics.predict-swap
 exercise js-basics.arrays.array-basics.tf-length-gap
 exercise js-basics.arrays.array-basics.tf-out-of-range
-exercise js-basics.arrays.array-hof.fill-reduce-total
 exercise js-basics.arrays.array-hof.find-bug-filter-empty-check
 exercise js-basics.arrays.array-hof.find-bug-foreach-chain
 exercise js-basics.arrays.array-hof.fix-filter-reversed
@@ -365,10 +364,10 @@ exercise js-basics.arrays.array-hof.impl-all-passed
 exercise js-basics.arrays.array-hof.impl-best-day
 exercise js-basics.arrays.array-hof.impl-coupon-sum
 exercise js-basics.arrays.array-hof.impl-first-vip
+exercise js-basics.arrays.array-hof.impl-goal-days
 exercise js-basics.arrays.array-hof.impl-passed-scores
 exercise js-basics.arrays.array-hof.impl-price-labels
 exercise js-basics.arrays.array-hof.impl-tag-summary
-exercise js-basics.arrays.array-hof.mcq-chain-which
 exercise js-basics.arrays.array-hof.mcq-filter-keeps
 exercise js-basics.arrays.array-hof.mcq-find-not-found
 exercise js-basics.arrays.array-hof.mcq-map-result
@@ -376,7 +375,6 @@ exercise js-basics.arrays.array-hof.mcq-reduce-params
 exercise js-basics.arrays.array-hof.mcq-some-returns
 exercise js-basics.arrays.array-hof.multi-map-facts
 exercise js-basics.arrays.array-hof.multi-reduce-initial
-exercise js-basics.arrays.array-hof.parsons-count-long
 exercise js-basics.arrays.array-hof.predict-chain-order
 exercise js-basics.arrays.array-hof.predict-filter-one-none
 exercise js-basics.arrays.array-hof.predict-find-vs-filter
@@ -446,8 +444,10 @@ exercise js-basics.arrays.array-search-sort.predict-sort-same-array
 exercise js-basics.arrays.array-search-sort.tf-compare-boolean
 exercise js-basics.arrays.arrays-review.fill-light-ends
 exercise js-basics.arrays.arrays-review.fill-shoe-sizes
+exercise js-basics.arrays.arrays-review.find-bug-rain-week
 exercise js-basics.arrays.arrays-review.find-bug-shipping-copy
 exercise js-basics.arrays.arrays-review.find-bug-water-plants
+exercise js-basics.arrays.arrays-review.fix-cancel-seats
 exercise js-basics.arrays.arrays-review.fix-locker-labels
 exercise js-basics.arrays.arrays-review.impl-elevator-route
 exercise js-basics.arrays.arrays-review.impl-initials
@@ -465,6 +465,7 @@ exercise js-basics.arrays.arrays-review.parsons-book-stack
 exercise js-basics.arrays.arrays-review.predict-foreach-tickets
 exercise js-basics.arrays.arrays-review.predict-levels-loops
 exercise js-basics.arrays.arrays-review.predict-pack-bag
+exercise js-basics.arrays.arrays-review.predict-print-queue
 exercise js-basics.arrays.arrays-review.predict-rank-sort
 exercise js-basics.arrays.arrays-review.tf-mixed-types
 exercise js-basics.arrays.arrays-review.tf-splice-count
@@ -514,7 +515,9 @@ exercise js-basics.browser-intro.final-project.predict-todo-count
 exercise js-basics.browser-intro.final-project.web-clear-done
 exercise js-basics.browser-intro.final-project.web-fix-todo-bugs
 exercise js-basics.browser-intro.final-project.web-todo-app
+exercise js-basics.control.control-review.fill-zoo-fee-cases
 exercise js-basics.control.control-review.find-bug-first-order-coupon
+exercise js-basics.control.control-review.find-bug-kiosk-menu
 exercise js-basics.control.control-review.fix-gym-hours
 exercise js-basics.control.control-review.fix-island-shipping
 exercise js-basics.control.control-review.fix-parcel-size-case
@@ -526,8 +529,10 @@ exercise js-basics.control.control-review.mcq-ternary-is-expression
 exercise js-basics.control.control-review.multi-vip-lounge
 exercise js-basics.control.control-review.parsons-pool-entry
 exercise js-basics.control.control-review.predict-chained-ternary-stock
+exercise js-basics.control.control-review.predict-picnic-items
 exercise js-basics.control.control-review.predict-ride-height
 exercise js-basics.control.control-review.predict-weekend-plan
+exercise js-basics.control.control-review.tf-if-string-zero
 exercise js-basics.control.control-review.tf-switch-no-match
 exercise js-basics.control.if-else.fill-stock-if-else
 exercise js-basics.control.if-else.find-bug-semicolon-if
@@ -659,6 +664,7 @@ exercise js-basics.functions.functions-review.fill-repeat-apply
 exercise js-basics.functions.functions-review.find-bug-lives-typo
 exercise js-basics.functions.functions-review.find-bug-rain-check
 exercise js-basics.functions.functions-review.fix-best-jump-block
+exercise js-basics.functions.functions-review.fix-coffee-default-order
 exercise js-basics.functions.functions-review.fix-weather-report
 exercise js-basics.functions.functions-review.impl-days-in-year
 exercise js-basics.functions.functions-review.impl-pace-label
@@ -669,6 +675,7 @@ exercise js-basics.functions.functions-review.mcq-mood-shadow
 exercise js-basics.functions.functions-review.mcq-pure-outer-level
 exercise js-basics.functions.functions-review.mcq-rest-position
 exercise js-basics.functions.functions-review.multi-pack-local-box
+exercise js-basics.functions.functions-review.multi-pure-parcel
 exercise js-basics.functions.functions-review.multi-which-return-ten
 exercise js-basics.functions.functions-review.parsons-arrow-temp-label
 exercise js-basics.functions.functions-review.predict-arrow-km
@@ -677,6 +684,7 @@ exercise js-basics.functions.functions-review.predict-declared-not-called
 exercise js-basics.functions.functions-review.predict-energy-jump
 exercise js-basics.functions.functions-review.predict-pick-style
 exercise js-basics.functions.functions-review.predict-team-arg-order
+exercise js-basics.functions.functions-review.predict-try-times-callback
 exercise js-basics.functions.functions-review.tf-hoisting-two-styles
 exercise js-basics.functions.functions-review.tf-no-return-not-null
 exercise js-basics.functions.return-and-side-effects.fill-return-all-paths
@@ -762,17 +770,21 @@ exercise js-basics.loops.for.tf-counter-after-while
 exercise js-basics.loops.for.tf-update-before-body
 exercise js-basics.loops.for.web-star-rating
 exercise js-basics.loops.loops-review.fill-line-up-product
+exercise js-basics.loops.loops-review.find-bug-count-no-start
 exercise js-basics.loops.loops-review.find-bug-wrong-loop-var
 exercise js-basics.loops.loops-review.fix-budget-break-late
 exercise js-basics.loops.loops-review.fix-locker-chart
+exercise js-basics.loops.loops-review.fix-quiz-page-update
 exercise js-basics.loops.loops-review.impl-bus-skip-stops
 exercise js-basics.loops.loops-review.impl-list-primes
 exercise js-basics.loops.loops-review.impl-reach-one
 exercise js-basics.loops.loops-review.mcq-continue-next-step
 exercise js-basics.loops.loops-review.mcq-counter-after-square
+exercise js-basics.loops.loops-review.mcq-staircase-count
 exercise js-basics.loops.loops-review.multi-which-never-end
 exercise js-basics.loops.loops-review.parsons-launch-countdown
 exercise js-basics.loops.loops-review.predict-break-box-check
+exercise js-basics.loops.loops-review.predict-do-while-vs-while
 exercise js-basics.loops.loops-review.predict-seat-step
 exercise js-basics.loops.loops-review.predict-stock-two-conditions
 exercise js-basics.loops.loops-review.tf-do-while-false-start
@@ -887,8 +899,10 @@ exercise js-basics.objects.object-iteration.tf-for-of-object
 exercise js-basics.objects.object-iteration.tf-undefined-means-missing
 exercise js-basics.objects.object-iteration.web-spec-list
 exercise js-basics.objects.objects-review.fill-plant-water
+exercise js-basics.objects.objects-review.find-bug-sold-out-menu
 exercise js-basics.objects.objects-review.find-bug-step-history
 exercise js-basics.objects.objects-review.fix-phrasebook
+exercise js-basics.objects.objects-review.fix-workout-summary
 exercise js-basics.objects.objects-review.impl-combine-print
 exercise js-basics.objects.objects-review.impl-humidity-text
 exercise js-basics.objects.objects-review.impl-make-workshop
@@ -909,6 +923,7 @@ exercise js-basics.objects.objects-review.predict-rainfall-days
 exercise js-basics.objects.objects-review.predict-range-order
 exercise js-basics.objects.objects-review.predict-shared-lamps
 exercise js-basics.objects.objects-review.predict-shirt-spread
+exercise js-basics.objects.objects-review.tf-alarm-throw
 exercise js-basics.objects.objects-review.tf-planet-position
 exercise js-basics.objects.reference-vs-value.fill-copy-spread
 exercise js-basics.objects.reference-vs-value.find-bug-param-mutates
@@ -1054,8 +1069,10 @@ exercise js-basics.operators.logical.predict-nullish-mix
 exercise js-basics.operators.logical.predict-skip-right
 exercise js-basics.operators.logical.tf-nullish-rule
 exercise js-basics.operators.logical.tf-or-both-true
+exercise js-basics.operators.operators-review.fill-bakery-stock
 exercise js-basics.operators.operators-review.fill-nullish-settings
 exercise js-basics.operators.operators-review.find-bug-score-record
+exercise js-basics.operators.operators-review.find-bug-snack-total
 exercise js-basics.operators.operators-review.fix-cart-receipt
 exercise js-basics.operators.operators-review.fix-member-discount
 exercise js-basics.operators.operators-review.fix-pin-check
@@ -1066,10 +1083,12 @@ exercise js-basics.operators.operators-review.impl-trip-budget
 exercise js-basics.operators.operators-review.mcq-equality-coercion-true
 exercise js-basics.operators.operators-review.mcq-string-of-undefined
 exercise js-basics.operators.operators-review.multi-falsy-values
+exercise js-basics.operators.operators-review.multi-loose-equality-results
 exercise js-basics.operators.operators-review.parsons-wallet
 exercise js-basics.operators.operators-review.predict-boolean-conversions
 exercise js-basics.operators.operators-review.predict-increment-values
 exercise js-basics.operators.operators-review.predict-precedence-mix
+exercise js-basics.operators.operators-review.predict-profile-texts
 exercise js-basics.operators.operators-review.tf-loose-converts
 exercise js-basics.operators.operators-review.tf-nan-no-error
 exercise js-basics.start.first-program.fix-quoted-total
@@ -1089,6 +1108,7 @@ exercise js-basics.start.reading-errors.fill-read-error-parts
 exercise js-basics.start.reading-errors.fix-missing-quotes
 exercise js-basics.start.reading-errors.fix-name-typo
 exercise js-basics.start.reading-errors.fix-two-errors
+exercise js-basics.start.reading-errors.impl-classify-errors
 exercise js-basics.start.reading-errors.impl-error-report
 exercise js-basics.start.reading-errors.mcq-cause-on-previous-line
 exercise js-basics.start.reading-errors.mcq-error-parts

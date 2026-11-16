@@ -248,6 +248,17 @@
         ]
       }
     },
+    "js-basics.arrays.arrays-review.predict-print-queue": {
+      "inputHash": "3bb6639c3eee9645e0f8f2363214e56b4dee96b78ee3e015087402d85c3db84b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3",
+          "[\"급한 메모\", \"보고서\", \"포스터\"]",
+          "undefined 0"
+        ]
+      }
+    },
     "js-basics.arrays.arrays-review.predict-rank-sort": {
       "inputHash": "6213021a27be41764bc063961a54f68fd51a82bd9f6b812278ee7770cabf4a17",
       "expected": {
@@ -342,6 +353,15 @@
         "lines": [
           "대기 2명",
           "재고 없음"
+        ]
+      }
+    },
+    "js-basics.control.control-review.predict-picnic-items": {
+      "inputHash": "1ac68a4b442d44675ce9d5b515d830154e70546b83e22d8c8be9340429e3f4ac",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "준비물: 물, 우산, 선크림"
         ]
       }
     },
@@ -630,6 +650,22 @@
         ]
       }
     },
+    "js-basics.functions.functions-review.predict-try-times-callback": {
+      "inputHash": "2e4069ddb8d76503a2b4b8eb9d487666a8c595a9ae4327c598d9250653bd71d9",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "시도 1",
+          "시도 2",
+          "시도 3",
+          "시도 4",
+          "4번째에 성공",
+          "시도 1",
+          "시도 2",
+          "모두 실패"
+        ]
+      }
+    },
     "js-basics.functions.return-and-side-effects.predict-missing-return-nan": {
       "inputHash": "9b541b32aba80d0502b05eacc2e05c645ddf2d45ae5dab8537dc66de7334ac4c",
       "expected": {
@@ -780,6 +816,16 @@
           "10번 상자 통과",
           "15번 상자 통과",
           "통과한 상자: 2개"
+        ]
+      }
+    },
+    "js-basics.loops.loops-review.predict-do-while-vs-while": {
+      "inputHash": "9a2e040c5eeef354f4893a351c236926cfcaa047f943c1c04c0fd93a94b6c7fe",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "do: 5번 칸",
+          "8, 5"
         ]
       }
     },
@@ -1359,6 +1405,18 @@
         "lines": [
           "4",
           "true"
+        ]
+      }
+    },
+    "js-basics.operators.operators-review.predict-profile-texts": {
+      "inputHash": "5c8216e988d7b204705bc81a7546ad2b8d5182df0f905ae4bfc22c455b54263a",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "31",
+          "닉네임: undefined",
+          "true",
+          "43"
         ]
       }
     },

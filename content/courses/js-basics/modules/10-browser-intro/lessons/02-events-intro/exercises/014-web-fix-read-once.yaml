@@ -14,6 +14,7 @@ prompt: |
   - 이름 앞뒤의 공백은 빼고 보여 주세요(` 민지 ` → `민지님, ...`).
 spec:
   focus: dom
+  debugging: true                # 버그가 있는 시작 페이지를 고치는 문제(디버깅으로 셈, D-069)
   starter:
     files:
       - path: index.html

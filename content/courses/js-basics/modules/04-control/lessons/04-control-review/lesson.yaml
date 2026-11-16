@@ -17,7 +17,7 @@ objectives:
   - 조건의 순서, 빠진 중괄호·break, 대입과 비교의 혼동 때문에 생긴 버그를 찾아 고칠 수 있다.
   - 요구사항을 읽고 if·else if·switch·조건 연산자 중 알맞은 것을 골라 프로그램을 작성할 수 있다.
 assessment:
-  itemCount: 15
+  itemCount: 15                    # 평가 개념 6개를 모두 확인하고 9문항을 더 냄
   passRatio: 0.8
 practice:
-  targetCount: 15
+  targetCount: 19                  # itemCount보다 4문항 많아 다시 응시하면 다른 문항이 섞임

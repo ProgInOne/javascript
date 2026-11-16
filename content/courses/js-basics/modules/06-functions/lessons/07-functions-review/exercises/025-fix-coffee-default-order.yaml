@@ -1,0 +1,98 @@
+id: js-basics.functions.functions-review.fix-coffee-default-order
+type: fix_bug
+difficulty: 3
+concepts:
+  - { id: js.fn.default-params, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.5 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [default-params, params-args, order, debugging, assessment]
+estimatedSeconds: 200
+usage: assessment
+prompt: |
+  카페 주문서를 만드는 함수 `orderCoffee`예요. 첫 번째 인수로 메뉴, 두 번째 인수로 크기를 받아요. 크기를 넘기지 않으면 `"보통"` 크기로 주문해요. 그런데 주문서가 이상하게 나와요. 함수를 고쳐서 아래처럼 출력되게 하세요.
+
+  ```text
+  라떼 보통 사이즈
+  아메리카노 큰 사이즈
+  ```
+
+  - 아래쪽의 호출 두 줄은 고치지 마세요. 숨겨진 테스트가 다른 메뉴와 크기로 `orderCoffee`를 불러 봐요.
+spec:
+  buggy:
+    files:
+      - path: main.js
+        content: |
+          function orderCoffee(size = "보통", menu) {
+            return menu + " " + size + " 사이즈";
+          }
+
+          console.log(orderCoffee("라떼"));
+          console.log(orderCoffee("아메리카노", "큰"));
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function orderCoffee(menu, size = "보통") {
+            return menu + " " + size + " 사이즈";
+          }
+
+          console.log(orderCoffee("라떼"));
+          console.log(orderCoffee("아메리카노", "큰"));
+  entry: orderCoffee
+  bugDescription: "`undefined 라떼 사이즈`와 `큰 아메리카노 사이즈`가 출력돼요."
+  bugMisconception: js.mc.params-match-by-name
+  checks:
+    - kind: console
+      id: output
+      description: 두 주문서가 "메뉴 크기 사이즈" 순서로 출력되어야 합니다.
+      requirement: 주문서 출력
+      expect:
+        lines: ["라떼 보통 사이즈", "아메리카노 큰 사이즈"]
+    - kind: call
+      id: menu-only
+      visible: false
+      description: orderCoffee("모카")는 "모카 보통 사이즈"를 돌려줘야 합니다.
+      requirement: 크기를 빼면 기본값
+      args: ["모카"]
+      expect: { equals: "모카 보통 사이즈" }
+    - kind: call
+      id: menu-and-size
+      visible: false
+      description: orderCoffee("녹차", "작은")은 "녹차 작은 사이즈"를 돌려줘야 합니다.
+      requirement: 주문서 출력
+      args: ["녹차", "작은"]
+      expect: { equals: "녹차 작은 사이즈" }
+    - kind: call
+      id: size-undefined
+      visible: false
+      description: 크기 자리에 undefined를 넘겨도 기본값 "보통"으로 주문해야 합니다.
+      requirement: 크기를 빼면 기본값
+      argsExpr: '["딸기 스무디", undefined]'
+      expect: { equals: "딸기 스무디 보통 사이즈" }
+misconceptions: [js.mc.params-match-by-name, js.mc.missing-arg-error]
+hints:
+  - "`orderCoffee(\"라떼\")`를 부를 때 인수 `\"라떼\"`는 어느 매개변수에 들어가나요? 인수는 이름이나 기본값 유무가 아니라 **순서**대로 들어가요."
+  - 기본값이 있는 매개변수가 앞에 있으면, 인수를 하나만 넘겼을 때 그 인수가 기본값 자리를 차지하고 뒤 매개변수는 `undefined`가 돼요.
+  - 생략할 수 있는 매개변수(기본값이 있는 것)는 뒤쪽에 두어요. 매개변수 순서를 호출 순서(메뉴, 크기)에 맞춰 보세요.
+explanation: |
+  원래 코드는 기본값이 있는 `size`를 첫 번째 매개변수로 두었어요. 인수는 순서대로 매개변수에 들어가요.
+
+  - `orderCoffee("라떼")`: `"라떼"`가 첫 번째 매개변수 `size`에 들어가고, `menu`에는 짝이 없어 `undefined`가 들어가요. 기본값 `"보통"`은 `size`가 `undefined`일 때만 쓰이므로 쓰이지 않아요. 그래서 `undefined 라떼 사이즈`예요.
+  - `orderCoffee("아메리카노", "큰")`: `size`가 `"아메리카노"`, `menu`가 `"큰"`이라 `큰 아메리카노 사이즈`예요.
+
+  예시 정답이에요. 매개변수 순서를 호출 순서와 맞추고, 기본값이 있는 매개변수를 뒤에 둬요.
+
+  ```js
+  function orderCoffee(menu, size = "보통") {
+    return menu + " " + size + " 사이즈";
+  }
+  ```
+
+  이제 `orderCoffee("라떼")`는 `menu`가 `"라떼"`, `size`는 넘기지 않아 `undefined`이므로 기본값 `"보통"`이 쓰여요.
+
+  호출 쪽을 `orderCoffee(undefined, "라떼")`처럼 바꾸면 출력은 맞출 수 있지만, 문제는 "메뉴를 먼저 넘긴다"는 약속을 함수가 지키지 않는 거예요. 숨겨진 테스트는 메뉴를 첫 번째로 넘겨 부르므로, 함수 쪽을 고쳐야 통과해요. 인수를 덜 넘겨도 오류는 나지 않고 `undefined`가 들어갈 뿐이라는 점도 기억해 두세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

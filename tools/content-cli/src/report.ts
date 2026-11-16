@@ -21,6 +21,20 @@ const KIND_LABELS: Record<UnitQuantity['kind'], string> = {
   project: '프로젝트',
 };
 
+/**
+ * The 기준 column. An assessment's range is about the items one sitting asks, not the pool
+ * (`승인`), so the row shows that number too: `출제 20 / 10~20` (D-070).
+ */
+function criterion(u: UnitQuantity): string {
+  if (!u.range) return '-';
+  const range = `${u.range.min}~${u.range.max}`;
+  return u.asked === null ? range : `출제 ${u.asked} / ${range}`;
+}
+
+/** Whether an assessment asks a number of items outside its range per sitting. */
+const askedOff = (u: UnitQuantity) =>
+  u.asked !== null && u.range !== null && (u.asked < u.range.min || u.asked > u.range.max);
+
 function unitRow(u: UnitQuantity, flagged: Set<string>): string[] {
   const share = (n: number) => (u.count === 0 ? '-' : `${n} (${Math.round((n / u.count) * 100)}%)`);
   return [
@@ -28,14 +42,14 @@ function unitRow(u: UnitQuantity, flagged: Set<string>): string[] {
     KIND_LABELS[u.kind],
     u.kind === 'lesson' ? u.importance : '-',
     String(u.count),
-    u.range ? `${u.range.min}~${u.range.max}` : '-',
+    criterion(u),
     ...(u.kind === 'lesson'
       ? CATEGORIES.map((c) => share(u.byCategory[c]))
       : CATEGORIES.map(() => '-')),
     u.byDifficulty.join('/'),
     String(u.byType.size),
     String(u.drafts),
-    flagged.has(u.lessonId) ? '✗' : '✓',
+    flagged.has(u.lessonId) || askedOff(u) ? '✗' : '✓',
   ];
 }
 
@@ -106,7 +120,7 @@ export function renderReport(source: ContentSource, format: ReportFormat = 'text
     out.push(table([HEADER, ...units.map((u) => unitRow(u, flagged))], format));
     const total = units.reduce((n, u) => n + u.count, 0);
     out.push(
-      `\n단원 ${units.length}개, 승인 문제 ${total}개, 기준 미달 단원 ${units.filter((u) => flagged.has(u.lessonId)).length}개`,
+      `\n단원 ${units.length}개, 승인 문제 ${total}개, 기준 미달 단원 ${units.filter((u) => flagged.has(u.lessonId) || askedOff(u)).length}개`,
     );
   }
   heading(`기준 위반 ${violations.length}건`);

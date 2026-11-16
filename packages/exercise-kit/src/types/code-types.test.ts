@@ -493,6 +493,13 @@ describe('web_task (basic)', () => {
     ).toBe(false);
     expect(verifySpec('web_task', raw)).toEqual([]);
   });
+
+  it('keeps the debugging flag as content metadata and never sends it to the client', () => {
+    const raw = webTaskSpecSchema.parse({ ...spec, debugging: true });
+    expect(raw.debugging).toBe(true);
+    expect(webTaskSpecSchema.safeParse({ ...spec, debugging: 'yes' }).success).toBe(false);
+    expect(webTask.redact(raw)).not.toHaveProperty('debugging');
+  });
 });
 
 describe('fill_blank (code mode)', () => {

@@ -1,0 +1,109 @@
+id: js-basics.start.reading-errors.impl-classify-errors
+type: implement_function
+difficulty: 2
+concepts:
+  - { id: js.errors.error-types, weight: 1 }
+  - { id: js.basics.console-log, weight: 0.3 }
+tags: [error-type, syntax-error, reference-error, type-error, write-code]
+estimatedSeconds: 200
+prompt: |
+  친구가 짧은 프로그램 네 개를 따로따로 실행했는데, 모두 오류가 났대요. 각 프로그램은 아래 한 줄짜리예요.
+
+  | 프로그램 | 코드 |
+  |---|---|
+  | 가 | `console.log("점수", 90;` |
+  | 나 | `console.log(점수);` |
+  | 다 | `Console.log("점수");` |
+  | 라 | `console.Log("점수");` |
+
+  실행하지 않고 코드만 보고, 각 프로그램에서 날 **오류 종류**를 콘솔에 아래 모양으로 네 줄 출력하는 프로그램을 작성하세요. `<...>` 자리에는 `SyntaxError`, `ReferenceError`, `TypeError` 중 하나를 넣고, `<`와 `>`는 쓰지 않아요.
+
+  ```text
+  가: <오류 종류>
+  나: <오류 종류>
+  다: <오류 종류>
+  라: <오류 종류>
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 프로그램 가~라의 오류 종류를 한 줄씩 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          console.log("가: SyntaxError");
+          console.log("나: ReferenceError");
+          console.log("다: ReferenceError");
+          console.log("라: TypeError");
+  checks:
+    - kind: console
+      id: ga
+      description: "\"가: <오류 종류>\" 줄에 프로그램 가의 오류 종류가 맞게 출력되어야 합니다."
+      requirement: 프로그램 가
+      visible: false
+      expect:
+        lines: ["가: SyntaxError"]
+        mode: contains
+    - kind: console
+      id: na
+      description: "\"나: <오류 종류>\" 줄에 프로그램 나의 오류 종류가 맞게 출력되어야 합니다."
+      requirement: 프로그램 나
+      visible: false
+      expect:
+        lines: ["나: ReferenceError"]
+        mode: contains
+    - kind: console
+      id: da
+      description: "\"다: <오류 종류>\" 줄에 프로그램 다의 오류 종류가 맞게 출력되어야 합니다."
+      requirement: 프로그램 다
+      visible: false
+      expect:
+        lines: ["다: ReferenceError"]
+        mode: contains
+    - kind: console
+      id: ra
+      description: "\"라: <오류 종류>\" 줄에 프로그램 라의 오류 종류가 맞게 출력되어야 합니다."
+      requirement: 프로그램 라
+      visible: false
+      expect:
+        lines: ["라: TypeError"]
+        mode: contains
+    - kind: console
+      id: format
+      description: 가, 나, 다, 라 네 줄만 이 순서대로 출력되어야 합니다.
+      requirement: 네 줄 순서
+      visible: false
+      expect:
+        lines: ["가: SyntaxError", "나: ReferenceError", "다: ReferenceError", "라: TypeError"]
+misconceptions: [js.mc.typo-is-syntax-error]
+hints:
+  - 오타라고 다 `SyntaxError`는 아니에요. 문장의 모양(괄호, 따옴표, 기호)이 틀렸는지, 모양은 맞는데 이름이 틀렸는지부터 나눠 보세요.
+  - 따옴표 없는 글자는 이름으로 읽어요. 그런 이름이 없으면 어떤 오류였나요? JavaScript는 대문자와 소문자를 다른 글자로 봐요.
+  - "`console`은 찾았지만 점(`.`) 뒤의 기능이 없으면 \"is not a function\"이 나요. 그때의 오류 종류를 떠올려 보세요."
+explanation: |
+  예시 정답이에요.
+
+  ```js
+  console.log("가: SyntaxError");
+  console.log("나: ReferenceError");
+  console.log("다: ReferenceError");
+  console.log("라: TypeError");
+  ```
+
+  | 프로그램 | 무엇이 틀렸나 | 오류 종류 |
+  |---|---|---|
+  | 가 | 닫는 괄호 `)`가 없어 문장의 **모양**이 틀렸어요 | `SyntaxError: missing ) after argument list` |
+  | 나 | 따옴표가 없어 `점수`를 이름으로 읽었는데, 그런 이름이 없어요 | `ReferenceError: 점수 is not defined` |
+  | 다 | `Console`은 `console`과 다른 이름이에요. 대문자 이름은 없어요 | `ReferenceError: Console is not defined` |
+  | 라 | `console`은 찾았지만 그 안에 `Log`라는 기능이 없어요 | `TypeError: console.Log is not a function` |
+
+  - 다와 라는 둘 다 대문자 한 글자 오타지만 오류 종류가 달라요. 다는 **이름 자체**를 못 찾았고(`ReferenceError`), 라는 이름은 찾았지만 **그 값으로 할 수 없는 일**을 시켰어요(`TypeError`).
+  - 오타라고 모두 `SyntaxError`가 되는 것은 아니에요. `SyntaxError`는 가처럼 괄호·따옴표·기호가 틀려 문장의 모양이 깨졌을 때예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

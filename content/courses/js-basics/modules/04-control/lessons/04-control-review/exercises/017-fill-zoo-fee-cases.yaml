@@ -1,0 +1,85 @@
+id: js-basics.control.control-review.fill-zoo-fee-cases
+type: fill_blank
+difficulty: 3
+concepts:
+  - { id: js.control.fallthrough, weight: 1 }
+  - { id: js.control.switch, weight: 0.5 }
+tags: [fallthrough, switch, break, review]
+estimatedSeconds: 100
+usage: assessment
+prompt: |
+  동물원 입장료를 요일로 정하는 코드예요. 규칙은 이래요.
+
+  - 토요일과 일요일: 12000원
+  - 그 밖의 요일: 9000원
+
+  토요일과 일요일은 같은 일을 하므로 `fee = 12000;`을 **한 번만** 써요. 두 빈칸을 채워서, 오늘(일요일) 실행하면 아래처럼 나오게 하세요.
+
+  ```text
+  입장료: 12000
+  ```
+spec:
+  mode: code
+  lang: js
+  template: |
+    const day = "일";
+    let fee = 0;
+    switch (day) {
+      case "토":
+      {{blank:share}}
+        fee = 12000;
+        {{blank:stop}}
+      default:
+        fee = 9000;
+    }
+    console.log("입장료:", fee);
+  blanks:
+    - id: share
+      accept: ['case "일":']
+      width: 12
+    - id: stop
+      accept: ["break;"]
+      width: 8
+  checks:
+    - kind: console
+      id: output
+      description: 일요일 입장료 12000이 출력되어야 합니다.
+      expect:
+        lines: ["입장료: 12000"]
+    - kind: program
+      id: values
+      description: 프로그램이 오류 없이 끝나고 fee에 12000이 들어 있어야 합니다.
+      expect:
+        globals:
+          fee: { equals: 12000 }
+        noError: true
+      misconceptionIfFail: js.mc.switch-no-break-stops
+misconceptions: [js.mc.switch-no-break-stops]
+hints:
+  - switch는 맞는 case를 찾으면 그 자리부터 아래로 실행해요. 일요일은 지금 어느 case에도 없어요.
+  - "`case \"토\":` 바로 아래에 일요일 case를 붙여 쓰면, 두 case가 같은 코드를 함께 쓰게 돼요(일부러 하는 fall-through)."
+  - "`fee = 12000;` 다음에 멈추지 않으면 아래 `default`의 `fee = 9000;`까지 실행돼요. switch를 끝내는 문장이 필요해요."
+explanation: |
+  첫 번째 빈칸은 **`case "일":`**, 두 번째 빈칸은 **`break;`**예요.
+
+  ```js
+  switch (day) {
+    case "토":
+    case "일":          // 코드 없이 붙여 써서 토·일이 같은 코드를 씀
+      fee = 12000;
+      break;            // 여기서 switch를 끝냄
+    default:
+      fee = 9000;
+  }
+  ```
+
+  - `case "토":` 아래에 코드 없이 `case "일":`을 붙이면, 토요일에 시작해도 일요일에 시작해도 `fee = 12000;`에 도착해요. break를 **일부러** 빼서 여러 case를 묶는 방법이에요.
+  - `break;`가 없으면 `fee = 12000;` 다음에 멈추지 않고 `default`의 `fee = 9000;`까지 실행돼서 입장료가 9000이 돼요. switch는 break를 만날 때까지 아래 case의 코드도 계속 실행하기 때문이에요.
+  - 첫 칸을 비우면 일요일과 같은 case가 없어서 `default`로 가 9000이 돼요.
+
+  case를 묶을 때만 break를 빼고, 코드가 있는 case 끝에는 break를 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

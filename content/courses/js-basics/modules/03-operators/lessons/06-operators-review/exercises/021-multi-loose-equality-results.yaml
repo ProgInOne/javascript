@@ -1,0 +1,60 @@
+id: js-basics.operators.operators-review.multi-loose-equality-results
+type: mcq_multi
+difficulty: 3
+concepts:
+  - { id: js.ops.loose-equality, weight: 1 }
+  - { id: js.conv.equality-coercion, weight: 0.5 }
+  - { id: js.conv.to-number, weight: 0.3 }
+tags: [loose-equality, equality-coercion, review]
+estimatedSeconds: 100
+usage: assessment
+prompt: |
+  다음 비교 중 **결과가 `true`**인 것을 모두 고르세요. `==`가 두 값을 어떻게 바꿔서 비교하는지 따져 보세요.
+spec:
+  options:
+    - id: a
+      text: '`"" == 0`'
+    - id: b
+      text: '`"0" == false`'
+      missedMisconception: js.mc.loose-equality-uses-truthiness
+    - id: c
+      text: '`" 7 " == 7`'
+    - id: d
+      text: "`null == 0`"
+      misconception: js.mc.null-loose-equals-zero
+      rationale: "==에서 null은 undefined와만 같아요. null이 falsy라고 해서 0과 같지는 않아요."
+    - id: e
+      text: '`"true" == true`'
+      misconception: js.mc.loose-equality-uses-truthiness
+      rationale: '==는 truthy인지 보지 않고 숫자로 바꿔 비교해요. true는 1, "true"는 숫자로 바꾸면 NaN이라 NaN == 1은 false예요.'
+    - id: f
+      text: "`undefined == 0`"
+      rationale: "undefined는 ==에서 null과만 같아요. 숫자 0과는 같지 않아요."
+  correct: [a, b, c]
+misconceptions: [js.mc.loose-equality-uses-truthiness, js.mc.null-loose-equals-zero]
+hints:
+  - "`==`는 자료형이 다르면 대부분 두 값을 **숫자로** 바꿔 비교해요. 불리언은 `true`가 1, `false`가 0이에요."
+  - '문자열을 숫자로 바꿀 때 앞뒤 공백은 무시하고, 빈 문자열은 0, 숫자가 아닌 글자는 `NaN`이에요.'
+  - "`null`과 `undefined`는 예외예요. 이 둘은 `==`에서 서로끼리만 같고, 다른 값으로 바꿔 비교하지 않아요."
+explanation: |
+  정답은 **`"" == 0`**, **`"0" == false`**, **`" 7 " == 7`**이에요.
+
+  | 비교 | 바꾼 뒤 | 결과 |
+  |---|---|---|
+  | `"" == 0` | `0 == 0` | `true` |
+  | `"0" == false` | `0 == 0` | `true` |
+  | `" 7 " == 7` | `7 == 7` (앞뒤 공백 무시) | `true` |
+  | `null == 0` | 바꾸지 않음. null은 undefined와만 같음 | `false` |
+  | `"true" == true` | `NaN == 1` | `false` |
+  | `undefined == 0` | 바꾸지 않음. undefined는 null과만 같음 | `false` |
+
+  - `"0" == false`를 고르지 않았다면 `==`가 truthy·falsy로 판단한다고 생각했을 수 있어요. `"0"`은 truthy지만, `==`는 두 값을 숫자로 바꿔 `0 == 0`을 비교해요.
+  - `"true" == true`도 같은 이유로 헷갈리기 쉬워요. 글자의 뜻이 아니라 숫자로 바꾼 값(`NaN`과 `1`)을 비교해서 `false`예요.
+  - `null == 0`을 골랐다면 null이 falsy라서 0과 같다고 생각한 거예요. null과 undefined는 `==`에서 서로끼리만 같아요.
+
+  규칙이 이렇게 많으니 실무에서는 `===`를 기본으로 쓰고, 자료형이 다르면 `Number`로 직접 바꾼 뒤 비교해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

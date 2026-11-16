@@ -1172,6 +1172,7 @@ HTML 구조 구현, CSS 스타일·레이아웃 구현, DOM 이벤트 구현, �
 ```yaml
 spec:
   focus: css                               # html | css | dom | project (UI 강조와 체크 기본값)
+  debugging: true                          # 선택. 시작 코드가 버그 있는 페이지(유형 구성비에서 디버깅으로 셈, D-069)
   starter:
     files:                                 # P0 기본형: index.html 하나(<style>·<script> 포함). 여러 파일은 P1
       - { path: index.html, content: "..." }
@@ -1673,7 +1674,9 @@ PRD [FR-EX-09](/docs/product/prd.md)의 목표를 다음과 같이 셉니다.
 
 - `tools/content-cli/src/quantity.ts`가 규칙 6개(`unit-count`, `unit-count-over`, `concept-min`, `type-mix`, `type-diversity`, `assessment-coverage`)를 검사하고, `content-cli check`·`check --run`·`build`가 켭니다. 승인된 문제만 세고, 단원 풀은 연습 문항(평가·프로젝트·풀이 예제 제외), 개념별 수는 주 개념 태그로 모든 단원에서 셉니다. 단원 범위는 단원 `importance`로 고릅니다.
 - 범주 "응용"은 난이도 4 이상의 구현·디버깅이고, 그 문제는 구현·디버깅이 아니라 응용으로 셉니다(범주 합 100%).
-- 수준은 규칙마다 따로 둡니다(`QUANTITY_LEVELS`). HTML/CSS는 모두 경고, JS는 현재 콘텐츠가 통과하는 규칙만 오류이고 `type-mix`는 위반 4곳이 남아 경고입니다. 범위를 넘는 단원(`unit-count-over`)은 늘 경고입니다. 위 6번의 "목표 미달은 오류"는 이 전환이 끝나면 완전히 맞습니다.
+- 수준은 규칙마다 따로 둡니다(`QUANTITY_LEVELS`). HTML/CSS는 모두 경고, JS는 모두 오류입니다(`type-mix`는 위반 단원을 고친 뒤 [D-069](/docs/decisions.md)에서 오류로 전환). 범위를 넘는 단원(`unit-count-over`)만 늘 경고입니다.
+- `find_bug_line`·`fix_bug`는 DOM 없이 실행되므로, 버그가 있는 시작 페이지를 고치는 `web_task`는 스펙의 `debugging: true`로 디버깅 범주에 셉니다([D-069](/docs/decisions.md)).
+- 단원 평가의 10~20은 한 번 출제 수 `min(승인된 문항 풀, itemCount ?? 20)`로 판단하고, 풀은 재응시를 위해 그보다 크게 둡니다([D-070](/docs/decisions.md)).
 - 보고서는 `content-cli report [--markdown]`(`pnpm content:report`)로 따로 출력합니다. `check` 출력에는 위반만 나옵니다. 개념별 "목표 / 실제 / 부족" 중 목표는 PRD 최솟값만 검사하고, 남는 수를 중요도 비율로 나눈 목표는 검사하지 않습니다.
 
 ## 콘텐츠 제작 파이프라인

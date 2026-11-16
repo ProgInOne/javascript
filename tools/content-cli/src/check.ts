@@ -16,7 +16,7 @@ import {
 } from './expectations.ts';
 import { loadContent, type ContentSource, type LessonNodeSource } from './load.ts';
 import { compileLessonMdx, type CompiledLesson } from './mdx.ts';
-import { checkQuantities } from './quantity.ts';
+import { ASSESSMENT_ITEM_RANGE, assessmentAsked, checkQuantities } from './quantity.ts';
 import { checkTemplates, type CheckedTemplate } from './templates.ts';
 
 /** Validates a type-specific exercise spec. Supplied by exercise-kit's registry. */
@@ -346,12 +346,6 @@ function applyExpectation(
   else diag.warn(file, message);
 }
 
-/** Item count range of a unit assessment (content-and-exercises.md#문제-수-산정-방식). */
-export const ASSESSMENT_ITEM_RANGE = { min: 10, max: 20 } as const;
-
-/** Most items one assessment asks without `itemCount` (learning-engine `config.assessment.maxItems`). */
-export const ASSESSMENT_MAX_ASKED = 20;
-
 /**
  * Rules of a `kind: assessment` unit (learning-engine.md#단원-평가-세트): it introduces nothing,
  * assesses the concepts in `concepts.reviewed` with its own `usage: assessment` items (at least
@@ -396,17 +390,18 @@ function checkAssessmentUnit(lesson: LessonNodeSource, diag: Diagnostics): void 
   for (const c of assessed) {
     if (!covered.has(c)) diag.warn(file, `평가 문항이 없는 개념입니다: ${c}`);
   }
-  const items = lesson.exercises.length;
+  // Only approved items are served (drafts are left out of the build).
+  const items = lesson.exercises.filter((e) => e.data.review.status === 'approved').length;
   const itemCount = data.assessment?.itemCount;
-  // The advice is about one sitting: `itemCount` items are asked (the pool may hold more so that
-  // retakes see new items); without it, the whole pool up to the engine's cap.
-  const asked = Math.min(items, itemCount ?? ASSESSMENT_MAX_ASKED);
+  // The advice is about one sitting, not the pool size (D-070): `itemCount` items are asked (the
+  // pool may hold more so that retakes see other items); without it, the pool up to the cap.
+  const asked = assessmentAsked(items, itemCount);
   const { min, max } = ASSESSMENT_ITEM_RANGE;
   if (asked < min || asked > max)
     diag.warn(file, `단원 평가 한 번에 내는 문항은 ${min}~${max}개를 권장합니다(지금 ${asked}개)`);
   if (itemCount !== undefined) {
     if (itemCount > items)
-      diag.warn(file, `assessment.itemCount ${itemCount}가 문항 ${items}개보다 많습니다`);
+      diag.warn(file, `assessment.itemCount ${itemCount}가 승인된 문항 ${items}개보다 많습니다`);
     if (itemCount < assessed.size)
       diag.warn(
         file,

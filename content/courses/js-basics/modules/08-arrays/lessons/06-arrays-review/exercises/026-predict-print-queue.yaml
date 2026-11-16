@@ -1,0 +1,51 @@
+id: js-basics.arrays.arrays-review.predict-print-queue
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.arr.shift-unshift, weight: 1 }
+  - { id: js.arr.push-pop, weight: 0.3 }
+  - { id: js.loops.while, weight: 0.3 }
+tags: [shift, unshift, return-value, empty-array, queue, assessment]
+estimatedSeconds: 120
+usage: assessment
+prompt: |
+  사무실 프린터의 인쇄 대기열이에요(배열의 앞이 먼저 인쇄할 문서). 급한 메모를 맨 앞에 끼워 넣은 뒤, 대기열이 빌 때까지 앞에서부터 하나씩 꺼내 인쇄해요. 실행하면 콘솔에 무엇이 출력될까요? 세 줄을 차례로 적어 보세요. 배열은 콘솔에 `["a", "b"]`처럼 보여요.
+spec:
+  lang: js
+  code: |
+    const printer = ["보고서", "포스터"];
+    const waiting = printer.unshift("급한 메모");
+    console.log(waiting);
+    const done = [];
+    while (printer.length > 0) {
+      done.push(printer.shift());
+    }
+    console.log(done);
+    console.log(printer.shift(), printer.length);
+  answerKind: console
+  misconceptionByAnswer:
+    "[\"급한 메모\", \"보고서\", \"포스터\"]\n[\"급한 메모\", \"보고서\", \"포스터\"]\nundefined 0": js.mc.push-returns-new-array
+misconceptions: [js.mc.push-returns-new-array]
+hints:
+  - "`unshift`는 배열을 바꾸는 일과 값을 돌려주는 일을 함께 해요. `waiting`에 담기는 것은 배열인가요, 다른 값인가요?"
+  - "`shift()`는 배열의 어느 쪽 끝에서 요소를 꺼내나요? 반복이 돌 때마다 `printer`와 `done`이 어떻게 바뀌는지 적어 보세요."
+  - 반복이 끝나면 `printer`는 비어 있어요. 빈 배열에서 `shift()`를 부르면 오류가 날까요, 무언가를 돌려줄까요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  3
+  ["급한 메모", "보고서", "포스터"]
+  undefined 0
+  ```
+
+  - 2번 줄: `unshift("급한 메모")`는 맨 앞에 넣어 `printer`를 `["급한 메모", "보고서", "포스터"]`로 바꾸고, **새 길이 3**을 돌려줘요. 그래서 `waiting`은 3이에요.
+  - 반복: `shift()`는 맨 앞 요소를 꺼내 돌려주고 배열에서 지워요. 앞에서부터 꺼내 `done` 끝에 넣으므로 `done`의 순서는 대기열 순서 그대로예요. 세 번 돌면 `printer`가 비어 반복이 끝나요.
+  - 마지막 줄: 빈 배열에서 `shift()`는 오류 없이 `undefined`를 돌려줘요. `printer.length`는 0이에요.
+
+  첫 줄을 배열로 예상했다면 `unshift`가 바뀐 배열을 돌려준다고 본 거예요. `push`처럼 `unshift`도 새 길이를 돌려줘요. `done`을 거꾸로(`포스터`부터) 예상했다면 `shift`가 끝에서 꺼낸다고 본 거예요. 끝에서 꺼내는 것은 `pop`이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

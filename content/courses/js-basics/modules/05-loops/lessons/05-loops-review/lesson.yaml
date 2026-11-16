@@ -20,7 +20,7 @@ objectives:
   - 끝나지 않는 반복, 하나 어긋난 반복 횟수, 누적 변수와 break·continue 위치 때문에 생긴 버그를 찾아 고칠 수 있다.
   - 요구사항을 읽고 반복·누적·중첩 반복을 조합한 프로그램을 작성할 수 있다.
 assessment:
-  itemCount: 15
+  itemCount: 15                    # 평가 개념 9개를 한 문항씩 모두 확인하고 6문항을 더 냄
   passRatio: 0.8
 practice:
-  targetCount: 15
+  targetCount: 19                  # itemCount보다 4문항 많아 다시 응시하면 다른 문항이 섞임

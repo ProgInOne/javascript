@@ -14,4 +14,4 @@ objectives:
   - reduce로 합계·개수·최댓값처럼 값 하나를 모으고, 초기값과 누적값 반환의 역할을 설명할 수 있다.
   - filter·map·reduce를 이어 써서 여러 단계의 목록 처리를 하고, 순서에 따라 결과가 달라지는 것을 예측할 수 있다.
 practice:
-  targetCount: 32
+  targetCount: 30

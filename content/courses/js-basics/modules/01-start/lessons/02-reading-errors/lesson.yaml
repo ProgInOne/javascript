@@ -13,4 +13,4 @@ objectives:
   - SyntaxError, ReferenceError, TypeError를 메시지로 구분하고 흔한 원인을 말할 수 있다.
   - 오류 메시지를 단서로 버그가 있는 줄을 찾아 고칠 수 있다.
 practice:
-  targetCount: 12
+  targetCount: 13
