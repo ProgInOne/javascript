@@ -288,6 +288,39 @@ describe('practice mode', () => {
     );
   });
 
+  it('resizes the problem panel on wide screens and remembers the share per type (D-067)', async () => {
+    vi.stubGlobal(
+      'matchMedia',
+      (query: string) =>
+        ({
+          matches: query === '(min-width: 1280px)',
+          media: query,
+          addEventListener: () => undefined,
+          removeEventListener: () => undefined,
+        }) as unknown as MediaQueryList,
+    );
+    localStorage.setItem('proginone:panel:results-collapsed', 'true');
+    const user = userEvent.setup();
+    renderApp(`/learn/${LESSON_ID}?mode=practice&set=${SET_ID}&i=2`, practiceApi());
+    expect(await screen.findByRole('heading', { name: /문제 2/ })).toBeVisible();
+    const handle = screen.getByRole('separator', { name: '문제 패널 폭' });
+    expect(handle).toHaveAttribute('aria-valuenow', '40');
+    expect(handle).toHaveAttribute('aria-valuetext', '40%');
+    handle.focus();
+    await user.keyboard('{End}');
+    expect(handle).toHaveAttribute('aria-valuenow', '55');
+    expect(localStorage.getItem('proginone:panel:practice-split:fix_bug')).toBe('55');
+    expect(handle.closest('.practice-layout')).toHaveStyle({ '--problem-share': '55%' });
+    // The folded results stay folded from the last visit.
+    expect(screen.getByRole('button', { name: '결과 펼치기' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
+    await user.dblClick(handle);
+    expect(handle).toHaveAttribute('aria-valuenow', '40');
+    expect(localStorage.getItem('proginone:panel:practice-split:fix_bug')).toBeNull();
+  });
+
   it('explains when a lesson has no exercises yet', async () => {
     renderApp(`/learn/${LESSON_ID}?mode=practice`, (method, path) => {
       if (path === '/settings') return { body: { theme: 'system' } };

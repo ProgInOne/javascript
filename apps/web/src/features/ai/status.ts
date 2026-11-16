@@ -14,6 +14,16 @@ export interface AiAvailability {
   reason: string | null;
 }
 
+/** The browser reports no network (D-068). AI needs the internet; the rest of the app does not. */
+export const AI_OFFLINE_REASON = '인터넷에 연결되어 있지 않아 AI를 쓸 수 없어요';
+export const AI_OFFLINE_COPY =
+  '인터넷 연결이 끊겨 AI 튜터를 쓸 수 없어요. 연결되면 자동으로 다시 쓸 수 있어요. 레슨·문제 풀이·채점·복습은 인터넷 없이도 그대로 할 수 있어요.';
+
+/** The ChatGPT login expired or was revoked (`logged_out` with `expired`, D-068). */
+export const AI_EXPIRED_REASON = 'ChatGPT 로그인이 만료됐어요. 다시 로그인해 주세요';
+export const AI_EXPIRED_COPY =
+  'ChatGPT 로그인이 만료됐어요. 다시 로그인하면 이어서 쓸 수 있어요. 학습 기록과 튜터 대화는 그대로 남아 있어요.';
+
 export const AI_NOT_CONNECTED_COPY =
   'AI 튜터를 쓰려면 ChatGPT 계정을 연결해 주세요. 연결하지 않아도 모든 문제와 해설은 볼 수 있어요.';
 
@@ -25,11 +35,22 @@ export function rateLimitCopy(resetsAt: string | null, now?: Date): string {
     : 'AI 사용량 한도에 도달했어요. 초기화된 뒤에 다시 쓸 수 있어요.';
 }
 
+/** Provider states that are a local setup problem: going offline does not change their message. */
+const LOCAL_PROBLEMS = new Set(['not_installed', 'unsupported_version', 'isolation_failed']);
+
 /**
  * What the AI state means for the UI. `undefined` (state not known yet) does not block entry
- * points: the server still refuses with an AI error, which is then shown.
+ * points: the server still refuses with an AI error, which is then shown. `online: false`
+ * (`navigator.onLine`) disables AI entry points unless a local setup problem says more.
  */
-export function describeAi(res: AIStatusResponse | undefined, now = new Date()): AiAvailability {
+export function describeAi(
+  res: AIStatusResponse | undefined,
+  now = new Date(),
+  online = true,
+): AiAvailability {
+  if (!online && !(res && LOCAL_PROBLEMS.has(res.status.state))) {
+    return { label: '오프라인', tone: 'warn', usable: false, reason: AI_OFFLINE_REASON };
+  }
   if (!res) return { label: '확인 중', tone: 'neutral', usable: true, reason: null };
   if (res.pendingLogin && res.status.state !== 'ready') {
     return {
@@ -70,7 +91,9 @@ export function describeAi(res: AIStatusResponse | undefined, now = new Date()):
       };
     }
     case 'logged_out':
-      return { label: '연결 안 됨', tone: 'neutral', usable: false, reason: 'AI 연결이 필요해요' };
+      return status.expired
+        ? { label: '로그인 만료', tone: 'warn', usable: false, reason: AI_EXPIRED_REASON }
+        : { label: '연결 안 됨', tone: 'neutral', usable: false, reason: 'AI 연결이 필요해요' };
     case 'not_installed':
       return {
         label: 'Codex CLI 미설치',

@@ -108,7 +108,8 @@ export const SLOW_HOLD_MS = 30_000;
 
 /**
  * A question containing `[mock:error:AI_*]` fails its unscripted reply with that error code
- * (provider state unchanged), so E2E can check how AI failures are shown. Mock provider only.
+ * (provider state unchanged, except `AI_UNAUTHORIZED`, which marks the login expired as Codex
+ * does), so E2E can check how AI failures are shown. Mock provider only.
  */
 export const MOCK_ERROR_MARKER = /\[mock:error:(AI_[A-Z_]+)\]/;
 
@@ -244,7 +245,11 @@ export class MockProvider implements ProviderAdapter {
     this.requests.push(req);
     if (this.#status.state !== 'ready') {
       throw new AIError(
-        this.#status.state === 'rate_limited' ? 'AI_RATE_LIMITED' : 'AI_NOT_CONNECTED',
+        this.#status.state === 'rate_limited'
+          ? 'AI_RATE_LIMITED'
+          : this.#status.state === 'logged_out' && this.#status.expired
+            ? 'AI_UNAUTHORIZED'
+            : 'AI_NOT_CONNECTED',
       );
     }
     let threadId: string | null = null;
@@ -264,6 +269,8 @@ export class MockProvider implements ProviderAdapter {
     const injected = step ? undefined : MOCK_ERROR_MARKER.exec(learnerQuestion(req) ?? '')?.[1];
     if (injected && (AI_ERROR_CODES as readonly string[]).includes(injected)) {
       await this.#tick(opts.signal, '');
+      // Like Codex: an `unauthorized` turn means the login expired (D-068).
+      if (injected === 'AI_UNAUTHORIZED') this.setStatus({ state: 'logged_out', expired: true });
       throw new AIError(injected as AIErrorCode, {
         ...(injected === 'AI_RATE_LIMITED'
           ? { details: { resetsAt: new Date(Date.now() + 3_600_000).toISOString() } }

@@ -7,7 +7,7 @@ import {
   type AIStatusResponse,
 } from '@proginone/shared';
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import { api, ApiRequestError, parseStreamEvent, stream } from '../../api/client.ts';
 import { describeAi } from './status.ts';
 
@@ -31,10 +31,32 @@ export function useAiStatus({ connect = false }: { connect?: boolean } = {}) {
   });
 }
 
+function subscribeOnline(onChange: () => void): () => void {
+  window.addEventListener('online', onChange);
+  window.addEventListener('offline', onChange);
+  return () => {
+    window.removeEventListener('online', onChange);
+    window.removeEventListener('offline', onChange);
+  };
+}
+
+/**
+ * `navigator.onLine`, kept current (D-068). Only `false` is trusted: it means no network at all,
+ * which AI needs. `true` does not prove the provider is reachable; its own errors say that.
+ */
+export function useOnline(): boolean {
+  return useSyncExternalStore(
+    subscribeOnline,
+    () => navigator.onLine,
+    () => true,
+  );
+}
+
 /** What the current AI state means for AI entry points (tutor, AI hint). */
 export function useAiAvailability() {
   const { data } = useAiStatus();
-  return describeAi(data);
+  const online = useOnline();
+  return describeAi(data, new Date(), online);
 }
 
 export function useAiModels(enabled: boolean) {

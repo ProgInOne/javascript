@@ -62,7 +62,17 @@ const run: RunResult = {
   pendingAtEnd: { timers: 0, intervals: 0 },
 };
 
-function Impl({ onRun, withRun }: { onRun?: () => void; withRun?: boolean }) {
+function Impl({
+  onRun,
+  withRun,
+  runStarts,
+}: {
+  onRun?: () => void;
+  withRun?: boolean;
+  /** Running the code sets `running` like the page does. */
+  runStarts?: boolean;
+}) {
+  const [running, setRunning] = useState(false);
   const [value, setValue] = useState<CodeAnswer>(
     initialAnswer({ typeId: 'implement_function', spec: implSpec }),
   );
@@ -74,7 +84,15 @@ function Impl({ onRun, withRun }: { onRun?: () => void; withRun?: boolean }) {
         value={value}
         onChange={setValue}
         labelledBy="p"
-        {...(onRun === undefined ? {} : { onRun })}
+        {...(onRun === undefined
+          ? {}
+          : {
+              onRun: () => {
+                onRun();
+                if (runStarts) setRunning(true);
+              },
+            })}
+        running={running}
         {...(withRun ? { run } : {})}
       />
       <output data-testid="value">{value.files[0]?.content}</output>
@@ -131,6 +149,35 @@ describe('ImplementFunction', () => {
 
     await user.click(screen.getByRole('button', { name: /실행/ }));
     expect(onRun).toHaveBeenCalled();
+    expect(await axeViolations(container)).toEqual([]);
+  });
+
+  it('folds the results to their header, opens them again on run, and resizes the editor', async () => {
+    const onRun = vi.fn();
+    const { user, container } = renderUi(<Impl onRun={onRun} runStarts />);
+    const fold = screen.getByRole('button', { name: '결과 접기' });
+    expect(fold.getAttribute('aria-expanded')).toBe('true');
+    await user.click(fold);
+    expect(screen.queryByRole('tabpanel')).toBeNull();
+    const unfold = screen.getByRole('button', { name: '결과 펼치기' });
+    expect(unfold.getAttribute('aria-expanded')).toBe('false');
+    // No editor/results handle while there is nothing below the editor to make room for.
+    expect(screen.queryByRole('separator', { name: '에디터 높이' })).toBeNull();
+    await user.click(screen.getByRole('button', { name: /실행/ }));
+    expect(onRun).toHaveBeenCalled();
+    expect(screen.getByRole('tabpanel')).toBeTruthy();
+
+    const handle = screen.getByRole('separator', { name: '에디터 높이' });
+    expect(handle.getAttribute('aria-orientation')).toBe('horizontal');
+    expect(handle.getAttribute('aria-valuemin')).toBe('240');
+    handle.focus();
+    await user.keyboard('{End}');
+    expect(handle.getAttribute('aria-valuenow')).toBe('900');
+    expect(container.querySelector('.pi-ex-workspace--sized')).toBeTruthy();
+    await user.keyboard('{ArrowUp}');
+    expect(handle.getAttribute('aria-valuenow')).toBe('890');
+    await user.dblClick(handle);
+    expect(container.querySelector('.pi-ex-workspace--sized')).toBeNull();
     expect(await axeViolations(container)).toEqual([]);
   });
 

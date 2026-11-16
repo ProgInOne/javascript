@@ -74,6 +74,8 @@
     position: absolute;
     inset: 0 3px;
     border-radius: 2px;
+    /* The drawer border is the visible line; the handle only lights up on hover and focus. */
+    background: transparent;
   }
   .tutor-drawer__resize:hover::after,
   .tutor-drawer__resize:focus-visible::after {

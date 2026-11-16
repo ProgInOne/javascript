@@ -43,6 +43,10 @@ test('assessment: hints locked, explanations revealed only after the end', async
   await expect(page.getByRole('button', { name: /튜터/ })).toHaveAttribute('aria-disabled', 'true');
   await page.keyboard.press('ControlOrMeta+j');
   await expect(page.locator('.tutor-drawer')).toHaveCount(0);
+  // The locked shortcuts say why nothing opened (D-067).
+  await expect(page.getByText(/단원 평가 중에는 튜터와 힌트를 쓸 수 없어요/).first()).toBeVisible();
+  await page.keyboard.press('ControlOrMeta+.');
+  await expect(page.getByText('평가 힌트 1단계예요.')).toHaveCount(0);
   await expectNoA11yViolations(page);
 
   // The server enforces the lock too (no context needed to be refused).

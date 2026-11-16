@@ -51,6 +51,7 @@ import {
 } from '../drafts/drafts.ts';
 import { useActiveTime, useExerciseRunner } from './hooks.ts';
 import { Markdown } from './Markdown.tsx';
+import { PracticeSplit } from './PracticeSplit.tsx';
 import { CODE_TYPES, TYPE_LABELS } from './model.ts';
 import {
   ExerciseCode,
@@ -689,25 +690,26 @@ function ItemWorkspace({
 
   if (isCode) {
     return (
-      <div
+      <PracticeSplit
         {...{ [SELECTABLE_ATTR]: '' }}
-        // Joined, not concatenated: prettier-plugin-tailwindcss trims a leading space inside a
-        // class string literal, which once glued the two classes together.
+        typeId={exercise.typeId}
+        // Joined, not a template literal: the class sorter trims the space inside one.
         className={[
           'practice-layout practice-layout--code',
-          exercise.typeId === 'web_task' ? 'practice-layout--web' : null,
+          exercise.typeId === 'web_task' && 'practice-layout--web',
         ]
           .filter(Boolean)
           .join(' ')}
         data-type={exercise.typeId}
         data-exercise-id={view.id}
-      >
-        <div className="practice-layout__problem">
-          {problem}
-          {response}
-        </div>
-        <div className="practice-layout__work">{renderer}</div>
-      </div>
+        problem={
+          <>
+            {problem}
+            {response}
+          </>
+        }
+        work={renderer}
+      />
     );
   }
   return (

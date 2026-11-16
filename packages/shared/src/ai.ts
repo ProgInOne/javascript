@@ -14,6 +14,7 @@ export type AIProviderId = z.infer<typeof aiProviderIdSchema>;
  * - `isolation_failed`: the tutor-only Codex home failed its feature-flag check (D-002); the
  *   tutor stays disabled until the problem is fixed.
  * - `error`: restarts were exhausted or startup failed; "다시 연결" restarts it.
+ * - `logged_out` with `expired: true`: the ChatGPT login expired (D-068).
  * Account details are limited to the plan type; the app never exposes the account email.
  */
 export const aiStatusSchema = z.discriminatedUnion('state', [
@@ -26,7 +27,11 @@ export const aiStatusSchema = z.discriminatedUnion('state', [
     required: z.string(),
   }),
   z.object({ state: z.literal('isolation_failed'), problems: z.array(z.string()) }),
-  z.object({ state: z.literal('logged_out') }),
+  /**
+   * `expired`: the provider had an account and lost it without a logout from the app (token
+   * expired or revoked, `unauthorized`). The UI says "로그인이 만료됐어요" instead of "연결 안 됨".
+   */
+  z.object({ state: z.literal('logged_out'), expired: z.boolean().optional() }),
   z.object({ state: z.literal('ready'), planType: z.string().nullable() }),
   z.object({ state: z.literal('rate_limited'), resetsAt: z.string().nullable() }),
   z.object({ state: z.literal('error'), code: z.string(), message: z.string() }),

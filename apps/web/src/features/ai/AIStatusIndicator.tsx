@@ -1,6 +1,6 @@
 import { Tooltip } from '@proginone/ui';
 import { Link } from '@tanstack/react-router';
-import { useAiStatus } from './api.ts';
+import { useAiStatus, useOnline } from './api.ts';
 import { describeAi } from './status.ts';
 
 /**
@@ -9,7 +9,8 @@ import { describeAi } from './status.ts';
  */
 export function AIStatusIndicator() {
   const { data } = useAiStatus();
-  const ai = describeAi(data);
+  const online = useOnline();
+  const ai = describeAi(data, new Date(), online);
   const used = data?.status.state === 'ready' ? (data.usage?.highestUsedPercent ?? null) : null;
   const hint =
     ai.reason ??
@@ -19,7 +20,9 @@ export function AIStatusIndicator() {
       <Link
         to="/settings/ai"
         className="ai-indicator"
-        data-ai-state={data ? (data.pendingLogin ? 'login' : data.status.state) : 'loading'}
+        data-ai-state={
+          !online ? 'offline' : data ? (data.pendingLogin ? 'login' : data.status.state) : 'loading'
+        }
         data-tone={ai.tone}
       >
         <span className="ai-indicator__dot" aria-hidden="true" />

@@ -105,4 +105,20 @@ describe('review', () => {
     await user.click(await screen.findByRole('button', { name: '복습 시작' }));
     expect(await screen.findByRole('heading', { name: '오늘 복습할 개념이 없어요' })).toBeVisible();
   });
+
+  it('shows an empty state for a set without items (FR-UI-03)', async () => {
+    const empty = practiceSet({ kind: 'review', lessonId: null, passRule: null, items: [] });
+    renderApp(`/review/session/${SET_ID}`, (_method, path) => {
+      if (path === '/settings') return { body: { theme: 'system' } };
+      if (path === `/practice-sets/${SET_ID}`) return { body: empty };
+      return {
+        status: 404,
+        body: { error: { code: 'NOT_FOUND', message: '없음', retryable: false } },
+      };
+    });
+    expect(
+      await screen.findByRole('heading', { name: '이 세트에는 풀 문제가 없어요' }),
+    ).toBeVisible();
+    expect(screen.getByRole('link', { name: '대시보드로 가기' })).toHaveAttribute('href', '/');
+  });
 });

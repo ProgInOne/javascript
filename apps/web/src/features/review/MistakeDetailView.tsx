@@ -93,12 +93,22 @@ function DetailBody({ detail }: { detail: MistakeDetail }) {
         <ExerciseCode view={{ code: detail.code, codeLanguage: detail.codeLanguage }} />
       </section>
 
-      {latest && (
+      {latest ? (
         <section className="mistake-detail__block" aria-labelledby="mistake-answer">
           <h3 id="mistake-answer" className="mistake-detail__label">
             내 답 ({dateLabel(latest.submittedAt)})
           </h3>
           <AttemptBody attempt={latest} />
+        </section>
+      ) : (
+        // FR-UI-03 빈 상태: a note whose wrong answers are no longer stored.
+        <section className="mistake-detail__block" aria-labelledby="mistake-answer">
+          <h3 id="mistake-answer" className="mistake-detail__label">
+            내 답
+          </h3>
+          <p className="m-0 text-fg-secondary">
+            남아 있는 틀린 답 기록이 없어요. 다시 풀어 보면 새 답이 여기에 기록돼요.
+          </p>
         </section>
       )}
 

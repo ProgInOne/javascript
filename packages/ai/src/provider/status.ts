@@ -10,7 +10,7 @@ export function errorForStatus(status: AIStatus): AIError | null {
     case 'ready':
       return null;
     case 'logged_out':
-      return new AIError('AI_NOT_CONNECTED');
+      return new AIError(status.expired ? 'AI_UNAUTHORIZED' : 'AI_NOT_CONNECTED');
     case 'rate_limited':
       return new AIError('AI_RATE_LIMITED', { details: { resetsAt: status.resetsAt } });
     case 'starting':

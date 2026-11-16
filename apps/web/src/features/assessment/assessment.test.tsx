@@ -171,6 +171,14 @@ describe('unit assessment', () => {
     expect(tutor).toHaveAttribute('aria-disabled', 'true');
     expect(screen.queryByText(/개념: /)).toBeNull();
     expect(screen.getByRole('navigation', { name: '평가 진행' })).toBeVisible();
+    // The shortcuts are locked too, and say why (D-067).
+    await user.keyboard('{Control>}.{/Control}');
+    await user.keyboard('{Control>}j{/Control}');
+    expect(calls.some((c) => c.path.endsWith('/hints'))).toBe(false);
+    expect(screen.queryByRole('complementary', { name: 'AI 튜터' })).toBeNull();
+    expect(
+      (await screen.findAllByText(/단원 평가 중에는 튜터와 힌트를 쓸 수 없어요/))[0],
+    ).toBeVisible();
 
     // Submit once: no outcome, no explanation.
     await user.click(screen.getByRole('radio', { name: /값을 저장한다/ }));

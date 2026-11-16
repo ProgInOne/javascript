@@ -1,9 +1,16 @@
 import type { CodeDraft, LessonDetail, PracticeSetView } from '@proginone/shared';
-import { ErrorState, Skeleton } from '@proginone/ui';
+import { ErrorState, IconButton, Skeleton } from '@proginone/ui';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { ArrowLeft, ArrowRight, ChevronLeft } from 'lucide-react';
-import { useCallback, useEffect, useMemo, type ReactNode } from 'react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  ChevronLeft,
+  Keyboard,
+  PanelRightClose,
+  PanelRightOpen,
+} from 'lucide-react';
+import { useCallback, useEffect, useId, useMemo, type ReactNode } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
 import {
   createPracticeSet,
@@ -22,6 +29,7 @@ import {
 import { PracticeSession } from '../../features/practice/PracticeSession.tsx';
 import { ProjectScreen } from '../../features/project/Project.tsx';
 import { AIStatusIndicator } from '../../features/ai/AIStatusIndicator.tsx';
+import { openShortcutHelp } from '../../features/shortcuts/ShortcutHelp.tsx';
 import { SELECTABLE_ATTR } from '../../features/tutor/selection.ts';
 import { TutorProvider, useTutorScope } from '../../features/tutor/TutorContext.tsx';
 import { TutorButton, TutorLayout } from '../../features/tutor/TutorLayout.tsx';
@@ -33,6 +41,7 @@ import { SECTION_LABELS } from '../../features/lesson-reader/sections.ts';
 import { useActiveSection } from '../../features/lesson-reader/useActiveSection.ts';
 import { useReadingProgress } from '../../features/lesson-reader/useReadingProgress.ts';
 import { formatMinutes } from '../../lib/format.ts';
+import { PANEL_KEYS, parseBoolean, usePanelState } from '../../lib/panels.ts';
 
 /** URL state of the learning screen (ui-ux.md 사이트맵): `?mode=practice&set=:id&i=n`. */
 export interface LearnSearch {
@@ -338,6 +347,14 @@ function LearnHeader({
         </Link>
       </nav>
       <AIStatusIndicator />
+      <IconButton
+        label="단축키 도움말"
+        shortcut="?"
+        icon={<Keyboard size={18} />}
+        aria-keyshortcuts="?"
+        className="max-md:hidden"
+        onClick={openShortcutHelp}
+      />
       {tutor ?? <TutorButton />}
     </header>
   );
@@ -351,6 +368,12 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
       ? lesson.sections.find((s) => s.id === progress.lastSectionId)
       : undefined;
   const own = lesson.concepts.filter((c) => c.role !== 'linked');
+  const asideId = useId();
+  const [asideCollapsed, setAsideCollapsed] = usePanelState(
+    PANEL_KEYS.lessonAside,
+    false,
+    parseBoolean,
+  );
   const predictFirst = useSettings().data?.['lesson.predictFirst'] ?? 'recommended';
   // Learner state: a failure only hides the mastery and the warning, never the lesson.
   const prerequisites = useQuery(lessonPrerequisitesQuery(lesson.id)).data;
@@ -369,7 +392,13 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
     <div className="min-h-screen bg-canvas">
       <LearnHeader lesson={lesson} mode="read" />
       <TutorLayout top={48}>
-        <div className="mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)] gap-10 px-5 py-10 lg:grid-cols-[minmax(0,680px)_240px] lg:justify-center">
+        <div
+          className={
+            asideCollapsed
+              ? 'mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)] gap-10 px-5 py-10 lg:grid-cols-[minmax(0,680px)_32px] lg:justify-center'
+              : 'mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)] gap-10 px-5 py-10 lg:grid-cols-[minmax(0,680px)_240px] lg:justify-center'
+          }
+        >
           <article aria-labelledby="lesson-title" {...{ [SELECTABLE_ATTR]: '' }}>
             <p className="text-fg-tertiary type-small">{lesson.module.title}</p>
             <h1 id="lesson-title" className="mt-1 type-h1 text-heading">
@@ -432,45 +461,72 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
             )}
           </article>
 
-          <aside className="hidden lg:block" aria-label="단원 정보">
-            <div className="sticky top-[calc(48px+var(--space-6))] grid gap-6">
-              {own.length > 0 && (
-                <section aria-labelledby="concepts-title">
-                  <h2
-                    id="concepts-title"
-                    className="mb-2 font-semibold text-fg-secondary type-small"
-                  >
-                    이 단원의 개념
+          <aside className="hidden lg:block" aria-label="단원 정보" id={asideId}>
+            {asideCollapsed ? (
+              <div className="sticky top-[calc(48px+var(--space-6))]">
+                <IconButton
+                  label="단원 정보 펼치기"
+                  icon={<PanelRightOpen size={18} />}
+                  aria-expanded={false}
+                  aria-controls={asideId}
+                  tooltipSide="left"
+                  onClick={() => {
+                    setAsideCollapsed(false);
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="sticky top-[calc(48px+var(--space-6))] grid gap-6">
+                <div className="-mt-1 -mb-4 flex justify-end">
+                  <IconButton
+                    label="단원 정보 접기"
+                    icon={<PanelRightClose size={18} />}
+                    aria-expanded
+                    aria-controls={asideId}
+                    tooltipSide="left"
+                    onClick={() => {
+                      setAsideCollapsed(true);
+                    }}
+                  />
+                </div>
+                {own.length > 0 && (
+                  <section aria-labelledby="concepts-title">
+                    <h2
+                      id="concepts-title"
+                      className="mb-2 font-semibold text-fg-secondary type-small"
+                    >
+                      이 단원의 개념
+                    </h2>
+                    <ul className="m-0 grid list-none gap-1.5 p-0 type-small">
+                      {own.map((c) => (
+                        <li key={c.id} className="flex items-center gap-2" title={c.summary}>
+                          <span className="text-fg">{c.title}</span>
+                          <ConceptImportanceBadge importance={c.importance} />
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+                <nav aria-labelledby="toc-title">
+                  <h2 id="toc-title" className="mb-2 font-semibold text-fg-secondary type-small">
+                    목차
                   </h2>
-                  <ul className="m-0 grid list-none gap-1.5 p-0 type-small">
-                    {own.map((c) => (
-                      <li key={c.id} className="flex items-center gap-2" title={c.summary}>
-                        <span className="text-fg">{c.title}</span>
-                        <ConceptImportanceBadge importance={c.importance} />
+                  <ol className="m-0 grid list-none gap-1 border-l border-line p-0 type-small">
+                    {lesson.sections.map((s) => (
+                      <li key={s.id}>
+                        <a
+                          href={`#${s.id}`}
+                          aria-current={active === s.id ? 'location' : undefined}
+                          className="-ml-px block border-l-2 border-transparent py-0.5 pl-3 text-fg-secondary no-underline hover:text-fg aria-[current=location]:border-action aria-[current=location]:font-semibold aria-[current=location]:text-heading"
+                        >
+                          {s.title ?? SECTION_LABELS[s.kind] ?? s.kind}
+                        </a>
                       </li>
                     ))}
-                  </ul>
-                </section>
-              )}
-              <nav aria-labelledby="toc-title">
-                <h2 id="toc-title" className="mb-2 font-semibold text-fg-secondary type-small">
-                  목차
-                </h2>
-                <ol className="m-0 grid list-none gap-1 border-l border-line p-0 type-small">
-                  {lesson.sections.map((s) => (
-                    <li key={s.id}>
-                      <a
-                        href={`#${s.id}`}
-                        aria-current={active === s.id ? 'location' : undefined}
-                        className="-ml-px block border-l-2 border-transparent py-0.5 pl-3 text-fg-secondary no-underline hover:text-fg aria-[current=location]:border-action aria-[current=location]:font-semibold aria-[current=location]:text-heading"
-                      >
-                        {s.title ?? SECTION_LABELS[s.kind] ?? s.kind}
-                      </a>
-                    </li>
-                  ))}
-                </ol>
-              </nav>
-            </div>
+                  </ol>
+                </nav>
+              </div>
+            )}
           </aside>
         </div>
       </TutorLayout>

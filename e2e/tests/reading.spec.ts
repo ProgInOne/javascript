@@ -50,4 +50,51 @@ test.describe('reading mode', () => {
     await page.getByRole('link', { name: '이어서 읽기' }).click();
     await expect(page).toHaveURL(/#[a-z-]+$/);
   });
+
+  test('runs an example with ⌘Enter, folds the side column, remembers the tutor drawer and lists shortcuts', async ({
+    page,
+  }) => {
+    await page.goto(LESSON);
+    await expect(page.getByRole('heading', { level: 1, name: '첫 프로그램' })).toBeVisible();
+
+    // FR-UI-02: ⌘Enter (Ctrl+Enter) runs the lesson example from its prediction field.
+    const example = page.getByRole('figure', { name: /예제 · JavaScript/ });
+    await example.getByRole('textbox', { name: '예상한 출력' }).fill('안녕하세요\n3');
+    await page.keyboard.press('ControlOrMeta+Enter');
+    await expect(example.getByRole('list', { name: '콘솔 출력' })).toContainText('안녕하세요');
+
+    // ? opens the shortcut help outside text fields; Esc closes it.
+    await page.getByRole('heading', { level: 1, name: '첫 프로그램' }).click();
+    await page.keyboard.press('?');
+    const help = page.getByRole('dialog', { name: '단축키' });
+    await expect(help).toBeVisible();
+    await expect(help.getByText('다음 힌트')).toBeVisible();
+    // The first Esc may close the close button's tooltip (focus lands on it), the next the dialog.
+    await expect(async () => {
+      await page.keyboard.press('Escape');
+      await expect(help).toBeHidden({ timeout: 500 });
+    }).toPass();
+    await page.getByRole('button', { name: '단축키 도움말' }).click();
+    await expect(help).toBeVisible();
+    await help.getByRole('button', { name: '닫기' }).click();
+    await expect(help).toBeHidden();
+
+    // FR-UI-01: the side column folds and stays folded on the next visit.
+    await page.getByRole('button', { name: '단원 정보 접기' }).click();
+    await expect(page.getByRole('navigation', { name: '목차' })).toBeHidden();
+    // The tutor drawer reopens where it was left open (wide screens only), without taking focus.
+    await page.getByRole('button', { name: /튜터/ }).click();
+    const drawer = page.getByRole('complementary', { name: 'AI 튜터' });
+    await expect(drawer).toBeVisible();
+    await page.reload();
+    await expect(page.getByRole('heading', { level: 1, name: '첫 프로그램' })).toBeVisible();
+    await expect(drawer).toBeVisible();
+    await expect(drawer.getByRole('textbox', { name: '튜터에게 질문' })).not.toBeFocused();
+    await page.getByRole('button', { name: '단원 정보 펼치기' }).click();
+    await expect(page.getByRole('navigation', { name: '목차' })).toBeVisible();
+    await drawer.getByRole('button', { name: '튜터 닫기' }).click();
+    await page.reload();
+    await expect(page.getByRole('heading', { level: 1, name: '첫 프로그램' })).toBeVisible();
+    await expect(drawer).toBeHidden();
+  });
 });

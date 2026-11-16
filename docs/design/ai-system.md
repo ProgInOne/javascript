@@ -508,7 +508,7 @@ sequenceDiagram
 - **대체 흐름**: 브라우저 콜백이 실패하는 환경을 위해 "기기 코드로 로그인"(`chatgptDeviceCode`: `verificationUrl`, `userCode` 표시)을 제공합니다.
 - **취소**: 사용자가 로그인 대화상자를 닫으면 `account/login/cancel(loginId)`. 5분 동안 완료되지 않으면 자동 취소합니다.
 - **로그아웃**: 설정 > "연결 해제" → `account/logout` → `account/updated { authMode: null }` → `logged_out`. 학습 데이터는 그대로 둡니다. 전용 홈의 로그인만 해제되며 Codex CLI 로그인에는 영향이 없습니다.
-- **토큰 만료**: `chatgpt` 모드는 Codex가 토큰을 갱신합니다(공식 문서). 그래도 `unauthorized` 오류가 오면 `logged_out`으로 전환하고, 진행 중 작업을 `AI_UNAUTHORIZED`로 실패시키고, 튜터 영역에 "다시 로그인" 버튼을 표시합니다.
+- **토큰 만료**: `chatgpt` 모드는 Codex가 토큰을 갱신합니다(공식 문서). 그래도 `unauthorized` 오류가 오면 `logged_out`으로 전환하고, 진행 중 작업을 `AI_UNAUTHORIZED`로 실패시키고, 튜터 영역에 "다시 로그인" 버튼을 표시합니다. 구현(v1.0, [D-068](/docs/decisions.md)): 상태는 `{ state: 'logged_out', expired: true }`이고, 계정이 있던 상태에서 앱이 요청하지 않은 계정 손실을 `account/read`로 확인했을 때도 같습니다. 만료 상태의 요청은 `AI_UNAUTHORIZED`로 거절하고, 다시 로그인해 `ready`가 되면 `expired`가 사라집니다. 학습자의 "연결 해제"는 만료가 아닙니다.
 - **앱은 자격 증명을 저장하거나 중개하지 않습니다.** `chatgptAuthTokens`(호스트가 토큰을 공급하는 실험적 모드)는 쓰지 않습니다.
 - **API 키 로그인**: Codex는 `apiKey` 로그인도 지원하지만, MVP UI에서는 ChatGPT 로그인만 노출합니다. 고급 설정에서만 허용할지는 미결입니다.
 

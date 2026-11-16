@@ -1312,6 +1312,18 @@ button.pi-ex-pane__file {
   padding: var(--space-2) var(--space-3);
   border-bottom: 1px solid var(--code-border);
 }
+.pi-ex-workspace__results-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+/* Editor/results separator (D-067): sits in the workspace gap instead of adding to it. */
+.pi-ex-workspace__separator {
+  margin-block: calc(-1 * var(--space-2));
+}
+.pi-ex-workspace--sized .pi-ex-editor__host {
+  height: var(--pi-ex-editor-h);
+}
 .pi-ex-workspace__panel {
   padding: var(--space-3) var(--space-4);
 }

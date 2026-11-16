@@ -90,6 +90,12 @@ export {
   type CodeRendererProps,
   type CodeRunProps,
 } from './renderers/CodeWorkspace.tsx';
+export {
+  EDITOR_MAX_HEIGHT,
+  EDITOR_MIN_HEIGHT,
+  WorkspacePanelsContext,
+  type WorkspacePanels,
+} from './renderers/workspace-panels.ts';
 export { ExerciseRenderer, type ExerciseRendererProps } from './renderers/ExerciseRenderer.tsx';
 
 // Code editor and preview container.

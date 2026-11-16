@@ -58,6 +58,23 @@ describe('RunnableExampleBlock', () => {
     );
   });
 
+  it('runs with Ctrl+Enter (⌘Enter on macOS) from inside the example once it can run', async () => {
+    run.mockResolvedValue(result());
+    render(<RunnableExampleBlock id="hello" lang="js" code="1" predict />);
+    expect(screen.getByRole('button', { name: '실행' })).toHaveAttribute(
+      'aria-keyshortcuts',
+      'Control+Enter',
+    );
+    const field = screen.getByRole('textbox', { name: '예상한 출력' });
+    await userEvent.click(field);
+    await userEvent.keyboard('{Control>}{Enter}{/Control}');
+    expect(run).not.toHaveBeenCalled();
+    await userEvent.type(field, '1');
+    await userEvent.keyboard('{Control>}{Enter}{/Control}');
+    expect(await screen.findByRole('list', { name: '콘솔 출력' })).toHaveTextContent('안녕하세요');
+    expect(run).toHaveBeenCalledTimes(1);
+  });
+
   it('lets the learner skip the prediction', async () => {
     run.mockResolvedValue(result());
     render(<RunnableExampleBlock id="hello" lang="js" code="1" predict />);

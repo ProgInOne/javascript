@@ -35,6 +35,29 @@ describe('describeAi', () => {
     expect(ai.reason).toMatch(reason);
   });
 
+  it('tells an expired login apart from never connecting (D-068)', () => {
+    expect(describeAi(res({ state: 'logged_out', expired: true }))).toMatchObject({
+      label: '로그인 만료',
+      tone: 'warn',
+      usable: false,
+      reason: 'ChatGPT 로그인이 만료됐어요. 다시 로그인해 주세요',
+    });
+    expect(describeAi(res({ state: 'logged_out', expired: false })).label).toBe('연결 안 됨');
+  });
+
+  it('disables AI while the browser is offline, unless a local setup problem says more', () => {
+    const offline = { label: '오프라인', usable: false, reason: /인터넷/ };
+    expect(describeAi(undefined, now, false)).toMatchObject(offline);
+    expect(describeAi(res({ state: 'ready', planType: null }), now, false)).toMatchObject(offline);
+    expect(describeAi(res({ state: 'logged_out', expired: true }), now, false)).toMatchObject(
+      offline,
+    );
+    expect(describeAi(res({ state: 'not_installed', hint: 'x' }), now, false).label).toBe(
+      'Codex CLI 미설치',
+    );
+    expect(describeAi(res({ state: 'ready', planType: null }), now, true).usable).toBe(true);
+  });
+
   it('shows usage warnings from the provider values', () => {
     const usage = (p: number) => ({ windows: [], highestUsedPercent: p, updatedAt: 0 });
     const ready = { state: 'ready', planType: 'pro' } as const;

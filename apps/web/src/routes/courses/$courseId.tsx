@@ -1,8 +1,8 @@
 import type { CoursePrerequisiteWarnings } from '@proginone/shared';
-import { Badge, Tooltip } from '@proginone/ui';
+import { Badge, EmptyState, Tooltip } from '@proginone/ui';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { ChevronDown, CircleAlert } from 'lucide-react';
+import { BookOpen, ChevronDown, CircleAlert } from 'lucide-react';
 import { courseQuery, coursePrerequisiteWarningsQuery } from '../../api/queries.ts';
 import { cardClass, pageClass, pageTitleClass } from '../../app/layout.ts';
 import { QueryState } from '../../app/QueryState.tsx';
@@ -39,6 +39,16 @@ function CourseDetail() {
                 </p>
 
                 <h2 className="mb-3 type-h3 text-heading">커리큘럼</h2>
+                {lessons.length === 0 && (
+                  // FR-UI-03 빈 상태: a pack can ship a course before its lessons.
+                  <EmptyState
+                    icon={BookOpen}
+                    headingLevel={3}
+                    title="이 과정에는 아직 단원이 없어요"
+                    description="콘텐츠 팩이 갱신되면 여기에 단원이 생겨요. 그동안 다른 과정을 학습해 보세요."
+                    action={<Link to="/courses">과정 목록 보기</Link>}
+                  />
+                )}
                 <div className="grid gap-3">
                   {course.modules.map((mod, mi) => (
                     <details key={mod.id} open={mi === 0} className={`${cardClass} group p-0`}>
@@ -56,6 +66,11 @@ function CourseDetail() {
                           {formatMinutes(mod.lessons.reduce((n, l) => n + l.estimatedMinutes, 0))}
                         </span>
                       </summary>
+                      {mod.lessons.length === 0 && (
+                        <p className="m-0 border-t border-line px-(--card-pad) py-3 text-fg-secondary type-small">
+                          이 모듈에는 아직 단원이 없어요.
+                        </p>
+                      )}
                       <ol className="m-0 list-none border-t border-line p-0">
                         {mod.lessons.map((lesson, li) => {
                           const weak = warned.get(lesson.id);

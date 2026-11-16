@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from 'react';
 import { isApplePlatform } from '@proginone/exercise-ui';
+import { PANEL_KEYS, readPanel, WIDE_QUERY, writePanel } from '../../lib/panels.ts';
 import { readTutorSelection } from './selection.ts';
 
 /** What the tutor is about: one thread per lesson or exercise (FR-AI-07). */
@@ -125,12 +126,19 @@ function focusRegion(region: Element) {
   target?.focus();
 }
 
+function restoredOpen(): boolean {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+  return readPanel(PANEL_KEYS.tutorOpen) === 'true' && window.matchMedia(WIDE_QUERY).matches;
+}
+
 /**
  * Tutor drawer state for a learning screen: open/close with return focus, the selection chip,
  * the current scope, `⌘J` (Ctrl+J elsewhere) and F6 region cycling.
  */
 export function TutorProvider({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState(false);
+  // The drawer reopens where the learner left it open (FR-UI-01 상태 기억, D-067), but only where
+  // it pushes the content aside: below 1280px it would cover the page as an overlay.
+  const [open, setOpen] = useState(restoredOpen);
   const [nudge, setNudge] = useState(false);
   const [selection, setSelection] = useState<TutorSelection | null>(null);
   const [focusRequest, setFocusRequest] = useState(0);
@@ -182,6 +190,7 @@ export function TutorProvider({ children }: { children: ReactNode }) {
     if (options.selection) setSelection(options.selection);
     openRef.current = true;
     setOpen(true);
+    writePanel(PANEL_KEYS.tutorOpen, 'true');
     setNudge(false);
     setFocusRequest((n) => n + 1);
   }, []);
@@ -190,6 +199,7 @@ export function TutorProvider({ children }: { children: ReactNode }) {
     if (!openRef.current) return;
     openRef.current = false;
     setOpen(false);
+    writePanel(PANEL_KEYS.tutorOpen, null);
     // Back to where the learner was, or to the header button (ui-ux.md 포커스 관리).
     const target = returnFocus.current;
     returnFocus.current = null;

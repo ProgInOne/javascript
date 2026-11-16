@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type BrowserContext, type Page } from '@playwright/test';
 
 // AI-unavailable states end to end (docs/design/ai-system.md#테스트 "E2E: AI 연결 안 됨, 한도 초과,
 // 응답 실패"), against the production build with PROGINONE_AI_PROVIDER=mock. The mock fails a
@@ -106,4 +106,79 @@ test.describe('AI unavailable (mock AI)', () => {
     await (await popup).close();
     await expect(page.getByRole('link', { name: 'AI 연결됨' })).toBeVisible();
   });
+
+  test('while the browser is offline, AI entry points say so and come back when online (D-068)', async ({
+    page,
+  }) => {
+    await openLesson(page);
+    await page.getByRole('button', { name: /튜터/ }).click();
+    const drawer = page.getByRole('complementary', { name: 'AI 튜터' });
+    const input = drawer.getByRole('textbox', { name: '튜터에게 질문' });
+    await expect(input).toBeEnabled();
+    const setOnline = (online: boolean) =>
+      page.evaluate((value) => {
+        Object.defineProperty(Navigator.prototype, 'onLine', {
+          configurable: true,
+          get: () => value,
+        });
+        window.dispatchEvent(new Event(value ? 'online' : 'offline'));
+      }, online);
+    // The local server stays reachable: only the browser's network flag changes.
+    await setOnline(false);
+    await expect(page.getByRole('link', { name: 'AI 오프라인' })).toBeVisible();
+    await expect(input).toBeDisabled();
+    await expect(drawer.getByText(/인터넷에 연결되어 있지 않아 AI를 쓸 수 없어요/)).toBeVisible();
+    // Learning itself keeps working.
+    await expect(page.getByRole('heading', { level: 1, name: '첫 프로그램' })).toBeVisible();
+    await setOnline(true);
+    await expect(input).toBeEnabled();
+    await expect(page.getByRole('link', { name: 'AI 연결됨' })).toBeVisible();
+    await drawer.getByRole('button', { name: '튜터 닫기' }).click();
+  });
+
+  test('an expired ChatGPT login is named as such and "다시 로그인" in the drawer fixes it (D-068)', async ({
+    page,
+    context,
+    request,
+  }) => {
+    // Whatever happens, leave the mock connected for the specs that follow (its login completes
+    // by itself).
+    const reconnect = async () => {
+      const headers = await apiHeaders(page);
+      await request.post('/api/v1/ai/login', { headers, data: {} });
+    };
+    try {
+      await expiredLoginFlow(page, context);
+    } finally {
+      if (!page.isClosed()) await reconnect().catch(() => undefined);
+    }
+  });
 });
+
+/** Body of the expired-login test (the test itself reconnects whatever happens). */
+async function expiredLoginFlow(page: Page, context: BrowserContext) {
+  await openLesson(page);
+  await page.getByRole('button', { name: /튜터/ }).click();
+  const drawer = page.getByRole('complementary', { name: 'AI 튜터' });
+  const input = drawer.getByRole('textbox', { name: '튜터에게 질문' });
+  // The mock answers like Codex does for an `unauthorized` turn: the login is marked expired.
+  await input.fill('[mock:error:AI_UNAUTHORIZED] 만료 테스트');
+  await input.press('Enter');
+  const reply = drawer.getByRole('list', { name: '튜터 대화' }).getByRole('listitem').last();
+  await expect(reply).toContainText('(AI_UNAUTHORIZED)', { timeout: 10_000 });
+  await expect(page.getByRole('link', { name: 'AI 로그인 만료' })).toBeVisible();
+  await expect(input).toBeDisabled();
+  await expect(drawer.getByText(/ChatGPT 로그인이 만료됐어요/)).toBeVisible();
+
+  await page.goto('/settings/ai');
+  await expect(page.getByText('ChatGPT 로그인이 만료됐어요', { exact: true })).toBeVisible();
+  // Back on the lesson the drawer is open again (remembered, FR-UI-01).
+  await openLesson(page);
+  await expect(drawer).toBeVisible();
+  const popup = context.waitForEvent('page');
+  await drawer.getByRole('button', { name: '다시 로그인' }).click();
+  await (await popup).close();
+  await expect(page.getByRole('link', { name: 'AI 연결됨' })).toBeVisible();
+  await expect(input).toBeEnabled();
+  await drawer.getByRole('button', { name: '튜터 닫기' }).click();
+}

@@ -9,6 +9,7 @@ import { ThemeSync } from '../app/ThemeSync.tsx';
 import { sendHeartbeat } from '../api/queries.ts';
 import { lessonIdOfPath, useActivityHeartbeat } from '../features/activity/useActivityHeartbeat.ts';
 import { AiEventsSync } from '../features/ai/api.ts';
+import { ShortcutHelp } from '../features/shortcuts/ShortcutHelp.tsx';
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -67,6 +68,7 @@ function RootLayout() {
       <ThemeSync />
       <ActivityHeartbeat />
       <AiEventsSync />
+      <ShortcutHelp />
       <Outlet />
     </Shell>
   );

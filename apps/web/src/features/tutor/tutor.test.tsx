@@ -381,6 +381,67 @@ describe('tutor drawer', () => {
     expect(within(drawer).getByRole('textbox', { name: '튜터에게 질문' })).toBeDisabled();
   });
 
+  it('says when the ChatGPT login expired and offers to log in again from the drawer', async () => {
+    const user = userEvent.setup();
+    const api = tutorApi({ status: { ...ready, status: { state: 'logged_out', expired: true } } });
+    renderApp(PRACTICE_FIX, api.handler);
+    const drawer = await openDrawer(user);
+    expect(await within(drawer).findByText('ChatGPT 로그인이 만료됐어요')).toBeVisible();
+    expect(within(drawer).getByText(/학습 기록과 튜터 대화는 그대로/)).toBeVisible();
+    expect(within(drawer).getByRole('button', { name: '다시 로그인' })).toBeEnabled();
+    expect(within(drawer).getByRole('textbox', { name: '튜터에게 질문' })).toBeDisabled();
+    expect(screen.getByRole('link', { name: 'AI 로그인 만료' })).toBeVisible();
+  });
+
+  it('explains being offline and comes back when the browser is online again', async () => {
+    const user = userEvent.setup();
+    const onLine = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false);
+    try {
+      renderApp(PRACTICE_FIX, tutorApi().handler);
+      const drawer = await openDrawer(user);
+      expect(await within(drawer).findByText('인터넷에 연결되어 있지 않아요')).toBeVisible();
+      expect(within(drawer).getByText(/인터넷 없이도 그대로 할 수 있어요/)).toBeVisible();
+      expect(screen.getByRole('link', { name: 'AI 오프라인' })).toBeVisible();
+      const input = within(drawer).getByRole('textbox', { name: '튜터에게 질문' });
+      expect(input).toBeDisabled();
+
+      onLine.mockReturnValue(true);
+      act(() => {
+        window.dispatchEvent(new Event('online'));
+      });
+      await waitFor(() => {
+        expect(input).toBeEnabled();
+      });
+    } finally {
+      onLine.mockRestore();
+    }
+  });
+
+  it('reopens where it was left open on wide screens, without taking focus', async () => {
+    vi.stubGlobal(
+      'matchMedia',
+      (query: string) =>
+        ({
+          matches: query === '(min-width: 1280px)',
+          media: query,
+          addEventListener: () => undefined,
+          removeEventListener: () => undefined,
+        }) as unknown as MediaQueryList,
+    );
+    localStorage.setItem('proginone:panel:tutor-open', 'true');
+    const user = userEvent.setup();
+    renderApp(`/learn/${LESSON_ID}`, tutorApi().handler);
+    const drawer = await screen.findByRole('complementary', { name: 'AI 튜터' });
+    const input = within(drawer).getByRole('textbox', { name: '튜터에게 질문' });
+    expect(input).not.toHaveFocus();
+
+    await user.click(within(drawer).getByRole('button', { name: /닫기/ }));
+    await waitFor(() => {
+      expect(screen.queryByRole('complementary', { name: 'AI 튜터' })).not.toBeInTheDocument();
+    });
+    expect(localStorage.getItem('proginone:panel:tutor-open')).toBeNull();
+  });
+
   it('toggles with Ctrl+J, closes with Esc and returns focus, cycles regions with F6', async () => {
     const user = userEvent.setup();
     const api = tutorApi();

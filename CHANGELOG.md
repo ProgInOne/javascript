@@ -29,6 +29,10 @@
 - JS 기초 유형 구성비 충족(M7, FR-EX-09, PRD MVP 완료 정의 2, [D-069](docs/decisions.md)): `start.reading-errors`에 오류 종류 구분 프로그램 작성 문제, `arrays.array-hof`에 `reduce` 초기값 구현 문제를 더하고 겹치는 3문제를 지워 30문제로 맞춤. 버그가 있는 시작 페이지를 고치는 웹 실습은 스펙의 `debugging: true`로 디버깅 범주에 셈(모듈 10의 `web-fix-*` 6개에 표시). JS 기초의 `type-mix` 위반 0
 - 단원 평가 문항 풀 보강(M7, [D-070](docs/decisions.md)): JS 단원 평가 6개에 21문항(모듈 3·4·5에 4개, 6·8·9에 3개)을 더해 풀이 한 번 출제 수보다 커짐(22·19·19·27·27·27). 재응시 때 문항 일부가 바뀜
 - 파라메트릭 템플릿 3개(계산 우선순위, for 누적, map) AI 교차 검토 승인
+- 학습 화면 패널 조절과 기억(M7, FR-UI-01, D-067): 실습 모드 문제 패널 | 작업 패널 비율(1280px 이상, 유형별), 코드 작업 영역의 에디터 높이와 결과(테스트·콘솔) 접기, 읽기 모드 보조 열("이 단원의 개념"·목차) 접기, 튜터 드로어 열림(1280px 이상에서 복원). 공통 핸들 `PanelSeparator`(`role="separator"`, 화살표 10px·Home/End·더블클릭 기본값·드래그). 브라우저 `localStorage`에 기억
+- 단축키(M7, FR-UI-02, D-067): 레슨 예제 `⌘Enter`(Windows·Linux `Ctrl+Enter`) 실행, 진행 중인 단원 평가에서 `⌘J`·`⌘.`를 누르면 잠긴 이유 안내, 단축키 도움말 모달(`?` 또는 학습 헤더 키보드 버튼)
+- AI 오프라인과 로그인 만료 표시(M7, FR-UI-03, D-068): 브라우저가 오프라인이면 헤더 "AI 오프라인"과 AI 진입점 비활성·안내(학습은 계속), ChatGPT 로그인이 만료되면(`logged_out`의 `expired`) "로그인 만료" 문구와 튜터 드로어·설정의 "다시 로그인". 만료 상태의 AI 요청은 `AI_UNAUTHORIZED`
+- 빈 상태(M7, FR-UI-03): 단원이 없는 과정·모듈, 문제가 없는 연습 세트, 틀린 답 기록이 없는 오답 노트 상세
 
 ### Changed
 
@@ -44,6 +48,11 @@
 - CI를 저장소 변수 `CI_RUNNER`로 self-hosted runner와 GitHub 호스트 runner 사이에서 전환할 수 있게 함(D-055). self-hosted(macOS)에서는 e2e·시각 회귀를 Docker로 같은 Playwright 이미지에서 실행하고, 릴리스 묶기가 bsdtar에서도 동작
 - content.db 스키마 버전 4. 기존 content.db는 `pnpm content:build`(개발은 `content:build:dev`)로 다시 만드세요.
 - 프로젝트 화면의 이어 하기 안내를 "저장해 둔 작성 중인 코드에서 이어서 해요"로 바꾸고, 채점 뒤에도 초안을 지우지 않음(D-063)
+- 튜터 드로어 폭 핸들을 공통 `PanelSeparator`로 교체(동작 같음)
+
+### Fixed
+
+- 웹 실습(`web_task`) 문제의 2열 배치 클래스가 붙지 않아 문제 패널이 설계(28%)보다 넓던 문제
 
 ### Fixed
 

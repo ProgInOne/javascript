@@ -1,14 +1,32 @@
 import type { CheckResult, CodeAnswer, CodeFile, PublicCheck } from '@proginone/exercise-kit';
 import type { RunResult } from '@proginone/shared';
-import { Button, Tabs, TabsContent, TabsList, TabsTrigger, WORKBENCH_CLASS } from '@proginone/ui';
-import { Play } from 'lucide-react';
-import { useRef, useState, type ReactNode } from 'react';
+import {
+  Button,
+  IconButton,
+  PanelSeparator,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  WORKBENCH_CLASS,
+} from '@proginone/ui';
+import { ChevronDown, ChevronUp, Play } from 'lucide-react';
+import {
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import { EditorPane, type EditorPaneHandle } from '../editor/EditorPane.tsx';
 import type { RendererBaseProps } from '../types.ts';
 import { CheckList, type CheckListMilestone } from '../widgets/CheckList.tsx';
 import { ConsoleView } from '../widgets/ConsoleView.tsx';
 import { Kbd } from '../widgets/Kbd.tsx';
 import { ariaShortcut, modKeyLabel } from '../widgets/shortcuts.ts';
+import { EDITOR_MAX_HEIGHT, EDITOR_MIN_HEIGHT, useWorkspacePanels } from './workspace-panels.ts';
 
 /** Run/feedback props shared by the code-writing renderers. Execution is packages/runner's job. */
 export interface CodeRunProps {
@@ -87,6 +105,38 @@ export function CodeWorkspace({
 }: WorkspaceProps) {
   const paneRef = useRef<EditorPaneHandle>(null);
   const [tab, setTab] = useState<string>(defaultResultTab);
+  const panels = useWorkspacePanels();
+  const collapsed = panels.resultsCollapsed;
+  const resultsId = useId();
+  const editorBox = useRef<HTMLDivElement>(null);
+  const [naturalHeight, setNaturalHeight] = useState(EDITOR_MIN_HEIGHT);
+  const stacked = layout === 'stacked';
+
+  // The separator reports the editor's real height until the learner sets one.
+  useLayoutEffect(() => {
+    const box = editorBox.current;
+    if (!box || !stacked) return;
+    // The box stays while the editor inside is replaced per file; read the current one.
+    const measure = () => {
+      const host = box.querySelector<HTMLElement>('.pi-ex-editor__host');
+      const h = host ? Math.round(host.getBoundingClientRect().height) : 0;
+      if (h > 0) setNaturalHeight(h);
+    };
+    measure();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(box);
+    return () => {
+      observer.disconnect();
+    };
+  }, [stacked]);
+
+  // Running with the results folded away would hide the output it produces, whether the run
+  // came from the button or the page's ⌘' shortcut.
+  const { setResultsCollapsed } = panels;
+  useEffect(() => {
+    if (running && collapsed) setResultsCollapsed(false);
+  }, [running, collapsed, setResultsCollapsed]);
 
   const editor = (
     <EditorPane
@@ -112,48 +162,76 @@ export function CodeWorkspace({
           <TabsTrigger value="tests">{checksTitle}</TabsTrigger>
           <TabsTrigger value="console">콘솔</TabsTrigger>
         </TabsList>
-        {onRun && (
-          <Button
-            size="sm"
-            icon={<Play size={14} aria-hidden="true" />}
-            loading={running}
-            aria-keyshortcuts={ariaShortcut("'")}
-            onClick={onRun}
-          >
-            실행
-            <Kbd keys={[modKeyLabel(), "'"]} />
-          </Button>
-        )}
+        <div className="pi-ex-workspace__results-actions">
+          {onRun && (
+            <Button
+              size="sm"
+              icon={<Play size={14} aria-hidden="true" />}
+              loading={running}
+              aria-keyshortcuts={ariaShortcut("'")}
+              onClick={onRun}
+            >
+              실행
+              <Kbd keys={[modKeyLabel(), "'"]} />
+            </Button>
+          )}
+          <IconButton
+            label={collapsed ? '결과 펼치기' : '결과 접기'}
+            icon={collapsed ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            aria-expanded={!collapsed}
+            aria-controls={resultsId}
+            onClick={() => {
+              panels.setResultsCollapsed(!collapsed);
+            }}
+          />
+        </div>
       </div>
-      <TabsContent value="tests" className="pi-ex-workspace__panel">
-        <CheckList
-          checks={checks}
-          results={checkResults}
-          title={checksTitle}
-          {...(entry === undefined ? {} : { entry })}
-          {...(milestones === undefined ? {} : { milestones })}
-        />
-      </TabsContent>
-      <TabsContent
-        value="console"
-        className="pi-ex-workspace__panel pi-ex-workspace__panel--console"
-      >
-        <ConsoleView
-          result={run}
-          running={running}
-          timeoutMs={timeoutMs}
-          {...(onStop === undefined ? {} : { onStop })}
-          onNavigate={(position) => {
-            paneRef.current?.goTo(position.file, position.line);
-          }}
-        />
-      </TabsContent>
+      <div id={resultsId} hidden={collapsed}>
+        <TabsContent value="tests" className="pi-ex-workspace__panel">
+          <CheckList
+            checks={checks}
+            results={checkResults}
+            title={checksTitle}
+            {...(entry === undefined ? {} : { entry })}
+            {...(milestones === undefined ? {} : { milestones })}
+          />
+        </TabsContent>
+        <TabsContent
+          value="console"
+          className="pi-ex-workspace__panel pi-ex-workspace__panel--console"
+        >
+          <ConsoleView
+            result={run}
+            running={running}
+            timeoutMs={timeoutMs}
+            {...(onStop === undefined ? {} : { onStop })}
+            onNavigate={(position) => {
+              if (collapsed) panels.setResultsCollapsed(false);
+              paneRef.current?.goTo(position.file, position.line);
+            }}
+          />
+        </TabsContent>
+      </div>
     </Tabs>
   );
 
+  const editorHeight = stacked ? panels.editorHeight : null;
+
   return (
     <div
-      className={`pi-ex-workspace pi-ex-workspace--${layout} ${WORKBENCH_CLASS}`}
+      className={[
+        'pi-ex-workspace',
+        `pi-ex-workspace--${layout}`,
+        WORKBENCH_CLASS,
+        editorHeight === null ? null : 'pi-ex-workspace--sized',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      style={
+        editorHeight === null
+          ? undefined
+          : ({ '--pi-ex-editor-h': `${String(editorHeight)}px` } as CSSProperties)
+      }
       role="group"
       aria-labelledby={labelledBy}
       aria-label={labelledBy ? undefined : '코드 작업 영역'}
@@ -165,7 +243,25 @@ export function CodeWorkspace({
           <div className="pi-ex-workspace__side">{preview}</div>
         </div>
       ) : (
-        <div className="pi-ex-workspace__editor">{editor}</div>
+        <>
+          <div className="pi-ex-workspace__editor" ref={editorBox}>
+            {editor}
+          </div>
+          {!collapsed && (
+            <PanelSeparator
+              orientation="horizontal"
+              label="에디터 높이"
+              value={editorHeight ?? naturalHeight}
+              min={EDITOR_MIN_HEIGHT}
+              max={EDITOR_MAX_HEIGHT}
+              onChange={panels.setEditorHeight}
+              onReset={() => {
+                panels.setEditorHeight(null);
+              }}
+              className="pi-ex-workspace__separator"
+            />
+          )}
+        </>
       )}
       {results}
     </div>

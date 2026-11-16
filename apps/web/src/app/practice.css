@@ -116,6 +116,17 @@
     .practice-layout--web {
       grid-template-columns: minmax(320px, 2fr) minmax(0, 5fr);
     }
+    /* Resizable problem | work split (PracticeSplit, D-067): the gap column holds the handle. */
+    .practice-layout--split {
+      column-gap: 0;
+      grid-template-columns:
+        minmax(320px, var(--problem-share, 40%))
+        var(--space-5)
+        minmax(0, 1fr);
+    }
+    .practice-layout__separator {
+      justify-self: center;
+    }
   }
   .practice-layout__problem,
   .practice-layout__work {

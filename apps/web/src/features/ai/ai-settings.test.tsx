@@ -120,6 +120,26 @@ describe('settings AI section', () => {
     expect(within(scope).getByText(/데이터 정책/)).toBeVisible();
   });
 
+  it('says when the login expired and offers to log in again (D-068)', async () => {
+    const api = aiApi(snapshot({ state: 'logged_out', expired: true }));
+    renderApp('/settings/ai', api.handler);
+    expect(await screen.findByText('ChatGPT 로그인이 만료됐어요')).toBeVisible();
+    expect(screen.getByText(/다시 로그인하면 이어서 쓸 수 있어요/)).toBeVisible();
+    expect(screen.getByRole('button', { name: '다시 로그인' })).toBeEnabled();
+    expect(screen.queryByRole('button', { name: 'ChatGPT로 연결' })).toBeNull();
+  });
+
+  it('warns while the browser is offline', async () => {
+    const onLine = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false);
+    try {
+      renderApp('/settings/ai', aiApi(snapshot({ state: 'ready', planType: 'pro' })).handler);
+      expect(await screen.findByText(/인터넷 연결이 끊겨 AI 튜터를 쓸 수 없어요/)).toBeVisible();
+      expect(screen.getByRole('link', { name: 'AI 오프라인' })).toBeVisible();
+    } finally {
+      onLine.mockRestore();
+    }
+  });
+
   it('logs in through a new tab and closes the dialog on the login event', async () => {
     const user = userEvent.setup();
     const tab = { opener: {}, closed: false, location: { href: '' }, close: vi.fn() };

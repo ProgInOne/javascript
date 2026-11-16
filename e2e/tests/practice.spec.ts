@@ -87,4 +87,73 @@ test.describe('practice mode', () => {
     await page.reload();
     await expect(page.locator('.cm-content').first()).toContainText('// 고치는 중');
   });
+
+  test('resizes and folds the code panels, remembers them, and keeps ⌘. working in the editor', async ({
+    page,
+    request,
+  }) => {
+    // The set "한 번 더 연습" left open by the previous test.
+    await page.goto(`${LESSON}?mode=practice`);
+    await expect(page).toHaveURL(/set=[0-9A-Z]{26}/);
+    const setId = new URL(page.url()).searchParams.get('set') ?? '';
+    const api = await apiFor(page, request);
+    const set = (await api.get(`/practice-sets/${setId}`)) as { items: { exerciseId: string }[] };
+    const fix = set.items.findIndex((i) => i.exerciseId.endsWith('.fix-total'));
+    await page.goto(`${LESSON}?mode=practice&set=${setId}&i=${String(fix + 1)}`);
+    const main = page.getByRole('main');
+    await expect(main.getByRole('heading', { name: /문제 \d+/ })).toBeVisible();
+
+    // FR-UI-01: the problem | work split moves with the keyboard and the pointer (1280px wide).
+    const split = main.getByRole('separator', { name: '문제 패널 폭' });
+    await expect(split).toHaveAttribute('aria-valuenow', '40');
+    const layout = page.locator('.practice-layout--split');
+    const problem = page.locator('.practice-layout__problem');
+    const share = async () => {
+      const [a, b] = await Promise.all([problem.boundingBox(), layout.boundingBox()]);
+      return (a?.width ?? 0) / (b?.width ?? 1);
+    };
+    expect(await share()).toBeCloseTo(0.4, 1);
+    await split.focus();
+    await page.keyboard.press('End');
+    await expect(split).toHaveAttribute('aria-valuenow', '55');
+    expect(await share()).toBeCloseTo(0.55, 1);
+    const box = await split.boundingBox();
+    if (!box) throw new Error('separator not laid out');
+    await page.mouse.move(box.x + box.width / 2, box.y + 40);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 - 150, box.y + 40, { steps: 5 });
+    await page.mouse.up();
+    const dragged = Number(await split.getAttribute('aria-valuenow'));
+    expect(dragged).toBeLessThan(50);
+    expect(dragged).toBeGreaterThan(30);
+
+    // The editor height handle and the folded results.
+    const editorHandle = main.getByRole('separator', { name: '에디터 높이' });
+    const host = page.locator('.pi-ex-editor__host').first();
+    const before = (await host.boundingBox())?.height ?? 0;
+    await editorHandle.focus();
+    for (let n = 0; n < 5; n++) await page.keyboard.press('ArrowDown');
+    await expect
+      .poll(async () => (await host.boundingBox())?.height ?? 0)
+      .toBeGreaterThan(before + 40);
+    await main.getByRole('button', { name: '결과 접기' }).click();
+    await expect(main.getByRole('tabpanel')).toBeHidden();
+    await expect(editorHandle).toBeHidden();
+
+    // All of it comes back after a reload.
+    await page.reload();
+    await expect(main.getByRole('separator', { name: '문제 패널 폭' })).toHaveAttribute(
+      'aria-valuenow',
+      String(dragged),
+    );
+    await expect(main.getByRole('button', { name: '결과 펼치기' })).toBeVisible();
+
+    // FR-UI-02: modifier shortcuts work while the editor has focus; running opens the results.
+    await page.locator('.cm-content').first().click();
+    await page.keyboard.press('ControlOrMeta+.');
+    await expect(main.getByRole('button', { name: /힌트 2\/\d 보기/ })).toBeVisible();
+    await page.keyboard.press("ControlOrMeta+'");
+    await expect(main.getByRole('button', { name: '결과 접기' })).toBeVisible();
+    await expect(main.getByRole('tabpanel')).toBeVisible();
+  });
 });

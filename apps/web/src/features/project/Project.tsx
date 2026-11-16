@@ -49,6 +49,7 @@ import { formatMinutes } from '../../lib/format.ts';
 import { statusMessage } from '../runner/runner.ts';
 import { AiHint } from '../tutor/AiHint.tsx';
 import { codeFilesOf, runSummaryOf } from '../tutor/context.ts';
+import { PracticeSplit } from '../practice/PracticeSplit.tsx';
 import { SELECTABLE_ATTR } from '../tutor/selection.ts';
 import { useTutorScope } from '../tutor/TutorContext.tsx';
 import {
@@ -334,138 +335,141 @@ export function ProjectWorkspace({
   const total = project.milestones.length;
 
   return (
-    <div
+    <PracticeSplit
       {...{ [SELECTABLE_ATTR]: '' }}
+      typeId="project"
       className="practice-layout practice-layout--code practice-layout--web project-workspace"
       data-type="web_task"
       data-exercise-id={view.id}
-    >
-      <div className="practice-layout__problem">
-        <section className="practice-problem" aria-labelledby={promptId}>
-          <header className="practice-problem__meta">
-            <h1
-              ref={headingRef}
-              tabIndex={-1}
-              id={promptId}
-              className="practice-problem__title project-title"
-            >
-              <Hammer size={20} aria-hidden="true" />
-              {lesson.title}
-            </h1>
-            <Badge variant="brand">응용 프로젝트</Badge>
-            {completed && <Badge variant="success">완성</Badge>}
-          </header>
-          <p className="m-0 text-fg-tertiary type-small">
-            마일스톤 {total}개
-            {lesson.project && ` · 약 ${formatMinutes(lesson.project.estimatedMinutes)}`}
-            {project.runCount > 0 && ` · 채점 ${project.runCount}번`}
+      problem={
+        <>
+          <section className="practice-problem" aria-labelledby={promptId}>
+            <header className="practice-problem__meta">
+              <h1
+                ref={headingRef}
+                tabIndex={-1}
+                id={promptId}
+                className="practice-problem__title project-title"
+              >
+                <Hammer size={20} aria-hidden="true" />
+                {lesson.title}
+              </h1>
+              <Badge variant="brand">응용 프로젝트</Badge>
+              {completed && <Badge variant="success">완성</Badge>}
+            </header>
+            <p className="m-0 text-fg-tertiary type-small">
+              마일스톤 {total}개
+              {lesson.project && ` · 약 ${formatMinutes(lesson.project.estimatedMinutes)}`}
+              {project.runCount > 0 && ` · 채점 ${project.runCount}번`}
+            </p>
+            <div className="practice-problem__prompt">
+              <Markdown text={view.prompt} />
+            </div>
+            {start.from !== 'starter' &&
+              project.runCount + (start.from === 'draft' ? 1 : 0) > 0 && (
+                <p className="project-resume m-0" role="note">
+                  {start.from === 'draft'
+                    ? '저장해 둔 작성 중인 코드에서 이어서 해요.'
+                    : '마지막으로 채점한 코드에서 이어서 해요.'}
+                </p>
+              )}
+          </section>
+
+          <MilestoneList project={project} />
+          {(lesson.project?.practiceCount ?? 0) > 0 && (
+            <PreparationCard lesson={lesson} count={lesson.project?.practiceCount ?? 0} />
+          )}
+
+          <p className="sr-only" aria-live="polite">
+            {result?.completedNow
+              ? '모든 마일스톤을 통과해 프로젝트를 완성했어요.'
+              : newly.length > 0
+                ? `새로 통과한 마일스톤: ${newly.join(', ')}`
+                : ''}
           </p>
-          <div className="practice-problem__prompt">
-            <Markdown text={view.prompt} />
-          </div>
-          {start.from !== 'starter' && project.runCount + (start.from === 'draft' ? 1 : 0) > 0 && (
-            <p className="project-resume m-0" role="note">
-              {start.from === 'draft'
-                ? '저장해 둔 작성 중인 코드에서 이어서 해요.'
-                : '마지막으로 채점한 코드에서 이어서 해요.'}
-            </p>
-          )}
-        </section>
+          {completed && <CompletionCard lesson={lesson} result={result} />}
 
-        <MilestoneList project={project} />
-        {(lesson.project?.practiceCount ?? 0) > 0 && (
-          <PreparationCard lesson={lesson} count={lesson.project?.practiceCount ?? 0} />
-        )}
-
-        <p className="sr-only" aria-live="polite">
-          {result?.completedNow
-            ? '모든 마일스톤을 통과해 프로젝트를 완성했어요.'
-            : newly.length > 0
-              ? `새로 통과한 마일스톤: ${newly.join(', ')}`
-              : ''}
-        </p>
-        {completed && <CompletionCard lesson={lesson} result={result} />}
-
-        <div className="practice-response">
-          <div className="project-actions">
-            <Button
-              variant="primary"
-              loading={submitting}
-              onClick={() => void grade()}
-              aria-keyshortcuts="Meta+Enter Control+Enter"
-            >
-              채점하기
-            </Button>
-            <span className="text-fg-secondary type-small">
-              채점하면 마일스톤마다 통과했는지 알려 줘요. 몇 번이든 다시 채점할 수 있어요.
-            </span>
-          </div>
-          {error && (
-            <p role="alert" className="practice-error">
-              {error}
-            </p>
-          )}
-          {runNote && <p className="text-fg-secondary type-small">{runNote}</p>}
-          {newly.length > 0 && !result?.completedNow && (
-            <p className="project-newly m-0">
-              <Check size={16} aria-hidden="true" />
-              새로 통과: {newly.join(', ')}
-            </p>
-          )}
-          <FeedbackBanner
-            result={graded ? feedbackResultOf(graded) : null}
-            misconceptions={(graded?.grade.misconceptions ?? []).map((m) => ({
-              id: m.id,
-              name: m.title,
-            }))}
-            {...(graded && graded.grade.explanation !== ''
-              ? { explanation: <Markdown text={graded.grade.explanation} /> }
-              : {})}
-          />
-          {graded && <MasteryChangeList changes={graded.masteryChanges} />}
-          {view.hintCount > 0 && (
-            <HintLadder
-              hints={Array.from({ length: view.hintCount }, (_, i) => hints[i]?.text ?? '')}
-              revealed={hints.length}
-              onReveal={() => void revealHint()}
-              onRevealAnswer={() => void revealSolution()}
-              answerRevealed={solution !== null}
-              answer={
-                solution && (
-                  <>
-                    <SolutionContent solution={solution.solution} />
-                    <Markdown text={solution.explanation} />
-                  </>
-                )
-              }
-              pending={hintPending}
-              afterHints={
-                <AiHint
-                  exerciseId={view.id}
-                  level={hints.length}
-                  request={() => {
-                    const code = codeFilesOf(work.current.answer);
-                    const lastRun = runSummaryOf(
-                      work.current.run,
-                      work.current.result
-                        ? feedbackResultOf(work.current.result).checkResults
-                        : null,
-                    );
-                    return {
-                      ...(code ? { currentCode: code } : {}),
-                      ...(lastRun ? { lastRunResult: lastRun } : {}),
-                    };
-                  }}
-                />
-              }
+          <div className="practice-response">
+            <div className="project-actions">
+              <Button
+                variant="primary"
+                loading={submitting}
+                onClick={() => void grade()}
+                aria-keyshortcuts="Meta+Enter Control+Enter"
+              >
+                채점하기
+              </Button>
+              <span className="text-fg-secondary type-small">
+                채점하면 마일스톤마다 통과했는지 알려 줘요. 몇 번이든 다시 채점할 수 있어요.
+              </span>
+            </div>
+            {error && (
+              <p role="alert" className="practice-error">
+                {error}
+              </p>
+            )}
+            {runNote && <p className="text-fg-secondary type-small">{runNote}</p>}
+            {newly.length > 0 && !result?.completedNow && (
+              <p className="project-newly m-0">
+                <Check size={16} aria-hidden="true" />
+                새로 통과: {newly.join(', ')}
+              </p>
+            )}
+            <FeedbackBanner
+              result={graded ? feedbackResultOf(graded) : null}
+              misconceptions={(graded?.grade.misconceptions ?? []).map((m) => ({
+                id: m.id,
+                name: m.title,
+              }))}
+              {...(graded && graded.grade.explanation !== ''
+                ? { explanation: <Markdown text={graded.grade.explanation} /> }
+                : {})}
             />
-          )}
-          <footer className="practice-item-footer">
-            <ReportButton exerciseId={view.id} />
-          </footer>
-        </div>
-      </div>
-      <div className="practice-layout__work">
+            {graded && <MasteryChangeList changes={graded.masteryChanges} />}
+            {view.hintCount > 0 && (
+              <HintLadder
+                hints={Array.from({ length: view.hintCount }, (_, i) => hints[i]?.text ?? '')}
+                revealed={hints.length}
+                onReveal={() => void revealHint()}
+                onRevealAnswer={() => void revealSolution()}
+                answerRevealed={solution !== null}
+                answer={
+                  solution && (
+                    <>
+                      <SolutionContent solution={solution.solution} />
+                      <Markdown text={solution.explanation} />
+                    </>
+                  )
+                }
+                pending={hintPending}
+                afterHints={
+                  <AiHint
+                    exerciseId={view.id}
+                    level={hints.length}
+                    request={() => {
+                      const code = codeFilesOf(work.current.answer);
+                      const lastRun = runSummaryOf(
+                        work.current.run,
+                        work.current.result
+                          ? feedbackResultOf(work.current.result).checkResults
+                          : null,
+                      );
+                      return {
+                        ...(code ? { currentCode: code } : {}),
+                        ...(lastRun ? { lastRunResult: lastRun } : {}),
+                      };
+                    }}
+                  />
+                }
+              />
+            )}
+            <footer className="practice-item-footer">
+              <ReportButton exerciseId={view.id} />
+            </footer>
+          </div>
+        </>
+      }
+      work={
         <ExerciseRenderer
           exercise={exercise}
           value={answer}
@@ -488,8 +492,8 @@ export function ProjectWorkspace({
             ...(runner.previewNotice === null ? {} : { notice: runner.previewNotice }),
           }}
         />
-      </div>
-    </div>
+      }
+    />
   );
 }
 

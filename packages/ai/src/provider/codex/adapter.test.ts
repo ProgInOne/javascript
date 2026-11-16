@@ -440,7 +440,12 @@ describe('CodexAdapter · turns', () => {
       .run(request(), { signal: new AbortController().signal })
       .catch((e: unknown) => e)) as AIError;
     expect(error.code).toBe('AI_UNAUTHORIZED');
-    expect(adapter.currentStatus().state).toBe('logged_out');
+    // An expired login, not "never connected" (D-068); the next run says the same.
+    expect(adapter.currentStatus()).toEqual({ state: 'logged_out', expired: true });
+    const next = (await adapter
+      .run(request(), { signal: new AbortController().signal })
+      .catch((e: unknown) => e)) as AIError;
+    expect(next.code).toBe('AI_UNAUTHORIZED');
   });
 });
 
@@ -491,7 +496,8 @@ describe('CodexAdapter · account', () => {
     const { adapter } = setup();
     await adapter.connect();
     await adapter.logout();
-    expect(adapter.currentStatus().state).toBe('logged_out');
+    // The learner's own logout is not an expiry.
+    expect(adapter.currentStatus()).toEqual({ state: 'logged_out' });
   });
 
   it('lists visible models only', async () => {

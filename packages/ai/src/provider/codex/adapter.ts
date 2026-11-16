@@ -154,6 +154,8 @@ export class CodexAdapter implements ProviderAdapter {
   #usage: AIUsage | null = null;
   #usageRead: Promise<AIUsage | null> | null = null;
   #pendingLogin: { loginId: string; startedAt: number; timer: NodeJS.Timeout } | null = null;
+  /** A logout the learner asked for is running: losing the account then is not an expiry. */
+  #loggingOut = false;
   #disposed = false;
   /** Bumped per process; exit handlers of older processes are ignored. */
   #generation = 0;
@@ -474,7 +476,18 @@ export class CodexAdapter implements ProviderAdapter {
       { refreshToken: false },
       this.#requestTimeout,
     );
-    if (!res.account) return this.#setStatus({ state: 'logged_out' });
+    if (!res.account) {
+      // The account went away without a logout from the app: the ChatGPT login expired or was
+      // revoked (D-068). A fresh start without an account is plain "not connected".
+      const lost =
+        !this.#loggingOut &&
+        (this.#status.state === 'ready' ||
+          this.#status.state === 'rate_limited' ||
+          (this.#status.state === 'logged_out' && this.#status.expired === true));
+      return this.#setStatus(
+        lost ? { state: 'logged_out', expired: true } : { state: 'logged_out' },
+      );
+    }
     void this.usage();
     if (this.#status.state === 'rate_limited' && (this.#usage?.highestUsedPercent ?? 0) >= 100) {
       return this.#status;
@@ -589,8 +602,13 @@ export class CodexAdapter implements ProviderAdapter {
 
   async logout(): Promise<void> {
     const rpc = await this.#readyRpc(true);
-    await rpc.request('account/logout', undefined, this.#requestTimeout);
-    this.#setStatus({ state: 'logged_out' });
+    this.#loggingOut = true;
+    try {
+      await rpc.request('account/logout', undefined, this.#requestTimeout);
+      this.#setStatus({ state: 'logged_out' });
+    } finally {
+      this.#loggingOut = false;
+    }
   }
 
   async #readyRpc(allowLoggedOut = false): Promise<JsonRpcClient> {
@@ -959,7 +977,7 @@ export class CodexAdapter implements ProviderAdapter {
       case 'contextWindowExceeded':
         return new AIError('AI_CONTEXT_TOO_LARGE');
       case 'unauthorized':
-        this.#setStatus({ state: 'logged_out' });
+        this.#setStatus({ state: 'logged_out', expired: true });
         return new AIError('AI_UNAUTHORIZED');
       case 'serverOverloaded':
         return new AIError('AI_OVERLOADED');

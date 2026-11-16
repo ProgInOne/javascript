@@ -5,6 +5,7 @@ import { renderApp } from '../test/render-app.tsx';
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  localStorage.clear();
 });
 
 const course = {
@@ -175,6 +176,45 @@ describe('curriculum screens', () => {
         .map((a) => a.textContent),
     ).toEqual(['학습 목표', '왜 필요할까요']);
     expect(screen.getByRole('link', { name: /다음: 오류 읽기/ })).toBeInTheDocument();
+  });
+
+  it('folds the lesson side column and remembers it (FR-UI-01)', async () => {
+    const user = userEvent.setup();
+    const { unmount } = renderApp(`/learn/${lesson.id}`, api);
+    await user.click(await screen.findByRole('button', { name: '단원 정보 접기' }));
+    expect(screen.queryByRole('navigation', { name: '목차' })).not.toBeInTheDocument();
+    expect(localStorage.getItem('proginone:panel:lesson-aside-collapsed')).toBe('true');
+    unmount();
+
+    renderApp(`/learn/${lesson.id}`, api);
+    const unfold = await screen.findByRole('button', { name: '단원 정보 펼치기' });
+    expect(unfold).toHaveAttribute('aria-expanded', 'false');
+    await user.click(unfold);
+    expect(screen.getByRole('navigation', { name: '목차' })).toBeInTheDocument();
+  });
+
+  it('shows empty states for a course or a module without lessons (FR-UI-03)', async () => {
+    renderApp('/courses/js-basics', (method, path) =>
+      path === '/courses/js-basics'
+        ? {
+            body: {
+              ...course,
+              lessonCount: 0,
+              objectives: [],
+              modules: [{ id: 'js-basics.start', title: '시작하기', summary: 's', lessons: [] }],
+            },
+          }
+        : api(method, path),
+    );
+    expect(
+      await screen.findByRole('heading', { name: '이 과정에는 아직 단원이 없어요' }),
+    ).toBeVisible();
+    expect(screen.getByRole('link', { name: '과정 목록 보기' })).toHaveAttribute(
+      'href',
+      '/courses',
+    );
+    expect(screen.getByText('이 모듈에는 아직 단원이 없어요.')).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: '학습 시작' })).not.toBeInTheDocument();
   });
 
   it('shows a not-found page for an unknown lesson', async () => {

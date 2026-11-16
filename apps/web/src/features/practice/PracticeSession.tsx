@@ -6,6 +6,9 @@ import {
   type SubmitAttemptResponse,
 } from '@proginone/shared';
 import { useQueryClient } from '@tanstack/react-query';
+import { EmptyState } from '@proginone/ui';
+import { Link } from '@tanstack/react-router';
+import { ListChecks } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
 import { LEARNING_STATE_KEYS, practiceSetQuery, skipItem } from '../../api/queries.ts';
@@ -135,7 +138,16 @@ export function PracticeSession({
           {skipError}
         </p>
       )}
-      {showSummary || !item || current === null ? (
+      {set.items.length === 0 ? (
+        // FR-UI-03 빈 상태: nothing was due or left to practise when the set was made.
+        <EmptyState
+          icon={ListChecks}
+          headingLevel={2}
+          title="이 세트에는 풀 문제가 없어요"
+          description="세트를 만들 때 풀 수 있는 문제가 남아 있지 않았어요. 다른 학습으로 이어가 보세요."
+          action={<Link to="/">대시보드로 가기</Link>}
+        />
+      ) : showSummary || !item || current === null ? (
         <SetSummary
           set={set}
           title={lessonTitle}

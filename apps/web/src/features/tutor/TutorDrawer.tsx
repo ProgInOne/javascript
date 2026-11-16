@@ -1,7 +1,15 @@
 import type { TutorEntryPoint } from '@proginone/shared';
-import { Button, EmptyState, ErrorState, IconButton, Skeleton, Spinner } from '@proginone/ui';
+import {
+  Button,
+  EmptyState,
+  ErrorState,
+  IconButton,
+  PanelSeparator,
+  Skeleton,
+  Spinner,
+} from '@proginone/ui';
 import { Link } from '@tanstack/react-router';
-import { MessageCircle, PlugZap, Send, Square, X } from 'lucide-react';
+import { LogIn, MessageCircle, PlugZap, Send, Square, WifiOff, X } from 'lucide-react';
 import {
   useCallback,
   useEffect,
@@ -10,11 +18,16 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
-  type PointerEvent,
 } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
-import { useAiStatus } from '../ai/api.ts';
-import { AI_NOT_CONNECTED_COPY, describeAi } from '../ai/status.ts';
+import { useAiStatus, useOnline } from '../ai/api.ts';
+import { LoginDialog, useAiLogin, type AiLogin } from '../ai/LoginDialog.tsx';
+import {
+  AI_EXPIRED_COPY,
+  AI_NOT_CONNECTED_COPY,
+  AI_OFFLINE_COPY,
+  describeAi,
+} from '../ai/status.ts';
 import { DRAWER_ATTR, selectionLabel } from './selection.ts';
 import { F6_REGION, useTutor, type TutorScope } from './TutorContext.tsx';
 import { TutorMessageItem } from './TutorMessageItem.tsx';
@@ -85,7 +98,10 @@ export function TutorDrawer({ width, onWidth }: { width: number; onWidth: (w: nu
   }, []);
   // Opening the tutor is a lazy-start trigger, like the settings AI section.
   const status = useAiStatus({ connect: true });
-  const ai = describeAi(status.data);
+  const online = useOnline();
+  const ai = describeAi(status.data, new Date(), online);
+  const login = useAiLogin();
+  const expired = status.data?.status.state === 'logged_out' && status.data.status.expired === true;
   const scope = tutor?.scope ?? null;
   const convo = useTutorConversation(scope, announce);
   const [question, setQuestion] = useState('');
@@ -107,7 +123,8 @@ export function TutorDrawer({ width, onWidth }: { width: number; onWidth: (w: nu
   }
 
   useEffect(() => {
-    inputRef.current?.focus();
+    // 0: the drawer was reopened with the page (remembered state); focus stays on the page.
+    if (tutor?.focusRequest) inputRef.current?.focus();
   }, [tutor?.focusRequest]);
 
   useLayoutEffect(() => {
@@ -243,20 +260,34 @@ export function TutorDrawer({ width, onWidth }: { width: number; onWidth: (w: nu
         ) : messages.length === 0 ? (
           blocked ? (
             <EmptyState
-              icon={PlugZap}
+              icon={online ? PlugZap : WifiOff}
               headingLevel={3}
-              title="AI 튜터를 쓸 수 없어요"
+              title={
+                !online
+                  ? '인터넷에 연결되어 있지 않아요'
+                  : expired
+                    ? 'ChatGPT 로그인이 만료됐어요'
+                    : 'AI 튜터를 쓸 수 없어요'
+              }
               description={
-                status.data?.status.state === 'rate_limited'
-                  ? `${ai.reason ?? ''} 그동안 힌트와 해설은 계속 볼 수 있어요.`
-                  : status.data?.status.state === 'logged_out'
-                    ? AI_NOT_CONNECTED_COPY
-                    : `${ai.reason ?? ''}. 연결하지 않아도 모든 문제와 해설은 볼 수 있어요.`
+                !online
+                  ? AI_OFFLINE_COPY
+                  : expired
+                    ? AI_EXPIRED_COPY
+                    : status.data?.status.state === 'rate_limited'
+                      ? `${ai.reason ?? ''} 그동안 힌트와 해설은 계속 볼 수 있어요.`
+                      : status.data?.status.state === 'logged_out'
+                        ? AI_NOT_CONNECTED_COPY
+                        : `${ai.reason ?? ''}. 연결하지 않아도 모든 문제와 해설은 볼 수 있어요.`
               }
               action={
-                <Link to="/settings/ai" className="lesson-link">
-                  AI 연결 설정
-                </Link>
+                online && expired ? (
+                  <ReloginButton login={login} />
+                ) : online ? (
+                  <Link to="/settings/ai" className="lesson-link">
+                    AI 연결 설정
+                  </Link>
+                ) : undefined
               }
             />
           ) : (
@@ -290,9 +321,15 @@ export function TutorDrawer({ width, onWidth }: { width: number; onWidth: (w: nu
         {blocked && messages.length > 0 && (
           <p className="tutor-composer__blocked">
             {ai.reason}{' '}
-            <Link to="/settings/ai" className="lesson-link">
-              AI 연결 설정
-            </Link>
+            {online && expired ? (
+              <ReloginButton login={login} inline />
+            ) : (
+              online && (
+                <Link to="/settings/ai" className="lesson-link">
+                  AI 연결 설정
+                </Link>
+              )
+            )}
           </p>
         )}
         {!blocked && !convo.streaming && (
@@ -369,7 +406,23 @@ export function TutorDrawer({ width, onWidth }: { width: number; onWidth: (w: nu
       <div id={liveId} className="sr-only" aria-live="polite">
         {announcement}
       </div>
+      <LoginDialog login={login} />
     </aside>
+  );
+}
+
+/** "다시 로그인" right in the drawer (ai-system.md 토큰 만료: 튜터 영역에 "다시 로그인" 버튼). */
+function ReloginButton({ login, inline = false }: { login: AiLogin; inline?: boolean }) {
+  return (
+    <Button
+      size="sm"
+      variant={inline ? 'ghost' : 'primary'}
+      icon={<LogIn size={14} aria-hidden="true" />}
+      loading={login.state.phase === 'starting'}
+      onClick={() => void login.start()}
+    >
+      다시 로그인
+    </Button>
   );
 }
 
@@ -391,47 +444,19 @@ function Chip({ label, title, onRemove }: { label: string; title?: string; onRem
 
 /** Drag handle with keyboard resizing (ui-ux.md 패널 리사이즈 규칙: ←→ 10px, Home/End). */
 function ResizeHandle({ width, onWidth }: { width: number; onWidth: (w: number) => void }) {
-  const drag = useRef<{ x: number; width: number } | null>(null);
-  const clamp = (w: number) => Math.min(DRAWER_MAX, Math.max(DRAWER_MIN, Math.round(w)));
   return (
-    <div
-      role="separator"
-      aria-orientation="vertical"
-      aria-label="튜터 드로어 폭"
-      aria-valuemin={DRAWER_MIN}
-      aria-valuemax={DRAWER_MAX}
-      aria-valuenow={width}
-      tabIndex={0}
-      className="tutor-drawer__resize"
-      onKeyDown={(e) => {
-        const next =
-          e.key === 'ArrowLeft'
-            ? width + 10
-            : e.key === 'ArrowRight'
-              ? width - 10
-              : e.key === 'Home'
-                ? DRAWER_MIN
-                : e.key === 'End'
-                  ? DRAWER_MAX
-                  : null;
-        if (next === null) return;
-        e.preventDefault();
-        onWidth(clamp(next));
-      }}
-      onDoubleClick={() => {
+    <PanelSeparator
+      orientation="vertical"
+      label="튜터 드로어 폭"
+      value={width}
+      min={DRAWER_MIN}
+      max={DRAWER_MAX}
+      panelAfter
+      onChange={onWidth}
+      onReset={() => {
         onWidth(DRAWER_DEFAULT);
       }}
-      onPointerDown={(e: PointerEvent<HTMLDivElement>) => {
-        e.currentTarget.setPointerCapture(e.pointerId);
-        drag.current = { x: e.clientX, width };
-      }}
-      onPointerMove={(e) => {
-        if (!drag.current) return;
-        onWidth(clamp(drag.current.width + (drag.current.x - e.clientX)));
-      }}
-      onPointerUp={() => {
-        drag.current = null;
-      }}
+      className="tutor-drawer__resize"
     />
   );
 }

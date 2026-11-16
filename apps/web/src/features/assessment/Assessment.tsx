@@ -1,6 +1,6 @@
-import { ariaShortcut, Kbd, modKeyLabel } from '@proginone/exercise-ui';
+import { ariaShortcut, isApplePlatform, Kbd, modKeyLabel } from '@proginone/exercise-ui';
 import type { AssessmentResult, LessonDetail, PracticeSetView } from '@proginone/shared';
-import { Badge, Button, EmptyState, ErrorState, Tooltip } from '@proginone/ui';
+import { Badge, Button, EmptyState, ErrorState, Tooltip, useToast } from '@proginone/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import {
@@ -170,6 +170,7 @@ export function AssessmentStart({
  */
 export function LockedTutorButton() {
   const reasonId = useId();
+  useLockedShortcuts();
   return (
     <>
       <Tooltip content="평가가 끝나면 열려요">
@@ -195,6 +196,33 @@ export function LockedTutorButton() {
       </span>
     </>
   );
+}
+
+/** Shown when `⌘J` or `⌘.` is pressed during an assessment. */
+export const ASSESSMENT_LOCK_COPY =
+  '단원 평가 중에는 튜터와 힌트를 쓸 수 없어요. 평가가 끝나면 열려요.';
+
+/**
+ * During an assessment the tutor (`⌘J`) and hint (`⌘.`) shortcuts are locked like their buttons
+ * (FR-UI-02, D-067). The key is taken so the browser does not act on it (Chrome opens downloads
+ * on Ctrl+J) and the learner is told why nothing opened.
+ */
+function useLockedShortcuts() {
+  const toast = useToast();
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.isComposing) return;
+      const mod = isApplePlatform() ? e.metaKey && !e.ctrlKey : e.ctrlKey && !e.metaKey;
+      if (!mod || e.altKey || e.shiftKey) return;
+      if (e.key.toLowerCase() !== 'j' && e.key !== '.') return;
+      e.preventDefault();
+      toast({ title: ASSESSMENT_LOCK_COPY, variant: 'info' });
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [toast]);
 }
 
 const OUTCOME = {

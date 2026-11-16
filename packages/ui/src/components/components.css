@@ -808,3 +808,43 @@
 .pi-error-state--inline .pi-state__code {
   margin-top: var(--space-1);
 }
+
+/* ── PanelSeparator (8px hit area, 2px line; ui-ux.md 반응형과 패널 규칙) ── */
+.pi-separator {
+  position: relative;
+  flex: none;
+  touch-action: none;
+  user-select: none;
+}
+.pi-separator--vertical {
+  width: 8px;
+  align-self: stretch;
+  cursor: col-resize;
+}
+.pi-separator--horizontal {
+  height: 8px;
+  cursor: row-resize;
+}
+.pi-separator::after {
+  content: '';
+  position: absolute;
+  border-radius: 2px;
+  background: var(--color-border-default);
+  transition: background-color var(--duration-fast) ease;
+}
+.pi-separator--vertical::after {
+  inset: 0 3px;
+}
+.pi-separator--horizontal::after {
+  inset: 3px 0;
+}
+.pi-separator:hover::after,
+.pi-separator:focus-visible::after,
+.pi-separator:active::after {
+  background: var(--color-action-primary);
+}
+.pi-separator:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 0;
+  border-radius: 2px;
+}

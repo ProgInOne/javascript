@@ -4,6 +4,56 @@
  * practice.css). Colors come from the semantic and mastery tokens only.
  */
 @layer components {
+  /* ── 단축키 도움말 (ShortcutHelp) ── */
+  .shortcut-help {
+    display: grid;
+    gap: var(--space-5);
+    max-height: min(60vh, 560px);
+    overflow-y: auto;
+  }
+  .shortcut-help__title {
+    margin-bottom: var(--space-2);
+    font: var(--text-small);
+    font-weight: 700;
+    color: var(--color-text-secondary);
+  }
+  .shortcut-help__list {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+  }
+  .shortcut-help__row {
+    display: grid;
+    grid-template-columns: minmax(9rem, auto) minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: baseline;
+    font: var(--text-small);
+  }
+  .shortcut-help__row dt {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .shortcut-help__row dd {
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+  .shortcut-help__combo {
+    display: inline-flex;
+    gap: 2px;
+  }
+  .shortcut-help__combo kbd {
+    min-width: 1.6em;
+    padding: 0 0.35em;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-xs);
+    background: var(--color-bg-subtle);
+    font: var(--text-caption);
+    font-family: var(--font-sans);
+    text-align: center;
+    color: var(--color-text-primary);
+  }
+
   /* ── GoalRing ── */
   .goal-ring {
     position: relative;

@@ -9,17 +9,26 @@ import {
   Spinner,
   useToast,
 } from '@proginone/ui';
-import { CircleAlert, LogIn, LogOut, RefreshCw } from 'lucide-react';
+import { CircleAlert, LogIn, LogOut, RefreshCw, WifiOff } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
 import { useSettings } from '../../api/queries.ts';
 import { cardClass, pageTitleClass } from '../../app/layout.ts';
 import { formatResetTime } from '../../lib/format.ts';
 import { useSaveSetting } from '../settings/useSaveSetting.ts';
-import { useAiCancelLogin, useAiLogout, useAiModels, useAiReconnect, useAiStatus } from './api.ts';
+import {
+  useAiCancelLogin,
+  useAiLogout,
+  useAiModels,
+  useAiReconnect,
+  useAiStatus,
+  useOnline,
+} from './api.ts';
 import { LoginDialog, useAiLogin } from './LoginDialog.tsx';
 import {
+  AI_EXPIRED_COPY,
   AI_NOT_CONNECTED_COPY,
+  AI_OFFLINE_COPY,
   describeAi,
   planLabel,
   rateLimitCopy,
@@ -32,6 +41,7 @@ const INSTALL_COMMAND = 'npm install -g @openai/codex';
 /** 설정 > AI (docs/design/ui-ux.md#설정 "AI 연결 섹션"). Opening it starts Codex lazily. */
 export function AiSettings() {
   const status = useAiStatus({ connect: true });
+  const online = useOnline();
   return (
     <section aria-labelledby="ai-title" className="max-w-[760px]">
       <h1 id="ai-title" className={pageTitleClass}>
@@ -39,6 +49,15 @@ export function AiSettings() {
       </h1>
       <div className={`${cardClass} ai-settings`}>
         <h2 className="type-h3 text-heading">AI 튜터 연결</h2>
+        {/* Always rendered so going offline is announced (D-068). */}
+        <div role="status">
+          {!online && (
+            <p className="ai-models__fallback">
+              <WifiOff size={16} aria-hidden="true" />
+              <span>{AI_OFFLINE_COPY}</span>
+            </p>
+          )}
+        </div>
         {status.data ? (
           <Connection data={status.data} />
         ) : status.isError ? (
@@ -124,14 +143,14 @@ function Connection({ data }: { data: AIStatusResponse }) {
       {label}
     </Button>
   );
-  const connectButton = (
+  const connectButton = (label = 'ChatGPT로 연결') => (
     <Button
       variant="primary"
       icon={<LogIn size={16} aria-hidden="true" />}
       loading={login.state.phase === 'starting'}
       onClick={() => void login.start()}
     >
-      ChatGPT로 연결
+      {label}
     </Button>
   );
 
@@ -186,8 +205,14 @@ function Connection({ data }: { data: AIStatusResponse }) {
         );
         break;
       case 'logged_out':
-        body = <p className="ai-settings__note">{AI_NOT_CONNECTED_COPY}</p>;
-        action = connectButton;
+        if (status.expired) {
+          title = 'ChatGPT 로그인이 만료됐어요';
+          body = <p className="ai-settings__note">{AI_EXPIRED_COPY}</p>;
+          action = connectButton('다시 로그인');
+        } else {
+          body = <p className="ai-settings__note">{AI_NOT_CONNECTED_COPY}</p>;
+          action = connectButton();
+        }
         break;
       case 'not_installed':
         title = 'Codex CLI가 설치되어 있지 않아요';

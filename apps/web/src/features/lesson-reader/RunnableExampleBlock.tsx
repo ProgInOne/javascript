@@ -1,4 +1,10 @@
-import { CodeEditor } from '@proginone/exercise-ui';
+import {
+  ariaShortcut,
+  CodeEditor,
+  Kbd,
+  matchExerciseShortcut,
+  modKeyLabel,
+} from '@proginone/exercise-ui';
 import { formatConsoleArgs, type CodeDraft, type RunResult } from '@proginone/shared';
 import { Button } from '@proginone/ui';
 import { Pencil, Play, RotateCcw } from 'lucide-react';
@@ -147,7 +153,17 @@ export function RunnableExampleBlock({
   const status = result ? statusMessage(result) : null;
 
   return (
-    <figure className="lesson-example" aria-labelledby={titleId}>
+    <figure
+      className="lesson-example"
+      aria-labelledby={titleId}
+      // ⌘Enter (Ctrl+Enter) runs the example while focus is anywhere inside it: the editor, the
+      // prediction field or a button (FR-UI-02 "실행(⌘Enter)", D-067).
+      onKeyDown={(e) => {
+        if (e.nativeEvent.isComposing || matchExerciseShortcut(e) !== 'onSubmit') return;
+        e.preventDefault();
+        if (canRun && !running) void run();
+      }}
+    >
       <figcaption id={titleId} className="lesson-example__header">
         <span>예제 · {LANG_LABELS[lang] ?? lang}</span>
         {predict && kind && (
@@ -226,11 +242,13 @@ export function RunnableExampleBlock({
               icon={<Play size={16} />}
               loading={running}
               disabled={!canRun}
+              aria-keyshortcuts={ariaShortcut('Enter')}
               onClick={() => {
                 void run();
               }}
             >
               {result ? '다시 실행' : '실행'}
+              <Kbd keys={[modKeyLabel(), 'Enter']} />
             </Button>
           </div>
         </div>
