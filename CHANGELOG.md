@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- CI를 저장소 변수 `CI_RUNNER`로 self-hosted runner와 GitHub 호스트 runner 사이에서 전환할 수 있게 함(D-055). self-hosted(macOS)에서는 e2e·시각 회귀를 Docker로 같은 Playwright 이미지에서 실행하고, 릴리스 묶기가 bsdtar에서도 동작
+
 ## [0.3.0] - 2026-11-15
 
 v0.3 베타(M6). JS 기초 과정 10개 모듈 전체(HTML·CSS 핵심 포함 63단원, 문제 1,035개, 모두 AI 교차 검토 승인), 단원 평가 6개와 최종 프로젝트, 복습 화면(오답 노트·약점 집중·숙련도 변화), 설정(백업 위치·복원 전 검사·학습 데이터 초기화·학습 방식), P0 요구사항 점검. GitHub Actions 사용량 소진으로 v0.3.0의 검증은 로컬에서 했고 시각 회귀는 실행하지 못했습니다.

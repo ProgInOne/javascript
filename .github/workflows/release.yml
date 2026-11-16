@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER == 'self-hosted' && fromJSON('["self-hosted","proginone"]') || 'ubuntu-latest' }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
@@ -33,9 +33,14 @@ jobs:
           version="${GITHUB_REF_NAME#v}"
           name="proginone-${version}"
           git archive --format=tar --prefix="${name}/" HEAD > "${name}.tar"
-          tar --append -f "${name}.tar" --transform "s,^,${name}/," apps/web/dist content/dist/content.db
+          # GNU tar (GitHub-hosted) and bsdtar (self-hosted macOS) spell the path prefix differently.
+          if tar --version | grep -q GNU; then
+            tar --append -f "${name}.tar" --transform "s,^,${name}/," apps/web/dist content/dist/content.db
+          else
+            tar -rf "${name}.tar" -s ",^,${name}/," apps/web/dist content/dist/content.db
+          fi
           gzip -9 "${name}.tar"
-          sha256sum "${name}.tar.gz" > "${name}.tar.gz.sha256"
+          shasum -a 256 "${name}.tar.gz" > "${name}.tar.gz.sha256"
 
       - name: Release notes from CHANGELOG
         run: |

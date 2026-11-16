@@ -83,3 +83,11 @@ CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Pla
 - [시작하기](/docs/guides/getting-started.md)
 - [기여 가이드 완료 정의](/CONTRIBUTING.md#완료-정의-definition-of-done)
 - [UI/UX 설계 시각 회귀 매트릭스](/docs/design/ui-ux.md#시각-회귀-매트릭스)
+
+## CI 실행 환경
+
+- 기본은 GitHub 호스트 runner입니다. 저장소 변수 `CI_RUNNER`가 `self-hosted`이면 같은 검사를 소유자 Mac의 self-hosted runner(`mac-proginone`)에서 돌립니다([D-055](/docs/decisions.md)).
+- self-hosted에서는 e2e·시각 회귀를 `tools/e2e-docker.sh`로 CI와 같은 Playwright 이미지에서 실행하므로 기준 이미지가 호환됩니다. Mac에서 Docker(Docker Desktop)가 켜져 있어야 합니다.
+- 전환: `gh variable set CI_RUNNER --body self-hosted`, 복귀: `gh variable delete CI_RUNNER`.
+- runner 관리: `~/actions-runner`에서 `./svc.sh status`·`./svc.sh stop`·`./svc.sh start`. 제거는 `./svc.sh uninstall` 후 `./config.sh remove --token <GitHub에서 받은 제거 토큰>`.
+- 저장소를 공개로 바꾸기 전에는 self-hosted runner를 반드시 제거합니다.

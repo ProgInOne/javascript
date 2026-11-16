@@ -14,6 +14,7 @@ permissions:
 jobs:
   update:
     name: update visual baselines
+    if: vars.CI_RUNNER != 'self-hosted'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     container:
@@ -39,6 +40,24 @@ jobs:
       - name: Playwright (update snapshots)
         working-directory: e2e
         run: pnpm exec playwright test --update-snapshots
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: visual-baselines
+          path: e2e/tests/__screenshots__
+          retention-days: 7
+
+  # On the self-hosted macOS runner (CI_RUNNER=self-hosted, D-055) the same image runs through Docker.
+  update-self-hosted:
+    name: update visual baselines
+    if: vars.CI_RUNNER == 'self-hosted'
+    runs-on: [self-hosted, proginone]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Playwright (update snapshots, Docker)
+        run: bash tools/e2e-docker.sh --update
 
       - uses: actions/upload-artifact@v7
         with:

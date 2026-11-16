@@ -13,9 +13,11 @@ permissions:
   contents: read
 
 jobs:
+  # Runner choice: the repository variable CI_RUNNER=self-hosted sends jobs to the self-hosted
+  # macOS runner (labels self-hosted, proginone; D-055). Without it, GitHub-hosted runners.
   check:
     name: lint · typecheck · test · build
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER == 'self-hosted' && fromJSON('["self-hosted","proginone"]') || 'ubuntu-latest' }}
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -61,6 +63,7 @@ jobs:
 
   e2e:
     name: e2e · visual · a11y
+    if: vars.CI_RUNNER != 'self-hosted'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     container:
@@ -91,6 +94,44 @@ jobs:
       - name: Playwright
         working-directory: e2e
         run: pnpm exec playwright test
+
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            e2e/playwright-report
+            e2e/test-results
+          retention-days: 7
+
+  # Same checks on the self-hosted macOS runner: job containers need a Linux runner, so the
+  # Playwright suite (with visual regression) runs in the same image through Docker instead.
+  e2e-self-hosted:
+    name: e2e · visual · a11y
+    if: vars.CI_RUNNER == 'self-hosted'
+    runs-on: [self-hosted, proginone]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec playwright install chromium
+
+      - run: pnpm build
+
+      - name: Content run check
+        run: pnpm content:check:run --frozen
+
+      - name: Playwright (Docker, same image as GitHub-hosted CI)
+        run: bash tools/e2e-docker.sh
 
       - if: failure()
         uses: actions/upload-artifact@v7

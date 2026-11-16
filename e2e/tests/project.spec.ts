@@ -137,9 +137,9 @@ const PROGRESS = {
   status: 'practicing',
   completedAt: null,
   milestones: [
-    { id: 'm1', title: '이름 제목 만들기', checkCount: 1, passed: true },
-    { id: 'm2', title: '좋아하는 것 목록 만들기', checkCount: 1, passed: false },
-    { id: 'm3', title: '인사 버튼 동작시키기', checkCount: 1, passed: false },
+    { id: 'm1', title: '이름 제목 만들기', checkCount: 1, passed: true, blocked: false },
+    { id: 'm2', title: '좋아하는 것 목록 만들기', checkCount: 1, passed: false, blocked: false },
+    { id: 'm3', title: '인사 버튼 동작시키기', checkCount: 1, passed: false, blocked: false },
   ],
   passedCount: 1,
   runCount: 1,
