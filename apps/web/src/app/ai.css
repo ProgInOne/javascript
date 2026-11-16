@@ -165,13 +165,23 @@
   .ai-models {
     display: grid;
     gap: var(--space-2);
-    margin: 0;
-    padding: 0;
-    list-style: none;
   }
-  .ai-models__name {
-    font-weight: 600;
+  .ai-models__fallback {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    margin: 0 0 var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--color-warning-bg);
+    border: 1px solid var(--color-warning-border);
     color: var(--color-text-primary);
+    font: var(--text-small);
+  }
+  .ai-models__fallback svg {
+    flex: none;
+    margin-top: 2px;
+    color: var(--color-warning-fg);
   }
   .ai-login {
     display: grid;

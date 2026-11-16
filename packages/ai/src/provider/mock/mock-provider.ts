@@ -38,7 +38,10 @@ export interface MockProviderOptions {
   /** Delay between deltas in ms (default 5). */
   deltaDelayMs?: number;
   status?: AIStatus;
+  /** The default model's ID (`isDefault` in {@link MOCK_MODELS}). */
   model?: string;
+  /** What `listModels` returns (default {@link MOCK_MODELS} with `model` as the default). */
+  models?: AIModel[];
 }
 
 const CAPABILITIES: ProviderCapabilities = {
@@ -51,6 +54,29 @@ const CAPABILITIES: ProviderCapabilities = {
 };
 
 const MOCK_MODEL = 'mock-tutor';
+
+/**
+ * The mock's model list: the default model and a second one that supports only `medium` and
+ * `high`, so model selection and effort clamping can be exercised end to end.
+ */
+export function mockModels(defaultId: string = MOCK_MODEL): AIModel[] {
+  return [
+    {
+      id: defaultId,
+      displayName: '모의 튜터',
+      description: '테스트용 결정론적 응답',
+      isDefault: true,
+      supportedEfforts: ['low', 'medium', 'high'],
+    },
+    {
+      id: 'mock-tutor-deep',
+      displayName: '모의 튜터 (깊게)',
+      description: '테스트용 두 번째 모델',
+      isDefault: false,
+      supportedEfforts: ['medium', 'high'],
+    },
+  ];
+}
 
 /** Reads `aborted` through a call so narrowing does not assume it is unchanged after an await. */
 const isAborted = (signal: AbortSignal) => signal.aborted;
@@ -112,6 +138,7 @@ export class MockProvider implements ProviderAdapter {
   readonly #threads = new Set<string>();
   readonly #deltaDelayMs: number;
   readonly #model: string;
+  #models: AIModel[];
   #status: AIStatus;
   #usage: AIUsage;
   #threadSeq = 0;
@@ -122,6 +149,7 @@ export class MockProvider implements ProviderAdapter {
   constructor(options: MockProviderOptions = {}) {
     this.#deltaDelayMs = options.deltaDelayMs ?? 5;
     this.#model = options.model ?? MOCK_MODEL;
+    this.#models = options.models ?? mockModels(this.#model);
     this.#status = options.status ?? { state: 'ready', planType: 'mock' };
     this.#usage = {
       windows: [{ id: 'primary', usedPercent: 0, windowDurationMins: 300, resetsAt: null }],
@@ -148,6 +176,11 @@ export class MockProvider implements ProviderAdapter {
   setUsage(usage: AIUsage): void {
     this.#usage = usage;
     this.#emit({ type: 'usage', usage });
+  }
+
+  /** Replaces the model list (a model disappearing from `model/list`). */
+  setModels(models: AIModel[]): void {
+    this.#models = models;
   }
 
   /** Simulates a lost provider-side thread store (rehydration tests). */
@@ -179,15 +212,7 @@ export class MockProvider implements ProviderAdapter {
   }
 
   listModels(): Promise<AIModel[]> {
-    return Promise.resolve([
-      {
-        id: this.#model,
-        displayName: '모의 튜터',
-        description: '테스트용 결정론적 응답',
-        isDefault: true,
-        supportedEfforts: ['low', 'medium', 'high'],
-      },
-    ]);
+    return Promise.resolve(this.#models.map((m) => ({ ...m })));
   }
 
   login(): Promise<AILoginResponse> {

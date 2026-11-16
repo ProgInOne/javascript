@@ -12,6 +12,7 @@ import type { UserDb } from '../../db/user/connection.ts';
 import { ensureLearner } from '../../db/user/learners.ts';
 import { listAiCalls } from '../../db/user/tutor.ts';
 import type { Logger } from '../../observability/logger.ts';
+import type { ModelSelection } from './model-selection.ts';
 
 export type AIEvent =
   { name: 'status'; data: AIStatusResponse } | { name: 'login'; data: AILoginEvent };
@@ -24,13 +25,21 @@ export class AiService {
   readonly #provider: ProviderAdapter;
   readonly #log: Logger;
   readonly #userDb: UserDb | null;
+  readonly #models: ModelSelection | null;
   readonly #listeners = new Set<(event: AIEvent) => void>();
   #usage: AIUsage | null = null;
 
-  constructor(deps: { provider: ProviderAdapter; log: Logger; userDb?: UserDb }) {
+  constructor(deps: {
+    provider: ProviderAdapter;
+    log: Logger;
+    userDb?: UserDb;
+    /** Model list cache shared with the task runner (`settings.ai.model`). */
+    models?: ModelSelection;
+  }) {
     this.#provider = deps.provider;
     this.#log = deps.log;
     this.#userDb = deps.userDb ?? null;
+    this.#models = deps.models ?? null;
     this.#provider.onEvent((event) => {
       if (event.type === 'usage') this.#usage = event.usage;
       if (event.type === 'login') {
@@ -88,17 +97,19 @@ export class AiService {
 
   async logout(): Promise<AIStatusResponse> {
     await this.#provider.logout();
+    this.#models?.invalidate();
     return this.snapshot();
   }
 
   async reconnect(): Promise<AIStatusResponse> {
     await this.#provider.reconnect();
+    this.#models?.invalidate();
     return this.status();
   }
 
   async models(): Promise<AIModel[]> {
     await this.ensureReady();
-    return this.#provider.listModels();
+    return this.#models ? this.#models.list() : this.#provider.listModels();
   }
 
   /** Recent AI calls for diagnosis (`GET /ai/calls`); empty without a database. */

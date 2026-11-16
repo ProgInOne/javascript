@@ -28,6 +28,13 @@ export const PREDICT_FIRST_MODES = ['recommended', 'required'] as const;
 export const HINT_POLICIES = ['standard', 'after-attempt'] as const;
 export type HintPolicy = (typeof HINT_POLICIES)[number];
 
+/**
+ * `ai.model` (FR-SET-01, ai-system.md#모델-선택): a model ID from the provider's `model/list`, or
+ * null for the provider's default (`isDefault`). A saved ID the provider no longer lists falls
+ * back to the default when a task runs; the stored value is kept (D-060).
+ */
+export const aiModelSettingSchema = z.string().trim().min(1).max(200).nullable();
+
 export const settingsSchema = z.object({
   theme: z.enum(THEMES),
   'appearance.workbench': z.enum(WORKBENCH_THEMES),
@@ -37,6 +44,7 @@ export const settingsSchema = z.object({
   'practice.askConfidence': z.boolean(),
   'tutor.proactiveSuggestions': z.boolean(),
   'hints.policy': z.enum(HINT_POLICIES),
+  'ai.model': aiModelSettingSchema,
 });
 export type Settings = z.infer<typeof settingsSchema>;
 export type SettingKey = keyof Settings;
@@ -50,6 +58,7 @@ export const SETTINGS_DEFAULTS: Settings = {
   'practice.askConfidence': true,
   'tutor.proactiveSuggestions': true,
   'hints.policy': 'standard',
+  'ai.model': null,
 };
 
 /** PATCH body: any subset of known keys; unknown keys are rejected. */

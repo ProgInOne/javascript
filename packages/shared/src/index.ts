@@ -12,3 +12,4 @@ export * from './learning.ts';
 export * from './review.ts';
 export * from './client-errors.ts';
 export * from './project.ts';
+export * from './activity.ts';

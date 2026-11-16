@@ -90,6 +90,20 @@ export type AIModel = z.infer<typeof aiModelSchema>;
 export const aiModelsResponseSchema = z.object({ models: z.array(aiModelSchema) });
 export type AIModelsResponse = z.infer<typeof aiModelsResponseSchema>;
 
+/**
+ * The model AI tasks use (ai-system.md#모델-선택, D-060): the saved `settings.ai.model` when the
+ * provider lists it, else the provider's default (`isDefault`). `fallback`: a saved model is no
+ * longer listed. The server applies it on every run; the settings screen shows the same result.
+ */
+export function pickModel(
+  models: readonly AIModel[],
+  saved: string | null,
+): { model: AIModel | null; fallback: boolean } {
+  const chosen = saved === null ? undefined : models.find((m) => m.id === saved);
+  if (chosen) return { model: chosen, fallback: false };
+  return { model: models.find((m) => m.isDefault) ?? null, fallback: saved !== null };
+}
+
 // ── Tutor task inputs shared with the HTTP contract ─────────────────────────────
 
 export const TUTOR_ENTRY_POINTS = [

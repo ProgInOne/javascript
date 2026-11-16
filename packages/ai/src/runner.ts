@@ -6,7 +6,12 @@ import { leakIssues, type OutputGuard } from './output/validate.ts';
 import { BASE_INSTRUCTIONS_VERSION, baseInstructions } from './prompts/base.ts';
 import { NO_TOOLS_REMINDER, POLICY_REMINDER } from './prompts/safety.ts';
 import { TurnGate } from './provider/gate.ts';
-import type { ProviderAdapter, ProviderRequest, ProviderResponse } from './provider/types.ts';
+import type {
+  ProviderAdapter,
+  ProviderRequest,
+  ProviderResponse,
+  ReasoningEffort,
+} from './provider/types.ts';
 import {
   statusForError,
   type AICallRecord,
@@ -38,8 +43,14 @@ export interface RunOptions {
   providerThread?: ProviderThreadRef | null;
   /** Answer-leak check (server: content fingerprints). */
   guard?: OutputGuard;
-  /** `undefined` uses the provider's default model. */
+  /** Overrides the model chosen by {@link TaskRunnerDeps.resolveModel} (tests). */
   model?: string;
+}
+
+/** The model a run uses and the reasoning efforts it supports (`model/list`). */
+export interface ResolvedModel {
+  id: string;
+  supportedEfforts: readonly string[];
 }
 
 export interface TaskResult<O> {
@@ -60,6 +71,28 @@ export interface TaskRunnerDeps {
   gate?: TurnGate;
   /** Waits between transient retries (tests pass a no-op). */
   sleep?: (ms: number) => Promise<void>;
+  /**
+   * The learner's model (`settings.ai.model`, ai-system.md#모델-선택), resolved against the
+   * provider's model list on every run. `null` (or a failure) leaves the model to the provider.
+   */
+  resolveModel?: () => Promise<ResolvedModel | null>;
+}
+
+const EFFORTS: readonly ReasoningEffort[] = ['low', 'medium', 'high'];
+
+/**
+ * The task's effort, lowered to the nearest effort the model supports (raised only when nothing
+ * lower is supported). Unknown support (empty list) keeps the task's effort.
+ */
+export function clampEffort(
+  effort: ReasoningEffort,
+  supported: readonly string[] | undefined,
+): ReasoningEffort {
+  if (!supported || supported.length === 0 || supported.includes(effort)) return effort;
+  const i = EFFORTS.indexOf(effort);
+  const lower = EFFORTS.slice(0, i).reverse();
+  const higher = EFFORTS.slice(i + 1);
+  return [...lower, ...higher].find((e) => supported.includes(e)) ?? effort;
 }
 
 const TRANSIENT: ReadonlySet<string> = new Set(['AI_OVERLOADED', 'AI_PROVIDER_ERROR']);
@@ -78,9 +111,11 @@ export class TaskRunner {
   readonly #now: () => number;
   readonly #gate: TurnGate;
   readonly #sleep: (ms: number) => Promise<void>;
+  readonly #resolveModel: (() => Promise<ResolvedModel | null>) | null;
 
   constructor(deps: TaskRunnerDeps) {
     this.#provider = deps.provider;
+    this.#resolveModel = deps.resolveModel ?? null;
     this.#now = deps.now ?? Date.now;
     this.#gate = deps.gate ?? new TurnGate(2);
     this.#sleep =
@@ -110,14 +145,17 @@ export class TaskRunner {
     let firstTokenMs: number | null = null;
     let context: BuiltContext = { blocks: [], manifest: [], estimatedTokens: 0 };
     let last: ProviderResponse | null = null;
+    // Decided once the turn slot is acquired (the model list may need the provider running).
+    let model: string | undefined = opts.model;
+    let effort: ReasoningEffort = task.effort;
 
     const record = (status: AICallStatus, error: AIError | null): AICallRecord => ({
       taskName: task.name,
       taskVersion: task.version,
       baseVersion: BASE_INSTRUCTIONS_VERSION,
       provider: this.#provider.id,
-      model: last?.model ?? opts.model ?? null,
-      effort: task.effort,
+      model: last?.model ?? model ?? null,
+      effort,
       providerThreadId: last?.providerThreadId ?? null,
       providerTurnId: last?.providerTurnId ?? null,
       status,
@@ -145,12 +183,20 @@ export class TaskRunner {
     try {
       release = await this.#gate.acquire(task.priority, opts.signal, opts.onQueued);
       opts.onStarted?.();
+      if (model === undefined && this.#resolveModel) {
+        const resolved = await this.#resolveModel().catch(() => null);
+        if (resolved) {
+          model = resolved.id;
+          effort = clampEffort(task.effort, resolved.supportedEfforts);
+        }
+      }
       const cached = opts.providerThread ?? null;
+      // A tutor thread started on another model is rebuilt (ai-system.md#모델-선택).
       let resumeId =
         task.thread === 'tutor-thread' &&
         cached !== null &&
         cached.instructionsVersion === iv &&
-        (opts.model === undefined || cached.model === opts.model)
+        (model === undefined || cached.model === model)
           ? cached.id
           : null;
       context = await buildContext(task.context, opts.source, input, {
@@ -191,7 +237,7 @@ export class TaskRunner {
           baseInstructions: baseInstructions(),
           developerInstructions: [task.instructions(input), ...reminders].join('\n\n'),
           input: task.userMessage(input, context),
-          effort: task.effort,
+          effort,
           thread:
             task.thread === 'tutor-thread'
               ? { kind: 'persistent', resumeId }
@@ -199,7 +245,7 @@ export class TaskRunner {
           timeoutMs: task.timeoutMs,
           ...(task.firstDeltaTimeoutMs ? { firstDeltaTimeoutMs: task.firstDeltaTimeoutMs } : {}),
           ...(task.outputSchema ? { outputSchema: task.outputSchema(input) } : {}),
-          ...(opts.model ? { model: opts.model } : {}),
+          ...(model ? { model } : {}),
         };
 
         let response: ProviderResponse | null = null;
@@ -284,7 +330,7 @@ export class TaskRunner {
             output: null,
             text: '',
             record: record('bad_output', null),
-            providerThread: this.#threadRef(task, last, opts, iv),
+            providerThread: this.#threadRef(task, last, model, iv),
           };
         }
 
@@ -293,7 +339,7 @@ export class TaskRunner {
           output,
           text: task.visibleText(output),
           record: record('ok', null),
-          providerThread: this.#threadRef(task, last, opts, iv),
+          providerThread: this.#threadRef(task, last, model, iv),
         };
       }
     } catch (e) {
@@ -310,13 +356,13 @@ export class TaskRunner {
   #threadRef<I, O>(
     task: AITaskDefinition<I, O>,
     response: ProviderResponse | null,
-    opts: RunOptions,
+    model: string | undefined,
     iv: string,
   ): ProviderThreadRef | null {
     if (task.thread !== 'tutor-thread' || !response?.providerThreadId) return null;
     return {
       id: response.providerThreadId,
-      model: response.model ?? opts.model ?? null,
+      model: response.model ?? model ?? null,
       instructionsVersion: iv,
     };
   }

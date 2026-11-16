@@ -139,7 +139,7 @@ test('lesson, "한 번 더 연습" and review sets serve fresh template variants
       await page.getByRole('button', { name: '문제 신고' }).click();
       await page.getByRole('dialog').getByRole('button', { name: '신고하기' }).click();
       await expect(
-        page.getByText('신고해 주셔서 고마워요. 이 문제는 다시 나오지 않아요.'),
+        page.getByText('신고해 주셔서 고마워요. 이 문제는 다시 나오지 않아요.', { exact: true }),
       ).toBeVisible();
       await expect(page.getByRole('button', { name: '신고함' })).toBeDisabled();
     });

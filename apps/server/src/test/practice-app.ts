@@ -5,6 +5,7 @@ import { ContentAccess } from '../services/curriculum/content-access.ts';
 import { createEngine } from '../services/practice/engine.ts';
 import { createPracticeServices } from '../services/practice/index.ts';
 import { AiService } from '../services/ai/ai-service.ts';
+import { ModelSelection } from '../services/ai/model-selection.ts';
 import { SettingsService } from '../services/settings/service.ts';
 import { EvaluatorService } from '../services/tutor/evaluator-service.ts';
 import { MemoryService } from '../services/tutor/memory-service.ts';
@@ -40,8 +41,19 @@ export async function practiceApp(options: { templates?: boolean } = {}) {
     hintPolicy: () => settings.get()['hints.policy'],
   });
   const provider = new MockProvider({ deltaDelayMs: 0 });
-  const aiService = new AiService({ provider, log: silentLog, userDb: ctx.userDb });
-  const runner = new TaskRunner({ provider, now, sleep: () => Promise.resolve() });
+  const models = new ModelSelection({
+    provider,
+    log: silentLog,
+    saved: () => settings.get()['ai.model'],
+    now,
+  });
+  const aiService = new AiService({ provider, log: silentLog, userDb: ctx.userDb, models });
+  const runner = new TaskRunner({
+    provider,
+    now,
+    sleep: () => Promise.resolve(),
+    resolveModel: () => models.resolve(),
+  });
   const evaluator = new EvaluatorService({
     userDb: ctx.userDb,
     content,

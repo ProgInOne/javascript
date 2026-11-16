@@ -540,7 +540,7 @@ sequenceDiagram
 | `exercise.generate`, `exercise.critique`, `content.draft` | `high` | 정확성이 중요하고 지연을 허용함 |
 | `session.summarize`, `misconception.propose` | `low` | 백그라운드, 구조화 추출 |
 
-- 저장된 모델이 목록에서 사라지면 기본 모델로 되돌리고 알림을 표시합니다.
+- 저장된 모델이 목록에서 사라지면 기본 모델로 되돌리고 알림을 표시합니다(저장 값은 지우지 않고 실행 시점에 대체, [D-060](/docs/decisions.md)).
 - 모델을 바꾸면 기존 튜터 스레드는 다음 턴에 재구성합니다([스레드 매핑 전략](#스레드-매핑-전략)).
 
 ### AI 작업 카탈로그
@@ -1167,6 +1167,18 @@ v0.2(M5)에서 바꾸거나 구체화한 점입니다.
 - 비가용 상태는 서버 오류 코드(`AI_*`)와 기존 UI 상태 표시로 끝까지 이어집니다. 튜터 답변은 질문 전 확인에서 막히면 일반 JSON 오류(`409 AI_NOT_CONNECTED` 등), 답변 중 실패하면 SSE `error`와 `failed` 메시지로 남고, AI 힌트·오답 설명은 저작 내용과 `fallbackCode`로 대체합니다. E2E(`ai-unavailable.spec.ts`)가 실패한 답변 표시, 연결 해제 시 진입점 비활성·서버 거부·대체 응답, 다시 연결을 확인합니다. 모의 제공자는 질문의 `[mock:error:AI_*]`로 오류를 주입합니다.
 - 사용량은 `GET /ai/status`·`/ai/events`의 `usage`(Codex가 알려 준 창별 `usedPercent`·`windowDurationMins`·`resetsAt`, 가장 높은 사용률)로 내려가며, 앱이 추정한 값은 없습니다. 0.155.1의 실제 응답 형태는 계약 테스트 녹화본(`startup-ready`)으로 고정했습니다. 80% 이상이면 백그라운드 AI 작업(요약, 오개념 제안)을 미룹니다. 95% 이상 "대화형만 허용"은 해당하는 생성 작업(`exercise.generate`)이 생길 때 적용합니다.
 - `ai_calls`는 다섯 작업 모두 성공·대체·실패 경로에서 기록합니다(작업·프롬프트 버전, 공통 지침 버전, 제공자, 모델, 추론 강도, 상태, 오류 코드, 재시도, 지연, 토큰, 컨텍스트 추정 토큰과 섹션 목록, 도구 시도, 검증 문제). AI가 준비되지 않아 호출하지 않은 경우는 기록하지 않습니다. 오류로 응답을 받지 못한 호출은 `model`이 비어 있을 수 있습니다. `GET /ai/calls?limit=&taskName=`으로 최근 기록을 볼 수 있습니다(프롬프트·응답 원문 없음, [디버깅 가이드](/docs/guides/debugging.md)).
+
+### 구현 메모 (v1.0)
+
+**모델 선택 ([D-060](/docs/decisions.md), FR-SET-01)**
+
+- 학습자가 고른 모델은 `settings.ai.model`(모델 ID, 기본값 `null` = 제공자 기본 모델)입니다. 설정 > AI에서 기본 모델을 고르면 `null`을 저장해 제공자의 기본 모델 변경을 따라갑니다.
+- 서버가 `TaskRunner`에 `resolveModel`을 주입합니다(`ModelSelection`). 실행기는 턴 슬롯을 얻은 뒤 저장 값을 `model/list` 결과와 맞춰(`pickModel`) 모델을 정하고, `thread/start`·`thread/resume`의 `model`로 보냅니다. 다섯 작업 모두 같은 경로이고 `ai_calls`에 실제 모델과 추론 강도가 남습니다.
+- 저장한 모델이 목록에 없으면 기본 모델로 실행하고 저장 값은 지우지 않습니다. 설정 화면이 같은 판정으로 "저장한 모델을 더 이상 쓸 수 없어서 기본 모델로 답해요"를 보여 줍니다. 위의 "기본 모델로 되돌리고 알림"을 저장 값 삭제 없이 구현한 것입니다(목록이 잠시 비어도 선택이 사라지지 않음).
+- 모델 목록은 10분 캐시하고 `GET /ai/models`(설정 화면)가 갱신, 로그아웃·다시 연결이 비웁니다. 목록을 못 받으면 `model` 없이 실행합니다.
+- 추론 강도는 작업 기본값을 모델의 `supportedReasoningEfforts` 안으로 옮깁니다(가장 가까운 낮은 값, 없으면 높은 값). `ai.reasoningEffort` 설정과 화면의 추론 강도 선택은 아직 없습니다.
+- 튜터 스레드는 저장된 `providerModel`이 이번 모델과 다르면 다음 턴에 재구성합니다.
+- `MockProvider`는 두 모델(`mock-tutor` 기본, `mock-tutor-deep`: `medium`·`high`만 지원)을 돌려주고 `setModels`로 목록을 바꿀 수 있어, 선택·대체·추론 강도 조정을 단위·통합·E2E 테스트로 확인합니다.
 
 ## 검토한 대안
 

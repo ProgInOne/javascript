@@ -10,6 +10,7 @@ import { useStartSet } from '../dashboard/useStartSet.ts';
 import { formatShortDate } from '../goals/pace.ts';
 import { MasteryIcon, STAGE_NAMES } from '../mastery/MasteryIcon.tsx';
 import { evidenceText, misconceptionStatusText, scoreDelta, shortfallText } from './explain.ts';
+import { RelatedExercises } from './RelatedExercises.tsx';
 
 const ROLE_LABELS = { introduces: '처음 배우는 단원', practices: '연습', reviews: '복습' } as const;
 const RATING_LABELS = { again: '다시', hard: '어려움', good: '알맞음', easy: '쉬움' } as const;
@@ -31,8 +32,9 @@ function dueLabel(memory: NonNullable<ConceptDetail['memory']>, today: string | 
 
 /**
  * The concept detail (ui-ux.md 개념 상세, FR-DASH-02): stage and effective mastery, what the next
- * stage still needs, the evidence behind the score, the next review, prerequisites,
- * misconceptions and related lessons. The same content in the sheet and the full page.
+ * stage still needs, the evidence behind the score, the next review, prerequisites, related
+ * exercises with statistics, misconceptions and related lessons. The same content in the sheet
+ * and the full page.
  */
 export function ConceptDetailBody({
   conceptId,
@@ -219,6 +221,8 @@ export function ConceptDetailBody({
           </p>
         )}
       </section>
+
+      <RelatedExercises conceptId={d.concept.id} headingLevel={(headingLevel + 1) as 2 | 3} />
 
       {d.misconceptions.length > 0 && (
         <section className="concept-detail__section" aria-labelledby="concept-mc">

@@ -312,9 +312,9 @@ sequenceDiagram
 | 연습 | `POST /practice-sets` (단원·복습·약점 집중·단원 평가 `kind: 'assessment'`·오답 노트의 "다시 풀기" `kind: 'extra'`(v0.3). 평가 중 시도 응답은 결과를 감춘 `withheld` 형태이고 마지막 제출이 전체 결과를 돌려줌, v0.3), `POST /practice-sets/:id/items/:itemId/skip` (건너뛰기), `GET /weak-concepts` (약점 개념과 이유), `GET /exercises/:id` (공개 스펙), `GET /exercises/:id/stats` (문제별 풀이 통계, FR-EX-10, v0.3), `POST /exercises/:id/run-plan` (샌드박스 실행 계획), `POST /attempts` (채점 결과와 해설), `POST /exercises/:id/inline-attempts` (레슨 본문 확인 문제: 연습 세트 밖 시도. 실행 없이 채점하는 유형만, 숙련도는 반영하고 FSRS 일정은 바꾸지 않음) |
 | 프로젝트 | `GET /lessons/:id/project` (`kind: project` 단원의 마일스톤별 통과·채점 횟수·이어 할 코드), `POST /lessons/:id/project/attempts` (연습 세트 밖 채점. 응답은 채점 결과·이번에 새로 통과한 마일스톤·완료 여부·갱신된 진행 상태, 해설은 완성한 뒤에만), v0.3 |
 | 힌트·정답 | `POST /exercises/:id/hints` (다음 단계 요청), `POST /exercises/:id/solution` |
-| 학습 상태 | `GET /mastery` (과정 진도와 개념 지도), `GET /concepts/:id`, `GET /lessons/:id/prerequisites` (단원 선수 개념과 숙련도, 약한 `required` 선수 개념 = 경고. 콘텐츠만 담는 `GET /lessons/:id`와 나눠 캐시 수명이 다름, v0.3, [D-052](/docs/decisions.md)), `GET /review-queue`, `GET /daily-plan` |
+| 학습 상태 | `GET /mastery` (과정 진도와 개념 지도), `GET /concepts/:id`, `GET /concepts/:id/exercises` (개념 상세 "관련 문제": 연습 문제와 문제별 통계, v1.0, [D-061](/docs/decisions.md)), `GET /lessons/:id/prerequisites` (단원 선수 개념과 숙련도, 약한 `required` 선수 개념 = 경고. 콘텐츠만 담는 `GET /lessons/:id`와 나눠 캐시 수명이 다름, v0.3, [D-052](/docs/decisions.md)), `GET /review-queue`, `GET /daily-plan` |
 | 복습 화면 | `GET /mistakes` (오답 노트: 과정·모듈·개념·상태 필터, 확신 오답 우선 정렬, 필터 선택지), `GET /mistakes/:exerciseId` (내 답·피드백·해설, 본 적 있는 정답만), `GET /mastery-changes` (숙련 단계 상승·하락과 주별 요약). v0.3, [D-044](/docs/decisions.md) |
-| 활동 | `POST /activity/heartbeat` (30초 간격, 학습 시간 측정) |
+| 활동 | `POST /activity/heartbeat` (30초 간격, 학습 시간 측정), `GET /activity/recent?limit=` (대시보드 "최근 활동": 연습 세트와 단원 완료에서 파생, v1.0, [D-061](/docs/decisions.md)) |
 | 목표 | `GET/PUT /goals` |
 | 학습자 | `GET/PATCH /learner` (온보딩: 경험 수준, 완료 시각, 온보딩 필요 여부) |
 | 튜터 | `POST /tutor/threads`, `GET /tutor/threads`, `GET /tutor/threads/:id/messages`, `POST /tutor/threads/:id/messages` (SSE), `POST /tutor/threads/:id/messages/:messageId/cancel`, `POST /exercises/:id/ai-hint` (`tutor.hint`) |

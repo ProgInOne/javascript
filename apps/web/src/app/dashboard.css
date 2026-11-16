@@ -118,8 +118,11 @@
   .dashboard__progress {
     grid-column: span 5;
   }
-  .dashboard__weak {
+  .dashboard__activity {
     grid-column: span 7;
+  }
+  .dashboard__weak {
+    grid-column: span 12;
   }
   @media (max-width: 1023px) {
     .dashboard__grid > * {
@@ -401,7 +404,70 @@
     color: var(--color-text-heading);
   }
 
+  /* ── 최근 활동 ── */
+  .recent-activity {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .recent-activity__row {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: baseline;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border-default);
+  }
+  .recent-activity__row:last-child {
+    border-bottom: 0;
+  }
+  .recent-activity__when {
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+  .recent-activity__body {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  .recent-activity__title {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  .recent-activity__details {
+    font: var(--text-small);
+    color: var(--color-text-secondary);
+  }
+
   /* ── 개념 상세 (sheet and page) ── */
+  .related-exercises {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .related-exercises li {
+    display: grid;
+    gap: 2px;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border-default);
+    font: var(--text-small);
+  }
+  .related-exercises__title {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  .related-exercises__lesson {
+    font-weight: 400;
+    color: var(--color-text-tertiary);
+  }
+  .related-exercises__prompt {
+    color: var(--color-text-primary);
+  }
+  .related-exercises__stats {
+    color: var(--color-text-secondary);
+  }
   .concept-sheet {
     --drawer-w: 480px;
   }

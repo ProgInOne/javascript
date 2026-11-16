@@ -54,7 +54,14 @@ test.afterAll(() => {
 async function openDashboard(page: Page) {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1, name: /대시보드/ })).toBeVisible();
-  for (const name of ['오늘의 학습', '오늘의 복습', '개념 지도', '과정 진도', '약점 개념']) {
+  for (const name of [
+    '오늘의 학습',
+    '오늘의 복습',
+    '개념 지도',
+    '과정 진도',
+    '최근 활동',
+    '약점 개념',
+  ]) {
     await expect(page.getByRole('region', { name })).toBeVisible();
   }
   // Every card has loaded (no skeletons left).
@@ -67,6 +74,19 @@ async function openDashboard(page: Page) {
 }
 
 /**
+ * "최근 활동" shows the minute of each activity, which depends on how long the UI took to solve
+ * a set: keep the real response but pin every time to 15:15 of its learner-local day (KST).
+ */
+async function pinActivityTimes(page: Page) {
+  await page.route('**/api/v1/activity/recent', async (route) => {
+    const res = await route.fetch();
+    const json = (await res.json()) as { items: { date: string; at: number }[] };
+    for (const item of json.items) item.at = Date.parse(`${item.date}T15:15:00+09:00`);
+    await route.fulfill({ response: res, json });
+  });
+}
+
+/**
  * Screenshots of the dashboard in the current state. `responses` replaces the learning-state
  * API with recorded responses (path → JSON) where the seeded history is not pixel-stable.
  */
@@ -76,6 +96,7 @@ function dashboardShots(state: string, responses?: Record<string, unknown>) {
       test(`dashboard-${state}-${scheme}-${width} @visual`, async ({ page }) => {
         await page.setViewportSize({ width, height: width === 1280 ? 800 : 900 });
         await prepare(page, scheme);
+        await pinActivityTimes(page);
         for (const [path, json] of Object.entries(responses ?? {})) {
           await page.route(`**/api/v1${path}`, (route) => route.fulfill({ json }));
         }
@@ -161,6 +182,9 @@ test('empty dashboard: the first lesson and an unfilled concept map', async ({ p
   const map = page.getByRole('region', { name: '개념 지도' });
   await expect(map.getByText(/학습하면 여기가 채워져요/)).toBeVisible();
   await expect(map.getByRole('img', { name: '숙련 단계: 미학습' })).toHaveCount(5);
+  await expect(
+    page.getByRole('region', { name: '최근 활동' }).getByText(/아직 활동이 없어요/),
+  ).toBeVisible();
   await expectNoA11yViolations(page);
 });
 dashboardShots('empty');
@@ -191,6 +215,13 @@ test('new learner: first lesson read and practised on day one', async ({ page, r
   await expect(
     page.getByRole('region', { name: '과정 진도' }).getByRole('progressbar'),
   ).toHaveAttribute('aria-valuenow', '25'); // 1 of 4 units (values ends with an assessment, then a project)
+  // 최근 활동 (FR-DASH-01): today's lesson set, carrying the lesson's completion.
+  const activity = page.getByRole('region', { name: '최근 활동' });
+  const row = activity.getByRole('listitem').filter({ hasText: '첫 프로그램 연습' });
+  await expect(row).toHaveCount(1);
+  await expect(row).toContainText(/^오늘 \d\d:\d\d/);
+  await expect(row).toContainText('단원 완료');
+  await expect(row).toContainText(/\d+문제 · 정답 \d+/);
   await expectNoA11yViolations(page);
 });
 dashboardShots('new');
@@ -232,7 +263,8 @@ test('long-term learner: a month of lessons, reviews and rest days', async ({ pa
 // Practice and review sets are built with a per-set random seed, so a month of seeded history
 // differs in details (which exercises, so scores and review dates) from run to run. The
 // long-term screenshots use responses recorded from this journey on 2026-12-16, with the
-// `const` misconception kept confirmed so the 약점 marker is covered.
+// `const` misconception kept confirmed so the 약점 marker is covered. Its `/activity/recent`
+// entry (최근 활동, added later) is written by hand to match that month: daily review sets.
 dashboardShots('long', LONG_TERM);
 test('concept detail: sheet from the concept map, then the full page', async ({ page }) => {
   await prepare(page);
@@ -245,6 +277,16 @@ test('concept detail: sheet from the concept map, then the full page', async ({ 
   await expect(sheet.getByRole('heading', { name: '숙련도가 이렇게 계산됐어요' })).toBeVisible();
   await expect(sheet.locator('.evidence-list li').first()).toBeVisible();
   await expect(sheet.getByRole('heading', { name: '선수 개념' })).toBeVisible();
+  // 관련 문제 (FR-DASH-02, FR-EX-10): the concept's practice exercises with statistics. The
+  // `const` item was answered wrong three times on day two.
+  const related = sheet.getByRole('region', { name: '관련 문제' });
+  await expect(related.getByText(/\d+문제 중 \d+문제를 풀어 봤어요/)).toBeVisible();
+  await expect(
+    related
+      .getByRole('listitem')
+      .filter({ hasText: /시도 \d+회/ })
+      .first(),
+  ).toBeVisible();
   await expectNoA11yViolations(page);
   // A prerequisite opens in place; Esc closes and focus returns to the tile.
   await sheet.getByRole('button', { name: /let 선언/ }).click();
@@ -256,6 +298,7 @@ test('concept detail: sheet from the concept map, then the full page', async ({ 
   await page.goto('/concepts/js.basics.const');
   await expect(page.getByRole('heading', { level: 1, name: 'const 선언' })).toBeVisible();
   await expect(page.getByRole('heading', { name: '관련 레슨' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: '관련 문제' })).toBeVisible();
   await expectNoA11yViolations(page);
 });
 

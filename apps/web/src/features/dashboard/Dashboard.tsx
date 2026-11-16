@@ -15,6 +15,7 @@ import {
   Check,
   Clock,
   Crosshair,
+  History,
   Layers,
   Repeat,
   Target,
@@ -25,6 +26,7 @@ import {
   dailyPlanQuery,
   goalsQuery,
   masteryQuery,
+  recentActivityQuery,
   reviewQueueQuery,
   weakConceptsQuery,
 } from '../../api/queries.ts';
@@ -35,13 +37,14 @@ import { formatLocalDate, formatShortDate, paceText } from '../goals/pace.ts';
 import { MasteryIcon, STAGE_NAMES } from '../mastery/MasteryIcon.tsx';
 import { ConceptSheet } from '../concepts/ConceptSheet.tsx';
 import { blockReason, blockTitle } from './plan.ts';
+import { RecentActivityList } from './RecentActivity.tsx';
 import { useStartSet } from './useStartSet.ts';
 
 const buttonLink = 'pi-button no-underline';
 
 /**
  * The dashboard (ui-ux.md 대시보드, FR-DASH-01): "지금 무엇을 하면 되는가" first — today's plan,
- * today's reviews, the concept map, course progress and weak concepts. Each card loads on its
+ * today's reviews, the concept map, course progress, recent activity and weak concepts. Each card loads on its
  * own, so one failing request does not hide the rest.
  */
 export function Dashboard() {
@@ -50,6 +53,7 @@ export function Dashboard() {
   const mastery = useQuery(masteryQuery);
   const queue = useQuery(reviewQueueQuery);
   const weak = useQuery(weakConceptsQuery);
+  const activity = useQuery(recentActivityQuery);
   const start = useStartSet();
   // Concept detail sheet (ui-ux.md: from the dashboard the detail opens as a sheet).
   const [sheet, setSheet] = useState<{ id: string; title: string } | null>(null);
@@ -142,6 +146,11 @@ export function Dashboard() {
         >
           <Loaded query={mastery} height={140} what="과정 진도">
             {(data) => <CourseProgress mastery={data} />}
+          </Loaded>
+        </Card>
+        <Card id="recent-activity" icon={History} title="최근 활동" className="dashboard__activity">
+          <Loaded query={activity} height={140} what="최근 활동">
+            {(data) => <RecentActivityList data={data} />}
           </Loaded>
         </Card>
         <Card id="weak-concepts" icon={Crosshair} title="약점 개념" className="dashboard__weak">

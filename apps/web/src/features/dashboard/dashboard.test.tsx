@@ -1,4 +1,9 @@
-import type { DailyPlanView, ReviewQueue, WeakConcepts } from '@proginone/shared';
+import type {
+  DailyPlanView,
+  RecentActivityList,
+  ReviewQueue,
+  WeakConcepts,
+} from '@proginone/shared';
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -30,6 +35,7 @@ interface State {
   mastery: ReturnType<typeof masteryOverview>;
   queue: ReviewQueue;
   weak: WeakConcepts;
+  activity?: RecentActivityList;
 }
 
 function server(state: State) {
@@ -47,6 +53,8 @@ function server(state: State) {
         return { body: state.queue };
       case '/weak-concepts':
         return { body: state.weak };
+      case '/activity/recent':
+        return { body: state.activity ?? { date: TODAY, items: [] } };
       case '/dashboard':
         return {
           body: {
@@ -258,8 +266,90 @@ describe('대시보드', () => {
         /0 \/ 2단원 완료 · 아직 시작 전/,
       ),
     ).toBeInTheDocument();
+    expect(
+      await within(screen.getByRole('region', { name: '최근 활동' })).findByText(
+        /아직 활동이 없어요/,
+      ),
+    ).toBeInTheDocument();
     // Only one primary action on the page.
     expect(document.querySelectorAll('.pi-button--primary')).toHaveLength(1);
+  });
+
+  it('recent activity: sets, completions and an assessment in progress without results', async () => {
+    const at = (date: string, time: string) => new Date(`${date}T${time}:00`).getTime();
+    const practice = {
+      type: 'practice' as const,
+      status: 'completed' as const,
+      lesson: null,
+      concepts: [],
+      conceptCount: 0,
+      stageUps: 0,
+      lessonCompleted: false,
+      assessment: null,
+    };
+    const activity: RecentActivityList = {
+      date: TODAY,
+      items: [
+        {
+          ...practice,
+          id: 'set-assess',
+          at: at(TODAY, '15:05'),
+          date: TODAY,
+          setKind: 'assessment',
+          status: 'active',
+          lesson: { id: 'js-basics.start.review', title: '시작하기 단원 평가' },
+          total: 8,
+          answered: 3,
+          correct: null,
+          stageUps: null,
+        },
+        {
+          ...practice,
+          id: 'set-lesson',
+          at: at(TODAY, '14:20'),
+          date: TODAY,
+          setKind: 'lesson',
+          lesson: { id: 'js-basics.functions.arrow', title: '화살표 함수' },
+          total: 7,
+          answered: 7,
+          correct: 5,
+          lessonCompleted: true,
+        },
+        {
+          ...practice,
+          id: 'set-review',
+          at: at('2026-11-14', '20:00'),
+          date: '2026-11-14',
+          setKind: 'review',
+          concepts: [{ id: 'js.a', title: '형 변환' }],
+          conceptCount: 6,
+          total: 9,
+          answered: 9,
+          correct: 8,
+          stageUps: 2,
+        },
+        {
+          type: 'lesson',
+          id: 'js-basics.loops.project',
+          at: at('2026-11-11', '10:00'),
+          date: '2026-11-11',
+          lesson: { id: 'js-basics.loops.project', title: '반복문 프로젝트' },
+        },
+      ],
+    };
+    renderApp('/', server({ ...active(), activity }));
+    const card = await screen.findByRole('region', { name: '최근 활동' });
+    const rows = await within(card).findAllByRole('listitem');
+    expect(rows.map((r) => r.textContent)).toEqual([
+      '오늘 15:05시작하기 단원 평가 단원 평가3/8문항 답함 · 진행 중',
+      '오늘 14:20화살표 함수 연습단원 완료7문제 · 정답 5',
+      '어제 20:00복습 6개 개념9문제 · 정답 8 · 숙련 상승 2',
+      '11/11반복문 프로젝트 단원 완료',
+    ]);
+    expect(within(card).getByRole('link', { name: '반복문 프로젝트' })).toHaveAttribute(
+      'href',
+      '/learn/js-basics.loops.project',
+    );
   });
 
   it('active learner: plan with reasons, reviews, pace, concept map markers and progress', async () => {

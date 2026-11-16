@@ -424,5 +424,136 @@
       "js.basics.const",
       "js.basics.reassign"
     ]
+  },
+  "/activity/recent": {
+    "date": "2026-12-16",
+    "items": [
+      {
+        "type": "practice",
+        "id": "01KCKX0000000000000000RV29",
+        "at": 1797315300000,
+        "date": "2026-12-15",
+        "setKind": "review",
+        "status": "completed",
+        "lesson": null,
+        "concepts": [
+          {
+            "id": "js.basics.console-log",
+            "title": "console.log로 출력하기"
+          },
+          {
+            "id": "js.basics.let",
+            "title": "let 선언"
+          },
+          {
+            "id": "js.basics.const",
+            "title": "const 선언"
+          }
+        ],
+        "conceptCount": 3,
+        "total": 3,
+        "answered": 3,
+        "correct": 2,
+        "stageUps": 0,
+        "lessonCompleted": false,
+        "assessment": null
+      },
+      {
+        "type": "practice",
+        "id": "01KCKX0000000000000000RV28",
+        "at": 1797228900000,
+        "date": "2026-12-14",
+        "setKind": "review",
+        "status": "completed",
+        "lesson": null,
+        "concepts": [
+          {
+            "id": "js.basics.statement",
+            "title": "문장과 실행 순서"
+          },
+          {
+            "id": "js.basics.const",
+            "title": "const 선언"
+          }
+        ],
+        "conceptCount": 2,
+        "total": 2,
+        "answered": 2,
+        "correct": 2,
+        "stageUps": 1,
+        "lessonCompleted": false,
+        "assessment": null
+      },
+      {
+        "type": "practice",
+        "id": "01KCKX0000000000000000RV25",
+        "at": 1796969700000,
+        "date": "2026-12-11",
+        "setKind": "review",
+        "status": "completed",
+        "lesson": null,
+        "concepts": [
+          {
+            "id": "js.basics.let",
+            "title": "let 선언"
+          }
+        ],
+        "conceptCount": 1,
+        "total": 1,
+        "answered": 1,
+        "correct": 1,
+        "stageUps": 0,
+        "lessonCompleted": false,
+        "assessment": null
+      },
+      {
+        "type": "practice",
+        "id": "01KCKX0000000000000000RV24",
+        "at": 1796883300000,
+        "date": "2026-12-10",
+        "setKind": "review",
+        "status": "completed",
+        "lesson": null,
+        "concepts": [
+          {
+            "id": "js.basics.const",
+            "title": "const 선언"
+          },
+          {
+            "id": "js.basics.console-log",
+            "title": "console.log로 출력하기"
+          }
+        ],
+        "conceptCount": 2,
+        "total": 3,
+        "answered": 3,
+        "correct": 1,
+        "stageUps": 0,
+        "lessonCompleted": false,
+        "assessment": null
+      },
+      {
+        "type": "practice",
+        "id": "01KCKX0000000000000000RV23",
+        "at": 1796796900000,
+        "date": "2026-12-09",
+        "setKind": "review",
+        "status": "completed",
+        "lesson": null,
+        "concepts": [
+          {
+            "id": "js.basics.statement",
+            "title": "문장과 실행 순서"
+          }
+        ],
+        "conceptCount": 1,
+        "total": 1,
+        "answered": 1,
+        "correct": 1,
+        "stageUps": 1,
+        "lessonCompleted": false,
+        "assessment": null
+      }
+    ]
   }
 }

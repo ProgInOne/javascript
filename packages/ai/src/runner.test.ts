@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { AIError } from './errors.ts';
 import type { OutputGuard } from './output/validate.ts';
 import { MockProvider } from './provider/mock/mock-provider.ts';
-import { TaskRunner } from './runner.ts';
+import { clampEffort, TaskRunner } from './runner.ts';
 import { tutorHint, tutorHintOutputSchema } from './tasks/tutor-hint.ts';
 import { tutorReply } from './tasks/tutor-reply.ts';
 import { fakeSource } from './test/fake-source.ts';
@@ -287,5 +287,81 @@ describe('TaskRunner · tutor.hint', () => {
     expect(result.record.validationIssues.map((i) => i.rule)).toEqual(
       expect.arrayContaining(['code_lines', 'answer_leak']),
     );
+  });
+});
+
+describe('TaskRunner · model selection (ai-system.md#모델-선택)', () => {
+  const deep = { id: 'mock-tutor-deep', supportedEfforts: ['medium', 'high'] };
+
+  it('runs on the resolved model and moves the effort to a supported one', async () => {
+    const provider = new MockProvider({ deltaDelayMs: 0 });
+    const runner = new TaskRunner({
+      provider,
+      now: () => 1_000,
+      sleep: noSleep,
+      resolveModel: () => Promise.resolve(deep),
+    });
+    const result = await runner.run(tutorReply, replyInput, { source: fakeSource() });
+    expect(provider.requests[0]).toMatchObject({ model: 'mock-tutor-deep', effort: 'medium' });
+    expect(result.record).toMatchObject({ model: 'mock-tutor-deep', effort: 'medium' });
+    expect(result.providerThread?.model).toBe('mock-tutor-deep');
+  });
+
+  it('leaves the model to the provider when resolving fails or finds nothing', async () => {
+    for (const resolveModel of [
+      () => Promise.reject(new Error('model/list failed')),
+      () => Promise.resolve(null),
+    ]) {
+      const provider = new MockProvider({ deltaDelayMs: 0 });
+      const runner = new TaskRunner({ provider, sleep: noSleep, resolveModel });
+      const result = await runner.run(tutorReply, replyInput, { source: fakeSource() });
+      expect(result.status).toBe('ok');
+      expect(provider.requests[0]?.model).toBeUndefined();
+      expect(provider.requests[0]?.effort).toBe('low');
+    }
+  });
+
+  it('rebuilds a tutor thread started on another model', async () => {
+    const provider = new MockProvider({ deltaDelayMs: 0 });
+    let model = { id: 'mock-tutor', supportedEfforts: ['low', 'medium', 'high'] };
+    const runner = new TaskRunner({
+      provider,
+      sleep: noSleep,
+      resolveModel: () => Promise.resolve(model),
+    });
+    const source = fakeSource();
+    const first = await runner.run(tutorReply, replyInput, { source });
+    const second = await runner.run(tutorReply, replyInput, {
+      source,
+      providerThread: first.providerThread,
+    });
+    expect(provider.requests[1]?.thread).toEqual({ kind: 'persistent', resumeId: 'mock-thread-1' });
+    model = deep;
+    await runner.run(tutorReply, replyInput, { source, providerThread: second.providerThread });
+    expect(provider.requests[2]?.thread).toEqual({ kind: 'persistent', resumeId: null });
+    expect(provider.requests[2]?.model).toBe('mock-tutor-deep');
+  });
+
+  it('an explicit run option wins over the resolver', async () => {
+    const provider = new MockProvider({ deltaDelayMs: 0 });
+    const runner = new TaskRunner({
+      provider,
+      sleep: noSleep,
+      resolveModel: () => Promise.resolve(deep),
+    });
+    await runner.run(tutorReply, replyInput, { source: fakeSource(), model: 'mock-tutor' });
+    expect(provider.requests[0]).toMatchObject({ model: 'mock-tutor', effort: 'low' });
+  });
+});
+
+describe('clampEffort', () => {
+  it('keeps supported or unknown efforts and otherwise prefers the nearest lower one', () => {
+    expect(clampEffort('low', undefined)).toBe('low');
+    expect(clampEffort('low', [])).toBe('low');
+    expect(clampEffort('medium', ['low', 'medium'])).toBe('medium');
+    expect(clampEffort('high', ['low', 'medium'])).toBe('medium');
+    expect(clampEffort('medium', ['low', 'high'])).toBe('low');
+    expect(clampEffort('low', ['medium', 'high'])).toBe('medium');
+    expect(clampEffort('medium', ['minimal', 'xhigh'])).toBe('medium');
   });
 });

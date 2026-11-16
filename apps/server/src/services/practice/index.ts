@@ -11,6 +11,8 @@ import { DashboardService } from '../learning/dashboard-service.ts';
 import { LearnerService } from '../learning/learner-service.ts';
 import { LessonProgressService } from '../learning/lesson-progress-service.ts';
 import { MasteryService } from '../learning/mastery-service.ts';
+import { RecentActivityService } from '../learning/recent-activity-service.ts';
+import { RelatedExercisesService } from '../learning/related-exercises-service.ts';
 import { MasteryChangeService } from '../review/mastery-change-service.ts';
 import { MistakeService } from '../review/mistake-service.ts';
 import { ReviewService } from '../review/review-service.ts';
@@ -48,6 +50,8 @@ export interface PracticeServices {
   mastery: MasteryService;
   mistakes: MistakeService;
   masteryChanges: MasteryChangeService;
+  recentActivity: RecentActivityService;
+  relatedExercises: RelatedExercisesService;
 }
 
 export function createPracticeServices(deps: PracticeDeps): PracticeServices {
@@ -71,5 +75,7 @@ export function createPracticeServices(deps: PracticeDeps): PracticeServices {
     mastery: new MasteryService(deps),
     mistakes: new MistakeService(deps),
     masteryChanges: new MasteryChangeService(deps),
+    recentActivity: new RecentActivityService(deps),
+    relatedExercises: new RelatedExercisesService(deps),
   };
 }

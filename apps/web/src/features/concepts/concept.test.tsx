@@ -1,4 +1,4 @@
-import type { ConceptDetail } from '@proginone/shared';
+import type { ConceptDetail, ExerciseStats, RelatedExercises } from '@proginone/shared';
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -174,6 +174,10 @@ function server() {
       return { body: { ...detail, evidence: [...detail.evidence, evidence('4')] } };
     }
     if (path === '/concepts/js.basics.let') return { body: letDetail };
+    if (path === '/concepts/js.basics.const/exercises') return { body: related };
+    if (path === '/concepts/js.basics.let/exercises') {
+      return { body: { conceptId: 'js.basics.let', exercises: [] } };
+    }
     if (method === 'POST' && path === '/practice-sets') {
       return {
         status: 409,
@@ -197,6 +201,50 @@ function server() {
     return { body: { theme: 'system' } };
   };
 }
+
+const stats = (exerciseId: string, over: Partial<ExerciseStats> = {}): ExerciseStats => ({
+  exerciseId,
+  attempts: 0,
+  timesServed: 0,
+  firstTries: 0,
+  firstTryCorrect: 0,
+  firstTryCorrectRate: null,
+  averageActiveMs: null,
+  hintUsedAttempts: 0,
+  hintUsageRate: null,
+  solutionViewedAttempts: 0,
+  lastAttemptAt: null,
+  ...over,
+});
+
+const related: RelatedExercises = {
+  conceptId: 'js.basics.const',
+  exercises: Array.from({ length: 7 }, (_, i) => {
+    const id = `js-basics.values.const.ex-${String(i)}`;
+    return {
+      id,
+      type: 'mcq_single',
+      difficulty: i === 0 ? 1 : 2,
+      prompt:
+        i === 0
+          ? '`const`로 선언한 변수에 다시 대입하면?\n\n```js\nconst a = 1;\n```'
+          : `문제 ${String(i)}`,
+      lesson: { id: 'js-basics.values.const', title: 'const 선언' },
+      stats:
+        i === 0
+          ? stats(id, {
+              attempts: 3,
+              firstTries: 2,
+              firstTryCorrect: 1,
+              firstTryCorrectRate: 0.5,
+              hintUsedAttempts: 1,
+              hintUsageRate: 1 / 3,
+              lastAttemptAt: Date.parse('2026-11-13T10:00:00'),
+            })
+          : stats(id),
+    };
+  }),
+};
 
 describe('개념 상세 문구', () => {
   it('explains gates, evidence and misconception progress in the learner’s words', () => {
@@ -305,6 +353,22 @@ describe('개념 상세', () => {
       path: '/practice-sets',
       body: { kind: 'weakness', conceptIds: ['js.basics.const'] },
     });
+  });
+
+  it('lists related exercises with statistics, easiest first, six at a time', async () => {
+    const user = userEvent.setup();
+    renderApp('/concepts/js.basics.const', server());
+    const section = await screen.findByRole('region', { name: '관련 문제' });
+    expect(await within(section).findByText('7문제 중 1문제를 풀어 봤어요.')).toBeVisible();
+    let rows = within(section).getAllByRole('listitem');
+    expect(rows).toHaveLength(6);
+    expect(rows[0]).toHaveTextContent('객관식 · L1 · const 선언');
+    expect(rows[0]).toHaveTextContent('const로 선언한 변수에 다시 대입하면?');
+    expect(rows[0]).toHaveTextContent('시도 3회 · 첫 시도 정답률 50% · 힌트 사용 33% · 마지막');
+    expect(rows[1]).toHaveTextContent('아직 풀지 않았어요');
+    await user.click(within(section).getByRole('button', { name: '모두 보기 (7개)' }));
+    rows = within(section).getAllByRole('listitem');
+    expect(rows).toHaveLength(7);
   });
 
   it('shows not found for an unknown concept', async () => {

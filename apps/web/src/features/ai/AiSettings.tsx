@@ -1,18 +1,21 @@
-import type { AIStatusResponse, AIUsage } from '@proginone/shared';
+import { pickModel, type AIModel, type AIStatusResponse, type AIUsage } from '@proginone/shared';
 import {
   Button,
   Dialog,
   ErrorState,
   ProgressBar,
+  RadioGroup,
   Skeleton,
   Spinner,
   useToast,
 } from '@proginone/ui';
-import { LogIn, LogOut, RefreshCw } from 'lucide-react';
+import { CircleAlert, LogIn, LogOut, RefreshCw } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
+import { useSettings } from '../../api/queries.ts';
 import { cardClass, pageTitleClass } from '../../app/layout.ts';
 import { formatResetTime } from '../../lib/format.ts';
+import { useSaveSetting } from '../settings/useSaveSetting.ts';
 import { useAiCancelLogin, useAiLogout, useAiModels, useAiReconnect, useAiStatus } from './api.ts';
 import { LoginDialog, useAiLogin } from './LoginDialog.tsx';
 import {
@@ -266,23 +269,7 @@ function Connection({ data }: { data: AIStatusResponse }) {
       {connected && data.usage && data.usage.windows.length > 0 && <Usage usage={data.usage} />}
 
       {status.state === 'ready' && models.data && models.data.models.length > 0 && (
-        <section aria-labelledby="ai-models-title">
-          <h3 id="ai-models-title" className="ai-settings__section-title">
-            사용할 수 있는 모델
-          </h3>
-          <ul className="ai-models">
-            {models.data.models.map((m) => (
-              <li key={m.id}>
-                <span className="ai-models__name">{m.displayName}</span>
-                {m.isDefault && <span className="text-fg-secondary"> (기본)</span>}
-                {m.description && <p className="ai-settings__note">{m.description}</p>}
-              </li>
-            ))}
-          </ul>
-          <p className="ai-settings__note mt-2">
-            튜터는 기본 모델을 써요. 모델 선택은 다음 버전에서 지원해요.
-          </p>
-        </section>
+        <ModelPicker models={models.data.models} />
       )}
 
       <LoginDialog login={login} />
@@ -327,6 +314,68 @@ function Connection({ data }: { data: AIStatusResponse }) {
       />
     </>
   );
+}
+
+const EFFORT_LABELS: Record<string, string> = {
+  none: '없음',
+  minimal: '최소',
+  low: '낮음',
+  medium: '보통',
+  high: '높음',
+  xhigh: '매우 높음',
+};
+
+/**
+ * 모델 선택 (FR-SET-01, ai-system.md#모델-선택, D-060): the provider's visible models with their
+ * description and reasoning efforts. Choosing the default model stores `null` so the learner keeps
+ * following the provider's default; a saved model the provider no longer lists is explained and
+ * the default is used until another model is chosen.
+ */
+function ModelPicker({ models }: { models: readonly AIModel[] }) {
+  const settings = useSettings();
+  const { save, pending } = useSaveSetting();
+  if (!settings.data) return null;
+  const saved = settings.data['ai.model'];
+  const { model: current, fallback } = pickModel(models, saved);
+  return (
+    <section aria-labelledby="ai-models-title" className="ai-models">
+      <h3 id="ai-models-title" className="ai-settings__section-title">
+        모델
+      </h3>
+      {fallback && (
+        <p className="ai-models__fallback" role="status">
+          <CircleAlert size={16} aria-hidden="true" />
+          <span>
+            저장한 모델({saved})을 더 이상 쓸 수 없어서{' '}
+            {current ? `기본 모델(${current.displayName})` : 'Codex 기본 모델'}로 답해요. 다른
+            모델을 고르면 바뀌어요.
+          </span>
+        </p>
+      )}
+      <RadioGroup
+        legend="튜터와 AI 기능이 쓸 모델"
+        value={current?.id}
+        disabled={pending}
+        options={models.map((m) => ({
+          value: m.id,
+          label: m.isDefault ? `${m.displayName} (기본)` : m.displayName,
+          description: modelDescription(m),
+        }))}
+        onValueChange={(id) => {
+          const picked = models.find((m) => m.id === id);
+          save({ 'ai.model': !picked || picked.isDefault ? null : picked.id }, '모델');
+        }}
+      />
+      <p className="ai-settings__note mt-2">
+        바꾼 모델은 다음 질문부터 쓰여요. 진행 중이던 튜터 대화는 새 모델로 이어서 답해요.
+      </p>
+    </section>
+  );
+}
+
+function modelDescription(m: AIModel): string {
+  const efforts = m.supportedEfforts.map((e) => EFFORT_LABELS[e] ?? e).join('·');
+  return [m.description, efforts && `추론 강도 ${efforts}`].filter(Boolean).join(' · ');
 }
 
 /** Provider-reported usage windows only (no app-side estimates). */

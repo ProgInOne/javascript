@@ -5,7 +5,7 @@ import {
   type Settings,
   type SettingsPatch,
 } from '@proginone/shared';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import type { UserDb } from '../../db/user/connection.ts';
 import { ensureLearner } from '../../db/user/learners.ts';
 import { settings } from '../../db/user/schema.ts';
@@ -46,6 +46,13 @@ export class SettingsService {
     const now = new Date();
     this.#userDb.orm.transaction((tx) => {
       for (const [key, value] of Object.entries(patch)) {
+        // `null` (only `ai.model`, whose default is null) removes the row: back to the default.
+        if (value === null) {
+          tx.delete(settings)
+            .where(and(eq(settings.learnerId, learner.id), eq(settings.key, key)))
+            .run();
+          continue;
+        }
         tx.insert(settings)
           .values({ learnerId: learner.id, key, valueJson: value, updatedAt: now })
           .onConflictDoUpdate({

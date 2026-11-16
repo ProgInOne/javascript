@@ -370,7 +370,7 @@ PRAGMA cache_size = -20000;       -- 약 20MB
 | | `onboarded_at` | INTEGER | Y | | |
 | | `created_at` | INTEGER | N | | |
 | `settings` | `learner_id` | TEXT | N | | PK 일부 |
-| | `key` | TEXT | N | | PK 일부. 예: `theme`, `editor.autocomplete`, `practice.askConfidence`, `tutor.proactiveSuggestions`, `hints.policy`, `ai.model`, `ai.reasoningEffort`. v0.3 구현 키: `theme`, `appearance.workbench`, `lesson.fontSize`, `lesson.predictFirst`, `editor.autocomplete`, `practice.askConfidence`, `tutor.proactiveSuggestions`, `hints.policy`([D-047](/docs/decisions.md)) |
+| | `key` | TEXT | N | | PK 일부. 예: `theme`, `editor.autocomplete`, `practice.askConfidence`, `tutor.proactiveSuggestions`, `hints.policy`, `ai.model`, `ai.reasoningEffort`. v0.3 구현 키: `theme`, `appearance.workbench`, `lesson.fontSize`, `lesson.predictFirst`, `editor.autocomplete`, `practice.askConfidence`, `tutor.proactiveSuggestions`, `hints.policy`([D-047](/docs/decisions.md)), v1.0 `ai.model`(모델 ID 또는 `null` = 제공자 기본 모델, `null`을 저장하면 행 삭제, [D-060](/docs/decisions.md)) |
 | | `value_json` | TEXT | N | | 값(zod 스키마는 키별로 `packages/shared/settings.ts`에 정의) |
 | | `updated_at` | INTEGER | N | | |
 

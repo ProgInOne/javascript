@@ -47,6 +47,8 @@ import {
   type MistakeListQuery,
   type GoalRequest,
   type LearnerPatch,
+  recentActivityListSchema,
+  relatedExercisesSchema,
 } from '@proginone/shared';
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
@@ -369,6 +371,25 @@ export const conceptQuery = (id: string, evidenceLimit?: number) =>
     staleTime: 30_000,
   });
 
+/** 관련 문제 (FR-DASH-02, FR-EX-10): practice exercises of a concept with statistics. */
+export const relatedExercisesQuery = (id: string) =>
+  queryOptions({
+    queryKey: ['concepts', id, 'exercises'],
+    queryFn: ({ signal }) =>
+      api(`/concepts/${encodeURIComponent(id)}/exercises`, {
+        schema: relatedExercisesSchema,
+        signal,
+      }),
+    staleTime: 30_000,
+  });
+
+/** 최근 활동 (FR-DASH-01): the latest practice sets and completed lessons. */
+export const recentActivityQuery = queryOptions({
+  queryKey: ['activity', 'recent'],
+  queryFn: ({ signal }) => api('/activity/recent', { schema: recentActivityListSchema, signal }),
+  staleTime: 30_000,
+});
+
 // ── Review screen: mistake notes and mastery changes ──
 
 /** `GET /mistakes` with only the filters that are set (stable keys for the cache). */
@@ -411,4 +432,5 @@ export const LEARNING_STATE_KEYS = [
   ['concepts'],
   ['mistakes'],
   ['mastery-changes'],
+  ['activity'],
 ] as const;

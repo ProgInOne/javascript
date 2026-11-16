@@ -6,6 +6,7 @@ import {
   lessonProgressRequestSchema,
   masteryChangesQuerySchema,
   mistakeListQuerySchema,
+  recentActivityQuerySchema,
   reviewQueueQuerySchema,
 } from '@proginone/shared';
 import { Hono } from 'hono';
@@ -14,8 +15,9 @@ import type { AppEnv } from '../env.ts';
 import { contentIdParam, jsonBody, limitBody } from './input.ts';
 
 /**
- * Reading progress, lesson prerequisites, review queue, activity heartbeat, the dashboard summary, goals, the concept
- * detail, the learner profile, the mistake notes and mastery changes
+ * Reading progress, lesson prerequisites, review queue, activity heartbeat and recent activity,
+ * the dashboard summary, goals, the concept detail and its related exercises, the learner
+ * profile, the mistake notes and mastery changes
  * (docs/design/system-architecture.md#api-규약).
  */
 export function learningRoutes(services: PracticeServices) {
@@ -35,6 +37,9 @@ export function learningRoutes(services: PracticeServices) {
       const request = heartbeatRequestSchema.parse(await jsonBody(c));
       return c.json(services.activity.heartbeat(request));
     })
+    .get('/activity/recent', (c) =>
+      c.json(services.recentActivity.list(recentActivityQuerySchema.parse(c.req.query()))),
+    )
     .get('/dashboard', (c) => c.json(services.dashboard.get()))
     .get('/weak-concepts', (c) => c.json(services.weakness.list()))
     .get('/daily-plan', (c) => c.json(services.dailyPlan.get()))
@@ -48,6 +53,9 @@ export function learningRoutes(services: PracticeServices) {
       const query = conceptDetailQuerySchema.parse(c.req.query());
       return c.json(services.concepts.get(id, query.evidenceLimit));
     })
+    .get('/concepts/:id/exercises', (c) =>
+      c.json(services.relatedExercises.list(contentIdParam(c.req.param('id')))),
+    )
     .get('/lessons/:id/prerequisites', (c) =>
       c.json(services.concepts.lessonPrerequisites(contentIdParam(c.req.param('id')))),
     )

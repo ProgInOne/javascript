@@ -1,4 +1,4 @@
-import type { AIStatus, AIStatusResponse, AIUsage } from '@proginone/shared';
+import type { AIModel, AIStatus, AIStatusResponse, AIUsage } from '@proginone/shared';
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -23,29 +23,33 @@ const notFound = {
 };
 
 /** Fake `/ai/*` API: `status` answers GET /ai/status; the events stream is controlled by the test. */
-function aiApi(initial: AIStatusResponse) {
+const MODELS: AIModel[] = [
+  {
+    id: 'gpt-x',
+    displayName: 'GPT X',
+    description: '빠른 모델',
+    isDefault: true,
+    supportedEfforts: ['medium'],
+  },
+];
+
+function aiApi(
+  initial: AIStatusResponse,
+  options: { models?: AIModel[]; settings?: Record<string, unknown> } = {},
+) {
   const events = controlledSse();
   let status = initial;
-  const handler = (method: string, path: string) => {
-    if (path === '/settings') return { body: { theme: 'system' } };
+  let settings: Record<string, unknown> = { theme: 'system', ...options.settings };
+  const handler = (method: string, path: string, body?: unknown) => {
+    if (method === 'PATCH' && path === '/settings') {
+      settings = { ...settings, ...(body as Record<string, unknown>) };
+      return { body: settings };
+    }
+    if (path === '/settings') return { body: settings };
     if (path === '/dashboard') return notFound;
     if (path === '/ai/events') return events.response;
     if (path === '/ai/status') return { body: status };
-    if (path === '/ai/models') {
-      return {
-        body: {
-          models: [
-            {
-              id: 'gpt-x',
-              displayName: 'GPT X',
-              description: '빠른 모델',
-              isDefault: true,
-              supportedEfforts: ['medium'],
-            },
-          ],
-        },
-      };
-    }
+    if (path === '/ai/models') return { body: { models: options.models ?? MODELS } };
     if (method === 'POST' && path === '/ai/login') {
       return { body: { loginId: 'login-1', authUrl: 'https://auth.example/login' } };
     }
@@ -98,8 +102,9 @@ describe('settings AI section', () => {
     expect(
       screen.getByText(/한도 도달/, { selector: '.ai-usage__value' }).closest('li'),
     ).toHaveAttribute('data-level', 'full');
-    expect(await screen.findByText('GPT X')).toBeVisible();
-    expect(screen.getByText('(기본)')).toBeVisible();
+    const group = await screen.findByRole('radiogroup', { name: '튜터와 AI 기능이 쓸 모델' });
+    expect(within(group).getByRole('radio', { name: 'GPT X (기본)' })).toBeChecked();
+    expect(within(group).getByText('빠른 모델 · 추론 강도 보통')).toBeVisible();
   });
 
   it('explains what is sent to the AI, even before connecting (NFR-08)', async () => {
@@ -248,5 +253,52 @@ describe('AI status indicator', () => {
     );
     expect(await screen.findByRole('link', { name: 'AI 사용량 경고' })).toBeVisible();
     expect(calls.some((c) => c.path === '/ai/status')).toBe(false);
+  });
+});
+
+describe('settings AI · model selection (FR-SET-01)', () => {
+  const models: AIModel[] = [
+    ...MODELS,
+    {
+      id: 'gpt-deep',
+      displayName: 'GPT Deep',
+      description: '깊게 생각하는 모델',
+      isDefault: false,
+      supportedEfforts: ['medium', 'high'],
+    },
+  ];
+
+  it('saves the chosen model, and null for the default model', async () => {
+    const user = userEvent.setup();
+    const api = aiApi(snapshot({ state: 'ready', planType: 'pro' }), { models });
+    const { calls } = renderApp('/settings/ai', api.handler);
+    const deep = await screen.findByRole('radio', { name: 'GPT Deep' });
+    expect(screen.getByRole('radio', { name: 'GPT X (기본)' })).toBeChecked();
+    await user.click(deep);
+    await waitFor(() => {
+      expect(deep).toBeChecked();
+    });
+    await user.click(screen.getByRole('radio', { name: 'GPT X (기본)' }));
+    await waitFor(() => {
+      expect(screen.getByRole('radio', { name: 'GPT X (기본)' })).toBeChecked();
+    });
+    expect(calls.filter((c) => c.method === 'PATCH').map((c) => c.body)).toEqual([
+      { 'ai.model': 'gpt-deep' },
+      { 'ai.model': null },
+    ]);
+    expect(screen.queryByRole('status', { name: /더 이상 쓸 수 없어서/ })).toBeNull();
+  });
+
+  it('explains the fallback when the saved model is no longer listed', async () => {
+    const api = aiApi(snapshot({ state: 'ready', planType: 'pro' }), {
+      models,
+      settings: { 'ai.model': 'gpt-retired' },
+    });
+    renderApp('/settings/ai', api.handler);
+    expect(
+      await screen.findByText(/저장한 모델\(gpt-retired\)을 더 이상 쓸 수 없어서/),
+    ).toBeVisible();
+    expect(screen.getByText(/기본 모델\(GPT X\)로 답해요/)).toBeVisible();
+    expect(screen.getByRole('radio', { name: 'GPT X (기본)' })).toBeChecked();
   });
 });
