@@ -85,6 +85,7 @@ function source(
     mdxFile: `/c/${l.slug}/lesson.mdx`,
     mdx: '',
     exercises: l.exercises.map((data) => ({ file: `/c/${data.id}.yaml`, data })),
+    templates: [],
   }));
   return {
     root: '/c',

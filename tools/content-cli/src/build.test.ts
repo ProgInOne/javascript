@@ -61,6 +61,8 @@ describe('buildContent', () => {
       exercises: 1,
       skippedDrafts: 0,
       includedDrafts: 0,
+      templates: 0,
+      templateVariants: 0,
     });
 
     const db = new Database(out, { readonly: true });
@@ -71,7 +73,7 @@ describe('buildContent', () => {
     );
     expect(meta).toMatchObject({
       pack_version: '2026.11.14.1',
-      schema_version: '3',
+      schema_version: '4',
       built_at: '2026-11-14T00:00:00.000Z',
     });
     expect(meta['content_hash']).toMatch(/^[0-9a-f]{64}$/);

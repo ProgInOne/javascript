@@ -12,12 +12,13 @@ import type { ReviewQueue, ReviewQueueEntryView } from '@proginone/shared';
 import type { UserDb } from '../../db/user/connection.ts';
 import { excludedExerciseIds } from '../../db/user/exercise-records.ts';
 import { dueConceptIds, lastRatings, loadConceptStates } from '../../db/user/learning-state.ts';
-import { lastSeenAtByGroup } from '../../db/user/practice-sets.ts';
+import { lastSeenAtByGroup, seenExerciseIds } from '../../db/user/practice-sets.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
 import { loadGoal } from '../learning/planning-input.ts';
 import { candidateOf, learnerContext } from '../practice/engine.ts';
 import { activeMisconceptionsByConcept, misconceptionTargetIds } from '../practice/signals.ts';
+import { templateCandidates } from '../practice/templates.ts';
 
 /** Upper bound for building the full queue (the `maxDailyReviews` cap still applies). */
 const UNBOUNDED_MINUTES = 24 * 60;
@@ -150,11 +151,23 @@ export class ReviewService {
     const orm = this.#userDb.orm;
     const ids = queue.due.map((e) => e.conceptId);
     const excluded = excludedExerciseIds(orm, learnerId);
-    const candidates = repo
+    const candidates = [
       // Remedial exercises too: a concept first practised through relearning items (e.g. a
       // prerequisite check) may have no practice exercises, and its card must still be reviewable.
-      .listExercisesForConcepts(ids, ['practice', 'remedial'])
-      .filter((e) => !excluded.has(e.id))
+      ...repo
+        .listExercisesForConcepts(ids, ['practice', 'remedial'])
+        .filter((e) => !excluded.has(e.id)),
+      // A fresh variant per template of a due concept: reviews ask a new variant, not the same
+      // exercise again (D-009, D-057).
+      ...templateCandidates({
+        repo,
+        orm,
+        learnerId,
+        templates: repo.listTemplates({ conceptIds: ids, usages: ['practice', 'remedial'] }),
+        seed,
+        excluded,
+      }),
+    ]
       .map(candidateOf)
       .filter((c) => c !== null);
     const plan = buildReviewSet(this.#engine, {
@@ -166,6 +179,7 @@ export class ReviewService {
       }),
       candidates,
       lastSeenAtByGroup: lastSeenAtByGroup(orm, learnerId),
+      seenExerciseIds: seenExerciseIds(orm, learnerId),
       misconceptionTargetIds: misconceptionTargetIds(repo, active),
       seed,
       now,

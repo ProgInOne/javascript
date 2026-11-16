@@ -1,0 +1,47 @@
+id: js-basics.loops.for.t.predict-accumulator
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+  - { id: js.loops.for, weight: 0.5 }
+tags: [accumulator, for, template]
+estimatedSeconds: 90
+params:
+  start: { kind: int, min: 0, max: 5 }
+  n: { kind: int, min: 3, max: 6 }
+  k: { kind: int, min: 1, max: 3 }
+  cmp: { kind: choice, values: ["<=", "<"] }
+  acc: { kind: identifier, pool: [total, sum, score, points] }
+render:
+  prompt: |
+    다음 코드를 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    let {{acc}} = {{start}};
+    for (let i = 1; i {{cmp}} {{n}}; i++) {
+      {{acc}} += i * {{k}};
+    }
+    console.log({{acc}});
+  answerKind: console
+  misconceptionByAnswer:
+    # 반복 횟수를 하나 틀리게 센 오답 (<=와 <를 반대로 봄)
+    "{{cmp === '<=' ? start + k * (n - 1) * n / 2 : start + k * n * (n + 1) / 2}}": js.mc.for-off-by-one
+hints:
+  - "`i`가 어떤 값들을 차례로 가지는지 먼저 적어 보세요. 조건 `i {{cmp}} {{n}}`이 언제 거짓이 되나요?"
+  - "회차마다 `{{acc}}`에 `i * {{k}}`가 더해져요. 시작값 `{{start}}`도 잊지 마세요."
+  - "{{cmp === '<=' ? 'i는 1부터 ' + n + '까지예요.' : 'i는 1부터 ' + (n - 1) + '까지예요. ' + n + '은 조건을 만족하지 않아요.'}} 각 회차에 더하는 값을 모두 더해 보세요."
+explanation: |
+  누적 변수 `{{acc}}`는 반복 전에 `{{start}}`으로 한 번만 만들고, 회차마다 `i * {{k}}`를 더해 가요.
+
+  - 조건이 `i {{cmp}} {{n}}`이므로 `i`는 1부터 {{cmp === '<=' ? n : n - 1}}까지 바뀌어요.
+  - 반복이 끝나면 시작값 {{start}}에 회차마다 더한 값이 모두 쌓인 결과가 출력돼요.
+
+  `<=`와 `<`를 헷갈리면 반복을 한 번 더 하거나 덜 하게 돼요. 마지막 회차에 `i`가 얼마인지 꼭 확인하세요.
+misconceptions: [js.mc.for-off-by-one]
+variantPolicy:
+  sampleSize: 30
+  minDistinctFromRecent: 3
+review:
+  status: draft
+  draftedBy: ai:claude

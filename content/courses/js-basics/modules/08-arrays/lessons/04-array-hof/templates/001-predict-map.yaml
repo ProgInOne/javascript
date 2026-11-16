@@ -1,0 +1,49 @@
+id: js-basics.arrays.array-hof.t.predict-map
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.arr.map, weight: 1 }
+  - { id: js.arr.mutating-vs-not, weight: 0.3 }
+tags: [map, original-unchanged, template]
+estimatedSeconds: 90
+params:
+  nums: { kind: intArray, length: 3, min: 1, max: 9 }
+  k: { kind: int, min: 2, max: 5 }
+  op: { kind: choice, values: ["*", "+"] }
+  arr: { kind: identifier, pool: [nums, prices, scores, points] }
+  out: { kind: identifier, pool: [result, changed, mapped, updated] }
+  # map이 원래 배열을 바꾼다고 생각할 때의 오답에 쓰는 값 (정답 계산이 아님)
+  mappedGuess:
+    kind: derived
+    expr: "op === '*' ? [nums[0] * k, nums[1] * k, nums[2] * k] : [nums[0] + k, nums[1] + k, nums[2] + k]"
+render:
+  prompt: |
+    다음 코드를 실행하면 콘솔에 무엇이 출력될까요? 두 줄을 차례로 적어 보세요. 배열은 콘솔에 `[1, 2]`처럼 보여요.
+spec:
+  lang: js
+  code: |
+    const {{arr}} = {{nums}};
+    const {{out}} = {{arr}}.map((n) => n {{op}} {{k}});
+    console.log({{arr}});
+    console.log({{out}});
+  answerKind: console
+  misconceptionByAnswer:
+    "{{mappedGuess}}\n{{mappedGuess}}": js.mc.map-mutates-original
+hints:
+  - "`map`은 `{{arr}}`를 직접 바꿀까요, 새 배열을 만들어 돌려줄까요?"
+  - "3번 줄은 `{{arr}}`, 4번 줄은 `map`이 돌려준 `{{out}}`를 출력해요."
+  - "콜백 `(n) => n {{op}} {{k}}`를 요소마다 한 번씩 불러 그 결과로 새 배열을 채워요."
+explanation: |
+  `map`은 원래 배열을 바꾸지 않고, 콜백이 돌려준 값으로 **새 배열** 을 만들어 돌려줘요.
+
+  - 3번 줄의 `{{arr}}`는 처음 그대로 `{{nums}}`이에요.
+  - 4번 줄의 `{{out}}`에는 요소마다 `n {{op}} {{k}}`를 계산한 값이 같은 순서로 들어 있어요.
+
+  두 줄이 모두 바뀐 배열이라고 답했다면 `map`이 원래 배열을 바꾼다고 생각한 거예요. 결과를 쓰려면 `const {{out}} = {{arr}}.map(...)`처럼 변수에 담아야 해요.
+misconceptions: [js.mc.map-mutates-original]
+variantPolicy:
+  sampleSize: 30
+  minDistinctFromRecent: 3
+review:
+  status: draft
+  draftedBy: ai:claude

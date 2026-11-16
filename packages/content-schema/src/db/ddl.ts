@@ -3,7 +3,7 @@
  * on every `content-cli build`, so there are no migrations; bump CONTENT_DB_SCHEMA_VERSION when
  * this changes. The Drizzle tables in ./schema.ts must match (checked by a test).
  */
-export const CONTENT_DB_SCHEMA_VERSION = 3;
+export const CONTENT_DB_SCHEMA_VERSION = 4;
 
 export const CONTENT_DDL = `
 CREATE TABLE content_meta (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL);
@@ -146,6 +146,41 @@ CREATE TABLE exercise_concepts (
   PRIMARY KEY (exercise_id, concept_id)
 );
 CREATE INDEX exercise_concepts_concept ON exercise_concepts (concept_id, is_primary);
+
+-- Parametric templates (schema version 4). Variants are not expanded here: the server instantiates
+-- <template id>@<seed> on demand, but only for seeds in template_variants, the pool that
+-- content-cli check --run verified by execution (expected_json = the execution-derived answer key).
+CREATE TABLE exercise_templates (
+  id TEXT PRIMARY KEY NOT NULL,
+  type TEXT NOT NULL,
+  difficulty INTEGER NOT NULL CHECK (difficulty BETWEEN 1 AND 5),
+  lesson_id TEXT NOT NULL REFERENCES lessons(id),
+  usage TEXT NOT NULL DEFAULT 'practice' CHECK (usage IN ('practice', 'remedial')),
+  variant_group TEXT,
+  primary_concept_id TEXT NOT NULL REFERENCES concepts(id),
+  concepts_json TEXT NOT NULL CHECK (json_valid(concepts_json)),
+  template_json TEXT NOT NULL CHECK (json_valid(template_json)),
+  misconception_ids_json TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(misconception_ids_json)),
+  tags_json TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(tags_json)),
+  estimated_seconds INTEGER NOT NULL,
+  variant_count_hint INTEGER NOT NULL,
+  min_distinct_from_recent INTEGER NOT NULL DEFAULT 3,
+  review_status TEXT NOT NULL CHECK (review_status IN ('auto_verified', 'trusted')),
+  template_hash TEXT NOT NULL
+);
+CREATE INDEX exercise_templates_lesson ON exercise_templates (lesson_id);
+CREATE INDEX exercise_templates_concept ON exercise_templates (primary_concept_id);
+
+CREATE TABLE template_variants (
+  variant_id TEXT PRIMARY KEY NOT NULL,
+  template_id TEXT NOT NULL REFERENCES exercise_templates(id),
+  seed TEXT NOT NULL,
+  sample_index INTEGER NOT NULL,
+  expected_json TEXT CHECK (expected_json IS NULL OR json_valid(expected_json)),
+  answer_key TEXT NOT NULL,
+  content_hash TEXT NOT NULL,
+  UNIQUE (template_id, sample_index)
+);
 
 CREATE TABLE content_id_aliases (
   old_id TEXT NOT NULL,

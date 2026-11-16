@@ -1,0 +1,34 @@
+id: js-basics.values.variables.t.predict-reassign
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.basics.reassign, weight: 1 }
+estimatedSeconds: 50
+params:
+  a: { kind: int, min: 1, max: 9 }
+  b: { kind: int, min: 2, max: 9 }
+  name: { kind: identifier, pool: [n, count, score] }
+render:
+  prompt: |
+    다음 코드를 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    let {{name}} = {{a}};
+    {{name}} = {{name}} + {{b}};
+    console.log({{name}});
+  answerKind: console
+  misconceptionByAnswer:
+    "{{a}}": js.mc.const-reassign
+hints:
+  - "오른쪽 `{{name}} + {{b}}`를 먼저 계산해요."
+  - "계산한 값을 왼쪽 `{{name}}`에 다시 담아요."
+  - "처음 값 {{a}}에 {{b}}를 더한 값이 출력돼요."
+explanation: |
+  `{{name}} = {{name}} + {{b}};`는 오른쪽을 먼저 계산한 뒤 그 값을 다시 `{{name}}`에 대입해요.
+misconceptions: [js.mc.const-reassign]
+variantPolicy:
+  sampleSize: 8
+review:
+  status: draft
+  draftedBy: ai:claude

@@ -13,6 +13,14 @@ import { writePublishedSlugs } from './aliases.ts';
 import { checkContent, projectExerciseOf, type SpecValidator } from './check.ts';
 import type { Diagnostics } from './diagnostics.ts';
 import { canonical, sha256 } from './hash.ts';
+import {
+  engineTemplateOf,
+  hasValue,
+  templateHash,
+  variantAnswerKey,
+  variantContentHash,
+  type CheckedTemplate,
+} from './templates.ts';
 
 /** Type-specific operations supplied by exercise-kit. */
 export interface ExerciseKitHooks {
@@ -52,6 +60,9 @@ export interface BuildResult {
     skippedDrafts: number;
     /** Draft exercises written because of `includeDrafts`. */
     includedDrafts: number;
+    /** Templates written, and the verified variants in their pools. */
+    templates: number;
+    templateVariants: number;
   };
 }
 
@@ -84,6 +95,76 @@ const prereqOf = (p: ConceptSource['prerequisites'][number]) =>
   typeof p === 'string' ? { id: p, strength: 'required' as const } : p;
 
 /**
+ * Writes a template and its verified variant pool (D-056). Only variants the last `check --run`
+ * verified are stored (predict ones with their execution-derived answer key); the server serves
+ * nothing else. Drafts follow the exercise rule (`includeDrafts` only).
+ */
+function insertTemplate(
+  tpl: CheckedTemplate,
+  ctx: {
+    insert: (table: string, row: Record<string, unknown>) => void;
+    diagnostics: Diagnostics;
+    includeDrafts: boolean;
+    stats: BuildResult['stats'];
+  },
+): void {
+  const { source: t } = tpl;
+  const isDraft = t.review.status !== 'approved';
+  if (isDraft && !ctx.includeDrafts) {
+    ctx.stats.skippedDrafts++;
+    return;
+  }
+  const pool = tpl.variants.filter((v) => v.verified);
+  if (pool.length === 0) {
+    ctx.diagnostics.warn(
+      tpl.file,
+      '실행 검증된 변형이 없어 빌드에서 뺐습니다. pnpm content:check:run으로 검증하세요',
+    );
+    return;
+  }
+  if (isDraft) ctx.stats.includedDrafts++;
+  const primary = t.concepts.find((c) => c.weight === 1)?.id ?? '';
+  const space = tpl.spaceSize;
+  const hint = Math.min(
+    Number.isFinite(space) ? space : 1_000_000,
+    t.variantPolicy.maxVariants ?? 1_000_000,
+  );
+  ctx.insert('exercise_templates', {
+    id: t.id,
+    type: t.type,
+    difficulty: t.difficulty,
+    lesson_id: tpl.lessonId,
+    usage: t.usage,
+    variant_group: t.variantGroup,
+    primary_concept_id: primary,
+    concepts_json: JSON.stringify(
+      t.concepts.map((c) => ({ conceptId: c.id, weight: c.weight, isPrimary: c.weight === 1 })),
+    ),
+    template_json: JSON.stringify(engineTemplateOf(t)),
+    misconception_ids_json: JSON.stringify(t.misconceptions),
+    tags_json: JSON.stringify(t.tags),
+    estimated_seconds: t.estimatedSeconds,
+    variant_count_hint: hint,
+    min_distinct_from_recent: t.variantPolicy.minDistinctFromRecent,
+    review_status: isDraft ? 'auto_verified' : 'trusted',
+    template_hash: templateHash(t),
+  });
+  for (const v of pool) {
+    ctx.insert('template_variants', {
+      variant_id: v.variantId,
+      template_id: t.id,
+      seed: v.seed,
+      sample_index: v.sampleIndex,
+      expected_json: hasValue(v.spec['expected']) ? JSON.stringify(v.spec['expected']) : null,
+      answer_key: variantAnswerKey(t, v),
+      content_hash: variantContentHash(t, v),
+    });
+  }
+  ctx.stats.templates++;
+  ctx.stats.templateVariants += pool.length;
+}
+
+/**
  * `content-cli build`: check, then write a fresh content.db atomically (temp file + rename).
  * Nothing is written when the check reports errors. Draft exercises are excluded unless
  * `includeDrafts` (development builds) is set; they are then stored like approved ones and the
@@ -96,6 +177,7 @@ export function buildContent(root: string, outFile: string, options: BuildOption
     diagnostics,
     lessons: compiled,
     aliases,
+    templates,
   } = checkContent(root, { validateSpec: kit.validateSpec, quantity: options.quantity ?? false });
   const stats = {
     courses: 0,
@@ -104,6 +186,8 @@ export function buildContent(root: string, outFile: string, options: BuildOption
     exercises: 0,
     skippedDrafts: 0,
     includedDrafts: 0,
+    templates: 0,
+    templateVariants: 0,
   };
   if (diagnostics.errorCount > 0 || !source.pack) return { diagnostics, written: false, stats };
   const pack = source.pack.data;
@@ -324,6 +408,9 @@ export function buildContent(root: string, outFile: string, options: BuildOption
       }
 
       for (const row of aliases) insert('content_id_aliases', { ...row });
+      for (const tpl of templates) {
+        insertTemplate(tpl, { insert, diagnostics, includeDrafts, stats });
+      }
 
       for (const { data: m } of source.misconceptions) {
         insert('misconceptions', {

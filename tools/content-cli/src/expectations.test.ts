@@ -137,7 +137,7 @@ describe('runCheck', () => {
       runner: runner(),
     });
     expect(result.ok).toBe(true);
-    expect(result.wrote).toBe(join(root, EXPECTATIONS_FILE));
+    expect(result.wrote).toEqual([join(root, EXPECTATIONS_FILE)]);
     expect(readFileSync(join(root, EXPECTATIONS_FILE), 'utf8')).toBe(
       serializeExpectations(store()),
     );
@@ -151,7 +151,7 @@ describe('runCheck', () => {
       validateSpec: exerciseKit.validateSpec,
       runner: runner(),
     });
-    expect(again).toMatchObject({ expectationsChanged: false, wrote: null, ok: true });
+    expect(again).toMatchObject({ expectationsChanged: false, wrote: [], ok: true });
   });
 
   it('fails without writing when frozen and out of date', async () => {
@@ -161,7 +161,7 @@ describe('runCheck', () => {
       runner: runner(),
       frozen: true,
     });
-    expect(result).toMatchObject({ ok: false, expectationsChanged: true, wrote: null });
+    expect(result).toMatchObject({ ok: false, expectationsChanged: true, wrote: [] });
     expect(result.diagnostics.items.map((d) => d.message)).toContain(
       '실행 기대값 파일이 최신이 아닙니다. pnpm content:check:run을 실행하고 바뀐 파일을 커밋하세요',
     );

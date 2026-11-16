@@ -15,8 +15,10 @@ export default tseslint.config(
       '.data/**',
       '.claude/**',
       '**/routeTree.gen.ts',
-      'playwright-report/**',
-      'test-results/**',
+      // Also under e2e/: a self-hosted runner keeps the last E2E job's report in its workspace.
+      '**/playwright-report/**',
+      '**/test-results/**',
+      '**/test-results-*/**',
     ],
   },
   js.configs.recommended,

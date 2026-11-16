@@ -171,3 +171,53 @@ describe('interleave', () => {
     }
   });
 });
+
+describe('buildReviewSet with template variants (D-057)', () => {
+  const DAY = 86_400_000;
+  const bank: ExerciseCandidate = {
+    id: 'm1.a.bank',
+    type: 'predict_output',
+    category: 'recall',
+    difficulty: 3,
+    estimatedSeconds: 60,
+    variantGroupKey: 'm1.a.bank',
+    origin: 'authored',
+    concepts: [{ conceptId: 'm1.a', weight: 1, isPrimary: true }],
+  };
+  const variant: ExerciseCandidate = {
+    ...bank,
+    id: 'm1.a.t.sum@5',
+    variantGroupKey: 'm1.a.t.sum',
+    origin: 'template',
+  };
+  const base = request({
+    entries: [entry('m1.a')],
+    concepts: [concept('m1.a', 'm1')],
+    candidates: [bank, variant],
+    // Both groups last seen 10 days ago (same freshness bracket).
+    lastSeenAtByGroup: { 'm1.a.bank': T0 - 10 * DAY, 'm1.a.t.sum': T0 - 10 * DAY },
+  });
+
+  it('prefers the bank item by score when repeats are unknown', () => {
+    expect(buildReviewSet(deps, base).items.map((i) => i.exerciseId)).toEqual(['m1.a.bank']);
+  });
+
+  it('serves a new variant instead of repeating a seen bank item', () => {
+    const items = buildReviewSet(deps, {
+      ...base,
+      seenExerciseIds: new Set(['m1.a.bank', 'm1.a.t.sum@1']),
+    }).items;
+    expect(items.map((i) => [i.exerciseId, i.exerciseOrigin])).toEqual([
+      ['m1.a.t.sum@5', 'template'],
+    ]);
+  });
+
+  it('still prefers a fresh group over a new variant of a recently seen template', () => {
+    const items = buildReviewSet(deps, {
+      ...base,
+      lastSeenAtByGroup: { 'm1.a.t.sum': T0 - DAY },
+      seenExerciseIds: new Set(['m1.a.t.sum@1']),
+    }).items;
+    expect(items.map((i) => i.exerciseId)).toEqual(['m1.a.bank']);
+  });
+});

@@ -164,7 +164,7 @@ flowchart LR
 `content-cli build`가 매번 새로 만드는 파일입니다. 마이그레이션이 없습니다(전체 재생성).
 스키마는 `packages/content-schema/src/db/`에 DDL(`ddl.ts`)과 읽기용 Drizzle 테이블(`schema.ts`)로 정의하고, 빌드 도구와 서버가 공유합니다(두 정의가 같은지 테스트로 확인). 빌드 도구(`tools/`)가 앱(`apps/`)에 의존하지 않도록 서버 대신 패키지에 둡니다.
 
-M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons.read_minutes`·`objectives_json`, `exercises.prompt`·`code`·`misconception_ids_json`·`tags_json`, `misconceptions.diagnostic_hint`·`remedial_lesson_anchor`. `lessons.body_compiled`에는 검증된 MDX JSON 트리를 저장합니다([콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#mdx-컴포넌트)). `projects`, `exercise_templates`는 해당 콘텐츠가 생길 때 추가합니다. M6에서 `assessments`를 추가했습니다(content.db 스키마 버전 2, 아래 [assessments, projects](#assessments-projects) 참고). 프로젝트는 테이블 대신 `exercises.usage = 'project'`로 표현합니다(스키마 버전 3).
+M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons.read_minutes`·`objectives_json`, `exercises.prompt`·`code`·`misconception_ids_json`·`tags_json`, `misconceptions.diagnostic_hint`·`remedial_lesson_anchor`. `lessons.body_compiled`에는 검증된 MDX JSON 트리를 저장합니다([콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#mdx-컴포넌트)). `projects`, `exercise_templates`는 해당 콘텐츠가 생길 때 추가합니다. M6에서 `assessments`를 추가했습니다(content.db 스키마 버전 2, 아래 [assessments, projects](#assessments-projects) 참고). 프로젝트는 테이블 대신 `exercises.usage = 'project'`로 표현합니다(스키마 버전 3). M7에서 `exercise_templates`와 시드 풀 `template_variants`를 추가했습니다(스키마 버전 4, 아래 [exercises, exercise_concepts, exercise_templates](#exercises-exercise_concepts-exercise_templates)의 구현 메모, [D-058](/docs/decisions.md)).
 
 #### content_meta
 
@@ -291,6 +291,20 @@ M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons
 
 - 템플릿 변형은 **content.db에 미리 펼쳐 저장하지 않습니다.** 서버가 요청 시 `exercise-kit` 템플릿 엔진으로 결정론적으로 생성합니다. 변형 ID는 `<템플릿 ID>@<seed>`이며, 한 번 생성한 변형의 스펙과 실행으로 계산한 기대값은 `user.db`의 `variant_cache`에 저장합니다.
 - 인덱스: `exercises(lesson_id, usage, difficulty)`, `exercises(type)`, `exercises(variant_group)`, `exercise_concepts(concept_id, is_primary)`, `exercise_templates(lesson_id)`.
+
+구현 메모 (M7, [D-058](/docs/decisions.md)): `exercise_templates`는 위 표에 `variant_group`, `primary_concept_id`(인덱스, 개념별 후보 조회), `misconception_ids_json`, `tags_json`, `estimated_seconds`, `min_distinct_from_recent`, `review_status`, `template_hash`를 더했고, `usage`는 `practice`/`remedial`만 씁니다. `template_json`은 엔진이 읽는 템플릿 원본(`params`, `constraints`, `render`, `spec`, `hints`, `explanation`, `variantPolicy`)입니다. 시드 풀은 새 테이블 `template_variants`입니다.
+
+| 컬럼 | 타입 | Null | 설명 |
+|---|---|---|---|
+| `variant_id` | TEXT | N | PK. `<템플릿 ID>@<seed>` |
+| `template_id` | TEXT | N | FK → `exercise_templates.id` |
+| `seed` | TEXT | N | 16진수 시드 |
+| `sample_index` | INTEGER | N | `sampleSeeds`의 몇 번째 표본인지. `(template_id, sample_index)` UNIQUE |
+| `expected_json` | TEXT | Y | 실행으로 계산한 정답 키(`predict_output`). 정답 키가 없는 유형은 NULL. **서버 전용** |
+| `answer_key` | TEXT | N | 정답의 정규화 문자열(최근 변형과 정답이 겹치지 않게 고를 때). **서버 전용** |
+| `content_hash` | TEXT | N | 렌더링한 변형의 해시(`attempts.exercise_version_hash`, 출제 스냅샷) |
+
+- `content-cli check --run`이 실행 검증한 변형만 행이 됩니다. 서버는 이 표에 있는 변형만 출제합니다(요청 시 `template_json`과 시드로 결정론적으로 만들고 `expected_json`을 채움). 그래서 `user.db`의 `variant_cache`는 쓰지 않습니다.
 - `spec_json`과 `public_spec_json`의 분리는 [시스템 아키텍처 설계](/docs/design/system-architecture.md#문제-제출-흐름-코드-실습)의 "정답 키를 클라이언트로 보내지 않는다" 원칙을 저장 수준에서 강제하기 위한 것입니다.
 
 #### assessments, projects

@@ -7,9 +7,11 @@ import {
   EXPECTATIONS_FILE,
   predictInputHash,
   serializeExpectations,
+  TEMPLATE_EXPECTATIONS_FILE,
   writeExpectations,
   type ExpectationStore,
 } from './expectations.ts';
+import { variantAsExercise, variantInputHash } from './templates.ts';
 import {
   collectExamples,
   verifyExample,
@@ -27,8 +29,8 @@ import {
  */
 
 export interface RunCheckItem {
-  kind: 'exercise' | 'example';
-  /** Exercise ID, or `<lesson id>#<example id>`. */
+  kind: 'exercise' | 'example' | 'template';
+  /** Exercise ID, `<lesson id>#<example id>`, or a template variant ID (`<template id>@<seed>`). */
   id: string;
   /** Path relative to the content root. */
   file: string;
@@ -54,10 +56,10 @@ export interface RunCheckResult {
   items: RunCheckItem[];
   /** Whether verification ran (it doesn't when the first schema check has errors). */
   ran: boolean;
-  /** The expectation file differs from the computed one. */
+  /** An expectation file (predict or template) differs from the computed one. */
   expectationsChanged: boolean;
-  /** Path written, if any. */
-  wrote: string | null;
+  /** Paths written. */
+  wrote: string[];
   ok: boolean;
 }
 
@@ -83,6 +85,7 @@ export async function runCheck(root: string, options: RunCheckOptions): Promise<
   const first = checkContent(root, {
     validateSpec: options.validateSpec,
     expectations: emptyStore(),
+    templateExpectations: emptyStore(),
     skipExpectations: true,
   });
   if (first.diagnostics.errorCount > 0) {
@@ -91,7 +94,7 @@ export async function runCheck(root: string, options: RunCheckOptions): Promise<
       items: [],
       ran: false,
       expectationsChanged: false,
-      wrote: null,
+      wrote: [],
       ok: false,
     };
   }
@@ -123,6 +126,21 @@ export async function runCheck(root: string, options: RunCheckOptions): Promise<
     }
   }
 
+  // Every pooled sample variant of every template runs like an authored exercise (D-056).
+  const variantSpecs = new Map<string, Record<string, unknown>>();
+  for (const tpl of first.templates) {
+    for (const variant of tpl.variants) {
+      variantSpecs.set(variant.variantId, variant.spec);
+      tasks.push({
+        kind: 'template',
+        id: variant.variantId,
+        file: rel(tpl.file),
+        type: tpl.source.type,
+        verify: () => verifyExercise(variantAsExercise(tpl.source, variant), options.runner),
+      });
+    }
+  }
+
   const outcomes = await pool(tasks, options.concurrency ?? 4, (t) => t.verify());
   const items = tasks.map(({ verify: _verify, ...item }, i): RunCheckItem => {
     const outcome = outcomes[i];
@@ -136,28 +154,54 @@ export async function runCheck(root: string, options: RunCheckOptions): Promise<
       .flatMap((c) => c.modules.flatMap((m) => m.lessons.flatMap((l) => l.exercises)))
       .map(({ data }) => [data.id, data.spec]),
   );
+  const templateStore: ExpectationStore = emptyStore();
   for (const item of items) {
+    if (item.kind === 'template') {
+      // Every variant that did not fail is verified (types without code to run are skipped, not
+      // failed); predict variants also carry their answer key. Only these seeds are served.
+      const spec = variantSpecs.get(item.id);
+      if (!spec || item.outcome.status === 'fail') continue;
+      if (item.type === 'predict_output' && item.outcome.expected === undefined) continue;
+      templateStore.entries[item.id] = {
+        inputHash: variantInputHash(item.type, spec),
+        expected: item.outcome.expected ?? null,
+      };
+      continue;
+    }
     const spec = specs.get(item.id);
     if (item.type !== 'predict_output' || item.outcome.expected === undefined || !spec) continue;
     store.entries[item.id] = { inputHash: predictInputHash(spec), expected: item.outcome.expected };
   }
 
-  const file = join(root, EXPECTATIONS_FILE);
-  const current = existsSync(file) ? readFileSync(file, 'utf8') : '';
-  const expectationsChanged = current !== serializeExpectations(store);
-  let wrote: string | null = null;
-  if (expectationsChanged && !options.frozen) wrote = writeExpectations(root, store);
+  const stale: string[] = [];
+  const wrote: string[] = [];
+  for (const [name, computed] of [
+    [EXPECTATIONS_FILE, store],
+    [TEMPLATE_EXPECTATIONS_FILE, templateStore],
+  ] as const) {
+    const file = join(root, name);
+    const current = existsSync(file) ? readFileSync(file, 'utf8') : '';
+    // No templates and no file: nothing to keep in sync.
+    if (current === '' && Object.keys(computed.entries).length === 0) continue;
+    if (current === serializeExpectations(computed)) continue;
+    stale.push(file);
+    if (!options.frozen) wrote.push(writeExpectations(root, computed, name));
+  }
+  const expectationsChanged = stale.length > 0;
 
   const final = checkContent(root, {
     validateSpec: options.validateSpec,
     expectations: store,
     quantity: options.quantity ?? false,
+    templateExpectations: templateStore,
   });
-  if (expectationsChanged && options.frozen) {
-    final.diagnostics.error(
-      file,
-      '실행 기대값 파일이 최신이 아닙니다. pnpm content:check:run을 실행하고 바뀐 파일을 커밋하세요',
-    );
+  if (options.frozen) {
+    for (const file of stale) {
+      final.diagnostics.error(
+        file,
+        '실행 기대값 파일이 최신이 아닙니다. pnpm content:check:run을 실행하고 바뀐 파일을 커밋하세요',
+      );
+    }
   }
   const failed = items.some((i) => i.outcome.status === 'fail');
   return {

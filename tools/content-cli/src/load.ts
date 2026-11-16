@@ -8,6 +8,7 @@ import {
   misconceptionsFileSchema,
   moduleSchema,
   packSchema,
+  templateSourceSchema,
   type ConceptSource,
   type CourseSource,
   type ExerciseSource,
@@ -15,6 +16,7 @@ import {
   type MisconceptionSource,
   type ModuleSource,
   type Pack,
+  type TemplateSource,
 } from '@proginone/content-schema';
 import { parse as parseYaml } from 'yaml';
 import type { z } from 'zod';
@@ -32,6 +34,8 @@ export interface LessonNodeSource {
   mdxFile: string;
   mdx: string | null;
   exercises: Located<ExerciseSource>[];
+  /** Parametric templates (`templates/*.yaml`). */
+  templates: Located<TemplateSource>[];
 }
 
 export interface ModuleNodeSource {
@@ -97,6 +101,23 @@ function readList<T>(dir: string, schema: z.ZodType<T[]>, diag: Diagnostics): Lo
     .flatMap((f) => {
       const file = join(dir, f);
       return (readYaml(file, schema, diag) ?? []).map((data) => ({ file, data }));
+    });
+}
+
+/** One schema-validated item per `*.yaml` file of a directory (sorted by file name). */
+function readEach<S extends z.ZodType>(
+  dir: string,
+  schema: S,
+  diag: Diagnostics,
+): Located<z.output<S>>[] {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith('.yaml'))
+    .sort()
+    .flatMap((f) => {
+      const file = join(dir, f);
+      const data = readYaml(file, schema, diag);
+      return data ? [{ file, data }] : [];
     });
 }
 
@@ -197,18 +218,17 @@ function loadLessons(moduleDir: string, mod: ModuleSource, diag: Diagnostics): L
     const mdxFile = join(dir, 'lesson.mdx');
     const mdx = existsSync(mdxFile) ? readFileSync(mdxFile, 'utf8') : null;
     if (mdx === null) diag.error(mdxFile, '레슨 본문 파일이 없습니다');
-    const exercisesDir = join(dir, 'exercises');
-    const exercises = existsSync(exercisesDir)
-      ? readdirSync(exercisesDir)
-          .filter((f) => f.endsWith('.yaml'))
-          .sort()
-          .flatMap((f) => {
-            const exFile = join(exercisesDir, f);
-            const data = readYaml(exFile, exerciseSourceSchema, diag);
-            return data ? [{ file: exFile, data }] : [];
-          })
-      : [];
-    lessons.push({ dir, localSlug, meta: { file, data: meta }, mdxFile, mdx, exercises });
+    const exercises = readEach(join(dir, 'exercises'), exerciseSourceSchema, diag);
+    const templates = readEach(join(dir, 'templates'), templateSourceSchema, diag);
+    lessons.push({
+      dir,
+      localSlug,
+      meta: { file, data: meta },
+      mdxFile,
+      mdx,
+      exercises,
+      templates,
+    });
   }
   return ordered(lessons, mod.lessons, join(moduleDir, 'module.yaml'), '단원', diag);
 }

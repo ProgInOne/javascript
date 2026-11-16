@@ -10,11 +10,12 @@ import type { WeakConcept, WeakConcepts } from '@proginone/shared';
 import type { UserDb } from '../../db/user/connection.ts';
 import { excludedExerciseIds } from '../../db/user/exercise-records.ts';
 import { listMasteryConceptIds, loadConceptStates } from '../../db/user/learning-state.ts';
-import { lastSeenAtByGroup } from '../../db/user/practice-sets.ts';
+import { lastSeenAtByGroup, seenExerciseIds } from '../../db/user/practice-sets.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
 import { candidateOf, learnerContext } from './engine.ts';
 import { activeMisconceptionsByConcept, conceptGraph, misconceptionTargetIds } from './signals.ts';
+import { templateCandidates } from './templates.ts';
 
 /** Concepts shown on the weakness screen (ui-ux.md#약점-집중: "최대 10개"). */
 export const WEAK_CONCEPTS_SHOWN = 10;
@@ -138,9 +139,19 @@ export class WeaknessService {
     if (targets.length === 0) return null;
     const ids = targets.map((t) => t.conceptId);
     const excluded = excludedExerciseIds(orm, learnerId);
-    const candidates = repo
-      .listExercisesForConcepts(ids, ['practice', 'remedial'])
-      .filter((e) => !excluded.has(e.id))
+    const candidates = [
+      ...repo
+        .listExercisesForConcepts(ids, ['practice', 'remedial'])
+        .filter((e) => !excluded.has(e.id)),
+      ...templateCandidates({
+        repo,
+        orm,
+        learnerId,
+        templates: repo.listTemplates({ conceptIds: ids, usages: ['practice', 'remedial'] }),
+        seed,
+        excluded,
+      }),
+    ]
       .map(candidateOf)
       .filter((c) => c !== null);
     const allTargets = repo.misconceptionTargets();
@@ -159,6 +170,7 @@ export class WeaknessService {
       candidates,
       confirmedTargetIds,
       lastSeenAtByGroup: lastSeenAtByGroup(orm, learnerId),
+      seenExerciseIds: seenExerciseIds(orm, learnerId),
       misconceptionTargetIds: misconceptionTargetIds(repo, active),
       seed,
       now,

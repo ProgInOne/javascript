@@ -1594,6 +1594,14 @@ variantPolicy:
   - `misconceptionByAnswer`의 오답이 실제 정답과 같아지는 변형이 없는가(같아지면 진단력 상실, 제약 추가 필요)
 - 빌드 시 미리 계산한 샘플 기대값은 content.db에 저장해, 대부분의 출제에서 숨김 검증 실행을 생략합니다.
 
+구현 메모 (M7, [D-058](/docs/decisions.md)): 숨김 검증 실행과 `variant_cache` 없이, **빌드 때 실행 검증한 표본 시드만 출제** 합니다.
+
+- 표본: `sampleSeeds(id, variantPolicy.sampleSize)`(기본 50, 5~100). 렌더링 결과(`render`, `spec`, `hints`, `explanation`)가 같은 표본은 하나로 합칩니다. 서로 다른 변형이 5개 미만이면 오류입니다.
+- `content:check`는 표본을 모두 만들어 보고(하나라도 실패하면 오류), 렌더링한 스펙을 유형의 정적 검사(`checkSpec`)에 넣고, 렌더링한 지문·힌트·해설의 원시 HTML을 검사합니다.
+- `content:check:run`은 각 변형을 저작 문제와 같은 검증(`verifyExercise`)에 넣고, 통과한 변형을 `content/.generated/template-expected.json`에 `<템플릿 ID>@<시드>` → `{ inputHash, expected }`로 기록합니다. 입력 해시는 `predict_output`이면 `predictInputHash`, 그 밖의 유형은 렌더링한 스펙 전체의 해시이고, 정답 키가 없는 유형의 `expected`는 `null`입니다. 그다음 정답 키를 채운 스펙으로 다시 검사해 오개념 답과 실제 정답의 충돌(오류)과 정답 쏠림(80% 이상 같으면 경고)을 봅니다.
+- `content:build`는 검증 기록이 최신인 변형만 `template_variants`(시드 풀)에 저장합니다. 서버는 풀 밖의 시드를 출제하지 않습니다.
+- 표현식 언어는 지문·힌트·해설과 오개념 답(`misconceptionByAnswer`의 키)에만 씁니다. 정답 키는 항상 실행 결과입니다.
+
 ### 변형 동일성 판정
 
 "사실상 같은 문제"를 여러 개로 세지 않기 위해 다음 규칙을 씁니다.
@@ -1732,7 +1740,7 @@ pnpm content draft template js-basics.functions.function-basics --concept js.fn.
 | `mcq_*` (일반) | `misconceptionByAnswer`·선택지의 오개념 ID 존재 확인 |
 | `find_bug_line` | 버그 코드가 `symptom`과 일치하는 증상을 내고, `fixedCode`가 증상을 없앰 |
 | `parsons` | 정답 순서(와 `alternatives`)로 조립한 코드가 `checks` 통과. 방해 줄을 넣으면 실패 |
-| 템플릿 | 시드 샘플 50개 실행, 정답 분포·오개념 충돌 검사 |
+| 템플릿 | 시드 샘플 50개(`variantPolicy.sampleSize`) 실행, 정답 분포·오개념 충돌 검사. 통과한 변형만 시드 풀로 빌드 |
 | 레슨 `<RunnableExample>` | 오류 없이 실행(의도된 오류 예제는 `expectError` 표시), `<ValueTrace>` 값 생성 |
 
 ### 5단계: 중복·분포 검사

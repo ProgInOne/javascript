@@ -1,6 +1,12 @@
 import { join } from 'node:path';
 import { CONTENT_DB_SCHEMA_VERSION, CONTENT_DDL } from '@proginone/content-schema/db';
-import { leakFingerprints, redactSpec } from '@proginone/exercise-kit';
+import {
+  instantiateTemplate,
+  instantiateVariant,
+  leakFingerprints,
+  redactSpec,
+  sampleSeeds,
+} from '@proginone/exercise-kit';
 import Database from 'better-sqlite3';
 import { tmpDir } from './helpers.ts';
 
@@ -599,3 +605,118 @@ export const PROJECT_EXERCISES: FixtureExercise[] = [
     ],
   },
 ];
+
+// ── Parametric template (D-056): a unit whose only practice is one template ──
+
+export const TPL_LESSON = 'js-basics.start.arithmetic';
+export const TPL_CONCEPT = 'js.basics.arithmetic';
+export const TPL = `${TPL_LESSON}.t.sum`;
+/** Answer-key marker of the fixture template's misconception map (never in a response). */
+export const TPL_MARKER = 'TPL-MARK';
+
+export const TEMPLATE_SOURCE = {
+  id: TPL,
+  type: 'predict_output',
+  params: {
+    a: { kind: 'int', min: 1, max: 9 },
+    b: { kind: 'int', min: 2, max: 9 },
+    c: { kind: 'int', min: 2, max: 5 },
+  },
+  constraints: [],
+  render: { prompt: '무엇이 출력되나요?' },
+  spec: {
+    lang: 'js',
+    code: 'console.log({{a}} + {{b}} * {{c}});\n',
+    answerKind: 'console',
+    misconceptionByAnswer: { '{{(a + b) * c}}': 'js.mc.log-is-return' },
+  },
+  hints: [
+    '`*`가 먼저예요.',
+    '`{{b}} * {{c}}`부터 계산해요.',
+    `그다음 {{a}}를 더해요. ${TPL_MARKER}`,
+  ],
+  explanation: '`{{b}} * {{c}}`를 먼저 계산해요.',
+  variantPolicy: { minDistinctFromRecent: 3 },
+};
+
+/** The fixture template's answer for a variant (what `check --run` would have recorded). */
+export function templateAnswer(variantId: string): string {
+  const { a, b, c } = instantiateVariant(TEMPLATE_SOURCE, variantId).params as Record<
+    string,
+    number
+  >;
+  return String((a ?? 0) + (b ?? 0) * (c ?? 0));
+}
+
+/**
+ * Adds the template unit to a fixture content.db: a lesson introducing `TPL_CONCEPT` with no bank
+ * exercises and the template `TPL` whose verified pool is its first `poolSize` sample seeds.
+ * Returns the pool's variant IDs in sample order.
+ */
+export function addTemplateFixture(path: string, poolSize = 6): string[] {
+  const db = new Database(path);
+  const ins = (table: string, row: Record<string, unknown>) => {
+    const cols = Object.keys(row);
+    db.prepare(
+      `INSERT INTO ${table} (${cols.join(',')}) VALUES (${cols.map((c) => `@${c}`).join(',')})`,
+    ).run(row);
+  };
+  ins('lessons', {
+    id: TPL_LESSON,
+    module_id: 'js-basics.start',
+    title: '산술',
+    summary: '요약',
+    order_index: 4,
+    estimated_minutes: 20,
+    read_minutes: 5,
+    objectives_json: '["계산한다"]',
+    body_compiled: '[]',
+    body_text: '',
+    sections_json: JSON.stringify({ v: 1, sections: [] }),
+    content_hash: 'h-tpl',
+  });
+  ins('concepts', {
+    id: TPL_CONCEPT,
+    course_id: 'js-basics',
+    title: '산술 연산',
+    summary: 's',
+    importance: 'core',
+    introduced_in_lesson_id: TPL_LESSON,
+  });
+  ins('lesson_concepts', { lesson_id: TPL_LESSON, concept_id: TPL_CONCEPT, role: 'introduces' });
+  ins('exercise_templates', {
+    id: TPL,
+    type: 'predict_output',
+    difficulty: 2,
+    lesson_id: TPL_LESSON,
+    usage: 'practice',
+    variant_group: null,
+    primary_concept_id: TPL_CONCEPT,
+    concepts_json: JSON.stringify([{ conceptId: TPL_CONCEPT, weight: 1, isPrimary: true }]),
+    template_json: JSON.stringify(TEMPLATE_SOURCE),
+    misconception_ids_json: '["js.mc.log-is-return"]',
+    tags_json: '[]',
+    estimated_seconds: 60,
+    variant_count_hint: 320,
+    min_distinct_from_recent: 3,
+    review_status: 'trusted',
+    template_hash: 'tpl-hash',
+  });
+  const ids: string[] = [];
+  sampleSeeds(TPL, poolSize).forEach((seed, i) => {
+    const variantId = instantiateTemplate(TEMPLATE_SOURCE, seed).variantId;
+    const expected = { kind: 'console', lines: [templateAnswer(variantId)] };
+    ins('template_variants', {
+      variant_id: variantId,
+      template_id: TPL,
+      seed: variantId.split('@')[1],
+      sample_index: i,
+      expected_json: JSON.stringify(expected),
+      answer_key: JSON.stringify(expected),
+      content_hash: `hash-${variantId}`,
+    });
+    ids.push(variantId);
+  });
+  db.close();
+  return ids;
+}

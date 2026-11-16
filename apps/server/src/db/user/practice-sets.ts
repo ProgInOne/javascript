@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, isNull, max } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, isNull, like, max, or } from 'drizzle-orm';
 import type { Orm } from './connection.ts';
 import {
   passRuleJson,
@@ -241,6 +241,51 @@ export function lastSeenAtByGroup(orm: Orm, learnerId: string): Record<string, n
     if (row.at !== null) out[row.key] = row.at.getTime();
   }
   return out;
+}
+
+/**
+ * Exercises the learner answered at least once (exact IDs; each template variant is its own
+ * exercise). Selection ranks repeats below unseen exercises (D-057).
+ */
+export function seenExerciseIds(orm: Orm, learnerId: string): Set<string> {
+  return new Set(
+    orm
+      .selectDistinct({ id: attempts.exerciseId })
+      .from(attempts)
+      .where(eq(attempts.learnerId, learnerId))
+      .all()
+      .map((r) => r.id),
+  );
+}
+
+/**
+ * Variants of the given templates the learner was served in any practice set, oldest first
+ * (set creation time, then position). Template IDs are slugs, so `LIKE '<id>@%'` has no
+ * wildcard inside the ID.
+ */
+export function servedVariants(
+  orm: Orm,
+  learnerId: string,
+  templateIds: readonly string[],
+): { exerciseId: string; at: number }[] {
+  if (templateIds.length === 0) return [];
+  return orm
+    .select({
+      exerciseId: practiceSetItems.exerciseId,
+      at: practiceSets.createdAt,
+      position: practiceSetItems.position,
+    })
+    .from(practiceSetItems)
+    .innerJoin(practiceSets, eq(practiceSetItems.practiceSetId, practiceSets.id))
+    .where(
+      and(
+        eq(practiceSetItems.learnerId, learnerId),
+        or(...templateIds.map((id) => like(practiceSetItems.exerciseId, `${id}@%`))),
+      ),
+    )
+    .orderBy(asc(practiceSets.createdAt), asc(practiceSetItems.position))
+    .all()
+    .map((r) => ({ exerciseId: r.exerciseId, at: r.at.getTime() }));
 }
 
 /**

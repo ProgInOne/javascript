@@ -1,4 +1,5 @@
 import { ASSESSMENT_MAX_ITEMS } from '@proginone/content-schema';
+import { instantiateVariant, leakFingerprints, parseVariantId } from '@proginone/exercise-kit';
 import { CONTENT_DB_SCHEMA_VERSION, contentTables as t } from '@proginone/content-schema/db';
 import type {
   CourseDetail,
@@ -123,6 +124,26 @@ export interface ContentExercise {
   leakFingerprints: string[];
 }
 
+/** One servable variant of a template's verified seed pool. */
+export interface TemplatePoolEntry {
+  variantId: string;
+  sampleIndex: number;
+  /** Canonical answer (server only): "different from the last N answers" selection. */
+  answerKey: string;
+}
+
+/** An `exercise_templates` row with its verified pool (D-056), without the template source. */
+export interface ContentTemplate {
+  id: string;
+  type: string;
+  difficulty: number;
+  lessonId: string;
+  usage: 'practice' | 'remedial';
+  primaryConceptId: string;
+  minDistinctFromRecent: number;
+  pool: TemplatePoolEntry[];
+}
+
 /** Read-only access to content.db (docs/design/data-model.md#contentdb-설계). */
 export class ContentRepository {
   readonly #db: Db;
@@ -131,6 +152,9 @@ export class ContentRepository {
   #prerequisites: ConceptPrerequisiteRow[] | undefined;
   #projectLessons: Set<string> | undefined;
   #targets: Map<string, Set<string>> | undefined;
+  #templates: Map<string, ContentTemplate> | undefined;
+  /** Instantiated variants by ID (pure and deterministic, so safe to keep for the process). */
+  readonly #variants = new Map<string, ContentExercise | null>();
 
   constructor(path: string) {
     const sqlite = openSqlite(path, { readonly: true });
@@ -339,9 +363,11 @@ export class ContentRepository {
 
   /**
    * A full exercise including its server-only spec (answer keys). Never send `spec` to the
-   * client; use exercise-kit `redactSpec`.
+   * client; use exercise-kit `redactSpec`. Template variant IDs (`<template id>@<seed>`) resolve
+   * to an instantiated variant when the seed is in the template's verified pool (D-056).
    */
   getExercise(id: string): ContentExercise | null {
+    if (id.includes('@')) return this.#variant(id);
     const row = this.#db.select().from(t.exercises).where(eq(t.exercises.id, id)).get();
     if (!row) return null;
     return this.#toExercise(row, this.#exerciseConcepts([id]).get(id) ?? []);
@@ -349,13 +375,132 @@ export class ContentRepository {
 
   getExercises(ids: readonly string[]): ContentExercise[] {
     if (ids.length === 0) return [];
+    const variants = ids
+      .filter((id) => id.includes('@'))
+      .map((id) => this.#variant(id))
+      .filter((e) => e !== null);
+    const authored = ids.filter((id) => !id.includes('@'));
+    if (authored.length === 0) return variants;
     const rows = this.#db
       .select()
       .from(t.exercises)
-      .where(inArray(t.exercises.id, [...ids]))
+      .where(inArray(t.exercises.id, authored))
       .all();
     const concepts = this.#exerciseConcepts(rows.map((r) => r.id));
-    return rows.map((r) => this.#toExercise(r, concepts.get(r.id) ?? []));
+    return [...rows.map((r) => this.#toExercise(r, concepts.get(r.id) ?? [])), ...variants];
+  }
+
+  /** Every template with its verified pool, keyed by ID (loaded once; content.db is read-only). */
+  #templateIndex(): Map<string, ContentTemplate> {
+    if (this.#templates) return this.#templates;
+    const pools = new Map<string, TemplatePoolEntry[]>();
+    for (const row of this.#db
+      .select({
+        templateId: t.templateVariants.templateId,
+        variantId: t.templateVariants.variantId,
+        sampleIndex: t.templateVariants.sampleIndex,
+        answerKey: t.templateVariants.answerKey,
+      })
+      .from(t.templateVariants)
+      .orderBy(asc(t.templateVariants.templateId), asc(t.templateVariants.sampleIndex))
+      .all()) {
+      const list = pools.get(row.templateId) ?? [];
+      list.push({ variantId: row.variantId, sampleIndex: row.sampleIndex, answerKey: row.answerKey });
+      pools.set(row.templateId, list);
+    }
+    this.#templates = new Map(
+      this.#db
+        .select({
+          id: t.exerciseTemplates.id,
+          type: t.exerciseTemplates.type,
+          difficulty: t.exerciseTemplates.difficulty,
+          lessonId: t.exerciseTemplates.lessonId,
+          usage: t.exerciseTemplates.usage,
+          primaryConceptId: t.exerciseTemplates.primaryConceptId,
+          minDistinctFromRecent: t.exerciseTemplates.minDistinctFromRecent,
+        })
+        .from(t.exerciseTemplates)
+        .orderBy(asc(t.exerciseTemplates.id))
+        .all()
+        .map((row) => [row.id, { ...row, pool: pools.get(row.id) ?? [] }]),
+    );
+    return this.#templates;
+  }
+
+  /**
+   * Templates (with a non-empty pool) whose primary concept is one of `conceptIds` or whose home
+   * lesson is `lessonId`, of the given usages. Variant selection is the caller's
+   * (services/practice/templates.ts).
+   */
+  listTemplates(filter: {
+    conceptIds?: readonly string[];
+    lessonId?: string;
+    usages: readonly ContentTemplate['usage'][];
+  }): ContentTemplate[] {
+    const concepts = new Set(filter.conceptIds ?? []);
+    return [...this.#templateIndex().values()].filter(
+      (tpl) =>
+        tpl.pool.length > 0 &&
+        filter.usages.includes(tpl.usage) &&
+        (concepts.has(tpl.primaryConceptId) || tpl.lessonId === filter.lessonId),
+    );
+  }
+
+  /**
+   * Instantiates `<template id>@<seed>` with exercise-kit's engine (deterministic: the same ID
+   * always yields the same variant) and fills the execution-derived answer key recorded at build
+   * time. Seeds outside the verified pool are not served (null): their answers were never run.
+   */
+  #variant(id: string): ContentExercise | null {
+    const cached = this.#variants.get(id);
+    if (cached !== undefined) return cached;
+    const resolved = this.#resolveVariant(id);
+    this.#variants.set(id, resolved);
+    return resolved;
+  }
+
+  #resolveVariant(id: string): ContentExercise | null {
+    const parsed = parseVariantId(id);
+    if (!parsed) return null;
+    const pooled = this.#db
+      .select()
+      .from(t.templateVariants)
+      .where(eq(t.templateVariants.variantId, id))
+      .get();
+    if (pooled?.templateId !== parsed.templateId) return null;
+    const row = this.#db
+      .select()
+      .from(t.exerciseTemplates)
+      .where(eq(t.exerciseTemplates.id, parsed.templateId))
+      .get();
+    if (!row) return null;
+    const instance = instantiateVariant(row.template, id);
+    const spec = { ...(instance.spec as Record<string, unknown>) };
+    if (pooled.expected !== null) spec['expected'] = pooled.expected;
+    const levels = instance.hints ?? [];
+    return {
+      id,
+      type: row.type,
+      difficulty: row.difficulty,
+      lessonId: row.lessonId,
+      usage: row.usage,
+      // Explicit, so every consumer computes the same group key (the template ID by default).
+      variantGroup: row.variantGroup ?? row.id,
+      prompt: instance.render['prompt'] ?? '',
+      code: instance.render['code'] ?? null,
+      spec,
+      hints: { v: 1, levels },
+      explanation: instance.explanation ?? '',
+      estimatedSeconds: row.estimatedSeconds,
+      origin: 'template',
+      contentHash: pooled.contentHash,
+      concepts: [...row.concepts].sort(
+        (a, b) => Number(b.isPrimary) - Number(a.isPrimary) || a.conceptId.localeCompare(b.conceptId),
+      ),
+      misconceptionIds: row.misconceptionIds,
+      workedExampleStage: null,
+      leakFingerprints: leakFingerprints(row.type, spec),
+    };
   }
 
   /**

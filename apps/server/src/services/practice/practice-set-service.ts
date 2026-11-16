@@ -19,6 +19,7 @@ import {
   insertSet,
   lastSeenAtByGroup,
   listItems,
+  seenExerciseIds,
   type PracticeSet,
 } from '../../db/user/practice-sets.ts';
 import { getLessonProgress, upsertLessonProgress } from '../../db/user/progress.ts';
@@ -29,6 +30,7 @@ import type { ReviewService } from '../review/review-service.ts';
 import type { WeaknessService } from './weakness.ts';
 import { candidateOf, learnerContext, passRuleOverrides } from './engine.ts';
 import { activeMisconceptionsByConcept, misconceptionTargetIds } from './signals.ts';
+import { templateCandidates } from './templates.ts';
 import { buildSetView } from './views.ts';
 
 /** Item reason of a "다시 풀기" item (an `extra` set from the mistake notes). */
@@ -431,9 +433,22 @@ export class PracticeSetService {
     const covered = project ? lesson.practices : lesson.introduces;
     const reviews = project ? [] : lesson.reviews;
     const excluded = excludedExerciseIds(orm, learnerId);
-    const candidates = repo
-      .listPracticeExercises(lessonId, reviews)
-      .filter((e) => !excluded.has(e.id))
+    const setId = newId();
+    // The lesson's bank items plus one fresh variant per template of the lesson or of a reviewed
+    // concept: a later set ("한 번 더 연습") gets new variants instead of repeats (D-057).
+    const candidates = [
+      ...repo.listPracticeExercises(lessonId, reviews).filter((e) => !excluded.has(e.id)),
+      ...(project
+        ? []
+        : templateCandidates({
+            repo,
+            orm,
+            learnerId,
+            templates: repo.listTemplates({ lessonId, conceptIds: reviews, usages: ['practice'] }),
+            seed: setId,
+            excluded,
+          })),
+    ]
       .map(candidateOf)
       .filter((c) => c !== null);
     const conceptIds = [...new Set([...covered, ...reviews])];
@@ -446,7 +461,6 @@ export class PracticeSetService {
       return [{ conceptId: id, importance: concept.importance, ...(state ? { state } : {}) }];
     });
 
-    const setId = newId();
     const now = this.#now();
     const plan = buildLessonPracticeSet(this.#engine, {
       lesson: {
@@ -459,6 +473,7 @@ export class PracticeSetService {
       concepts: setConcepts,
       candidates,
       lastSeenAtByGroup: lastSeenAtByGroup(orm, learnerId),
+      seenExerciseIds: seenExerciseIds(orm, learnerId),
       misconceptionTargetIds: misconceptionTargetIds(
         repo,
         activeMisconceptionsByConcept(this.#engine, orm, learnerId, now),

@@ -15,6 +15,11 @@ import { canonical, sha256 } from './hash.ts';
  * while a code change without a new run is caught as a stale expectation.
  */
 export const EXPECTATIONS_FILE = '.generated/predict-expected.json';
+/**
+ * The same store for template variants, keyed by variant ID (`<template id>@<seed>`) of each
+ * build-time sample seed (docs/design/content-and-exercises.md#정답의-실행-계산).
+ */
+export const TEMPLATE_EXPECTATIONS_FILE = '.generated/template-expected.json';
 
 /** Bump when the hashed inputs or the stored shape change; every entry becomes stale. */
 const STORE_VERSION = 1;
@@ -56,9 +61,13 @@ export function predictInputHash(spec: Readonly<Record<string, unknown>>): strin
   );
 }
 
-/** Reads `<root>/.generated/predict-expected.json`. A missing file is an empty store. */
-export function readExpectations(root: string, diag: Diagnostics): ExpectationStore {
-  const file = join(root, EXPECTATIONS_FILE);
+/** Reads `<root>/.generated/predict-expected.json` (or `name`). A missing file is an empty store. */
+export function readExpectations(
+  root: string,
+  diag: Diagnostics,
+  name: string = EXPECTATIONS_FILE,
+): ExpectationStore {
+  const file = join(root, name);
   if (!existsSync(file)) return emptyStore();
   let raw: unknown;
   try {
@@ -88,8 +97,12 @@ export function serializeExpectations(store: ExpectationStore): string {
   return `${JSON.stringify({ v: store.v, entries }, null, 2)}\n`;
 }
 
-export function writeExpectations(root: string, store: ExpectationStore): string {
-  const file = join(root, EXPECTATIONS_FILE);
+export function writeExpectations(
+  root: string,
+  store: ExpectationStore,
+  name: string = EXPECTATIONS_FILE,
+): string {
+  const file = join(root, name);
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, serializeExpectations(store));
   return file;

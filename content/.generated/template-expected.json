@@ -1,0 +1,845 @@
+{
+  "v": 1,
+  "entries": {
+    "js-basics.arrays.array-hof.t.predict-map@14fdb4126a806f53": {
+      "inputHash": "534705c727882a000f3412494c631645dff2750c762d7b84de4a6b8243035fa4",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[2, 8, 5]",
+          "[6, 24, 15]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@1e54539f2e6f11b": {
+      "inputHash": "829f305b7084b7b51b5b66582a87a9493bc843ed3d0ab7f538af72c61563de8a",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[9, 3, 9]",
+          "[27, 9, 27]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@2a1038dcc6825a81": {
+      "inputHash": "64d619c67dea5f246fecb50b80f3450c2b24cb98aa008705abb4093e7fe84415",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[6, 9, 9]",
+          "[9, 12, 12]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@2bf9ce700ec20a62": {
+      "inputHash": "20226c3e2c562c7dc8665678bd2ea88d8155586ae7a790cb5105a3b967513414",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[9, 7, 6]",
+          "[18, 14, 12]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@2e331d7c887f7b10": {
+      "inputHash": "59fd6995d391e3e4de1dee04595ccfc16be164048e9bab609a690c6d97e660eb",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[9, 6, 1]",
+          "[18, 12, 2]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@3073107ccbc79288": {
+      "inputHash": "2bfe15e0d080f56b6068806fa41d7064557b801593574eb4032bbd618b159864",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[2, 7, 5]",
+          "[4, 14, 10]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@44706aba9cb0de99": {
+      "inputHash": "0a2ae1705833408bb30e1b7b41ea3e0d56494be8eba845af8ae030d82024c52c",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[3, 2, 6]",
+          "[12, 8, 24]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@44bbc55727e2360f": {
+      "inputHash": "ea592377410be3be20106f7f524c3f754b837d64f82ac5824fc13d06a65653b7",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[9, 6, 5]",
+          "[12, 9, 8]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@4fee9f8a67148881": {
+      "inputHash": "21a3c4eb0d1cef5d0400c715000a6dad5979151d294e5b6f2271f7ccb8f88bbb",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[8, 1, 6]",
+          "[12, 5, 10]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@5d7e7d828eb640be": {
+      "inputHash": "28e909b538cf4247440a7dbd10998e1095abaaec80dda8d537bd1523915d427c",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[9, 2, 2]",
+          "[11, 4, 4]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@5dbd2e7c64b2b190": {
+      "inputHash": "075e9468de4e9732144a6ecf98e518d84df2e72f91783e5ec1f029c00d207ef2",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[3, 5, 3]",
+          "[9, 15, 9]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@61c740fc1206ed82": {
+      "inputHash": "13221af50f8b333678de000939d810b17475acc8cd6c9f20e3ce125beb908b34",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[9, 3, 8]",
+          "[45, 15, 40]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@6e7b973c8d07cf4b": {
+      "inputHash": "ed15281b95ac97fd628defb0e44dcaf91f0c2c205a4ffdc634b8b02e5715aa42",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[3, 8, 6]",
+          "[15, 40, 30]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@7d7f500e229efcd1": {
+      "inputHash": "72eda3d434fcf72ee64836a2a54d8b1f5eb106b739d70e0aa4becd78ee620a7b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[4, 7, 4]",
+          "[16, 28, 16]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@8bf8334b7587c80b": {
+      "inputHash": "e140542315f99b3cd5d6b112941a9b6fb06ab0971471bc59a167807c11f5c058",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[1, 9, 9]",
+          "[2, 18, 18]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@8f319493773eac1c": {
+      "inputHash": "88a8d232027b04a434e53601ead78cf665bc7957956be23b8e6787f3d2c881e1",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[9, 7, 5]",
+          "[27, 21, 15]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@93f39603d6c0b137": {
+      "inputHash": "947330cc340ab52aa3a4287da55ab8478b13d1dff68393d1f7afdc4d0f4d1857",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[1, 3, 1]",
+          "[5, 7, 5]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@9b3c9a5cf8ae4ac7": {
+      "inputHash": "124b87c887b698563fff867e1b2a6f7a6e586335c9ca94de481e90c35d1ba28c",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[1, 9, 9]",
+          "[4, 12, 12]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@a502ab3546407692": {
+      "inputHash": "9f28b64ffae22426828feea1a9b0e377b626d8a12560cf3a20d6070e91ec9936",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[7, 3, 1]",
+          "[9, 5, 3]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@a672e63b175fac43": {
+      "inputHash": "b95d4eb87c6981fa206e085c71e4f7a8cb4bb5c92fd589396765224d4a5c180e",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[3, 1, 3]",
+          "[6, 4, 6]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@a8bd41bc7ab6627": {
+      "inputHash": "fb3a92fba50bcf8eb002c5ff3e53061b3115f09753b232c22ad67e91ecebe707",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[4, 5, 8]",
+          "[12, 15, 24]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@b5374884fece0964": {
+      "inputHash": "4603649142496613f9bdea6b38c0a1ef1837284d9c55a177280b271989060e69",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[8, 8, 5]",
+          "[24, 24, 15]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@c2ed25dc0e151dbd": {
+      "inputHash": "33efaccf7fc7c585cf46d5478c9aafc74e9eee61d345f7271871d589afe85d58",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[7, 7, 1]",
+          "[12, 12, 6]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@c9a4be85d6fe1a3a": {
+      "inputHash": "e875ff9da9d9821298f1c778098396ccd7ae87a5237464687790ce222fe4feac",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[7, 7, 3]",
+          "[14, 14, 6]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@cb25a36cc2573561": {
+      "inputHash": "b52f98c4fb1945bc8aa8e8d556ca582ecd5b827159a08b42c3d8c469011e7ed8",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[2, 3, 6]",
+          "[5, 6, 9]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@da113829402596d6": {
+      "inputHash": "e409d00e8791d31e9cb993e5a3996d1cd6e02eb659bc0c48ed806ebe14758643",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[6, 4, 2]",
+          "[9, 7, 5]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@f5012b9afb25b773": {
+      "inputHash": "fd89e6e982c3db420bb47172afa1a46a5211cff527486f52fdad663d5d4b1409",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[9, 8, 8]",
+          "[14, 13, 13]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@f7603c36799f1155": {
+      "inputHash": "36183c90974980e58dd6c66346532a2c89ccb6526b7c29cce4261fd4d993c050",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[5, 6, 3]",
+          "[25, 30, 15]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@f814df7ba7dc06dc": {
+      "inputHash": "8c37ef34f4ce30c4f64b19a69efe6393a0e544bc23fa844756a4cdcf2a3d7135",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[9, 1, 3]",
+          "[13, 5, 7]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.t.predict-map@ff51afc054815919": {
+      "inputHash": "df5e6a28f1fcd02c83c0d02e1763418e059d36a01e23ab1ce8449810b6fb3826",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[6, 5, 2]",
+          "[18, 15, 6]"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@12ec11d39069ce0d": {
+      "inputHash": "c4c985a4268a1b5f4042f3d7b84f67f67c15ecb12ddcb09415cc0aa108c9f683",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "43"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@23def4d1fb2a8d14": {
+      "inputHash": "848591ea6705158fe39794ecd3fec9f1766f2a640b2a6d75cdbeb48458dca32b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "14"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@2a0fd91932b6576c": {
+      "inputHash": "41a2f14f632d4cdcaa62171965dc6ee52fc8e9e89ebce6ffa7b308ddf07be5be",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "24"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@2d9da680887e1748": {
+      "inputHash": "647a9023be0d0b3ddd17ced158acb7b7a87a8be9f1ed598e0f288248914f98a0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "20"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@2ec2db7da2b0861a": {
+      "inputHash": "67946a0a8fcf563350f3479e93452a33f55faaac373709b3334c94e31cdf895d",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "6"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@383aacf858c7883f": {
+      "inputHash": "a7577c72cac6cd9c0ce3d82376cebfadc8644cad99b340d33986fe278a2f4c7f",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "21"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@44485c633f3f9d70": {
+      "inputHash": "1aaf4780b02ca16b08d2bb899fc39b13f8be549cb58553368218a5306a3a6d87",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "13"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@4cbe556548d8bc7b": {
+      "inputHash": "ceb092c2cc8a12f3dae65f214b0515f16867cc9d9aa3857f371d18f112eb65c8",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "6"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@544a6bb2f5430afc": {
+      "inputHash": "baec139de393dcc965cd37a2340097fc3a1d347cd71e1bb8989e86c50dc2b03d",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "34"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@62e234afd2fe9bfd": {
+      "inputHash": "7198d2560f539b470bcc9c67a6714819a7f7ac6b9b4f5d566653cd199de4bef1",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "44"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@6417736a6934bb38": {
+      "inputHash": "20a4dd8a3bc0ee8dfc0f72fa3107198a9783d2a64e581c934f61298dedf04396",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "23"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@6894ab932ca164a4": {
+      "inputHash": "2ee7c79fe7b40ca9b3382f53e6b5dd3e629404afecde49e5f1b0fa3afe8651e5",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "46"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@6ba549e3c3555392": {
+      "inputHash": "73667268fd53fc24d4ffa59d25e378774910f836262fbe35b5fcccf9141066e0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "7"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@6bab98a1e1199fca": {
+      "inputHash": "bc5d55eea4882c128437e5017053bf0d61763be16238f008a3af4845c242aaaf",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "15"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@7e4bc690cd23d3bd": {
+      "inputHash": "4d67c5a5944100639b0c4e77d3c1cfdb38f70a640c45dbd61a7a587b808fd1c6",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "20"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@7ffa3cf2378d6e89": {
+      "inputHash": "f5e1164632f14d712e7f470098fa57406225a035cb9eb902a2e9b499668bb68e",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "7"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@98052d38e663e9d": {
+      "inputHash": "00bc7b767b22b0aa9081883095534cc5cde05f2b32d15e55620117820e41875c",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "20"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@a7a0bb411f7c64b0": {
+      "inputHash": "c6d7388cf38b5c2a2db7c0ea2254445acd2f141a4391b009a5991c24d9773d9e",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "21"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@abbe35e725fdb18d": {
+      "inputHash": "86dc26ca43c5cfa5349f1ddca3a32052c2cca33600a18583ffc3f93cd64fce5d",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "11"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@afd1ec8ba3c01220": {
+      "inputHash": "1cf1601498b62b7769914b4b5fad6ecd618ff7055c263ce0f6582116f07deb4b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "12"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@b7cf840398df3a62": {
+      "inputHash": "bd3103b2718b24f0141ce371962f9b2b5a295ee901db326fc4072d71243db794",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "22"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@c78b58984661fbf8": {
+      "inputHash": "7862904054ee02719364621fdf9ce77ea14647e409e0bbaa49fed6cf41fc2f62",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "20"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@c9b08125f3c59006": {
+      "inputHash": "20fcf017cf780eafcb948ebe9d06d95319d8d69e1510b878ee522214df1e5946",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "21"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@cd1c7313d0e04866": {
+      "inputHash": "6440b7958ac052002627b7f1d36d1962ff8dcd1722329e43606be69191395106",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "66"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@d5cb70b5c6826d97": {
+      "inputHash": "06659b8a1989133455189feeea121a00999d64edd41024126b6f08cf6ad1895a",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "46"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@da29361247cc7380": {
+      "inputHash": "e3bb20db529f6e87475163ffd5a2c21d4e622f6dec5399456d08a81191291444",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "45"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@db3a97cdae80b6a6": {
+      "inputHash": "cbaace42a6ab4fa4038bfcc812b9d37ed00a2a6d74ddf833fed3161749d38ded",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "47"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@e1608762a2acd8fa": {
+      "inputHash": "bbd8b9ae77309358a929d1c964848dcbad57fc08c518a7bd76be7bb54654c38d",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "22"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@e929a1cd3a08dc1a": {
+      "inputHash": "166be750d850ed0b4ae3b781f37881a02dd22e6c9d8af6232e04e991cba3a009",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "21"
+        ]
+      }
+    },
+    "js-basics.loops.for.t.predict-accumulator@f5964abd38434fe0": {
+      "inputHash": "68e4605de57b1f9f09f14a271cfb53bdc8b36f5148f4acf629ea362fda6c8601",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "8"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@1279324030621ca": {
+      "inputHash": "fd28d3ace21898b63eb40f5a7761161d974beb5dbda0e5b519669532352bb953",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "61"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@13f3df1eebe1a134": {
+      "inputHash": "2b112c0cabd4ceb7bb2e2a35ba41bdcd46f66b274fb87258067979b4b69fa370",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "4"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@1b7252530cdf929": {
+      "inputHash": "311de251ef4795a280f00b291dd21cb0d5dfa3c8ea027c39bc83be26c2c5f2e7",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "88"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@2b51ba498bac4134": {
+      "inputHash": "9b298b7810127bdd083d825b7b34fa3f6bbc3b016c3b416a4bb0e3e7643311a9",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "47"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@3b4f5a608fc2d371": {
+      "inputHash": "3cbcfda08b778f58d23d711ea99f313d71cf17388bdd5e80f6c680f7acc1a1d0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "23"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@51ec5626e7ab3e3d": {
+      "inputHash": "9b392c61ee63ecfa1a5978f7624443f48df95c1f107c9ce43044f15d1e1c8015",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "90"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@598c30367eef5625": {
+      "inputHash": "8fe21f9c33cf566f354b193ca9698d3ac83a0d8f0f4f4337198d37ac56232b42",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "42"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@5a189905e4af3b3f": {
+      "inputHash": "7b8deebd3cb7373ad85753d18c1e178e01ba14eaa44b1dac30c1f1b34468762a",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "72"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@5b7d7d697f9884f5": {
+      "inputHash": "23fd945474f3f617f62697887cabf38eb7c802a19d751a9b02ddac7a2abffd8b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "53"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@5bf8d69fba68a867": {
+      "inputHash": "f5e05f119e08e81c351deaccda82d637a8ad9d4f6de45b54c7c507c8d3938ec1",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "11"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@6091d1a9f273df73": {
+      "inputHash": "33a16b65f406646c8f624307f84703cd77c9e51d502071a10a47c01f25ff0fc1",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "97"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@71708961e68bea10": {
+      "inputHash": "d4a60b3e7ae6587ef68b7e24764bf799510644c9fa902c4d0501a70d48bee4d2",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "80"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@71afb26de55874b1": {
+      "inputHash": "d18fda415dc24a87ff9786e550d33a2df0c807785b0a3c47a14c6b8249517933",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "58"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@7892fbd98149badc": {
+      "inputHash": "2991b12ac169033aaf423ae6dbd818c76e6d36b0e15603180d6339f469dd40ad",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "19"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@7f77ab82729ed0b1": {
+      "inputHash": "ea1653b67fe063549f23e2367cf62c37d327ebe6a8dc8674c46e09e7e78509f3",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "15"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@81ecaaf21a83eb0f": {
+      "inputHash": "cc0007ee4cc771f0397963a899a3fd26eb1abd1e66cdfca2145639750b00453e",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "44"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@97742e6c8859627c": {
+      "inputHash": "f6f30e0f728dab9ad939468ab8843c37b09063838bc8bc6e8fe9626d19f08bbe",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "54"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@98b7e082f4e12499": {
+      "inputHash": "59cd4e62cf6f2008e3cc89af4de421b0b3a168608eeff0633a74c5045a34e893",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "45"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@ae110dc98771fa2c": {
+      "inputHash": "70ee398796c4ee201db81db0ecc5b2769cc2923b84e45f7d665f507cc6195225",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "32"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@ba26ffeedbb839c2": {
+      "inputHash": "eeb4cd9e59c93afab7550f98ad98473020f4465bd73b2e1f817b89b8d7cd94e3",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "30"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@c33e8093cc11c47": {
+      "inputHash": "e365997515585c5b7eb2bc9c2cc6ea5649b635665c0ec99763dc86ad7da54631",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "54"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@c3b0b2bf32092722": {
+      "inputHash": "3835df18246591f206d97cade0d3795ffd1c654e44cb3461fb837d4361226754",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "33"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@c8d5f5599748a871": {
+      "inputHash": "ed84bccf802a18b52fbd2f0c15554f65924630c90c59e6e8d375c5ae6c102151",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "53"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@cc0cb31dfb67fae7": {
+      "inputHash": "b5390ece83496237276104f8d6bdd32257d618dc465b195966c31b3a8832dcd3",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "27"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@cf866b6a467390ec": {
+      "inputHash": "b2bf5d9229f73abc282da3d0edc3f66e28db1f17f82998b247b1a3c67ed303ce",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "8"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@d1cdb3cd2ac5275a": {
+      "inputHash": "3d8f25392652ea05ecd7c69fcddd1f2f41ff365bd1fedcac8e2d4a47af73e1ee",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "16"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@e8ee2878a5ca4413": {
+      "inputHash": "eec27ce06ecdb287df1804ad00348a27ab6c917aa85548b63dc44864ed8b44b1",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "57"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@f36c5c504c8c2633": {
+      "inputHash": "a4690a64756da75e80ff1403ab920a22d86fc16bea03f41d4b2cdc17066c447b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "76"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@fd2953456a732530": {
+      "inputHash": "7b019d5890b54c7e4484df9222bf43b2c108ea2f0bb564d98c09ecee396cc213",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "9"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.t.predict-precedence@ff50c12081bbc606": {
+      "inputHash": "3019289894cc90d40495dafd67d28001963c70f4382fdff700258cf5d924b8d8",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "33"
+        ]
+      }
+    }
+  }
+}

@@ -25,6 +25,12 @@ export interface SelectionContext {
   readonly lastSeenAtByGroup: Readonly<Record<string, number>>;
   /** Exercises that target an active misconception (`misconceptions.remedial_exercise_ids_json`). */
   readonly misconceptionTargetIds?: readonly ExerciseId[];
+  /**
+   * Exercises the learner already answered (exact IDs, so each template variant is its own
+   * exercise). When given, a repeat ranks below a not-yet-seen exercise of the same freshness
+   * bracket and range, so a new template variant beats repeating a bank item (D-009, D-057).
+   */
+  readonly seenExerciseIds?: ReadonlySet<ExerciseId>;
   readonly now: number;
 }
 
@@ -171,7 +177,8 @@ export function plan(
 
 /**
  * Picks the best candidate. Tiers: fresh in-range, fresh any, recent (freshness 0) in-range,
- * recent any. Inside a tier: highest score, then the seeded tie-break key, then the ID.
+ * recent any; inside each, an exercise the learner has not answered yet comes before a repeat
+ * (`seenExerciseIds`). Inside a tier: highest score, then the seeded tie-break key, then the ID.
  */
 export function pickBest(
   config: EngineConfig,
@@ -191,7 +198,11 @@ export function pickBest(
   } | null = null;
   for (const candidate of pool) {
     const scored = scoreCandidate(config, candidate, input);
-    const tier = (scored.factors.freshness > 0 ? 0 : 2) + (input.inRange(candidate) ? 0 : 1);
+    const repeat = input.context.seenExerciseIds?.has(candidate.id) === true;
+    const tier =
+      (scored.factors.freshness > 0 ? 0 : 4) +
+      (input.inRange(candidate) ? 0 : 2) +
+      (repeat ? 1 : 0);
     if (best === null || isBetter(candidate, scored.score, tier, best, input.tieBreak)) {
       best = { candidate, scored, tier };
     }

@@ -90,6 +90,7 @@ import {
   insertItems,
   insertPendingRating,
   lastSeenAtByGroup,
+  seenExerciseIds,
   listItems,
   replaceItemExercise,
   touchedItemIds,
@@ -116,6 +117,7 @@ import {
   remediationContext,
   remediationView,
 } from './signals.ts';
+import { templateCandidates } from './templates.ts';
 import { nextItemIdOf, progressOf, resultView } from './views.ts';
 
 export interface AttemptServiceDeps {
@@ -886,7 +888,19 @@ export class AttemptService {
         .filter((e) => !excluded.has(e.id))
         .map(candidateOf)
         .filter((c) => c !== null);
-    const candidates = usable(repo.listExercisesForConcepts(conceptIds, ['practice']));
+    // Template variants too: a follow-up after viewing the solution is a sibling variant of the
+    // same template when there is one (the set's own variants count as served, D-057).
+    const candidates = usable([
+      ...repo.listExercisesForConcepts(conceptIds, ['practice']),
+      ...templateCandidates({
+        repo,
+        orm,
+        learnerId,
+        templates: repo.listTemplates({ conceptIds, usages: ['practice'] }),
+        seed: `${set.row.id}:${item.id}`,
+        excluded,
+      }),
+    ]);
     const remedialCandidates =
       remediation === null
         ? []
@@ -959,6 +973,7 @@ export class AttemptService {
       remedialCandidates,
       concepts: [...input.states.values()],
       lastSeenAtByGroup: lastSeenAtByGroup(orm, learnerId),
+      seenExerciseIds: seenExerciseIds(orm, learnerId),
       seed: `${set.row.id}:${item.id}`,
       now,
     });

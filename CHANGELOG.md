@@ -11,10 +11,13 @@
 - `content-cli report`(`pnpm content:report`, `--markdown`): 단원별 승인 수/기준, 범주별 수·비율, 난이도 1~5 분포, 유형 수, 초안 수, 수량 기준 위반 목록
 - 콘텐츠 별칭(M7, FR-CUR-06, D-057): `content/aliases.yaml`(`rename`·`merge`·`split`)을 검사해 content.db `content_id_aliases`에 기록. 앱이 시작할 때와 백업을 복원한 뒤 이전 slug를 가리키는 학습 기록(시도·힌트·숙련도·기억·복습 기록·오답 노트·진도·오개념 관찰·목표·튜터 범위)을 새 slug로 옮김(바꿀 기록이 있을 때만 먼저 백업, 같은 별칭 집합은 한 번만 적용). 숙련도·기억처럼 개념마다 한 행인 기록은 새 slug에 기록이 없을 때만 옮김
 - 공개 slug 목록 `content/.published-slugs.txt`(D-057): `content-cli build`(초안 제외)가 갱신하고, `content-cli check`는 목록에 있던 slug가 별칭 없이 사라지거나 승인됐던 문제가 초안으로 돌아가면 경고
+- 파라메트릭 템플릿 콘텐츠 파이프라인(FR-EX-08, [D-058](docs/decisions.md)): 단원의 `templates/*.yaml` 형식과 스키마, `content:check`의 표본 시드 검사, `content:check:run`의 변형별 실행 검증(정답 키는 실행으로만 계산, 결정론 확인)과 `.generated/template-expected.json` 기록, 실행 검증된 시드 풀을 content.db(`exercise_templates`, `template_variants`)에 저장. 핵심 개념 템플릿 초안 3개(계산 우선순위, for 누적, map).
+- 템플릿 변형 출제(FR-EX-08·FR-EX-14, [D-059](docs/decisions.md)): 서버가 검증된 시드 풀의 `<템플릿 ID>@<시드>` 변형을 요청 시 만들고 실행으로 계산한 정답 키로 채점합니다. 단원 연습("한 번 더 연습" 포함)·복습·약점 연습·적응 후속 문항이 템플릿마다 아직 안 본 변형을 후보로 받고, 이미 푼 문제의 반복보다 새 변형을 먼저 냅니다. 변형을 신고하면 그 템플릿 전체가 멈춥니다. 서버 테스트와 템플릿 전용 E2E 서버(`E2E_PORT + 4`)의 E2E를 더했습니다.
 
 ### Changed
 
 - CI를 저장소 변수 `CI_RUNNER`로 self-hosted runner와 GitHub 호스트 runner 사이에서 전환할 수 있게 함(D-055). self-hosted(macOS)에서는 e2e·시각 회귀를 Docker로 같은 Playwright 이미지에서 실행하고, 릴리스 묶기가 bsdtar에서도 동작
+- content.db 스키마 버전 4. 기존 content.db는 `pnpm content:build`(개발은 `content:build:dev`)로 다시 만드세요.
 
 ## [0.3.0] - 2026-11-15
 

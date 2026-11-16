@@ -48,11 +48,14 @@ content/
 │                   └── 01-first-program/
 │                       ├── lesson.yaml   # 단원 메타데이터
 │                       ├── lesson.mdx    # 레슨 본문
-│                       └── exercises/
-│                           ├── 001-mcq-console-log-role.yaml
-│                           └── 002-predict-quoted-expression.yaml
+│                       ├── exercises/
+│                       │   ├── 001-mcq-console-log-role.yaml
+│                       │   └── 002-predict-quoted-expression.yaml
+│                       └── templates/            # 파라메트릭 템플릿 (선택)
+│                           └── 001-predict-precedence.yaml
 ├── .generated/
-│   └── predict-expected.json         # content:check:run이 만듦. 직접 고치지 않음
+│   ├── predict-expected.json         # content:check:run이 만듦. 직접 고치지 않음
+│   └── template-expected.json        # 템플릿 변형의 실행 검증 기록. 직접 고치지 않음
 ├── aliases.yaml                      # 바꾼 slug의 별칭 (필요할 때만)
 ├── .published-slugs.txt              # content:build가 갱신하는 공개 slug 목록. 직접 고치지 않음
 └── dist/                             # 빌드 결과 (git에 올리지 않음)
@@ -631,6 +634,57 @@ spec:
 - `with`, `010` 같은 8진수 리터럴, 중복 매개변수는 실행 전 `SyntaxError`입니다.
 - 예측 문제의 기대값도 엄격 모드 실행 결과입니다.
 
+## 파라메트릭 템플릿
+
+템플릿은 매개변수만 바꾼 변형 문제를 만드는 문제 원본입니다([FR-EX-08](/docs/product/prd.md), [설계](/docs/design/content-and-exercises.md#파라메트릭-템플릿)).
+복습과 "한 번 더 연습"이 같은 문제를 다시 내지 않고 새 변형을 내는 데 씁니다.
+단원 디렉터리의 `templates/*.yaml`에 둡니다. ID는 `<단원 ID>.t.<이름>`입니다.
+
+```yaml
+id: js-basics.operators.arithmetic.t.predict-precedence
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.ops.precedence, weight: 1 }
+estimatedSeconds: 60
+params:
+  a: { kind: int, min: 10, max: 60 }
+  b: { kind: int, min: 2, max: 9 }
+  c: { kind: int, min: 2, max: 6 }
+  op: { kind: choice, values: ["+", "-"] }
+constraints:
+  - "op === '+' || a > b * c"       # 결과가 음수가 되지 않게
+render:
+  prompt: |
+    다음 코드를 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    const total = {{a}} {{op}} {{b}} * {{c}};
+    console.log(total);
+  answerKind: console
+  misconceptionByAnswer:
+    "{{op === '+' ? (a + b) * c : (a - b) * c}}": js.mc.always-left-to-right
+hints: [ ... 3개, {{ }} 사용 가능 ... ]
+explanation: |
+  ...
+misconceptions: [js.mc.always-left-to-right]
+variantPolicy:
+  sampleSize: 30                 # 빌드 때 실행 검증할 표본 수 (기본 50, 5~100)
+  minDistinctFromRecent: 3       # 최근 본 변형 3개와 정답이 겹치지 않게
+review:
+  status: draft
+  draftedBy: ai:claude
+```
+
+- 공통 필드(`difficulty`, `concepts`, `tags`, `estimatedSeconds`, `hints` 3개, `explanation`, `misconceptions`, `review`)는 문제 파일과 같습니다. `usage`는 `practice`(기본)나 `remedial`만 됩니다. `variantGroup`을 비우면 템플릿 ID가 변형 그룹입니다.
+- `render.prompt`(필수)와 `render.code`(선택), `spec`의 모든 문자열과 키, `hints`, `explanation`에 `{{ 식 }}`을 씁니다. 매개변수 종류와 표현식 언어는 [설계](/docs/design/content-and-exercises.md#매개변수-종류)를 따릅니다. YAML에서 `{{`로 시작하는 값은 따옴표나 `|`로 감쌉니다.
+- **정답은 쓰지 않습니다.** `spec.expected`를 쓰면 오류이고, `content:check:run`이 변형마다 실제로 실행해 계산합니다. 표현식은 지문·힌트·해설, 그리고 진단용 오답(`misconceptionByAnswer`의 키)에만 씁니다.
+- `content:check`는 표본 시드로 변형을 모두 만들어 봅니다. 표본 하나라도 만들 수 없거나(제약을 만족하지 못함, 스펙 오류) 서로 다른 변형이 5개 미만이면 오류입니다.
+- `content:check:run`은 변형마다 저작 문제와 같은 실행 검증을 하고 `.generated/template-expected.json`에 기록합니다. 오개념 답이 어떤 변형의 실제 정답과 같으면 오류이니 `constraints`로 그런 변형을 빼세요. 정답의 80% 이상이 같으면 경고입니다.
+- 빌드에는 실행 검증을 통과한 변형만 들어가고, 앱은 그 변형만 출제합니다([D-058](/docs/decisions.md)). 템플릿을 고치면 `content:check:run`을 다시 돌리고 바뀐 기록 파일을 함께 커밋하세요. 승인된 템플릿의 기록이 낡으면 오류입니다.
+- 검토자는 템플릿 전체와 무작위 변형 5개 이상을 확인합니다([검토 기준](/docs/design/content-and-exercises.md#6단계-ai-교차-검토)).
+
 ## 검사와 실행 검증
 
 ### content:check (정적 검사)
@@ -677,6 +731,7 @@ spec:
 | `parsons` | `checks`가 있으면 정답 순서(와 `alternatives`)로 조립한 코드가 필수 체크를 모두 통과하고, 방해 줄을 넣으면(`replaces` 자리, 없으면 모든 위치) 하나 이상 실패. 없으면 조립한 코드에 문법 오류가 없는지만 확인 |
 | `find_bug_line` | 버그 코드가 `symptomCheck`의 증상(콘솔 출력 전체 또는 오류 이름)을 그대로 내고, `fixedCode`는 오류 없이 실행되며 증상이 없음 |
 | `mcq_single`, `mcq_multi`, `true_false`, `fill_blank`(text) | 실행할 코드가 없어 건너뜀. 스펙의 오개념 ID가 있는지는 정적 검사에서 확인 |
+| 템플릿 변형 | 표본 시드로 만든 변형마다 위 유형별 검증. 통과한 변형을 `.generated/template-expected.json`에 기록 |
 
 - `static`, `html-valid` 체크는 서버가 실행 없이 채점하므로 실행 검증에서 뺍니다.
 - v0.1의 `mcq_single`에는 선택지 코드를 실행하는 `verifyChecks`가 없어 실행 검증 대상이 아닙니다.

@@ -3,12 +3,13 @@ import { join } from 'node:path';
 
 export const DAY_MS = 86_400_000;
 
-type Server = 'main' | 'journey' | 'mastery';
+type Server = 'main' | 'journey' | 'mastery' | 'templates';
 
 const DATA_DIR_ENV: Readonly<Record<Server, string>> = {
   main: 'E2E_DATA_DIR',
   journey: 'E2E_JOURNEY_DATA_DIR',
   mastery: 'E2E_MASTERY_DATA_DIR',
+  templates: 'E2E_TEMPLATES_DATA_DIR',
 };
 
 function dataDirOf(server: Server): string {

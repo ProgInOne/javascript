@@ -156,7 +156,8 @@ describe('checkContent', () => {
   });
 });
 
-describe('checkContent: diagrams', () => {
+// Mermaid's parser loads lazily and takes seconds on a busy CI runner; give the suite room.
+describe('checkContent: diagrams', { timeout: 30_000 }, () => {
   const withDiagram = (source: string) => (f: Files) => {
     f[LESSON_MDX] = lessonMdx({
       principle: `원리 본문\n\n<Diagram alt="흐름">\n\n\`\`\`mermaid\n${source}\n\`\`\`\n\n</Diagram>`,

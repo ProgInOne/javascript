@@ -162,3 +162,43 @@ export const contentIdAliases = sqliteTable('content_id_aliases', {
   entityKind: text('entity_kind').notNull(),
   sincePackVersion: text('since_pack_version').notNull(),
 });
+
+/** A template's concept tag (`exercise_templates.concepts_json`). */
+export interface TemplateConceptTag {
+  conceptId: string;
+  weight: number;
+  isPrimary: boolean;
+}
+
+export const exerciseTemplates = sqliteTable('exercise_templates', {
+  id: text('id').primaryKey(),
+  type: text('type').notNull(),
+  difficulty: integer('difficulty').notNull(),
+  lessonId: text('lesson_id').notNull(),
+  usage: text('usage', { enum: ['practice', 'remedial'] }).notNull(),
+  variantGroup: text('variant_group'),
+  primaryConceptId: text('primary_concept_id').notNull(),
+  concepts: json<TemplateConceptTag[]>('concepts_json').notNull(),
+  /** Template source (params, constraints, render, spec with answer-key rules). Server only. */
+  template: json<Record<string, unknown>>('template_json').notNull(),
+  misconceptionIds: json<string[]>('misconception_ids_json').notNull(),
+  tags: json<string[]>('tags_json').notNull(),
+  estimatedSeconds: integer('estimated_seconds').notNull(),
+  variantCountHint: integer('variant_count_hint').notNull(),
+  minDistinctFromRecent: integer('min_distinct_from_recent').notNull(),
+  reviewStatus: text('review_status', { enum: ['auto_verified', 'trusted'] }).notNull(),
+  templateHash: text('template_hash').notNull(),
+});
+
+/** The verified seed pool of each template (one row per servable variant). */
+export const templateVariants = sqliteTable('template_variants', {
+  variantId: text('variant_id').primaryKey(),
+  templateId: text('template_id').notNull(),
+  seed: text('seed').notNull(),
+  sampleIndex: integer('sample_index').notNull(),
+  /** Execution-derived answer key (predict_output), or null for types without one. Server only. */
+  expected: json<unknown>('expected_json'),
+  /** Canonical answer text, for "different answer than the last N variants". Server only. */
+  answerKey: text('answer_key').notNull(),
+  contentHash: text('content_hash').notNull(),
+});

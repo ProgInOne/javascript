@@ -1,0 +1,77 @@
+{
+  "v": 1,
+  "entries": {
+    "js-basics.values.variables.t.predict-reassign@3e0907eb3ced88ba": {
+      "inputHash": "688f2e5312238002503c01125647cca374720b25d765f4f12dfd82aa0a0ad516",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "6"
+        ]
+      }
+    },
+    "js-basics.values.variables.t.predict-reassign@753a2d4f1fc32bc6": {
+      "inputHash": "43fcbe6e54df822a77a6aa3cacc79bcac7a3ebcc8481a9b1809c415d410b3fd9",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "13"
+        ]
+      }
+    },
+    "js-basics.values.variables.t.predict-reassign@93876ff4ab8453a8": {
+      "inputHash": "e6850bafe3d8a979397c4e5b0ab1cbaa3eaf2bff6ff5a73ac759963df36d4442",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "4"
+        ]
+      }
+    },
+    "js-basics.values.variables.t.predict-reassign@965387be8a0f8119": {
+      "inputHash": "a7d42c613365b8b83f1477e1397ad88628e85c0d7f93543c51da8bf535b8808a",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "10"
+        ]
+      }
+    },
+    "js-basics.values.variables.t.predict-reassign@a879bbc45fcdebcf": {
+      "inputHash": "3e4252011558efe4023d6558454728dfd041054f4e232a33dcbc21cc4f35fdeb",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "9"
+        ]
+      }
+    },
+    "js-basics.values.variables.t.predict-reassign@ad0f44b334df845b": {
+      "inputHash": "817d73f22d70f7a2b43ad7ea8382f01508df4a1f35aedf17632998e60109d8b0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "9"
+        ]
+      }
+    },
+    "js-basics.values.variables.t.predict-reassign@cb57d5811c06aa3a": {
+      "inputHash": "ba9faeb2f8fec58bbc4059cde29129ea21e0db1e27d16f1f061448ff8bcea203",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "10"
+        ]
+      }
+    },
+    "js-basics.values.variables.t.predict-reassign@eb1af1b5661aa567": {
+      "inputHash": "a9aa943b73e94dfd47f21173ff95298ad4e2065961e41b364a3656ac45672553",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "12"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+id: js-basics.operators.arithmetic.t.predict-precedence
+type: predict_output
+difficulty: 2
+concepts:
+  - { id: js.ops.precedence, weight: 1 }
+  - { id: js.ops.arithmetic, weight: 0.3 }
+tags: [precedence, template]
+estimatedSeconds: 60
+params:
+  a: { kind: int, min: 10, max: 60 }
+  b: { kind: int, min: 2, max: 9 }
+  c: { kind: int, min: 2, max: 6 }
+  op: { kind: choice, values: ["+", "-"] }
+  name: { kind: identifier, pool: [total, result, score, price, answer] }
+constraints:
+  # 뺄셈일 때 결과가 음수가 되지 않게 (가독성)
+  - "op === '+' || a > b * c"
+render:
+  prompt: |
+    다음 코드를 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    const {{name}} = {{a}} {{op}} {{b}} * {{c}};
+    console.log({{name}});
+  answerKind: console
+  misconceptionByAnswer:
+    # 왼쪽부터 계산한 오답: (a op b) * c
+    "{{op === '+' ? (a + b) * c : (a - b) * c}}": js.mc.always-left-to-right
+hints:
+  - "`{{op}}`와 `*` 중 어느 쪽을 먼저 계산할까요?"
+  - "곱셈 `*`는 덧셈·뺄셈보다 먼저예요. `{{b}} * {{c}}`부터 값으로 바꿔 보세요."
+  - "`{{b}} * {{c}}`는 `{{b * c}}`이에요. 이제 `{{a}} {{op}} {{b * c}}`를 계산하면 돼요."
+explanation: |
+  `*`는 `{{op}}`보다 우선순위가 높아서 먼저 계산해요.
+
+  1. `{{b}} * {{c}}` → `{{b * c}}`
+  1. `{{a}} {{op}} {{b * c}}`를 계산한 값이 `{{name}}`에 담기고 출력돼요.
+
+  왼쪽부터 `({{a}} {{op}} {{b}}) * {{c}}`로 계산해 `{{op === '+' ? (a + b) * c : (a - b) * c}}`라고 답했다면, 곱셈이 먼저라는 규칙을 다시 확인하세요. 먼저 {{op === '+' ? '더하고' : '빼고'}} 싶을 때는 괄호를 써요.
+misconceptions: [js.mc.always-left-to-right]
+variantPolicy:
+  sampleSize: 30
+  minDistinctFromRecent: 3
+review:
+  status: draft
+  draftedBy: ai:claude

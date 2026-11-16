@@ -11,11 +11,13 @@ import {
   EXPECTATIONS_FILE,
   predictInputHash,
   readExpectations,
+  TEMPLATE_EXPECTATIONS_FILE,
   type ExpectationStore,
 } from './expectations.ts';
 import { loadContent, type ContentSource, type LessonNodeSource } from './load.ts';
 import { compileLessonMdx, type CompiledLesson } from './mdx.ts';
 import { checkQuantities } from './quantity.ts';
+import { checkTemplates, type CheckedTemplate } from './templates.ts';
 
 /** Validates a type-specific exercise spec. Supplied by exercise-kit's registry. */
 export type SpecValidator = (
@@ -37,6 +39,11 @@ export interface CheckOptions {
    * `<root>/.generated/predict-expected.json` (see expectations.ts).
    */
   expectations?: ExpectationStore;
+  /**
+   * Execution-derived answer keys of template variants. Default: read from
+   * `<root>/.generated/template-expected.json`.
+   */
+  templateExpectations?: ExpectationStore;
   /** Leave `spec.expected` empty and report nothing about it (first pass of `check --run`). */
   skipExpectations?: boolean;
   /**
@@ -53,6 +60,8 @@ export interface CheckResult {
   lessons: Map<string, CompiledLesson>;
   /** `content_id_aliases` rows from `aliases.yaml` (aliases.ts). */
   aliases: AliasRow[];
+  /** Parametric templates that instantiate, with their sample variant pools (templates.ts). */
+  templates: CheckedTemplate[];
 }
 
 /**
@@ -282,6 +291,17 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
 
   if (options.quantity) checkQuantities(source, diag);
   const aliases = checkAliases(source, diag);
+  // Parametric templates (templates.ts): catalog references and build-time sample seeds.
+  const templates = checkTemplates({
+    source,
+    diag,
+    concepts: new Set(concepts.keys()),
+    misconceptions: new Set(misconceptions.keys()),
+    unique,
+    ...(options.validateSpec ? { validateSpec: options.validateSpec } : {}),
+    store: options.templateExpectations ?? readExpectations(root, diag, TEMPLATE_EXPECTATIONS_FILE),
+    skipExpectations: options.skipExpectations ?? false,
+  });
 
   // Mermaid syntax of every <Diagram>, in one child process (diagram.ts).
   parseDiagrams(diagrams.map((d) => d.code)).forEach(({ error }, i) => {
@@ -293,7 +313,7 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
       );
   });
 
-  return { source, diagnostics: diag, lessons, aliases };
+  return { source, diagnostics: diag, lessons, aliases, templates };
 }
 
 /**

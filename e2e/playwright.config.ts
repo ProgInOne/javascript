@@ -45,6 +45,20 @@ if (process.env['E2E_MASTERY_CONTENT_DB'] !== masteryContentDb) {
   process.env['E2E_MASTERY_CONTENT_DB'] = masteryContentDb;
 }
 
+// A fifth server for parametric template variants (tests/templates.spec.ts): the fixture content
+// plus a template in the variables unit (fixtures/content-templates), so the other specs' sets
+// keep their exercises.
+const TEMPLATES_PORT = PORT + 4;
+const templatesDir =
+  process.env['E2E_TEMPLATES_DATA_DIR'] ?? mkdtempSync(join(tmpdir(), 'proginone-e2e-templates-'));
+process.env['E2E_TEMPLATES_DATA_DIR'] = templatesDir;
+process.env['E2E_TEMPLATES_URL'] = `http://127.0.0.1:${TEMPLATES_PORT}`;
+const templatesContentDb = join(templatesDir, 'content.db');
+if (process.env['E2E_TEMPLATES_CONTENT_DB'] !== templatesContentDb) {
+  buildFixtureContent(templatesContentDb, 'content-templates');
+  process.env['E2E_TEMPLATES_CONTENT_DB'] = templatesContentDb;
+}
+
 const serverEnv = (port: number, dir: string, content = contentDb) => ({
   NODE_ENV: 'production',
   PROGINONE_PORT: String(port),
@@ -109,6 +123,13 @@ export default defineConfig({
       reuseExistingServer: false,
       timeout: 30_000,
       env: serverEnv(MASTERY_PORT, masteryDir, masteryContentDb),
+    },
+    {
+      command: 'node ../apps/server/src/main.ts',
+      url: `http://127.0.0.1:${TEMPLATES_PORT}/`,
+      reuseExistingServer: false,
+      timeout: 30_000,
+      env: serverEnv(TEMPLATES_PORT, templatesDir, templatesContentDb),
     },
   ],
 });

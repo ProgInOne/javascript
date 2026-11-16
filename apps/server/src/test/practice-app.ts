@@ -9,7 +9,7 @@ import { SettingsService } from '../services/settings/service.ts';
 import { EvaluatorService } from '../services/tutor/evaluator-service.ts';
 import { MemoryService } from '../services/tutor/memory-service.ts';
 import { TutorService } from '../services/tutor/tutor-service.ts';
-import { writeContentDb } from './content-fixture.ts';
+import { addTemplateFixture, writeContentDb } from './content-fixture.ts';
 import { setupDb, silentLog } from './helpers.ts';
 
 /** 2026-11-14 10:00 Asia/Seoul. */
@@ -22,10 +22,13 @@ let engine: ReturnType<typeof createEngine> | undefined;
 /**
  * The real app over a migrated temp user.db and the fixture content.db, with a controllable
  * clock (`clock.now`) and a learner in Asia/Seoul. AI routes use a `MockProvider` (`ai.provider`).
+ * `templates: true` adds the parametric template unit (`addTemplateFixture`; pool in `pool`).
  */
-export async function practiceApp() {
+export async function practiceApp(options: { templates?: boolean } = {}) {
   const ctx = await setupDb();
-  const content = ContentAccess.open(writeContentDb());
+  const contentPath = writeContentDb();
+  const pool = options.templates ? addTemplateFixture(contentPath) : [];
+  const content = ContentAccess.open(contentPath);
   const clock = { now: T0 };
   const now = () => clock.now;
   const settings = new SettingsService({ userDb: ctx.userDb, log: silentLog });
@@ -115,6 +118,7 @@ export async function practiceApp() {
   return {
     ...ctx,
     content,
+    pool,
     clock,
     call,
     open,

@@ -23,7 +23,8 @@ const USAGE = `사용법: content-cli <명령> [옵션]
 옵션
   --dir <경로>   콘텐츠 디렉터리 (기본: ./content)
   --run          check: 문제와 레슨 예제를 실제로 실행해 검증하고, 예측 문제의
-                 기대값을 .generated/predict-expected.json에 기록합니다
+                 기대값을 .generated/predict-expected.json에, 템플릿 표본 변형의
+                 기대값을 .generated/template-expected.json에 기록합니다
   --frozen       check --run: 기대값 파일이 최신이 아니면 쓰지 않고 실패합니다(CI용)
   --concurrency <n>
                  check --run: 동시에 실행할 브라우저 페이지 수 (기본: 4)
@@ -69,15 +70,21 @@ function reportRun(items: readonly RunCheckItem[]): void {
   for (const item of items) {
     const { status, messages } = item.outcome;
     if (status === 'skip') continue;
-    const name = item.kind === 'example' ? `예제 ${item.id.split('#')[1] ?? item.id}` : item.type;
+    const name =
+      item.kind === 'example'
+        ? `예제 ${item.id.split('#')[1] ?? item.id}`
+        : item.kind === 'template'
+          ? `${item.type} 변형 @${item.id.split('@')[1] ?? ''}`
+          : item.type;
     const [head, ...rest] = messages;
     console.log(`${STATUS_LABELS[status]}  ${item.file}  ${name}  ${head ?? ''}`);
     for (const line of rest) console.log(`      ${line}`);
   }
   const count = (s: string) => items.filter((i) => i.outcome.status === s).length;
   const examples = items.filter((i) => i.kind === 'example').length;
+  const variants = items.filter((i) => i.kind === 'template').length;
   console.log(
-    `\n실행 검증: 문제 ${items.length - examples}개, 예제 ${examples}개 — 통과 ${count('pass')}, 실패 ${count('fail')}, 실행 대상 아님 ${count('skip')}`,
+    `\n실행 검증: 문제 ${items.length - examples - variants}개, 템플릿 변형 ${variants}개, 예제 ${examples}개 — 통과 ${count('pass')}, 실패 ${count('fail')}, 실행 대상 아님 ${count('skip')}`,
   );
 }
 
@@ -115,7 +122,7 @@ async function checkWithRun(): Promise<boolean> {
       return false;
     }
     reportRun(result.items);
-    if (result.wrote) console.log(`기대값 파일을 갱신했습니다: ${result.wrote}`);
+    for (const file of result.wrote) console.log(`기대값 파일을 갱신했습니다: ${file}`);
     console.log(`(${((Date.now() - started) / 1000).toFixed(1)}초)\n`);
     const failed = report(result.diagnostics);
     return result.ok && !failed;
@@ -155,7 +162,7 @@ if (command === 'build') {
   if (result.written) {
     const s = result.stats;
     console.log(
-      `content.db: ${out}\n과정 ${s.courses}, 단원 ${s.lessons}, 개념 ${s.concepts}, 문제 ${s.exercises} (미검토 제외 ${s.skippedDrafts})`,
+      `content.db: ${out}\n과정 ${s.courses}, 단원 ${s.lessons}, 개념 ${s.concepts}, 문제 ${s.exercises}, 템플릿 ${s.templates}(검증된 변형 ${s.templateVariants}) (미검토 제외 ${s.skippedDrafts})`,
     );
     if (includeDrafts)
       console.warn(`경고  미검토(draft) 문제 ${s.includedDrafts}개가 포함된 개발용 빌드입니다.`);
