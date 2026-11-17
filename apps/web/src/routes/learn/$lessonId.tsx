@@ -27,6 +27,7 @@ import {
   LockedTutorButton,
 } from '../../features/assessment/Assessment.tsx';
 import { PracticeSession } from '../../features/practice/PracticeSession.tsx';
+import { ThemeToggleButton } from '../../features/settings/ThemeToggle.tsx';
 import { ProjectScreen } from '../../features/project/Project.tsx';
 import { AIStatusIndicator } from '../../features/ai/AIStatusIndicator.tsx';
 import { openShortcutHelp } from '../../features/shortcuts/ShortcutHelp.tsx';
@@ -300,10 +301,11 @@ function LearnHeader({
   step?: { current: number; total: number } | undefined;
 }) {
   useModeShortcuts(lesson.id);
+  // Narrow screens tighten the gaps so the theme switch (D-078) still fits a 390px row.
   return (
     <header
       data-f6-region=""
-      className="sticky top-0 z-header flex h-12 items-center gap-3 border-b border-line bg-surface px-4"
+      className="sticky top-0 z-header flex h-12 items-center gap-2 border-b border-line bg-surface px-3 md:gap-3 md:px-4"
     >
       <Link
         to="/courses/$courseId"
@@ -374,6 +376,7 @@ function LearnHeader({
         className="max-md:hidden"
         onClick={openShortcutHelp}
       />
+      <ThemeToggleButton />
       {tutor ?? <TutorButton />}
     </header>
   );

@@ -23,6 +23,36 @@ test.describe('app shell', () => {
     await page.getByRole('radio', { name: /시스템/ }).click();
     await expect(page.locator('html')).not.toHaveAttribute('data-theme', /.+/);
   });
+
+  test('switches the theme from the header and keeps it (D-078)', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1, name: '대시보드' })).toBeVisible();
+    // The learner follows the OS (onboarded.setup.ts), which is light: the switch offers dark.
+    await page.getByRole('button', { name: '다크 테마로 바꾸기' }).click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await expect(page.getByRole('button', { name: '라이트 테마로 바꾸기' })).toBeVisible();
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    await page.getByRole('button', { name: '설정' }).click();
+    await expect(page.getByRole('radio', { name: /다크/ })).toBeChecked();
+
+    // The learning screen has the switch too.
+    await page.goto('/learn/js-basics.start.first-program');
+    await expect(page.getByRole('heading', { level: 1, name: '첫 프로그램' })).toBeVisible();
+    await page.getByRole('button', { name: '라이트 테마로 바꾸기' }).click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+
+    // Back to following the OS for the other specs.
+    await page.goto('/settings/appearance');
+    await expect(page.getByRole('radio', { name: /라이트/ })).toBeChecked();
+    const saved = page.waitForResponse(
+      (r) => r.url().endsWith('/api/v1/settings') && r.request().method() === 'PATCH',
+    );
+    await page.getByRole('radio', { name: /시스템/ }).click();
+    await saved;
+    await expect(page.locator('html')).not.toHaveAttribute('data-theme', /.+/);
+  });
 });
 
 test.describe('backups', () => {

@@ -6,7 +6,8 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { dashboardQuery } from '../api/queries.ts';
 import { AIStatusIndicator } from '../features/ai/AIStatusIndicator.tsx';
 import { HeaderGoal } from '../features/goals/HeaderGoal.tsx';
-import { LogoMark } from './Logo.tsx';
+import { ThemeToggleButton, ThemeToggleMenuItem } from '../features/settings/ThemeToggle.tsx';
+import { Logo } from './Logo.tsx';
 
 const navLink =
   'relative inline-flex items-center px-3 font-medium text-fg-secondary no-underline hover:text-fg ' +
@@ -74,7 +75,8 @@ function NavLinks({
  *
  * Below the md breakpoint (1024px) the nav collapses into a disclosure menu so the header fits a
  * phone (390px): the button reports `aria-expanded`, the panel follows it in tab order, and Esc,
- * a click outside or choosing a destination closes it (Esc returns focus to the button).
+ * a click outside or choosing a destination closes it (Esc returns focus to the button). The
+ * light ↔ dark switch (D-078) sits beside 설정 on wide screens and at the end of the menu below.
  */
 export function AppHeader() {
   const navigate = useNavigate();
@@ -106,15 +108,9 @@ export function AppHeader() {
       className="sticky top-0 z-header h-(--header-h) border-b border-line bg-surface/92 backdrop-blur-md backdrop-saturate-150"
     >
       <div className="mx-auto flex h-full max-w-[calc(var(--page-max)+2*var(--space-8))] items-center gap-3 px-4 md:gap-8 md:px-5 lg:px-8">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-[17px] font-extrabold tracking-[-0.02em] text-heading no-underline"
-          aria-label="ProgInOne 대시보드"
-        >
-          <LogoMark />
-          <span>
-            Prog<span className="text-brand">In</span>One
-          </span>
+        {/* Named by the logo image, not aria-label (label-in-name; see Logo). */}
+        <Link to="/" className="inline-flex shrink-0 items-center no-underline">
+          <Logo label="ProgInOne 대시보드" />
         </Link>
         <nav className="hidden h-full gap-1 md:flex" aria-label="주 메뉴">
           <NavLinks className={navLink} due={due} />
@@ -122,6 +118,8 @@ export function AppHeader() {
         <div className="ml-auto flex min-w-0 items-center gap-2 md:gap-3">
           <HeaderGoal />
           <AIStatusIndicator />
+          {/* Narrow screens: the theme switch is a row of the menu instead (D-078). */}
+          <ThemeToggleButton className="max-md:hidden" />
           <IconButton
             label="설정"
             icon={<Settings size={20} />}
@@ -174,6 +172,9 @@ export function AppHeader() {
                     setMenuOpen(false);
                   }}
                 />
+                <div className="mt-1 border-t border-line pt-1">
+                  <ThemeToggleMenuItem className={`${menuLink} w-full gap-2 text-left`} />
+                </div>
               </nav>
             )}
           </div>

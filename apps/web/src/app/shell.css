@@ -9,3 +9,60 @@
 body {
   background: var(--color-bg-canvas);
 }
+
+/* Logo "말풍선 열기구" (D-079). Brand colors are fixed hex; only the tile, lines and basket follow the theme. */
+.app-logo {
+  flex: none;
+}
+.app-logo__tile {
+  fill: light-dark(#ebfaf3, #1b3a2c);
+}
+.app-logo__lines {
+  fill: none;
+  stroke: light-dark(#062e1f, #7fe3b4);
+}
+.app-logo__basket {
+  fill: light-dark(#062e1f, #7fe3b4);
+}
+.app-logo-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-logo-wordmark {
+  font-family: 'Outfit', var(--font-sans);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--color-text-heading);
+}
+/* Phones: a smaller lockup so the 390px header keeps one line (goal chip, AI, settings, menu). */
+@media (max-width: 479.98px) {
+  .app-logo-lockup {
+    gap: 6px;
+  }
+  .app-logo-lockup .app-logo {
+    width: 24px;
+    height: 24px;
+  }
+  .app-logo-wordmark {
+    font-size: 18px;
+  }
+}
+/* Dotless ı with a rounded-square cursor in place of the dot. */
+.app-logo-wordmark__i {
+  position: relative;
+  display: inline-block;
+}
+.app-logo-wordmark__i i {
+  position: absolute;
+  left: 50%;
+  top: -0.02em;
+  width: 0.2em;
+  height: 0.2em;
+  margin-left: -0.1em;
+  border-radius: 0.05em;
+  background: #00c471;
+}

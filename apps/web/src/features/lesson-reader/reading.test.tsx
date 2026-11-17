@@ -124,6 +124,8 @@ describe('step view', () => {
     renderApp(`/learn/${LESSON_ID}`, api);
 
     expect(await screen.findByText('단계 1 / 2')).toBeVisible();
+    // The learning-screen header has the theme switch too (D-078).
+    expect(screen.getByRole('button', { name: '다크 테마로 바꾸기' })).toBeVisible();
     const first = screen.getByRole('group', { name: '1단계: 왜 배울까' });
     const second = screen.getByRole('group', { name: '2단계: 확인' });
     expect(first).toHaveAttribute('data-state', 'current');

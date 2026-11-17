@@ -6,6 +6,7 @@ import { z } from 'zod';
  * Process-level settings (port, dataDir, …) live in the server config instead.
  * Keys follow docs/design/data-model.md#meta-learners-settings.
  */
+/** D-078: `light` is the default; `system` (follow the OS) stays a choice in 설정 > 화면. */
 export const THEMES = ['light', 'dark', 'system'] as const;
 
 /** D-024: the light workbench is the default; dark remaps `.workbench` subtrees only. */
@@ -50,7 +51,7 @@ export type Settings = z.infer<typeof settingsSchema>;
 export type SettingKey = keyof Settings;
 
 export const SETTINGS_DEFAULTS: Settings = {
-  theme: 'system',
+  theme: 'light',
   'appearance.workbench': 'light',
   'lesson.fontSize': 'medium',
   'lesson.predictFirst': 'recommended',

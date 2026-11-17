@@ -69,6 +69,8 @@ const PAIRS: Pair[] = [
   { use: '히어로 제목(큰 글자)', fg: 'color-hero-fg', bg: 'color-hero-bg', min: TEXT },
   { use: '히어로 보조', fg: 'color-hero-muted', bg: 'color-hero-bg', min: TEXT },
   { use: '단계 칩(왜 배울까)', fg: 'color-text-brand', bg: 'mastery-intro', min: TEXT },
+  { use: '해설 상자 본문', fg: 'color-text-primary', bg: 'color-bg-explanation', min: TEXT },
+  { use: '해설 상자 머리말', fg: 'color-text-brand', bg: 'color-bg-explanation', min: TEXT },
   { use: 'AI 텍스트', fg: 'color-ai-fg', bg: 'color-ai-bg', min: TEXT },
   { use: 'AI 강조', fg: 'color-ai-accent', bg: 'color-bg-surface', min: TEXT },
   { use: '오류 강조', fg: 'color-error-accent', bg: 'color-bg-surface', min: TEXT },

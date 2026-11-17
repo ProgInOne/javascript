@@ -18,7 +18,7 @@ import {
   useUpdateLearner,
 } from '../api/queries.ts';
 import { cardClass } from '../app/layout.ts';
-import { LogoMark } from '../app/Logo.tsx';
+import { Logo } from '../app/Logo.tsx';
 import { LoginDialog, useAiLogin } from '../features/ai/LoginDialog.tsx';
 import { useAiStatus } from '../features/ai/api.ts';
 import { draftOf, GoalFields, requestOf, type GoalDraft } from '../features/goals/GoalForm.tsx';
@@ -101,12 +101,7 @@ function OnboardingPage() {
   return (
     <div className="onboarding">
       <div className="onboarding__top">
-        <span className="inline-flex items-center gap-2 text-[17px] font-extrabold tracking-[-0.02em] text-heading">
-          <LogoMark />
-          <span>
-            Prog<span className="text-brand">In</span>One
-          </span>
-        </span>
+        <Logo />
         <Button
           variant="ghost"
           size="sm"

@@ -8,7 +8,7 @@ ProgInOne의 디자인 토큰(CSS 변수)과 기본 React 컴포넌트입니다.
 웹 앱의 진입점에서 CSS를 다음 순서로 한 번만 가져옵니다.
 
 ```ts
-import '@proginone/ui/fonts.css'; // Pretendard Variable, JetBrains Mono (번들 포함, CDN 없음)
+import '@proginone/ui/fonts.css'; // Pretendard Variable, JetBrains Mono, Outfit 700 (번들 포함, CDN 없음)
 import '@proginone/ui/tokens.css'; // 기본·의미·컴포넌트 토큰
 import '@proginone/ui/base.css'; // 전역 기본 스타일, 포커스 링, reduced-motion
 import '@proginone/ui/components.css'; // 기본 컴포넌트 스타일
@@ -111,4 +111,5 @@ pnpm --filter @proginone/ui check:contrast -- --md    # 마크다운 표
 
 - [Pretendard](https://github.com/orioncactus/pretendard) 가변 글꼴의 한글 빈도 기반 동적 서브셋(`font-display: swap`)을 씁니다.
 - [JetBrains Mono](https://www.jetbrains.com/lp/mono/) 가변 글꼴(굵기 축)을 Fontsource 패키지로 씁니다. 리거처는 `base.css`에서 끕니다.
-- 두 글꼴 모두 SIL Open Font License 1.1입니다.
+- [Outfit](https://github.com/Outfitio/Outfit-Fonts) 700의 라틴 서브셋만 Fontsource 패키지로 씁니다. 로고 워드마크 전용입니다(D-079).
+- 세 글꼴 모두 SIL Open Font License 1.1입니다. 라이선스 전문은 각 패키지(`node_modules/…/LICENSE`)에 들어 있습니다.

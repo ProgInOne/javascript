@@ -4,7 +4,9 @@ export const THEME_CACHE_KEY = 'proginone.theme';
 
 /**
  * Applies the theme to <html>. `system` removes the attribute so the tokens follow
- * `prefers-color-scheme`. The value is cached for public/theme-init.js to avoid a flash.
+ * `prefers-color-scheme`. Every value, `system` included, is cached for public/theme-init.js:
+ * it paints the cached theme before the app loads, and the light default when nothing is cached
+ * (D-078), so neither a `system` nor a dark learner sees a flash.
  */
 export function applyTheme(
   theme: Settings['theme'],
@@ -13,11 +15,16 @@ export function applyTheme(
   if (theme === 'system') delete root.dataset['theme'];
   else root.dataset['theme'] = theme;
   try {
-    if (theme === 'system') localStorage.removeItem(THEME_CACHE_KEY);
-    else localStorage.setItem(THEME_CACHE_KEY, theme);
+    localStorage.setItem(THEME_CACHE_KEY, theme);
   } catch {
     // Storage unavailable (private mode); the attribute is still applied.
   }
+}
+
+/** The theme on screen: the explicit choice, or the OS preference for `system` (D-078). */
+export function resolveTheme(theme: Settings['theme'], systemDark: boolean): 'light' | 'dark' {
+  if (theme === 'system') return systemDark ? 'dark' : 'light';
+  return theme;
 }
 
 /** `lesson.fontSize` → `--lesson-font-size` (17 / 18 / 20px, ui-ux.md 타이포그래피, D-077). */

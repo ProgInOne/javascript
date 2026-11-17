@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { applyAppearance, applyTheme, THEME_CACHE_KEY } from './theme.ts';
+import script from '../../public/theme-init.js?raw';
+import { applyAppearance, applyTheme, resolveTheme, THEME_CACHE_KEY } from './theme.ts';
 
 afterEach(() => {
   localStorage.clear();
@@ -13,11 +14,48 @@ describe('applyTheme', () => {
     expect(localStorage.getItem(THEME_CACHE_KEY)).toBe('dark');
   });
 
-  it('follows the system for "system"', () => {
+  it('follows the system for "system" and caches that too (D-078)', () => {
     applyTheme('light');
     applyTheme('system');
     expect(document.documentElement.dataset['theme']).toBeUndefined();
-    expect(localStorage.getItem(THEME_CACHE_KEY)).toBeNull();
+    expect(localStorage.getItem(THEME_CACHE_KEY)).toBe('system');
+  });
+});
+
+describe('resolveTheme', () => {
+  it('resolves "system" through the OS preference', () => {
+    expect(resolveTheme('system', true)).toBe('dark');
+    expect(resolveTheme('system', false)).toBe('light');
+    expect(resolveTheme('light', true)).toBe('light');
+    expect(resolveTheme('dark', false)).toBe('dark');
+  });
+});
+
+describe('theme-init.js', () => {
+  // eslint-disable-next-line @typescript-eslint/no-implied-eval -- runs the shipped file as is
+  const run = new Function(script) as () => void;
+
+  it.each([
+    [null, 'light'],
+    ['light', 'light'],
+    ['dark', 'dark'],
+    ['system', undefined],
+    ['neon', 'light'],
+  ])('paints cache %s as %s before the app loads', (cached, painted) => {
+    if (cached !== null) localStorage.setItem(THEME_CACHE_KEY, cached);
+    run();
+    expect(document.documentElement.dataset['theme']).toBe(painted);
+  });
+
+  it('reads what applyTheme cached', () => {
+    for (const theme of ['light', 'dark', 'system'] as const) {
+      applyTheme(theme);
+      delete document.documentElement.dataset['theme'];
+      run();
+      expect(document.documentElement.dataset['theme']).toBe(
+        theme === 'system' ? undefined : theme,
+      );
+    }
   });
 });
 

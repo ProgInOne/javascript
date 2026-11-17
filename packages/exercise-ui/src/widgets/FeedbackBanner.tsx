@@ -1,5 +1,5 @@
 import type { CheckResult, FeedbackItem, GradeResult } from '@proginone/exercise-kit';
-import { AlertTriangle, CheckCircle2, CircleDot, XCircle } from 'lucide-react';
+import { AlertTriangle, BookOpen, CheckCircle2, CircleDot, XCircle } from 'lucide-react';
 import { useId, type ReactNode } from 'react';
 import type { Confidence } from '../types.ts';
 import { CHECK_FAIL_REASON_LABELS } from './CheckList.tsx';
@@ -176,7 +176,14 @@ export function FeedbackBanner({
         {explanation !== undefined && (
           <details className="pi-ex-feedback__explanation" open={explanationOpen || undefined}>
             <summary>해설 보기</summary>
-            <div className="pi-ex-feedback__explanation-body">{explanation}</div>
+            {/* A boxed panel so the explanation does not read as more toggle text (D-080). */}
+            <div role="group" aria-label="해설" className="pi-ex-feedback__explanation-body">
+              <p className="pi-ex-feedback__explanation-label" aria-hidden="true">
+                <BookOpen size={14} />
+                해설
+              </p>
+              {explanation}
+            </div>
           </details>
         )}
 

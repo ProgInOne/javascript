@@ -10,6 +10,10 @@ describe('SettingsService', () => {
     const { userDb } = await setupDb();
     const service = new SettingsService({ userDb, log: silentLog });
     expect(service.get()).toEqual(SETTINGS_DEFAULTS);
+    // D-078: a learner who never chose a theme sees the light one; a saved `system` stays.
+    expect(service.get().theme).toBe('light');
+    expect(service.update({ theme: 'system' }).theme).toBe('system');
+    expect(service.get().theme).toBe('system');
     expect(service.update({ theme: 'dark' })).toEqual({ ...SETTINGS_DEFAULTS, theme: 'dark' });
     expect(service.update({ theme: 'light' }).theme).toBe('light'); // upsert
     expect(

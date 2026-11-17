@@ -63,6 +63,8 @@ test.describe('phone width (390px)', () => {
     // The learning header keeps its mode switch on one line.
     const read = page.getByRole('link', { name: '읽기', exact: true });
     expect((await read.boundingBox())?.height).toBeLessThanOrEqual(32);
+    // ...and its theme switch (D-078).
+    await expect(page.getByRole('button', { name: /테마로 바꾸기/ })).toBeVisible();
   });
 
   test('the practice screen fits for a choice item and a code item', async ({ page }) => {
@@ -114,12 +116,22 @@ test.describe('phone width (390px)', () => {
     await expect(page.getByRole('heading', { level: 1, name: '과정' })).toBeVisible();
     const menu = page.getByRole('button', { name: '메뉴' });
     const nav = page.getByRole('navigation', { name: '주 메뉴' });
+    // The logo lockup (D-079) and the goal chip each stay on one line at 390px.
+    for (const box of [
+      await page.getByRole('img', { name: 'ProgInOne 대시보드' }).boundingBox(),
+      await page.getByRole('button', { name: /오늘 목표/ }).boundingBox(),
+    ]) {
+      expect(box?.height ?? 0).toBeLessThanOrEqual(32);
+    }
     await expect(nav).toBeHidden();
     await menu.focus();
     await page.keyboard.press('Enter');
     await expect(menu).toHaveAttribute('aria-expanded', 'true');
     await expect(nav).toBeVisible();
     await expect(nav.getByRole('link', { name: '과정' })).toHaveAttribute('aria-current', 'page');
+    // The theme switch is the menu's last row here, not a header button (D-078).
+    await expect(nav.getByRole('button', { name: /테마로 바꾸기/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /테마로 바꾸기/ })).toHaveCount(1);
     await expectNoHorizontalScroll(page);
     // Esc closes it and keeps focus on the button.
     await page.keyboard.press('Escape');
@@ -148,4 +160,5 @@ test('the header keeps its inline nav at desktop width', async ({ page }) => {
   const nav = page.getByRole('navigation', { name: '주 메뉴' });
   await expect(nav.getByRole('link', { name: '과정' })).toBeVisible();
   await expect(page.getByRole('button', { name: '메뉴' })).toBeHidden();
+  await expect(page.getByRole('button', { name: /테마로 바꾸기/ })).toBeVisible();
 });

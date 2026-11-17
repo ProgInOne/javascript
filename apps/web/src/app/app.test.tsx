@@ -23,6 +23,9 @@ describe('app shell', () => {
       'href',
       '#main',
     );
+    // Logo (D-079): named by its image, not by the decorative "progınone" text.
+    expect(screen.getByRole('link', { name: 'ProgInOne 대시보드' })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('img', { name: 'ProgInOne 대시보드' })).toBeInTheDocument();
   });
 
   it('shows a not-found page for unknown routes', async () => {
@@ -58,5 +61,94 @@ describe('설정 > 화면', () => {
       expect(document.documentElement.dataset['theme']).toBe('light');
     });
     expect(calls).toContainEqual({ method: 'PATCH', path: '/settings', body: { theme: 'light' } });
+  });
+});
+
+describe('header theme switch (D-078)', () => {
+  const darkOs = (dark: boolean) => {
+    vi.stubGlobal(
+      'matchMedia',
+      (query: string) =>
+        ({
+          matches: dark && query === '(prefers-color-scheme: dark)',
+          media: query,
+          addEventListener: () => undefined,
+          removeEventListener: () => undefined,
+        }) as unknown as MediaQueryList,
+    );
+  };
+
+  it('switches light ↔ dark at once and saves it', async () => {
+    let theme = 'light';
+    const { calls } = renderApp('/', (method, path, body) => {
+      if (path !== '/settings') return { status: 404, body: {} };
+      if (method === 'PATCH') theme = (body as { theme: string }).theme;
+      return { body: { theme } };
+    });
+    const toDark = await screen.findByRole('button', { name: '다크 테마로 바꾸기' });
+    await waitFor(() => {
+      expect(toDark).toBeEnabled();
+    });
+    await userEvent.click(toDark);
+    expect(document.documentElement.dataset['theme']).toBe('dark');
+    expect(calls).toContainEqual({ method: 'PATCH', path: '/settings', body: { theme: 'dark' } });
+    await userEvent.click(await screen.findByRole('button', { name: '라이트 테마로 바꾸기' }));
+    await waitFor(() => {
+      expect(document.documentElement.dataset['theme']).toBe('light');
+    });
+    expect(calls).toContainEqual({ method: 'PATCH', path: '/settings', body: { theme: 'light' } });
+  });
+
+  it('turns "system" into the opposite of what the OS shows', async () => {
+    darkOs(true);
+    const { calls } = renderApp('/', (_method, path, body) =>
+      path === '/settings'
+        ? { body: { theme: (body as { theme?: string } | undefined)?.theme ?? 'system' } }
+        : { status: 404, body: {} },
+    );
+    const toLight = await screen.findByRole('button', { name: '라이트 테마로 바꾸기' });
+    await waitFor(() => {
+      expect(toLight).toBeEnabled();
+    });
+    expect(document.documentElement.dataset['theme']).toBeUndefined();
+    await userEvent.click(toLight);
+    expect(document.documentElement.dataset['theme']).toBe('light');
+    expect(calls).toContainEqual({ method: 'PATCH', path: '/settings', body: { theme: 'light' } });
+  });
+
+  it('puts the theme back and says so when saving fails', async () => {
+    renderApp('/', (method, path) =>
+      path !== '/settings'
+        ? { status: 404, body: {} }
+        : method === 'PATCH'
+          ? { status: 500, body: { error: { code: 'INTERNAL', message: '오류', retryable: true } } }
+          : { body: { theme: 'light' } },
+    );
+    const toDark = await screen.findByRole('button', { name: '다크 테마로 바꾸기' });
+    await waitFor(() => {
+      expect(toDark).toBeEnabled();
+    });
+    await userEvent.click(toDark);
+    expect((await screen.findAllByText('테마를 바꾸지 못했어요')).length).toBeGreaterThan(0);
+    expect(document.documentElement.dataset['theme']).toBe('light');
+    expect(screen.getByRole('button', { name: '다크 테마로 바꾸기' })).toBeInTheDocument();
+  });
+
+  it('is also a row of the narrow-screen menu', async () => {
+    darkOs(false);
+    renderApp('/', (_method, path, body) =>
+      path === '/settings'
+        ? { body: { theme: (body as { theme?: string } | undefined)?.theme ?? 'dark' } }
+        : { status: 404, body: {} },
+    );
+    await userEvent.click(await screen.findByRole('button', { name: '메뉴' }));
+    const menu = screen.getAllByRole('navigation', { name: '주 메뉴' }).at(-1);
+    if (!menu) throw new Error('no menu');
+    const row = await within(menu).findByRole('button', { name: '라이트 테마로 바꾸기' });
+    await waitFor(() => {
+      expect(row).toBeEnabled();
+    });
+    await userEvent.click(row);
+    expect(document.documentElement.dataset['theme']).toBe('light');
   });
 });

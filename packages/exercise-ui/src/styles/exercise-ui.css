@@ -854,9 +854,35 @@
   font-weight: 600;
   cursor: pointer;
 }
+/* Explanation box (D-080): a mint panel below the toggle, not more text in the same style. */
+.pi-ex-feedback__explanation[open] summary {
+  margin-bottom: var(--space-2);
+}
 .pi-ex-feedback__explanation-body {
-  padding-top: var(--space-2);
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-explanation);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-explanation);
+  color: var(--color-text-primary);
   font: var(--text-body);
+}
+/* Spacing comes from the grid gap; beats host prose margins such as `.lesson-prose p`. */
+.pi-ex-feedback .pi-ex-feedback__explanation-body > * {
+  margin-block: 0;
+}
+.pi-ex-feedback .pi-ex-feedback__explanation-body :last-child {
+  margin-bottom: 0;
+}
+.pi-ex-feedback__explanation-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  font: var(--text-small);
+  font-weight: 700;
+  color: var(--color-text-brand);
 }
 .pi-ex-feedback__actions {
   display: flex;

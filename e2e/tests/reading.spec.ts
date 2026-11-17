@@ -19,6 +19,8 @@ test.describe('reading mode', () => {
     await check.locator('label', { hasText: '맨 위의 문장' }).click();
     await check.getByRole('button', { name: '애매해요' }).click();
     await expect(check.getByRole('heading', { name: '정답이에요.' })).toBeVisible();
+    // Correct but unsure: the explanation opens, in its own box under the toggle (D-080).
+    await expect(check.getByRole('group', { name: '해설' })).toBeVisible();
     // A code exercise referenced inline is left to practice mode.
     await expect(page.getByText('이 확인 문제는 실습 모드에서 풀 수 있어요.')).toBeVisible();
 

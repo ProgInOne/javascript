@@ -220,6 +220,10 @@ describe('FeedbackBanner', () => {
     );
     expect(screen.getByText('맞혔지만 찍었다고 했죠. 해설을 꼭 확인해보세요.')).toBeTruthy();
     expect(screen.getByText('해설 본문').closest('details')?.open).toBe(true);
+    // The explanation sits in its own labelled box under the toggle (D-080).
+    const box = screen.getByRole('group', { name: '해설' });
+    expect(box.textContent).toContain('해설 본문');
+    expect(box.className).toContain('pi-ex-feedback__explanation-body');
   });
 
   it('opens the misconception note when the learner was sure but wrong', async () => {

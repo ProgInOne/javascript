@@ -485,6 +485,9 @@ importers:
       '@fontsource-variable/jetbrains-mono':
         specifier: ^5.3.0
         version: 5.3.0
+      '@fontsource/outfit':
+        specifier: ^5.3.0
+        version: 5.3.0
       lucide-react:
         specifier: ^1.72.0
         version: 1.72.0(@types/react@19.3.0)(react@19.3.1)
@@ -1264,6 +1267,9 @@ packages:
 
   '@fontsource-variable/jetbrains-mono@5.3.0':
     resolution: {integrity: sha512-F32xpS2NsGYoQi2ADSkKTgpJj7ozajsGgDJ8woTnqjmIB+dxDIqImjl4pXZVEExu8UFZ2ndhmX18EBS/hdz3Lw==}
+
+  '@fontsource/outfit@5.3.0':
+    resolution: {integrity: sha512-0AVHzTTVJSxWDOxPKSfMeHhZeBFDU3cmgrcOb76ZEyhGo0+xgyG3GsLF3h9+X8w0IX7G4jzjJgFQEBiWdX6VgA==}
 
   '@hono/node-server@2.1.8':
     resolution: {integrity: sha512-jdf7FHh6A1lzjpHHQUgxsg2GeER2vMetnAOfeActzcoli6jamlK+NAwL6Dsr5Fl3BS3tYUQzCdtZjU8Qxv7bEA==}
@@ -5112,6 +5118,8 @@ snapshots:
   '@floating-ui/utils@0.2.12': {}
 
   '@fontsource-variable/jetbrains-mono@5.3.0': {}
+
+  '@fontsource/outfit@5.3.0': {}
 
   '@hono/node-server@2.1.8(hono@4.13.18)':
     dependencies:

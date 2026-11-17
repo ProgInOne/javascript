@@ -208,6 +208,9 @@
   --color-bg-subtle: light-dark(var(--neutral-25), var(--neutral-850));
   --color-bg-muted: light-dark(var(--neutral-100), var(--neutral-800));
   --color-bg-selected: light-dark(var(--jade-50), var(--jade-950));
+  /* Explanation box after grading (D-080): mint panel set apart from the "해설 보기" toggle. */
+  --color-bg-explanation: light-dark(var(--jade-50), var(--jade-950));
+  --color-border-explanation: light-dark(var(--jade-200), var(--jade-800));
   --color-bg-hover: light-dark(var(--neutral-25), var(--neutral-850));
   --color-bg-overlay: light-dark(rgb(16 35 26 / 0.32), rgb(0 0 0 / 0.56));
 

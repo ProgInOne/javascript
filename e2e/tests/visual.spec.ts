@@ -188,6 +188,9 @@ for (const viewport of VIEWPORTS) {
       await page.locator('label', { hasText: '저장되어' }).click();
       await page.getByRole('button', { name: /확실해요/ }).click();
       await expect(page.getByRole('heading', { name: '정답이 아니에요.' })).toBeVisible();
+      // Explanation open: the boxed panel under the toggle (D-080).
+      await page.getByText('해설 보기').click();
+      await expect(page.getByRole('group', { name: '해설' })).toContainText('완료');
       await expect(page).toHaveScreenshot(
         `practice-choice-feedback-${scheme}-${viewport.width}.png`,
         { fullPage: true },
