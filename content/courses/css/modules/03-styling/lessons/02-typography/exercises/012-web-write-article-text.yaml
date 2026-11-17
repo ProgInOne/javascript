@@ -1,0 +1,154 @@
+id: css.styling.typography.web-write-article-text
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.type.line-height, weight: 1 }
+  - { id: css.type.font-properties, weight: 0.3 }
+  - { id: css.type.text-align, weight: 0.3 }
+tags: [line-height, font-size, font-family, text-align, web-task, from-scratch]
+estimatedSeconds: 360
+prompt: |
+  여행 글 상자(`class="article"`)를 읽기 편하게 꾸미려고 해요. `style` 요소 안에 CSS를 **처음부터 직접** 써서 아래처럼 만드세요.
+
+  1. 글 상자의 글꼴: 고딕 계열의 **일반 글꼴 이름** 하나만 쓰세요.
+  1. 글 상자의 글자 크기: `18px`
+  1. 줄 높이: 글 상자 안의 소제목과 문단이 각자 **자기 글자 크기의 1.6배**가 되게 하세요. 줄 높이 선언은 글 상자 규칙에 **한 번만** 쓰세요.
+  1. 소제목(`h2`)은 글 상자 안에서 **가운데 정렬**하세요.
+
+  HTML(`body`)은 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>여행 글</title>
+              <style>
+                /* 여기에 CSS를 처음부터 직접 쓰세요 */
+              </style>
+            </head>
+            <body>
+              <div class="article">
+                <h2>바다 마을 산책</h2>
+                <p>아침 일찍 항구에 가면 고깃배가 돌아오는 모습을 볼 수 있어요. 시장 골목에서는 갓 구운 호떡 냄새가 나요.</p>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>여행 글</title>
+              <style>
+                .article {
+                  font-family: sans-serif;
+                  font-size: 18px;
+                  line-height: 1.6;
+                }
+                .article h2 {
+                  text-align: center;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="article">
+                <h2>바다 마을 산책</h2>
+                <p>아침 일찍 항구에 가면 고깃배가 돌아오는 모습을 볼 수 있어요. 시장 골목에서는 갓 구운 호떡 냄새가 나요.</p>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: font-family
+      description: 글 상자의 글꼴이 고딕 계열의 일반 글꼴 이름(sans-serif)이어야 합니다.
+      requirement: 글꼴
+      visible: true
+      selector: .article
+      expect:
+        computed:
+          font-family: { equals: sans-serif }
+    - kind: css
+      id: font-size
+      description: 글 상자의 글자 크기가 18px이어야 합니다.
+      requirement: 글자 크기
+      visible: true
+      selector: .article
+      expect:
+        computed:
+          font-size: { px: { value: 18 } }
+    - kind: css
+      id: paragraph-line-height
+      description: 문단(글자 18px)의 줄 높이가 1.6배인 28.8px이어야 합니다.
+      requirement: 줄 높이
+      visible: true
+      selector: .article p
+      expect:
+        computed:
+          line-height: { px: { value: 28.8 } }
+    - kind: css
+      id: heading-line-height
+      description: 소제목(글자 27px)의 줄 높이도 자기 글자 크기의 1.6배인 43.2px이어야 합니다.
+      requirement: 줄 높이
+      visible: true
+      selector: .article h2
+      expect:
+        computed:
+          line-height: { px: { value: 43.2 } }
+    - kind: css
+      id: heading-center
+      description: 소제목이 가운데 정렬되어 있어야 합니다.
+      requirement: 소제목 가운데 정렬
+      visible: true
+      selector: .article h2
+      expect:
+        computed:
+          text-align: { equals: center }
+    - kind: css
+      id: paragraph-left
+      description: 문단은 가운데 정렬하지 않아야 합니다.
+      requirement: 소제목 가운데 정렬
+      selector: .article p
+      expect:
+        computed:
+          text-align: { oneOf: [start, left] }
+    - kind: dom
+      id: body-kept
+      description: 소제목과 문단은 그대로 있어야 합니다.
+      requirement: HTML은 그대로
+      selector: .article > h2 + p
+      expect:
+        count: 1
+hints:
+  - 글꼴·글자 크기·줄 높이는 글 상자 규칙 하나에 쓰면 안쪽의 소제목과 문단이 물려받아요. 그런데 줄 높이를 어떻게 써야 소제목과 문단이 **각자** 자기 글자 크기를 기준으로 계산할까요?
+  - "단위 없는 `line-height` 숫자는 배수 자체가 물려 내려가서, 각 요소가 자기 글자 크기에 곱해요. `px`나 `em`으로 쓰면 글 상자에서 계산된 길이가 그대로 물려 내려가요. 가운데 정렬은 `.article h2`에만 따로 줘요."
+  - "`.article` 규칙에 글꼴(`sans-serif`), 글자 크기, 줄 높이를 쓰는데, 줄 높이는 단위 없이 배수 숫자만 써요. 두 번째 규칙은 글 상자 안의 `h2`만 고르는 선택자로 만들고, 글자를 가운데로 모으는 속성을 써요."
+explanation: |
+  예시 정답은 아래 규칙이에요.
+
+  ```css
+  .article {
+    font-family: sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  .article h2 {
+    text-align: center;
+  }
+  ```
+
+  - `sans-serif`는 어느 기기에나 있는 **일반 글꼴 이름**이라, 이 이름만 쓰면 기기마다 고딕 계열 글꼴 하나가 골라져요. 특정 글꼴을 원하면 앞에 나열하고 마지막에 일반 이름을 두어요.
+  - 단위 없는 `line-height: 1.6`은 **배수**가 물려 내려가요. 그래서 문단(18px)은 18 × 1.6 = 28.8px, 소제목(기본 크기 1.5em이라 27px)은 27 × 1.6 = 43.2px이 돼요. `1.6em`이나 `28.8px`로 쓰면 글 상자에서 계산된 28.8px이 그대로 물려 내려가 소제목의 줄이 좁아져요.
+  - `text-align`은 블록 **안의 글자**를 정렬해요. 소제목에만 주면 문단은 왼쪽 정렬 그대로예요. 글 상자 전체에 주면 문단까지 가운데로 모여요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

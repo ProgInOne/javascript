@@ -152,6 +152,7 @@ export class ExerciseService {
       publicSpec,
       estimatedSeconds: exercise.estimatedSeconds,
       requiresRun: def.requiresRun(spec),
+      writing: def.writing(spec),
       hintCount: levels.length,
       openedHints: levels.slice(0, level).map((text, i) => ({ level: i + 1, text })),
       solutionViewed,

@@ -1,0 +1,141 @@
+id: css.layout.responsive.web-write-title-size-query
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.responsive.media-queries, weight: 1 }
+  - { id: css.responsive.mobile-first, weight: 0.3 }
+tags: [media-query, min-width, font-size, web-task, from-scratch]
+estimatedSeconds: 300
+prompt: |
+  행사 안내 페이지의 큰 제목(`class="title"`)이 휴대폰에서는 너무 크고, 모니터에서는 너무 작아요. `style` 요소 안에 CSS를 **처음부터 직접** 써서 화면 너비에 따라 제목 크기가 바뀌게 하세요.
+
+  - 기본(좁은 화면): 제목 글자 크기 `24px`
+  - 화면 너비가 `768px` **이상**일 때: 제목 글자 크기 `40px`
+
+  채점은 화면 너비 `375px`, `767px`, `768px`, `1280px`에서 따로 해요. 미리보기 창의 너비는 직접 바꿀 수 없으니, 경계를 잘 생각해서 쓰세요. HTML(`body`)은 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>행사 안내</title>
+              <style>
+                /* 여기에 CSS를 처음부터 직접 쓰세요 */
+              </style>
+            </head>
+            <body>
+              <h1 class="title">가을 책 축제</h1>
+              <p>10월 둘째 주 토요일, 도서관 앞마당에서 만나요.</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>행사 안내</title>
+              <style>
+                .title {
+                  font-size: 24px;
+                }
+                @media (min-width: 768px) {
+                  .title {
+                    font-size: 40px;
+                  }
+                }
+              </style>
+            </head>
+            <body>
+              <h1 class="title">가을 책 축제</h1>
+              <p>10월 둘째 주 토요일, 도서관 앞마당에서 만나요.</p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: phone
+      description: 너비 375px 화면에서 제목 글자 크기가 24px이어야 합니다.
+      requirement: 좁은 화면 24px
+      visible: true
+      viewport: 375
+      selector: .title
+      expect:
+        computed:
+          font-size: { px: { value: 24 } }
+      misconceptionIfFail: css.mc.max-width-means-above
+    - kind: css
+      id: just-below
+      description: 너비 767px 화면에서도 제목 글자 크기가 24px이어야 합니다(768px 미만).
+      requirement: 좁은 화면 24px
+      visible: true
+      viewport: 767
+      selector: .title
+      expect:
+        computed:
+          font-size: { px: { value: 24 } }
+    - kind: css
+      id: boundary
+      description: 너비가 정확히 768px인 화면에서 제목 글자 크기가 40px이어야 합니다(768px 이상).
+      requirement: 넓은 화면 40px
+      visible: true
+      viewport: 768
+      selector: .title
+      expect:
+        computed:
+          font-size: { px: { value: 40 } }
+    - kind: css
+      id: desktop
+      description: 너비 1280px 화면에서 제목 글자 크기가 40px이어야 합니다.
+      requirement: 넓은 화면 40px
+      visible: true
+      viewport: 1280
+      selector: .title
+      expect:
+        computed:
+          font-size: { px: { value: 40 } }
+      misconceptionIfFail: css.mc.max-width-means-above
+    - kind: css
+      id: paragraph-kept
+      description: 너비 1280px 화면에서 안내 문단의 글자 크기는 기본값(16px) 그대로여야 합니다.
+      requirement: 다른 요소는 그대로
+      viewport: 1280
+      selector: p
+      expect:
+        computed:
+          font-size: { px: { value: 16 } }
+misconceptions: [css.mc.max-width-means-above]
+hints:
+  - 규칙은 두 개가 필요해요. 하나는 언제나 적용되는 기본 규칙, 다른 하나는 화면이 일정 너비 "이상"일 때만 적용되는 규칙이에요.
+  - "`@media (min-width: 768px) { ... }` 안의 규칙은 768px 이상에서만 적용돼요. 기본 규칙은 미디어 쿼리 **앞**에 써야 넓은 화면에서 미디어 쿼리 안의 규칙이 이겨요."
+  - "먼저 미디어 쿼리 밖에 `.title`의 기본 글자 크기 규칙을 쓰고, 그 아래에 `min-width` 미디어 쿼리를 열어 안에 `.title` 규칙을 한 번 더 써요. 경계값은 문제의 \"768px 이상\"을 그대로 옮기면 돼요."
+explanation: |
+  예시 정답은 아래 CSS예요.
+
+  ```css
+  .title {
+    font-size: 24px;
+  }
+  @media (min-width: 768px) {
+    .title {
+      font-size: 40px;
+    }
+  }
+  ```
+
+  - 미디어 쿼리 밖의 기본 규칙은 모든 화면에 적용되고, `min-width: 768px` 안의 규칙은 768px **이상**에서만 더해져요. 좁은 화면용 기본을 먼저 쓰고 넓은 화면을 덧붙였으니 모바일 우선 방식이에요.
+  - 두 규칙의 선택자가 같아 명시도가 같으므로, 넓은 화면에서는 **뒤에 쓴** 미디어 쿼리 안의 규칙이 이겨요. 순서를 바꾸면 넓은 화면에서도 24px이 돼요.
+  - `max-width: 768px`로 쓰면 반대로 768px **이하**에서 적용돼요. `min-width: 769px`처럼 경계를 잘못 잡으면 정확히 768px인 화면에서 24px로 남아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

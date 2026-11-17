@@ -4,7 +4,7 @@ import type { ExerciseCategory, ExerciseOrigin, FsrsPort, Importance } from './t
  * Version of the formulas and coefficients. Bump it (and record it in CHANGELOG.md) whenever a
  * coefficient or rule changes; every stored result carries the version that computed it.
  */
-export const ENGINE_VERSION = '1.3.0';
+export const ENGINE_VERSION = '1.4.0';
 
 /** Weights for the correct (`o ≥ 0.5`) and incorrect branch of a factor. */
 export interface BranchWeights {

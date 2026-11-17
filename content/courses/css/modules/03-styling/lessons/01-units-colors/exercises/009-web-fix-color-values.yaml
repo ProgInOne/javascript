@@ -14,6 +14,7 @@ prompt: |
   - 글자 색: 흰색 (세 자리 16진수로 쓰려고 했어요)
 spec:
   focus: css
+  debugging: true                # 버그가 있는 시작 페이지를 고치는 문제(디버깅으로 셈, D-069)
   starter:
     files:
       - path: index.html

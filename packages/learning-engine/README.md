@@ -98,12 +98,12 @@ buildReviewQueue(deps, {
 buildLessonPracticeSet(deps, {
   lesson: { id; importance; introduces: ConceptId[]; reviews: ConceptId[]; passRule?: Partial<PassRule> };
   concepts: LessonSetConcept[];          // { conceptId, importance, state? }
-  candidates: ExerciseCandidate[];       // ExerciseFacts + origin
+  candidates: ExerciseCandidate[];       // ExerciseFacts(+ writing: 작성형, D-084) + origin
   lastSeenAtByGroup: Record<string, number>;
   misconceptionTargetIds?: ExerciseId[];
   seed: string;                          // 연습 세트 ID
   now: number;
-}): { items: PlannedItem[]; passRule: PassRule; rationale: SetRationale }
+}): { items: PlannedItem[]; passRule: PassRule; rationale: SetRationale }  // 작성형 최소 1개(writing_required), 없으면 생성 범주 최소 1개
 
 buildReviewSet(deps, {
   entries: ReviewQueueEntry[];           // buildReviewQueue의 due

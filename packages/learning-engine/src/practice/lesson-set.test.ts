@@ -228,6 +228,85 @@ describe('buildLessonPracticeSet', () => {
     expect(items).toHaveLength(8);
   });
 
+  describe('writing exercise (D-084)', () => {
+    const single = (candidates: ExerciseCandidate[], lastSeenAtByGroup = {}) => {
+      const req = request();
+      return buildLessonPracticeSet(deps, {
+        ...req,
+        lesson: { ...req.lesson, importance: 'minor', introduces: ['c.a'] },
+        concepts: [{ conceptId: 'c.a', importance: 'core' }],
+        candidates,
+        lastSeenAtByGroup,
+      });
+    };
+    const recall = pool('c.a', 7, { type: 'predict_output', category: 'recall' });
+    const fixBug = candidate('c.a', 98, { type: 'fix_bug', category: 'production' });
+    const writing = candidate('c.a', 99, {
+      type: 'web_task',
+      category: 'production',
+      writing: true,
+    });
+
+    it('swaps in a writing exercise when only code to fix was picked, keeping the fix', () => {
+      // The writing exercise was served 2 days ago, so band filling prefers the fresh items.
+      const { items, rationale } = single([...recall, fixBug, writing], {
+        [writing.variantGroupKey]: T0 - 2 * DAY_MS,
+      });
+      expect(items).toHaveLength(8);
+      expect(rationale.productionIncluded).toBe(true);
+      expect(rationale.writingIncluded).toBe(true);
+      expect(items.find((i) => i.exerciseId === writing.id)?.reason).toBe('writing_required');
+      expect(items.find((i) => i.exerciseId === fixBug.id)?.reason).toBe('lesson_practice');
+      expect(items.filter((i) => i.type === 'predict_output')).toHaveLength(6);
+    });
+
+    it('one writing exercise satisfies the production rule too', () => {
+      const recall8 = pool('c.a', 8, { type: 'predict_output', category: 'recall' });
+      const { items, rationale } = single([...recall8, writing], {
+        [writing.variantGroupKey]: T0 - 2 * DAY_MS,
+      });
+      expect(rationale).toMatchObject({ productionIncluded: true, writingIncluded: true });
+      expect(items.map((i) => i.reason)).not.toContain('production_required');
+      expect(items.filter((i) => i.reason === 'writing_required')).toHaveLength(1);
+    });
+
+    it('does not swap when a writing exercise is already in the set', () => {
+      const { items, rationale } = single([...recall.slice(0, 6), fixBug, writing]);
+      expect(rationale.writingIncluded).toBe(true);
+      expect(items.map((i) => i.reason).every((r) => r === 'lesson_practice')).toBe(true);
+    });
+
+    it('reports false when the lesson has no writing exercise', () => {
+      const { items, rationale } = single([...recall, fixBug]);
+      expect(rationale).toMatchObject({ productionIncluded: true, writingIncluded: false });
+      expect(items.map((i) => i.reason)).not.toContain('writing_required');
+    });
+
+    it('prefers a writing exercise not served recently', () => {
+      const old = candidate('c.a', 97, {
+        type: 'implement_function',
+        category: 'production',
+        writing: true,
+      });
+      // Both lose to the fresh items in band filling only if they are recent, so serve both
+      // recently and mark `writing` as already answered: the unseen one wins the swap.
+      const req = request();
+      const { items } = buildLessonPracticeSet(deps, {
+        ...req,
+        lesson: { ...req.lesson, importance: 'minor', introduces: ['c.a'] },
+        concepts: [{ conceptId: 'c.a', importance: 'core' }],
+        candidates: [...recall, fixBug, writing, old],
+        lastSeenAtByGroup: {
+          [writing.variantGroupKey]: T0 - 2 * DAY_MS,
+          [old.variantGroupKey]: T0 - 3 * DAY_MS,
+        },
+        seenExerciseIds: new Set([writing.id]),
+      });
+      expect(items.find((i) => i.exerciseId === old.id)?.reason).toBe('writing_required');
+      expect(items.map((i) => i.exerciseId)).not.toContain(writing.id);
+    });
+  });
+
   it('interleaves one item per reviewed concept below effective 70', () => {
     const req = request();
     const weak = {

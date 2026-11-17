@@ -12,4 +12,4 @@ objectives:
   - 인라인 요소에 적용되지 않는 속성을 알고, inline-block으로 바꿔 크기와 간격을 줄 수 있다.
   - 일반 흐름에서 블록이 쌓이는 방향과 위아래 margin이 겹치는 규칙으로 요소 사이의 간격을 계산할 수 있다.
 practice:
-  targetCount: 10
+  targetCount: 11

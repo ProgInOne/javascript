@@ -1,0 +1,208 @@
+id: html.content.lists-tables.web-write-jump-rope-table
+type: web_task
+difficulty: 3
+concepts:
+  - { id: html.content.tables, weight: 1 }
+  - { id: html.doc.nesting, weight: 0.3 }
+tags: [table, thead, tbody, th, td, web-task, from-scratch]
+estimatedSeconds: 420
+prompt: |
+  우리 반 줄넘기 기록을 표로 보여 주는 페이지를 빈 파일에서 **처음부터 직접** 써 보세요. 문서의 뼈대부터 쓰고 본문을 채우면 돼요.
+
+  1. 본문 맨 위에 가장 큰 제목 **줄넘기 기록**을 넣으세요.
+  1. 그 아래에 표를 하나 만드세요.
+     - 제목 행은 `thead`로 묶고, 제목 칸 두 개 **이름**, **기록**을 차례로 둬요.
+     - 데이터 행 세 개는 `tbody`로 묶어요. 각 행의 칸은 이름, 기록 순서예요.
+
+  | 이름 | 기록 |
+  |---|---|
+  | 민지 | 120회 |
+  | 서준 | 95회 |
+  | 하윤 | 143회 |
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!-- 빈 파일이에요. 문서의 뼈대부터 직접 써 보세요. -->
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>줄넘기 기록</title>
+            </head>
+            <body>
+              <h1>줄넘기 기록</h1>
+              <table>
+                <thead>
+                  <tr>
+                    <th>이름</th>
+                    <th>기록</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>민지</td>
+                    <td>120회</td>
+                  </tr>
+                  <tr>
+                    <td>서준</td>
+                    <td>95회</td>
+                  </tr>
+                  <tr>
+                    <td>하윤</td>
+                    <td>143회</td>
+                  </tr>
+                </tbody>
+              </table>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: heading
+      description: 본문에 가장 큰 제목 "줄넘기 기록"이 있어야 합니다.
+      requirement: 제목
+      visible: true
+      selector: body > h1
+      expect:
+        count: 1
+        text: { equals: 줄넘기 기록 }
+    - kind: dom
+      id: one-table
+      description: 표(table)가 하나 있어야 합니다.
+      requirement: 표
+      visible: true
+      selector: table
+      expect:
+        count: 1
+    - kind: dom
+      id: header-cells
+      description: thead 안의 행 하나에 제목 칸(th)이 두 개 있어야 합니다.
+      requirement: 제목 행
+      visible: true
+      selector: table > thead > tr > th
+      expect:
+        count: 2
+      misconceptionIfFail: html.mc.th-is-bold-td
+    - kind: dom
+      id: header-name
+      description: 첫 번째 제목 칸은 "이름"이어야 합니다.
+      requirement: 제목 행
+      visible: true
+      selector: thead th:first-child
+      expect:
+        text: { equals: 이름 }
+    - kind: dom
+      id: header-record
+      description: 두 번째 제목 칸은 "기록"이어야 합니다.
+      requirement: 제목 행
+      visible: true
+      selector: thead th:nth-child(2)
+      expect:
+        text: { equals: 기록 }
+    - kind: dom
+      id: body-rows
+      description: tbody 안에 데이터 행(tr)이 세 개 있어야 합니다.
+      requirement: 데이터 행
+      visible: true
+      selector: table > tbody > tr
+      expect:
+        count: 3
+    - kind: dom
+      id: data-cells
+      description: 데이터 행의 칸은 모두 데이터 칸(td)이고, 모두 여섯 개여야 합니다.
+      requirement: 데이터 행
+      visible: true
+      selector: tbody td
+      expect:
+        count: 6
+    - kind: dom
+      id: no-th-in-body
+      description: 데이터 행에는 제목 칸(th)이 없어야 합니다.
+      requirement: 데이터 행
+      selector: tbody th
+      expect:
+        count: 0
+    - kind: dom
+      id: first-row-name
+      description: 첫 번째 데이터 행의 첫 칸은 "민지"여야 합니다.
+      requirement: 데이터 행
+      selector: tbody tr:first-child td:first-child
+      expect:
+        text: { equals: 민지 }
+    - kind: dom
+      id: first-row-record
+      description: 첫 번째 데이터 행의 둘째 칸은 "120회"여야 합니다.
+      requirement: 데이터 행
+      selector: tbody tr:first-child td:nth-child(2)
+      expect:
+        text: { equals: 120회 }
+    - kind: dom
+      id: row-order
+      description: 데이터 행은 민지, 서준, 하윤 순서여야 합니다.
+      requirement: 데이터 행
+      visible: true
+      selector: tbody tr:nth-child(2) td:first-child
+      expect:
+        text: { equals: 서준 }
+    - kind: dom
+      id: cell-order
+      description: 각 행의 칸은 이름, 기록 순서여야 합니다(서준의 기록은 95회).
+      requirement: 데이터 행
+      visible: true
+      selector: tbody tr:nth-child(2) td:nth-child(2)
+      expect:
+        text: { equals: 95회 }
+    - kind: dom
+      id: last-row-name
+      description: 마지막 데이터 행의 첫 칸은 "하윤"이어야 합니다.
+      requirement: 데이터 행
+      selector: tbody tr:last-child td:first-child
+      expect:
+        text: { equals: 하윤 }
+    - kind: dom
+      id: last-row
+      description: 마지막 데이터 행의 둘째 칸은 "143회"여야 합니다.
+      requirement: 데이터 행
+      selector: tbody tr:last-child td:nth-child(2)
+      expect:
+        text: { equals: 143회 }
+misconceptions: [html.mc.th-is-bold-td]
+hints:
+  - 표는 행(가로줄)을 위에서부터 쌓아 만들어요. 행 하나를 만드는 요소와, 그 안의 제목 칸·데이터 칸 요소를 떠올려 보세요.
+  - "`table` 안에 `thead`와 `tbody`를 차례로 두고, 각 행은 `tr`이에요. 제목 칸은 `th`, 데이터 칸은 `td`로 써요."
+  - "데이터 행 하나는 `<tr><td>민지</td><td>120회</td></tr>`처럼 써요. 제목 행도 같은 모양인데 칸 요소만 달라요. 제목 행은 `thead` 안에, 데이터 행 세 개는 `tbody` 안에 넣어요."
+explanation: |
+  예시 정답의 표는 이래요.
+
+  ```html
+  <table>
+    <thead>
+      <tr>
+        <th>이름</th>
+        <th>기록</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>민지</td>
+        <td>120회</td>
+      </tr>
+      <!-- 서준, 하윤 행도 같은 모양 -->
+    </tbody>
+  </table>
+  ```
+
+  - 표는 **행 단위**로 써요. `tr` 하나가 가로줄 하나이고, 그 안에 칸을 왼쪽부터 차례로 넣어요.
+  - `th`는 그 열이 무엇인지 알려 주는 **제목 칸**이에요. 굵게 보이는 것은 브라우저의 기본 모양일 뿐이에요. 제목을 `td`로 쓰고 굵게 꾸미면 화면 낭독기는 제목 칸으로 알아보지 못해요.
+  - 제목 행은 `thead`, 데이터 행은 `tbody`로 묶으면 표의 구조가 분명해져요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

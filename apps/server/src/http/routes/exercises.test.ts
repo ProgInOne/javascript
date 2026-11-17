@@ -61,6 +61,16 @@ describe('GET /exercises/:id', () => {
     expect((await view(EX.implement)).category).toBe('production');
   });
 
+  it('marks writing exercises (작성형, D-084)', async () => {
+    const { call } = await practiceApp();
+    const view = async (id: string) =>
+      exerciseViewSchema.parse((await call('GET', `/exercises/${id}`)).json);
+    expect((await view(EX.implement)).writing).toBe(true);
+    expect((await view(EX.fixBug)).writing).toBe(false);
+    expect((await view(EX.web)).writing).toBe(false); // the starter has markup to edit
+    expect((await view(EX.mcq)).writing).toBe(false);
+  });
+
   it('labels the code with the language of the exercise course', async () => {
     const { call } = await practiceApp();
     const view = exerciseViewSchema.parse((await call('GET', `/exercises/${EX.mcq}`)).json);

@@ -15,6 +15,7 @@ prompt: |
   - 안쪽 여백: `10px`
 spec:
   focus: css
+  debugging: true                # 버그가 있는 시작 페이지를 고치는 문제(디버깅으로 셈, D-069)
   starter:
     files:
       - path: index.html

@@ -1,0 +1,156 @@
+id: css.box.display.web-write-page-buttons
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.display.inline-block, weight: 1 }
+  - { id: css.display.block-inline, weight: 0.3 }
+tags: [inline-block, width, height, web-task, from-scratch]
+estimatedSeconds: 300
+prompt: |
+  게시판 아래에 페이지 번호 링크(`class="page"`) 세 개가 있어요. 지금은 CSS가 비어 있어서 번호가 글자로만 보여요. `style` 요소 안에 CSS를 **처음부터 직접** 써서 번호를 **정사각형 버튼**처럼 만드세요.
+
+  1. 번호 링크마다 너비 `40px`, 높이 `40px`인 상자가 되어야 해요.
+  1. 상자의 배경색은 연한 파란색 `#dbeafe`예요.
+  1. 세 상자는 지금처럼 **한 줄에 나란히** 있어야 해요.
+
+  HTML(`body`)은 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>게시판</title>
+              <style>
+                /* 여기에 CSS를 처음부터 직접 쓰세요 */
+              </style>
+            </head>
+            <body>
+              <h1>자유 게시판</h1>
+              <p>첫 페이지의 글 10개를 보고 있어요.</p>
+              <p>
+                <a class="page" id="p1" href="#">1</a>
+                <a class="page" id="p2" href="#">2</a>
+                <a class="page" id="p3" href="#">3</a>
+              </p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>게시판</title>
+              <style>
+                .page {
+                  display: inline-block;
+                  width: 40px;
+                  height: 40px;
+                  background: #dbeafe;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>자유 게시판</h1>
+              <p>첫 페이지의 글 10개를 보고 있어요.</p>
+              <p>
+                <a class="page" id="p1" href="#">1</a>
+                <a class="page" id="p2" href="#">2</a>
+                <a class="page" id="p3" href="#">3</a>
+              </p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: takes-size
+      description: 번호 링크가 줄 안에 놓이면서도 너비·높이를 받는 상자여야 합니다(display가 inline이면 width·height가 무시됩니다).
+      requirement: 40px 정사각형
+      visible: true
+      selector: .page
+      all: true
+      expect:
+        computed:
+          display: { oneOf: [inline-block, inline-flex, inline-grid] }
+      misconceptionIfFail: css.mc.width-on-inline
+    - kind: css
+      id: size
+      description: 번호 링크 세 개의 너비와 높이가 모두 40px이어야 합니다.
+      requirement: 40px 정사각형
+      visible: true
+      selector: .page
+      all: true
+      expect:
+        computed:
+          width: { px: { value: 40 } }
+          height: { px: { value: 40 } }
+    - kind: css
+      id: background
+      description: 번호 링크 세 개의 배경색이 모두 #dbeafe여야 합니다.
+      requirement: 연한 파란 배경
+      visible: true
+      selector: .page
+      all: true
+      expect:
+        computed:
+          background-color: { color: "#dbeafe" }
+    - kind: layout
+      id: same-row-12
+      description: 2번 상자가 1번 상자와 같은 줄, 오른쪽에 있어야 합니다.
+      requirement: 한 줄에 나란히
+      visible: true
+      a: "#p2"
+      b: "#p1"
+      relation: right-of
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.inline-block-new-line
+    - kind: layout
+      id: same-row-23
+      description: 3번 상자가 2번 상자와 같은 줄에 있어야 합니다.
+      requirement: 한 줄에 나란히
+      visible: true
+      a: "#p3"
+      b: "#p2"
+      relation: same-row
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.inline-block-new-line
+    - kind: dom
+      id: body-kept
+      description: 번호 링크 세 개는 그대로 있어야 합니다.
+      requirement: HTML은 그대로
+      selector: a.page
+      expect:
+        count: 3
+misconceptions: [css.mc.width-on-inline, css.mc.inline-block-new-line]
+hints:
+  - 링크(`a`)는 기본으로 어떤 `display`인가요? 그 상태에서도 너비와 높이가 적용되는지 떠올려 보세요.
+  - "인라인 요소는 `width`·`height`를 무시해요. 줄 안에 나란히 있으면서 크기를 받으려면 `display`를 바꿔야 하는데, `block`은 새 줄에서 시작해요."
+  - "`.page` 규칙 하나에 선언 네 개를 써요. `display`는 바깥은 인라인처럼 줄 안에 놓이고 안쪽은 블록처럼 크기를 받는 값으로 바꾸고, 나머지 셋은 너비·높이·배경색이에요."
+explanation: |
+  예시 정답은 아래 규칙이에요.
+
+  ```css
+  .page {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background: #dbeafe;
+  }
+  ```
+
+  - `a`는 기본이 **인라인**이라 `width`·`height`를 써도 무시되고 글자 크기만큼만 칠해져요.
+  - `display: block`으로 바꾸면 크기는 적용되지만, 블록은 항상 새 줄에서 시작해서 세 상자가 위아래로 쌓여요.
+  - `display: inline-block`은 **바깥은 인라인, 안쪽은 블록**이라 크기를 받으면서도 같은 줄에 나란히 놓여요.
+
+  상자 사이의 작은 틈은 HTML에서 링크 사이를 줄바꿈한 공백 때문이에요. 인라인처럼 놓이는 상자 사이의 공백은 글자 사이 공백처럼 한 칸으로 그려져요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

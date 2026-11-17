@@ -30,7 +30,7 @@ import {
 } from '@proginone/shared';
 import { Badge, Button, ErrorState, Skeleton } from '@proginone/ui';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, ArrowRight, Lock, RotateCcw, SkipForward } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Lock, PenLine, RotateCcw, SkipForward } from 'lucide-react';
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
 import {
@@ -457,6 +457,12 @@ function ItemWorkspace({
         <span className="text-fg-secondary type-small">
           {TYPE_LABELS[exercise.typeId] ?? exercise.typeId}
         </span>
+        {view.writing && (
+          // 작성형 (D-084): the learner writes the code from an empty starter.
+          <Badge variant="brand" icon={<PenLine size={12} />}>
+            직접 작성
+          </Badge>
+        )}
         <span className="text-fg-tertiary type-small" title={`난이도 L${view.difficulty}`}>
           L{view.difficulty}
         </span>

@@ -780,6 +780,7 @@ export interface ExerciseTypeDef<Spec, PublicSpec, Answer> {
   publicSpecSchema: z.ZodType<PublicSpec>; // redact 결과의 형식 (웹이 검증·렌더링에 사용)
   answerSchema: z.ZodType<Answer>; // 클라이언트 제출 검증
   requiresRun(spec: Spec): boolean; // 채점에 샌드박스 RunResult가 필요한가
+  writing?(spec: Spec): boolean;   // 작성형(빈 시작 코드에서 처음부터 쓰는 문제)인가. 없으면 거짓 (D-084)
   redact(spec: Spec, options?: { shuffleSeed?: string }): PublicSpec; // 정답 키를 제거한 클라이언트용 스펙
 
   // 브라우저 샌드박스 실행이 필요한 유형만 구현. 서버가 실행 계획(하네스 포함)을 만든다.
@@ -1196,6 +1197,13 @@ spec:
     - { id: m2, title: 추가 버튼으로 목록에 항목 넣기, checks: [add-item] }
   mockFetch: []                            # 선택. 가짜 fetch 응답 (브라우저 JS 과정)
 ```
+
+- **작성형(직접 작성)**: 시작 코드에서 실습의 초점 부분이 비어 있으면 학습자가 처음부터 쓰는 문제로 봅니다([D-084](/docs/decisions.md)). 콘텐츠에 따로 표시하지 않고 exercise-kit이 시작 코드 글자만 보고 정합니다(`webTaskStartsEmpty`).
+    - `focus: html`: 파일 전체가 공백과 HTML 주석뿐입니다(`<!-- 빈 파일이에요. 문서의 뼈대부터 직접 써 보세요. -->`).
+    - `focus: css`: 모든 `<style>`이 공백과 CSS 주석뿐이고, `style` 속성과 스타일시트 `<link>`가 없습니다. HTML은 주어지고 CSS를 모두 학습자가 씁니다. 페이지에 필요한 크기 같은 것도 `style` 속성으로 주지 말고 요구사항으로 쓰게 합니다.
+    - `focus: dom`: 모든 `<script>`가 공백과 JS 주석뿐이고 `<script src>`와 `on…` 속성이 없습니다.
+    - `focus: project`와 `debugging: true`는 작성형이 아닙니다. `implement_function`은 늘 작성형입니다.
+    - 작성형 문제는 학습 화면에 "직접 작성" 배지가 붙고, 단원 연습 세트에 최소 1개 들어갑니다(소개 개념에 후보가 있을 때). 작성형은 시작 코드 실패 검증을 자연히 통과하지만, 체크가 지문의 요구를 모두 확인하는지(빈 칸으로 시작해서 놓치기 쉬운 순서·위치·개수 조건) 더 꼼꼼히 봅니다.
 
 - 답안: `{ files: { path, content }[] }`. P0 기본형은 `index.html` 하나만 허용하고(빌드 검증), 여러 파일은 P1입니다.
 - 채점: 체크 전부 통과 시 `correct`. 마일스톤이 있으면 마일스톤별 통과를 따로 기록하고, 모든 마일스톤 통과 시 `correct`.

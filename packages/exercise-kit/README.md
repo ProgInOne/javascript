@@ -19,6 +19,7 @@ I/O가 없는 순수 패키지이며 `@proginone/shared`에만 의존합니다.
 | `checkSpec(typeId, raw)` | 스키마 + 정적 검증을 `{ ok, errors \| warnings }` 문자열로 | `content-cli`의 `validateSpec` 연결점 |
 | `leakFingerprints(typeId, raw)` | 정답 누설 지문(`normalizeLeakText`로 정규화한 문자열) | `content-cli build`, AI 힌트 검사 |
 | `getExerciseType(typeId)` | 범주(`category`), 스키마, 버전 조회 | 학습 엔진 입력 구성, 웹 렌더러 |
+| `isWritingExercise(typeId, raw)` | 작성형 여부: 빈 시작 코드에서 학습자가 코드를 처음부터 쓰는 문제인지(`implement_function`은 늘, `web_task`는 초점 부분이 빈 시작 코드, D-084) | 서버 `ExerciseFacts.writing`, `GET /exercises/:id`의 `writing` |
 
 잘못된 입력은 `ExerciseKitError`(`code`: `UNKNOWN_TYPE`, `INVALID_SPEC`, `INVALID_ANSWER`, `INVALID_RUN_RESULT`, `RUN_REQUIRED`, `EXPECTED_MISSING` 등)를 던집니다.
 오답은 오류가 아니라 정상적인 `GradeResult`입니다.

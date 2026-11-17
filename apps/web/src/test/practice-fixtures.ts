@@ -91,6 +91,7 @@ const base = {
   hintCount: 3,
   openedHints: [],
   solutionViewed: false,
+  writing: false,
 };
 
 export const mcqView: ExerciseView = {

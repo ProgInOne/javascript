@@ -149,6 +149,11 @@ export interface ExerciseTypeDef<Spec, PublicSpec, Answer> {
   answerSchema: z.ZodType<Answer>;
   /** Whether grading this spec needs a sandbox `RunResult`. */
   requiresRun(spec: Spec): boolean;
+  /**
+   * Whether the learner writes the code themselves (작성형, D-084): an `implement_function`, or a
+   * `web_task` whose starter leaves the focused part empty. Omitted = never.
+   */
+  writing?(spec: Spec): boolean;
   /** Removes answer keys. The result is safe to send to the web app. */
   redact(spec: Spec, options?: RedactOptions): PublicSpec;
   /** Run plan for the sandbox (types that execute learner code). */

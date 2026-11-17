@@ -17,6 +17,7 @@ prompt: |
   1. 이미 지난 일정(`class="past warning"`)은 맨 아래의 `#schedule li.past` 규칙대로 연한 회색(`#9ca3af`)이에요.
 spec:
   focus: css
+  debugging: true                # 버그가 있는 시작 페이지를 고치는 문제(디버깅으로 셈, D-069)
   starter:
     files:
       - path: index.html

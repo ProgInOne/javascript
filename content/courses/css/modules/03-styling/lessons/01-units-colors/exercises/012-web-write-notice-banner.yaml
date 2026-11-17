@@ -1,0 +1,154 @@
+id: css.styling.units-colors.web-write-notice-banner
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.colors.notation, weight: 1 }
+  - { id: css.units.length, weight: 0.5 }
+tags: [color, rgb, hex, percent, rem, web-task, from-scratch]
+estimatedSeconds: 360
+prompt: |
+  디자이너가 공지 페이지의 모양을 아래처럼 정해 줬어요. `style` 요소 안에 CSS를 **처음부터 직접** 써서 그대로 만드세요.
+
+  공지 띠(`class="notice"`)는 바깥 상자(`class="page"`) 안에 있어요. 바깥 상자는 너비를 따로 정하지 않아서 화면 너비에 따라 넓어지고 좁아져요. 공지 띠를 이렇게 꾸며요.
+
+  1. 배경색: 빨강 `254`, 초록 `243`, 파랑 `199`를 섞은 색 (`rgb()`로 쓰세요)
+  1. 글자 색: 16진수 `#92400e`
+  1. 너비: 화면이 넓든 좁든 늘 **바깥 상자 너비의 절반**
+  1. 안쪽 여백: 네 방향 모두 `1rem`
+
+  채점은 화면 너비 `375px`와 `1280px`에서 따로 해요. HTML(`body`)은 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공지</title>
+              <style>
+                /* 여기에 CSS를 처음부터 직접 쓰세요 */
+              </style>
+            </head>
+            <body>
+              <div class="page">
+                <h1>동네 도서관</h1>
+                <p class="notice">이번 주 토요일은 쉬어요.</p>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>공지</title>
+              <style>
+                .notice {
+                  background: rgb(254 243 199);
+                  color: #92400e;
+                  width: 50%;
+                  padding: 1rem;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="page">
+                <h1>동네 도서관</h1>
+                <p class="notice">이번 주 토요일은 쉬어요.</p>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: background
+      description: 공지 띠의 배경색이 rgb(254 243 199)여야 합니다.
+      requirement: 배경색
+      visible: true
+      selector: .notice
+      expect:
+        computed:
+          background-color: { color: "rgb(254, 243, 199)" }
+    - kind: css
+      id: text-color
+      description: 공지 띠의 글자 색이 #92400e여야 합니다.
+      requirement: 글자 색
+      visible: true
+      selector: .notice
+      expect:
+        computed:
+          color: { color: "#92400e" }
+    - kind: css
+      id: half-width-wide
+      description: 너비 1280px 화면에서 공지 띠의 너비가 바깥 상자(.page) 너비의 절반이어야 합니다.
+      requirement: 바깥 상자의 절반 너비
+      visible: true
+      viewport: 1280
+      selector: .notice
+      expect:
+        computed:
+          width: { px: { value: 632 } }
+      misconceptionIfFail: css.mc.percent-of-screen
+    - kind: css
+      id: half-width-narrow
+      description: 너비 375px 화면에서도 공지 띠의 너비가 바깥 상자(.page) 너비의 절반이어야 합니다.
+      requirement: 바깥 상자의 절반 너비
+      visible: true
+      viewport: 375
+      selector: .notice
+      expect:
+        computed:
+          width: { px: { value: 179.5 } }
+      misconceptionIfFail: css.mc.percent-of-screen
+    - kind: css
+      id: padding
+      description: 공지 띠의 안쪽 여백이 네 방향 모두 1rem(16px)이어야 합니다.
+      requirement: 안쪽 여백
+      visible: true
+      selector: .notice
+      expect:
+        computed:
+          padding-top: { px: { value: 16 } }
+          padding-right: { px: { value: 16 } }
+          padding-bottom: { px: { value: 16 } }
+          padding-left: { px: { value: 16 } }
+      misconceptionIfFail: css.mc.unitless-length
+    - kind: dom
+      id: body-kept
+      description: 공지 띠는 바깥 상자 안에 그대로 있어야 합니다.
+      requirement: HTML은 그대로
+      selector: .page > p.notice
+      expect:
+        count: 1
+misconceptions: [css.mc.percent-of-screen, css.mc.unitless-length]
+hints:
+  - 공지 띠의 네 가지 선언은 `.notice` 규칙 하나에 써요. 색 두 개는 표기법이 달라요. 너비는 무엇을 기준으로 하는 단위를 써야 "바깥 상자의 절반"이 될까요?
+  - "`rgb()` 안에는 빨강, 초록, 파랑 값을 0부터 255까지의 숫자로 차례로 써요. 16진수 색은 `#` 뒤에 여섯 자리를 그대로 써요. 길이 단위 표에서 부모 상자, 화면, 루트 글자 크기를 기준으로 하는 단위를 각각 찾아보세요."
+  - "너비는 부모 기준 단위로 `50`을 써요. 화면 기준 단위(`vw`)는 바깥 상자가 아니라 화면 전체의 절반이라 맞지 않아요. 안쪽 여백은 단축 속성 하나에 값 하나만 쓰면 네 방향에 모두 적용돼요."
+explanation: |
+  예시 정답은 아래 규칙이에요.
+
+  ```css
+  .notice {
+    background: rgb(254 243 199);
+    color: #92400e;
+    width: 50%;
+    padding: 1rem;
+  }
+  ```
+
+  - `rgb(254 243 199)`는 빛의 세 색을 0부터 255까지의 양으로 섞어요. `rgb(254, 243, 199)`처럼 쉼표로 나눠도 같아요. 같은 색을 16진수로 쓰면 `#fef3c7`이에요.
+  - `#92400e`는 빨강 `92`, 초록 `40`, 파랑 `0e`를 두 자리씩 16진수로 쓴 색이에요.
+  - `%` 너비는 **부모**(바깥 상자) content 영역의 너비가 기준이라, 바깥 상자가 넓어지고 좁아져도 늘 그 절반이 돼요. 바깥 상자는 `body` 안을 꽉 채우는데, `body`에는 브라우저가 기본으로 주는 작은 바깥 여백(8px씩)이 있어서 1280px 화면에서 바깥 상자는 1264px, 공지 띠는 632px이에요.
+  - `50vw`로 쓰면 **화면** 너비의 절반이라 1280px 화면에서 640px이 되어 바깥 상자의 절반보다 커져요. `632px`처럼 px로 고정하면 한 화면에서만 맞고, 375px 화면에서는 바깥 상자보다 넓어져요.
+  - `1rem`은 루트(`html`)의 글자 크기(기본 16px)와 같아요. `padding: 16`처럼 단위를 빼면 그 선언이 무시돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

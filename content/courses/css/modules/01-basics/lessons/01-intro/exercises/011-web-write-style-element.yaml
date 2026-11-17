@@ -1,0 +1,136 @@
+id: css.basics.intro.web-write-style-element
+type: web_task
+difficulty: 2
+concepts:
+  - { id: css.intro.linking, weight: 1 }
+  - { id: css.intro.rule-structure, weight: 0.5 }
+tags: [style-element, css-rule, web-task, from-scratch]
+estimatedSeconds: 240
+prompt: |
+  꽃집 안내 페이지에는 아직 CSS가 하나도 없어요. `head` 안에 **`style` 요소를 직접 추가하고**, 그 안에 규칙을 처음부터 써서 아래처럼 보이게 하세요.
+
+  1. 가게 이름(`h1`)의 글자 색: 남색(`navy`)
+  1. 안내 문단 두 개(`class="info"`)의 글자 크기: `18px`
+
+  `style` 속성(인라인 스타일)은 쓰지 말고, HTML(`body`)도 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>봄날 꽃집</title>
+            </head>
+            <body>
+              <h1>봄날 꽃집</h1>
+              <p class="info">매일 아침 9시에 문을 열어요.</p>
+              <p class="info">꽃다발은 하루 전에 주문해 주세요.</p>
+              <p>전화: 02-000-0000</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>봄날 꽃집</title>
+              <style>
+                h1 {
+                  color: navy;
+                }
+                .info {
+                  font-size: 18px;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>봄날 꽃집</h1>
+              <p class="info">매일 아침 9시에 문을 열어요.</p>
+              <p class="info">꽃다발은 하루 전에 주문해 주세요.</p>
+              <p>전화: 02-000-0000</p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: style-in-head
+      description: head 안에 style 요소가 있어야 합니다.
+      requirement: style 요소
+      visible: true
+      selector: head > style
+      expect:
+        count: { min: 1 }
+    - kind: dom
+      id: no-inline-style
+      description: style 속성(인라인 스타일)을 쓰지 않아야 합니다.
+      requirement: style 요소
+      visible: true
+      selector: "[style]"
+      expect:
+        count: 0
+    - kind: css
+      id: title-navy
+      description: 가게 이름(h1)의 글자 색이 남색이어야 합니다.
+      requirement: 남색 제목
+      visible: true
+      selector: h1
+      expect:
+        computed:
+          color: { color: "#000080" }
+    - kind: css
+      id: info-size
+      description: 안내 문단 두 개의 글자 크기가 모두 18px이어야 합니다.
+      requirement: 18px 안내 문단
+      visible: true
+      selector: .info
+      all: true
+      expect:
+        computed:
+          font-size: { px: { value: 18 } }
+    - kind: css
+      id: phone-unchanged
+      description: 전화번호 문단의 글자 크기는 기본값(16px) 그대로여야 합니다.
+      requirement: 다른 문단은 그대로
+      selector: "p:not(.info)"
+      expect:
+        computed:
+          font-size: { px: { value: 16 } }
+    - kind: dom
+      id: body-kept
+      description: 안내 문단 두 개는 그대로 있어야 합니다.
+      requirement: HTML은 그대로
+      selector: p.info
+      expect:
+        count: 2
+hints:
+  - 이 페이지 한 장에만 쓸 CSS는 어디에, 어떤 요소 안에 쓴다고 배웠나요? 그 요소부터 만들고, 안에 규칙을 써요.
+  - "`head` 안(`title` 다음)에 `<style>`과 `</style>`을 쓰고, 그 사이에 규칙을 두 개 써요. 선택자는 `h1`과 `.info`예요."
+  - "규칙은 `선택자 { 속성: 값; }` 모양이에요. 예를 들어 모든 문단을 빨갛게 하려면 `p { color: red; }`라고 써요. 글자 크기를 정하는 속성은 `font-size`예요."
+explanation: |
+  예시 정답은 `head` 안에 다음 `style` 요소를 추가하는 거예요.
+
+  ```html
+  <style>
+    h1 {
+      color: navy;
+    }
+    .info {
+      font-size: 18px;
+    }
+  </style>
+  ```
+
+  - `style` 요소 안에 쓴 규칙은 **이 페이지 전체**에 적용돼요. 선택자 `.info` 하나로 두 문단을 한꺼번에 꾸밀 수 있어요.
+  - 각 문단에 `style="font-size: 18px"`을 쓰면 그 요소 하나에만 적용돼요. 같은 꾸밈을 여러 요소에 줄 때는 규칙 하나가 낫고, 고칠 곳도 한 군데뿐이에요.
+  - 여러 페이지가 함께 쓰는 CSS라면 외부 파일을 만들고 `<link rel="stylesheet" href="style.css" />`로 연결해요. 이 실습은 파일 하나로 실행되므로 `style` 요소를 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -52,6 +52,12 @@ export interface ExerciseFacts {
   readonly category: ExerciseCategory;
   /** `ExerciseTypeDef.weightOverride` (e.g. `true_false` 0.5). Replaces the category weight. */
   readonly typeWeightOverride?: number;
+  /**
+   * The learner writes the code from an empty starter (작성형: `implement_function`, a `web_task`
+   * whose focused part starts empty), not edits given code (D-084). Missing = false. Always a
+   * `production` exercise.
+   */
+  readonly writing?: boolean;
   readonly difficulty: Difficulty;
   readonly estimatedSeconds: number;
   /** Resolved with {@link resolveVariantGroupKey}; stored as `attempts.variant_group_key`. */

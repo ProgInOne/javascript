@@ -14,6 +14,7 @@ prompt: |
   (`.row`의 `display: flex; flex-wrap: wrap;`은 "자식들을 가로로 나란히 놓되, 자리가 모자라면 다음 줄로 넘긴다"는 뜻이에요. 레이아웃 모듈에서 배우니 지금은 그대로 두세요.)
 spec:
   focus: css
+  debugging: true                # 버그가 있는 시작 페이지를 고치는 문제(디버깅으로 셈, D-069)
   starter:
     files:
       - path: index.html

@@ -11,6 +11,7 @@ prompt: |
   `.notice` 규칙을 고쳐서 상자의 `width`가 300px, `padding`이 네 방향 모두 20px이 되게 하세요. 테두리와 배경색은 그대로 두세요.
 spec:
   focus: css
+  debugging: true                # 버그가 있는 시작 페이지를 고치는 문제(디버깅으로 셈, D-069)
   starter:
     files:
       - path: index.html

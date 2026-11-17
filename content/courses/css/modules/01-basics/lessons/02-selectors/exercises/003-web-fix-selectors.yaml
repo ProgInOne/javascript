@@ -12,6 +12,7 @@ prompt: |
   2. 평점 문단 두 개(`class="rating"`)의 글자 색이 주황색(`orange`)
 spec:
   focus: css
+  debugging: true                # 버그가 있는 시작 페이지를 고치는 문제(디버깅으로 셈, D-069)
   starter:
     files:
       - path: index.html

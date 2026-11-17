@@ -477,6 +477,7 @@ D-076에서 B 시안에 맞춰 sm·md·lg를 2px씩 키우고 xl을 더했습니
 | **ConsoleView** | 콘솔 출력 | 로그 레벨별 아이콘, `SerializedValue` 펼침 트리, 잘림 안내, `alert`/`confirm`/`prompt` 대체 표시와 입력값 패널, 실행 상태, 오류 스택(학습자 코드 줄 링크), 지우기. 상세는 [콘솔 패널](#콘솔-패널) |
 | **PreviewFrame** | HTML/CSS 미리보기 | 툴바(새로 고침. 뷰포트 375/768/1280 전환과 박스 모델 인스펙터는 P1), 미리보기 알림(링크 이동·폼 제출 안내, `role="status"`), 탭 제목 막대(아래 참고), 샌드박스 iframe 컨테이너 |
 | **PreviewTabBar** | 미리보기 탭 제목 | 미리보기 바로 위의 브라우저 탭 모양 막대. 일반 문서 아이콘(lucide `FileText`)과 학습자 문서의 `document.title`(텍스트로만 그림, 넘치면 말줄임표와 툴팁). 제목이 없으면 흐린 글씨 "제목 없음". `role="group"`·이름 "미리보기 탭 제목", 라이브 영역이 아니라 제목이 바뀌어도 알리지 않음. 웹 실습·프로젝트(PreviewFrame)와 레슨 HTML 예제(RunnableExample)가 함께 씀([D-082](/docs/decisions.md)) |
+| **WritingBadge** | 직접 작성 표식 | 작성형 문제(빈 시작 코드에서 학습자가 코드를 처음부터 쓰는 문제: `implement_function`, 초점 부분이 빈 `web_task`)의 문제 머리 줄, 유형 이름 옆에 붙는 `Badge`(brand)와 펜 아이콘(lucide `PenLine`, 장식) + 글자 "직접 작성". 색만으로 전하지 않고 글자가 곧 이름입니다. 신호는 `GET /exercises/:id`의 `writing`([D-084](/docs/decisions.md)) |
 | **EditorPane** | CodeMirror 래퍼 | 파일 탭, 포맷, 초기화(확인), 자동 저장 상태 표시("저장됨 · 방금") |
 | **TutorMessage** | 튜터 대화 메시지 | 학습자/튜터 구분. 튜터 메시지는 왼쪽 violet 표식 + "AI 튜터" 레이블. 스트리밍 중 커서, 중단 버튼, 코드 블록 복사, "에디터에 적용"(P1, 확인 필요) |
 | **ContextChip** | 튜터 컨텍스트 표시 | "현재 문제", "선택한 코드 12줄", "테스트 결과" 칩. 제거 가능 |

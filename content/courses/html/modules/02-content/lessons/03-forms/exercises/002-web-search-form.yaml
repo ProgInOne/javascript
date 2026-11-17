@@ -4,36 +4,26 @@ difficulty: 3
 concepts:
   - { id: html.forms.form, weight: 1 }
   - { id: html.forms.inputs, weight: 0.3 }
-tags: [form, action, name, web-task]
-estimatedSeconds: 300
+  - { id: html.forms.labels, weight: 0.3 }
+tags: [form, action, name, label, web-task, from-scratch]
+estimatedSeconds: 360
 prompt: |
-  도서관 사이트에 책 검색 칸을 만들고 있어요. 입력칸과 버튼은 있는데, 버튼을 눌러도 검색어가 아무 데도 보내지지 않아요.
+  도서관 사이트에 책 검색 칸을 만들어요. 빈 파일에서 시작해 문서의 뼈대부터 **처음부터 직접** 써 보세요.
 
-  아래 요구사항에 맞게 고치세요.
+  1. 본문 맨 위에 가장 큰 제목 **우리 동네 도서관**을 넣으세요.
+  1. 그 아래에 **폼**을 하나 두고, 폼을 보내면 검색어가 `/search` 주소로 가게 하세요.
+  1. 폼 안에 검색어 입력칸을 두세요. `id`는 `q`, 종류(`type`)는 `search`이고, 서버가 검색어를 알아볼 수 있게 값에 `q`라는 **이름**을 붙이세요.
+  1. 입력칸에 **책 제목**이라는 이름표를 달고, 이름표를 누르면 입력칸에 커서가 가도록 연결하세요.
+  1. 폼 안에 **검색** 버튼을 두세요. 누르면 폼을 보내는 버튼이어야 해요.
 
-  1. 입력칸과 버튼을 **폼**으로 묶어서, 폼을 보내면 검색어가 `/search` 주소로 가게 하세요.
-  1. 서버가 검색어를 알아볼 수 있게, 입력칸의 값에 `q`라는 **이름**을 붙이세요.
-
-  `label`, 입력칸의 `id`와 `type`, 버튼은 그대로 두세요. (미리보기는 폼을 실제로 전송하지 않아요. 검색 버튼을 누른 뒤 미리보기 모양이 바뀌면 다시 실행하세요.)
+  (미리보기는 폼을 실제로 전송하지 않아요. 검색 버튼을 누른 뒤 미리보기 모양이 바뀌면 다시 실행하세요.)
 spec:
   focus: html
   starter:
     files:
       - path: index.html
         content: |
-          <!doctype html>
-          <html lang="ko">
-            <head>
-              <meta charset="utf-8" />
-              <title>책 검색</title>
-            </head>
-            <body>
-              <h1>우리 동네 도서관</h1>
-              <label for="q">책 제목</label>
-              <input id="q" type="search" />
-              <button type="submit">검색</button>
-            </body>
-          </html>
+          <!-- 빈 파일이에요. 문서의 뼈대부터 직접 써 보세요. -->
   solution:
     files:
       - path: index.html
@@ -55,53 +45,84 @@ spec:
           </html>
   checks:
     - kind: dom
+      id: heading
+      description: 본문에 가장 큰 제목 "우리 동네 도서관"이 있어야 합니다.
+      requirement: 제목
+      visible: true
+      selector: body > h1
+      expect:
+        count: 1
+        text: { equals: 우리 동네 도서관 }
+    - kind: dom
       id: form-action
       description: 보낼 주소가 /search인 폼이 하나 있어야 합니다.
-      requirement: 폼으로 묶기
+      requirement: 폼
       visible: true
       selector: 'form[action="/search"]'
       expect:
         count: 1
     - kind: dom
       id: input-in-form
-      description: 검색어 입력칸(#q)이 폼 안에 있어야 합니다.
-      requirement: 폼으로 묶기
+      description: id가 q인 입력칸이 폼 안에 있어야 합니다.
+      requirement: 검색어 입력칸
       visible: true
       selector: "form #q"
       expect:
         count: 1
         tag: input
     - kind: dom
-      id: button-in-form
-      description: 검색 버튼이 폼 안에 있어야 합니다.
-      requirement: 폼으로 묶기
+      id: input-type
+      description: 입력칸의 type은 search여야 합니다.
+      requirement: 검색어 입력칸
       visible: true
-      selector: form button
+      selector: "#q"
       expect:
-        count: 1
+        attr: { name: type, equals: search }
     - kind: dom
       id: input-name
       description: 입력칸의 값에 q라는 이름(name)이 붙어 있어야 합니다.
-      requirement: 값의 이름
+      requirement: 검색어 입력칸
       visible: true
       selector: "#q"
       expect:
         attr: { name: name, equals: q }
     - kind: dom
-      id: type-kept
-      description: 입력칸의 type은 search 그대로여야 합니다.
-      requirement: 그대로 두기
-      selector: "#q"
+      id: label-for
+      description: "\"책 제목\" 이름표(label)가 입력칸(#q)에 연결되어 있어야 합니다(for 속성 또는 label 안에 넣기)."
+      requirement: 이름표
+      visible: true
+      selector: 'label[for="q"], label:has(#q)'
       expect:
-        attr: { name: type, equals: search }
+        count: 1
+        text: { includes: 책 제목 }
+      misconceptionIfFail: html.mc.label-just-text
+    - kind: dom
+      id: button-in-form
+      description: "\"검색\" 버튼이 폼 안에 하나 있어야 합니다."
+      requirement: 검색 버튼
+      visible: true
+      selector: form button
+      expect:
+        count: 1
+        text: { equals: 검색 }
+    - kind: dom
+      id: button-submits
+      description: 검색 버튼은 폼을 보내는 버튼이어야 합니다(type="button"이 아니어야 합니다).
+      requirement: 검색 버튼
+      selector: 'form button:not([type="button"]):not([type="reset"])'
+      expect:
+        count: 1
+      misconceptionIfFail: html.mc.button-does-nothing
+misconceptions: [html.mc.label-just-text, html.mc.button-does-nothing]
 hints:
-  - 여러 입력 요소를 묶어서 한꺼번에 보내는 상자 요소가 있어요. 보낼 주소는 그 요소의 속성으로 정해요.
-  - "`form` 요소로 label, input, button을 모두 감싸고, `action` 속성에 보낼 주소를 써요. 값의 이름은 input의 `name` 속성이에요."
-  - "form의 여는 태그는 `label` 앞에, 닫는 태그는 `button` 뒤에 둬요. `action`의 값은 문제의 주소, input에 추가할 `name`의 값은 `q`예요."
+  - 문서의 뼈대를 먼저 쓰고, 본문에 제목과 폼을 차례로 넣어요. 여러 입력 요소를 묶어서 한꺼번에 보내는 상자 요소는 무엇이었나요?
+  - "`form` 요소의 `action` 속성에 보낼 주소를 써요. 그 안에 `label`, `input`, `button`을 차례로 넣고, 값의 이름은 input의 `name`, 이름표 연결은 label의 `for`와 input의 `id`로 해요."
+  - "폼의 여는 태그에 `action`을 쓰고, 입력칸 하나에 `id`·`name`·`type` 세 속성을 모두 줘요(`id`와 `name`은 같은 값이어도 돼요). 이름표의 `for` 값은 입력칸의 어느 속성 값과 같아야 할까요? 버튼은 `type`을 쓰지 않거나 `submit`으로 써요."
 explanation: |
-  예시 정답은 이래요.
+  예시 정답의 본문은 이래요.
 
   ```html
+  <h1>우리 동네 도서관</h1>
   <form action="/search">
     <label for="q">책 제목</label>
     <input id="q" name="q" type="search" />
@@ -109,9 +130,10 @@ explanation: |
   </form>
   ```
 
-  - **form으로 묶기**: 입력칸과 버튼이 form 안에 있어야 폼을 보낼 때 검색어가 함께 가요. form 밖의 버튼은 보낼 폼이 없어서 눌러도 아무 일이 일어나지 않아요.
-  - **action**: 폼을 보낼 주소예요. "해리 포터"를 검색하면 브라우저는 `/search?q=해리 포터` 같은 주소로 이동해요(공백 같은 글자는 주소용 기호로 바뀌어 보내져요).
-  - **name**: 보낼 때 값에 붙는 이름이에요. `id`는 HTML 안에서 요소를 찾을 때(label 연결 등) 쓰고, 서버로 보낼 때의 이름은 `name`이에요. 둘이 같은 값이어도 괜찮아요.
+  - **form과 action**: 입력칸과 버튼이 form 안에 있어야 폼을 보낼 때 검색어가 함께 가요. `action`은 폼을 보낼 주소예요. "해리 포터"를 검색하면 브라우저는 `/search?q=해리 포터` 같은 주소로 이동해요(공백 같은 글자는 주소용 기호로 바뀌어 보내져요).
+  - **name과 id**: `name`은 보낼 때 값에 붙는 이름이고, `id`는 HTML 안에서 요소를 찾을 때(label 연결 등) 써요. 둘이 같은 값이어도 괜찮아요.
+  - **label 연결**: `for` 값이 입력칸의 `id`와 같으면 이름표를 눌러도 입력칸에 커서가 가고, 화면 낭독기도 입력칸의 이름을 "책 제목"으로 읽어요. `<label>책 제목 <input … /></label>`처럼 label 안에 입력칸을 넣어도 연결돼요. 연결하지 않은 `<label>책 제목</label>`은 그냥 글자일 뿐이에요.
+  - **button**: form 안의 `button`은 type을 쓰지 않아도 폼을 보내요(`submit`). `type="submit"`을 적으면 뜻이 더 분명해요. `type="button"`으로 쓰면 눌러도 폼을 보내지 않아요.
 origin: authored
 review:
   status: approved

@@ -5,6 +5,7 @@ export {
   getExerciseType,
   gradeSubmission,
   implementedExerciseTypes,
+  isWritingExercise,
   leakFingerprints,
   parseAnswer,
   parseSpec,

@@ -103,6 +103,12 @@ export const exerciseViewSchema = z.object({
   estimatedSeconds: z.int(),
   /** True when grading needs a sandbox `RunResult` (fetch a run plan first). */
   requiresRun: z.boolean(),
+  /**
+   * 작성형 (D-084): the learner writes the code from an empty starter (`implement_function`, or a
+   * `web_task` whose focused part starts empty) instead of editing given code. The UI shows a
+   * "직접 작성" badge.
+   */
+  writing: z.boolean(),
   hintCount: z.int(),
   /** Hints already opened in this context, in order (restores the hint ladder). */
   openedHints: z.array(openedHintSchema),

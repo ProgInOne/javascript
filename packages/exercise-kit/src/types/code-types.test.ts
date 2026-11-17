@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest';
 
 import { editDistanceExceeds, tokenize } from '../common/edit-distance.ts';
 import { ExerciseKitError } from '../core/errors.ts';
-import { buildRunPlan, gradeSubmission, verifySpec } from '../core/registry.ts';
+import { buildRunPlan, gradeSubmission, isWritingExercise, verifySpec } from '../core/registry.ts';
 import { logEntries, makeRun, returned, sv } from '../testing/run.ts';
 import { codeAnswerSchema } from './code-common.ts';
 import { fillBlank, fillBlankSpecSchema, fillTemplate } from './fill-blank.ts';
 import { fixBug, fixBugSpecSchema, REWRITE_PENALTY } from './fix-bug.ts';
 import { implementFunction, implementFunctionSpecSchema } from './implement-function.ts';
-import { webTask, webTaskSpecSchema } from './web-task.ts';
+import { webTask, webTaskSpecSchema, webTaskStartsEmpty } from './web-task.ts';
 
 const implSpec = implementFunctionSpecSchema.parse({
   starter: {
@@ -499,6 +499,86 @@ describe('web_task (basic)', () => {
     expect(raw.debugging).toBe(true);
     expect(webTaskSpecSchema.safeParse({ ...spec, debugging: 'yes' }).success).toBe(false);
     expect(webTask.redact(raw)).not.toHaveProperty('debugging');
+  });
+});
+
+describe('writing exercises (작성형, D-084)', () => {
+  const withStarter = (focus: string, content: string, extra: Record<string, unknown> = {}) =>
+    webTaskSpecSchema.parse({
+      focus,
+      starter: { files: [{ path: 'index.html', content }] },
+      solution: { files: [{ path: 'index.html', content: '<p>답</p>' }] },
+      checks: [{ kind: 'dom', id: 'p', selector: 'p', expect: { exists: true } }],
+      ...extra,
+    });
+  const page = (head: string, body = '<p class="a">안녕</p>') =>
+    `<!doctype html>\n<html lang="ko">\n<head>${head}</head>\n<body>${body}</body>\n</html>\n`;
+
+  it('html: only an empty file (whitespace and comments) is a writing task', () => {
+    expect(webTaskStartsEmpty(withStarter('html', ''))).toBe(true);
+    expect(webTaskStartsEmpty(withStarter('html', '\n<!-- 여기에 HTML을 쓰세요 -->\n'))).toBe(true);
+    expect(webTaskStartsEmpty(withStarter('html', page('')))).toBe(false);
+    expect(webTaskStartsEmpty(withStarter('html', '<!-- a -->\n<p>x</p>'))).toBe(false);
+  });
+
+  it('css: empty style elements over given markup, without inline styles', () => {
+    expect(webTaskStartsEmpty(withStarter('css', page('<style>\n  /* 여기에 */\n</style>')))).toBe(
+      true,
+    );
+    expect(webTaskStartsEmpty(withStarter('css', page('')))).toBe(true);
+    expect(webTaskStartsEmpty(withStarter('css', page('<style>p { color: red; }</style>')))).toBe(
+      false,
+    );
+    expect(
+      webTaskStartsEmpty(
+        withStarter('css', page('<style></style>', '<p style="color: red">x</p>')),
+      ),
+    ).toBe(false);
+    expect(
+      webTaskStartsEmpty(withStarter('css', page('<link rel="stylesheet" href="a.css" />'))),
+    ).toBe(false);
+    // A rule inside an HTML comment is not code the learner edits.
+    expect(
+      webTaskStartsEmpty(withStarter('css', page('<!-- <style>p{}</style> --><style></style>'))),
+    ).toBe(true);
+  });
+
+  it('dom: empty scripts without inline handlers; debugging and project tasks never', () => {
+    expect(
+      webTaskStartsEmpty(
+        withStarter('dom', page('', '<button>a</button><script>\n// 여기에\n</script>')),
+      ),
+    ).toBe(true);
+    expect(webTaskStartsEmpty(withStarter('dom', page('', '<script>let a = 1;</script>')))).toBe(
+      false,
+    );
+    expect(
+      webTaskStartsEmpty(withStarter('dom', page('', '<button onclick="go()">a</button>'))),
+    ).toBe(false);
+    expect(webTaskStartsEmpty(withStarter('dom', page('', '<script src="a.js"></script>')))).toBe(
+      false,
+    );
+    expect(webTaskStartsEmpty(withStarter('html', '', { debugging: true }))).toBe(false);
+    expect(webTaskStartsEmpty(withStarter('project', ''))).toBe(false);
+  });
+
+  it('isWritingExercise: implement_function always, web_task by starter, others never', () => {
+    expect(isWritingExercise('web_task', withStarter('html', ''))).toBe(true);
+    expect(isWritingExercise('web_task', withStarter('html', page('')))).toBe(false);
+    expect(
+      isWritingExercise('implement_function', {
+        starter: { files: [{ path: 'main.js', content: 'function f() {}\n' }] },
+        entry: 'f',
+        solution: { files: [{ path: 'main.js', content: 'function f() { return 1; }\n' }] },
+        checks: [{ kind: 'call', id: 'c', args: [], expect: { equals: 1 } }],
+      }),
+    ).toBe(true);
+    expect(
+      isWritingExercise('true_false', {
+        statement: '참',
+        answer: true,
+      }),
+    ).toBe(false);
   });
 });
 

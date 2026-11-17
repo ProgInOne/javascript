@@ -1,4 +1,4 @@
-import { getExerciseType, variantGroupKey } from '@proginone/exercise-kit';
+import { getExerciseType, isWritingExercise, variantGroupKey } from '@proginone/exercise-kit';
 import {
   createTsFsrsPort,
   defaultEngineConfig,
@@ -29,6 +29,30 @@ export function learnerContext(userDb: UserDb): { learnerId: string; dayBoundary
   };
 }
 
+/** `isWritingExercise` by exercise ID and content hash (a spec only changes with its hash). */
+const writingCache = new Map<string, boolean>();
+
+/**
+ * Whether the learner writes the code from an empty starter (작성형, D-084). Only production
+ * types can be; a spec that fails validation counts as not writing (serving it fails later
+ * with the usual content error).
+ */
+export function isWriting(exercise: ContentExercise): boolean {
+  if (getExerciseType(exercise.type)?.category !== 'production') return false;
+  const key = `${exercise.id}\u0000${exercise.contentHash}`;
+  const cached = writingCache.get(key);
+  if (cached !== undefined) return cached;
+  let writing: boolean;
+  try {
+    writing = isWritingExercise(exercise.type, exercise.spec);
+  } catch {
+    writing = false;
+  }
+  if (writingCache.size > 5_000) writingCache.clear();
+  writingCache.set(key, writing);
+  return writing;
+}
+
 /**
  * Engine facts of a content exercise, or null when it cannot be served (type not implemented in
  * this version, or no primary concept).
@@ -41,6 +65,7 @@ export function candidateOf(exercise: ContentExercise): ExerciseCandidate | null
     type: exercise.type,
     category: def.category,
     ...(def.weightOverride === undefined ? {} : { typeWeightOverride: def.weightOverride }),
+    ...(isWriting(exercise) ? { writing: true } : {}),
     // content.db enforces `difficulty BETWEEN 1 AND 5`.
     difficulty: Math.min(5, Math.max(1, Math.round(exercise.difficulty))) as Difficulty,
     estimatedSeconds: exercise.estimatedSeconds,

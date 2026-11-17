@@ -12,4 +12,4 @@ objectives:
   - 단위 없는 line-height가 실제로 몇 px이 되는지 계산할 수 있다.
   - text-align이 정렬하는 대상을 설명하고, 글자 정렬과 상자 가운데 놓기를 구분할 수 있다.
 practice:
-  targetCount: 11
+  targetCount: 12

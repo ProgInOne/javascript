@@ -1,0 +1,173 @@
+id: css.layout.responsive.web-write-menu-mobile-first
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.responsive.mobile-first, weight: 1 }
+  - { id: css.responsive.media-queries, weight: 0.3 }
+  - { id: css.flex.axes, weight: 0.3 }
+tags: [mobile-first, media-query, flexbox, web-task, from-scratch]
+estimatedSeconds: 420
+prompt: |
+  카페 메뉴판의 메뉴 상자(`class="item"`) 세 개를 화면 너비에 따라 다르게 놓으려고 해요. `style` 요소 안에 CSS를 **모바일 우선** 방식으로 **처음부터 직접** 써 보세요. 상자 세 개는 `class="menu"`인 상자 안에 있어요.
+
+  1. 기본(좁은 화면): `.menu`를 Flexbox 컨테이너로 만들고, 메뉴 상자를 **위아래로** 쌓으세요. 상자 사이 간격은 `12px`이에요.
+  1. 화면 너비가 `700px` **이상**일 때: 메뉴 상자를 **가로로 나란히** 놓으세요. 간격은 그대로 `12px`이에요.
+
+  채점은 화면 너비 `375px`, `700px`, `1280px`에서 따로 해요. 모바일 우선 방식이므로 미디어 쿼리 밖에는 좁은 화면용 규칙을 쓰고, `min-width` 미디어 쿼리 안에 넓은 화면에서 달라지는 것만 쓰세요. (채점은 화면에 나온 결과만 보기 때문에, 모바일 우선으로 썼는지는 스스로 확인해 보세요.) HTML(`body`)은 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>오늘의 메뉴</title>
+              <style>
+                /* 여기에 CSS를 처음부터 직접 쓰세요 */
+              </style>
+            </head>
+            <body>
+              <h1>오늘의 메뉴</h1>
+              <div class="menu">
+                <div class="item" id="m1">아메리카노</div>
+                <div class="item" id="m2">카페라테</div>
+                <div class="item" id="m3">유자차</div>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>오늘의 메뉴</title>
+              <style>
+                .menu {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 12px;
+                }
+                @media (min-width: 700px) {
+                  .menu {
+                    flex-direction: row;
+                  }
+                }
+              </style>
+            </head>
+            <body>
+              <h1>오늘의 메뉴</h1>
+              <div class="menu">
+                <div class="item" id="m1">아메리카노</div>
+                <div class="item" id="m2">카페라테</div>
+                <div class="item" id="m3">유자차</div>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: flex-container
+      description: 메뉴 묶음(.menu)이 Flexbox 컨테이너여야 합니다.
+      requirement: Flexbox 컨테이너
+      visible: true
+      viewport: 375
+      selector: .menu
+      expect:
+        computed:
+          display: { equals: flex }
+      misconceptionIfFail: css.mc.flex-on-children
+    - kind: layout
+      id: stacked-on-phone
+      description: 너비 375px 화면에서 두 번째 상자가 첫 번째 상자 아래에 있어야 합니다.
+      requirement: 좁은 화면에서는 위아래로
+      visible: true
+      viewport: 375
+      a: "#m2"
+      b: "#m1"
+      relation: below
+      tolerancePx: 1
+    - kind: layout
+      id: gap-on-phone
+      description: 너비 375px 화면에서 첫 번째와 두 번째 상자 사이의 세로 간격이 12px이어야 합니다.
+      requirement: 간격 12px
+      visible: true
+      viewport: 375
+      a: "#m1"
+      b: "#m2"
+      gap: { axis: y, min: 12, max: 12 }
+      tolerancePx: 1
+    - kind: layout
+      id: row-at-700
+      description: 너비가 정확히 700px인 화면에서 두 번째 상자가 첫 번째 상자 오른쪽에 있어야 합니다(700px 이상).
+      requirement: 넓은 화면에서는 가로로
+      visible: true
+      viewport: 700
+      a: "#m2"
+      b: "#m1"
+      relation: right-of
+      tolerancePx: 1
+    - kind: layout
+      id: row-on-desktop
+      description: 너비 1280px 화면에서 세 번째 상자가 두 번째 상자와 같은 줄에 있어야 합니다.
+      requirement: 넓은 화면에서는 가로로
+      visible: true
+      viewport: 1280
+      a: "#m3"
+      b: "#m2"
+      relation: same-row
+      tolerancePx: 1
+      misconceptionIfFail: css.mc.max-width-means-above
+    - kind: layout
+      id: gap-on-desktop
+      description: 너비 1280px 화면에서 첫 번째와 두 번째 상자 사이의 가로 간격이 12px이어야 합니다.
+      requirement: 간격 12px
+      visible: true
+      viewport: 1280
+      a: "#m1"
+      b: "#m2"
+      gap: { axis: x, min: 12, max: 12 }
+      tolerancePx: 1
+    - kind: dom
+      id: body-kept
+      description: 메뉴 상자 세 개는 그대로 있어야 합니다.
+      requirement: HTML은 그대로
+      selector: .menu > .item
+      expect:
+        count: 3
+misconceptions: [css.mc.flex-on-children, css.mc.mobile-first-means-desktop-override, css.mc.max-width-means-above]
+hints:
+  - 모바일 우선은 좁은 화면 배치를 먼저 쓰고, 넓은 화면에서 달라지는 것만 덧붙이는 방식이에요. 두 화면에서 달라지는 속성은 무엇 하나인가요?
+  - "`display: flex`는 나란히 놓을 상자들의 **부모**(`.menu`)에 줘요. 위아래로 쌓으려면 주축 방향을 `column`으로 바꾸고, 간격은 `gap`으로 줘요. 넓은 화면에서는 `@media (min-width: 700px)` 안에서 주축 방향만 `row`로 바꿔요."
+  - "미디어 쿼리 밖의 `.menu` 규칙에 선언 세 개(Flexbox 컨테이너, 세로 주축, 간격)를 쓰고, 그 아래 `min-width` 미디어 쿼리 안의 `.menu` 규칙에는 주축 방향 선언 하나만 써요."
+explanation: |
+  예시 정답은 아래 CSS예요.
+
+  ```css
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  @media (min-width: 700px) {
+    .menu {
+      flex-direction: row;
+    }
+  }
+  ```
+
+  - 미디어 쿼리 밖의 기본 규칙이 **좁은 화면용**이에요. Flexbox 컨테이너의 주축을 `column`으로 바꿔 위아래로 쌓고, `gap`으로 상자 사이만 띄워요.
+  - `min-width: 700px` 안에는 넓은 화면에서 **달라지는 것**(주축 방향)만 써요. `display`와 `gap`은 기본 규칙에서 물려받듯 그대로 적용돼요. 이렇게 덧붙이기만 하는 것이 모바일 우선이에요.
+  - 넓은 화면용 가로 배치를 기본으로 쓰고 `max-width`로 좁은 화면을 덮어써도 결과는 같지만, 그것은 데스크톱 우선 방식이에요.
+  - `display: flex`를 `.item`에 주면 각 상자 **안쪽**이 Flexbox가 될 뿐, 상자들끼리는 나란히 놓이지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

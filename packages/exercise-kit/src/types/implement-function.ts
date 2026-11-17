@@ -62,6 +62,8 @@ export const implementFunction: ExerciseTypeDef<
   publicSpecSchema: implementFunctionPublicSpecSchema,
   answerSchema: codeAnswerSchema,
   requiresRun: () => true,
+  // The learner writes the function body or the program (D-028, D-084).
+  writing: () => true,
 
   redact(spec) {
     const out: ImplementFunctionPublicSpec = {

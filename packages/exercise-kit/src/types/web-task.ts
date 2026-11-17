@@ -103,6 +103,52 @@ export const webTaskPublicSpecSchema = z.object({
 });
 export type WebTaskPublicSpec = z.infer<typeof webTaskPublicSpecSchema>;
 
+const HTML_COMMENT = /<!--[\s\S]*?(?:-->|$)/g;
+const BLOCK_COMMENT = /\/\*[\s\S]*?(?:\*\/|$)/g;
+const LINE_COMMENT = /\/\/[^\n]*/g;
+const blankAfter = (text: string, ...comments: RegExp[]) =>
+  comments.reduce((rest, pattern) => rest.replace(pattern, ''), text).trim() === '';
+const elementBodies = (html: string, tag: 'style' | 'script') =>
+  [...html.matchAll(new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)</${tag}\\s*>`, 'gi'))].map(
+    (m) => m[1] ?? '',
+  );
+
+/**
+ * Whether the starter leaves the focused part for the learner to write (작성형, D-084). Decided
+ * from the starter text only, so the same spec always gives the same answer:
+ * - `html`: the whole file is empty apart from whitespace and HTML comments.
+ * - `css`: every `<style>` element is empty apart from whitespace and CSS comments, and there is
+ *   no `style` attribute and no stylesheet `<link>` (the given markup is what the CSS styles).
+ * - `dom`: every `<script>` element is empty apart from whitespace and JS comments, there is no
+ *   `<script src>` and no inline `on…` handler.
+ * - `project` tasks and pages to fix (`debugging`) are never writing tasks.
+ */
+export function webTaskStartsEmpty(spec: Pick<WebTaskSpec, 'focus' | 'debugging' | 'starter'>) {
+  if (spec.debugging === true) return false;
+  const html = spec.starter.files.map((f) => f.content).join('\n');
+  const markup = html.replace(HTML_COMMENT, '');
+  switch (spec.focus) {
+    case 'html':
+      return blankAfter(html, HTML_COMMENT);
+    case 'css':
+      return (
+        elementBodies(markup, 'style').every((body) => blankAfter(body, BLOCK_COMMENT)) &&
+        !/<[a-z][^>]*\sstyle\s*=/i.test(markup) &&
+        !/<link\b[^>]*stylesheet/i.test(markup)
+      );
+    case 'dom':
+      return (
+        elementBodies(markup, 'script').every((body) =>
+          blankAfter(body, BLOCK_COMMENT, LINE_COMMENT),
+        ) &&
+        !/<script\b[^>]*\ssrc\s*=/i.test(markup) &&
+        !/<[a-z][^>]*\son[a-z]+\s*=/i.test(markup)
+      );
+    case 'project':
+      return false;
+  }
+}
+
 export const webTask: ExerciseTypeDef<WebTaskSpec, WebTaskPublicSpec, CodeAnswer> = {
   id: 'web_task',
   version: VERSION,
@@ -111,6 +157,7 @@ export const webTask: ExerciseTypeDef<WebTaskSpec, WebTaskPublicSpec, CodeAnswer
   publicSpecSchema: webTaskPublicSpecSchema,
   answerSchema: codeAnswerSchema,
   requiresRun: () => true,
+  writing: webTaskStartsEmpty,
 
   redact(spec) {
     const out: WebTaskPublicSpec = {

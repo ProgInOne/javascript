@@ -1,44 +1,28 @@
 id: html.semantics.landmarks.web-nav-footer
 type: web_task
-difficulty: 2
+difficulty: 3
 concepts:
   - { id: html.semantics.page-landmarks, weight: 1 }
-tags: [landmark, nav, footer, web-task]
-estimatedSeconds: 200
+  - { id: html.content.lists, weight: 0.3 }
+tags: [landmark, header, nav, main, footer, web-task, from-scratch]
+estimatedSeconds: 420
 prompt: |
-  꽃집 페이지에 `header`와 `main`은 있지만, 주요 메뉴와 꼬리말은 랜드마크로 표시되어 있지 않아요. 화면 낭독기 사용자가 "주요 메뉴로", "꼬리말로" 바로 건너뛸 수 있게 고치세요.
+  꽃집 페이지를 빈 파일에서 **처음부터 직접** 써 보세요. 화면 낭독기 사용자가 "주요 메뉴로", "본문으로", "꼬리말로" 바로 건너뛸 수 있도록, 페이지의 큰 구역을 알맞은 **시맨틱 요소**로 나눠야 해요. 문서의 뼈대부터 쓰고 본문을 채우면 돼요.
 
-  1. 머리말 안의 메뉴 목록(`ul`)을 **주요 메뉴** 요소로 감싸세요. 메뉴는 머리말 안에 그대로 있어야 해요.
-  1. `main` 뒤의 연락처 문단을 **꼬리말** 요소로 감싸세요.
+  1. **머리말**: 가장 큰 제목 **봄날 꽃집**과, 그 아래 **주요 메뉴**를 넣으세요. 주요 메뉴는 링크 두 개의 목록(`ul`)이에요.
+     - **처음으로** → `index.html`
+     - **꽃 고르기** → `flowers.html`
+  1. **핵심 내용**: 소제목(`h2`) **이번 주 추천 꽃**과 문단 **노란 프리지어가 들어왔어요.**
+  1. **꼬리말**: 문단 **연락처: 02-000-0000**
 
-  안의 내용과 순서는 바꾸지 마세요.
+  세 구역은 위 순서대로 본문 바로 아래에 두세요.
 spec:
   focus: html
   starter:
     files:
       - path: index.html
         content: |
-          <!doctype html>
-          <html lang="ko">
-            <head>
-              <meta charset="utf-8" />
-              <title>봄날 꽃집</title>
-            </head>
-            <body>
-              <header>
-                <h1>봄날 꽃집</h1>
-                <ul>
-                  <li><a href="index.html">처음으로</a></li>
-                  <li><a href="flowers.html">꽃 고르기</a></li>
-                </ul>
-              </header>
-              <main>
-                <h2>이번 주 추천 꽃</h2>
-                <p>노란 프리지어가 들어왔어요.</p>
-              </main>
-              <p>연락처: 02-000-0000</p>
-            </body>
-          </html>
+          <!-- 빈 파일이에요. 문서의 뼈대부터 직접 써 보세요. -->
   solution:
     files:
       - path: index.html
@@ -70,21 +54,81 @@ spec:
           </html>
   checks:
     - kind: dom
+      id: header-title
+      description: 머리말(header) 안에 가장 큰 제목 "봄날 꽃집"이 있어야 합니다.
+      requirement: 머리말
+      visible: true
+      selector: body > header h1
+      expect:
+        count: 1
+        text: { equals: 봄날 꽃집 }
+    - kind: dom
       id: nav-in-header
-      description: 메뉴 목록이 머리말(header) 안의 주요 메뉴 요소 바로 안에 있어야 합니다.
+      description: 링크 목록(ul)이 머리말 안의 주요 메뉴 요소 바로 안에 있어야 합니다.
       requirement: 주요 메뉴
       visible: true
       selector: header > nav > ul
       expect:
         count: 1
     - kind: dom
+      id: nav-items
+      description: 주요 메뉴 목록에는 항목(li)이 두 개 있어야 합니다.
+      requirement: 주요 메뉴
+      visible: true
+      selector: nav > ul > li
+      expect:
+        count: 2
+    - kind: dom
+      id: nav-home
+      description: "\"처음으로\" 링크가 index.html로 이동해야 합니다."
+      requirement: 주요 메뉴
+      visible: true
+      selector: 'nav li > a[href="index.html"], nav li > a[href="./index.html"]'
+      expect:
+        count: 1
+        text: { equals: 처음으로 }
+    - kind: dom
+      id: nav-flowers
+      description: "\"꽃 고르기\" 링크가 flowers.html로 이동해야 합니다."
+      requirement: 주요 메뉴
+      visible: true
+      selector: 'nav li > a[href="flowers.html"], nav li > a[href="./flowers.html"]'
+      expect:
+        count: 1
+        text: { equals: 꽃 고르기 }
+    - kind: dom
       id: one-nav
       description: 주요 메뉴 요소는 하나만 있어야 합니다.
       requirement: 주요 메뉴
-      visible: true
       selector: nav
       expect:
         count: 1
+    - kind: dom
+      id: main-content
+      description: 핵심 내용(main) 안에 소제목 "이번 주 추천 꽃"이 있어야 합니다.
+      requirement: 핵심 내용
+      visible: true
+      selector: body > main h2
+      expect:
+        count: 1
+        text: { equals: 이번 주 추천 꽃 }
+    - kind: dom
+      id: main-paragraph
+      description: 핵심 내용 안에 문단 "노란 프리지어가 들어왔어요."가 있어야 합니다.
+      requirement: 핵심 내용
+      selector: main p
+      expect:
+        count: 1
+        text: { equals: 노란 프리지어가 들어왔어요. }
+    - kind: dom
+      id: one-main
+      description: 핵심 내용(main)은 하나만 있어야 합니다.
+      requirement: 핵심 내용
+      visible: true
+      selector: main
+      expect:
+        count: 1
+      misconceptionIfFail: html.mc.many-mains
     - kind: dom
       id: footer-contact
       description: 연락처 문단이 body 바로 아래의 꼬리말 요소 안에 있어야 합니다.
@@ -96,44 +140,44 @@ spec:
         text: { equals: "연락처: 02-000-0000" }
     - kind: dom
       id: landmark-order
-      description: 구역 순서는 머리말, 핵심 내용, 꼬리말이어야 합니다.
-      requirement: 꼬리말
+      description: 본문 바로 아래 구역 순서는 머리말, 핵심 내용, 꼬리말이어야 합니다.
+      requirement: 구역 순서
+      visible: true
       selector: body
       expect:
         order: [header, main, footer]
-    - kind: dom
-      id: main-kept
-      description: 핵심 내용(main)은 하나 그대로 있어야 합니다.
-      requirement: 내용 유지
-      selector: main
-      expect:
-        count: 1
-      misconceptionIfFail: html.mc.many-mains
 misconceptions: [html.mc.many-mains]
 hints:
-  - 페이지의 큰 구역 네 가지 중 지금 빠진 것은 무엇인지, 레슨의 구역 그림과 비교해 보세요.
-  - 사이트의 주요 링크 묶음은 `nav`, 연락처·저작권이 들어가는 맨 아래 구역은 `footer`예요.
-  - "`ul` 목록 전체를 주요 메뉴 요소로 감싸되 `header` 안에 그대로 두고, `main` 뒤의 연락처 문단은 꼬리말 요소로 감싸세요. 둘 다 여는 태그와 닫는 태그가 필요해요."
+  - 레슨의 구역 그림을 떠올려 보세요. 페이지 맨 위, 사이트의 주요 링크 묶음, 이 페이지만의 핵심 내용, 맨 아래 연락처 구역에 각각 어떤 요소를 썼나요?
+  - "머리말은 `header`, 주요 메뉴는 `nav`, 핵심 내용은 `main`, 꼬리말은 `footer`예요. `nav`는 `header` 안에 넣고, 링크 목록은 `ul` 안의 `li`마다 `a`를 하나씩 둬요."
+  - "`body` 바로 안에는 구역 요소 세 개만 차례로 와요. 주요 메뉴 구역은 머리말 구역 안, 큰 제목 다음에 두고, 그 안의 `ul`에는 `li`마다 링크(`a`)를 하나씩 넣어요. 소제목과 문단은 핵심 내용 구역에, 연락처 문단은 꼬리말 구역에 넣어요."
 explanation: |
-  예시 정답은 이래요.
+  예시 정답의 본문은 이래요.
 
   ```html
   <header>
     <h1>봄날 꽃집</h1>
     <nav>
-      <ul>…</ul>
+      <ul>
+        <li><a href="index.html">처음으로</a></li>
+        <li><a href="flowers.html">꽃 고르기</a></li>
+      </ul>
     </nav>
   </header>
-  <main>…</main>
+  <main>
+    <h2>이번 주 추천 꽃</h2>
+    <p>노란 프리지어가 들어왔어요.</p>
+  </main>
   <footer>
     <p>연락처: 02-000-0000</p>
   </footer>
   ```
 
-  - 사이트의 다른 페이지로 가는 **주요** 링크 묶음은 `nav`로 감싸요. 머리말 안에 두어도 돼요.
-  - 연락처처럼 페이지 맨 아래에 오는 정보는 꼬리말 `footer`에 넣어요.
+  - 페이지 맨 위의 소개 구역은 `header`, 사이트의 다른 페이지로 가는 **주요** 링크 묶음은 `nav`예요. `nav`는 머리말 안에 두어도 돼요.
+  - 이 페이지만의 핵심 내용은 `main`에 넣고, `main`은 한 페이지에 하나만 써요.
+  - 연락처처럼 맨 아래에 오는 정보는 꼬리말 `footer`에 넣어요.
 
-  모양은 전혀 바뀌지 않지만, 화면 낭독기는 이제 `header`, `nav`, `main`, `footer` 네 랜드마크를 모두 알려 줘요. `main`은 여전히 하나뿐이어야 해요.
+  시맨틱 요소는 모양을 바꾸지 않아요. `div`로 나눈 페이지와 화면은 같지만, 화면 낭독기는 이제 `header`, `nav`, `main`, `footer` 네 랜드마크를 알려 주고 사용자가 바로 건너뛸 수 있어요.
 origin: authored
 review:
   status: approved

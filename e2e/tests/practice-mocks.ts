@@ -46,6 +46,7 @@ const common = {
   hintCount: 3,
   openedHints: [{ level: 1, text: '`log`는 "기록하다"라는 뜻이에요. 어디에 기록할까요?' }],
   solutionViewed: false,
+  writing: false,
 };
 
 export const views: Record<string, Record<string, unknown>> = {

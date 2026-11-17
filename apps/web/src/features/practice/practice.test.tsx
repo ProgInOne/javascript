@@ -5,7 +5,7 @@ import {
   type Settings,
 } from '@proginone/shared';
 import type * as RunnerModule from '../runner/runner.ts';
-import { screen, waitFor, within } from '@testing-library/react';
+import { cleanup, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderApp } from '../../test/render-app.tsx';
@@ -175,6 +175,23 @@ describe('practice mode', () => {
       { practiceSetItemId: practiceSet().items[0]?.id },
     ]);
     expect(screen.getByRole('button', { name: '정답 보기' })).toBeDisabled();
+  });
+
+  it('marks writing exercises with a "직접 작성" badge (D-084)', async () => {
+    const base = practiceApi();
+    // The flag comes from the server (exercise-kit decides it from the starter).
+    const writingFix = { ...fixView, writing: true };
+    const handler = (method: string, path: string, body: unknown) =>
+      path.startsWith(`/exercises/${encodeURIComponent(FIX)}?`)
+        ? { body: writingFix }
+        : base(method, path, body);
+    renderApp(`/learn/${LESSON_ID}?mode=practice&set=${SET_ID}&i=1`, handler);
+    expect(await screen.findByRole('radio', { name: /값을 저장한다/ })).toBeVisible();
+    expect(screen.queryByText('직접 작성')).not.toBeInTheDocument();
+    cleanup();
+
+    renderApp(`/learn/${LESSON_ID}?mode=practice&set=${SET_ID}&i=2`, handler);
+    expect(await screen.findByText('직접 작성')).toBeVisible();
   });
 
   it('submits with one button and no confidence when 확신도 is off (설정 > 학습 방식)', async () => {

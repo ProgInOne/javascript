@@ -46,6 +46,7 @@ export interface SelectFactors {
 export type PracticeItemReason =
   | 'lesson_practice'
   | 'production_required'
+  | 'writing_required'
   | 'interleave_review'
   | 'review_due'
   | 'review_reinforce'

@@ -3,7 +3,12 @@ import { effectiveMastery } from '../mastery/effective.ts';
 import type { ConceptId, ConceptState, Importance } from '../types.ts';
 import { clamp } from '../util/math.ts';
 import { tieBreakKeys } from '../util/rng.ts';
-import type { ExerciseCandidate, PlannedItem, SelectionContext } from './candidates.ts';
+import type {
+  ExerciseCandidate,
+  PlannedItem,
+  PracticeItemReason,
+  SelectionContext,
+} from './candidates.ts';
 import { pickBest, plan, primaryConceptOf, recentTypesOf, scoreCandidate } from './candidates.ts';
 import { breakTypeRuns } from './order.ts';
 import { lessonPassRule } from './pass-rule.ts';
@@ -49,6 +54,11 @@ export interface SetRationale {
   readonly interleavedReviewConcepts: readonly ConceptId[];
   /** A production exercise was available and is included. */
   readonly productionIncluded: boolean;
+  /**
+   * A writing exercise (`ExerciseFacts.writing`) of an introduced concept was available and is
+   * included (D-084). False when the lesson has none.
+   */
+  readonly writingIncluded: boolean;
   readonly estimatedSeconds: number;
 }
 
@@ -87,8 +97,8 @@ function groupsOf(pool: readonly ExerciseCandidate[]): number {
 /**
  * Builds the first practice set of a lesson (learning-engine.md#단원-연습-세트):
  * size by lesson importance, ≥ 3 items per introduced concept and the rest by concept
- * importance, warm-up/core/challenge bands (30/50/20%), at least one production exercise when
- * available, one interleaved item per reviewed concept below effective 70, sorted by difficulty
+ * importance, warm-up/core/challenge bands (30/50/20%), at least one production exercise and at
+ * least one writing exercise (D-084) when available, one interleaved item per reviewed concept below effective 70, sorted by difficulty
  * without three same-type items in a row, and one exercise per variant group.
  */
 export function buildLessonPracticeSet(deps: EngineDeps, input: LessonSetRequest): LessonSet {
@@ -198,12 +208,34 @@ export function buildLessonPracticeSet(deps: EngineDeps, input: LessonSetRequest
     });
   });
 
-  // At least one production exercise when the lesson has one.
-  let productionIncluded = items.some((item) => isProduction(input.candidates, item.exerciseId));
-  if (!productionIncluded) {
-    const swapped = includeProduction(deps, input, items, used, tieBreak, recentTypes);
-    productionIncluded = swapped;
-  }
+  // At least one writing exercise, then at least one production exercise, when the lesson has
+  // one. Fixing given code (`fix_bug`, a `web_task` page to fix) is production but not writing,
+  // so checking production alone let a set hold no writing exercise at all (D-084). A writing
+  // exercise is production too, so the second step only runs when the lesson has none.
+  const byId = new Map(input.candidates.map((c) => [c.id, c]));
+  const isProduction = (c: ExerciseCandidate) => c.category === 'production';
+  const isWriting = (c: ExerciseCandidate) => isProduction(c) && c.writing === true;
+  const includes = (match: (c: ExerciseCandidate) => boolean) =>
+    items.some((item) => {
+      const c = byId.get(item.exerciseId);
+      return c !== undefined && match(c);
+    });
+  const writingIncluded =
+    includes(isWriting) ||
+    swapIn(deps, input, items, used, tieBreak, recentTypes, {
+      match: isWriting,
+      // Replace a recognition/recall item when the concept has one, so a fix_bug or a page to fix
+      // (debugging practice) stays in the set.
+      keep: isProduction,
+      reason: 'writing_required',
+    });
+  const productionIncluded =
+    includes(isProduction) ||
+    swapIn(deps, input, items, used, tieBreak, recentTypes, {
+      match: isProduction,
+      keep: () => false,
+      reason: 'production_required',
+    });
 
   for (const conceptId of reviewConcepts) {
     const concept = conceptById.get(conceptId);
@@ -250,54 +282,67 @@ export function buildLessonPracticeSet(deps: EngineDeps, input: LessonSetRequest
       insufficientCandidates,
       interleavedReviewConcepts: reviewConcepts,
       productionIncluded,
+      writingIncluded,
       estimatedSeconds: ordered.reduce((sum, item) => sum + item.estimatedSeconds, 0),
     },
   };
 }
 
-function isProduction(candidates: readonly ExerciseCandidate[], id: string): boolean {
-  return candidates.some((c) => c.id === id && c.category === 'production');
-}
-
 /**
- * Replaces the lowest-scoring item of a concept with its best unused production candidate.
- * Returns whether a production exercise is now included.
+ * Replaces an item of an introduced concept with that concept's best unused candidate matching
+ * `rule.match`. The replaced item is the concept's lowest-scoring item, skipping items that
+ * `rule.keep` protects when the concept has another one. Among concepts, the best candidate wins:
+ * fresh before recently served (freshness 0), unseen before repeated, then the score, then the
+ * seeded tie-break. Returns whether a matching exercise is now included.
  */
-function includeProduction(
+function swapIn(
   deps: EngineDeps,
   input: LessonSetRequest,
   items: PlannedItem[],
   used: Set<string>,
   tieBreak: ReadonlyMap<string, number>,
   recentTypes: (id: ConceptId) => string[],
+  rule: {
+    readonly match: (candidate: ExerciseCandidate) => boolean;
+    readonly keep: (candidate: ExerciseCandidate) => boolean;
+    readonly reason: PracticeItemReason;
+  },
 ): boolean {
   const { config } = deps;
-  let best: { candidate: ExerciseCandidate; score: number; victim: number } | null = null;
+  const byId = new Map(input.candidates.map((c) => [c.id, c]));
+  let best: { candidate: ExerciseCandidate; score: number; tier: number; victim: number } | null =
+    null;
   for (const conceptId of input.lesson.introduces) {
     const victims = items
       .map((item, index) => ({ item, index }))
       .filter(({ item }) => item.targetConceptId === conceptId);
     if (victims.length === 0) continue;
-    const victim = victims.reduce((low, cur) =>
+    const replaceable = victims.filter(({ item }) => {
+      const current = byId.get(item.exerciseId);
+      return current === undefined || !rule.keep(current);
+    });
+    const victim = (replaceable.length > 0 ? replaceable : victims).reduce((low, cur) =>
       cur.item.selectScore < low.item.selectScore ? cur : low,
     );
     const target = victim.item.difficulty;
     for (const candidate of input.candidates) {
-      if (candidate.category !== 'production' || primaryConceptOf(candidate) !== conceptId) {
-        continue;
-      }
+      if (!rule.match(candidate) || primaryConceptOf(candidate) !== conceptId) continue;
       if (used.has(candidate.variantGroupKey)) continue;
-      const { score } = scoreCandidate(config, candidate, {
+      const { score, factors } = scoreCandidate(config, candidate, {
         targetDifficulty: target,
         recentTypes: recentTypes(conceptId),
         context: input,
       });
+      const tier =
+        (factors.freshness > 0 ? 0 : 2) + (input.seenExerciseIds?.has(candidate.id) ? 1 : 0);
       const better =
         best === null ||
-        score > best.score ||
-        (score === best.score &&
-          (tieBreak.get(candidate.id) ?? 0) < (tieBreak.get(best.candidate.id) ?? 0));
-      if (better) best = { candidate, score, victim: victim.index };
+        tier < best.tier ||
+        (tier === best.tier &&
+          (score > best.score ||
+            (score === best.score &&
+              (tieBreak.get(candidate.id) ?? 0) < (tieBreak.get(best.candidate.id) ?? 0))));
+      if (better) best = { candidate, score, tier, victim: victim.index };
     }
   }
   if (best === null) return false;
@@ -313,7 +358,7 @@ function includeProduction(
   items[best.victim] = plan(
     best.candidate,
     scored,
-    'production_required',
+    rule.reason,
     old.targetConceptId,
     bandFor(config.practice.bands, best.candidate.difficulty),
   );

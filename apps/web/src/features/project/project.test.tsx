@@ -87,6 +87,7 @@ const view: ExerciseView = {
   },
   estimatedSeconds: 2400,
   requiresRun: true,
+  writing: false,
   hintCount: 3,
   openedHints: [],
   solutionViewed: false,

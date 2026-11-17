@@ -38,6 +38,7 @@ export interface RegisteredExerciseType {
   answerSchema: z.ZodType;
   supportsRunPlan: boolean;
   requiresRun(spec: unknown): boolean;
+  writing(spec: unknown): boolean;
   redact(spec: unknown, options?: RedactOptions): unknown;
   buildRunPlan(spec: unknown, answer: unknown, options: RunPlanOptions): RunPlan;
   grade(input: {
@@ -60,6 +61,7 @@ function register<S, P, A>(def: ExerciseTypeDef<S, P, A>): RegisteredExerciseTyp
     answerSchema: def.answerSchema,
     supportsRunPlan: def.buildRunPlan !== undefined,
     requiresRun: (spec) => def.requiresRun(spec as S),
+    writing: (spec) => def.writing?.(spec as S) ?? false,
     redact: (spec, options) => def.redact(spec as S, options),
     buildRunPlan: (spec, answer, options) => {
       if (!def.buildRunPlan)
@@ -197,6 +199,14 @@ export function gradeSubmission(input: {
     ...(run === undefined ? {} : { run }),
     ...(input.serverFindings === undefined ? {} : { serverFindings: input.serverFindings }),
   });
+}
+
+/**
+ * Whether the exercise is a writing (작성형) exercise: the learner writes the code from an empty
+ * starter instead of editing given code (D-084). Validates the spec first.
+ */
+export function isWritingExercise(typeId: string, rawSpec: unknown): boolean {
+  return requireType(typeId).writing(parseSpec(typeId, rawSpec));
 }
 
 /** Validates a raw spec and returns its answer-leak fingerprints (server only). */
