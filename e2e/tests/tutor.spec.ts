@@ -73,6 +73,8 @@ test.describe('tutor drawer (mock AI)', () => {
     await page.goto(LESSON);
     await expect(page.getByRole('heading', { level: 1, name: '첫 프로그램' })).toBeVisible();
     const paragraph = page.locator('article p').filter({ hasText: '결과를 눈으로 확인' }).first();
+    // The reader may reopen at a later step (D-077): bring the paragraph into view first.
+    await paragraph.scrollIntoViewIfNeeded();
     await paragraph.evaluate((el) => {
       const range = document.createRange();
       range.selectNodeContents(el);

@@ -79,6 +79,8 @@ export const lessonDetailSchema = z.object({
   objectives: z.array(z.string()),
   estimatedMinutes: z.number().int(),
   readMinutes: z.number().int(),
+  /** Practice exercises of the lesson (the hero's "연습 n문제", D-077). Older servers omit it. */
+  practiceCount: z.number().int().min(0).optional(),
   sections: z.array(z.object({ id: z.string(), kind: z.string(), title: z.string().nullable() })),
   /** Validated MDX tree; rendered by the web app's lesson renderer. Untrusted shape: renderer re-checks. */
   body: z.array(z.unknown()),

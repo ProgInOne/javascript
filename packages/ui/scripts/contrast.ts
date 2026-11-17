@@ -3,7 +3,7 @@
  * per theme and computes WCAG 2.x contrast ratios.
  *
  * Supported token value forms (anything else is an error, so the checker can't
- * silently skip a pair): `oklch(L C H)`, `var(--x)`, `light-dark(<value>, <value>)`.
+ * silently skip a pair): `#rrggbb`, `oklch(L C H)`, `var(--x)`, `light-dark(<value>, <value>)`.
  */
 
 export type Scheme = 'light' | 'dark';
@@ -96,9 +96,29 @@ function resolveValue(
     if (next === undefined) throw new Error(`unknown token: --${name}`);
     return resolveValue(next, tokens, scheme, new Set([...seen, name]));
   }
+  const hex = /^#([0-9a-f]{6})$/i.exec(value);
+  if (hex) return hexToOklch(hex[1] ?? '');
   const color = /^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)$/.exec(value);
   if (color) return [Number(color[1]), Number(color[2]), Number(color[3])];
   throw new Error(`unsupported token value: ${value}`);
+}
+
+/** sRGB `rrggbb` → OKLCH (Björn Ottosson's OKLab matrices). */
+export function hexToOklch(rrggbb: string): Oklch {
+  const lin = [0, 2, 4].map((i) => {
+    const v = parseInt(rrggbb.slice(i, i + 2), 16) / 255;
+    return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  });
+  const [r = 0, g = 0, b = 0] = lin;
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s;
+  const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s;
+  const B = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
+  const C = Math.hypot(A, B);
+  const H = ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360;
+  return [L, C, H];
 }
 
 /**

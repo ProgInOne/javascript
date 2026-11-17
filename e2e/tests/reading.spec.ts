@@ -33,22 +33,59 @@ test.describe('reading mode', () => {
       lessonId: 'js-basics.start.first-program',
     });
 
-    // Scrolling saves the position (debounced); the next visit offers to resume there.
+    // Scrolling saves the position (debounced); the next visit reopens at that step (D-077).
+    const savedAt = (id: string) =>
+      page.waitForRequest(
+        (req) =>
+          req.url().endsWith('/progress') &&
+          (req.postDataJSON() as { lastSectionId?: unknown }).lastSectionId === id,
+      );
+    await page.evaluate(() => {
+      window.scrollTo(0, 0);
+    });
+    await expect(page.getByText('단계 1 / 5')).toBeVisible();
+    let saved = savedAt('check');
     await page
       .getByRole('navigation', { name: '목차' })
       .getByRole('link', { name: '이해도 확인' })
       .click();
-    const saved = page.waitForRequest(
-      (req) =>
-        req.url().endsWith('/progress') &&
-        typeof (req.postDataJSON() as { lastSectionId?: unknown }).lastSectionId === 'string',
-    );
+    await expect(page.getByText('단계 5 / 5')).toBeVisible();
     await page.clock.fastForward(3_000);
     await saved;
     await page.goto(LESSON);
-    await expect(page.getByText(/지난번에 ‘.+’까지 읽었어요/)).toBeVisible();
-    await page.getByRole('link', { name: '이어서 읽기' }).click();
-    await expect(page).toHaveURL(/#[a-z-]+$/);
+    await expect(page.getByText(/지난번에 5단계 ‘확인’의 ‘.+’까지 읽었어요/)).toBeVisible();
+    await page.clock.runFor(500);
+    await expect(page.getByText('단계 5 / 5')).toBeVisible();
+    await expect(page.getByRole('group', { name: '5단계: 확인' })).toBeInViewport();
+
+    // "다음 단계" moves to the next card, focuses it, and the step is remembered.
+    await page.evaluate(() => {
+      window.scrollTo(0, 0);
+    });
+    await expect(page.getByText('단계 1 / 5')).toBeVisible();
+    await page.getByRole('button', { name: '다음 단계: 원리' }).click();
+    await expect(page.getByText('단계 2 / 5')).toBeVisible();
+    await expect(page.getByRole('group', { name: '2단계: 원리' })).toBeFocused();
+    saved = savedAt('examples');
+    await page.getByRole('button', { name: '다음 단계: 직접 해 보기' }).click();
+    const third = page.getByRole('group', { name: '3단계: 직접 해 보기' });
+    await expect(third).toBeFocused();
+    await expect(third).toHaveAttribute('aria-current', 'step');
+    await expect(page.getByRole('group', { name: '1단계: 왜 배울까' })).toHaveAttribute(
+      'data-state',
+      'done',
+    );
+    // Later steps are quieter but never locked.
+    await expect(page.getByRole('group', { name: '4단계: 주의' })).toHaveAttribute(
+      'data-state',
+      'upcoming',
+    );
+    await page.clock.fastForward(3_000);
+    await saved;
+    await page.reload();
+    await page.clock.runFor(500);
+    await expect(page.getByText('단계 3 / 5')).toBeVisible();
+    await expect(third).toBeInViewport();
   });
 
   test('runs an example with ⌘Enter, folds the side column, remembers the tutor drawer and lists shortcuts', async ({

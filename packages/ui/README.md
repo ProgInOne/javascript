@@ -103,7 +103,7 @@ pnpm --filter @proginone/ui check:contrast -- --all   # 모든 쌍 출력
 pnpm --filter @proginone/ui check:contrast -- --md    # 마크다운 표
 ```
 
-[`scripts/check-contrast.ts`](scripts/check-contrast.ts)는 `tokens.css`의 의미 토큰을 라이트, 다크, 다크 작업대 각각에서 OKLCH 값까지 풀어 WCAG 대비를 계산합니다.
+[`scripts/check-contrast.ts`](scripts/check-contrast.ts)는 `tokens.css`의 의미 토큰을 라이트, 다크, 다크 작업대 각각에서 기본 색(`#rrggbb` 또는 `oklch()`)까지 풀어 WCAG 대비를 계산합니다.
 기준은 본문 7:1, 텍스트 4.5:1, 입력 테두리·포커스 링·진도 채움 같은 비텍스트 3:1입니다. CI와 `pnpm check`에서 실행합니다.
 의미 토큰을 추가하거나 매핑을 바꾸면 해당 쌍을 `PAIRS`에 추가합니다.
 

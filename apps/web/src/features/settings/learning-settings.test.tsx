@@ -103,9 +103,7 @@ describe('설정 > 화면', () => {
 
     await user.click(await screen.findByRole('radio', { name: /크게/ }));
     await waitFor(() => {
-      expect(document.documentElement.style.getPropertyValue('--lesson-font-size')).toBe(
-        '1.1875rem',
-      );
+      expect(document.documentElement.style.getPropertyValue('--lesson-font-size')).toBe('1.25rem');
     });
     await user.click(screen.getByRole('radio', { name: /어둡게/ }));
     await waitFor(() => {

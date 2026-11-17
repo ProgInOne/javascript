@@ -53,6 +53,6 @@ test('learning settings change the lesson: confidence, predict first, body size'
   // Predicting is required: no skip link, run waits for a prediction.
   await expect(example.getByRole('button', { name: '예측 건너뛰기' })).toHaveCount(0);
   await expect(example.getByRole('button', { name: '실행' })).toBeDisabled();
-  // 19px lesson body.
-  await expect(page.locator('.lesson-prose').first()).toHaveCSS('font-size', '19px');
+  // 20px lesson body.
+  await expect(page.locator('.lesson-prose').first()).toHaveCSS('font-size', '20px');
 });

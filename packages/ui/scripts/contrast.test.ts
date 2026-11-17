@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   checkPairs,
   contrastRatio,
+  hexToOklch,
   parseTokenSheet,
   resolveToken,
   scenariosOf,
@@ -69,5 +70,26 @@ describe('checkPairs', () => {
       ['다크', true],
       ['작업대(다크)', false],
     ]);
+  });
+});
+
+describe('hexToOklch', () => {
+  it('converts sRGB hex to OKLCH', () => {
+    const [l, c] = hexToOklch('ffffff');
+    expect(l).toBeCloseTo(1, 3);
+    expect(c).toBeCloseTo(0, 3);
+    const [black] = hexToOklch('000000');
+    expect(black).toBeCloseTo(0, 3);
+  });
+
+  it('lets token sheets use #rrggbb values', () => {
+    const sheet = parseTokenSheet(':root { --w: #ffffff; --b: #000000; --g: #00c471; }');
+    const [light] = scenariosOf(sheet);
+    if (!light) throw new Error('missing scenario');
+    const ratio = (a: string, b: string) =>
+      contrastRatio(resolveToken(sheet, light, a), resolveToken(sheet, light, b));
+    expect(ratio('w', 'b')).toBeCloseTo(21, 0);
+    // White on the brand fill misses AA (D-076).
+    expect(ratio('w', 'g')).toBeCloseTo(2.3, 1);
   });
 });

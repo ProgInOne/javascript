@@ -67,6 +67,9 @@
     border-color: var(--color-action-primary);
     background: var(--color-action-primary);
   }
+  .set-progress__dot[data-state='wrong'] {
+    color: var(--color-text-on-danger);
+  }
   .set-progress__dot[data-state='wrong']::before {
     border-color: var(--color-action-danger);
     background: var(--color-action-danger);
@@ -410,15 +413,17 @@
     display: grid;
     gap: var(--space-4);
     margin: 0 0 var(--space-6);
-    padding: var(--space-5);
-    border: 1px solid var(--color-border-default);
+    padding: var(--space-5) var(--space-6);
     border-radius: var(--radius-lg);
-    background: var(--color-bg-surface);
+    background: var(--color-bg-subtle);
     font: var(--text-body);
+    font-size: 1rem;
   }
   .lesson-inline-check__label {
+    justify-self: start;
+    margin-bottom: var(--space-2);
     font: var(--text-small);
-    font-weight: 600;
+    font-weight: 700;
     color: var(--color-text-brand);
   }
 

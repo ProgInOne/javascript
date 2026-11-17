@@ -41,11 +41,13 @@ const progress = (lastSectionId: string | null) => ({
   introducedConcepts: [],
 });
 
+let savedSection: string | null = 'check';
+
 function api(method: string, path: string, body: unknown) {
   if (path === '/settings') return { body: { theme: 'system' } };
   if (path === `/lessons/${encodeURIComponent(LESSON_ID)}`) return { body: withChecks };
   if (path === `/lessons/${encodeURIComponent(LESSON_ID)}/progress`) {
-    return { body: progress('check') };
+    return { body: progress(savedSection) };
   }
   if (path === `/exercises/${encodeURIComponent(MCQ)}`) return { body: mcqView };
   if (path === `/exercises/${encodeURIComponent(FIX)}`) return { body: fixView };
@@ -77,8 +79,16 @@ describe('reading mode', () => {
     const user = userEvent.setup();
     const { calls } = renderApp(`/learn/${LESSON_ID}`, api);
 
-    expect(await screen.findByText(/지난번에 ‘이해도 확인’까지 읽었어요/)).toBeVisible();
-    expect(screen.getByRole('link', { name: '이어서 읽기' })).toHaveAttribute('href', '#check');
+    // The saved section is in step 2 of 2: the reader reopens there (D-077).
+    expect(
+      await screen.findByText(/지난번에 2단계 ‘확인’의 ‘이해도 확인’까지 읽었어요/),
+    ).toBeVisible();
+    expect(screen.getByRole('button', { name: '이어서 읽기' })).toBeVisible();
+    expect(await screen.findByText('단계 2 / 2')).toBeVisible();
+    expect(screen.getByRole('group', { name: '2단계: 확인' })).toHaveAttribute(
+      'aria-current',
+      'step',
+    );
     expect(calls).toContainEqual({
       method: 'POST',
       path: `/lessons/${encodeURIComponent(LESSON_ID)}/progress`,
@@ -100,6 +110,34 @@ describe('reading mode', () => {
     await user.click(screen.getByRole('button', { name: '찍었어요' }));
     expect(await screen.findByRole('heading', { name: '정답이에요.' })).toBeVisible();
     expect(screen.getByText(/맞혔지만 찍었다고 했죠/)).toBeVisible();
+  });
+});
+
+describe('step view', () => {
+  afterEach(() => {
+    savedSection = 'check';
+  });
+
+  it('groups the sections into steps and moves on with "다음 단계"', async () => {
+    savedSection = null;
+    const user = userEvent.setup();
+    renderApp(`/learn/${LESSON_ID}`, api);
+
+    expect(await screen.findByText('단계 1 / 2')).toBeVisible();
+    const first = screen.getByRole('group', { name: '1단계: 왜 배울까' });
+    const second = screen.getByRole('group', { name: '2단계: 확인' });
+    expect(first).toHaveAttribute('data-state', 'current');
+    // Later steps are quieter but never locked: their content is there and usable.
+    expect(second).toHaveAttribute('data-state', 'upcoming');
+    expect(await screen.findByRole('radio', { name: /값을 저장한다/ })).toBeEnabled();
+    // The last step has no "다음 단계".
+    expect(screen.getAllByRole('button', { name: /다음 단계/ })).toHaveLength(1);
+
+    await user.click(screen.getByRole('button', { name: '다음 단계: 확인' }));
+    expect(screen.getByText('단계 2 / 2')).toBeVisible();
+    expect(second).toHaveAttribute('data-state', 'current');
+    expect(second).toHaveFocus();
+    expect(first).toHaveAttribute('data-state', 'done');
   });
 });
 

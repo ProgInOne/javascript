@@ -26,7 +26,7 @@ describe('applyAppearance', () => {
     const root = document.createElement('html');
     applyAppearance({ 'appearance.workbench': 'dark', 'lesson.fontSize': 'large' }, root);
     expect(root.dataset['workbench']).toBe('dark');
-    expect(root.style.getPropertyValue('--lesson-font-size')).toBe('1.1875rem');
+    expect(root.style.getPropertyValue('--lesson-font-size')).toBe('1.25rem');
     applyAppearance({ 'appearance.workbench': 'light', 'lesson.fontSize': 'medium' }, root);
     expect(root.dataset['workbench']).toBeUndefined();
     expect(root.style.getPropertyValue('--lesson-font-size')).toBe('');

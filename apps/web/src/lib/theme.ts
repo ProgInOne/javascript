@@ -20,11 +20,11 @@ export function applyTheme(
   }
 }
 
-/** `lesson.fontSize` → `--lesson-font-size` (16 / 17 / 19px, ui-ux.md 타이포그래피). */
+/** `lesson.fontSize` → `--lesson-font-size` (17 / 18 / 20px, ui-ux.md 타이포그래피, D-077). */
 export const LESSON_FONT_SIZE_VALUES: Record<Settings['lesson.fontSize'], string> = {
-  small: '1rem',
-  medium: '1.0625rem',
-  large: '1.1875rem',
+  small: '1.0625rem',
+  medium: '1.125rem',
+  large: '1.25rem',
 };
 
 /**

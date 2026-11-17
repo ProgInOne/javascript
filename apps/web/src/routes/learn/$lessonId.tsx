@@ -1,5 +1,5 @@
 import type { CodeDraft, LessonDetail, PracticeSetView } from '@proginone/shared';
-import { ErrorState, IconButton, Skeleton } from '@proginone/ui';
+import { ErrorState, IconButton, ProgressBar, Skeleton } from '@proginone/ui';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import {
@@ -10,7 +10,7 @@ import {
   PanelRightClose,
   PanelRightOpen,
 } from 'lucide-react';
-import { useCallback, useEffect, useId, useMemo, type ReactNode } from 'react';
+import { useCallback, useEffect, useId, useMemo, useState, type ReactNode } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
 import {
   createPracticeSet,
@@ -38,7 +38,9 @@ import { ConceptImportanceBadge, LessonBody } from '../../features/lesson-reader
 import { LessonPractice } from '../../features/practice/LessonPractice.tsx';
 import { PrerequisiteWarning } from '../../features/lesson-reader/PrerequisiteWarning.tsx';
 import { SECTION_LABELS } from '../../features/lesson-reader/sections.ts';
+import { groupSteps, stepIndexOf } from '../../features/lesson-reader/steps.ts';
 import { useActiveSection } from '../../features/lesson-reader/useActiveSection.ts';
+import { useLessonSteps } from '../../features/lesson-reader/useLessonSteps.ts';
 import { useReadingProgress } from '../../features/lesson-reader/useReadingProgress.ts';
 import { formatMinutes } from '../../lib/format.ts';
 import { PANEL_KEYS, parseBoolean, usePanelState } from '../../lib/panels.ts';
@@ -288,11 +290,14 @@ function LearnHeader({
   lesson,
   mode,
   tutor,
+  step,
 }: {
   lesson: LessonDetail;
   mode: 'read' | 'practice';
   /** Replaces the tutor button (the locked one during an assessment). */
   tutor?: ReactNode;
+  /** Step view of reading mode (D-077): "단계 n / 전체" and its bar. */
+  step?: { current: number; total: number } | undefined;
 }) {
   useModeShortcuts(lesson.id);
   return (
@@ -319,9 +324,23 @@ function LearnHeader({
           </li>
         </ol>
       </nav>
+      {step && (
+        <div className="ml-auto flex shrink-0 items-center gap-2.5">
+          <p className="tnum whitespace-nowrap text-fg-secondary type-small">
+            단계 {step.current + 1} / {step.total}
+          </p>
+          <ProgressBar
+            value={step.current + 1}
+            max={step.total}
+            size={8}
+            label="단계 진행"
+            className="w-32 max-md:hidden"
+          />
+        </div>
+      )}
       <nav
         aria-label="학습 모드"
-        className="ml-auto flex shrink-0 gap-1 rounded-lg bg-muted p-1 type-small"
+        className={`${step ? '' : 'ml-auto'}flex shrink-0 gap-1 rounded-lg bg-muted p-1 type-small`}
       >
         <Link
           to="/learn/$lessonId"
@@ -360,13 +379,39 @@ function LearnHeader({
   );
 }
 
+type LessonSection = LessonDetail['sections'][number];
+
+const sectionTitle = (s: LessonSection) => s.title ?? SECTION_LABELS[s.kind] ?? s.kind;
+
+/**
+ * Reading mode (ui-ux.md 학습 화면: 읽기 모드, D-077): a green hero band, then the lesson as step
+ * cards (regular lessons) or one plain card (assessments and projects), with the concepts and the
+ * table of contents in a side column that folds (D-067).
+ */
 function LessonReader({ lesson }: { lesson: LessonDetail }) {
   const active = useActiveSection(lesson.sections.map((s) => s.id));
-  const progress = useReadingProgress(lesson.id, active, recordLessonProgress);
+  const steps = useMemo(
+    () => (lesson.kind === 'lesson' ? groupSteps(lesson.body) : []),
+    [lesson.kind, lesson.body],
+  );
+  // `useReadingProgress` needs the section to save before it can return the saved one, so the
+  // saved position reaches the step hook through state.
+  const [lastSectionId, setLastSectionId] = useState<string | null>(null);
+  const { current, goTo } = useLessonSteps(steps, lastSectionId);
+  // The saved position follows the current step: after "다음 단계" near the end of the page the
+  // section on screen may still belong to the step before.
+  const tracked =
+    steps.length > 0 && stepIndexOf(steps, active) !== current
+      ? (steps[current]?.sectionIds[0] ?? active)
+      : active;
+  const progress = useReadingProgress(lesson.id, tracked, recordLessonProgress);
+  const saved = progress?.lastSectionId ?? null;
+  if (saved !== lastSectionId) setLastSectionId(saved);
   const resume =
-    progress?.lastSectionId && progress.lastSectionId !== lesson.sections[0]?.id
-      ? lesson.sections.find((s) => s.id === progress.lastSectionId)
+    saved && saved !== lesson.sections[0]?.id
+      ? lesson.sections.find((s) => s.id === saved)
       : undefined;
+  const resumeStep = stepIndexOf(steps, resume?.id);
   const own = lesson.concepts.filter((c) => c.role !== 'linked');
   const asideId = useId();
   const [asideCollapsed, setAsideCollapsed] = usePanelState(
@@ -388,34 +433,100 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
           : undefined,
     [drafts.data, drafts.isError],
   );
+  const stepView = useMemo(
+    () => ({
+      list: steps,
+      current,
+      onGoTo: (i: number) => {
+        goTo(i, { focus: true });
+      },
+    }),
+    [steps, current, goTo],
+  );
+  const sectionsById = new Map(lesson.sections.map((s) => [s.id, s]));
+  const tocItem = (s: LessonSection) => (
+    <li key={s.id}>
+      <a
+        href={`#${s.id}`}
+        aria-current={active === s.id ? 'location' : undefined}
+        className="-ml-px block border-l-2 border-transparent py-0.5 pl-3 text-fg-secondary no-underline hover:text-fg aria-[current=location]:border-action aria-[current=location]:font-semibold aria-[current=location]:text-heading"
+      >
+        {sectionTitle(s)}
+      </a>
+    </li>
+  );
   return (
     <div className="min-h-screen bg-canvas">
-      <LearnHeader lesson={lesson} mode="read" />
+      <LearnHeader
+        lesson={lesson}
+        mode="read"
+        step={steps.length > 0 ? { current, total: steps.length } : undefined}
+      />
       <TutorLayout top={48}>
+        <div className="lesson-hero">
+          <div className="lesson-hero__inner">
+            <div className="lesson-hero__text">
+              <p className="lesson-hero__eyebrow">
+                {lesson.course.title} · {lesson.module.title}
+              </p>
+              <h1 id="lesson-title" className="lesson-hero__title">
+                {lesson.title}
+              </h1>
+              {lesson.summary && <p className="lesson-hero__summary">{lesson.summary}</p>}
+            </div>
+            <dl className="lesson-hero__tiles">
+              <div className="lesson-hero__tile">
+                <dt>읽기</dt>
+                <dd>{formatMinutes(lesson.readMinutes)}</dd>
+              </div>
+              <div className="lesson-hero__tile">
+                <dt>전체</dt>
+                <dd>{formatMinutes(lesson.estimatedMinutes)}</dd>
+              </div>
+              {lesson.practiceCount !== undefined && lesson.practiceCount > 0 && (
+                <div className="lesson-hero__tile">
+                  <dt>연습</dt>
+                  <dd>{lesson.practiceCount}문제</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+        </div>
         <div
           className={
             asideCollapsed
-              ? 'mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)] gap-10 px-5 py-10 lg:grid-cols-[minmax(0,680px)_32px] lg:justify-center'
-              : 'mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)] gap-10 px-5 py-10 lg:grid-cols-[minmax(0,680px)_240px] lg:justify-center'
+              ? 'lesson-layout lg:grid-cols-[minmax(0,800px)_32px]'
+              : 'lesson-layout lg:grid-cols-[minmax(0,800px)_240px]'
           }
         >
-          <article aria-labelledby="lesson-title" {...{ [SELECTABLE_ATTR]: '' }}>
-            <p className="text-fg-tertiary type-small">{lesson.module.title}</p>
-            <h1 id="lesson-title" className="mt-1 type-h1 text-heading">
-              {lesson.title}
-            </h1>
-            <p className="mt-2 mb-10 text-fg-tertiary type-small">
-              읽기 약 {formatMinutes(lesson.readMinutes)} · 전체 약{' '}
-              {formatMinutes(lesson.estimatedMinutes)}
-            </p>
+          <article
+            aria-labelledby="lesson-title"
+            className="lesson-article"
+            {...{ [SELECTABLE_ATTR]: '' }}
+          >
             {prerequisites && <PrerequisiteWarning data={prerequisites} />}
             {resume && (
               <p className="lesson-resume" role="note">
-                지난번에 ‘{resume.title ?? SECTION_LABELS[resume.kind] ?? resume.kind}’까지
-                읽었어요.{' '}
-                <a href={`#${resume.id}`} className="lesson-link">
-                  이어서 읽기
-                </a>
+                지난번에{' '}
+                {resumeStep >= 0
+                  ? `${String(resumeStep + 1)}단계 ‘${steps[resumeStep]?.label ?? ''}’의 `
+                  : ''}
+                ‘{sectionTitle(resume)}’까지 읽었어요.{' '}
+                {resumeStep >= 0 ? (
+                  <button
+                    type="button"
+                    className="pi-button pi-button--link"
+                    onClick={() => {
+                      goTo(resumeStep, { focus: true });
+                    }}
+                  >
+                    이어서 읽기
+                  </button>
+                ) : (
+                  <a href={`#${resume.id}`} className="lesson-link">
+                    이어서 읽기
+                  </a>
+                )}
               </p>
             )}
             <LessonBody
@@ -426,6 +537,7 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
               predictFirst={predictFirst}
               prerequisites={prerequisites?.prerequisites}
               exampleDrafts={exampleDrafts}
+              steps={stepView}
             />
 
             {(lesson.previous ?? lesson.next) && (
@@ -461,7 +573,7 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
             )}
           </article>
 
-          <aside className="hidden lg:block" aria-label="단원 정보" id={asideId}>
+          <aside className="hidden pt-12 lg:block" aria-label="단원 정보" id={asideId}>
             {asideCollapsed ? (
               <div className="sticky top-[calc(48px+var(--space-6))]">
                 <IconButton
@@ -511,19 +623,36 @@ function LessonReader({ lesson }: { lesson: LessonDetail }) {
                   <h2 id="toc-title" className="mb-2 font-semibold text-fg-secondary type-small">
                     목차
                   </h2>
-                  <ol className="m-0 grid list-none gap-1 border-l border-line p-0 type-small">
-                    {lesson.sections.map((s) => (
-                      <li key={s.id}>
-                        <a
-                          href={`#${s.id}`}
-                          aria-current={active === s.id ? 'location' : undefined}
-                          className="-ml-px block border-l-2 border-transparent py-0.5 pl-3 text-fg-secondary no-underline hover:text-fg aria-[current=location]:border-action aria-[current=location]:font-semibold aria-[current=location]:text-heading"
-                        >
-                          {s.title ?? SECTION_LABELS[s.kind] ?? s.kind}
-                        </a>
-                      </li>
-                    ))}
-                  </ol>
+                  {steps.length > 0 ? (
+                    <ol className="m-0 grid list-none gap-3 p-0 type-small">
+                      {steps.map((step, i) => (
+                        <li key={step.id} className="grid gap-1">
+                          <span
+                            className="lesson-toc-step"
+                            data-state={
+                              i < current ? 'done' : i === current ? 'current' : 'upcoming'
+                            }
+                          >
+                            <span className="lesson-toc-step__num" aria-hidden="true">
+                              {i + 1}
+                            </span>
+                            <span className="sr-only">{`${String(i + 1)}단계: `}</span>
+                            {step.label}
+                          </span>
+                          <ol className="m-0 ml-2.5 grid list-none gap-1 border-l border-line p-0">
+                            {step.sectionIds.flatMap((id) => {
+                              const s = sectionsById.get(id);
+                              return s ? [tocItem(s)] : [];
+                            })}
+                          </ol>
+                        </li>
+                      ))}
+                    </ol>
+                  ) : (
+                    <ol className="m-0 grid list-none gap-1 border-l border-line p-0 type-small">
+                      {lesson.sections.map(tocItem)}
+                    </ol>
+                  )}
                 </nav>
               </div>
             )}

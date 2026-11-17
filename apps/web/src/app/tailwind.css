@@ -51,6 +51,7 @@
   --shadow-1: var(--elevation-1);
   --shadow-2: var(--elevation-2);
   --shadow-3: var(--elevation-3);
+  --shadow-card: var(--elevation-card);
 
   --z-index-header: var(--z-header);
 }

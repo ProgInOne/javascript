@@ -1,10 +1,300 @@
-/* Lesson prose (reading mode). Long-form typography is clearer as CSS than as utilities. */
+/*
+ * Reading mode: hero band, step cards (D-077) and lesson prose. Long-form typography is clearer
+ * as CSS than as utilities.
+ */
 @layer components {
+  /* ── Hero band ── */
+  .lesson-hero {
+    background: var(--color-hero-bg);
+    color: var(--color-hero-fg);
+    padding: var(--space-10) 0 calc(var(--space-12) + var(--space-2));
+  }
+  .lesson-hero__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-6) var(--space-10);
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 var(--space-5);
+  }
+  .lesson-hero__text {
+    display: grid;
+    gap: var(--space-3);
+    min-width: 0;
+    max-width: 680px;
+  }
+  .lesson-hero__eyebrow {
+    font: var(--text-ui);
+    font-weight: 700;
+    color: var(--color-hero-muted);
+  }
+  .lesson-hero__title {
+    font: 800 2.5rem/1.2 var(--font-sans);
+    letter-spacing: var(--tracking-display);
+    color: var(--color-hero-fg);
+  }
+  .lesson-hero__title:focus {
+    outline: none;
+  }
+  .lesson-hero__summary {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--color-hero-muted);
+  }
+  .lesson-hero__tiles {
+    display: flex;
+    gap: var(--space-3);
+    margin: 0;
+  }
+  .lesson-hero__tile {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    min-width: 5.5rem;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    background: var(--color-hero-tile);
+  }
+  .lesson-hero__tile dt {
+    font: var(--text-small);
+    color: var(--color-hero-muted);
+  }
+  .lesson-hero__tile dd {
+    margin: 0;
+    font: 800 1.375rem/1.3 var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  @media (max-width: 1023.98px) {
+    .lesson-hero {
+      padding: var(--space-8) 0 var(--space-12);
+    }
+    .lesson-hero__title {
+      font-size: 2rem;
+    }
+    .lesson-hero__summary {
+      font-size: 1rem;
+    }
+  }
+
+  /* ── Page layout: the cards ride up over the band ── */
+  .lesson-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-10);
+    max-width: 1120px;
+    margin: calc(-1 * var(--space-6)) auto 0;
+    padding: 0 var(--space-5) var(--space-16);
+  }
+  @media (min-width: 1280px) {
+    .lesson-layout {
+      justify-content: center;
+    }
+  }
+  .lesson-article > .lesson-prereq-warning,
+  .lesson-article > .lesson-resume {
+    position: relative;
+    margin-bottom: var(--space-6);
+    box-shadow: var(--elevation-card);
+  }
+
+  /* ── Steps (D-077) ── */
+  .lesson-steps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+  .lesson-step {
+    --marker: 40px;
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--marker) minmax(0, 1fr);
+    column-gap: var(--space-5);
+    scroll-margin-top: calc(var(--learn-header-h) + var(--space-4));
+    border-radius: var(--radius-xl);
+  }
+  .lesson-step:focus {
+    outline: none;
+  }
+  .lesson-step:focus-visible .lesson-step__card {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+  /* The progress line runs from this marker to the next one. */
+  .lesson-step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--space-8) + var(--marker));
+    bottom: calc(-1 * var(--space-8) - var(--space-8));
+    left: calc(var(--marker) / 2 - 1.5px);
+    width: 3px;
+    border-radius: 3px;
+    background: var(--color-border-strong);
+  }
+  .lesson-step[data-state='done']::before {
+    background: var(--color-progress-fill);
+  }
+  .lesson-step__marker {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--marker);
+    height: var(--marker);
+    margin-top: var(--space-8);
+    border: 2px solid var(--color-border-strong);
+    border-radius: var(--radius-full);
+    background: var(--color-bg-surface);
+    color: var(--color-text-tertiary);
+    font: 700 1rem/1 var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    transition:
+      background-color var(--duration-base) var(--ease-standard),
+      border-color var(--duration-base) var(--ease-standard);
+  }
+  .lesson-step[data-state='done'] .lesson-step__marker {
+    border-color: var(--color-action-primary);
+    background: var(--color-action-primary);
+    color: var(--color-text-on-action);
+  }
+  .lesson-step[data-state='current'] .lesson-step__marker {
+    border: 3px solid var(--color-progress-fill);
+    color: var(--color-text-brand);
+    font-weight: 800;
+    box-shadow: 0 0 0 6px var(--color-bg-selected);
+  }
+  .lesson-step__card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    min-width: 0;
+    padding: var(--space-8) var(--space-8) var(--space-8);
+    border: 1px solid var(--color-border-card);
+    border-radius: var(--radius-xl);
+    background: var(--color-bg-surface);
+    box-shadow: var(--elevation-card);
+    transition:
+      background-color var(--duration-base) var(--ease-standard),
+      box-shadow var(--duration-base) var(--ease-standard);
+  }
+  /* Later steps look quieter but stay readable (no opacity on text) and are never locked. */
+  .lesson-step[data-state='upcoming'] .lesson-step__card {
+    border-color: var(--color-border-default);
+    background: var(--color-bg-subtle);
+    box-shadow: none;
+  }
+  .lesson-step[data-state='upcoming'] .lesson-step__chip {
+    background: var(--color-bg-muted);
+    color: var(--color-text-secondary);
+  }
+  .lesson-step[data-state='upcoming'] .lesson-step__card:hover,
+  .lesson-step[data-state='upcoming'] .lesson-step__card:focus-within {
+    background: var(--color-bg-surface);
+  }
+  .lesson-step__chip {
+    justify-self: start;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    background: var(--color-bg-selected);
+    color: var(--color-text-brand);
+    font: var(--text-small);
+    font-weight: 700;
+  }
+  .lesson-step[data-step='principle'] .lesson-step__chip {
+    background: var(--color-info-bg);
+    color: var(--color-info-fg);
+  }
+  .lesson-step[data-step='try'] .lesson-step__chip {
+    background: var(--color-accent-bg);
+    color: var(--color-accent-fg);
+  }
+  .lesson-step[data-step='caution'] .lesson-step__chip {
+    background: var(--color-feedback-incorrect-bg);
+    color: var(--color-feedback-incorrect-fg);
+  }
+  .lesson-step[data-step='check'] .lesson-step__chip {
+    background: var(--color-feedback-correct-bg);
+    color: var(--color-feedback-correct-fg);
+  }
+  .lesson-step__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border-default);
+  }
+  .lesson-step__hint {
+    font: var(--text-ui);
+    color: var(--color-text-secondary);
+  }
+  .lesson-step__footer .pi-button {
+    height: 44px;
+    padding: 0 var(--space-5);
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .lesson-flat {
+    padding: var(--space-8);
+    border: 1px solid var(--color-border-card);
+    border-radius: var(--radius-xl);
+    background: var(--color-bg-surface);
+    box-shadow: var(--elevation-card);
+  }
+  @media (max-width: 1023.98px) {
+    .lesson-step {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .lesson-step::before,
+    .lesson-step__marker {
+      display: none;
+    }
+    .lesson-step__card,
+    .lesson-flat {
+      padding: var(--space-6) var(--space-5);
+    }
+  }
+
+  /* Side column: steps in the table of contents. */
+  .lesson-toc-step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 700;
+    color: var(--color-text-secondary);
+  }
+  .lesson-toc-step__num {
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--color-border-strong);
+    border-radius: var(--radius-full);
+    font: var(--text-caption);
+    font-weight: 700;
+  }
+  .lesson-toc-step[data-state='done'] .lesson-toc-step__num {
+    border-color: var(--color-action-primary);
+    background: var(--color-action-primary);
+    color: var(--color-text-on-action);
+  }
+  .lesson-toc-step[data-state='current'] {
+    color: var(--color-text-heading);
+  }
+  .lesson-toc-step[data-state='current'] .lesson-toc-step__num {
+    border-color: var(--color-progress-fill);
+    color: var(--color-text-brand);
+  }
+
+  /* ── Prose ── */
   .lesson-prose {
     font: var(--text-lesson);
-    font-size: var(--lesson-font-size, 17px);
+    font-size: var(--lesson-font-size, 18px);
     letter-spacing: var(--tracking-lesson);
-    color: var(--color-text-primary);
+    color: var(--color-text-prose);
     word-break: keep-all;
     overflow-wrap: anywhere;
   }
@@ -15,7 +305,7 @@
   .lesson-prose pre,
   .lesson-prose figure,
   .lesson-prose .lesson-table-wrap {
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-5);
   }
   .lesson-prose ul,
   .lesson-prose ol {
@@ -28,12 +318,16 @@
     list-style: decimal;
   }
   .lesson-prose li + li {
-    margin-top: var(--space-1);
+    margin-top: var(--space-2);
+  }
+  .lesson-prose strong {
+    color: var(--color-text-heading);
   }
   .lesson-prose h3 {
-    font: var(--text-h3);
+    font: 700 1.25rem/1.4 var(--font-sans);
+    letter-spacing: var(--tracking-h3);
     color: var(--color-text-heading);
-    margin: var(--space-6) 0 var(--space-3);
+    margin: var(--space-8) 0 var(--space-3);
   }
   .lesson-prose blockquote {
     border-left: 3px solid var(--color-border-strong);
@@ -41,14 +335,50 @@
     color: var(--color-text-secondary);
   }
   .lesson-section {
-    scroll-margin-top: calc(48px + var(--space-4));
+    scroll-margin-top: calc(var(--learn-header-h) + var(--space-4));
     margin-bottom: var(--space-10);
   }
+  .lesson-section:last-child {
+    margin-bottom: 0;
+  }
+  .lesson-section > :last-child {
+    margin-bottom: 0;
+  }
   .lesson-section > h2 {
-    font: var(--text-h2);
-    letter-spacing: var(--tracking-h2);
+    font: 800 1.75rem/1.3 var(--font-sans);
+    letter-spacing: var(--tracking-h1);
     color: var(--color-text-heading);
     margin-bottom: var(--space-4);
+  }
+  .lesson-section + .lesson-section > h2 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: var(--tracking-h2);
+  }
+  /* Learning objectives as "목표 n" boxes (B 시안). */
+  .lesson-section[data-kind='objectives'] > ul,
+  .lesson-section[data-kind='objectives'] > ol {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--space-3);
+    padding: 0;
+    list-style: none;
+    counter-reset: goal;
+  }
+  .lesson-section[data-kind='objectives'] li {
+    margin: 0;
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-subtle);
+    font-size: 0.9375em;
+    line-height: 1.6;
+    counter-increment: goal;
+  }
+  .lesson-section[data-kind='objectives'] li::before {
+    content: '목표 ' counter(goal);
+    display: block;
+    font-weight: 700;
+    color: var(--color-text-brand);
   }
   .lesson-inline-code {
     font-family: var(--font-mono);
@@ -57,13 +387,42 @@
       'liga' 0,
       'calt' 0;
     font-size: var(--text-code-inline-size, 0.9em);
-    background: var(--color-bg-subtle);
-    border: 1px solid var(--color-border-default);
+    background: var(--color-bg-selected);
+    color: var(--color-text-brand);
     border-radius: var(--radius-xs);
-    padding: 0.05em 0.35em;
+    padding: 0.1em 0.4em;
     white-space: break-spaces;
     overflow-wrap: anywhere;
     box-decoration-break: clone;
+  }
+  /*
+   * Lesson code is dark on every theme (B 시안, D-077); the practice editor keeps D-024.
+   * The code tokens resolve their light-dark() at :root, so the dark values are set here
+   * explicitly (the same pairs check:contrast verifies for dark mode).
+   */
+  .lesson-prose .lesson-code,
+  .lesson-example__editor {
+    color-scheme: dark;
+    --code-bg: var(--neutral-900);
+    --code-surface: var(--neutral-900);
+    --code-gutter-bg: var(--neutral-900);
+    --code-gutter-fg: var(--neutral-400);
+    --code-fg: var(--neutral-200);
+    --code-line-active: var(--neutral-850);
+    --code-line-error: var(--red-950);
+    --code-border: var(--neutral-800);
+    --syn-keyword: var(--violet-300);
+    --syn-fn: var(--blue-300);
+    --syn-number: var(--coral-300);
+    --syn-string: var(--green-300);
+    --syn-comment: var(--neutral-400);
+    --syn-punct: var(--neutral-300);
+    --syn-prop: var(--neutral-100);
+    --color-bg-surface: var(--neutral-900);
+    --color-text-primary: var(--neutral-50);
+    --color-text-secondary: var(--neutral-300);
+    --color-text-tertiary: var(--neutral-400);
+    --color-border-default: var(--neutral-700);
   }
   .lesson-code {
     font: var(--text-code);
@@ -71,11 +430,13 @@
     font-feature-settings:
       'liga' 0,
       'calt' 0;
+    font-size: 0.9375rem;
+    line-height: 1.75;
     background: var(--code-bg, var(--color-bg-subtle));
     color: var(--code-fg, var(--color-text-primary));
-    border: 1px solid var(--color-border-default);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
+    border: 1px solid var(--code-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-5);
     overflow-x: auto;
     white-space: pre;
     tab-size: 2;
@@ -94,88 +455,122 @@
     /* minmax(0, …): wide code inside scrolls on its own instead of widening the page. */
     grid-template-columns: auto minmax(0, 1fr);
     gap: var(--space-3);
-    margin: 0 0 var(--space-4);
-    padding: var(--space-4);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-info-border);
+    margin: 0 0 var(--space-5);
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-lg);
+    border: 1px solid transparent;
     background: var(--color-info-bg);
+    font-size: 0.9375em;
+    line-height: 1.7;
+  }
+  .lesson-callout__icon {
+    margin-top: 0.3em;
+    color: var(--color-info-fg);
   }
   .lesson-callout[data-kind='tip'] {
-    border-color: var(--color-feedback-correct-border);
-    background: var(--color-feedback-correct-bg);
+    background: var(--color-bg-selected);
+  }
+  .lesson-callout[data-kind='tip'] .lesson-callout__icon {
+    color: var(--color-text-brand);
   }
   .lesson-callout[data-kind='warning'] {
-    border-color: var(--color-warning-border);
     background: var(--color-warning-bg);
   }
+  .lesson-callout[data-kind='warning'] .lesson-callout__icon {
+    color: var(--color-warning-fg);
+  }
   .lesson-callout[data-kind='danger'] {
-    border-color: var(--color-feedback-incorrect-border);
     background: var(--color-feedback-incorrect-bg);
+  }
+  .lesson-callout[data-kind='danger'] .lesson-callout__icon {
+    color: var(--color-feedback-incorrect-fg);
   }
   .lesson-callout > :last-child > :last-child {
     margin-bottom: 0;
   }
-  .lesson-callout__icon {
-    margin-top: 0.2em;
-  }
   .lesson-callout__title {
     font-weight: 700;
+    color: var(--color-text-heading);
     margin-bottom: var(--space-1) !important;
   }
+  /* Misconception → fact boxes side by side (B 시안 오해/사실). */
   .lesson-pitfall {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-2);
-    margin: 0 0 var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: var(--space-3);
+    margin: 0 0 var(--space-5);
   }
   .lesson-pitfall__part {
-    border-radius: var(--radius-md);
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--color-border-default);
-    background: var(--color-bg-surface);
+    min-width: 0;
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-bg-subtle);
+    font-size: 0.9375em;
+    line-height: 1.65;
   }
   .lesson-pitfall__part[data-part='wrong'] {
-    border-color: var(--color-feedback-incorrect-border);
     background: var(--color-feedback-incorrect-bg);
   }
   .lesson-pitfall__part[data-part='right'] {
-    border-color: var(--color-feedback-correct-border);
     background: var(--color-feedback-correct-bg);
   }
   .lesson-pitfall__part > :last-child {
     margin-bottom: 0;
   }
   .lesson-pitfall__label {
-    font: var(--text-small);
-    font-weight: 700;
+    font: var(--text-ui);
+    font-weight: 800;
     color: var(--color-text-secondary);
     margin-bottom: var(--space-1) !important;
   }
+  .lesson-pitfall__part[data-part='wrong'] .lesson-pitfall__label {
+    color: var(--color-feedback-incorrect-fg);
+  }
+  .lesson-pitfall__part[data-part='right'] .lesson-pitfall__label {
+    color: var(--color-feedback-correct-fg);
+  }
   .lesson-table-wrap {
     overflow-x: auto;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
   }
   .lesson-table-wrap table {
     border-collapse: collapse;
     width: 100%;
     font: var(--text-body);
+    font-size: 1rem;
   }
   .lesson-table-wrap th,
   .lesson-table-wrap td {
-    border: 1px solid var(--color-border-default);
-    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border-default);
+    padding: var(--space-3) var(--space-4);
     text-align: left;
     vertical-align: top;
   }
-  .lesson-table-wrap thead th,
+  .lesson-table-wrap tr:last-child > * {
+    border-bottom: 0;
+  }
+  .lesson-table-wrap th + th,
+  .lesson-table-wrap th + td,
+  .lesson-table-wrap td + td {
+    border-left: 1px solid var(--color-border-default);
+  }
+  .lesson-table-wrap thead th {
+    background: var(--color-bg-selected);
+    color: var(--color-text-brand);
+    font-weight: 700;
+  }
   .lesson-table-wrap tbody th {
     background: var(--color-bg-subtle);
+    color: var(--color-text-heading);
     font-weight: 600;
   }
   .lesson-reveal {
     border: 1px solid var(--color-border-default);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     padding: var(--space-3) var(--space-4);
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-5);
+    background: var(--color-bg-subtle);
   }
   .lesson-reveal summary {
     cursor: pointer;
@@ -195,28 +590,32 @@
     border-bottom-width: 2px;
     border-radius: var(--radius-xs);
     padding: 0 0.35em;
+    background: var(--color-bg-surface);
   }
   .lesson-example {
     border: 1px solid var(--color-border-default);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    background: var(--color-bg-surface);
+    background: var(--color-bg-subtle);
+  }
+  .lesson-example .lesson-code {
+    border: 0;
+    border-radius: 0;
   }
   .lesson-example__header,
   .lesson-example__footer {
     display: flex;
     justify-content: space-between;
     gap: var(--space-3);
-    padding: var(--space-2) var(--space-4);
+    padding: var(--space-3) var(--space-4);
     font: var(--text-small);
     background: var(--color-bg-subtle);
   }
   .lesson-example__header {
-    border-bottom: 1px solid var(--color-border-default);
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--color-text-heading);
   }
   .lesson-example__footer {
-    border-top: 1px solid var(--color-border-default);
     justify-content: flex-end;
   }
   .lesson-inline-exercise {
@@ -224,11 +623,12 @@
     align-items: center;
     gap: var(--space-2);
     border: 1px dashed var(--color-border-strong);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     padding: var(--space-4);
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-5);
     color: var(--color-text-secondary);
     font: var(--text-ui);
+    background: var(--color-bg-subtle);
   }
   .lesson-diagram {
     margin: 0 0 var(--space-4);

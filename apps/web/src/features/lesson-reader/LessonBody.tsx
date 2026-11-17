@@ -1,8 +1,10 @@
 import type { CodeDraft, LessonConcept, LessonPrerequisite, Settings } from '@proginone/shared';
-import { Badge } from '@proginone/ui';
+import { Badge, Button } from '@proginone/ui';
 import { Link } from '@tanstack/react-router';
 import {
   AlertTriangle,
+  ArrowRight,
+  Check,
   ExternalLink,
   Info,
   Lightbulb,
@@ -16,6 +18,7 @@ import { InlineExerciseSlot } from './InlineExerciseSlot.tsx';
 import { LessonDiagram } from './LessonDiagram.tsx';
 import { RunnableExampleBlock } from './RunnableExampleBlock.tsx';
 import { SECTION_LABELS } from './sections.ts';
+import type { LessonStep } from './steps.ts';
 
 /**
  * Renders the lesson tree built by content-cli (validated MDX → mdast + allowed components).
@@ -115,7 +118,9 @@ function Component({ node }: { node: Node }) {
     case 'Pitfall':
       return (
         <div className="lesson-pitfall">
-          <Children of={node} />
+          {pitfallParts(node).map((child, i) => (
+            <NodeView key={i} node={child} />
+          ))}
         </div>
       );
     case 'Wrong':
@@ -215,6 +220,21 @@ function Component({ node }: { node: Node }) {
     default:
       return null;
   }
+}
+
+const PITFALL_PARTS = new Set(['Wrong', 'Actual', 'Right']);
+
+/**
+ * Wrong/Actual/Right written on single lines arrive wrapped in a paragraph: unwrap them so each
+ * part is its own box (and no block sits inside a `<p>`).
+ */
+function pitfallParts(pitfall: Node): Node[] {
+  return kids(pitfall).flatMap((n) => {
+    if (n.type !== 'paragraph') return [n];
+    const inner = kids(n);
+    if (!inner.some((c) => PITFALL_PARTS.has(str(c['name']) ?? ''))) return [n];
+    return inner.filter((c) => !(c.type === 'text' && (str(c['value']) ?? '').trim() === ''));
+  });
 }
 
 /** Rows may arrive wrapped in a paragraph when written on single lines. */
@@ -474,6 +494,79 @@ function NodeView({ node }: { node: Node }): ReactNode {
   }
 }
 
+/** Step view state (D-077); the reader owns it because the header shows it too. */
+export interface LessonStepsView {
+  list: readonly LessonStep[];
+  current: number;
+  /** "다음 단계": scrolls to step `index`, focuses it and makes it current. */
+  onGoTo: (index: number) => void;
+}
+
+function nodesOf(nodes: readonly unknown[]) {
+  return nodes.map((node, i) =>
+    node && typeof node === 'object' ? <NodeView key={i} node={node as Node} /> : null,
+  );
+}
+
+function stepState(i: number, current: number) {
+  return i < current ? 'done' : i === current ? 'current' : 'upcoming';
+}
+
+/**
+ * The lesson as step cards (D-077): a vertical progress line on the left, one white card per step
+ * with its kind chip, and "다음 단계" at the end of every card but the last. Later steps look
+ * quieter but are never locked.
+ */
+function LessonSteps({ steps }: { steps: LessonStepsView }) {
+  const { list, current, onGoTo } = steps;
+  return (
+    <div className="lesson-steps">
+      {list.map((step, i) => {
+        const next = list[i + 1];
+        return (
+          <div
+            key={step.id}
+            id={step.id}
+            role="group"
+            aria-label={`${String(i + 1)}단계: ${step.label}`}
+            tabIndex={-1}
+            className="lesson-step"
+            data-step={step.key}
+            data-state={stepState(i, current)}
+            {...(i === current ? { 'aria-current': 'step' as const } : {})}
+          >
+            <div className="lesson-step__marker" aria-hidden="true">
+              {i < current ? <Check size={20} strokeWidth={3} /> : i + 1}
+            </div>
+            <div className="lesson-step__card">
+              <p className="lesson-step__chip">
+                <span className="sr-only">{`${String(i + 1)}단계: `}</span>
+                {step.label}
+              </p>
+              <div className="lesson-prose">{nodesOf(step.nodes)}</div>
+              {next && (
+                <div className="lesson-step__footer">
+                  <span className="lesson-step__hint">다음은 ‘{next.label}’ 단계예요.</span>
+                  <Button
+                    variant="primary"
+                    aria-label={`다음 단계: ${next.label}`}
+                    onClick={() => {
+                      onGoTo(i + 1);
+                    }}
+                  >
+                    다음 단계
+                    <ArrowRight size={18} aria-hidden="true" />
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function LessonBody({
   lessonId,
   kind = 'lesson',
@@ -482,6 +575,7 @@ export function LessonBody({
   predictFirst = 'recommended',
   prerequisites,
   exampleDrafts,
+  steps,
 }: {
   lessonId: string;
   kind?: LessonContextValue['kind'];
@@ -490,6 +584,8 @@ export function LessonBody({
   predictFirst?: LessonContextValue['predictFirst'];
   prerequisites?: readonly LessonPrerequisite[] | undefined;
   exampleDrafts?: ReadonlyMap<string, CodeDraft> | undefined;
+  /** Step view; without it (or with no steps) the lesson is one plain card. */
+  steps?: LessonStepsView | undefined;
 }) {
   const value = {
     lessonId,
@@ -501,11 +597,13 @@ export function LessonBody({
   };
   return (
     <LessonContext.Provider value={value}>
-      <div className="lesson-prose">
-        {body.map((node, i) =>
-          node && typeof node === 'object' ? <NodeView key={i} node={node as Node} /> : null,
-        )}
-      </div>
+      {steps && steps.list.length > 0 ? (
+        <LessonSteps steps={steps} />
+      ) : (
+        <div className="lesson-flat">
+          <div className="lesson-prose">{nodesOf(body)}</div>
+        </div>
+      )}
     </LessonContext.Provider>
   );
 }

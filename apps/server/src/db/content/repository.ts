@@ -1026,6 +1026,7 @@ export class ContentRepository {
       objectives: lesson.objectives,
       estimatedMinutes: lesson.estimatedMinutes,
       readMinutes: lesson.readMinutes,
+      practiceCount: this.countPracticeExercises(lesson.id),
       sections: lesson.sections.sections,
       body: lesson.bodyCompiled,
       concepts,

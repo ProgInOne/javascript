@@ -16,20 +16,20 @@ const THEME_LABELS: Record<Settings['theme'], { label: string; description: stri
 };
 
 const SIZE_LABELS: Record<Settings['lesson.fontSize'], { label: string; description: string }> = {
-  small: { label: '작게', description: '16px' },
-  medium: { label: '보통', description: '17px (기본)' },
-  large: { label: '크게', description: '19px' },
+  small: { label: '작게', description: '17px' },
+  medium: { label: '보통', description: '18px (기본)' },
+  large: { label: '크게', description: '20px' },
 };
 
 const WORKBENCH_LABELS: Record<
   Settings['appearance.workbench'],
   { label: string; description: string }
 > = {
-  light: { label: '밝게', description: '레슨 코드 블록과 같은 모습 (기본)' },
+  light: { label: '밝게', description: '밝은 바탕의 코드 에디터와 콘솔 (기본)' },
   dark: { label: '어둡게', description: '실습의 코드 에디터와 콘솔만 어둡게' },
 };
 
-/** 설정 > 화면 (ui-ux.md#설정): theme, lesson body size (16/17/19px), workbench theme (D-024). */
+/** 설정 > 화면 (ui-ux.md#설정): theme, lesson body size (17/18/20px), workbench theme (D-024). */
 function AppearanceSettings() {
   const settings = useSettings();
   const { save, pending } = useSaveSetting();
