@@ -249,6 +249,7 @@ console.log(3 + 4);
 
 - 원시 HTML 대신 컴포넌트를 씁니다. 인라인 코드(`` `<div>` ``) 안의 태그는 괜찮습니다.
 - 존댓말 해요체로 쓰고, 개념을 "왜 필요한가"의 구체적 상황으로 시작합니다. 자세한 기준은 설계 문서의 [레슨 본문 표준 섹션](/docs/design/content-and-exercises.md#레슨-본문-표준-섹션)을 봅니다.
+- 제품·서비스·언어 이름은 공식 영문 표기로 씁니다: Chrome, Edge, Safari, Firefox, JavaScript, TypeScript, GitHub, VS Code, Node.js. "크롬"처럼 음역하면 화면에 보이는 이름이나 검색어와 달라집니다. 일반 용어(엣지 케이스, DOM 노드)와 학습자 답을 넓게 받는 `accept` 목록은 해당하지 않습니다. `content:check`가 레슨 본문, `lesson.yaml`의 제목·요약·목표, 문제의 지문·해설·힌트에서 음역을 찾으면 경고합니다(코드는 검사하지 않음).
 
 ## 문제 파일
 

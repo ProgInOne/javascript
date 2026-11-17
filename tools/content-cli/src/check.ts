@@ -16,6 +16,7 @@ import {
 } from './expectations.ts';
 import { loadContent, type ContentSource, type LessonNodeSource } from './load.ts';
 import { compileLessonMdx, type CompiledLesson } from './mdx.ts';
+import { namingWarning } from './naming.ts';
 import { ASSESSMENT_ITEM_RANGE, assessmentAsked, checkQuantities } from './quantity.ts';
 import { checkTemplates, type CheckedTemplate } from './templates.ts';
 
@@ -164,7 +165,13 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
       else introducedAt.set(c, index);
     }
 
+    const metaText = [data.title, data.summary, ...data.objectives].join('\n');
+    const metaNaming = namingWarning('lesson.yaml', metaText);
+    if (metaNaming) diag.warn(file, metaNaming);
+
     if (lesson.mdx !== null) {
+      const mdxNaming = namingWarning('본문', lesson.mdx);
+      if (mdxNaming) diag.warn(lesson.mdxFile, mdxNaming);
       const compiled = compileLessonMdx(lesson.mdx, { lessonKind: data.kind });
       lessons.set(data.id, compiled);
       for (const e of compiled.errors) diag.error(lesson.mdxFile, e);
@@ -206,6 +213,8 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
       const fields = { prompt: ex.prompt, explanation: ex.explanation, hints: ex.hints.join('\n') };
       for (const [field, text] of Object.entries(fields)) {
         if (containsRawHtml(text)) diag.error(exFile, `${field}에 원시 HTML이 있습니다`);
+        const naming = namingWarning(field, text);
+        if (naming) diag.warn(exFile, naming);
       }
       if (ex.type === 'predict_output') {
         predictIds.add(ex.id);
