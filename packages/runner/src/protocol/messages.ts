@@ -11,7 +11,7 @@ import {
   type RunPlan,
 } from '@proginone/shared';
 import { z } from 'zod';
-import { PROTOCOL_VERSION } from './constants.ts';
+import { PREVIEW_TITLE_MAX_LENGTH, PROTOCOL_VERSION } from './constants.ts';
 import { type Limits, limitsSchema } from './limits.ts';
 
 /**
@@ -21,7 +21,12 @@ import { type Limits, limitsSchema } from './limits.ts';
  * travels between host, shell and harness.
  */
 
-export { HARNESS_CONFIG_GLOBAL, PROTOCOL_VERSION } from './constants.ts';
+export {
+  HARNESS_CONFIG_GLOBAL,
+  normalizePreviewTitle,
+  PREVIEW_TITLE_MAX_LENGTH,
+  PROTOCOL_VERSION,
+} from './constants.ts';
 const v = z.literal(PROTOCOL_VERSION);
 
 export type RunMode = (typeof RUN_MODES)[number];
@@ -180,6 +185,12 @@ export const shellControlSchema = z.union([
   z.object({ v, type: z.literal('heartbeat'), runId: z.uuid(), at: z.number().nonnegative() }),
   runEventSchema,
   z.object({ v, type: z.literal('notice'), notice: z.enum(RUNNER_NOTICES) }),
+  /**
+   * The title of the preview document on screen (D-082), for the tab bar above the preview. Sent
+   * when the document has parsed, has loaded and whenever its title changes, also after its run
+   * has finished. Learner code can make the shell send any string here; show it as text only.
+   */
+  z.object({ v, type: z.literal('title'), title: z.string().max(PREVIEW_TITLE_MAX_LENGTH) }),
 ]);
 export type ShellControl = z.infer<typeof shellControlSchema>;
 
@@ -227,6 +238,8 @@ export interface HarnessConfig {
    * the shell (`pg-notice`), instead of letting the sandbox swap in an error page.
    */
   interceptNavigation?: boolean;
+  /** `preview` only: report the document title to the shell (`pg-title`, D-082). */
+  reportTitle?: boolean;
 }
 
 /** Learner document → shell over `window.postMessage` (see `RunnerNotice`). */
@@ -244,4 +257,15 @@ export interface HarnessNoticeMessage {
  */
 export interface HarnessLeftMessage {
   type: 'pg-left';
+}
+
+/**
+ * Preview document → shell over `window.postMessage`: the document title (`document.title`), at
+ * `DOMContentLoaded`, at `load` and after it changes (D-082). Learner code can send this too; the
+ * shell accepts it only from the preview document on screen and only as a string, so it only
+ * ever changes the title shown above that preview.
+ */
+export interface HarnessTitleMessage {
+  type: 'pg-title';
+  title: string;
 }

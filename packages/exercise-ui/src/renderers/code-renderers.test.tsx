@@ -299,6 +299,31 @@ describe('WebTask and PreviewFrame', () => {
     expect(region.textContent).toBe(message);
     expect(await axeViolations(container)).toEqual([]);
   });
+
+  it('shows the document title in a tab bar, as text only (D-082)', async () => {
+    const { rerender, container } = renderUi(<PreviewFrame status="ready" documentTitle={null} />);
+    const tab = screen.getByRole('group', { name: '미리보기 탭 제목' });
+    expect(tab.textContent).toBe('제목 없음');
+    expect(tab.querySelector('[data-empty]')).not.toBeNull();
+    // Not a live region: frequent title changes are not announced.
+    expect(tab.closest('[aria-live], [role="status"]')).toBeNull();
+    rerender(
+      <UiProvider>
+        <PreviewFrame status="ready" documentTitle={'<img src=x onerror="alert(1)">할 일'} />
+      </UiProvider>,
+    );
+    expect(tab.textContent).toBe('<img src=x onerror="alert(1)">할 일');
+    expect(tab.querySelector('img')).toBeNull();
+    expect(tab.querySelector('[data-empty]')).toBeNull();
+    expect(within(tab).getByTitle('<img src=x onerror="alert(1)">할 일')).toBeTruthy();
+    rerender(
+      <UiProvider>
+        <PreviewFrame status="ready" documentTitle="   " />
+      </UiProvider>,
+    );
+    expect(tab.textContent).toBe('제목 없음');
+    expect(await axeViolations(container)).toEqual([]);
+  });
 });
 
 describe('ExerciseRenderer', () => {

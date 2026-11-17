@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { resolveLimits } from './limits.ts';
 import {
   harnessToShellSchema,
+  normalizePreviewTitle,
+  PREVIEW_TITLE_MAX_LENGTH,
   runnablePlanSchema,
   runRequestSchema,
   shellControlSchema,
@@ -121,6 +123,33 @@ describe('channel schemas', () => {
     expect(
       harnessToShellSchema.safeParse({ type: 'viewport', reqId: 1, width: 10, height: 10 }).success,
     ).toBe(false);
+  });
+
+  it('accepts preview titles up to the length limit only (D-082)', () => {
+    const title = (t: unknown) => shellControlSchema.safeParse({ v: 1, type: 'title', title: t });
+    expect(title('할 일 목록').success).toBe(true);
+    expect(title('').success).toBe(true);
+    expect(title('가'.repeat(PREVIEW_TITLE_MAX_LENGTH)).success).toBe(true);
+    expect(title('가'.repeat(PREVIEW_TITLE_MAX_LENGTH + 1)).success).toBe(false);
+    expect(title(42).success).toBe(false);
+    expect(title({ toString: () => 'x' }).success).toBe(false);
+  });
+
+  it('normalizes what a preview document reports as its title (D-082)', () => {
+    const title = (t: unknown) => shellControlSchema.safeParse({ v: 1, type: 'title', title: t });
+    expect(normalizePreviewTitle('  내  첫\n\t페이지 ')).toBe('내 첫 페이지');
+    expect(normalizePreviewTitle('a\u0000b\u007fc\u200bd')).toBe('a b c\u200bd');
+    expect(normalizePreviewTitle('')).toBe('');
+    for (const bad of [undefined, null, 1, ['x'], { title: 'x' }]) {
+      expect(normalizePreviewTitle(bad)).toBeNull();
+    }
+    const long = normalizePreviewTitle('가'.repeat(1_000));
+    expect(long).toHaveLength(PREVIEW_TITLE_MAX_LENGTH);
+    // The limit counts code units like the schema, and never leaves a lone surrogate.
+    const emoji = normalizePreviewTitle('a' + '😀'.repeat(300)) ?? '';
+    expect(emoji.length).toBe(PREVIEW_TITLE_MAX_LENGTH - 1);
+    expect(emoji.endsWith('😀')).toBe(true);
+    expect(title(emoji).success).toBe(true);
   });
 
   it('carries shared observation steps in run requests', () => {

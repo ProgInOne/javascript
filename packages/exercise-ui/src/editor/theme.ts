@@ -33,7 +33,9 @@ export const editorTheme = EditorView.theme({
   },
   '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--code-fg)', borderLeftWidth: '2px' },
   '.cm-selectionBackground, &.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground':
-    { backgroundColor: 'var(--color-bg-selected)' },
+    { backgroundColor: 'var(--code-selection)' },
+  // Native selection inside the content (screen readers, copy) follows the same color.
+  '.cm-content ::selection': { backgroundColor: 'var(--code-selection)' },
   '.cm-activeLine': { backgroundColor: 'var(--code-line-active)' },
   '.cm-gutters': {
     backgroundColor: 'var(--code-gutter-bg)',

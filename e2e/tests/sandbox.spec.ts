@@ -14,12 +14,13 @@ import {
   run,
   startFrameMonitor,
   startProbe,
+  titles,
   watchRequests,
 } from './sandbox-fixtures.ts';
 
 /**
  * Runner sandbox through the production build (docs/design/code-execution-sandbox.md#보안-테스트-스위트).
- * Scenario numbers (S1–S49) refer to that table. Every attack checks both that it was blocked
+ * Scenario numbers (S1–S50) refer to that table. Every attack checks both that it was blocked
  * and that nothing reached a server: the probe server (a stand-in for another local service)
  * and the app server (all page requests are recorded).
  */
@@ -591,6 +592,82 @@ document.getElementById('plain').addEventListener('submit', (e) => {
     // The next run shows the learner document again.
     await run(page, { ...html('<!doctype html><p id="p">다시</p>'), mode: 'preview' });
     await expect(learner.locator('#p')).toHaveText('다시');
+    await expectNoLeaks();
+  });
+
+  test('preview reports its document title, cut to the limit, as it changes (D-082)', async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName === 'firefox', FISSION_FRAMES);
+    const { expectNoLeaks } = await setup(page, { placement: 'visible' });
+    const last = async () => (await titles(page)).at(-1);
+    const doc = `<!doctype html><title>할 일 목록</title>
+<button id="rename">이름 바꾸기</button><button id="long">긴 제목</button>
+<script>
+document.getElementById('rename').addEventListener('click', () => { document.title = '  새   제목 '; });
+document.getElementById('long').addEventListener('click', () => { document.title = '가'.repeat(1000); });
+</script>`;
+    const result = await run(page, { ...html(doc), mode: 'preview' });
+    expect(result.status).toBe('completed');
+    await expect.poll(last).toBe('할 일 목록');
+    const learner = page
+      .frameLocator('iframe[title="코드 실행 결과"]')
+      .frameLocator('iframe[title="학습자 문서"]');
+    // After the run: `document.title =` (whitespace collapsed like a browser tab).
+    await learner.locator('#rename').click();
+    await expect.poll(last).toBe('새 제목');
+    await learner.locator('#long').click();
+    await expect.poll(last).toBe('가'.repeat(200));
+
+    // A document without a title reports an empty one; a script can add a <title> later.
+    await run(page, {
+      ...html(`<!doctype html><p>본문</p><script>
+setTimeout(() => { const t = document.createElement('title'); t.textContent = '나중 제목'; document.head.append(t); }, 50);
+</script>`),
+      mode: 'preview',
+    });
+    await expect.poll(last).toBe('나중 제목');
+    expect(await titles(page)).toContain('');
+    await expectNoLeaks();
+  });
+
+  test('fake title messages only change the title of their own preview (S50, D-082)', async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName === 'firefox', FISSION_FRAMES);
+    const { expectNoLeaks } = await setup(page, { placement: 'visible' });
+    const doc = `<!doctype html><title>진짜</title><script>
+// Not strings: ignored. A flood: throttled, and the last title still wins.
+parent.postMessage({ type: 'pg-title', title: { text: 'x' } }, '*');
+parent.postMessage({ type: 'pg-title', title: null }, '*');
+parent.postMessage({ type: 'pg-title', title: 42 }, '*');
+parent.postMessage({ type: 'pg-title', title: ['배열'] }, '*');
+window.addEventListener('load', () => setTimeout(() => {
+  for (let i = 0; i < 500; i++) parent.postMessage({ type: 'pg-title', title: 'flood ' + i }, '*');
+  parent.postMessage({ type: 'pg-title', title: '<img src=x onerror=alert(1)>' + 'x'.repeat(500) }, '*');
+}, 50));
+</script>`;
+    await run(page, { ...html(doc), mode: 'preview' });
+    const expected = ('<img src=x onerror=alert(1)>' + 'x'.repeat(500)).slice(0, 200);
+    await expect.poll(async () => (await titles(page)).at(-1)).toBe(expected);
+    const seen = await titles(page);
+    expect(seen.length, 'titles forwarded despite the flood').toBeLessThan(20);
+    expect(seen.every((t) => typeof t === 'string' && t.length <= 200)).toBe(true);
+    expect(seen).not.toContain('x');
+
+    // A grading (`dom`) document is not a preview: its title and fake messages go nowhere.
+    const before = (await titles(page)).length;
+    const graded = await run(
+      page,
+      html(`<!doctype html><title>채점</title><script>
+parent.postMessage({ type: 'pg-title', title: '채점 가짜' }, '*');
+</script>`),
+    );
+    expect(graded.status).toBe('completed');
+    await page.waitForTimeout(300);
+    expect((await titles(page)).slice(before)).toEqual([]);
     await expectNoLeaks();
   });
 

@@ -298,12 +298,14 @@
   --code-gutter-fg: light-dark(var(--neutral-550), var(--neutral-400));
   --code-fg: light-dark(var(--neutral-900), var(--neutral-200));
   --code-line-active: light-dark(var(--jade-50), var(--neutral-850));
+  /* Editor selection: blue, not the jade of the active line, so a drag shows on that line too. */
+  --code-selection: light-dark(#cfe3ff, #1a3150);
   --code-line-error: light-dark(var(--red-50), var(--red-950));
   --code-border: light-dark(var(--neutral-200), var(--neutral-800));
   --syn-keyword: light-dark(var(--violet-700), var(--violet-300));
   --syn-fn: light-dark(var(--blue-700), var(--blue-300));
-  --syn-number: light-dark(var(--coral-700), var(--coral-300));
-  --syn-string: light-dark(var(--green-700), var(--green-300));
+  --syn-number: light-dark(var(--coral-800), var(--coral-300));
+  --syn-string: light-dark(var(--green-800), var(--green-300));
   --syn-comment: light-dark(var(--neutral-600), var(--neutral-400));
   --syn-punct: light-dark(var(--neutral-600), var(--neutral-300));
   --syn-prop: light-dark(var(--neutral-800), var(--neutral-100));

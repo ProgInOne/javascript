@@ -6,13 +6,15 @@ import type * as RunnerModule from '../runner/runner.ts';
 
 const run = vi.fn<() => Promise<RunResult>>();
 let previewNotice: ((message: string) => void) | undefined;
+let previewTitle: ((title: string) => void) | undefined;
 vi.mock('../runner/runner.ts', async (importOriginal) => {
   const actual = await importOriginal<typeof RunnerModule>();
   return {
     ...actual,
     consoleRunner: () => ({ run }),
-    previewRunner: (_container: HTMLElement, onNotice?: (message: string) => void) => {
-      previewNotice = onNotice;
+    previewRunner: (_container: HTMLElement, callbacks: RunnerModule.PreviewCallbacks = {}) => {
+      previewNotice = callbacks.onNotice;
+      previewTitle = callbacks.onTitle;
       return { run, dispose: () => undefined };
     },
   };
@@ -127,6 +129,20 @@ describe('RunnableExampleBlock', () => {
     expect(screen.getByRole('status')).toHaveTextContent(
       '미리보기에서는 링크 이동과 폼 제출이 실제로 일어나지 않아요.',
     );
+  });
+
+  it('shows the preview document title in a tab bar above the HTML preview (D-082)', async () => {
+    run.mockResolvedValue(result({ console: [] }));
+    render(<RunnableExampleBlock id="t" lang="html" code="<title>x</title>" predict={false} />);
+    const tab = screen.getByRole('group', { name: '미리보기 탭 제목' });
+    expect(tab).toHaveTextContent('제목 없음');
+    await userEvent.click(screen.getByRole('button', { name: '실행' }));
+    act(() => {
+      previewTitle?.('<b>내 첫 페이지</b>');
+    });
+    // Learner text is shown as text, never parsed as HTML.
+    expect(tab).toHaveTextContent('<b>내 첫 페이지</b>');
+    expect(tab.querySelector('b')).toBeNull();
   });
 
   it('shows CSS-only snippets without a run button', () => {

@@ -53,7 +53,8 @@
 |---|---|---|
 | `CodeEditor` | `value`, `onChange`, `language`(`js`·`html`·`css`), `label`, `readOnly`, `autocomplete`(기본 끔), `lineNumbers`, `errorLines`, `onFormatError`, `ref`(`focus`·`goToLine`·`format`) | CodeMirror 6. 토큰 기반 테마라 라이트 기본과 다크 작업대가 함께 동작합니다. `Tab` 들여쓰기, `Esc` 다음 `Tab`으로 빠져나가기(하단 안내), `⇧⌥F` 포맷(물리 키 기준이라 macOS Option 조합도 동작), `⌘Enter`는 비워 두어 제출 단축키로 전달 |
 | `EditorPane` | `files`, `onChange`, `onReset`, `saveStatus`, `readOnly`, `autocomplete`, `errorLines`, `ref`(`goTo(file, line)`) | 파일 이름(여러 파일은 전환 버튼, P1), 포맷, 확인 후 초기화, 자동 저장 상태, 포맷 실패 안내 |
-| `PreviewFrame` | `mountRef`(러너가 샌드박스 iframe을 붙일 자리) 또는 `children`, `status`(`idle`·`loading`·`ready`·`error`), `errorMessage`, `onRefresh` | 툴바(새로 고침), 빈 상태·로딩·오류 상태. 뷰포트 전환과 요소 검사는 P1 |
+| `PreviewFrame` | `mountRef`(러너가 샌드박스 iframe을 붙일 자리) 또는 `children`, `status`(`idle`·`loading`·`ready`·`error`), `errorMessage`, `notice`, `documentTitle`, `onRefresh` | 툴바(새로 고침), 알림, 탭 제목 막대, 빈 상태·로딩·오류 상태. 뷰포트 전환과 요소 검사는 P1 |
+| `PreviewTabBar` | `title`(러너가 알린 `document.title`, 없으면 "제목 없음") | 미리보기 위 브라우저 탭 모양 막대(D-082). 제목은 텍스트로만 그림 |
 | `formatCode(code, language)` | — | Prettier(첫 사용 때 지연 로드). 문법 오류는 줄 번호가 있는 `FormatError` |
 
 ## 위젯

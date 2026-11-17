@@ -1,6 +1,7 @@
 import { Button, Spinner } from '@proginone/ui';
 import { Info, MonitorPlay, RefreshCw } from 'lucide-react';
 import { useId, type ReactNode, type Ref } from 'react';
+import { PreviewTabBar } from './PreviewTabBar.tsx';
 
 export type PreviewStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -21,6 +22,11 @@ export interface PreviewFrameProps {
    * 폼 제출이 실제로 일어나지 않아요."). Cleared by the caller on the next run.
    */
   notice?: string;
+  /**
+   * Title of the shown document for the tab bar above it (`document.title`, D-082). `null` or
+   * blank shows "제목 없음". Rendered as text only: learner code controls it.
+   */
+  documentTitle?: string | null;
   /** Re-renders the preview (새로 고침). Hidden when omitted. */
   onRefresh?: () => void;
   /** Accessible name of the region. Default "미리보기". */
@@ -28,8 +34,8 @@ export interface PreviewFrameProps {
 }
 
 /**
- * HTML/CSS single-document preview container (PreviewFrame in ui-ux.md). Toolbar with refresh;
- * viewport switching (375/768/1280) and the element inspector are P1.
+ * HTML/CSS single-document preview container (PreviewFrame in ui-ux.md). Toolbar with refresh,
+ * a browser-tab look-alike with the document title (D-082); viewport switching (375/768/1280) and the element inspector are P1.
  */
 export function PreviewFrame({
   mountRef,
@@ -37,6 +43,7 @@ export function PreviewFrame({
   status = 'idle',
   errorMessage,
   notice,
+  documentTitle,
   onRefresh,
   label = '미리보기',
 }: PreviewFrameProps) {
@@ -78,6 +85,7 @@ export function PreviewFrame({
           </p>
         )}
       </div>
+      <PreviewTabBar title={documentTitle} />
       <div className="pi-ex-preview__stage">
         <div ref={mountRef} className="pi-ex-preview__mount" data-status={status}>
           {children}

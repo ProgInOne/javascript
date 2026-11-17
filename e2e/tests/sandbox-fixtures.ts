@@ -47,13 +47,14 @@ function hostScript(): Promise<string> {
   return hostBundle;
 }
 
-type HostOptions = Omit<RunnerHostOptions, 'container' | 'onEvent' | 'onNotice'>;
+type HostOptions = Omit<RunnerHostOptions, 'container' | 'onEvent' | 'onNotice' | 'onTitle'>;
 
 interface TestWindow {
   __runnerHostModule: typeof HostModule;
   __host: RunnerHost;
   __events: unknown[];
   __notices: string[];
+  __titles: string[];
   __monitor: { maxGap: number; last: number };
 }
 
@@ -65,10 +66,12 @@ export async function openRunner(page: Page, options: HostOptions = {}) {
     const w = window as unknown as TestWindow;
     w.__events = [];
     w.__notices = [];
+    w.__titles = [];
     w.__host = w.__runnerHostModule.createRunnerHost({
       ...opts,
       onEvent: (e) => w.__events.push(e),
       onNotice: (n) => w.__notices.push(n),
+      onTitle: (t) => w.__titles.push(t),
     });
     await w.__host.ready();
   }, options);
@@ -145,6 +148,11 @@ export const html = (content: string, extra: PlanExtra = {}): RunPlan =>
 /** Preview notices received so far (`RunnerHostOptions.onNotice`). */
 export function notices(page: Page) {
   return page.evaluate(() => (window as unknown as TestWindow).__notices);
+}
+
+/** Preview titles received so far (`RunnerHostOptions.onTitle`, D-082). */
+export function titles(page: Page) {
+  return page.evaluate(() => (window as unknown as TestWindow).__titles);
 }
 
 /** Requests the shell CSP blocked in the last run (from the `blocked` event). */

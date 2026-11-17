@@ -11,13 +11,14 @@
  * Bundled by `shell/build.ts` into a single line, so inserting it into a learner document does not
  * move learner line numbers.
  */
-import { HARNESS_CONFIG_GLOBAL } from '../protocol/constants.ts';
+import { HARNESS_CONFIG_GLOBAL, PREVIEW_TITLE_MAX_LENGTH } from '../protocol/constants.ts';
 import type { ConsoleEntry, ConsoleLevel } from '@proginone/shared';
 import type {
   BlockedRequest,
   HarnessConfig,
   HarnessLeftMessage,
   HarnessNoticeMessage,
+  HarnessTitleMessage,
   HarnessToShell,
 } from '../protocol/messages.ts';
 import type {
@@ -72,6 +73,8 @@ type Fn = (...args: unknown[]) => unknown;
 /** Grading runs: a form submission no handler cancelled (detectUncancelledSubmit). */
 const SUBMIT_NAVIGATION_MESSAGE =
   '실행 중에는 다른 페이지로 이동하거나 폼을 전송할 수 없습니다. submit 이벤트 처리기에서 event.preventDefault()로 폼 전송을 막았는지 확인하세요.';
+/** Preview title reports (D-082): changes within this window are sent as one report. */
+const TITLE_REPORT_MS = 100;
 
 const cfg = (G as unknown as Record<string, HarnessConfig | undefined>)[HARNESS_CONFIG_GLOBAL];
 try {
@@ -854,6 +857,66 @@ function start(config: HarnessConfig) {
     addListener('submit', onNavigation, true);
   }
 
+  // ---- preview tab title ---------------------------------------------------------------------
+  /**
+   * Preview only (D-082). The preview has no browser tab, so the app shows the document title in
+   * a tab bar above it. Reports `document.title` to the shell at `DOMContentLoaded` and `load`, and
+   * after any change to the document (a `MutationObserver` on the whole document sees a `<title>`
+   * edit, a `document.title = …` assignment and a `<title>` added or removed by script). Changes
+   * are batched: one report at most every {@link TITLE_REPORT_MS} ms, with the title as it is
+   * then, and only when it differs from the last report.
+   *
+   * The getter and the observer are captured before learner code runs, so redefining
+   * `document.title` or `MutationObserver` cannot change what is reported. Learner code can still
+   * post its own `pg-title`; that only changes the title shown above its own preview.
+   */
+  function reportTitle(parentWindow: Window) {
+    const titleGetter = getOwnPropertyDescriptor(G.Document.prototype, 'title')?.get as
+      Fn | undefined;
+    const ObserverCtor = G.MutationObserver;
+    const observe = ObserverCtor.prototype.observe as Fn;
+    if (!titleGetter) return;
+    const doc = document;
+    let last: string | null = null;
+    let scheduled = false;
+
+    const sendTitle = () => {
+      scheduled = false;
+      let title: string;
+      try {
+        title = strSlice(
+          StringCtor(apply(titleGetter, doc, [])),
+          0,
+          // Only bounds the message: the shell normalizes and makes the exact cut.
+          PREVIEW_TITLE_MAX_LENGTH * 2,
+        );
+      } catch {
+        return;
+      }
+      if (title === last) return;
+      last = title;
+      try {
+        parentWindow.postMessage({ type: 'pg-title', title } satisfies HarnessTitleMessage, '*');
+      } catch {
+        // ignore
+      }
+    };
+    const schedule = () => {
+      if (scheduled) return;
+      scheduled = true;
+      setTimeoutRaw(sendTitle, TITLE_REPORT_MS);
+    };
+
+    try {
+      const observer = new ObserverCtor(schedule);
+      apply(observe, observer, [doc, { childList: true, subtree: true, characterData: true }]);
+    } catch {
+      // without the observer the title is still reported at DOMContentLoaded and load
+    }
+    addListener('DOMContentLoaded', sendTitle);
+    addListener('load', sendTitle);
+  }
+
   // ---- grading: un-cancelled form submission ------------------------------------------------
   /**
    * `dom` (grading) runs only. A form submission that no handler cancelled navigates the learner
@@ -966,6 +1029,7 @@ function start(config: HarnessConfig) {
     parentWindow.postMessage({ type: 'pg-harness-hello' }, '*');
     if (config.interceptNavigation) interceptNavigation(parentWindow);
     else detectUncancelledSubmit();
+    if (config.reportTitle) reportTitle(parentWindow);
     addListener('load', () => {
       void afterScripts();
     });

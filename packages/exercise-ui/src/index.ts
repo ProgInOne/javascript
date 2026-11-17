@@ -107,3 +107,4 @@ export {
   type PreviewFrameProps,
   type PreviewStatus,
 } from './preview/PreviewFrame.tsx';
+export { PreviewTabBar, type PreviewTabBarProps } from './preview/PreviewTabBar.tsx';

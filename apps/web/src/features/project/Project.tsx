@@ -490,6 +490,7 @@ export function ProjectWorkspace({
             status: previewStatus,
             onRefresh: () => void runPreview(),
             ...(runner.previewNotice === null ? {} : { notice: runner.previewNotice }),
+            documentTitle: runner.previewTitle,
           }}
         />
       }

@@ -4,7 +4,7 @@
  *
  * - Talks to the host only over the transferred MessagePort; the only window messages it reacts
  *   to are `connect` from its parent, `pg-harness-hello` from its current learner document and
- *   `pg-notice` from a preview document.
+ *   `pg-notice`, `pg-left` and `pg-title` from the preview document on screen.
  * - Validates everything it receives with the protocol schemas.
  * - Runs `js-console` in a `blob:` Worker and `dom`/`preview` in a nested sandboxed `srcdoc`
  *   frame, enforces `maxDurationMs`, and sends heartbeats while a run is active.
@@ -15,8 +15,10 @@ import {
   harnessToShellSchema,
   type HarnessConfig,
   type HarnessNoticeMessage,
+  type HarnessTitleMessage,
   type HarnessToShell,
   hostToShellSchema,
+  normalizePreviewTitle,
   PROTOCOL_VERSION,
   type BlockedRequest,
   type RunRequest,
@@ -33,6 +35,8 @@ const HARD_STOP_GRACE_MS = 300;
 const LEARNER_CSP = `<meta http-equiv="Content-Security-Policy" content="worker-src 'none'">`;
 /** At most one notice per this interval: learner code can post `pg-notice` in a loop. */
 const NOTICE_INTERVAL_MS = 500;
+/** At most one title per this interval: learner code can post `pg-title` in a loop (D-082). */
+const TITLE_INTERVAL_MS = 100;
 
 interface ActiveRun {
   request: RunRequest;
@@ -53,6 +57,10 @@ let current: ActiveRun | null = null;
 /** A finished preview keeps its document on screen until the next run. */
 let previewFrame: HTMLIFrameElement | null = null;
 let lastNoticeAt = -Infinity;
+/** Title throttle state (forwardTitle). */
+let pendingTitle: string | null = null;
+let titleTimer: ReturnType<typeof setTimeout> | null = null;
+let lastTitleAt = -Infinity;
 
 const post = (msg: ShellControl | RunResult) => {
   hostPort?.postMessage(msg);
@@ -81,7 +89,9 @@ window.addEventListener('message', (e: MessageEvent) => {
     return;
   }
   if (isPreviewWindow(e.source)) {
-    if ((e.data as { type?: unknown } | null)?.type === 'pg-left') showLeftPreview(e.source);
+    const type = (e.data as { type?: unknown } | null)?.type;
+    if (type === 'pg-left') showLeftPreview(e.source);
+    else if (type === 'pg-title') forwardTitle((e.data as Partial<HarnessTitleMessage>).title);
     else forwardNotice(e.data);
   }
   // Everything else, including learner code posting fake results to its parent, is ignored.
@@ -140,6 +150,7 @@ function replaceLeftPreview(frame: HTMLIFrameElement) {
   frame.dataset['left'] = '1';
   frame.srcdoc = LEFT_PREVIEW_DOC;
   forwardNotice({ type: 'pg-notice', notice: 'navigation-blocked' });
+  forwardTitle(''); // the explanation has no title of its own
 }
 
 function forwardNotice(data: unknown) {
@@ -149,6 +160,28 @@ function forwardNotice(data: unknown) {
   if (at - lastNoticeAt < NOTICE_INTERVAL_MS) return;
   lastNoticeAt = at;
   post({ v: PROTOCOL_VERSION, type: 'notice', notice: d.notice });
+}
+
+/**
+ * Passes the preview document's title on to the host (D-082): strings only, normalized and cut
+ * to `PREVIEW_TITLE_MAX_LENGTH`. Learner code can post `pg-title` in a loop, so at most one title
+ * goes out every {@link TITLE_INTERVAL_MS} ms; the last one in a burst always goes out.
+ */
+function forwardTitle(value: unknown) {
+  const title = normalizePreviewTitle(value);
+  if (title === null) return;
+  pendingTitle = title;
+  if (titleTimer !== null) return;
+  const wait = Math.max(0, lastTitleAt + TITLE_INTERVAL_MS - performance.now());
+  titleTimer = setTimeout(flushTitle, wait);
+}
+
+function flushTitle() {
+  titleTimer = null;
+  if (pendingTitle === null) return;
+  lastTitleAt = performance.now();
+  post({ v: PROTOCOL_VERSION, type: 'title', title: pendingTitle });
+  pendingTitle = null;
 }
 
 function onHostMessage(e: MessageEvent) {
@@ -178,6 +211,7 @@ function startRun(request: RunRequest) {
   if (!request.syntaxOnly) {
     previewFrame?.remove();
     previewFrame = null;
+    pendingTitle = null; // a title of the removed document must not follow the new one
   }
 
   const channel = new MessageChannel();
@@ -215,6 +249,8 @@ function startRun(request: RunRequest) {
     scripts: request.mode === 'js-console' ? [] : request.scripts,
     sourceIds: {},
     ...(request.mode === 'preview' ? { interceptNavigation: true } : {}),
+    // A syntax check keeps the last preview (and its title) on screen.
+    ...(request.mode === 'preview' && !request.syntaxOnly ? { reportTitle: true } : {}),
   };
 
   if (request.mode === 'js-console') {

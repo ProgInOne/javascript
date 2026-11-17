@@ -29,6 +29,21 @@ const WEB_ANSWER = `<!doctype html>
 </html>
 `;
 
+/** A web task run that changes its own title (the preview tab bar, D-082). */
+const WEB_TITLE_CODE = `<!doctype html>
+<html lang="ko">
+  <head><meta charset="utf-8" /><title>첫 제목</title></head>
+  <body>
+    <button id="rename">제목 바꾸기</button>
+    <script>
+      document.getElementById('rename').addEventListener('click', () => {
+        document.title = '바뀐 제목';
+      });
+    </script>
+  </body>
+</html>
+`;
+
 const P = 'js-basics.start.first-program.';
 
 /** Answers one item correctly. The first time through, also exercises wrong answers and hints. */
@@ -151,18 +166,26 @@ export async function answer(page: Page, exerciseId: string, firstSet: boolean) 
       await submitSure();
       break;
     case 'web-heading':
-      await replaceCode(page, WEB_ANSWER);
       if (firstSet) {
+        const fission = page.context().browser()?.browserType().name() === 'firefox';
+        const preview = page.frameLocator('.pi-ex-preview__mount iframe').frameLocator('iframe');
+        const tab = main.getByRole('group', { name: '미리보기 탭 제목' });
+        // The tab bar above the preview shows the document title and follows `document.title`.
+        await replaceCode(page, WEB_TITLE_CODE);
         await main.getByRole('button', { name: /^실행/ }).click();
+        await expect(tab).toHaveText('첫 제목');
+        if (!fission) {
+          await preview.getByRole('button', { name: '제목 바꾸기' }).click();
+          await expect(tab).toHaveText('바뀐 제목');
+        }
+        await replaceCode(page, WEB_ANSWER);
+        await main.getByRole('button', { name: /^실행/ }).click();
+        await expect(tab).toHaveText('제목');
         // The visible preview keeps the rendered document (sandboxed, opaque origin). Playwright
         // cannot look into Firefox's out-of-process frames (FISSION_FRAMES); grading still runs.
-        if (page.context().browser()?.browserType().name() !== 'firefox')
-          await expect(
-            page
-              .frameLocator('.pi-ex-preview__mount iframe')
-              .frameLocator('iframe')
-              .getByText('안녕하세요'),
-          ).toBeVisible();
+        if (!fission) await expect(preview.getByText('안녕하세요')).toBeVisible();
+      } else {
+        await replaceCode(page, WEB_ANSWER);
       }
       await main.getByRole('button', { name: /확실해요|^제출/ }).click();
       break;

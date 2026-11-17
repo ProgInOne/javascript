@@ -98,6 +98,11 @@ const PAIRS: Pair[] = [
     (fg) => ({ use: '구문 강조', fg, bg: 'code-bg', min: TEXT }),
   ),
   { use: '구문 강조 / 활성 줄', fg: 'syn-comment', bg: 'code-line-active', min: TEXT },
+  // Selected code stays readable: body text and every syntax color on the selection.
+  { use: '코드 본문 / 선택', fg: 'code-fg', bg: 'code-selection', min: BODY },
+  ...['syn-keyword', 'syn-fn', 'syn-number', 'syn-string', 'syn-comment', 'syn-punct'].map(
+    (fg) => ({ use: '구문 강조 / 선택', fg, bg: 'code-selection', min: TEXT }),
+  ),
 ];
 
 const css = readFileSync(new URL('../src/tokens/tokens.css', import.meta.url), 'utf8');

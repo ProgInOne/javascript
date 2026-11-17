@@ -12,6 +12,8 @@ export function useExerciseRunner() {
   const previewHost = useRef<RunnerHost | null>(null);
   /** Notice about the current preview document (cleared by the next preview run). */
   const [previewNotice, setPreviewNotice] = useState<string | null>(null);
+  /** Title of the preview document for the tab bar (D-082); `null` before a document reports. */
+  const [previewTitle, setPreviewTitle] = useState<string | null>(null);
   useEffect(
     () => () => {
       previewHost.current?.dispose();
@@ -26,14 +28,19 @@ export function useExerciseRunner() {
     const mount = previewMount.current;
     if (!mount) return consoleRunner().run(plan);
     setPreviewNotice(null);
-    previewHost.current ??= previewRunner(mount, setPreviewNotice);
+    // The title stays until the new document reports its own (always, once it has parsed), so
+    // the tab bar does not flicker on every run.
+    previewHost.current ??= previewRunner(mount, {
+      onNotice: setPreviewNotice,
+      onTitle: setPreviewTitle,
+    });
     return previewHost.current.run(plan.mode === 'dom' ? { ...plan, mode: 'preview' } : plan);
   }, []);
   const abort = useCallback(() => {
     consoleRunner().abort();
     previewHost.current?.abort();
   }, []);
-  return { previewMount, previewNotice, hidden, preview, abort };
+  return { previewMount, previewNotice, previewTitle, hidden, preview, abort };
 }
 
 const IDLE_AFTER_MS = 60_000;

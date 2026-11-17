@@ -505,6 +505,7 @@ function ItemWorkspace({
               status: previewStatus,
               onRefresh: () => void runInteractive(),
               ...(runner.previewNotice === null ? {} : { notice: runner.previewNotice }),
+              documentTitle: runner.previewTitle,
             },
           }
         : {})}

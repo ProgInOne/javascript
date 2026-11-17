@@ -4,6 +4,7 @@ import {
   Kbd,
   matchExerciseShortcut,
   modKeyLabel,
+  PreviewTabBar,
 } from '@proginone/exercise-ui';
 import { formatConsoleArgs, type CodeDraft, type RunResult } from '@proginone/shared';
 import { Button } from '@proginone/ui';
@@ -111,6 +112,8 @@ export function RunnableExampleBlock({
   const [result, setResult] = useState<RunResult | null>(null);
   const [failed, setFailed] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  /** The preview document's title for the tab bar (D-082). */
+  const [previewTitle, setPreviewTitle] = useState<string | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const previewHost = useRef<ReturnType<typeof previewRunner> | null>(null);
 
@@ -134,7 +137,10 @@ export function RunnableExampleBlock({
       if (kind === 'html') {
         if (!previewRef.current) return;
         previewHost.current?.dispose();
-        previewHost.current = previewRunner(previewRef.current, setNotice);
+        previewHost.current = previewRunner(previewRef.current, {
+          onNotice: setNotice,
+          onTitle: setPreviewTitle,
+        });
         host = previewHost.current;
       }
       setResult(await host.run(examplePlan(kind, code)));
@@ -255,11 +261,10 @@ export function RunnableExampleBlock({
       )}
 
       {kind === 'html' && (
-        <div
-          ref={previewRef}
-          className="bg-white h-48 border-t border-line"
-          aria-label="실행 결과 미리보기"
-        />
+        <>
+          <PreviewTabBar title={previewTitle} className="border-t border-line" />
+          <div ref={previewRef} className="bg-white h-48" aria-label="실행 결과 미리보기" />
+        </>
       )}
 
       {(result ?? failed) && (

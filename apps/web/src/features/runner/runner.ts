@@ -52,13 +52,20 @@ export function noticeMessage(notice: RunnerNotice): string {
   return NOTICE_MESSAGES[notice];
 }
 
-/**
- * A visible runner rendering into `container` (HTML preview). Dispose it when unmounting.
- * `onNotice` receives learner-facing notices (e.g. a link the preview did not follow).
- */
+export interface PreviewCallbacks {
+  /** Learner-facing notices (e.g. a link the preview did not follow). */
+  onNotice?: (message: string) => void;
+  /**
+   * The preview document's title for the tab bar (D-082), `''` when it has none. Learner code
+   * controls it: render it as text only.
+   */
+  onTitle?: (title: string) => void;
+}
+
+/** A visible runner rendering into `container` (HTML preview). Dispose it when unmounting. */
 export function previewRunner(
   container: HTMLElement,
-  onNotice?: (message: string) => void,
+  { onNotice, onTitle }: PreviewCallbacks = {},
 ): RunnerHost {
   return createRunnerHost({
     serverOrigin: SERVER_ORIGIN,
@@ -71,6 +78,7 @@ export function previewRunner(
           },
         }
       : {}),
+    ...(onTitle ? { onTitle } : {}),
   });
 }
 

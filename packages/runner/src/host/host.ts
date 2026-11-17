@@ -69,6 +69,12 @@ export interface RunnerHostOptions {
    */
   onNotice?: (notice: RunnerNotice) => void;
   /**
+   * The title of the `preview` document on screen (D-082): when it has parsed, has loaded and
+   * after it changes, also after its run has finished. At most `PREVIEW_TITLE_MAX_LENGTH`
+   * characters, `''` when the document has none. Learner code controls it: render it as text.
+   */
+  onTitle?: (title: string) => void;
+  /**
    * Load every shell from its own `<shellId>.localhost` site (default `true`, D-018). A stuck
    * shell process is then never reused, and Firefox keeps the app responsive.
    */
@@ -290,6 +296,10 @@ export function createRunnerHost(options: RunnerHostOptions = {}): RunnerHost {
   function onShellMessage(msg: ShellControl) {
     if (msg.type === 'notice') {
       options.onNotice?.(msg.notice);
+      return;
+    }
+    if (msg.type === 'title') {
+      options.onTitle?.(msg.title);
       return;
     }
     const p = pending;

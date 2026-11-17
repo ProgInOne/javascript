@@ -405,7 +405,7 @@ const RunError = z.object({
 });
 ```
 
-스트리밍 이벤트(`RunEvent`)는 콘솔 배치(`console-batch`), 진행 상태(`started`, `script-done`, `settled`), 하트비트(`heartbeat`)입니다. 이와 별도로 셸은 실행과 무관한 미리보기 알림(`notice`, [미리보기](#미리보기))을 보냅니다.
+스트리밍 이벤트(`RunEvent`)는 콘솔 배치(`console-batch`), 진행 상태(`started`, `script-done`, `settled`), 하트비트(`heartbeat`)입니다. 이와 별도로 셸은 실행과 무관한 미리보기 알림(`notice`)과 미리보기 문서 제목(`title`)을 보냅니다([미리보기](#미리보기)).
 UI는 콘솔을 실시간으로 그리고, 채점은 최종 `RunResult`만 씁니다.
 
 ### 콘솔 캡처와 값 직렬화
@@ -710,6 +710,7 @@ __pg.expose({
 - **스크롤 유지**: 하네스가 교체 직전 스크롤 위치를 보고하고, 새 문서에서 같은 위치로 복원합니다(문서 높이가 바뀌면 최대값으로 제한).
 - **오류 표시**: 미리보기 위에 반투명 오류 배너를 띄우고 해당 줄로 이동하는 버튼을 제공합니다. 문서는 마지막 성공 상태를 유지하지 않고 현재 코드를 그대로 보여줍니다(실제 브라우저와 같은 경험).
 - **링크 이동과 폼 제출**: 학습자 문서의 탐색은 셸 CSP(`frame-src 'none'`, `form-action 'none'`)가 막으므로, 그대로 두면 미리보기가 브라우저 오류 화면으로 바뀝니다. `preview` 모드에서만 하네스가 학습자 코드보다 먼저 `window`에 캡처 단계 `click`·`submit` 리스너를 달아, 링크(`a[href]`, `area[href]`. `javascript:`는 제외)와 실제 폼 제출(신뢰된 `submit`, `method="dialog"` 제외)을 시작 전에 취소합니다. `#…` 조각 링크도 취소합니다: `srcdoc` 문서는 조각을 부모(셸) URL 기준으로 해석해 조각 링크마저 문서를 떠나기 때문입니다. 조각 링크는 대신 대상 요소(`id`, 없으면 `name`, `#`·`#top`은 맨 위)로 스크롤하고 안내는 띄우지 않습니다. 학습자 핸들러는 평소처럼 실행되고, 이벤트의 `preventDefault`·`defaultPrevented`·`returnValue`는 학습자 자신의 취소만 반영하도록 그 이벤트에서만 가립니다. 학습자 핸들러가 취소하지 않았으면 하네스가 (조각 링크가 아닐 때) 셸에 `pg-notice`를 보내고, 셸은 호스트에 `notice`(`navigation-blocked`, 0.5초에 한 번까지)를 전달하며, 앱은 미리보기 위 라이브 영역(`role="status"`)에 "미리보기에서는 링크 이동과 폼 제출이 실제로 일어나지 않아요."를 보여 줍니다. 실행이 끝난 뒤에도 미리보기 문서는 계속 조작되므로 이 알림은 실행과 무관한 메시지입니다. 샌드박스 플래그·CSP는 바꾸지 않습니다(탐색을 더 일찍 멈출 뿐). 채점용 `dom` 모드는 가로채지 않습니다: `preventDefault()`를 빠뜨린 폼은 실제 브라우저처럼 문서가 바뀌고 `NavigationError`로 실패해야 하기 때문입니다(실패를 정하는 시점은 [실행 동작](#실행-동작)의 "취소되지 않은 폼 제출"). 한계: 인라인 핸들러의 `return false`는 `preventDefault` 호출 없이 취소하므로 안내가 함께 뜨고, `location` 대입과 `form.submit()`·`<meta refresh>`는 가로채지 않습니다. 이런 이동으로 문서가 떠나면(하네스의 `pagehide` 알림 `pg-left` 또는 하네스 인사 뒤 iframe의 두 번째 `load`), 셸은 오류 화면 대신 그 미리보기 iframe의 `srcdoc`을 스크립트 없는 안내 문서("미리보기는 다른 페이지로 이동할 수 없어요.")로 바꾸며 같은 알림을 보냅니다. 다음 실행이 학습자 문서를 다시 그립니다([D-074](/docs/decisions.md)).
+- **탭 제목**: 미리보기에는 브라우저 탭이 없어 `<title>`·`document.title`을 다루는 문제의 결과를 볼 곳이 없습니다. `preview` 모드에서만(문법 검사 제외) 하네스가 학습자 코드보다 먼저 `Document.prototype`의 `title` getter와 `MutationObserver`를 잡아 두고, `DOMContentLoaded`·`load` 때와 문서가 바뀐 뒤(문서 전체를 `childList`·`characterData`·`subtree`로 관찰하므로 `<title>` 수정, `document.title =` 대입, 스크립트가 넣거나 뺀 `<title>`을 모두 봄) 제목을 읽습니다. 바뀐 내용은 0.1초 단위로 묶고, 앞서 보낸 값과 다를 때만 셸에 `window.postMessage`로 `pg-title`(`{ type: 'pg-title', title }`)을 보냅니다. 셸은 화면에 있는 미리보기 문서(`pg-notice`·`pg-left`와 같은 출처 검사)에서 온 문자열만 받아, 제어 문자를 공백으로 바꾸고 공백을 접고 200자(UTF-16 단위, 서로게이트 쌍은 자르지 않음)에서 자른 뒤 0.1초에 한 번까지(묶음의 마지막 값은 반드시) 호스트에 `title`(`{ v, type: 'title', title }`, 스키마 `max(200)`)로 전달합니다. 새 실행이 시작되면 이전 문서의 보내지 않은 제목은 버리고, 문서가 떠나 안내 문서로 바뀌면 빈 제목을 보냅니다. 앱은 미리보기 위 탭 모양 막대에 텍스트로만 그립니다(UI는 [UI/UX 설계 PreviewFrame](/docs/design/ui-ux.md)). 학습자 코드도 `pg-title`을 보낼 수 있지만 자기 미리보기의 표시 제목만 바뀔 뿐이고, 채점용 `dom` 문서의 메시지는 셸이 받지 않습니다(보안 스위트 S50). 채점과는 무관한 표시 기능이라 제목을 확인하는 체크는 그대로 관측 단계로 합니다([D-082](/docs/decisions.md)).
 - **뷰포트 프리셋**(P1): 375/768/1280. 미리보기 셸의 중첩 iframe 크기를 바꾸고 축소 비율(`transform: scale`)로 패널에 맞춥니다. 축소는 셸 바깥(앱 쪽 iframe 컨테이너)에서 적용해 학습자 문서의 레이아웃 계산에 영향을 주지 않게 합니다.
 
 ### 박스 모델 인스펙터 (P1)
@@ -864,6 +865,7 @@ Playwright로 실행하며, CI 필수 항목입니다. 각 케이스는 "차단�
 | S47 | 셸 iframe 밖에 둔 채점 셸의 타이머·측정 | dom | 뷰포트 안 투명 배치에서 정상 |
 | S48 | 계측 없는 DOM 무한 루프 후 다음 실행 | dom | 앱 응답 유지, Watchdog 후 새 사이트 셸에서 다음 실행 정상 (Chromium·Firefox) |
 | S49 | `preventDefault()` 없는 `submit` 처리기로 폼 제출(`requestSubmit`, 제출 버튼 클릭) 후 관측 단계 | dom | 매 실행 `NavigationError`, 제출 뒤 관측 없음(결정론). 취소·`return false`·`method="dialog"`·다른 `target`·신뢰되지 않은 `submit`은 정상 완료 |
+| S50 | 미리보기 문서가 `parent.postMessage({ type: 'pg-title', title })`를 문자열이 아닌 값, 아주 긴 문자열, 500번 반복으로 보냄. 채점(`dom`) 문서도 같은 메시지를 보냄 | preview, dom | 문자열만 전달, 200자에서 자름, 0.1초에 한 번까지(마지막 값은 전달). 자기 미리보기의 탭 제목만 바뀌고 채점 문서의 메시지는 무시 ([D-082](/docs/decisions.md)) |
 - 메인 UI 응답성 측정: 테스트 페이지가 앱 메인 스레드에서 `requestAnimationFrame` 간격을 기록하고, 공격 실행 중 최대 간격을 검사합니다.
 
 ## 검토한 대안
