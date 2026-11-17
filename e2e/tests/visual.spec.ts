@@ -126,6 +126,82 @@ const FIRST_VISIT = {
   introducedConcepts: [],
 };
 
+// Course progress (D-083) of the fixture course: a new learner, and one who completed the first
+// lesson and read 45% of the second.
+const FIXTURE_LESSONS = [
+  { id: 'js-basics.start.first-program', title: '첫 프로그램', moduleId: 'js-basics.start' },
+  { id: 'js-basics.values.variables', title: '변수 선언', moduleId: 'js-basics.values' },
+  {
+    id: 'js-basics.values.values-review',
+    title: '값과 변수 단원 평가',
+    moduleId: 'js-basics.values',
+  },
+  {
+    id: 'js-basics.project.mini-project',
+    title: '미니 프로젝트: 자기소개 카드',
+    moduleId: 'js-basics.project',
+  },
+] as const;
+interface LessonState {
+  status: string;
+  readProgress: number;
+}
+function courseProgress(states: readonly LessonState[]) {
+  const done = (s: LessonState | undefined) => s?.status === 'completed';
+  const count = (lessons: readonly (typeof FIXTURE_LESSONS)[number][]) => ({
+    total: lessons.length,
+    completed: lessons.filter((l) => done(states[FIXTURE_LESSONS.indexOf(l)])).length,
+  });
+  const lessons = count(FIXTURE_LESSONS);
+  const active = FIXTURE_LESSONS.findIndex((_, i) => states[i]?.status === 'reading');
+  const next = FIXTURE_LESSONS[active >= 0 ? active : states.findIndex((s) => !done(s))];
+  const summary = {
+    courseId: 'js-basics',
+    lessons,
+    state:
+      lessons.completed === lessons.total
+        ? 'completed'
+        : states.some((s) => s.status !== 'not_started')
+          ? 'in_progress'
+          : 'not_started',
+    next: next
+      ? {
+          id: next.id,
+          title: next.title,
+          status: states[FIXTURE_LESSONS.indexOf(next)]?.status ?? 'not_started',
+        }
+      : null,
+  };
+  const detail = {
+    ...summary,
+    modules: ['js-basics.start', 'js-basics.values', 'js-basics.project'].map((moduleId) => ({
+      moduleId,
+      lessons: count(FIXTURE_LESSONS.filter((l) => l.moduleId === moduleId)),
+    })),
+    lessonStatuses: FIXTURE_LESSONS.map((l, i) => ({ lessonId: l.id, ...states[i] })),
+  };
+  return { list: { courses: [summary] }, detail };
+}
+const NOT_STARTED = { status: 'not_started', readProgress: 0 };
+const NEW_LEARNER = courseProgress([NOT_STARTED, NOT_STARTED, NOT_STARTED, NOT_STARTED]);
+const IN_PROGRESS = courseProgress([
+  { status: 'completed', readProgress: 1 },
+  { status: 'reading', readProgress: 0.45 },
+  NOT_STARTED,
+  NOT_STARTED,
+]);
+
+/** Fixed course progress and no prerequisite `!`, whatever earlier tests did. */
+async function mockCourseProgress(page: Page, progress: typeof NEW_LEARNER) {
+  await page.route('**/api/v1/course-progress', (route) => route.fulfill({ json: progress.list }));
+  await page.route('**/api/v1/courses/js-basics/progress', (route) =>
+    route.fulfill({ json: progress.detail }),
+  );
+  await page.route('**/api/v1/courses/js-basics/prerequisite-warnings', (route) =>
+    route.fulfill({ json: { courseId: 'js-basics', lessons: [] } }),
+  );
+}
+
 // Baselines are generated in the Playwright Docker image: `pnpm test:e2e:visual --update`.
 const VIEWPORTS = [
   { width: 1280, height: 800 },
@@ -167,14 +243,39 @@ for (const scheme of ['light', 'dark'] as const) {
         await page.route('**/api/v1/lessons/*/progress', (route) =>
           route.fulfill({ json: FIRST_VISIT }),
         );
+        await mockCourseProgress(page, NEW_LEARNER);
         await openScreen(page, path, heading, scheme);
         if (path === '/settings/ai') {
           await expect(page.getByRole('radio', { name: '모의 튜터 (기본)' })).toBeChecked();
+        }
+        if (path.startsWith('/courses')) {
+          await expect(page.locator('[data-course-state]').first()).toBeVisible();
         }
         await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
       });
     }
   }
+}
+
+// Course list and detail of a learner in the middle of the course (D-083).
+for (const { path, heading, scheme, slug } of [
+  { path: '/courses', heading: '과정', scheme: 'light', slug: 'courses-progress' },
+  {
+    path: '/courses/js-basics',
+    heading: 'JavaScript 기초',
+    scheme: 'dark',
+    slug: 'courses-js-basics-progress',
+  },
+] as const) {
+  const name = `${slug}-${scheme}-1280`;
+  test(`${name} @visual`, async ({ page }) => {
+    await page.setViewportSize(VIEWPORTS[0]);
+    await page.route('**/api/v1/goals', (route) => route.fulfill({ json: GOALS }));
+    await mockCourseProgress(page, IN_PROGRESS);
+    await openScreen(page, path, heading, scheme);
+    await expect(page.locator('[data-course-state="in_progress"]').first()).toBeVisible();
+    await expect(page).toHaveScreenshot(`${name}.png`, { fullPage: true });
+  });
 }
 
 // Practice screen (ui-ux.md 실습 모드) with fixed API responses: a choice item after a wrong,

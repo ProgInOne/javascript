@@ -125,7 +125,10 @@ test('project: partial milestones, resume after reload, then complete', async ({
 
   // The course lists the unit as a project.
   await page.goto('/courses/js-basics');
-  await page.getByText('작은 프로젝트').click();
+  // The module may already be open as the one with the lesson to do now (D-083).
+  await expect(page.getByRole('progressbar', { name: '과정 진행률' })).toBeVisible();
+  const unit = page.locator('[data-module-id="js-basics.project"]');
+  if ((await unit.getAttribute('open')) === null) await page.getByText('작은 프로젝트').click();
   const row = page.getByRole('link', { name: /자기소개 카드/ });
   await expect(row).toContainText('응용 프로젝트');
 });

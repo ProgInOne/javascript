@@ -40,6 +40,8 @@ import {
   conceptDetailSchema,
   lessonPrerequisitesSchema,
   coursePrerequisiteWarningsSchema,
+  courseProgressDetailSchema,
+  courseProgressListSchema,
   masteryOverviewSchema,
   weakConceptsSchema,
   masteryChangesSchema,
@@ -205,6 +207,28 @@ export const coursePrerequisiteWarningsQuery = (id: string) =>
         signal,
       }),
     staleTime: 30_000,
+  });
+
+/**
+ * Learner progress over every course: the course list's bars and "이어서 학습" (D-083). Always
+ * refetched on mount: reading a lesson changes it without going through a mutation here.
+ */
+export const courseProgressListQuery = queryOptions({
+  queryKey: ['course-progress'],
+  queryFn: ({ signal }) => api('/course-progress', { schema: courseProgressListSchema, signal }),
+  staleTime: 0,
+});
+
+/** One course's module and lesson progress: the course detail (D-083). */
+export const courseProgressQuery = (id: string) =>
+  queryOptions({
+    queryKey: ['course-progress', id],
+    queryFn: ({ signal }) =>
+      api(`/courses/${encodeURIComponent(id)}/progress`, {
+        schema: courseProgressDetailSchema,
+        signal,
+      }),
+    staleTime: 0,
   });
 
 // ── Practice (docs/design/system-architecture.md#api-규약) ──
@@ -453,6 +477,7 @@ export const LEARNING_STATE_KEYS = [
   ['daily-plan'],
   ['goals'],
   ['mastery'],
+  ['course-progress'],
   ['weak-concepts'],
   ['concepts'],
   ['mistakes'],

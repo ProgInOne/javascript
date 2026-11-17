@@ -224,3 +224,107 @@ describe('curriculum screens', () => {
     ).toBeInTheDocument();
   });
 });
+
+describe('course progress (D-083)', () => {
+  const READING = 'js-basics.start.reading-errors';
+  const summary = {
+    courseId: 'js-basics',
+    lessons: { total: 2, completed: 1 },
+    state: 'in_progress',
+    next: { id: READING, title: '오류 읽기', status: 'reading' },
+  };
+  const detail = {
+    ...summary,
+    modules: [{ moduleId: 'js-basics.start', lessons: { total: 2, completed: 1 } }],
+    lessonStatuses: [
+      { lessonId: lesson.id, status: 'completed', readProgress: 1 },
+      { lessonId: READING, status: 'reading', readProgress: 0.45 },
+    ],
+  };
+  const withProgress =
+    (list: object, course: object, extra?: (path: string) => { body: unknown } | undefined) =>
+    (method: string, path: string) =>
+      extra?.(path) ??
+      (path === '/course-progress'
+        ? { body: list }
+        : path === '/courses/js-basics/progress'
+          ? { body: course }
+          : api(method, path));
+
+  it('shows the progress, state and next lesson on the course card', async () => {
+    const { router } = renderApp('/courses', withProgress({ courses: [summary] }, detail));
+    const bar = await screen.findByRole('progressbar', { name: 'JavaScript 기초 진행률' });
+    expect(bar).toHaveAttribute('aria-valuenow', '50');
+    expect(screen.getByText('2단원 중 1단원 완료')).toBeVisible();
+    expect(screen.getByText('진행 중')).toBeVisible();
+    // Two separate links: the card (title) and "이어서 학습" (never nested).
+    const card = screen.getByRole('link', { name: 'JavaScript 기초' });
+    const resume = screen.getByRole('link', { name: '이어서 학습: 오류 읽기' });
+    expect(card).not.toContainElement(resume);
+    await userEvent.click(resume);
+    expect(router.state.location.pathname).toBe(`/learn/${READING}`);
+  });
+
+  it('shows no progress on the card when the progress request fails', async () => {
+    renderApp('/courses', api);
+    expect(await screen.findByRole('link', { name: 'JavaScript 기초' })).toBeVisible();
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(screen.queryByText(/이어서 학습/)).not.toBeInTheDocument();
+  });
+
+  it('marks modules and lessons, the lesson to do now, and continues there', async () => {
+    const { router } = renderApp(
+      '/courses/js-basics',
+      withProgress({ courses: [summary] }, detail, (path) =>
+        path === '/courses/js-basics/prerequisite-warnings'
+          ? {
+              body: {
+                courseId: 'js-basics',
+                lessons: [
+                  {
+                    lessonId: READING,
+                    concepts: [{ id: 'js.basics.comment', title: '주석', lesson: null }],
+                  },
+                ],
+              },
+            }
+          : undefined,
+      ),
+    );
+    expect(await screen.findByText('1/2단원 완료')).toBeVisible();
+    expect(screen.getByRole('progressbar', { name: '과정 진행률' })).toHaveAttribute(
+      'aria-valuenow',
+      '50',
+    );
+    expect(screen.getByText('2단원 중 1단원 완료')).toBeVisible();
+    // Status in words in each row's name, not color alone; the current row is marked.
+    const done = screen.getByRole('link', { name: /첫 프로그램.*완료/ });
+    expect(done).not.toHaveAttribute('aria-current');
+    const now = screen.getByRole('link', { name: /오류 읽기.*지금 할 단원 · 읽는 중 45%/ });
+    expect(now).toHaveAttribute('aria-current', 'step');
+    // The `!` stays beside the row link (D-073).
+    const mark = await screen.findByRole('link', { name: /^선수 개념 안내: 먼저 ‘주석’/ });
+    expect(now).not.toContainElement(mark);
+    await userEvent.click(screen.getByRole('link', { name: '이어서 학습: 오류 읽기' }));
+    expect(router.state.location.pathname).toBe(`/learn/${READING}`);
+  });
+
+  it('offers a review once every lesson is completed', async () => {
+    const completed = {
+      ...detail,
+      lessons: { total: 2, completed: 2 },
+      state: 'completed',
+      next: null,
+      modules: [{ moduleId: 'js-basics.start', lessons: { total: 2, completed: 2 } }],
+      lessonStatuses: detail.lessonStatuses.map((l) => ({ ...l, status: 'completed' })),
+    };
+    renderApp('/courses/js-basics', withProgress({ courses: [] }, completed));
+    expect(await screen.findByRole('link', { name: '복습하기' })).toHaveAttribute(
+      'href',
+      '/review',
+    );
+    expect(screen.queryByRole('link', { name: '학습 시작' })).not.toBeInTheDocument();
+    expect(screen.getAllByText('완료').length).toBeGreaterThanOrEqual(2);
+    expect(screen.queryByText(/지금 할 단원/)).not.toBeInTheDocument();
+  });
+});

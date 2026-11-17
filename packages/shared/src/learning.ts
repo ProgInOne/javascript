@@ -432,3 +432,56 @@ export const masteryOverviewSchema = z.object({
   ),
 });
 export type MasteryOverview = z.infer<typeof masteryOverviewSchema>;
+
+// ── Course progress (course list and course detail, D-083) ──────────────────
+
+/**
+ * Where a learner is in a course: nothing started, some lesson started or completed, or every
+ * lesson completed. A course without lessons stays `not_started`.
+ */
+export const COURSE_PROGRESS_STATES = ['not_started', 'in_progress', 'completed'] as const;
+export const courseProgressStateSchema = z.enum(COURSE_PROGRESS_STATES);
+export type CourseProgressState = z.infer<typeof courseProgressStateSchema>;
+
+/** One course of `GET /course-progress`. `lessons` counts like `GET /mastery` (D-083). */
+export const courseProgressSummarySchema = z.object({
+  courseId: z.string(),
+  lessons: lessonCountSchema,
+  state: courseProgressStateSchema,
+  /**
+   * The lesson to do now ("이어서 학습", "학습 시작"): the most recently updated lesson being read
+   * or practiced, else the first lesson not completed in course order. Null when the course is
+   * completed or has no lessons.
+   */
+  next: z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      status: z.enum(LESSON_PROGRESS_STATUSES),
+    })
+    .nullable(),
+});
+export type CourseProgressSummary = z.infer<typeof courseProgressSummarySchema>;
+
+/** `GET /course-progress`: every course in course-list order (FR-CUR-01, D-083). */
+export const courseProgressListSchema = z.object({
+  courses: z.array(courseProgressSummarySchema),
+});
+export type CourseProgressList = z.infer<typeof courseProgressListSchema>;
+
+/**
+ * `GET /courses/:id/progress` (D-083): the summary plus every module's count and every lesson's
+ * status in course order. Lessons without a `lesson_progress` row are `not_started`.
+ */
+export const courseProgressDetailSchema = courseProgressSummarySchema.extend({
+  modules: z.array(z.object({ moduleId: z.string(), lessons: lessonCountSchema })),
+  lessonStatuses: z.array(
+    z.object({
+      lessonId: z.string(),
+      status: z.enum(LESSON_PROGRESS_STATUSES),
+      /** 0–1, the furthest reading position (`lesson_progress.read_progress`). */
+      readProgress: z.number().min(0).max(1),
+    }),
+  ),
+});
+export type CourseProgressDetail = z.infer<typeof courseProgressDetailSchema>;

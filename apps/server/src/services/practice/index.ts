@@ -5,6 +5,7 @@ import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
 import { ActivityService } from '../learning/activity-service.ts';
 import { ConceptService } from '../learning/concept-service.ts';
+import { CourseProgressService } from '../learning/course-progress-service.ts';
 import { DailyPlanService } from '../learning/daily-plan-service.ts';
 import { GoalService } from '../learning/goal-service.ts';
 import { DashboardService } from '../learning/dashboard-service.ts';
@@ -50,6 +51,7 @@ export interface PracticeServices {
   concepts: ConceptService;
   learner: LearnerService;
   mastery: MasteryService;
+  courseProgress: CourseProgressService;
   mistakes: MistakeService;
   masteryChanges: MasteryChangeService;
   recentActivity: RecentActivityService;
@@ -76,6 +78,7 @@ export function createPracticeServices(deps: PracticeDeps): PracticeServices {
     concepts: new ConceptService(deps),
     learner: new LearnerService(deps),
     mastery: new MasteryService(deps),
+    courseProgress: new CourseProgressService(deps),
     mistakes: new MistakeService(deps),
     masteryChanges: new MasteryChangeService(deps),
     recentActivity: new RecentActivityService(deps),

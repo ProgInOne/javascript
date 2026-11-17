@@ -8,11 +8,11 @@ import {
 import type { ConceptTileView, MasteryOverview, StageCounts } from '@proginone/shared';
 import type { UserDb } from '../../db/user/connection.ts';
 import { loadConceptStates } from '../../db/user/learning-state.ts';
-import { listLessonProgress } from '../../db/user/progress.ts';
 import type { Clock } from '../clock.ts';
 import type { ContentAccess } from '../curriculum/content-access.ts';
 import { learnerContext } from '../practice/engine.ts';
 import { activeMisconceptionsByConcept } from '../practice/signals.ts';
+import { countCompleted, progressRows } from './course-progress-service.ts';
 
 const emptyCounts = (): StageCounts => ({
   not_started: 0,
@@ -47,11 +47,7 @@ export class MasteryService {
     const { learnerId, dayBoundary } = learnerContext(this.#userDb);
     const endOfToday = endOfLocalDay(now, dayBoundary);
     const today = localDateOf(now, dayBoundary);
-    const completed = new Set(
-      listLessonProgress(orm, learnerId)
-        .filter((p) => p.status === 'completed')
-        .map((p) => p.lessonId),
-    );
+    const rows = progressRows(this.#userDb);
     const active = activeMisconceptionsByConcept(this.#engine, orm, learnerId, now);
     const mcTitles = repo.getMisconceptions(
       [...active.values()].flatMap((a) => [...a.confirmed, ...a.suspected]),
@@ -99,10 +95,8 @@ export class MasteryService {
       const modules = course.modules.map((m) => ({
         id: m.id,
         title: m.title,
-        lessons: {
-          total: m.lessons.length,
-          completed: m.lessons.filter((l) => completed.has(l.id)).length,
-        },
+        // Same count as the course list and detail (D-083).
+        lessons: countCompleted(m.lessons, rows),
         concepts: tiles.get(m.id) ?? [],
       }));
       return [

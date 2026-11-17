@@ -78,6 +78,20 @@ const PAIRS: Pair[] = [
   ...surfaces.map((bg) => ({ use: '포커스 링', fg: 'color-focus-ring', bg, min: NON_TEXT })),
   { use: '진도 채움 / 트랙', fg: 'color-progress-fill', bg: 'color-progress-track', min: NON_TEXT },
   { use: '진도 채움 / 표면', fg: 'color-progress-fill', bg: 'color-bg-surface', min: NON_TEXT },
+  // Course detail rows (D-083): the lesson to do now sits on the selected background.
+  { use: '단원 번호 / 선택 배경', fg: 'color-text-tertiary', bg: 'color-bg-selected', min: TEXT },
+  {
+    use: '진도 채움 / 선택 배경',
+    fg: 'color-progress-fill',
+    bg: 'color-bg-selected',
+    min: NON_TEXT,
+  },
+  {
+    use: '완료 아이콘 / 표면',
+    fg: 'color-feedback-correct-fg',
+    bg: 'color-bg-surface',
+    min: NON_TEXT,
+  },
   { use: '코드 본문', fg: 'code-fg', bg: 'code-bg', min: BODY },
   { use: '코드 줄 번호', fg: 'code-gutter-fg', bg: 'code-gutter-bg', min: TEXT },
   ...['syn-keyword', 'syn-fn', 'syn-number', 'syn-string', 'syn-comment', 'syn-punct'].map(

@@ -100,7 +100,11 @@ test.describe('curriculum', () => {
       .click();
     await page.getByRole('link', { name: /JavaScript 기초/ }).click();
     await expect(page.getByRole('heading', { level: 1, name: 'JavaScript 기초' })).toBeVisible();
-    await page.getByRole('link', { name: '학습 시작' }).click();
+    // The summary button depends on earlier specs' progress (D-083): open the row instead.
+    await page
+      .locator('[data-module-id="js-basics.start"]')
+      .getByRole('link', { name: /첫 프로그램/ })
+      .click();
     await expect(page.getByRole('heading', { level: 1, name: '첫 프로그램' })).toBeFocused();
     await expect(page.getByRole('region', { name: '흔한 실수' })).toContainText(
       '출력한 값은 어딘가에 저장된다.',
