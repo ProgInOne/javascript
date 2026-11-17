@@ -79,8 +79,14 @@ export type {
   SetRationale,
 } from './practice/lesson-set.ts';
 export { buildLessonPracticeSet } from './practice/lesson-set.ts';
-export type { PassCheck, PassResult, PassRuleItem } from './practice/pass-rule.ts';
-export { evaluatePassRule, lessonPassRule } from './practice/pass-rule.ts';
+export type {
+  ConceptCredit,
+  ConceptCreditCheck,
+  PassCheck,
+  PassResult,
+  PassRuleItem,
+} from './practice/pass-rule.ts';
+export { evaluatePassRule, lessonPassRule, conceptCredits } from './practice/pass-rule.ts';
 export type {
   AssessmentResult,
   AssessmentResultItem,

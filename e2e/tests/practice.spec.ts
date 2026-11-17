@@ -47,7 +47,9 @@ test.describe('practice mode', () => {
     await expect(summary.getByRole('heading', { level: 2 })).toBeFocused();
     await expect(summary).toContainText('연습 12문제 · 정답 12');
     await expect(summary.getByText(/→ 연습 중/).first()).toBeVisible();
-    await expect(summary.getByText('이 단원의 개념을 모두 기준만큼 연습했어요')).toBeVisible();
+    await expect(
+      summary.getByText('이 단원의 개념마다 이번 연습에서 충분히 맞혔어요'),
+    ).toBeVisible();
     await expect(summary.getByRole('link', { name: '다음 단원: 변수 선언' })).toBeVisible();
     // Firefox with Fission: axe crashes the page while walking the runner's frames, and
     // Playwright does not finish a reload of a page that had out-of-process frames

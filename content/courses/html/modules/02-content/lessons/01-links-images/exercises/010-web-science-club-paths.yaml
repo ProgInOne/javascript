@@ -1,0 +1,156 @@
+id: html.content.links-images.web-science-club-paths
+type: web_task
+difficulty: 3
+concepts:
+  - { id: html.content.paths, weight: 1 }
+  - { id: html.content.images, weight: 0.3 }
+tags: [path, relative-path, parent-folder, link, img, web-task]
+estimatedSeconds: 300
+prompt: |
+  학교 동아리 사이트의 폴더가 아래와 같아요. 지금 만들 문서는 **`clubs/science/intro.html`** 이에요(미리보기에는 이 문서만 보여요).
+
+  ```text
+  school/
+  ├── index.html
+  ├── images/
+  │   └── map.png
+  └── clubs/
+      ├── list.html
+      ├── art/
+      │   └── intro.html
+      └── science/
+          └── intro.html   ← 지금 문서
+  ```
+
+  이 문서에 아래 네 가지를 만드세요. 모두 **상대 경로**로, 지금 문서가 있는 폴더를 기준으로 써요.
+
+  1. 지도 그림(`id="map"`)이 `school/images/map.png`를 보여 주게 `src`를 쓰세요.
+  1. "첫 페이지" 문단의 글자 전체를 `school/index.html`로 가는 링크로 만드세요.
+  1. "동아리 목록" 문단의 글자 전체를 `clubs/list.html`로 가는 링크로 만드세요.
+  1. "미술부 소개" 문단의 글자 전체를 `clubs/art/intro.html`로 가는 링크로 만드세요.
+
+  글자와 `alt`는 바꾸지 마세요. (미리보기에는 그림 파일이 없어 깨진 그림으로 보이고, 링크를 눌러도 다른 페이지로 이동하지 않아요.)
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>과학부 소개</title>
+            </head>
+            <body>
+              <h1>과학부 소개</h1>
+              <p>매주 수요일, 과학실에서 실험을 해요.</p>
+              <img id="map" alt="과학실이 2층 끝에 표시된 학교 지도" />
+              <p>첫 페이지</p>
+              <p>동아리 목록</p>
+              <p>미술부 소개</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>과학부 소개</title>
+            </head>
+            <body>
+              <h1>과학부 소개</h1>
+              <p>매주 수요일, 과학실에서 실험을 해요.</p>
+              <img id="map" src="../../images/map.png" alt="과학실이 2층 끝에 표시된 학교 지도" />
+              <p><a href="../../index.html">첫 페이지</a></p>
+              <p><a href="../list.html">동아리 목록</a></p>
+              <p><a href="../art/intro.html">미술부 소개</a></p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: map-src
+      description: 지도 그림의 src가 지금 문서(science 폴더)에서 school/images/map.png를 가리켜야 합니다.
+      requirement: 지도 그림 경로
+      visible: true
+      selector: 'img#map[src="../../images/map.png"], img#map[src="./../../images/map.png"]'
+      expect:
+        count: 1
+      misconceptionIfFail: html.mc.relative-path-base
+    - kind: dom
+      id: map-alt-kept
+      description: 지도 그림의 alt는 그대로여야 합니다.
+      requirement: 지도 그림 경로
+      selector: "#map"
+      expect:
+        attr: { name: alt, equals: 과학실이 2층 끝에 표시된 학교 지도 }
+    - kind: dom
+      id: home-link
+      description: "\"첫 페이지\" 링크가 지금 문서에서 school/index.html을 가리켜야 합니다."
+      requirement: 첫 페이지 링크
+      visible: true
+      selector: 'p > a[href="../../index.html"], p > a[href="./../../index.html"]'
+      expect:
+        count: 1
+        text: { equals: 첫 페이지 }
+      misconceptionIfFail: html.mc.relative-path-base
+    - kind: dom
+      id: list-link
+      description: "\"동아리 목록\" 링크가 지금 문서에서 clubs/list.html을 가리켜야 합니다."
+      requirement: 동아리 목록 링크
+      visible: true
+      selector: 'p > a[href="../list.html"], p > a[href="./../list.html"]'
+      expect:
+        count: 1
+        text: { equals: 동아리 목록 }
+    - kind: dom
+      id: art-link
+      description: "\"미술부 소개\" 링크가 지금 문서에서 clubs/art/intro.html을 가리켜야 합니다."
+      requirement: 미술부 소개 링크
+      visible: true
+      selector: 'p > a[href="../art/intro.html"], p > a[href="./../art/intro.html"]'
+      expect:
+        count: 1
+        text: { equals: 미술부 소개 }
+    - kind: dom
+      id: link-count
+      description: 링크는 모두 세 개여야 합니다.
+      requirement: 링크 세 개
+      selector: a
+      expect:
+        count: 3
+misconceptions: [html.mc.relative-path-base]
+hints:
+  - 출발점은 지금 문서가 들어 있는 science 폴더예요. 가리킬 파일마다 science 폴더에서 몇 단계 위로 나가야 하는지 세어 보세요.
+  - "`../`를 한 번 쓰면 clubs 폴더로, 두 번 쓰면 school 폴더로 나가요. list.html과 art 폴더는 clubs 안에, index.html과 images 폴더는 school 안에 있어요."
+  - 위로 나간 만큼 `../`를 이어 쓴 다음, 들어갈 폴더가 있으면 `폴더이름/`을 붙이고 마지막에 파일 이름을 써요. 미술부 소개는 한 번 나간 뒤 art 폴더로 들어가요.
+explanation: |
+  예시 정답은 이래요.
+
+  ```html
+  <img id="map" src="../../images/map.png" alt="과학실이 2층 끝에 표시된 학교 지도" />
+  <p><a href="../../index.html">첫 페이지</a></p>
+  <p><a href="../list.html">동아리 목록</a></p>
+  <p><a href="../art/intro.html">미술부 소개</a></p>
+  ```
+
+  출발점은 지금 문서가 있는 **science 폴더**예요.
+
+  | 가리킬 파일 | 길 | 상대 경로 |
+  |---|---|---|
+  | `map.png` | 두 번 나가서 school, 그 안의 images로 들어가기 | `../../images/map.png` |
+  | `index.html` | science → clubs → school로 두 번 나가기 | `../../index.html` |
+  | `list.html` | clubs로 한 번 나가기 | `../list.html` |
+  | 미술부 `intro.html` | clubs로 한 번 나간 뒤 art로 들어가기 | `../art/intro.html` |
+
+  - `images/map.png`, `index.html`, `clubs/list.html`처럼 사이트 맨 위(school) 폴더를 기준으로 쓰면, 브라우저는 science 폴더 안에서 찾아서 실패해요. 상대 경로의 출발점은 언제나 지금 문서가 있는 폴더예요.
+  - `../images/map.png`는 한 번만 나가서 clubs 안에서 images를 찾아요. images는 school 바로 안에 있으니 두 번 나가야 해요.
+  - `art/intro.html`은 science 안에서 art 폴더를 찾아요. art는 science와 나란히 clubs 안에 있으니 먼저 `../`로 나가야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -5,10 +5,51 @@ import { STAGE_LABELS } from './model.ts';
 
 const percent = (n: number) => `${Math.round(n * 100)}%`;
 
+interface PassLine {
+  met: boolean;
+  text: string;
+  detail?: string;
+}
+
+type Checks = PassResultView['checks'];
+
+const CONCEPT_HINT =
+  '한 번 더 연습하거나 대시보드의 약점 집중으로 이 개념을 연습해 보세요. 다음 단원으로 넘어가도 괜찮아요.';
+
+/**
+ * Concept lines (D-081): one per concept under the bar, with its result in this set and the next
+ * step. Results from before D-081 judged the long-term mastery score and list the concepts only.
+ */
+function conceptLines(credit: Checks['minConceptCredit'], legacy: Checks['minConceptScore']) {
+  const lines: PassLine[] = [];
+  if (credit) {
+    if (credit.met) {
+      lines.push({ met: true, text: '이 단원의 개념마다 이번 연습에서 충분히 맞혔어요' });
+    }
+    for (const c of credit.concepts.filter((x) => !x.met)) {
+      lines.push({
+        met: false,
+        text: `‘${c.title}’ 이번 연습 ${c.correct}/${c.total} 정답`,
+        detail: CONCEPT_HINT,
+      });
+    }
+  } else if (legacy) {
+    lines.push(
+      legacy.met
+        ? { met: true, text: '이 단원의 개념을 모두 기준만큼 연습했어요' }
+        : {
+            met: false,
+            text: `연습이 더 필요한 개념: ${legacy.below.map((b) => b.title).join(', ')}`,
+          },
+    );
+  }
+  return lines;
+}
+
 /** Pass rule checks in learner language (learning-engine.md#단원-연습-세트). */
-function passLines(pass: PassResultView): { met: boolean; text: string }[] {
+function passLines(pass: PassResultView): PassLine[] {
   const c = pass.checks;
-  const lines = [
+  const lines: PassLine[] = [
     {
       met: c.minCorrect.met,
       text: `정답 비율 ${percent(c.minCorrect.actual)} (기준 ${percent(c.minCorrect.required)})`,
@@ -24,12 +65,7 @@ function passLines(pass: PassResultView): { met: boolean; text: string }[] {
       text: `L3 이상 문제 정답 ${c.minLevel3Correct.actual}개 (기준 ${c.minLevel3Correct.required}개)`,
     });
   }
-  lines.push({
-    met: c.minConceptScore.met,
-    text: c.minConceptScore.met
-      ? '이 단원의 개념을 모두 기준만큼 연습했어요'
-      : `연습이 더 필요한 개념: ${c.minConceptScore.below.map((b) => b.title).join(', ')}`,
-  });
+  lines.push(...conceptLines(c.minConceptCredit, c.minConceptScore));
   return lines;
 }
 
@@ -56,7 +92,8 @@ export function SetSummary({
   }, []);
   const result = set.result;
   const pass = result?.pass ?? null;
-  const needsPractice = new Set(pass?.checks.minConceptScore.below.map((b) => b.id) ?? []);
+  const below = pass?.checks.minConceptCredit?.below ?? pass?.checks.minConceptScore?.below ?? [];
+  const needsPractice = new Set(below.map((b) => b.id));
   const heading =
     set.kind === 'review'
       ? '오늘의 복습을 마쳤어요'
@@ -80,7 +117,8 @@ export function SetSummary({
       )}
       {pass && !pass.passed && (
         <p className="set-summary__note">
-          아직 단원 통과 기준에 조금 못 미쳤어요. 한 번 더 연습하면 다시 확인할 수 있어요.
+          아직 단원 통과 기준에 조금 못 미쳤어요. 한 번 더 연습하면 다시 확인할 수 있고, 다음
+          단원으로 넘어가도 괜찮아요.
         </p>
       )}
 
@@ -116,7 +154,12 @@ export function SetSummary({
                 ) : (
                   <CircleDashed size={16} aria-label="미충족" />
                 )}
-                <span>{line.text}</span>
+                <span className="set-summary__line">
+                  <span>{line.text}</span>
+                  {line.detail && (
+                    <span className="block text-fg-tertiary type-small">{line.detail}</span>
+                  )}
+                </span>
               </li>
             ))}
           </ul>

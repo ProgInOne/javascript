@@ -161,26 +161,30 @@ function LessonSet({ lesson, setId, item, navigate }: LessonPracticeProps & { se
           본문 다시 보기
         </Link>
         <Button
-          variant={passed && lesson.next ? 'secondary' : 'primary'}
+          variant={passed ? 'secondary' : 'primary'}
           icon={<RotateCcw size={16} aria-hidden="true" />}
           loading={restarting}
           onClick={() => void again()}
         >
           한 번 더 연습
         </Button>
-        {passed && lesson.next && (
+        {/* Not passing never blocks the next lesson (D-081): the link stays, as a secondary
+            action after "한 번 더 연습". */}
+        {lesson.next ? (
           <Link
             to="/learn/$lessonId"
             params={{ lessonId: lesson.next.id }}
             search={{}}
-            className="pi-button pi-button--primary pi-button--md no-underline"
+            className={`pi-button pi-button--${passed ? 'primary' : 'secondary'} pi-button--md no-underline`}
           >
-            다음 단원: {lesson.next.title}
+            {passed ? '다음 단원' : '다음 단원으로'}: {lesson.next.title}
             <ArrowRight size={16} aria-hidden="true" />
           </Link>
-        )}
-        {passed && !lesson.next && (
-          <Link to="/" className="pi-button pi-button--primary pi-button--md no-underline">
+        ) : (
+          <Link
+            to="/"
+            className={`pi-button pi-button--${passed ? 'primary' : 'secondary'} pi-button--md no-underline`}
+          >
             대시보드로
           </Link>
         )}

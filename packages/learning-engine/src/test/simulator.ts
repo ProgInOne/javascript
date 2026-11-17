@@ -403,9 +403,7 @@ export class SimulatedLearner {
     const result = this.#runSet('lesson', plan.items);
     const pass = evaluatePassRule(this.deps.config, plan.passRule, {
       items: result.passItems,
-      introducedScores: Object.fromEntries(
-        lesson.introduces.map((id) => [id, this.state(id).mastery.score]),
-      ),
+      introducedConceptIds: lesson.introduces,
     });
     this.lessonProgress.set(lesson.id, pass.passed ? 'completed' : 'practicing');
     return pass.passed;
@@ -460,6 +458,7 @@ export class SimulatedLearner {
           attemptInItem: 1,
         },
         firstAttemptCorrect: facts.outcome === 'correct',
+        primaryConceptIds: exercise.concepts.filter((c) => c.isPrimary).map((c) => c.conceptId),
       });
       const remaining = items.slice(index + 1).map((i) => i.targetConceptId);
       const ready = conceptsReadyToFlush({

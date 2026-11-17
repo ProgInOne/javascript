@@ -31,7 +31,10 @@ export type PracticeScopeJson = z.infer<typeof practiceScopeJson>;
 export const passRuleJson = z.object({
   v: z.literal(1),
   minCorrect: z.number().min(0).max(1),
-  minConceptScore: z.number().min(0).max(100),
+  /** Sets built before D-081 (engine < 1.3.0); ignored. */
+  minConceptScore: z.number().min(0).max(100).optional(),
+  /** Per-concept credit within the set (D-081); older sets use the engine default. */
+  minConceptCredit: z.number().min(0).max(1).optional(),
   minDistinctTypes: z.int().min(0),
   minLevel3Correct: z.int().min(0),
 });
@@ -45,7 +48,23 @@ export const passResultJson = z.object({
   checks: z.object({
     allAnswered: z.boolean(),
     minCorrect: passCheck,
-    minConceptScore: passCheck.extend({ below: z.array(id) }),
+    /** Results before D-081: the long-term mastery score of each introduced concept. */
+    minConceptScore: passCheck.extend({ below: z.array(id) }).optional(),
+    /** Engine 1.3.0+ (D-081): each introduced concept's credited correctness in the set. */
+    minConceptCredit: passCheck
+      .extend({
+        below: z.array(id),
+        concepts: z.array(
+          z.object({
+            conceptId: id,
+            credit: z.number(),
+            correct: z.int().min(0),
+            total: z.int().min(0),
+            met: z.boolean(),
+          }),
+        ),
+      })
+      .optional(),
     minDistinctTypes: passCheck,
     minLevel3Correct: passCheck,
   }),

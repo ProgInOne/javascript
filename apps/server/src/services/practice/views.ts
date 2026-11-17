@@ -1,3 +1,4 @@
+import { defaultEngineConfig } from '@proginone/learning-engine';
 import { inArray } from 'drizzle-orm';
 import type {
   AssessmentResult,
@@ -29,6 +30,9 @@ export function progressOf(items: readonly Pick<PracticeItemRow, 'status'>[]): P
   return { total: items.length, answered, skipped, pending: items.length - answered - skipped };
 }
 
+/** Sets built before D-081 stored no `minConceptCredit`; they are judged with the default. */
+const defaultConceptCredit = defaultEngineConfig.practice.passRule.minConceptCredit;
+
 export function nextItemIdOf(items: readonly Pick<PracticeItemRow, 'id' | 'status'>[]) {
   return items.find((i) => i.status === 'pending')?.id ?? null;
 }
@@ -44,8 +48,13 @@ export function resultView(
   assessment?: { orm: Orm; setId: string },
 ): PracticeSetResult {
   const pass = result.pass;
-  const below = pass?.checks.minConceptScore.below ?? [];
-  const titles = repo.getConcepts(below);
+  const legacy = pass?.checks.minConceptScore;
+  const credit = pass?.checks.minConceptCredit;
+  const titles = repo.getConcepts([
+    ...(legacy?.below ?? []),
+    ...(credit?.concepts.map((c) => c.conceptId) ?? []),
+  ]);
+  const refOf = (id: string) => ({ id, title: titles.get(id)?.title ?? id });
   return {
     total: result.total,
     answered: result.answered,
@@ -57,11 +66,25 @@ export function resultView(
         : {
             passed: pass.passed,
             checks: {
-              ...pass.checks,
-              minConceptScore: {
-                ...pass.checks.minConceptScore,
-                below: below.map((id) => ({ id, title: titles.get(id)?.title ?? id })),
-              },
+              allAnswered: pass.checks.allAnswered,
+              minCorrect: pass.checks.minCorrect,
+              minDistinctTypes: pass.checks.minDistinctTypes,
+              minLevel3Correct: pass.checks.minLevel3Correct,
+              ...(legacy ? { minConceptScore: { ...legacy, below: legacy.below.map(refOf) } } : {}),
+              ...(credit
+                ? {
+                    minConceptCredit: {
+                      met: credit.met,
+                      required: credit.required,
+                      actual: credit.actual,
+                      below: credit.below.map(refOf),
+                      concepts: credit.concepts.map(({ conceptId, ...rest }) => ({
+                        ...refOf(conceptId),
+                        ...rest,
+                      })),
+                    },
+                  }
+                : {}),
             },
           },
     ...(result.assessment && assessment
@@ -200,7 +223,7 @@ export function buildSetView(orm: Orm, repo: ContentRepository, set: PracticeSet
         ? null
         : {
             minCorrect: passRule.minCorrect,
-            minConceptScore: passRule.minConceptScore,
+            minConceptCredit: passRule.minConceptCredit ?? defaultConceptCredit,
             minDistinctTypes: passRule.minDistinctTypes,
             minLevel3Correct: passRule.minLevel3Correct,
           },

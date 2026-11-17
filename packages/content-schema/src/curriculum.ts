@@ -37,6 +37,7 @@ export type ModuleSource = z.infer<typeof moduleSchema>;
 /** Overrides of the engine's default pass rule (docs/design/learning-engine.md). */
 export const passRuleSchema = z.strictObject({
   minCorrect: z.number().min(0).max(1).optional(),
+  minConceptCredit: z.number().min(0).max(1).optional(),
   minDistinctTypes: z.number().int().min(1).optional(),
   minLevel3Correct: z.number().int().min(0).optional(),
 });

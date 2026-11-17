@@ -1,0 +1,61 @@
+id: css.styling.units-colors.mcq-nested-percent
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: css.units.length, weight: 1 }
+  - { id: css.box.size, weight: 0.3 }
+tags: [units, percent, nested]
+estimatedSeconds: 90
+prompt: |
+  화면(뷰포트) 너비는 `1000px`이에요. `.col`은 `.wrap` 안에, `.item`은 `.col` 안에 있어요. `box-sizing`은 모두 기본값(`content-box`)이에요.
+
+  `.item`의 `width`는 몇 px인가요?
+code: |
+  .wrap {
+    width: 800px;
+  }
+  .col {
+    width: 50%;
+    padding: 20px;
+  }
+  .item {
+    width: 50%;
+  }
+spec:
+  options:
+    - id: a
+      text: 200px
+    - id: b
+      text: 400px
+      rationale: "`.item`의 부모는 `.wrap`이 아니라 `.col`이에요. `%`는 바로 바깥 요소를 기준으로 해요."
+    - id: c
+      text: 500px
+      misconception: css.mc.percent-of-screen
+      rationale: "`%`는 화면 너비가 아니라 부모의 content 너비를 기준으로 해요. 화면 너비의 50%는 `50vw`예요."
+    - id: d
+      text: 180px
+      rationale: "`content-box`에서 `.col`의 padding은 width 400px 바깥에 더해져요. content 너비가 줄어들지 않아요."
+    - id: e
+      text: 220px
+      rationale: "`%`의 기준은 padding까지 더한 너비가 아니라 부모의 content 너비예요."
+  correct: a
+misconceptions: [css.mc.percent-of-screen]
+hints:
+  - "`%`는 \"바로 바깥 요소\"의 크기를 기준으로 해요. `.item`을 바로 감싸는 요소는 무엇인가요?"
+  - 먼저 `.col`의 content 너비를 구하세요. `.col`의 `50%`는 `.wrap`을 기준으로 하고, 기본값 `content-box`에서 padding은 width에 더해질 뿐 content를 줄이지 않아요.
+  - "`.col`의 content 너비는 padding과 상관없이 `width: 50%`가 정한 값 그대로예요. 그 값이 `.item`의 `50%`가 기준으로 삼는 너비예요."
+explanation: |
+  정답은 **200px**이에요. `%`는 단계마다 **바로 바깥 요소의 content 너비**를 기준으로 계산해요.
+
+  1. `.col`: 부모 `.wrap`의 content 너비 800px의 50% → `400px`. 기본값 `content-box`라서 padding 20px은 이 바깥에 더해지고, content 너비는 400px 그대로예요.
+  2. `.item`: 부모 `.col`의 content 너비 400px의 50% → **200px**.
+
+  - 400px: `.col`을 건너뛰고 `.wrap`을 기준으로 계산했어요. `%`는 바로 바깥 요소를 봐요.
+  - 500px: 화면 너비 1000px의 50%예요. 화면을 기준으로 하는 단위는 `vw`이고, `%`는 부모를 기준으로 해요.
+  - 180px: padding을 빼서 `.col`의 content를 360px로 본 거예요. `content-box`에서는 padding이 width 바깥에 더해져요.
+  - 220px: padding까지 더한 440px을 기준으로 본 거예요. `%`의 기준은 부모의 content 너비예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

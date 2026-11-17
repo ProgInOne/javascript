@@ -1,0 +1,63 @@
+id: css.styling.typography.mcq-note-font
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: css.type.font-properties, weight: 1 }
+  - { id: css.units.rem-em, weight: 0.3 }
+tags: [font-family, font-size, font-weight, fallback]
+estimatedSeconds: 100
+prompt: |
+  학습자의 컴퓨터에 `Georgia` 글꼴은 **있고**, `"Noto Sans KR"` 글꼴은 **없어요**. 루트(`html`)의 글자 크기는 기본값 `16px`이에요.
+
+  `body` 안에 있는 `.note` 문단의 글자는 어떻게 보이나요?
+code: |
+  body {
+    font-family: "없는 글꼴", Georgia, serif;
+    font-size: 20px;
+  }
+  .note {
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+spec:
+  options:
+    - id: a
+      text: 기기의 기본 고딕 계열 글꼴(`sans-serif`), 14px, 굵게
+    - id: b
+      text: "`Noto Sans KR`, 14px, 굵게"
+      misconception: css.mc.font-family-guaranteed
+      rationale: font-family에 적었다고 그 글꼴이 생기지 않아요. 기기에 없으면 목록의 다음 글꼴로 넘어가요.
+    - id: c
+      text: "`Georgia`, 14px, 굵게"
+      rationale: "`.note`에 직접 준 font-family가 `body`에서 물려받은 목록을 대신해요. 브라우저는 `.note`의 목록 안에서만 글꼴을 찾아요."
+    - id: d
+      text: 기기의 기본 고딕 계열 글꼴(`sans-serif`), 17.5px, 굵게
+      rationale: "`rem`은 부모(`body`, 20px)가 아니라 루트(`html`, 16px)를 기준으로 해요."
+    - id: e
+      text: 기기의 기본 고딕 계열 글꼴(`sans-serif`), 14px, 보통 굵기
+      rationale: "`font-weight: 700`은 `bold`와 같은 굵게예요. 보통 굵기는 400이에요."
+  correct: a
+misconceptions: [css.mc.font-family-guaranteed]
+hints:
+  - 세 속성을 하나씩 따로 따져 보세요. 글꼴은 `.note`에 직접 준 목록을 쓸까요, `body`에서 물려받은 목록을 쓸까요?
+  - "`.note`의 목록을 앞에서부터 보면서 기기에 있는 첫 글꼴을 찾으세요. 글자 크기는 `rem`이 무엇을 기준으로 하는지 떠올리면 돼요."
+  - "`.note`의 목록에서 없는 글꼴을 건너뛰면 다음은 어떤 이름인가요? `0.875rem`의 기준이 `body`의 20px인지 루트의 16px인지 단위 표에서 확인하고, 숫자 700이 `normal`과 `bold` 중 어느 쪽인지도 떠올려 보세요."
+explanation: |
+  정답은 **기기의 기본 고딕 계열 글꼴(`sans-serif`), 14px, 굵게**예요.
+
+  - **글꼴**: `.note`에 직접 준 `font-family`가 `body`에서 물려받은 목록보다 우선해요. `.note`의 목록에서 `"Noto Sans KR"`은 기기에 없으니 건너뛰고, 다음 `sans-serif`(어느 기기에나 있는 일반 글꼴 이름)를 써요.
+  - **크기**: `rem`은 루트(`html`)의 글자 크기를 기준으로 해요. `16 × 0.875 = 14px`이에요.
+  - **굵기**: `700`은 `bold`와 같아요.
+
+  오답을 고른 경우는 이래요.
+
+  - `Noto Sans KR`: CSS에 적은 글꼴이 기기에 없으면 보이지 않아요. 그래서 목록 끝에 일반 글꼴 이름을 둬요.
+  - `Georgia`: 브라우저는 `.note`의 목록 안에서만 찾아요. 부모 `body`의 목록으로 돌아가지 않아요.
+  - 17.5px: 부모 `body`의 20px에 0.875를 곱한 값이에요. 부모를 기준으로 하는 건 `em`이고, `rem`은 루트를 기준으로 해요.
+  - 보통 굵기: 400이 보통(`normal`), 700이 굵게(`bold`)예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

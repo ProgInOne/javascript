@@ -4,7 +4,7 @@ import type { ExerciseCategory, ExerciseOrigin, FsrsPort, Importance } from './t
  * Version of the formulas and coefficients. Bump it (and record it in CHANGELOG.md) whenever a
  * coefficient or rule changes; every stored result carries the version that computed it.
  */
-export const ENGINE_VERSION = '1.2.0';
+export const ENGINE_VERSION = '1.3.0';
 
 /** Weights for the correct (`o ≥ 0.5`) and incorrect branch of a factor. */
 export interface BranchWeights {
@@ -221,8 +221,11 @@ export interface PracticeBand {
 export interface PassRule {
   /** Mean credited correctness (`o × W_hint × W_try` per item). */
   readonly minCorrect: number;
-  /** Every introduced concept's `score` must reach this. */
-  readonly minConceptScore: number;
+  /**
+   * Credited correctness each introduced concept's items must reach within the set (with at
+   * least one correct item). Replaced `minConceptScore`, the long-term mastery score (D-081).
+   */
+  readonly minConceptCredit: number;
   /** Distinct exercise types answered correctly. */
   readonly minDistinctTypes: number;
   /** L3+ items answered correctly on the first attempt. */
@@ -316,7 +319,7 @@ export const defaultEngineConfig: EngineConfig = {
     originPreference: { authored: 1, template: 0.8, generated: 0.5 },
     freshness: { blockDays: 7, oldDays: 30, mid: 0.4, old: 0.7 },
     typeNoveltyWindow: 3,
-    passRule: { minCorrect: 0.7, minConceptScore: 50, minDistinctTypes: 2, minLevel3Correct: 0 },
+    passRule: { minCorrect: 0.7, minConceptCredit: 0.6, minDistinctTypes: 2, minLevel3Correct: 0 },
   },
   weakness: {
     minConcepts: 3,

@@ -13,4 +13,4 @@ objectives:
   - 폴더 구조를 보고 지금 문서에서 다른 파일까지의 상대 경로를 쓸 수 있다.
   - img 요소에 그림의 내용을 전하는 alt를 쓰고, 꾸미기용 그림과 구분할 수 있다.
 practice:
-  targetCount: 9
+  targetCount: 11

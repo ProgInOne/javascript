@@ -55,7 +55,7 @@ ProgInOne 문서와 코드에서 쓰는 용어의 단일 정의입니다.
 | 개념 중요도 | `importance` | 개념과 단원의 `core` / `standard` / `minor`. 레슨 깊이, 문제 수 목표, 연습 세트 크기, 복습 우선순위에 영향 |
 | 난이도 루브릭 | `rubric` | 개념 수, 추론 단계, 구현량, 함정 4항목 점수로 L1~L5를 정하는 기준 |
 | 마일스톤 | `milestone` | `web_task`에서 체크를 단계로 묶은 프로젝트형 진행 단위 |
-| 통과 기준 | `PassRule` | 연습 세트 통과 판정 필드(`minCorrect`, `minConceptScore`, `minDistinctTypes`, `minLevel3Correct`). 단원이 일부 덮어쓸 수 있음 |
+| 통과 기준 | `PassRule` | 연습 세트 통과 판정 필드(`minCorrect`, `minConceptCredit`, `minDistinctTypes`, `minLevel3Correct`). 단원이 일부 덮어쓸 수 있음 |
 | 별칭 | alias | 바뀐 slug의 매핑(`rename` / `merge` / `split`). `content/aliases.yaml` |
 | 콘텐츠 원본 스키마 버전 | `schemaVersion` | `pack.yaml`의 원본 형식 버전. `content-schema` 패키지와 일치해야 함 |
 | 고아 참조 | `orphan_refs` | user.db가 참조하지만 콘텐츠 팩에서 해석되지 않는 콘텐츠 ID. 기록은 지우지 않고 "보관됨"으로 표시 |

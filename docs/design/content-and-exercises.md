@@ -595,7 +595,7 @@ objectives:
   - return과 console.log의 차이를 예측 문제로 구분할 수 있다.
 practice:
   targetCount: 28                 # 목표 문제 수 (빌드가 실제 수와 비교해 경고)
-  passRule: { minCorrect: 0.7, minDistinctTypes: 3, minLevel3Correct: 1 }
+  passRule: { minCorrect: 0.7, minConceptCredit: 0.6, minDistinctTypes: 3, minLevel3Correct: 1 }
 ```
 
 `passRule`의 정확한 판정은 [학습 엔진 설계](/docs/design/learning-engine.md)가 정의하며, 콘텐츠는 단원별로 값을 덮어쓸 수 있습니다.

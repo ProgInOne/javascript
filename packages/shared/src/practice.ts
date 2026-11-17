@@ -252,7 +252,7 @@ export type PracticeProgress = z.infer<typeof practiceProgressSchema>;
 
 export const passRuleSchema = z.object({
   minCorrect: z.number(),
-  minConceptScore: z.number(),
+  minConceptCredit: z.number(),
   minDistinctTypes: z.int(),
   minLevel3Correct: z.int(),
 });
@@ -266,7 +266,22 @@ export const passResultSchema = z.object({
   checks: z.object({
     allAnswered: z.boolean(),
     minCorrect: passCheckSchema,
-    minConceptScore: passCheckSchema.extend({ below: z.array(conceptRefSchema) }),
+    /** Results before D-081: concepts whose long-term mastery score was under the bar. */
+    minConceptScore: passCheckSchema.extend({ below: z.array(conceptRefSchema) }).optional(),
+    /** D-081: each introduced concept's credited correctness within the set. */
+    minConceptCredit: passCheckSchema
+      .extend({
+        below: z.array(conceptRefSchema),
+        concepts: z.array(
+          conceptRefSchema.extend({
+            credit: z.number(),
+            correct: z.int().min(0),
+            total: z.int().min(0),
+            met: z.boolean(),
+          }),
+        ),
+      })
+      .optional(),
     minDistinctTypes: passCheckSchema,
     minLevel3Correct: passCheckSchema,
   }),

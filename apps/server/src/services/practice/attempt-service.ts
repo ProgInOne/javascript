@@ -720,8 +720,6 @@ export class AttemptService {
       const first = finalMastery.get(update.conceptId);
       finalMastery.set(update.conceptId, first ? { ...update, before: first.before } : update);
     }
-    const scoreOf = (id: string) =>
-      finalMastery.get(id)?.after.score ?? after.get(id)?.mastery.score ?? 0;
 
     let result: PracticeResultJson | null = null;
     let lessonCompletedNow = false;
@@ -772,6 +770,9 @@ export class AttemptService {
                   }
                 : null,
             firstAttemptCorrect: first ? observationOf(first) >= 0.5 : false,
+            primaryConceptIds: (exercise?.concepts ?? [])
+              .filter((c) => c.isPrimary)
+              .map((c) => c.conceptId),
           };
         });
       const pass =
@@ -780,15 +781,15 @@ export class AttemptService {
               engine.config,
               {
                 minCorrect: set.passRule.minCorrect,
-                minConceptScore: set.passRule.minConceptScore,
+                // Sets built before D-081 stored `minConceptScore` instead.
+                minConceptCredit:
+                  set.passRule.minConceptCredit ?? engine.config.practice.passRule.minConceptCredit,
                 minDistinctTypes: set.passRule.minDistinctTypes,
                 minLevel3Correct: set.passRule.minLevel3Correct,
               },
               {
                 items: passItems,
-                introducedScores: Object.fromEntries(
-                  set.scope.conceptIds.map((id) => [id, scoreOf(id)]),
-                ),
+                introducedConceptIds: set.scope.conceptIds,
               },
             )
           : null;
@@ -1235,12 +1236,16 @@ export function writeSignals(orm: UserDb['orm'], learnerId: string, signals: Sig
 }
 
 function toPassJson(pass: PassResult): NonNullable<PracticeResultJson['pass']> {
-  const { minConceptScore } = pass.checks;
+  const { minConceptCredit } = pass.checks;
   return {
     passed: pass.passed,
     checks: {
       ...pass.checks,
-      minConceptScore: { ...minConceptScore, below: [...minConceptScore.below] },
+      minConceptCredit: {
+        ...minConceptCredit,
+        below: [...minConceptCredit.below],
+        concepts: minConceptCredit.concepts.map((c) => ({ ...c })),
+      },
     },
   };
 }

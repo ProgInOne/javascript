@@ -1,0 +1,57 @@
+id: html.basics.how-web-works.fill-reload-change
+type: fill_blank
+difficulty: 3
+concepts:
+  - { id: html.web.client-server, weight: 1 }
+tags: [client-server, request, response, reload]
+estimatedSeconds: 100
+prompt: |
+  지수는 HTML만으로 만든 학교 소식 페이지 `news.html`을 브라우저에 열어 두었어요. 화면에는 "체육대회는 금요일이에요."가 보여요.
+
+  그사이 선생님이 **서버에 있는** `news.html`에서 "금요일"을 "토요일"로 고쳐 저장했어요. 지수가 아무것도 누르지 않았더니, 지수의 화면에는 여전히 "금요일"이 보여요.
+
+  레슨에서 배운 낱말로 빈칸을 채워 이 상황을 설명하세요.
+spec:
+  mode: text
+  template: |
+    1. 지수의 화면이 저절로 바뀌지 않은 까닭: 서버는 브라우저의 {{blank:why}}이(가) 와야 파일을 보내 줘요.
+    2. 지수가 새로 고침을 누르면, 브라우저가 서버에 news.html을 다시 {{blank:req}}해요.
+    3. 서버는 고친 news.html을 {{blank:res}}(으)로 보내 줘요.
+    4. 브라우저가 받은 파일을 다시 그리면, 화면에 보이는 요일은 {{blank:day}}이에요. (금요일 / 토요일)
+  blanks:
+    - id: why
+      accept: ["요청", "request"]
+      caseSensitive: false
+      width: 8
+    - id: req
+      accept: ["요청", "request"]
+      caseSensitive: false
+      width: 8
+    - id: res
+      accept: ["응답", "response"]
+      caseSensitive: false
+      width: 8
+    - id: day
+      accept: ["토요일", "토"]
+      width: 8
+      misconceptionMap:
+        "금요일": html.mc.page-lives-in-browser
+        "금": html.mc.page-lives-in-browser
+misconceptions: [html.mc.page-lives-in-browser]
+hints:
+  - 지수의 화면에 보이는 페이지는 언제 서버에서 받아 온 파일일까요?
+  - 서버는 파일을 가지고 있다가 "달라고 하는" 곳에 보내 주는 컴퓨터예요. 달라는 말이 없으면 서버는 아무것도 보내지 않아요.
+  - 새로 고침은 같은 주소의 파일을 서버에 한 번 더 달라고 하는 일이에요. 이때 서버에 있는 파일은 이미 고쳐진 뒤예요.
+explanation: |
+  정답은 차례로 **요청**, **요청**, **응답**, **토요일**이에요.
+
+  - 지수의 화면은 선생님이 고치기 **전에** 받아 온 `news.html`을 그린 것이에요. 서버는 요청이 와야 파일을 보내므로, 서버의 파일이 바뀌었다고 해서 이미 그려진 화면이 저절로 바뀌지 않아요.
+  - 새로 고침을 누르면 브라우저가 서버에 `news.html`을 다시 **요청**하고, 서버는 지금 가지고 있는(고쳐진) 파일을 **응답**으로 보내요.
+  - 브라우저가 새로 받은 HTML을 다시 그리므로 화면에는 **토요일**이 보여요.
+
+  새로 고침을 해도 "금요일"이라고 답했다면, 페이지가 브라우저 안에 들어 있다고 생각한 것일 수 있어요. 페이지의 원본 파일은 서버에 있고, 브라우저는 요청할 때마다 그 순간 서버에 있는 파일을 받아 와서 그려요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

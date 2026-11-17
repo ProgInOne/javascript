@@ -105,7 +105,7 @@ describe('buildLessonPracticeSet', () => {
     expect(rationale.insufficientCandidates).toEqual([]);
     expect(passRule).toEqual({
       minCorrect: 0.7,
-      minConceptScore: 50,
+      minConceptCredit: 0.6,
       minDistinctTypes: 2,
       minLevel3Correct: 1,
     });
@@ -155,7 +155,7 @@ describe('buildLessonPracticeSet', () => {
     ).toHaveLength(12);
     expect(minor.passRule).toEqual({
       minCorrect: 0.7,
-      minConceptScore: 50,
+      minConceptCredit: 0.6,
       minDistinctTypes: 3,
       minLevel3Correct: 0,
     });

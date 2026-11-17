@@ -33,7 +33,7 @@ const set = {
   items,
   progress: { total: 2, answered: 0, skipped: 0, pending: 2 },
   nextItemId: items[0]?.id,
-  passRule: { minCorrect: 0.7, minConceptScore: 50, minDistinctTypes: 2, minLevel3Correct: 1 },
+  passRule: { minCorrect: 0.7, minConceptCredit: 0.6, minDistinctTypes: 2, minLevel3Correct: 1 },
   result: null,
   createdAt: 1,
   completedAt: null,

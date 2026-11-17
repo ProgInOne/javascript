@@ -457,13 +457,15 @@ targetDifficulty = clamp(maxDifficultyCorrect + adjust, 1, 5)
 |---|---|---|
 | (항상) | | 모든 항목에 답했거나 건너뜀 |
 | `minCorrect` | 0.7 | 세트 신용 정답률(항목별 `o × W_hint × W_try`의 평균) 이상 |
-| `minConceptScore` | 50 | 단원이 소개하는 모든 개념의 `score`가 이 값 이상 |
+| `minConceptCredit` | 0.6 | 단원이 소개하는 개념마다, 이번 세트에서 그 개념이 주 개념(가중치 1)인 항목들의 신용 정답률(`o × W_hint × W_try` 평균, 건너뜀 0)이 이 값 이상이고 그중 1개 이상 맞힘(마지막 시도 `o ≥ 0.5`). 세트에 항목이 없는 개념은 판정에서 뺌 |
 | `minDistinctTypes` | 2 | 정답을 낸 서로 다른 문제 유형 수 이상 |
 | `minLevel3Correct` | 0 (`core` 단원은 1) | L3 이상 문제의 첫 시도 정답 수 이상 |
 
-콘텐츠는 단원의 `lesson.yaml`의 `practice.passRule`로 필드 일부를 덮어쓸 수 있습니다([콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#lessonyaml)). 덮어쓰지 않은 필드는 기본값을 씁니다.
+**개념 조건은 세트 안 성과로 판정합니다**([D-081](/docs/decisions.md)). 장기 숙련도 `concept_mastery.score`는 쓰지 않습니다. 이 점수는 여러 세션과 복습 간격에 걸쳐 쌓이도록 설계되어(반복·저난이도 감쇠, 단계 게이트) 첫 세트를 거의 다 맞혀도 50에 닿지 않는 것이 정상이고, 이를 단원 완료 조건으로 쓰면 "이번 단원을 이해했는가"가 아니라 "얼마나 오래 연습했는가"를 묻게 됩니다. 숙련도 점수는 그대로 개념 지도, 복습 큐, 약점 판정, `mastered` 게이트에 씁니다. 재학습 항목은 다른 기준과 같이 판정에서 뺍니다. v1.0까지 쓰던 `minConceptScore`(50)는 저장된 이전 세트에 남아 있어도 무시합니다.
 
-통과하면 `lesson_progress.status = 'completed'`. 통과하지 못해도 다음 단원을 막지 않고, 약점 집중 세트를 제안합니다.
+콘텐츠는 단원의 `lesson.yaml`의 `practice.passRule`로 필드 일부(`minCorrect`, `minConceptCredit`, `minDistinctTypes`, `minLevel3Correct`)를 덮어쓸 수 있습니다([콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#lessonyaml)). 덮어쓰지 않은 필드는 기본값을 씁니다.
+
+통과하면 `lesson_progress.status = 'completed'`. 통과하지 못해도 다음 단원을 막지 않고(요약 화면에 "다음 단원으로" 링크가 늘 있음), 한 번 더 연습이나 약점 집중 세트를 제안합니다.
 
 #### 진행 중 적응 (`nextAdaptiveStep`)
 
@@ -1039,6 +1041,16 @@ v1.0(M7)에서 목표 페이스의 실제 시간 보정을 켰습니다. 엔진�
 시나리오 테스트(서버 `routes/lesson-time.test.ts`, 가짜 시계): 25분 단원을 37.5분 동안 읽고 끝내면(보정 근거 1개로 낮춘 설정) 남은 단원이 25분 → 37.5분이 되고, 오늘의 학습도 같은 시간을 계획합니다. 90분이면 2.0으로 제한되고, 기본 설정에서는 단원 하나로는 보정하지 않습니다.
 
 **단계적 풀이 예제 콘텐츠** ([D-072](/docs/decisions.md)): 재학습 규칙의 "풀이 예제" 단계는 v0.2부터 구현되어 있었지만 콘텐츠가 없어 늘 "쉬운 문제 + 힌트"로 넘어갔습니다. v1.0에서 JS 기초 모듈 2~5의 `core` 개념 16개에 단계 0(주석 단 완성 풀이를 읽고 출력 예측, `predict_output`)·1(핵심 줄 빈칸, `fill_blank`)·2(직접 작성, `implement_function`) 풀이 예제를 넣었습니다. 엔진과 서버는 바꾸지 않았습니다.
+
+### 구현 메모 (D-081)
+
+v1.0 출시 후보 뒤에 단원 통과 규칙의 개념 조건을 장기 숙련도 점수에서 세트 안 성과로 바꿨습니다. 숙련도 계수는 바꾸지 않았고, 통과 규칙이 바뀌어 `ENGINE_VERSION`을 `1.3.0`으로 올렸습니다. 결정은 [D-081](/docs/decisions.md)에 있습니다.
+
+| 항목 | 구현 |
+|---|---|
+| 엔진 | `PassRule.minConceptScore`를 `minConceptCredit`(기본 0.6)으로 바꿨습니다. `PassRuleItem`에 선택 필드 `primaryConceptIds`를 더했고, 없으면 그 항목은 어느 개념에도 세지 않습니다. `conceptCredits`가 개념별 신용 정답률·정답 수·항목 수를 계산하고, `evaluatePassRule`은 입력으로 숙련도 점수 대신 소개 개념 목록(`introducedConceptIds`)을 받아 `checks.minConceptCredit`(`below`, `concepts`, `actual` = 가장 낮은 개념 정답률, 판정한 개념이 없으면 1)을 돌려줍니다 |
+| 서버 | `attempt-service.ts`가 항목의 주 개념을 채웁니다. `pass_rule_json`의 `minConceptScore`·`minConceptCredit`은 둘 다 선택이고, `minConceptCredit`이 없는 이전 세트는 엔진 기본값으로 판정합니다. `result_json`의 `checks`는 이전 결과의 `minConceptScore` 또는 새 결과의 `minConceptCredit` 중 하나를 가집니다. `lesson.yaml`의 `practice.passRule.minConceptCredit`(0~1)으로 덮어쓸 수 있습니다 |
+| API·화면 | `passRule.minConceptCredit`, `pass.checks.minConceptCredit`(`below[]`, `concepts[]`에 제목·정답률·정답 수·항목 수)을 돌려줍니다. 요약 화면은 미달 개념마다 "‘요소’ 이번 연습 1/3 정답"과 다음 행동을 같은 목록 항목에 보여 줍니다. 이전 결과는 예전 문구를 씁니다. 통과하지 못해도 "다음 단원으로" 링크를 보조 버튼으로 늘 보여 주고, "한 번 더 연습"이 주 버튼입니다 |
 
 ## 검토한 대안
 

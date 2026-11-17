@@ -12,4 +12,4 @@ objectives:
   - content-box에서 요소가 화면에 차지하는 너비를 계산할 수 있다.
   - box-sizing border-box가 크기 계산을 어떻게 바꾸는지 설명하고 레이아웃 문제를 고칠 수 있다.
 practice:
-  targetCount: 10
+  targetCount: 12

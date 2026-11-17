@@ -56,7 +56,7 @@ export function candidateOf(exercise: ContentExercise): ExerciseCandidate | null
 
 const PASS_RULE_KEYS = [
   'minCorrect',
-  'minConceptScore',
+  'minConceptCredit',
   'minDistinctTypes',
   'minLevel3Correct',
 ] as const;

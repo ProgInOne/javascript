@@ -22,7 +22,7 @@ describe('POST /practice-sets (lesson)', () => {
       id: 'js.basics.statement',
       title: 'js.basics.statement',
     });
-    expect(set.passRule).toMatchObject({ minCorrect: 0.7, minConceptScore: 50 });
+    expect(set.passRule).toMatchObject({ minCorrect: 0.7, minConceptCredit: 0.6 });
     expect(set.nextItemId).toBe(set.items[0]?.id);
 
     const again = await lessonSet(ctx);
@@ -136,6 +136,73 @@ describe('POST /attempts', () => {
     expect(closed.status).toBe(409);
     expect(errorCode(closed.json)).toBe('PRACTICE_SET_CLOSED');
     expect((await lessonSet(ctx)).id).not.toBe(set.id);
+  });
+
+  it('judges concepts by the set, not the long-term mastery score (D-081)', async () => {
+    // A slow learning rate keeps the mastery score far under the old bar of 50.
+    const ctx = await practiceApp({
+      engineConfig: (c) => ({ ...c, mastery: { ...c.mastery, alpha: 0.02 } }),
+    });
+    const CONCEPT = 'js.basics.statement';
+    const set = await lessonSet(ctx);
+    const [head, ...rest] = set.items;
+    if (!head) throw new Error('empty set');
+    parsed(await submit(ctx, head, { correct: false }));
+    let last: AttemptResponse | undefined;
+    for (const item of rest) last = parsed(await submit(ctx, item));
+    const pass = last?.set.result?.pass;
+    expect(pass?.passed).toBe(true);
+    const check = pass?.checks.minConceptCredit;
+    expect(check).toMatchObject({ met: true, required: 0.6, below: [] });
+    expect(check?.concepts).toHaveLength(1);
+    const [concept] = check?.concepts ?? [];
+    expect(concept).toMatchObject({ id: CONCEPT, title: CONCEPT, met: true });
+    expect(concept?.correct).toBe((concept?.total ?? 0) - 1);
+    expect(pass?.checks.minConceptScore).toBeUndefined();
+    const score = ctx.userDb.sqlite
+      .prepare('SELECT score FROM concept_mastery WHERE concept_id = ?')
+      .get(CONCEPT) as { score: number };
+    expect(score.score).toBeLessThan(50);
+    expect(ctx.userDb.sqlite.prepare('SELECT status FROM lesson_progress').get()).toEqual({
+      status: 'completed',
+    });
+    const stored = ctx.userDb.sqlite
+      .prepare('SELECT pass_rule_json, result_json FROM practice_sets WHERE id = ?')
+      .get(set.id) as { pass_rule_json: string; result_json: string };
+    expect(JSON.parse(stored.pass_rule_json)).toMatchObject({ minConceptCredit: 0.6 });
+    const storedResult = JSON.parse(stored.result_json) as {
+      pass: { checks: { minConceptCredit: unknown } };
+    };
+    expect(storedResult.pass.checks.minConceptCredit).toMatchObject({
+      below: [],
+      concepts: [{ conceptId: CONCEPT, met: true }],
+    });
+  });
+
+  it('reports a concept under the set bar with its correct count (D-081)', async () => {
+    const ctx = await practiceApp({
+      engineConfig: (c) => ({
+        ...c,
+        practice: { ...c.practice, passRule: { ...c.practice.passRule, minConceptCredit: 0.95 } },
+      }),
+    });
+    const set = await lessonSet(ctx);
+    const [head, ...rest] = set.items;
+    if (!head) throw new Error('empty set');
+    parsed(await submit(ctx, head, { correct: false }));
+    for (const item of rest) parsed(await submit(ctx, item));
+    const view = practiceSetViewSchema.parse(
+      (await ctx.call('GET', `/practice-sets/${set.id}`)).json,
+    );
+    expect(view.passRule?.minConceptCredit).toBe(0.95);
+    const check = view.result?.pass?.checks.minConceptCredit;
+    expect(view.result?.pass?.passed).toBe(false);
+    expect(check?.below).toEqual([{ id: 'js.basics.statement', title: 'js.basics.statement' }]);
+    expect(check?.concepts[0]).toMatchObject({ met: false });
+    expect(check?.concepts[0]?.correct).toBe((check?.concepts[0]?.total ?? 0) - 1);
+    expect(ctx.userDb.sqlite.prepare('SELECT status FROM lesson_progress').get()).toEqual({
+      status: 'practicing',
+    });
   });
 
   it('reports wrong answers with misconception titles and never leaks hidden checks', async () => {

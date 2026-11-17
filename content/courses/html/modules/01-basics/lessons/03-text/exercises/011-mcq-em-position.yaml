@@ -1,0 +1,42 @@
+id: html.basics.text.mcq-em-position
+type: mcq_single
+difficulty: 3
+concepts:
+  - { id: html.text.emphasis, weight: 1 }
+tags: [em, strong, emphasis, stress]
+estimatedSeconds: 80
+prompt: |
+  친구가 "숙제를 어제 냈지?"라고 물었어요. 민지는 "아니, 나는 **어제가 아니라 오늘** 냈어."라는 뜻으로 대답하려고 해요. 이 뜻을 HTML로 가장 알맞게 표시한 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`<p>나는 <em>오늘</em> 숙제를 냈어.</p>`"
+    - id: b
+      text: "`<p><em>나는</em> 오늘 숙제를 냈어.</p>`"
+      rationale: 이렇게 쓰면 "다른 사람이 아니라 내가" 냈다는 뜻이 돼요. 친구가 물은 것은 누가 아니라 언제예요.
+    - id: c
+      text: "`<p>나는 오늘 <em>숙제를</em> 냈어.</p>`"
+      rationale: 이렇게 쓰면 "다른 것이 아니라 숙제를" 냈다는 뜻이 돼요. 강세를 둔 낱말이 달라서 전하려는 뜻과 맞지 않아요.
+    - id: d
+      text: "`<p>나는 <strong>오늘</strong> 숙제를 냈어.</p>`"
+      misconception: html.mc.strong-is-bold
+      rationale: strong은 "중요하다, 심각하다, 급하다"는 뜻이에요. "어제가 아니라 오늘"처럼 말할 때 힘을 주는 강세는 em으로 표시해요.
+  correct: a
+misconceptions: [html.mc.strong-is-bold]
+hints:
+  - 이 대답은 "놓치면 안 되는 중요한 내용"인가요, "말할 때 어느 낱말에 힘을 주느냐"의 문제인가요?
+  - 말의 강세는 em으로 표시해요. em은 어느 낱말을 감싸느냐에 따라 문장의 뜻이 달라져요.
+  - 친구는 "언제" 냈는지를 잘못 알고 있어요. 소리 내어 대답할 때 힘을 주어 말할 낱말 하나만 감싸야 해요.
+explanation: |
+  정답은 **`<p>나는 <em>오늘</em> 숙제를 냈어.</p>`**예요.
+
+  "어제가 아니라 오늘"이라는 뜻은 말할 때 **오늘**에 힘을 주어 전해요. 말의 강세는 `em`으로 표시하고, `em`은 감싼 낱말에 따라 뜻이 달라져요.
+
+  - `<em>나는</em>`: "다른 사람이 아니라 **내가**" 냈다는 뜻이 돼요.
+  - `<em>숙제를</em>`: "다른 것이 아니라 **숙제를**" 냈다는 뜻이 돼요.
+  - `<strong>오늘</strong>`: strong은 중요하거나 심각한 내용을 뜻해요. 굵게 보이든 기울게 보이든 모양만 다르다고 생각했다면, 두 요소는 모양이 아니라 뜻이 다르다는 점을 떠올려 보세요. 화면 낭독기는 모양이 아니라 이 뜻을 전해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,176 @@
+id: css.box.model.web-memo-board
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.box.areas, weight: 1 }
+  - { id: css.box.spacing, weight: 0.5 }
+tags: [box-model, padding, border, margin, web-task]
+estimatedSeconds: 300
+prompt: |
+  회색 게시판(`.board`)에 노란 메모(`.note`) 두 장이 붙어 있어요. 지금은 글자가 노란 영역 가장자리에 붙어 있고, 메모 두 장도 맞붙어 있어요. `.note` 규칙에 속성을 추가해 아래 세 가지를 만족시키세요.
+
+  1. 노란 영역 안에서 글자가 가장자리와 **위아래 10px, 왼쪽·오른쪽 20px** 떨어지게 하세요. 이 여백에도 노란색이 칠해져야 해요.
+  2. 노란 영역을 **4px 두께의 실선 테두리**(색 `#1f2937`)로 둘러싸세요.
+  3. 두 메모의 테두리 사이로 **게시판의 회색이 16px** 보이게 하세요.
+
+  게시판과 메모의 배경색은 그대로 두세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>메모 게시판</title>
+              <style>
+                .board {
+                  width: 320px;
+                  padding: 12px;
+                  background: #d1d5db;
+                }
+                .note {
+                  background: #fde68a;
+                  /* 여기에 속성을 추가하세요 */
+                }
+              </style>
+            </head>
+            <body>
+              <div class="board">
+                <div class="note" id="note1">우유 사기</div>
+                <div class="note" id="note2">박스 모델 복습하기</div>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>메모 게시판</title>
+              <style>
+                .board {
+                  width: 320px;
+                  padding: 12px;
+                  background: #d1d5db;
+                }
+                .note {
+                  background: #fde68a;
+                  padding: 10px 20px;
+                  border: 4px solid #1f2937;
+                  margin-bottom: 16px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="board">
+                <div class="note" id="note1">우유 사기</div>
+                <div class="note" id="note2">박스 모델 복습하기</div>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: inner-space-exists
+      description: 두 메모 모두 글자와 노란 영역 가장자리 사이(테두리 안쪽)에 네 방향 여백이 있어야 합니다.
+      requirement: 노란 영역 안쪽 여백
+      visible: true
+      selector: .note
+      all: true
+      expect:
+        computed:
+          padding-top: { px: { min: 10 } }
+          padding-right: { px: { min: 10 } }
+          padding-bottom: { px: { min: 10 } }
+          padding-left: { px: { min: 10 } }
+      misconceptionIfFail: css.mc.margin-is-inside
+    - kind: css
+      id: inner-space-values
+      description: 안쪽 여백이 위아래 10px, 왼쪽·오른쪽 20px이어야 합니다.
+      requirement: 노란 영역 안쪽 여백
+      visible: true
+      selector: .note
+      all: true
+      expect:
+        computed:
+          padding-top: { px: { value: 10 } }
+          padding-right: { px: { value: 20 } }
+          padding-bottom: { px: { value: 10 } }
+          padding-left: { px: { value: 20 } }
+      misconceptionIfFail: css.mc.shorthand-order
+    - kind: css
+      id: border-line
+      description: 두 메모 모두 네 방향에 4px 두께의 #1f2937 실선 테두리가 있어야 합니다.
+      requirement: 4px 실선 테두리
+      visible: true
+      selector: .note
+      all: true
+      expect:
+        computed:
+          border-top-width: { px: { value: 4 } }
+          border-right-width: { px: { value: 4 } }
+          border-bottom-width: { px: { value: 4 } }
+          border-left-width: { px: { value: 4 } }
+          border-top-style: { equals: solid }
+          border-left-style: { equals: solid }
+          border-top-color: { color: "#1f2937" }
+    - kind: layout
+      id: gray-gap
+      description: 첫 번째 메모의 테두리 아래 끝과 두 번째 메모의 테두리 위 끝 사이가 16px이어야 합니다.
+      requirement: 메모 사이 회색 16px
+      visible: true
+      a: "#note1"
+      b: "#note2"
+      gap: { axis: y, min: 16, max: 16 }
+      tolerancePx: 1
+    - kind: css
+      id: colors-kept
+      description: 메모의 노란 배경색은 그대로여야 합니다.
+      requirement: 배경색 유지
+      selector: .note
+      all: true
+      expect:
+        computed:
+          background-color: { color: "#fde68a" }
+    - kind: css
+      id: board-kept
+      description: 게시판의 회색 배경색과 너비는 그대로여야 합니다.
+      requirement: 배경색 유지
+      selector: .board
+      expect:
+        computed:
+          background-color: { color: "#d1d5db" }
+          width: { px: { value: 320 } }
+misconceptions: [css.mc.margin-is-inside, css.mc.shorthand-order]
+hints:
+  - 세 요구를 테두리를 기준으로 나눠 보세요. 노란색이 칠해지는 여백은 테두리의 안쪽일까요, 바깥쪽일까요? 회색이 보이는 틈은요?
+  - 배경색은 테두리 안쪽에만 칠해지고, 테두리 바깥 영역은 투명해서 부모의 색이 보여요. 레슨의 네 영역 표에서 각 영역을 정하는 속성을 찾아보세요.
+  - 여백의 값이 위아래와 좌우가 다르면 단축 속성에 값을 두 개 써요. 값이 2개일 때 어떤 순서로 읽히는지 떠올려 보세요. 메모 사이 틈은 첫 메모의 아래쪽 바깥 간격 하나로도 만들 수 있어요.
+explanation: |
+  예시 정답은 `.note`에 아래 세 줄을 추가하는 거예요.
+
+  ```css
+  padding: 10px 20px;
+  border: 4px solid #1f2937;
+  margin-bottom: 16px;
+  ```
+
+  - **노란색이 칠해지는 여백**은 테두리 안쪽이라 `padding`이에요. 배경색은 content와 padding에 칠해져요. 값이 2개면 "위아래, 좌우" 순서라 `10px 20px`이에요.
+  - **실선 테두리**는 `border`로 두께·모양·색을 한 번에 써요.
+  - **회색이 보이는 틈**은 테두리 바깥이라 `margin`이에요. margin은 투명해서 부모인 게시판의 회색이 보여요. `margin: 16px 0;`처럼 위아래 모두 줘도 맞닿은 두 margin이 겹쳐서 16px로 보이므로 정답이에요.
+
+  자주 틀리는 경우는 이래요.
+
+  - 틈을 `padding`으로 만들면 노란 영역이 커질 뿐 메모는 여전히 맞붙어 있어요. 회색이 보이려면 테두리 바깥의 margin이어야 해요.
+  - `padding: 20px 10px;`로 쓰면 위아래 20px, 좌우 10px이 돼요. 단축 속성은 위에서 시작해 시계 방향으로 읽어요.
+  - 테두리를 `margin`이나 `padding` 값으로 흉내 내도 선은 그려지지 않아요. 선은 `border`만 그려요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -670,3 +670,18 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - 펼침은 그대로 네이티브 `<details>`/`<summary>`라 펼침 상태는 브라우저가 알립니다(`aria-expanded`를 따로 두지 않음). 상자는 `role="group"`과 이름 "해설"로 묶고, 보이는 머리말은 이름과 겹치지 않게 `aria-hidden`입니다. 문제마다 랜드마크(`region`)가 생기면 랜드마크 목록이 시끄러워져 쓰지 않았습니다.
 - 레슨 `<Reveal>`은 이미 테두리 상자 전체가 펼침이라 바꾸지 않았고, 단원 평가 결과의 해설은 "해설" 제목이 있는 별도 구성이라 그대로 둡니다.
 - 상세: [UI/UX 설계 컴포넌트 목록의 FeedbackBanner](/docs/design/ui-ux.md).
+
+## D-081. 단원 통과의 개념 조건은 세트 안 성과로 — `확정`
+
+- 2026-11-17, 학습자 보고에 따른 조율자 결정. 학습자 보고: "연습을 마치고 통과 기준에 못 미쳐서 다시 연습했고 전부 맞췄는데 아직도 통과 기준에 못 미친다고 뜬다."
+- 원인: 통과 규칙의 개념 조건 `minConceptScore`(50)가 장기 숙련도 `concept_mastery.score`를 썼습니다. 이 점수는 여러 세션과 복습 간격에 걸쳐 쌓이도록 설계되어(반복·저난이도 감쇠, 단계 게이트) 한 세트로는 잘 오르지 않습니다. `html.basics.how-web-works`에서는 두 번째 세트를 전부 맞혀도 `html.web.client-server`가 40.4였고, `html.basics.document` 첫 세트에서는 13문제 중 11문제(신용 정답률 0.954)를 맞혔는데 소개 개념 5개가 모두 50 미만(최고 34.4)이라 통과하지 못했습니다.
+- **개념 조건을 세트 안 성과로 판정합니다(`minConceptCredit`, 기본 0.6).** 단원이 소개하는 개념마다, 이번 세트에서 그 개념이 주 개념(가중치 1)인 항목들의 신용 정답률(`o × W_hint × W_try` 평균, 건너뜀 0)이 0.6 이상이고 그중 1개 이상을 맞혀야 합니다(마지막 시도 `o ≥ 0.5`). 세트에 그 개념 항목이 없으면 판정에서 뺍니다(점수 조건으로 되돌리지 않음). 재학습 항목은 다른 기준과 같이 뺍니다.
+  - 근거: 단원 완료는 "이번 단원 내용을 이해했는가"를 묻는 판정이고, 장기 점수는 "얼마나 오래 기억하고 연습했는가"를 나타냅니다. 장기 점수를 쓰면 몇 문제만 틀려도(또는 다 맞혀도) 막힙니다. 개념별 바닥선은 세트 전체 정답률이 높아도 한 개념을 통째로 놓친 경우를 잡습니다. 0.6은 2문항 중 1개만 맞히면(0.5) 미달, 3문항 중 2개면(0.67) 충족이 되는 값입니다.
+  - 버린 대안: "세트에서 그 개념 문제를 모두 첫 시도에 맞히면 점수 조건 예외"(이 결정의 첫 안. 몇 문제만 틀려도 여전히 장기 점수에 막힘), 기준 점수 낮추기·감쇠 완화(점수의 의미가 바뀌고 복습·약점 판정에 영향).
+- **`concept_mastery.score`는 그대로 개념 지도, 복습, 약점 판정, `mastered` 게이트에 씁니다.** 단원 완료 판정에만 쓰지 않습니다.
+- **필드**: `PassRule.minConceptScore`를 `minConceptCredit`으로 바꿨습니다. `lesson.yaml`의 `practice.passRule.minConceptCredit`(0~1)으로 단원별로 덮어쓸 수 있습니다. 이미 저장된 세트의 `pass_rule_json.minConceptScore`는 호환용으로 읽기만 하고 무시하며, `minConceptCredit`이 없으면 엔진 기본값을 씁니다. `result_json`에는 개념별 `{conceptId, credit, correct, total, met}`과 미달 개념(`below`)을 담고, 이전 결과의 `minConceptScore`는 그대로 읽힙니다. 학습 엔진 `1.3.0`.
+- **요약 화면**: 미달 개념마다 "‘요소’ 이번 연습 1/3 정답"과 다음 행동(한 번 더 연습, 약점 집중, 다음 단원으로 넘어가도 됨)을 같은 목록 항목에 두어 스크린 리더도 함께 읽습니다.
+- **통과하지 못해도 "다음 단원"을 늘 보여 줍니다.** 설계는 처음부터 "통과하지 못해도 다음 단원을 막지 않는다"였지만, 요약 화면이 통과했을 때만 다음 단원 링크를 보여 줘 학습자는 막힌 것으로 느꼈습니다. 통과하지 못했을 때는 "한 번 더 연습"이 주 버튼, "다음 단원으로: (제목)"이 보조 버튼입니다. 다음 단원 진입을 실제로 막는 곳은 서버·화면 어디에도 없었습니다.
+- **콘텐츠를 보강합니다.** HTML/CSS에서 주 개념 문제가 3개 이하이고 모두 난이도 2 이하인 개념이 19개였습니다. 작은 풀은 세트를 다시 해도 같은 문제가 반복됩니다. `html.web.client-server`에 난이도 2~3 문제 3개를 더하고, 같은 상황의 개념 중 단원 상한(HTML/CSS 6~12개)에 자리가 있는 단원의 개념 5개(`html.text.emphasis`, `html.content.paths`, `css.box.areas`, `css.units.length`, `css.type.font-properties`)에 2개씩, 모두 13개를 더했습니다(유형 구성비 ±10%p 안). 독립 AI 검토자가 전수 검토해 승인했습니다([검토 기록](/docs/reviews/2026-11-17-d081-htmlcss-concept-items-review.md)). 여섯 단원의 `practice.targetCount`를 새 승인 수에 맞췄습니다.
+  - `html.basics.how-web-works`는 15개가 되어 상한 12를 넘고 `unit-count-over` 경고 1개가 남습니다. 이 단원의 개념 3개가 모두 작은 풀이라 기존 문제를 빼면 다른 개념이 같은 상황이 되므로 상한을 넘는 쪽을 택했습니다(상한 초과는 원래 경고만 내는 규칙). 단원이 이미 12개인 `document`·`forms`·`flex-basics`의 같은 상황 개념(`html.doc.*` 4개, `html.forms.inputs`·`labels`·`buttons`, `css.flex.container`·`axes`)과 `html.content.links`, `html.text.paragraphs`, `css.box.spacing`, `css.colors.notation`은 이번에 보강하지 않았습니다.
+- 상세: [학습 엔진 설계 단원 연습 세트](/docs/design/learning-engine.md#단원-연습-세트), [구현 메모 (D-081)](/docs/design/learning-engine.md#구현-메모-d-081), [UI/UX 설계 단원 완료 순간](/docs/design/ui-ux.md#단원-완료-순간).

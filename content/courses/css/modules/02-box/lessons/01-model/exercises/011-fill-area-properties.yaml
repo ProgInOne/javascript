@@ -1,0 +1,107 @@
+id: css.box.model.fill-area-properties
+type: fill_blank
+difficulty: 2
+concepts:
+  - { id: css.box.areas, weight: 1 }
+tags: [box-model, padding, border, margin]
+estimatedSeconds: 90
+prompt: |
+  회색 틀(`.frame`) 안의 노란 상자(`.box`)를 아래 그림처럼 만들려고 해요.
+
+  1. 글자 둘레로 **노란색이 16px 더** 칠해져요.
+  2. 그 노란 영역을 **3px 두께의 진한 선**이 둘러싸요.
+  3. 선 바깥으로는 노란색이 아니라 **틀의 회색이 24px** 보여요.
+
+  빈칸에 알맞은 **속성 이름**을 쓰세요.
+spec:
+  mode: code
+  lang: html
+  template: |
+    <style>
+      .frame {
+        background: #d1d5db;
+        border: 1px solid #9ca3af;
+      }
+      .box {
+        background: #fde68a;
+        {{blank:inner}}: 16px;
+        {{blank:line}}: 3px solid #1f2937;
+        {{blank:outer}}: 24px;
+      }
+    </style>
+    <div class="frame">
+      <div class="box">노란 상자</div>
+    </div>
+  blanks:
+    - id: inner
+      accept: ["padding"]
+      width: 10
+    - id: line
+      accept: ["border"]
+      width: 10
+    - id: outer
+      accept: ["margin"]
+      width: 10
+  checks:
+    - kind: css
+      id: yellow-around-text
+      description: 글자와 선 사이(테두리 안쪽)에 네 방향 모두 16px의 여백이 있어야 합니다.
+      requirement: 글자 둘레 노란색 16px
+      visible: true
+      selector: .box
+      expect:
+        computed:
+          padding-top: { px: { value: 16 } }
+          padding-right: { px: { value: 16 } }
+          padding-bottom: { px: { value: 16 } }
+          padding-left: { px: { value: 16 } }
+      misconceptionIfFail: css.mc.margin-is-inside
+    - kind: css
+      id: dark-line
+      description: 노란 영역을 네 방향 모두 3px 두께의 실선이 둘러싸야 합니다.
+      requirement: 3px 진한 선
+      visible: true
+      selector: .box
+      expect:
+        computed:
+          border-top-width: { px: { value: 3 } }
+          border-right-width: { px: { value: 3 } }
+          border-bottom-width: { px: { value: 3 } }
+          border-left-width: { px: { value: 3 } }
+          border-top-style: { equals: solid }
+    - kind: css
+      id: gray-outside
+      description: 선 바깥(테두리 바깥)에 네 방향 모두 24px의 간격이 있어야 합니다.
+      requirement: 선 바깥 회색 24px
+      visible: true
+      selector: .box
+      expect:
+        computed:
+          margin-top: { px: { value: 24 } }
+          margin-right: { px: { value: 24 } }
+          margin-bottom: { px: { value: 24 } }
+          margin-left: { px: { value: 24 } }
+      misconceptionIfFail: css.mc.background-under-margin
+misconceptions: [css.mc.margin-is-inside, css.mc.background-under-margin]
+hints:
+  - 세 가지 요구는 상자의 서로 다른 영역을 말해요. 진한 선을 기준으로 각 요구가 선의 안쪽인지 바깥쪽인지 나눠 보세요.
+  - 배경색이 칠해지는 여백과 배경색이 칠해지지 않아 부모의 색이 보이는 간격은 서로 다른 영역이에요.
+  - 선 자체는 테두리, 선 안쪽의 칠해지는 여백은 안쪽 여백, 선 바깥의 투명한 간격은 바깥 간격이에요. 각각을 정하는 속성 이름을 떠올려 보세요.
+explanation: |
+  정답은 차례로 **`padding`**, **`border`**, **`margin`**이에요.
+
+  | 요구 | 영역 | 속성 |
+  |---|---|---|
+  | 글자 둘레로 노란색이 16px 더 칠해짐 | 테두리 안쪽 여백 | `padding` |
+  | 3px 진한 선 | 테두리 | `border` |
+  | 선 바깥으로 틀의 회색이 24px 보임 | 테두리 바깥 간격 | `margin` |
+
+  배경색은 content와 padding 영역에 칠해지므로, 노란색을 글자 둘레로 넓히려면 `padding`을 써요. margin은 항상 투명해서 그 자리에는 부모인 `.frame`의 회색이 보여요.
+
+  - 첫 빈칸과 마지막 빈칸을 바꿔 썼다면 padding과 margin의 위치를 반대로 기억한 거예요. 그러면 노란색이 24px 칠해지고, 바깥 회색은 16px만 보여요.
+  - 마지막 빈칸에 `padding`을 쓰면 회색 대신 노란색이 넓어질 뿐이에요. 배경색은 margin까지 칠해지지 않는다는 점이 이 둘을 가르는 기준이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,181 @@
+id: css.styling.typography.web-quote-font
+type: web_task
+difficulty: 3
+concepts:
+  - { id: css.type.font-properties, weight: 1 }
+  - { id: css.units.rem-em, weight: 0.3 }
+  - { id: css.cascade.inheritance, weight: 0.3 }
+tags: [font-family, font-size, font-weight, fallback, web-task]
+estimatedSeconds: 300
+prompt: |
+  책 소개 카드(`.card`)에 인용문(`.quote`)을 넣었어요. 인용문이 본문과 똑같아 보여서 눈에 띄지 않아요. `.quote`와 `.source` 규칙에 속성을 추가해 아래 세 가지를 만족시키세요.
+
+  1. 인용문(출처 포함)의 글꼴: `Georgia`로 보여 주고, Georgia가 없는 기기에서는 **명조 계열 일반 글꼴**로 보이게 하세요. 목록에는 이 두 이름만 쓰세요.
+  2. 인용문의 글자 크기: **루트 글자 크기(16px)의 1.25배**인 20px로 하세요. 카드의 글자 크기(14px)와는 상관없어야 해요.
+  3. 출처(`.source`)만 **굵게**(`bold`, 숫자로 700) 하세요. 인용문 본문은 보통 굵기 그대로예요.
+
+  카드 본문(`.desc`)은 그대로 두세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>책 소개</title>
+              <style>
+                body {
+                  font-family: sans-serif;
+                }
+                .card {
+                  width: 320px;
+                  padding: 16px;
+                  border: 1px solid #9ca3af;
+                  font-size: 14px;
+                }
+                .quote {
+                  margin: 0 0 12px;
+                  color: #374151;
+                  /* 1, 2번 속성을 추가하세요 */
+                }
+                .source {
+                  margin: 8px 0 0;
+                  /* 3번 속성을 추가하세요 */
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <div class="quote">
+                  <p class="line">읽기 좋은 글은 읽기 좋은 간격에서 나온다.</p>
+                  <p class="source">타이포그래피 입문</p>
+                </div>
+                <p class="desc">글꼴과 줄 간격을 처음 배우는 사람을 위한 책이에요.</p>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>책 소개</title>
+              <style>
+                body {
+                  font-family: sans-serif;
+                }
+                .card {
+                  width: 320px;
+                  padding: 16px;
+                  border: 1px solid #9ca3af;
+                  font-size: 14px;
+                }
+                .quote {
+                  margin: 0 0 12px;
+                  color: #374151;
+                  font-family: Georgia, serif;
+                  font-size: 1.25rem;
+                }
+                .source {
+                  margin: 8px 0 0;
+                  font-weight: bold;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <div class="quote">
+                  <p class="line">읽기 좋은 글은 읽기 좋은 간격에서 나온다.</p>
+                  <p class="source">타이포그래피 입문</p>
+                </div>
+                <p class="desc">글꼴과 줄 간격을 처음 배우는 사람을 위한 책이에요.</p>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: quote-family
+      description: 인용문 본문과 출처의 글꼴 목록이 Georgia, 그다음 명조 계열 일반 글꼴 순서여야 합니다.
+      requirement: Georgia와 대안 글꼴
+      visible: true
+      selector: .quote p
+      all: true
+      expect:
+        computed:
+          font-family: { equals: "Georgia, serif" }
+      misconceptionIfFail: css.mc.font-family-guaranteed
+    - kind: css
+      id: quote-size
+      description: 인용문 본문과 출처의 글자 크기가 20px이어야 합니다.
+      requirement: 인용문 크기 20px
+      visible: true
+      selector: .quote p
+      all: true
+      expect:
+        computed:
+          font-size: { px: { value: 20 } }
+    - kind: css
+      id: source-bold
+      description: 출처가 굵게(700 이상) 보여야 합니다.
+      requirement: 출처만 굵게
+      visible: true
+      selector: .source
+      expect:
+        computed:
+          font-weight: { numeric: { min: 700 } }
+    - kind: css
+      id: line-normal
+      description: 인용문 본문은 보통 굵기(400)여야 합니다.
+      requirement: 출처만 굵게
+      visible: true
+      selector: .line
+      expect:
+        computed:
+          font-weight: { numeric: { max: 400 } }
+    - kind: css
+      id: desc-kept
+      description: 카드 본문의 글꼴(sans-serif), 크기 14px, 보통 굵기는 그대로여야 합니다.
+      requirement: 카드 본문 유지
+      selector: .desc
+      expect:
+        computed:
+          font-family: { equals: sans-serif }
+          font-size: { px: { value: 14 } }
+          font-weight: { numeric: { max: 400 } }
+misconceptions: [css.mc.font-family-guaranteed]
+hints:
+  - 세 요구는 각각 `font-family`, `font-size`, `font-weight` 하나씩에 대응해요. 글꼴과 크기는 상속되니, 인용문 본문과 출처를 감싸는 `.quote`에 한 번만 주면 돼요.
+  - 글꼴 목록은 앞에서부터 찾으니 원하는 글꼴을 먼저, 어느 기기에나 있는 일반 글꼴 이름을 마지막에 써요. 크기는 부모(카드 14px)가 아니라 루트를 기준으로 하는 단위를 쓰세요.
+  - 고딕 계열 일반 글꼴 이름이 `sans-serif`라면 명조 계열은 무엇일까요? 루트 글자 크기의 배수로 쓰는 단위는 이전 단원에서 배웠어요. 굵게는 `.quote`가 아니라 출처에만 주세요.
+explanation: |
+  예시 정답은 아래와 같아요.
+
+  ```css
+  .quote {
+    font-family: Georgia, serif;
+    font-size: 1.25rem;
+  }
+  .source {
+    font-weight: bold;
+  }
+  ```
+
+  - **글꼴**: `font-family`는 앞에서부터 기기에 있는 첫 글꼴을 써요. Georgia가 없는 기기에서도 명조 계열을 지키려면 마지막에 일반 글꼴 이름 `serif`를 둬요. `.quote`에 주면 안의 두 문단이 물려받아요.
+  - **크기**: `rem`은 루트(16px)를 기준으로 해서 `1.25rem`이 20px이에요. `font-size: 20px`로 써도 정답이에요. `1.25em`은 부모인 카드 14px을 기준으로 해서 17.5px이 되므로 틀려요.
+  - **굵기**: `font-weight: bold`(또는 `700`)를 `.source`에만 줘요. `.quote`에 주면 인용문 본문까지 굵어져요.
+
+  자주 틀리는 경우는 이래요.
+
+  - `font-family: Georgia;`만 쓰면 Georgia가 없는 기기에서 브라우저의 기본 글꼴로 보여서 명조 계열이 보장되지 않아요. 대안 일반 글꼴 이름을 꼭 마지막에 둬요.
+  - `font-family: serif, Georgia;`처럼 순서를 바꾸면 `serif`가 언제나 먼저 선택돼서 Georgia가 쓰이지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

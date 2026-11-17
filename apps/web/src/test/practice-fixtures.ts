@@ -73,7 +73,7 @@ export function practiceSet(over: Partial<PracticeSetView> = {}): PracticeSetVie
     items,
     progress: { total: items.length, answered: 0, skipped: 0, pending: items.length },
     nextItemId: items[0]?.id ?? null,
-    passRule: { minCorrect: 0.7, minConceptScore: 50, minDistinctTypes: 2, minLevel3Correct: 0 },
+    passRule: { minCorrect: 0.7, minConceptCredit: 0.6, minDistinctTypes: 2, minLevel3Correct: 0 },
     result: null,
     createdAt: 1,
     completedAt: null,
@@ -195,7 +195,7 @@ export function attemptResponse(
               checks: {
                 allAnswered: true,
                 minCorrect: { met: true, required: 0.7, actual: 1 },
-                minConceptScore: { met: true, required: 50, actual: 60, below: [] },
+                minConceptCredit: { met: true, required: 0.6, actual: 1, below: [], concepts: [] },
                 minDistinctTypes: { met: true, required: 2, actual: 2 },
                 minLevel3Correct: { met: true, required: 0, actual: 0 },
               },

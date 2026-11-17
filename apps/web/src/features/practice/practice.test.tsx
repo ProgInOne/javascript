@@ -288,6 +288,51 @@ describe('practice mode', () => {
     );
   });
 
+  it('keeps the next lesson open when the set did not pass (D-081)', async () => {
+    const items = practiceSet().items.map((i) => ({
+      ...i,
+      status: 'answered' as const,
+      attempts: 1,
+      lastOutcome: 'correct' as const,
+    }));
+    const concept = { id: 'js.basics.console-log', title: 'console.log로 출력하기' };
+    const failed = practiceSet({
+      status: 'completed',
+      items,
+      progress: { total: 2, answered: 2, skipped: 0, pending: 0 },
+      nextItemId: null,
+      result: {
+        total: 2,
+        answered: 2,
+        skipped: 0,
+        correct: 1,
+        pass: {
+          passed: false,
+          checks: {
+            allAnswered: true,
+            minCorrect: { met: false, required: 0.7, actual: 0.5 },
+            minConceptCredit: {
+              met: false,
+              required: 0.6,
+              actual: 0.5,
+              below: [concept],
+              concepts: [{ ...concept, credit: 0.5, correct: 1, total: 2, met: false }],
+            },
+            minDistinctTypes: { met: false, required: 2, actual: 1 },
+            minLevel3Correct: { met: true, required: 0, actual: 0 },
+          },
+        },
+      },
+    });
+    renderApp(`/learn/${LESSON_ID}?mode=practice&set=${SET_ID}`, practiceApi(failed));
+    expect(await screen.findByRole('heading', { name: '연습을 마쳤어요' })).toBeVisible();
+    expect(screen.getByText('‘console.log로 출력하기’ 이번 연습 1/2 정답')).toBeVisible();
+    expect(screen.getByRole('button', { name: '한 번 더 연습' })).toHaveClass('pi-button--primary');
+    const next = screen.getByRole('link', { name: /다음 단원으로: 오류 읽기/ });
+    expect(next).toHaveAttribute('href', '/learn/js-basics.start.reading-errors');
+    expect(next).toHaveClass('pi-button--secondary');
+  });
+
   it('resizes the problem panel on wide screens and remembers the share per type (D-067)', async () => {
     vi.stubGlobal(
       'matchMedia',

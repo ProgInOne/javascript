@@ -1,0 +1,69 @@
+id: html.basics.how-web-works.fill-request-order
+type: fill_blank
+difficulty: 3
+concepts:
+  - { id: html.web.client-server, weight: 1 }
+  - { id: html.web.rendering, weight: 0.3 }
+tags: [client-server, request, response, order]
+estimatedSeconds: 120
+prompt: |
+  동물원 소개 페이지 `zoo.html`에는 그림 파일 `panda.jpg`가 하나 적혀 있어요. 처음 가 보는 이 페이지의 주소를 입력했을 때 일어나는 일을 뒤섞어 적었어요.
+
+  - **A**: 서버가 `panda.jpg`를 응답으로 보낸다
+  - **B**: 브라우저가 서버에 `zoo.html`을 요청한다
+  - **C**: 브라우저가 받은 HTML을 읽다가 `panda.jpg`가 필요하다는 것을 알고, 서버에 `panda.jpg`를 요청한다
+  - **D**: 서버가 `zoo.html`을 응답으로 보낸다
+  - **E**: 브라우저가 판다 그림까지 넣어 페이지를 모두 그린다
+
+  일어나는 순서대로 빈칸에 알파벳을 하나씩 쓰세요.
+spec:
+  mode: text
+  template: |
+    1번째: {{blank:s1}}
+    2번째: {{blank:s2}}
+    3번째: {{blank:s3}}
+    4번째: {{blank:s4}}
+    5번째: {{blank:s5}}
+  blanks:
+    - id: s1
+      accept: ["B"]
+      caseSensitive: false
+      width: 3
+    - id: s2
+      accept: ["D"]
+      caseSensitive: false
+      width: 3
+    - id: s3
+      accept: ["C"]
+      caseSensitive: false
+      width: 3
+    - id: s4
+      accept: ["A"]
+      caseSensitive: false
+      width: 3
+    - id: s5
+      accept: ["E"]
+      caseSensitive: false
+      width: 3
+misconceptions: []
+hints:
+  - 브라우저가 처음부터 `panda.jpg`가 필요하다는 것을 알 수 있을까요? 그림 파일 이름은 어느 파일 안에 적혀 있나요?
+  - 요청이 있어야 응답이 와요. 그리고 브라우저는 `zoo.html`을 받아서 읽어 봐야 그 안에 그림이 적혀 있다는 것을 알 수 있어요.
+  - 요청과 응답은 필요한 파일마다 한 쌍씩, 모두 두 번 오가요. 각 응답은 짝이 되는 요청 바로 뒤에 오고, 판다 그림이 들어간 페이지를 모두 그리는 일은 필요한 파일을 다 받은 뒤에야 할 수 있어요.
+explanation: |
+  정답은 **B → D → C → A → E**예요.
+
+  1. **B**: 브라우저는 처음에 주소에 해당하는 `zoo.html`만 알아요. 그래서 먼저 `zoo.html`을 요청해요.
+  1. **D**: 서버가 `zoo.html`을 응답으로 보내요.
+  1. **C**: 브라우저가 HTML을 읽다가 `panda.jpg`가 적혀 있는 것을 보고, 그 파일도 서버에 요청해요.
+  1. **A**: 서버가 `panda.jpg`를 응답으로 보내요.
+  1. **E**: 그림까지 받아야 판다 그림이 들어간 페이지를 모두 그릴 수 있어요.
+
+  - C를 B나 D보다 앞에 두었다면, 그림 파일 이름은 `zoo.html` 안에 적혀 있어서 HTML을 받아 읽기 전에는 알 수 없다는 점을 떠올려 보세요.
+  - A를 C보다 앞에 두었다면, 서버는 요청이 와야 파일을 보낸다는 점을 떠올려 보세요. 서버는 브라우저가 무엇을 필요로 할지 미리 알아서 보내 주지 않아요.
+  - 이처럼 페이지 하나를 열 때도 요청과 응답은 필요한 파일마다 따로 오가요. HTML 안에 CSS 파일이 적혀 있을 때도 마찬가지예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -32,6 +32,8 @@ export interface PassRuleItem {
   } | null;
   /** The first attempt of the item had `o ≥ 0.5`. */
   readonly firstAttemptCorrect: boolean;
+  /** Primary concepts of the item (`weight = 1`); omitted = none (D-081). */
+  readonly primaryConceptIds?: readonly ConceptId[];
 }
 
 export interface PassCheck {
@@ -40,12 +42,35 @@ export interface PassCheck {
   readonly actual: number;
 }
 
+/** One introduced concept's items in the set (D-081). */
+export interface ConceptCredit {
+  readonly conceptId: ConceptId;
+  /** Credited correctness of the concept's items (`o × W_hint × W_try` mean, skipped = 0). */
+  readonly credit: number;
+  /** Items answered correctly (last attempt `o ≥ 0.5`). */
+  readonly correct: number;
+  /** Items with the concept as a primary concept. */
+  readonly total: number;
+  readonly met: boolean;
+}
+
+/**
+ * `minConceptCredit` check: `actual` is the lowest concept credit (1 when no concept is judged).
+ * Introduced concepts without an item in the set are left out (`concepts` lacks them).
+ */
+export interface ConceptCreditCheck extends PassCheck {
+  /** Concepts under the bar, sorted. */
+  readonly below: readonly ConceptId[];
+  /** Every judged concept, sorted by ID. */
+  readonly concepts: readonly ConceptCredit[];
+}
+
 export interface PassResult {
   readonly passed: boolean;
   readonly checks: {
     readonly allAnswered: boolean;
     readonly minCorrect: PassCheck;
-    readonly minConceptScore: PassCheck & { readonly below: readonly ConceptId[] };
+    readonly minConceptCredit: ConceptCreditCheck;
     readonly minDistinctTypes: PassCheck;
     readonly minLevel3Correct: PassCheck;
   };
@@ -66,17 +91,48 @@ function itemCredit(config: EngineConfig, item: PassRuleItem): number {
 }
 
 /**
+ * Per-concept performance in the set (D-081): for each introduced concept with at least one
+ * primary item, the credited correctness of those items and how many were answered correctly.
+ * A concept meets the bar with `credit ≥ minConceptCredit` and at least one correct item.
+ */
+export function conceptCredits(
+  config: EngineConfig,
+  rule: PassRule,
+  items: readonly PassRuleItem[],
+  introducedConceptIds: readonly ConceptId[],
+): ConceptCredit[] {
+  return [...new Set(introducedConceptIds)].sort().flatMap((conceptId) => {
+    const mine = items.filter((item) => item.primaryConceptIds?.includes(conceptId) ?? false);
+    if (mine.length === 0) return [];
+    const credit = mine.reduce((sum, item) => sum + itemCredit(config, item), 0) / mine.length;
+    const correct = mine.filter(
+      (item) => item.status === 'answered' && (item.finalAttempt?.o ?? 0) >= 0.5,
+    ).length;
+    return [
+      {
+        conceptId,
+        credit,
+        correct,
+        total: mine.length,
+        met: credit >= rule.minConceptCredit - 1e-9 && correct >= 1,
+      },
+    ];
+  });
+}
+
+/**
  * Lesson set pass rule (learning-engine.md#단원-연습-세트): every item answered or skipped,
- * credited correctness (`o × W_hint × W_try` mean over items, skipped = 0), every introduced
- * concept's score, distinct correct types, and L3+ first-try correct answers.
+ * credited correctness (`o × W_hint × W_try` mean over items, skipped = 0), each introduced
+ * concept's credited correctness within the set (`conceptCredits`), distinct correct types, and
+ * L3+ first-try correct answers. The long-term `concept_mastery.score` is not used (D-081).
  */
 export function evaluatePassRule(
   config: EngineConfig,
   rule: PassRule,
   input: {
     readonly items: readonly PassRuleItem[];
-    /** Current `concept_mastery.score` of the lesson's introduced concepts. */
-    readonly introducedScores: Readonly<Record<ConceptId, number>>;
+    /** Concepts the lesson introduces. */
+    readonly introducedConceptIds: readonly ConceptId[];
   },
 ): PassResult {
   const { items } = input;
@@ -85,11 +141,9 @@ export function evaluatePassRule(
     items.length === 0
       ? 0
       : items.reduce((sum, item) => sum + itemCredit(config, item), 0) / items.length;
-  const below = Object.entries(input.introducedScores)
-    .filter(([, score]) => score < rule.minConceptScore)
-    .map(([id]) => id)
-    .sort();
-  const lowest = Math.min(...Object.values(input.introducedScores), 100);
+  const concepts = conceptCredits(config, rule, items, input.introducedConceptIds);
+  const below = concepts.filter((c) => !c.met).map((c) => c.conceptId);
+  const lowest = Math.min(...concepts.map((c) => c.credit), 1);
   const types = new Set(
     items
       .filter((item) => item.status === 'answered' && (item.finalAttempt?.o ?? 0) >= 0.5)
@@ -100,11 +154,12 @@ export function evaluatePassRule(
   const checks = {
     allAnswered,
     minCorrect: { met: credit >= rule.minCorrect, required: rule.minCorrect, actual: credit },
-    minConceptScore: {
+    minConceptCredit: {
       met: below.length === 0,
-      required: rule.minConceptScore,
+      required: rule.minConceptCredit,
       actual: lowest,
       below,
+      concepts,
     },
     minDistinctTypes: {
       met: types >= rule.minDistinctTypes,
@@ -121,7 +176,7 @@ export function evaluatePassRule(
     passed:
       allAnswered &&
       checks.minCorrect.met &&
-      checks.minConceptScore.met &&
+      checks.minConceptCredit.met &&
       checks.minDistinctTypes.met &&
       checks.minLevel3Correct.met,
     checks,
