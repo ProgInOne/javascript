@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig, devices } from '@playwright/test';
 import { buildContent } from '../tools/content-cli/src/build.ts';
 import { exerciseKit } from '../tools/content-cli/src/kit.ts';
+import { removeRunTempRoot, startRunTempRoot } from '../tools/test-tmp.ts';
 
 /**
  * Performance check (`pnpm perf`, docs/reviews/2026-11-16-m7-performance.md): the production
@@ -12,6 +13,13 @@ import { exerciseKit } from '../tools/content-cli/src/kit.ts';
  * fresh learner in a temporary data directory. Measures NFR-01·02·03 in Chromium and fails when
  * a median misses its target.
  */
+// Every temporary folder of this run (data dirs, fixture content, servers' own) goes under one
+// root, removed when the main process exits; workers inherit it and do not make their own.
+const runRoot = startRunTempRoot('perf');
+if (runRoot)
+  process.on('exit', () => {
+    removeRunTempRoot(runRoot);
+  });
 const PORT = Number(process.env['PERF_PORT'] ?? 4660);
 const dataDir = process.env['PERF_DATA_DIR'] ?? mkdtempSync(join(tmpdir(), 'proginone-perf-'));
 process.env['PERF_DATA_DIR'] = dataDir; // shared with the worker process

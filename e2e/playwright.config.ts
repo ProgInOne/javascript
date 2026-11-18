@@ -3,10 +3,18 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { defineConfig, devices } from '@playwright/test';
 import { buildFixtureContent } from './fixture-content.ts';
+import { removeRunTempRoot, startRunTempRoot } from '../tools/test-tmp.ts';
 
 // Runs the production build (`pnpm build` first) on its own port with a fresh data directory,
 // so tests never touch real learning data. Visual tests only run inside the Playwright Docker
 // image (PW_VISUAL=1) because font rendering differs between operating systems.
+// Every temporary folder of this run (data dirs, fixture content, servers' own) goes under one
+// root, removed when the main process exits; workers inherit it and do not make their own.
+const runRoot = startRunTempRoot('e2e');
+if (runRoot)
+  process.on('exit', () => {
+    removeRunTempRoot(runRoot);
+  });
 const PORT = Number(process.env['E2E_PORT'] ?? 4391);
 const dataDir = process.env['E2E_DATA_DIR'] ?? mkdtempSync(join(tmpdir(), 'proginone-e2e-'));
 process.env['E2E_DATA_DIR'] = dataDir; // shared with worker processes
