@@ -2,7 +2,7 @@ import type { LessonDetail, PracticeSetView } from '@proginone/shared';
 import { Button, EmptyState, ErrorState, Skeleton } from '@proginone/ui';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
-import { ArrowRight, BookOpen, RotateCcw } from 'lucide-react';
+import { ArrowRight, BookOpen, House, RotateCcw } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
 import { createPracticeSet, practiceSetQuery } from '../../api/queries.ts';
@@ -185,7 +185,16 @@ function LessonSet({ lesson, setId, item, navigate }: LessonPracticeProps & { se
             to="/"
             className={`pi-button pi-button--${passed ? 'primary' : 'secondary'} pi-button--md no-underline`}
           >
-            대시보드로
+            <House size={16} aria-hidden="true" />
+            홈으로
+          </Link>
+        )}
+        {/* Leave for the dashboard without going on (learner request); the last lesson's
+            action above already goes home. */}
+        {lesson.next && (
+          <Link to="/" className="pi-button pi-button--ghost pi-button--md no-underline">
+            <House size={16} aria-hidden="true" />
+            홈으로
           </Link>
         )}
       </>

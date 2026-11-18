@@ -51,6 +51,7 @@ test.describe('practice mode', () => {
       summary.getByText('이 단원의 개념마다 이번 연습에서 충분히 맞혔어요'),
     ).toBeVisible();
     await expect(summary.getByRole('link', { name: '다음 단원: 변수 선언' })).toBeVisible();
+    await expect(summary.getByRole('link', { name: '홈으로' })).toHaveAttribute('href', '/');
     // Firefox with Fission: axe crashes the page while walking the runner's frames, and
     // Playwright does not finish a reload of a page that had out-of-process frames
     // (docs/reviews/2026-11-16-m7-compatibility.md). NFR-13 is checked in Chromium.
