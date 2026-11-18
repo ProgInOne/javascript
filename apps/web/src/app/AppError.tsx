@@ -4,18 +4,46 @@ import { useEffect } from 'react';
 import type { ErrorComponentProps } from '@tanstack/react-router';
 import { ApiRequestError } from '../api/client.ts';
 import { reportClientError } from '../lib/client-errors.ts';
+import { isStaleBuildError, reloadForNewBuild } from '../lib/stale-build.ts';
 
 /** Page-level error (docs/design/ui-ux.md#공통-상태-디자인). Maintenance gets its own copy. */
 export function AppError({ error, reset }: ErrorComponentProps) {
   const client = useQueryClient();
   const api = error instanceof ApiRequestError ? error : null;
+  const staleBuild = isStaleBuildError(error);
   useEffect(() => {
+    // A screen chunk from an older build: reload once to pick up the new build (not a bug to report).
+    if (staleBuild) {
+      reloadForNewBuild();
+      return;
+    }
     reportClientError('boundary', error);
-  }, [error]);
+  }, [error, staleBuild]);
   const retry = () => {
     void client.resetQueries().then(reset);
   };
 
+  if (staleBuild) {
+    return (
+      <ErrorState
+        variant="page"
+        headingLevel={1}
+        title="앱이 새 버전으로 바뀌었어요"
+        description="이 화면은 이전 버전으로 열려 있어요. 새로고침하면 새 버전으로 이어서 할 수 있어요."
+        code="STALE_BUILD"
+        action={
+          <Button
+            variant="primary"
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
+            새로고침
+          </Button>
+        }
+      />
+    );
+  }
   if (api?.code === 'MAINTENANCE') {
     return (
       <ErrorState

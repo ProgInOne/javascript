@@ -16,6 +16,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ApiRequestError } from './api/client.ts';
 import { installGlobalErrorReporting } from './lib/client-errors.ts';
+import { installStaleBuildReload } from './lib/stale-build.ts';
 import { routeTree } from './routeTree.gen.ts';
 
 const queryClient = new QueryClient({
@@ -42,6 +43,7 @@ declare module '@tanstack/react-router' {
 }
 
 installGlobalErrorReporting();
+installStaleBuildReload();
 
 const root = document.getElementById('root');
 if (!root) throw new Error('#root is missing');
