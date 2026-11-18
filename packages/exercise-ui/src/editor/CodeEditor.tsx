@@ -33,7 +33,7 @@ import {
 } from '@codemirror/view';
 import { useEffect, useId, useImperativeHandle, useRef, type Ref } from 'react';
 import { FormatError, formatCode, type EditorLanguage } from './format.ts';
-import { editorHighlight, editorTheme } from './theme.ts';
+import { editorHighlight, editorTheme, selectionMarker } from './theme.ts';
 
 /** Imperative handle for toolbar buttons and console "go to line" links. */
 export interface CodeEditorHandle {
@@ -230,6 +230,7 @@ export function CodeEditor({
           EditorState.tabSize.of(2),
           indentUnit.of('  '),
           editorTheme,
+          selectionMarker,
           editorHighlight,
           c.language.of(languageExtension(language)),
           c.readOnly.of(readOnlyExt()),

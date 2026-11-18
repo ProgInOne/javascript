@@ -37,6 +37,11 @@ export const editorTheme = EditorView.theme({
   // Native selection inside the content (screen readers, copy) follows the same color.
   '.cm-content ::selection': { backgroundColor: 'var(--code-selection)' },
   '.cm-activeLine': { backgroundColor: 'var(--code-line-active)' },
+  // The active line paints above the selection layer, so while text is selected it steps aside:
+  // otherwise the line where a drag ends hides its part of the selection.
+  '&.cm-pi-has-selection .cm-activeLine, &.cm-pi-has-selection .cm-activeLineGutter': {
+    backgroundColor: 'transparent',
+  },
   '.cm-gutters': {
     backgroundColor: 'var(--code-gutter-bg)',
     color: 'var(--code-gutter-fg)',
@@ -65,6 +70,11 @@ export const editorTheme = EditorView.theme({
     color: 'var(--color-text-primary)',
   },
 });
+
+/** Marks the editor while any selection range is non-empty (see the `.cm-pi-has-selection` rule). */
+export const selectionMarker = EditorView.editorAttributes.compute(['selection'], (state) =>
+  state.selection.ranges.some((range) => !range.empty) ? { class: 'cm-pi-has-selection' } : {},
+);
 
 /** Syntax colors: jade keywords, blue functions, amber numbers, violet strings, neutral comments. */
 export const editorHighlight = syntaxHighlighting(

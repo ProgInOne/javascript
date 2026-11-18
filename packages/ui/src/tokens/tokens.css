@@ -298,8 +298,8 @@
   --code-gutter-fg: light-dark(var(--neutral-550), var(--neutral-400));
   --code-fg: light-dark(var(--neutral-900), var(--neutral-200));
   --code-line-active: light-dark(var(--jade-50), var(--neutral-850));
-  /* Editor selection: blue, not the jade of the active line, so a drag shows on that line too. */
-  --code-selection: light-dark(#cfe3ff, #1a3150);
+  /* Editor selection: a clear blue, not the jade of the active line (which steps aside while text is selected). */
+  --code-selection: light-dark(#c2dcff, #1a3150);
   --code-line-error: light-dark(var(--red-50), var(--red-950));
   --code-border: light-dark(var(--neutral-200), var(--neutral-800));
   --syn-keyword: light-dark(var(--violet-700), var(--violet-300));
