@@ -151,11 +151,16 @@ SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chr
 
 ## CI 실행 환경
 
-- 기본은 GitHub 호스트 runner입니다. 저장소 변수 `CI_RUNNER`가 `self-hosted`이면 같은 검사를 소유자 Mac의 self-hosted runner(`mac-proginone`)에서 돌립니다([D-055](/docs/decisions.md)).
-- self-hosted에서는 e2e·시각 회귀를 `tools/e2e-docker.sh`로 CI와 같은 Playwright 이미지에서 실행하므로 기준 이미지가 호환됩니다. Mac에서 Docker(Docker Desktop)가 켜져 있어야 합니다.
-- 전환: `gh variable set CI_RUNNER --body self-hosted`, 복귀: `gh variable delete CI_RUNNER`.
-- runner는 같은 Mac에 두 개(`mac-proginone` = `~/actions-runner`, `mac-proginone-2` = `~/actions-runner-2`)이고 작업이 동시에 두 개 돕니다. 두 runner가 `$HOME`을 같이 쓰므로 `pnpm/action-setup`은 runner별 임시 폴더(`runner.temp`)에 설치합니다.
+- CI는 GitHub 호스트 runner(`ubuntu-latest`)에서 돌고, e2e·시각 회귀는 Playwright 이미지(`mcr.microsoft.com/playwright:v1.65.1-noble`) 작업 컨테이너에서 돕니다. 공개 저장소라 사용 시간이 무료입니다([D-085](/docs/decisions.md)).
+- 2026-11-16~19에는 소유자 Mac의 self-hosted runner 두 개에서 돌렸습니다([D-055](/docs/decisions.md)). runner는 공개 전에 제거했고, 워크플로의 `CI_RUNNER=self-hosted` 분기는 저장소가 비공개일 때만 동작합니다. 공개 저장소에는 self-hosted runner를 다시 등록하지 않습니다.
 - CI를 기다릴 때는 `gh run watch <id> --interval 120 --exit-status`처럼 간격을 넓힙니다. 기본 3초 간격으로 여러 곳에서 기다리면 GitHub API 한도(시간당 5,000회)를 금방 넘습니다.
-- runner 관리: 각 runner 폴더(`~/actions-runner`, `~/actions-runner-2`)에서 `./svc.sh status`·`./svc.sh stop`·`./svc.sh start`. 제거는 `./svc.sh uninstall` 후 `./config.sh remove --token <GitHub에서 받은 제거 토큰>`.
-- 제한 시간: 검사 작업(lint·typecheck·test·build)은 30분, self-hosted E2E는 45분입니다. 같은 Mac에서 Docker E2E와 함께 돌면 검사 작업이 혼자 돌 때(약 10분)보다 크게 느려져, 15분 제한에 걸려 취소된 적이 있습니다. 작업이 "cancelled"로 끝나면 먼저 시작·종료 시각이 제한 시간과 맞는지 확인합니다.
-- 저장소를 공개로 바꾸기 전에는 self-hosted runner를 반드시 제거합니다.
+- 제한 시간: 검사 작업(lint·typecheck·test·build)은 30분입니다. 작업이 "cancelled"로 끝나면 먼저 시작·종료 시각이 제한 시간과 맞는지 확인합니다.
+
+### 저장소 권한
+
+저장소는 공개입니다([D-085](/docs/decisions.md)). 설정을 바꿀 때는 이 목록과 결정 기록을 함께 고칩니다.
+
+- `main`: PR로만 바뀌고 스쿼시 병합만 허용합니다. 필수 검사(`lint · typecheck · test · build`, `e2e · visual · a11y`)가 통과해야 병합할 수 있고, 강제 푸시·삭제는 막혀 있습니다. 확인: `gh api repos/oscarjhk/ProgInOne/rulesets`.
+- 릴리스 태그 `v*`: 한 번 만들면 지우거나 옮길 수 없습니다. 잘못 만든 태그는 새 버전으로 고칩니다.
+- Actions: 허용한 액션만 쓸 수 있습니다(GitHub 소유와 `pnpm/action-setup`). 새 외부 액션을 쓰려면 저장소 설정 → Actions → General의 허용 목록에 먼저 추가합니다. 외부 기여자의 PR은 소유자가 승인해야 CI가 돕니다.
+- self-hosted runner를 이 저장소에 다시 등록하지 않습니다.

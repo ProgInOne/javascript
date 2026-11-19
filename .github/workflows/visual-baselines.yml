@@ -14,7 +14,7 @@ permissions:
 jobs:
   update:
     name: update visual baselines
-    if: vars.CI_RUNNER != 'self-hosted'
+    if: ${{ !(vars.CI_RUNNER == 'self-hosted' && github.event.repository.private) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     container:
@@ -53,7 +53,7 @@ jobs:
   # On the self-hosted macOS runner (CI_RUNNER=self-hosted, D-055) the same image runs through Docker.
   update-self-hosted:
     name: update visual baselines
-    if: vars.CI_RUNNER == 'self-hosted'
+    if: ${{ (vars.CI_RUNNER == 'self-hosted' && github.event.repository.private) }}
     runs-on: [self-hosted, proginone]
     timeout-minutes: 45
     steps:

@@ -15,9 +15,11 @@ permissions:
 jobs:
   # Runner choice: the repository variable CI_RUNNER=self-hosted sends jobs to the self-hosted
   # macOS runner (labels self-hosted, proginone; D-055). Without it, GitHub-hosted runners.
+  # Only while the repository is private (D-085): on a public repository anyone's pull request
+  # would run on the owner's Mac, so a leftover variable falls back to GitHub-hosted runners.
   check:
     name: lint · typecheck · test · build
-    runs-on: ${{ vars.CI_RUNNER == 'self-hosted' && fromJSON('["self-hosted","proginone"]') || 'ubuntu-latest' }}
+    runs-on: ${{ (vars.CI_RUNNER == 'self-hosted' && github.event.repository.private) && fromJSON('["self-hosted","proginone"]') || 'ubuntu-latest' }}
     # ~10 min alone; on the shared Mac next to a Docker E2E job it passed 15 min and was cut off.
     timeout-minutes: 30
     steps:
@@ -71,7 +73,7 @@ jobs:
 
   e2e:
     name: e2e · visual · a11y
-    if: vars.CI_RUNNER != 'self-hosted'
+    if: ${{ !(vars.CI_RUNNER == 'self-hosted' && github.event.repository.private) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     container:
@@ -119,7 +121,7 @@ jobs:
   # Playwright suite (with visual regression) runs in the same image through Docker instead.
   e2e-self-hosted:
     name: e2e · visual · a11y
-    if: vars.CI_RUNNER == 'self-hosted'
+    if: ${{ (vars.CI_RUNNER == 'self-hosted' && github.event.repository.private) }}
     runs-on: [self-hosted, proginone]
     timeout-minutes: 45 # Docker image start + full suite on a shared Mac; ~30 min under load
     steps:

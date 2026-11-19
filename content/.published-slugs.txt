@@ -195,6 +195,7 @@ exercise css.basics.intro.mcq-rule-parts
 exercise css.basics.intro.web-fix-broken-rule
 exercise css.basics.intro.web-style-all-tips
 exercise css.basics.intro.web-write-rule
+exercise css.basics.intro.web-write-style-element
 exercise css.basics.selectors.fill-class-and-id
 exercise css.basics.selectors.fill-group-selector
 exercise css.basics.selectors.fill-last-child
@@ -217,6 +218,7 @@ exercise css.box.display.mcq-narrow-blocks
 exercise css.box.display.web-card-gap-collapse
 exercise css.box.display.web-card-link-bar
 exercise css.box.display.web-tag-badges
+exercise css.box.display.web-write-page-buttons
 exercise css.box.model.fill-area-properties
 exercise css.box.model.fill-border-box-content
 exercise css.box.model.fill-content-box-width
@@ -251,6 +253,8 @@ exercise css.layout.responsive.web-cards-row-on-wide
 exercise css.layout.responsive.web-fix-query-order
 exercise css.layout.responsive.web-mobile-first-page
 exercise css.layout.responsive.web-viewport-and-title
+exercise css.layout.responsive.web-write-menu-mobile-first
+exercise css.layout.responsive.web-write-title-size-query
 exercise css.layout.review.fill-column-gap-position
 exercise css.layout.review.fill-tag-spacing
 exercise css.layout.review.fill-viewport-content
@@ -272,6 +276,7 @@ exercise css.styling.typography.web-center-card
 exercise css.styling.typography.web-fix-line-height
 exercise css.styling.typography.web-quote-font
 exercise css.styling.typography.web-title-font
+exercise css.styling.typography.web-write-article-text
 exercise css.styling.units-colors.fill-nested-em
 exercise css.styling.units-colors.fill-percent-width
 exercise css.styling.units-colors.fill-rgb-from-hex
@@ -283,6 +288,7 @@ exercise css.styling.units-colors.web-fix-color-values
 exercise css.styling.units-colors.web-fix-missing-units
 exercise css.styling.units-colors.web-rem-heading
 exercise css.styling.units-colors.web-vw-and-percent
+exercise css.styling.units-colors.web-write-notice-banner
 exercise html.basics.document.fill-close-nested
 exercise html.basics.document.fill-closing-tag
 exercise html.basics.document.fill-count-tags
@@ -355,6 +361,7 @@ exercise html.content.lists-tables.multi-unordered-lists
 exercise html.content.lists-tables.web-exercise-table
 exercise html.content.lists-tables.web-picnic-list
 exercise html.content.lists-tables.web-recipe-steps
+exercise html.content.lists-tables.web-write-jump-rope-table
 exercise html.semantics.landmarks.fill-faq-section
 exercise html.semantics.landmarks.fill-footer-landmark
 exercise html.semantics.landmarks.fill-layout-div
