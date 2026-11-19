@@ -21,7 +21,7 @@
     "@proginone/learning-engine": "workspace:*",
     "@proginone/runner": "workspace:*",
     "@proginone/shared": "workspace:*",
-    "better-sqlite3": "^13.1.1",
+    "better-sqlite3": "^13.2.0",
     "drizzle-orm": "^0.45.4",
     "env-paths": "^4.0.0",
     "hono": "^4.13.18",
