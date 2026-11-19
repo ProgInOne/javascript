@@ -734,3 +734,13 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
   - 독립 AI 검토자가 새 문제와 바꾼 문제를 전수 검토했습니다([검토 기록](/docs/reviews/2026-11-18-d084-writing-exercises-review.md)).
 - 상세: [학습 엔진 설계 구현 메모 (D-084)](/docs/design/learning-engine.md#구현-메모-d-084), [콘텐츠·문제 시스템 설계 web_task](/docs/design/content-and-exercises.md#web_task-웹-실습), [UI/UX 설계 컴포넌트 목록의 WritingBadge](/docs/design/ui-ux.md).
 
+## D-085. 저장소 공개: 기록을 정리한 새 공개 저장소, GitHub 호스트 runner, 권한 설정 — `확정`
+- 2026-11-19, 사용자 결정(저장소를 공개로 바꾸면 GitHub 호스트 표준 runner 사용이 무료라 D-055의 임시 전환을 끝냄. 공개 전에 기기 정보가 드러나는 작성자 주소를 지움).
+- **기존 저장소를 공개로 돌리지 않고, 기록을 다시 쓴 새 공개 저장소로 옮겼습니다.** 초기 커밋 3개의 작성자·커미터, 태그 4개의 태거, 스쿼시 병합 136개의 `Co-authored-by` 줄에 이 Mac의 기본 git 주소(`사용자@호스트.local`)가 들어 있었습니다. 같은 저장소에 강제 푸시하면 GitHub가 영구 보관하는 PR 커밋(`refs/pull/*`)에 옛 주소가 남으므로, 기록을 다시 써서(파일 트리는 모든 태그와 main에서 원본과 같음을 확인) 새 저장소 `oscarjhk/ProgInOne`에 올리고, 기존 저장소는 `ProgInOne-archive`로 이름을 바꿔 비공개로 보관(archive)했습니다. 커밋 메시지의 `(#번호)`는 보관 저장소의 PR을 가리킵니다. 릴리스 4개는 원래 산출물(체크섬 확인)과 노트로 다시 만들었습니다.
+- **로컬 커밋 주소**: 이 저장소의 git 설정에 GitHub noreply 주소를 지정했습니다(`git config user.email`). 전역 설정은 사용자 몫으로 둡니다.
+- **self-hosted runner는 제거했습니다.** 두 runner를 서비스 해제·등록 해제하고 폴더를 지웠으며 `CI_RUNNER` 변수도 지웠습니다. 워크플로의 self-hosted 조건에는 `github.event.repository.private`를 더해, 다시 비공개로 돌리지 않는 한 변수가 생겨도 GitHub 호스트 runner로 돕니다. 포크 PR은 자기 워크플로를 고쳐 runner 라벨을 직접 지정할 수 있으므로 공개 저장소에는 self-hosted runner를 다시 등록하지 않습니다. self-hosted 전용 작업과 tar 분기는 비공개로 되돌릴 때를 위해 남깁니다.
+- **권한 설정**([테스트 가이드 저장소 권한](/docs/guides/testing.md#저장소-권한)):
+  - 저장소 규칙 `main 보호`: 삭제·강제 푸시 금지, 선형 기록, PR 필수(승인 0명, 스쿼시만, 리뷰 대화 해결), 필수 상태 검사 `lint · typecheck · test · build`와 `e2e · visual · a11y`(GitHub Actions). 우회 대상은 없습니다(소유자도 PR과 CI를 거침).
+  - 저장소 규칙 `릴리스 태그 보호`: `v*` 태그의 삭제·수정·강제 이동 금지.
+  - Actions: GitHub 소유 액션과 `pnpm/action-setup`만 허용, `GITHUB_TOKEN` 기본 읽기 전용, 워크플로가 PR을 승인할 수 없음, 외부 기여자의 포크 PR 워크플로는 모두 승인 필요.
+  - 보안: 비밀 스캔과 푸시 보호, Dependabot 알림·보안 업데이트, 비공개 취약점 신고를 켰습니다. 협업자는 소유자뿐입니다.
