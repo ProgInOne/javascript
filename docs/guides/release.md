@@ -130,7 +130,7 @@ Release에 올라간 파일로 실제 설치를 해 봅니다. 임시 폴더와 
 
     ```shell
     dir="$(mktemp -d)" && cd "$dir"
-    gh release download v0.3.0 -R oscarjhk/ProgInOne
+    gh release download v0.3.0 -R ProgInOne/javascript
     shasum -a 256 -c proginone-0.3.0.tar.gz.sha256
     ```
 
