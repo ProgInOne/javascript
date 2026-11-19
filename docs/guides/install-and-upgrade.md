@@ -22,14 +22,14 @@
 
 ## 내려받기와 체크섬 확인
 
-1.  [GitHub Releases](https://github.com/oscarjhk/ProgInOne/releases)에서 원하는 버전의 두 파일을 받습니다.
+1.  [GitHub Releases](https://github.com/ProgInOne/javascript/releases)에서 원하는 버전의 두 파일을 받습니다.
     - `proginone-<버전>.tar.gz`: 앱 번들(소스, 빌드된 웹 앱 `apps/web/dist`, 콘텐츠 팩 `content/dist/content.db`)
     - `proginone-<버전>.tar.gz.sha256`: SHA-256 체크섬
 
     GitHub CLI를 쓴다면:
 
     ```shell
-    gh release download v0.3.0 -R oscarjhk/ProgInOne
+    gh release download v0.3.0 -R ProgInOne/javascript
     ```
 
 1.  두 파일이 있는 폴더에서 체크섬을 확인합니다. `OK`가 나와야 합니다.

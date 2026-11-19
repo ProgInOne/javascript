@@ -160,7 +160,7 @@ SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chr
 
 저장소는 공개입니다([D-085](/docs/decisions.md)). 설정을 바꿀 때는 이 목록과 결정 기록을 함께 고칩니다.
 
-- `main`: PR로만 바뀌고 스쿼시 병합만 허용합니다. 필수 검사(`lint · typecheck · test · build`, `e2e · visual · a11y`)가 통과해야 병합할 수 있고, 강제 푸시·삭제는 막혀 있습니다. 확인: `gh api repos/oscarjhk/ProgInOne/rulesets`.
+- `main`: PR로만 바뀌고 스쿼시 병합만 허용합니다. 필수 검사(`lint · typecheck · test · build`, `e2e · visual · a11y`)가 통과해야 병합할 수 있고, 강제 푸시·삭제는 막혀 있습니다. 확인: `gh api repos/ProgInOne/javascript/rulesets`.
 - 릴리스 태그 `v*`: 한 번 만들면 지우거나 옮길 수 없습니다. 잘못 만든 태그는 새 버전으로 고칩니다.
 - Actions: 허용한 액션만 쓸 수 있습니다(GitHub 소유와 `pnpm/action-setup`). 새 외부 액션을 쓰려면 저장소 설정 → Actions → General의 허용 목록에 먼저 추가합니다. 외부 기여자의 PR은 소유자가 승인해야 CI가 돕니다.
 - self-hosted runner를 이 저장소에 다시 등록하지 않습니다.
