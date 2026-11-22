@@ -1,0 +1,42 @@
+id: js-basics.strings.string-basics.check-out-of-range
+type: predict_output
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.str.index-length, weight: 1 }
+tags: [string, index, undefined]
+estimatedSeconds: 60
+prompt: |
+  네 자리 비밀번호의 글자를 꺼내 보는 코드예요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const pin = "4821";
+    console.log(pin[4]);
+    console.log(pin[3]);
+    console.log("확인 끝");
+  answerKind: console
+  misconceptionByAnswer:
+    "1\n2\n확인 끝": js.mc.index-starts-at-one
+misconceptions: [js.mc.out-of-range-index-throws, js.mc.last-index-is-length]
+hints:
+  - "`\"4821\"`의 인덱스는 0부터 몇까지인가요?"
+  - 범위 밖의 인덱스를 읽으면 오류가 날까요, 아니면 다른 값이 나올까요?
+  - "`pin[4]`는 마지막 글자 다음 칸이에요. 없는 칸을 읽으면 `undefined`가 나오고 프로그램은 계속 실행돼요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  undefined
+  1
+  확인 끝
+  ```
+
+  - `"4821"`은 4글자라 인덱스는 0부터 3까지예요. `pin[4]`는 범위 밖이라 오류 대신 `undefined`가 나와요.
+  - `pin[3]`은 마지막 글자 `1`이에요.
+  - 오류가 나지 않았으니 마지막 줄 `확인 끝`도 출력돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

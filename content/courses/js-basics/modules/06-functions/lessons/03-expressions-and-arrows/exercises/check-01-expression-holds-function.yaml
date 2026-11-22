@@ -1,0 +1,41 @@
+id: js-basics.functions.expressions-and-arrows.check-expression-holds-function
+type: true_false
+usage: check
+difficulty: 1
+concepts:
+  - { id: js.fn.expression, weight: 1 }
+tags: [function, expression, value]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`const tax = function (price) { return price / 10; };` 줄이 실행된 직후, `tax`에는 숫자가 아니라 함수가 담겨 있고 본문은 아직 한 번도 실행되지 않았다."
+  answer: true
+  misconceptionIfWrong: js.mc.fn-expression-stores-result
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 함수 표현식은 함수라는 값을 만들어 변수에 담기만 하고, 본문은 `tax(1000)`처럼 호출할 때 실행된다
+      correct: true
+    - id: r2
+      text: 함수 표현식은 만들자마자 본문을 실행해서 계산 결과를 변수에 담는다
+      misconception: js.mc.fn-expression-stores-result
+    - id: r3
+      text: 인수가 없으니 본문이 실행되어 `tax`에 `NaN`이 담긴다
+      misconception: js.mc.fn-expression-stores-result
+hints:
+  - "`=` 오른쪽의 `function (price) { ... }`는 실행 결과일까요, 함수 그 자체일까요?"
+  - 함수 선언과 마찬가지로 함수 표현식도 만들어 두기만 해요.
+  - 본문이 실행되려면 변수 이름 뒤에 괄호를 붙여 불러야 해요. 이 줄에 그런 호출이 있나요?
+explanation: |
+  정답은 **참**이에요.
+
+  - `function (price) { ... }`는 **함수라는 값**을 만들고, `const tax =`가 그 값을 변수에 담아요. `const n = 3;`에서 3을 담는 것과 같은 모양이에요.
+  - 이 줄에는 호출이 없으니 본문은 실행되지 않았어요. `tax(1000)`처럼 괄호를 붙여 부를 때 비로소 실행되어 `100`을 돌려줘요.
+
+  `typeof tax`를 출력하면 `"function"`이 나와요. 계산 결과가 담겼다면 `"number"`였겠죠.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

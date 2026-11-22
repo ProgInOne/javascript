@@ -1,0 +1,46 @@
+id: js-basics.functions.expressions-and-arrows.check-braces-return
+type: predict_output
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.fn.undefined-return, weight: 0.3 }
+tags: [function, arrow, braces, return]
+estimatedSeconds: 60
+prompt: |
+  점수에 보너스를 더하는 화살표 함수 두 개예요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const addPoint = (score) => score + 10;
+    const addBonus = (score) => {
+      score + 50;
+    };
+
+    console.log(addPoint(70));
+    console.log(addBonus(70));
+  answerKind: console
+  misconceptionByAnswer:
+    "80\n120": js.mc.arrow-braces-implicit-return
+misconceptions: [js.mc.arrow-braces-implicit-return]
+hints:
+  - 두 함수의 본문 모양은 무엇이 다른가요? 중괄호가 있는지 보세요.
+  - 중괄호 본문은 일반 함수 본문과 같아요. 값을 돌려주려면 무엇이 필요할까요?
+  - "`addBonus` 안에는 `return`이 없어요. `return`이 없는 함수의 결과를 떠올려 보세요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  80
+  undefined
+  ```
+
+  - `addPoint`는 중괄호 없는 식 본문이라 `score + 10`의 값 80이 자동으로 반환돼요.
+  - `addBonus`는 중괄호 본문인데 `return`이 없어요. `score + 50`을 계산만 하고 버려서 결과는 `undefined`예요.
+
+  `120`이라고 답했다면 중괄호를 써도 값이 저절로 반환된다고 본 거예요. `return score + 50;`이라고 써야 120이 돌아와요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

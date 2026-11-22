@@ -213,6 +213,10 @@ console.log("오늘 매출: " + totalSales);
 - `sell` 안에서 `taxRate`를 찾으면 함수 안에는 없으니 바깥에서 찾아 0.1을 써요. 함수 안에서도 바깥 변수를 **읽을 수 있어요**.
 - 6번 줄은 바깥 `totalSales`를 **바꿔요**. 함수가 끝나도 바뀐 값이 남아서, 두 번 호출한 뒤 3300이 돼요.
 - `tax`는 계산에만 쓰는 값이라 함수 안에 뒀어요. 함수 밖에서는 쓸 수 없고, 쓸 필요도 없어요.
+
+호출 사이에 기억할 값과 한 번 쓰고 버릴 값을 나눠서, 직접 써 보세요.
+
+<TryIt ref="js-basics.functions.scope-basics.try-running-log" />
 </Section>
 
 <Section kind="examples">
@@ -416,21 +420,21 @@ console.log("총점: " + totalScore + ", 최고 판: " + bestRound); // 총점: 
 </Section>
 
 <Section kind="check">
-블록 안에서 만든 변수를 확인해 보세요.
+블록 안과 밖에서 만든 변수를 비교해 보세요.
 
-<InlineExercise ref="js-basics.functions.scope-basics.mcq-block-let-outside" />
+<InlineExercise ref="js-basics.functions.scope-basics.check-block-variable" />
 
-함수 안에서 만든 변수는 어디까지 쓸 수 있을까요?
+함수 안의 변수가 호출 사이에 남는지 판단해 보세요.
 
-<InlineExercise ref="js-basics.functions.scope-basics.mcq-local-visible-outside" />
+<InlineExercise ref="js-basics.functions.scope-basics.check-local-fresh" />
 
-함수 안에서 바깥 변수를 쓸 수 있는지 판단해 보세요.
+함수 안에서 바깥 변수를 읽고 바꿔 보세요.
 
-<InlineExercise ref="js-basics.functions.scope-basics.tf-inner-reads-outer" />
+<InlineExercise ref="js-basics.functions.scope-basics.check-read-and-update-outer" />
 
 매개변수를 바꾸면 바깥 변수는 어떻게 될까요?
 
-<InlineExercise ref="js-basics.functions.scope-basics.mcq-param-reassign-outer" />
+<InlineExercise ref="js-basics.functions.scope-basics.check-param-copy" />
 </Section>
 
 <Section kind="practice" />

@@ -1,0 +1,49 @@
+id: js-basics.functions.default-and-rest.check-rest-leftovers
+type: fill_blank
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.fn.rest-params, weight: 1 }
+tags: [function, rest-parameter, length]
+estimatedSeconds: 60
+prompt: |
+  상자 이름과 그 안에 넣을 물건들을 받는 함수예요.
+
+  ```js
+  function pack(box, ...items) {
+    return items.length;
+  }
+  ```
+
+  `pack("A상자", "연필", "지우개")`를 부를 때를 생각해 빈칸을 채우세요.
+spec:
+  mode: text
+  template: |
+    호출 결과(숫자): {{blank:count}}
+    매개변수 box에 들어가는 값(따옴표 없이): {{blank:box}}
+  blanks:
+    - id: count
+      accept: ["2"]
+      width: 4
+      misconceptionMap:
+        "3": js.mc.rest-includes-named
+    - id: box
+      accept: ["A상자", "\"A상자\""]
+      width: 10
+misconceptions: [js.mc.rest-includes-named]
+hints:
+  - 첫 번째 인수는 어느 매개변수가 먼저 받나요?
+  - "`...items`는 앞의 매개변수가 받고 **남은** 인수만 모아요."
+  - 인수 세 개 중 첫 번째가 `box`로 가면, `items`에는 몇 개가 남나요?
+explanation: |
+  정답은 `2`와 `A상자`예요.
+
+  - 첫 번째 인수 `"A상자"`는 매개변수 `box`가 받아요.
+  - 나머지 매개변수 `items`는 **남은** 인수 `"연필"`, `"지우개"`만 모아요. 그래서 `items.length`는 2예요.
+
+  `3`이라고 답했다면 나머지 매개변수가 앞 매개변수의 인수까지 모은다고 본 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

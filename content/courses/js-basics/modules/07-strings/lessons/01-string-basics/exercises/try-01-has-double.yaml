@@ -1,0 +1,112 @@
+id: js-basics.strings.string-basics.try-has-double
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.str.index-length, weight: 1 }
+  - { id: js.loops.for, weight: 0.5 }
+tags: [string, index, length, loop, write-code]
+estimatedSeconds: 300
+prompt: |
+  같은 글자가 **바로 붙어서** 두 번 나오는지 검사하는 함수 `hasDouble(word)`를 완성하세요. 그런 곳이 있으면 `true`, 없으면 `false`를 돌려줘요.
+
+  | 호출 | 돌려줄 값 | 이유 |
+  |---|---|---|
+  | `hasDouble("apple")` | `true` | `pp` |
+  | `hasDouble("banana")` | `false` | `a`가 여러 번 나오지만 붙어 있지 않아요 |
+  | `hasDouble("book")` | `true` | `oo` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function hasDouble(word) {
+            // 인덱스 i의 글자와 바로 다음 글자(i + 1)를 비교하며 끝까지 살펴보세요.
+            // 같은 곳을 찾으면 true, 끝까지 없으면 false를 돌려주세요.
+          }
+
+          console.log(hasDouble("apple"));
+          console.log(hasDouble("banana"));
+  entry: hasDouble
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function hasDouble(word) {
+            for (let i = 0; i < word.length - 1; i++) {
+              if (word[i] === word[i + 1]) {
+                return true;
+              }
+            }
+            return false;
+          }
+
+          console.log(hasDouble("apple"));
+          console.log(hasDouble("banana"));
+  checks:
+    - kind: call
+      id: apple
+      description: '"apple"에는 pp가 있으니 true입니다.'
+      requirement: 붙은 글자 찾기
+      args: ["apple"]
+      expect: { equals: true }
+    - kind: call
+      id: banana
+      description: '"banana"는 a가 여러 번 나와도 붙어 있지 않으니 false입니다.'
+      requirement: 붙지 않으면 false
+      args: ["banana"]
+      expect: { equals: false }
+    - kind: call
+      id: book
+      description: '"book"에는 oo가 있으니 true입니다.'
+      requirement: 붙은 글자 찾기
+      args: ["book"]
+      expect: { equals: true }
+    - kind: call
+      id: hidden-end
+      visible: false
+      description: 붙은 글자가 맨 끝에 있어도 찾아야 합니다("jazz").
+      requirement: 붙은 글자 찾기
+      args: ["jazz"]
+      expect: { equals: true }
+    - kind: call
+      id: hidden-start
+      visible: false
+      description: 붙은 글자가 맨 앞에 있어도 찾아야 합니다("aardvark").
+      requirement: 붙은 글자 찾기
+      args: ["aardvark"]
+      expect: { equals: true }
+    - kind: call
+      id: hidden-one-char
+      visible: false
+      description: 한 글자짜리 단어는 비교할 짝이 없으니 false입니다.
+      requirement: 붙지 않으면 false
+      args: ["a"]
+      expect: { equals: false }
+misconceptions: [js.mc.last-index-is-length]
+hints:
+  - "`for (let i = 0; ...; i++)`로 인덱스를 돌면서 `word[i]`와 `word[i + 1]`을 `===`로 비교해요."
+  - "`i`가 마지막 인덱스이면 `word[i + 1]`은 범위 밖이에요. 그래서 반복 조건은 `i < word.length - 1`이면 충분해요."
+  - 같은 곳을 찾으면 바로 `return true;`, 반복이 다 끝난 **뒤에** `return false;`를 둬요.
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function hasDouble(word) {
+    for (let i = 0; i < word.length - 1; i++) {
+      if (word[i] === word[i + 1]) {
+        return true;
+      }
+    }
+    return false;
+  }
+  ```
+
+  - `word[i]`와 바로 다음 칸 `word[i + 1]`을 비교해요. 마지막 짝은 `length - 2`번과 `length - 1`번이라서 `i < word.length - 1`까지만 돌아요.
+  - 조건을 `i < word.length`로 써도 마지막에 `word[length]`(`undefined`)와 비교할 뿐이라 결과는 같아요. 하지만 범위를 정확히 맞추는 습관이 좋아요.
+  - `return false;`를 반복 안의 `else`에 두면 첫 짝만 보고 끝나 버려요. 끝까지 살펴본 뒤에 돌려줘야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

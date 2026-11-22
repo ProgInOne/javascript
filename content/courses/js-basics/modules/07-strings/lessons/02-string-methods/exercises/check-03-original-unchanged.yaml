@@ -1,0 +1,46 @@
+id: js-basics.strings.string-methods.check-original-unchanged
+type: predict_output
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.str.case-trim, weight: 1 }
+  - { id: js.str.immutability, weight: 0.3 }
+tags: [string, trim, toUpperCase, immutability]
+estimatedSeconds: 70
+prompt: |
+  입력받은 도시 이름을 정리하는 코드예요. 대괄호는 앞뒤 공백이 보이도록 붙였어요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const city = "  busan ";
+    const clean = city.trim();
+    console.log("[" + city + "]");
+    console.log("[" + clean.toUpperCase() + "]");
+    console.log("[" + clean + "]");
+  answerKind: console
+  misconceptionByAnswer:
+    "[busan]\n[BUSAN]\n[busan]": js.mc.string-method-mutates
+    "[busan]\n[BUSAN]\n[BUSAN]": js.mc.string-method-mutates
+    "[  busan ]\n[BUSAN]\n[BUSAN]": js.mc.string-method-mutates
+misconceptions: [js.mc.string-method-mutates]
+hints:
+  - "`city.trim()`은 `city`를 고칠까요, 새 문자열을 돌려줄까요?"
+  - 돌려받은 새 문자열은 `clean`에 담겼어요. `city`는 그대로예요.
+  - "`clean.toUpperCase()`도 새 문자열을 돌려줄 뿐 `clean`을 바꾸지 않아요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  [  busan ]
+  [BUSAN]
+  [busan]
+  ```
+
+  - 문자열 메서드는 원래 문자열을 바꾸지 않고 **새 문자열을 돌려줘요**. 그래서 `city`는 공백이 그대로 남아 있어요.
+  - `clean`에는 `trim()`이 돌려준 `"busan"`이 담겼어요.
+  - 4번 줄의 `toUpperCase()`는 `"BUSAN"`을 돌려줘서 출력할 뿐, `clean`은 여전히 소문자 `busan`이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -173,6 +173,10 @@ undefined
 - `passOrFail(45)`: 조건이 거짓이라 `if` 블록을 건너뛰고 함수 끝까지 내려가요. 만난 `return`이 없으니 `undefined`를 돌려줘요. 오류는 나지 않아서 알아차리기 어려워요.
 
 고치려면 함수 끝에 `return "불합격";`을 더해 "그 밖의 경우"를 돌려주게 해요.
+
+이번에는 처음부터 모든 갈래에서 값을 돌려주는 함수를 직접 써 보세요.
+
+<TryIt ref="js-basics.functions.return-and-side-effects.try-weather-word" />
 </Section>
 
 <Section kind="examples">
@@ -318,13 +322,13 @@ console.log("합계: " + total + "원");
 </Section>
 
 <Section kind="check">
-함수가 바깥 변수를 바꿀 수 있는지 확인해 보세요.
+함수 안에서 바꾼 바깥 변수가 어떻게 되는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.functions.return-and-side-effects.tf-function-changes-outer" />
+<InlineExercise ref="js-basics.functions.return-and-side-effects.check-outer-change-stays" />
 
-어떤 함수의 결과가 `undefined`인지 골라 보세요.
+조건이 모두 거짓일 때 함수가 무엇을 돌려주는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.functions.return-and-side-effects.multi-what-returns-undefined" />
+<InlineExercise ref="js-basics.functions.return-and-side-effects.check-missing-branch" />
 </Section>
 
 <Section kind="practice" />

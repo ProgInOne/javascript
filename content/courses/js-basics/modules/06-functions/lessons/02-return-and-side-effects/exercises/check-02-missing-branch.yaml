@@ -1,0 +1,53 @@
+id: js-basics.functions.return-and-side-effects.check-missing-branch
+type: mcq_single
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.fn.undefined-return, weight: 1 }
+tags: [function, return, undefined, else-if]
+estimatedSeconds: 60
+prompt: |
+  가슴둘레(cm)로 티셔츠 크기를 알려 주는 함수예요. 마지막 줄은 무엇을 출력하나요?
+code: |
+  function sizeName(cm) {
+    if (cm < 90) {
+      return "S";
+    } else if (cm < 100) {
+      return "M";
+    }
+  }
+
+  console.log(sizeName(105));
+spec:
+  options:
+    - id: a
+      text: "`undefined`"
+    - id: b
+      text: "`M`"
+      rationale: "`105 < 100`은 거짓이라 `return \"M\";`에 가지 않아요."
+    - id: c
+      text: "`null`"
+      misconception: js.mc.no-return-is-null
+      rationale: 만난 `return`이 없으면 `null`이 아니라 `undefined`가 돌아와요.
+    - id: d
+      text: "아무것도 없는 빈 줄"
+      misconception: js.mc.return-in-if-covers-all
+      rationale: 조건이 모두 거짓이라고 함수가 빈 문자열을 대신 돌려주지는 않아요.
+  correct: a
+misconceptions: [js.mc.no-return-is-null, js.mc.return-in-if-covers-all]
+hints:
+  - "`sizeName(105)`에서 두 조건 `105 < 90`, `105 < 100`은 각각 참인가요, 거짓인가요?"
+  - 두 조건이 모두 거짓이면 실행 흐름은 함수의 어디로 가나요?
+  - 함수 끝까지 내려갔는데 만난 `return`이 없으면 무엇이 돌아오는지 떠올려 보세요.
+explanation: |
+  정답은 `undefined`예요.
+
+  - `105 < 90`도, `105 < 100`도 거짓이라 두 `return`을 모두 건너뛰고 함수 끝까지 내려가요.
+  - 만난 `return`이 없으면 함수는 `undefined`를 돌려줘요. `null`이나 빈 문자열이 아니에요.
+
+  모든 경우에 값이 필요하면 함수 맨 끝에 `return "L";`처럼 "그 밖의 경우"를 돌려주는 줄을 둬요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,53 @@
+id: js-basics.functions.scope-basics.check-block-variable
+type: mcq_single
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.scope.block, weight: 1 }
+tags: [scope, block, let]
+estimatedSeconds: 60
+prompt: |
+  아래 코드를 실행하면 어떻게 되나요?
+code: |
+  let total = 0;
+  const isMember = true;
+
+  if (isMember) {
+    let bonus = 500;
+    total = 1000 + bonus;
+  }
+
+  console.log(total);
+  console.log(bonus);
+spec:
+  options:
+    - id: a
+      text: "`1500`이 출력된 뒤 10번 줄에서 `ReferenceError`가 난다"
+    - id: b
+      text: "`1500`과 `500`이 차례로 출력된다"
+      misconception: js.mc.block-let-visible-outside
+      rationale: "`bonus`는 `if` 블록 안에서 `let`으로 만들어서 블록이 끝나면 쓸 수 없어요."
+    - id: c
+      text: "9번 줄에서 바로 `ReferenceError`가 나서 아무것도 출력되지 않는다"
+      rationale: "`total`은 블록 바깥에서 만든 변수라 블록 안에서 바꾼 값을 블록 밖에서도 쓸 수 있어요."
+    - id: d
+      text: "`1000`과 `undefined`가 차례로 출력된다"
+      rationale: "`total`에는 블록 안에서 `1500`이 대입됐어요. 그리고 범위 밖의 `let` 변수는 `undefined`가 아니라 오류가 나요."
+  correct: a
+misconceptions: [js.mc.block-let-visible-outside]
+hints:
+  - "`total`과 `bonus`는 각각 어디에서 만들었나요? 블록 안인가요, 바깥인가요?"
+  - 블록 바깥에서 만든 변수는 블록 안에서 바꿔도 블록이 끝난 뒤 그 값을 쓸 수 있어요.
+  - 블록 안에서 `let`으로 만든 변수는 블록이 끝나면 사라져요. 그 이름을 쓰면 어떤 오류가 날까요?
+explanation: |
+  정답은 "`1500`이 출력된 뒤 10번 줄에서 `ReferenceError`가 난다"예요.
+
+  - `total`은 블록 **바깥**에서 만들었어요. 블록 안에서 `1500`을 대입했고, 블록이 끝나도 그 값이 남아서 9번 줄은 `1500`을 출력해요.
+  - `bonus`는 `if` 블록 **안**에서 `let`으로 만들었어요. 블록이 끝나면 쓸 수 없어서 10번 줄은 `ReferenceError: bonus is not defined`예요.
+
+  블록 밖에서도 쓸 값은 `total`처럼 블록 바깥에서 먼저 만들고, 블록 안에서는 대입만 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
