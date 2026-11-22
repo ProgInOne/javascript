@@ -11,7 +11,7 @@ import type {
   WeakConcepts,
 } from '@proginone/shared';
 
-// Fake API data for onboarding, goals and the dashboard (packages/shared/src/learning.ts).
+// Fake API data for onboarding, goals and the dashboard (@proginone/shared learning.ts).
 
 export const TODAY = '2026-11-15';
 export const FIRST_LESSON = { id: 'js-basics.start.first-program', title: '첫 프로그램' };

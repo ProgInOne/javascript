@@ -5,8 +5,9 @@ import { z } from 'zod';
  * sandbox (`@proginone/runner`). Shapes follow docs/design/code-execution-sandbox.md
  * (#메시지-프로토콜, #직렬화-형식-serializedvalue, #관측-모델).
  *
- * It lives in `packages/shared` because both packages may depend only on `shared`
- * (docs/design/system-architecture.md#의존-방향-규칙). The runner adds the transport-only
+ * It lives in its own package, which both depend on: it is this repository's JavaScript runner
+ * contract, so it stays out of the language-neutral `@proginone/shared` (D-090,
+ * docs/design/system-architecture.md#의존-방향-규칙). The runner adds the transport-only
  * pieces (`RunRequest`, `Limits`, `PreparedCode`, `RunEvent`) on top of these.
  *
  * Everything here is produced by untrusted code (the learner's program runs in the harness), so

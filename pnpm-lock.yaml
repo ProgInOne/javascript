@@ -217,12 +217,15 @@ importers:
       '@proginone/learning-engine':
         specifier: 0.1.0-next.20261122143408
         version: 0.1.0-next.20261122143408
+      '@proginone/run-contract':
+        specifier: workspace:*
+        version: link:../../packages/run-contract
       '@proginone/runner':
         specifier: workspace:*
         version: link:../../packages/runner
       '@proginone/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
+        specifier: 0.1.0-next.20261122143408
+        version: 0.1.0-next.20261122143408
       better-sqlite3:
         specifier: ^13.2.0
         version: 13.2.0
@@ -263,12 +266,15 @@ importers:
       '@proginone/exercise-ui':
         specifier: workspace:*
         version: link:../../packages/exercise-ui
+      '@proginone/run-contract':
+        specifier: workspace:*
+        version: link:../../packages/run-contract
       '@proginone/runner':
         specifier: workspace:*
         version: link:../../packages/runner
       '@proginone/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
+        specifier: 0.1.0-next.20261122143408
+        version: 0.1.0-next.20261122143408
       '@proginone/ui':
         specifier: 0.1.0-next.20261122143408
         version: 0.1.0-next.20261122143408(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -346,17 +352,20 @@ importers:
   packages/ai:
     dependencies:
       '@proginone/shared':
-        specifier: workspace:*
-        version: link:../shared
+        specifier: 0.1.0-next.20261122143408
+        version: 0.1.0-next.20261122143408
       zod:
         specifier: ^4.6.7
         version: 4.6.7
 
   packages/exercise-kit:
     dependencies:
-      '@proginone/shared':
+      '@proginone/run-contract':
         specifier: workspace:*
-        version: link:../shared
+        version: link:../run-contract
+      '@proginone/shared':
+        specifier: 0.1.0-next.20261122143408
+        version: 0.1.0-next.20261122143408
       zod:
         specifier: ^4.6.7
         version: 4.6.7
@@ -393,9 +402,12 @@ importers:
       '@proginone/exercise-kit':
         specifier: workspace:*
         version: link:../exercise-kit
-      '@proginone/shared':
+      '@proginone/run-contract':
         specifier: workspace:*
-        version: link:../shared
+        version: link:../run-contract
+      '@proginone/shared':
+        specifier: 0.1.0-next.20261122143408
+        version: 0.1.0-next.20261122143408
       '@proginone/ui':
         specifier: 0.1.0-next.20261122143408
         version: 0.1.0-next.20261122143408(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -437,11 +449,20 @@ importers:
         specifier: ^19.3.1
         version: 19.3.1(react@19.3.1)
 
+  packages/run-contract:
+    dependencies:
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
+
   packages/runner:
     dependencies:
-      '@proginone/shared':
+      '@proginone/run-contract':
         specifier: workspace:*
-        version: link:../shared
+        version: link:../run-contract
+      '@proginone/shared':
+        specifier: 0.1.0-next.20261122143408
+        version: 0.1.0-next.20261122143408
       acorn:
         specifier: 8.19.0
         version: 8.19.0
@@ -455,12 +476,6 @@ importers:
         specifier: ^4.6.7
         version: 4.6.7
 
-  packages/shared:
-    dependencies:
-      zod:
-        specifier: ^4.6.7
-        version: 4.6.7
-
   tools/content-cli:
     dependencies:
       '@proginone/content-schema':
@@ -469,12 +484,15 @@ importers:
       '@proginone/exercise-kit':
         specifier: workspace:*
         version: link:../../packages/exercise-kit
+      '@proginone/run-contract':
+        specifier: workspace:*
+        version: link:../../packages/run-contract
       '@proginone/runner':
         specifier: workspace:*
         version: link:../../packages/runner
       '@proginone/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
+        specifier: 0.1.0-next.20261122143408
+        version: 0.1.0-next.20261122143408
       better-sqlite3:
         specifier: ^13.2.0
         version: 13.2.0
@@ -1318,6 +1336,9 @@ packages:
 
   '@proginone/learning-engine@0.1.0-next.20261122143408':
     resolution: {integrity: sha512-HOxLV4OKuqQXY9v12xHOGL358YkPqja90bPQaqmSOVYG9efZ5qa242JgdFrRZsnorjMIPI4HI05E+WYWJ6vYcQ==, tarball: https://npm.pkg.github.com/download/@proginone/learning-engine/0.1.0-next.20261122143408/bdb79bb06f2af25b4ce404be936d144e8df5c6a7}
+
+  '@proginone/shared@0.1.0-next.20261122143408':
+    resolution: {integrity: sha512-f5K/rzhQ8HwuJt5ZkWGUgs45dJZXn6wHTSYUVJ6n7kSvlRhKYjlvXeJjpjKByz6zujUKERjKOnkfzVRWTPwnvQ==, tarball: https://npm.pkg.github.com/download/@proginone/shared/0.1.0-next.20261122143408/c1675621b3b281e592e4391e54b10c5cc26a398f}
 
   '@proginone/ui@0.1.0-next.20261122143408':
     resolution: {integrity: sha512-FfSgEOO5/hNAsYBcdUAQOM8KSRZHgagscDLUCDci0ReIarbfvyGTTuFeR/B6oqZzTndR5N/9VplYtqVQZHnQ+Q==, tarball: https://npm.pkg.github.com/download/@proginone/ui/0.1.0-next.20261122143408/76d5dedaaf9d7c1ff70e9957030146fec8e04695}
@@ -5215,6 +5236,10 @@ snapshots:
   '@proginone/learning-engine@0.1.0-next.20261122143408':
     dependencies:
       ts-fsrs: 6.0.0
+
+  '@proginone/shared@0.1.0-next.20261122143408':
+    dependencies:
+      zod: 4.6.7
 
   '@proginone/ui@0.1.0-next.20261122143408(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:

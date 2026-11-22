@@ -114,7 +114,7 @@ flowchart LR
 유형마다 구조가 다른 데이터에만 JSON 컬럼을 씁니다.
 
 - 컬럼명은 `_json` 접미사를 씁니다. SQLite 타입은 `TEXT`이며, Drizzle에서는 `text('spec_json', { mode: 'json' }).$type<T>()`로 선언합니다.
-- **쓰기 전에 반드시 zod로 검증** 합니다. 스키마는 `packages/shared`(또는 `exercise-kit`, `content-schema`)에 있고, 리포지토리 계층의 `insert`/`update` 래퍼가 검증을 강제합니다.
+- **쓰기 전에 반드시 zod로 검증** 합니다. 스키마는 `@proginone/shared`(또는 `exercise-kit`, `content-schema`)에 있고, 리포지토리 계층의 `insert`/`update` 래퍼가 검증을 강제합니다.
 - **읽을 때도 검증** 합니다(`safeParse`). 실패하면 행을 "손상됨"으로 로그에 남기고 해당 기능만 오류 상태로 표시합니다. 앱 전체를 멈추지 않습니다.
 - JSON 객체에는 `v`(스키마 버전 정수) 필드를 넣습니다. 구조가 바뀌면 읽기 시 업그레이드 함수(`upgradeSpecV1toV2` 등)를 적용합니다. 대량 변환이 필요하면 데이터 마이그레이션으로 처리합니다.
 - **조회 조건, 정렬, 조인에 쓰는 값은 JSON에 넣지 않고 일반 컬럼으로 둡니다.** 예외적으로 필요하면 생성 컬럼(`GENERATED ALWAYS AS (json_extract(...)) VIRTUAL`)과 인덱스를 추가합니다.
@@ -123,7 +123,7 @@ flowchart LR
 #### 불리언과 열거형
 
 - 불리언: `INTEGER` 0/1, `CHECK (col IN (0,1))`. Drizzle `integer(..., { mode: 'boolean' })`.
-- 열거형: `TEXT` + `CHECK (col IN (...))`. 값은 [용어집](/docs/glossary.md)의 코드 식별자를 씁니다. TypeScript 쪽은 `packages/shared`의 `as const` 배열에서 zod enum과 Drizzle `text({ enum })`을 함께 만듭니다.
+- 열거형: `TEXT` + `CHECK (col IN (...))`. 값은 [용어집](/docs/glossary.md)의 코드 식별자를 씁니다. TypeScript 쪽은 `@proginone/shared`의 `as const` 배열에서 zod enum과 Drizzle `text({ enum })`을 함께 만듭니다.
 
 #### 보관(soft delete) 정책
 
@@ -371,7 +371,7 @@ PRAGMA cache_size = -20000;       -- 약 20MB
 | | `created_at` | INTEGER | N | | |
 | `settings` | `learner_id` | TEXT | N | | PK 일부 |
 | | `key` | TEXT | N | | PK 일부. 예: `theme`, `editor.autocomplete`, `practice.askConfidence`, `tutor.proactiveSuggestions`, `hints.policy`, `ai.model`, `ai.reasoningEffort`. v0.3 구현 키: `theme`, `appearance.workbench`, `lesson.fontSize`, `lesson.predictFirst`, `editor.autocomplete`, `practice.askConfidence`, `tutor.proactiveSuggestions`, `hints.policy`([D-047](/docs/decisions.md)), v1.0 `ai.model`(모델 ID 또는 `null` = 제공자 기본 모델, `null`을 저장하면 행 삭제, [D-060](/docs/decisions.md)) |
-| | `value_json` | TEXT | N | | 값(zod 스키마는 키별로 `packages/shared/settings.ts`에 정의) |
+| | `value_json` | TEXT | N | | 값(zod 스키마는 키별로 `@proginone/shared`의 `settings.ts`에 정의) |
 | | `updated_at` | INTEGER | N | | |
 
 - Drizzle 마이그레이션 이력은 Drizzle 기본 테이블(`__drizzle_migrations`)에 남습니다.
@@ -827,7 +827,7 @@ AI가 생성한 문제는 학습자 고유 데이터이므로 `user.db`에 둡�
     - **롤링 요약**: 스레드의 새 요약은 이전 요약을 합쳐 대화 전체를 다루고, `tutor_threads.summary_id`가 가장 최근 요약을 가리킵니다. 이전 요약 행은 지우지 않지만, 장기 기억 조회(과거 요약, 재구성)는 `summary_id`가 가리키는 행만 읽습니다. 다음 요약은 `covered_until` 이후 메시지만 읽습니다.
     - `session_summary_concepts.summary_id`는 `ON DELETE CASCADE`입니다.
     - `scope_type = 'study_session'`은 열거형에만 두었습니다. `study_sessions`가 아직 없어 v0.2에서는 튜터 스레드만 요약합니다([D-035](/docs/decisions.md)).
-- `tutor_messages.meta_json`(TEXT, NULL 허용)을 추가했습니다. 튜터 답변의 `<meta>` 블록(`referencedConcepts`, `suggestedFollowUp`, `possibleMisconception` 등, 스키마는 `packages/shared`의 `tutorReplyMetaSchema`)을 담고, 이후 `misconception.propose`의 입력 신호로 씁니다. `attachments_json`에는 선택 영역(`{ type: 'selection', kind, text, sectionId? }`)을 담습니다.
+- `tutor_messages.meta_json`(TEXT, NULL 허용)을 추가했습니다. 튜터 답변의 `<meta>` 블록(`referencedConcepts`, `suggestedFollowUp`, `possibleMisconception` 등, 스키마는 `@proginone/shared`의 `tutorReplyMetaSchema`)을 담고, 이후 `misconception.propose`의 입력 신호로 씁니다. `attachments_json`에는 선택 영역(`{ type: 'selection', kind, text, sectionId? }`)을 담습니다.
 - 인덱스: `tutor_threads(learner_id, scope_type, scope_id, status)`, `tutor_threads(learner_id, last_message_at)`, `tutor_messages(thread_id, created_at)`.
 - 컨텍스트 빌더는 "현재 개념과 선수 개념에 연결된 최근 요약"을 `session_summary_concepts`로 조회합니다([AI 시스템 설계](/docs/design/ai-system.md)).
 

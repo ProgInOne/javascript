@@ -118,7 +118,7 @@ ProgInOne/
 │   ├── web/                 # React SPA (Vite)
 │   └── server/              # Node 로컬 서버 (Hono)
 ├── packages/
-│   ├── shared/              # 공용 타입, zod 스키마, API 계약, ID 유틸
+│   ├── run-contract/        # JS 러너와 채점기 사이의 계약, 콘솔 형식 (배포하지 않음)
 │   ├── exercise-kit/        # 문제 유형 레지스트리: 스펙 스키마, 채점기, 템플릿 엔진
 │   ├── exercise-ui/         # 문제 유형별 React 렌더러
 │   ├── runner/              # 샌드박스 런타임(하네스)과 호스트 프로토콜
@@ -131,20 +131,24 @@ ProgInOne/
 └── .github/workflows/       # CI, 릴리스
 ```
 
-공통 패키지는 `ProgInOne/core`에서 배포한 것을 받아 씁니다([언어 확장 구조](#언어-확장-구조)). 지금까지 옮긴 것: `learning-engine`(숙련도, FSRS, 연습 세트 구성, 재학습 규칙. 순수 함수), `ui`(디자인 시스템: 토큰, 기본 컴포넌트), `content-schema`(콘텐츠 원본과 content.db 스키마. 언어별 값은 `tools/content-cli/src/schema.ts`가 확장).
+공통 패키지는 `ProgInOne/core`에서 배포한 것을 받아 씁니다([언어 확장 구조](#언어-확장-구조)). 지금까지 옮긴 것: `learning-engine`(숙련도, FSRS, 연습 세트 구성, 재학습 규칙. 순수 함수), `ui`(디자인 시스템: 토큰, 기본 컴포넌트), `content-schema`(콘텐츠 원본과 content.db 스키마. 언어별 값은 `tools/content-cli/src/schema.ts`가 확장), `shared`(API 계약: 요청·응답 zod 스키마, 오류 코드. 과정 언어는 열려 있음). 1차 분리가 끝났고, 2차(`exercise-kit`의 공통 부분, `exercise-ui`, `ai`)는 아직 이 저장소에 있습니다.
 
 #### 의존 방향 규칙
 
 ```mermaid
 flowchart BT
-    shared
-    ui --> shared
-    contentschema[content-schema] --> shared
+    subgraph core["ProgInOne/core (배포 패키지 @proginone/*)"]
+        shared
+        ui
+        contentschema[content-schema]
+        engine[learning-engine]
+    end
+    runcontract[run-contract]
     exercisekit[exercise-kit] --> shared
+    exercisekit --> runcontract
     exerciseui[exercise-ui] --> exercisekit
     exerciseui --> ui
-    runner --> shared
-    engine[learning-engine] --> shared
+    runner --> runcontract
     ai --> shared
     web[apps/web] --> ui
     web --> exerciseui
@@ -153,14 +157,17 @@ flowchart BT
     server --> engine
     server --> ai
     server --> exercisekit
+    server --> contentschema
     cli[tools/content-cli] --> contentschema
     cli --> exercisekit
     cli --> ai
 ```
 
-- 화살표는 "의존한다"입니다. 순환 의존은 금지하며 CI에서 검사합니다. `learning-engine`은 `ProgInOne/core`의 배포 패키지입니다.
+- 화살표는 "의존한다"입니다. 그림은 주요 의존만 보입니다(대부분의 패키지가 `shared`를 씀). 순환 의존은 금지하며 CI에서 검사합니다.
+- core의 패키지는 배포된 것을 받아 쓰므로 dependency-cruiser가 따라가지 않습니다(`node_modules`). 배포 패키지에 대한 규칙은 ESLint가 검사합니다.
+- `run-contract`는 JS 러너에만 해당하는 계약이라 이 저장소에 남은 내부 패키지입니다. 다른 내부 패키지에 의존하지 않고, `runner`와 `exercise-kit`이 함께 씁니다.
 - `learning-engine`과 `exercise-kit`의 채점기는 **I/O 없는 순수 함수** 입니다. DB와 네트워크 접근은 `apps/server`의 서비스 계층이 담당합니다.
-- `apps/server`는 러너 셸 문서(`/sandbox/runner.html`)를 만들어 제공하려고 `runner`의 셸 빌드(`@proginone/runner/shell-build`)를 씁니다. 샌드박스 결과 검증은 `packages/shared`의 계약(`parseRunResult`)으로 합니다.
+- `apps/server`는 러너 셸 문서(`/sandbox/runner.html`)를 만들어 제공하려고 `runner`의 셸 빌드(`@proginone/runner/shell-build`)를 씁니다. 샌드박스 결과 검증은 `packages/run-contract`의 계약(`parseRunResult`)으로 합니다.
 - `apps/web`은 `learning-engine`에 의존하지 않습니다. 학습 판단은 서버가 합니다. `learning-engine`은 배포 패키지라 dependency-cruiser가 따라가지 않으므로, 이 규칙은 ESLint(`no-restricted-imports`)가 검사합니다.
 - `packages/ai`는 제공자 프로토콜과 작업 정의만 갖고, DB 조회는 `apps/server`가 구현하는 `ContextSource` 인터페이스로 주입받습니다.
 
@@ -278,7 +285,7 @@ sequenceDiagram
 
 - 기본 경로: `/api/v1`. 모든 응답은 JSON이며, 스트리밍만 SSE(`text/event-stream`)를 씁니다.
 - 리소스 지향 경로를 쓰고, 상태를 바꾸는 동작은 `POST`/`PUT`/`PATCH`/`DELETE`를 씁니다.
-- 요청·응답 스키마는 `packages/shared`의 zod 스키마가 원천입니다. 웹은 같은 스키마로 **응답을 런타임 검증하는** 작은 fetch 클라이언트(`apps/web/src/api/client.ts`)를 씁니다. Hono RPC 클라이언트는 웹이 서버 소스의 타입(Node 타입 포함)을 끌어와야 하고 응답을 검증하지 않아서 쓰지 않습니다(M3 결정).
+- 요청·응답 스키마는 `@proginone/shared`의 zod 스키마가 원천입니다. 웹은 같은 스키마로 **응답을 런타임 검증하는** 작은 fetch 클라이언트(`apps/web/src/api/client.ts`)를 씁니다. Hono RPC 클라이언트는 웹이 서버 소스의 타입(Node 타입 포함)을 끌어와야 하고 응답을 검증하지 않아서 쓰지 않습니다(M3 결정).
 - 페이지네이션은 커서 기반(`?cursor=&limit=`)입니다.
 
 오류 응답 형식:
@@ -410,7 +417,7 @@ sequenceDiagram
 - **서버 로그**: `pino` 구조화 JSON 로그. 요청 ID를 모든 로그에 포함합니다. 개발 모드는 pretty 출력.
 - **AI 호출 기록**: 작업 이름, 제공자, 모델, 프롬프트 템플릿 버전, 입력·출력 토큰(제공되는 경우), 지연 시간, 결과 상태, 오류 코드를 `ai_calls` 테이블에 저장합니다. 프롬프트 원문은 DB에 저장하지 않고, 디버그 설정일 때만 `<dataDir>/logs/ai/`에 파일로 7일간 보관합니다.
 - **클라이언트 오류**: React 오류 경계와 `window.onerror`로 잡은 오류를 `/api/v1/client-errors`로 보내 서버 로그에 남깁니다.
-  - 구현 메모 (v0.3): 본문은 `{ source: 'boundary' | 'window' | 'unhandledrejection', name?, message, stack?, path }`(`packages/shared`의 `clientErrorReportSchema`, 길이 제한 이름 100·메시지 1,000·스택 4,000·경로 300자, 16KB 초과는 `413`)이고 서버는 `warn` 수준 `client error` 로그 한 줄로 남깁니다(DB에는 저장하지 않음). 경로는 쿼리 문자열 없이 화면 주소만 보내고, 학습자가 입력한 내용은 보내지 않습니다. 이미 서버가 기록한 API 오류(`ApiRequestError`)는 보내지 않고, 응답을 해석하지 못한 `BAD_RESPONSE`만 보냅니다. 렌더 반복이 로그를 채우지 않도록 웹은 같은 오류를 페이지당 한 번, 최대 20건만 보내고, 서버는 분당 30건까지 기록한 뒤 나머지는 세어 다음 기록에 `droppedBefore`로 붙입니다. 응답은 `204`입니다.
+  - 구현 메모 (v0.3): 본문은 `{ source: 'boundary' | 'window' | 'unhandledrejection', name?, message, stack?, path }`(`@proginone/shared`의 `clientErrorReportSchema`, 길이 제한 이름 100·메시지 1,000·스택 4,000·경로 300자, 16KB 초과는 `413`)이고 서버는 `warn` 수준 `client error` 로그 한 줄로 남깁니다(DB에는 저장하지 않음). 경로는 쿼리 문자열 없이 화면 주소만 보내고, 학습자가 입력한 내용은 보내지 않습니다. 이미 서버가 기록한 API 오류(`ApiRequestError`)는 보내지 않고, 응답을 해석하지 못한 `BAD_RESPONSE`만 보냅니다. 렌더 반복이 로그를 채우지 않도록 웹은 같은 오류를 페이지당 한 번, 최대 20건만 보내고, 서버는 분당 30건까지 기록한 뒤 나머지는 세어 다음 기록에 `droppedBefore`로 붙입니다. 응답은 `204`입니다.
 - **진단 화면**: 앱·콘텐츠·스키마 버전, 데이터 위치, 최근 오류, AI 연결 상태(설정 화면, P1).
 
 ### 빌드와 개발 환경

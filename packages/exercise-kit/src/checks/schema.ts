@@ -1,4 +1,4 @@
-import { A11Y_IMPACTS } from '@proginone/shared';
+import { A11Y_IMPACTS } from '@proginone/run-contract';
 import { z } from 'zod';
 
 import { parseLiteral } from '../common/literal.ts';

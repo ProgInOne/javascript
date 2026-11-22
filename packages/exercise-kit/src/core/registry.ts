@@ -1,4 +1,4 @@
-import { hasProtoKey, parseRunResult, withinDepth, type RunPlan } from '@proginone/shared';
+import { hasProtoKey, parseRunResult, withinDepth, type RunPlan } from '@proginone/run-contract';
 import type { z } from 'zod';
 
 import { fillBlank } from '../types/fill-blank.ts';

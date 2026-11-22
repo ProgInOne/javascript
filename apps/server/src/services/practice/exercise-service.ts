@@ -8,10 +8,10 @@ import {
   type PracticeContext,
   type ReportRequest,
   type ReportResponse,
-  type RunPlan,
   type RunPlanRequest,
   type SolutionResponse,
 } from '@proginone/shared';
+import { type RunPlan } from '@proginone/run-contract';
 import type { ContentExercise } from '../../db/content/repository.ts';
 import { countExerciseScopeAttempts } from '../../db/user/attempts.ts';
 import type { UserDb } from '../../db/user/connection.ts';

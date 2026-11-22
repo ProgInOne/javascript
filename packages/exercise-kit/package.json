@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@proginone/shared": "workspace:*",
+    "@proginone/run-contract": "workspace:*",
+    "@proginone/shared": "0.1.0-next.20261122143408",
     "zod": "^4.6.7"
   }
 }

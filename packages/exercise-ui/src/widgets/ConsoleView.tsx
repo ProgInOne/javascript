@@ -5,7 +5,7 @@ import {
   type RunResult,
   type RunStatus,
   type SourcePosition,
-} from '@proginone/shared';
+} from '@proginone/run-contract';
 import { Button } from '@proginone/ui';
 import {
   AlertTriangle,

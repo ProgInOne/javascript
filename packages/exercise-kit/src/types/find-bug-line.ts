@@ -3,7 +3,7 @@ import {
   type ObservationOf,
   type RunPlan,
   type RunResult,
-} from '@proginone/shared';
+} from '@proginone/run-contract';
 import { z } from 'zod';
 
 import { compareOutput } from '../common/output.ts';

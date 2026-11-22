@@ -826,7 +826,7 @@ registerRenderer('mcq_single', McqSingleRenderer); // props: { spec: PublicSpec,
 공통 규칙:
 
 - 서버·웹·`content-cli`는 유형 정의를 직접 부르지 않고 경계 함수(`parseSpec`, `redactSpec`, `buildRunPlan`, `gradeSubmission`, `verifySpec`)를 씁니다. 경계 함수가 스펙·답안·`RunResult`를 스키마로 검증한 뒤 순수 구현을 호출하고, 잘못된 입력은 `ExerciseKitError`(`INVALID_SPEC`, `INVALID_ANSWER`, `INVALID_RUN_RESULT`, `RUN_REQUIRED` 등)로 던집니다. 오답은 오류가 아니라 정상적인 `GradeResult`입니다.
-- 샌드박스와 주고받는 계약(`SerializedValue`, 관측 단계 `ObservationStep`·`CheckBundle`, 관측값 `Observation`, `RunResult`, `RunPlan`)과 ProgInOne 콘솔 형식 함수는 `packages/shared`에 둡니다. `exercise-kit`과 `runner`가 모두 `shared`에만 의존할 수 있기 때문입니다([의존 방향 규칙](/docs/design/system-architecture.md#의존-방향-규칙)). 러너는 전송 전용 부분(`RunRequest`, `Limits`, `PreparedCode`, `RunEvent`)을 그 위에 정의합니다.
+- 샌드박스와 주고받는 계약(`SerializedValue`, 관측 단계 `ObservationStep`·`CheckBundle`, 관측값 `Observation`, `RunResult`, `RunPlan`)과 ProgInOne 콘솔 형식 함수는 이 저장소의 내부 패키지 `packages/run-contract`에 둡니다. `exercise-kit`과 `runner`가 모두 여기에 의존하고, 언어와 무관한 `@proginone/shared`(ProgInOne/core)에는 넣지 않습니다([의존 방향 규칙](/docs/design/system-architecture.md#의존-방향-규칙), [D-090](/docs/decisions.md)). 러너는 전송 전용 부분(`RunRequest`, `Limits`, `PreparedCode`, `RunEvent`)을 그 위에 정의합니다.
 - `outcome`은 `correct`이면 `correct`, 아니면 `score > 0`일 때 `partial`, 0이면 `incorrect`입니다. 실행이 `error`/`timeout`/`loop_limit`으로 끝나면 `error`이고, `crashed`/`aborted`면 `error`이면서 `engineApplicable: false`입니다([학습 엔진 설계](/docs/design/learning-engine.md#관측값)).
 - `correct`는 항상 이진 판정입니다. 부분 점수 `score`는 피드백과 통계에만 쓰고, 숙련도 반영 방식은 [학습 엔진 설계](/docs/design/learning-engine.md)가 정합니다.
 - 채점은 결정론적이어야 합니다. 같은 `spec`·`answer`·`run`이면 항상 같은 결과입니다.

@@ -1,4 +1,4 @@
-import type { RunStatus } from '@proginone/shared';
+import type { RunStatus } from '@proginone/run-contract';
 
 import type {
   CheckResult,

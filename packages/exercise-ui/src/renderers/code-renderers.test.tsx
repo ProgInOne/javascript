@@ -5,7 +5,7 @@ import type {
   ImplementFunctionPublicSpec,
   WebTaskPublicSpec,
 } from '@proginone/exercise-kit';
-import type { RunResult } from '@proginone/shared';
+import type { RunResult } from '@proginone/run-contract';
 import { UiProvider } from '@proginone/ui';
 import { act, screen, within } from '@testing-library/react';
 import { createRef, useState } from 'react';

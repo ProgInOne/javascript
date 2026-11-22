@@ -8,12 +8,11 @@ import {
   type HintLevel,
 } from '@proginone/learning-engine';
 import {
-  parseRunResult,
   type ProjectAttemptRequest,
   type ProjectAttemptResponse,
   type ProjectView,
-  type RunResult,
 } from '@proginone/shared';
+import { parseRunResult, type RunResult } from '@proginone/run-contract';
 import {
   projectMilestones,
   type ContentExercise,

@@ -1,5 +1,5 @@
 import type { CheckResult, CodeAnswer, CodeFile, PublicCheck } from '@proginone/exercise-kit';
-import type { RunResult } from '@proginone/shared';
+import type { RunResult } from '@proginone/run-contract';
 import {
   Button,
   IconButton,

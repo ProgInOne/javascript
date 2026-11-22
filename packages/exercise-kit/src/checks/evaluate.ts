@@ -8,7 +8,7 @@ import {
   type Rect,
   type RunResult,
   type SerializedValue,
-} from '@proginone/shared';
+} from '@proginone/run-contract';
 
 import { parseLiteral } from '../common/literal.ts';
 import { normalizeOutputLines } from '../common/normalize.ts';

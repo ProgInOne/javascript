@@ -1,4 +1,4 @@
-import type { RunResult } from '@proginone/shared';
+import type { RunResult } from '@proginone/run-contract';
 
 import type {
   CheckFailReason,

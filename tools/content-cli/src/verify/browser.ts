@@ -1,7 +1,7 @@
 import { createServer, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { fileURLToPath } from 'node:url';
-import type { RunPlan, RunResult } from '@proginone/shared';
+import type { RunPlan, RunResult } from '@proginone/run-contract';
 import { runnerHtml, RUNNER_PATH, SHELL_HEADERS } from '@proginone/runner/shell-build';
 import { build } from 'esbuild';
 import { chromium, type Browser, type Page } from 'playwright-core';

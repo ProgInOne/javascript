@@ -27,26 +27,27 @@ module.exports = {
       to: { path: '^apps/' },
     },
     {
-      name: 'shared-is-leaf',
+      name: 'run-contract-is-leaf',
       severity: 'error',
-      comment: 'packages/shared는 다른 내부 패키지에 의존하지 않습니다.',
-      from: { path: '^packages/shared/' },
-      to: { path: '^(packages/(?!shared/)|apps/|tools/)' },
+      comment: 'packages/run-contract(JS 러너 계약)는 다른 내부 패키지에 의존하지 않습니다.',
+      from: { path: '^packages/run-contract/' },
+      to: { path: '^(packages/(?!run-contract/)|apps/|tools/)' },
     },
     {
       name: 'runner-only-to-shared',
       severity: 'error',
-      comment: 'packages/runner는 내부 패키지 중 shared에만 의존합니다(앱과 서버가 함께 씁니다).',
+      comment:
+        'packages/runner는 내부 패키지 중 run-contract에만 의존합니다(앱과 서버가 함께 씁니다). 공통 패키지 @proginone/shared는 배포 패키지라 여기서 보지 않습니다.',
       from: { path: '^packages/runner/' },
-      to: { path: '^(packages/(?!(runner|shared)/)|apps/|tools/)' },
+      to: { path: '^(packages/(?!(runner|run-contract)/)|apps/|tools/)' },
     },
     {
       name: 'ai-only-to-shared',
       severity: 'error',
       comment:
-        'packages/ai는 내부 패키지 중 shared에만 의존합니다. DB 조회는 서버가 구현하는 ContextSource로 주입받습니다.',
+        'packages/ai는 내부 패키지에 의존하지 않습니다(공통 패키지 @proginone/shared만 씀). DB 조회는 서버가 구현하는 ContextSource로 주입받습니다.',
       from: { path: '^packages/ai/' },
-      to: { path: '^(packages/(?!(ai|shared)/)|apps/|tools/)' },
+      to: { path: '^(packages/(?!ai/)|apps/|tools/)' },
     },
     {
       name: 'pure-packages-no-io',

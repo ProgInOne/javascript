@@ -11,7 +11,7 @@ import {
 import { queryOptions } from '@tanstack/react-query';
 import { api, stream, type StreamOptions } from '../../api/client.ts';
 
-// Tutor API (docs/design/system-architecture.md#api-규약 "튜터", packages/shared/src/tutor.ts).
+// Tutor API (docs/design/system-architecture.md#api-규약 "튜터", @proginone/shared tutor.ts).
 
 /**
  * The open thread of a lesson or exercise. `POST /tutor/threads` returns the existing open thread

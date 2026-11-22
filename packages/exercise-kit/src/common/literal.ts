@@ -1,4 +1,4 @@
-import type { SerializedValue } from '@proginone/shared';
+import type { SerializedValue } from '@proginone/run-contract';
 
 /**
  * Safe parser for JavaScript literals written by learners (and for expected console lines).

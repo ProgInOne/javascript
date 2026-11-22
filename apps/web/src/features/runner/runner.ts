@@ -4,7 +4,7 @@ import {
   type RunnerHost,
   type RunnerNotice,
 } from '@proginone/runner';
-import type { RunPlan, RunResult } from '@proginone/shared';
+import type { RunPlan, RunResult } from '@proginone/run-contract';
 
 /**
  * The local server that serves `/sandbox/runner.html`. In production that is this page's origin;

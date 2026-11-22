@@ -1,5 +1,5 @@
 import { fromJson, parsonsPublicId } from '@proginone/exercise-kit';
-import { runPlanSchema, type RunPlan, type RunResult } from '@proginone/shared';
+import { runPlanSchema, type RunPlan, type RunResult } from '@proginone/run-contract';
 import { EX, PROJECT_PREP, REMEDIAL } from './content-fixture.ts';
 
 // Learner answers and sandbox results for the fixture exercises (content-fixture.ts).

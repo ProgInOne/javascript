@@ -25,7 +25,7 @@ import {
   type ShellControl,
   type ShellToHarness,
 } from '../protocol/messages.ts';
-import type { ConsoleEntry, RunResult } from '@proginone/shared';
+import type { ConsoleEntry, RunResult } from '@proginone/run-contract';
 
 declare const __HARNESS_SOURCE__: string;
 

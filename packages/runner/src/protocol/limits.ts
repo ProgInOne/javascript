@@ -1,4 +1,4 @@
-import type { RUN_PURPOSES } from '@proginone/shared';
+import type { RUN_PURPOSES } from '@proginone/run-contract';
 import { z } from 'zod';
 
 /** Resource limits of one run (docs/design/code-execution-sandbox.md#스키마-스케치). */

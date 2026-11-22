@@ -1,4 +1,4 @@
-import { formatValue, type SerializedValue } from '@proginone/shared';
+import { formatValue, type SerializedValue } from '@proginone/run-contract';
 
 import { numberValue } from './literal.ts';
 

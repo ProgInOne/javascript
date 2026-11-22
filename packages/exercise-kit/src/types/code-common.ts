@@ -1,4 +1,4 @@
-import { runFileSchema, type RunFile, type RunPlan, type RunResult } from '@proginone/shared';
+import { runFileSchema, type RunFile, type RunPlan, type RunResult } from '@proginone/run-contract';
 import { z } from 'zod';
 
 import { leakSet } from '../common/normalize.ts';

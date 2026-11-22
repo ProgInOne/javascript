@@ -1,4 +1,4 @@
-import type { RunPlan, RunResult } from '@proginone/shared';
+import type { RunPlan, RunResult } from '@proginone/run-contract';
 import type { z } from 'zod';
 
 /** All type IDs from docs/design/content-and-exercises.md#유형-목록과-우선순위. */

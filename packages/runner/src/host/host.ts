@@ -1,4 +1,4 @@
-import { parseRunResult, type RunResult } from '@proginone/shared';
+import { parseRunResult, type RunResult } from '@proginone/run-contract';
 import { PROTOCOL_VERSION } from '../protocol/constants.ts';
 import {
   type HostToShell,

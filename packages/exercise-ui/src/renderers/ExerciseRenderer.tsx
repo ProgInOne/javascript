@@ -5,7 +5,7 @@ import type {
   McqMultiAnswer,
   ParsonsAnswer,
 } from '@proginone/exercise-kit';
-import type { RunResult } from '@proginone/shared';
+import type { RunResult } from '@proginone/run-contract';
 import type { AnswerByType, RenderableExercise, RenderableTypeId } from '../exercise.ts';
 import type { PreviewFrameProps } from '../preview/PreviewFrame.tsx';
 import { FixBug, ImplementFunction, WebTask } from './CodeRenderers.tsx';

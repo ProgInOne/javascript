@@ -547,7 +547,7 @@ sequenceDiagram
 
 모든 작업의 공통 사항:
 
-- 입력·출력 스키마는 `packages/shared`가 아니라 각 작업 파일에 둡니다. 서버 API 응답 스키마는 별도입니다.
+- 입력·출력 스키마는 `@proginone/shared`가 아니라 각 작업 파일에 둡니다. 서버 API 응답 스키마는 별도입니다.
 - 토큰 예산은 초기값이며, 호출 기록의 실제 사용량을 보고 조정합니다.
 - 모든 작업은 `ai_calls`에 기록됩니다.
 
@@ -1117,7 +1117,7 @@ v0.1(M4)에서 `packages/ai`와 서버 튜터 백엔드를 구현하면서 위 �
 
 **SSE와 오류**
 
-- `POST /tutor/threads/:id/messages` 이벤트: `message.created` → `status`(`queued`/`running`) → `delta`… (`reset`) → `done`(`complete`/`withheld`/`cancelled`, 저장한 본문 포함) 또는 `error`(`failed`로 저장). 페이로드 스키마는 `packages/shared/src/tutor.ts`의 `tutorStreamEventSchemas`가 원천입니다.
+- `POST /tutor/threads/:id/messages` 이벤트: `message.created` → `status`(`queued`/`running`) → `delta`… (`reset`) → `done`(`complete`/`withheld`/`cancelled`, 저장한 본문 포함) 또는 `error`(`failed`로 저장). 페이로드 스키마는 `@proginone/shared`의 `tutor.ts`에 있는 `tutorStreamEventSchemas`가 원천입니다.
 - `GET /ai/events`: 연결 즉시 `status` 스냅샷(상태·사용량·진행 중 로그인), 이후 변경마다 `status`, 로그인 완료 시 `login`. 15초마다 `: keep-alive`.
 - 모든 `/api` 요청이 세션 토큰 헤더를 요구하므로 웹은 SSE를 `EventSource`가 아니라 `fetch` 스트림으로 읽어야 합니다.
 - 오류 코드: 설계 목록에 `AI_UNAVAILABLE`(미설치, 미지원 버전, 격리 검증 실패, 재시작 소진. `details.reason`)을 추가했습니다. 상태에는 `isolation_failed`를 추가했습니다. HTTP 상태는 `AI_NOT_CONNECTED`·`AI_UNAUTHORIZED`·`AI_CANCELLED` 409, `AI_RATE_LIMITED` 429, `AI_CONTEXT_TOO_LARGE` 413, `AI_TIMEOUT` 504, `AI_BAD_OUTPUT`·`AI_PROVIDER_ERROR` 502, `AI_OVERLOADED`·`AI_UNAVAILABLE` 503, `AI_LOCKED_IN_ASSESSMENT` 403입니다. 401은 세션 토큰 만료(`UNAUTHORIZED`) 전용이라 쓰지 않습니다.

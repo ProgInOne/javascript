@@ -1,4 +1,4 @@
-import type { SerializedValue } from '@proginone/shared';
+import type { SerializedValue } from '@proginone/run-contract';
 import { describe, expect, it } from 'vitest';
 
 import { LITERAL_MAX_LENGTH, parseLiteral } from './literal.ts';
