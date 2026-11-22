@@ -41,27 +41,18 @@ describe('GET /exercises/:id/stats (FR-EX-10)', () => {
     expect(hint.status).toBe(200);
     const second = await submit(ctx, item, { body: { activeMs: 10_000 } });
     expect(second.status).toBe(201);
-    // An inline (lesson body) attempt is a first try of its own.
-    const inline = await ctx.call('POST', `/exercises/${EX.mcq}/inline-attempts`, {
-      answer: { optionId: 'b' },
-      startedAt: ctx.clock.now - 20_000,
-      activeMs: 20_000,
-      confidence: null,
-    });
-    expect(inline.status).toBe(201);
-
     const s = await stats(ctx, EX.mcq);
     expect(s).toMatchObject({
-      attempts: 3,
+      attempts: 2,
       timesServed: 1,
-      firstTries: 2,
-      firstTryCorrect: 1,
-      firstTryCorrectRate: 0.5,
+      firstTries: 1,
+      firstTryCorrect: 0,
+      firstTryCorrectRate: 0,
       hintUsedAttempts: 1,
       solutionViewedAttempts: 0,
-      averageActiveMs: 20_000, // (30 000 + 10 000 + 20 000) / 3
+      averageActiveMs: 20_000, // (30 000 + 10 000) / 2
     });
-    expect(s.hintUsageRate).toBeCloseTo(1 / 3);
+    expect(s.hintUsageRate).toBeCloseTo(1 / 2);
     expect(s.lastAttemptAt).toBe(ctx.clock.now);
   });
 

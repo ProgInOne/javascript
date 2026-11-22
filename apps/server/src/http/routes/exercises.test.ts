@@ -10,6 +10,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ANSWER_KEY_FIELDS,
   ANSWER_MARKERS,
+  BLOCK,
   EX,
   FIXTURE_EXERCISES,
 } from '../../test/content-fixture.ts';
@@ -182,21 +183,24 @@ describe('hints and solution', () => {
     const ctx = await practiceApp();
     const patched = await ctx.call('PATCH', '/settings', { 'hints.policy': 'after-attempt' });
     expect(patched.status).toBe(200);
-    const early = await ctx.call('POST', `/exercises/${EX.mcq}/hints`);
+    const early = await ctx.call('POST', `/exercises/${BLOCK.checkMcq}/hints`);
     expect(early.status).toBe(409);
     expect(errorCode(early.json)).toBe('EXERCISE_TRY_FIRST');
     expect(count(ctx, 'hint_events')).toBe(0);
 
-    const attempt = await ctx.call('POST', `/exercises/${EX.mcq}/inline-attempts`, {
+    const attempt = await ctx.call('POST', `/exercises/${BLOCK.checkMcq}/inline-attempts`, {
       answer: { optionId: 'a' },
       startedAt: ctx.clock.now - 20_000,
       activeMs: 15_000,
       confidence: null,
     });
     expect(attempt.status).toBe(201);
-    const after = await ctx.call('POST', `/exercises/${EX.mcq}/hints`);
+    const after = await ctx.call('POST', `/exercises/${BLOCK.checkMcq}/hints`);
     expect(after.status).toBe(200);
     expect(hintResponseSchema.parse(after.json).level).toBe(1);
+
+    // A try task records no submissions; the lesson keeps its first-try rule (D-091).
+    expect((await ctx.call('POST', `/exercises/${BLOCK.tryShout}/hints`)).status).toBe(200);
 
     // Back to standard: no submission needed.
     await ctx.call('PATCH', '/settings', { 'hints.policy': 'standard' });

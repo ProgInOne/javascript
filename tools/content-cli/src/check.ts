@@ -443,8 +443,14 @@ function checkLessonBlocks(
         diag.error(exFile, '본문의 TryIt이 쓰지 않는 usage: try 문제입니다');
     }
   }
-  if (data.kind === 'lesson' && compiled !== null && tryIts.length === 0)
-    diag.error(file, '일반 단원에는 직접 써 보기(TryIt)가 하나 이상 있어야 합니다');
+  // A lesson that introduces concepts lets the learner write them by hand at least once.
+  if (
+    data.kind === 'lesson' &&
+    data.concepts.primary.length > 0 &&
+    compiled !== null &&
+    tryIts.length === 0
+  )
+    diag.error(file, '개념을 소개하는 단원에는 직접 써 보기(TryIt)가 하나 이상 있어야 합니다');
 }
 
 /**

@@ -43,6 +43,8 @@ import {
   type InlineAttemptRequest,
   type InlineAttemptResponse,
   type RunResult,
+  type TryAttemptRequest,
+  type TryAttemptResponse,
   type SetAdaptation,
   type SkipItemResponse,
   type FinishSetResponse,
@@ -381,6 +383,16 @@ export class AttemptService {
         { details: { exerciseId: exercise.id } },
       );
     }
+    // The body answers only the lesson's own check items; practice items stay in practice sets
+    // so the two never repeat (D-091).
+    if (exercise.usage !== 'check') {
+      throw new AppError(
+        'EXERCISE_USAGE_MISMATCH',
+        409,
+        '본문 확인 문제가 아닌 문제는 여기서 풀 수 없습니다.',
+        { details: { usage: exercise.usage, expected: 'check' } },
+      );
+    }
     const candidate = candidateOf(exercise);
     if (!candidate) {
       throw new AppError('EXERCISE_UNSUPPORTED', 500, '이 문제는 채점할 수 없습니다.', {
@@ -524,6 +536,57 @@ export class AttemptService {
         stageAfter: m.after.stage,
       })),
       misconceptionChanges: misconceptionChanges(this.#engine, repo, effects?.misconceptions ?? []),
+    };
+  }
+
+  /**
+   * `POST /exercises/:id/try-attempts`: a lesson's "직접 써 보기" task (`<TryIt>`, D-091), checked
+   * against the sandbox run the browser made from the grading plan. Feedback only: nothing is
+   * written (no attempt, mastery, evidence, FSRS, mistake note or daily activity), because the
+   * task is a first hands-on try right after the explanation, not evidence of mastery.
+   */
+  submitTry(exerciseId: string, request: TryAttemptRequest): TryAttemptResponse {
+    const repo = this.#content.repo;
+    const exercise = repo.getExercise(exerciseId);
+    if (!exercise) {
+      throw new AppError('NOT_FOUND', 404, '문제를 찾을 수 없습니다.', {
+        details: { id: exerciseId },
+      });
+    }
+    // Only try tasks: grading any other item here would reveal its result without a record.
+    if (exercise.usage !== 'try') {
+      throw new AppError(
+        'EXERCISE_USAGE_MISMATCH',
+        409,
+        '직접 써 보기 과제가 아닌 문제는 여기서 확인할 수 없습니다.',
+        { details: { usage: exercise.usage, expected: 'try' } },
+      );
+    }
+    const { spec } = loadSpec(exercise);
+    const answer = kit(() => parseAnswer(exercise.type, request.answer));
+    // The run result is untrusted: parse it first.
+    const parsed = parseRunResult(request.runResult);
+    if (!parsed.success) {
+      throw new AppError('VALIDATION_RUN_RESULT_INVALID', 400, '실행 결과 형식이 올바르지 않습니다.', {
+        details: { issues: [parsed.error.slice(0, 500)] },
+      });
+    }
+    const grade = kit(() =>
+      gradeSubmission({ typeId: exercise.type, spec, answer, run: parsed.data }),
+    );
+    const misconceptions = repo.getMisconceptions(grade.misconceptionIds);
+    return {
+      attempt: { outcome: grade.outcome, score: grade.score, correct: grade.correct },
+      grade: {
+        feedback: grade.feedback,
+        ...(grade.checkResults ? { checkResults: grade.checkResults } : {}),
+        ...(grade.failedRequirements ? { failedRequirements: grade.failedRequirements } : {}),
+        misconceptions: grade.misconceptionIds.map((id) => ({
+          id,
+          title: misconceptions.get(id)?.title ?? id,
+        })),
+        explanation: exercise.explanation,
+      },
     };
   }
 

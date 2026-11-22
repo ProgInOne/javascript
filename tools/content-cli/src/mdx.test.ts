@@ -22,6 +22,7 @@ describe('compileLessonMdx', () => {
     expect(r.sections.map((s) => s.kind)).toEqual([...SECTION_KINDS]);
     expect(r.refs).toEqual({
       exercises: ['js-basics.start.first-program.mcq-x'],
+      tryIts: [],
       concepts: ['js.basics.statement', 'js.basics.console-log'],
       misconceptions: ['js.mc.log-is-return'],
       examples: ['hello'],

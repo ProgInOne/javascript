@@ -2,11 +2,12 @@ import {
   finishSetResponseSchema,
   inlineAttemptResponseSchema,
   practiceSetViewSchema,
+  tryAttemptResponseSchema,
   type AttemptResponse,
 } from '@proginone/shared';
 import { describe, expect, it } from 'vitest';
-import { CORRECT } from '../../test/answers.ts';
-import { EX, FIXTURE_EXERCISES } from '../../test/content-fixture.ts';
+import { CORRECT, runFor, WRONG } from '../../test/answers.ts';
+import { BLOCK, EX, FIXTURE_EXERCISES } from '../../test/content-fixture.ts';
 import { count, practiceApp, T0 } from '../../test/practice-app.ts';
 import { errorCode, LESSON, lessonSet, parsed, submit } from '../../test/practice-flow.ts';
 
@@ -353,7 +354,7 @@ describe('POST /exercises/:id/inline-attempts', () => {
 
   it('grades a lesson check outside any set and updates mastery without FSRS', async () => {
     const ctx = await practiceApp();
-    const wrong = await inline(ctx, EX.mcq, { answer: { optionId: 'a' } });
+    const wrong = await inline(ctx, BLOCK.checkMcq, { answer: { optionId: 'a' } });
     expect(wrong.status).toBe(201);
     const first = inlineAttemptResponseSchema.parse(wrong.json);
     expect(first.attempt).toMatchObject({
@@ -365,10 +366,10 @@ describe('POST /exercises/:id/inline-attempts', () => {
     expect(first.grade.misconceptions).toEqual([
       { id: 'js.mc.log-is-return', title: 'console.log를 반환으로 생각함' },
     ]);
-    expect(first.grade.explanation).toBe(`${EX.mcq} 해설`);
+    expect(first.grade.explanation).toBe(`${BLOCK.checkMcq} 해설`);
 
     const right = inlineAttemptResponseSchema.parse(
-      (await inline(ctx, EX.mcq, { answer: { optionId: 'b' } })).json,
+      (await inline(ctx, BLOCK.checkMcq, { answer: { optionId: 'b' } })).json,
     );
     expect(right.attempt).toMatchObject({ correct: true, attemptNo: 2, attemptInItem: 2 });
     const change = right.masteryChanges.find((m) => m.conceptId === 'js.basics.statement');
@@ -389,27 +390,108 @@ describe('POST /exercises/:id/inline-attempts', () => {
       ctx.userDb.sqlite.prepare('SELECT attempts_count, correct_count FROM daily_activity').get(),
     ).toEqual({ attempts_count: 2, correct_count: 1 });
 
-    // An inline attempt does not count as an attempt in a later practice set item.
+    // The lesson's set never serves its check items or try task, so the two do not repeat (D-091).
     const set = await lessonSet(ctx);
-    const mcq = set.items.find((i) => i.exerciseId === EX.mcq);
-    if (!mcq) throw new Error('fixture set misses mcq');
-    expect(parsed(await submit(ctx, mcq)).attempt).toMatchObject({
-      attemptInItem: 1,
-      attemptNo: 3,
-    });
+    const blocks = new Set<string>(Object.values(BLOCK));
+    expect(set.items.filter((i) => blocks.has(i.exerciseId))).toEqual([]);
   });
 
-  it('rejects run-based exercises, bad answers and unknown exercises', async () => {
+  it('answers only usage: check items, and rejects bad answers and unknown exercises', async () => {
     const ctx = await practiceApp();
-    const run = await inline(ctx, EX.implement, { answer: CORRECT[EX.implement] });
-    expect(run.status).toBe(409);
-    expect(errorCode(run.json)).toBe('EXERCISE_RUN_REQUIRED');
-    const bad = await inline(ctx, EX.mcq, { answer: { optionId: 7 } });
+    // A practice item stays in practice sets (D-091).
+    const practice = await inline(ctx, EX.mcq, { answer: { optionId: 'b' } });
+    expect(practice.status).toBe(409);
+    expect(errorCode(practice.json)).toBe('EXERCISE_USAGE_MISMATCH');
+    const tryTask = await inline(ctx, BLOCK.tryShout, { answer: CORRECT[EX.implement] });
+    expect(errorCode(tryTask.json)).toBe('EXERCISE_USAGE_MISMATCH');
+    const bad = await inline(ctx, BLOCK.checkMcq, { answer: { optionId: 7 } });
     expect(errorCode(bad.json)).toBe('VALIDATION_ANSWER_INVALID');
-    const extra = await inline(ctx, EX.mcq, { answer: { optionId: 'b' }, practiceSetItemId: 'x' });
+    const extra = await inline(ctx, BLOCK.checkMcq, {
+      answer: { optionId: 'b' },
+      practiceSetItemId: 'x',
+    });
     expect(extra.status).toBe(400);
     expect((await inline(ctx, 'a.b.c.nope', { answer: { optionId: 'b' } })).status).toBe(404);
     expect(count(ctx, 'attempts')).toBe(0);
+  });
+});
+
+describe('POST /exercises/:id/try-attempts (D-091)', () => {
+  /** Checks a try task the way the lesson does: grading plan → sandbox → try attempt. */
+  async function tryIt(
+    ctx: Awaited<ReturnType<typeof practiceApp>>,
+    id: string,
+    correct: boolean,
+  ) {
+    const answer = (correct ? CORRECT : WRONG)[EX.implement];
+    const plan = await ctx.call('POST', `/exercises/${id}/run-plan`, {
+      answer,
+      purpose: 'grading',
+    });
+    expect(plan.status).toBe(200);
+    return ctx.call('POST', `/exercises/${id}/try-attempts`, {
+      answer,
+      runResult: runFor(plan.json, { correct }),
+    });
+  }
+
+  it('grades the run for feedback and records nothing', async () => {
+    const ctx = await practiceApp();
+    const wrong = await tryIt(ctx, BLOCK.tryShout, false);
+    expect(wrong.status).toBe(200);
+    const miss = tryAttemptResponseSchema.parse(wrong.json);
+    expect(miss.attempt.correct).toBe(false);
+    expect(miss.grade.checkResults?.some((c) => !c.passed)).toBe(true);
+
+    const right = tryAttemptResponseSchema.parse((await tryIt(ctx, BLOCK.tryShout, true)).json);
+    expect(right.attempt).toEqual({ outcome: 'correct', score: 1, correct: true });
+    expect(right.grade.explanation).toBe(`${BLOCK.tryShout} 해설`);
+    // Answer keys never come back.
+    expect(JSON.stringify(right)).not.toContain('SOLUTION-MARK');
+
+    for (const table of [
+      'attempts',
+      'submissions',
+      'exercise_snapshots',
+      'concept_mastery',
+      'mastery_evidence',
+      'misconception_observations',
+      'pending_ratings',
+      'daily_activity',
+    ])
+      expect(count(ctx, table), table).toBe(0);
+  });
+
+  it('checks only usage: try tasks and needs a valid run result', async () => {
+    const ctx = await practiceApp();
+    const practice = await tryIt(ctx, EX.implement, true);
+    expect(practice.status).toBe(409);
+    expect(errorCode(practice.json)).toBe('EXERCISE_USAGE_MISMATCH');
+    const check = await ctx.call('POST', `/exercises/${BLOCK.checkMcq}/try-attempts`, {
+      answer: { optionId: 'b' },
+      runResult: {},
+    });
+    expect(errorCode(check.json)).toBe('EXERCISE_USAGE_MISMATCH');
+    const badRun = await ctx.call('POST', `/exercises/${BLOCK.tryShout}/try-attempts`, {
+      answer: CORRECT[EX.implement],
+      runResult: { v: 1, type: 'result' },
+    });
+    expect(errorCode(badRun.json)).toBe('VALIDATION_RUN_RESULT_INVALID');
+    const missing = await ctx.call('POST', '/exercises/a.b.c.nope/try-attempts', {
+      answer: {},
+      runResult: {},
+    });
+    expect(missing.status).toBe(404);
+  });
+
+  it('is never part of a practice set', async () => {
+    const ctx = await practiceApp();
+    const res = await ctx.call('POST', '/practice-sets', {
+      kind: 'extra',
+      exerciseIds: [BLOCK.tryShout],
+    });
+    expect(res.status).toBe(409);
+    expect(errorCode(res.json)).toBe('EXERCISE_USAGE_MISMATCH');
   });
 });
 
