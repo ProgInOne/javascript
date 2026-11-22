@@ -59,19 +59,22 @@ export class DailyPlanService {
     const progress = listLessonProgress(orm, learnerId);
     const progressById = new Map(progress.map((p) => [p.lessonId, p]));
 
-    // Continue: the most recently active lesson being read, or practised with a set still open.
+    // Continue: the lesson of the latest activity, while it is being read or practised with a set
+    // still open. A lesson left open before other lessons were studied is not continued (D-089):
+    // the plan follows where the learner is now; the course screen still shows it in progress.
     // A lesson whose last set ended without passing is not in progress: the plan moves on to the
     // next lesson and weakness practice instead of repeating it every day (D-033). A project has
     // no set: it is in progress until every milestone passed (D-048).
+    const latest =
+      [...progress].sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0] ?? null;
     const active =
-      [...progress]
-        .filter(
-          (p) =>
-            p.status === 'reading' ||
-            (p.status === 'practicing' &&
-              (p.practiceSetId !== null || repo.getLessonPlan(p.lessonId)?.kind === 'project')),
-        )
-        .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0] ?? null;
+      latest &&
+      (latest.status === 'reading' ||
+        (latest.status === 'practicing' &&
+          (latest.practiceSetId !== null ||
+            repo.getLessonPlan(latest.lessonId)?.kind === 'project')))
+        ? latest
+        : null;
     const activeCourse = active ? repo.courseOfLesson(active.lessonId) : null;
     const activeLesson =
       active && activeCourse
@@ -82,16 +85,20 @@ export class DailyPlanService {
         ? lessonEstimate(orm, activeLesson, active, { repo, learnerId })
         : null;
 
-    // Next: the first untouched lesson or project of the target course (else the current course,
-    // else the first course of the catalog). Assessments are taken from the course screen.
-    const courseId =
-      goal.targetCourseId ?? activeCourse ?? lastCourse(repo, progress) ?? repo.listCourseIds()[0];
-    const next =
-      courseId === undefined
-        ? undefined
-        : courseLessonEstimates(repo, orm, learnerId, courseId, PLAN_KINDS).find(
-            (l) => (l.progress?.status ?? 'not_started') === 'not_started',
-          );
+    // Next: the first untouched lesson or project, searched from the target course (else the
+    // course of the latest activity) onward in catalog order (track → course), so finishing a
+    // course moves on to the next one (html → css → js-basics, D-089). Assessments are taken from
+    // the course screen.
+    let next: ReturnType<typeof courseLessonEstimates>[number] | undefined;
+    for (const courseId of courseSearchOrder(
+      repo.listCourseIds(),
+      goal.targetCourseId ?? (latest ? repo.courseOfLesson(latest.lessonId) : null),
+    )) {
+      next = courseLessonEstimates(repo, orm, learnerId, courseId, PLAN_KINDS).find(
+        (l) => (l.progress?.status ?? 'not_started') === 'not_started',
+      );
+      if (next) break;
+    }
 
     const reviews = this.#review.allDue();
     const weak = this.#weakness.rank(now).entries;
@@ -157,10 +164,11 @@ export class DailyPlanService {
 const PLAN_KINDS = ['lesson', 'project'] as const;
 
 /** Course of the most recently updated lesson progress, if any. */
-function lastCourse(
-  repo: ContentAccess['repo'],
-  progress: readonly LessonProgressRow[],
-): string | null {
-  const latest = [...progress].sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0];
-  return latest ? repo.courseOfLesson(latest.lessonId) : null;
+/**
+ * Courses to look for the next lesson in: `start` and the ones after it in catalog order, then
+ * the ones before it. An unknown or missing `start` searches from the first course.
+ */
+export function courseSearchOrder(courseIds: readonly string[], start: string | null): string[] {
+  const i = start === null ? -1 : courseIds.indexOf(start);
+  return i < 0 ? [...courseIds] : [...courseIds.slice(i), ...courseIds.slice(0, i)];
 }

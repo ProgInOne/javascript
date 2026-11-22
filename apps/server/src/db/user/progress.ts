@@ -184,19 +184,17 @@ export function listLessonProgress(
 }
 
 /** The most recently active lesson that is being read or practiced ("이어서 학습"). */
+/**
+ * The lesson of the latest activity while it is still in progress (`reading`/`practicing`); null
+ * when the latest lesson is completed (a lesson left open before it is not continued, D-089).
+ */
 export function latestActiveLesson(orm: Orm, learnerId: string) {
-  return (
-    orm
-      .select()
-      .from(lessonProgress)
-      .where(
-        and(
-          eq(lessonProgress.learnerId, learnerId),
-          inArray(lessonProgress.status, ['reading', 'practicing']),
-        ),
-      )
-      .orderBy(desc(lessonProgress.updatedAt))
-      .limit(1)
-      .get() ?? null
-  );
+  const latest = orm
+    .select()
+    .from(lessonProgress)
+    .where(eq(lessonProgress.learnerId, learnerId))
+    .orderBy(desc(lessonProgress.updatedAt))
+    .limit(1)
+    .get();
+  return latest && (latest.status === 'reading' || latest.status === 'practicing') ? latest : null;
 }
