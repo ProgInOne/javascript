@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, develop]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -23,6 +23,19 @@ jobs:
     # ~10 min alone; on the shared Mac next to a Docker E2E job it passed 15 min and was cut off.
     timeout-minutes: 30
     steps:
+      # main only takes release PRs from develop (D-090, CONTRIBUTING.md#develop과-main).
+      - name: Release PRs to main come from develop
+        # A fork's branch named develop is not this repository's develop.
+        if: >-
+          github.event_name == 'pull_request' && github.base_ref == 'main' &&
+          (github.head_ref != 'develop' || github.event.pull_request.head.repo.full_name != github.repository)
+        run: |
+          echo "::error::PRs into main must come from this repository's develop (got '${HEAD_REPO}:${HEAD_REF}'). Target develop instead."
+          exit 1
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+
       - uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v6

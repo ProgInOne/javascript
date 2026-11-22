@@ -3,7 +3,7 @@
 ProgInOne 릴리스를 만들고 확인하는 방법입니다.
 
 - 대상: 유지 관리자
-- 최종 수정: 2026-11-16
+- 최종 수정: 2026-11-22 (develop/main 운영: D-090)
 - 설치하는 쪽의 절차는 [설치와 업그레이드](/docs/guides/install-and-upgrade.md)에 있습니다.
 
 ## 버전 체계
@@ -29,7 +29,7 @@ ProgInOne 릴리스를 만들고 확인하는 방법입니다.
 
 ## 릴리스 전 확인
 
-1.  `main`의 최신 커밋에서 CI가 두 작업(`check`, `e2e`) 모두 통과했는지 확인합니다.
+1.  `develop`의 최신 커밋에서 CI가 두 작업(`check`, `e2e`) 모두 통과했는지 확인합니다.
 1.  콘텐츠 실행 검증과 성능·호환성 점검을 실행합니다. 마일스톤 릴리스에서는 결과를 `docs/reviews/`에 남깁니다.
 
     ```shell
@@ -41,7 +41,11 @@ ProgInOne 릴리스를 만들고 확인하는 방법입니다.
 
 ## 릴리스 PR
 
-릴리스는 버전과 변경 이력만 바꾸는 PR 하나로 준비합니다. 브랜치 이름은 `chore/release-v<버전>`입니다.
+릴리스는 PR 두 개로 합니다([D-090](/docs/decisions.md)). 먼저 버전과 변경 이력만 바꾸는 PR을 `develop`에 병합하고, 그다음 `develop`을 `main`으로 병합합니다.
+
+### 버전 PR
+
+`develop`에서 브랜치 `chore/release-v<버전>`을 만듭니다.
 
 1.  루트 `package.json`의 `version`을 올립니다.
 1.  `CHANGELOG.md`의 `## [Unreleased]` 아래 항목을 새 섹션 `## [<버전>] - <YYYY-MM-DD>`로 옮기고, `[Unreleased]`는 비워 둡니다.
@@ -50,14 +54,23 @@ ProgInOne 릴리스를 만들고 확인하는 방법입니다.
     - 릴리스 워크플로가 이 섹션을 그대로 릴리스 노트로 씁니다. 제목 줄은 정확히 `## [<버전>]`으로 시작해야 합니다.
 1.  `docs/roadmap.md`에 마일스톤 진행 상태를 갱신합니다.
 1.  커밋 메시지는 `chore(release): v<버전>`입니다.
-1.  CI가 통과하면 스쿼시 병합합니다.
+1.  CI가 통과하면 `develop`에 스쿼시 병합합니다.
+
+### develop → main PR
+
+```shell
+gh pr create --base main --head develop --title "release: v<버전>" --body "<CHANGELOG 섹션 요약>"
+```
+
+- CI가 통과하면 **merge commit**으로 병합합니다(`gh pr merge --merge`). `main`은 merge commit만 허용합니다.
+- `develop`은 기본 브랜치라 병합 뒤에도 지워지지 않습니다.
 
 ## 태그와 릴리스 워크플로
 
-병합한 `main`의 커밋에 태그를 붙여 푸시합니다.
+`main`의 merge commit에 태그를 붙여 푸시합니다.
 
 ```shell
-git checkout main && git pull
+git fetch origin && git checkout main && git pull --ff-only
 git tag -a v0.4.0 -m "v0.4.0"
 git push origin v0.4.0
 ```
