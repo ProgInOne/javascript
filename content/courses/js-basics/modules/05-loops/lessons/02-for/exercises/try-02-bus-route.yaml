@@ -16,6 +16,7 @@ prompt: |
 
   - 글자를 모을 누적 변수 `route`를 쓰세요.
   - 반복 안에서는 출력하지 말고, 반복이 끝난 뒤에 `route`를 한 번만 출력해요.
+  - 화살표 `→`는 위 출력에서 복사해 붙여 넣어도 돼요.
 spec:
   starter:
     files:
@@ -39,7 +40,7 @@ spec:
   checks:
     - kind: console
       id: output
-      description: "`1 → 2 → 3 → 4 → 5 → 종점` 한 줄만 출력되어야 합니다. 반복 안에서 출력하면 여러 줄이 나와요."
+      description: "`1 → 2 → 3 → 4 → 5 → 종점` 한 줄만 출력되어야 합니다. 반복 안에서 출력하면 여러 줄이 나옵니다."
       requirement: 안내판 한 줄 출력
       expect:
         lines: ["1 → 2 → 3 → 4 → 5 → 종점"]

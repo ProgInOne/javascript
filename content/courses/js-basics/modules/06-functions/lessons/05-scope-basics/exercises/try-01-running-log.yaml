@@ -13,6 +13,7 @@ prompt: |
   - 누적 거리는 호출과 호출 사이에 **기억**되어야 해요. 처음에는 0km예요.
   - 돌려줄 문장 모양: `"오늘 3km, 누적 3km"`
   - 예: `run(3)` → `"오늘 3km, 누적 3km"`, 이어서 `run(5)` → `"오늘 5km, 누적 8km"`
+  - "확인"을 누르면 `run(3)`, `run(5)`, `run(2)`를 차례로 불러 검사해요. 직접 `run`을 부른 줄이 남아 있으면 누적 거리가 이어져서 확인이 실패하니, 확인 전에는 그 줄을 지우거나 앞에 `//`를 붙여 주세요.
 spec:
   starter:
     files:
@@ -24,6 +25,10 @@ spec:
             // 2. 누적 거리에 km를 더하세요.
             // 3. "오늘 (km)km, 누적 (누적 거리)km" 문장을 돌려주세요.
           }
+
+          // 실행해 보려면 아래 줄의 //를 지우세요. "확인"을 누르기 전에는 다시 //를 붙여 주세요.
+          // console.log(run(3));
+          // console.log(run(5));
   entry: run
   solution:
     files:
@@ -38,16 +43,20 @@ spec:
             // 3. "오늘 (km)km, 누적 (누적 거리)km" 문장을 돌려주세요.
             return "오늘 " + km + "km, 누적 " + totalKm + "km";
           }
+
+          // 실행해 보려면 아래 줄의 //를 지우세요. "확인"을 누르기 전에는 다시 //를 붙여 주세요.
+          // console.log(run(3));
+          // console.log(run(5));
   checks:
     - kind: call
       id: first
-      description: 처음 3km를 달리면 "오늘 3km, 누적 3km"를 돌려줘야 합니다.
+      description: 처음 3km를 달리면 "오늘 3km, 누적 3km"를 돌려줘야 합니다. 직접 부른 run 호출이 남아 있으면 누적 거리가 달라집니다.
       requirement: 문장 돌려주기
       args: [3]
       expect: { equals: "오늘 3km, 누적 3km" }
     - kind: call
       id: second
-      description: 이어서 5km를 달리면 누적 거리가 8km로 쌓여야 합니다.
+      description: 이어서 5km를 달리면 누적 거리가 8km로 쌓여야 합니다. 직접 부른 run 호출이 남아 있으면 누적 거리가 달라집니다.
       requirement: 누적 거리 기억하기
       args: [5]
       expect: { equals: "오늘 5km, 누적 8km" }
