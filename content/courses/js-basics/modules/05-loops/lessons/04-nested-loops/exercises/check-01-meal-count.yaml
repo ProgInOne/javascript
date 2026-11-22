@@ -1,0 +1,46 @@
+id: js-basics.loops.nested-loops.check-meal-count
+type: fill_blank
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.loops.nested, weight: 1 }
+tags: [nested, iteration-count]
+estimatedSeconds: 60
+prompt: |
+  닷새 동안 하루 세 끼를 기록하는 코드예요.
+
+  ```js
+  for (let day = 1; day <= 5; day++) {
+    for (let meal = 1; meal <= 3; meal++) {
+      console.log(day + "일째 " + meal + "번째 식사");
+    }
+  }
+  ```
+
+  실행하면 `console.log`는 모두 몇 번 실행되나요? 숫자만 적어 주세요.
+spec:
+  mode: text
+  template: |
+    console.log 실행 횟수: {{blank:count}}번
+  blanks:
+    - id: count
+      accept: ["15"]
+      width: 4
+      misconceptionMap:
+        "8": js.mc.nested-count-additive
+misconceptions: [js.mc.nested-count-additive]
+hints:
+  - 바깥 반복은 몇 번, 안쪽 반복은 몇 번 도나요?
+  - 바깥 회차 하나마다 안쪽 반복이 처음부터 끝까지 통째로 돌아요. 1일째에 몇 번 출력될까요?
+  - 하루에 3번씩, 5일 동안이에요. 더하기일까요, 곱하기일까요?
+explanation: |
+  정답은 **15번**이에요.
+
+  바깥 반복(`day`)은 5번 돌고, 바깥 회차마다 안쪽 반복(`meal`)이 1부터 3까지 3번씩 통째로 돌아요. 그래서 3 + 3 + 3 + 3 + 3 = 5 × 3 = 15번이에요.
+
+  8이라고 답했다면 바깥 횟수와 안쪽 횟수를 더한 거예요. 안쪽 본문의 실행 횟수는 (바깥 횟수) × (안쪽 횟수)예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,48 @@
+id: js-basics.values.null-undefined.check-two-lines-meaning
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.types.undefined, weight: 1 }
+  - { id: js.errors.error-types, weight: 0.3 }
+tags: [undefined, reference-error]
+estimatedSeconds: 70
+prompt: |
+  어떤 프로그램을 실행했더니 콘솔에 아래 두 줄이 나왔어요. 두 줄에 대한 설명으로 맞는 것은 무엇인가요?
+
+  ```text
+  undefined
+  ReferenceError: color is not defined (3번째 줄)
+  ```
+spec:
+  options:
+    - id: a
+      text: 첫 줄은 값 없이 만든 변수를 출력한 결과이고, 둘째 줄은 만든 적 없는 이름 `color`를 써서 난 오류다
+    - id: b
+      text: 두 줄 모두 `color`라는 변수에 아직 값이 없다는 같은 뜻이다
+      misconception: js.mc.not-defined-is-undefined
+      rationale: "`is not defined`는 값이 없다는 뜻이 아니라, 그런 이름의 변수가 아예 없다는 오류예요."
+    - id: c
+      text: 첫 줄의 `undefined`도 오류라서, 프로그램은 첫 줄에서 이미 멈췄다
+      misconception: js.mc.undefined-is-error
+      rationale: 첫 줄에서 멈췄다면 둘째 줄의 오류도 나오지 않았을 거예요. `undefined`는 값이에요.
+    - id: d
+      text: "`color` 변수에 `undefined`가 들어 있어서 둘째 줄의 오류가 났다"
+      misconception: js.mc.not-defined-is-undefined
+      rationale: "`undefined`가 들어 있는 변수는 출력해도 오류가 나지 않아요. 오류는 변수가 아예 없을 때 나요."
+  correct: a
+misconceptions: [js.mc.not-defined-is-undefined, js.mc.undefined-is-error]
+hints:
+  - 두 줄 중 맨 앞에 오류 종류가 붙어 있는 줄은 어느 것인가요?
+  - "`undefined`만 있는 줄은 값이고, `ReferenceError`가 붙은 줄은 오류예요."
+  - "`is not defined`는 \"값이 없다\"와 \"이름이 없다\" 중 어느 쪽일까요?"
+explanation: |
+  정답은 **첫 줄은 값 없이 만든 변수를 출력한 결과이고, 둘째 줄은 만든 적 없는 이름을 써서 난 오류**라는 설명이에요.
+
+  - `undefined`만 덩그러니 있는 첫 줄은 **값**이에요. 변수는 있지만 아직 값이 정해지지 않았을 때 나와요. 프로그램은 계속 실행돼요.
+  - `ReferenceError: color is not defined`는 **오류**예요. `color`라는 이름의 변수가 아예 없어서 3번 줄에서 멈췄어요. 오타나 대소문자 차이가 흔한 원인이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

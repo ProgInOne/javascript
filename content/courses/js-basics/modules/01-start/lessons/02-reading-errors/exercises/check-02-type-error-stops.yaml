@@ -1,0 +1,35 @@
+id: js-basics.start.reading-errors.check-type-error-stops
+type: true_false
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.errors.error-messages, weight: 1 }
+  - { id: js.basics.statements, weight: 0.3 }
+tags: [runtime-error, execution-order]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램에 대한 설명이 맞는지 골라 주세요.
+code: |
+  console.log("준비");
+  console.lg("시작");
+  console.log("끝");
+spec:
+  statement: '`준비`가 출력되고 2번 줄에서 `TypeError`가 난 다음, 3번 줄의 `끝`도 이어서 출력된다.'
+  answer: false
+  misconceptionIfWrong: js.mc.code-after-error-runs
+misconceptions: [js.mc.code-after-error-runs]
+hints:
+  - 2번 줄의 `console.lg`는 문법 검사를 통과할까요, 실행 중에 걸릴까요?
+  - 실행 중 오류가 나면 앞 줄까지는 실행돼요. 오류 난 줄 뒤는 어떻게 될까요?
+  - 프로그램은 오류 난 줄만 건너뛰지 않고 그 자리에서 멈춰요.
+explanation: |
+  정답은 **거짓**이에요.
+
+  2번 줄의 `console.lg`는 문장 모양은 맞지만 `lg`라는 기능이 없어서, 실행 중에 `TypeError`가 나요. 그래서 1번 줄의 `준비`는 출력되지만 프로그램은 2번 줄에서 멈춰요. 3번 줄은 실행되지 않으니 `끝`은 나오지 않아요.
+
+  오류 난 줄만 건너뛰고 나머지를 계속 실행하지는 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

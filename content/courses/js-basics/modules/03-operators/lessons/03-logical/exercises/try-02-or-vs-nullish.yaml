@@ -1,0 +1,99 @@
+id: js-basics.operators.logical.try-or-vs-nullish
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.ops.nullish, weight: 1 }
+  - { id: js.ops.short-circuit, weight: 0.5 }
+tags: [nullish, logical-or, default-value, write-code]
+estimatedSeconds: 210
+prompt: |
+  택배 보관함 앱이에요. 보관함 칸 번호는 **0번 칸도 있어요.** 저장된 칸 번호 `savedBox`(0)와 메모 `savedMemo`(`null`)로 기본값을 정하는 식을 직접 써 보고, `||`와 `??`의 차이를 확인해 보세요.
+
+  1. `boxWithOr`: `savedBox`가 비어 있으면 `"미배정"`이 되도록 `||`로 쓰세요.
+  1. `boxWithNullish`: 같은 일을 `??`로 쓰세요.
+  1. `memo`: `savedMemo`가 없으면(`null`·`undefined`) `"메모 없음"`이 되도록 쓰세요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요. 0번 칸을 지켜 주는 쪽은 어느 연산자인가요?
+
+  ```text
+  || 결과: 미배정
+  ?? 결과: 0
+  메모: 메모 없음
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const savedBox = 0;      // 0번 칸에 보관 중
+          const savedMemo = null;  // 메모를 남기지 않았어요
+
+          // 1. boxWithOr: || 로 기본값 "미배정"
+
+          // 2. boxWithNullish: ?? 로 기본값 "미배정"
+
+          // 3. memo: 기본값 "메모 없음"
+
+          console.log("|| 결과:", boxWithOr);
+          console.log("?? 결과:", boxWithNullish);
+          console.log("메모:", memo);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const savedBox = 0;      // 0번 칸에 보관 중
+          const savedMemo = null;  // 메모를 남기지 않았어요
+
+          // 1. boxWithOr: || 로 기본값 "미배정"
+          const boxWithOr = savedBox || "미배정";
+          // 2. boxWithNullish: ?? 로 기본값 "미배정"
+          const boxWithNullish = savedBox ?? "미배정";
+          // 3. memo: 기본값 "메모 없음"
+          const memo = savedMemo ?? "메모 없음";
+          console.log("|| 결과:", boxWithOr);
+          console.log("?? 결과:", boxWithNullish);
+          console.log("메모:", memo);
+  checks:
+    - kind: program
+      id: with-or
+      description: "`||`는 0을 falsy로 보고 기본값을 고르므로 boxWithOr는 \"미배정\"이어야 합니다."
+      requirement: "|| 로 기본값"
+      expect: { globals: { boxWithOr: { equals: "미배정" } }, noError: true }
+    - kind: program
+      id: with-nullish
+      description: "`??`는 0을 그대로 두므로 boxWithNullish는 숫자 0이어야 합니다."
+      requirement: "?? 로 기본값"
+      misconceptionIfFail: js.mc.nullish-same-as-or
+      expect: { globals: { boxWithNullish: { equals: 0 } }, noError: true }
+    - kind: program
+      id: memo
+      description: savedMemo가 null이므로 memo는 "메모 없음"이어야 합니다.
+      requirement: 메모 기본값
+      expect: { globals: { memo: { equals: "메모 없음" } }, noError: true }
+    - kind: console
+      id: output
+      description: 세 값이 정해진 모양으로 세 줄 출력되어야 합니다.
+      requirement: 출력
+      expect:
+        lines: ["|| 결과: 미배정", "?? 결과: 0", "메모: 메모 없음"]
+misconceptions: [js.mc.nullish-same-as-or, js.mc.or-default-keeps-zero]
+hints:
+  - "기본값을 정하는 식은 `저장된 값 || 기본값`, `저장된 값 ?? 기본값` 모양이에요."
+  - "`||`는 왼쪽이 falsy(0, 빈 문자열 포함)면 기본값을, `??`는 왼쪽이 `null`·`undefined`일 때만 기본값을 골라요."
+  - "`const boxWithOr = savedBox || \"미배정\";`처럼 써요. `memo`는 `||`와 `??` 어느 쪽으로 써도 결과가 같아요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  const boxWithOr = savedBox || "미배정";       // 0은 falsy → "미배정"
+  const boxWithNullish = savedBox ?? "미배정";  // 0은 null·undefined가 아님 → 0
+  const memo = savedMemo ?? "메모 없음";        // null → "메모 없음"
+  ```
+
+  0번 칸처럼 0도 올바른 값이면 `??`를 써야 값이 지켜져요. `||`는 0과 빈 문자열까지 "없음"으로 보고 바꿔 버려요. `memo`는 `null`이라 `||`로 써도 `"메모 없음"`이 돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

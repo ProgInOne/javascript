@@ -1,0 +1,42 @@
+id: js-basics.values.var-and-tdz.check-typeof-before-var
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.values.var, weight: 1 }
+  - { id: js.types.typeof, weight: 0.3 }
+tags: [var, hoisting, typeof]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    console.log(typeof weather);
+    var weather = "맑음";
+    console.log(typeof weather);
+  answerKind: console
+  misconceptionByAnswer:
+    "string\nstring": js.mc.var-hoists-value
+misconceptions: [js.mc.var-hoists-value]
+hints:
+  - "`var` 변수는 실행 전에 이름이 등록되면서 어떤 값이 미리 들어가나요?"
+  - "`\"맑음\"`은 언제 `weather`에 들어가나요? 1번 줄이 실행될 때는 아직일까요?"
+  - 1번 줄에서 `weather`에는 `undefined`가 들어 있어요. 그 값의 `typeof`는 무엇일까요?
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  undefined
+  string
+  ```
+
+  - 실행 전 준비에서 `var weather`는 이름이 등록되고 `undefined`가 미리 들어가요. 그래서 1번 줄의 `typeof weather`는 `undefined`예요. 오류는 나지 않아요.
+  - 값 `"맑음"`은 2번 줄이 실행될 때 비로소 들어가요. 그래서 3번 줄에서는 `string`이에요.
+
+  두 줄 모두 `string`이라고 답했다면 값까지 끌어올려진다고 생각한 거예요. 미리 준비되는 것은 이름과 `undefined`뿐이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

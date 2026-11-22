@@ -1,0 +1,42 @@
+id: js-basics.control.if-else.check-level-condition
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.control.if, weight: 1 }
+  - { id: js.ops.strict-equality, weight: 0.3 }
+tags: [if, condition, assignment]
+estimatedSeconds: 50
+prompt: |
+  게임에서 숫자 변수 `level`이 **정확히 3일 때만** 보너스를 주려고 해요. `if ( ? ) { ... }`의 괄호 안에 쓸 조건으로 알맞은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`level === 3`'
+    - id: b
+      text: '`level = 3`'
+      misconception: js.mc.assign-as-compare
+      rationale: '`=`는 대입이에요. `level`에 3을 넣고, 넣은 값 3이 참으로 판단되어 언제나 블록이 실행돼요.'
+    - id: c
+      text: '`level === "3"`'
+      rationale: '`level`은 숫자인데 문자열 `"3"`과 `===`로 비교하면 자료형이 달라서 항상 `false`예요.'
+    - id: d
+      text: '`level >= 3`'
+      rationale: 3 이상이면 모두 참이라 4, 5일 때도 보너스를 줘요.
+  correct: a
+misconceptions: [js.mc.assign-as-compare]
+hints:
+  - 조건은 `true`나 `false`가 되는 비교식이어야 해요.
+  - "`=` 하나는 무엇을 하는 연산자였나요? 비교일까요, 대입일까요?"
+  - 같은지 비교할 때는 `===`를 써요. 비교하는 값의 자료형도 맞아야 해요.
+explanation: |
+  정답은 `level === 3`이에요. `level`이 숫자 3과 같을 때만 `true`가 돼요.
+
+  - `level = 3`: 비교가 아니라 대입이에요. `level`이 무엇이었든 3으로 바뀌고, 3은 truthy라서 블록이 항상 실행돼요.
+  - `level === "3"`: 숫자와 문자열은 `===`로 같지 않아서 블록이 실행되지 않아요.
+  - `level >= 3`: 3보다 큰 레벨에서도 참이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

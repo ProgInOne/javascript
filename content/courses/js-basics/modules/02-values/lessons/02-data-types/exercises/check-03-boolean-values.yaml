@@ -1,0 +1,43 @@
+id: js-basics.values.data-types.check-boolean-values
+type: mcq_multi
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.types.boolean, weight: 1 }
+tags: [boolean, literal]
+estimatedSeconds: 60
+prompt: |
+  다음 중 자료형이 **boolean**인 값을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: '`false`'
+    - id: b
+      text: '`true`'
+    - id: c
+      text: '`"true"`'
+      misconception: js.mc.quoted-boolean
+      rationale: 따옴표로 감쌌으니 네 글자로 된 문자열이에요.
+    - id: d
+      text: '`TRUE`'
+      misconception: js.mc.boolean-capitalized
+      rationale: 불리언은 소문자로만 써요. `TRUE`는 이름으로 읽혀서 `ReferenceError`가 나요.
+    - id: e
+      text: '`"참"`'
+      rationale: 따옴표로 감싼 글자이니 문자열이에요.
+  correct: [a, b]
+misconceptions: [js.mc.quoted-boolean, js.mc.boolean-capitalized]
+hints:
+  - 불리언 값은 딱 두 개뿐이에요.
+  - 따옴표로 감싼 값은 내용과 상관없이 어떤 자료형인가요?
+  - 대문자로 쓴 `TRUE`는 JavaScript가 값으로 알아볼까요, 이름으로 읽을까요?
+explanation: |
+  정답은 `false`와 `true`예요. 불리언은 따옴표 없이 **소문자**로 쓴 이 두 값뿐이에요.
+
+  - `"true"`, `"참"`은 따옴표로 감싼 문자열이에요.
+  - `TRUE`는 불리언이 아니라 이름으로 읽혀서, 그런 변수가 없으면 `ReferenceError`가 나요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

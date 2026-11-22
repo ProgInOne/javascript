@@ -1,0 +1,92 @@
+id: js-basics.operators.comparison.try-order-benefits
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.ops.relational, weight: 1 }
+tags: [relational, boundary, write-code]
+estimatedSeconds: 210
+prompt: |
+  온라인 서점의 주문 혜택 규칙이에요. 주문 금액 `orderTotal`이 딱 30000원일 때, 세 가지 혜택을 받을 수 있는지 **비교식**으로 계산해 변수에 담아 보세요. `true`/`false`를 직접 쓰지 말고 비교 연산자로 계산해요.
+
+  | 변수 | 규칙 |
+  |---|---|
+  | `canUseCoupon` | 20000원 **이상**이면 쿠폰 사용 가능 |
+  | `earnsPoints` | 30000원 **초과**이면 포인트 적립 |
+  | `isSmallOrder` | 10000원 **미만**이면 소액 주문 |
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  쿠폰 사용: true
+  포인트 적립: false
+  소액 주문: false
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const orderTotal = 30000;
+
+          // canUseCoupon, earnsPoints, isSmallOrder를 비교식으로 만드세요.
+
+
+          console.log("쿠폰 사용:", canUseCoupon);
+          console.log("포인트 적립:", earnsPoints);
+          console.log("소액 주문:", isSmallOrder);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const orderTotal = 30000;
+
+          // canUseCoupon, earnsPoints, isSmallOrder를 비교식으로 만드세요.
+          const canUseCoupon = orderTotal >= 20000;
+          const earnsPoints = orderTotal > 30000;
+          const isSmallOrder = orderTotal < 10000;
+
+          console.log("쿠폰 사용:", canUseCoupon);
+          console.log("포인트 적립:", earnsPoints);
+          console.log("소액 주문:", isSmallOrder);
+  checks:
+    - kind: program
+      id: coupon
+      description: canUseCoupon은 30000원이 20000원 이상이므로 true여야 합니다.
+      requirement: 쿠폰 사용
+      expect: { globals: { canUseCoupon: { equals: true } }, noError: true }
+    - kind: program
+      id: points
+      description: earnsPoints는 30000원이 30000원 "초과"가 아니므로 false여야 합니다. 경계값에서 `>`와 `>=`가 갈려요.
+      requirement: 포인트 적립
+      expect: { globals: { earnsPoints: { equals: false } }, noError: true }
+    - kind: program
+      id: small
+      description: isSmallOrder는 30000원이 10000원 미만이 아니므로 false여야 합니다.
+      requirement: 소액 주문
+      expect: { globals: { isSmallOrder: { equals: false } }, noError: true }
+    - kind: console
+      id: output
+      description: 세 혜택 여부가 정해진 모양으로 세 줄 출력되어야 합니다.
+      requirement: 출력
+      expect:
+        lines: ["쿠폰 사용: true", "포인트 적립: false", "소액 주문: false"]
+hints:
+  - "주석 아래에 `const canUseCoupon = orderTotal ... 20000;` 같은 문장을 세 줄 써요."
+  - 이상은 `>=`, 초과는 `>`, 미만은 `<`예요. "이상"과 "이하"만 기준값을 포함해요.
+  - "`orderTotal > 30000`은 `30000 > 30000`이라 `false`예요. 경계값을 넣어 직접 확인해 보세요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  const canUseCoupon = orderTotal >= 20000;   // 30000 >= 20000 → true
+  const earnsPoints = orderTotal > 30000;     // 30000 > 30000 → false
+  const isSmallOrder = orderTotal < 10000;    // 30000 < 10000 → false
+  ```
+
+  요구사항의 "이상·초과·미만"을 정확한 연산자로 옮기는 게 핵심이에요. 특히 주문 금액이 기준과 딱 같을 때 `>`와 `>=`의 결과가 달라요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

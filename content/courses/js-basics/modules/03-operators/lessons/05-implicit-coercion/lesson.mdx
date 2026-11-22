@@ -230,6 +230,10 @@ console.log(Number(a) + Number(b));
 ```
 
 3번 줄은 문자열끼리 `+`라서 이어 붙여 `"34"`가 됐어요. 4번 줄은 `Number`로 먼저 숫자로 바꿨기 때문에 양쪽이 숫자가 되어 `7`을 더했어요. **입력값처럼 문자열로 들어오는 값은 `+`로 계산하기 전에 숫자로 바꾸는 습관**을 들여요.
+
+이번에는 숫자로 더하기와 글자 이어 붙이기를 한 프로그램 안에서 직접 써 보세요.
+
+<TryIt ref="js-basics.operators.implicit-coercion.try-fruit-count" />
 </Section>
 
 <Section kind="pitfalls">
@@ -305,21 +309,21 @@ console.log("결제 금액: " + total + "원");
 </Section>
 
 <Section kind="check">
-문자열 `"0"`이 truthy인지 확인해 보세요.
+글자가 든 문자열이 truthy인지 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.implicit-coercion.tf-string-zero" />
+<InlineExercise ref="js-basics.operators.implicit-coercion.check-not-false-string" />
 
-`+`가 문자열을 만나면 어떻게 되는지 확인해 보세요.
+`+`와 `*`가 문자열을 만나면 어떻게 되는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.implicit-coercion.mcq-string-plus-number" />
+<InlineExercise ref="js-basics.operators.implicit-coercion.check-which-is-fifteen" />
 
 `+`가 여러 개인 식을 계산해 보세요.
 
-<InlineExercise ref="js-basics.operators.implicit-coercion.predict-left-to-right" />
+<InlineExercise ref="js-basics.operators.implicit-coercion.check-label-and-count" />
 
-마지막으로 `==`의 `null` 규칙을 확인해 보세요.
+마지막으로 `==`의 `null`·`undefined` 규칙을 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.implicit-coercion.mcq-null-loose-equals" />
+<InlineExercise ref="js-basics.operators.implicit-coercion.check-undefined-zero" />
 </Section>
 
 <Section kind="practice" />

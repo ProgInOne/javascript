@@ -1,0 +1,43 @@
+id: js-basics.start.first-program.check-one-line-score
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+tags: [console-log, quotes, comma]
+estimatedSeconds: 50
+prompt: |
+  콘솔에 `점수: 90`이라는 줄 **하나**가 나오게 하려고 해요. 알맞은 코드는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`console.log("점수:", 90);`'
+    - id: b
+      text: '`console.log(점수: 90);`'
+      rationale: 글자 `점수:`를 따옴표로 감싸지 않아서 JavaScript가 글자로 읽지 못하고 오류를 내요.
+    - id: c
+      text: '`console.log("점수:"); console.log(90);`'
+      rationale: console.log를 두 번 부르면 콘솔에 두 줄이 나와요. `점수:`와 `90`이 다른 줄에 찍혀요.
+    - id: d
+      text: '`"점수: 90";`'
+      misconception: js.mc.expression-prints-itself
+      rationale: 값만 적은 문장은 아무것도 보여 주지 않아요. 콘솔에 보이려면 console.log가 필요해요.
+  correct: a
+misconceptions: [js.mc.expression-prints-itself]
+hints:
+  - 콘솔에 무언가를 보여 주는 명령이 들어 있는 보기부터 추려 보세요.
+  - console.log 한 번이 콘솔의 한 줄이 돼요. 그리고 글자는 따옴표로 감싸야 해요.
+  - 쉼표로 나눈 값은 한 칸 띄어 같은 줄에 나와요.
+explanation: |
+  정답은 `console.log("점수:", 90);`이에요.
+
+  글자 `"점수:"`와 숫자 `90`을 쉼표로 나눠 넣으면 한 칸 띄어 `점수: 90` 한 줄이 나와요.
+
+  - `console.log(점수: 90);`: 글자에 따옴표가 없어서 오류가 나요.
+  - console.log를 두 번 쓰면 두 줄로 나뉘어 나와요.
+  - `"점수: 90";`처럼 값만 적은 문장은 계산만 하고 콘솔에는 아무것도 보여 주지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

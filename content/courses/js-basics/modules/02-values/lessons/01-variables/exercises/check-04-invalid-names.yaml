@@ -1,0 +1,44 @@
+id: js-basics.values.variables.check-invalid-names
+type: mcq_multi
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.values.identifiers, weight: 1 }
+tags: [identifier, naming]
+estimatedSeconds: 75
+prompt: |
+  다음 중 변수 이름으로 **쓸 수 없는** 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: '`2ndPlace`'
+      missedMisconception: js.mc.identifier-invalid-chars
+    - id: b
+      text: '`user-age`'
+      missedMisconception: js.mc.identifier-invalid-chars
+    - id: c
+      text: '`const`'
+    - id: d
+      text: '`_count`'
+      rationale: 밑줄 `_`은 이름에 쓸 수 있는 글자예요. 맨 앞에 와도 괜찮아요.
+    - id: e
+      text: '`totalScore2`'
+      rationale: 숫자는 맨 앞만 아니면 이름에 넣을 수 있어요.
+  correct: [a, b, c]
+misconceptions: [js.mc.identifier-invalid-chars]
+hints:
+  - 이름에 쓸 수 있는 글자는 글자, 숫자, `_`, `$`뿐이에요. 다른 기호가 섞인 이름이 있나요?
+  - 숫자는 이름의 어느 자리에 오면 안 되었나요?
+  - JavaScript가 이미 쓰고 있는 단어(예약어)도 이름이 될 수 없어요.
+explanation: |
+  쓸 수 없는 이름은 `2ndPlace`, `user-age`, `const` 세 개예요.
+
+  - `2ndPlace`: 숫자로 시작해서 안 돼요. `secondPlace`처럼 바꿔요.
+  - `user-age`: 하이픈은 빼기 기호로 읽혀요. `userAge`처럼 camelCase로 써요.
+  - `const`: 상수를 만드는 예약어라서 이름으로 쓸 수 없어요.
+  - `_count`, `totalScore2`는 규칙에 맞는 이름이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

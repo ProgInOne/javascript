@@ -1,0 +1,50 @@
+id: js-basics.loops.for.check-count-by-two
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.loops.for, weight: 1 }
+  - { id: js.loops.loop-variable, weight: 0.3 }
+tags: [for, iteration-count]
+estimatedSeconds: 60
+prompt: |
+  다음 반복의 본문은 모두 몇 번 실행되나요?
+code: |
+  for (let page = 2; page <= 10; page += 2) {
+    console.log(page + "쪽 확인");
+  }
+spec:
+  options:
+    - id: a
+      text: 5번
+    - id: b
+      text: 4번
+      misconception: js.mc.for-off-by-one
+      rationale: "`page <= 10`이라서 10일 때도 조건이 참이에요. 마지막 회차의 `page`는 10이에요."
+    - id: c
+      text: 10번
+      rationale: 갱신이 `page += 2`라서 한 번에 2씩 늘어요. 3, 5, 7 같은 값은 거치지 않아요.
+    - id: d
+      text: 9번
+      rationale: 2부터 10까지의 수를 모두 센 횟수예요. 이 반복은 2씩 건너뛰어요.
+  correct: a
+misconceptions: [js.mc.for-off-by-one]
+hints:
+  - 횟수가 헷갈리면 `page`가 거치는 값을 직접 적어 보세요.
+  - 시작값은 2이고, 갱신 `page += 2`로 2씩 늘어요. 조건이 참인 마지막 값은 무엇인가요?
+  - 2, 4, 6, …으로 적어 가다가 `page <= 10`이 거짓이 되는 값에서 멈추고 개수를 세어 보세요.
+explanation: |
+  정답은 **5번**이에요.
+
+  `page`는 2, 4, 6, 8, 10을 거쳐요. 10일 때도 `10 <= 10`이 참이라 본문이 실행되고, 갱신으로 12가 되면 `12 <= 10`이 거짓이라 반복이 끝나요.
+
+  | 회차 | 1 | 2 | 3 | 4 | 5 |
+  |---|---|---|---|---|---|
+  | `page` | 2 | 4 | 6 | 8 | 10 |
+
+  반복 횟수는 시작값, 조건, 갱신이 함께 정해요. 첫 값과 마지막 값을 적어 보면 하나씩 어긋나는 실수를 막을 수 있어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

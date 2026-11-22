@@ -1,0 +1,37 @@
+id: js-basics.values.variables.check-pet-name
+type: predict_output
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.values.let, weight: 1 }
+  - { id: js.basics.console-log, weight: 0.3 }
+tags: [let, variable]
+estimatedSeconds: 45
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    let pet = "고양이";
+    console.log("내 동물:", pet);
+  answerKind: console
+  misconceptionByAnswer:
+    "내 동물: pet": js.mc.variable-name-in-quotes
+    "고양이\n내 동물: 고양이": js.mc.expression-prints-itself
+misconceptions: [js.mc.variable-name-in-quotes, js.mc.expression-prints-itself]
+hints:
+  - 1번 줄은 변수를 만드는 문장이에요. 이 줄도 콘솔에 무언가를 출력할까요?
+  - 2번 줄에서 `pet`에는 따옴표가 없어요. 따옴표 없는 이름은 무엇으로 바뀌나요?
+  - 쉼표로 나눈 두 값은 한 칸 띄어 한 줄에 나와요. `pet` 자리에는 변수에 들어 있는 값이 나와요.
+explanation: |
+  정답은 `내 동물: 고양이` 한 줄이에요.
+
+  - 1번 줄은 `pet`이라는 변수를 만들고 `"고양이"`를 넣기만 해요. 아무것도 출력하지 않아요.
+  - 2번 줄의 `pet`은 따옴표가 없으니 **변수 이름**이에요. 들어 있는 값 `고양이`로 바뀌어서, 글자 `내 동물:`과 한 칸 띄어 출력돼요.
+
+  `내 동물: pet`이라고 답했다면 이름과 글자를 헷갈린 거예요. 글자 `pet`을 출력하려면 `"pet"`처럼 따옴표가 있어야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

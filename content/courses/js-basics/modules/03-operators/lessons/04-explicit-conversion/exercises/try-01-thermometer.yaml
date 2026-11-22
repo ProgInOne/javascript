@@ -1,0 +1,95 @@
+id: js-basics.operators.explicit-conversion.try-thermometer
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.conv.to-number, weight: 1 }
+  - { id: js.conv.nan, weight: 0.3 }
+tags: [number, parseint, parsefloat, conversion, write-code]
+estimatedSeconds: 240
+prompt: |
+  체온계가 `"36.8도"`라는 글자를 돌려줬어요. 세 가지 방법으로 숫자로 바꿔 보고 결과를 비교해 보세요. 시작 코드의 주석을 따라 변수 세 개를 만들고 출력하면 돼요.
+
+  실행하면 콘솔에 아래 세 줄이 나와야 해요.
+
+  ```text
+  정수 부분: 36
+  소수까지: 36.8
+  Number로 바꾸면: NaN
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const tempText = "36.8도";
+
+          // 1. parseInt로 tempText를 바꿔 whole에 넣으세요.
+
+          // 2. parseFloat로 tempText를 바꿔 exact에 넣으세요.
+
+          // 3. Number로 tempText를 바꿔 asNumber에 넣으세요.
+
+          // 4. 세 값을 "정수 부분:", "소수까지:", "Number로 바꾸면:" 뒤에 쉼표로 붙여 한 줄씩 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const tempText = "36.8도";
+          const whole = parseInt(tempText);
+          const exact = parseFloat(tempText);
+          const asNumber = Number(tempText);
+          console.log("정수 부분:", whole);
+          console.log("소수까지:", exact);
+          console.log("Number로 바꾸면:", asNumber);
+  checks:
+    - kind: program
+      id: whole
+      description: whole에는 parseInt로 읽은 숫자 36이 들어 있어야 합니다.
+      requirement: parseInt로 정수 읽기
+      expect:
+        globals:
+          whole: { equals: 36 }
+        noError: true
+    - kind: program
+      id: exact
+      description: exact에는 parseFloat로 읽은 숫자 36.8이 들어 있어야 합니다.
+      requirement: parseFloat로 소수까지 읽기
+      expect:
+        globals:
+          exact: { equals: 36.8 }
+        noError: true
+    - kind: console
+      id: output
+      description: 세 줄이 정해진 모양과 순서로 출력되어야 합니다. 셋째 줄은 Number가 전체를 읽지 못해 NaN이 나와요.
+      requirement: 세 줄 출력
+      expect:
+        lines: ["정수 부분: 36", "소수까지: 36.8", "Number로 바꾸면: NaN"]
+misconceptions: [js.mc.number-parses-prefix]
+hints:
+  - 함수 이름 뒤 괄호 안에 바꿀 값을 넣어요. 예를 들어 `const whole = parseInt(...);`처럼 써요.
+  - parseInt는 앞에서부터 정수만, parseFloat는 소수점까지 읽어요. Number는 문자열 전체를 읽어요.
+  - "출력은 `console.log(\"정수 부분:\", whole);`처럼 글자와 변수를 쉼표로 나눠 써요. 나머지 두 줄도 같은 모양이에요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  const tempText = "36.8도";
+  const whole = parseInt(tempText);
+  const exact = parseFloat(tempText);
+  const asNumber = Number(tempText);
+  console.log("정수 부분:", whole);
+  console.log("소수까지:", exact);
+  console.log("Number로 바꾸면:", asNumber);
+  ```
+
+  - `parseInt`는 앞에서부터 읽다가 `.`에서 멈춰서 `36`이에요. 반올림하지 않아요.
+  - `parseFloat`는 소수점까지 읽고 `도`에서 멈춰서 `36.8`이에요.
+  - `Number`는 문자열 전체를 읽는데 `도`가 숫자가 아니라서 `NaN`이에요. 오류는 나지 않아요.
+
+  단위가 붙은 글자에서 숫자를 꺼낼 때는 parseInt·parseFloat를, 값 전체가 숫자여야 할 때는 Number를 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

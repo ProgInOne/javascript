@@ -1,0 +1,41 @@
+id: js-basics.operators.logical.check-or-picks-value
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+tags: [logical-or, short-circuit]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const city = "" || "서울";
+    console.log(city);
+    console.log("부산" || "서울");
+  answerKind: console
+  misconceptionByAnswer:
+    "true\ntrue": js.mc.logical-returns-boolean
+misconceptions: [js.mc.logical-returns-boolean]
+hints:
+  - "`||`는 `true`/`false`가 아니라 양쪽 값 중 하나를 그대로 돌려줘요."
+  - 빈 문자열 `""`은 falsy예요. 왼쪽이 falsy면 `||`는 어느 쪽을 돌려주나요?
+  - 왼쪽이 truthy면 왼쪽을, falsy면 오른쪽을 돌려줘요.
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  서울
+  부산
+  ```
+
+  - `"" || "서울"`: 왼쪽 빈 문자열이 falsy라서 오른쪽 `"서울"`을 돌려줘요.
+  - `"부산" || "서울"`: 왼쪽 `"부산"`이 truthy라서 왼쪽을 그대로 돌려주고, 오른쪽은 보지 않아요.
+
+  `true`라고 답했다면 `||`가 항상 불리언을 만든다고 생각한 거예요. `||`는 값을 **골라서** 돌려줘요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

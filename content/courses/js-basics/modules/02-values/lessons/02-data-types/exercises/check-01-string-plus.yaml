@@ -1,0 +1,45 @@
+id: js-basics.values.data-types.check-string-plus
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.types.primitives, weight: 1 }
+  - { id: js.types.string, weight: 0.3 }
+tags: [string, number, plus]
+estimatedSeconds: 50
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  let count = "10";
+  console.log(count + 5);
+spec:
+  options:
+    - id: a
+      text: '`105`'
+    - id: b
+      text: '`15`'
+      misconception: js.mc.quoted-number-is-number
+      rationale: '`"10"`은 따옴표로 감싼 문자열이에요. 문자열이 끼면 `+`는 더하지 않고 이어 붙여요.'
+    - id: c
+      text: '`count5`'
+      rationale: 따옴표 없는 `count`는 변수 이름이라 들어 있는 값 `"10"`으로 바뀌어요.
+    - id: d
+      text: 문자열과 숫자는 더할 수 없어서 오류가 난다
+      rationale: 오류는 나지 않아요. 문자열이 끼면 `+`는 글자를 이어 붙여요.
+  correct: a
+misconceptions: [js.mc.quoted-number-is-number]
+hints:
+  - "`count`에 들어 있는 값은 숫자일까요, 문자열일까요? 따옴표를 확인해 보세요."
+  - 같은 `+`라도 한쪽이 문자열이면 다르게 동작해요.
+  - 문자열 `"10"` 뒤에 `5`를 이어 붙이면 어떤 글자가 될까요?
+explanation: |
+  정답은 `105`예요.
+
+  `count`에는 따옴표로 감싼 문자열 `"10"`이 들어 있어요. 한쪽이 문자열이면 `+`는 더하기 대신 이어 붙이기를 해서 `"105"`가 되고, 콘솔에는 따옴표 없이 `105`로 보여요.
+
+  `15`라고 답했다면 `"10"`을 숫자로 본 거예요. 겉모습이 숫자여도 따옴표가 있으면 문자열이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

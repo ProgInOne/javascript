@@ -1,0 +1,48 @@
+id: js-basics.operators.logical.check-nullish-results
+type: fill_blank
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.ops.nullish, weight: 1 }
+tags: [nullish, default-value]
+estimatedSeconds: 75
+prompt: |
+  각 식의 결과를 빈칸에 쓰세요. 숫자와 `true`/`false`는 따옴표 없이 써요.
+spec:
+  mode: text
+  template: |
+    0 ?? 7          → {{blank:zero}}
+    undefined ?? 7  → {{blank:undef}}
+    false ?? 7      → {{blank:bool}}
+  blanks:
+    - id: zero
+      accept: ["0"]
+      width: 6
+      misconceptionMap:
+        "7": js.mc.nullish-same-as-or
+    - id: undef
+      accept: ["7"]
+      width: 6
+    - id: bool
+      accept: ["false"]
+      width: 6
+      misconceptionMap:
+        "7": js.mc.nullish-same-as-or
+misconceptions: [js.mc.nullish-same-as-or]
+hints:
+  - "`??`는 왼쪽이 어떤 값일 때만 오른쪽을 고를까요?"
+  - "`??`가 기본값을 고르는 경우는 왼쪽이 `null`이나 `undefined`일 때뿐이에요."
+  - "`0`과 `false`는 falsy지만 `null`도 `undefined`도 아니에요."
+explanation: |
+  정답은 차례로 `0`, `7`, `false`예요.
+
+  - `0 ?? 7`: `0`은 `null`도 `undefined`도 아니라서 그대로 `0`이에요.
+  - `undefined ?? 7`: 왼쪽이 `undefined`라서 기본값 `7`이에요.
+  - `false ?? 7`: `false`도 `null`·`undefined`가 아니라서 그대로 `false`예요.
+
+  `7`이라고 답한 칸이 있다면 `??`를 `||`처럼 생각한 거예요. `||`였다면 세 식 모두 `7`이 나왔을 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

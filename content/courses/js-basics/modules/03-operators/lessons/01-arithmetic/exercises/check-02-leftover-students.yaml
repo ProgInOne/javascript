@@ -1,0 +1,43 @@
+id: js-basics.operators.arithmetic.check-leftover-students
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.ops.remainder, weight: 1 }
+tags: [remainder]
+estimatedSeconds: 50
+prompt: |
+  학생 26명이 4명씩 조를 짜요. 조에 들어가지 못하고 **남는 학생 수**를 구하는 식은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`26 % 4`'
+    - id: b
+      text: '`26 / 4`'
+      misconception: js.mc.division-truncates
+      rationale: "`/`는 소수까지 계산해서 `6.5`가 나와요. 남는 학생 수가 아니에요."
+    - id: c
+      text: '`(26 - 26 % 4) / 4`'
+      misconception: js.mc.remainder-is-quotient
+      rationale: 나머지를 빼고 나눈 이 식은 몫, 즉 만들 수 있는 조의 수 `6`이에요.
+    - id: d
+      text: '`26 * 4 / 100`'
+      misconception: js.mc.remainder-is-percent
+      rationale: 이 식은 26의 4%를 구해요. 나머지와는 상관없어요.
+  correct: a
+misconceptions: [js.mc.remainder-is-quotient, js.mc.remainder-is-percent]
+hints:
+  - 남는 학생 수는 26을 4로 나눈 몫일까요, 나머지일까요?
+  - 26 = 4 × 6 + 2예요. 남는 건 어느 숫자인가요?
+  - 나머지를 구하는 연산자는 `%`예요.
+explanation: |
+  정답은 `26 % 4`예요. 26 = 4 × 6 + **2**라서 결과는 `2`, 즉 두 명이 남아요.
+
+  - `26 / 4`는 `6.5`예요. `/`는 소수까지 계산해요.
+  - `(26 - 26 % 4) / 4`는 몫 `6`이에요. 조의 수를 구할 때 쓰는 식이에요.
+  - `26 * 4 / 100`은 백분율 계산이에요. `%`는 퍼센트가 아니라 나머지 연산자예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

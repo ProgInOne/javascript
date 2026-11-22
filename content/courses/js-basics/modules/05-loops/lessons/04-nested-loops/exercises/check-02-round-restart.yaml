@@ -1,0 +1,48 @@
+id: js-basics.loops.nested-loops.check-round-restart
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.loops.nested, weight: 1 }
+tags: [nested, inner-reset, trace]
+estimatedSeconds: 75
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    for (let round = 1; round <= 3; round++) {
+      let line = round + "회:";
+      for (let n = 1; n <= 2; n++) {
+        line += " " + n;
+      }
+      console.log(line);
+    }
+  answerKind: console
+  misconceptionByAnswer:
+    "1회: 1 2\n2회:\n3회:": js.mc.inner-var-not-reset
+    "1회: 1 2\n2회: 3 4\n3회: 5 6": js.mc.inner-var-not-reset
+misconceptions: [js.mc.inner-var-not-reset]
+hints:
+  - "`console.log(line)`은 안쪽 반복 안에 있나요, 바깥에 있나요? 모두 몇 줄이 출력될까요?"
+  - 바깥 회차가 바뀌면 안쪽 `for`의 `let n = 1`은 어떻게 될까요?
+  - 안쪽 `for` 문 전체가 바깥 반복의 본문이라서, 회차마다 `n`이 1부터 다시 시작해요. `line`도 회차마다 새로 만들어져요.
+explanation: |
+  정답은 다음 세 줄이에요.
+
+  ```text
+  1회: 1 2
+  2회: 1 2
+  3회: 1 2
+  ```
+
+  - 안쪽 `for` 문 전체가 바깥 반복의 본문이에요. 그래서 바깥 회차마다 안쪽 `for`도 `let n = 1`부터 다시 시작해서 1, 2를 이어 붙여요.
+  - `line`도 바깥 본문에서 만들어서 회차마다 `"1회:"`, `"2회:"`처럼 새로 시작해요.
+  - `console.log(line)`은 안쪽 반복이 끝난 뒤, 바깥 회차마다 한 번 실행돼서 세 줄이 나와요.
+
+  2회부터 숫자가 없거나 `3 4`, `5 6`처럼 이어진다고 생각했다면, 안쪽 반복 변수가 이전 값에 머문다고 본 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
