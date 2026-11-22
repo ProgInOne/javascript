@@ -1,0 +1,34 @@
+id: js-basics.values.variables.check-assign-direction
+type: true_false
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.values.assignment, weight: 1 }
+tags: [assignment, direction]
+estimatedSeconds: 50
+prompt: |
+  다음 코드에 대한 설명이 맞는지 골라 주세요.
+code: |
+  let a = 5;
+  let b = 2;
+  a = b;
+spec:
+  statement: 3번 줄까지 실행하면 `a`와 `b`에 모두 `2`가 들어 있다.
+  answer: true
+  misconceptionIfWrong: js.mc.assign-direction
+misconceptions: [js.mc.assign-direction]
+hints:
+  - 대입 `=`는 어느 쪽을 먼저 계산하고, 어느 쪽에 값을 넣나요?
+  - "`a = b;`는 \"a ← b\"로 읽어요. 오른쪽 `b`의 값은 지금 얼마인가요?"
+  - 값을 받는 쪽은 왼쪽 `a`뿐이에요. `b`는 읽히기만 하고 바뀌지 않아요.
+explanation: |
+  정답은 **참**이에요.
+
+  `a = b;`는 오른쪽 `b`의 지금 값 `2`를 왼쪽 `a`에 넣어요. `a`에 있던 `5`는 덮어써지고, `b`는 읽히기만 했으니 그대로 `2`예요. 그래서 둘 다 `2`예요.
+
+  `b`가 `5`가 된다고 생각했다면 대입의 방향을 거꾸로 읽은 거예요. 대입은 항상 **오른쪽 → 왼쪽**이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

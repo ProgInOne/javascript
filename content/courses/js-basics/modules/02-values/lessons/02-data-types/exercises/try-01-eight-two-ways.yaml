@@ -1,0 +1,87 @@
+id: js-basics.values.data-types.try-eight-two-ways
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.types.primitives, weight: 1 }
+  - { id: js.types.typeof, weight: 0.5 }
+tags: [number, string, typeof, plus, write-code]
+estimatedSeconds: 240
+prompt: |
+  숫자 8과 문자열 `"8"`을 직접 만들어서, 같은 `+ 2`가 어떻게 다르게 동작하는지 확인해 보세요. 주석의 순서대로 코드를 써요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  10
+  82
+  number string
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1. 숫자 8을 담은 변수 numberEight를 만드세요.
+
+          // 2. 문자열 "8"을 담은 변수 textEight를 만드세요.
+
+          // 3. numberEight + 2와 textEight + 2를 각각 한 줄씩 출력하세요.
+
+          // 4. 두 변수의 자료형을 typeof로 한 줄에 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 1. 숫자 8을 담은 변수 numberEight를 만드세요.
+          const numberEight = 8;
+          // 2. 문자열 "8"을 담은 변수 textEight를 만드세요.
+          const textEight = "8";
+          // 3. numberEight + 2와 textEight + 2를 각각 한 줄씩 출력하세요.
+          console.log(numberEight + 2);
+          console.log(textEight + 2);
+          // 4. 두 변수의 자료형을 typeof로 한 줄에 출력하세요.
+          console.log(typeof numberEight, typeof textEight);
+  checks:
+    - kind: program
+      id: values
+      description: "`numberEight`에는 숫자 8, `textEight`에는 문자열 \"8\"이 들어 있어야 합니다."
+      requirement: 두 변수의 값과 자료형
+      expect: { globals: { numberEight: { equals: 8 }, textEight: { equals: "8" } }, noError: true }
+    - kind: console
+      id: plus-lines
+      description: 숫자는 더해져서 `10`, 문자열은 이어 붙여져서 `82`가 차례로 출력되어야 합니다.
+      requirement: + 2의 결과
+      expect:
+        lines: ["10", "82"]
+        mode: ordered-subset
+    - kind: console
+      id: output
+      description: 세 줄이 정해진 순서대로 출력되어야 합니다. 마지막 줄은 두 자료형을 한 줄에 출력해요.
+      requirement: 세 줄 출력
+      expect:
+        lines: ["10", "82", "number string"]
+misconceptions: [js.mc.quoted-number-is-number, js.mc.same-output-same-type]
+hints:
+  - 숫자는 따옴표 없이, 문자열은 따옴표로 감싸서 변수에 담아요. 바꾸지 않을 값이니 `const`로 만들어도 돼요.
+  - "3번은 `console.log(numberEight + 2);` 같은 문장을 두 번 써요. 변수 이름에는 따옴표를 붙이지 않아요."
+  - "4번은 `console.log(typeof numberEight, typeof textEight);`처럼 쉼표로 나눠 한 줄에 출력해요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  const numberEight = 8;
+  const textEight = "8";
+  console.log(numberEight + 2);
+  console.log(textEight + 2);
+  console.log(typeof numberEight, typeof textEight);
+  ```
+
+  - `numberEight + 2`는 숫자끼리라서 더하기를 해 `10`이에요.
+  - `textEight + 2`는 문자열이 끼어서 이어 붙이기를 해 `"82"`가 되고, 콘솔에는 따옴표 없이 `82`로 보여요.
+  - 두 변수를 출력만 하면 둘 다 `8`로 보이지만, `typeof`로 확인하면 `number`와 `string`으로 달라요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

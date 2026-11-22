@@ -1,0 +1,43 @@
+id: js-basics.values.data-types.check-copy-then-retype
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.types.primitives, weight: 1 }
+  - { id: js.types.typeof, weight: 0.3 }
+tags: [typeof, reassignment]
+estimatedSeconds: 70
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 콘솔에 보이는 그대로 적어 주세요.
+spec:
+  lang: js
+  code: |
+    let answer = 42;
+    let copy = answer;
+    answer = "마흔둘";
+    console.log(typeof copy, typeof answer);
+  answerKind: console
+  misconceptionByAnswer:
+    "number number": js.mc.type-belongs-to-variable
+    "string string": js.mc.variable-remembers-formula
+misconceptions: [js.mc.type-belongs-to-variable, js.mc.variable-remembers-formula]
+hints:
+  - 줄마다 `answer`와 `copy`에 무엇이 들어 있는지 표로 적어 보세요.
+  - 2번 줄은 그 순간 `answer`의 값을 `copy`에 복사해요. 3번 줄은 `answer`만 바꿔요.
+  - "`typeof`는 변수가 아니라 그 순간 들어 있는 **값**의 자료형을 알려 줘요."
+explanation: |
+  정답은 `number string`이에요.
+
+  | 실행한 줄 | `answer` | `copy` |
+  |---|---|---|
+  | `let answer = 42;` | 42 | (아직 없음) |
+  | `let copy = answer;` | 42 | 42 |
+  | `answer = "마흔둘";` | "마흔둘" | 42 |
+
+  - `copy`에는 2번 줄에서 복사한 숫자 42가 그대로 있어서 `number`예요.
+  - `answer`에는 이제 문자열이 들어 있어서 `string`이에요. 자료형은 변수가 아니라 값에 붙어 있으니, 숫자를 담았던 변수에 문자열을 넣어도 괜찮아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

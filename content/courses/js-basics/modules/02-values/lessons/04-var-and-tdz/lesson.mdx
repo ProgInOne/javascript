@@ -132,6 +132,10 @@ ReferenceError: Cannot access 'level' before initialization (1번째 줄)
 `let`도 실행 전에 이름은 등록하지만, 선언 줄(2번 줄)이 실행되기 전까지는 쓸 수 없어요. 1번 줄은 `level`의 TDZ 안이라 `ReferenceError`가 나고, 프로그램이 멈춰서 3번 줄도 실행되지 않아요.
 
 `var`처럼 `undefined`가 나오지 않는다는 점, 그리고 메시지가 `level is not defined`가 아니라는 점을 기억해요. JavaScript는 `level`이 아래에서 선언된다는 것을 알고 있어요.
+
+`var` 때문에 숨어 있던 실수를 `const`로 드러내고 직접 고쳐 보세요.
+
+<TryIt ref="js-basics.values.var-and-tdz.try-library-const" />
 </Section>
 
 <Section kind="examples">
@@ -211,11 +215,11 @@ console.log(userName, visitCount);
 <Section kind="check">
 `var` 변수를 선언 전에 쓰면 무엇이 나오는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.values.var-and-tdz.tf-var-before-declaration" />
+<InlineExercise ref="js-basics.values.var-and-tdz.check-typeof-before-var" />
 
-선언 전 사용 오류의 뜻을 확인해 보세요.
+선언 전 사용 오류를 어떻게 고치는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.values.var-and-tdz.mcq-tdz-message" />
+<InlineExercise ref="js-basics.values.var-and-tdz.check-tdz-fix" />
 </Section>
 
 <Section kind="practice" />
