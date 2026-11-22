@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  packages: read # @proginone/* from GitHub Packages, vendored into the bundle (D-090)
 
 jobs:
   release:
@@ -23,8 +24,12 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: '@proginone'
 
       - run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build app and content
         run: |
@@ -32,18 +37,9 @@ jobs:
           pnpm content:build
 
       - name: Bundle
-        run: |
-          version="${GITHUB_REF_NAME#v}"
-          name="proginone-${version}"
-          git archive --format=tar --prefix="${name}/" HEAD > "${name}.tar"
-          # GNU tar (GitHub-hosted) and bsdtar (self-hosted macOS) spell the path prefix differently.
-          if tar --version | grep -q GNU; then
-            tar --append -f "${name}.tar" --transform "s,^,${name}/," apps/web/dist content/dist/content.db
-          else
-            tar -rf "${name}.tar" -s ",^,${name}/," apps/web/dist content/dist/content.db
-          fi
-          gzip -9 "${name}.tar"
-          shasum -a 256 "${name}.tar.gz" > "${name}.tar.gz.sha256"
+        run: tools/release-bundle.sh "${GITHUB_REF_NAME#v}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release notes from CHANGELOG
         run: |
