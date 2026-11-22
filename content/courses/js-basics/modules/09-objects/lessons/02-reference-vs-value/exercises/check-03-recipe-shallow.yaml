@@ -14,19 +14,20 @@ code: |
   myRecipe.name = "매운 카레";
   myRecipe.spices.push("고춧가루");
 spec:
-  statement: '코드를 실행한 뒤 `recipe.name`은 `"카레"` 그대로이고, `recipe.spices`도 `["강황"]` 그대로다.'
-  answer: false
+  statement: '코드를 실행한 뒤 `myRecipe === recipe`는 `false`이지만, `myRecipe.spices === recipe.spices`는 `true`다.'
+  answer: true
   misconceptionIfWrong: js.mc.shallow-copy-is-deep
 misconceptions: [js.mc.shallow-copy-is-deep]
 hints:
-  - 설명은 두 부분이에요. `name`과 `spices`를 따로 따져 보세요.
-  - "`{ ...recipe }`는 첫 단계 칸만 새로 만들어요. `spices` 칸에는 무엇이 복사될까요?"
-  - 배열은 참조만 복사돼요. 두 객체의 `spices`가 같은 배열이라면 `push`는 어디에 보일까요?
+  - "`{ ...recipe }`로 만든 `myRecipe`는 새 객체일까요?"
+  - 펼쳐서 복사할 때 `spices` 칸에는 배열이 새로 만들어질까요, 참조가 복사될까요?
+  - 객체의 `===`는 같은 객체(배열)를 가리키는지만 봐요.
 explanation: |
-  정답은 **거짓**이에요.
+  정답은 **참**이에요.
 
-  - `name`은 맞아요. `myRecipe`는 새 객체라서 `myRecipe.name`을 바꿔도 `recipe.name`은 `"카레"`예요.
-  - `spices`는 틀렸어요. 펼쳐서 복사하면 배열의 참조만 복사돼서 두 객체가 **같은 배열**을 함께 써요. `push`로 그 배열을 바꿨으니 `recipe.spices`도 `["강황", "고춧가루"]`예요.
+  - `myRecipe === recipe`는 `false`예요. `{ ...recipe }`는 새 객체를 만들어서, 바깥 객체는 서로 달라요.
+  - `myRecipe.spices === recipe.spices`는 `true`예요. 펼쳐서 복사하면 배열은 새로 만들어지지 않고 참조만 복사돼서, 두 객체가 **같은 배열**을 함께 써요.
+  - 그래서 `myRecipe.spices.push("고춧가루")`는 `recipe.spices`에서도 보이고, `myRecipe.name`을 바꾼 것은 `recipe.name`에 보이지 않아요.
 
   안쪽 배열까지 따로 만들려면 `{ ...recipe, spices: [...recipe.spices] }`나 `structuredClone(recipe)`를 써요.
 origin: authored

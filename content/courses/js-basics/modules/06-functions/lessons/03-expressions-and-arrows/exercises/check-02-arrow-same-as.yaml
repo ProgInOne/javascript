@@ -29,7 +29,7 @@ spec:
       misconception: js.mc.fn-expression-stores-result
       rationale: 함수가 아니라 계산 결과를 담으려는 코드예요. `n`이 없어서 오류가 나요.
   correct: a
-misconceptions: [js.mc.arrow-braces-implicit-return, js.mc.arrow-is-comparison]
+misconceptions: [js.mc.arrow-braces-implicit-return, js.mc.arrow-is-comparison, js.mc.fn-expression-stores-result]
 hints:
   - "`=>` 오른쪽에 중괄호가 없으면 그 식의 값은 어떻게 되나요?"
   - 식 본문 화살표 함수는 오른쪽 식의 값을 자동으로 돌려줘요. 함수 표현식으로 바꾸면 무엇을 직접 써야 할까요?

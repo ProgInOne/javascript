@@ -13,7 +13,7 @@ prompt: |
   1. `makeUsername(name)`: `name`이 **두 글자보다 짧으면** 메시지가 `이름은 두 글자 이상이어야 해요`인 `Error`를 던져요. 아니면 `"@" + name`을 돌려줘요.
   2. `safeUsername(name)`: `try...catch`로 `makeUsername(name)`을 불러요. 성공하면 그 결과를, 오류가 나면 `"가입 실패: (오류 메시지)"`를 돌려줘요.
 
-  채점은 `safeUsername`을 불러서 해요.
+  채점은 `safeUsername`을 불러 보고, `makeUsername`이 짧은 이름에서 오류를 던지는지도 확인해요.
 
   | 호출 | 돌려줄 값 |
   |---|---|
@@ -73,6 +73,14 @@ spec:
       requirement: 올바른 이름
       args: ["JS"]
       expect: { equals: "@JS" }
+    - kind: call
+      id: make-throws
+      visible: false
+      description: makeUsername은 짧은 이름에서 값을 돌려주지 말고 Error를 던져야 합니다.
+      requirement: 짧은 이름은 오류 던지기
+      argsExpr: '(() => { try { makeUsername("J"); return ["안던짐"]; } catch (err) { return [err instanceof Error && err.message === "이름은 두 글자 이상이어야 해요" ? "OK" : "다른오류"]; } })()'
+      expect: { equals: "@OK" }
+      misconceptionIfFail: js.mc.throw-just-logs
 misconceptions: [js.mc.throw-just-logs]
 hints:
   - "`makeUsername`에서는 `if (name.length < 2)`로 확인하고, 그때 `throw new Error(\"...\")`로 오류를 던져요. `console.log`로 출력하는 것과 달라요."

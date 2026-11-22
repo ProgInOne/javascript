@@ -454,21 +454,19 @@
       }
     },
     "js-basics.control.if-else.check-no-braces-hat": {
-      "inputHash": "bb621c192525be47dc52f1198b8c47b10646a52a7dad8f6d745be0ffe4002379",
+      "inputHash": "482032b2673d88e6aba848b6fc4064c92820acdc4406d56875e2f8512c4891cb",
       "expected": {
         "kind": "console",
         "lines": [
-          "모자 챙기기",
-          "출발"
+          "10"
         ]
       }
     },
     "js-basics.control.if-else.check-rain-skip": {
-      "inputHash": "d5a427a3dfbbba9561bfdcdfad6277543614ef72b611eda6e65d112901dd163f",
+      "inputHash": "cdfc16a1aa6379e8a3333a051c0d7206ceffa1c93e649d0c4099550ca9219ab2",
       "expected": {
         "kind": "console",
         "lines": [
-          "집을 나서요",
           "버스를 타요"
         ]
       }
@@ -542,6 +540,15 @@
         "kind": "console",
         "lines": [
           "없는 층이에요"
+        ]
+      }
+    },
+    "js-basics.control.ternary.check-empty-nickname": {
+      "inputHash": "763fe04377d4597534301b8776411fe2dfb94e76d4f884cdbf61c35018e120c1",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "손님"
         ]
       }
     },
@@ -627,12 +634,12 @@
       }
     },
     "js-basics.functions.expressions-and-arrows.check-braces-return": {
-      "inputHash": "20d5b12516bcb5dbca67f38b25db37d0e55f858a8ab1a59063c24da1102e4c0d",
+      "inputHash": "e70bfeed64e0b6e4a54e2026ca39d2047fc725efe127700eb92d9139d75eb65f",
       "expected": {
         "kind": "console",
         "lines": [
-          "80",
-          "undefined"
+          "불합격",
+          "불합격"
         ]
       }
     },
@@ -819,11 +826,12 @@
       }
     },
     "js-basics.functions.return-and-side-effects.check-outer-change-stays": {
-      "inputHash": "69f41b19ef0358d19d461b0394b608cb31eeedb516235775292fd759bad7b0cb",
+      "inputHash": "a75557476d9fd7754a7626335af4bef41540bca4ac9376a6a74a3501b2bf813a",
       "expected": {
         "kind": "console",
         "lines": [
-          "1"
+          "50",
+          "50"
         ]
       }
     },
@@ -1378,12 +1386,12 @@
       }
     },
     "js-basics.objects.reference-vs-value.check-shared-lunch": {
-      "inputHash": "2861559aaefcaf90ff76c460f7d1a6271689d61355837d6c0573eb5d1951d62f",
+      "inputHash": "7f5a05e4d9b5ceca0aa514df76a3e575d013fc424dbd7cbd8d149e6ca10e4f66",
       "expected": {
         "kind": "console",
         "lines": [
           "9000",
-          "9000"
+          "7000"
         ]
       }
     },
@@ -1476,6 +1484,16 @@
         "lines": [
           "24",
           "8"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.check-division-decimal": {
+      "inputHash": "263ba63ada8eb6cbe7a4e48395c12279ff349e1e9619e3a12a55519e8f72cde0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3.5",
+          "7"
         ]
       }
     },
@@ -2072,6 +2090,16 @@
           "boolean",
           "object",
           "string"
+        ]
+      }
+    },
+    "js-basics.values.null-undefined.check-undefined-continues": {
+      "inputHash": "e62733589367cac5dc9815f0069bdda92c25e7bcfddc002d817285efcc9bde68",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "undefined undefined",
+          "다음 줄"
         ]
       }
     },

@@ -18,14 +18,13 @@ spec:
       rationale: 태그를 감추는 것은 브라우저가 화면에 그릴 때의 일이에요. 소스 보기는 그리기 전의 코드를 보여 줘요.
     - id: c
       text: 원래 화면과 똑같이 그려진 페이지가 한 번 더 보인다
-      misconception: html.mc.code-shown-as-is
       rationale: 그려진 화면이 아니라, 화면을 만들기 위해 받은 코드가 보여요.
     - id: d
       text: 브라우저 프로그램 안에 미리 저장되어 있던 페이지 파일이 보인다
       misconception: html.mc.page-lives-in-browser
       rationale: 페이지 파일은 브라우저 안이 아니라 서버에 있어요. 브라우저는 요청해서 받은 것을 보여 줘요.
   correct: a
-misconceptions: [html.mc.code-shown-as-is, html.mc.page-lives-in-browser]
+misconceptions: [html.mc.page-lives-in-browser]
 hints:
   - 브라우저가 서버에서 받는 것은 그림이 아니라 무엇인가요?
   - 화면은 받은 코드를 브라우저가 해석해서 그린 결과예요. "소스"는 그 원본이에요.

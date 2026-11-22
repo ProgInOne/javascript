@@ -7,11 +7,10 @@ concepts:
 tags: [label, for, id]
 estimatedSeconds: 60
 prompt: |
-  배송 정보 폼에 이렇게 썼어요.
-
-  `<label for="city">사는 도시</label>` 다음 줄에 `<input id="town" type="text" />`
-
-  화면에서 "사는 도시" 글자를 누르면 어떻게 되나요?
+  배송 정보 폼에 아래처럼 썼어요. 화면에서 "사는 도시" 글자를 누르면 어떻게 되나요?
+code: |
+  <label for="city">사는 도시</label>
+  <input id="town" type="text" />
 spec:
   options:
     - id: a

@@ -66,7 +66,7 @@ spec:
         text: { equals: 우산을 챙기세요. }
     - kind: dom
       id: only-heading-and-p
-      description: 본문에는 제목과 문단만 있어야 합니다. CSS 규칙은 style 안에 써요.
+      description: 본문에 문단(p)은 하나만 있어야 합니다.
       requirement: HTML 문단
       selector: body > p
       expect:

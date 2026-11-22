@@ -20,8 +20,8 @@ spec:
       text: '`books["데미안"]`'
       rationale: 대괄호 안에는 요소의 값이 아니라 위치 번호(인덱스)를 써요.
     - id: d
-      text: '`books.length - 2`'
-      rationale: 이 식은 숫자 `2`일 뿐이에요. 요소를 읽으려면 `books[...]`처럼 대괄호로 감싸야 해요.
+      text: '`books.length - 1`'
+      rationale: 이 식은 숫자 `3`일 뿐이에요. 요소를 읽으려면 `books[...]`처럼 대괄호로 감싸야 하고, 감싸도 마지막 책 `"나니아"`예요.
   correct: a
 misconceptions: [js.mc.index-starts-at-one]
 hints:
@@ -35,7 +35,7 @@ explanation: |
 
   - `books[3]`: 네 번째 책 `"나니아"`예요. "세 번째"와 "인덱스 3"을 같다고 보면 생기는 실수예요.
   - `books["데미안"]`: 대괄호 안에는 위치 번호를 써요. 값으로는 요소를 찾을 수 없어서 `undefined`가 나와요.
-  - `books.length - 2`: 계산 결과가 숫자 `2`예요. 인덱스로 쓰려면 `books[books.length - 2]`처럼 대괄호 안에 넣어야 해요.
+  - `books.length - 1`: 계산 결과가 숫자 `3`이에요. 요소가 아니라 숫자이고, 대괄호에 넣어 읽어도 세 번째가 아니라 마지막 책이에요.
 origin: authored
 review:
   status: approved

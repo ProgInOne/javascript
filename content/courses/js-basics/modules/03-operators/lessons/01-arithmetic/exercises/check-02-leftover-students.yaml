@@ -14,7 +14,6 @@ spec:
       text: '`26 % 4`'
     - id: b
       text: '`26 / 4`'
-      misconception: js.mc.division-truncates
       rationale: "`/`는 소수까지 계산해서 `6.5`가 나와요. 남는 학생 수가 아니에요."
     - id: c
       text: '`(26 - 26 % 4) / 4`'

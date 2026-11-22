@@ -54,7 +54,7 @@ spec:
       expect: { equals: "더워요" }
     - kind: call
       id: hot-edge
-      description: 딱 28도도 "더워요"예요(28 이상).
+      description: 딱 28도도 "더워요"여야 합니다(28 이상).
       requirement: 더울 때
       args: [28]
       expect: { equals: "더워요" }
@@ -66,7 +66,7 @@ spec:
       expect: { equals: "추워요" }
     - kind: call
       id: cold-edge
-      description: 딱 10도도 "추워요"예요(10 이하).
+      description: 딱 10도도 "추워요"여야 합니다(10 이하).
       requirement: 추울 때
       args: [10]
       expect: { equals: "추워요" }
