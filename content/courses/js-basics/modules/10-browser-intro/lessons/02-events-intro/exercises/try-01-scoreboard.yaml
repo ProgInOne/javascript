@@ -1,0 +1,159 @@
+id: js-basics.browser-intro.events-intro.try-scoreboard
+type: web_task
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.dom.add-event-listener, weight: 1 }
+  - { id: js.dom.text-content, weight: 0.3 }
+tags: [addeventlistener, click, counter, web, write-code]
+estimatedSeconds: 240
+prompt: |
+  보드게임 점수판을 만들어 보세요. `<script>` 안에 코드를 쓰면 돼요.
+
+  - **+1** 버튼(`#plus`)을 누를 때마다 점수가 1 늘어요.
+  - **−1** 버튼(`#minus`)을 누를 때마다 점수가 1 줄어요. 0보다 작아져도 괜찮아요.
+  - 점수는 `#score`에 숫자로 보여 줘요. 처음에는 `0`이에요.
+
+  | 누른 버튼 | `#score` |
+  |---|---|
+  | (처음) | `0` |
+  | +1, +1 | `2` |
+  | 이어서 −1 | `1` |
+
+  HTML은 고치지 마세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>점수판</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #score { font-size: 48px; font-weight: bold; margin: 8px 0; }
+                button { font-size: 18px; padding: 6px 16px; }
+              </style>
+            </head>
+            <body>
+              <p id="score">0</p>
+              <button id="minus">−1</button>
+              <button id="plus">+1</button>
+              <script>
+                // 1. #score, #plus, #minus를 찾아 변수에 담으세요.
+                // 2. 점수를 담을 변수를 함수 밖에 만드세요(처음 값 0).
+                // 3. #plus에 click 이벤트를 등록해, 점수를 1 늘리고 #score에 보여 주세요.
+                // 4. #minus에도 click 이벤트를 등록해, 점수를 1 줄이고 #score에 보여 주세요.
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>점수판</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #score { font-size: 48px; font-weight: bold; margin: 8px 0; }
+                button { font-size: 18px; padding: 6px 16px; }
+              </style>
+            </head>
+            <body>
+              <p id="score">0</p>
+              <button id="minus">−1</button>
+              <button id="plus">+1</button>
+              <script>
+                const scoreText = document.querySelector("#score");
+                let score = 0;
+                document.querySelector("#plus").addEventListener("click", () => {
+                  score++;
+                  scoreText.textContent = score;
+                });
+                document.querySelector("#minus").addEventListener("click", () => {
+                  score--;
+                  scoreText.textContent = score;
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: starts-zero
+      description: '처음에는 #score가 "0"이어야 합니다.'
+      requirement: 처음 점수
+      selector: "#score"
+      expect:
+        text: { equals: "0" }
+    - kind: event
+      id: plus-twice
+      description: '+1을 두 번 누르면 #score가 "2"여야 합니다.'
+      requirement: +1 버튼
+      visible: true
+      steps:
+        - { action: click, selector: "#plus" }
+        - { action: click, selector: "#plus" }
+      expect:
+        - { selector: "#score", text: { equals: "2" } }
+      misconceptionIfFail: js.mc.listener-handler-called
+    - kind: event
+      id: minus-once
+      description: '이어서 −1을 한 번 누르면 #score가 "1"이어야 합니다.'
+      requirement: −1 버튼
+      visible: true
+      steps:
+        - { action: click, selector: "#minus" }
+      expect:
+        - { selector: "#score", text: { equals: "1" } }
+    - kind: event
+      id: below-zero
+      description: '이어서 −1을 두 번 더 누르면 #score가 "-1"이어야 합니다.'
+      requirement: −1 버튼
+      steps:
+        - { action: click, selector: "#minus" }
+        - { action: click, selector: "#minus" }
+      expect:
+        - { selector: "#score", text: { equals: "-1" } }
+    - kind: event
+      id: plus-again
+      description: '이어서 +1을 누르면 #score가 "0"으로 돌아와야 합니다. 점수는 누를 때마다 처음부터 다시 시작하지 않아야 합니다.'
+      requirement: +1 버튼
+      steps:
+        - { action: click, selector: "#plus" }
+      expect:
+        - { selector: "#score", text: { equals: "0" } }
+misconceptions: [js.mc.listener-handler-called]
+hints:
+  - 단원의 첫 번째 예제(좋아요 버튼)와 같은 모양을 버튼 두 개에 하나씩 만들면 돼요.
+  - 점수 변수는 두 함수가 함께 써야 하니 **함수 밖**에 `let score = 0;`으로 만들어요. 함수 안에서 만들면 누를 때마다 0부터 다시 시작해요.
+  - "`#plus`의 함수에서는 `score++`, `#minus`의 함수에서는 `score--`를 한 뒤 `textContent`에 `score`를 대입하세요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  const scoreText = document.querySelector("#score");
+  let score = 0;
+  document.querySelector("#plus").addEventListener("click", () => {
+    score++;
+    scoreText.textContent = score;
+  });
+  document.querySelector("#minus").addEventListener("click", () => {
+    score--;
+    scoreText.textContent = score;
+  });
+  ```
+
+  - 버튼마다 `addEventListener`로 함수를 하나씩 맡겨요. 등록할 때는 실행되지 않고, 누를 때마다 실행돼요.
+  - `score`가 함수 밖에 있어서 두 버튼이 같은 점수를 늘리고 줄여요.
+  - `textContent`에 숫자를 대입하면 글자로 바뀌어 보여요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,156 @@
+id: js-basics.browser-intro.dom-basics.try-chat-message
+type: web_task
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.dom.document-tree, weight: 1 }
+  - { id: js.dom.class-style, weight: 0.5 }
+  - { id: js.dom.text-content, weight: 0.3 }
+tags: [create-element, append, classlist, web, write-code]
+estimatedSeconds: 240
+prompt: |
+  채팅 화면에 내가 보낸 메시지를 하나 더해 보세요. `<script>` 안에 코드를 쓰면 돼요.
+
+  1. 새 `li`를 만들어 글자 `나: 몇 시에 만날까?`를 넣으세요.
+  1. 이 `li`에 `msg`와 `mine` 클래스를 넣으세요(`mine`이 있으면 오른쪽에 파란 말풍선으로 보여요).
+  1. `#chat`의 맨 끝에 붙이세요.
+  1. 붙인 **뒤에** `#chat` 안의 `li` 개수를 세어 `#count`에 `메시지 3개`처럼 보여 주세요. 숫자는 직접 적지 마세요.
+
+  HTML과 CSS는 고치지 마세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>채팅</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; max-width: 360px; }
+                #chat { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+                .msg { padding: 6px 10px; border-radius: 12px; background: #e5e7eb; align-self: flex-start; }
+                .mine { background: #bfdbfe; align-self: flex-end; }
+                #count { color: #6b7280; font-size: 14px; }
+              </style>
+            </head>
+            <body>
+              <p id="count">메시지 2개</p>
+              <ul id="chat">
+                <li class="msg">민지: 안녕!</li>
+                <li class="msg">준호: 주말에 영화 볼래?</li>
+              </ul>
+              <script>
+                // 1. createElement로 새 li를 만들고 글자를 넣으세요.
+                // 2. classList로 msg와 mine 클래스를 넣으세요.
+                // 3. #chat을 찾아 맨 끝에 append하세요.
+                // 4. #chat 안의 li 개수를 세어 #count에 "메시지 3개"처럼 쓰세요.
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>채팅</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; max-width: 360px; }
+                #chat { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+                .msg { padding: 6px 10px; border-radius: 12px; background: #e5e7eb; align-self: flex-start; }
+                .mine { background: #bfdbfe; align-self: flex-end; }
+                #count { color: #6b7280; font-size: 14px; }
+              </style>
+            </head>
+            <body>
+              <p id="count">메시지 2개</p>
+              <ul id="chat">
+                <li class="msg">민지: 안녕!</li>
+                <li class="msg">준호: 주말에 영화 볼래?</li>
+              </ul>
+              <script>
+                const message = document.createElement("li");
+                message.textContent = "나: 몇 시에 만날까?";
+                message.classList.add("msg");
+                message.classList.add("mine");
+                const chat = document.querySelector("#chat");
+                chat.append(message);
+                const total = chat.querySelectorAll("li").length;
+                document.querySelector("#count").textContent = `메시지 ${total}개`;
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: three-messages
+      description: "#chat 안에 메시지(li)가 3개 있어야 합니다."
+      requirement: 목록 끝에 붙이기
+      visible: true
+      selector: "#chat li"
+      expect:
+        count: 3
+      misconceptionIfFail: js.mc.created-element-auto-shown
+    - kind: dom
+      id: last-text
+      description: '마지막 메시지의 글자가 "나: 몇 시에 만날까?"여야 합니다.'
+      requirement: 목록 끝에 붙이기
+      visible: true
+      selector: "#chat li:last-child"
+      expect:
+        text: { equals: "나: 몇 시에 만날까?" }
+    - kind: dom
+      id: last-classes
+      description: 마지막 메시지에 msg와 mine 클래스가 모두 있어야 합니다.
+      requirement: 클래스 넣기
+      visible: true
+      selector: "#chat li:last-child.msg.mine"
+      expect:
+        count: 1
+      misconceptionIfFail: js.mc.classlist-dot-prefix
+    - kind: dom
+      id: count-text
+      description: '#count에 "메시지 3개"가 보여야 합니다.'
+      requirement: 개수 다시 쓰기
+      visible: true
+      selector: "#count"
+      expect:
+        text: { equals: "메시지 3개" }
+    - kind: dom
+      id: first-kept
+      description: 원래 있던 첫 메시지는 그대로 맨 앞에 있어야 합니다.
+      requirement: 목록 끝에 붙이기
+      selector: "#chat li:first-child"
+      expect:
+        text: { equals: "민지: 안녕!" }
+misconceptions: [js.mc.created-element-auto-shown, js.mc.classlist-dot-prefix]
+hints:
+  - 단원의 다섯 번째 예제처럼 "만들기 → 글자 넣기 → 붙이기" 순서예요. 클래스 넣기는 붙이기 전이든 후든 괜찮아요.
+  - 클래스는 `classList.add`로 하나씩 넣어요. 이름 앞에 점은 붙이지 않아요.
+  - "개수는 `append`한 다음에 `chat.querySelectorAll(\"li\").length`로 세면 3이 나와요. 그 값을 넣어 `#count`의 `textContent`에 대입하세요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  const message = document.createElement("li");
+  message.textContent = "나: 몇 시에 만날까?";
+  message.classList.add("msg");
+  message.classList.add("mine");
+  const chat = document.querySelector("#chat");
+  chat.append(message);
+  const total = chat.querySelectorAll("li").length;
+  document.querySelector("#count").textContent = `메시지 ${total}개`;
+  ```
+
+  - `createElement`로 만든 요소는 `append`하기 전까지 화면에 없어요. 그래서 개수도 `append` **뒤에** 세야 3이 나와요. 먼저 세면 2예요.
+  - `classList.add("msg", "mine")`처럼 한 번에 여러 이름을 넘겨도 돼요.
+  - 개수를 화면에서 세어 쓰면, 메시지가 몇 개든 `#count`가 실제 목록과 어긋나지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

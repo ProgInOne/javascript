@@ -1,0 +1,48 @@
+id: js-basics.browser-intro.dom-basics.check-missing-append
+type: mcq_single
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.dom.document-tree, weight: 1 }
+  - { id: js.dom.text-content, weight: 0.3 }
+tags: [create-element, append]
+estimatedSeconds: 60
+prompt: |
+  공지 목록 `<ol id="notices">`에 새 공지를 더하려고 아래 코드를 썼어요. 오류는 나지 않는데 화면에 새 공지가 보이지 않아요. 어떤 줄을 더해야 할까요?
+code: |
+  const notices = document.querySelector("#notices");
+  const notice = document.createElement("li");
+  notice.textContent = "내일은 휴관일이에요";
+spec:
+  options:
+    - id: a
+      text: '`notices.append(notice);`'
+    - id: b
+      text: '`notice.textContent = notice.textContent;`'
+      misconception: js.mc.created-element-auto-shown
+      rationale: 글자는 이미 들어 있어요. 글자를 다시 넣어도 `notice`는 여전히 트리 밖에 있어요.
+    - id: c
+      text: '`notice.classList.add("visible");`'
+      misconception: js.mc.created-element-auto-shown
+      rationale: 클래스는 모양을 바꿀 뿐이에요. 트리에 붙지 않은 요소는 클래스가 있어도 화면에 나오지 않아요.
+    - id: d
+      text: '`document.createElement("ol");`'
+      rationale: 새 `ol`을 하나 더 만들 뿐이고, 그것도 트리에 붙지 않아요. 목록은 이미 문서에 있어요.
+  correct: a
+misconceptions: [js.mc.created-element-auto-shown]
+hints:
+  - "`createElement`로 만든 요소는 지금 트리의 어디에 있나요?"
+  - 새 요소가 화면에 나오려면 문서에 있는 어떤 요소의 자식이 되어야 해요.
+  - 부모 요소의 맨 끝에 자식을 붙이는 메서드를 떠올려 보세요.
+explanation: |
+  정답은 `notices.append(notice);`예요.
+
+  `createElement("li")`는 새 `li`를 만들기만 해요. 글자를 넣어도 이 요소는 아직 트리의 어디에도 붙지 않아서 화면에 보이지 않아요. 부모인 `notices`에 `append`해야 목록 끝에 나타나요.
+
+  - 글자를 다시 넣거나 클래스를 넣어도 요소는 여전히 트리 밖이에요.
+  - `document.createElement("ol")`은 또 다른 새 요소를 만들 뿐이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

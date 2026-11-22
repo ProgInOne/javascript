@@ -126,6 +126,10 @@ form.addEventListener("submit", (event) => {
 - 8번 줄의 `addEventListener`는 화살표 함수를 맡겨 두기만 해요. 그래서 `눌렀어요`는 아직 나오지 않아요.
 - 버튼을 누를 때마다 맡겨 둔 함수가 실행돼요. `count`가 1씩 늘고, 화면의 숫자와 콘솔이 함께 바뀌어요.
 - `count`는 함수 밖에 있는 변수라서 누를 때마다 같은 변수가 늘어요. 함수 안에서 `let count = 0;`을 만들면 누를 때마다 0부터 다시 시작해서 늘 1이 나와요.
+
+이번에는 버튼 두 개에 각각 함수를 등록하는 점수판을 직접 써 보세요.
+
+<TryIt ref="js-basics.browser-intro.events-intro.try-scoreboard" />
 </Section>
 
 <Section kind="examples">
@@ -190,6 +194,10 @@ string
 - `type="number"`여도 `value`는 문자열 `"3"`, `"5"`예요. 8번 줄이 `string`을 보여 줘요.
 - 6번 줄은 문자열끼리의 `+`라 이어 붙여서 `35`예요.
 - 7번 줄처럼 `Number`로 바꾼 뒤 더해야 `8`이에요.
+
+`value`는 문자열이라 `length`로 글자 수도 셀 수 있어요. 글자가 바뀔 때마다 `value`를 읽는 코드를 직접 써 보세요.
+
+<TryIt ref="js-basics.browser-intro.events-intro.try-char-counter" />
 </Section>
 
 <Section kind="examples">
@@ -328,17 +336,17 @@ searchInput.addEventListener("input", () => {
 </Section>
 
 <Section kind="check">
-함수를 맡기는 문법을 확인해 보세요.
+함수를 등록하는 순간과 실행되는 순간을 확인해 보세요.
 
-<InlineExercise ref="js-basics.browser-intro.events-intro.mcq-pass-handler" />
+<InlineExercise ref="js-basics.browser-intro.events-intro.check-register-not-run" />
 
-입력창의 `value`가 어떤 자료형인지 확인해 보세요.
+입력창의 `value`를 언제 읽어야 하는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.browser-intro.events-intro.tf-value-is-number" />
+<InlineExercise ref="js-basics.browser-intro.events-intro.check-value-read-when" />
 
-이벤트 객체에 대해 확인해 보세요.
+이벤트 객체에서 누른 키를 읽는 법을 확인해 보세요.
 
-<InlineExercise ref="js-basics.browser-intro.events-intro.multi-event-object" />
+<InlineExercise ref="js-basics.browser-intro.events-intro.check-event-key" />
 </Section>
 
 <Section kind="practice" />

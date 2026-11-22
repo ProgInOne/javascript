@@ -1,0 +1,42 @@
+id: js-basics.browser-intro.dom-basics.check-classlist-add-keeps
+type: true_false
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.dom.class-style, weight: 1 }
+tags: [classlist, add]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: '`<div id="tab" class="tab">`에 `document.querySelector("#tab").classList.add("active");`를 실행하면 `class` 속성이 `"active"`로 바뀌어 원래 있던 `tab` 클래스는 사라진다.'
+  answer: false
+  requireReason: true
+  reasons:
+    - id: r1
+      text: classList.add는 원래 클래스는 그대로 두고 새 클래스를 덧붙여서 class 속성이 "tab active"가 된다
+      correct: true
+    - id: r2
+      text: classList.add는 클래스가 이미 하나 있으면 아무것도 넣지 않는다
+    - id: r3
+      text: 요소에는 클래스를 하나만 둘 수 있어서 새 클래스가 원래 클래스를 대신하므로 맞는 설명이다
+    - id: r4
+      text: classList.add에는 ".active"처럼 점을 붙여야 하므로 이 코드는 아무것도 바꾸지 않는다
+      misconception: js.mc.classlist-dot-prefix
+hints:
+  - 단원의 네 번째 예제에서 `add("selected")` 뒤의 `className`이 무엇이었는지 떠올려 보세요.
+  - 요소 하나에 클래스를 여러 개 둘 수 있을까요? `class="card selected"`처럼요.
+  - "`add`는 넣기, `remove`는 빼기예요. 넣을 때 다른 클래스까지 빼지는 않아요."
+explanation: |
+  정답은 **거짓**이에요. `classList.add`는 원래 클래스를 그대로 두고 새 클래스를 덧붙여요.
+
+  실행하면 `class` 속성은 `"tab active"`가 돼요. 그래서 `.tab` 규칙(기본 모양)과 `.active` 규칙(강조 모양)이 함께 적용돼요.
+
+  - 요소에는 클래스를 여러 개 둘 수 있어요. 특정 클래스만 빼려면 `remove`를 써요.
+  - `add`는 클래스가 이미 있어도 새 클래스를 넣어요. 같은 이름을 두 번 넣을 때만 아무 변화가 없어요.
+  - `classList`에는 점 없이 이름만 써요. `add(".active")`라고 쓰면 오히려 이름이 `.active`인 엉뚱한 클래스가 들어가요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
