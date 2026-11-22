@@ -185,6 +185,10 @@ console.log(stamp.slice(-5, -3));
 
 - 10번 글자는 공백이에요. `slice(5, 10)`은 10번 앞에서 멈추므로 공백이 들어가지 않아요.
 - `stamp.length`는 16이라 `-5`는 `16 - 5 = 11`번, `-3`은 `16 - 3 = 13`번과 같아요. 그래서 `slice(-5, -3)`은 `slice(11, 13)`과 같아요.
+
+`indexOf`로 찾은 위치를 `slice`의 끝으로 써서, 길이가 매번 다른 앞부분을 직접 잘라 보세요.
+
+<TryIt ref="js-basics.strings.string-methods.try-area-code" />
 </Section>
 
 <Section kind="examples">
@@ -243,6 +247,10 @@ html,css,javascript
 - `list.length`는 조각 수 3이에요. 원래 문자열의 글자 수 19가 아니에요.
 - `list.join()`처럼 구분자를 비우면 쉼표로 이어요. 아무것도 없이 이으려면 `join("")`이라고 써요.
 - 마지막 줄은 `" #"`로 이어서 `html #css #javascript`를 만들고, 맨 앞에 `#`를 하나 더 붙였어요.
+
+`trim`과 `split`을 이어 불러 단어 수를 세는 함수를 직접 써 보세요.
+
+<TryIt ref="js-basics.strings.string-methods.try-word-count" />
 </Section>
 
 <Section kind="examples">
@@ -368,21 +376,21 @@ console.log(`https://blog.example.com/posts/${slug}`);
 </Section>
 
 <Section kind="check">
-`indexOf`가 못 찾으면 무엇을 돌려주는지 확인해 보세요.
+찾기 메서드가 대소문자를 어떻게 다루는지 예측해 보세요.
 
-<InlineExercise ref="js-basics.strings.string-methods.mcq-indexof-not-found" />
+<InlineExercise ref="js-basics.strings.string-methods.check-search-case" />
 
 `slice`가 어디까지 자르는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.strings.string-methods.mcq-slice-range" />
+<InlineExercise ref="js-basics.strings.string-methods.check-slice-range" />
 
-메서드가 원래 문자열을 바꾸는지 확인해 보세요.
+메서드를 부른 뒤 원래 문자열이 어떻게 되는지 예측해 보세요.
 
-<InlineExercise ref="js-basics.strings.string-methods.tf-method-mutates" />
+<InlineExercise ref="js-basics.strings.string-methods.check-original-unchanged" />
 
-`split`의 결과를 확인해 보세요.
+`split`으로 나눈 조각을 꺼내 보세요.
 
-<InlineExercise ref="js-basics.strings.string-methods.mcq-split-count" />
+<InlineExercise ref="js-basics.strings.string-methods.check-split-piece" />
 </Section>
 
 <Section kind="practice" />

@@ -1,0 +1,45 @@
+id: js-basics.strings.string-methods.check-split-piece
+type: mcq_single
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.str.split-join, weight: 1 }
+tags: [string, split, array]
+estimatedSeconds: 60
+prompt: |
+  마지막 줄은 무엇을 출력하나요?
+code: |
+  const parts = "2026/11/22".split("/");
+  console.log(parts[1]);
+spec:
+  options:
+    - id: a
+      text: "`11`"
+    - id: b
+      text: "`0`"
+      misconception: js.mc.split-result-is-string
+      rationale: "`split`의 결과는 문자열이 아니라 조각들의 목록이에요. `parts[1]`은 1번 글자가 아니라 1번 조각이에요."
+    - id: c
+      text: "`2026`"
+      misconception: js.mc.index-starts-at-one
+      rationale: 목록의 위치 번호도 0부터 시작해요. `2026`은 `parts[0]`이에요.
+    - id: d
+      text: "`11/22`"
+      rationale: "`split(\"/\")`은 `/`가 있는 곳마다 모두 잘라요. 조각은 `2026`, `11`, `22` 세 개예요."
+  correct: a
+misconceptions: [js.mc.split-result-is-string]
+hints:
+  - "`split(\"/\")`은 문자열을 `/`가 있는 곳마다 잘라요. 조각은 몇 개이고 무엇인가요?"
+  - "`parts`는 문자열이 아니라 조각들의 목록이에요. `parts[1]`은 몇 번째 조각인가요?"
+  - 목록의 위치 번호도 0부터 시작해요. 0번 조각이 `2026`이에요.
+explanation: |
+  정답은 `11`이에요.
+
+  - `"2026/11/22".split("/")`은 `/`마다 잘라 조각 `"2026"`, `"11"`, `"22"`의 목록을 만들어요. `/`는 조각에 들어가지 않아요.
+  - 목록도 0부터 세서 `parts[0]`이 `"2026"`, `parts[1]`이 `"11"`이에요.
+  - `0`이라고 답했다면 `parts`를 원래 문자열처럼 보고 1번 글자를 꺼낸 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
