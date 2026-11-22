@@ -1,4 +1,5 @@
 import {
+  finishSetResponseSchema,
   inlineAttemptResponseSchema,
   practiceSetViewSchema,
   type AttemptResponse,
@@ -409,5 +410,83 @@ describe('POST /exercises/:id/inline-attempts', () => {
     expect(extra.status).toBe(400);
     expect((await inline(ctx, 'a.b.c.nope', { answer: { optionId: 'b' } })).status).toBe(404);
     expect(count(ctx, 'attempts')).toBe(0);
+  });
+});
+
+describe('a wrong answer to the last item', () => {
+  /** Answers every item right except the last one, which is answered wrong. */
+  async function lastWrong(ctx: Awaited<ReturnType<typeof practiceApp>>) {
+    const set = await lessonSet(ctx);
+    const items = [...set.items];
+    const lastItem = items.pop();
+    if (!lastItem) throw new Error('empty set');
+    for (const item of items) parsed(await submit(ctx, item));
+    const wrong = parsed(await submit(ctx, lastItem, { correct: false }));
+    return { set, lastItem, wrong };
+  }
+
+  it('keeps the set open so the item can be tried again', async () => {
+    const ctx = await practiceApp();
+    const { set, lastItem, wrong } = await lastWrong(ctx);
+    expect(wrong.attempt.correct).toBe(false);
+    expect(wrong.set.status).toBe('active');
+    expect(wrong.set.nextItemId).toBeNull();
+    expect(wrong.set.result).toBeNull();
+    expect(wrong.set.progress).toEqual({ total: N, answered: N, skipped: 0, pending: 0 });
+    expect(
+      ctx.userDb.sqlite.prepare('SELECT status, practice_set_id FROM lesson_progress').get(),
+    ).toEqual({ status: 'practicing', practice_set_id: set.id });
+    // Resuming the lesson returns the same open set.
+    expect((await lessonSet(ctx)).id).toBe(set.id);
+
+    const retried = parsed(await submit(ctx, lastItem));
+    expect(retried.item).toEqual({ id: lastItem.id, status: 'answered', attempts: 2 });
+    expect(retried.set.status).toBe('completed');
+    expect(retried.set.result).toMatchObject({ total: N, answered: N, correct: N });
+    expect(retried.set.result?.pass?.passed).toBe(true);
+    expect(
+      ctx.userDb.sqlite
+        .prepare('SELECT COUNT(*) AS n FROM pending_ratings WHERE flushed_at IS NULL')
+        .get(),
+    ).toEqual({ n: 0 });
+  });
+
+  it('ends the set with "결과 보기" (finish) as it stands', async () => {
+    const ctx = await practiceApp();
+    const { set } = await lastWrong(ctx);
+    const res = await ctx.call('POST', `/practice-sets/${set.id}/finish`);
+    expect(res.status).toBe(200);
+    const done = finishSetResponseSchema.parse(res.json);
+    expect(done.set).toMatchObject({ id: set.id, status: 'completed', nextItemId: null });
+    expect(done.set.result).toMatchObject({ total: N, answered: N, correct: N - 1 });
+    expect(
+      ctx.userDb.sqlite.prepare('SELECT status FROM practice_sets WHERE id = ?').get(set.id),
+    ).toEqual({ status: 'completed' });
+    expect(
+      ctx.userDb.sqlite
+        .prepare('SELECT COUNT(*) AS n FROM pending_ratings WHERE flushed_at IS NULL')
+        .get(),
+    ).toEqual({ n: 0 });
+    expect(
+      (
+        ctx.userDb.sqlite.prepare('SELECT practice_set_id FROM lesson_progress').get() as {
+          practice_set_id: string | null;
+        }
+      ).practice_set_id,
+    ).toBeNull();
+
+    const again = await ctx.call('POST', `/practice-sets/${set.id}/finish`);
+    expect(again.status).toBe(409);
+    expect(errorCode(again.json)).toBe('PRACTICE_SET_CLOSED');
+  });
+
+  it('refuses to finish while items are pending', async () => {
+    const ctx = await practiceApp();
+    const set = await lessonSet(ctx);
+    const res = await ctx.call('POST', `/practice-sets/${set.id}/finish`);
+    expect(res.status).toBe(409);
+    expect(errorCode(res.json)).toBe('PRACTICE_SET_UNFINISHED');
+    const missing = await ctx.call('POST', '/practice-sets/01JD3Z8Q6V2K9M4T7R1X5W0BNC/finish');
+    expect(missing.status).toBe(404);
   });
 });

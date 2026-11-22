@@ -142,7 +142,8 @@ export function attemptResponse(
 ): AttemptResponse {
   const items = set.items.map((i) => (i.id === itemId ? { ...i, status: 'answered' as const } : i));
   const answered = items.filter((i) => i.status === 'answered').length;
-  const completed = over.completed ?? answered === items.length;
+  // The server keeps a set open after a wrong answer to its last pending item (another try).
+  const completed = over.completed ?? (answered === items.length && outcome === 'correct');
   return {
     attempt: {
       id: '01JD3Z8Q6V2K9M4T7R1X5W0ATT',

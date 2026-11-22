@@ -11,7 +11,7 @@ import { Link } from '@tanstack/react-router';
 import { ListChecks } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { ApiRequestError } from '../../api/client.ts';
-import { LEARNING_STATE_KEYS, practiceSetQuery, skipItem } from '../../api/queries.ts';
+import { finishSet, LEARNING_STATE_KEYS, practiceSetQuery, skipItem } from '../../api/queries.ts';
 import { applyAttemptToSet, mergeMasteryChanges, nextPendingIndex } from './model.ts';
 import { PracticeItem } from './PracticeItem.tsx';
 import { SetProgress } from './SetProgress.tsx';
@@ -124,6 +124,38 @@ export function PracticeSession({
     }
   };
 
+  /**
+   * "결과 보기". A set stays open after a wrong answer to its last pending item (so it can be
+   * tried again); asking for the result then ends it on the server first.
+   */
+  const showResult = async () => {
+    if (set.status !== 'active') {
+      go(null);
+      return;
+    }
+    setSkipError(null);
+    try {
+      const res = await finishSet(set.id);
+      client.setQueryData(practiceSetQuery(set.id).queryKey, (old) =>
+        old
+          ? {
+              ...old,
+              status: res.set.status,
+              progress: res.set.progress,
+              nextItemId: res.set.nextItemId,
+              result: res.set.result ?? old.result,
+              completedAt: old.completedAt ?? Date.now(),
+            }
+          : old,
+      );
+      setChanges((c) => [...c, ...res.masteryChanges]);
+      for (const queryKey of LEARNING_STATE_KEYS) void client.invalidateQueries({ queryKey });
+      go(null);
+    } catch (e) {
+      setSkipError(e instanceof ApiRequestError ? e.message : '결과를 불러오지 못했어요.');
+    }
+  };
+
   return (
     <div className="practice-session">
       <div className="practice-session__bar">
@@ -173,16 +205,19 @@ export function PracticeSession({
           onSkip={() => skip(item.id)}
           workedExample={stages.get(item.id) ?? null}
           nextPending={nextPendingIndex(set, current)}
-          onShowSummary={() => {
-            go(null);
-          }}
+          onShowSummary={() => void showResult()}
         />
       )}
     </div>
   );
 }
 
+/**
+ * The item to open: the first pending one, or, in an open set with nothing pending (the last
+ * answer was wrong and the result not asked for yet), the last item so it can be tried again.
+ */
 function firstIndex(set: PracticeSetView): number {
   const i = set.items.findIndex((item) => item.id === set.nextItemId);
-  return i < 0 ? 0 : i;
+  if (i >= 0) return i;
+  return set.status === 'active' ? Math.max(0, set.items.length - 1) : 0;
 }

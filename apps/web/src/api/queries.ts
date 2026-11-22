@@ -12,6 +12,7 @@ import {
   reportResponseSchema,
   runPlanSchema,
   skipItemResponseSchema,
+  finishSetResponseSchema,
   submitAttemptResponseSchema,
   solutionResponseSchema,
   type AttemptRequest,
@@ -275,6 +276,13 @@ export const skipItem = (setId: string, itemId: string) =>
   api(`/practice-sets/${encodeURIComponent(setId)}/items/${encodeURIComponent(itemId)}/skip`, {
     method: 'POST',
     schema: skipItemResponseSchema,
+  });
+
+/** `POST /practice-sets/:id/finish`: ends an open set whose items are all done ("결과 보기"). */
+export const finishSet = (setId: string) =>
+  api(`/practice-sets/${encodeURIComponent(setId)}/finish`, {
+    method: 'POST',
+    schema: finishSetResponseSchema,
   });
 
 export const openHint = (exerciseId: string, practiceSetItemId: string | null) =>

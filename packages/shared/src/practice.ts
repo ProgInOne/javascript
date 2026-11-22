@@ -593,6 +593,17 @@ export const skipItemResponseSchema = attemptResponseSchema.pick({
 export type SkipItemResponse = z.infer<typeof skipItemResponseSchema>;
 
 /**
+ * `POST /practice-sets/:id/finish`: ends an open set whose items are all done. A wrong answer to
+ * the last pending item keeps the set open for another try; "결과 보기" ends it here.
+ * `409 PRACTICE_SET_UNFINISHED` while items are pending, `409 PRACTICE_SET_CLOSED` once ended.
+ */
+export const finishSetResponseSchema = attemptResponseSchema.pick({
+  set: true,
+  masteryChanges: true,
+});
+export type FinishSetResponse = z.infer<typeof finishSetResponseSchema>;
+
+/**
  * `POST /exercises/:id/inline-attempts`: a lesson's inline check (`<InlineExercise>`), answered
  * while reading, outside any practice set. Only exercises graded without a sandbox run.
  * Mastery is updated like any attempt; FSRS scheduling is left to practice and review sets.

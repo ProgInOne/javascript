@@ -45,6 +45,7 @@ import {
   type RunResult,
   type SetAdaptation,
   type SkipItemResponse,
+  type FinishSetResponse,
 } from '@proginone/shared';
 import type { ContentExercise, ContentRepository } from '../../db/content/repository.ts';
 import {
@@ -581,6 +582,60 @@ export class AttemptService {
   }
 
   /**
+   * `POST /practice-sets/:id/finish`: ends an open set whose items are all answered or skipped.
+   * That happens when the last pending item was answered wrong: the set stays open for another
+   * try (like any other item) until the learner asks for the result. The result, the pass rule,
+   * the remaining FSRS flushes and the lesson progress are computed as if the last answer had
+   * just ended the set.
+   */
+  finish(setId: string): FinishSetResponse {
+    const now = this.#now();
+    const orm = this.#userDb.orm;
+    const { learnerId, dayBoundary } = learnerContext(this.#userDb);
+    const set = getSet(orm, learnerId, setId);
+    if (!set) {
+      throw new AppError('NOT_FOUND', 404, '연습 세트를 찾을 수 없습니다.', {
+        details: { practiceSetId: setId },
+      });
+    }
+    if (set.row.status !== 'active') {
+      throw new AppError('PRACTICE_SET_CLOSED', 409, '이미 끝난 연습 세트입니다.', {
+        details: { practiceSetId: set.row.id },
+      });
+    }
+    const pending = listItems(orm, set.row.id).filter((i) => i.status === 'pending');
+    if (pending.length > 0) {
+      throw new AppError('PRACTICE_SET_UNFINISHED', 409, '아직 풀지 않은 문항이 있습니다.', {
+        details: { practiceSetId: set.row.id, pending: pending.length },
+      });
+    }
+    const plan = this.#plan({ learnerId, set, item: null, attempt: null, dayBoundary, now });
+    const date = localDateOf(now, dayBoundary);
+    orm.transaction(() => {
+      this.#write(plan, { learnerId, set, item: null, attemptId: null, correct: false, date, now });
+    });
+    const repo = this.#content.repo;
+    const titles = repo.getConcepts(plan.mastery.map((m) => m.conceptId));
+    return {
+      masteryChanges: plan.mastery.map((m) => ({
+        conceptId: m.conceptId,
+        title: titles.get(m.conceptId)?.title ?? m.conceptId,
+        scoreBefore: m.before.score,
+        scoreAfter: m.after.score,
+        stageBefore: m.before.stage,
+        stageAfter: m.after.stage,
+      })),
+      set: {
+        id: set.row.id,
+        status: 'completed',
+        progress: progressOf(plan.items),
+        nextItemId: null,
+        result: plan.result ? resultView(plan.result, repo, { orm, setId: set.row.id }) : null,
+      },
+    };
+  }
+
+  /**
    * Everything the engine decides for an answered (`attempt` given) or skipped item: mastery,
    * misconceptions, relearning, adaptive items, FSRS flushes and the set result. Reads and pure
    * engine calls only; the caller writes the plan in one transaction.
@@ -588,7 +643,8 @@ export class AttemptService {
   #plan(input: {
     learnerId: string;
     set: PracticeSet;
-    item: PracticeItemRow;
+    /** `null` when the learner ends a set whose items are all done (`finish`). */
+    item: PracticeItemRow | null;
     attempt: {
       candidate: ExerciseCandidate;
       facts: AttemptFacts;
@@ -604,7 +660,7 @@ export class AttemptService {
     const engine = this.#engine;
     const orm = this.#userDb.orm;
     let items = listItems(orm, set.row.id).map((i) =>
-      i.id !== item.id
+      i.id !== item?.id
         ? i
         : facts
           ? { ...i, status: 'answered' as const, finalAttemptId: facts.attemptId }
@@ -621,7 +677,7 @@ export class AttemptService {
     }));
     const conceptIds = [
       ...(candidate?.concepts.map((c) => c.conceptId) ?? []),
-      ...(item.targetConceptId === null ? [] : [item.targetConceptId]),
+      ...(item?.targetConceptId ? [item.targetConceptId] : []),
       ...stored.map((p) => p.conceptId),
       ...set.scope.conceptIds,
     ];
@@ -633,7 +689,7 @@ export class AttemptService {
         : { input: undefined, stored: new Map<string, StoredObservation>() };
     const primary = candidate?.concepts.find((c) => c.isPrimary)?.conceptId;
     const effects: AttemptEffects =
-      candidate && facts
+      candidate && facts && item
         ? applyAttempt(engine, {
             attempt: facts,
             exercise: candidate,
@@ -657,19 +713,26 @@ export class AttemptService {
         : EMPTY_EFFECTS;
 
     // Adaptive changes (pure), applied to the in-memory item list before the set is judged.
-    const adaptation = this.#adapt({
-      learnerId,
-      set,
-      item,
-      items,
-      facts,
-      remediation: effects.remediation,
-      states,
-      now,
-    });
+    const adaptation =
+      item === null
+        ? { items, replaced: [], appended: [] }
+        : this.#adapt({
+            learnerId,
+            set,
+            item,
+            items,
+            facts,
+            remediation: effects.remediation,
+            states,
+            now,
+          });
     items = adaptation.items;
     const remaining = items.filter((i) => i.status === 'pending');
-    const setFinished = remaining.length === 0;
+    // A wrong answer to the last pending item keeps the set open so the learner can try it again
+    // like any other item; "결과 보기" then ends it (`finish`). Assessments take one submission.
+    const awaitingRetry =
+      facts !== null && facts.outcome !== 'correct' && set.row.kind !== 'assessment';
+    const setFinished = remaining.length === 0 && !awaitingRetry;
     const after = new Map<string, ConceptState>(states);
     for (const update of effects.mastery) {
       const prev = after.get(update.conceptId) ?? initialConceptState(update.conceptId);
@@ -729,7 +792,7 @@ export class AttemptService {
           orm,
           items.map((i) => i.id),
         ),
-        ...(facts
+        ...(facts && item
           ? [
               {
                 id: facts.attemptId,
@@ -1011,8 +1074,9 @@ export class AttemptService {
     ctx: {
       learnerId: string;
       set: PracticeSet;
-      item: PracticeItemRow;
-      /** `null` when the item was skipped. */
+      /** `null` when the set is ended by `finish`. */
+      item: PracticeItemRow | null;
+      /** `null` when the item was skipped (or nothing was answered: `finish`). */
       attemptId: string | null;
       correct: boolean;
       date: string;
@@ -1055,13 +1119,15 @@ export class AttemptService {
     markRatingsFlushed(orm, plan.skippedIds, 'skipped', now);
     for (const memory of plan.flush.memory) upsertMemory(orm, learnerId, memory, now);
     for (const log of plan.flush.reviewLogs) insertReviewLog(orm, learnerId, log);
-    updateItem(
-      orm,
-      item.id,
-      attemptId === null
-        ? { status: 'skipped', finalAttemptId: item.finalAttemptId }
-        : { status: 'answered', finalAttemptId: attemptId },
-    );
+    if (item) {
+      updateItem(
+        orm,
+        item.id,
+        attemptId === null
+          ? { status: 'skipped', finalAttemptId: item.finalAttemptId }
+          : { status: 'answered', finalAttemptId: attemptId },
+      );
+    }
     if (plan.result) completeSet(orm, set.row.id, plan.result, now);
 
     const lessonId = set.scope.lessonId;

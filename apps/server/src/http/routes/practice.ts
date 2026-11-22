@@ -16,7 +16,8 @@ export function practiceSetRoutes(service: PracticeSetService, attempts: Attempt
     .get('/:id', (c) => c.json(service.get(rowIdParam(c.req.param('id')))))
     .post('/:id/items/:itemId/skip', (c) =>
       c.json(attempts.skip(rowIdParam(c.req.param('id')), rowIdParam(c.req.param('itemId')))),
-    );
+    )
+    .post('/:id/finish', (c) => c.json(attempts.finish(rowIdParam(c.req.param('id')))));
 }
 
 /** `/attempts`. Bodies carry learner code and a sandbox `RunResult` (≤ 1MB by contract). */
