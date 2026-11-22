@@ -13,7 +13,7 @@ ProgInOne 릴리스를 만들고 확인하는 방법입니다.
 | 앱 | SemVer `MAJOR.MINOR.PATCH` | 루트 `package.json`의 `version`, git 태그 `v<버전>` |
 | 콘텐츠 팩 | `YYYY.MM.DD.N` | `content/pack.yaml` |
 | user.db 스키마 | 마이그레이션 일련번호 | `apps/server/src/db/user/migrations/` |
-| content.db 스키마 | 정수 | `packages/content-schema/src/db/ddl.ts`의 `CONTENT_DB_SCHEMA_VERSION` |
+| content.db 스키마 | 정수 | `@proginone/content-schema/db`의 `CONTENT_DB_SCHEMA_VERSION`(ProgInOne/core) |
 
 - 1.0 이전(`0.x`)에는 MINOR가 호환성 깨짐을 포함할 수 있습니다. 단, user.db 마이그레이션은 항상 전진 호환입니다(새 앱이 예전 데이터를 엽니다).
 - 마일스톤 릴리스는 MINOR를 올립니다(M4 `0.1.0`, M5 `0.2.0`, M6 `0.3.0`, M7 `1.0.0`). 릴리스 뒤의 버그 수정만 담으면 PATCH를 올립니다.

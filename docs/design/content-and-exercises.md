@@ -511,7 +511,7 @@ title: 웹 프론트엔드 기초
 courses: [html, css, js-basics]  # 빌드에 포함할 과정 (v1.x에서 js-advanced, browser-js 추가)
 ```
 
-구현 메모 (M4, `packages/content-schema`):
+구현 메모 (M4, `packages/content-schema`. 지금은 ProgInOne/core의 `@proginone/content-schema`이고, 언어별 값은 `tools/content-cli/src/schema.ts`가 확장: D-090, D-092):
 
 - `pack.yaml`은 `courses` 대신 `tracks: [{ id, title, summary, courses }]`를 씁니다. content.db의 `tracks` 테이블과 과정 목록 화면의 묶음이 여기서 나옵니다.
 - `course.yaml`에는 `language`(`html`/`css`/`javascript`), `level`(`intro`/`basic`/`advanced`), `depth`(`full`/`core`), `status`가 있습니다(content.db `courses` 컬럼과 일치). `lesson.yaml`에는 `summary`가 필수입니다.
@@ -1968,7 +1968,7 @@ slug는 바꾸지 않는 것이 원칙이지만, 커리큘럼 재구성(단원 �
 
 구현 메모 (M7, [D-057](/docs/decisions.md)):
 
-- `aliases.yaml` 형식은 위 예시와 같습니다(`packages/content-schema/src/aliases.ts`). `entity_kind`는 쓰지 않고 `to`가 현재 콘텐츠에서 무엇인지로 정합니다. `since`는 생략하면 빌드하는 팩 버전입니다. 검사는 `tools/content-cli/src/aliases.ts`이고, 빌드가 `content_id_aliases`에 행을 씁니다(split은 대상마다 한 행).
+- `aliases.yaml` 형식은 위 예시와 같습니다(`@proginone/content-schema`의 [`aliases.ts`](https://github.com/ProgInOne/core/blob/develop/packages/content-schema/src/aliases.ts)). `entity_kind`는 쓰지 않고 `to`가 현재 콘텐츠에서 무엇인지로 정합니다. `since`는 생략하면 빌드하는 팩 버전입니다. 검사는 `tools/content-cli/src/aliases.ts`이고, 빌드가 `content_id_aliases`에 행을 씁니다(split은 대상마다 한 행).
 - 사라진 slug는 **경고** 로 시작합니다(위 문장의 "오류" 대신). 목록 파일은 `<종류> <slug>` 줄의 정렬된 텍스트이고, `content-cli build`(초안 제외)만 갱신합니다. 의도한 삭제는 목록을 갱신해 커밋하면 경고가 사라지고, 그 diff가 검토 기록입니다. 목록 파일이 없으면 비교하지 않습니다.
 - 서버는 앱 시작과 백업 복원 뒤 user.db의 콘텐츠 참조 열을 한 번에 새 slug로 갱신합니다(`apps/server/src/db/user/content-aliases.ts`, 바꿀 행이 있을 때만 사전 백업, 적용한 별칭 집합의 지문을 `app_meta`에 기록). `merge`·`split`의 숙련도·기억 재계산과 시도 재배분은 아직 없습니다: 키가 겹치는 행(학습자·개념마다 한 행)은 옮기지 않고 고아로 남기며, 이력 행(시도·증거·복습 기록)은 모두 옮깁니다. `rename`의 "데이터 마이그레이션"은 이 갱신입니다.
 

@@ -5,7 +5,7 @@ ProgInOne의 두 SQLite 데이터베이스(`content.db`, `user.db`)의 테이블
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-15 (튜터 테이블 v0.1 구현 반영)
+- 최종 수정: 2026-11-23 (content.db 스키마를 공통 패키지로 옮기고 언어 값을 엶: D-090, D-092)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [학습 엔진 설계](/docs/design/learning-engine.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [AI 시스템 설계](/docs/design/ai-system.md)
 
 ## 배경과 범위
@@ -162,7 +162,7 @@ flowchart LR
 ### content.db 설계
 
 `content-cli build`가 매번 새로 만드는 파일입니다. 마이그레이션이 없습니다(전체 재생성).
-스키마는 `packages/content-schema/src/db/`에 DDL(`ddl.ts`)과 읽기용 Drizzle 테이블(`schema.ts`)로 정의하고, 빌드 도구와 서버가 공유합니다(두 정의가 같은지 테스트로 확인). 빌드 도구(`tools/`)가 앱(`apps/`)에 의존하지 않도록 서버 대신 패키지에 둡니다.
+스키마는 공통 패키지 `@proginone/content-schema/db`(ProgInOne/core의 [`packages/content-schema/src/db/`](https://github.com/ProgInOne/core/blob/develop/packages/content-schema/src/db))에 DDL(`ddl.ts`)과 읽기용 Drizzle 테이블(`schema.ts`)로 정의하고, 빌드 도구와 서버가 공유합니다(두 정의가 같은지 테스트로 확인). 빌드 도구(`tools/`)가 앱(`apps/`)에 의존하지 않도록 서버 대신 패키지에 둡니다. 스키마 버전 기록은 [패키지 README](https://github.com/ProgInOne/core/blob/develop/packages/content-schema/README.md#contentdb-스키마-버전)에 있습니다.
 
 M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons.read_minutes`·`objectives_json`, `exercises.prompt`·`code`·`misconception_ids_json`·`tags_json`, `misconceptions.diagnostic_hint`·`remedial_lesson_anchor`. `lessons.body_compiled`에는 검증된 MDX JSON 트리를 저장합니다([콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#mdx-컴포넌트)). `projects`, `exercise_templates`는 해당 콘텐츠가 생길 때 추가합니다. M6에서 `assessments`를 추가했습니다(content.db 스키마 버전 2, 아래 [assessments, projects](#assessments-projects) 참고). 프로젝트는 테이블 대신 `exercises.usage = 'project'`로 표현합니다(스키마 버전 3). M7에서 `exercise_templates`와 시드 풀 `template_variants`를 추가했습니다(스키마 버전 4, 아래 [exercises, exercise_concepts, exercise_templates](#exercises-exercise_concepts-exercise_templates)의 구현 메모, [D-058](/docs/decisions.md)). `exercises.usage`에 본문 이해도 확인 `check`와 직접 써 보기 `try`를 더해 스키마 버전이 5가 되었습니다([D-091](/docs/decisions.md)). user.db는 바뀌지 않습니다: `check` 시도는 지금처럼 `practice_set_item_id`가 NULL인 `attempts`이고, `try` 채점은 기록하지 않습니다.
 
@@ -190,7 +190,7 @@ M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons
 | | `track_id` | TEXT | N | | FK → `tracks.id` |
 | | `title` | TEXT | N | | |
 | | `summary` | TEXT | N | | |
-| | `language` | TEXT | N | | `html` / `css` / `javascript`. 러너·에디터 기본 언어 결정 |
+| | `language` | TEXT | N | | 언어 slug. 이 저장소는 `html` / `css` / `javascript`. 러너·에디터 기본 언어 결정. 공통 스키마에는 `CHECK`가 없고 `content-cli`의 언어 키트가 검사(D-092) |
 | | `level` | TEXT | N | | `intro` / `basic` / `advanced` |
 | | `depth` | TEXT | N | `'full'` | `full` / `core` (D-003: JS는 full, HTML/CSS는 core) |
 | | `order_index` | INTEGER | N | | 트랙 내 권장 순서 |
@@ -231,7 +231,7 @@ M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons
 | | `summary` | TEXT | N | | 1~2문장 정의. AI 컨텍스트에 사용 |
 | | `importance` | TEXT | N | `'standard'` | `core` / `standard` / `minor`. 레슨 깊이, 문제 수 목표(FR-EX-09), 복습 우선순위 |
 | | `introduced_in_lesson_id` | TEXT | N | | FK → `lessons.id`. 처음 가르치는 단원 |
-| | `mdn_url` | TEXT | Y | | 참고 링크(FR-CUR-08) |
+| | `doc_url` | TEXT | Y | | 참고 문서 링크(FR-CUR-08). 이 저장소는 원본의 `mdn` 경로로 만든 MDN 주소(D-092, 스키마 버전 6 전에는 `mdn_url`) |
 | `concept_prerequisites` | `concept_id` | TEXT | N | | FK → `concepts.id` |
 | | `prerequisite_id` | TEXT | N | | FK → `concepts.id` |
 | | `strength` | TEXT | N | `'required'` | `required` / `helpful`. 재학습 탐색은 `required`만 따름 |

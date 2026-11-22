@@ -13,6 +13,7 @@ import { writePublishedSlugs } from './aliases.ts';
 import { checkContent, projectExerciseOf, type SpecValidator } from './check.ts';
 import type { Diagnostics } from './diagnostics.ts';
 import { canonical, sha256 } from './hash.ts';
+import { docUrlOf } from './schema.ts';
 import {
   engineTemplateOf,
   hasValue,
@@ -89,8 +90,6 @@ const dedupeSignature = (ex: ExerciseSource) => {
   return `${ex.type}|${primary}|${sha256(norm(ex.prompt) + '\n' + norm(ex.code ?? ''))}`;
 };
 
-const mdnUrl = (path: string | undefined) =>
-  path ? `https://developer.mozilla.org/ko/docs/${path}` : null;
 const prereqOf = (p: ConceptSource['prerequisites'][number]) =>
   typeof p === 'string' ? { id: p, strength: 'required' as const } : p;
 
@@ -315,7 +314,7 @@ export function buildContent(root: string, outFile: string, options: BuildOption
           summary: c.summary,
           importance: c.importance,
           introduced_in_lesson_id: home.lessonId,
-          mdn_url: mdnUrl(c.mdn),
+          doc_url: docUrlOf(c),
         });
         search(c.id, 'concept', c.title, c.summary);
         stats.concepts++;
