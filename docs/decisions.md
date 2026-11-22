@@ -825,3 +825,12 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - 묶음의 `pnpm-workspace.yaml`과 `pnpm-lock.yaml`은 태그 커밋과 다릅니다([릴리스 절차 > 공통 패키지 동봉](/docs/guides/release.md#공통-패키지-동봉)).
 - 묶기는 `git archive`를 임시 폴더에 풀어 조립한 뒤 압축합니다. 예전처럼 tar에 덧붙이지 않으므로 GNU tar·bsdtar 분기가 없어졌고, 워크플로와 로컬 대체 절차가 같은 스크립트를 씁니다.
 - 확인: learning-engine을 `next` 사전 배포판으로 바꾼 임시 커밋으로 묶음을 만들었습니다. 토큰이 없는 깨끗한 폴더에서 설치하고 시작한 뒤, 릴리스 스모크 테스트(토큰 검사, 실제 콘텐츠의 핵심 흐름) 두 개가 모두 통과했습니다.
+
+## D-094. 공통 패키지를 받는 설정: 레지스트리는 저장소, 토큰은 사용자 설정 — `확정`
+- 2026-11-23, D-090·D-092를 적용하며 정한 운영 방식(조직 설정 변경은 사용자가 직접 함).
+- **저장소의 `.npmrc`에는 레지스트리 주소(`@proginone:registry=https://npm.pkg.github.com`)만 둡니다.** pnpm 12는 저장소가 관리하는 `.npmrc`의 인증 설정에서 환경 변수를 펼치지 않고 무시합니다("repository-controlled registry credentials"). 그래서 토큰은 사용자 설정에만 둡니다.
+  - 개발 컴퓨터: `~/.npmrc`에 `read:packages` 토큰([시작하기 > 공통 패키지 토큰](/docs/guides/getting-started.md#공통-패키지-토큰)).
+  - GitHub Actions: `setup-node`의 `registry-url`·`scope`가 만드는 사용자 설정과 `NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}`. 워크플로 권한에 `packages: read`를 더합니다.
+  - Docker E2E(`tools/e2e-docker.sh`): 호스트의 `~/.npmrc`를 컨테이너 사용자 설정으로 넣고, `NODE_AUTH_TOKEN`이 있으면 함께 씁니다.
+- **`minimumReleaseAgeExclude`에 `@proginone/*`를 더합니다.** pnpm 12는 기본으로 배포된 지 하루가 안 된 버전을 거부하는데, core의 `next` 사전 배포판은 배포 몇 분 뒤에 이 저장소가 씁니다. 우리가 만든 패키지라 공급망 지연 규칙에서 뺍니다.
+- **조직 설정 → Packages → Package creation에서 Public을 허용했습니다.** 이 설정이 꺼져 있으면 소유자도 패키지를 공개로 바꿀 수 없습니다(D-092의 공개 결정을 적용하다 발견). 새 패키지도 공개로 바꿔야 하므로 켜 둡니다. 조직 구성원은 소유자뿐이라 다른 사람이 공개 패키지를 만들 위험은 없습니다(D-086).

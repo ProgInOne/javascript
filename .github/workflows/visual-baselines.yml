@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  packages: read # @proginone/* from GitHub Packages (D-090)
 
 jobs:
   update:
@@ -35,8 +36,12 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: '@proginone'
 
       - run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: pnpm build
 
@@ -61,6 +66,8 @@ jobs:
 
       - name: Playwright (update snapshots, Docker)
         run: bash tools/e2e-docker.sh --update
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v7
         with:

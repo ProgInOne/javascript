@@ -10,6 +10,8 @@ allowBuilds:
   esbuild: false
 
 minimumReleaseAgeExclude:
+  # Our own packages: core publishes `next` snapshots minutes before this repository uses them.
+  - '@proginone/*'
   - '@playwright/test@1.65.1'
   - playwright-core@1.65.1
   - playwright@1.65.1
