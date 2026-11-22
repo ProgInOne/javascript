@@ -1,0 +1,26 @@
+id: js-basics.arrays.array-search-sort.check-negative-goes-first
+type: true_false
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.sort, weight: 1 }
+tags: [sort, compare-function, check]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: '`[8, 3].sort((a, b) => a - b)`에서 `a`가 3, `b`가 8일 때 비교 함수는 `-5`를 돌려주고, 음수이므로 3이 8보다 앞에 놓인다.'
+  answer: true
+hints:
+  - "`a - b`에 3과 8을 넣어 계산해 보세요."
+  - 비교 함수가 음수를 돌려주면 `a`와 `b` 중 무엇이 앞에 오나요?
+  - "`(a, b) => a - b`가 작은 수부터 정렬하는 이유를 떠올려 보세요."
+explanation: |
+  정답은 **참**이에요.
+
+  `3 - 8`은 `-5`예요. 비교 함수가 **음수**를 돌려주면 `a`를 앞에, **양수**를 돌려주면 `b`를 앞에 놓아요. 그래서 3이 8보다 앞에 와서 결과는 `[3, 8]`이에요. `(a, b) => a - b`가 작은 수부터 정렬하는 비교 함수인 이유가 바로 이거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

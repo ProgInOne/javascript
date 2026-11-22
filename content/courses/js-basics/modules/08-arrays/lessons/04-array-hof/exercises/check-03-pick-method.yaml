@@ -1,0 +1,49 @@
+id: js-basics.arrays.array-hof.check-pick-method
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.find, weight: 1 }
+  - { id: js.arr.filter, weight: 0.3 }
+  - { id: js.arr.some-every, weight: 0.3 }
+tags: [find, filter, some, check]
+estimatedSeconds: 60
+prompt: |
+  택배 무게 목록 `weights`에서 **10kg을 넘는 첫 번째 택배의 무게** 하나만 알고 싶어요. 어떤 코드를 써야 할까요?
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: 'weights.find((w) => w > 10)'
+    - id: b
+      text: 'weights.filter((w) => w > 10)'
+      misconception: js.mc.find-returns-all
+      rationale: '`filter`는 10kg을 넘는 무게를 **모두** 담은 배열을 돌려줘요. 하나만 필요하면 `find`예요.'
+    - id: c
+      text: 'weights.some((w) => w > 10)'
+      rationale: '`some`은 그런 택배가 있는지 `true`/`false`로만 알려 줘요. 무게 값은 돌려주지 않아요.'
+    - id: d
+      text: 'weights.map((w) => w > 10)'
+      rationale: '`map`은 택배마다 `true`/`false`를 담은 같은 길이의 배열을 만들어요.'
+  correct: a
+misconceptions: [js.mc.find-returns-all]
+hints:
+  - 필요한 결과가 배열인가요, 값 하나인가요, `true`/`false`인가요?
+  - 조건에 맞는 요소 중 처음 만나는 것 하나를 돌려주는 메서드가 있었어요.
+  - "`filter`는 배열, `some`은 불리언, `find`는 요소 하나를 돌려줘요."
+explanation: |
+  정답은 `weights.find((w) => w > 10)`이에요.
+
+  | 코드 | 돌려주는 값 |
+  |---|---|
+  | `find` | 조건에 맞는 **첫 요소 하나** (없으면 `undefined`) |
+  | `filter` | 조건에 맞는 요소를 모두 담은 배열 |
+  | `some` | 맞는 요소가 하나라도 있는지 `true`/`false` |
+  | `map` | 요소마다 콜백 결과를 담은 같은 길이의 배열 |
+
+  "첫 번째 하나의 값"이 필요하므로 `find`예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

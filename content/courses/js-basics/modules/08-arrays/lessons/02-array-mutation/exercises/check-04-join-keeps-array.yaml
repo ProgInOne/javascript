@@ -1,0 +1,31 @@
+id: js-basics.arrays.array-mutation.check-join-keeps-array
+type: true_false
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.mutating-vs-not, weight: 1 }
+  - { id: js.str.split-join, weight: 0.3 }
+tags: [join, mutating, check]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: '`const words = ["안녕", "하세요"];` 다음에 `const line = words.join("");`을 실행하면, `words`도 `"안녕하세요"`로 바뀐다.'
+  answer: false
+  misconceptionIfWrong: js.mc.non-mutating-method-changes-original
+misconceptions: [js.mc.non-mutating-method-changes-original]
+hints:
+  - "`join`이 돌려준 값은 어디에 담겼나요?"
+  - 레슨 네 번째 예제에서 `join`을 부른 뒤에도 `snacks`가 어땠는지 떠올려 보세요.
+  - "`join`은 배열을 바꾸는 메서드일까요, 새 값을 만들어 돌려주는 메서드일까요?"
+explanation: |
+  정답은 **거짓**이에요.
+
+  `join`은 배열을 바꾸지 않고, 요소를 이어 붙인 **새 문자열**을 돌려줘요. 그 문자열은 `line`에 담기고, `words`는 그대로 `["안녕", "하세요"]`예요.
+
+  원래 배열을 바꾸는 메서드는 `push`·`pop`·`shift`·`unshift`·`splice`처럼 이 단원에서 배운 것들이에요. `join`, `slice`, `indexOf`는 결과를 돌려주기만 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

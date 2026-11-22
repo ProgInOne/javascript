@@ -254,6 +254,10 @@ console.log("최고 점수: " + best);
 - `i`는 0부터 시작해 `i < scores.length`, 즉 `i`가 4일 때까지 반복해요. 인덱스 0~4를 정확히 한 번씩 봐요.
 - `best`는 첫 요소 `scores[0]`으로 시작해서, 더 큰 요소를 만날 때마다 바꿔요. 0으로 시작하지 않은 이유는 점수가 모두 음수인 배열에서도 맞게 동작하게 하기 위해서예요.
 - 평균은 합계를 개수 `scores.length`로 나눠요. 점수가 늘어도 코드는 그대로예요.
+
+이번에는 인덱스 반복을 직접 써 볼 차례예요. 인덱스 자리에 `i - 1` 같은 식을 쓰면 바로 앞 요소와 비교할 수 있어요.
+
+<TryIt ref="js-basics.arrays.array-basics.try-count-rises" />
 </Section>
 
 <Section kind="pitfalls">
@@ -338,21 +342,21 @@ next(); // sea.jpg
 </Section>
 
 <Section kind="check">
-인덱스가 몇 번부터 시작하는지 확인해 보세요.
+n번째 요소를 읽는 인덱스를 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-basics.mcq-first-index" />
+<InlineExercise ref="js-basics.arrays.array-basics.check-nth-book" />
 
-범위 밖 인덱스를 읽으면 어떻게 되는지 확인해 보세요.
+범위 밖 인덱스와 음수 인덱스를 읽으면 어떻게 되는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-basics.tf-out-of-range" />
+<InlineExercise ref="js-basics.arrays.array-basics.check-missing-slots" />
 
-마지막 요소를 읽는 식을 확인해 보세요.
+마지막 요소를 읽는 식을 직접 적어 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-basics.mcq-last-element" />
+<InlineExercise ref="js-basics.arrays.array-basics.check-last-expression" />
 
 `const` 배열의 요소를 바꿀 수 있는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-basics.mcq-const-update" />
+<InlineExercise ref="js-basics.arrays.array-basics.check-which-line-throws" />
 </Section>
 
 <Section kind="practice" />
