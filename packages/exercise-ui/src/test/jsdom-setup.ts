@@ -1,3 +1,5 @@
+// jsdom setup for React component tests (vitest.config.ts `ui` and `web` projects). The same
+// stubs ship with @proginone/ui's own tests in ProgInOne/core; that package does not publish them.
 import { cleanup } from '@testing-library/react';
 import { afterEach } from 'vitest';
 

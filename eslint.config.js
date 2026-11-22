@@ -65,11 +65,7 @@ export default tseslint.config(
     },
   },
   {
-    files: [
-      'apps/web/src/**/*.{ts,tsx}',
-      'packages/ui/src/**/*.tsx',
-      'packages/exercise-ui/src/**/*.{ts,tsx}',
-    ],
+    files: ['apps/web/src/**/*.{ts,tsx}', 'packages/exercise-ui/src/**/*.{ts,tsx}'],
     ...reactHooks.configs.flat['recommended-latest'],
     languageOptions: { globals: { ...globals.browser } },
   },

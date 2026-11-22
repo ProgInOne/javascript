@@ -1,7 +1,7 @@
 /*
  * Exercise renderers and practice widgets (D-025: plain CSS with semantic tokens, like
- * packages/ui components.css). Apps import it into `@layer components`.
- * Class prefix `pi-ex-`, BEM-ish. Focus rings come from packages/ui base.css `:focus-visible`.
+ * @proginone/ui components.css). Apps import it into `@layer components`.
+ * Class prefix `pi-ex-`, BEM-ish. Focus rings come from @proginone/ui base.css `:focus-visible`.
  */
 
 /* ── Shared ── */

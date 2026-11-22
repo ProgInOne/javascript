@@ -398,7 +398,7 @@
   /*
    * Lesson code is dark on every theme (B 시안, D-077); the practice editor keeps D-024.
    * The code tokens resolve their light-dark() at :root, so the dark values are set here
-   * explicitly (the same pairs check:contrast verifies for dark mode).
+   * explicitly (the same pairs core's check:contrast verifies for dark mode).
    */
   .lesson-prose .lesson-code,
   .lesson-example__editor {

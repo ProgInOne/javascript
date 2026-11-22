@@ -30,8 +30,7 @@
     "check:deps": "depcruise apps packages tools --config .dependency-cruiser.cjs",
     "check:links": "node tools/check-links.mjs",
     "check:bundle": "node tools/check-bundle.mjs",
-    "check:contrast": "pnpm --filter @proginone/ui check:contrast",
-    "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm check:deps && pnpm check:contrast && pnpm test && pnpm check:links"
+    "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm check:deps && pnpm test && pnpm check:links"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

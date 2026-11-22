@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { createRequire } from 'node:module';
+import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 /**
@@ -8,16 +9,20 @@ import { describe, expect, it } from 'vitest';
  * these are checked on the stylesheets themselves.
  */
 
-const root = join(import.meta.dirname, '../../..');
+const root = join(import.meta.dirname, '..');
 const appCss = join(root, 'apps/web/src/app');
+// @proginone/ui is a published package (ProgInOne/core); read the sheets the web app installs.
+const fromWeb = createRequire(join(root, 'apps/web/package.json'));
+const uiSheets = ['@proginone/ui/components.css', '@proginone/ui/base.css'].map((specifier) =>
+  relative(root, fromWeb.resolve(specifier)),
+);
 const sheets: Record<string, string> = Object.fromEntries(
   [
     ...readdirSync(appCss)
       .filter((f) => f.endsWith('.css'))
       .map((f) => join('apps/web/src/app', f)),
     'packages/exercise-ui/src/styles/exercise-ui.css',
-    'packages/ui/src/components/components.css',
-    'packages/ui/src/tokens/base.css',
+    ...uiSheets,
   ].map((file) => [file, readFileSync(join(root, file), 'utf8')]),
 );
 

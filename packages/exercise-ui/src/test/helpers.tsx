@@ -16,8 +16,8 @@ export function renderUi(ui: ReactElement): RenderResult & { user: UserEvent } {
 }
 
 /**
- * axe-core WCAG 2.2 A/AA violations of a subtree (same rules as packages/ui/src/test/axe.ts).
- * Color contrast is skipped: jsdom has no computed colors (covered by check:contrast and e2e).
+ * axe-core WCAG 2.2 A/AA violations of a subtree (same rules as ProgInOne/core packages/ui/src/test/axe.ts).
+ * Color contrast is skipped: jsdom has no computed colors (covered by core's check:contrast and e2e).
  */
 export async function axeViolations(node: Element): Promise<string[]> {
   const results = await axe.run(node, {
