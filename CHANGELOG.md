@@ -7,6 +7,7 @@
 
 ### Changed
 
+- 콘텐츠 스키마를 공통 패키지 `@proginone/content-schema`(ProgInOne/core, `0.1.0-next`)로 받아 씀(D-090 1차, D-092). `packages/content-schema`를 지우고, 과정 언어(`html`·`css`·`javascript`)와 개념의 `mdn` 경로는 `tools/content-cli/src/schema.ts`가 공통 스키마를 확장해 검사. content.db 스키마 버전 6: `concepts.mdn_url` → `doc_url`, `courses.language`의 `CHECK` 제거. **개발 중인 저장소는 `pnpm content:build`로 content.db를 다시 만들어야 함**(서버가 버전이 다른 content.db를 열지 않음)
 - 디자인 시스템을 공통 패키지 `@proginone/ui`(ProgInOne/core, `0.1.0-next`)로 받아 씀(D-090 1차). `packages/ui`를 지우고, 컴포넌트 테스트의 jsdom 보완은 `packages/exercise-ui/src/test/jsdom-setup.ts`로, 앱 스타일시트의 코드 글꼴 검사는 `tools/code-font.test.ts`로 옮김. 토큰 대비 검사(`check:contrast`)는 core CI에서 돎
 - 학습 엔진을 공통 패키지 `@proginone/learning-engine`(ProgInOne/core, `0.1.0-next`)으로 받아 씀(D-090 1차). 이 저장소의 `packages/learning-engine`을 지움. 웹 앱이 엔진에 의존하지 않는다는 규칙은 ESLint `no-restricted-imports`로 검사
 - 공통 패키지를 받는 설정(D-094): 저장소 `.npmrc`에 GitHub Packages 주소, CI·시각 기준 이미지 워크플로에 `packages: read`와 토큰, Docker E2E에 호스트 `~/.npmrc` 전달, `minimumReleaseAgeExclude`에 `@proginone/*`. 개발하려면 `~/.npmrc`에 `read:packages` 토큰이 필요(시작하기 가이드)

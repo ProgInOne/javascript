@@ -1,6 +1,7 @@
 import { ASSESSMENT_MAX_ITEMS } from '@proginone/content-schema';
 import { instantiateVariant, leakFingerprints, parseVariantId } from '@proginone/exercise-kit';
 import { CONTENT_DB_SCHEMA_VERSION, contentTables as t } from '@proginone/content-schema/db';
+import { courseSummarySchema } from '@proginone/shared';
 import type {
   CourseDetail,
   CourseList,
@@ -13,6 +14,13 @@ import { and, asc, count, desc, eq, inArray, or, sql } from 'drizzle-orm';
 import { drizzle, type BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { openSqlite } from '../user/connection.ts';
 import type { ContentAlias } from '../user/content-aliases.ts';
+
+/**
+ * content.db stores any course language slug (D-092); this repository's content-cli only writes
+ * `html`, `css` and `javascript`, which the API contract expects. Narrowed where rows leave here.
+ */
+const courseLanguage = (value: string): CourseSummary['language'] =>
+  courseSummarySchema.shape.language.parse(value);
 
 export class ContentDbError extends Error {
   constructor(message: string) {
@@ -56,7 +64,8 @@ export interface ConceptDetailRow {
   title: string;
   summary: string;
   importance: 'core' | 'standard' | 'minor';
-  mdnUrl: string | null;
+  /** Reference document (content.db `doc_url`; MDN for this repository's content). */
+  docUrl: string | null;
   course: { id: string; title: string };
   lessons: { id: string; title: string; role: 'introduces' | 'practices' | 'reviews' }[];
 }
@@ -242,7 +251,7 @@ export class ContentRepository {
       id: course.id,
       title: course.title,
       summary: course.summary,
-      language: course.language,
+      language: courseLanguage(course.language),
       level: course.level,
       estimatedMinutes: course.estimatedMinutes,
       lessonCount,
@@ -758,16 +767,15 @@ export class ContentRepository {
   }
 
   /** Language of a lesson's course (`html`, `css`, `javascript`), or null. */
-  courseLanguageOfLesson(lessonId: string): (typeof t.courses.$inferSelect)['language'] | null {
-    return (
-      this.#db
-        .select({ language: t.courses.language })
-        .from(t.lessons)
-        .innerJoin(t.modules, eq(t.lessons.moduleId, t.modules.id))
-        .innerJoin(t.courses, eq(t.modules.courseId, t.courses.id))
-        .where(eq(t.lessons.id, lessonId))
-        .get()?.language ?? null
-    );
+  courseLanguageOfLesson(lessonId: string): CourseSummary['language'] | null {
+    const language = this.#db
+      .select({ language: t.courses.language })
+      .from(t.lessons)
+      .innerJoin(t.modules, eq(t.lessons.moduleId, t.modules.id))
+      .innerJoin(t.courses, eq(t.modules.courseId, t.courses.id))
+      .where(eq(t.lessons.id, lessonId))
+      .get()?.language;
+    return language === undefined ? null : courseLanguage(language);
   }
 
   /** Published/preview courses in catalog order (the first one starts a new learner). */
@@ -839,7 +847,7 @@ export class ContentRepository {
       title: row.concept.title,
       summary: row.concept.summary,
       importance: row.concept.importance,
-      mdnUrl: row.concept.mdnUrl,
+      docUrl: row.concept.docUrl,
       course: { id: row.concept.courseId, title: row.courseTitle },
       lessons,
     };
@@ -1021,7 +1029,7 @@ export class ContentRepository {
       summary: lesson.summary,
       kind: lesson.kind,
       importance: lesson.importance,
-      course: { id: course.id, title: course.title, language: course.language },
+      course: { id: course.id, title: course.title, language: courseLanguage(course.language) },
       module: { id: mod.id, title: mod.title },
       objectives: lesson.objectives,
       estimatedMinutes: lesson.estimatedMinutes,

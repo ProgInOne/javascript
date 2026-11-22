@@ -119,7 +119,6 @@ ProgInOne/
 │   └── server/              # Node 로컬 서버 (Hono)
 ├── packages/
 │   ├── shared/              # 공용 타입, zod 스키마, API 계약, ID 유틸
-│   ├── content-schema/      # 콘텐츠 원본(MDX/YAML)의 zod 스키마
 │   ├── exercise-kit/        # 문제 유형 레지스트리: 스펙 스키마, 채점기, 템플릿 엔진
 │   ├── exercise-ui/         # 문제 유형별 React 렌더러
 │   ├── runner/              # 샌드박스 런타임(하네스)과 호스트 프로토콜
@@ -132,7 +131,7 @@ ProgInOne/
 └── .github/workflows/       # CI, 릴리스
 ```
 
-공통 패키지는 `ProgInOne/core`에서 배포한 것을 받아 씁니다([언어 확장 구조](#언어-확장-구조)). 지금까지 옮긴 것: `learning-engine`(숙련도, FSRS, 연습 세트 구성, 재학습 규칙. 순수 함수), `ui`(디자인 시스템: 토큰, 기본 컴포넌트).
+공통 패키지는 `ProgInOne/core`에서 배포한 것을 받아 씁니다([언어 확장 구조](#언어-확장-구조)). 지금까지 옮긴 것: `learning-engine`(숙련도, FSRS, 연습 세트 구성, 재학습 규칙. 순수 함수), `ui`(디자인 시스템: 토큰, 기본 컴포넌트), `content-schema`(콘텐츠 원본과 content.db 스키마. 언어별 값은 `tools/content-cli/src/schema.ts`가 확장).
 
 #### 의존 방향 규칙
 

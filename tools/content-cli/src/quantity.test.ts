@@ -1,6 +1,4 @@
 import {
-  conceptSchema,
-  courseSchema,
   exerciseSourceSchema,
   lessonSchema,
   moduleSchema,
@@ -8,6 +6,7 @@ import {
 } from '@proginone/content-schema';
 import { describe, expect, it } from 'vitest';
 import { Diagnostics } from './diagnostics.ts';
+import { jsConceptSchema, jsCourseSchema } from './schema.ts';
 import type { ContentSource, LessonNodeSource } from './load.ts';
 import {
   categoryOf,
@@ -96,14 +95,14 @@ function source(
     misconceptions: [],
     concepts: concepts.map((c) => ({
       file: '/c/concepts.yaml',
-      data: conceptSchema.parse({ ...c, title: c.id, summary: 's' }),
+      data: jsConceptSchema.parse({ ...c, title: c.id, summary: 's' }),
     })),
     courses: [
       {
         dir: '/c',
         meta: {
           file: '/c/course.yaml',
-          data: courseSchema.parse({
+          data: jsCourseSchema.parse({
             id: course,
             title: course,
             summary: 's',

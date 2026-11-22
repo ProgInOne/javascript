@@ -209,8 +209,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ai
       '@proginone/content-schema':
-        specifier: workspace:*
-        version: link:../../packages/content-schema
+        specifier: 0.1.0-next.20261122143408
+        version: 0.1.0-next.20261122143408(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)
       '@proginone/exercise-kit':
         specifier: workspace:*
         version: link:../../packages/exercise-kit
@@ -352,15 +352,6 @@ importers:
         specifier: ^4.6.7
         version: 4.6.7
 
-  packages/content-schema:
-    dependencies:
-      drizzle-orm:
-        specifier: ^0.45.4
-        version: 0.45.4(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)
-      zod:
-        specifier: ^4.6.7
-        version: 4.6.7
-
   packages/exercise-kit:
     dependencies:
       '@proginone/shared':
@@ -473,8 +464,8 @@ importers:
   tools/content-cli:
     dependencies:
       '@proginone/content-schema':
-        specifier: workspace:*
-        version: link:../../packages/content-schema
+        specifier: 0.1.0-next.20261122143408
+        version: 0.1.0-next.20261122143408(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)
       '@proginone/exercise-kit':
         specifier: workspace:*
         version: link:../../packages/exercise-kit
@@ -1321,6 +1312,9 @@ packages:
     resolution: {integrity: sha512-y+NCIRm2LvY4slUVWvGh1nujJ8RF/hEisIsq2mtUPgdQC4L701bq5hZGMhrpeXjACvwvO9tj5dJqhvM6TP9lbw==}
     engines: {node: '>=20'}
     hasBin: true
+
+  '@proginone/content-schema@0.1.0-next.20261122143408':
+    resolution: {integrity: sha512-WVUXJDpBhwLeRaDa+NTDaGUysJR2VJa/LuGFN6CZjcX2cQpAzw3gs3bXHLoUlUDigPkv5Fxr8wN1ywZ/Fh2mfA==, tarball: https://npm.pkg.github.com/download/@proginone/content-schema/0.1.0-next.20261122143408/ce15daa4ac845a08c5543b05d546e66ad1deed17}
 
   '@proginone/learning-engine@0.1.0-next.20261122143408':
     resolution: {integrity: sha512-HOxLV4OKuqQXY9v12xHOGL358YkPqja90bPQaqmSOVYG9efZ5qa242JgdFrRZsnorjMIPI4HI05E+WYWJ6vYcQ==, tarball: https://npm.pkg.github.com/download/@proginone/learning-engine/0.1.0-next.20261122143408/bdb79bb06f2af25b4ce404be936d144e8df5c6a7}
@@ -5181,6 +5175,42 @@ snapshots:
   '@playwright/test@1.65.1':
     dependencies:
       playwright: 1.65.1
+
+  '@proginone/content-schema@0.1.0-next.20261122143408(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)':
+    dependencies:
+      drizzle-orm: 0.45.4(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)
+      zod: 4.6.7
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@netlify/db'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@prisma/client'
+      - '@tidbcloud/serverless'
+      - '@types/better-sqlite3'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - better-sqlite3
+      - bun-types
+      - expo-sqlite
+      - gel
+      - knex
+      - kysely
+      - mysql2
+      - pg
+      - postgres
+      - prisma
+      - sql.js
+      - sqlite3
 
   '@proginone/learning-engine@0.1.0-next.20261122143408':
     dependencies:
