@@ -1,4 +1,4 @@
-import type { CheckBundle } from '@proginone/shared';
+import type { CheckBundle } from '@proginone/run-contract';
 import { parseExpressionAt } from 'acorn';
 import { instrumentJs } from './instrument.ts';
 

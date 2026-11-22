@@ -54,7 +54,8 @@ function codeLanguageKey(course: ExerciseView['codeLanguage'], code: string): st
       return 'css';
     case 'html':
       return /<[a-z!/]/i.test(code) ? 'html' : null;
-    case null:
+    default:
+      // Any other course language (the API leaves it open, D-092) or none: no highlighting.
       return null;
   }
 }

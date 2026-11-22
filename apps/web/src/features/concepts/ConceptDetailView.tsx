@@ -288,9 +288,9 @@ export function ConceptDetailBody({
             이 개념만 연습
           </Button>
         )}
-        {d.concept.mdnUrl && (
+        {d.concept.docUrl && (
           <a
-            href={d.concept.mdnUrl}
+            href={d.concept.docUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 type-small"

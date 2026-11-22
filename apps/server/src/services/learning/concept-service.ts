@@ -123,7 +123,7 @@ export class ConceptService {
         summary: concept.summary,
         importance: concept.importance,
         course: concept.course,
-        mdnUrl: concept.docUrl,
+        docUrl: concept.docUrl,
       },
       mastery: {
         stage: m.stage,

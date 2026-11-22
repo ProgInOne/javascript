@@ -1,9 +1,5 @@
-import {
-  SETTINGS_DEFAULTS,
-  type PracticeSetView,
-  type RunPlan,
-  type Settings,
-} from '@proginone/shared';
+import { SETTINGS_DEFAULTS, type PracticeSetView, type Settings } from '@proginone/shared';
+import { type RunPlan } from '@proginone/run-contract';
 import type * as RunnerModule from '../runner/runner.ts';
 import { cleanup, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

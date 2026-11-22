@@ -6,7 +6,8 @@ import {
   modKeyLabel,
   PreviewTabBar,
 } from '@proginone/exercise-ui';
-import { formatConsoleArgs, type CodeDraft, type RunResult } from '@proginone/shared';
+import { type CodeDraft } from '@proginone/shared';
+import { formatConsoleArgs, type RunResult } from '@proginone/run-contract';
 import { Button } from '@proginone/ui';
 import { Pencil, Play, RotateCcw } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';

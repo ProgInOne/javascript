@@ -781,7 +781,7 @@ export function replay(deps: EngineDeps, events: Iterable<EngineEvent>): ReplayR
 - 모든 함수는 입력을 변경하지 않고 새 객체를 반환합니다.
 - 시간은 `now` 인자로만 받습니다. `Date.now()`를 호출하지 않습니다(ESLint 규칙으로 금지).
 - 무작위는 `seed`로 만든 RNG만 씁니다(`Math.random` 금지).
-- 입력 타입은 `packages/shared`의 zod 스키마에서 파생합니다. 엔진은 입력을 다시 검증하지 않습니다(서버 경계에서 검증 완료).
+- 입력 타입은 `@proginone/shared`의 zod 스키마에서 파생합니다. 엔진은 입력을 다시 검증하지 않습니다(서버 경계에서 검증 완료).
 - 계수를 바꾸면 `ENGINE_VERSION`을 올리고 `CHANGELOG.md`에 기록합니다. 저장된 결과에는 계산한 엔진 버전이 남습니다.
 
 ### 패키지 구조

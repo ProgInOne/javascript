@@ -1,4 +1,4 @@
-import { runResultSchema } from '@proginone/shared';
+import { runResultSchema } from '@proginone/run-contract';
 import { z } from 'zod';
 
 /**

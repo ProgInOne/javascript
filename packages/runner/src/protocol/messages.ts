@@ -9,7 +9,7 @@ import {
   runErrorSchema,
   runPlanSchema,
   type RunPlan,
-} from '@proginone/shared';
+} from '@proginone/run-contract';
 import { z } from 'zod';
 import { PREVIEW_TITLE_MAX_LENGTH, PROTOCOL_VERSION } from './constants.ts';
 import { type Limits, limitsSchema } from './limits.ts';

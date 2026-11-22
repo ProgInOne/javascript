@@ -10,7 +10,6 @@ import {
   projectAttemptResponseSchema,
   projectViewSchema,
   reportResponseSchema,
-  runPlanSchema,
   skipItemResponseSchema,
   finishSetResponseSchema,
   submitAttemptResponseSchema,
@@ -60,6 +59,7 @@ import {
   exampleDraftListSchema,
   type CodeDraftPut,
 } from '@proginone/shared';
+import { runPlanSchema } from '@proginone/run-contract';
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 import { clearAllLocalDrafts } from '../features/drafts/local.ts';

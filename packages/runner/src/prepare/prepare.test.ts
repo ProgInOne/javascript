@@ -1,6 +1,6 @@
 import { runInNewContext } from 'node:vm';
 import { describe, expect, it } from 'vitest';
-import type { CheckBundle, ObservationStep, RunPlan } from '@proginone/shared';
+import type { CheckBundle, ObservationStep, RunPlan } from '@proginone/run-contract';
 import { runnablePlanSchema } from '../protocol/messages.ts';
 import { ArgsExprError, exposedNames, exposeScript } from './expose.ts';
 

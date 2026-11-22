@@ -1,5 +1,5 @@
 import type { CheckResult, GradeResult, PublicCheck } from '@proginone/exercise-kit';
-import type { RunResult } from '@proginone/shared';
+import type { RunResult } from '@proginone/run-contract';
 import { screen, within } from '@testing-library/react';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';

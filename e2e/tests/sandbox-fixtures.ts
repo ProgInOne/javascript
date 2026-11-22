@@ -10,7 +10,7 @@ import type {
   ObservationStep,
   RunPlan,
   RunResult,
-} from '../../packages/shared/src/run-protocol.ts';
+} from '../../packages/run-contract/src/run-protocol.ts';
 
 /**
  * Drives the real runner through the production build.

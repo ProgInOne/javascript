@@ -3,7 +3,7 @@ import {
   type PredictOutputAnswer,
   type PredictOutputPublicSpec,
 } from '@proginone/exercise-kit';
-import { consoleEntriesToLines, type RunResult } from '@proginone/shared';
+import { consoleEntriesToLines, type RunResult } from '@proginone/run-contract';
 import { Button } from '@proginone/ui';
 import { Check, Play, X } from 'lucide-react';
 import { useId } from 'react';

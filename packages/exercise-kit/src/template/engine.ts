@@ -1,4 +1,4 @@
-import { hasProtoKey, withinDepth } from '@proginone/shared';
+import { hasProtoKey, withinDepth } from '@proginone/run-contract';
 import { z } from 'zod';
 
 import { createRng, deriveSeed, seedFromString } from '../common/prng.ts';

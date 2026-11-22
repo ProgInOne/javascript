@@ -1008,7 +1008,7 @@ PoC 코드와 실행 방법, 테스트별 근거는 [`poc/sandbox/`](/poc/sandbo
 
 | 경로 | 역할 |
 |---|---|
-| `src/protocol/` | 러너 전송 메시지(`RunRequest`, `RunEvent`, 셸·하네스 채널), 실행 가능성 검사를 더한 `runnablePlanSchema`, 목적별 기본 제한값. 채점기와 공유하는 계약(`RunPlan`, `CheckBundle`, `ObservationStep`, `Observation`, `RunResult`, `SerializedValue`, `parseRunResult`)은 `@proginone/shared`(`run-protocol.ts`)에 있고 러너는 그것을 그대로 씁니다 |
+| `src/protocol/` | 러너 전송 메시지(`RunRequest`, `RunEvent`, 셸·하네스 채널), 실행 가능성 검사를 더한 `runnablePlanSchema`, 목적별 기본 제한값. 채점기와 공유하는 계약(`RunPlan`, `CheckBundle`, `ObservationStep`, `Observation`, `RunResult`, `SerializedValue`, `parseRunResult`)은 `@proginone/run-contract`(`packages/run-contract`의 `run-protocol.ts`)에 있고 러너는 그것을 그대로 씁니다 |
 | `src/prepare/` | acorn 반복문 계측, parse5 기반 HTML 재작성(원문 오프셋 편집), 노출 스크립트, 오류 위치 역매핑 |
 | `src/harness/` | 하네스(내장 함수 확보, 직렬화, 콘솔, 타이머 추적, 대체 구현, 반복문 가드, 관측 단계) |
 | `src/shell/` | 셸 컨트롤러와 `runner.html` 빌드(`@proginone/runner/shell-build`, Node 전용) |

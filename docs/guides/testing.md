@@ -26,7 +26,7 @@ CI는 PR과 `develop`·`main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e`
 
 - 파일 위치: 대상 옆의 `*.test.ts(x)`.
 - 루트 `vitest.config.ts`의 프로젝트:
-  - `node`: 서버, `shared`, 스크립트
+  - `node`: 서버, `run-contract`·`runner`·`exercise-kit` 등 패키지, 스크립트
   - `ui`: `packages/exercise-ui` 컴포넌트(jsdom, `packages/exercise-ui/src/test/jsdom-setup.ts`). 기본 컴포넌트(`@proginone/ui`)의 테스트와 토큰 대비 검사는 ProgInOne/core에서 돕니다
   - `web`: `apps/web`(jsdom, jest-dom 매처)
 - 하나만 실행: `pnpm vitest run --project web`, `pnpm vitest run apps/server/src/services/backup`.

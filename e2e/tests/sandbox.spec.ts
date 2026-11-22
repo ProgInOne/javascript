@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import type { ObservationStep } from '../../packages/shared/src/run-protocol.ts';
+import type { ObservationStep } from '../../packages/run-contract/src/run-protocol.ts';
 import {
   blockedRequests,
   FISSION_FRAMES,

@@ -24,10 +24,10 @@ import {
   type PracticeItemView,
   type PracticeSetView,
   type Remediation,
-  type RunResult,
   type SolutionResponse,
   type SubmitAttemptResponse,
 } from '@proginone/shared';
+import { type RunResult } from '@proginone/run-contract';
 import { Badge, Button, ErrorState, Skeleton } from '@proginone/ui';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, ArrowRight, Lock, PenLine, RotateCcw, SkipForward } from 'lucide-react';

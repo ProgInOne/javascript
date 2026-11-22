@@ -12,7 +12,7 @@
  * move learner line numbers.
  */
 import { HARNESS_CONFIG_GLOBAL, PREVIEW_TITLE_MAX_LENGTH } from '../protocol/constants.ts';
-import type { ConsoleEntry, ConsoleLevel } from '@proginone/shared';
+import type { ConsoleEntry, ConsoleLevel } from '@proginone/run-contract';
 import type {
   BlockedRequest,
   HarnessConfig,
@@ -27,7 +27,7 @@ import type {
   RunError,
   SerializedValue,
   SourcePosition,
-} from '@proginone/shared';
+} from '@proginone/run-contract';
 import {
   apply,
   arraySlice,

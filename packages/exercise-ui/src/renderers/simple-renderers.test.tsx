@@ -7,7 +7,7 @@ import {
   type PredictOutputAnswer,
   type PredictOutputPublicSpec,
 } from '@proginone/exercise-kit';
-import type { RunResult } from '@proginone/shared';
+import type { RunResult } from '@proginone/run-contract';
 import { screen, within } from '@testing-library/react';
 import { useState } from 'react';
 import { describe, expect, it } from 'vitest';

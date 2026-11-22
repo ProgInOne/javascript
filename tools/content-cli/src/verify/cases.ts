@@ -21,7 +21,7 @@ import {
   type PredictExpected,
   type PredictOutputSpec,
 } from '@proginone/exercise-kit';
-import { formatValue, type RunError, type RunPlan, type RunResult } from '@proginone/shared';
+import { formatValue, type RunError, type RunPlan, type RunResult } from '@proginone/run-contract';
 import { canonical } from '../hash.ts';
 import type { LessonNode } from '../mdx.ts';
 

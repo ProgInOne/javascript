@@ -9,7 +9,7 @@ import { expect, test } from '@playwright/test';
 const URL = process.env['E2E_DATA_SETTINGS_URL'] ?? '';
 const LESSON = '/learn/js-basics.start.first-program';
 
-/** The keys this spec changes, at their defaults (packages/shared/src/settings.ts). */
+/** The keys this spec changes, at their defaults (@proginone/shared settings.ts). */
 const DEFAULTS = {
   'practice.askConfidence': true,
   'lesson.predictFirst': 'recommended',

@@ -17,7 +17,12 @@ export const Route = createFileRoute('/courses/')({
   component: CourseList,
 });
 
-const LANGUAGE_LABELS = { html: 'HTML', css: 'CSS', javascript: 'JavaScript' } as const;
+/** Labels of this repository's course languages; the API leaves the language open (D-092). */
+const LANGUAGE_LABELS: Readonly<Record<string, string>> = {
+  html: 'HTML',
+  css: 'CSS',
+  javascript: 'JavaScript',
+};
 
 /** Course cards grouped by track (docs/design/ui-ux.md#과정-목록과-과정-상세). */
 function CourseList() {
@@ -81,7 +86,9 @@ function CourseCard({
       className={`${cardClass} relative flex h-full flex-col transition-shadow hover:shadow-2`}
       data-course-card={course.id}
     >
-      <span className="type-caption text-brand">{LANGUAGE_LABELS[course.language]}</span>
+      <span className="type-caption text-brand">
+        {LANGUAGE_LABELS[course.language] ?? course.language}
+      </span>
       <Link
         to="/courses/$courseId"
         params={{ courseId: course.id }}

@@ -5,7 +5,7 @@ import {
   type ObservationOf,
   type RunPlan,
   type RunResult,
-} from '@proginone/shared';
+} from '@proginone/run-contract';
 import { z } from 'zod';
 
 import { parseLiteral } from '../common/literal.ts';

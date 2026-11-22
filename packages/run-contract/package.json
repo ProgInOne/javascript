@@ -1,8 +1,8 @@
 {
-  "name": "@proginone/shared",
+  "name": "@proginone/run-contract",
   "version": "0.0.0",
   "private": true,
-  "description": "공용 타입, zod 스키마, API 계약",
+  "description": "JavaScript 러너와 채점기 사이의 계약(실행 결과·관측값·직렬화 값, 콘솔 형식)",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"

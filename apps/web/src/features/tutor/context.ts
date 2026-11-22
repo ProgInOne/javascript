@@ -1,11 +1,7 @@
-import {
-  consoleEntriesToLines,
-  type RunResult,
-  type TutorCodeFiles,
-  type TutorRunSummary,
-} from '@proginone/shared';
+import { type TutorCodeFiles, type TutorRunSummary } from '@proginone/shared';
+import { consoleEntriesToLines, type RunResult } from '@proginone/run-contract';
 
-// What the web app tells the tutor about the learner's work (packages/shared/src/ai.ts). The
+// What the web app tells the tutor about the learner's work (@proginone/shared ai.ts). The
 // limits mirror the request schemas so a long answer never makes the request invalid.
 
 const MAX_FILES = 10;
