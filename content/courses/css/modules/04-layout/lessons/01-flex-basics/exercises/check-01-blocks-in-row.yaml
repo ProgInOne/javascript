@@ -1,0 +1,39 @@
+id: css.layout.flex-basics.check-blocks-in-row
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: css.flex.container, weight: 1 }
+tags: [flexbox, container, items]
+estimatedSeconds: 50
+prompt: |
+  `.notes`에 `display: flex`를 줬고, 그 바로 아래 자식은 문단(`p`) 세 개예요. `p`는 원래 블록 요소예요. 세 문단은 어떻게 놓이나요? (컨테이너는 충분히 넓어요.)
+spec:
+  options:
+    - id: a
+      text: 블록이어도 플렉스 아이템이 되어 한 줄에 나란히 놓인다
+    - id: b
+      text: "`p`는 블록이라 여전히 위아래로 쌓인다"
+      rationale: 플렉스 아이템이 되면 원래 블록이든 인라인이든 상관없이 주축을 따라 한 줄로 놓여요.
+    - id: c
+      text: "각 문단에도 `display: flex`를 줘야 나란히 놓인다"
+      misconception: css.mc.flex-on-children
+      rationale: display flex는 감싼 부모에 한 번만 주면 돼요. 바로 아래 자식은 저절로 아이템이 돼요.
+    - id: d
+      text: 문단마다 `width`를 정해 줘야 나란히 놓인다
+      rationale: 너비를 정하지 않아도 아이템은 내용만큼의 너비로 나란히 놓여요.
+  correct: a
+misconceptions: [css.mc.flex-on-children]
+hints:
+  - "`display: flex`를 준 요소의 바로 아래 자식은 무엇이 되나요?"
+  - 플렉스 아이템은 원래의 블록·인라인 성질과 상관없이 배치돼요.
+  - 기본 주축은 가로(row)예요. 아이템은 주축을 따라 늘어서요.
+explanation: |
+  정답은 **한 줄에 나란히 놓인다**예요.
+
+  부모에 `display: flex`를 주면 바로 아래 자식은 모두 플렉스 아이템이 되고, 원래 블록이든 인라인이든 상관없이 주축(기본값 가로)을 따라 한 줄로 놓여요. 문단마다 `display: flex`나 `width`를 줄 필요는 없어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

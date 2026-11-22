@@ -1,0 +1,45 @@
+id: css.basics.cascade.check-body-center-margin
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: css.cascade.inheritance, weight: 1 }
+tags: [cascade, inheritance]
+estimatedSeconds: 60
+prompt: |
+  `body`에만 아래 규칙을 줬어요. `body` 안의 제목(`h1`)에는 따로 준 규칙이 없어요. 제목은 이 두 값 중 무엇을 물려받나요?
+code: |
+  body {
+    text-align: center;
+    margin: 40px;
+  }
+spec:
+  options:
+    - id: a
+      text: 가운데 정렬(`text-align`)만 물려받고, 바깥 여백(`margin`)은 물려받지 않는다
+    - id: b
+      text: 둘 다 물려받아서 제목도 가운데 정렬되고 바깥 여백이 40px 생긴다
+      misconception: css.mc.all-props-inherit
+      rationale: margin 같은 상자 속성은 상속되지 않아요. 상속되면 안쪽 요소마다 여백이 겹겹이 쌓여요.
+    - id: c
+      text: 바깥 여백만 물려받고, 가운데 정렬은 물려받지 않는다
+      rationale: 반대예요. text-align은 글자 관련 속성이라 상속되고, margin은 상자 속성이라 상속되지 않아요.
+    - id: d
+      text: 제목에 규칙이 없으니 둘 다 물려받지 않는다
+      rationale: 글자 관련 속성은 규칙이 없어도 부모의 값을 물려받아요. 그게 상속이에요.
+  correct: a
+misconceptions: [css.mc.all-props-inherit]
+hints:
+  - 상속되는 속성과 상속되지 않는 속성은 크게 두 무리로 나뉘었어요.
+  - 글자 관련 속성은 상속되고, 상자 관련 속성은 상속되지 않아요.
+  - "`text-align`은 글자를 어떻게 줄 세울지, `margin`은 상자 바깥에 얼마나 띄울지 정해요. 각각 어느 무리일까요?"
+explanation: |
+  정답은 **가운데 정렬만 물려받는다**예요.
+
+  - `text-align`은 글자 관련 속성이라 상속돼요. 제목에 규칙이 없어도 `body`의 `center`를 물려받아 가운데 정렬돼요.
+  - `margin`은 상자 관련 속성이라 상속되지 않아요. 바깥 여백 40px은 `body` 상자에만 생겨요. 만약 상속된다면 안쪽 요소마다 여백이 또 생겨서 페이지가 점점 좁아질 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

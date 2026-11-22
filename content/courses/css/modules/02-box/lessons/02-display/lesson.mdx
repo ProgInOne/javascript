@@ -89,6 +89,10 @@
 - `div`는 `width: 120px`가 적용되고, 위아래 16px margin으로 주변과 떨어져 있어요. 블록이라 혼자 한 줄을 차지해요.
 - `span`은 글자 길이만큼만 칠해지고 `width: 120px`가 무시돼요. 좌우 margin 16px은 옆 글자를 밀어내지만, 위아래 margin은 윗줄·아랫줄과의 간격을 바꾸지 않아요.
 - `display: inline-block`으로 바꾸면 `span`이 문장 안에 그대로 있으면서 120px 너비를 받고, 위아래 margin도 줄 높이를 밀어내요.
+
+반대로 블록 요소를 인라인으로 바꾸면 어떻게 될까요? 직접 써 보세요.
+
+<TryIt ref="css.box.display.try-inline-breadcrumb" />
 </Section>
 
 <Section kind="examples">
@@ -178,13 +182,13 @@
 </Section>
 
 <Section kind="check">
-인라인 요소에 margin을 주면 어떻게 되는지 확인해 보세요.
+인라인 요소에 크기를 주면 어떻게 되는지 확인해 보세요.
 
-<InlineExercise ref="css.box.display.mcq-inline-margin" />
+<InlineExercise ref="css.box.display.check-inline-width" />
 
 마진 상쇄로 간격을 계산해 보세요.
 
-<InlineExercise ref="css.box.display.fill-margin-collapse" />
+<InlineExercise ref="css.box.display.check-heading-paragraph-gaps" />
 </Section>
 
 <Section kind="practice" />

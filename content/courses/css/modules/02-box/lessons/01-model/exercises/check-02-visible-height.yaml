@@ -1,0 +1,55 @@
+id: css.box.model.check-visible-height
+type: fill_blank
+difficulty: 2
+usage: check
+concepts:
+  - { id: css.box.size, weight: 1 }
+  - { id: css.box.spacing, weight: 0.3 }
+tags: [box-model, height, content-box]
+estimatedSeconds: 90
+prompt: |
+  너비 대신 **높이**도 같은 방법으로 계산해요. 아래 상자는 `box-sizing`을 정하지 않았어요(기본값 `content-box`). 이 상자가 화면에서 **테두리까지 차지하는 높이**는 몇 px인가요? 숫자만 써도 돼요.
+code: |
+  .banner {
+    height: 100px;
+    padding: 10px 30px;
+    border: 2px solid black;
+    margin: 20px;
+  }
+spec:
+  mode: text
+  template: |
+    화면에서 보이는 높이(테두리까지): {{blank:h}}
+  blanks:
+    - id: h
+      accept: ["124px", "124"]
+      acceptRegex: "124 ?(?:px)?"
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "100": css.mc.width-includes-padding
+        "100px": css.mc.width-includes-padding
+        "164": css.mc.margin-is-inside
+        "164px": css.mc.margin-is-inside
+misconceptions: [css.mc.width-includes-padding, css.mc.margin-is-inside]
+hints:
+  - 높이도 너비와 같아요. `height`는 content 영역의 높이이고, 위아래의 padding과 border가 더해져요.
+  - "`padding: 10px 30px`는 값이 2개라서 \"위아래 10px, 좌우 30px\"이에요. 높이에는 위아래 값만 들어가요."
+  - margin은 테두리 바깥이라 보이는 높이에 들어가지 않아요. 100 + 10 + 10 + 2 + 2를 계산해 보세요.
+explanation: |
+  정답은 **124px**이에요.
+
+  | 부분 | 높이 |
+  |---|---|
+  | content (`height`) | 100px |
+  | padding (위 + 아래) | 10px + 10px = 20px |
+  | border (위 + 아래) | 2px + 2px = 4px |
+  | **합계** | **124px** |
+
+  - `padding: 10px 30px`에서 30px은 왼쪽·오른쪽 값이라 높이와 상관없어요.
+  - margin 20px은 테두리 바깥의 간격이라 보이는 높이에 넣지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
