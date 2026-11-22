@@ -1,0 +1,96 @@
+id: js-basics.strings.string-methods.try-word-count
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.str.split-join, weight: 1 }
+  - { id: js.str.case-trim, weight: 0.5 }
+tags: [string, split, trim, write-code]
+estimatedSeconds: 240
+prompt: |
+  한 줄 소개에 단어가 몇 개인지 세어 돌려주는 함수 `wordCount(text)`를 완성하세요.
+
+  - 단어와 단어 사이에는 공백이 **한 칸**씩 있어요.
+  - 사용자가 실수로 넣은 **앞뒤 공백**은 단어로 세지 않아요.
+  - 단어는 항상 하나 이상 있어요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `wordCount("I love JS")` | `3` |
+  | `wordCount("  hello world ")` | `2` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function wordCount(text) {
+            // 1. 앞뒤 공백을 지우세요.
+            // 2. 공백 한 칸으로 나눠 조각의 개수를 돌려주세요.
+          }
+
+          console.log(wordCount("I love JS"));
+          console.log(wordCount("  hello world "));
+  entry: wordCount
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function wordCount(text) {
+            const words = text.trim().split(" ");
+            return words.length;
+          }
+
+          console.log(wordCount("I love JS"));
+          console.log(wordCount("  hello world "));
+  checks:
+    - kind: call
+      id: three
+      description: '"I love JS"는 단어 3개입니다.'
+      requirement: 단어 세기
+      args: ["I love JS"]
+      expect: { equals: 3 }
+      misconceptionIfFail: js.mc.split-result-is-string
+    - kind: call
+      id: spaces-around
+      description: '"  hello world "처럼 앞뒤에 공백이 있어도 단어 2개로 세야 합니다.'
+      requirement: 앞뒤 공백 무시
+      args: ["  hello world "]
+      expect: { equals: 2 }
+    - kind: call
+      id: hidden-one-word
+      visible: false
+      description: 단어가 하나뿐이면 1을 돌려줘야 합니다.
+      requirement: 단어 세기
+      args: ["안녕"]
+      expect: { equals: 1 }
+    - kind: call
+      id: hidden-korean
+      visible: false
+      description: 한글 문장도 공백으로 나눈 단어 수를 세야 합니다.
+      requirement: 단어 세기
+      args: [" 오늘 점심은 김밥이에요"]
+      expect: { equals: 3 }
+misconceptions: [js.mc.split-result-is-string, js.mc.string-method-mutates]
+hints:
+  - "`split(\" \")`로 나누면 조각들의 목록이 생겨요. 목록의 `length`가 조각 수예요."
+  - 앞뒤 공백을 그대로 두고 나누면 빈 조각이 생겨서 수가 늘어나요. 먼저 `trim()`으로 지워요.
+  - "`text.trim().split(\" \").length`처럼 이어 부르면 한 줄로도 쓸 수 있어요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function wordCount(text) {
+    const words = text.trim().split(" ");
+    return words.length;
+  }
+  ```
+
+  - `trim()`이 앞뒤 공백을 지운 새 문자열을 돌려주고, 그 문자열의 `split(" ")`이 단어 조각의 목록을 만들어요. 목록의 `length`가 단어 수예요.
+  - `trim()` 없이 `"  hello world "`를 나누면 앞뒤에 빈 조각이 생겨 5가 나와요.
+  - `text.trim();`만 따로 쓰고 결과를 담지 않으면 `text`는 그대로예요. 메서드는 새 문자열을 돌려줄 뿐이에요.
+  - `text.length`는 조각 수가 아니라 글자 수예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

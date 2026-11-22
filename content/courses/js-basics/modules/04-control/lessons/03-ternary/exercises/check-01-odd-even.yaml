@@ -1,0 +1,40 @@
+id: js-basics.control.ternary.check-odd-even
+type: fill_blank
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.control.ternary, weight: 1 }
+tags: [ternary, remainder]
+estimatedSeconds: 50
+prompt: |
+  다음 코드를 실행한 뒤 `kind`에 들어 있는 글자를 적어 주세요. 따옴표는 쓰지 않아도 돼요.
+
+  ```js
+  const n = 7;
+  const kind = n % 2 === 0 ? "짝수" : "홀수";
+  ```
+spec:
+  mode: text
+  template: |
+    kind의 값: {{blank:value}}
+  blanks:
+    - id: value
+      accept: ["홀수", "\"홀수\"", "'홀수'"]
+      width: 8
+hints:
+  - 조건 연산자는 `?` 앞의 조건부터 계산해요. `7 % 2`는 얼마인가요?
+  - "`7 % 2`는 1이라서 `1 === 0`은 거짓이에요. 거짓이면 어느 쪽 값이 될까요?"
+  - 조건이 거짓이면 `:` 뒤의 값이 식 전체의 결과가 되어 `kind`에 들어가요.
+explanation: |
+  정답은 `홀수`예요.
+
+  1. `n % 2`는 7을 2로 나눈 나머지 `1`이에요.
+  1. `1 === 0`은 `false`예요.
+  1. 조건이 거짓이니 `:` 뒤의 `"홀수"`가 식 전체의 값이 되고, 그 값이 `kind`에 들어가요.
+
+  `false`라고 답했다면 조건의 결과가 그대로 들어간다고 본 거예요. 조건은 두 값 중 무엇을 고를지 정할 뿐이고, 들어가는 것은 고른 값이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

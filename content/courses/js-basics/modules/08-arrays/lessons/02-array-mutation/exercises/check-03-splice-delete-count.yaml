@@ -1,0 +1,40 @@
+id: js-basics.arrays.array-mutation.check-splice-delete-count
+type: fill_blank
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.splice, weight: 1 }
+tags: [splice, delete-count, check]
+estimatedSeconds: 60
+prompt: |
+  무지개 색 배열에서 `"주황"`, `"노랑"`, `"초록"` 세 개를 한 번에 지우려고 해요. 빈칸에 들어갈 숫자를 적어 보세요.
+
+  ```js
+  const colors = ["빨강", "주황", "노랑", "초록", "파랑"];
+  ```
+spec:
+  mode: text
+  template: |
+    colors.splice(1, {{blank:count}});
+  blanks:
+    - id: count
+      accept: ["3"]
+      width: 4
+      misconceptionMap:
+        "4": js.mc.splice-second-arg-end
+misconceptions: [js.mc.splice-second-arg-end]
+hints:
+  - "`splice`의 첫 번째 인수 `1`은 어디부터 지울지를 뜻해요."
+  - 두 번째 인수는 끝 인덱스가 아니에요. 무엇을 뜻할까요?
+  - 두 번째 인수는 지울 요소의 **개수**예요. 지울 색이 몇 개인지 세어 보세요.
+explanation: |
+  정답은 `3`이에요.
+
+  `splice(시작, 개수)`는 시작 인덱스부터 **개수만큼** 지워요. `"주황"`(1번)부터 세 개를 지우면 `colors`에는 `["빨강", "파랑"]`이 남아요.
+
+  두 번째 인수를 "끝 인덱스"로 보고 `4`를 쓰면 1번부터 네 개, 즉 `"파랑"`까지 지워져요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,101 @@
+id: js-basics.arrays.array-iteration.try-sum-until-zero
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.arr.for-of, weight: 1 }
+  - { id: js.loops.break, weight: 0.5 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [for-of, break, accumulator, write-code]
+estimatedSeconds: 240
+prompt: |
+  계산대에 찍힌 금액이 배열 `amounts`에 차례로 들어 있어요. 금액 `0`은 "계산 끝" 표시라서, 그 뒤에 있는 금액은 다음 손님 것이에요. **처음 나오는 `0` 앞까지만** 더한 합계를 돌려주는 함수 `sumUntilZero(amounts)`를 완성하세요. `0`이 없으면 모두 더해요.
+
+  `for...of`로 요소를 하나씩 꺼내고, `0`을 만나면 반복을 멈춰 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `sumUntilZero([3000, 1500, 0, 9000])` | `4500` |
+  | `sumUntilZero([2000, 500])` | `2500` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function sumUntilZero(amounts) {
+            // 1. 합계를 담을 변수를 만드세요.
+            // 2. for...of로 amounts의 금액을 하나씩 꺼내세요.
+            // 3. 금액이 0이면 반복을 멈추고, 아니면 합계에 더하세요.
+            // 4. 합계를 돌려주세요.
+          }
+
+          console.log(sumUntilZero([3000, 1500, 0, 9000]));
+  entry: sumUntilZero
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function sumUntilZero(amounts) {
+            let total = 0;
+            for (const amount of amounts) {
+              if (amount === 0) {
+                break;
+              }
+              total += amount;
+            }
+            return total;
+          }
+
+          console.log(sumUntilZero([3000, 1500, 0, 9000]));
+  checks:
+    - { kind: call, id: stop-at-zero, args: [[3000, 1500, 0, 9000]], expect: { equals: 4500 }, requirement: 0에서 멈추기 }
+    - { kind: call, id: no-zero, args: [[2000, 500]], expect: { equals: 2500 }, requirement: 0이 없으면 모두 더하기 }
+    - kind: call
+      id: first-zero-only
+      visible: false
+      description: 0이 여러 번 있으면 처음 나오는 0에서 멈춰야 합니다.
+      requirement: 0에서 멈추기
+      args: [[100, 0, 200, 0, 300]]
+      expect: { equals: 100 }
+    - kind: call
+      id: zero-first
+      visible: false
+      description: 첫 금액이 0이면 합계는 0입니다.
+      requirement: 0에서 멈추기
+      args: [[0, 5000]]
+      expect: { equals: 0 }
+    - kind: call
+      id: empty
+      visible: false
+      description: 금액이 하나도 없으면 0을 돌려줘야 합니다.
+      requirement: 0이 없으면 모두 더하기
+      args: [[]]
+      expect: { equals: 0 }
+hints:
+  - 합계 변수는 반복 앞에서 `let total = 0;`으로 만들어요.
+  - "`for (const amount of amounts)`로 금액을 하나씩 꺼낼 수 있어요. 반복을 바로 멈추는 키워드는 `break`예요."
+  - "반복 안에서 먼저 `if (amount === 0) { break; }`로 확인하고, 그다음 줄에서 `total += amount;`를 해요. 반복이 끝나면 `return total;`이에요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function sumUntilZero(amounts) {
+    let total = 0;
+    for (const amount of amounts) {
+      if (amount === 0) {
+        break;
+      }
+      total += amount;
+    }
+    return total;
+  }
+  ```
+
+  - 멈춰야 하는 반복이라 `forEach`가 아니라 `for...of`와 `break`를 써요. `forEach` 콜백 안의 `return`으로는 멈출 수 없어요.
+  - `0`인지 먼저 확인하고 더해요. 0을 더해도 합계는 같지만, 확인을 먼저 해야 "멈춘다"는 의도가 분명해요.
+  - 함수 안이므로 `break` 대신 `return total;`로 바로 끝내도 같은 결과예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

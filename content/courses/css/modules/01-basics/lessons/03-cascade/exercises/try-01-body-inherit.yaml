@@ -1,0 +1,138 @@
+id: css.basics.cascade.try-body-inherit
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: css.cascade.inheritance, weight: 1 }
+  - { id: css.cascade.specificity, weight: 0.3 }
+tags: [cascade, inheritance, body, web-task]
+estimatedSeconds: 240
+prompt: |
+  일기장 페이지의 `style` 요소에 규칙 **두 개를 직접** 써 보세요. HTML은 바꾸지 마세요.
+
+  1. `body` 규칙 하나로 페이지의 모든 글자를 진한 청회색(`darkslategray`), 글자 크기 `18px`로 바꿔요. 제목·문단·목록에 규칙을 하나하나 쓰지 말고, 상속을 이용해 보세요.
+  1. 맨 아래 메모 문단(`class="memo"`)만 글자 색을 진한 초록(`darkgreen`)으로 바꿔요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>오늘의 일기</title>
+              <style>
+                /* 1. body 규칙: 글자 색 darkslategray, 글자 크기 18px */
+
+                /* 2. memo 문단만: 글자 색 darkgreen */
+              </style>
+            </head>
+            <body>
+              <h1>오늘의 일기</h1>
+              <p>아침에 공원을 한 바퀴 걸었어요.</p>
+              <ul>
+                <li>점심: 김치볶음밥</li>
+                <li>저녁: 된장찌개</li>
+              </ul>
+              <p class="memo">내일은 우산을 꼭 챙기기!</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>오늘의 일기</title>
+              <style>
+                body {
+                  color: darkslategray;
+                  font-size: 18px;
+                }
+                .memo {
+                  color: darkgreen;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>오늘의 일기</h1>
+              <p>아침에 공원을 한 바퀴 걸었어요.</p>
+              <ul>
+                <li>점심: 김치볶음밥</li>
+                <li>저녁: 된장찌개</li>
+              </ul>
+              <p class="memo">내일은 우산을 꼭 챙기기!</p>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: title-color
+      description: 제목(h1)의 글자 색이 진한 청회색(darkslategray)이어야 합니다.
+      requirement: 페이지 전체 글자
+      visible: true
+      selector: h1
+      expect:
+        computed:
+          color: { color: "#2f4f4f" }
+    - kind: css
+      id: items-color-size
+      description: 목록 항목 두 개의 글자가 진한 청회색에 18px이어야 합니다.
+      requirement: 페이지 전체 글자
+      visible: true
+      selector: li
+      all: true
+      expect:
+        computed:
+          color: { color: "#2f4f4f" }
+          font-size: { px: { value: 18 } }
+    - kind: css
+      id: first-p
+      description: 첫 문단의 글자가 진한 청회색에 18px이어야 합니다.
+      requirement: 페이지 전체 글자
+      visible: true
+      selector: "p:not(.memo)"
+      expect:
+        computed:
+          color: { color: "#2f4f4f" }
+          font-size: { px: { value: 18 } }
+    - kind: css
+      id: memo-green
+      description: 메모 문단만 진한 초록(darkgreen)이고, 글자 크기는 18px을 그대로 물려받아야 합니다.
+      requirement: 메모 문단
+      visible: true
+      selector: .memo
+      expect:
+        computed:
+          color: { color: "#006400" }
+          font-size: { px: { value: 18 } }
+      misconceptionIfFail: css.mc.inherited-beats-direct
+misconceptions: [css.mc.inherited-beats-direct]
+hints:
+  - 글자 색과 글자 크기는 상속되는 속성이에요. 모든 요소를 감싸는 부모에 한 번만 주면 어떻게 될까요?
+  - "`body`에 `color`와 `font-size`를 주면 안쪽 요소가 모두 물려받아요. 메모 문단은 그 문단을 직접 고르는 규칙을 하나 더 쓰면 물려받은 값보다 우선해요."
+  - "첫 규칙은 `body { color: darkslategray; font-size: 18px; }`, 둘째 규칙은 선택자 `.memo`에 `color: darkgreen;`이에요."
+explanation: |
+  예시 답안의 규칙은 이래요.
+
+  ```css
+  body {
+    color: darkslategray;
+    font-size: 18px;
+  }
+  .memo {
+    color: darkgreen;
+  }
+  ```
+
+  - `color`와 `font-size`는 상속되는 속성이라, `body`에 한 번만 주면 제목·문단·목록이 모두 물려받아요.
+  - 메모 문단은 `.memo` 규칙이 **직접** 고르므로 물려받은 청회색보다 우선해요. 글자 크기는 `.memo`가 정하지 않았으니 그대로 18px을 물려받아요.
+  - 제목은 브라우저 기본 스타일이 크기를 따로 정해서 18px보다 크게 보여요. 그래도 색은 물려받아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

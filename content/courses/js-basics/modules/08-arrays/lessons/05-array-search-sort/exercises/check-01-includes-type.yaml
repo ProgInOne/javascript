@@ -1,0 +1,41 @@
+id: js-basics.arrays.array-search-sort.check-includes-type
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.includes-indexof, weight: 1 }
+tags: [includes, type, check]
+estimatedSeconds: 45
+prompt: |
+  사물함 번호 배열이 `const lockers = [101, 202, 303];`일 때, `lockers.includes("202")`의 결과는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`false`'
+    - id: b
+      text: '`true`'
+      misconception: js.mc.includes-loose-match
+      rationale: 배열의 요소는 숫자 `202`이고 찾는 값은 문자열 `"202"`예요. 자료형이 다르면 같은 값이 아니에요.
+    - id: c
+      text: '`1`'
+      rationale: 위치를 돌려주는 것은 `indexOf`예요. `includes`는 `true`/`false`만 돌려줘요.
+    - id: d
+      text: '`-1`'
+      rationale: '`-1`은 `indexOf`가 못 찾았을 때의 값이에요. `includes`는 `true`/`false`를 돌려줘요.'
+  correct: a
+misconceptions: [js.mc.includes-loose-match]
+hints:
+  - "`includes`는 어떤 종류의 값을 돌려주나요?"
+  - 배열에 든 `202`와 찾는 `"202"`는 자료형이 같나요?
+  - "`includes`는 `===`처럼 자료형까지 같아야 같은 값으로 봐요."
+explanation: |
+  정답은 `false`예요.
+
+  `includes`는 요소와 찾는 값을 자료형까지 비교해요. 배열에는 숫자 `202`가 있지만 찾는 값은 문자열 `"202"`라서 같은 요소가 없어요. 입력창에서 받은 글자처럼 문자열인 값을 숫자 배열에서 찾으려면 `Number("202")`처럼 먼저 숫자로 바꿔야 해요.
+
+  `1`이나 `-1` 같은 위치는 `indexOf`가 돌려주는 값이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,40 @@
+id: css.basics.intro.check-site-wide-css
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: css.intro.linking, weight: 1 }
+tags: [link, stylesheet, external-css]
+estimatedSeconds: 60
+prompt: |
+  페이지가 20장인 학교 동아리 사이트를 만들고 있어요. 모든 페이지의 제목 색을 같게 하고, 나중에 색을 바꿀 때 **한 곳만** 고치고 싶어요. 가장 알맞은 방법은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: CSS 파일 하나에 규칙을 쓰고, 20장의 페이지마다 `head`에서 `link` 요소로 그 파일을 연결한다
+    - id: b
+      text: 20장의 페이지마다 `style` 요소를 만들고 같은 규칙을 써 둔다
+      rationale: 적용은 되지만 style 요소는 그 페이지 한 장에만 적용돼요. 색을 바꿀 때 20군데를 고쳐야 해요.
+    - id: c
+      text: 모든 제목의 여는 태그에 `style` 속성으로 색을 쓴다
+      rationale: style 속성은 그 요소 하나에만 적용돼요. 고칠 곳이 제목 수만큼 생겨요.
+    - id: d
+      text: 첫 페이지의 `style` 요소에만 규칙을 쓴다. 나머지 페이지에도 저절로 적용된다
+      rationale: style 요소의 규칙은 그 페이지 한 장에만 적용돼요. 다른 페이지로 이어지지 않아요.
+  correct: a
+hints:
+  - 세 가지 연결 방법은 적용 범위가 달라요. 여러 페이지에 한꺼번에 적용되는 방법은 무엇이었나요?
+  - style 요소는 페이지 한 장, style 속성은 요소 하나에만 적용돼요.
+  - 여러 페이지가 **같은 파일**을 함께 쓰면, 그 파일 한 곳만 고쳐도 모든 페이지가 바뀌어요.
+explanation: |
+  정답은 **외부 CSS 파일 하나를 모든 페이지에서 `link`로 연결하는 것**이에요.
+
+  `link` 요소로 연결한 파일은 그 파일을 연결한 모든 페이지에 적용돼요. 그래서 규칙을 그 파일 한 곳에서만 고치면 20장이 모두 바뀌어요.
+
+  - `style` 요소는 그 페이지 한 장에만 적용돼서, 같은 규칙을 20번 써야 하고 고칠 때도 20번 고쳐야 해요.
+  - `style` 속성은 그 요소 하나에만 적용돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

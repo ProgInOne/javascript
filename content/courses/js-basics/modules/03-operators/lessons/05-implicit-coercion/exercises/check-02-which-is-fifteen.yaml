@@ -1,0 +1,44 @@
+id: js-basics.operators.implicit-coercion.check-which-is-fifteen
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.conv.plus-concat, weight: 1 }
+tags: [plus, concat, coercion]
+estimatedSeconds: 60
+prompt: |
+  다음 중 결과가 **숫자** `15`인 식은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`"10" * 1 + 5`'
+    - id: b
+      text: '`"10" + 5`'
+      misconception: js.mc.plus-string-adds
+      rationale: '`+`는 한쪽이 문자열이면 이어 붙여요. 결과는 문자열 `"105"`예요.'
+    - id: c
+      text: '`10 + "5"`'
+      misconception: js.mc.plus-string-adds
+      rationale: 문자열이 오른쪽에 있어도 마찬가지로 이어 붙여요. 결과는 `"105"`예요.
+    - id: d
+      text: '`"1" + "5"`'
+      rationale: 문자열끼리 이어 붙여서 `"15"`가 되지만, 숫자가 아니라 문자열이에요.
+  correct: a
+misconceptions: [js.mc.plus-string-adds]
+hints:
+  - "`+`는 문자열이 하나라도 있으면 무엇을 하나요?"
+  - "`*`, `-`, `/`는 이어 붙이는 기능이 없어서 문자열을 숫자로 바꿔 계산해요."
+  - 왼쪽부터 계산해요. `"10" * 1`의 결과가 숫자라면, 그다음 `+ 5`는 무엇을 할까요?
+explanation: |
+  정답은 `"10" * 1 + 5`예요.
+
+  1. `"10" * 1`: `*`는 문자열을 숫자로 바꿔 계산하므로 숫자 `10`이에요.
+  1. `10 + 5`: 양쪽이 숫자라 더하기를 해서 `15`예요.
+
+  - `"10" + 5`, `10 + "5"`: 한쪽이 문자열이라 이어 붙여 `"105"`예요.
+  - `"1" + "5"`: `"15"`로 보이지만 문자열이에요. 콘솔에서는 따옴표 없이 `15`로 보여서 헷갈리기 쉬워요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,28 @@
+id: js-basics.control.if-else.check-else-when-all-false
+type: true_false
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.control.else-if, weight: 1 }
+tags: [else-if, else]
+estimatedSeconds: 50
+prompt: |
+  `if … else if … else if … else` 체인 하나에 대한 설명이 맞는지 골라 주세요.
+spec:
+  statement: 체인 위쪽의 조건 중 **하나라도** 거짓이면 마지막 `else` 블록이 실행된다.
+  answer: false
+hints:
+  - 체인은 위에서부터 조건을 검사하다가 참인 조건을 만나면 어떻게 하나요?
+  - 참인 조건을 만나면 그 블록 하나만 실행하고 체인을 빠져나가요. 그럼 `else`까지 내려오는 건 언제일까요?
+  - "`else`는 위의 조건이 **모두** 거짓일 때만 실행돼요."
+explanation: |
+  **거짓**이에요.
+
+  체인은 위에서부터 조건을 검사하다가 **처음으로 참인 조건**의 블록 하나만 실행하고 빠져나가요. 그래서 위쪽 조건이 하나 거짓이어도 그 아래 조건이 참이면 그 블록이 실행되고, `else`는 실행되지 않아요.
+
+  마지막 `else`는 위의 조건이 **모두** 거짓일 때만 실행돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

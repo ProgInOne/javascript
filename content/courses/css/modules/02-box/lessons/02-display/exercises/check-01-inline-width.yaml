@@ -1,0 +1,47 @@
+id: css.box.display.check-inline-width
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: css.display.block-inline, weight: 1 }
+tags: [display, inline, width]
+estimatedSeconds: 50
+prompt: |
+  문장 속 강조 단어(`strong`)에 아래 규칙을 줬어요. 다른 CSS는 없어요. 화면에서 이 단어는 어떻게 보이나요?
+code: |
+  strong {
+    width: 200px;
+    height: 50px;
+    background: yellow;
+  }
+spec:
+  options:
+    - id: a
+      text: 글자 길이만큼만 노랗게 칠해지고, 너비와 높이는 무시된다
+    - id: b
+      text: 200 × 50px 크기의 노란 상자가 문장 안에 생긴다
+      misconception: css.mc.width-on-inline
+      rationale: strong은 인라인 요소라 width와 height가 적용되지 않아요.
+    - id: c
+      text: 200 × 50px 노란 상자가 되면서 새 줄로 떨어진다
+      rationale: 인라인 요소는 새 줄에서 시작하지 않고, 크기도 받지 않아요.
+    - id: d
+      text: 규칙 전체가 무시되어 배경색도 칠해지지 않는다
+      rationale: 무시되는 것은 width와 height뿐이에요. background는 글자 영역에 그대로 칠해져요.
+  correct: a
+misconceptions: [css.mc.width-on-inline]
+hints:
+  - "`strong`은 블록일까요, 인라인일까요?"
+  - 인라인 요소는 문장 속 단어처럼 내용만큼만 차지해요.
+  - 인라인 요소에서 무시되는 속성과 그대로 적용되는 속성을 나눠 보세요. 배경색은 무시되지 않아요.
+explanation: |
+  정답은 **글자 길이만큼만 노랗게 칠해지고, 너비와 높이는 무시된다**예요.
+
+  `strong`은 인라인 요소라 글자처럼 줄 안에 흘러가고, 내용만큼만 자리를 차지해요. 그래서 `width`와 `height`는 무시돼요. `background`는 적용되니 글자 영역만 노랗게 칠해져요.
+
+  크기를 주고 싶으면 `display: inline-block`으로 바꿔요. 그러면 문장 안에 그대로 있으면서 200 × 50px 상자가 돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

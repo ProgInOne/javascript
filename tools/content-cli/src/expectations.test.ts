@@ -11,7 +11,7 @@ import {
 import { exerciseKit } from './kit.ts';
 import { runCheck } from './run-check.ts';
 import { fakeRunner } from './test/fake-runner.ts';
-import { EXERCISE_YAML, LESSON, writeContent } from './test/fixture.ts';
+import { CHECK, EXERCISE_YAML, LESSON, TRY, writeContent } from './test/fixture.ts';
 
 const PREDICT = `${LESSON}.predict-hello`;
 const PREDICT_YAML =
@@ -144,6 +144,8 @@ describe('runCheck', () => {
     expect(result.items.map((i) => [i.id, i.outcome.status])).toEqual([
       [`${LESSON}.mcq-what-is-console`, 'skip'],
       [PREDICT, 'pass'],
+      [CHECK, 'skip'],
+      [TRY, 'pass'],
     ]);
     expect(result.diagnostics.errorCount).toBe(0);
 

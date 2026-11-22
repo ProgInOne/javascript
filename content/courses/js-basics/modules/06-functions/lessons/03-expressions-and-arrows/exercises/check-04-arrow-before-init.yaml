@@ -1,0 +1,46 @@
+id: js-basics.functions.expressions-and-arrows.check-arrow-before-init
+type: mcq_single
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.fn.hoisting, weight: 1 }
+tags: [function, hoisting, arrow, tdz]
+estimatedSeconds: 60
+prompt: |
+  아래 코드를 실행하면 어떻게 되나요?
+code: |
+  console.log(cheer("민수"));
+
+  const cheer = (name) => name + " 화이팅!";
+spec:
+  options:
+    - id: a
+      text: "`ReferenceError`가 나고 아무것도 출력되지 않는다"
+    - id: b
+      text: "`민수 화이팅!`이 출력된다"
+      misconception: js.mc.expression-hoisted
+      rationale: 함수 선언과 달리 `const`에 담은 화살표 함수는 3번 줄이 실행되어야 쓸 수 있어요.
+    - id: c
+      text: "`undefined`가 출력된다"
+      rationale: "`const` 변수는 그 줄이 실행되기 전에 읽으면 `undefined`가 아니라 오류가 나요."
+    - id: d
+      text: "`SyntaxError`가 나서 실행되지 않는다"
+      rationale: 문법은 맞아요. 실행하다가 1번 줄에서 오류가 나요.
+  correct: a
+misconceptions: [js.mc.expression-hoisted]
+hints:
+  - "`cheer`는 함수 선언인가요, `const` 변수에 담은 화살표 함수인가요?"
+  - "`const` 변수는 그 줄이 실행되어야 값이 담겨요. 1번 줄이 실행될 때 3번 줄은 실행되었나요?"
+  - 선언 전에 `const` 변수를 쓰면 `Cannot access 'cheer' before initialization`이라는 오류가 나요.
+explanation: |
+  정답은 "`ReferenceError`가 나고 아무것도 출력되지 않는다"예요.
+
+  - `cheer`는 `const` 변수에 담은 화살표 함수예요. 3번 줄이 실행되어야 함수가 담기는데, 1번 줄에서 먼저 부르려 해서 `ReferenceError: Cannot access 'cheer' before initialization`이 나요.
+  - 함수 선언(`function cheer(name) { ... }`)이었다면 실행 전에 미리 만들어져서 `민수 화이팅!`이 나왔을 거예요.
+
+  함수 표현식과 화살표 함수는 **먼저 만들고 아래에서 부르세요**.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

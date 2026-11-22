@@ -1,0 +1,120 @@
+id: css.styling.units-colors.try-rem-and-em
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: css.units.rem-em, weight: 1 }
+tags: [units, rem, em, font-size, web-task]
+estimatedSeconds: 240
+prompt: |
+  이벤트 카드(`.card`)는 글자 크기가 `20px`로 정해져 있어요. 루트(`html`)의 글자 크기는 기본값 `16px`이에요.
+
+  `style` 요소의 주석 자리에 규칙 두 개를 **직접** 써 보세요. 크기는 `px`가 아니라 `rem`과 `em`으로 써요.
+
+  1. 카드 제목(`.title`)의 글자 크기: **루트** 글자 크기의 `1.5`배 → 24px가 되어야 해요.
+  1. 카드 설명(`.desc`)의 글자 크기: **카드** 글자 크기의 `0.8`배 → 16px가 되어야 해요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>여름 이벤트</title>
+              <style>
+                .card {
+                  font-size: 20px;
+                  border: 2px solid #1f2937;
+                  padding: 12px;
+                }
+                /* 1. .title: 루트 글자 크기의 1.5배 (rem 또는 em 중 알맞은 단위로) */
+
+                /* 2. .desc: 카드 글자 크기의 0.8배 (rem 또는 em 중 알맞은 단위로) */
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <h2 class="title">여름 독서 이벤트</h2>
+                <p class="desc">책 세 권을 읽으면 도장을 받아요.</p>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>여름 이벤트</title>
+              <style>
+                .card {
+                  font-size: 20px;
+                  border: 2px solid #1f2937;
+                  padding: 12px;
+                }
+                .title {
+                  font-size: 1.5rem;
+                }
+                .desc {
+                  font-size: 0.8em;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <h2 class="title">여름 독서 이벤트</h2>
+                <p class="desc">책 세 권을 읽으면 도장을 받아요.</p>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: title-size
+      description: 카드 제목의 글자 크기가 루트(16px)의 1.5배인 24px이어야 합니다. 카드(20px)를 기준으로 하면 30px이 돼요.
+      requirement: 제목 크기
+      visible: true
+      selector: .title
+      expect:
+        computed:
+          font-size: { px: { value: 24 } }
+      misconceptionIfFail: css.mc.em-same-as-rem
+    - kind: css
+      id: desc-size
+      description: 카드 설명의 글자 크기가 카드(20px)의 0.8배인 16px이어야 합니다. 루트(16px)를 기준으로 하면 12.8px이 돼요.
+      requirement: 설명 크기
+      visible: true
+      selector: .desc
+      expect:
+        computed:
+          font-size: { px: { value: 16 } }
+      misconceptionIfFail: css.mc.em-same-as-rem
+misconceptions: [css.mc.em-same-as-rem]
+hints:
+  - 제목은 루트를, 설명은 카드(부모)를 기준으로 해요. 각각 어느 단위가 그 기준을 볼까요?
+  - "`rem`은 루트(`html`)의 글자 크기를, `font-size`에 쓴 `em`은 부모의 글자 크기를 기준으로 해요."
+  - "`.title { font-size: 1.5rem; }`처럼 쓰고, 설명은 같은 모양으로 `0.8em`을 써요."
+explanation: |
+  예시 답안의 규칙은 이래요.
+
+  ```css
+  .title {
+    font-size: 1.5rem;
+  }
+  .desc {
+    font-size: 0.8em;
+  }
+  ```
+
+  - `1.5rem`은 루트 16px의 1.5배라 24px이에요. 카드가 20px이어도 상관없어요. 여기에 `1.5em`을 쓰면 부모인 카드 20px의 1.5배인 30px이 돼요.
+  - `0.8em`은 부모인 카드 20px의 0.8배라 16px이에요. `0.8rem`을 쓰면 루트 기준이라 12.8px이 돼요.
+  - 같은 숫자라도 단위가 무엇을 기준으로 하는지에 따라 크기가 달라져요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

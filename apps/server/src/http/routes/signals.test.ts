@@ -1,7 +1,7 @@
 import { inlineAttemptResponseSchema } from '@proginone/shared';
 import { describe, expect, it } from 'vitest';
 import { WRONG } from '../../test/answers.ts';
-import { EX } from '../../test/content-fixture.ts';
+import { BLOCK, EX } from '../../test/content-fixture.ts';
 import { count, DAY, practiceApp } from '../../test/practice-app.ts';
 import { lessonSet, parsed, submit, type Ctx } from '../../test/practice-flow.ts';
 
@@ -86,7 +86,7 @@ describe('misconception observations', () => {
       resolution: { done: 1, required: 2 },
     });
     ctx.clock.now += DAY;
-    const res = await ctx.call('POST', `/exercises/${EX.predict}/inline-attempts`, {
+    const res = await ctx.call('POST', `/exercises/${BLOCK.checkPredict}/inline-attempts`, {
       answer: { console: '2' },
       confidence: 'sure',
       startedAt: ctx.clock.now - 20_000,
@@ -101,7 +101,7 @@ describe('misconception observations', () => {
     expect(observations(ctx)[0]?.status).toBe('resolved');
 
     // A relapse reopens the same row.
-    const relapse = await ctx.call('POST', `/exercises/${EX.predict}/inline-attempts`, {
+    const relapse = await ctx.call('POST', `/exercises/${BLOCK.checkPredict}/inline-attempts`, {
       answer: WRONG[EX.predict],
       confidence: 'unsure',
       startedAt: ctx.clock.now - 20_000,
@@ -161,7 +161,7 @@ describe('relearning suggestions', () => {
   it('does not suggest for inline checks', async () => {
     const ctx = await practiceApp();
     for (let i = 0; i < 3; i++) {
-      const res = await ctx.call('POST', `/exercises/${EX.mcq}/inline-attempts`, {
+      const res = await ctx.call('POST', `/exercises/${BLOCK.checkMcq}/inline-attempts`, {
         answer: WRONG[EX.mcq],
         confidence: 'unsure',
         startedAt: ctx.clock.now - 20_000,

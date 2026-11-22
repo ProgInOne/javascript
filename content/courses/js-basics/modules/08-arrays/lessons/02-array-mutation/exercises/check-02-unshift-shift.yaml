@@ -1,0 +1,42 @@
+id: js-basics.arrays.array-mutation.check-unshift-shift
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.shift-unshift, weight: 1 }
+tags: [shift, unshift, return-value, check]
+estimatedSeconds: 75
+prompt: |
+  재생 목록 맨 앞에 곡을 넣었다가, 맨 앞 곡을 재생하며 목록에서 빼요. 실행하면 콘솔에 무엇이 출력될까요? 세 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const playlist = ["봄날", "여름밤"];
+    const size = playlist.unshift("새벽");
+    const playing = playlist.shift();
+    console.log(size);
+    console.log(playing);
+    console.log(playlist);
+  answerKind: console
+misconceptions: [js.mc.shift-unshift-swapped]
+hints:
+  - "`unshift`와 `shift`는 둘 다 배열의 맨 앞에서 일해요. 하나는 넣고, 하나는 빼요."
+  - "`unshift`는 넣은 뒤의 길이를, `shift`는 꺼낸 요소를 돌려줘요."
+  - 2번 줄이 끝났을 때 `playlist`의 맨 앞 요소가 무엇인지 적어 보세요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  3
+  새벽
+  ["봄날", "여름밤"]
+  ```
+
+  - 2번 줄 `unshift("새벽")`은 맨 앞에 넣어 `["새벽", "봄날", "여름밤"]`을 만들고, 새 길이 `3`을 돌려줘요.
+  - 3번 줄 `shift()`는 맨 앞의 `"새벽"`을 꺼내 돌려줘요. 배열은 다시 `["봄날", "여름밤"]`이 돼요.
+  - 맨 끝을 꺼내는 메서드는 `pop`이에요. `shift`는 언제나 맨 앞이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

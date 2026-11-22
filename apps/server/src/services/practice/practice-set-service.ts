@@ -115,6 +115,16 @@ export class PracticeSetService {
         { details: { exerciseIds: locked } },
       );
     }
+    // A try task is worked in its lesson body only (D-091).
+    const tries = exerciseIds.filter((id) => found.get(id)?.usage === 'try');
+    if (tries.length > 0) {
+      throw new AppError(
+        'EXERCISE_USAGE_MISMATCH',
+        409,
+        '직접 써 보기 과제는 단원 본문에서 풉니다.',
+        { details: { exerciseIds: tries, expected: 'try' } },
+      );
+    }
     // A project's web_task is worked on its project screen only (D-048).
     const projects = exerciseIds.filter((id) => found.get(id)?.usage === 'project');
     if (projects.length > 0) {

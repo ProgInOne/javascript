@@ -202,6 +202,10 @@ console.log(toWon3(10));
 
 - 세 함수는 모양만 다르고 하는 일은 같아요. `toWon3`은 식 본문이라 `dollar * 1400`의 값이 자동으로 반환돼요.
 - `toWon3`을 `(dollar) => { dollar * 1400 }`으로 바꾸면 마지막 줄이 `undefined`가 돼요. 중괄호를 쓰는 순간 일반 함수 본문이 되어 `return`이 필요하거든요.
+
+이제 식 본문 화살표 함수를 직접 써 보세요.
+
+<TryIt ref="js-basics.functions.expressions-and-arrows.try-to-fahrenheit" />
 </Section>
 
 <Section kind="examples">
@@ -240,6 +244,10 @@ undefined
 
 - `squareBraces`는 `n * n`을 계산하긴 하지만, 그 값을 돌려주라는 `return`이 없어서 버려요. `return`이 없는 함수는 <ConceptLink to="js.fn.undefined-return">`undefined`를 반환</ConceptLink>해요.
 - `squareReturn`처럼 중간 계산을 변수에 담아야 할 때는 중괄호 본문을 쓰고 마지막에 `return`해요.
+
+이번에는 `if`가 필요한 화살표 함수를 중괄호 본문으로 직접 써 보세요.
+
+<TryIt ref="js-basics.functions.expressions-and-arrows.try-water-advice" />
 </Section>
 
 <Section kind="examples">
@@ -362,19 +370,19 @@ console.log("배송비: " + formatWon(shippingFee(total)));
 <Section kind="check">
 함수 표현식이 변수에 무엇을 담는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.functions.expressions-and-arrows.mcq-expression-stores-function" />
+<InlineExercise ref="js-basics.functions.expressions-and-arrows.check-expression-holds-function" />
 
-화살표를 읽어 보세요.
+화살표 함수를 함수 표현식으로 바꿔 읽어 보세요.
 
-<InlineExercise ref="js-basics.functions.expressions-and-arrows.mcq-arrow-read" />
+<InlineExercise ref="js-basics.functions.expressions-and-arrows.check-arrow-same-as" />
 
-중괄호 본문의 반환값을 확인해 보세요.
+중괄호 본문의 반환값을 예측해 보세요.
 
-<InlineExercise ref="js-basics.functions.expressions-and-arrows.tf-arrow-braces-return" />
+<InlineExercise ref="js-basics.functions.expressions-and-arrows.check-braces-return" />
 
-함수 선언을 선언보다 위에서 부르면 어떻게 될까요?
+화살표 함수를 만들기 전에 부르면 어떻게 될까요?
 
-<InlineExercise ref="js-basics.functions.expressions-and-arrows.mcq-call-before-declaration" />
+<InlineExercise ref="js-basics.functions.expressions-and-arrows.check-arrow-before-init" />
 </Section>
 
 <Section kind="practice" />

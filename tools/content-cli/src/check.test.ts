@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { checkContent } from './check.ts';
 import {
+  CHECK,
+  CHECK_YAML,
+  EXERCISE,
   EXERCISE_YAML,
   LESSON_MDX,
   LESSON_YAML,
@@ -14,6 +17,9 @@ import {
   withAssessment,
   withProject,
   writeContent,
+  FIXTURE_BLOCKS,
+  TRY,
+  TRY_YAML,
 } from './test/fixture.ts';
 
 type Files = Record<string, unknown>;
@@ -91,6 +97,65 @@ describe('checkContent', () => {
         f[LESSON_MDX] = lessonMdx({ check: '<InlineExercise ref="a.b.c.d" />' });
       },
       '이 단원에 없는 문제',
+    ],
+    [
+      'inline check on a practice item (D-091)',
+      (f) => {
+        f[LESSON_MDX] = lessonMdx({
+          ...FIXTURE_BLOCKS,
+          check: `<InlineExercise ref="${CHECK}" />\n\n<InlineExercise ref="${EXERCISE}" />`,
+        });
+      },
+      'usage: check 문제만 씁니다',
+    ],
+    [
+      'check item the body never uses',
+      (f) => {
+        f[LESSON_MDX] = lessonMdx({ ...FIXTURE_BLOCKS, check: '확인.' });
+      },
+      'InlineExercise가 쓰지 않는 usage: check 문제',
+    ],
+    [
+      'check item that needs a run',
+      (f) => {
+        obj(f, CHECK_YAML)['type'] = 'implement_function';
+      },
+      '실행 없이 채점하는',
+    ],
+    [
+      'TryIt on a non-try item',
+      (f) => {
+        f[LESSON_MDX] = lessonMdx({
+          ...FIXTURE_BLOCKS,
+          walkthrough: `<TryIt ref="${TRY}" />\n\n<TryIt ref="${EXERCISE}" />`,
+        });
+      },
+      'usage: try 문제만 씁니다',
+    ],
+    [
+      'try task with a choice type',
+      (f) => {
+        obj(f, TRY_YAML)['type'] = 'mcq_single';
+      },
+      'usage: try 문제는 web_task, implement_function, fix_bug 유형만',
+    ],
+    [
+      'lesson without a TryIt',
+      (f) => {
+        f[LESSON_MDX] = lessonMdx({ check: FIXTURE_BLOCKS.check });
+        f[TRY_YAML] = undefined;
+      },
+      '직접 써 보기(TryIt)가 하나 이상',
+    ],
+    [
+      'the same check twice',
+      (f) => {
+        f[LESSON_MDX] = lessonMdx({
+          ...FIXTURE_BLOCKS,
+          check: `${FIXTURE_BLOCKS.check}\n\n${FIXTURE_BLOCKS.check}`,
+        });
+      },
+      '같은 문제를 두 번',
     ],
     [
       'missing pitfall coverage',
@@ -192,7 +257,8 @@ describe('checkContent', () => {
       validateSpec: () => ({ ok: true, misconceptions: ['js.mc.log-is-return', 'js.mc.nope'] }),
     });
     const errors = diagnostics.items.filter((d) => d.level === 'error').map((d) => d.message);
-    expect(errors).toEqual(['spec: 없는 오개념입니다: js.mc.nope']);
+    // Reported once per exercise (the validator returns it for all three).
+    expect(new Set(errors)).toEqual(new Set(['spec: 없는 오개념입니다: js.mc.nope']));
   });
 });
 
@@ -200,6 +266,7 @@ describe('checkContent', () => {
 describe('checkContent: diagrams', { timeout: 30_000 }, () => {
   const withDiagram = (source: string) => (f: Files) => {
     f[LESSON_MDX] = lessonMdx({
+      ...FIXTURE_BLOCKS,
       principle: `원리 본문\n\n<Diagram alt="흐름">\n\n\`\`\`mermaid\n${source}\n\`\`\`\n\n</Diagram>`,
     });
   };

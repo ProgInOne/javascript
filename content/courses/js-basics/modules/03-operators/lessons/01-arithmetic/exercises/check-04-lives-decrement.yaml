@@ -1,0 +1,47 @@
+id: js-basics.operators.arithmetic.check-lives-decrement
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.ops.increment, weight: 1 }
+tags: [increment, decrement, postfix, prefix]
+estimatedSeconds: 75
+prompt: |
+  게임 캐릭터의 남은 목숨을 줄이는 코드예요. 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    let lives = 3;
+    console.log(lives--);
+    console.log(lives);
+    console.log(--lives);
+  answerKind: console
+  misconceptionByAnswer:
+    "2\n2\n1": js.mc.postfix-prefix-same
+    "3\n3\n2": js.mc.postfix-prefix-same
+misconceptions: [js.mc.postfix-prefix-same]
+hints:
+  - "`--`를 뒤에 붙인 식과 앞에 붙인 식은 식의 값이 달라요. 어느 쪽이 줄이기 전 값일까요?"
+  - "`lives--`는 줄이기 **전** 값을 돌려주고, `lives`는 1 줄어요."
+  - "`--lives`는 먼저 1 줄인 다음, 줄인 **뒤** 값을 돌려줘요."
+explanation: |
+  정답은 다음 세 줄이에요.
+
+  ```text
+  3
+  2
+  1
+  ```
+
+  | 줄 | 일어나는 일 | 출력 | `lives` |
+  |---|---|---|---|
+  | `console.log(lives--);` | 줄이기 전 값 3을 출력하고, `lives`는 2가 돼요 | 3 | 2 |
+  | `console.log(lives);` | 지금 값을 출력해요 | 2 | 2 |
+  | `console.log(--lives);` | 먼저 1로 줄이고, 줄인 뒤 값을 출력해요 | 1 | 1 |
+
+  뒤에 붙이면 "쓰고 나서 줄이기", 앞에 붙이면 "줄이고 나서 쓰기"예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

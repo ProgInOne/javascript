@@ -130,6 +130,10 @@ NaN
 - `parseFloat("3.5kg")`: 소수점까지 읽고 `k`에서 멈춰서 `3.5`예요.
 - `parseInt("3.9")`: 정수만 읽으므로 `.`에서 멈춰서 `3`이에요. 반올림한 4가 아니에요.
 - `parseInt("가격 500")`: 첫 글자부터 숫자가 아니라 읽은 숫자가 없어서 `NaN`이에요.
+
+세 가지 변환 방법을 직접 써서 결과를 비교해 보세요.
+
+<TryIt ref="js-basics.operators.explicit-conversion.try-thermometer" />
 </Section>
 
 <Section kind="examples">
@@ -255,11 +259,11 @@ console.log("수량을 읽지 못함:", Number.isNaN(quantity)); // 수량을 �
 <Section kind="check">
 `Number`가 문자열을 어떻게 읽는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.explicit-conversion.mcq-number-12px" />
+<InlineExercise ref="js-basics.operators.explicit-conversion.check-not-nan" />
 
-`Boolean`이 글자를 어떻게 바꾸는지 확인해 보세요.
+`Boolean`이 여러 문자열과 숫자를 어떻게 바꾸는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.explicit-conversion.tf-boolean-false-string" />
+<InlineExercise ref="js-basics.operators.explicit-conversion.check-boolean-strings" />
 </Section>
 
 <Section kind="practice" />

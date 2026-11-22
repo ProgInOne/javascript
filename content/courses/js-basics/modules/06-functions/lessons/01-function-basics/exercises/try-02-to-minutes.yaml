@@ -1,0 +1,87 @@
+id: js-basics.functions.function-basics.try-to-minutes
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.fn.return, weight: 1 }
+  - { id: js.fn.declaration, weight: 0.5 }
+  - { id: js.fn.params-args, weight: 0.5 }
+tags: [function, return, parameter, write-code]
+estimatedSeconds: 240
+prompt: |
+  영화 상영 시간을 분으로 바꿔 주는 함수를 직접 만들어 보세요.
+
+  - 함수 이름은 `toMinutes`, 매개변수는 시간 `hours`와 분 `minutes` 두 개예요.
+  - 모두 몇 분인지 계산해서 **돌려주세요**(출력이 아니라 `return`).
+  - 예: `toMinutes(2, 30)` → `150`, `toMinutes(0, 45)` → `45`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // hours(시간)와 minutes(분)를 받아 모두 몇 분인지 돌려주는 함수 toMinutes를 선언하세요.
+
+
+          // 다 만들었으면 아래 줄로 확인해 보세요. 150이 나오면 돼요.
+          // console.log(toMinutes(2, 30));
+  entry: toMinutes
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // hours(시간)와 minutes(분)를 받아 모두 몇 분인지 돌려주는 함수 toMinutes를 선언하세요.
+          function toMinutes(hours, minutes) {
+            return hours * 60 + minutes;
+          }
+
+          // 다 만들었으면 아래 줄로 확인해 보세요. 150이 나오면 돼요.
+          console.log(toMinutes(2, 30));
+  checks:
+    - kind: call
+      id: two-thirty
+      description: 2시간 30분은 150분을 돌려줘야 합니다.
+      requirement: 분으로 바꿔 돌려주기
+      args: [2, 30]
+      expect: { equals: 150 }
+      misconceptionIfFail: js.mc.return-is-log
+    - kind: call
+      id: only-minutes
+      description: 0시간 45분은 45분을 돌려줘야 합니다.
+      requirement: 분으로 바꿔 돌려주기
+      args: [0, 45]
+      expect: { equals: 45 }
+    - kind: call
+      id: only-hours
+      description: 1시간 0분은 60분을 돌려줘야 합니다.
+      requirement: 분으로 바꿔 돌려주기
+      args: [1, 0]
+      expect: { equals: 60 }
+    - kind: call
+      id: hidden-other
+      visible: false
+      description: 다른 시간과 분을 넘겨도 매개변수로 계산한 값을 돌려줘야 합니다.
+      requirement: 분으로 바꿔 돌려주기
+      args: [3, 5]
+      expect: { equals: 185 }
+misconceptions: [js.mc.return-is-log]
+hints:
+  - "`function toMinutes(hours, minutes) { ... }` 모양으로 선언하고, 본문에는 `return` 한 줄을 써요."
+  - 1시간은 60분이에요. 시간을 분으로 바꾼 값에 남은 분을 더하면 돼요.
+  - "`return hours * 60 + minutes;`처럼 계산한 값을 돌려줘요. `console.log`로 출력만 하면 결과가 `undefined`예요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function toMinutes(hours, minutes) {
+    return hours * 60 + minutes;
+  }
+  ```
+
+  - `toMinutes(2, 30)`을 부르면 `hours`에 2, `minutes`에 30이 들어가 `2 * 60 + 30`인 150을 돌려줘요.
+  - 출력이 아니라 `return`이라서, 돌려받은 값을 `toMinutes(2, 30) + 10`처럼 다른 계산에 바로 쓸 수 있어요.
+  - 함수 안에서 `console.log`만 하면 화면에는 150이 보여도 호출 결과는 `undefined`라서 확인을 통과하지 못해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

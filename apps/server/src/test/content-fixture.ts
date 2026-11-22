@@ -190,6 +190,7 @@ export function writeContentDb(meta: Record<string, string> = {}): string {
   });
   for (const ex of [
     ...FIXTURE_EXERCISES,
+    ...LESSON_BLOCK_EXERCISES,
     ...REMEDIAL_EXERCISES,
     ...ASSESSMENT_EXERCISES,
     ...PROJECT_EXERCISES,
@@ -291,7 +292,7 @@ interface FixtureExercise {
   id: string;
   type: string;
   difficulty: number;
-  usage?: 'practice' | 'remedial' | 'assessment' | 'project';
+  usage?: 'practice' | 'remedial' | 'assessment' | 'project' | 'check' | 'try';
   spec: unknown;
   code?: string;
   lessonId?: string;
@@ -485,6 +486,29 @@ export const FIXTURE_EXERCISES: FixtureExercise[] = [
       ],
     },
   },
+];
+
+/**
+ * The first lesson's own body items (D-091): "이해도 확인" checks (`usage: check`, answered by
+ * `inline-attempts`) and a "직접 써 보기" task (`usage: try`, checked by `try-attempts`). Kept out of
+ * FIXTURE_EXERCISES: practice sets never serve them.
+ */
+export const BLOCK = {
+  checkMcq: `${P}.check-mcq`,
+  checkPredict: `${P}.check-predict`,
+  tryShout: `${P}.try-shout`,
+} as const;
+
+const fixtureById = (id: string): FixtureExercise => {
+  const ex = FIXTURE_EXERCISES.find((e) => e.id === id);
+  if (!ex) throw new Error(`no fixture exercise ${id}`);
+  return ex;
+};
+
+export const LESSON_BLOCK_EXERCISES: FixtureExercise[] = [
+  { ...fixtureById(EX.mcq), id: BLOCK.checkMcq, usage: 'check' },
+  { ...fixtureById(EX.predict), id: BLOCK.checkPredict, usage: 'check' },
+  { ...fixtureById(EX.implement), id: BLOCK.tryShout, usage: 'try' },
 ];
 
 // ── Remedial exercises: outside lesson and review sets, used by adaptive items and weakness sets ──

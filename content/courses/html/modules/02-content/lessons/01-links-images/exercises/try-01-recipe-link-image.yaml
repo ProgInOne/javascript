@@ -1,0 +1,121 @@
+id: html.content.links-images.try-recipe-link-image
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: html.content.images, weight: 1 }
+  - { id: html.content.links, weight: 0.5 }
+  - { id: html.content.paths, weight: 0.5 }
+tags: [link, img, alt, relative-path, web-task]
+estimatedSeconds: 300
+prompt: |
+  요리 사이트의 첫 페이지에 링크 하나와 그림 하나를 직접 써 보세요. 폴더는 이렇게 생겼어요.
+
+  ```text
+  recipes/
+  ├── index.html      ← 지금 문서
+  ├── kimbap.html
+  └── images/
+      └── kimbap.jpg
+  ```
+
+  1. 문단 안에 링크 글자 "김밥 만드는 법"을 쓰고, 누르면 `kimbap.html`로 가게 하세요(상대 경로).
+  1. 그 아래에 그림 `kimbap.jpg`를 넣으세요(상대 경로). 그림을 볼 수 없는 사람에게 어떤 그림인지 전하는 설명도 주세요.
+
+  미리보기에는 그림 파일이 없어서 깨진 그림으로 보여요. 그림 자리에 여러분이 쓴 설명이 보이면 잘 된 거예요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>오늘의 요리</title>
+            </head>
+            <body>
+              <h1>오늘의 요리</h1>
+              <!-- 1. 문단 안에 kimbap.html로 가는 링크를 쓰세요 -->
+
+              <!-- 2. images 폴더의 kimbap.jpg 그림을 설명과 함께 넣으세요 -->
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>오늘의 요리</title>
+            </head>
+            <body>
+              <h1>오늘의 요리</h1>
+              <p><a href="kimbap.html">김밥 만드는 법</a></p>
+
+              <img src="images/kimbap.jpg" alt="접시에 썰어 담은 김밥 한 줄" />
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: link-in-p
+      description: 문단 안에 링크(a)가 하나 있고, 링크 글자는 "김밥 만드는 법"이어야 합니다.
+      requirement: 링크
+      visible: true
+      selector: body p > a
+      expect:
+        count: 1
+        text: { equals: 김밥 만드는 법 }
+    - kind: dom
+      id: link-href
+      description: 링크는 같은 폴더의 kimbap.html로 가야 합니다(href="kimbap.html").
+      requirement: 링크
+      visible: true
+      selector: body p > a
+      expect:
+        attr: { name: href, equals: kimbap.html }
+      misconceptionIfFail: html.mc.link-text-is-address
+    - kind: dom
+      id: img-src
+      description: 그림 하나가 images 폴더의 kimbap.jpg를 가리켜야 합니다(src="images/kimbap.jpg").
+      requirement: 그림
+      visible: true
+      selector: img
+      expect:
+        count: 1
+        attr: { name: src, equals: images/kimbap.jpg }
+      misconceptionIfFail: html.mc.relative-path-base
+    - kind: dom
+      id: img-alt
+      description: 그림에는 내용을 전하는 alt 설명이 비어 있지 않게 있어야 합니다.
+      requirement: 그림
+      visible: true
+      selector: img
+      expect:
+        attr: { name: alt, present: true, notEmpty: true }
+      misconceptionIfFail: html.mc.alt-optional
+misconceptions: [html.mc.link-text-is-address, html.mc.relative-path-base, html.mc.alt-optional]
+hints:
+  - 링크는 `a`, 그림은 `img`로 만들어요. 이동할 곳과 그림 파일의 위치는 각각 어느 속성에 쓸까요?
+  - "링크 주소는 `href`, 그림 경로는 `src`, 그림 설명은 `alt`에 써요. kimbap.html은 같은 폴더, kimbap.jpg는 images 폴더 안에 있어요."
+  - "`<p><a href=\"kimbap.html\">김밥 만드는 법</a></p>`, 그리고 `<img src=\"images/kimbap.jpg\" alt=\"...\" />`의 `...`에 그림을 설명하는 말을 써 보세요."
+explanation: |
+  예시 답안은 이래요.
+
+  ```html
+  <p><a href="kimbap.html">김밥 만드는 법</a></p>
+  <img src="images/kimbap.jpg" alt="접시에 썰어 담은 김밥 한 줄" />
+  ```
+
+  - `kimbap.html`은 지금 문서와 **같은 폴더**에 있어서 파일 이름만 써요.
+  - `kimbap.jpg`는 `images` 폴더 **안**에 있어서 `images/kimbap.jpg`예요.
+  - `alt`에는 그림을 보지 않아도 내용이 떠오르는 설명을 써요. "사진"이나 파일 이름은 도움이 되지 않아요.
+  - `img`는 빈 요소라 닫는 태그가 없어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

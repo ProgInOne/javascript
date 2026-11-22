@@ -1,0 +1,46 @@
+id: js-basics.functions.callbacks-intro.check-what-holds-function
+type: mcq_multi
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.fn.first-class, weight: 1 }
+tags: [function, first-class, value]
+estimatedSeconds: 75
+prompt: |
+  아래 함수 `shout`가 있어요. 다음 줄 중에서 실행한 뒤 변수에 **함수**(함수를 실행한 결과가 아니라 함수 값)가 담기는 것을 모두 고르세요. `shout`가 아닌 새 함수여도 돼요.
+code: |
+  function shout(word) {
+    return word + "!!";
+  }
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: "const a = shout;"
+    - id: b
+      text: "const b = shout(\"와\");"
+      misconception: js.mc.assign-call-result
+      rationale: 괄호를 붙이면 함수를 실행한 결과(문자열 `"와!!"`)가 담겨요.
+    - id: c
+      text: "const c = (w) => w + \"!!\";"
+    - id: d
+      text: "const d = typeof shout;"
+      rationale: "`typeof shout`는 자료형 이름인 문자열 `\"function\"`이에요. 함수가 아니에요."
+  correct: [a, c]
+misconceptions: [js.mc.assign-call-result, js.mc.function-not-a-value]
+hints:
+  - 함수 이름 뒤에 괄호가 있으면 함수를 담는 걸까요, 실행한 결과를 담는 걸까요?
+  - 괄호 없는 함수 이름은 함수 자체예요. 화살표 함수를 만들어 담는 것도 함수를 담는 거예요.
+  - "`typeof`가 돌려주는 값은 어떤 자료형인지 떠올려 보세요."
+explanation: |
+  정답은 `const a = shout;`와 `const c = (w) => w + "!!";`예요.
+
+  - `a`: 괄호가 없으니 실행하지 않고 함수 자체를 담아요. 이제 `a("좋아")`처럼 부를 수 있어요.
+  - `c`: 화살표 함수라는 값을 만들어 담아요.
+  - `b`: `shout("와")`를 실행한 결과 `"와!!"`가 담겨요. `b()`처럼 부르면 `TypeError`예요.
+  - `d`: `typeof shout`는 문자열 `"function"`이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

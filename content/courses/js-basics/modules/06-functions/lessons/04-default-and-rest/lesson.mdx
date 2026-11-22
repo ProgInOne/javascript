@@ -189,6 +189,10 @@ console.log(total("없음"));
 - 첫 인수는 항상 `label`이 받고, `prices`는 남은 것만 모아요.
 - `i`가 0부터 `prices.length - 1`까지 가면서 `prices[i]`로 값을 하나씩 꺼내 누적해요(<ConceptLink to="js.loops.accumulator-pattern">누적 패턴</ConceptLink>).
 - 남은 인수가 없으면 `prices.length`는 0이라 반복이 한 번도 돌지 않고 `sum`은 0 그대로예요.
+
+나머지 매개변수로 점수를 모아 세는 함수를 직접 써 보세요. 이번에는 매개변수 자리도 직접 채워야 해요.
+
+<TryIt ref="js-basics.functions.default-and-rest.try-count-passed" />
 </Section>
 
 <Section kind="pitfalls">
@@ -239,13 +243,13 @@ console.log(makeNotice("입력이 비었어요", "경고")); // [경고] 입력�
 </Section>
 
 <Section kind="check">
-기본값이 언제 쓰이는지 확인해 보세요.
+기본값이 쓰이는 호출을 골라 보세요.
 
-<InlineExercise ref="js-basics.functions.default-and-rest.tf-default-on-null" />
+<InlineExercise ref="js-basics.functions.default-and-rest.check-when-default-used" />
 
-나머지 매개변수에 무엇이 모이는지 예측해 보세요.
+나머지 매개변수에 무엇이 모이는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.functions.default-and-rest.predict-rest-length" />
+<InlineExercise ref="js-basics.functions.default-and-rest.check-rest-leftovers" />
 </Section>
 
 <Section kind="practice" />

@@ -1,0 +1,41 @@
+id: js-basics.values.null-undefined.check-null-situation
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.types.null, weight: 1 }
+tags: ["null"]
+estimatedSeconds: 60
+prompt: |
+  다음 중 변수에 `null`을 넣기에 **가장 알맞은** 상황은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: 회원이 프로필 사진을 등록하지 않아서, 사진이 "없음"을 표시하고 싶을 때
+    - id: b
+      text: 장바구니에 담은 상품이 0개일 때
+      misconception: js.mc.empty-value-is-zero
+      rationale: 상품 개수 0은 "0개가 있음"이라는 숫자 값이에요. 숫자 `0`을 넣어요.
+    - id: c
+      text: 변수를 만들면서 값을 넣는 것을 깜빡했을 때
+      rationale: 값을 넣지 않으면 JavaScript가 자동으로 `undefined`를 넣어요. `null`은 일부러 넣는 값이에요.
+    - id: d
+      text: 이름 칸에 글자가 하나도 없는 문자열을 담고 싶을 때
+      misconception: js.mc.empty-value-is-zero
+      rationale: 글자가 없는 문자열은 빈 문자열 `""`로 담아요. `""`도 값이 있는 문자열이에요.
+  correct: a
+misconceptions: [js.mc.empty-value-is-zero]
+hints:
+  - "`null`은 누가, 어떤 뜻으로 넣는 값이었나요?"
+  - 0개나 빈 문자열은 "값이 없음"일까요, "0이라는 값, 빈 글자라는 값이 있음"일까요?
+  - 값을 깜빡하고 안 넣었을 때 자동으로 들어가는 값은 `null`이 아니에요.
+explanation: |
+  정답은 **프로필 사진이 "없음"을 표시하고 싶을 때**예요. `null`은 프로그래머가 "여기는 값이 없어요"라고 **일부러** 표시할 때 넣는 값이에요.
+
+  - 상품 0개는 숫자 `0`, 글자 없는 이름은 빈 문자열 `""`로 담아요. 둘 다 값이 있는 거예요.
+  - 값을 깜빡하면 JavaScript가 자동으로 `undefined`를 넣어요. `null`은 자동으로 생기지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

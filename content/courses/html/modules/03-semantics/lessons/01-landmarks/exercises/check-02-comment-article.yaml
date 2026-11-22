@@ -1,0 +1,40 @@
+id: html.semantics.landmarks.check-comment-article
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: html.semantics.sectioning, weight: 1 }
+tags: [article, section, sectioning]
+estimatedSeconds: 60
+prompt: |
+  온라인 서점의 책 소개 페이지 아래에 독자 댓글이 여러 개 달려 있어요. 댓글 하나에는 글쓴이, 날짜, 내용이 있어서 그 댓글만 따로 떼어 보아도 뜻이 통해요. **댓글 하나하나**를 감쌀 요소로 가장 알맞은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`article`"
+    - id: b
+      text: "`section`"
+      misconception: html.mc.section-article-same
+      rationale: section은 문서 안의 주제별 구역이에요. 혼자서도 뜻이 통하는 글 한 편은 article이에요.
+    - id: c
+      text: "`main`"
+      misconception: html.mc.many-mains
+      rationale: main은 페이지의 핵심 내용 전체를 감싸는 요소이고, 한 페이지에 하나만 써요.
+    - id: d
+      text: "`nav`"
+      rationale: nav는 사이트의 주요 메뉴 링크 묶음이에요.
+  correct: a
+misconceptions: [html.mc.section-article-same, html.mc.many-mains]
+hints:
+  - 댓글 하나만 잘라서 다른 곳에 붙여도 이해될까요?
+  - 따로 떼어 내도 뜻이 통하는 독립된 글을 감싸는 요소가 있었어요.
+  - 레슨의 article 예에는 블로그 글, 뉴스 기사, 상품 카드, 그리고 댓글 하나가 있었어요.
+explanation: |
+  정답은 **`article`**이에요.
+
+  댓글 하나는 글쓴이와 내용을 갖춘 **독립된 글**이라, 따로 떼어 내도 뜻이 통해요. 이런 묶음은 `article`로 감싸요. 댓글 전체를 모은 "독자 댓글" 구역은 소제목이 붙는 주제별 구역이니 `section`으로 감쌀 수 있어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

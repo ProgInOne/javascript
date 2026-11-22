@@ -1,0 +1,95 @@
+id: js-basics.objects.reference-vs-value.try-heal-hero
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.5 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [object, reference, parameter, write-code]
+estimatedSeconds: 240
+prompt: |
+  게임 캐릭터의 체력을 채우는 함수 `heal(character, amount)`를 직접 만들어 보세요.
+
+  - 받은 캐릭터의 `hp`를 `amount`만큼 늘려요.
+  - 단, `hp`는 `maxHp`를 넘을 수 없어요. 넘으면 `maxHp`로 맞춰요.
+  - 새 객체를 만들지 말고, **받은 객체의 속성을 바꿔요**. 돌려주는 값은 없어도 돼요.
+
+  시작 코드 아래쪽이 아래처럼 출력되면 성공이에요.
+
+  ```text
+  70
+  100
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const hero = { name: "별빛", hp: 40, maxHp: 100 };
+
+          // 여기에 heal(character, amount) 함수를 만드세요.
+
+          heal(hero, 30);
+          console.log(hero.hp);
+          heal(hero, 50);
+          console.log(hero.hp);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const hero = { name: "별빛", hp: 40, maxHp: 100 };
+
+          // 여기에 heal(character, amount) 함수를 만드세요.
+          function heal(character, amount) {
+            character.hp += amount;
+            if (character.hp > character.maxHp) {
+              character.hp = character.maxHp;
+            }
+          }
+
+          heal(hero, 30);
+          console.log(hero.hp);
+          heal(hero, 50);
+          console.log(hero.hp);
+  checks:
+    - kind: console
+      id: output
+      description: 30을 채우면 70, 다시 50을 채우면 최대 체력인 100이 출력되어야 합니다.
+      requirement: 체력 채우기
+      expect:
+        lines: ["70", "100"]
+        mode: ordered-subset
+      misconceptionIfFail: js.mc.param-reassign-replaces-object
+    - kind: program
+      id: hero-after
+      description: 함수를 부른 뒤 바깥 hero 객체의 hp가 100이고, 다른 속성은 그대로여야 합니다.
+      requirement: 받은 객체 바꾸기
+      expect:
+        globals:
+          hero: { equals: { name: "별빛", hp: 100, maxHp: 100 } }
+        noError: true
+misconceptions: [js.mc.param-reassign-replaces-object]
+hints:
+  - 매개변수 `character`는 바깥 `hero`와 같은 객체를 가리켜요. 그 객체의 속성을 바꾸면 `hero`에서도 보여요.
+  - 먼저 `character.hp`에 `amount`를 더하고, 그다음 `maxHp`보다 커졌는지 `if`로 확인해 보세요.
+  - "`character.hp += amount;` 뒤에 `if (character.hp > character.maxHp) { character.hp = character.maxHp; }`예요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function heal(character, amount) {
+    character.hp += amount;
+    if (character.hp > character.maxHp) {
+      character.hp = character.maxHp;
+    }
+  }
+  ```
+
+  - `heal(hero, 30)`을 부르면 `character`에 `hero`의 참조가 들어가요. `character.hp`를 바꾸는 것은 `hero.hp`를 바꾸는 것과 같아서, 돌려주지 않아도 바깥에서 바뀐 값이 보여요.
+  - `character = { ...character, hp: 70 };`처럼 매개변수에 새 객체를 대입하면 `hero`는 그대로예요. 함수 안에서 바깥 객체를 바꾸려면 속성에 대입해야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

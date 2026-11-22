@@ -196,6 +196,10 @@ console.log("초기화 뒤: " + minji.score);
 - 11번 줄에서 `player`에 `minji`의 참조가 들어가요. 2번 줄은 그 객체의 `score`를 바꾸니 바깥 `minji.score`가 80이 돼요.
 - 14번 줄에서도 `player`는 처음에 `minji`와 같은 객체를 가리켜요. 그런데 6번 줄은 **매개변수 `player`에 새 객체를 대입**해요. 화살표만 새 객체로 옮겨졌고, `minji`가 가리키는 원래 객체는 손대지 않았어요. 함수가 끝나면 새 객체는 아무도 쓰지 않고 사라져요.
 - 함수로 점수를 0으로 만들려면 `player.score = 0;`처럼 속성을 바꾸거나, 새 객체를 `return`하고 바깥에서 받아 써야 해요.
+
+받은 객체의 속성을 바꾸는 함수를 직접 써 보세요.
+
+<TryIt ref="js-basics.objects.reference-vs-value.try-heal-hero" />
 </Section>
 
 <Section kind="examples">
@@ -256,6 +260,10 @@ console.log(copy2.tags);
 - 3번 줄은 객체를 복사하면서 `tags`만 `[...original.tags]`로 **새 배열**을 만들어 넣어요. 뒤에 쓴 `tags`가 복사해 온 `tags`를 대신해요.
 - 6번 줄의 `structuredClone`은 안쪽 배열과 객체까지 모두 새로 만들어요. 어디가 중첩되어 있는지 몰라도 통째로 따로 만들 수 있어요.
 - 세 배열이 모두 다른 배열이라, 한쪽에 `push`해도 나머지는 그대로예요.
+
+이번에는 안쪽에 배열과 객체가 함께 든 좌석표를 따로 바뀌게 복사해 보세요.
+
+<TryIt ref="js-basics.objects.reference-vs-value.try-copy-room" />
 </Section>
 
 <Section kind="examples">
@@ -409,21 +417,21 @@ console.log(draft.name);               // 민지
 </Section>
 
 <Section kind="check">
-객체를 다른 변수에 대입한 뒤 바꾸면 어떻게 될까요?
+객체를 다른 변수에 대입해 바꾼 뒤, 그 변수에 새 객체를 대입하면 어떻게 될까요?
 
-<InlineExercise ref="js-basics.objects.reference-vs-value.mcq-assign-shares" />
+<InlineExercise ref="js-basics.objects.reference-vs-value.check-shared-lunch" />
 
-함수에 넘긴 객체를 함수 안에서 바꾸면 어떻게 될까요?
+함수 안에서 바깥 객체를 바꾸려면 어떻게 써야 할까요?
 
-<InlineExercise ref="js-basics.objects.reference-vs-value.tf-param-object-copied" />
+<InlineExercise ref="js-basics.objects.reference-vs-value.check-which-function-changes" />
 
-얕은 복사본의 안쪽 배열을 바꾸면 원본은 어떻게 될까요?
+얕은 복사본과 원본은 어디까지 같은 것을 가리킬까요?
 
-<InlineExercise ref="js-basics.objects.reference-vs-value.mcq-shallow-nested" />
+<InlineExercise ref="js-basics.objects.reference-vs-value.check-recipe-shallow" />
 
-`const`로 만든 객체의 속성을 바꿀 수 있는지 확인해 보세요.
+`const`로 만든 객체에서 무엇이 막히는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.objects.reference-vs-value.mcq-const-push" />
+<InlineExercise ref="js-basics.objects.reference-vs-value.check-const-team-line" />
 </Section>
 
 <Section kind="practice" />

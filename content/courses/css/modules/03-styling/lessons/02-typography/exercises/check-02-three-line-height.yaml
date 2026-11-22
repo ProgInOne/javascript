@@ -1,0 +1,43 @@
+id: css.styling.typography.check-three-line-height
+type: fill_blank
+difficulty: 2
+usage: check
+concepts:
+  - { id: css.type.line-height, weight: 1 }
+tags: [line-height, unitless]
+estimatedSeconds: 80
+prompt: |
+  아래 문단은 화면에서 정확히 **3줄**로 보여요. padding·border는 없어요. 이 문단의 높이는 몇 px인가요? 숫자만 써도 돼요.
+code: |
+  .story {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+spec:
+  mode: text
+  template: |
+    문단의 높이(3줄): {{blank:h}}
+  blanks:
+    - id: h
+      accept: ["72px", "72"]
+      acceptRegex: "72 ?(?:px)?"
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "4.5": css.mc.line-height-unitless-px
+        "4.5px": css.mc.line-height-unitless-px
+misconceptions: [css.mc.line-height-unitless-px]
+hints:
+  - 단위 없는 `line-height`는 글자 크기에 곱하는 배수예요. 먼저 한 줄의 높이를 구해 보세요.
+  - 한 줄은 16 × 1.5 = 24px이에요.
+  - 문단의 높이는 한 줄 높이에 줄 수를 곱한 값이에요.
+explanation: |
+  정답은 **72px**이에요.
+
+  - 단위 없는 `line-height: 1.5`는 글자 크기의 1.5배라서 한 줄은 `16 × 1.5 = 24px`이에요. 1.5px이 아니에요.
+  - 문단이 3줄이니 `24 × 3 = 72px`이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

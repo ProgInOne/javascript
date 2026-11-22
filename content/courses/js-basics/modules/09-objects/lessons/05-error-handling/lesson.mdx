@@ -152,6 +152,10 @@ Error
 
 - `throw`는 메시지를 출력하는 문장이 아니에요. 4번 줄 자체는 아무것도 출력하지 않았고, 출력은 `catch`에서 했어요.
 - `"여기는 실행될까요?"`는 끝까지 나오지 않아요. `catch`가 끝난 뒤 `try`로 돌아가지 않으니까요.
+
+오류를 던지는 함수와, 그 오류를 잡는 함수를 직접 써 보세요.
+
+<TryIt ref="js-basics.objects.error-handling.try-safe-username" />
 </Section>
 
 <Section kind="examples">
@@ -319,11 +323,11 @@ console.log(addToCart("20"));   // 담지 못했어요: 한 번에 10개까지�
 <Section kind="check">
 `throw` 다음에는 어떤 일이 일어날까요?
 
-<InlineExercise ref="js-basics.objects.error-handling.mcq-throw-stops" />
+<InlineExercise ref="js-basics.objects.error-handling.check-throw-skips" />
 
 `finally`는 언제 실행될까요?
 
-<InlineExercise ref="js-basics.objects.error-handling.mcq-finally-when" />
+<InlineExercise ref="js-basics.objects.error-handling.check-finally-on-return" />
 </Section>
 
 <Section kind="practice" />

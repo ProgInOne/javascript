@@ -1,0 +1,84 @@
+id: js-basics.functions.expressions-and-arrows.try-to-fahrenheit
+type: implement_function
+usage: try
+difficulty: 1
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+tags: [function, arrow, write-code]
+estimatedSeconds: 180
+prompt: |
+  섭씨 온도를 화씨로 바꾸는 **화살표 함수** `toF`를 직접 만들어 보세요.
+
+  - 매개변수는 섭씨 온도 `c` 하나예요.
+  - 화씨는 `c * 9 / 5 + 32`예요. 이 값을 돌려주세요.
+  - 중괄호와 `return` 없이 **식 본문**으로 한 줄에 써 보세요.
+  - 예: `toF(0)` → `32`, `toF(100)` → `212`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 섭씨 c를 받아 화씨(c * 9 / 5 + 32)를 돌려주는 화살표 함수 toF를 만드세요.
+          // 중괄호 없이 한 줄로 써 보세요.
+
+
+          // 다 만들었으면 아래 줄로 확인해 보세요. 212가 나오면 돼요.
+          // console.log(toF(100));
+  entry: toF
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 섭씨 c를 받아 화씨(c * 9 / 5 + 32)를 돌려주는 화살표 함수 toF를 만드세요.
+          // 중괄호 없이 한 줄로 써 보세요.
+          const toF = (c) => c * 9 / 5 + 32;
+
+          // 다 만들었으면 아래 줄로 확인해 보세요. 212가 나오면 돼요.
+          console.log(toF(100));
+  checks:
+    - kind: call
+      id: freezing
+      description: 섭씨 0도는 화씨 32도여야 합니다.
+      requirement: 화씨로 바꿔 돌려주기
+      args: [0]
+      expect: { equals: 32 }
+      misconceptionIfFail: js.mc.arrow-braces-implicit-return
+    - kind: call
+      id: boiling
+      description: 섭씨 100도는 화씨 212도여야 합니다.
+      requirement: 화씨로 바꿔 돌려주기
+      args: [100]
+      expect: { equals: 212 }
+    - kind: call
+      id: room
+      description: 섭씨 25도는 화씨 77도여야 합니다.
+      requirement: 화씨로 바꿔 돌려주기
+      args: [25]
+      expect: { equals: 77 }
+    - kind: call
+      id: hidden-negative
+      visible: false
+      description: 영하 온도도 같은 식으로 바꿔야 합니다(섭씨 -40도는 화씨 -40도).
+      requirement: 화씨로 바꿔 돌려주기
+      args: [-40]
+      expect: { equals: -40 }
+misconceptions: [js.mc.arrow-braces-implicit-return, js.mc.arrow-concise-with-return]
+hints:
+  - "`const toF = (c) => ...;` 모양으로 시작해요. `=>` 오른쪽에 돌려줄 식을 써요."
+  - 식 본문에서는 식의 값이 자동으로 반환돼요. `return`을 쓰면 SyntaxError예요.
+  - "`=>` 오른쪽에 `c * 9 / 5 + 32`를 그대로 쓰면 돼요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  const toF = (c) => c * 9 / 5 + 32;
+  ```
+
+  - 중괄호가 없는 식 본문이라 `c * 9 / 5 + 32`의 값이 자동으로 반환돼요.
+  - `(c) => { c * 9 / 5 + 32; }`처럼 중괄호를 쓰고 `return`을 빠뜨리면 `undefined`가 나와요. 중괄호를 쓰려면 `return`도 함께 써야 해요.
+  - `(c) => return c * 9 / 5 + 32`는 식 자리에 문장을 써서 SyntaxError예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

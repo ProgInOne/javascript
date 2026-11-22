@@ -1,0 +1,53 @@
+id: js-basics.loops.nested-loops.check-meal-count
+type: fill_blank
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.loops.nested, weight: 1 }
+tags: [nested, iteration-count]
+estimatedSeconds: 75
+prompt: |
+  나흘 동안 식사를 기록하는 코드예요. 첫날은 1번, 둘째 날은 2번…처럼 날마다 기록 횟수가 늘어나요.
+
+  ```js
+  for (let day = 1; day <= 4; day++) {
+    for (let meal = 1; meal <= day; meal++) {
+      console.log(day + "일째 " + meal + "번째 기록");
+    }
+  }
+  ```
+
+  실행하면 `console.log`는 모두 몇 번 실행되나요? 숫자만 적어 주세요.
+spec:
+  mode: text
+  template: |
+    console.log 실행 횟수: {{blank:count}}번
+  blanks:
+    - id: count
+      accept: ["10"]
+      width: 4
+      misconceptionMap:
+        "8": js.mc.nested-count-additive
+misconceptions: [js.mc.nested-count-additive]
+hints:
+  - 안쪽 반복의 조건은 `meal <= day`예요. 안쪽 반복이 도는 횟수가 날마다 같나요?
+  - 1일째에는 안쪽이 1번, 2일째에는 2번 돌아요. 3일째와 4일째는요?
+  - 날마다 실행 횟수가 다르니 곱하지 말고, 날짜별 횟수를 모두 더해 보세요.
+explanation: |
+  정답은 **10번**이에요.
+
+  | `day` | 안쪽 `meal` | 출력 횟수 |
+  |---|---|---|
+  | 1 | 1 | 1 |
+  | 2 | 1, 2 | 2 |
+  | 3 | 1, 2, 3 | 3 |
+  | 4 | 1, 2, 3, 4 | 4 |
+
+  - 안쪽 범위가 `meal <= day`라서 바깥 회차마다 안쪽 반복 횟수가 달라요. 그래서 1 + 2 + 3 + 4 = 10번이에요.
+  - `16`이라고 답했다면 안쪽이 매번 4번 돈다고 보고 4 × 4로 곱한 거예요. 안쪽 범위가 고정일 때만 (바깥 횟수) × (안쪽 횟수)예요.
+  - `8`이라고 답했다면 바깥 횟수 4와 안쪽 마지막 횟수 4를 더한 거예요. 바깥 회차마다 안쪽 반복이 통째로 다시 돌아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

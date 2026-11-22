@@ -1,0 +1,46 @@
+id: js-basics.functions.function-basics.check-call-parens
+type: mcq_single
+usage: check
+difficulty: 1
+concepts:
+  - { id: js.fn.call, weight: 1 }
+tags: [function, call, parentheses]
+estimatedSeconds: 45
+prompt: |
+  아래처럼 함수 `showTime`을 만들어 두었어요. 이 함수의 본문을 **실행하는** 코드는 어느 것인가요?
+code: |
+  function showTime() {
+    console.log("지금은 3시예요");
+  }
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: "showTime();"
+    - id: b
+      text: "showTime;"
+      misconception: js.mc.call-without-parens
+      rationale: 괄호 없이 이름만 쓰면 함수를 가리키기만 하고 실행하지 않아요. 오류도 나지 않아요.
+    - id: c
+      text: "function showTime();"
+      rationale: "`function`은 함수를 새로 만들 때 쓰는 키워드예요. 이렇게 쓰면 본문이 없는 잘못된 선언이라 SyntaxError가 나요."
+    - id: d
+      text: "showTime{};"
+      rationale: 호출에는 중괄호가 아니라 괄호를 써요. 이 줄은 SyntaxError예요.
+  correct: a
+misconceptions: [js.mc.call-without-parens]
+hints:
+  - 함수를 만드는 것과 부르는 것은 모양이 달라요. 부를 때도 `function`을 쓸까요?
+  - 함수를 부를 때는 이름 뒤에 무언가를 꼭 붙여요. 인수가 없어도 붙여요.
+  - 이름 뒤에 빈 괄호 `()`가 있는 선택지를 찾아보세요.
+explanation: |
+  정답은 `showTime();`이에요.
+
+  - 함수 이름 뒤에 **괄호**를 붙여야 호출이에요. 인수가 없으면 빈 괄호 `()`를 써요.
+  - `showTime;`은 오류 없이 지나가지만 아무 일도 하지 않아요. 알아차리기 어려운 실수예요.
+  - `function`은 함수를 새로 만들 때만 쓰고, 중괄호 `{}`는 본문을 감쌀 때 써요. 부를 때는 둘 다 필요 없어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

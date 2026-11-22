@@ -190,7 +190,8 @@ export class ExerciseService {
     const orm = this.#userDb.orm;
     return orm.transaction(() => {
       const { level } = hintState(listHintEvents(orm, scope));
-      if (level === 0) this.#assertTriedFirst(scope);
+      // A try task records no submissions, so its first-try rule is kept by the lesson (D-091).
+      if (level === 0 && exercise.usage !== 'try') this.#assertTriedFirst(scope);
       if (level >= levels.length) {
         throw new AppError('EXERCISE_HINTS_EXHAUSTED', 409, '더 열 수 있는 힌트가 없습니다.', {
           details: { hintCount: levels.length },

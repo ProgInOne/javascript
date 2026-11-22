@@ -1,0 +1,43 @@
+id: js-basics.objects.object-basics.check-missing-undefined
+type: predict_output
+usage: check
+difficulty: 1
+concepts:
+  - { id: js.obj.dot-bracket, weight: 1 }
+  - { id: js.types.undefined, weight: 0.3 }
+tags: [object, missing-property, undefined]
+estimatedSeconds: 60
+prompt: |
+  휴대폰 정보 객체에 없는 속성도 읽어 봐요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const phone = { model: "갤럭시", color: "검정" };
+    console.log(phone.color);
+    console.log(phone.price);
+    console.log("확인 끝");
+  answerKind: console
+  misconceptionByAnswer:
+    "검정": js.mc.missing-property-error
+misconceptions: [js.mc.missing-property-error]
+hints:
+  - "`phone`에 들어 있는 키는 무엇과 무엇인가요?"
+  - 없는 속성을 읽으면 오류가 날까요, 아니면 "비어 있음"을 뜻하는 값이 나올까요?
+  - 없는 속성은 `undefined`예요. 오류가 아니니 다음 줄도 실행돼요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  검정
+  undefined
+  확인 끝
+  ```
+
+  - `phone.color`는 있는 속성이라 `검정`이에요.
+  - `price` 속성은 없어요. 없는 속성을 읽으면 오류가 아니라 `undefined`가 나와요.
+  - 오류가 나지 않았으니 마지막 줄까지 실행돼요. 오류(`TypeError`)는 `phone.price.won`처럼 `undefined`에서 다시 속성을 읽을 때 나요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

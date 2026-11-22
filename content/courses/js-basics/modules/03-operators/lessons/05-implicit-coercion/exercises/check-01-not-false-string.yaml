@@ -1,0 +1,44 @@
+id: js-basics.operators.implicit-coercion.check-not-false-string
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.conv.truthy-falsy, weight: 1 }
+tags: [truthy, falsy, not]
+estimatedSeconds: 50
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  const answer = "false";
+  console.log(!answer);
+spec:
+  options:
+    - id: a
+      text: '`false`'
+    - id: b
+      text: '`true`'
+      misconception: js.mc.boolean-reads-string-content
+      rationale: '`"false"`는 글자가 들어 있는 문자열이라 truthy예요. 뒤집으면 `false`예요.'
+    - id: c
+      text: '`"false"`라는 글자가 그대로 나온다'
+      rationale: '`!`는 값을 불리언으로 바꾼 뒤 뒤집어요. 결과는 항상 `true`나 `false`예요.'
+    - id: d
+      text: 문자열에는 `!`를 쓸 수 없어서 오류가 난다
+      rationale: 어떤 값이든 `!`를 붙일 수 있어요. truthy·falsy로 판단해서 뒤집을 뿐이에요.
+  correct: a
+misconceptions: [js.mc.boolean-reads-string-content]
+hints:
+  - "`answer`에 든 값은 불리언 false인가요, 다섯 글자로 된 문자열인가요?"
+  - falsy 값 목록에 있는 문자열은 빈 문자열 `""` 하나뿐이에요.
+  - "`\"false\"`는 truthy예요. `!`는 그걸 뒤집어요."
+explanation: |
+  정답은 **`false`**예요.
+
+  `answer`에는 불리언이 아니라 `"false"`라는 **문자열**이 들어 있어요. 문자열은 빈 문자열 `""`만 falsy이고 글자가 있으면 truthy예요. `!`는 truthy인 값을 뒤집어 `false`를 만들어요.
+
+  글자의 뜻("거짓")은 보지 않는다는 점이 핵심이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

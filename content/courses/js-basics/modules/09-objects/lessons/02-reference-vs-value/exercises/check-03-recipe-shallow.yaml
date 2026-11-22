@@ -1,0 +1,37 @@
+id: js-basics.objects.reference-vs-value.check-recipe-shallow
+type: true_false
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.obj.copy-shallow, weight: 1 }
+tags: [object, shallow-copy, spread]
+estimatedSeconds: 60
+prompt: |
+  아래 코드를 보고, 설명이 맞는지 고르세요.
+code: |
+  const recipe = { name: "카레", spices: ["강황"] };
+  const myRecipe = { ...recipe };
+  myRecipe.name = "매운 카레";
+  myRecipe.spices.push("고춧가루");
+spec:
+  statement: '코드를 실행한 뒤 `myRecipe === recipe`는 `false`이지만, `myRecipe.spices === recipe.spices`는 `true`다.'
+  answer: true
+  misconceptionIfWrong: js.mc.shallow-copy-is-deep
+misconceptions: [js.mc.shallow-copy-is-deep]
+hints:
+  - "`{ ...recipe }`로 만든 `myRecipe`는 새 객체일까요?"
+  - 펼쳐서 복사할 때 `spices` 칸에는 배열이 새로 만들어질까요, 참조가 복사될까요?
+  - 객체의 `===`는 같은 객체(배열)를 가리키는지만 봐요.
+explanation: |
+  정답은 **참**이에요.
+
+  - `myRecipe === recipe`는 `false`예요. `{ ...recipe }`는 새 객체를 만들어서, 바깥 객체는 서로 달라요.
+  - `myRecipe.spices === recipe.spices`는 `true`예요. 펼쳐서 복사하면 배열은 새로 만들어지지 않고 참조만 복사돼서, 두 객체가 **같은 배열**을 함께 써요.
+  - 그래서 `myRecipe.spices.push("고춧가루")`는 `recipe.spices`에서도 보이고, `myRecipe.name`을 바꾼 것은 `recipe.name`에 보이지 않아요.
+
+  안쪽 배열까지 따로 만들려면 `{ ...recipe, spices: [...recipe.spices] }`나 `structuredClone(recipe)`를 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

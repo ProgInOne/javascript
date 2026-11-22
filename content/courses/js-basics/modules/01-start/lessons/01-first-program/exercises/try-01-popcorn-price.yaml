@@ -1,0 +1,89 @@
+id: js-basics.start.first-program.try-popcorn-price
+type: implement_function
+difficulty: 1
+usage: try
+concepts:
+  - { id: js.basics.console-log, weight: 1 }
+  - { id: js.basics.statements, weight: 0.3 }
+tags: [console-log, quotes, comma, write-code]
+estimatedSeconds: 200
+prompt: |
+  팝콘 한 개는 4500원이에요. 팝콘 두 개의 가격을 계산해서 콘솔에 아래 세 줄을 출력해 보세요. 주석에 적힌 순서대로 `console.log` 문장을 직접 쓰면 돼요.
+
+  ```text
+  팝콘 2개
+  9000
+  팝콘 2개 가격: 9000
+  ```
+
+  `9000`은 직접 계산해서 적지 말고 `4500 * 2`처럼 계산식으로 써 보세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1. 글자 "팝콘 2개"를 출력하세요.
+
+          // 2. 4500 * 2를 계산한 결과를 출력하세요. (따옴표를 붙이면 계산하지 않아요!)
+
+          // 3. 글자 "팝콘 2개 가격:"과 계산 결과를 쉼표로 나눠 한 줄에 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 1. 글자 "팝콘 2개"를 출력하세요.
+          console.log("팝콘 2개");
+          // 2. 4500 * 2를 계산한 결과를 출력하세요. (따옴표를 붙이면 계산하지 않아요!)
+          console.log(4500 * 2);
+          // 3. 글자 "팝콘 2개 가격:"과 계산 결과를 쉼표로 나눠 한 줄에 출력하세요.
+          console.log("팝콘 2개 가격:", 4500 * 2);
+  checks:
+    - kind: console
+      id: text-line
+      description: 글자 `팝콘 2개`만 있는 줄이 출력되어야 합니다.
+      requirement: 글자 출력
+      expect:
+        lines: ["팝콘 2개"]
+        mode: contains
+    - kind: console
+      id: calc-line
+      description: 계산 결과 `9000`만 있는 줄이 출력되어야 합니다. 식을 따옴표로 감싸면 `4500 * 2`가 글자 그대로 나와요.
+      requirement: 계산 결과 출력
+      expect:
+        lines: ["9000"]
+        mode: contains
+    - kind: console
+      id: comma-line
+      description: "글자와 계산 결과가 한 칸 띄어 `팝콘 2개 가격: 9000` 한 줄로 출력되어야 합니다."
+      requirement: 글자와 계산 결과를 한 줄에
+      expect:
+        lines: ["팝콘 2개 가격: 9000"]
+        mode: contains
+    - kind: console
+      id: order
+      description: 세 줄만 정해진 순서대로 출력되어야 합니다.
+      requirement: 세 줄 순서
+      expect:
+        lines: ["팝콘 2개", "9000", "팝콘 2개 가격: 9000"]
+hints:
+  - 콘솔에 나올 줄이 세 개이니 `console.log` 문장도 세 개가 필요해요. 주석 아래 빈 줄에 하나씩 써요.
+  - 글자는 큰따옴표로 감싸고, 계산식은 따옴표 없이 써요. 곱하기 기호는 `*`예요.
+  - "셋째 줄은 `console.log(\"팝콘 2개 가격:\", 4500 * 2);`처럼 쉼표로 두 값을 나눠 넣어요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  console.log("팝콘 2개");
+  console.log(4500 * 2);
+  console.log("팝콘 2개 가격:", 4500 * 2);
+  ```
+
+  - 따옴표로 감싼 `"팝콘 2개"`는 글자 그대로 나와요.
+  - 따옴표 없는 `4500 * 2`는 계산한 결과 `9000`이 나와요. `"4500 * 2"`라고 쓰면 글자 그대로 `4500 * 2`가 나와요.
+  - 쉼표로 나눈 두 값은 한 칸 띄어 같은 줄에 나와요.
+misconceptions: [js.mc.quoted-expression-evaluates]
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

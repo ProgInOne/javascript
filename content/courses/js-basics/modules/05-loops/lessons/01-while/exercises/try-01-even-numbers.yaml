@@ -1,0 +1,88 @@
+id: js-basics.loops.while.try-even-numbers
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.loops.while, weight: 1 }
+  - { id: js.ops.compound-assignment, weight: 0.3 }
+tags: [while, write-code]
+estimatedSeconds: 240
+prompt: |
+  `while` 반복을 직접 써서 2부터 10까지의 짝수를 한 줄에 하나씩 출력해 보세요. 반복이 끝나면 시작 코드의 마지막 줄이 `짝수 출력 끝`을 출력해요.
+
+  ```text
+  2
+  4
+  6
+  8
+  10
+  짝수 출력 끝
+  ```
+
+  `console.log`를 다섯 번 쓰지 말고, 반복 하나로 써 보세요. 시작값 `n = 2`는 준비되어 있어요. 조건을 정하고, 본문에서 `n`을 **2씩** 늘려 가며 출력하면 돼요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          let n = 2;
+
+          // while 반복으로, n이 10 이하인 동안 n을 출력하고 n을 2씩 늘리세요.
+
+          console.log("짝수 출력 끝");
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let n = 2;
+
+          // while 반복으로, n이 10 이하인 동안 n을 출력하고 n을 2씩 늘리세요.
+          while (n <= 10) {
+            console.log(n);
+            n += 2;
+          }
+
+          console.log("짝수 출력 끝");
+  checks:
+    - kind: console
+      id: output
+      description: 2, 4, 6, 8, 10이 한 줄에 하나씩 나온 뒤 `짝수 출력 끝`이 출력되어야 합니다.
+      requirement: 짝수 출력
+      expect:
+        lines: ["2", "4", "6", "8", "10", "짝수 출력 끝"]
+    - kind: program
+      id: loop-ends
+      description: 반복이 끝난 뒤 `n`은 조건을 처음으로 거짓으로 만든 값 `12`여야 합니다. 반복이 끝나지 않는다면 본문에서 `n`을 늘리고 있는지 확인해 보세요.
+      requirement: 반복이 끝나도록 n 바꾸기
+      expect:
+        globals:
+          n: { equals: 12 }
+        noError: true
+      misconceptionIfFail: js.mc.while-auto-update
+misconceptions: [js.mc.while-auto-update]
+hints:
+  - 모양은 `while (조건) { 본문 }`이에요. 조건에는 `n`이 10 이하인지 검사하는 식을 써요.
+  - 조건은 `n <= 10`이에요. 본문에서는 `console.log(n);`으로 출력하고, `n`을 2만큼 늘려요.
+  - 본문 둘째 줄은 `n += 2;`예요. 이 줄이 없으면 `n`이 계속 2라서 반복이 끝나지 않아요.
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  while (n <= 10) {
+    console.log(n);
+    n += 2;
+  }
+  ```
+
+  | 검사할 때 `n` | 조건 `n <= 10` | 출력 |
+  |---|---|---|
+  | 2, 4, 6, 8, 10 | `true` | 그 값 |
+  | 12 | `false` | (반복 끝) |
+
+  - 시작값 `2`, 조건 `n <= 10`, 변수 바꾸기 `n += 2` 세 가지가 함께 있어야 반복이 정확히 다섯 번 돌고 끝나요.
+  - 조건을 `n < 10`으로 쓰면 `10`이 빠져요. `n += 2`를 빠뜨리면 무한 반복이 돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

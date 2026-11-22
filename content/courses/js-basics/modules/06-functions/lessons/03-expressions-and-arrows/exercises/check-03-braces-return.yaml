@@ -1,0 +1,48 @@
+id: js-basics.functions.expressions-and-arrows.check-braces-return
+type: predict_output
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [function, arrow, braces, return]
+estimatedSeconds: 70
+prompt: |
+  점수로 합격 여부를 알려 주는 화살표 함수예요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const label = (score) => {
+      if (score >= 60) {
+        "합격";
+      }
+      return "불합격";
+    };
+
+    console.log(label(80));
+    console.log(label(40));
+  answerKind: console
+  misconceptionByAnswer:
+    "합격\n불합격": js.mc.arrow-braces-implicit-return
+misconceptions: [js.mc.arrow-braces-implicit-return]
+hints:
+  - 함수 본문이 중괄호로 감싸여 있어요. 중괄호 본문에서 값을 돌려주는 것은 무엇뿐인가요?
+  - "`if` 안의 `\"합격\";`에는 `return`이 없어요. 이 줄은 값을 만들기만 하고 어디에도 보내지 않아요."
+  - "`label(80)`도 `if` 블록을 지나 마지막 줄까지 가요. 마지막 줄은 무엇을 돌려주나요?"
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  불합격
+  불합격
+  ```
+
+  - 중괄호 본문에서는 `return`만 값을 돌려줘요. `"합격";`처럼 식만 쓴 줄은 계산한 뒤 버려져요.
+  - 그래서 `label(80)`도 `if` 블록을 지나 `return "불합격";`에 닿아 `불합격`을 돌려줘요.
+
+  첫 줄을 `합격`이라고 답했다면 중괄호 본문에서도 식의 값이 저절로 반환된다고 본 거예요. `return "합격";`이라고 써야 80점일 때 `합격`이 돌아와요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

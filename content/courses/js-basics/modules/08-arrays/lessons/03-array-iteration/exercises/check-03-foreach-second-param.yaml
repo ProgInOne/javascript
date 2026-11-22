@@ -1,0 +1,27 @@
+id: js-basics.arrays.array-iteration.check-foreach-second-param
+type: true_false
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.arr.foreach, weight: 1 }
+  - { id: js.fn.callback, weight: 0.3 }
+tags: [forEach, callback, index, check]
+estimatedSeconds: 45
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: '`["봄", "여름"].forEach((season, n) => console.log(n));`을 실행하면 `봄`과 `여름`이 차례로 출력된다.'
+  answer: false
+hints:
+  - "`forEach`는 콜백을 부를 때 인수를 어떤 순서로 넘겨 주나요?"
+  - 콜백의 첫 번째 매개변수 `season`에는 요소가 들어와요. 두 번째 `n`에는 무엇이 들어올까요?
+  - 매개변수 이름이 무엇이든, 두 번째 자리에는 언제나 같은 종류의 값이 들어와요.
+explanation: |
+  정답은 **거짓**이에요. 출력은 `0`과 `1`이에요.
+
+  `forEach`는 콜백을 `(요소, 인덱스)` 순서로 불러요. 첫 번째 매개변수 `season`에 `"봄"`, `"여름"`이, 두 번째 매개변수 `n`에 `0`, `1`이 들어와요. 이름을 `n`이라고 지어도 두 번째 자리는 인덱스예요. 요소를 출력하려면 `console.log(season)`이라고 써야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

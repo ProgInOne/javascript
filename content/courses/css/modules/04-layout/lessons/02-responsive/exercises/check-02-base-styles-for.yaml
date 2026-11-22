@@ -1,0 +1,41 @@
+id: css.layout.responsive.check-base-styles-for
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: css.responsive.mobile-first, weight: 1 }
+tags: [mobile-first, media-query]
+estimatedSeconds: 50
+prompt: |
+  **모바일 우선** 방식으로 CSS를 쓸 때, 미디어 쿼리 **밖에** 쓰는 기본 스타일과 미디어 쿼리 조건을 바르게 짝지은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: 기본 스타일은 좁은 화면용, 넓어질 때 바뀌는 것만 `min-width` 미디어 쿼리 안에 쓴다
+    - id: b
+      text: 기본 스타일은 넓은 화면용, 좁아질 때 바뀌는 것을 `max-width` 미디어 쿼리 안에 쓴다
+      misconception: css.mc.mobile-first-means-desktop-override
+      rationale: 넓은 화면을 기본으로 두고 좁은 화면에서 덮어쓰는 것은 데스크톱 우선 방식이에요.
+    - id: c
+      text: 기본 스타일은 좁은 화면용, 넓어질 때 바뀌는 것은 `max-width` 미디어 쿼리 안에 쓴다
+      rationale: max-width는 그 값 이하, 즉 좁은 화면에서 적용돼요. 넓어질 때 더할 규칙에는 맞지 않아요.
+    - id: d
+      text: 미디어 쿼리 밖에는 아무것도 쓰지 않고, 모든 화면용 규칙을 미디어 쿼리 안에 나눠 쓴다
+      rationale: 모바일 우선은 조건 없는 기본 스타일(좁은 화면용) 위에 넓은 화면 규칙을 덧붙이는 방식이에요.
+  correct: a
+misconceptions: [css.mc.mobile-first-means-desktop-override]
+hints:
+  - "\"모바일 우선\"은 어떤 화면의 배치를 먼저 쓴다는 뜻일까요?"
+  - 좁은 화면 배치를 조건 없이 먼저 쓰고, 화면이 넓어질 때 필요한 것만 덧붙여요.
+  - 화면이 "어떤 너비 이상"일 때 적용되는 조건은 min-width예요.
+explanation: |
+  정답은 **기본 스타일은 좁은 화면용, 넓어질 때 바뀌는 것만 `min-width` 안에**예요.
+
+  모바일 우선은 단순한 좁은 화면 배치를 미디어 쿼리 밖에 먼저 쓰고, 화면이 넓어질 때 달라지는 것만 `min-width` 미디어 쿼리로 덧붙여요. 넓은 화면 규칙이 "추가"로만 쌓여서 덮어쓰기가 덜 엉켜요.
+
+  넓은 화면을 기본으로 두고 `max-width`로 좁은 화면을 덮어쓰는 방식은 데스크톱 우선이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

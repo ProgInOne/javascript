@@ -1,0 +1,43 @@
+id: css.basics.selectors.check-cannot-select
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: css.selectors.basic, weight: 1 }
+tags: [selector, class, id, type-selector]
+estimatedSeconds: 60
+prompt: |
+  HTML에 `<h2 id="intro" class="title big">자기소개</h2>`가 있어요. 다음 선택자 중 이 제목을 **고르지 못하는** 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`intro`"
+    - id: b
+      text: "`#intro`"
+      rationale: 샵(#)은 id로 고르는 선택자예요. id가 intro이니 이 제목을 골라요.
+    - id: c
+      text: "`.big`"
+      rationale: class 값을 공백으로 나누면 title과 big 두 클래스예요. .big으로도 골라져요.
+      misconception: css.mc.multiple-classes-one-name
+    - id: d
+      text: "`h2`"
+      rationale: 타입 선택자 h2는 문서의 모든 h2를 고르니 이 제목도 골라요.
+  correct: a
+misconceptions: [css.mc.multiple-classes-one-name]
+hints:
+  - 선택자마다 앞에 붙은 기호를 보세요. 기호가 없으면 무엇으로 고르는 선택자일까요?
+  - 점(.)은 클래스, 샵(#)은 id, 기호가 없으면 요소 이름으로 고르는 타입 선택자예요.
+  - 기호 없는 `intro`는 `<intro>`라는 이름의 요소를 찾아요. 그런 요소가 문서에 있나요?
+explanation: |
+  정답은 **`intro`** 예요.
+
+  기호가 없는 선택자는 요소 이름으로 고르는 타입 선택자예요. `intro`는 `<intro>`라는 요소를 찾으므로 이 제목을 고르지 못해요. id로 고르려면 앞에 샵을 붙여 `#intro`라고 써야 해요.
+
+  - `#intro`: id가 intro인 요소를 골라요.
+  - `.big`: class 값 `title big`은 공백으로 나뉜 두 클래스라서, `.title`로도 `.big`으로도 골라져요.
+  - `h2`: 모든 h2 요소를 골라요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

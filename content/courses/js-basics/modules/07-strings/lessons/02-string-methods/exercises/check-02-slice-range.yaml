@@ -1,0 +1,53 @@
+id: js-basics.strings.string-methods.check-slice-range
+type: fill_blank
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.str.slice, weight: 1 }
+tags: [string, slice]
+estimatedSeconds: 75
+prompt: |
+  지역 코드가 들어 있는 문자열이에요.
+
+  ```js
+  const code = "KR-SEOUL-01";
+  ```
+
+  두 식의 결과를 따옴표 없이 쓰세요.
+spec:
+  mode: text
+  template: |
+    code.slice(3, 8): {{blank:city}}
+    code.slice(-2): {{blank:num}}
+  blanks:
+    - id: city
+      accept: ["SEOUL", "\"SEOUL\""]
+      caseSensitive: true
+      width: 10
+      misconceptionMap:
+        "SEOUL-": js.mc.slice-end-inclusive
+        "SEOUL-01": js.mc.slice-second-arg-length
+    - id: num
+      accept: ["01", "\"01\""]
+      width: 6
+      misconceptionMap:
+        "1": js.mc.slice-negative-invalid
+misconceptions: [js.mc.slice-end-inclusive, js.mc.slice-second-arg-length, js.mc.slice-negative-invalid]
+hints:
+  - 인덱스를 적어 보세요. `K`가 0, `R`이 1, `-`가 2, `S`가 3이에요.
+  - "`slice(시작, 끝)`은 끝 인덱스의 글자를 넣지 않아요. 8번 글자는 무엇인가요?"
+  - 음수는 뒤에서부터 센 위치예요. `slice(-2)`는 뒤에서 2글자부터 끝까지예요.
+explanation: |
+  정답은 `SEOUL`과 `01`이에요.
+
+  | 인덱스 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+  |---|---|---|---|---|---|---|---|---|---|---|---|
+  | 글자 | K | R | - | S | E | O | U | L | - | 0 | 1 |
+
+  - `slice(3, 8)`은 3번부터 8번 **바로 앞**(7번)까지라 `SEOUL`이에요. 8번 `-`는 들어가지 않아요. 두 번째 값 8은 글자 수가 아니라 끝 위치예요.
+  - `slice(-2)`는 뒤에서 2번째 글자부터 끝까지라 `01`이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

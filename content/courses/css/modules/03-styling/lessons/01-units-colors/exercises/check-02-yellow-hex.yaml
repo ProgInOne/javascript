@@ -1,0 +1,40 @@
+id: css.styling.units-colors.check-yellow-hex
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: css.colors.notation, weight: 1 }
+tags: [color, rgb, hex]
+estimatedSeconds: 60
+prompt: |
+  `rgb(255 255 0)`은 빨강과 초록 빛을 가장 강하게 섞고 파랑은 넣지 않은 노란색이에요. 같은 색을 16진수로 쓴 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`#ffff00`"
+    - id: b
+      text: "`#255255000`"
+      rationale: 16진수 표기는 십진수 255를 그대로 쓰지 않아요. 255는 16진수로 ff예요.
+    - id: c
+      text: "`#00ffff`"
+      rationale: 앞 두 자리가 빨강이에요. 00ffff는 빨강 0, 초록 255, 파랑 255라서 하늘색(청록)이에요.
+    - id: d
+      text: "`#ff00ff`"
+      rationale: 가운데 두 자리가 초록이에요. ff00ff는 초록이 0이라 자홍색이에요.
+  correct: a
+hints:
+  - "`#rrggbb`는 빨강, 초록, 파랑을 두 자리씩 차례로 써요."
+  - 16진수 `ff`는 255, `00`은 0이에요.
+  - 빨강 255 → ff, 초록 255 → ff, 파랑 0 → 00을 차례로 이어 보세요.
+explanation: |
+  정답은 **`#ffff00`** 이에요.
+
+  `#rrggbb`는 빨강·초록·파랑 값을 두 자리 16진수로 차례로 써요. 255는 `ff`, 0은 `00`이니 `ff` `ff` `00`을 이어서 `#ffff00`이 돼요.
+
+  - 자리 순서를 바꾸면 다른 색이 돼요(`#00ffff`는 청록, `#ff00ff`는 자홍).
+  - 십진수 255를 그대로 이어 쓰는 표기는 없어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

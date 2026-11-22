@@ -1,0 +1,30 @@
+id: js-basics.loops.for.check-init-once
+type: true_false
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.loops.for, weight: 1 }
+tags: [for, init, execution-order]
+estimatedSeconds: 45
+prompt: |
+  다음 설명이 맞는지 골라 주세요.
+spec:
+  statement: '`for (let k = 3; k > 0; k--) { console.log(k); }`에서 초기화 `let k = 3`은 회차마다 다시 실행된다.'
+  answer: false
+  misconceptionIfWrong: js.mc.for-init-every-time
+misconceptions: [js.mc.for-init-every-time]
+hints:
+  - for의 세 부분 중 회차마다 실행되는 것은 무엇이고, 한 번만 실행되는 것은 무엇이었나요?
+  - 만약 회차마다 `k`가 다시 3이 된다면, `k > 0`은 언제 거짓이 될까요?
+  - 초기화는 반복을 시작할 때 딱 한 번, 조건·본문·갱신은 회차마다 실행돼요.
+explanation: |
+  정답은 **거짓**이에요.
+
+  초기화 `let k = 3`은 반복을 시작할 때 **딱 한 번**만 실행돼요. 그다음부터는 조건 → 본문 → 갱신이 회차마다 되풀이돼요. 그래서 `k`는 3, 2, 1로 줄어들고, 0이 되면 `k > 0`이 거짓이라 반복이 끝나요.
+
+  초기화가 회차마다 실행된다면 `k`가 매번 3으로 돌아가서 반복이 영원히 끝나지 않았을 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

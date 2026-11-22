@@ -1,0 +1,39 @@
+id: html.basics.text.check-poem-lines
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: html.text.paragraphs, weight: 1 }
+tags: [paragraph, whitespace, newline]
+estimatedSeconds: 50
+prompt: |
+  짧은 시를 소개하려고 `p` 하나 안에서 행마다 Enter를 쳐 네 줄로 썼어요. 그런데 실행하니 네 행이 한 줄로 이어져 보여요. 그 이유로 알맞은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: 브라우저는 코드의 줄바꿈을 공백 한 칸처럼 그리기 때문이다
+    - id: b
+      text: Enter를 한 번만 쳐서 그렇고, 두 번씩 치면 줄이 바뀐다
+      misconception: html.mc.newline-in-source
+      rationale: 빈 줄을 몇 번 넣어도 브라우저는 공백 한 칸으로 합쳐 그려요.
+    - id: c
+      text: 미리보기 화면이 너무 넓어서 줄이 합쳐졌다
+      rationale: 화면 너비는 긴 줄을 언제 접을지만 정해요. 코드의 줄바꿈이 사라지는 이유는 아니에요.
+    - id: d
+      text: 시는 `p`에 넣을 수 없는 글이라서 브라우저가 무시했다
+      rationale: 글자는 그대로 모두 보였어요. 줄바꿈만 공백으로 바뀐 거예요.
+  correct: a
+misconceptions: [html.mc.newline-in-source]
+hints:
+  - 첫 번째 예제에서 코드의 네 줄은 화면에서 어떻게 보였나요?
+  - 코드의 줄바꿈과 여러 칸 공백을 브라우저가 어떻게 처리하는지 떠올려 보세요.
+  - 브라우저에게 줄바꿈과 공백은 모두 "공백 한 칸"이에요.
+explanation: |
+  정답은 **브라우저가 코드의 줄바꿈을 공백 한 칸처럼 그리기 때문**이에요.
+
+  HTML 코드의 줄바꿈과 여러 칸 공백은 화면에서 **공백 한 칸**으로 합쳐져요. 그래서 Enter를 몇 번 치든 같은 문단 안에서는 글이 이어져 보여요. 내용을 나누려면 요소로 표시해야 해요. 이 시처럼 줄바꿈 자체가 내용이면 행 끝마다 `<br>`을 쓰고, 문단을 나눌 때는 `p`를 따로 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

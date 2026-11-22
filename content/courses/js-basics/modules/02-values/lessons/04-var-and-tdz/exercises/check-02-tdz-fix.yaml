@@ -1,0 +1,45 @@
+id: js-basics.values.var-and-tdz.check-tdz-fix
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.values.tdz, weight: 1 }
+tags: [tdz, reference-error]
+estimatedSeconds: 60
+prompt: |
+  프로그램을 실행했더니 아래 오류가 났어요. 이 오류를 고치는 방법으로 **가장 알맞은** 것은 무엇인가요?
+
+  ```text
+  ReferenceError: Cannot access 'speed' before initialization (2번째 줄)
+  ```
+spec:
+  options:
+    - id: a
+      text: "`speed`를 선언하는 줄을, `speed`를 쓰는 2번 줄보다 위로 옮긴다"
+    - id: b
+      text: "`speed`의 철자나 대소문자가 틀렸는지 찾아 고친다"
+      misconception: js.mc.tdz-means-misspelled
+      rationale: 이 메시지는 이름은 맞는데 선언 줄이 아직 실행되지 않았다는 뜻이에요. 오타라면 `speed is not defined`가 나요.
+    - id: c
+      text: "`let`이나 `const`를 `var`로 바꿔서 오류가 나지 않게 한다"
+      rationale: 오류는 사라지지만 `undefined`가 조용히 쓰이는 버그로 바뀔 뿐이에요. 선언 순서를 바로잡아야 해요.
+    - id: d
+      text: 2번 줄을 지우고 다시 실행한다
+      rationale: "`speed`를 쓰려던 일 자체가 사라져요. 원인은 선언 순서예요."
+  correct: a
+misconceptions: [js.mc.tdz-means-misspelled]
+hints:
+  - "`before initialization`은 \"초기화(선언 줄 실행) 전에\"라는 뜻이에요."
+  - 이름은 맞아요. JavaScript는 `speed`가 아래에서 선언된다는 것을 알고 있어요.
+  - 선언 줄이 먼저 실행되게 하려면 줄의 순서를 어떻게 바꿔야 할까요?
+explanation: |
+  정답은 **선언 줄을 쓰는 줄보다 위로 옮긴다**예요.
+
+  `Cannot access 'speed' before initialization`은 `let`이나 `const`로 선언한 `speed`를, 선언 줄이 실행되기 전(TDZ 안)에 썼다는 뜻이에요. 이름은 맞으니 오타를 찾을 필요가 없어요.
+
+  `var`로 바꾸면 오류는 사라지지만, 선언 전에는 `undefined`가 조용히 쓰여서 더 찾기 어려운 버그가 돼요. 변수는 쓰기 전에 선언해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

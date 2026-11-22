@@ -1,0 +1,91 @@
+id: js-basics.objects.destructuring-and-spread.try-queue-spread
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.obj.spread, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [spread, array, immutable, write-code]
+estimatedSeconds: 240
+prompt: |
+  놀이기구 대기 줄에 손님을 세우는 함수 `joinQueue(queue, name, fastPass)`를 만드세요. 배열 **전개**(`...`)로 새 배열을 만들어 돌려줘요.
+
+  - `fastPass`가 `true`면 `name`을 줄 **맨 앞**에, 아니면 줄 **맨 뒤**에 세운 새 배열을 돌려줘요.
+  - 받은 `queue` 배열은 바꾸지 않아요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `joinQueue(["민지", "준호"], "서연", false)` | `["민지", "준호", "서연"]` |
+  | `joinQueue(["민지", "준호"], "하린", true)` | `["하린", "민지", "준호"]` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function joinQueue(queue, name, fastPass) {
+            // 배열 전개로 새 줄을 만들어 돌려주세요.
+          }
+
+          console.log(joinQueue(["민지", "준호"], "하린", true));
+  entry: joinQueue
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function joinQueue(queue, name, fastPass) {
+            if (fastPass) {
+              return [name, ...queue];
+            }
+            return [...queue, name];
+          }
+
+          console.log(joinQueue(["민지", "준호"], "하린", true));
+  checks:
+    - { kind: call, id: back, args: [["민지", "준호"], "서연", false], expect: { equals: ["민지", "준호", "서연"] }, requirement: 맨 뒤에 서기 }
+    - { kind: call, id: front, args: [["민지", "준호"], "하린", true], expect: { equals: ["하린", "민지", "준호"] }, requirement: 맨 앞에 서기 }
+    - kind: call
+      id: empty-queue
+      visible: false
+      description: 줄이 비어 있으면 그 손님 한 명만 있는 배열이어야 합니다.
+      requirement: 맨 뒤에 서기
+      args: [[], "도윤", false]
+      expect: { equals: ["도윤"] }
+    - kind: call
+      id: keep-queue
+      visible: false
+      description: 받은 queue 배열을 바꾸면 안 됩니다.
+      requirement: 원래 줄 그대로
+      args: [["민지", "준호"], "서연", true]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.spread-mutates-original
+    - kind: call
+      id: new-array
+      visible: false
+      description: 받은 배열이 아니라 새 배열을 돌려줘야 합니다.
+      requirement: 원래 줄 그대로
+      args: [["민지"], "서연", false]
+      expect: { returnsNewReference: true }
+misconceptions: [js.mc.spread-mutates-original]
+hints:
+  - "`[...queue]`는 `queue`의 요소를 모두 담은 새 배열이에요. 대괄호 안에서 다른 값과 함께 쓸 수 있어요."
+  - 맨 앞에 세우려면 `name`을 전개보다 **앞에**, 맨 뒤에 세우려면 **뒤에** 써요.
+  - "`if (fastPass)`이면 `[name, ...queue]`를, 아니면 `[...queue, name]`을 돌려줘요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function joinQueue(queue, name, fastPass) {
+    if (fastPass) {
+      return [name, ...queue];
+    }
+    return [...queue, name];
+  }
+  ```
+
+  - 배열 전개는 요소를 펼쳐서 새 배열에 담아요. 펼친 위치의 앞뒤에 다른 값을 함께 넣을 수 있어요.
+  - `queue.push(name)`이나 `queue.unshift(name)`은 받은 배열을 바꿔요. 함수를 부른 쪽의 줄까지 바뀌니, 새 배열을 만들어 돌려주는 편이 안전해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

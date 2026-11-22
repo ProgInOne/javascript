@@ -1,0 +1,29 @@
+id: js-basics.browser-intro.final-project.check-shared-handler
+type: true_false
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.dom.event-object, weight: 1 }
+  - { id: js.fn.callback, weight: 0.3 }
+tags: [project, event-target, check]
+estimatedSeconds: 50
+prompt: |
+  할 일마다 완료 버튼(`<button>완료</button>`)이 있고, 모든 완료 버튼에 같은 함수 `toggleDone`을 등록했어요. 아래 설명이 맞는지 골라 보세요.
+spec:
+  statement: "`toggleDone(event)` 안에서 `event.target`을 읽으면, 여러 완료 버튼 가운데 사용자가 방금 누른 그 버튼을 알 수 있다."
+  answer: true
+hints:
+  - "`event.target`은 어떤 요소를 가리키나요?"
+  - 함수는 하나여도, 이벤트가 일어날 때마다 그때의 이벤트 객체가 따로 넘어와요.
+  - 버튼 안에 글자만 있으면 누른 요소는 버튼 자신이에요.
+explanation: |
+  **맞아요.**
+
+  이벤트가 일어날 때마다 브라우저는 그 순간의 이벤트 객체를 함수에 넘겨요. `event.target`은 이벤트가 일어난 요소라서, 같은 함수를 여러 버튼이 함께 써도 어느 버튼을 눌렀는지 알 수 있어요.
+
+  버튼 안에 `<span>` 같은 요소가 있으면 `target`이 그 안쪽 요소일 수 있다는 점은 기억해 두세요. 이 프로젝트처럼 글자만 있으면 버튼 자신이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

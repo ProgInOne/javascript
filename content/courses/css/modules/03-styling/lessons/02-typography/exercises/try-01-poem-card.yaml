@@ -1,0 +1,129 @@
+id: css.styling.typography.try-poem-card
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: css.type.text-align, weight: 1 }
+  - { id: css.type.line-height, weight: 0.5 }
+  - { id: css.cascade.inheritance, weight: 0.2 }
+tags: [text-align, line-height, web-task]
+estimatedSeconds: 270
+prompt: |
+  시 카드(`.poem`)를 읽기 좋게 꾸며 보세요. 주석 자리에 선언과 규칙을 **직접** 써요. HTML은 바꾸지 마세요.
+
+  1. `.poem` 규칙에: 줄 높이를 **글자 크기의 2배**로(단위 없는 숫자로 써요), 카드 안의 글자를 **가운데 정렬**해요.
+  1. 새 규칙을 써서 시인 이름(`.poet`)만 **오른쪽 정렬**해요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>오늘의 시</title>
+              <style>
+                .poem {
+                  font-size: 18px;
+                  padding: 16px;
+                  background: #f5f5f4;
+                  /* 1. 줄 높이(글자 크기의 2배)와 가운데 정렬을 여기에 */
+                }
+                /* 2. .poet 규칙: 오른쪽 정렬 */
+              </style>
+            </head>
+            <body>
+              <div class="poem">
+                <p>바람이 불어오는 곳<br />그곳으로 가네</p>
+                <p class="poet">- 한 시인</p>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>오늘의 시</title>
+              <style>
+                .poem {
+                  font-size: 18px;
+                  padding: 16px;
+                  background: #f5f5f4;
+                  line-height: 2;
+                  text-align: center;
+                }
+                .poet {
+                  text-align: right;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="poem">
+                <p>바람이 불어오는 곳<br />그곳으로 가네</p>
+                <p class="poet">- 한 시인</p>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: line-height
+      description: 시 문단의 한 줄 높이가 글자 크기 18px의 2배인 36px이어야 합니다.
+      requirement: 줄 높이
+      visible: true
+      selector: ".poem p:first-child"
+      expect:
+        computed:
+          line-height: { px: { value: 36 } }
+      misconceptionIfFail: css.mc.line-height-unitless-px
+    - kind: css
+      id: center
+      description: 시 문단이 카드 안에서 가운데 정렬되어야 합니다.
+      requirement: 가운데 정렬
+      visible: true
+      selector: ".poem p:first-child"
+      expect:
+        computed:
+          text-align: { equals: center }
+    - kind: css
+      id: poet-right
+      description: 시인 이름만 오른쪽 정렬되어야 합니다.
+      requirement: 시인 이름
+      visible: true
+      selector: .poet
+      expect:
+        computed:
+          text-align: { equals: right }
+hints:
+  - 줄 높이와 글자 정렬은 둘 다 상속되는 속성이에요. 카드(`.poem`)에 주면 안쪽 문단이 물려받아요.
+  - "줄 높이는 `line-height`에 단위 없는 숫자로, 정렬은 `text-align`으로 써요. 시인 이름은 `.poet`을 직접 고르는 규칙이 물려받은 가운데 정렬보다 우선해요."
+  - "`.poem` 안에 `line-height: 2;`와 `text-align: center;`를 쓰고, 아래에 `.poet { text-align: right; }`를 써요."
+explanation: |
+  예시 답안은 이래요.
+
+  ```css
+  .poem {
+    font-size: 18px;
+    padding: 16px;
+    background: #f5f5f4;
+    line-height: 2;
+    text-align: center;
+  }
+  .poet {
+    text-align: right;
+  }
+  ```
+
+  - 단위 없는 `line-height: 2`는 글자 크기의 2배라 한 줄이 `18 × 2 = 36px`이에요.
+  - `text-align`은 상자 안의 글자를 정렬하고, 상속돼서 카드 안의 문단이 모두 가운데 정렬돼요.
+  - `.poet` 규칙은 시인 이름 문단을 직접 고르니 물려받은 `center`보다 우선해서 오른쪽 정렬돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

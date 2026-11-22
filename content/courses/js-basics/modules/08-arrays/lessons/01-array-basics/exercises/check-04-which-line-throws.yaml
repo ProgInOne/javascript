@@ -1,0 +1,48 @@
+id: js-basics.arrays.array-basics.check-which-line-throws
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.element-update, weight: 1 }
+  - { id: js.values.const, weight: 0.5 }
+tags: [const, element-update, check]
+estimatedSeconds: 60
+prompt: |
+  다음 코드에서 `TypeError`가 나는 줄은 어느 것인가요?
+code: |
+  const tags = ["js", "html"];
+  tags[0] = "css";     // (가)
+  tags[1] = tags[0];   // (나)
+  tags = ["react"];    // (다)
+spec:
+  options:
+    - id: a
+      text: (다)만
+    - id: b
+      text: (가)부터 오류가 난다
+      misconception: js.mc.array-immutable-like-string
+      rationale: '`const`는 요소를 바꾸는 것을 막지 않아요. (가)는 문제없이 실행돼요.'
+    - id: c
+      text: (나)만
+      rationale: (나)는 0번 요소를 읽어 1번 자리에 넣는 평범한 요소 바꾸기예요.
+    - id: d
+      text: 오류가 나는 줄이 없다
+      rationale: 변수 자체에 새 배열을 다시 대입하는 줄이 있어요. 그건 `const`가 막아요.
+  correct: a
+misconceptions: [js.mc.array-immutable-like-string]
+hints:
+  - 세 줄 중 "요소 하나를 바꾸는 줄"과 "변수에 새 값을 대입하는 줄"을 나눠 보세요.
+  - "`const`가 막는 것은 둘 중 어느 쪽일까요?"
+  - 대괄호 없이 `tags = ...`로 시작하는 줄을 찾아보세요.
+explanation: |
+  정답은 **(다)만**이에요.
+
+  - (가)와 (나)는 `tags[인덱스] = 값` 모양이라 배열 안의 요소만 바꿔요. `const` 배열이어도 괜찮아요.
+  - (다)는 `tags`라는 변수에 새 배열을 다시 대입해요. `const`는 바로 이것을 막아서 `TypeError: Assignment to constant variable.`이 나요.
+
+  정리하면 `const`는 "변수가 가리키는 배열을 바꾸지 못하게" 할 뿐, "배열 안의 요소를 바꾸지 못하게" 하지는 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

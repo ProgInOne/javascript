@@ -45,9 +45,6 @@ const makeDraft = (f: Record<string, unknown>) => {
   };
   const mc = (f['misconceptions/js.yaml'] as Record<string, unknown>[])[0];
   if (mc) delete mc['remediation'];
-  f['courses/js-basics/modules/01-start/lessons/01-first-program/lesson.mdx'] = (
-    f['courses/js-basics/modules/01-start/lessons/01-first-program/lesson.mdx'] as string
-  ).replace(/<InlineExercise[^>]*\/>/, '확인');
 };
 
 describe('buildContent', () => {
@@ -58,7 +55,8 @@ describe('buildContent', () => {
       courses: 1,
       lessons: 1,
       concepts: 2,
-      exercises: 1,
+      // The practice item, the lesson's check item and its try task (D-091).
+      exercises: 3,
       skippedDrafts: 0,
       includedDrafts: 0,
       templates: 0,
@@ -73,7 +71,7 @@ describe('buildContent', () => {
     );
     expect(meta).toMatchObject({
       pack_version: '2026.11.14.1',
-      schema_version: '4',
+      schema_version: '5',
       built_at: '2026-11-14T00:00:00.000Z',
     });
     expect(meta['content_hash']).toMatch(/^[0-9a-f]{64}$/);
@@ -119,7 +117,7 @@ describe('buildContent', () => {
   it('skips draft exercises', () => {
     const { out, result } = build(makeDraft);
     expect(result.written).toBe(true);
-    expect(result.stats).toMatchObject({ exercises: 0, skippedDrafts: 1, includedDrafts: 0 });
+    expect(result.stats).toMatchObject({ exercises: 2, skippedDrafts: 1, includedDrafts: 0 });
     const db = new Database(out, { readonly: true });
     expect(db.prepare("SELECT value FROM content_meta WHERE key = 'includes_drafts'").get()).toBe(
       undefined,
@@ -130,9 +128,11 @@ describe('buildContent', () => {
   it('includes draft exercises as auto_verified with includeDrafts (development builds)', () => {
     const { out, result } = build(makeDraft, { includeDrafts: true });
     expect(result.written).toBe(true);
-    expect(result.stats).toMatchObject({ exercises: 1, skippedDrafts: 0, includedDrafts: 1 });
+    expect(result.stats).toMatchObject({ exercises: 3, skippedDrafts: 0, includedDrafts: 1 });
     const db = new Database(out, { readonly: true });
-    expect(db.prepare('SELECT id, review_status FROM exercises').get()).toEqual({
+    expect(
+      db.prepare('SELECT id, review_status FROM exercises WHERE id = ?').get(EXERCISE),
+    ).toEqual({
       id: EXERCISE,
       review_status: 'auto_verified',
     });

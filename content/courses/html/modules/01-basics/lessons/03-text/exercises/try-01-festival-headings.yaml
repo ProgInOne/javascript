@@ -1,0 +1,151 @@
+id: html.basics.text.try-festival-headings
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: html.text.headings, weight: 1 }
+  - { id: html.text.emphasis, weight: 0.5 }
+tags: [heading, h1, h2, h3, strong, web-task]
+estimatedSeconds: 300
+prompt: |
+  학교 축제 안내문에 제목을 직접 써 넣어 보세요. 문단은 이미 있어요. 주석이 있는 자리마다 알맞은 제목 요소를 쓰면 돼요.
+
+  - 학교 축제 안내 (페이지 전체의 제목)
+    - 공연 (장)
+    - 먹거리 (장)
+      - 결제 방법 ("먹거리"의 세부 내용)
+
+  마지막 문단의 "현금만 쓸 수 있어요"는 꼭 알아야 하는 **중요한 내용**이에요. 이 부분만 알맞은 요소로 감싸세요(마침표는 빼고).
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>학교 축제 안내</title>
+            </head>
+            <body>
+              <!-- 페이지 전체의 제목: 학교 축제 안내 -->
+
+              <!-- 장 제목: 공연 -->
+              <p>강당에서 오후 2시에 시작해요.</p>
+
+              <!-- 장 제목: 먹거리 -->
+              <p>운동장에 먹거리 장터가 열려요.</p>
+
+              <!-- "먹거리"의 세부 제목: 결제 방법 -->
+              <p>장터에서는 현금만 쓸 수 있어요.</p>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>학교 축제 안내</title>
+            </head>
+            <body>
+              <h1>학교 축제 안내</h1>
+
+              <h2>공연</h2>
+              <p>강당에서 오후 2시에 시작해요.</p>
+
+              <h2>먹거리</h2>
+              <p>운동장에 먹거리 장터가 열려요.</p>
+
+              <h3>결제 방법</h3>
+              <p>장터에서는 <strong>현금만 쓸 수 있어요</strong>.</p>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: h1
+      description: 페이지 전체의 제목 "학교 축제 안내"가 h1 하나여야 합니다.
+      requirement: 제목 단계
+      visible: true
+      selector: body > h1
+      expect:
+        count: 1
+        text: { equals: 학교 축제 안내 }
+    - kind: dom
+      id: h2-count
+      description: 장 제목 "공연"과 "먹거리"는 둘 다 h2여야 합니다.
+      requirement: 제목 단계
+      visible: true
+      selector: body > h2
+      expect:
+        count: 2
+      misconceptionIfFail: html.mc.heading-skip-levels
+    - kind: dom
+      id: h2-first
+      description: 첫 번째 h2는 "공연"이어야 합니다.
+      requirement: 제목 단계
+      selector: body > h2:first-of-type
+      expect:
+        text: { equals: 공연 }
+    - kind: dom
+      id: h2-second
+      description: 두 번째 h2는 "먹거리"여야 합니다.
+      requirement: 제목 단계
+      selector: body > h2:nth-of-type(2)
+      expect:
+        text: { equals: 먹거리 }
+    - kind: dom
+      id: h3
+      description: '"먹거리"의 세부 제목 "결제 방법"은 한 단계 아래인 h3여야 합니다.'
+      requirement: 제목 단계
+      visible: true
+      selector: body > h3
+      expect:
+        count: 1
+        text: { equals: 결제 방법 }
+      misconceptionIfFail: html.mc.heading-skip-levels
+    - kind: dom
+      id: outline-order
+      description: 제목은 h1, h2, h2, h3 순서로 놓여야 합니다(주석 자리마다 하나씩).
+      requirement: 제목 단계
+      selector: body
+      expect:
+        order: [h1, h2, p, h2, p, h3, p]
+    - kind: dom
+      id: strong
+      description: 마지막 문단에서 "현금만 쓸 수 있어요"만 strong으로 감싸야 합니다.
+      requirement: 중요한 내용
+      visible: true
+      selector: body > p:last-of-type > strong
+      expect:
+        count: 1
+        text: { equals: 현금만 쓸 수 있어요 }
+misconceptions: [html.mc.heading-skip-levels]
+hints:
+  - 제목 요소는 목차의 단계로 골라요. 페이지 전체 제목, 장, 장 안의 세부 내용은 각각 몇 단계일까요?
+  - 페이지 제목은 `h1`, 같은 단계의 장 두 개는 둘 다 `h2`, 그 아래 세부 제목은 `h3`이에요. 중요한 내용은 `strong`으로 감싸요.
+  - "첫 주석 자리에 `<h1>학교 축제 안내</h1>`을 쓰고, 나머지도 같은 모양으로 `h2`, `h2`, `h3`을 써요. 마지막 문단은 `<p>장터에서는 <strong>현금만 쓸 수 있어요</strong>.</p>`처럼 고쳐요."
+explanation: |
+  예시 답안의 제목과 강조는 이래요.
+
+  ```html
+  <h1>학교 축제 안내</h1>
+  <h2>공연</h2>
+  ...
+  <h2>먹거리</h2>
+  ...
+  <h3>결제 방법</h3>
+  <p>장터에서는 <strong>현금만 쓸 수 있어요</strong>.</p>
+  ```
+
+  - 목차는 h1 → h2 → h2 → h3으로, 단계를 건너뛰지 않아요. "공연"과 "먹거리"는 같은 단계의 장이라 둘 다 `h2`예요.
+  - "결제 방법"은 "먹거리" 아래의 세부 내용이라 한 단계 아래인 `h3`이에요.
+  - 결제 수단 제한은 꼭 알아야 할 중요한 내용이라 `strong`이에요. 굵게 보이는 것은 기본 모양일 뿐이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

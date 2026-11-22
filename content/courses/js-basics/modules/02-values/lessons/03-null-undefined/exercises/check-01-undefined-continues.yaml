@@ -1,0 +1,42 @@
+id: js-basics.values.null-undefined.check-undefined-continues
+type: predict_output
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.types.undefined, weight: 1 }
+tags: [undefined, typeof]
+estimatedSeconds: 50
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 콘솔에 보이는 그대로 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    let city;
+    console.log(city, typeof city);
+    console.log("다음 줄");
+  answerKind: console
+  misconceptionByAnswer:
+    "undefined object\n다음 줄": js.mc.null-undefined-same
+misconceptions: [js.mc.undefined-is-error, js.mc.null-undefined-same]
+hints:
+  - 값 없이 만든 `let` 변수에는 JavaScript가 자동으로 무엇을 넣어 두나요?
+  - "`typeof undefined`의 결과는 무엇인가요? `typeof null`과 헷갈리지 않게 확인해 보세요."
+  - "`undefined`도 값이에요. 값을 출력한 뒤 프로그램은 어떻게 되나요?"
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  undefined undefined
+  다음 줄
+  ```
+
+  - `let city;`처럼 값 없이 만든 변수에는 JavaScript가 자동으로 `undefined`를 넣어 둬요.
+  - `typeof undefined`는 문자열 `"undefined"`예요. `console.log`가 두 값을 공백으로 이어서 `undefined undefined`가 나와요.
+  - `undefined`는 오류가 아니라 "아직 정해지지 않음"을 뜻하는 정상적인 값이라서, 출력해도 프로그램은 멈추지 않고 `다음 줄`을 출력해요.
+
+  `typeof`가 `object`라고 답했다면 `null`과 헷갈린 거예요. `typeof null`만 `"object"`예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

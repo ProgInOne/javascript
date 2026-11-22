@@ -1,0 +1,92 @@
+id: js-basics.loops.break-continue.try-heavy-box
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.loops.break, weight: 1 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [break, search, write-code]
+estimatedSeconds: 240
+prompt: |
+  창고에 1번부터 10번까지 상자가 있어요. n번 상자의 무게는 `n * 3`kg이에요. 무게가 **처음으로 20kg을 넘는** 상자를 찾는 프로그램을 써 보세요.
+
+  - 1번 상자부터 차례로 살펴보다가, 찾으면 그 상자를 출력하고 `break`로 멈춰요. 그 앞의 상자는 출력하지 않아요.
+  - 찾은 상자 번호는 반복 앞에서 만든 변수 `found`에 담아요.
+  - 반복이 끝나면 `찾기 끝`을 출력해요.
+
+  ```text
+  7번 상자: 21kg
+  찾기 끝
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          let found = 0; // 찾은 상자 번호를 담을 변수
+
+          // 1. for 문으로 1번부터 10번 상자까지 차례로 살펴보세요.
+          //    n번 상자의 무게는 n * 3이에요.
+          //    무게가 20보다 크면: found에 번호를 담고, "7번 상자: 21kg" 모양으로 출력하고, 반복을 멈추세요.
+
+          // 2. 반복이 끝난 뒤 "찾기 끝"을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let found = 0; // 찾은 상자 번호를 담을 변수
+
+          for (let box = 1; box <= 10; box++) {
+            const weight = box * 3;
+            if (weight > 20) {
+              found = box;
+              console.log(box + "번 상자: " + weight + "kg");
+              break;
+            }
+          }
+
+          console.log("찾기 끝");
+  checks:
+    - kind: console
+      id: output
+      description: 처음으로 20kg을 넘는 상자 하나만 출력된 뒤 `찾기 끝`이 나와야 합니다. 찾은 뒤에도 반복이 계속되면 8번, 9번, 10번 상자도 출력됩니다.
+      requirement: 처음 하나만 찾고 멈추기
+      expect:
+        lines: ["7번 상자: 21kg", "찾기 끝"]
+    - kind: program
+      id: found
+      description: 끝난 뒤 `found`에 찾은 상자 번호 7이 들어 있어야 합니다.
+      requirement: 찾은 번호 기억하기
+      expect:
+        globals: { found: { equals: 7 } }
+        noError: true
+misconceptions: [js.mc.break-ends-program]
+hints:
+  - 반복 변수는 상자 번호예요. 1부터 10까지 1씩 늘리는 `for` 문으로 시작해 보세요.
+  - 본문에서 `if (box * 3 > 20)`처럼 검사하고, 참일 때 할 일 세 가지(`found`에 담기, 출력, `break`)를 `if` 블록 안에 써요.
+  - "`break`는 `if` 블록 안, 출력 줄 다음에 둬야 해요. `찾기 끝`은 반복 바깥에 쓰면 `break` 뒤에도 실행돼요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  let found = 0;
+  for (let box = 1; box <= 10; box++) {
+    const weight = box * 3;
+    if (weight > 20) {
+      found = box;
+      console.log(box + "번 상자: " + weight + "kg");
+      break;
+    }
+  }
+  console.log("찾기 끝");
+  ```
+
+  - 1번(3kg)부터 6번(18kg)까지는 조건이 거짓이라 아무것도 출력하지 않아요.
+  - 7번(21kg)에서 조건이 참이 되어 출력하고 `break`로 반복을 끝내요. `break`가 없으면 8번(24kg), 9번, 10번도 출력돼요.
+  - `break`는 반복만 끝내므로 `찾기 끝`은 그대로 실행돼요.
+  - `found`는 반복 앞에서 만들었으니 반복이 끝난 뒤에도 쓸 수 있어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

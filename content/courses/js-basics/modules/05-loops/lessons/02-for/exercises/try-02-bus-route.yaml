@@ -1,0 +1,78 @@
+id: js-basics.loops.for.try-bus-route
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [accumulator, string, for, write-code]
+estimatedSeconds: 240
+prompt: |
+  버스 노선 안내판을 만들어 보세요. 1번부터 5번 정류장까지 번호를 **한 줄로 이어 붙이고**, 끝에 `종점`을 붙여서 아래 한 줄을 출력해요.
+
+  ```text
+  1 → 2 → 3 → 4 → 5 → 종점
+  ```
+
+  - 글자를 모을 누적 변수 `route`를 쓰세요.
+  - 반복 안에서는 출력하지 말고, 반복이 끝난 뒤에 `route`를 한 번만 출력해요.
+  - 화살표 `→`는 위 출력에서 복사해 붙여 넣어도 돼요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1. 글자를 모을 누적 변수 route를 만드세요. 시작값은 무엇이어야 할까요?
+
+          // 2. for 문으로 1부터 5까지 반복하면서, route에 "번호 → "를 이어 붙이세요.
+
+          // 3. 반복이 끝난 뒤 route에 "종점"을 붙이고, route를 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let route = "";
+          for (let stop = 1; stop <= 5; stop++) {
+            route += stop + " → ";
+          }
+          route += "종점";
+          console.log(route);
+  checks:
+    - kind: console
+      id: output
+      description: "`1 → 2 → 3 → 4 → 5 → 종점` 한 줄만 출력되어야 합니다. 반복 안에서 출력하면 여러 줄이 나옵니다."
+      requirement: 안내판 한 줄 출력
+      expect:
+        lines: ["1 → 2 → 3 → 4 → 5 → 종점"]
+    - kind: program
+      id: route-variable
+      description: 끝난 뒤 누적 변수 `route`에 완성된 안내판 글자가 들어 있어야 합니다.
+      requirement: 누적 변수 route
+      expect:
+        globals: { route: { equals: "1 → 2 → 3 → 4 → 5 → 종점" } }
+        noError: true
+misconceptions: [js.mc.accumulator-no-init, js.mc.accumulator-reset-in-loop]
+hints:
+  - 이어 붙일 글자를 모으는 누적 변수는 반복 앞에서 빈 문자열 `""`로 시작해요.
+  - "회차마다 `route += stop + \" → \";`처럼 번호와 화살표를 붙여요. 시작값을 빼먹으면 맨 앞에 `undefined`가 붙어요."
+  - 반복이 끝나면 `route += "종점";`으로 마무리하고 `console.log(route);`를 반복 바깥에 한 번만 써요.
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  let route = "";
+  for (let stop = 1; stop <= 5; stop++) {
+    route += stop + " → ";
+  }
+  route += "종점";
+  console.log(route);
+  ```
+
+  - `route`는 반복 **앞에서** 빈 문자열로 시작해요. 시작값이 없으면 `undefined`에 글자가 붙어 `undefined1 → …`이 돼요.
+  - 회차마다 `+=`로 번호와 화살표를 이어 붙여요. `=`를 쓰면 마지막 회차의 `5 → `만 남아요.
+  - 반복이 끝난 뒤 `종점`을 붙이고 한 번만 출력해요. 반복 안에서 출력하면 만들어지는 중간 모습이 모두 찍혀요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

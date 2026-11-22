@@ -199,6 +199,10 @@ console.log(makeBadge({ name: "서연", level: null }));
 - 인수 객체를 매개변수 자리에서 바로 풀었어요. 함수 안에서는 `name`, `level`, `team`을 그냥 변수처럼 써요.
 - 기본값은 값이 **없거나 `undefined`일 때만** 들어가요. 준호의 `team: undefined`도 기본값이 쓰여요.
 - 서연의 `level: null`은 "값이 있다"로 봐서 기본값이 쓰이지 않고 `null`이 그대로 문자열에 붙어 `Lv.null`이 됐어요. `null`도 기본값으로 바꾸고 싶다면 모듈 3의 `??`를 써서 `const lv = level ?? 1;`처럼 따로 처리해요.
+
+매개변수 자리에서 구조 분해와 기본값을 직접 써 보세요.
+
+<TryIt ref="js-basics.objects.destructuring-and-spread.try-profile-line" />
 </Section>
 
 <Section kind="examples">
@@ -302,6 +306,10 @@ console.log(Object.keys(user).length);
 - 3번 줄은 `morning`의 요소, `lunch`의 요소, `"아이스크림"`을 차례로 담은 새 배열이에요. `morning`은 그대로예요.
 - 8번 줄은 값을 **받는** 자리의 `...`라서 나머지예요. `password`를 꺼내고, 남은 `id`와 `name`을 담은 새 객체 `publicInfo`를 만들어요. 화면에 보여 줄 정보에서 비밀번호만 빼고 싶을 때 이렇게 해요.
 - 10번 줄에서 `user`의 속성은 여전히 3개예요. 나머지로 모아도 원본에서 빠지는 것은 없어요.
+
+배열 전개로 원본을 바꾸지 않고 새 배열을 만드는 함수를 직접 써 보세요.
+
+<TryIt ref="js-basics.objects.destructuring-and-spread.try-queue-spread" />
 </Section>
 
 <Section kind="pitfalls">
@@ -393,21 +401,21 @@ console.log(formatPrice(12000, { comma: false }));  // 12000원
 </Section>
 
 <Section kind="check">
-구조 분해한 뒤 원래 객체는 어떻게 될까요?
+이름 바꾸기와 기본값이 함께 있을 때 변수에 무엇이 들어가는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.objects.destructuring-and-spread.mcq-destructure-keeps-original" />
+<InlineExercise ref="js-basics.objects.destructuring-and-spread.check-rename-default" />
 
-이름을 바꿔서 꺼내는 문법의 방향을 확인해 보세요.
+나머지(`...`)로 구조 분해한 뒤 원래 객체는 어떻게 될까요?
 
-<InlineExercise ref="js-basics.objects.destructuring-and-spread.tf-rename-direction" />
+<InlineExercise ref="js-basics.objects.destructuring-and-spread.check-rest-keeps-account" />
 
 배열 구조 분해는 무엇을 기준으로 값을 넣을까요?
 
-<InlineExercise ref="js-basics.objects.destructuring-and-spread.mcq-array-by-position" />
+<InlineExercise ref="js-basics.objects.destructuring-and-spread.check-coords-position" />
 
 전개 구문에서 같은 키가 겹치면 어느 값이 남을까요?
 
-<InlineExercise ref="js-basics.objects.destructuring-and-spread.mcq-spread-order" />
+<InlineExercise ref="js-basics.objects.destructuring-and-spread.check-spread-merge-blanks" />
 </Section>
 
 <Section kind="practice" />

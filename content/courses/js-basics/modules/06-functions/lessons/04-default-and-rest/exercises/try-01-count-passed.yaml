@@ -1,0 +1,108 @@
+id: js-basics.functions.default-and-rest.try-count-passed
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.fn.rest-params, weight: 1 }
+  - { id: js.loops.for, weight: 0.3 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [function, rest-parameter, loop, write-code]
+estimatedSeconds: 300
+prompt: |
+  합격 점수와 학생들의 점수를 받아, 합격한 학생이 몇 명인지 **돌려주는** 함수 `countPassed`를 완성하세요.
+
+  - 첫 번째 인수는 합격 점수 `passLine`이에요.
+  - 그 뒤에 점수가 **몇 개든** 올 수 있어요. 나머지 매개변수로 모두 받으세요.
+  - 점수가 `passLine` **이상**이면 합격이에요.
+  - 예: `countPassed(60, 55, 70, 60, 90)` → `3`, `countPassed(80)` → `0`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 괄호 안에 매개변수를 쓰세요: 합격 점수 passLine, 그리고 나머지 점수들을 모을 매개변수
+          function countPassed() {
+            // 점수를 하나씩 보며 passLine 이상인 점수의 개수를 세어 돌려주세요.
+          }
+
+          console.log(countPassed(60, 55, 70, 60, 90));
+  entry: countPassed
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 괄호 안에 매개변수를 쓰세요: 합격 점수 passLine, 그리고 나머지 점수들을 모을 매개변수
+          function countPassed(passLine, ...scores) {
+            let count = 0;
+            for (let i = 0; i < scores.length; i++) {
+              if (scores[i] >= passLine) {
+                count++;
+              }
+            }
+            return count;
+          }
+
+          console.log(countPassed(60, 55, 70, 60, 90));
+  checks:
+    - kind: call
+      id: example
+      description: 합격 점수 60에 점수 55, 70, 60, 90이면 3명이 합격입니다(60점도 합격).
+      requirement: 합격자 수 세기
+      args: [60, 55, 70, 60, 90]
+      expect: { equals: 3 }
+      misconceptionIfFail: js.mc.rest-includes-named
+    - kind: call
+      id: none-passed
+      description: 합격 점수 80에 점수 79 하나뿐이면 0명입니다.
+      requirement: 합격자 수 세기
+      args: [80, 79]
+      expect: { equals: 0 }
+    - kind: call
+      id: no-scores
+      description: 점수를 하나도 넘기지 않으면 0을 돌려줘야 합니다.
+      requirement: 점수가 없을 때
+      args: [80]
+      expect: { equals: 0 }
+    - kind: call
+      id: hidden-passline-not-counted
+      visible: false
+      description: 첫 번째 인수(합격 점수)는 점수로 세지 않아야 합니다. 합격 점수 50에 점수 40, 30이면 0명입니다.
+      requirement: 합격자 수 세기
+      args: [50, 40, 30]
+      expect: { equals: 0 }
+      misconceptionIfFail: js.mc.rest-includes-named
+    - kind: call
+      id: hidden-many
+      visible: false
+      description: 점수가 많아도 모두 살펴봐야 합니다.
+      requirement: 합격자 수 세기
+      args: [70, 70, 71, 69, 100, 0, 85]
+      expect: { equals: 4 }
+misconceptions: [js.mc.rest-includes-named, js.mc.rest-not-last]
+hints:
+  - "괄호 안에 `passLine, ...scores`처럼 써요. 나머지 매개변수는 맨 끝에 둬요."
+  - "`scores`는 남은 점수들의 묶음이에요. `for (let i = 0; i < scores.length; i++)`로 하나씩 `scores[i]`를 꺼내요."
+  - "개수를 셀 변수를 0으로 만들고, `scores[i] >= passLine`일 때마다 1씩 늘린 뒤 반복이 끝나면 `return`해요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function countPassed(passLine, ...scores) {
+    let count = 0;
+    for (let i = 0; i < scores.length; i++) {
+      if (scores[i] >= passLine) {
+        count++;
+      }
+    }
+    return count;
+  }
+  ```
+
+  - 첫 인수는 `passLine`이 받고, `...scores`는 **남은** 점수만 모아요. 그래서 합격 점수 자체가 점수로 세어지지 않아요.
+  - 점수를 하나도 넘기지 않으면 `scores.length`가 0이라 반복이 돌지 않고 0을 돌려줘요.
+  - `...scores, passLine`처럼 나머지 매개변수를 앞에 두면 SyntaxError예요. 나머지 매개변수는 맨 끝에 하나만 둘 수 있어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,82 @@
+id: js-basics.functions.function-basics.try-print-score
+type: implement_function
+usage: try
+difficulty: 1
+concepts:
+  - { id: js.fn.params-args, weight: 1 }
+  - { id: js.fn.declaration, weight: 0.5 }
+  - { id: js.fn.call, weight: 0.5 }
+tags: [function, declaration, call, parameter, write-code]
+estimatedSeconds: 240
+prompt: |
+  성적표의 한 줄을 출력하는 함수를 직접 만들어 보세요.
+
+  1. 과목 이름 `subject`와 점수 `score`를 매개변수로 받아 `과목: 점수점` 모양으로 **출력하는** 함수 `printScore`를 선언하세요.
+  1. 그 함수를 세 번 불러서 아래처럼 출력되게 하세요.
+
+  ```text
+  국어: 90점
+  수학: 85점
+  영어: 100점
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1. subject와 score를 받아 "과목: 점수점"을 출력하는 함수 printScore를 선언하세요.
+
+
+          // 2. printScore를 세 번 불러 국어 90, 수학 85, 영어 100을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 1. subject와 score를 받아 "과목: 점수점"을 출력하는 함수 printScore를 선언하세요.
+          function printScore(subject, score) {
+            console.log(subject + ": " + score + "점");
+          }
+
+          // 2. printScore를 세 번 불러 국어 90, 수학 85, 영어 100을 출력하세요.
+          printScore("국어", 90);
+          printScore("수학", 85);
+          printScore("영어", 100);
+  checks:
+    - kind: console
+      id: output
+      description: '국어, 수학, 영어 점수가 "과목: 점수점" 모양으로 차례로 세 줄 출력되어야 합니다.'
+      requirement: 성적표 세 줄 출력
+      expect:
+        lines: ["국어: 90점", "수학: 85점", "영어: 100점"]
+      misconceptionIfFail: js.mc.declaration-runs-function
+    - kind: program
+      id: no-error
+      description: 프로그램이 오류 없이 끝까지 실행되어야 합니다.
+      requirement: 오류 없이 실행
+      expect: { noError: true }
+misconceptions: [js.mc.declaration-runs-function, js.mc.params-match-by-name]
+hints:
+  - "먼저 `function printScore(subject, score) { ... }` 모양으로 함수를 만들어요. 본문에는 출력하는 한 줄이 들어가요."
+  - "본문에서 `subject`, `\": \"`, `score`, `\"점\"`을 `+`로 이어 붙여 `console.log`로 출력해요."
+  - "선언만으로는 아무것도 출력되지 않아요. 아래에서 `printScore(\"국어\", 90);`처럼 인수를 바꿔 세 번 불러요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function printScore(subject, score) {
+    console.log(subject + ": " + score + "점");
+  }
+
+  printScore("국어", 90);
+  printScore("수학", 85);
+  printScore("영어", 100);
+  ```
+
+  - 선언에서 출력 모양을 한 번만 정해 두고, 호출할 때마다 다른 인수를 넘겨요. 부를 때마다 `subject`와 `score`가 새 값으로 채워져요.
+  - 인수는 순서대로 들어가요. `printScore(90, "국어")`처럼 순서를 바꾸면 `90: 국어점`이 나와요.
+  - 선언만 하고 부르지 않으면 아무것도 출력되지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

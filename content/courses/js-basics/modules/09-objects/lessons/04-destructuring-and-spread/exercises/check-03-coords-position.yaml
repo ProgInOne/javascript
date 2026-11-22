@@ -1,0 +1,36 @@
+id: js-basics.objects.destructuring-and-spread.check-coords-position
+type: predict_output
+usage: check
+difficulty: 1
+concepts:
+  - { id: js.arr.destructuring, weight: 1 }
+tags: [destructuring, array, skip]
+estimatedSeconds: 60
+prompt: |
+  지도 좌표 배열에서 값을 꺼내요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    const coords = [37, 127, 50];
+    const [lat, lng] = coords;
+    const [, , height] = coords;
+    console.log(lng, height);
+  answerKind: console
+  misconceptionByAnswer:
+    "127 undefined": js.mc.array-destructuring-by-name
+misconceptions: [js.mc.array-destructuring-by-name]
+hints:
+  - 배열 구조 분해는 변수 이름이 아니라 **위치**로 값을 넣어요.
+  - "`[lat, lng]`에서 `lng`는 몇 번 위치인가요?"
+  - "`[, , height]`는 쉼표로 0번과 1번을 건너뛰어요. `height`에는 몇 번 값이 들어갈까요?"
+explanation: |
+  출력은 `127 50`이에요.
+
+  - 2번 줄은 0번 값 `37`을 `lat`에, 1번 값 `127`을 `lng`에 넣어요.
+  - 3번 줄은 앞의 두 자리를 비워서 0번과 1번을 건너뛰고, 2번 값 `50`을 `height`에 넣어요.
+  - 변수 이름은 아무 뜻이 없어요. 위치만 보고 값이 정해져요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,41 @@
+id: js-basics.operators.explicit-conversion.check-not-nan
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.conv.to-number, weight: 1 }
+tags: [number, conversion, nan]
+estimatedSeconds: 50
+prompt: |
+  다음 중 `Number`로 바꾼 결과가 `NaN`이 **아닌** 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`Number(" 7 ")`'
+    - id: b
+      text: '`Number("7개")`'
+      misconception: js.mc.number-parses-prefix
+      rationale: Number는 문자열 전체를 읽어요. `개`는 숫자로 읽을 수 없어서 `NaN`이에요.
+    - id: c
+      text: '`Number("2,000")`'
+      rationale: 쉼표도 숫자가 아니라서 전체를 숫자로 읽을 수 없어요. 결과는 `NaN`이에요.
+    - id: d
+      text: '`Number(undefined)`'
+      rationale: undefined는 NaN으로 바꾸도록 정해져 있어요.
+  correct: a
+misconceptions: [js.mc.number-parses-prefix]
+hints:
+  - Number는 문자열의 앞부분만 읽나요, 전체를 읽나요?
+  - 숫자 말고 다른 글자(단위, 쉼표)가 섞여 있으면 전체를 숫자로 읽을 수 없어요. 그런데 앞뒤 공백은 어떻게 다뤘나요?
+  - 앞뒤 공백은 무시해요. 공백을 빼고 나면 숫자만 남는 보기를 찾아보세요.
+explanation: |
+  정답은 `Number(" 7 ")`이에요. 앞뒤 공백은 무시하므로 결과는 숫자 `7`이에요.
+
+  - `Number("7개")`: `개`까지 숫자로 읽을 수 없어서 `NaN`이에요. 앞의 숫자만 꺼내려면 `parseInt("7개")`를 써요.
+  - `Number("2,000")`: 쉼표 때문에 `NaN`이에요.
+  - `Number(undefined)`: `NaN`이 되도록 정해져 있어요. (`Number(null)`은 `0`이에요.)
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,42 @@
+id: js-basics.operators.logical.check-or-default-replaces
+type: mcq_multi
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.ops.short-circuit, weight: 1 }
+tags: [short-circuit, default-value, falsy]
+estimatedSeconds: 80
+prompt: |
+  `const shown = x || "기본";`에서 `shown`이 `"기본"`이 되는 `x`를 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: '`0`'
+      missedMisconception: js.mc.or-default-keeps-zero
+    - id: b
+      text: '`""` (빈 문자열)'
+      missedMisconception: js.mc.or-default-keeps-zero
+    - id: c
+      text: '`null`'
+    - id: d
+      text: '`"0"`'
+      rationale: 글자 `"0"`은 빈 문자열이 아니라서 truthy예요. `shown`은 `"0"`이에요.
+    - id: e
+      text: '`"false"`'
+      rationale: 글자 `"false"`도 truthy예요. `shown`은 `"false"`예요.
+  correct: [a, b, c]
+misconceptions: [js.mc.or-default-keeps-zero]
+hints:
+  - "`||`는 왼쪽이 falsy일 때 오른쪽(기본값)을 골라요."
+  - falsy 값은 `false`, `0`, `""`, `null`, `undefined`, `NaN` 여섯 가지예요.
+  - 따옴표로 감싼 `"0"`과 `"false"`는 숫자나 불리언이 아니라 글자가 들어 있는 문자열이에요.
+explanation: |
+  정답은 `0`, `""`, `null`이에요. 세 값은 모두 falsy라서 `||`가 기본값 `"기본"`을 골라요.
+
+  - `0`과 `""`도 바뀐다는 점이 `||`로 기본값을 정할 때의 함정이에요. 0이나 빈 문자열을 지켜야 하면 `??`를 써요.
+  - `"0"`과 `"false"`는 글자가 들어 있는 문자열이라 truthy예요. `shown`에 그대로 들어가요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

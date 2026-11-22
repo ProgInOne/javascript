@@ -1,0 +1,39 @@
+id: js-basics.values.variables.try-score
+type: implement_function
+usage: try
+difficulty: 1
+concepts:
+  - { id: js.basics.let, weight: 1 }
+estimatedSeconds: 120
+prompt: |
+  `let`으로 `score`를 `10`으로 만들고, `15`로 바꾼 뒤 출력하세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 여기에 쓰세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let score = 10;
+          score = 15;
+          console.log(score);
+  checks:
+    - kind: console
+      id: output
+      description: 바꾼 값 15가 출력되어야 합니다.
+      requirement: 바꾼 값 출력
+      expect:
+        lines: ["15"]
+hints:
+  - 먼저 `let`으로 만들어요.
+  - 다시 대입할 때는 `let`을 쓰지 않아요.
+  - "`console.log(score);`로 출력해요."
+explanation: |
+  `let score = 10;`으로 만들고 `score = 15;`로 바꾼 뒤 출력하면 `15`가 나와요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

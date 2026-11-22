@@ -1,0 +1,39 @@
+id: js-basics.arrays.array-basics.check-last-expression
+type: fill_blank
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.arr.length, weight: 1 }
+tags: [length, last-element, check]
+estimatedSeconds: 50
+prompt: |
+  대기 줄 배열 `queue`에 몇 명이 서 있든 **맨 마지막 바로 앞사람**을 읽으려고 해요. 빈칸에 들어갈 인덱스 식을 적어 보세요. 숫자로 위치를 직접 쓰지 말고 `length`를 쓰세요.
+spec:
+  mode: text
+  template: |
+    const beforeLast = queue[{{blank:idx}}];
+  blanks:
+    - id: idx
+      accept: ["queue.length - 2"]
+      acceptRegex: "\\(?queue ?\\. ?length ?- ?2\\)?"
+      width: 18
+      misconceptionMap:
+        "queue.length - 1": js.mc.array-last-index-is-length
+        "-2": js.mc.array-negative-index-last
+misconceptions: [js.mc.array-last-index-is-length]
+hints:
+  - 요소가 4개라면 마지막 요소의 인덱스는 몇 번이고, 그 바로 앞은 몇 번인가요?
+  - 인덱스가 0부터 시작하니 마지막 인덱스는 요소 개수보다 하나 작아요. 바로 앞은 거기서 하나 더 작아요.
+  - 요소 개수는 `queue.length`예요. 여기서 얼마를 빼야 할까요?
+explanation: |
+  정답은 `queue.length - 2`예요.
+
+  인덱스가 0부터 시작하므로 요소가 n개면 인덱스는 0부터 n − 1까지예요. 마지막 요소는 `queue.length - 1`이고, 그 바로 앞은 하나 더 작은 `queue.length - 2`예요. 줄에 선 사람 수가 바뀌어도 같은 식이 맞아요.
+
+  - `queue.length - 1`: 마지막 바로 앞이 아니라 맨 마지막 사람이에요.
+  - `-2`: 음수 인덱스 자리에는 요소가 없어서 `undefined`예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

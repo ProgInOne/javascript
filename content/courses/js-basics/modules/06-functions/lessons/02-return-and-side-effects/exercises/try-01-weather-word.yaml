@@ -1,0 +1,120 @@
+id: js-basics.functions.return-and-side-effects.try-weather-word
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.fn.undefined-return, weight: 1 }
+  - { id: js.control.else-if, weight: 0.5 }
+tags: [function, return, undefined, else-if, write-code]
+estimatedSeconds: 240
+prompt: |
+  기온을 받아 날씨 한마디를 **돌려주는** 함수 `weatherWord(temp)`를 완성하세요. 어떤 기온을 넣어도 `undefined`가 나오면 안 돼요.
+
+  | 기온 `temp` | 돌려줄 값 |
+  |---|---|
+  | 28 이상 | `"더워요"` |
+  | 10 이하 | `"추워요"` |
+  | 그 밖의 모든 경우 | `"적당해요"` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function weatherWord(temp) {
+            // 28 이상이면 "더워요", 10 이하이면 "추워요"를 돌려주세요.
+            // 그 밖의 모든 경우에도 "적당해요"를 돌려줘야 해요.
+          }
+
+          console.log(weatherWord(30));
+          console.log(weatherWord(5));
+          console.log(weatherWord(20));
+  entry: weatherWord
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function weatherWord(temp) {
+            if (temp >= 28) {
+              return "더워요";
+            } else if (temp <= 10) {
+              return "추워요";
+            }
+            return "적당해요";
+          }
+
+          console.log(weatherWord(30));
+          console.log(weatherWord(5));
+          console.log(weatherWord(20));
+  checks:
+    - kind: call
+      id: hot
+      description: 30도이면 "더워요"를 돌려줘야 합니다.
+      requirement: 더울 때
+      args: [30]
+      expect: { equals: "더워요" }
+    - kind: call
+      id: hot-edge
+      description: 딱 28도도 "더워요"여야 합니다(28 이상).
+      requirement: 더울 때
+      args: [28]
+      expect: { equals: "더워요" }
+    - kind: call
+      id: cold
+      description: 5도이면 "추워요"를 돌려줘야 합니다.
+      requirement: 추울 때
+      args: [5]
+      expect: { equals: "추워요" }
+    - kind: call
+      id: cold-edge
+      description: 딱 10도도 "추워요"여야 합니다(10 이하).
+      requirement: 추울 때
+      args: [10]
+      expect: { equals: "추워요" }
+    - kind: call
+      id: mild
+      description: 20도처럼 어느 조건에도 맞지 않으면 undefined가 아니라 "적당해요"를 돌려줘야 합니다.
+      requirement: 그 밖의 경우
+      args: [20]
+      expect: { equals: "적당해요" }
+      misconceptionIfFail: js.mc.return-in-if-covers-all
+    - kind: call
+      id: mild-edge
+      visible: false
+      description: 27도는 28 이상이 아니므로 "적당해요"를 돌려줘야 합니다.
+      requirement: 그 밖의 경우
+      args: [27]
+      expect: { equals: "적당해요" }
+    - kind: call
+      id: mild-edge-low
+      visible: false
+      description: 11도는 10 이하가 아니므로 "적당해요"를 돌려줘야 합니다.
+      requirement: 그 밖의 경우
+      args: [11]
+      expect: { equals: "적당해요" }
+misconceptions: [js.mc.return-in-if-covers-all, js.mc.no-return-is-null]
+hints:
+  - "`if`와 `else if`로 더울 때와 추울 때를 나누고, 각 갈래에서 `return`으로 글자를 돌려줘요."
+  - "\"이상\"은 `>=`, \"이하\"는 `<=`예요."
+  - 두 조건이 모두 거짓이면 함수 끝까지 내려가요. 그 자리(함수 맨 끝)에 `return "적당해요";`를 두면 `undefined`가 나오지 않아요.
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function weatherWord(temp) {
+    if (temp >= 28) {
+      return "더워요";
+    } else if (temp <= 10) {
+      return "추워요";
+    }
+    return "적당해요";
+  }
+  ```
+
+  - 조건이 모두 거짓인 경우(예: 20도)는 함수 맨 끝의 `return "적당해요";`가 맡아요. 이 줄이 없으면 `weatherWord(20)`은 `undefined`예요.
+  - `else { return "적당해요"; }`로 써도 같아요. 중요한 것은 **모든 갈래에서** 값을 돌려주는 거예요.
+  - 경계값 28과 10은 `>=`, `<=`로 포함해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

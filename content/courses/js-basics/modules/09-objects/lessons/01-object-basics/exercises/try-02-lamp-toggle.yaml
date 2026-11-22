@@ -1,0 +1,96 @@
+id: js-basics.objects.object-basics.try-lamp-toggle
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.obj.methods-intro, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [object, method, this, write-code]
+estimatedSeconds: 240
+prompt: |
+  스마트 전등 객체 `lamp`에 메서드 `toggle()`을 직접 만들어 보세요.
+
+  - 부를 때마다 `on`이 `false`면 `true`로, `true`면 `false`로 바뀌어요.
+  - 바꾼 뒤 `"(방 이름) 불: 켜짐"` 또는 `"(방 이름) 불: 꺼짐"`을 돌려줘요. 방 이름은 `room` 속성에서 읽어요.
+
+  시작 코드 아래쪽의 세 줄이 아래처럼 출력되면 성공이에요.
+
+  ```text
+  거실 불: 켜짐
+  거실 불: 꺼짐
+  false
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const lamp = {
+            room: "거실",
+            on: false,
+            // 여기에 toggle 메서드를 만드세요.
+          };
+
+          console.log(lamp.toggle());
+          console.log(lamp.toggle());
+          console.log(lamp.on);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const lamp = {
+            room: "거실",
+            on: false,
+            toggle() {
+              this.on = !this.on;
+              if (this.on) {
+                return this.room + " 불: 켜짐";
+              }
+              return this.room + " 불: 꺼짐";
+            },
+          };
+
+          console.log(lamp.toggle());
+          console.log(lamp.toggle());
+          console.log(lamp.on);
+  checks:
+    - kind: console
+      id: output
+      description: toggle을 두 번 부르면 켜짐, 꺼짐 순서로 문장이 나오고, 마지막에 on이 false여야 합니다.
+      requirement: 켜고 끄기
+      expect:
+        lines: ["거실 불: 켜짐", "거실 불: 꺼짐", "false"]
+        mode: ordered-subset
+      misconceptionIfFail: js.mc.method-reads-props-by-name
+    - kind: program
+      id: no-error
+      description: 실행 중에 오류가 나지 않아야 합니다(메서드 안에서는 this로 속성을 읽어요).
+      requirement: 켜고 끄기
+      expect:
+        noError: true
+misconceptions: [js.mc.method-reads-props-by-name]
+hints:
+  - 메서드는 `toggle() { ... },`처럼 객체 리터럴 안에 속성처럼 써요. 앞 속성 뒤의 쉼표도 잊지 마세요.
+  - 메서드 안에서 자기 속성은 `this.on`, `this.room`으로 읽고 바꿔요. `on`이라고만 쓰면 변수를 찾아요.
+  - "`this.on = !this.on;`으로 뒤집은 뒤, `if (this.on)`이면 켜짐 문장을, 아니면 꺼짐 문장을 돌려주세요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  toggle() {
+    this.on = !this.on;
+    if (this.on) {
+      return this.room + " 불: 켜짐";
+    }
+    return this.room + " 불: 꺼짐";
+  },
+  ```
+
+  - `lamp.toggle()`로 부르면 메서드 안의 `this`는 점 앞의 `lamp`예요. 그래서 `this.on`을 바꾸면 `lamp.on`이 바뀐 채로 남아요.
+  - `!`는 불리언을 뒤집어요. `if`로 `false`일 때 `true`를, 아니면 `false`를 대입해도 같아요.
+  - 두 번 불렀으니 처음 상태(`false`)로 돌아와서 마지막 줄은 `false`예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

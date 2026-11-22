@@ -1,0 +1,95 @@
+id: js-basics.functions.expressions-and-arrows.try-water-advice
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [function, arrow, braces, return, write-code]
+estimatedSeconds: 240
+prompt: |
+  하루에 마신 물 잔 수를 받아 한마디를 돌려주는 **화살표 함수** `waterAdvice`를 만들어 보세요. 이번에는 `if`가 필요해서 **중괄호 본문**으로 써야 해요.
+
+  - 매개변수는 마신 잔 수 `cups` 하나예요.
+  - 8잔 이상이면 `"충분해요"`를 돌려줘요.
+  - 8잔보다 적으면 모자란 잔 수를 넣어 `"3잔 더 마셔요"`처럼 돌려줘요.
+  - 예: `waterAdvice(9)` → `"충분해요"`, `waterAdvice(5)` → `"3잔 더 마셔요"`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // cups를 받는 화살표 함수 waterAdvice를 중괄호 본문으로 만드세요.
+          // 8잔 이상이면 "충분해요", 아니면 "(8 - cups)잔 더 마셔요"를 돌려줘요.
+
+
+          // console.log(waterAdvice(9));
+          // console.log(waterAdvice(5));
+  entry: waterAdvice
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // cups를 받는 화살표 함수 waterAdvice를 중괄호 본문으로 만드세요.
+          // 8잔 이상이면 "충분해요", 아니면 "(8 - cups)잔 더 마셔요"를 돌려줘요.
+          const waterAdvice = (cups) => {
+            if (cups >= 8) {
+              return "충분해요";
+            }
+            return (8 - cups) + "잔 더 마셔요";
+          };
+
+          console.log(waterAdvice(9));
+          console.log(waterAdvice(5));
+  checks:
+    - kind: call
+      id: enough
+      description: 9잔이면 "충분해요"를 돌려줘야 합니다.
+      requirement: 충분할 때
+      args: [9]
+      expect: { equals: "충분해요" }
+      misconceptionIfFail: js.mc.arrow-braces-implicit-return
+    - kind: call
+      id: enough-edge
+      description: 딱 8잔도 "충분해요"여야 합니다(8잔 이상).
+      requirement: 충분할 때
+      args: [8]
+      expect: { equals: "충분해요" }
+    - kind: call
+      id: short
+      description: 5잔이면 "3잔 더 마셔요"를 돌려줘야 합니다.
+      requirement: 모자랄 때
+      args: [5]
+      expect: { equals: "3잔 더 마셔요" }
+      misconceptionIfFail: js.mc.arrow-braces-implicit-return
+    - kind: call
+      id: hidden-zero
+      visible: false
+      description: 한 잔도 안 마셨으면 "8잔 더 마셔요"를 돌려줘야 합니다.
+      requirement: 모자랄 때
+      args: [0]
+      expect: { equals: "8잔 더 마셔요" }
+misconceptions: [js.mc.arrow-braces-implicit-return]
+hints:
+  - "`const waterAdvice = (cups) => { ... };`처럼 `=>` 뒤에 중괄호를 열어요."
+  - 중괄호 본문은 일반 함수 본문과 같아요. `if`를 쓰고, 값을 돌려주는 곳마다 `return`을 직접 써야 해요.
+  - "모자란 잔 수는 `8 - cups`예요. `(8 - cups) + \"잔 더 마셔요\"`처럼 이어 붙여 돌려줘요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  const waterAdvice = (cups) => {
+    if (cups >= 8) {
+      return "충분해요";
+    }
+    return (8 - cups) + "잔 더 마셔요";
+  };
+  ```
+
+  - `if`처럼 여러 문장이 필요하면 중괄호 본문을 써요. 중괄호를 연 순간 값은 저절로 반환되지 않으니, 두 갈래 모두 `return`을 써야 해요.
+  - `(8 - cups)`에 괄호를 쳐야 빼기를 먼저 계산해요. 괄호가 없으면 `8 - cups + "잔..."`도 왼쪽부터 계산해서 결과는 같지만, 괄호가 있으면 뜻이 더 분명해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

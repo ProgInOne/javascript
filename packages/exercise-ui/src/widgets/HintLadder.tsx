@@ -39,6 +39,8 @@ export interface HintLadderProps {
    * ui-ux.md 힌트 사다리). Rendered only while at least one hint is open.
    */
   afterHints?: ReactNode;
+  /** Note under the hint button. Default: hints lower this exercise's mastery weight a little. */
+  note?: string;
 }
 
 const LOCKED_REASON = '평가가 끝나면 열려요';
@@ -60,6 +62,7 @@ export function HintLadder({
   headingLevel = 3,
   renderText = defaultRenderText,
   afterHints,
+  note = '힌트를 볼수록 이 문제의 숙련도 반영이 조금 줄어요.',
 }: HintLadderProps) {
   const headingId = useId();
   const lockedId = useId();
@@ -121,9 +124,7 @@ export function HintLadder({
             힌트 {next}/{total} 보기
             <Kbd keys={[modKeyLabel(), '.']} />
           </Button>
-          {!locked && (
-            <p className="pi-ex-hints__note">힌트를 볼수록 이 문제의 숙련도 반영이 조금 줄어요.</p>
-          )}
+          {!locked && <p className="pi-ex-hints__note">{note}</p>}
         </div>
       )}
 

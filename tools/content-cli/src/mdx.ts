@@ -54,6 +54,7 @@ export const COMPONENTS: Record<string, ComponentSpec> = {
     },
   },
   InlineExercise: { props: { ref: req(s) } },
+  TryIt: { props: { ref: req(s) } },
   Callout: {
     props: { kind: req({ type: ['note', 'tip', 'warning', 'danger', 'deep-dive'] }), title: s },
   },
@@ -84,7 +85,10 @@ export interface CompiledLesson {
   sections: { id: string; kind: SectionKind; title: string | null }[];
   text: string;
   refs: {
+    /** `<InlineExercise ref>`s, in order. */
     exercises: string[];
+    /** `<TryIt ref>`s, in order (D-091). */
+    tryIts: string[];
     concepts: string[];
     misconceptions: string[];
     examples: string[];
@@ -167,6 +171,7 @@ export function compileLessonMdx(
   const errors: string[] = [];
   const refs: CompiledLesson['refs'] = {
     exercises: [],
+    tryIts: [],
     concepts: [],
     misconceptions: [],
     examples: [],
@@ -279,6 +284,7 @@ export function compileLessonMdx(
     }
     if (name === 'InlineExercise' && typeof props['ref'] === 'string')
       refs.exercises.push(props['ref']);
+    if (name === 'TryIt' && typeof props['ref'] === 'string') refs.tryIts.push(props['ref']);
     if (name === 'ConceptLink' && typeof props['to'] === 'string') refs.concepts.push(props['to']);
     if (name === 'Pitfall' && typeof props['misconception'] === 'string')
       refs.misconceptions.push(props['misconception']);

@@ -1,0 +1,46 @@
+id: js-basics.control.switch.check-zero-case
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.control.switch, weight: 1 }
+  - { id: js.ops.strict-equality, weight: 0.3 }
+tags: [switch, strict-equality]
+estimatedSeconds: 60
+prompt: |
+  `const code = 0;`일 때 `switch (code) { ... }` 안에 아래 `case` 중 하나를 넣었어요. **실행되는** `case`는 어느 것인가요?
+spec:
+  options:
+    - id: a
+      text: '`case 0:`'
+    - id: b
+      text: '`case "0":`'
+      misconception: js.mc.switch-loose-compare
+      rationale: 숫자 `0`과 문자열 `"0"`은 자료형이 달라서 `===`로 같지 않아요.
+    - id: c
+      text: '`case false:`'
+      misconception: js.mc.switch-loose-compare
+      rationale: "`0 == false`는 참이지만 switch는 `===`로 비교해요. 숫자와 불리언은 같지 않아요."
+    - id: d
+      text: '`case code === 0:`'
+      misconception: js.mc.switch-case-condition
+      rationale: "`code === 0`은 먼저 `true`가 되고, switch는 `0 === true`를 비교해요. 거짓이에요."
+  correct: a
+misconceptions: [js.mc.switch-loose-compare, js.mc.switch-case-condition]
+hints:
+  - switch는 괄호 안의 값과 case 옆의 값을 어떤 연산자로 비교했나요?
+  - "`===`는 자료형까지 같아야 참이에요. 각 case 옆의 값의 자료형을 확인해 보세요."
+  - case에 조건식을 쓰면 그 식이 먼저 `true`나 `false`로 계산돼요. 숫자 `0`과 자료형까지 같은 값은 하나뿐이에요.
+explanation: |
+  정답은 `case 0:`이에요.
+
+  switch는 `code`와 case 옆의 값을 `===`로 비교해요. 자료형까지 같은 숫자 `0`만 맞아요.
+
+  - `case "0":` 문자열이라 자료형이 달라요.
+  - `case false:` `==`라면 같다고 보지만, switch는 `===`라서 같지 않아요.
+  - `case code === 0:` 조건식이 먼저 `true`가 되고, `0 === true`는 거짓이에요. 조건으로 나누고 싶을 때는 `if`를 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

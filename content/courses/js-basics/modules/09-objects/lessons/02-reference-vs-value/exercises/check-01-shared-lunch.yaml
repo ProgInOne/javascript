@@ -1,0 +1,46 @@
+id: js-basics.objects.reference-vs-value.check-shared-lunch
+type: predict_output
+usage: check
+difficulty: 1
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+tags: [object, reference, assignment]
+estimatedSeconds: 60
+prompt: |
+  점심 메뉴 객체를 다른 변수에 대입하고 그 변수로 가격을 바꾼 뒤, 그 변수에 새 객체를 대입했어요. 실행하면 콘솔에 무엇이 출력될까요? 두 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const lunch = { menu: "비빔밥", price: 8000 };
+    let dinner = lunch;
+    dinner.price = 9000;
+    dinner = { menu: "국수", price: 7000 };
+    console.log(lunch.price);
+    console.log(dinner.price);
+  answerKind: console
+  misconceptionByAnswer:
+    "8000\n7000": js.mc.assign-copies-object
+    "7000\n7000": js.mc.param-reassign-replaces-object
+misconceptions: [js.mc.assign-copies-object, js.mc.param-reassign-replaces-object]
+hints:
+  - "`let dinner = lunch;`를 하면 새 객체가 생길까요, 아니면 같은 객체를 함께 가리킬까요?"
+  - 3번 줄은 객체의 속성을 바꾸고, 4번 줄은 변수 `dinner`에 다른 객체를 대입해요. 둘은 다른 일이에요.
+  - 4번 줄 뒤에 `lunch`는 여전히 처음 객체를 가리켜요. 그 객체의 `price`는 3번 줄에서 무엇으로 바뀌었나요?
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  9000
+  7000
+  ```
+
+  - 2번 줄은 새 객체를 만들지 않아요. `dinner`에는 `lunch`와 **같은 객체**의 참조가 들어가요.
+  - 3번 줄은 그 객체 하나의 `price`를 `9000`으로 바꿔요. `lunch`로 읽어도 `9000`이에요.
+  - 4번 줄은 `dinner`라는 화살표만 새 객체로 옮겨요. `lunch`는 여전히 처음 객체를 가리키고, 그 객체는 바뀌지 않아요.
+
+  `8000`이라고 썼다면 대입이 객체를 복사한다고 본 거예요. 첫 줄을 `7000`이라고 썼다면 변수에 새 객체를 대입하면 원래 객체가 바뀐다고 본 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

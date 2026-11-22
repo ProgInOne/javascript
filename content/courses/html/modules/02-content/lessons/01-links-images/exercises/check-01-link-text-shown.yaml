@@ -1,0 +1,40 @@
+id: html.content.links-images.check-link-text-shown
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: html.content.links, weight: 1 }
+tags: [link, a, href]
+estimatedSeconds: 45
+prompt: |
+  `<a href="https://www.example.com/library">도서관 홈페이지</a>`를 실행했어요. 링크 글자를 "도서관 가기"로 바꾸고 `href`는 그대로 두면 어떻게 되나요?
+spec:
+  options:
+    - id: a
+      text: 화면의 링크 글자만 "도서관 가기"로 바뀌고, 누르면 같은 주소로 이동한다
+    - id: b
+      text: 이동할 주소가 "도서관 가기"라는 페이지로 바뀐다
+      misconception: html.mc.link-text-is-address
+      rationale: 이동할 곳은 href가 정해요. 링크 글자는 사람에게 보여 주는 설명일 뿐이에요.
+    - id: c
+      text: 링크 글자와 주소가 달라져서 링크가 동작하지 않는다
+      misconception: html.mc.link-text-is-address
+      rationale: 링크 글자와 주소는 원래 서로 관계가 없어요. 달라도 링크는 그대로 동작해요.
+    - id: d
+      text: 화면에 `https://www.example.com/library`가 링크 글자 대신 보인다
+      rationale: href의 주소는 화면에 보이지 않아요. 보이는 것은 태그 사이의 글자예요.
+  correct: a
+misconceptions: [html.mc.link-text-is-address]
+hints:
+  - a 요소에서 화면에 보이는 부분과 이동할 곳을 정하는 부분은 각각 어디인가요?
+  - 이동할 곳은 속성에, 보이는 글자는 태그 사이에 있어요.
+  - 바꾼 것은 태그 사이의 글자뿐이고 href는 그대로예요.
+explanation: |
+  정답은 **링크 글자만 바뀌고, 누르면 같은 주소로 이동한다**예요.
+
+  `a` 요소에서 이동할 곳은 `href` 속성이 정하고, 태그 사이의 내용은 화면에 보이는 **링크 글자**예요. 둘은 서로 관계가 없어서, 글자를 바꿔도 `href`가 같으면 같은 곳으로 가요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

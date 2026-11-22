@@ -1,0 +1,55 @@
+id: js-basics.control.switch.check-pet-group
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.control.fallthrough, weight: 1 }
+  - { id: js.control.switch, weight: 0.3 }
+tags: [switch, break, fallthrough, grouping]
+estimatedSeconds: 60
+prompt: |
+  다음 코드를 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  const pet = "고양이";
+  switch (pet) {
+    case "고양이":
+    case "햄스터":
+      console.log("실내에서 키워요");
+      break;
+    case "강아지":
+      console.log("산책이 필요해요");
+      break;
+  }
+spec:
+  options:
+    - id: a
+      text: '`실내에서 키워요` 한 줄'
+    - id: b
+      text: 아무것도 나오지 않는다
+      misconception: js.mc.switch-no-break-stops
+      rationale: "`case \"고양이\":`에서 실행을 시작하고, 코드가 없는 그 자리를 지나 아래 `console.log`까지 흘러가요."
+    - id: c
+      text: '`실내에서 키워요`, `산책이 필요해요` 두 줄'
+      rationale: "`실내에서 키워요` 다음 줄에 `break`가 있어서 거기서 switch를 빠져나가요."
+    - id: d
+      text: case 아래에 코드가 없어서 SyntaxError가 난다
+      rationale: 코드 없이 case를 줄줄이 쓰는 것은 올바른 문법이에요. 여러 값을 묶는 방법이에요.
+  correct: a
+misconceptions: [js.mc.switch-no-break-stops]
+hints:
+  - "`pet`과 같은 case는 어느 것인가요? 거기서부터 실행이 시작돼요."
+  - "`case \"고양이\":` 아래에는 코드가 없어요. break가 없으면 실행은 어디로 이어질까요?"
+  - 아래로 흘러가다가 `break`를 만나면 switch 전체를 빠져나가요.
+explanation: |
+  정답은 **`실내에서 키워요` 한 줄**이에요.
+
+  1. `"고양이"`와 같은 `case "고양이":`에서 실행을 시작해요.
+  1. 그 자리에는 코드도 `break`도 없으니 `case "햄스터":`를 지나 `console.log("실내에서 키워요")`를 실행해요.
+  1. 바로 다음 `break`에서 switch를 빠져나가요. `산책이 필요해요`는 나오지 않아요.
+
+  이렇게 break를 일부러 빼서 case를 묶으면 "고양이이거나 햄스터이면"이라는 뜻이 돼요. 묶음 끝의 `break`가 다음 묶음으로 흘러가는 것을 막아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

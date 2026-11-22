@@ -68,7 +68,7 @@ test.describe('tutor API (mock AI)', () => {
     await page.goto('/');
     const token = await page.locator('meta[name="proginone-token"]').getAttribute('content');
     const headers = { 'x-proginone-token': token ?? '' };
-    const exercise = 'js-basics.start.first-program.mcq-log-role';
+    const exercise = 'js-basics.start.first-program.check-log-role';
     const submit = async (optionId: string) => {
       const res = await request.post(`/api/v1/exercises/${exercise}/inline-attempts`, {
         headers,

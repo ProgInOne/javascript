@@ -1,0 +1,122 @@
+id: css.box.display.try-inline-breadcrumb
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: css.display.block-inline, weight: 1 }
+  - { id: css.box.spacing, weight: 0.3 }
+tags: [display, inline, list, web-task]
+estimatedSeconds: 240
+prompt: |
+  페이지 위쪽에 "지금 보는 위치"를 알려 주는 경로 목록(`class="crumbs"`)이 있어요. 목록 항목(`li`)은 블록이라 지금은 위아래로 쌓여 있어요.
+
+  `style` 요소에 규칙을 **직접** 써서 아래처럼 만드세요. HTML은 바꾸지 마세요.
+
+  1. 경로 목록 안의 항목(`li`)의 `display`를 **인라인**(`inline`)으로 바꿔 **한 줄에 나란히** 놓이게 해요.
+  1. 항목마다 오른쪽 바깥 간격(`margin-right`)을 `12px` 줘요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>소설 코너</title>
+              <style>
+                /* 경로 목록(.crumbs) 안의 li: display 인라인, 오른쪽 바깥 간격 12px */
+              </style>
+            </head>
+            <body>
+              <ul class="crumbs">
+                <li>홈</li>
+                <li>책</li>
+                <li>소설</li>
+              </ul>
+              <h1>소설 코너</h1>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>소설 코너</title>
+              <style>
+                .crumbs li {
+                  display: inline;
+                  margin-right: 12px;
+                }
+              </style>
+            </head>
+            <body>
+              <ul class="crumbs">
+                <li>홈</li>
+                <li>책</li>
+                <li>소설</li>
+              </ul>
+              <h1>소설 코너</h1>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: li-inline
+      description: 경로 목록의 항목 세 개가 모두 display inline이어야 합니다.
+      requirement: 한 줄에 나란히
+      visible: true
+      selector: .crumbs li
+      all: true
+      expect:
+        computed:
+          display: { equals: inline }
+    - kind: layout
+      id: same-row
+      description: 첫 항목 "홈"과 마지막 항목 "소설"이 같은 줄에 있어야 합니다.
+      requirement: 한 줄에 나란히
+      visible: true
+      a: ".crumbs li:first-child"
+      b: ".crumbs li:last-child"
+      relation: same-row
+    - kind: layout
+      id: left-to-right
+      description: 항목은 홈, 책, 소설 순서로 왼쪽에서 오른쪽으로 흘러야 합니다.
+      requirement: 한 줄에 나란히
+      a: ".crumbs li:first-child"
+      b: ".crumbs li:nth-child(2)"
+      relation: left-of
+    - kind: css
+      id: margin-right
+      description: 항목마다 오른쪽 바깥 간격(margin-right)이 12px이어야 합니다.
+      requirement: 항목 사이 간격
+      visible: true
+      selector: .crumbs li
+      all: true
+      expect:
+        computed:
+          margin-right: { px: { value: 12 } }
+hints:
+  - 블록은 위아래로 쌓이고, 인라인은 글자처럼 줄 안에 이어서 놓여요. 항목을 어느 쪽으로 바꿔야 할까요?
+  - "\"경로 목록 안의 li\"는 자손 선택자 `.crumbs li`로 골라요. 그 규칙에 `display`와 `margin-right` 두 선언을 써요."
+  - "`.crumbs li { display: inline; margin-right: 12px; }`처럼 써요."
+explanation: |
+  예시 답안의 규칙은 이래요.
+
+  ```css
+  .crumbs li {
+    display: inline;
+    margin-right: 12px;
+  }
+  ```
+
+  - `li`는 기본이 블록이라 하나씩 새 줄에서 시작해요. `display: inline`으로 바꾸면 글자처럼 줄 안에 이어서 놓여요. 인라인이 되면서 글머리 기호도 사라져요.
+  - 인라인 요소도 **좌우** margin은 옆 요소를 밀어내요. 그래서 `margin-right`로 항목 사이를 띄울 수 있어요. 위아래 margin은 인라인에서 무시되니 쓰지 않았어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

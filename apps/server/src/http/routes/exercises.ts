@@ -3,6 +3,7 @@ import {
   practiceContextSchema,
   reportRequestSchema,
   runPlanRequestSchema,
+  tryAttemptRequestSchema,
 } from '@proginone/shared';
 import { Hono } from 'hono';
 import type { AttemptService } from '../../services/practice/attempt-service.ts';
@@ -42,6 +43,11 @@ export function exerciseRoutes(service: ExerciseService, attempts: AttemptServic
       const id = contentIdParam(c.req.param('id'));
       const request = inlineAttemptRequestSchema.parse(await jsonBody(c));
       return c.json(attempts.submitInline(id, request), 201);
+    })
+    .post('/:id/try-attempts', async (c) => {
+      const id = contentIdParam(c.req.param('id'));
+      const request = tryAttemptRequestSchema.parse(await jsonBody(c));
+      return c.json(attempts.submitTry(id, request));
     })
     .post('/:id/reports', async (c) => {
       const id = contentIdParam(c.req.param('id'));

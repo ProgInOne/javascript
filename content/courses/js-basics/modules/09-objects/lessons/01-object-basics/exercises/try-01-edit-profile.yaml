@@ -1,0 +1,89 @@
+id: js-basics.objects.object-basics.try-edit-profile
+type: implement_function
+usage: try
+difficulty: 1
+concepts:
+  - { id: js.obj.add-delete, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.3 }
+tags: [object, add-property, update-property, delete, write-code]
+estimatedSeconds: 200
+prompt: |
+  회원 프로필 객체 `profile`을 고쳐 보세요. 시작 코드의 주석 자리에 한 줄씩 직접 써요.
+
+  1. `age`를 `16`으로 바꿔요.
+  2. 처음에 없던 속성 `city`를 `"대전"`으로 추가해요.
+  3. 이제 필요 없는 `tempNick` 속성을 지워요.
+
+  다 고치면 마지막 줄이 아래처럼 출력돼요.
+
+  ```text
+  { name: "하린", age: 16, city: "대전" }
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const profile = { name: "하린", age: 15, tempNick: "하린이" };
+
+          // 1. age를 16으로 바꾸세요.
+
+          // 2. city 속성을 "대전"으로 추가하세요.
+
+          // 3. tempNick 속성을 지우세요.
+
+          console.log(profile);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const profile = { name: "하린", age: 15, tempNick: "하린이" };
+
+          // 1. age를 16으로 바꾸세요.
+          profile.age = 16;
+          // 2. city 속성을 "대전"으로 추가하세요.
+          profile.city = "대전";
+          // 3. tempNick 속성을 지우세요.
+          delete profile.tempNick;
+
+          console.log(profile);
+  checks:
+    - kind: console
+      id: output
+      description: 고친 프로필이 name, age, city 순서로 출력되어야 합니다.
+      requirement: 고친 결과 출력
+      expect:
+        lines: ['{ name: "하린", age: 16, city: "대전" }']
+        mode: ordered-subset
+    - kind: program
+      id: profile-object
+      description: profile에 name "하린", age 16, city "대전"만 남아 있어야 합니다(tempNick은 없어야 해요).
+      requirement: 속성 바꾸기·추가·삭제
+      expect:
+        globals:
+          profile: { equals: { name: "하린", age: 16, city: "대전" } }
+        noError: true
+      misconceptionIfFail: js.mc.add-property-needs-declare
+misconceptions: [js.mc.add-property-needs-declare]
+hints:
+  - 세 가지 모두 `profile.속성` 모양으로 시작해요. 바꾸기와 추가는 대입, 지우기는 키워드 하나를 앞에 붙여요.
+  - 있는 속성에 대입하면 값이 바뀌고, 없는 속성에 대입하면 새로 생겨요. 리터럴을 다시 쓸 필요가 없어요.
+  - "`profile.age = 16;`, `profile.city = \"대전\";`, 그리고 `delete profile.tempNick;`이에요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  profile.age = 16;
+  profile.city = "대전";
+  delete profile.tempNick;
+  ```
+
+  - `age`는 이미 있는 속성이라 대입하면 값만 바뀌어요.
+  - `city`는 없던 속성이지만 대입하는 순간 새로 생기고, 끝에 붙어요.
+  - `delete`로 지운 `tempNick`은 출력에서 사라지고, 읽으면 `undefined`예요.
+  - `profile`은 `const`지만 속성을 바꾸는 것은 막지 않아요. `profile = { ... }`처럼 변수에 새 객체를 대입하면 `TypeError`예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
