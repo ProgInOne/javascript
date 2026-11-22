@@ -26,10 +26,10 @@ spec:
       text: '`실내에서 키워요` 한 줄'
     - id: b
       text: 아무것도 나오지 않는다
+      misconception: js.mc.switch-no-break-stops
       rationale: "`case \"고양이\":`에서 실행을 시작하고, 코드가 없는 그 자리를 지나 아래 `console.log`까지 흘러가요."
     - id: c
       text: '`실내에서 키워요`, `산책이 필요해요` 두 줄'
-      misconception: js.mc.switch-no-break-stops
       rationale: "`실내에서 키워요` 다음 줄에 `break`가 있어서 거기서 switch를 빠져나가요."
     - id: d
       text: case 아래에 코드가 없어서 SyntaxError가 난다

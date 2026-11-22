@@ -40,7 +40,7 @@ spec:
   checks:
     - kind: console
       id: text-line
-      description: 첫 줄에 글자 `팝콘 2개`가 출력되어야 합니다.
+      description: 글자 `팝콘 2개`만 있는 줄이 출력되어야 합니다.
       requirement: 글자 출력
       expect:
         lines: ["팝콘 2개"]

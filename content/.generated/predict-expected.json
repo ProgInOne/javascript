@@ -454,21 +454,19 @@
       }
     },
     "js-basics.control.if-else.check-no-braces-hat": {
-      "inputHash": "bb621c192525be47dc52f1198b8c47b10646a52a7dad8f6d745be0ffe4002379",
+      "inputHash": "482032b2673d88e6aba848b6fc4064c92820acdc4406d56875e2f8512c4891cb",
       "expected": {
         "kind": "console",
         "lines": [
-          "모자 챙기기",
-          "출발"
+          "10"
         ]
       }
     },
     "js-basics.control.if-else.check-rain-skip": {
-      "inputHash": "d5a427a3dfbbba9561bfdcdfad6277543614ef72b611eda6e65d112901dd163f",
+      "inputHash": "cdfc16a1aa6379e8a3333a051c0d7206ceffa1c93e649d0c4099550ca9219ab2",
       "expected": {
         "kind": "console",
         "lines": [
-          "집을 나서요",
           "버스를 타요"
         ]
       }
@@ -542,6 +540,15 @@
         "kind": "console",
         "lines": [
           "없는 층이에요"
+        ]
+      }
+    },
+    "js-basics.control.ternary.check-empty-nickname": {
+      "inputHash": "763fe04377d4597534301b8776411fe2dfb94e76d4f884cdbf61c35018e120c1",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "손님"
         ]
       }
     },
@@ -1479,6 +1486,16 @@
         ]
       }
     },
+    "js-basics.operators.arithmetic.check-division-decimal": {
+      "inputHash": "263ba63ada8eb6cbe7a4e48395c12279ff349e1e9619e3a12a55519e8f72cde0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3.5",
+          "7"
+        ]
+      }
+    },
     "js-basics.operators.arithmetic.check-lives-decrement": {
       "inputHash": "5d1b6b471f743e541ed5bae259ab046bf524e7f967a1e69d10634de511088a61",
       "expected": {
@@ -2072,6 +2089,16 @@
           "boolean",
           "object",
           "string"
+        ]
+      }
+    },
+    "js-basics.values.null-undefined.check-undefined-continues": {
+      "inputHash": "e62733589367cac5dc9815f0069bdda92c25e7bcfddc002d817285efcc9bde68",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "undefined undefined",
+          "다음 줄"
         ]
       }
     },
