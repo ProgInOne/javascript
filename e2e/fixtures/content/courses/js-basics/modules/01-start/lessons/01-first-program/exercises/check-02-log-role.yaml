@@ -1,12 +1,12 @@
 id: js-basics.start.first-program.check-log-role
 usage: check
 type: mcq_single
-difficulty: 1
+difficulty: 2
 concepts:
   - { id: js.basics.console-log, weight: 1 }
 estimatedSeconds: 40
 prompt: |
-  `console.log("완료");`를 실행하면 어떤 일이 일어나나요?
+  본문 확인: `console.log("끝");`은 무슨 일을 하나요?
 spec:
   options:
     - id: a

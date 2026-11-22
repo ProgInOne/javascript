@@ -32,7 +32,7 @@ test('learning settings change the lesson: confidence, predict first, body size'
   page,
 }) => {
   await page.goto(LESSON);
-  const check = page.locator('.lesson-inline-check');
+  const check = page.locator('.lesson-inline-check').first();
   await expect(check.getByRole('button', { name: /확실해요/ })).toBeVisible();
   const example = page.getByRole('figure', { name: /예제/ }).first();
   await expect(example.getByRole('button', { name: '예측 건너뛰기' })).toBeVisible();
