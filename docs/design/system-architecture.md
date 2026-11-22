@@ -5,7 +5,7 @@ ProgInOne의 전체 구조를 정의합니다. 실행 형태, 프로세스, 모�
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-15 (튜터·AI API v0.1 반영)
+- 최종 수정: 2026-11-22 (공통 패키지 저장소와 배포 방식: D-090)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md)
 
 ## 배경과 범위
@@ -516,7 +516,9 @@ sequenceDiagram
 | 공통 + 확장 지점 | `content-schema`(문제 유형), `exercise-ui`(에디터 언어 모드 주입), `ai`(언어별 프롬프트 조각), 서버·웹 앱 뼈대 | 언어 쪽에서 확장 지점을 채움 |
 | 언어별 | 콘텐츠, `runner`(코드 실행 샌드박스), `exercise-kit`의 검사, `content-cli` 언어 키트 | 언어 저장소에서 새로 작성 |
 
-- 공통 패키지는 두 번째 언어를 시작할 때 이 저장소에서 떼어 내 GitHub Packages에 버전을 붙여 배포합니다. 그 전까지 공통 후보는 언어별 영역에 의존하지 않게 유지합니다.
+- 공통 패키지는 새 저장소 `ProgInOne/core`로 옮겨 GitHub Packages에 `@proginone/*`로 배포합니다. 세 번에 나눠 떼어 냅니다: 1차 `learning-engine`·`ui`·`content-schema`·`shared`, 2차 `exercise-kit`의 공통 부분(`exercise-core`)·`exercise-ui`·`ai`, 3차 서버·웹 뼈대([D-090](/docs/decisions.md)).
+- `shared`의 JS 러너 계약(`run-protocol`, `console-format`)과 `exercise-kit`의 JS·DOM 검사는 언어별 영역이므로 이 저장소에 남습니다. 옮기기 전까지 공통 후보는 언어별 영역에 의존하지 않게 유지합니다.
+- 배포하는 패키지는 빌드한 JS(`dist/`)입니다. 학습자가 토큰 없이 설치할 수 있도록 릴리스 묶음에 `@proginone/*`를 미리 넣습니다(서버를 한 파일로 묶음).
 - 각 언어 앱은 지금처럼 로컬 웹앱 하나(서버 + 웹)로 배포합니다. 학습자 데이터 폴더와 포트는 언어별로 나눌지, 한 앱이 여러 언어를 담을지를 두 번째 언어 설계 때 정합니다(미결 사항).
 
 ## 검토한 대안
