@@ -60,6 +60,7 @@ spec:
       requirement: 켜고 끄기
       expect:
         lines: ["거실 불: 켜짐", "거실 불: 꺼짐", "false"]
+        mode: ordered-subset
       misconceptionIfFail: js.mc.method-reads-props-by-name
     - kind: program
       id: no-error
