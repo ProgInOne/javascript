@@ -1,0 +1,46 @@
+id: js-basics.browser-intro.events-intro.check-event-key
+type: mcq_single
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.dom.event-object, weight: 1 }
+tags: [event-object, keydown, key]
+estimatedSeconds: 60
+prompt: |
+  검색창에서 **Enter 키를 눌렀을 때만** 검색하려고 해요. 빈칸에 들어갈 조건으로 알맞은 것은 무엇인가요?
+code: |
+  searchInput.addEventListener("keydown", (event) => {
+    if (________) {
+      search();
+    }
+  });
+spec:
+  options:
+    - id: a
+      text: '`event.key === "Enter"`'
+    - id: b
+      text: '`event.target === "Enter"`'
+      rationale: '`event.target`은 이벤트가 일어난 요소(여기서는 검색창)예요. 누른 키의 이름이 아니에요.'
+    - id: c
+      text: '`event === "Enter"`'
+      rationale: '`event`는 여러 정보를 담은 이벤트 객체예요. 키 이름은 그 안의 `key`에 들어 있어요.'
+    - id: d
+      text: '`event.key === "enter"`'
+      rationale: 키 이름은 대소문자를 구별해요. Enter 키의 이름은 첫 글자가 대문자인 `"Enter"`예요.
+  correct: a
+hints:
+  - 브라우저는 함수를 부를 때 무슨 일이 일어났는지 담은 객체를 넘겨줘요. 그 객체의 어떤 속성에 키 이름이 있나요?
+  - "`target`은 요소, `key`는 키 이름이에요."
+  - 문자열 비교는 대소문자까지 같아야 `true`예요. Enter 키 이름의 철자를 떠올려 보세요.
+explanation: |
+  정답은 `event.key === "Enter"`예요.
+
+  - `keydown` 함수가 받는 이벤트 객체의 `key`에는 누른 키의 이름이 들어 있어요. Enter 키는 `"Enter"`, A 키는 `"a"`예요.
+  - `event.target`은 이벤트가 일어난 요소라서 문자열 `"Enter"`와 같을 수 없어요.
+  - `event` 자체는 객체라서 문자열과 비교하면 늘 `false`예요.
+  - `"enter"`는 대소문자가 달라서 `event.key`와 같지 않아요. 결국 검색이 한 번도 실행되지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

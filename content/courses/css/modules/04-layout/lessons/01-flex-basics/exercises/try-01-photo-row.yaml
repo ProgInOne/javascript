@@ -1,0 +1,133 @@
+id: css.layout.flex-basics.try-photo-row
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: css.flex.container, weight: 1 }
+  - { id: css.flex.gap, weight: 0.5 }
+tags: [flexbox, display-flex, gap, web-task]
+estimatedSeconds: 200
+prompt: |
+  여행 사진 세 장(`.photo`)이 지금은 위아래로 쌓여 있어요. `.gallery` 규칙에 선언을 **직접** 써서 아래처럼 만드세요. HTML과 `.photo` 규칙은 바꾸지 마세요.
+
+  1. 사진 세 장이 **Flexbox로** 한 줄에 나란히 놓여요.
+  1. 사진과 사진 **사이**는 `10px`이에요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>여행 사진</title>
+              <style>
+                .gallery {
+                  /* 여기에 선언 두 개: Flexbox로 나란히, 사이 간격 10px */
+                }
+                .photo {
+                  width: 100px;
+                  height: 80px;
+                  background: #bae6fd;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="gallery">
+                <div class="photo" id="p1">바다</div>
+                <div class="photo" id="p2">산</div>
+                <div class="photo" id="p3">시장</div>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>여행 사진</title>
+              <style>
+                .gallery {
+                  display: flex;
+                  gap: 10px;
+                }
+                .photo {
+                  width: 100px;
+                  height: 80px;
+                  background: #bae6fd;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="gallery">
+                <div class="photo" id="p1">바다</div>
+                <div class="photo" id="p2">산</div>
+                <div class="photo" id="p3">시장</div>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: gallery-flex
+      description: 사진들을 감싼 .gallery가 플렉스 컨테이너(display flex)여야 합니다.
+      requirement: 한 줄에 나란히
+      visible: true
+      selector: .gallery
+      expect:
+        computed:
+          display: { equals: flex }
+      misconceptionIfFail: css.mc.flex-on-children
+    - kind: layout
+      id: same-row
+      description: 첫 사진과 마지막 사진이 같은 줄에 있어야 합니다.
+      requirement: 한 줄에 나란히
+      visible: true
+      a: "#p1"
+      b: "#p3"
+      relation: same-row
+      tolerancePx: 1
+    - kind: layout
+      id: gap-1-2
+      description: 첫 번째와 두 번째 사진 사이가 가로로 10px이어야 합니다.
+      requirement: 사이 간격 10px
+      visible: true
+      a: "#p1"
+      b: "#p2"
+      gap: { axis: x, min: 10, max: 10 }
+      tolerancePx: 1
+    - kind: layout
+      id: gap-2-3
+      description: 두 번째와 세 번째 사진 사이가 가로로 10px이어야 합니다.
+      requirement: 사이 간격 10px
+      visible: true
+      a: "#p2"
+      b: "#p3"
+      gap: { axis: x, min: 10, max: 10 }
+      tolerancePx: 1
+misconceptions: [css.mc.flex-on-children]
+hints:
+  - 나란히 놓을 사진들이 아니라, 사진들을 **감싼 부모**에 무엇을 줘야 할까요?
+  - "부모에 `display: flex`를 주면 바로 아래 자식들이 한 줄로 놓여요. 아이템 사이 간격은 컨테이너의 `gap`으로 정해요."
+  - "`.gallery` 안에 `display: flex;`와 `gap: 10px;`을 써요."
+explanation: |
+  예시 답안은 이래요.
+
+  ```css
+  .gallery {
+    display: flex;
+    gap: 10px;
+  }
+  ```
+
+  - `display: flex`는 나란히 놓을 사진이 아니라 사진을 감싼 `.gallery`에 줘요. 바로 아래 자식인 사진 세 장이 플렉스 아이템이 되어 가로로 놓여요.
+  - `gap: 10px`는 아이템 **사이**에만 간격을 만들어요. 사진이 세 장이니 간격은 두 군데예요. 컨테이너 가장자리에는 간격이 생기지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

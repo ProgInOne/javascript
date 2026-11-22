@@ -1,0 +1,43 @@
+id: js-basics.strings.string-methods.check-search-case
+type: predict_output
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.str.search, weight: 1 }
+tags: [string, indexOf, includes, case]
+estimatedSeconds: 60
+prompt: |
+  노래 제목에서 글자를 찾아보는 코드예요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const song = "Happy Birthday";
+    console.log(song.indexOf("B"));
+    console.log(song.indexOf("b"));
+    console.log(song.includes("day"));
+  answerKind: console
+  misconceptionByAnswer:
+    "6\n6\ntrue": js.mc.includes-ignores-case
+    "6\nfalse\ntrue": js.mc.indexof-as-boolean
+misconceptions: [js.mc.includes-ignores-case, js.mc.indexof-as-boolean]
+hints:
+  - "`Happy Birthday`에서 대문자 `B`는 몇 번 인덱스에 있나요? 공백도 한 글자예요."
+  - 찾기 메서드는 대문자와 소문자를 다른 글자로 봐요. 소문자 `b`가 이 제목에 있나요?
+  - "`indexOf`는 못 찾으면 `false`가 아니라 숫자 `-1`을 돌려줘요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  6
+  -1
+  true
+  ```
+
+  - `H(0) a(1) p(2) p(3) y(4) 공백(5) B(6)`이라 `indexOf("B")`는 6이에요.
+  - 소문자 `b`는 제목에 없어요. 찾기 메서드는 대소문자를 구별해서 `indexOf("b")`는 `-1`이에요.
+  - `Birthday`가 `day`로 끝나므로 `includes("day")`는 `true`예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

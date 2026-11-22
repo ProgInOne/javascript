@@ -152,6 +152,10 @@ console.log(line);
 
 - `shift`는 맨 앞의 `"민지"`를 꺼내 돌려줘요. 남은 `"준호"`는 0번으로, `"서연"`은 1번으로 당겨져요.
 - `unshift`는 맨 앞에 넣고 새 길이 3을 돌려줘요. 원래 요소들은 한 칸씩 뒤로 밀려요.
+
+앞에서 꺼내고 끝에 넣는 두 메서드를 직접 써 볼까요? 보드게임의 차례 넘기기를 만들어 보세요.
+
+<TryIt ref="js-basics.arrays.array-mutation.try-pass-turn" />
 </Section>
 
 <Section kind="examples">
@@ -355,21 +359,21 @@ console.log(recent); // ["양말", "운동화", "모자"]
 </Section>
 
 <Section kind="check">
-`push`가 무엇을 돌려주는지 확인해 보세요.
+`pop`이 무엇을 돌려주는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-mutation.mcq-push-returns" />
+<InlineExercise ref="js-basics.arrays.array-mutation.check-pop-returns" />
 
 앞에서 넣고 빼는 메서드를 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-mutation.mcq-shift-unshift" />
+<InlineExercise ref="js-basics.arrays.array-mutation.check-unshift-shift" />
 
 `splice`의 두 번째 인수를 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-mutation.mcq-splice-count" />
+<InlineExercise ref="js-basics.arrays.array-mutation.check-splice-delete-count" />
 
-배열 메서드와 문자열 메서드의 차이를 확인해 보세요.
+`join`처럼 원래 배열을 바꾸지 않는 메서드를 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-mutation.tf-push-new-array" />
+<InlineExercise ref="js-basics.arrays.array-mutation.check-join-keeps-array" />
 </Section>
 
 <Section kind="practice" />

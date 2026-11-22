@@ -11,7 +11,7 @@ test.describe('reading mode', () => {
     await expect(page.getByRole('heading', { level: 1, name: '첫 프로그램' })).toBeVisible();
 
     // Inline check: graded at once by the server, outside any practice set.
-    const check = page.locator('.lesson-inline-check');
+    const check = page.locator('.lesson-inline-check').first();
     await check.locator('label', { hasText: '맨 아래의 문장' }).click();
     await check.getByRole('button', { name: /확실해요/ }).click();
     await expect(check.getByRole('heading', { name: '정답이 아니에요.' })).toBeVisible();
@@ -21,8 +21,12 @@ test.describe('reading mode', () => {
     await expect(check.getByRole('heading', { name: '정답이에요.' })).toBeVisible();
     // Correct but unsure: the explanation opens, in its own box under the toggle (D-080).
     await expect(check.getByRole('group', { name: '해설' })).toBeVisible();
-    // A code exercise referenced inline is left to practice mode.
-    await expect(page.getByText('이 확인 문제는 실습 모드에서 풀 수 있어요.')).toBeVisible();
+    // 직접 써 보기 (D-091): the buggy starter runs in the sandbox and is checked, not recorded.
+    const tryIt = page.locator('.lesson-try');
+    await tryIt.getByRole('button', { name: '확인' }).click();
+    await expect(
+      tryIt.getByRole('heading', { name: /정답이 아니에요|부분 정답이에요/ }),
+    ).toBeVisible();
 
     // Heartbeat every 30 s while the tab is visible and the learner is active.
     const heartbeat = page.waitForRequest('**/api/v1/activity/heartbeat');

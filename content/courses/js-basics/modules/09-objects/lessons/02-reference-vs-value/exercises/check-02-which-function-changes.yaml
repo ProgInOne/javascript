@@ -1,0 +1,42 @@
+id: js-basics.objects.reference-vs-value.check-which-function-changes
+type: mcq_single
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.obj.reference, weight: 1 }
+  - { id: js.fn.params-args, weight: 0.3 }
+tags: [object, reference, parameter]
+estimatedSeconds: 75
+prompt: |
+  `const item = { name: "볼펜", qty: 5 };`가 있어요. `empty(item);`을 부른 뒤 `item.qty`가 `0`이 되게 하는 `empty` 함수는 어느 것인가요?
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: 'function empty(x) { x.qty = 0; }'
+    - id: b
+      text: 'function empty(x) { x = { name: x.name, qty: 0 }; }'
+      misconception: js.mc.param-reassign-replaces-object
+      rationale: 매개변수 `x`에 새 객체를 대입하면 `x`만 새 객체를 가리키게 돼요. 바깥 `item`이 가리키는 객체는 그대로예요.
+    - id: c
+      text: 'function empty(x) { let qty = x.qty; qty = 0; }'
+      rationale: 변수 `qty`에 숫자 5가 복사될 뿐이에요. 변수 `qty`를 바꿔도 객체의 속성은 바뀌지 않아요.
+    - id: d
+      text: 'function empty(x) { const y = { ...x }; y.qty = 0; }'
+      rationale: "`y`는 복사로 만든 새 객체예요. 새 객체의 속성만 바뀌고 `item`은 그대로예요."
+  correct: a
+misconceptions: [js.mc.param-reassign-replaces-object]
+hints:
+  - 함수를 부르면 매개변수 `x`는 바깥 `item`과 같은 객체를 가리켜요.
+  - 그 객체를 바꾸려면 `x`가 가리키는 객체의 속성에 대입해야 해요. `x` 자체에 새 값을 대입하면 어떻게 될까요?
+  - "`x.속성 = 값` 모양인 선택지를 찾아보세요."
+explanation: |
+  정답은 `function empty(x) { x.qty = 0; }`이에요. `x`와 `item`은 같은 객체를 가리키니, `x.qty`를 바꾸면 `item.qty`도 `0`이에요.
+
+  - 매개변수에 새 객체를 대입하면 화살표만 옮겨져요. 함수가 끝나면 그 새 객체는 사라지고 `item`은 그대로예요.
+  - 숫자를 변수에 꺼내서 바꾸거나, 복사본을 바꾸는 것도 원래 객체에 닿지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,51 @@
+id: js-basics.strings.string-basics.check-index-and-length
+type: fill_blank
+usage: check
+difficulty: 1
+concepts:
+  - { id: js.str.index-length, weight: 1 }
+tags: [string, index, length]
+estimatedSeconds: 60
+prompt: |
+  `const fruit = "grape";`일 때 빈칸에 알맞은 값을 쓰세요. 글자는 따옴표 없이, 숫자는 숫자만 쓰세요.
+spec:
+  mode: text
+  template: |
+    fruit.length: {{blank:len}}
+    fruit[0]: {{blank:first}}
+    마지막 글자 e의 인덱스: {{blank:last}}
+  blanks:
+    - id: len
+      accept: ["5"]
+      width: 4
+    - id: first
+      accept: ["g", "\"g\""]
+      caseSensitive: true
+      width: 4
+      misconceptionMap:
+        "r": js.mc.index-starts-at-one
+    - id: last
+      accept: ["4"]
+      width: 4
+      misconceptionMap:
+        "5": js.mc.last-index-is-length
+misconceptions: [js.mc.index-starts-at-one, js.mc.last-index-is-length]
+hints:
+  - "`length`는 글자 수예요. `grape`의 글자를 세어 보세요."
+  - 인덱스는 0부터 시작해요. 첫 글자는 몇 번일까요?
+  - 글자가 5개이면 인덱스는 0부터 몇까지인가요? 마지막 인덱스는 `length - 1`이에요.
+explanation: |
+  정답은 차례로 `5`, `g`, `4`예요.
+
+  | 인덱스 | 0 | 1 | 2 | 3 | 4 |
+  |---|---|---|---|---|---|
+  | 글자 | g | r | a | p | e |
+
+  - `fruit.length`는 글자 수 5예요.
+  - 인덱스는 0부터 시작해서 `fruit[0]`은 첫 글자 `g`예요.
+  - 마지막 글자의 인덱스는 `length - 1`, 곧 4예요. `fruit[5]`는 범위 밖이라 `undefined`예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

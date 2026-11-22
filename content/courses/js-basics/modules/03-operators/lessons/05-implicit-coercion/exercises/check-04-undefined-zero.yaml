@@ -1,0 +1,30 @@
+id: js-basics.operators.implicit-coercion.check-undefined-zero
+type: true_false
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.conv.equality-coercion, weight: 1 }
+tags: [loose-equality, undefined, "null"]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 골라 주세요.
+spec:
+  statement: '`undefined`도 0처럼 falsy이므로 `undefined == 0`은 `true`다.'
+  answer: false
+  misconceptionIfWrong: js.mc.loose-equality-uses-truthiness
+misconceptions: [js.mc.loose-equality-uses-truthiness]
+hints:
+  - "`==`는 truthy·falsy로 비교할까요, 정해진 변환 규칙으로 비교할까요?"
+  - "`null`과 `undefined`는 `==`에서 숫자로 바뀌지 않아요."
+  - "`null`과 `undefined`는 서로하고만(그리고 자기 자신과만) 같아요."
+explanation: |
+  **거짓**이에요. `undefined == 0`은 `false`예요.
+
+  `==`는 truthy·falsy를 보지 않아요. `null`과 `undefined`는 `==`에서 숫자로 바뀌지 않고, 서로하고만 같다는 특별 규칙이 있어요. 그래서 `undefined == null`은 `true`지만 `undefined == 0`, `undefined == false`, `undefined == ""`는 모두 `false`예요.
+
+  둘 다 falsy라고 `==`로 같은 것은 아니에요. 헷갈리지 않으려면 변환이 없는 `===`를 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

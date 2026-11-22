@@ -1,0 +1,37 @@
+id: js-basics.strings.string-basics.check-template-expression
+type: true_false
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.str.template-literal, weight: 1 }
+tags: [string, template-literal]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "`const price = 3;`일 때 `` console.log(`${price + 4}개 남았어요`); ``는 `7개 남았어요`를 출력한다."
+  answer: true
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 백틱 문자열의 `${}` 안에는 식을 쓸 수 있고, 계산한 결과가 그 자리에 들어간다
+      correct: true
+    - id: r2
+      text: "`${}` 안에는 변수 이름만 쓸 수 있어서 `price + 4`를 쓰면 오류가 난다"
+    - id: r3
+      text: "`${}`는 글자 그대로 출력되어 `${price + 4}개 남았어요`가 나온다"
+      misconception: js.mc.template-in-normal-quotes
+hints:
+  - 이 문자열은 따옴표가 아니라 백틱으로 감쌌어요. 백틱 문자열에서 `${}`는 어떻게 되나요?
+  - "`${}` 안에는 변수뿐 아니라 계산식도 쓸 수 있어요."
+  - "`price + 4`를 먼저 계산하면 얼마인가요?"
+explanation: |
+  정답은 **참**이에요.
+
+  - 백틱으로 감싼 템플릿 리터럴에서는 `${}` 안의 **식**을 계산해서 그 자리에 넣어요. `price + 4`는 7이라 `7개 남았어요`가 나와요.
+  - `${}`가 글자 그대로 나오는 것은 큰따옴표·작은따옴표 문자열 안에 썼을 때예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

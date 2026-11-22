@@ -112,6 +112,10 @@ row (기본값)                    column
 - 카드 사이에는 `gap: 12px`만큼 간격이 생겨요. 회색 가장자리와 카드 사이의 12px은 gap이 아니라 `.list`의 `padding`이 만든 거예요.
 - 세 번째 카드 안의 `strong`은 `.list`의 손자라 아이템이 아니에요. 카드 안에서 글자처럼 흘러요.
 - `display: flex`를 `.item`으로 옮기면 카드들은 다시 위아래로 쌓여요. 각 카드가 자기 안쪽 글자의 컨테이너가 될 뿐이에요.
+
+이제 플렉스 컨테이너를 직접 만들어 보세요. `display: flex`를 어느 요소에 쓰는지가 핵심이에요.
+
+<TryIt ref="css.layout.flex-basics.try-photo-row" />
 </Section>
 
 <Section kind="examples">
@@ -152,6 +156,10 @@ row (기본값)                    column
 | 3 | `align-items: flex-start` (교차축) | 가로 방향 시작점(왼쪽) |
 
 `justify-content`를 "가로 정렬"로 외워 두면 이 예제에서 버튼이 가로 가운데로 갈 거라고 예상하게 돼요. 주축이 세로로 바뀌면 `justify-content`도 세로를 맡아요. `align-items`를 `center`로 바꿔 보면 버튼이 가로 가운데로도 옮겨져요.
+
+주축을 세로로 바꾼 뒤 `justify-content`가 어느 방향을 맡는지 직접 써서 확인해 보세요.
+
+<TryIt ref="css.layout.flex-basics.try-column-card-ends" />
 </Section>
 
 <Section kind="examples">
@@ -250,13 +258,13 @@ row (기본값)                    column
 </Section>
 
 <Section kind="check">
-`display: flex`를 어디에 주는지 확인해 보세요.
+`display: flex`를 준 컨테이너 안에서 아이템이 어떻게 놓이는지 확인해 보세요.
 
-<InlineExercise ref="css.layout.flex-basics.mcq-flex-where" />
+<InlineExercise ref="css.layout.flex-basics.check-blocks-in-row" />
 
 이번에는 축과 정렬 속성을 짝지어 보세요.
 
-<InlineExercise ref="css.layout.flex-basics.mcq-vertical-center-row" />
+<InlineExercise ref="css.layout.flex-basics.check-column-horizontal-center" />
 </Section>
 
 <Section kind="practice" />

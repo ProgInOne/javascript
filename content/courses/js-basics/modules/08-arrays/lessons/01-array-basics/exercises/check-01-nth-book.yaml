@@ -1,0 +1,43 @@
+id: js-basics.arrays.array-basics.check-nth-book
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.arr.literal-index, weight: 1 }
+tags: [index, check]
+estimatedSeconds: 40
+prompt: |
+  책장 배열 `const books = ["어린 왕자", "모모", "데미안", "나니아"];`에서 **세 번째 책** `"데미안"`을 읽는 식은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`books[2]`'
+    - id: b
+      text: '`books[3]`'
+      misconception: js.mc.index-starts-at-one
+      rationale: 인덱스는 0부터 세요. `books[3]`은 네 번째 책 `"나니아"`예요.
+    - id: c
+      text: '`books["데미안"]`'
+      rationale: 대괄호 안에는 요소의 값이 아니라 위치 번호(인덱스)를 써요.
+    - id: d
+      text: '`books.length - 2`'
+      rationale: 이 식은 숫자 `2`일 뿐이에요. 요소를 읽으려면 `books[...]`처럼 대괄호로 감싸야 해요.
+  correct: a
+misconceptions: [js.mc.index-starts-at-one]
+hints:
+  - 첫 번째 책 `"어린 왕자"`의 인덱스는 몇 번인가요?
+  - 인덱스는 "맨 앞에서 몇 칸 떨어졌나"예요. 세 번째 책은 맨 앞에서 몇 칸 떨어져 있나요?
+  - 세 번째 요소의 인덱스는 3보다 하나 작아요.
+explanation: |
+  정답은 `books[2]`예요.
+
+  인덱스는 0부터 시작해서 `"어린 왕자"`가 0, `"모모"`가 1, `"데미안"`이 2, `"나니아"`가 3이에요. "n번째 요소"의 인덱스는 언제나 `n - 1`이에요.
+
+  - `books[3]`: 네 번째 책 `"나니아"`예요. "세 번째"와 "인덱스 3"을 같다고 보면 생기는 실수예요.
+  - `books["데미안"]`: 대괄호 안에는 위치 번호를 써요. 값으로는 요소를 찾을 수 없어서 `undefined`가 나와요.
+  - `books.length - 2`: 계산 결과가 숫자 `2`예요. 인덱스로 쓰려면 `books[books.length - 2]`처럼 대괄호 안에 넣어야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

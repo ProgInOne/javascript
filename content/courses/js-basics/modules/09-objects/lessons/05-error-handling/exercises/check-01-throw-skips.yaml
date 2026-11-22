@@ -1,0 +1,49 @@
+id: js-basics.objects.error-handling.check-throw-skips
+type: predict_output
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.errors.throw, weight: 1 }
+  - { id: js.errors.try-catch, weight: 0.5 }
+tags: [throw, try-catch, flow]
+estimatedSeconds: 70
+prompt: |
+  `try` 블록 안에서 오류를 던져요. 실행하면 콘솔에 무엇이 출력될까요? 출력되는 줄을 차례로 모두 적어 보세요.
+spec:
+  lang: js
+  code: |
+    try {
+      console.log("A");
+      throw new Error("멈춤");
+      console.log("B");
+    } catch (err) {
+      console.log("C " + err.message);
+    }
+    console.log("D");
+  answerKind: console
+  misconceptionByAnswer:
+    "A\nB\nC 멈춤\nD": js.mc.throw-just-logs
+    "A\nC 멈춤\nB\nD": js.mc.try-resumes-after-catch
+    "A\nC 멈춤": js.mc.caught-error-stops-program
+misconceptions: [js.mc.throw-just-logs, js.mc.try-resumes-after-catch]
+hints:
+  - "`throw`는 메시지를 출력하는 문장일까요, 실행 흐름을 바꾸는 문장일까요?"
+  - 오류가 던져지면 `try`의 남은 줄은 건너뛰고 곧바로 `catch`로 가요.
+  - "`catch`가 끝나면 `try`로 돌아가지 않고 그 아래 코드가 이어서 실행돼요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  A
+  C 멈춤
+  D
+  ```
+
+  - `A`가 출력된 뒤 `throw`가 오류를 던져요. `throw` 자체는 아무것도 출력하지 않아요.
+  - `try`의 남은 줄(`B`)은 건너뛰고 `catch`로 가요. `err.message`는 `"멈춤"`이라 `C 멈춤`이 나와요.
+  - 오류를 잡았으니 프로그램은 멈추지 않고 `D`까지 출력해요. `catch`가 끝난 뒤 `B`로 돌아가지는 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

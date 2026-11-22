@@ -1,0 +1,61 @@
+id: css.box.display.check-heading-paragraph-gaps
+type: fill_blank
+difficulty: 2
+usage: check
+concepts:
+  - { id: css.display.normal-flow, weight: 1 }
+tags: [margin, margin-collapse, normal-flow]
+estimatedSeconds: 90
+prompt: |
+  제목 하나 아래에 문단 두 개가 차례로 있어요. 아래 규칙만 적용됐다고 생각하고, 각 사이의 간격이 몇 px인지 쓰세요. 숫자만 써도 돼요.
+code: |
+  <style>
+    h2 {
+      margin-bottom: 12px;
+    }
+    p {
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+  </style>
+  <h2>공지</h2>
+  <p>첫째 문단</p>
+  <p>둘째 문단</p>
+spec:
+  mode: text
+  template: |
+    제목과 첫째 문단 사이: {{blank:a}}   첫째 문단과 둘째 문단 사이: {{blank:b}}
+  blanks:
+    - id: a
+      accept: ["16px", "16"]
+      acceptRegex: "16 ?(?:px)?"
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "28": css.mc.vertical-margins-add
+        "28px": css.mc.vertical-margins-add
+    - id: b
+      accept: ["16px", "16"]
+      acceptRegex: "16 ?(?:px)?"
+      caseSensitive: false
+      width: 8
+      misconceptionMap:
+        "32": css.mc.vertical-margins-add
+        "32px": css.mc.vertical-margins-add
+misconceptions: [css.mc.vertical-margins-add]
+hints:
+  - 위아래로 맞닿은 블록의 margin은 더해질까요, 겹칠까요?
+  - 맞닿은 두 margin 중 큰 값 하나만 남아요.
+  - "제목과 첫째 문단은 12px과 16px, 두 문단 사이는 16px과 16px이 맞닿아요."
+explanation: |
+  정답은 **16px, 16px**이에요.
+
+  - 제목과 첫째 문단: 제목의 `margin-bottom` 12px과 문단의 `margin-top` 16px이 맞닿아 겹치고, 큰 값 16px만 남아요.
+  - 두 문단 사이: 첫째 문단의 `margin-bottom` 16px과 둘째 문단의 `margin-top` 16px이 겹쳐서 16px이에요. 32px이 아니에요.
+
+  일반 흐름에서 위아래로 맞닿은 블록의 margin은 더해지지 않고 큰 쪽 하나만 남아요(마진 상쇄).
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

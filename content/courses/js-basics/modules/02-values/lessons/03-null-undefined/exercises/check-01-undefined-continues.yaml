@@ -1,0 +1,32 @@
+id: js-basics.values.null-undefined.check-undefined-continues
+type: true_false
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.types.undefined, weight: 1 }
+tags: [undefined]
+estimatedSeconds: 45
+prompt: |
+  다음 프로그램에 대한 설명이 맞는지 골라 주세요.
+code: |
+  let city;
+  console.log(city);
+  console.log("다음 줄");
+spec:
+  statement: '`city`에 값이 없으므로 2번 줄에서 오류가 나고, `다음 줄`은 출력되지 않는다.'
+  answer: false
+  misconceptionIfWrong: js.mc.undefined-is-error
+misconceptions: [js.mc.undefined-is-error]
+hints:
+  - 값 없이 만든 `let` 변수에는 JavaScript가 자동으로 무엇을 넣어 두나요?
+  - 그 값을 출력하는 것은 오류일까요, 정상적인 출력일까요?
+  - "`undefined`도 값이에요. 값을 출력한 뒤 프로그램은 어떻게 되나요?"
+explanation: |
+  정답은 **거짓**이에요. 콘솔에는 `undefined`와 `다음 줄` 두 줄이 나와요.
+
+  `let city;`처럼 값 없이 만든 변수에는 JavaScript가 자동으로 `undefined`를 넣어 둬요. `undefined`는 오류가 아니라 "아직 정해지지 않음"을 뜻하는 정상적인 값이라서, 출력해도 프로그램은 멈추지 않고 다음 줄을 실행해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

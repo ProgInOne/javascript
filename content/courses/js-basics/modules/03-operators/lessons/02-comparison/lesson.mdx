@@ -164,6 +164,10 @@ true false false
 | `isShorter` | `height < limit` | `130 < 130` (미만: 같으면 거짓) | `false` |
 
 키가 기준과 **딱 같은** 경계값에서 `>=`와 `>`의 결과가 갈려요. 요구사항이 "이상"이면 `>=`를 써야 130cm인 사람도 탈 수 있어요.
+
+이제 요구사항을 비교식으로 옮기는 코드를 직접 써 보세요. 경계값에서 결과가 어떻게 되는지 눈여겨보세요.
+
+<TryIt ref="js-basics.operators.comparison.try-order-benefits" />
 </Section>
 
 <Section kind="examples">
@@ -244,6 +248,10 @@ true
 - 1번 줄: `"만원"`은 숫자로 바꿀 수 없어서 계산이 실패하고, `price`에 `NaN`이 들어가요. 오류는 나지 않아요.
 - 3번 줄: `price`는 분명히 NaN인데 `price === NaN`은 `false`예요. NaN은 자기 자신과도 같지 않기 때문이에요.
 - 4번 줄: NaN인지는 `Number.isNaN(price)`로 확인해야 정확하게 `true`가 나와요.
+
+이번에는 `===`와 `Number.isNaN`으로 값을 확인하는 코드를 직접 써 보세요.
+
+<TryIt ref="js-basics.operators.comparison.try-code-and-quantity" />
 </Section>
 
 <Section kind="pitfalls">
@@ -320,19 +328,19 @@ console.log("쿠폰 사용:", isCouponValid);    // false (대소문자가 달�
 <Section kind="check">
 `===`가 무엇을 비교하는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.comparison.mcq-strict-type" />
+<InlineExercise ref="js-basics.operators.comparison.check-member-id-type" />
 
 `==`와 `===`의 차이를 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.comparison.mcq-loose-vs-strict" />
+<InlineExercise ref="js-basics.operators.comparison.check-zero-loose-strict" />
 
 문자열끼리 비교하면 어떻게 되는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.comparison.mcq-string-compare" />
+<InlineExercise ref="js-basics.operators.comparison.check-dictionary-order" />
 
 마지막으로 비교를 이어 쓰면 어떻게 되는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.comparison.tf-chained-comparison" />
+<InlineExercise ref="js-basics.operators.comparison.check-chained-age" />
 </Section>
 
 <Section kind="practice" />

@@ -1,0 +1,72 @@
+id: js-basics.control.ternary.try-subway-fare
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.control.ternary, weight: 1 }
+tags: [ternary, precedence, write-code]
+estimatedSeconds: 240
+prompt: |
+  지하철 요금 안내를 조건 연산자로 직접 써 보세요.
+
+  1. `age`가 65 이상이면 `0`, 아니면 `1400`을 골라 `fare`에 넣어요. `const`와 조건 연산자 한 줄로 써요.
+  1. `"요금: "` 뒤에 `fare`가 `0`이면 `"무료"`를, 아니면 `fare`를 이어 붙여 출력해요. 조건 연산자를 **괄호로 감싸야** 해요.
+
+  시작 코드의 `age`는 `30`이라 콘솔에 `요금: 1400`이 나와야 해요. 다 쓰면 `age`를 `70`으로 바꿔 `요금: 무료`가 나오는지도 확인해 보세요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const age = 30;
+
+          // 1. age가 65 이상이면 0, 아니면 1400을 골라 fare에 넣으세요.
+
+          // 2. "요금: " 뒤에 fare가 0이면 "무료", 아니면 fare를 이어 붙여 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const age = 30;
+
+          // 1. age가 65 이상이면 0, 아니면 1400을 골라 fare에 넣으세요.
+          const fare = age >= 65 ? 0 : 1400;
+          // 2. "요금: " 뒤에 fare가 0이면 "무료", 아니면 fare를 이어 붙여 출력하세요.
+          console.log("요금: " + (fare === 0 ? "무료" : fare));
+  checks:
+    - kind: program
+      id: fare-value
+      description: "`age`가 30이면 `fare`에 `1400`이 들어 있어야 합니다."
+      requirement: 요금 고르기
+      expect:
+        globals:
+          fare: { equals: 1400 }
+        noError: true
+    - kind: console
+      id: output
+      description: "콘솔에 `요금: 1400` 한 줄이 출력되어야 합니다. `요금: ` 없이 값만 나온다면 조건 연산자를 괄호로 감쌌는지 확인해 보세요."
+      requirement: 안내 출력
+      expect:
+        lines: ["요금: 1400"]
+      misconceptionIfFail: js.mc.ternary-precedence
+misconceptions: [js.mc.ternary-precedence]
+hints:
+  - '모양은 `조건 ? 참일 때의 값 : 거짓일 때의 값`이에요. 첫 번째 조건은 `age >= 65`예요.'
+  - '1번은 `const fare = age >= 65 ? 0 : 1400;`처럼 써요. 2번의 조건은 `fare === 0`이에요.'
+  - "2번은 `console.log(\"요금: \" + (fare === 0 ? \"무료\" : fare));`처럼 조건 연산자 전체를 괄호로 감싸요. 괄호가 없으면 `+`가 먼저 계산돼서 `요금: `이 사라져요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  const fare = age >= 65 ? 0 : 1400;
+  console.log("요금: " + (fare === 0 ? "무료" : fare));
+  ```
+
+  - 1번 줄: `30 >= 65`가 거짓이라 `:` 뒤의 `1400`이 `fare`에 들어가요.
+  - 2번 줄: 괄호 안의 조건 연산자가 먼저 `1400`이 되고, 그 값이 `"요금: "` 뒤에 이어 붙여져요.
+  - 괄호를 빼면 `"요금: " + fare`가 먼저 계산돼서 `"요금: 1400" === 0`이 조건이 되고, 출력은 `1400`만 남아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,40 @@
+id: css.styling.units-colors.check-ignored-declaration
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: css.units.length, weight: 1 }
+tags: [units, px, unitless]
+estimatedSeconds: 50
+prompt: |
+  다음 선언 중 브라우저가 **무시하는** 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`padding: 16;`"
+    - id: b
+      text: "`margin: 0;`"
+      rationale: 0은 무엇의 0이든 같아서 단위를 빼도 돼요.
+    - id: c
+      text: "`width: 50%;`"
+      rationale: "%도 단위예요. 부모 너비의 50%로 적용돼요."
+    - id: d
+      text: "`font-size: 1.25rem;`"
+      rationale: rem은 루트 글자 크기를 기준으로 하는 단위예요. 루트가 16px이면 20px이 돼요.
+  correct: a
+hints:
+  - 네 선언의 값 뒤에 무엇이 붙어 있는지 보세요.
+  - 0이 아닌 길이에는 단위를 꼭 붙여야 해요. 브라우저는 단위 없는 길이를 무엇의 크기인지 알 수 없어요.
+  - 단위를 빼도 되는 길이는 0뿐이에요.
+explanation: |
+  정답은 **`padding: 16;`** 이에요.
+
+  16px인지 16rem인지 알 수 없으니 브라우저는 이 선언을 무시해요. 0이 아닌 길이에는 `16px`처럼 단위를 꼭 붙여요.
+
+  - `margin: 0;`은 0이라 단위가 없어도 돼요.
+  - `50%`와 `1.25rem`은 단위가 붙은 올바른 길이예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

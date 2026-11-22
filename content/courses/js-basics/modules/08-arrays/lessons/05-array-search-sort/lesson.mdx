@@ -204,6 +204,10 @@ true
 
 - `original.sort(...)`는 `original`을 직접 정렬하고 **같은 배열**을 돌려줘요. 그래서 `original`도 정렬된 순서이고, `sorted === original`은 `true`예요. 새 배열이 생긴 것이 아니라 같은 배열에 이름이 둘 붙었을 뿐이에요.
 - `prices.slice()`는 `prices`를 복사한 새 배열을 만들어요. `sort`는 그 복사본을 정렬하므로 `prices`는 들어온 순서 그대로예요.
+
+비교 함수와 복사를 함께 직접 써 볼까요? 이번에는 숫자 대신 단어의 글자 수로 정렬해 보세요.
+
+<TryIt ref="js-basics.arrays.array-search-sort.try-sort-by-length" />
 </Section>
 
 <Section kind="examples">
@@ -326,21 +330,21 @@ console.log("전체 기록:", records.join(", "));
 </Section>
 
 <Section kind="check">
-배열의 `includes`가 무엇과 비교하는지 확인해 보세요.
+배열의 `includes`가 자료형까지 비교하는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-search-sort.mcq-includes-whole-element" />
+<InlineExercise ref="js-basics.arrays.array-search-sort.check-includes-type" />
 
 비교 함수 없이 숫자를 정렬하면 어떻게 되는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-search-sort.mcq-default-sort" />
+<InlineExercise ref="js-basics.arrays.array-search-sort.check-default-sort-ages" />
 
-비교 함수가 무엇을 돌려줘야 하는지 확인해 보세요.
+비교 함수가 돌려준 값으로 순서가 어떻게 정해지는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-search-sort.tf-compare-boolean" />
+<InlineExercise ref="js-basics.arrays.array-search-sort.check-negative-goes-first" />
 
-`concat`의 결과를 확인해 보세요.
+`slice`가 원래 배열을 어떻게 다루는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-search-sort.mcq-concat-result" />
+<InlineExercise ref="js-basics.arrays.array-search-sort.check-slice-keeps-queue" />
 </Section>
 
 <Section kind="practice" />

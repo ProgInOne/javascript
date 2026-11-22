@@ -1,0 +1,43 @@
+id: js-basics.operators.comparison.check-dictionary-order
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.ops.relational, weight: 1 }
+tags: [relational, string]
+estimatedSeconds: 60
+prompt: |
+  다음 식 중에서 수의 크기가 아니라 **사전 순서**(첫 글자부터 한 글자씩)로 비교하는 식은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`"25" < "3"`'
+    - id: b
+      text: '`"25" < 3`'
+      misconception: js.mc.mixed-compare-as-string
+      rationale: 한쪽이 숫자면 문자열 `"25"`를 숫자 25로 바꿔서 수의 크기로 비교해요.
+    - id: c
+      text: '`25 < "3"`'
+      misconception: js.mc.mixed-compare-as-string
+      rationale: 이것도 한쪽이 숫자라서 `"3"`을 숫자 3으로 바꿔 비교해요.
+    - id: d
+      text: '`25 < 3`'
+      rationale: 숫자끼리는 당연히 수의 크기로 비교해요.
+  correct: a
+misconceptions: [js.mc.mixed-compare-as-string]
+hints:
+  - 각 식의 양쪽이 숫자인지 문자열인지 표시해 보세요.
+  - 한쪽이라도 숫자면 문자열을 숫자로 바꿔서 비교해요.
+  - 사전 순서 비교는 두 값이 **모두** 문자열일 때만 일어나요.
+explanation: |
+  정답은 `"25" < "3"`이에요. 두 값이 모두 문자열이라 첫 글자 `"2"`와 `"3"`을 비교하고, `"2"`가 앞이라 결과는 `true`예요. 수로는 25가 더 크지만요.
+
+  - `"25" < 3`, `25 < "3"`: 한쪽이 숫자라서 문자열을 숫자로 바꿔 `25 < 3`을 계산해요. 결과는 `false`예요.
+  - `25 < 3`: 숫자끼리 비교해요.
+
+  숫자로 비교할 값은 숫자로 저장해야 이런 혼동이 없어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

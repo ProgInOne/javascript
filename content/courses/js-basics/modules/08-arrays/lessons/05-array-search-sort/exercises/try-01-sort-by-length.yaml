@@ -1,0 +1,92 @@
+id: js-basics.arrays.array-search-sort.try-sort-by-length
+type: implement_function
+difficulty: 3
+usage: try
+concepts:
+  - { id: js.arr.sort, weight: 1 }
+  - { id: js.arr.slice-concat, weight: 0.5 }
+  - { id: js.arr.mutating-vs-not, weight: 0.3 }
+tags: [sort, compare-function, slice, write-code]
+estimatedSeconds: 300
+prompt: |
+  단어 목록을 **짧은 단어부터** 정렬한 새 배열을 돌려주는 함수 `byLength(words)`를 완성하세요. 원래 배열 `words`는 들어온 순서 그대로 남아야 해요.
+
+  비교 함수에서 두 수 대신 두 단어의 **글자 수**를 빼 보세요. 원본을 지키려면 정렬하기 전에 복사해야 해요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `byLength(["바나나", "귤", "사과"])` | `["귤", "사과", "바나나"]` |
+  | `byLength(["strawberry", "fig", "kiwi"])` | `["fig", "kiwi", "strawberry"]` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function byLength(words) {
+            // 1. words를 복사한 새 배열을 만드세요.
+            // 2. 복사본을 글자 수가 적은 단어부터 정렬하세요.
+            // 3. 정렬한 복사본을 돌려주세요.
+          }
+
+          const fruits = ["바나나", "귤", "사과"];
+          console.log(byLength(fruits));
+          console.log(fruits);
+  entry: byLength
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function byLength(words) {
+            return words.slice().sort((a, b) => a.length - b.length);
+          }
+
+          const fruits = ["바나나", "귤", "사과"];
+          console.log(byLength(fruits));
+          console.log(fruits);
+  checks:
+    - { kind: call, id: korean, args: [["바나나", "귤", "사과"]], expect: { equals: ["귤", "사과", "바나나"] }, requirement: 짧은 단어부터 }
+    - { kind: call, id: english, args: [["strawberry", "fig", "kiwi"]], expect: { equals: ["fig", "kiwi", "strawberry"] }, requirement: 짧은 단어부터 }
+    - kind: call
+      id: not-dictionary
+      visible: false
+      description: 사전순이 아니라 글자 수로 정렬해야 합니다.
+      requirement: 짧은 단어부터
+      args: [["abcd", "zz", "b"]]
+      expect: { equals: ["b", "zz", "abcd"] }
+    - kind: call
+      id: keep-original
+      visible: false
+      description: 원래 단어 배열의 순서를 바꾸면 안 됩니다.
+      requirement: 원래 배열 그대로
+      args: [["바나나", "귤", "사과"]]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.sort-returns-new-array
+    - kind: call
+      id: empty
+      visible: false
+      description: 빈 배열이면 빈 배열을 돌려줘야 합니다.
+      requirement: 짧은 단어부터
+      args: [[]]
+      expect: { equals: [] }
+misconceptions: [js.mc.sort-returns-new-array]
+hints:
+  - "`sort`는 원래 배열을 직접 바꿔요. 먼저 `words.slice()`로 복사본을 만들어요."
+  - 비교 함수는 음수를 돌려주면 `a`를 앞에 놓아요. 짧은 단어가 앞에 오려면 무엇에서 무엇을 빼야 할까요?
+  - "`return words.slice().sort((a, b) => a.length - b.length);`처럼 복사, 정렬, 돌려주기를 이어 쓸 수 있어요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function byLength(words) {
+    return words.slice().sort((a, b) => a.length - b.length);
+  }
+  ```
+
+  - `slice()`로 복사한 새 배열을 정렬하므로 `words`는 그대로예요. `words.sort(...)`를 바로 쓰면 원래 배열까지 정렬돼요.
+  - `a.length - b.length`가 음수이면 짧은 `a`가 앞에 와요. 비교 함수 안에서 무엇을 빼느냐로 정렬 기준을 정할 수 있어요.
+  - 비교 함수 없이 `sort()`만 쓰면 사전순이 되어 `["abcd", "b", "zz"]`처럼 나와요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

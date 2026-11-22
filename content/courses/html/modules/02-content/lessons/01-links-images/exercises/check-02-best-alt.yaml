@@ -1,0 +1,39 @@
+id: html.content.links-images.check-best-alt
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: html.content.images, weight: 1 }
+tags: [img, alt, accessibility]
+estimatedSeconds: 50
+prompt: |
+  동물 보호소 페이지에 입양을 기다리는 강아지 사진 `dog.jpg`를 넣어요. 이 사진의 `alt`로 가장 알맞은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`alt=\"공을 물고 잔디밭을 달리는 갈색 강아지\"`"
+    - id: b
+      text: "`alt=\"사진\"`"
+      rationale: 그림을 볼 수 없는 사람은 "사진"만 듣고 무엇이 있는지 알 수 없어요.
+    - id: c
+      text: "`alt=\"dog.jpg\"`"
+      rationale: 파일 이름은 그림의 내용을 전하지 못해요.
+    - id: d
+      text: "`alt=\"\"`"
+      misconception: html.mc.alt-optional
+      rationale: 빈 alt는 꾸미기만 하는 그림에 써요. 입양할 강아지 사진은 내용이 중요한 그림이에요.
+  correct: a
+misconceptions: [html.mc.alt-optional]
+hints:
+  - alt는 그림을 볼 수 없는 사람에게 무엇을 대신 전하나요?
+  - 이 사진은 꾸미기용인가요, 내용을 전하는 그림인가요?
+  - 그림을 보지 않고 alt만 들어도 어떤 강아지인지 떠올릴 수 있어야 해요.
+explanation: |
+  정답은 **"공을 물고 잔디밭을 달리는 갈색 강아지"**예요.
+
+  `alt`는 그림을 볼 수 없을 때 그림의 **내용을 대신 전하는** 글이에요. 입양할 강아지 사진은 페이지의 중요한 내용이라, 그림을 보지 않아도 모습이 떠오르게 써요. "사진"이나 파일 이름은 아무것도 전하지 못하고, `alt=""`는 꾸미기만 하는 그림에만 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

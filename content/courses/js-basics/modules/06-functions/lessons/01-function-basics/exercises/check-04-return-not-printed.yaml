@@ -1,0 +1,39 @@
+id: js-basics.functions.function-basics.check-return-not-printed
+type: predict_output
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.fn.return, weight: 1 }
+tags: [function, return, console-log]
+estimatedSeconds: 60
+prompt: |
+  절반을 돌려주는 함수 `half`를 두 번 불러요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    function half(n) {
+      return n / 2;
+    }
+
+    half(10);
+    console.log(half(8));
+  answerKind: console
+  misconceptionByAnswer:
+    "5\n4": js.mc.return-value-auto-printed
+misconceptions: [js.mc.return-value-auto-printed]
+hints:
+  - "`return`은 값을 돌려주는 일과 화면에 보여 주는 일 중 무엇을 하나요?"
+  - 5번 줄은 `half(10)`을 부르기만 하고, 돌려받은 값을 어디에도 쓰지 않아요.
+  - 콘솔에 무언가 나오는 것은 `console.log`가 있는 줄뿐이에요.
+explanation: |
+  출력은 `4` 한 줄이에요.
+
+  - 5번 줄 `half(10);`은 함수를 실행해 `5`를 돌려받지만, 그 값을 출력하지도 담지도 않아서 그냥 버려져요. `return`은 값을 돌려줄 뿐 출력하지 않아요.
+  - 6번 줄은 `half(8)`이 돌려준 `4`를 `console.log`로 출력해요.
+
+  `5`도 나온다고 생각했다면 반환값이 저절로 출력된다고 본 거예요. 반환값을 보려면 `console.log(half(10));`처럼 직접 출력해야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

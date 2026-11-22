@@ -1,0 +1,39 @@
+id: html.content.lists-tables.check-add-column
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: html.content.tables, weight: 1 }
+tags: [table, tr, th, td, column]
+estimatedSeconds: 60
+prompt: |
+  "과일, 가격" 두 열로 된 가격표(제목 행 1개, 데이터 행 3개)에 **"원산지" 열**을 오른쪽에 하나 더 만들려고 해요. 어떻게 고쳐야 하나요?
+spec:
+  options:
+    - id: a
+      text: 네 개의 `tr`마다 맨 끝에 칸을 하나씩 더 넣는다(제목 행에는 `th`, 데이터 행에는 `td`)
+    - id: b
+      text: "`table` 안에 열을 뜻하는 요소를 하나 더 넣는다"
+      rationale: 열을 만드는 요소는 따로 없어요. 각 행의 같은 위치 칸들이 모여 열이 돼요.
+    - id: c
+      text: 제목 행에만 `th`를 하나 더 넣는다. 데이터 행의 칸은 브라우저가 채운다
+      rationale: 브라우저는 빠진 칸을 내용으로 채워 주지 않아요. 데이터 행에도 칸을 직접 넣어야 열이 맞아요.
+    - id: d
+      text: "`tbody` 안에 `tr`을 하나 더 넣는다"
+      rationale: tr을 더하면 가로줄(행)이 하나 늘어요. 열이 아니라 행이 생겨요.
+  correct: a
+hints:
+  - 표를 만드는 요소 중에 세로줄(열)을 뜻하는 요소가 있었나요?
+  - 열은 각 행의 첫째 칸끼리, 둘째 칸끼리 모여서 생겨요. 셋째 열을 만들려면 행마다 무엇이 있어야 할까요?
+  - 제목 행 하나와 데이터 행 세 개, 모두 네 개의 행에 셋째 칸이 필요해요. 제목 행의 칸과 데이터 행의 칸은 요소가 달라요.
+explanation: |
+  정답은 **모든 `tr`마다 칸을 하나씩 더 넣는 것**이에요.
+
+  HTML 표에는 열을 만드는 요소가 따로 없어요. 행(`tr`)마다 칸을 왼쪽부터 넣고, 각 행의 셋째 칸들이 모여 셋째 열이 돼요. 그래서 제목 행에는 제목 칸 `th`("원산지")를, 데이터 행 세 개에는 데이터 칸 `td`를 하나씩 더 넣어 행마다 칸 수를 맞춰요.
+
+  `tr`을 하나 더 넣으면 열이 아니라 행이 늘어나요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

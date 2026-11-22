@@ -1,0 +1,37 @@
+id: js-basics.arrays.array-search-sort.check-default-sort-ages
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.sort, weight: 1 }
+tags: [sort, default-order, check]
+estimatedSeconds: 70
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요? 비교 함수를 넘기지 않았다는 점에 주의하세요.
+spec:
+  lang: js
+  code: |
+    const ages = [5, 40, 3, 21];
+    ages.sort();
+    console.log(ages);
+  answerKind: console
+  misconceptionByAnswer:
+    "[3, 5, 21, 40]": js.mc.sort-numeric-default
+    "[5, 40, 3, 21]": js.mc.sort-returns-new-array
+misconceptions: [js.mc.sort-numeric-default]
+hints:
+  - 비교 함수가 없으면 `sort`는 요소를 무엇으로 바꿔서 비교하나요?
+  - "`\"5\"`, `\"40\"`, `\"3\"`, `\"21\"`을 사전처럼 첫 글자부터 비교해 보세요."
+  - "`sort`는 원래 배열을 직접 바꾸니, `ages`를 출력하면 정렬된 결과가 보여요."
+explanation: |
+  출력은 `[21, 3, 40, 5]`예요.
+
+  비교 함수가 없으면 `sort`는 숫자를 문자열 `"5"`, `"40"`, `"3"`, `"21"`로 보고 사전순으로 놓아요. 첫 글자가 `2` → `3` → `4` → `5` 순이라 `21`, `3`, `40`, `5`가 돼요.
+
+  - 크기 순 `[3, 5, 21, 40]`을 얻으려면 `ages.sort((a, b) => a - b)`처럼 비교 함수를 넘겨야 해요.
+  - `sort`는 결과를 담지 않아도 `ages` 자체를 바꿔요. 그래서 처음 순서 그대로 나오지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

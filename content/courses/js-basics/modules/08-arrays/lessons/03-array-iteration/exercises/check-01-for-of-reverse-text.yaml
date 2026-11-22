@@ -1,0 +1,44 @@
+id: js-basics.arrays.array-iteration.check-for-of-reverse-text
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.for-of, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [for-of, accumulator, check]
+estimatedSeconds: 60
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    const letters = ["가", "나", "다"];
+    let text = "";
+    for (const letter of letters) {
+      text = letter + text;
+    }
+    console.log(text);
+  answerKind: console
+  misconceptionByAnswer:
+    "210": js.mc.for-of-gives-index
+misconceptions: [js.mc.for-of-gives-index]
+hints:
+  - "`for...of`의 `letter`에는 인덱스와 요소 중 무엇이 들어오나요?"
+  - 바퀴마다 `text`가 어떻게 바뀌는지 표로 적어 보세요. 첫 바퀴가 끝나면 `text`는 `"가"`예요.
+  - "`letter + text`는 새 글자를 앞에 붙여요. 뒤에 붙이는 `text + letter`와 순서가 달라요."
+explanation: |
+  출력은 `다나가`예요.
+
+  | 바퀴 | `letter` | `text` (바퀴 끝) |
+  |---|---|---|
+  | 1 | 가 | 가 |
+  | 2 | 나 | 나가 |
+  | 3 | 다 | 다나가 |
+
+  - `for...of`는 인덱스가 아니라 **요소**를 차례로 꺼내 줘요. 그래서 `letter`에는 `"가"`, `"나"`, `"다"`가 들어와요.
+  - `letter + text`는 새 글자를 지금까지 모은 글자 **앞**에 붙여서, 순서가 거꾸로 쌓여요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

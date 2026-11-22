@@ -1,0 +1,38 @@
+id: js-basics.objects.error-handling.check-finally-on-return
+type: true_false
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.errors.finally, weight: 1 }
+tags: [finally, return]
+estimatedSeconds: 60
+prompt: |
+  아래 코드를 보고, 설명이 맞는지 고르세요.
+code: |
+  function save() {
+    try {
+      return "저장 완료";
+    } finally {
+      console.log("정리");
+    }
+  }
+  console.log(save());
+spec:
+  statement: '`try`에서 오류가 나지 않고 바로 `return`했으므로, 콘솔에는 `저장 완료`만 출력되고 `정리`는 출력되지 않는다.'
+  answer: false
+  misconceptionIfWrong: js.mc.finally-only-on-error
+misconceptions: [js.mc.finally-only-on-error]
+hints:
+  - "`finally`는 오류가 났을 때만 실행될까요?"
+  - "`try` 안에서 `return`을 만나도, 함수가 끝나기 직전에 실행되는 블록이 있어요."
+  - 순서를 생각해 보세요. `finally`가 먼저 실행되고, 그다음 바깥에서 반환값을 출력해요.
+explanation: |
+  정답은 **거짓**이에요. 콘솔에는 `정리`, `저장 완료`가 차례로 나와요.
+
+  - `finally`는 `try`가 오류 없이 끝나든, 오류가 나서 `catch`로 가든 **항상** 실행돼요.
+  - `try` 안에서 `return`을 만나도 함수가 끝나기 직전에 `finally`가 먼저 실행돼요. 그래서 `정리`가 먼저 나오고, 그다음 마지막 줄이 반환값 `저장 완료`를 출력해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

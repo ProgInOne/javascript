@@ -75,6 +75,25 @@ export const CSS_EXERCISE_TYPES: ReadonlySet<string> = new Set([
   'web_task',
 ]);
 
+/**
+ * Types a `usage: check` item may use: the short types the lesson body answers in place
+ * (ui-ux.md 읽기 모드). `fill_blank` only in its text mode (the code mode needs a run).
+ */
+export const CHECK_EXERCISE_TYPES: ReadonlySet<string> = new Set([
+  'mcq_single',
+  'mcq_multi',
+  'true_false',
+  'fill_blank',
+  'predict_output',
+]);
+
+/** Types a `usage: try` item may use: code the learner writes and runs in the body (D-091). */
+export const TRY_EXERCISE_TYPES: ReadonlySet<string> = new Set([
+  'web_task',
+  'implement_function',
+  'fix_bug',
+]);
+
 const prereqId = (p: ConceptSource['prerequisites'][number]) => (typeof p === 'string' ? p : p.id);
 
 /** Schema + cross-reference checks (content-cli check --schema). */
@@ -238,12 +257,17 @@ export function checkContent(root: string, options: CheckOptions = {}): CheckRes
     checkAssessmentUnit(lesson, diag);
     checkProjectUnit(lesson, diag);
     checkWorkedExamples(lesson, diag);
+    checkLessonBlocks(lesson, lesson.mdx === null ? null : (lessons.get(data.id) ?? null), diag);
     const drafts = lesson.exercises.length - approved;
     if (drafts > 0) diag.warn(file, `검토되지 않은 문제 ${drafts}개는 빌드에서 제외됩니다`);
     // Worked examples are served only by the relearning path, never in the unit's sets (D-072).
     const target = data.practice?.targetCount;
     const counted = lesson.exercises.filter(
-      (x) => x.data.review.status === 'approved' && x.data.usage !== 'worked_example',
+      (x) =>
+        x.data.review.status === 'approved' &&
+        x.data.usage !== 'worked_example' &&
+        x.data.usage !== 'check' &&
+        x.data.usage !== 'try',
     ).length;
     if (target !== undefined && counted !== target)
       diag.warn(file, `승인된 문제 ${counted}개 / 목표 ${target}개`);
@@ -358,6 +382,75 @@ function applyExpectation(
     : '실행 기대값이 아직 없습니다. pnpm content:check:run으로 계산하세요';
   if (ex.review.status === 'approved') diag.error(file, message);
   else diag.warn(file, message);
+}
+
+/**
+ * The lesson's own body blocks (D-091): "이해도 확인" items (`usage: check`, `<InlineExercise>`)
+ * and "직접 써 보기" tasks (`usage: try`, `<TryIt>`). Each such item belongs to exactly one block
+ * of its own lesson, so practice sets (which never serve them) and the body do not repeat.
+ */
+function checkLessonBlocks(
+  lesson: LessonNodeSource,
+  compiled: CompiledLesson | null,
+  diag: Diagnostics,
+): void {
+  const { file, data } = lesson.meta;
+  const byId = new Map(lesson.exercises.map((x) => [x.data.id, x] as const));
+  const inline = compiled?.refs.exercises ?? [];
+  const tryIts = compiled?.refs.tryIts ?? [];
+  const mdxFile = lesson.mdxFile;
+
+  for (const [list, label] of [
+    [inline, 'InlineExercise'],
+    [tryIts, 'TryIt'],
+  ] as const) {
+    const seen = new Set<string>();
+    for (const ref of list) {
+      if (seen.has(ref)) diag.error(mdxFile, `${label}가 같은 문제를 두 번 씁니다: ${ref}`);
+      seen.add(ref);
+    }
+  }
+  for (const ref of inline) {
+    const ex = byId.get(ref)?.data;
+    if (ex && ex.usage !== 'check')
+      diag.error(mdxFile, `이해도 확인(InlineExercise)은 usage: check 문제만 씁니다: ${ref}`);
+  }
+  for (const ref of tryIts) {
+    const ex = byId.get(ref)?.data;
+    if (!ex) diag.error(mdxFile, `이 단원에 없는 문제입니다: ${ref}`);
+    else if (ex.usage !== 'try')
+      diag.error(mdxFile, `직접 써 보기(TryIt)는 usage: try 문제만 씁니다: ${ref}`);
+  }
+
+  for (const { file: exFile, data: ex } of lesson.exercises) {
+    if (ex.usage === 'check') {
+      const spec = ex.spec as { mode?: unknown } | null;
+      if (!CHECK_EXERCISE_TYPES.has(ex.type) || (ex.type === 'fill_blank' && spec?.mode === 'code'))
+        diag.error(
+          exFile,
+          `usage: check 문제는 실행 없이 채점하는 ${[...CHECK_EXERCISE_TYPES].join(', ')} 유형만 씁니다: ${ex.type}`,
+        );
+      if (!inline.includes(ex.id))
+        diag.error(exFile, '본문의 InlineExercise가 쓰지 않는 usage: check 문제입니다');
+    }
+    if (ex.usage === 'try') {
+      if (!TRY_EXERCISE_TYPES.has(ex.type))
+        diag.error(
+          exFile,
+          `usage: try 문제는 ${[...TRY_EXERCISE_TYPES].join(', ')} 유형만 씁니다: ${ex.type}`,
+        );
+      if (!tryIts.includes(ex.id))
+        diag.error(exFile, '본문의 TryIt이 쓰지 않는 usage: try 문제입니다');
+    }
+  }
+  // A lesson that introduces concepts lets the learner write them by hand at least once.
+  if (
+    data.kind === 'lesson' &&
+    data.concepts.primary.length > 0 &&
+    compiled !== null &&
+    tryIts.length === 0
+  )
+    diag.error(file, '개념을 소개하는 단원에는 직접 써 보기(TryIt)가 하나 이상 있어야 합니다');
 }
 
 /**
@@ -493,7 +586,7 @@ export function projectExerciseOf(
  * project exercise — a `web_task` whose checks are grouped into `milestones`, marked
  * `usage: project` (or the unit's only milestone `web_task`). Other exercises of the unit are its
  * preparation practice (`usage: practice`, primary concept among the applied ones), served only in
- * the unit's own practice set. Units of other kinds may not hold project exercises.
+ * the unit's own practice set, and the body's own check items (`usage: check`, D-091). Units of other kinds may not hold project exercises.
  */
 function checkProjectUnit(lesson: LessonNodeSource, diag: Diagnostics): void {
   const { file, data } = lesson.meta;
@@ -534,7 +627,8 @@ function checkProjectUnit(lesson: LessonNodeSource, diag: Diagnostics): void {
   for (const { file: exFile, data: ex } of lesson.exercises) {
     if (ex.id === project?.exercise.id) continue;
     if (ex.usage === 'project') continue; // reported above (more than one)
-    if (ex.usage !== 'practice') {
+    // Besides preparation practice, the body may hold its own check items (D-091).
+    if (ex.usage !== 'practice' && ex.usage !== 'check') {
       diag.error(
         exFile,
         `프로젝트 단원의 준비 연습 문제는 usage: practice여야 합니다(지금: ${ex.usage})`,

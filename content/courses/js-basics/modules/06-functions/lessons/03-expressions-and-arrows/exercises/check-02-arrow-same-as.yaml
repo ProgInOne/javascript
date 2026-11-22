@@ -1,0 +1,47 @@
+id: js-basics.functions.expressions-and-arrows.check-arrow-same-as
+type: mcq_single
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.fn.arrow, weight: 1 }
+  - { id: js.fn.expression, weight: 0.3 }
+tags: [function, arrow, expression]
+estimatedSeconds: 60
+prompt: |
+  아래 화살표 함수와 **똑같이 동작하는** 코드는 어느 것인가요? 같은 인수를 넣으면 같은 값을 돌려줘야 해요.
+code: |
+  const half = (n) => n / 2;
+spec:
+  codeOptions: true
+  options:
+    - id: a
+      text: "const half = function (n) { return n / 2; };"
+    - id: b
+      text: "const half = function (n) { n / 2; };"
+      misconception: js.mc.arrow-braces-implicit-return
+      rationale: 중괄호 본문에 `return`이 없어서 계산만 하고 `undefined`를 돌려줘요.
+    - id: c
+      text: "const half = (n) >= n / 2;"
+      misconception: js.mc.arrow-is-comparison
+      rationale: "`>=`는 크거나 같은지 비교하는 연산자예요. 함수를 만드는 화살표는 `=>`예요."
+    - id: d
+      text: "const half = n / 2;"
+      misconception: js.mc.fn-expression-stores-result
+      rationale: 함수가 아니라 계산 결과를 담으려는 코드예요. `n`이 없어서 오류가 나요.
+  correct: a
+misconceptions: [js.mc.arrow-braces-implicit-return, js.mc.arrow-is-comparison]
+hints:
+  - "`=>` 오른쪽에 중괄호가 없으면 그 식의 값은 어떻게 되나요?"
+  - 식 본문 화살표 함수는 오른쪽 식의 값을 자동으로 돌려줘요. 함수 표현식으로 바꾸면 무엇을 직접 써야 할까요?
+  - "`function`을 쓴 두 선택지 중 `return`이 있는 쪽을 보세요."
+explanation: |
+  정답은 `const half = function (n) { return n / 2; };`예요.
+
+  - `(n) => n / 2`는 중괄호가 없는 식 본문이라 `n / 2`의 값이 자동으로 반환돼요.
+  - 함수 표현식이나 중괄호 본문으로 쓰면 `return`을 직접 써야 해요. `return`이 빠지면 결과는 `undefined`예요.
+  - 화살표 `=>`는 비교 연산자 `>=`와 다른 기호예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

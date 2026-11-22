@@ -183,6 +183,10 @@ list.append(item);
 - `querySelectorAll(".price")`는 맞는 요소 세 개를 담은 목록이에요. 콘솔에 `가격 3개`가 나와요.
 - 반복 변수 `i`가 0, 1, 2를 거치며 `prices[i]`의 글자 뒤에 `원`을 붙여요. `prices[i].textContent`를 읽어 이어 붙인 문자열을 다시 대입했어요.
 - 이 코드를 `querySelector`로 쓰면 김밥 가격 하나만 바뀌어요.
+
+이번에는 직접 써 보세요. 찾은 요소마다 글자 앞에 순서 번호를 붙이는 코드예요.
+
+<TryIt ref="js-basics.browser-intro.dom-basics.try-number-steps" />
 </Section>
 
 <Section kind="examples">
@@ -293,6 +297,10 @@ card selected
 - 그래서 8번 줄에서 목록 안의 `li`는 처음 것 하나뿐이에요.
 - 9번 줄의 `append`가 목록의 맨 끝에 붙여요. 이제 화면에 `운동하기`가 보이고, 10번 줄은 2를 출력해요.
 - `list.querySelectorAll("li")`처럼 `document` 대신 요소에서 찾으면, 그 요소 **안에서만** 찾아요.
+
+새 요소를 만들고, 클래스를 넣고, 붙인 뒤 개수를 다시 세는 코드를 직접 써 보세요.
+
+<TryIt ref="js-basics.browser-intro.dom-basics.try-chat-message" />
 </Section>
 
 <Section kind="pitfalls">
@@ -370,21 +378,21 @@ badge.classList.toggle("empty", count === 0);
 </Section>
 
 <Section kind="check">
-선택자 문법을 확인해 보세요.
+어떤 요소 안의 요소를 찾는 선택자를 확인해 보세요.
 
-<InlineExercise ref="js-basics.browser-intro.dom-basics.mcq-id-selector" />
+<InlineExercise ref="js-basics.browser-intro.dom-basics.check-descendant-selector" />
 
-`textContent`에 대입하면 무슨 일이 일어나는지 확인해 보세요.
+`textContent`로 읽은 값과 대입한 결과를 확인해 보세요.
 
-<InlineExercise ref="js-basics.browser-intro.dom-basics.mcq-textcontent-replace" />
+<InlineExercise ref="js-basics.browser-intro.dom-basics.check-textcontent-string" />
 
-`classList`와 `style`의 규칙을 확인해 보세요.
+`classList.add`가 원래 클래스를 어떻게 다루는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.browser-intro.dom-basics.multi-classlist-style" />
+<InlineExercise ref="js-basics.browser-intro.dom-basics.check-classlist-add-keeps" />
 
-새로 만든 요소가 언제 화면에 나타나는지 확인해 보세요.
+새로 만든 요소를 화면에 나오게 하는 방법을 확인해 보세요.
 
-<InlineExercise ref="js-basics.browser-intro.dom-basics.tf-created-element-shown" />
+<InlineExercise ref="js-basics.browser-intro.dom-basics.check-missing-append" />
 </Section>
 
 <Section kind="practice" />

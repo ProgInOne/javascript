@@ -51,6 +51,11 @@ export const ERROR_CODES = [
    * (learning-engine.md#단원-평가-세트: locked until the assessment ends).
    */
   'EXERCISE_LOCKED_IN_ASSESSMENT',
+  /**
+   * The exercise belongs to another place (D-091): an inline attempt on an item that is not a
+   * lesson's `usage: check`, or a try attempt on an item that is not a `usage: try` task.
+   */
+  'EXERCISE_USAGE_MISMATCH',
   'PRACTICE_NO_EXERCISES',
   'PRACTICE_NOTHING_DUE',
   'PRACTICE_SET_CLOSED',

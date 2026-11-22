@@ -1,0 +1,108 @@
+id: js-basics.arrays.array-basics.try-count-rises
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.arr.literal-index, weight: 1 }
+  - { id: js.arr.length, weight: 0.5 }
+  - { id: js.loops.for, weight: 0.3 }
+tags: [index, length, loop, write-code]
+estimatedSeconds: 300
+prompt: |
+  날마다 걸은 걸음 수가 배열 `steps`에 날짜 순서대로 들어 있어요. **바로 전날보다 걸음 수가 늘어난 날**이 며칠인지 돌려주는 함수 `countRises(steps)`를 완성하세요. 첫날은 전날 기록이 없으니 세지 않아요.
+
+  `for` 반복에서 `steps[i]`와 전날 기록 `steps[i - 1]`을 비교해 보세요.
+
+  | 호출 | 돌려줄 값 | 이유 |
+  |---|---|---|
+  | `countRises([3000, 4500, 4000, 6000])` | `2` | 4500(전날 3000), 6000(전날 4000) |
+  | `countRises([5000, 5000, 4000])` | `0` | 늘어난 날이 없음 |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function countRises(steps) {
+            // 1. 늘어난 날의 수를 셀 변수를 0으로 만드세요.
+            // 2. 전날과 비교할 수 있는 둘째 날(인덱스 1)부터 마지막 날까지 반복하세요.
+            // 3. 그날 기록이 전날 기록보다 크면 수를 1 늘리세요.
+            // 4. 센 수를 돌려주세요.
+          }
+
+          console.log(countRises([3000, 4500, 4000, 6000]));
+  entry: countRises
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function countRises(steps) {
+            let count = 0;
+            for (let i = 1; i < steps.length; i++) {
+              if (steps[i] > steps[i - 1]) {
+                count++;
+              }
+            }
+            return count;
+          }
+
+          console.log(countRises([3000, 4500, 4000, 6000]));
+  checks:
+    - { kind: call, id: four-days, args: [[3000, 4500, 4000, 6000]], expect: { equals: 2 }, requirement: 늘어난 날 세기 }
+    - { kind: call, id: no-rise, args: [[5000, 5000, 4000]], expect: { equals: 0 }, requirement: 늘어난 날 세기 }
+    - kind: call
+      id: last-day
+      visible: false
+      description: 마지막 날까지 빠짐없이 비교해야 합니다.
+      requirement: 늘어난 날 세기
+      args: [[100, 90, 80, 200]]
+      expect: { equals: 1 }
+      misconceptionIfFail: js.mc.array-last-index-is-length
+    - kind: call
+      id: every-day
+      visible: false
+      description: 매일 늘었다면 첫날을 뺀 날 수를 돌려줘야 합니다.
+      requirement: 늘어난 날 세기
+      args: [[1, 2, 3, 4, 5]]
+      expect: { equals: 4 }
+    - kind: call
+      id: one-day
+      visible: false
+      description: 기록이 하루뿐이면 비교할 전날이 없으니 0입니다.
+      requirement: 짧은 기록
+      args: [[7000]]
+      expect: { equals: 0 }
+    - kind: call
+      id: empty
+      visible: false
+      description: 기록이 없으면 0을 돌려줘야 합니다.
+      requirement: 짧은 기록
+      args: [[]]
+      expect: { equals: 0 }
+hints:
+  - 전날 기록은 인덱스가 하나 작은 `steps[i - 1]`이에요. 인덱스 0의 전날은 없으니 `i`는 1부터 시작해요.
+  - 마지막 인덱스는 `steps.length - 1`이라서 반복 조건은 `i < steps.length`예요.
+  - "`let count = 0;`을 만들고, 반복 안에서 `if (steps[i] > steps[i - 1])`이면 `count++`, 반복이 끝난 뒤 `return count;`를 써요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function countRises(steps) {
+    let count = 0;
+    for (let i = 1; i < steps.length; i++) {
+      if (steps[i] > steps[i - 1]) {
+        count++;
+      }
+    }
+    return count;
+  }
+  ```
+
+  - 인덱스 자리에 `i - 1` 같은 식을 쓰면 "바로 앞 요소"를 읽을 수 있어요.
+  - `i`를 0부터 시작하면 첫 바퀴에서 `steps[-1]`(`undefined`)과 비교해요. `3000 > undefined`는 `false`라 이 문제에서는 결과가 우연히 같지만, 의도가 분명하도록 1부터 시작하는 편이 좋아요.
+  - 조건을 `i <= steps.length`로 쓰면 마지막 바퀴에서 범위 밖 `undefined`를 읽어요.
+  - 같은 걸음 수는 "늘어난" 것이 아니라서 `>`로 비교해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

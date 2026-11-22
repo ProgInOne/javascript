@@ -219,7 +219,8 @@ practice:
 | 컴포넌트 | 쓰임 | 주요 속성 |
 |---|---|---|
 | `<RunnableExample>` | 실행 가능한 코드 예제. 내용은 코드 블록 하나 | `id`(필수, 단원 안 고유), `lang`(필수: `js`·`html`·`css`·`web`), `predict`, `predictKind`, `expectError`, `editable`, `concepts`, `highlight` |
-| `<InlineExercise>` | 본문 중간의 확인 문제 | `ref`(같은 단원의 문제 ID) |
+| `<InlineExercise>` | 본문 중간의 확인 문제 | `ref`(같은 단원의 `usage: check` 문제 ID) |
+| `<TryIt>` | 직접 써 보기 과제 | `ref`(같은 단원의 `usage: try` 문제 ID) |
 | `<Callout>` | 참고·팁·주의 상자 | `kind`(`note`·`tip`·`warning`·`danger`·`deep-dive`), `title` |
 | `<CompareTable>`, `<Row>` | 비교 표. 행 내용은 `\|`로 칸을 나눔 | `columns`, `label` |
 | `<ConceptLink>` | 개념 링크 | `to`(개념 ID) |
@@ -281,6 +282,17 @@ review:
 ```
 
 `usage`(기본 `practice`), `workedExampleStage`, `variantGroup`은 필요할 때만 씁니다.
+
+### 이해도 확인과 직접 써 보기 (D-091)
+
+본문에서 쓰는 문제는 연습 문제와 따로 만듭니다. 연습 세트는 이 문제들을 뽑지 않으므로, 본문에서 푼 문제가 연습에 다시 나오지 않습니다.
+
+- **이해도 확인**: `usage: check`. 파일은 `exercises/check-01-<slug>.yaml`, ID는 `<단원 ID>.check-<slug>`처럼 씁니다. 방금 설명한 내용을 40~90초 안에 확인하는 짧은 문제로, `mcq_single`·`mcq_multi`·`true_false`·`fill_blank`(글자 모드)·`predict_output`만 씁니다(CSS 과정은 `mcq_single`·`fill_blank`). 같은 단원의 연습 문제와 장면·코드가 겹치지 않게 씁니다.
+- **직접 써 보기**: `usage: try`와 `<TryIt ref="...">`. 파일은 `exercises/try-01-<slug>.yaml`, ID는 `<단원 ID>.try-<slug>`입니다. 예제와 해설 바로 뒤에 두고, 3~6분 안에 끝나는 작은 과제로 씁니다. 유형은 `web_task`·`implement_function`·`fix_bug`입니다.
+  - 시작 코드에는 뼈대(문서 구조, 함수 선언, 무엇을 쓸지 알려 주는 주석)만 두고, 핵심 줄은 학습자가 직접 쓰게 합니다.
+  - 테스트는 지문이 요구한 것만 검사하고, 예시 답안은 모두 통과하고 시작 코드는 실패해야 합니다(`content:check:run`이 확인).
+  - 채점 결과는 기록하지 않습니다. 학습자는 몇 번이든 "확인"할 수 있습니다.
+- 개념을 소개하는(`concepts.primary`가 있는) 일반 단원에는 `TryIt`이 하나 이상 있어야 합니다. 각 `check`·`try` 문제는 본문에서 정확히 한 번 써야 합니다(`content:check` 오류).
 필드 전체 설명은 설계 문서의 [문제 파일 형식](/docs/design/content-and-exercises.md#문제-파일-형식-공통-필드)을 봅니다.
 
 ### 유형별 스펙

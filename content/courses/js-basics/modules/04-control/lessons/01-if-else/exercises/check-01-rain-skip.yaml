@@ -1,0 +1,45 @@
+id: js-basics.control.if-else.check-rain-skip
+type: predict_output
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.control.if, weight: 1 }
+tags: [if, false-condition]
+estimatedSeconds: 50
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 나오는 줄을 모두 순서대로 쓰세요.
+spec:
+  lang: js
+  code: |
+    const isRaining = false;
+    console.log("집을 나서요");
+    if (isRaining) {
+      console.log("우산을 챙겨요");
+    }
+    console.log("버스를 타요");
+  answerKind: console
+  misconceptionByAnswer:
+    "집을 나서요": js.mc.false-if-stops-program
+misconceptions: [js.mc.false-if-stops-program]
+hints:
+  - 문장은 위에서 아래로 실행돼요. `if` 줄에 도착했을 때 조건 `isRaining`의 값은 무엇인가요?
+  - 조건이 거짓이면 if 블록 전체를 건너뛰어요. 그다음에는 어디로 가나요?
+  - 조건문이 끝난 뒤의 문장은 조건과 상관없이 항상 실행돼요.
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  집을 나서요
+  버스를 타요
+  ```
+
+  - 2번 줄이 `집을 나서요`를 출력해요.
+  - 3번 줄의 조건 `isRaining`은 `false`라서 3~5번 줄의 블록을 건너뛰어요.
+  - 6번 줄은 조건문 다음 문장이라 항상 실행돼요.
+
+  `집을 나서요`만 나온다고 답했다면, 조건이 거짓일 때 프로그램이 멈춘다고 생각한 거예요. 거짓이면 블록만 건너뛰고 다음 문장으로 이어져요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

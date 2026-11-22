@@ -1,0 +1,30 @@
+id: js-basics.values.variables.check-const-read
+type: true_false
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.values.const, weight: 1 }
+tags: [const, reassignment]
+estimatedSeconds: 60
+prompt: |
+  다음 코드에 대한 설명이 맞는지 골라 주세요.
+code: |
+  const speed = 60;
+  let distance = speed * 2;
+  console.log(distance);
+spec:
+  statement: "`speed`는 `const`로 만들었으니 2번 줄처럼 값을 읽어서 계산에 쓰는 것도 할 수 없고, 오류가 난다."
+  answer: false
+hints:
+  - "`const`가 막는 것은 정확히 무엇이었나요? 읽기일까요, 다시 대입하기일까요?"
+  - 2번 줄에서 `speed`의 왼쪽에 `=`가 있나요? `speed`에 새 값을 넣고 있나요?
+  - 2번 줄에서 값을 받는 쪽은 `distance`예요. `speed`는 읽히기만 해요.
+explanation: |
+  정답은 **거짓**이에요. 이 코드는 오류 없이 `120`을 출력해요.
+
+  `const`가 막는 것은 `speed = 70;`처럼 **다른 값을 다시 대입하는 것**뿐이에요. `speed * 2`처럼 값을 읽어서 계산에 쓰는 것은 얼마든지 할 수 있어요. 2번 줄에서 새 값을 받는 쪽은 `let`으로 만든 `distance`예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

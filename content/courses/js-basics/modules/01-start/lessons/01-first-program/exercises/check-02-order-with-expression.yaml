@@ -1,0 +1,45 @@
+id: js-basics.start.first-program.check-order-with-expression
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.basics.statements, weight: 1 }
+  - { id: js.basics.console-log, weight: 0.3 }
+tags: [statements, order]
+estimatedSeconds: 60
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    console.log("출발");
+    10 + 20;
+    console.log("도착");
+    console.log(10 + 20);
+  answerKind: console
+  misconceptionByAnswer:
+    "출발\n30\n도착\n30": js.mc.expression-prints-itself
+misconceptions: [js.mc.expression-prints-itself]
+hints:
+  - 문장은 위에서 아래로 하나씩 실행돼요. 콘솔에 줄을 남기는 문장은 몇 개인가요?
+  - 둘째 줄 `10 + 20;`은 계산만 하는 문장이에요. 결과를 보여 달라는 명령이 있나요?
+  - console.log가 있는 문장만 한 줄씩 출력해요. 마지막 줄은 따옴표가 없으니 계산 결과가 나와요.
+explanation: |
+  정답은 다음 세 줄이에요.
+
+  ```text
+  출발
+  도착
+  30
+  ```
+
+  - 문장은 맨 위부터 하나씩 실행돼요. 첫 줄이 `출발`을 출력해요.
+  - `10 + 20;`은 계산은 하지만 보여 달라는 명령이 없어서 콘솔에 아무것도 남기지 않아요.
+  - 셋째 줄이 `도착`, 넷째 줄이 계산 결과 `30`을 출력해요.
+
+  `출발` 다음에 `30`이 나온다고 생각했다면, 식만 적은 문장도 출력된다고 본 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

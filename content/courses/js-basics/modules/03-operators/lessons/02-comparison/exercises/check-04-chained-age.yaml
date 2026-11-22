@@ -1,0 +1,45 @@
+id: js-basics.operators.comparison.check-chained-age
+type: mcq_single
+difficulty: 3
+usage: check
+concepts:
+  - { id: js.ops.relational, weight: 1 }
+tags: [relational, chained-comparison]
+estimatedSeconds: 75
+prompt: |
+  청소년 요금(13세 이상 19세 이하) 대상인지 확인하려고 수학식처럼 썼어요. `age`가 `25`일 때 `isTeen`에 들어가는 값은 무엇인가요?
+code: |
+  const age = 25;
+  const isTeen = 13 <= age <= 19;
+spec:
+  options:
+    - id: a
+      text: '`true`'
+    - id: b
+      text: '`false`'
+      misconception: js.mc.chained-comparison
+      rationale: 수학식처럼 읽으면 25는 범위 밖이라 false 같지만, JavaScript는 비교를 왼쪽부터 하나씩 계산해요.
+    - id: c
+      text: 비교 연산자를 이어 써서 오류가 난다
+      rationale: 문법에는 맞아서 오류 없이 실행돼요. 그래서 더 알아차리기 어려워요.
+    - id: d
+      text: '`30`'
+      rationale: 비교식의 결과는 true나 false예요.
+  correct: a
+misconceptions: [js.mc.chained-comparison]
+hints:
+  - 비교 연산자는 왼쪽부터 하나씩 계산해요. 먼저 `13 <= age`는 무엇이 되나요?
+  - "`13 <= 25`는 `true`예요. 이제 남은 식은 `true <= 19`예요."
+  - 크기를 비교할 때 `true`는 숫자 1로 바뀌어요. `1 <= 19`는요?
+explanation: |
+  정답은 `true`예요. 25세는 범위 밖인데도요.
+
+  1. 왼쪽부터 `13 <= age`, 즉 `13 <= 25`를 계산해서 `true`가 돼요.
+  1. 그다음 `true <= 19`를 계산해요. `true`는 숫자 1로 바뀌어 `1 <= 19`, 결과는 `true`예요.
+
+  두 조건은 지금은 `const oldEnough = age >= 13;`, `const youngEnough = age <= 19;`처럼 따로 저장하고, 다음 단원에서 배울 `&&`로 묶어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

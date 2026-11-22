@@ -1,0 +1,39 @@
+id: html.basics.document.check-void-element
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: html.doc.elements, weight: 1 }
+tags: [element, tag, void-element]
+estimatedSeconds: 50
+prompt: |
+  `<br>`은 줄을 바꾸는 요소이고, 닫는 태그 `</br>`을 쓰지 않아요. 문단 안에 쓴 `<br>` 한 개에 대한 설명으로 알맞은 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: 내용이 없는 빈 요소라서, 여는 태그 하나가 곧 요소 전체다
+    - id: b
+      text: 닫는 태그가 없으니 요소가 아니고 태그일 뿐이다
+      misconception: html.mc.tag-is-element
+      rationale: 닫는 태그가 없어도 요소예요. 빈 요소는 여는 태그 하나가 요소 전체예요.
+    - id: c
+      text: 닫는 태그를 빠뜨린 실수라서, 반드시 `</br>`을 붙여야 한다
+      rationale: br은 원래 내용이 없는 빈 요소라 닫는 태그를 쓰지 않아요.
+    - id: d
+      text: 문단이 끝날 때까지 이어지는 요소라서, 뒤의 글자가 모두 br의 내용이 된다
+      rationale: 빈 요소에는 내용이 없어요. 뒤의 글자는 br이 아니라 문단의 내용이에요.
+  correct: a
+misconceptions: [html.mc.tag-is-element]
+hints:
+  - 요소는 보통 여는 태그 + 내용 + 닫는 태그예요. 줄바꿈에는 감쌀 내용이 있나요?
+  - 그림(`img`)이나 줄바꿈(`br`)처럼 내용이 없는 요소를 부르는 이름이 있었어요.
+  - 내용이 없으면 닫는 태그도 필요 없어서, 여는 태그 하나가 요소 전체가 돼요.
+explanation: |
+  정답은 **빈 요소라서, 여는 태그 하나가 곧 요소 전체다**예요.
+
+  `br`은 감쌀 내용이 없는 **빈 요소**예요. 그래서 닫는 태그를 쓰지 않고, `<br>` 하나가 요소 전체예요. 닫는 태그가 없다고 요소가 아닌 것은 아니에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

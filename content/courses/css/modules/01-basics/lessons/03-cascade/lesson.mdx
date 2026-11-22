@@ -145,6 +145,10 @@ CSS를 조금 쓰다 보면 이런 일을 겪어요.
 - 제목과 첫 문단은 규칙이 없지만 파란색이에요. `color`가 상속되어 `.card`의 값을 물려받았어요.
 - 테두리와 안쪽 여백은 카드 바깥 상자에만 있어요. `border`와 `padding`은 상속되지 않아서 제목과 문단에는 생기지 않아요.
 - `.note` 문단은 회색이에요. 이 문단을 직접 고르는 `.note` 규칙이 있으니 물려받은 파란색보다 우선해요.
+
+상속을 이용해 규칙 몇 줄로 페이지 전체의 글자를 바꿔 보세요.
+
+<TryIt ref="css.basics.cascade.try-body-inherit" />
 </Section>
 
 <Section kind="pitfalls">
@@ -200,11 +204,11 @@ body {
 <Section kind="check">
 명시도와 순서의 관계를 확인해 보세요.
 
-<InlineExercise ref="css.basics.cascade.mcq-id-beats-later-class" />
+<InlineExercise ref="css.basics.cascade.check-type-count-wins" />
 
-상속되는 속성을 구분해 보세요.
+글자 속성과 상자 속성 중 무엇이 상속되는지 구분해 보세요.
 
-<InlineExercise ref="css.basics.cascade.mcq-which-inherit" />
+<InlineExercise ref="css.basics.cascade.check-body-center-margin" />
 </Section>
 
 <Section kind="practice" />

@@ -3,7 +3,7 @@
  * on every `content-cli build`, so there are no migrations; bump CONTENT_DB_SCHEMA_VERSION when
  * this changes. The Drizzle tables in ./schema.ts must match (checked by a test).
  */
-export const CONTENT_DB_SCHEMA_VERSION = 4;
+export const CONTENT_DB_SCHEMA_VERSION = 5;
 
 export const CONTENT_DDL = `
 CREATE TABLE content_meta (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL);
@@ -116,7 +116,7 @@ CREATE TABLE exercises (
   difficulty INTEGER NOT NULL CHECK (difficulty BETWEEN 1 AND 5),
   lesson_id TEXT REFERENCES lessons(id),
   usage TEXT NOT NULL DEFAULT 'practice'
-    CHECK (usage IN ('practice', 'assessment', 'diagnostic', 'remedial', 'worked_example', 'project')),
+    CHECK (usage IN ('practice', 'assessment', 'diagnostic', 'remedial', 'worked_example', 'project', 'check', 'try')),
   worked_example_stage INTEGER CHECK (worked_example_stage IS NULL OR worked_example_stage IN (0, 1, 2)),
   variant_group TEXT,
   prompt TEXT NOT NULL,

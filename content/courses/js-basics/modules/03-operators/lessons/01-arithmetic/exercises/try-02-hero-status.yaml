@@ -1,0 +1,88 @@
+id: js-basics.operators.arithmetic.try-hero-status
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.ops.compound-assignment, weight: 1 }
+  - { id: js.ops.increment, weight: 0.5 }
+tags: [compound-assignment, increment, write-code]
+estimatedSeconds: 210
+prompt: |
+  게임 캐릭터의 체력(`hp`)과 레벨(`level`)이 차례로 바뀌어요. 주석에 적힌 일을 **줄임 표현**(`-=`, `*=`, `++`)으로 한 줄씩 직접 써 보세요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  체력: 140
+  레벨: 2
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          let hp = 100;
+          let level = 1;
+
+          // 1. 몬스터에게 맞아서 hp가 30 줄었어요. (-= 사용)
+
+          // 2. 물약을 먹어서 hp가 2배가 됐어요. (*= 사용)
+
+          // 3. 레벨이 1 올랐어요. (++ 사용)
+
+          console.log("체력:", hp);
+          console.log("레벨:", level);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          let hp = 100;
+          let level = 1;
+
+          // 1. 몬스터에게 맞아서 hp가 30 줄었어요. (-= 사용)
+          hp -= 30;
+          // 2. 물약을 먹어서 hp가 2배가 됐어요. (*= 사용)
+          hp *= 2;
+          // 3. 레벨이 1 올랐어요. (++ 사용)
+          level++;
+          console.log("체력:", hp);
+          console.log("레벨:", level);
+  checks:
+    - kind: program
+      id: hp
+      description: hp는 100에서 30이 줄고 2배가 되어 140이어야 합니다.
+      requirement: 체력 변화
+      expect: { globals: { hp: { equals: 140 } }, noError: true }
+    - kind: program
+      id: level
+      description: level은 1 올라서 2여야 합니다.
+      requirement: 레벨 변화
+      expect: { globals: { level: { equals: 2 } }, noError: true }
+    - kind: console
+      id: output
+      description: 체력과 레벨이 정해진 모양으로 두 줄 출력되어야 합니다.
+      requirement: 출력
+      expect:
+        lines: ["체력: 140", "레벨: 2"]
+misconceptions: [js.mc.compound-operator-reversed, js.mc.expression-changes-variable]
+hints:
+  - 각 주석 아래에 문장을 하나씩 써요. 순서가 바뀌면 결과도 달라져요(먼저 빼고, 그다음 2배).
+  - 연산 기호는 `=` **앞**에 붙여요. `hp =- 30`은 `hp`에 `-30`을 넣는 전혀 다른 문장이에요.
+  - "`hp -= 30;`, `hp *= 2;`, `level++;` 모양이에요. `hp - 30;`처럼 대입 없이 계산만 하면 `hp`는 바뀌지 않아요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  hp -= 30;   // hp = hp - 30 → 70
+  hp *= 2;    // hp = hp * 2  → 140
+  level++;    // level = level + 1 → 2
+  ```
+
+  - 복합 대입은 "자기 자신에 계산해서 다시 넣기"를 줄인 표현이에요.
+  - `level++;`처럼 한 줄에 따로 쓰면 `++level;`과 결과가 같아요.
+  - `hp - 30;`만 쓰면 계산하고 결과를 버려서 `hp`가 바뀌지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,87 @@
+id: js-basics.control.if-else.try-elevator
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.control.if, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [if, else, write-code]
+estimatedSeconds: 240
+prompt: |
+  엘리베이터 안내 프로그램을 `if`와 `else`로 직접 써 보세요.
+
+  - 탄 사람 수(`people`)가 정원(`limit`)보다 **많으면** `정원 초과! 내려야 할 사람:`과 넘친 인원 수를 출력해요.
+  - 그렇지 않으면 `출발합니다`를 출력해요.
+  - 어느 쪽이든 마지막에는 항상 `문이 닫혀요`를 출력해요.
+
+  지금은 12명이 탔고 정원은 10명이라, 실행하면 아래처럼 나와야 해요.
+
+  ```text
+  정원 초과! 내려야 할 사람: 2
+  문이 닫혀요
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const people = 12;
+          const limit = 10;
+
+          // 1. people이 limit보다 많은지 검사하는 if 문을 쓰세요.
+          //    참이면 "정원 초과! 내려야 할 사람:"과 people - limit을 쉼표로 나눠 출력해요.
+
+          // 2. else 블록에서는 "출발합니다"를 출력하세요.
+
+          // 3. 조건문 다음에 "문이 닫혀요"를 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const people = 12;
+          const limit = 10;
+          if (people > limit) {
+            console.log("정원 초과! 내려야 할 사람:", people - limit);
+          } else {
+            console.log("출발합니다");
+          }
+          console.log("문이 닫혀요");
+  checks:
+    - kind: console
+      id: over-line
+      description: "정원을 넘었으니 `정원 초과! 내려야 할 사람: 2`가 출력되어야 합니다."
+      requirement: 정원 초과 안내
+      expect:
+        lines: ["정원 초과! 내려야 할 사람: 2"]
+        mode: contains
+    - kind: console
+      id: output
+      description: 정원 초과 안내 다음에 `문이 닫혀요`가 출력되고, `출발합니다`는 나오지 않아야 합니다(if와 else 중 하나만 실행).
+      requirement: 한 갈래만 실행하고 이어서 출력
+      expect:
+        lines: ["정원 초과! 내려야 할 사람: 2", "문이 닫혀요"]
+misconceptions: [js.mc.false-if-stops-program]
+hints:
+  - "`if (조건) { ... } else { ... }` 모양을 떠올려 보세요. \"보다 많다\"는 어떤 비교 연산자로 쓰나요?"
+  - "조건은 `people > limit`이에요. 넘친 인원은 `people - limit`으로 계산해요."
+  - "`문이 닫혀요`는 어느 쪽이든 항상 나와야 하니 블록 안이 아니라 조건문이 끝난 다음 줄에 써요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  if (people > limit) {
+    console.log("정원 초과! 내려야 할 사람:", people - limit);
+  } else {
+    console.log("출발합니다");
+  }
+  console.log("문이 닫혀요");
+  ```
+
+  - `12 > 10`은 `true`라서 if 블록만 실행되고 else 블록은 건너뛰어요.
+  - `문이 닫혀요`는 조건문 밖에 있으니 어느 갈래로 갔든 항상 실행돼요.
+  - `people`을 `8`로 바꿔 실행해 보세요. 이번에는 `출발합니다`와 `문이 닫혀요`가 나와요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

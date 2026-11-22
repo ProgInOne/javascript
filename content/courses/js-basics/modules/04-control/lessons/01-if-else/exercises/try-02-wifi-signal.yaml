@@ -1,0 +1,88 @@
+id: js-basics.control.if-else.try-wifi-signal
+type: implement_function
+difficulty: 3
+usage: try
+concepts:
+  - { id: js.control.else-if, weight: 1 }
+  - { id: js.ops.relational, weight: 0.3 }
+tags: [else-if, order, write-code]
+estimatedSeconds: 300
+prompt: |
+  와이파이 신호 세기(`signal`)로 상태를 **하나만** 출력하는 프로그램을 `else if` 체인으로 직접 써 보세요.
+
+  | 신호 세기 | 출력 |
+  |---|---|
+  | 80 이상 | `아주 좋음` |
+  | 50 이상 | `좋음` |
+  | 20 이상 | `약함` |
+  | 그보다 작으면 | `연결 안 됨` |
+
+  상태를 출력한 다음에는 항상 `신호 확인 끝`을 출력해요. 지금 신호 세기는 65라서 실행하면 아래처럼 나와야 해요.
+
+  ```text
+  좋음
+  신호 확인 끝
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const signal = 65;
+
+          // 1. if … else if … else 체인으로 상태를 하나만 출력하세요.
+          //    조건의 순서에 주의하세요. 체인은 처음으로 참인 갈래 하나만 실행해요.
+
+          // 2. 체인 다음에 "신호 확인 끝"을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const signal = 65;
+          if (signal >= 80) {
+            console.log("아주 좋음");
+          } else if (signal >= 50) {
+            console.log("좋음");
+          } else if (signal >= 20) {
+            console.log("약함");
+          } else {
+            console.log("연결 안 됨");
+          }
+          console.log("신호 확인 끝");
+  checks:
+    - kind: console
+      id: one-state
+      description: 신호 세기 65에 맞는 상태 `좋음` 하나만 출력되고, 이어서 `신호 확인 끝`이 출력되어야 합니다. `약함`이 나온다면 조건의 순서를 확인하세요.
+      requirement: 상태 하나만 출력
+      misconceptionIfFail: js.mc.else-if-order-irrelevant
+      expect:
+        lines: ["좋음", "신호 확인 끝"]
+misconceptions: [js.mc.else-if-order-irrelevant, js.mc.separate-ifs-like-chain]
+hints:
+  - 갈래가 넷이니 `if`, `else if` 두 개, `else` 하나가 필요해요. 따로따로 쓴 `if` 문은 참인 것을 모두 실행하니 체인으로 이어 써요.
+  - 범위가 겹치는 조건은 좁은 범위부터 써요. 65는 `>= 50`도 `>= 20`도 참이에요. 어느 조건을 먼저 검사해야 할까요?
+  - "`if (signal >= 80) { ... } else if (signal >= 50) { ... } else if (signal >= 20) { ... } else { ... }` 순서로 쓰고, 체인 다음 줄에 `신호 확인 끝`을 출력해요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  if (signal >= 80) {
+    console.log("아주 좋음");
+  } else if (signal >= 50) {
+    console.log("좋음");
+  } else if (signal >= 20) {
+    console.log("약함");
+  } else {
+    console.log("연결 안 됨");
+  }
+  console.log("신호 확인 끝");
+  ```
+
+  - `65 >= 80`은 거짓, `65 >= 50`은 참이라 `좋음`을 출력하고 체인을 빠져나가요. `65 >= 20`은 검사하지도 않아요.
+  - `signal >= 20`을 맨 앞에 두면 65도 거기서 걸려 `약함`이 나와요. 좁은 범위부터 써야 해요.
+  - `if` 문을 따로따로 쓰면 `좋음`과 `약함`이 둘 다 나와요. 하나만 고를 때는 체인을 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

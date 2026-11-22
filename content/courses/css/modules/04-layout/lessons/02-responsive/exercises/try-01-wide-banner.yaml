@@ -1,0 +1,144 @@
+id: css.layout.responsive.try-wide-banner
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: css.responsive.media-queries, weight: 1 }
+  - { id: css.responsive.mobile-first, weight: 0.5 }
+tags: [media-query, min-width, mobile-first, web-task]
+estimatedSeconds: 270
+prompt: |
+  알림 띠(`.banner`)의 기본 규칙은 좁은 화면용으로 이미 써 두었어요. 그 **아래에** 미디어 쿼리를 **직접** 써서, 화면 너비가 `900px` **이상**일 때만 아래처럼 바뀌게 하세요.
+
+  1. 띠 안의 글자를 가운데 정렬해요.
+  1. 띠의 안쪽 여백을 네 방향 모두 `40px`로 넓혀요.
+
+  좁은 화면에서는 지금 모습(왼쪽 정렬, 안쪽 여백 `12px`) 그대로여야 해요. 채점은 화면 너비 `375px`, `899px`, `900px`, `1280px`에서 따로 해요. HTML은 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>여름 할인</title>
+              <style>
+                .banner {
+                  padding: 12px;
+                  background: #dbeafe;
+                }
+                /* 여기에 미디어 쿼리: 900px 이상에서 가운데 정렬, 안쪽 여백 40px */
+              </style>
+            </head>
+            <body>
+              <div class="banner">여름 할인이 시작됐어요!</div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>여름 할인</title>
+              <style>
+                .banner {
+                  padding: 12px;
+                  background: #dbeafe;
+                }
+                @media (min-width: 900px) {
+                  .banner {
+                    text-align: center;
+                    padding: 40px;
+                  }
+                }
+              </style>
+            </head>
+            <body>
+              <div class="banner">여름 할인이 시작됐어요!</div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: phone
+      description: 너비 375px 화면에서는 안쪽 여백 12px에 가운데 정렬이 아니어야 합니다.
+      requirement: 좁은 화면은 그대로
+      visible: true
+      viewport: 375
+      selector: .banner
+      expect:
+        computed:
+          padding-top: { px: { value: 12 } }
+          padding-left: { px: { value: 12 } }
+          text-align: { oneOf: [start, left] }
+      misconceptionIfFail: css.mc.max-width-means-above
+    - kind: css
+      id: just-below
+      description: 너비 899px 화면에서도 안쪽 여백이 12px이어야 합니다(900px 미만).
+      requirement: 좁은 화면은 그대로
+      visible: true
+      viewport: 899
+      selector: .banner
+      expect:
+        computed:
+          padding-top: { px: { value: 12 } }
+          text-align: { oneOf: [start, left] }
+    - kind: css
+      id: boundary
+      description: 너비가 정확히 900px인 화면에서 가운데 정렬, 안쪽 여백 40px이어야 합니다(900px 이상).
+      requirement: 넓은 화면에서 바뀜
+      visible: true
+      viewport: 900
+      selector: .banner
+      expect:
+        computed:
+          text-align: { equals: center }
+          padding-top: { px: { value: 40 } }
+          padding-left: { px: { value: 40 } }
+    - kind: css
+      id: desktop
+      description: 너비 1280px 화면에서 가운데 정렬, 안쪽 여백이 네 방향 모두 40px이어야 합니다.
+      requirement: 넓은 화면에서 바뀜
+      visible: true
+      viewport: 1280
+      selector: .banner
+      expect:
+        computed:
+          text-align: { equals: center }
+          padding-top: { px: { value: 40 } }
+          padding-right: { px: { value: 40 } }
+          padding-bottom: { px: { value: 40 } }
+          padding-left: { px: { value: 40 } }
+      misconceptionIfFail: css.mc.max-width-means-above
+misconceptions: [css.mc.max-width-means-above]
+hints:
+  - 화면이 "900px 이상"일 때만 적용되는 미디어 쿼리 조건은 min-width와 max-width 중 무엇일까요?
+  - "`@media (min-width: 900px) { ... }` 안에 `.banner` 규칙을 하나 더 써요. 기본 규칙보다 **아래**에 있어야 덮어쓸 수 있어요."
+  - "미디어 쿼리 안의 `.banner` 규칙에 `text-align: center;`와 `padding: 40px;`을 써요."
+explanation: |
+  예시 답안에서 기본 규칙 아래에 더한 미디어 쿼리는 이래요.
+
+  ```css
+  @media (min-width: 900px) {
+    .banner {
+      text-align: center;
+      padding: 40px;
+    }
+  }
+  ```
+
+  - `min-width: 900px`은 900px **이상**이라서, 정확히 900px인 화면부터 적용되고 899px에서는 적용되지 않아요.
+  - 미디어 쿼리 안의 `.banner`는 기본 규칙과 명시도가 같아서, **뒤에** 써야 `padding`을 덮어써요.
+  - 좁은 화면 스타일을 기본으로 두고 넓은 화면에서 바뀌는 것만 더했으니 모바일 우선 방식이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -83,7 +83,7 @@ test('one learner: onboarding → lesson → practice → assessment → review 
   await test.step('reading: the inline check, then the lesson read to the end', async () => {
     await page.getByRole('region', { name: '오늘의 학습' }).getByRole('link').first().click();
     await expectHeading(page, '첫 프로그램');
-    const check = page.locator('.lesson-inline-check');
+    const check = page.locator('.lesson-inline-check').first();
     await check.locator('label', { hasText: '맨 위의 문장' }).click();
     await check.getByRole('button', { name: '애매해요' }).click();
     await expect(check.getByRole('heading', { name: '정답이에요.' })).toBeVisible();

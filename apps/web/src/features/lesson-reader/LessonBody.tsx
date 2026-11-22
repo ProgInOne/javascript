@@ -15,6 +15,7 @@ import {
 import { createContext, useContext, type ReactNode } from 'react';
 import { MasteryIcon, STAGE_NAMES } from '../mastery/MasteryIcon.tsx';
 import { InlineExerciseSlot } from './InlineExerciseSlot.tsx';
+import { TryItSlot } from './TryItSlot.tsx';
 import { LessonDiagram } from './LessonDiagram.tsx';
 import { RunnableExampleBlock } from './RunnableExampleBlock.tsx';
 import { SECTION_LABELS } from './sections.ts';
@@ -209,6 +210,8 @@ function Component({ node }: { node: Node }) {
       return <RunnableExample p={p} />;
     case 'InlineExercise':
       return <InlineExerciseSlot exerciseId={str(p['ref']) ?? ''} />;
+    case 'TryIt':
+      return <TryItSlot exerciseId={str(p['ref']) ?? ''} />;
     case 'Diagram':
       return (
         <LessonDiagram

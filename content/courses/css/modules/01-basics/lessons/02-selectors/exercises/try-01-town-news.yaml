@@ -1,0 +1,135 @@
+id: css.basics.selectors.try-town-news
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: css.selectors.combinators, weight: 1 }
+  - { id: css.intro.rule-structure, weight: 0.3 }
+tags: [selector, descendant, group, web-task]
+estimatedSeconds: 300
+prompt: |
+  동네 소식 페이지의 `style` 요소에 규칙을 **직접** 써 보세요. HTML은 바꾸지 마세요.
+
+  1. 아래쪽 안내 상자(`class="footer"`) **안에 있는 링크만** 글자 색을 회색(`gray`)으로 바꿔요. 본문 문단의 "자세히" 링크는 그대로여야 해요.
+  1. 공지 문단(`class="notice"`)과 행사 문단(`class="event"`) **두 가지 모두** 배경색을 연노랑(`lightyellow`)으로 바꿔요. 쉼표로 묶어 규칙 하나로 써 보세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>동네 소식</title>
+              <style>
+                /* 1. footer 안의 링크만: 글자 색 gray */
+
+                /* 2. notice와 event 둘 다: 배경색 lightyellow */
+              </style>
+            </head>
+            <body>
+              <h1>우리 동네 소식</h1>
+              <p class="notice">도서관이 월요일에 쉬어요.</p>
+              <p>새 놀이터가 생겼어요. <a href="#park">자세히</a></p>
+              <p class="event">토요일에 벼룩시장이 열려요.</p>
+              <div class="footer">
+                <p>문의: <a href="#mail">메일 보내기</a></p>
+                <a href="#top">맨 위로</a>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>동네 소식</title>
+              <style>
+                .footer a {
+                  color: gray;
+                }
+                .notice, .event {
+                  background-color: lightyellow;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>우리 동네 소식</h1>
+              <p class="notice">도서관이 월요일에 쉬어요.</p>
+              <p>새 놀이터가 생겼어요. <a href="#park">자세히</a></p>
+              <p class="event">토요일에 벼룩시장이 열려요.</p>
+              <div class="footer">
+                <p>문의: <a href="#mail">메일 보내기</a></p>
+                <a href="#top">맨 위로</a>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: footer-links-gray
+      description: 안내 상자 안의 링크 두 개("메일 보내기", "맨 위로")가 모두 회색이어야 합니다. 문단 안에 한 단계 더 들어 있는 링크도 포함이에요.
+      requirement: 안내 상자의 링크
+      visible: true
+      selector: .footer a
+      all: true
+      expect:
+        computed:
+          color: { color: "#808080" }
+      misconceptionIfFail: css.mc.descendant-direct-child-only
+    - kind: css
+      id: body-link-kept
+      description: 본문 문단의 "자세히" 링크는 회색이 아니라 원래 링크 색 그대로여야 합니다.
+      requirement: 안내 상자의 링크
+      visible: true
+      selector: body > p a
+      expect:
+        computed:
+          color: { color: "#0000ee" }
+      misconceptionIfFail: css.mc.descendant-vs-group
+    - kind: css
+      id: notice-event-bg
+      description: 공지 문단과 행사 문단의 배경색이 모두 연노랑(lightyellow)이어야 합니다.
+      requirement: 공지와 행사
+      visible: true
+      selector: .notice, .event
+      all: true
+      expect:
+        computed:
+          background-color: { color: "#ffffe0" }
+    - kind: css
+      id: plain-p-kept
+      description: 놀이터 문단의 배경은 칠해지지 않아야 합니다.
+      requirement: 공지와 행사
+      selector: body > p:nth-of-type(2)
+      expect:
+        computed:
+          background-color: { equals: "rgba(0, 0, 0, 0)" }
+misconceptions: [css.mc.descendant-direct-child-only, css.mc.descendant-vs-group]
+hints:
+  - 1번은 "footer 안에 있는 a", 2번은 "notice 그리고 event"예요. 각각 공백과 쉼표 중 무엇으로 이어야 할까요?
+  - "\"안에 있는\"은 공백으로 잇는 자손 선택자, \"그리고\"는 쉼표로 잇는 그룹 선택자예요. 클래스 이름 앞에는 점(`.`)을 붙여요."
+  - "1번 선택자는 `.footer a`, 2번 선택자는 `.notice, .event`예요. 각각 뒤에 `{ 속성: 값; }`을 붙여 규칙을 완성하세요."
+explanation: |
+  예시 답안의 규칙은 이래요.
+
+  ```css
+  .footer a {
+    color: gray;
+  }
+  .notice, .event {
+    background-color: lightyellow;
+  }
+  ```
+
+  - `.footer a`는 "`.footer` 안에 있는 `a`"예요. "메일 보내기"는 `.footer`의 바로 아래가 아니라 문단 안에 있지만, 자손 선택자는 깊이와 상관없이 골라요. 본문의 "자세히"는 `.footer` 밖이라 그대로예요.
+  - `.notice, .event`는 쉼표로 묶은 그룹 선택자라 두 문단을 **둘 다** 골라요. 같은 규칙을 두 번 쓰지 않아도 돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

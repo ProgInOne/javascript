@@ -1,0 +1,131 @@
+id: js-basics.browser-intro.events-intro.try-char-counter
+type: web_task
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.dom.input-value, weight: 1 }
+  - { id: js.dom.add-event-listener, weight: 0.5 }
+tags: [input-value, input-event, length, web, write-code]
+estimatedSeconds: 240
+prompt: |
+  한 줄 소개를 쓰는 입력창 아래에 글자 수를 보여 주세요. `<script>` 안에 코드를 쓰면 돼요.
+
+  - 입력창(`#intro`)의 글자가 **바뀔 때마다** `#counter`에 지금 글자 수를 `5/20자` 모양으로 보여 줘요.
+  - 글자 수는 입력창의 `value`로 세요. 공백도 한 글자로 세요.
+  - 처음 `#counter`의 `0/20자`는 HTML에 이미 적혀 있어요.
+
+  | 입력창의 글자 | `#counter` |
+  |---|---|
+  | `안녕` | `2/20자` |
+  | `코딩 좋아해요` | `7/20자` |
+
+  HTML은 고치지 마세요.
+spec:
+  focus: dom
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>한 줄 소개</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #intro { width: 240px; padding: 6px; }
+                #counter { color: #6b7280; font-size: 14px; }
+              </style>
+            </head>
+            <body>
+              <label for="intro">한 줄 소개</label>
+              <input id="intro" maxlength="20" />
+              <p id="counter">0/20자</p>
+              <script>
+                // 1. #intro와 #counter를 찾아 변수에 담으세요.
+                // 2. #intro에 글자가 바뀔 때마다 일어나는 이벤트를 등록하세요.
+                // 3. 이벤트 함수 안에서 value를 읽어 글자 수를 세고, #counter에 "2/20자"처럼 쓰세요.
+              </script>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>한 줄 소개</title>
+              <style>
+                body { font-family: sans-serif; padding: 16px; }
+                #intro { width: 240px; padding: 6px; }
+                #counter { color: #6b7280; font-size: 14px; }
+              </style>
+            </head>
+            <body>
+              <label for="intro">한 줄 소개</label>
+              <input id="intro" maxlength="20" />
+              <p id="counter">0/20자</p>
+              <script>
+                const intro = document.querySelector("#intro");
+                const counter = document.querySelector("#counter");
+                intro.addEventListener("input", () => {
+                  counter.textContent = `${intro.value.length}/20자`;
+                });
+              </script>
+            </body>
+          </html>
+  checks:
+    - kind: event
+      id: two-chars
+      description: '입력창에 "안녕"을 쓰면 #counter가 "2/20자"여야 합니다.'
+      requirement: 쓸 때마다 글자 수 보여 주기
+      visible: true
+      steps:
+        - { action: type, selector: "#intro", value: "안녕" }
+      expect:
+        - { selector: "#counter", text: { equals: "2/20자" } }
+      misconceptionIfFail: js.mc.event-name-on-prefix
+    - kind: event
+      id: with-space
+      description: '이어서 "코딩 좋아해요"로 바꾸면 #counter가 "7/20자"여야 합니다(공백도 한 글자).'
+      requirement: 쓸 때마다 글자 수 보여 주기
+      visible: true
+      steps:
+        - { action: type, selector: "#intro", value: "코딩 좋아해요" }
+      expect:
+        - { selector: "#counter", text: { equals: "7/20자" } }
+      misconceptionIfFail: js.mc.input-value-read-once
+    - kind: event
+      id: cleared
+      description: '입력창을 모두 지우면 #counter가 "0/20자"로 돌아와야 합니다.'
+      requirement: 쓸 때마다 글자 수 보여 주기
+      steps:
+        - { action: type, selector: "#intro", value: "" }
+      expect:
+        - { selector: "#counter", text: { equals: "0/20자" } }
+misconceptions: [js.mc.input-value-read-once, js.mc.event-name-on-prefix]
+hints:
+  - 입력창의 글자가 바뀔 때마다 일어나는 이벤트는 `"input"`이에요. 이름 앞에 `on`은 붙이지 않아요.
+  - "`value`는 이벤트 함수 **안에서** 읽어야 지금 쓴 글자가 들어 있어요. `value`는 문자열이라 `length`로 글자 수를 셀 수 있어요."
+  - "함수 안에서 `counter.textContent = intro.value.length + \"/20자\";`처럼 대입하세요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  const intro = document.querySelector("#intro");
+  const counter = document.querySelector("#counter");
+  intro.addEventListener("input", () => {
+    counter.textContent = `${intro.value.length}/20자`;
+  });
+  ```
+
+  - `input` 이벤트는 글자를 쓰거나 지울 때마다 일어나요. `change`는 입력창을 벗어날 때만 일어나서 쓰는 동안에는 숫자가 바뀌지 않아요.
+  - `value`를 함수 밖에서 한 번만 읽으면 페이지가 열릴 때의 빈 문자열이 남아서 늘 `0/20자`예요. 함수 안에서 읽어야 해요.
+  - `value`는 문자열이라 `length`가 글자 수예요. 공백도 한 글자로 세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

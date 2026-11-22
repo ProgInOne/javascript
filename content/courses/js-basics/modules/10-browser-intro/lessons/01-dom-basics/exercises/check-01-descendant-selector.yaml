@@ -1,0 +1,42 @@
+id: js-basics.browser-intro.dom-basics.check-descendant-selector
+type: mcq_single
+usage: check
+difficulty: 1
+concepts:
+  - { id: js.dom.query-selector, weight: 1 }
+tags: [query-selector, selector]
+estimatedSeconds: 45
+prompt: |
+  문서에 `<ul id="todo">`가 있고, 그 안에 `li`가 세 개 있어요. 이 목록 **안의 첫 번째 `li`** 를 찾는 코드는 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: '`document.querySelector("#todo li")`'
+    - id: b
+      text: '`document.querySelector("todo li")`'
+      rationale: 앞에 `#`이 없으면 `todo`라는 태그를 찾아요. id를 찾으려면 `#todo`라고 써야 해요.
+    - id: c
+      text: '`document.querySelector("#todo.li")`'
+      rationale: '`#todo.li`는 id가 `todo`이면서 클래스가 `li`인 요소 하나를 뜻해요. 띄어 써야 "안에 있는"이라는 뜻이 돼요.'
+    - id: d
+      text: '`document.querySelectorAll("#todo li")`'
+      misconception: js.mc.queryselector-returns-all
+      rationale: '`querySelectorAll`은 요소 하나가 아니라 맞는 요소를 모두 담은 목록을 돌려줘요.'
+  correct: a
+misconceptions: [js.mc.queryselector-returns-all]
+hints:
+  - "`querySelector`에는 CSS에서 쓰던 선택자를 그대로 써요."
+  - id는 `#`으로, "어떤 요소 안의 요소"는 두 선택자 사이를 띄어 써서 나타내요.
+  - 맞는 요소가 여러 개일 때 첫 번째 하나만 돌려주는 메서드는 `querySelector`예요.
+explanation: |
+  정답은 `document.querySelector("#todo li")`예요.
+
+  - `#todo li`는 CSS의 자손 선택자예요. id가 `todo`인 요소 **안에 있는** `li`를 뜻해요.
+  - 맞는 `li`가 세 개지만 `querySelector`는 문서에서 가장 먼저 나오는 하나만 돌려줘요.
+  - `"todo li"`는 `#`이 빠져 `todo` 태그를 찾고, `"#todo.li"`는 띄어쓰기가 없어 전혀 다른 뜻이에요. 둘 다 맞는 요소가 없어 `null`이에요.
+  - `querySelectorAll`은 세 개를 모두 담은 목록을 돌려줘요. 첫 번째 하나만 원할 때는 `querySelector`를 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -25,13 +25,19 @@ export function Markdown({ text, variant = 'content' }: MarkdownProps) {
 type Block =
   | { kind: 'p'; lines: string[] }
   | { kind: 'code'; lang: string; lines: string[] }
-  | { kind: 'ul' | 'ol'; items: string[] }
+  | { kind: 'ul' | 'ol'; items: ListItem[] }
   | { kind: 'heading'; text: string }
   | { kind: 'quote'; text: string }
   | { kind: 'table'; align: Align[]; head: string[]; rows: string[][] }
   | { kind: 'hr' };
 
 type Align = 'left' | 'center' | 'right' | null;
+
+/** A list item, with at most one nested list (one level, as authored prompts use it). */
+interface ListItem {
+  text: string;
+  sub: { kind: 'ul' | 'ol'; items: string[] } | null;
+}
 
 const BULLET = /^\s*[-*]\s+(.*)$/;
 const ORDERED = /^\s*\d+[.)]\s+(.*)$/;
@@ -141,13 +147,34 @@ function parse(text: string, ai: boolean): Block[] {
     const listKind = BULLET.test(line) ? 'ul' : ORDERED.test(line) ? 'ol' : null;
     if (listKind) {
       const re = listKind === 'ul' ? BULLET : ORDERED;
-      const items: string[] = [];
+      const items: ListItem[] = [];
+      const indent = (l: string) => /^\s*/.exec(l)?.[0].length ?? 0;
+      const base = indent(line);
       while (i < lines.length) {
-        const m = re.exec(at(i));
-        if (m) items.push(m[1] ?? '');
-        else if (/^\s{2,}\S/.test(at(i)) && items.length > 0)
-          items[items.length - 1] = `${items.at(-1) ?? ''} ${at(i).trim()}`;
-        else break;
+        const cur = at(i);
+        const last = items.at(-1);
+        // A marker indented past the list's own is a nested list of the item above.
+        const nestedKind =
+          last && indent(cur) >= base + 2
+            ? BULLET.test(cur)
+              ? 'ul'
+              : ORDERED.test(cur)
+                ? 'ol'
+                : null
+            : null;
+        const m = nestedKind ? null : re.exec(cur);
+        if (last && nestedKind) {
+          const text = (nestedKind === 'ul' ? BULLET : ORDERED).exec(cur)?.[1] ?? '';
+          if (last.sub?.kind === nestedKind) last.sub.items.push(text);
+          else if (last.sub === null) last.sub = { kind: nestedKind, items: [text] };
+          else last.sub.items.push(text);
+        } else if (m) items.push({ text: m[1] ?? '', sub: null });
+        else if (/^\s{2,}\S/.test(cur) && last) {
+          if (last.sub) {
+            const n = last.sub.items.length - 1;
+            last.sub.items[n] = `${last.sub.items[n] ?? ''} ${cur.trim()}`;
+          } else last.text = `${last.text} ${cur.trim()}`;
+        } else break;
         i++;
       }
       out.push({ kind: listKind, items });
@@ -186,21 +213,32 @@ function blocks(text: string, ai: boolean): ReactNode[] {
         );
       }
       case 'ul':
+      case 'ol': {
+        const List = block.kind;
         return (
-          <ul key={index}>
+          <List key={index}>
             {block.items.map((item, i) => (
-              <li key={i}>{span(item)}</li>
+              <li key={i}>
+                {span(item.text)}
+                {item.sub &&
+                  (item.sub.kind === 'ul' ? (
+                    <ul>
+                      {item.sub.items.map((t, j) => (
+                        <li key={j}>{span(t)}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <ol>
+                      {item.sub.items.map((t, j) => (
+                        <li key={j}>{span(t)}</li>
+                      ))}
+                    </ol>
+                  ))}
+              </li>
             ))}
-          </ul>
+          </List>
         );
-      case 'ol':
-        return (
-          <ol key={index}>
-            {block.items.map((item, i) => (
-              <li key={i}>{span(item)}</li>
-            ))}
-          </ol>
-        );
+      }
       case 'heading':
         // Not a real heading: AI output must not change the page outline.
         return (

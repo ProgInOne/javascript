@@ -1,0 +1,85 @@
+id: js-basics.arrays.array-mutation.try-pass-turn
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.arr.shift-unshift, weight: 1 }
+  - { id: js.arr.push-pop, weight: 0.5 }
+tags: [shift, push, write-code]
+estimatedSeconds: 240
+prompt: |
+  보드게임에서 차례를 넘기는 함수 `passTurn(players)`를 완성하세요. 차례가 끝난 사람(맨 앞)을 줄에서 꺼내 **맨 뒤**에 다시 세우고, 바뀐 `players` 배열을 돌려줘요.
+
+  이 단원에서 배운 메서드 두 개로 배열을 직접 바꿔 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `passTurn(["민지", "준호", "서연"])` | `["준호", "서연", "민지"]` |
+  | `passTurn(["가은", "나래"])` | `["나래", "가은"]` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function passTurn(players) {
+            // 1. 맨 앞 사람을 꺼내 변수에 담으세요.
+            // 2. 그 사람을 배열 맨 뒤에 넣으세요.
+            // 3. players를 돌려주세요.
+          }
+
+          console.log(passTurn(["민지", "준호", "서연"]));
+  entry: passTurn
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function passTurn(players) {
+            const done = players.shift();
+            players.push(done);
+            return players;
+          }
+
+          console.log(passTurn(["민지", "준호", "서연"]));
+  checks:
+    - { kind: call, id: three, args: [["민지", "준호", "서연"]], expect: { equals: ["준호", "서연", "민지"] }, requirement: 맨 앞 사람을 맨 뒤로 }
+    - { kind: call, id: two, args: [["가은", "나래"]], expect: { equals: ["나래", "가은"] }, requirement: 맨 앞 사람을 맨 뒤로 }
+    - kind: call
+      id: four
+      visible: false
+      description: 네 명이어도 맨 앞 한 사람만 맨 뒤로 가고, 나머지 순서는 그대로여야 합니다.
+      requirement: 맨 앞 사람을 맨 뒤로
+      args: [["A", "B", "C", "D"]]
+      expect: { equals: ["B", "C", "D", "A"] }
+      misconceptionIfFail: js.mc.shift-unshift-swapped
+    - kind: call
+      id: one
+      visible: false
+      description: 한 명뿐이면 차례를 넘겨도 그대로입니다.
+      requirement: 맨 앞 사람을 맨 뒤로
+      args: [["혼자"]]
+      expect: { equals: ["혼자"] }
+misconceptions: [js.mc.shift-unshift-swapped]
+hints:
+  - 맨 앞 요소를 꺼내 돌려주는 메서드와, 맨 끝에 요소를 넣는 메서드가 필요해요.
+  - "`const done = players.shift();`로 맨 앞 사람을 꺼낼 수 있어요."
+  - 꺼낸 사람을 `players.push(done);`로 맨 뒤에 넣고, `return players;`를 써요.
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function passTurn(players) {
+    const done = players.shift();
+    players.push(done);
+    return players;
+  }
+  ```
+
+  - `shift()`는 맨 앞 요소를 꺼내 돌려줘요. 그 값을 `done`에 받아 두어야 다시 넣을 수 있어요.
+  - `push(done)`은 맨 끝에 넣어요. `unshift`를 쓰면 다시 맨 앞에 들어가서 순서가 그대로예요.
+  - `return players.push(done);`처럼 쓰면 배열이 아니라 새 길이(숫자)를 돌려주니 주의해요.
+  - `players.push(players.shift());`처럼 한 줄로 써도 같아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

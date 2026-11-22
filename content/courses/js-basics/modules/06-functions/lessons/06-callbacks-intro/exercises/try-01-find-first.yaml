@@ -1,0 +1,108 @@
+id: js-basics.functions.callbacks-intro.try-find-first
+type: implement_function
+usage: try
+difficulty: 3
+concepts:
+  - { id: js.fn.callback, weight: 1 }
+  - { id: js.loops.for, weight: 0.3 }
+  - { id: js.fn.return, weight: 0.3 }
+tags: [function, callback, loop, return, write-code]
+estimatedSeconds: 300
+prompt: |
+  `start`부터 `end`까지(둘 다 포함) 차례로 살펴보며, 콜백 `test`가 `true`를 돌려주는 **첫 번째 수**를 돌려주는 함수 `findFirst(start, end, test)`를 완성하세요.
+
+  - `test`는 수 하나를 받아 `true`나 `false`를 돌려주는 함수예요. 무엇을 찾을지는 `test`가 정해요.
+  - 조건에 맞는 수가 하나도 없으면 `-1`을 돌려주세요.
+
+  ```js
+  findFirst(1, 20, (n) => n % 7 === 0);  // 7
+  findFirst(10, 15, (n) => n % 2 === 1); // 11
+  findFirst(1, 5, (n) => n > 100);       // -1
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function findFirst(start, end, test) {
+            // start부터 end까지의 수 n마다 test(n)을 불러 보고,
+            // 처음으로 true가 나온 n을 돌려주세요. 끝까지 없으면 -1을 돌려주세요.
+          }
+
+          console.log(findFirst(1, 20, (n) => n % 7 === 0));
+  entry: findFirst
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function findFirst(start, end, test) {
+            for (let n = start; n <= end; n++) {
+              if (test(n)) {
+                return n;
+              }
+            }
+            return -1;
+          }
+
+          console.log(findFirst(1, 20, (n) => n % 7 === 0));
+  checks:
+    - kind: call
+      id: multiple-of-seven
+      description: 1부터 20까지 중 처음 나오는 7의 배수는 7입니다.
+      requirement: 첫 번째 수 찾기
+      argsExpr: "[1, 20, (n) => n % 7 === 0]"
+      expect: { equals: 7 }
+    - kind: call
+      id: first-odd
+      description: 10부터 15까지 중 처음 나오는 홀수는 11입니다.
+      requirement: 첫 번째 수 찾기
+      argsExpr: "[10, 15, (n) => n % 2 === 1]"
+      expect: { equals: 11 }
+    - kind: call
+      id: not-found
+      description: 조건에 맞는 수가 없으면 -1을 돌려줘야 합니다.
+      requirement: 없을 때 -1
+      argsExpr: "[1, 5, (n) => n > 100]"
+      expect: { equals: -1 }
+    - kind: call
+      id: hidden-end-included
+      visible: false
+      description: 맞는 수가 end 하나뿐이어도 찾아야 합니다(끝 수 포함).
+      requirement: 첫 번째 수 찾기
+      argsExpr: "[1, 9, (n) => n === 9]"
+      expect: { equals: 9 }
+    - kind: call
+      id: hidden-start-match
+      visible: false
+      description: start부터 조건에 맞으면 start를 돌려줘야 합니다(여러 개 맞아도 첫 번째만).
+      requirement: 첫 번째 수 찾기
+      argsExpr: "[4, 10, (n) => n % 2 === 0]"
+      expect: { equals: 4 }
+misconceptions: [js.mc.call-without-parens, js.mc.return-in-if-covers-all]
+hints:
+  - "`for (let n = start; n <= end; n++)`로 수를 하나씩 살펴봐요."
+  - "`test(n)`처럼 콜백을 불러서 `true`가 나오면 그 자리에서 `return n;`으로 바로 끝내요."
+  - 반복이 끝날 때까지 돌려준 값이 없다면 맞는 수가 없었다는 뜻이에요. 반복 **뒤에** `return -1;`을 둬요.
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function findFirst(start, end, test) {
+    for (let n = start; n <= end; n++) {
+      if (test(n)) {
+        return n;
+      }
+    }
+    return -1;
+  }
+  ```
+
+  - `findFirst`는 수를 차례로 넘겨주는 일만 하고, 무엇을 찾을지는 콜백 `test`가 정해요. 그래서 하나의 함수로 7의 배수도, 홀수도 찾을 수 있어요.
+  - `return n;`은 반복과 함수를 함께 끝내서 첫 번째 수만 돌려줘요.
+  - `return -1;`을 반복 **안**의 `else`에 두면 첫 수가 맞지 않을 때 바로 -1을 돌려주는 버그가 돼요. 끝까지 살펴본 뒤에 돌려줘야 해요.
+  - `if (test)`처럼 괄호 없이 쓰면 콜백을 부르지 않고 함수 자체를 조건으로 써요. 함수는 truthy라서 항상 `start`를 돌려주게 돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -605,7 +605,8 @@ export type FinishSetResponse = z.infer<typeof finishSetResponseSchema>;
 
 /**
  * `POST /exercises/:id/inline-attempts`: a lesson's inline check (`<InlineExercise>`), answered
- * while reading, outside any practice set. Only exercises graded without a sandbox run.
+ * while reading, outside any practice set. Only `usage: check` items (D-091), which are graded
+ * without a sandbox run.
  * Mastery is updated like any attempt; FSRS scheduling is left to practice and review sets.
  */
 export const inlineAttemptRequestSchema = attemptRequestSchema
@@ -620,6 +621,22 @@ export const inlineAttemptResponseSchema = attemptResponseSchema.pick({
   misconceptionChanges: true,
 });
 export type InlineAttemptResponse = z.infer<typeof inlineAttemptResponseSchema>;
+
+/**
+ * `POST /exercises/:id/try-attempts`: a lesson's "직접 써 보기" task (`<TryIt>`, D-091). The
+ * sandbox run is graded for feedback only: nothing is recorded (no attempt, mastery, FSRS or
+ * mistake note), so the learner can check as often as they like.
+ */
+export const tryAttemptRequestSchema = z
+  .object({ answer: z.unknown(), runResult: z.unknown() })
+  .strict();
+export type TryAttemptRequest = z.infer<typeof tryAttemptRequestSchema>;
+
+export const tryAttemptResponseSchema = z.object({
+  attempt: attemptResponseSchema.shape.attempt.pick({ outcome: true, score: true, correct: true }),
+  grade: attemptResponseSchema.shape.grade,
+});
+export type TryAttemptResponse = z.infer<typeof tryAttemptResponseSchema>;
 
 // ── Reading progress, review queue, activity, dashboard ──────────────────────
 

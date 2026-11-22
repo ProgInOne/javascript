@@ -1,0 +1,39 @@
+id: html.basics.document.check-what-goes-in-head
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: html.doc.skeleton, weight: 1 }
+tags: [skeleton, head, body, title]
+estimatedSeconds: 45
+prompt: |
+  가게 소개 페이지를 만들고 있어요. 다음 중 `body`가 아니라 **`head`에 넣어야 하는 것**은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: 브라우저 탭에 보일 이름 "행복 빵집"(`title`)
+    - id: b
+      text: 화면 맨 위에 크게 보일 제목 "행복 빵집"(`h1`)
+      misconception: html.mc.head-is-visible
+      rationale: 화면에 보일 제목은 본문 내용이라 body에 넣어요.
+    - id: c
+      text: 화면에 보일 영업시간 안내 문단(`p`)
+      rationale: 화면에 보일 내용은 모두 body에 넣어요.
+    - id: d
+      text: 화면에 보일 빵 사진(`img`)
+      rationale: 그림도 화면에 그려지는 내용이라 body에 넣어요.
+  correct: a
+misconceptions: [html.mc.head-is-visible]
+hints:
+  - head와 body 중 화면(본문)에 그려지는 부분은 어디였나요?
+  - head에는 화면에 그리지 않는 문서 정보를 넣어요.
+  - 탭이나 즐겨찾기에 쓰이는 이름은 본문에 그려지나요?
+explanation: |
+  정답은 **탭에 보일 이름(`title`)**이에요.
+
+  `head`에는 화면 본문에 그리지 않는 **문서 정보**(글자 인코딩, 탭 이름 등)를 넣고, 화면에 보일 제목·문단·그림은 모두 `body`에 넣어요. `title`의 글자는 본문이 아니라 브라우저 탭과 즐겨찾기 이름으로 쓰여요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

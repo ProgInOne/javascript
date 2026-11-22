@@ -1,0 +1,45 @@
+id: js-basics.browser-intro.events-intro.check-register-not-run
+type: mcq_single
+usage: check
+difficulty: 1
+concepts:
+  - { id: js.dom.add-event-listener, weight: 1 }
+tags: [addeventlistener, click, order]
+estimatedSeconds: 50
+prompt: |
+  아래 스크립트가 있는 페이지를 열었어요. 버튼은 **아직 한 번도 누르지 않았어요.** 지금 콘솔에 보이는 것은 무엇인가요?
+code: |
+  const bell = document.querySelector("#bell");
+  bell.addEventListener("click", () => {
+    console.log("딩동");
+  });
+  console.log("준비 완료");
+spec:
+  options:
+    - id: a
+      text: '`준비 완료` 한 줄'
+    - id: b
+      text: '`딩동` 다음에 `준비 완료`'
+      rationale: 등록하는 줄에서는 함수가 실행되지 않아요. 함수에 맡겨 두기만 해요.
+    - id: c
+      text: '`준비 완료` 다음에 `딩동`'
+      rationale: '`딩동`은 버튼을 누를 때마다 나와요. 아직 누르지 않았으니 나오지 않아요.'
+    - id: d
+      text: 아무것도 보이지 않는다
+      rationale: 마지막 줄의 `console.log("준비 완료")`는 페이지가 열릴 때 바로 실행돼요.
+  correct: a
+hints:
+  - "`addEventListener`는 함수를 바로 실행할까요, 아니면 맡겨 둘까요?"
+  - 맡겨 둔 함수는 언제 불리나요?
+  - 스크립트의 나머지 줄은 페이지가 열릴 때 위에서부터 그대로 실행돼요.
+explanation: |
+  정답은 `준비 완료` 한 줄이에요.
+
+  - `addEventListener("click", 함수)`는 "누를 때마다 이 함수를 불러 줘"라고 맡겨 두는 줄이에요. 등록하는 순간에는 함수가 실행되지 않아요.
+  - 그래서 페이지가 열릴 때 실행되는 출력은 마지막 줄의 `준비 완료`뿐이에요.
+  - 버튼을 누르면 그때마다 `딩동`이 한 줄씩 더해져요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

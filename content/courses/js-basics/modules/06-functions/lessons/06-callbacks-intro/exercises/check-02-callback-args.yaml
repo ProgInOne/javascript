@@ -1,0 +1,49 @@
+id: js-basics.functions.callbacks-intro.check-callback-args
+type: predict_output
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.fn.callback, weight: 1 }
+tags: [function, callback, call-order]
+estimatedSeconds: 70
+prompt: |
+  하루에 두 번 할 일을 콜백으로 받아 불러 주는 함수예요. 실행하면 콘솔에 무엇이 어떤 순서로 출력될까요? 줄마다 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    function twice(task) {
+      task("아침");
+      task("저녁");
+    }
+
+    function brush(time) {
+      console.log(time + " 양치");
+    }
+
+    console.log("하루 시작");
+    twice(brush);
+    console.log("하루 끝");
+  answerKind: console
+misconceptions: [js.mc.callback-runs-at-pass-time]
+hints:
+  - 11번 줄에서 `brush`를 넘기는 순간 `brush`가 실행될까요?
+  - "`twice` 안에서 `task(...)`를 부를 때마다 넘겨받은 `brush`가 실행돼요. 몇 번, 어떤 인수로 부르나요?"
+  - "`task(\"아침\")`이면 `brush`의 `time`에 `\"아침\"`이 들어가요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  하루 시작
+  아침 양치
+  저녁 양치
+  하루 끝
+  ```
+
+  - 11번 줄에서는 함수 `brush` 자체를 넘길 뿐, 넘기는 순간 실행되지 않아요.
+  - `twice`가 `task("아침")`, `task("저녁")`으로 콜백을 두 번 불러요. 이때 넘긴 글자가 `brush`의 매개변수 `time`에 들어가요.
+  - 콜백을 **언제, 몇 번, 무엇을 넣어** 부를지는 콜백을 받은 `twice`가 정해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

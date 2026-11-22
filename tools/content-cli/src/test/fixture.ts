@@ -6,6 +6,16 @@ import { SECTION_KINDS } from '../mdx.ts';
 
 export const LESSON = 'js-basics.start.first-program';
 export const EXERCISE = `${LESSON}.mcq-what-is-console`;
+/** The lesson's own "이해도 확인" item (`usage: check`, D-091). */
+export const CHECK = `${LESSON}.check-log-prints`;
+/** The lesson's "직접 써 보기" task (`usage: try`, D-091). */
+export const TRY = `${LESSON}.try-say-hello`;
+
+/** The fixture lesson's own body blocks (D-091): a TryIt after the walkthrough and a check. */
+export const FIXTURE_BLOCKS = {
+  walkthrough: `walkthrough.\n\n<TryIt ref="${TRY}" />`,
+  check: `<InlineExercise ref="${CHECK}" />`,
+};
 
 export function lessonMdx(extra: Partial<Record<string, string>> = {}): string {
   return SECTION_KINDS.map((k) => `<Section kind="${k}">\n${extra[k] ?? `${k}.`}\n</Section>`).join(
@@ -74,7 +84,7 @@ export function writeContent(
     'courses/js-basics/modules/01-start/lessons/01-first-program/lesson.mdx': lessonMdx({
       pitfalls:
         '<Pitfall misconception="js.mc.log-is-return">\n<Wrong>a</Wrong>\n<Actual>b</Actual>\n<Right>c</Right>\n</Pitfall>',
-      check: `<InlineExercise ref="${EXERCISE}" />`,
+      ...FIXTURE_BLOCKS,
     }),
     'courses/js-basics/modules/01-start/lessons/01-first-program/exercises/001-mcq.yaml': {
       id: EXERCISE,
@@ -84,6 +94,44 @@ export function writeContent(
       estimatedSeconds: 40,
       prompt: '`console.log`는 무엇을 하나요?',
       spec: { options: [] },
+      hints: ['a', 'b', 'c'],
+      explanation: '출력합니다.',
+      review: { status: 'approved', draftedBy: 'ai:claude', reviewedBy: 'ai:reviewer' },
+    },
+    'courses/js-basics/modules/01-start/lessons/01-first-program/exercises/check-01-log.yaml': {
+      id: CHECK,
+      type: 'true_false',
+      usage: 'check',
+      difficulty: 1,
+      concepts: [{ id: 'js.basics.console-log', weight: 1 }],
+      estimatedSeconds: 30,
+      prompt: '`console.log`는 값을 콘솔에 출력해요.',
+      spec: { statement: '`console.log`는 값을 콘솔에 출력해요.', answer: true },
+      hints: ['a', 'b', 'c'],
+      explanation: '맞아요.',
+      review: { status: 'approved', draftedBy: 'ai:claude', reviewedBy: 'ai:reviewer' },
+    },
+    'courses/js-basics/modules/01-start/lessons/01-first-program/exercises/try-01-hello.yaml': {
+      id: TRY,
+      type: 'implement_function',
+      usage: 'try',
+      difficulty: 1,
+      concepts: [{ id: 'js.basics.console-log', weight: 1 }],
+      estimatedSeconds: 180,
+      prompt: '인사말을 출력해 보세요.',
+      spec: {
+        starter: { files: [{ path: 'main.js', content: '// 여기에 쓰세요.\n' }] },
+        solution: { files: [{ path: 'main.js', content: 'console.log("안녕");\n' }] },
+        checks: [
+          {
+            kind: 'console',
+            id: 'output',
+            description: '콘솔에 "안녕"이 출력되어야 합니다.',
+            requirement: '인사 출력',
+            expect: { lines: ['안녕'] },
+          },
+        ],
+      },
       hints: ['a', 'b', 'c'],
       explanation: '출력합니다.',
       review: { status: 'approved', draftedBy: 'ai:claude', reviewedBy: 'ai:reviewer' },
@@ -105,6 +153,10 @@ export const LESSON_YAML =
 export const LESSON_MDX = 'courses/js-basics/modules/01-start/lessons/01-first-program/lesson.mdx';
 export const EXERCISE_YAML =
   'courses/js-basics/modules/01-start/lessons/01-first-program/exercises/001-mcq.yaml';
+export const CHECK_YAML =
+  'courses/js-basics/modules/01-start/lessons/01-first-program/exercises/check-01-log.yaml';
+export const TRY_YAML =
+  'courses/js-basics/modules/01-start/lessons/01-first-program/exercises/try-01-hello.yaml';
 
 export const REVIEW = 'js-basics.start.start-review';
 export const REVIEW_YAML = 'courses/js-basics/modules/01-start/lessons/02-start-review/lesson.yaml';

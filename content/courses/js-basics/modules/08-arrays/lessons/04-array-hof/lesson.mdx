@@ -143,6 +143,10 @@ console.log(prices.map((p, i) => `${i + 1}번: ${p}원`));
 - `map`은 요소마다 콜백을 불러 `3000 + 500`, `12000 + 500`, `4500 + 500`을 새 배열에 차례로 담아요.
 - `prices`는 그대로예요. `map`은 원래 배열을 바꾸지 않고 새 배열을 돌려줘요.
 - 콜백의 두 번째 매개변수 `i`에는 인덱스가 들어와요. 0부터라서 `i + 1`로 번호를 만들었어요. 콜백이 문자열을 돌려주면 결과도 문자열 배열이에요. 콘솔은 배열 안의 문자열을 큰따옴표로 감싸 보여 줘요.
+
+`map`을 직접 써 볼까요? 콜백이 돌려준 값으로 새 배열이 만들어진다는 점을 떠올리며 이름 목록을 정리해 보세요.
+
+<TryIt ref="js-basics.arrays.array-hof.try-trim-names" />
 </Section>
 
 <Section kind="examples">
@@ -229,6 +233,10 @@ acc: 15000, price: 4500
 - 첫 호출의 `acc`는 초기값 `0`이에요. 콜백이 `0 + 3000`을 **돌려주면** 그 값이 다음 호출의 `acc`가 돼요.
 - 콜백은 요소 수만큼 세 번 불렸어요. 마지막 호출이 돌려준 `19500`이 `reduce`의 결과예요.
 - 중괄호 본문을 썼기 때문에 `return acc + price;`가 꼭 필요해요. `return`을 빠뜨리면 두 번째 호출의 `acc`가 `undefined`가 되어 결과가 망가져요.
+
+이번에는 `reduce`를 직접 써 보세요. 누적값에 무엇을 더해 돌려줄지, 초기값은 무엇일지 정하는 것이 핵심이에요.
+
+<TryIt ref="js-basics.arrays.array-hof.try-total-letters" />
 </Section>
 
 <Section kind="examples">
@@ -442,19 +450,19 @@ if (results.length > 0) {
 <Section kind="check">
 `map`이 무엇을 돌려주는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-hof.mcq-map-result" />
+<InlineExercise ref="js-basics.arrays.array-hof.check-map-lengths" />
 
-`filter`가 어떤 요소를 남기는지 확인해 보세요.
+`filter`가 고를 요소를 하나도 찾지 못하면 어떻게 되는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-hof.mcq-filter-keeps" />
+<InlineExercise ref="js-basics.arrays.array-hof.check-filter-nothing" />
 
-`find`가 못 찾았을 때를 확인해 보세요.
+필요한 결과에 맞는 메서드를 골라 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-hof.mcq-find-not-found" />
+<InlineExercise ref="js-basics.arrays.array-hof.check-pick-method" />
 
-`reduce` 콜백의 매개변수 순서를 확인해 보세요.
+`reduce`의 누적값이 어떻게 이어지는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.arrays.array-hof.mcq-reduce-params" />
+<InlineExercise ref="js-basics.arrays.array-hof.check-reduce-multiply" />
 </Section>
 
 <Section kind="practice" />

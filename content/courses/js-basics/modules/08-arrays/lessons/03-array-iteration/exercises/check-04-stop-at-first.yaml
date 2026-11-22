@@ -1,0 +1,45 @@
+id: js-basics.arrays.array-iteration.check-stop-at-first
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.foreach, weight: 1 }
+  - { id: js.arr.for-of, weight: 0.5 }
+  - { id: js.loops.break, weight: 0.3 }
+tags: [forEach, break, for-of, check]
+estimatedSeconds: 60
+prompt: |
+  주문 번호 배열을 앞에서부터 보다가 **처음 나오는 취소 주문**(`0`)을 만나면 그 자리에서 반복을 멈추고 싶어요. 알맞은 방법은 어느 것인가요?
+spec:
+  options:
+    - id: a
+      text: '`for...of`로 돌다가 `0`을 만나면 `break`한다'
+    - id: b
+      text: '`forEach`의 콜백 안에서 `0`을 만나면 `return`한다'
+      misconception: js.mc.foreach-return-stops
+      rationale: 콜백 안의 `return`은 그 요소에 대한 콜백 한 번만 끝내요. `forEach`는 다음 요소로 계속 가요.
+    - id: c
+      text: '`forEach`의 콜백 안에서 `0`을 만나면 `break`한다'
+      rationale: 콜백은 반복문이 아니라 함수라서 그 안에 `break`를 쓸 수 없어요. 문법 오류가 나요.
+    - id: d
+      text: '`forEach`가 돌려주는 값이 `0`이 될 때까지 다시 부른다'
+      rationale: '`forEach`는 항상 `undefined`를 돌려줘요. 멈춤과는 관계가 없어요.'
+  correct: a
+misconceptions: [js.mc.foreach-return-stops]
+hints:
+  - 세 가지 반복 방법 중 "중간에 멈추기"가 불가능한 것은 무엇이었나요?
+  - "`forEach` 콜백 안의 `return`은 무엇을 끝내나요?"
+  - 반복을 바로 멈추는 키워드 `break`는 반복문 안에서만 쓸 수 있어요.
+explanation: |
+  정답은 **`for...of`로 돌다가 `0`을 만나면 `break`한다**예요.
+
+  - `forEach`에는 중간에 멈출 방법이 없어요. 콜백 안의 `return`은 그 요소의 콜백만 끝내고, 다음 요소로 넘어가요.
+  - 콜백은 함수라서 `break`를 쓸 수 없어요.
+  - `forEach`는 언제나 `undefined`를 돌려줘요.
+
+  "찾으면 멈추는" 일은 `for...of`와 `break`(함수 안이라면 `return`)로 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

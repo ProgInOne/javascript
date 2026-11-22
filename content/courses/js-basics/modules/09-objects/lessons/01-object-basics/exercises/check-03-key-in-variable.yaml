@@ -1,0 +1,44 @@
+id: js-basics.objects.object-basics.check-key-in-variable
+type: mcq_single
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.obj.dot-bracket, weight: 1 }
+tags: [object, bracket, variable-key]
+estimatedSeconds: 60
+prompt: |
+  화면 설정을 담은 객체와, 사용자가 고른 항목 이름이 든 변수 `choice`가 있어요. `40`을 읽는 식은 어느 것인가요?
+code: |
+  const settings = { volume: 7, brightness: 40 };
+  const choice = "brightness";
+spec:
+  options:
+    - id: a
+      text: '`settings[choice]`'
+    - id: b
+      text: '`settings.choice`'
+      misconception: js.mc.dot-with-variable-key
+      rationale: 점 뒤의 `choice`는 변수가 아니라 속성 이름 그대로예요. `choice`라는 속성은 없어서 `undefined`예요.
+    - id: c
+      text: '`settings["choice"]`'
+      rationale: 따옴표로 감싸면 글자 `"choice"`가 키가 돼요. 그런 속성은 없어서 `undefined`예요.
+    - id: d
+      text: '`settings[brightness]`'
+      misconception: js.mc.bracket-key-without-quotes
+      rationale: 대괄호 안의 따옴표 없는 `brightness`는 변수예요. 그런 변수가 없어서 `ReferenceError`가 나요.
+  correct: a
+misconceptions: [js.mc.dot-with-variable-key, js.mc.bracket-key-without-quotes]
+hints:
+  - 읽고 싶은 속성의 이름은 코드에 직접 적혀 있지 않고 변수 `choice` 안에 들어 있어요.
+  - 점 표기법은 점 뒤의 글자를 이름 그대로 써요. 변수의 값을 쓰려면 어떤 표기법이 필요할까요?
+  - 대괄호 안은 식이라 먼저 계산돼요. `choice`를 계산하면 무엇이 되나요?
+explanation: |
+  정답은 `settings[choice]`예요. 대괄호 안의 `choice`를 먼저 계산하면 `"brightness"`이고, 그 이름의 속성 값 `40`을 읽어요.
+
+  - `settings.choice`와 `settings["choice"]`는 둘 다 이름이 `choice`인 속성을 찾아서 `undefined`예요.
+  - `settings[brightness]`는 변수 `brightness`를 찾다가 `ReferenceError`가 나요. 이름을 그대로 쓰려면 `settings["brightness"]`나 `settings.brightness`예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
