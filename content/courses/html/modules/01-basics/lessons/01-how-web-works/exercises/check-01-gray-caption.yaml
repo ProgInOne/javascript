@@ -1,0 +1,36 @@
+id: html.basics.how-web-works.check-gray-caption
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: html.web.three-languages, weight: 1 }
+tags: [html, css, javascript, roles]
+estimatedSeconds: 40
+prompt: |
+  사진 아래에 있는 설명 글자를 **회색으로, 조금 작게** 보이게 하고 싶어요. 이 일은 주로 어느 언어의 몫인가요?
+spec:
+  options:
+    - id: a
+      text: CSS
+    - id: b
+      text: HTML
+      rationale: HTML은 "여기에 설명 글이 있다"는 내용과 구조를 표시해요. 색과 크기 같은 모양은 정하지 않아요.
+    - id: c
+      text: JavaScript
+      misconception: html.mc.html-is-programming
+      rationale: JavaScript는 누르면 바뀌는 것 같은 동작을 맡아요. 처음부터 정해진 색과 크기는 모양의 문제예요.
+  correct: a
+misconceptions: [html.mc.html-is-programming]
+hints:
+  - 글자의 내용이 바뀌나요, 아니면 보이는 모습만 바뀌나요?
+  - 세 언어는 내용과 구조, 모양, 동작을 하나씩 나눠 맡아요.
+  - 색, 크기, 여백, 배치는 집에 비유하면 벽지와 가구 배치에 해당해요.
+explanation: |
+  정답은 **CSS**예요.
+
+  회색과 작은 크기는 글자의 **모양**이에요. 모양은 CSS가 맡아요. 설명 글 자체(내용)는 HTML로 쓰고, 누를 때 무언가 바뀌는 동작이 필요할 때만 JavaScript를 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

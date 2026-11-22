@@ -1,0 +1,150 @@
+id: html.semantics.landmarks.try-new-books-section
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: html.semantics.sectioning, weight: 1 }
+  - { id: html.text.headings, weight: 0.3 }
+tags: [section, article, main, web-task]
+estimatedSeconds: 360
+prompt: |
+  도서관 페이지의 `main` 안을 직접 써 보세요.
+
+  1. "새로 들어온 책"이라는 소제목(`h2`)이 붙은 **주제별 구역**을 하나 만드세요.
+  1. 그 구역 안에 책 소개 두 편을 넣으세요. 책 소개 한 편은 다른 곳에 옮겨도 뜻이 통하는 **독립된 글**이에요. 각 글에는 소제목(`h3`)과 문단(`p`)이 하나씩 있어요.
+
+  | 글 | 소제목 | 문단 |
+  |---|---|---|
+  | 첫째 | 별을 세는 밤 | 밤하늘 사진이 가득한 그림책이에요. |
+  | 둘째 | 요리하는 고양이 | 고양이 요리사의 하루를 그린 동화예요. |
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>우리 동네 도서관</title>
+            </head>
+            <body>
+              <header>
+                <h1>우리 동네 도서관</h1>
+              </header>
+              <main>
+                <!-- 여기에 "새로 들어온 책" 구역과, 그 안의 책 소개 두 편을 쓰세요 -->
+              </main>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>우리 동네 도서관</title>
+            </head>
+            <body>
+              <header>
+                <h1>우리 동네 도서관</h1>
+              </header>
+              <main>
+                <section>
+                  <h2>새로 들어온 책</h2>
+                  <article>
+                    <h3>별을 세는 밤</h3>
+                    <p>밤하늘 사진이 가득한 그림책이에요.</p>
+                  </article>
+                  <article>
+                    <h3>요리하는 고양이</h3>
+                    <p>고양이 요리사의 하루를 그린 동화예요.</p>
+                  </article>
+                </section>
+              </main>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: section
+      description: main 안에 주제별 구역(section)이 하나 있어야 합니다.
+      requirement: 주제별 구역
+      visible: true
+      selector: main > section
+      expect:
+        count: 1
+      misconceptionIfFail: html.mc.section-article-same
+    - kind: dom
+      id: section-heading
+      description: 구역의 소제목은 h2 "새로 들어온 책"이어야 합니다.
+      requirement: 주제별 구역
+      visible: true
+      selector: main > section > h2
+      expect:
+        count: 1
+        text: { equals: 새로 들어온 책 }
+    - kind: dom
+      id: articles
+      description: 구역 안에 독립된 글(article)이 두 편 있어야 합니다.
+      requirement: 책 소개 글
+      visible: true
+      selector: main > section > article
+      expect:
+        count: 2
+      misconceptionIfFail: html.mc.section-article-same
+    - kind: dom
+      id: article-headings
+      description: 글마다 소제목(h3)이 하나씩 있어야 합니다.
+      requirement: 책 소개 글
+      visible: true
+      selector: main > section > article > h3
+      expect:
+        count: 2
+    - kind: dom
+      id: first-title
+      description: 첫째 글의 소제목은 "별을 세는 밤"이어야 합니다.
+      requirement: 책 소개 글
+      selector: main > section > article:first-of-type > h3
+      expect:
+        text: { equals: 별을 세는 밤 }
+    - kind: dom
+      id: second-text
+      description: 둘째 글의 문단은 "고양이 요리사의 하루를 그린 동화예요."여야 합니다.
+      requirement: 책 소개 글
+      selector: main > section > article:nth-of-type(2) > p
+      expect:
+        count: 1
+        text: { equals: 고양이 요리사의 하루를 그린 동화예요. }
+misconceptions: [html.mc.section-article-same]
+hints:
+  - 소제목이 붙는 주제별 구역과, 따로 떼어도 뜻이 통하는 독립된 글은 각각 어떤 요소였나요?
+  - 바깥 구역은 `section`, 책 소개 한 편은 `article`이에요. `section` 안에 `h2`를 먼저 쓰고 그 아래에 `article` 두 개를 넣어요.
+  - "`<section>` 다음 줄에 `<h2>새로 들어온 책</h2>`, 그 아래에 `<article><h3>별을 세는 밤</h3><p>...</p></article>`을 쓰고, 둘째 글도 같은 모양으로 쓴 뒤 `</section>`으로 닫아요."
+explanation: |
+  예시 답안의 `main` 안쪽은 이래요.
+
+  ```html
+  <section>
+    <h2>새로 들어온 책</h2>
+    <article>
+      <h3>별을 세는 밤</h3>
+      <p>밤하늘 사진이 가득한 그림책이에요.</p>
+    </article>
+    <article>
+      <h3>요리하는 고양이</h3>
+      <p>고양이 요리사의 하루를 그린 동화예요.</p>
+    </article>
+  </section>
+  ```
+
+  - "새로 들어온 책"은 이 페이지 안에서 소제목이 붙는 **주제별 구역**이라 `section`이에요. 따로 떼어 내면 어느 도서관의 책인지 알 수 없어요.
+  - 책 소개 한 편은 다른 곳에 옮겨도 뜻이 통하는 **독립된 글**이라 `article`이에요.
+  - 제목 단계도 h1(사이트) → h2(구역) → h3(글)로 건너뛰지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

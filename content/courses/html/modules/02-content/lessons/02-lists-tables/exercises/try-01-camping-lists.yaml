@@ -1,0 +1,154 @@
+id: html.content.lists-tables.try-camping-lists
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: html.content.lists, weight: 1 }
+  - { id: html.doc.nesting, weight: 0.3 }
+tags: [list, ol, ul, li, web-task]
+estimatedSeconds: 240
+prompt: |
+  캠핑 안내 페이지에 목록 두 개를 직접 써 보세요. 주석이 있는 자리에 쓰면 돼요.
+
+  1. "텐트 치는 순서" 제목 바로 아래: 순서가 중요한 목록으로 세 단계를 이 순서대로 써요.
+     - 바닥에 텐트를 편다
+     - 폴대를 끼운다
+     - 팩을 박아 고정한다
+  1. "챙길 간식" 제목 바로 아래: 순서가 상관없는 목록으로 간식 세 가지(감자칩, 귤, 초콜릿)를 써요.
+
+  번호(`1.`)나 글머리 기호(`•`)는 글자로 쓰지 마세요. 브라우저가 붙여 줘요.
+spec:
+  focus: html
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>캠핑 안내</title>
+            </head>
+            <body>
+              <h2>텐트 치는 순서</h2>
+              <!-- 여기에 순서가 중요한 목록을 쓰세요 (세 단계) -->
+
+              <h2>챙길 간식</h2>
+              <!-- 여기에 순서가 상관없는 목록을 쓰세요 (간식 세 가지) -->
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>캠핑 안내</title>
+            </head>
+            <body>
+              <h2>텐트 치는 순서</h2>
+              <ol>
+                <li>바닥에 텐트를 편다</li>
+                <li>폴대를 끼운다</li>
+                <li>팩을 박아 고정한다</li>
+              </ol>
+
+              <h2>챙길 간식</h2>
+              <ul>
+                <li>감자칩</li>
+                <li>귤</li>
+                <li>초콜릿</li>
+              </ul>
+            </body>
+          </html>
+  checks:
+    - kind: dom
+      id: steps-ol
+      description: 첫 번째 제목 바로 아래에 순서가 중요한 목록(ol)이 있어야 합니다.
+      requirement: 텐트 치는 순서
+      visible: true
+      selector: body > h2:first-of-type + ol
+      expect:
+        count: 1
+    - kind: dom
+      id: steps-count
+      description: 순서가 중요한 목록에 항목(li)이 세 개 있어야 합니다.
+      requirement: 텐트 치는 순서
+      visible: true
+      selector: body > ol > li
+      expect:
+        count: 3
+    - kind: dom
+      id: steps-first
+      description: 첫 단계는 "바닥에 텐트를 편다"여야 합니다(번호는 글자로 쓰지 않아요).
+      requirement: 텐트 치는 순서
+      visible: true
+      selector: body > ol > li:first-child
+      expect:
+        text: { equals: 바닥에 텐트를 편다 }
+    - kind: dom
+      id: steps-last
+      description: 마지막 단계는 "팩을 박아 고정한다"여야 합니다.
+      requirement: 텐트 치는 순서
+      visible: true
+      selector: body > ol > li:last-child
+      expect:
+        text: { equals: 팩을 박아 고정한다 }
+    - kind: dom
+      id: snacks-ul
+      description: 두 번째 제목 바로 아래에 순서가 상관없는 목록(ul)이 있어야 합니다.
+      requirement: 챙길 간식
+      visible: true
+      selector: body > h2:nth-of-type(2) + ul
+      expect:
+        count: 1
+    - kind: dom
+      id: snacks-count
+      description: 순서가 상관없는 목록에 항목(li)이 세 개 있어야 합니다.
+      requirement: 챙길 간식
+      visible: true
+      selector: body > ul > li
+      expect:
+        count: 3
+    - kind: dom
+      id: no-loose-li
+      description: 항목(li)은 모두 ul이나 ol 안에 있어야 합니다.
+      requirement: 목록 구조
+      selector: body > li
+      expect:
+        count: 0
+      misconceptionIfFail: html.mc.li-alone
+misconceptions: [html.mc.li-alone]
+hints:
+  - 텐트 치는 순서는 순서를 바꾸면 안 되고, 간식은 어떤 순서여도 괜찮아요. 각각 어떤 목록 상자가 맞을까요?
+  - 순서가 중요하면 `ol`, 상관없으면 `ul`로 감싸고, 항목 하나하나는 `li`로 써요.
+  - "`<ol>` 안에 `<li>바닥에 텐트를 편다</li>`처럼 단계마다 `li`를 한 줄씩 넣고 `</ol>`로 닫아요. 간식도 같은 모양인데 상자만 `ul`이에요."
+explanation: |
+  예시 답안의 두 목록은 이래요.
+
+  ```html
+  <h2>텐트 치는 순서</h2>
+  <ol>
+    <li>바닥에 텐트를 편다</li>
+    <li>폴대를 끼운다</li>
+    <li>팩을 박아 고정한다</li>
+  </ol>
+
+  <h2>챙길 간식</h2>
+  <ul>
+    <li>감자칩</li>
+    <li>귤</li>
+    <li>초콜릿</li>
+  </ul>
+  ```
+
+  - 텐트 치는 순서는 단계를 바꾸면 안 되니 `ol`이에요. 번호 1, 2, 3은 브라우저가 매겨요.
+  - 간식은 순서가 상관없으니 `ul`이에요. 항목 앞에 글머리 기호가 붙어요.
+  - 두 목록 모두 항목은 `li`로 쓰고, `li`는 반드시 목록 상자 안에 넣어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

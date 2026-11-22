@@ -1,0 +1,37 @@
+id: html.content.lists-tables.check-ol-reorder
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: html.content.lists, weight: 1 }
+tags: [list, ol, li]
+estimatedSeconds: 50
+prompt: |
+  `ol` 안에 "세수하기", "아침 먹기", "양치하기" 세 항목이 이 순서로 있어요. 코드에서 "양치하기" 항목(`li` 한 줄)을 맨 위로 옮기고 다시 실행하면 화면은 어떻게 보이나요?
+spec:
+  options:
+    - id: a
+      text: 1. 양치하기, 2. 세수하기, 3. 아침 먹기
+    - id: b
+      text: 3. 양치하기, 1. 세수하기, 2. 아침 먹기
+      rationale: 번호는 항목에 붙어 다니지 않아요. 브라우저가 위에서부터 차례로 다시 매겨요.
+    - id: c
+      text: 번호 없이 글머리 기호(•)로 바뀐다
+      rationale: 글머리 기호는 ul의 기본 모양이에요. 순서를 바꿔도 ol은 그대로 번호가 붙어요.
+    - id: d
+      text: 번호를 손으로 고치기 전까지 모든 항목이 같은 번호로 보인다
+      rationale: ol의 번호는 코드에 쓰지 않아요. 브라우저가 매기니 손으로 고칠 번호가 없어요.
+  correct: a
+hints:
+  - ol의 번호 1, 2, 3은 코드의 어디에 적혀 있었나요?
+  - 번호는 브라우저가 항목이 놓인 순서대로 위에서부터 매겨요.
+  - 옮긴 뒤 맨 위에 놓인 항목이 무엇인지 보고, 거기서부터 1을 붙여 보세요.
+explanation: |
+  정답은 **1. 양치하기, 2. 세수하기, 3. 아침 먹기**예요.
+
+  `ol`의 번호는 코드에 쓰지 않고 브라우저가 **항목이 놓인 순서대로** 매겨요. 그래서 항목을 옮기면 번호는 1부터 다시 차례로 붙고, 항목만 자리가 바뀌어요. 단계를 끼워 넣거나 순서를 바꿔도 번호를 고칠 필요가 없는 이유예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
