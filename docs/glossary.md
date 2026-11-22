@@ -143,6 +143,14 @@ ProgInOne 문서와 코드에서 쓰는 용어의 단일 정의입니다.
 | 가상 타이머 | `timers: 'virtual'` | 채점·검증에서 시간 경과를 시뮬레이션하는 타이머 모드 |
 | 실행 상태 | `RunResult.status` | `completed` / `error` / `timeout` / `loop_limit` / `crashed` / `aborted`. `crashed`·`aborted`는 숙련도에 반영하지 않음 |
 
+## 저장소·배포 용어
+
+| 한국어 | 코드 식별자 | 정의 |
+|---|---|---|
+| 언어 저장소 | `ProgInOne/<언어>` | 학습 언어 하나의 앱(서버·웹), 콘텐츠, 러너, 채점 검사를 담은 저장소. 예: `ProgInOne/javascript` |
+| 공통 패키지 | `@proginone/*` | 언어와 무관해 언어 저장소들이 함께 쓰는 패키지. `ProgInOne/core`에서 GitHub Packages로 배포 |
+| 사전 배포판 | `next` 태그 | core의 `develop`에 병합될 때마다 배포하는 스냅샷 버전. 언어 저장소의 `develop`만 씀 |
+
 ## 화면 용어
 
 | 한국어 | 코드 식별자 | 정의 |
