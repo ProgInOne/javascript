@@ -11,7 +11,7 @@ estimatedSeconds: 360
 prompt: |
   동아리 가입 신청 폼의 안쪽을 직접 써 보세요. `form`은 이미 있어요. 주석 자리에 쓰면 돼요.
 
-  1. 이름표 **전화번호**와 전화번호 입력칸. 입력칸의 `id`는 `phone`이고, 휴대폰에서 숫자 자판이 뜨는 종류(`type`)로 하세요.
+  1. 이름표 **전화번호**와 전화번호 입력칸. 입력칸의 `id`는 `phone`이고, **전화번호를 받는** 종류(`type`)로 하세요.
   1. 이름표 **학년**과 학년 입력칸. 입력칸의 `id`는 `grade`이고, 숫자만 받는 종류로 하세요.
   1. 두 이름표는 `for`와 `id`로 각 입력칸에 연결하세요.
   1. 맨 아래에 **신청하기** 버튼. 누르면 폼을 보내도록 `type`을 직접 써 주세요.
@@ -119,7 +119,7 @@ spec:
 misconceptions: [html.mc.input-type-looks-only, html.mc.label-just-text]
 hints:
   - 이름표는 `label`, 입력칸은 `input`, 버튼은 `button`이에요. 이름표와 입력칸은 어떤 두 속성으로 연결했었나요?
-  - "`label`의 `for` 값과 `input`의 `id` 값을 같게 써요. 전화번호는 `type=\"tel\"`, 숫자만 받으려면 `type=\"number\"`예요."
+  - "`label`의 `for` 값과 `input`의 `id` 값을 같게 써요. 전화번호는 `type=\"tel\"`(휴대폰에서 숫자 자판이 떠요), 숫자만 받으려면 `type=\"number\"`예요."
   - "`<label for=\"phone\">전화번호</label>` 다음에 `<input id=\"phone\" type=\"tel\" />`을 써요. 학년도 같은 모양으로 쓰고, 마지막에 `<button type=\"submit\">신청하기</button>`을 써요."
 explanation: |
   예시 답안의 폼 안쪽은 이래요.

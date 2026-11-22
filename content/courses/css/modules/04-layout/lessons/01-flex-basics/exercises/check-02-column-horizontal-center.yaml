@@ -8,7 +8,7 @@ concepts:
 tags: [flexbox, align-items, column]
 estimatedSeconds: 70
 prompt: |
-  아래 컨테이너의 아이템들은 위아래로 쌓인 채 왼쪽에 붙어 있어요. 쌓인 모양은 그대로 두고 아이템들을 **가로 가운데**로 옮기려면 `.menu`에 어떤 선언을 추가해야 하나요?
+  아래 컨테이너의 아이템들은 위아래로 쌓인 채 왼쪽에 붙어 있어요. 쌓인 모양은 그대로 두고 아이템들을 **가로 가운데**로 옮기려면 `.menu`의 선언을 어떻게 바꾸거나 추가해야 하나요?
 code: |
   .menu {
     display: flex;

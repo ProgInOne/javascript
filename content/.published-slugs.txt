@@ -241,7 +241,7 @@ exercise css.box.model.mcq-area-order
 exercise css.box.model.mcq-background-area
 exercise css.box.model.mcq-border-box-meaning
 exercise css.box.model.mcq-shorthand-two-values
-exercise css.box.model.try-width-for-ruler
+exercise css.box.model.try-padding-for-nametag
 exercise css.box.model.web-card-spacing
 exercise css.box.model.web-fit-ruler
 exercise css.box.model.web-fix-side-by-side

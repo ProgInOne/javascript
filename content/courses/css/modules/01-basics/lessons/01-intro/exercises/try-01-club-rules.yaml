@@ -9,8 +9,8 @@ estimatedSeconds: 240
 prompt: |
   동아리 소개 페이지의 `style` 요소 안에 **규칙 두 개를 직접** 써 보세요.
 
-  1. 모든 소제목(`h2`): 글자 색 흰색(`white`), 배경색 청록색(`teal`)
-  1. 모든 목록 항목(`li`): 글자 크기 `20px`
+  1. 모든 소제목(`h2`): 글자 색 흰색(`white`), 배경색(`background-color`) 청록색(`teal`)
+  1. 모든 목록 항목(`li`): 글자 크기(`font-size`) `20px`
 
   선언마다 끝에 세미콜론을 붙이고, HTML(`body`)은 바꾸지 마세요.
 spec:
@@ -25,7 +25,7 @@ spec:
               <meta charset="utf-8" />
               <title>사진 동아리</title>
               <style>
-                /* 1. h2 규칙: 글자 색 white, 배경색 teal */
+                /* 1. h2 규칙: 글자 색 white, 배경색(background-color) teal */
 
                 /* 2. li 규칙: 글자 크기 20px */
               </style>
