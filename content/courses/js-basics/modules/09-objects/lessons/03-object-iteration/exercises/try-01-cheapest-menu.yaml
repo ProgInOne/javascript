@@ -1,0 +1,105 @@
+id: js-basics.objects.object-iteration.try-cheapest-menu
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.obj.for-in, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.5 }
+  - { id: js.control.if, weight: 0.3 }
+tags: [object, for-in, minimum, write-code]
+estimatedSeconds: 270
+prompt: |
+  카페 메뉴판 객체(메뉴 이름 → 가격)를 받아, **가장 싼 메뉴의 이름**을 돌려주는 함수 `cheapest(prices)`를 만드세요. `for...in`으로 키를 하나씩 돌며 값을 비교해 보세요.
+
+  - 메뉴는 적어도 하나 있어요.
+  - 가장 싼 메뉴가 여러 개면 먼저 나온 메뉴를 돌려줘요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `cheapest({ 아메리카노: 4000, 라테: 4500, 녹차: 3800 })` | `"녹차"` |
+  | `cheapest({ 쿠키: 2000, 마들렌: 2500 })` | `"쿠키"` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function cheapest(prices) {
+            // for...in으로 메뉴 이름을 하나씩 보며 가장 싼 메뉴를 찾으세요.
+          }
+
+          console.log(cheapest({ 아메리카노: 4000, 라테: 4500, 녹차: 3800 }));
+  entry: cheapest
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function cheapest(prices) {
+            let best = undefined;
+            for (const name in prices) {
+              if (best === undefined || prices[name] < prices[best]) {
+                best = name;
+              }
+            }
+            return best;
+          }
+
+          console.log(cheapest({ 아메리카노: 4000, 라테: 4500, 녹차: 3800 }));
+  checks:
+    - { kind: call, id: last-cheapest, args: [{ 아메리카노: 4000, 라테: 4500, 녹차: 3800 }], expect: { equals: "녹차" }, requirement: 가장 싼 메뉴 이름, misconceptionIfFail: js.mc.for-in-gives-values }
+    - { kind: call, id: first-cheapest, args: [{ 쿠키: 2000, 마들렌: 2500 }], expect: { equals: "쿠키" }, requirement: 가장 싼 메뉴 이름 }
+    - kind: call
+      id: middle
+      visible: false
+      description: 가장 싼 메뉴가 가운데에 있어도 찾아야 합니다.
+      requirement: 가장 싼 메뉴 이름
+      args: [{ 김밥: 3500, 라면: 3000, 떡볶이: 4000 }]
+      expect: { equals: "라면" }
+    - kind: call
+      id: single
+      visible: false
+      description: 메뉴가 하나뿐이면 그 메뉴를 돌려줘야 합니다.
+      requirement: 가장 싼 메뉴 이름
+      args: [{ 생수: 1000 }]
+      expect: { equals: "생수" }
+    - kind: call
+      id: tie
+      visible: false
+      description: 가장 싼 메뉴가 여러 개면 먼저 나온 메뉴를 돌려줘야 합니다.
+      requirement: 같은 가격일 때
+      args: [{ 콜라: 2000, 사이다: 1500, 환타: 1500 }]
+      expect: { equals: "사이다" }
+    - kind: call
+      id: keep-prices
+      visible: false
+      description: 받은 메뉴판 객체를 바꾸면 안 됩니다.
+      args: [{ 아메리카노: 4000, 라테: 4500 }]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.for-in-gives-values, js.mc.dot-with-variable-key]
+hints:
+  - "지금까지 찾은 가장 싼 메뉴의 **이름**을 담을 변수를 하나 만들고, `for (const name in prices)`로 이름을 하나씩 받아 보세요."
+  - "가격은 `prices[name]`, 지금까지의 최저 가격은 `prices[best]`로 읽어요. `prices.name`은 이름이 `\"name\"`인 속성을 찾아요."
+  - "`best`가 아직 비어 있거나(`undefined`) `prices[name] < prices[best]`이면 `best = name;`으로 바꾸고, 반복이 끝나면 `best`를 돌려줘요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function cheapest(prices) {
+    let best = undefined;
+    for (const name in prices) {
+      if (best === undefined || prices[name] < prices[best]) {
+        best = name;
+      }
+    }
+    return best;
+  }
+  ```
+
+  - `for...in`의 `name`에는 키(메뉴 이름)가 들어와요. 값은 `prices[name]`으로 읽어요.
+  - 돌려줄 것은 이름이라서 가격이 아니라 **이름**을 `best`에 기억해요. 비교할 때 `prices[best]`로 그 가격을 읽어요.
+  - `<`로 비교하면 같은 가격인 뒤 메뉴로는 바꾸지 않아서, 먼저 나온 메뉴가 남아요.
+  - 첫 메뉴로 시작하고 싶다면 `let best = Object.keys(prices)[0];`도 좋아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

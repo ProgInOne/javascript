@@ -1,0 +1,86 @@
+id: js-basics.arrays.array-hof.try-trim-names
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.arr.map, weight: 1 }
+  - { id: js.str.case-trim, weight: 0.3 }
+  - { id: js.fn.arrow, weight: 0.3 }
+tags: [map, trim, write-code]
+estimatedSeconds: 200
+prompt: |
+  가입 폼에서 받은 이름 목록에 앞뒤 공백이 섞여 있어요. 이름마다 **앞뒤 공백을 지운 새 배열**을 돌려주는 함수 `cleanNames(names)`를 완성하세요. 원래 배열 `names`는 바꾸면 안 돼요.
+
+  `map`과 화살표 함수로 한 줄에 써 보세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `cleanNames([" 민지", "준호  ", " 서연 "])` | `["민지", "준호", "서연"]` |
+  | `cleanNames([])` | `[]` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function cleanNames(names) {
+            // map으로 이름마다 앞뒤 공백을 지운 새 배열을 만들어 돌려주세요.
+          }
+
+          console.log(cleanNames([" 민지", "준호  ", " 서연 "]));
+  entry: cleanNames
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function cleanNames(names) {
+            return names.map((name) => name.trim());
+          }
+
+          console.log(cleanNames([" 민지", "준호  ", " 서연 "]));
+  checks:
+    - { kind: call, id: three, args: [[" 민지", "준호  ", " 서연 "]], expect: { equals: ["민지", "준호", "서연"] }, requirement: 앞뒤 공백 지우기 }
+    - { kind: call, id: empty, args: [[]], expect: { equals: [] }, requirement: 앞뒤 공백 지우기 }
+    - kind: call
+      id: inner-space
+      visible: false
+      description: 이름 가운데의 공백은 그대로 두고 앞뒤 공백만 지워야 합니다.
+      requirement: 앞뒤 공백 지우기
+      args: [["  Kim Minji ", "이 준"]]
+      expect: { equals: ["Kim Minji", "이 준"] }
+    - kind: call
+      id: keep-original
+      visible: false
+      description: 원래 이름 배열을 바꾸면 안 됩니다.
+      requirement: 원래 배열 그대로
+      args: [[" 민지", "준호  "]]
+      expect: { argsUnchanged: true }
+      misconceptionIfFail: js.mc.map-mutates-original
+    - kind: call
+      id: new-array
+      visible: false
+      description: 받은 배열이 아니라 새 배열을 돌려줘야 합니다.
+      requirement: 원래 배열 그대로
+      args: [["민지"]]
+      expect: { returnsNewReference: true }
+misconceptions: [js.mc.map-callback-no-return]
+hints:
+  - 요소마다 바꾼 값으로 같은 길이의 새 배열을 만드는 메서드는 `map`이에요.
+  - 문자열의 앞뒤 공백을 지운 새 문자열은 `trim()`이 돌려줘요.
+  - "`return names.map((name) => name.trim());`처럼 `map`의 결과를 `return`해야 해요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function cleanNames(names) {
+    return names.map((name) => name.trim());
+  }
+  ```
+
+  - `map`은 콜백이 돌려준 값으로 새 배열을 만들고, 원래 배열은 바꾸지 않아요.
+  - 화살표 함수 본문이 식 하나라 `name.trim()`의 결과가 그대로 돌려줘져요. 중괄호를 쓴다면 `(name) => { return name.trim(); }`처럼 `return`이 필요해요.
+  - `names.map(...)`만 쓰고 `return`을 빠뜨리면 함수는 `undefined`를 돌려줘요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,28 @@
+id: js-basics.arrays.array-hof.check-filter-nothing
+type: true_false
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.filter, weight: 1 }
+tags: [filter, empty-array, check]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르세요.
+spec:
+  statement: '`const adults = [12, 15, 17].filter((age) => age >= 20);`을 실행하면, 고를 요소가 없으므로 `adults`는 `undefined`다.'
+  answer: false
+  misconceptionIfWrong: js.mc.filter-empty-is-undefined
+misconceptions: [js.mc.filter-empty-is-undefined]
+hints:
+  - "`filter`는 언제나 어떤 종류의 값을 돌려주나요?"
+  - 레슨 두 번째 예제에서 100점을 넘는 점수를 고른 결과가 무엇이었는지 떠올려 보세요.
+  - 맞는 요소가 0개인 배열을 무엇이라고 부를까요?
+explanation: |
+  정답은 **거짓**이에요. `adults`는 빈 배열 `[]`이에요.
+
+  `filter`는 맞는 요소가 몇 개든 언제나 **배열**을 돌려줘요. 하나도 없으면 요소가 0개인 빈 배열이에요. 그래서 "찾았는지"는 `if (adults)`가 아니라 `adults.length > 0`으로 확인해요. 빈 배열도 참으로 취급되기 때문이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

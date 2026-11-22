@@ -1,0 +1,47 @@
+id: js-basics.objects.reference-vs-value.check-const-team-line
+type: mcq_single
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.obj.const-mutation, weight: 1 }
+tags: [object, const, reassign]
+estimatedSeconds: 60
+prompt: |
+  아래 코드를 위에서부터 실행할 때, **처음으로** 오류가 나는 줄은 몇 번 줄인가요?
+code: |
+  const team = { name: "파랑", members: ["민지"] };
+  team.name = "하늘";
+  team.members.push("준호");
+  team.members = [];
+  team = { name: "노랑" };
+spec:
+  options:
+    - id: a
+      text: 5번 줄
+    - id: b
+      text: 2번 줄
+      misconception: js.mc.const-object-props-frozen
+      rationale: "`const`는 변수 `team`에 다시 대입하는 것만 막아요. 속성을 바꾸는 것은 괜찮아요."
+    - id: c
+      text: 3번 줄
+      rationale: 안쪽 배열에 요소를 더하는 것도 객체를 바꾸는 일이라 `const`와 상관없어요.
+    - id: d
+      text: 4번 줄
+      misconception: js.mc.const-object-props-frozen
+      rationale: "`team.members = []`는 변수 `team`이 아니라 `members` 속성에 대입해요. 막히지 않아요."
+  correct: a
+misconceptions: [js.mc.const-object-props-frozen]
+hints:
+  - "`const`가 막는 것은 무엇이었나요? 속성 바꾸기인가요, 변수에 다시 대입하기인가요?"
+  - 각 줄의 `=` 왼쪽이 변수 `team` 자체인지, `team.무엇`인지 보세요.
+  - "`=` 왼쪽이 `team` 하나뿐인 줄은 몇 번 줄인가요?"
+explanation: |
+  정답은 **5번 줄**이에요. `TypeError: Assignment to constant variable.`이 나요.
+
+  - 2번 줄과 4번 줄은 `team`이 가리키는 객체의 **속성**에 대입해요. 3번 줄은 안쪽 배열을 바꿔요. 모두 `const`가 막지 않아요.
+  - 5번 줄만 **변수 `team`에 새 객체를 대입**해요. `const`가 막는 것은 이것뿐이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

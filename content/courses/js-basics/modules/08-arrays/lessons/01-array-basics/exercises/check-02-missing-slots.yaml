@@ -1,0 +1,44 @@
+id: js-basics.arrays.array-basics.check-missing-slots
+type: predict_output
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.arr.literal-index, weight: 1 }
+  - { id: js.types.undefined, weight: 0.3 }
+tags: [out-of-range, negative-index, undefined, check]
+estimatedSeconds: 60
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요? 세 줄을 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const steps = ["준비", "출발"];
+    console.log(steps[2]);
+    console.log(steps[-1]);
+    console.log("계속 진행");
+  answerKind: console
+  misconceptionByAnswer:
+    "undefined\n출발\n계속 진행": js.mc.array-negative-index-last
+    "출발\nundefined\n계속 진행": js.mc.index-starts-at-one
+misconceptions: [js.mc.array-out-of-range-throws, js.mc.array-negative-index-last]
+hints:
+  - "`steps`에는 요소가 몇 개 있고, 인덱스는 몇 번부터 몇 번까지인가요?"
+  - 인덱스 2와 인덱스 -1 자리에 요소가 있는지 하나씩 확인해 보세요.
+  - 없는 자리를 읽으면 오류가 나지 않고 "아무것도 없다"는 값이 나와요. 그래서 마지막 줄도 실행돼요.
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  undefined
+  undefined
+  계속 진행
+  ```
+
+  - 요소가 2개라 인덱스는 0과 1뿐이에요. `steps[2]`는 범위 밖이라 `undefined`예요.
+  - `steps[-1]`도 그 자리에 요소가 없어서 `undefined`예요. 음수 인덱스가 "뒤에서 첫 번째"가 되지는 않아요.
+  - 두 경우 모두 오류가 아니라서 프로그램은 멈추지 않고 `계속 진행`까지 출력해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

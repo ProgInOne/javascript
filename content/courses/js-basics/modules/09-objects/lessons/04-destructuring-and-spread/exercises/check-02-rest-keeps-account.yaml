@@ -1,0 +1,34 @@
+id: js-basics.objects.destructuring-and-spread.check-rest-keeps-account
+type: true_false
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.obj.destructuring, weight: 1 }
+tags: [destructuring, rest, original]
+estimatedSeconds: 60
+prompt: |
+  아래 코드를 보고, 설명이 맞는지 고르세요.
+code: |
+  const account = { id: "coco", pin: "0000", point: 300 };
+  const { pin, ...card } = account;
+spec:
+  statement: '2번 줄을 실행하면 `pin`이 빠져나가서, `account`에는 `id`와 `point` 두 속성만 남는다.'
+  answer: false
+  misconceptionIfWrong: js.mc.destructuring-removes-property
+misconceptions: [js.mc.destructuring-removes-property]
+hints:
+  - 구조 분해는 객체의 값을 읽어 오는 일일까요, 객체에서 속성을 꺼내 없애는 일일까요?
+  - "`...card`는 남은 속성들을 담은 **새 객체**를 만들어요."
+  - 2번 줄에서 `account`에 대입하거나 `delete`하는 코드가 있나요?
+explanation: |
+  정답은 **거짓**이에요.
+
+  구조 분해는 값을 읽어서 변수에 넣을 뿐, 원래 객체를 바꾸지 않아요. `account`에는 여전히 `id`, `pin`, `point` 세 속성이 있어요.
+
+  - `pin`에는 `"0000"`이 들어가요.
+  - `card`는 `pin`을 뺀 나머지 속성을 담은 **새 객체** `{ id: "coco", point: 300 }`이에요. 빠진 것은 `card` 쪽이지 `account`가 아니에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

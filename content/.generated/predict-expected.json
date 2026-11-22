@@ -1,6 +1,17 @@
 {
   "v": 1,
   "entries": {
+    "js-basics.arrays.array-basics.check-missing-slots": {
+      "inputHash": "7c1d0bae1b5a2eb769454a1bcaf77462a0340eec9ce10abdfeb813909886a134",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "undefined",
+          "undefined",
+          "계속 진행"
+        ]
+      }
+    },
     "js-basics.arrays.array-basics.predict-length-gap": {
       "inputHash": "462b81d38e25b7d02e4ce2f0e497d784f26a00b8159cfe6b6cbb62ba0086c54f",
       "expected": {
@@ -31,6 +42,15 @@
         "lines": [
           "[\"나\", \"나\", \"다\"]",
           "[\"다\", \"나\", \"가\"]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-hof.check-reduce-multiply": {
+      "inputHash": "b86cbf4acdc6c607f97af105459cc623c132cab642760edb51e8c484d59cb6c0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "24"
         ]
       }
     },
@@ -109,6 +129,15 @@
         ]
       }
     },
+    "js-basics.arrays.array-iteration.check-for-of-reverse-text": {
+      "inputHash": "462274cefabf7e0672ef6d57f396cacf255235d20a8a881b916bd646862107a6",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "다나가"
+        ]
+      }
+    },
     "js-basics.arrays.array-iteration.predict-for-in-index": {
       "inputHash": "7b9d1f4670f231d192b954456602a896a9cd8de2ace8cb5da66692e955f53b42",
       "expected": {
@@ -144,6 +173,17 @@
         ]
       }
     },
+    "js-basics.arrays.array-mutation.check-unshift-shift": {
+      "inputHash": "d8d669eb76ecaa4193d087dd7279e98b338845d22c827a41851c871b436f7f98",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3",
+          "새벽",
+          "[\"봄날\", \"여름밤\"]"
+        ]
+      }
+    },
     "js-basics.arrays.array-mutation.predict-function-arg": {
       "inputHash": "355ab69cc109928ae17d209c6f4504d677281a0a4219cbfd1fbb21668d09d8c8",
       "expected": {
@@ -175,6 +215,25 @@
           "[50]",
           "[]",
           "[10, 99, 7, 8, 40]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-search-sort.check-default-sort-ages": {
+      "inputHash": "7b6d236ef1b2ca8d2e78a7af6678c4bae223b34f6f7c344d8e7c409d96ab3ed7",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[21, 3, 40, 5]"
+        ]
+      }
+    },
+    "js-basics.arrays.array-search-sort.check-slice-keeps-queue": {
+      "inputHash": "a701f25c8ff3a82f97f4760890f8ced7a21b1af7910ea61bed350bca7991f7fb",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[\"나\", \"다\"]",
+          "4"
         ]
       }
     },
@@ -267,6 +326,16 @@
           "105",
           "7 true",
           "[7, 58, 61, 105]"
+        ]
+      }
+    },
+    "js-basics.browser-intro.dom-basics.check-textcontent-string": {
+      "inputHash": "cc6e151368effb41e9371dfeace3948617abc53a979b6c078031c949bcb4be9a",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "71",
+          "품절"
         ]
       }
     },
@@ -1019,6 +1088,15 @@
         ]
       }
     },
+    "js-basics.objects.destructuring-and-spread.check-coords-position": {
+      "inputHash": "6fcf30b3e48c671179fc1e4017db22a67ffa0c18e7ac347a09a6a31314144c24",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "127 50"
+        ]
+      }
+    },
     "js-basics.objects.destructuring-and-spread.predict-defaults-null": {
       "inputHash": "53c26ded98df68fbe5e4fa0c46e99361241ff8ce6c965fb2094a77a10192d0dc",
       "expected": {
@@ -1050,6 +1128,17 @@
           "[\"감자\", \"샐러드\"]",
           "[\"감자\", \"치즈\"]",
           "false true"
+        ]
+      }
+    },
+    "js-basics.objects.error-handling.check-throw-skips": {
+      "inputHash": "c09401bdf61e69882adb03532b4b33e64a747b4246f22fdce90e5abd86cb815d",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "A",
+          "C 멈춤",
+          "D"
         ]
       }
     },
@@ -1089,6 +1178,17 @@
         ]
       }
     },
+    "js-basics.objects.object-basics.check-missing-undefined": {
+      "inputHash": "969d79fdef46d577a6dbbcc6c1a684ee50bafaeb853a9a161c63b0a00d145e1b",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "검정",
+          "undefined",
+          "확인 끝"
+        ]
+      }
+    },
     "js-basics.objects.object-basics.predict-cart-changes": {
       "inputHash": "d6df35946cc526c3776dabeb6889e0e0e5d08aa17fe66f8537f1b5b3acf88fc6",
       "expected": {
@@ -1115,6 +1215,16 @@
           "코딩부 301호",
           "4",
           "{ title: \"코딩부\", room: 301 }"
+        ]
+      }
+    },
+    "js-basics.objects.object-iteration.check-for-in-pets": {
+      "inputHash": "0d194956879e3bd9398663b61db3d5fc0c05a3d9669506428ae97f129eea9d40",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "강아지 2마리",
+          "고양이 1마리"
         ]
       }
     },
@@ -1224,6 +1334,16 @@
         "lines": [
           "빨강 2 검정 1",
           "6 L 1 M"
+        ]
+      }
+    },
+    "js-basics.objects.reference-vs-value.check-shared-lunch": {
+      "inputHash": "2861559aaefcaf90ff76c460f7d1a6271689d61355837d6c0573eb5d1951d62f",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "9000",
+          "9000"
         ]
       }
     },

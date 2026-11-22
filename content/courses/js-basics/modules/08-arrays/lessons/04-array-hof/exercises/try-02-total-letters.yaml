@@ -1,0 +1,79 @@
+id: js-basics.arrays.array-hof.try-total-letters
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.arr.reduce, weight: 1 }
+  - { id: js.fn.arrow, weight: 0.3 }
+tags: [reduce, accumulator, write-code]
+estimatedSeconds: 240
+prompt: |
+  문자 메시지 조각들의 배열 `parts`를 받아, 모든 조각의 **글자 수를 더한 값**을 돌려주는 함수 `totalLetters(parts)`를 완성하세요.
+
+  `reduce`로 누적값에 조각마다 글자 수를 더해 보세요. 초기값도 잊지 마세요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `totalLetters(["안녕", "잘 지내?", "응"])` | `8` |
+  | `totalLetters([])` | `0` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function totalLetters(parts) {
+            // reduce로 (누적값, 조각)을 받아 누적값에 조각의 글자 수를 더해 돌려주세요.
+            // 조각이 하나도 없을 때도 0이 나오도록 초기값을 정하세요.
+          }
+
+          console.log(totalLetters(["안녕", "잘 지내?", "응"]));
+  entry: totalLetters
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function totalLetters(parts) {
+            return parts.reduce((acc, part) => acc + part.length, 0);
+          }
+
+          console.log(totalLetters(["안녕", "잘 지내?", "응"]));
+  checks:
+    - { kind: call, id: three, args: [["안녕", "잘 지내?", "응"]], expect: { equals: 8 }, requirement: 글자 수 더하기, misconceptionIfFail: js.mc.reduce-callback-no-return }
+    - { kind: call, id: empty, args: [[]], expect: { equals: 0 }, requirement: 조각이 없을 때 0, misconceptionIfFail: js.mc.reduce-initial-optional-safe }
+    - kind: call
+      id: one
+      visible: false
+      description: 조각이 하나뿐이어도 문자열이 아니라 그 조각의 글자 수(숫자)를 돌려줘야 합니다.
+      requirement: 글자 수 더하기
+      args: [["hello"]]
+      expect: { equals: 5 }
+      misconceptionIfFail: js.mc.reduce-initial-optional-safe
+    - kind: call
+      id: with-empty-part
+      visible: false
+      description: 빈 문자열 조각은 0글자로 셉니다.
+      requirement: 글자 수 더하기
+      args: [["ab", "", "cde"]]
+      expect: { equals: 5 }
+misconceptions: [js.mc.reduce-callback-no-return, js.mc.reduce-initial-optional-safe]
+hints:
+  - "`reduce`의 콜백은 `(누적값, 요소)` 순서로 받아요. 여기서 요소는 조각 문자열이에요."
+  - 콜백은 "지금까지의 합 + 이번 조각의 글자 수"를 돌려줘야 해요. 글자 수는 `part.length`예요.
+  - "`return parts.reduce((acc, part) => acc + part.length, 0);`처럼 초기값 `0`을 두 번째 인수로 넘겨요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function totalLetters(parts) {
+    return parts.reduce((acc, part) => acc + part.length, 0);
+  }
+  ```
+
+  - 초기값 `0`이 첫 `acc`가 돼요. 콜백이 돌려준 값이 다음 `acc`로 이어져요.
+  - 초기값을 빼면 첫 요소(문자열 `"안녕"`)가 첫 `acc`가 되어 `"안녕" + 5`처럼 문자열 연결이 일어나고, 빈 배열이면 `TypeError`가 나요.
+  - 중괄호 본문으로 쓰면 `return acc + part.length;`를 빠뜨리지 마세요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,53 @@
+id: js-basics.browser-intro.events-intro.check-value-read-when
+type: true_false
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.dom.input-value, weight: 1 }
+  - { id: js.dom.add-event-listener, weight: 0.3 }
+tags: [input-value, timing]
+estimatedSeconds: 60
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: '스크립트 맨 위에서 `const city = document.querySelector("#city").value;`로 읽어 두면, 나중에 사용자가 입력창에 `부산`을 쓰고 버튼을 눌렀을 때 버튼의 이벤트 함수 안에서 `city`는 `"부산"`이다.'
+  answer: false
+  misconceptionIfWrong: js.mc.input-value-read-once
+  requireReason: true
+  reasons:
+    - id: r1
+      text: value는 읽은 그 순간의 글자를 복사한 문자열이라, city에는 페이지가 열릴 때의 글자(처음에는 빈 문자열)가 남아 있다
+      correct: true
+    - id: r2
+      text: 입력창의 value는 항상 숫자라서 "부산" 같은 글자는 들어갈 수 없다
+      misconception: js.mc.input-value-is-number
+    - id: r3
+      text: const로 만든 변수는 입력창과 이어져 있어서 사용자가 쓰는 글자를 따라 바뀌므로 맞는 설명이다
+      misconception: js.mc.input-value-read-once
+    - id: r4
+      text: 이벤트 함수 안에서는 함수 밖의 변수를 읽을 수 없어서 오류가 난다
+hints:
+  - 페이지가 열릴 때 입력창에는 어떤 글자가 들어 있나요?
+  - "`value`를 읽으면 입력창과 이어진 끈이 생길까요, 아니면 그 순간의 글자를 복사해 올까요?"
+  - 사용자가 쓴 글자를 쓰려면 `value`를 언제 읽어야 하는지 단원의 다섯 번째 예제를 떠올려 보세요.
+explanation: |
+  정답은 **거짓**이에요.
+
+  `value`는 읽는 순간 입력창에 들어 있던 글자를 복사한 문자열이에요. 스크립트 맨 위에서 읽으면 페이지가 열린 순간의 글자, 보통은 빈 문자열 `""`이 `city`에 들어가고, 그 뒤에 사용자가 무엇을 쓰든 `city`는 바뀌지 않아요.
+
+  사용자가 쓴 글자를 쓰려면 입력창 **요소**만 밖에서 찾아 두고, `value`는 이벤트 함수 **안에서** 읽어요.
+
+  ```js
+  const cityInput = document.querySelector("#city");
+  button.addEventListener("click", () => {
+    const city = cityInput.value; // 누른 그 순간의 글자
+  });
+  ```
+
+  - `value`는 숫자가 아니라 항상 문자열이에요. 글자도 그대로 들어가요.
+  - 이벤트 함수 안에서도 함수 밖의 변수를 읽을 수 있어요. 오류는 나지 않고, 예전 값이 그대로 보일 뿐이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

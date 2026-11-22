@@ -1,0 +1,36 @@
+id: js-basics.arrays.array-hof.check-reduce-multiply
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.arr.reduce, weight: 1 }
+tags: [reduce, accumulator, check]
+estimatedSeconds: 60
+prompt: |
+  실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    const factors = [2, 3, 4];
+    const result = factors.reduce((acc, n) => acc * n, 1);
+    console.log(result);
+  answerKind: console
+hints:
+  - 첫 호출의 `acc`는 초기값이에요. 초기값은 무엇인가요?
+  - 콜백이 돌려준 값이 다음 호출의 `acc`가 돼요. 단계마다 `acc`를 적어 보세요.
+  - "`1 * 2`, 그 결과에 `* 3`, 그 결과에 `* 4`예요."
+explanation: |
+  출력은 `24`예요.
+
+  | 호출 | `acc` | `n` | 돌려준 값 |
+  |---|---|---|---|
+  | 1 | 1 (초기값) | 2 | 2 |
+  | 2 | 2 | 3 | 6 |
+  | 3 | 6 | 4 | 24 |
+
+  화살표 함수의 본문이 식 하나라서 `acc * n`이 그대로 돌려줘져요. 마지막 호출이 돌려준 `24`가 `reduce`의 결과예요. 곱셈이라 초기값을 0이 아니라 1로 두었다는 점도 눈여겨보세요. 0으로 시작하면 결과는 늘 0이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

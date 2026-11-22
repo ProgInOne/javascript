@@ -1,0 +1,45 @@
+id: js-basics.browser-intro.dom-basics.check-textcontent-string
+type: predict_output
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.dom.text-content, weight: 1 }
+  - { id: js.conv.plus-concat, weight: 0.3 }
+tags: [textcontent, string]
+estimatedSeconds: 70
+prompt: |
+  다음 문서를 열면 콘솔에 무엇이 출력될까요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: web
+  code: |
+    <p id="stock">7</p>
+    <script>
+      const stock = document.querySelector("#stock");
+      stock.textContent = stock.textContent + 1;
+      console.log(stock.textContent);
+      stock.textContent = "품절";
+      console.log(stock.textContent);
+    </script>
+  answerKind: console
+  misconceptionByAnswer:
+    "71\n71품절": js.mc.textcontent-appends
+misconceptions: [js.mc.textcontent-appends]
+hints:
+  - "`textContent`로 읽은 값은 숫자처럼 보여도 어떤 자료형일까요?"
+  - 문자열에 숫자를 `+`로 더하면 계산이 아니라 이어 붙이기가 돼요.
+  - "`textContent`에 대입하면 원래 글자 뒤에 붙을까요, 아니면 통째로 바뀔까요?"
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  71
+  품절
+  ```
+
+  - `textContent`는 읽을 때 항상 문자열이에요. `"7" + 1`은 이어 붙이기라서 `"71"`이 돼요. 숫자로 계산하려면 `Number(stock.textContent) + 1`처럼 바꿔야 해요.
+  - `textContent`에 대입하면 요소 안의 글자 **전체**가 그 값으로 바뀌어요. 그래서 두 번째 줄은 `71품절`이 아니라 `품절`이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
