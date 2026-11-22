@@ -21,8 +21,6 @@ spec:
     - id: value
       accept: ["홀수", "\"홀수\"", "'홀수'"]
       width: 8
-      misconceptionMap:
-        "false": js.mc.ternary-result-discarded
 hints:
   - 조건 연산자는 `?` 앞의 조건부터 계산해요. `7 % 2`는 얼마인가요?
   - "`7 % 2`는 1이라서 `1 === 0`은 거짓이에요. 거짓이면 어느 쪽 값이 될까요?"
