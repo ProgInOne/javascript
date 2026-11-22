@@ -418,11 +418,7 @@ describe('POST /exercises/:id/inline-attempts', () => {
 
 describe('POST /exercises/:id/try-attempts (D-091)', () => {
   /** Checks a try task the way the lesson does: grading plan → sandbox → try attempt. */
-  async function tryIt(
-    ctx: Awaited<ReturnType<typeof practiceApp>>,
-    id: string,
-    correct: boolean,
-  ) {
+  async function tryIt(ctx: Awaited<ReturnType<typeof practiceApp>>, id: string, correct: boolean) {
     const answer = (correct ? CORRECT : WRONG)[EX.implement];
     const plan = await ctx.call('POST', `/exercises/${id}/run-plan`, {
       answer,

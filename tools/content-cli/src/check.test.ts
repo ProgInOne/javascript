@@ -143,7 +143,7 @@ describe('checkContent', () => {
       'lesson without a TryIt',
       (f) => {
         f[LESSON_MDX] = lessonMdx({ check: FIXTURE_BLOCKS.check });
-        delete f[TRY_YAML];
+        f[TRY_YAML] = undefined;
       },
       '직접 써 보기(TryIt)가 하나 이상',
     ],

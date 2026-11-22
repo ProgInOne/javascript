@@ -567,9 +567,14 @@ export class AttemptService {
     // The run result is untrusted: parse it first.
     const parsed = parseRunResult(request.runResult);
     if (!parsed.success) {
-      throw new AppError('VALIDATION_RUN_RESULT_INVALID', 400, '실행 결과 형식이 올바르지 않습니다.', {
-        details: { issues: [parsed.error.slice(0, 500)] },
-      });
+      throw new AppError(
+        'VALIDATION_RUN_RESULT_INVALID',
+        400,
+        '실행 결과 형식이 올바르지 않습니다.',
+        {
+          details: { issues: [parsed.error.slice(0, 500)] },
+        },
+      );
     }
     const grade = kit(() =>
       gradeSubmission({ typeId: exercise.type, spec, answer, run: parsed.data }),

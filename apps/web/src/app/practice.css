@@ -430,6 +430,40 @@
     font-weight: 700;
     color: var(--color-text-brand);
   }
+  /* "직접 써 보기" (D-091): a code task inside the lesson column. The editor keeps its own
+     body font; the box is a little wider than the reading measure would allow for prose. */
+  .lesson-try {
+    display: grid;
+    gap: var(--space-4);
+    margin: var(--space-6) 0;
+    padding: var(--space-5) var(--space-6);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-subtle);
+    font: var(--text-body);
+    font-size: 1rem;
+    min-width: 0;
+  }
+  .lesson-try__label {
+    display: inline-flex;
+    gap: var(--space-2);
+    align-items: center;
+    margin-bottom: var(--space-2);
+    font: var(--text-small);
+    font-weight: 700;
+    color: var(--color-text-brand);
+  }
+  .lesson-try__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+  }
+  @media (max-width: 640px) {
+    .lesson-try {
+      padding: var(--space-4);
+    }
+  }
 
   .nav-badge {
     display: inline-grid;

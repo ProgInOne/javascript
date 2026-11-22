@@ -15,6 +15,7 @@ import {
   finishSetResponseSchema,
   submitAttemptResponseSchema,
   solutionResponseSchema,
+  tryAttemptResponseSchema,
   type AttemptRequest,
   type CreatePracticeSetRequest,
   type HeartbeatRequest,
@@ -23,6 +24,7 @@ import {
   type ProjectAttemptRequest,
   type ReportRequest,
   type RunPlanRequest,
+  type TryAttemptRequest,
   backupListSchema,
   backupCheckSchema,
   backupLocationChangeSchema,
@@ -312,6 +314,14 @@ export const submitInlineAttempt = (exerciseId: string, request: InlineAttemptRe
     method: 'POST',
     body: request,
     schema: inlineAttemptResponseSchema,
+  });
+
+/** A lesson's "직접 써 보기" task (`<TryIt>`, D-091): graded for feedback only, nothing recorded. */
+export const submitTryAttempt = (exerciseId: string, request: TryAttemptRequest) =>
+  api(`/exercises/${encodeURIComponent(exerciseId)}/try-attempts`, {
+    method: 'POST',
+    body: request,
+    schema: tryAttemptResponseSchema,
   });
 
 // ── Project units (content-and-exercises.md#프로젝트-단원-kind-project) ──
