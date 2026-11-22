@@ -817,3 +817,11 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - 검토한 대안: 언어 목록을 받는 스키마 팩토리(타입은 가장 정확하지만 DDL·API 계약까지 제네릭이 되어 복잡함), core의 enum에 언어를 계속 추가(단순하지만 언어마다 core를 고쳐 배포해야 함).
 - 이 저장소의 반영: 1차 분리 패키지로 전환하는 PR에서 `content-cli`·서버·웹이 확장 지점을 쓰고 `mdnUrl`을 `docUrl`로 바꿉니다.
 - **`@proginone/*` 패키지는 공개합니다.** 조직 패키지는 처음 배포하면 비공개로 만들어지므로, 패키지마다 GitHub 웹 화면(Package settings → Danger Zone → Change visibility)에서 공개로 바꿉니다. 공식 API가 없고 되돌릴 수 없습니다. 공개 패키지도 GitHub Packages에서 받으려면 토큰이 필요하다는 점(D-090)은 같습니다.
+
+## D-093. 릴리스 묶음에 공통 패키지를 동봉(D-090의 설치 방법 변경) — `확정`
+- 2026-11-23, 사용자 결정(D-090의 "서버를 esbuild로 한 파일로 묶기"를 구현하려다 위험을 발견).
+- 배경: 서버는 실행 중에 소스 위치를 기준으로 파일을 찾습니다(`migrations` 폴더, 루트 `package.json`의 버전, `apps/web/dist`). 러너 셸(`/sandbox/runner.html`)은 처음 요청받을 때 `packages/runner`의 TS 원본을 esbuild로 묶습니다. 서버를 한 파일로 묶으면 이 경로들과 셸 빌드 방식을 모두 바꿔야 해, 학습자가 실제로 실행하는 경로가 크게 달라집니다.
+- **학습자가 토큰 없이 설치한다는 D-090의 목표는 그대로 두고, 방법을 동봉으로 바꿉니다.** 릴리스 묶기(`tools/release-bundle.sh`)가 레지스트리에서 받는 `@proginone/*`를 `npm pack`으로 받아 묶음의 `vendor/`에 넣습니다. 그리고 묶음의 `pnpm-workspace.yaml`에 `overrides`(`file:vendor/<파일>.tgz`)를 더하고 잠금 파일을 다시 만듭니다(`tools/vendor-proginone.mjs`). 서버 코드, 실행 방식, 설치 명령(`pnpm install --prod --frozen-lockfile`)은 그대로입니다.
+- 묶음의 `pnpm-workspace.yaml`과 `pnpm-lock.yaml`은 태그 커밋과 다릅니다([릴리스 절차 > 공통 패키지 동봉](/docs/guides/release.md#공통-패키지-동봉)).
+- 묶기는 `git archive`를 임시 폴더에 풀어 조립한 뒤 압축합니다. 예전처럼 tar에 덧붙이지 않으므로 GNU tar·bsdtar 분기가 없어졌고, 워크플로와 로컬 대체 절차가 같은 스크립트를 씁니다.
+- 확인: learning-engine을 `next` 사전 배포판으로 바꾼 임시 커밋으로 묶음을 만들었습니다. 토큰이 없는 깨끗한 폴더에서 설치하고 시작한 뒤, 릴리스 스모크 테스트(토큰 검사, 실제 콘텐츠의 핵심 흐름) 두 개가 모두 통과했습니다.
