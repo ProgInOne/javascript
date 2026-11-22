@@ -1547,6 +1547,17 @@
         ]
       }
     },
+    "js-basics.start.first-program.check-order-with-expression": {
+      "inputHash": "dc28a3c3a75290cfd92933b8cd4a4da2c8301903b4a09a710933c2a1c678fa02",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "출발",
+          "도착",
+          "30"
+        ]
+      }
+    },
     "js-basics.start.first-program.predict-comment-one-line": {
       "inputHash": "3511b8b8df112bf3ad5067f9c9f68f004769d5151b48012e7c373e9b1d0abc2c",
       "expected": {
