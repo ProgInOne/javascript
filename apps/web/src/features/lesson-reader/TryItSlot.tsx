@@ -261,6 +261,7 @@ function TryItWorkspace({
             )
           }
           pending={hintPending}
+          note="직접 써 보기는 숙련도에 반영되지 않아요. 막히면 편하게 열어 보세요."
         />
       )}
     </section>

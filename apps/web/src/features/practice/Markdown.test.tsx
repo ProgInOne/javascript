@@ -56,6 +56,27 @@ describe('Markdown (AI variant)', () => {
   });
 });
 
+describe('Markdown lists', () => {
+  it('nests one level of list under an item (authored prompts)', () => {
+    const { container } = render(
+      <Markdown
+        text={
+          '1. 첫 단계:\n   - 텐트를 편다\n   - 폴대를 끼운다\n     이어진 줄\n1. 둘째 단계\n\n끝.'
+        }
+      />,
+    );
+    const top = container.querySelector('ol');
+    expect(top?.children).toHaveLength(2);
+    const nested = top?.querySelector(':scope > li > ul');
+    expect([...(nested?.children ?? [])].map((li) => li.textContent)).toEqual([
+      '텐트를 편다',
+      '폴대를 끼운다 이어진 줄',
+    ]);
+    expect(top?.children[1]?.textContent).toBe('둘째 단계');
+    expect(screen.getByText('끝.')).toBeInTheDocument();
+  });
+});
+
 describe('Markdown tables', () => {
   const cellTexts = (row: Element) =>
     [...row.querySelectorAll('th, td')].map((cell) => cell.textContent);

@@ -1,0 +1,30 @@
+id: js-basics.start.first-program.check-first-line
+usage: check
+type: mcq_single
+difficulty: 2
+concepts:
+  - { id: js.basics.statement, weight: 1 }
+estimatedSeconds: 40
+prompt: |
+  문장이 세 개 있는 프로그램을 실행하면 어떤 문장이 가장 먼저 실행되나요?
+spec:
+  options:
+    - id: a
+      text: 맨 위의 문장
+    - id: b
+      text: 맨 아래의 문장
+      rationale: 프로그램은 위에서 아래로 실행돼요.
+    - id: c
+      text: 가장 짧은 문장
+      rationale: 길이와 실행 순서는 관계없어요.
+  correct: a
+hints:
+  - 책을 읽는 방향을 떠올려 보세요.
+  - 프로그램은 한 문장씩 차례로 실행돼요.
+  - 위에서 아래로예요.
+explanation: |
+  정답은 **맨 위의 문장**이에요. 문장은 위에서 아래로 하나씩 실행돼요.
+origin: authored
+review:
+  status: draft
+  draftedBy: ai:claude

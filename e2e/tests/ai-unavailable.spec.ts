@@ -77,7 +77,7 @@ test.describe('AI unavailable (mock AI)', () => {
     );
     // Explaining a wrong attempt falls back to the authored misconception text.
     const attempt = await request.post(
-      '/api/v1/exercises/js-basics.start.first-program.mcq-log-role/inline-attempts',
+      '/api/v1/exercises/js-basics.start.first-program.check-log-role/inline-attempts',
       {
         headers,
         data: {

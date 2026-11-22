@@ -444,6 +444,10 @@
     font-size: 1rem;
     min-width: 0;
   }
+  /* The lesson column is too narrow for the editor and the preview side by side. */
+  .lesson-try .pi-ex-workspace__split {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .lesson-try__label {
     display: inline-flex;
     gap: var(--space-2);
