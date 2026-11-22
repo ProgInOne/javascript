@@ -7,7 +7,7 @@
  * - Only approved exercises count (drafts do not ship). A parametric template will count as 1
  *   when templates join the pipeline (FR-EX-08).
  * - A unit's pool is its practice items (not `usage: assessment` / `project` /
- *   `worked_example`).
+ *   `worked_example` / `check` / `try`).
  * - A concept's count is the practice items whose primary concept (weight 1) it is, across all
  *   units. Secondary tags never count.
  */
@@ -204,7 +204,11 @@ const primaryOf = (ex: ExerciseSource) => ex.concepts.find((c) => c.weight === 1
 
 /** Items that count toward a unit's practice pool. */
 const isPracticePool = (ex: ExerciseSource) =>
-  ex.usage !== 'assessment' && ex.usage !== 'project' && ex.usage !== 'worked_example';
+  ex.usage !== 'assessment' &&
+  ex.usage !== 'project' &&
+  ex.usage !== 'worked_example' &&
+  ex.usage !== 'check' &&
+  ex.usage !== 'try';
 
 const approved = (ex: ExerciseSource) => ex.review.status === 'approved';
 

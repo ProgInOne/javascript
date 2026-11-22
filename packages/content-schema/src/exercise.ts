@@ -12,6 +12,16 @@ export const EXERCISE_USAGES = [
   'worked_example',
   /** The milestone `web_task` of a `kind: project` unit (only served on the project screen). */
   'project',
+  /**
+   * A lesson's own "이해도 확인" item, answered in the body through `<InlineExercise>` (D-091).
+   * Never served by practice, review or related-exercise lists, so it does not repeat there.
+   */
+  'check',
+  /**
+   * A lesson's "직접 써 보기" code task, written and run in the body through `<TryIt>` (D-091).
+   * Graded for feedback only: no attempt, mastery or FSRS record, and never in any set.
+   */
+  'try',
 ] as const;
 
 /**
