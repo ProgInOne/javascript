@@ -1,0 +1,48 @@
+id: js-basics.functions.scope-basics.check-read-and-update-outer
+type: predict_output
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.scope.global, weight: 1 }
+tags: [scope, global, outer-variable]
+estimatedSeconds: 70
+prompt: |
+  가격표를 만들 때마다 몇 장 만들었는지 세는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    const unit = "원";
+    let made = 0;
+
+    function priceTag(price) {
+      made++;
+      return price + unit;
+    }
+
+    console.log(priceTag(500));
+    console.log(priceTag(1200));
+    console.log(made);
+  answerKind: console
+  misconceptionByAnswer:
+    "500원\n1200원\n0": js.mc.function-cant-change-outer
+misconceptions: [js.mc.inner-cant-read-outer, js.mc.function-cant-change-outer]
+hints:
+  - 함수 안에 `unit`이 없으면 JavaScript는 어디에서 `unit`을 찾나요?
+  - 함수 안에서 바깥 변수 `made`를 바꾸면, 함수가 끝난 뒤에도 바뀐 값이 남나요?
+  - "`priceTag`를 두 번 불렀으니 `made`는 몇이 되었을까요?"
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  500원
+  1200원
+  2
+  ```
+
+  - `priceTag` 안에는 `unit`이 없어서 바깥(전역)의 `unit`을 찾아 `"원"`을 써요. 함수 안에서도 바깥 변수를 **읽을 수 있어요**.
+  - `made++`는 바깥 변수 `made`를 **바꿔요**. 두 번 불렀으니 0 → 1 → 2가 되고, 함수가 끝나도 그 값이 남아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

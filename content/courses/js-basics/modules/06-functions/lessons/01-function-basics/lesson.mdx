@@ -199,6 +199,10 @@ orderLine("떡볶이", 4500, 3);
 
 - 인수는 순서대로 매개변수에 들어가요. 호출할 때마다 매개변수가 새 값으로 채워져요.
 - 출력 모양을 바꾸고 싶으면 2번 줄 하나만 고치면 세 줄이 모두 바뀌어요. 이것이 함수를 쓰는 이유예요.
+
+이번에는 매개변수가 있는 함수를 직접 선언하고 여러 번 불러 보세요.
+
+<TryIt ref="js-basics.functions.function-basics.try-print-score" />
 </Section>
 
 <Section kind="examples">
@@ -265,6 +269,10 @@ console.log("한 번에: " + withDelivery(calcPrice(4500, 3)));
 - 9번 줄: 호출 식을 반환값으로 바꿔 읽으면 `7000 + 4000`이라 `food`는 11000이에요.
 - 11번 줄: 반환값을 변수에 담지 않고 `+`로 바로 이어 붙였어요. 반환값은 담아 두지 않아도 바로 쓸 수 있어요.
 - 12번 줄: 인수 자리에 호출이 들어 있어요. 안쪽 `calcPrice(4500, 3)`이 먼저 13500을 돌려주고, 그 값으로 `withDelivery(13500)`을 불러 16500이 돼요.
+
+계산한 값을 `return`으로 돌려주는 함수를 직접 써 보세요.
+
+<TryIt ref="js-basics.functions.function-basics.try-to-minutes" />
 </Section>
 
 <Section kind="examples">
@@ -413,21 +421,21 @@ printLine("결제", goods + shippingFee(goods));
 </Section>
 
 <Section kind="check">
-선언만 했을 때 무슨 일이 일어나는지 확인해 보세요.
+함수 선언이 가운데에 있을 때 출력 순서를 확인해 보세요.
 
-<InlineExercise ref="js-basics.functions.function-basics.tf-declaration-runs" />
+<InlineExercise ref="js-basics.functions.function-basics.check-declaration-order" />
 
-괄호의 역할을 확인해 보세요.
+함수를 실행하는 코드를 골라 보세요.
 
-<InlineExercise ref="js-basics.functions.function-basics.mcq-call-without-parens" />
+<InlineExercise ref="js-basics.functions.function-basics.check-call-parens" />
 
-매개변수를 다시 선언하면 어떻게 될까요?
+인수가 매개변수에 어떻게 들어가는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.functions.function-basics.tf-param-let-redeclare" />
+<InlineExercise ref="js-basics.functions.function-basics.check-args-order" />
 
-`return`과 `console.log`의 차이를 확인해 보세요.
+반환값이 저절로 출력되는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.functions.function-basics.mcq-return-vs-log" />
+<InlineExercise ref="js-basics.functions.function-basics.check-return-not-printed" />
 </Section>
 
 <Section kind="practice" />

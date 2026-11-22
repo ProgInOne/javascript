@@ -476,6 +476,18 @@
         ]
       }
     },
+    "js-basics.functions.callbacks-intro.check-callback-args": {
+      "inputHash": "92cd1bbc85b9362d8c61ddb960f6a75f2e7e542c411a3bb600005c913d900ba0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "하루 시작",
+          "아침 양치",
+          "저녁 양치",
+          "하루 끝"
+        ]
+      }
+    },
     "js-basics.functions.callbacks-intro.predict-callback-order": {
       "inputHash": "62e74b28d6f3985f2b31ec3b0a5c1f5d4c297a535ed13a7e1d4d5f448502ea68",
       "expected": {
@@ -525,6 +537,16 @@
         ]
       }
     },
+    "js-basics.functions.expressions-and-arrows.check-braces-return": {
+      "inputHash": "20d5b12516bcb5dbca67f38b25db37d0e55f858a8ab1a59063c24da1102e4c0d",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "80",
+          "undefined"
+        ]
+      }
+    },
     "js-basics.functions.expressions-and-arrows.predict-arrow-braces-undefined": {
       "inputHash": "8f96e61802a64c8ea4e009854049983403f2dc139595f42e61d23dcf4943b7bc",
       "expected": {
@@ -554,6 +576,26 @@
         "lines": [
           "2개",
           "3개: 4500원"
+        ]
+      }
+    },
+    "js-basics.functions.function-basics.check-declaration-order": {
+      "inputHash": "4ebf694d421eb23f73d7b2867e6375fb3a11da3308dc91184c6a150c8aaba7a8",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1교시 시작",
+          "1교시 끝",
+          "종이 울려요"
+        ]
+      }
+    },
+    "js-basics.functions.function-basics.check-return-not-printed": {
+      "inputHash": "eef4a61ab47da2678a9b0bf3faad24dadcc59bf273a9e1b276729d38b9695f65",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "4"
         ]
       }
     },
@@ -687,6 +729,15 @@
         ]
       }
     },
+    "js-basics.functions.return-and-side-effects.check-outer-change-stays": {
+      "inputHash": "69f41b19ef0358d19d461b0394b608cb31eeedb516235775292fd759bad7b0cb",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1"
+        ]
+      }
+    },
     "js-basics.functions.return-and-side-effects.predict-missing-return-nan": {
       "inputHash": "9b541b32aba80d0502b05eacc2e05c645ddf2d45ae5dab8537dc66de7334ac4c",
       "expected": {
@@ -710,6 +761,17 @@
           "주문 접수: 김밥",
           "2번 김밥",
           "받은 주문 수: 2"
+        ]
+      }
+    },
+    "js-basics.functions.scope-basics.check-read-and-update-outer": {
+      "inputHash": "17d6275f1f5a5d234dc4c14893b1fcff23c9e77f475c749d206817e5c5d36e77",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "500원",
+          "1200원",
+          "2"
         ]
       }
     },
@@ -1605,6 +1667,17 @@
         "name": "ReferenceError"
       }
     },
+    "js-basics.strings.string-basics.check-out-of-range": {
+      "inputHash": "9f9a2b5c698e5d449972c06899baf062d9fbab6a37e0f8aadde82c2c572d3ab0",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "undefined",
+          "1",
+          "확인 끝"
+        ]
+      }
+    },
     "js-basics.strings.string-basics.predict-index-assign": {
       "inputHash": "f37c956c6800c4cbba029ecae4679fe46a1b96b5fba51b165e3a35080333a694",
       "expected": {
@@ -1633,6 +1706,28 @@
           "${team}팀: ${score}점",
           "A팀: 10점",
           "A팀: 73점"
+        ]
+      }
+    },
+    "js-basics.strings.string-methods.check-original-unchanged": {
+      "inputHash": "d856afe6a9f66839dc7c1931472316dd4399c73335f5ab13b47a13374ddd6701",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "[  busan ]",
+          "[BUSAN]",
+          "[busan]"
+        ]
+      }
+    },
+    "js-basics.strings.string-methods.check-search-case": {
+      "inputHash": "a8d57c57241a48b49a5309ee9f07d90d4f138342b2b2b77126af7a283f5392e2",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "6",
+          "-1",
+          "true"
         ]
       }
     },

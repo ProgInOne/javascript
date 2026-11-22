@@ -1,0 +1,42 @@
+id: js-basics.functions.return-and-side-effects.check-outer-change-stays
+type: predict_output
+usage: check
+difficulty: 1
+concepts:
+  - { id: js.fn.side-effects, weight: 1 }
+tags: [function, side-effect, outer-variable]
+estimatedSeconds: 60
+prompt: |
+  게임에서 캐릭터가 공격을 받을 때마다 목숨이 하나씩 줄어요. 실행하면 콘솔에 무엇이 출력될까요?
+spec:
+  lang: js
+  code: |
+    let lives = 3;
+
+    function hit() {
+      lives = lives - 1;
+    }
+
+    hit();
+    hit();
+    console.log(lives);
+  answerKind: console
+  misconceptionByAnswer:
+    "3": js.mc.function-cant-change-outer
+misconceptions: [js.mc.function-cant-change-outer]
+hints:
+  - "`hit` 안의 `lives`는 새로 만든 변수인가요, 바깥에서 만든 변수인가요?"
+  - 함수 안에서 바깥 변수에 대입한 값은 함수가 끝나도 그대로 남아요.
+  - "`hit()`을 두 번 불렀으니 `lives`가 몇 번 줄었는지 세어 보세요."
+explanation: |
+  출력은 `1`이에요.
+
+  - `hit` 안에는 `let lives`가 없어서, `lives = lives - 1;`은 바깥 변수 `lives`를 바꿔요. 이런 변화가 **부수 효과**예요.
+  - 함수가 끝나도 바뀐 값은 남아요. 그래서 두 번 부르면 3 → 2 → 1이 돼요.
+
+  `3`이라고 답했다면 함수 안에서 바꾼 값이 함수가 끝나면 원래대로 돌아간다고 본 거예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

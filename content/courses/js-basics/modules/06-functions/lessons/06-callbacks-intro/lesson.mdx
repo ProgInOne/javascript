@@ -207,6 +207,10 @@ console.log(countIf(1, 10, (n) => n > 100));
 - 세 번째 줄은 1~10 중 100보다 큰 수가 없어서, 콜백이 10번 불렸지만 한 번도 `true`가 아니라 0이에요.
 
 세는 함수 하나로 세 가지 질문에 답했어요. 조건이 바뀌면 콜백만 바꾸면 돼요.
+
+이번에는 콜백을 받아 부르는 쪽 함수를 직접 써 보세요.
+
+<TryIt ref="js-basics.functions.callbacks-intro.try-find-first" />
 </Section>
 
 <Section kind="examples">
@@ -298,13 +302,13 @@ plusButton.addEventListener("click", addOne);   // 괄호 없이 넘겨요
 </Section>
 
 <Section kind="check">
-함수 이름과 함수 호출의 차이를 확인해 보세요.
+변수에 함수 자체가 담기는 경우를 골라 보세요.
 
-<InlineExercise ref="js-basics.functions.callbacks-intro.tf-assign-call-result" />
+<InlineExercise ref="js-basics.functions.callbacks-intro.check-what-holds-function" />
 
-콜백을 올바르게 넘기는 방법을 골라 보세요.
+콜백이 언제, 어떤 인수로 불리는지 예측해 보세요.
 
-<InlineExercise ref="js-basics.functions.callbacks-intro.mcq-pass-callback" />
+<InlineExercise ref="js-basics.functions.callbacks-intro.check-callback-args" />
 </Section>
 
 <Section kind="practice" />

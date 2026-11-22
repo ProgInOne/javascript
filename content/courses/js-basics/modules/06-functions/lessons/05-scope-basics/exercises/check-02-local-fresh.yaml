@@ -1,0 +1,39 @@
+id: js-basics.functions.scope-basics.check-local-fresh
+type: true_false
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.scope.function, weight: 1 }
+tags: [scope, function, local-variable]
+estimatedSeconds: 50
+prompt: |
+  다음 설명이 맞는지 고르고, 그렇게 판단한 이유도 고르세요.
+spec:
+  statement: "함수 안에서 `let count = 0;`으로 만든 변수는, 그 함수를 다시 부르면 지난 호출이 끝날 때의 값부터 이어서 쓴다."
+  answer: false
+  misconceptionIfWrong: js.mc.function-var-persists
+  requireReason: true
+  reasons:
+    - id: r1
+      text: 함수 안의 변수는 호출할 때마다 새로 만들어지고 호출이 끝나면 사라지므로, 매번 0부터 시작한다
+      correct: true
+    - id: r2
+      text: 함수 안의 변수는 함수에 붙어 있어서 다음 호출까지 값이 남아 있다
+      misconception: js.mc.function-var-persists
+    - id: r3
+      text: 함수 안의 변수는 함수 밖에서도 쓸 수 있는 전역 변수가 된다
+      misconception: js.mc.function-local-visible-outside
+hints:
+  - 함수를 부를 때마다 본문은 처음부터 다시 실행돼요. `let count = 0;` 줄도 다시 실행될까요?
+  - 함수 안에서 만든 변수는 호출이 끝나면 어떻게 되나요?
+  - 호출 사이에 값을 기억하려면 변수를 어디에 둬야 했는지 떠올려 보세요.
+explanation: |
+  정답은 **거짓**이에요.
+
+  - 함수를 부를 때마다 본문이 처음부터 실행되므로 `let count = 0;`도 다시 실행돼요. 함수 안의 변수는 호출마다 **새로** 만들어지고, 호출이 끝나면 사라져요.
+  - 그래서 지난 호출의 값은 남아 있지 않아요. 호출 사이에 값을 기억해야 한다면 변수를 **함수 바깥**에 만들어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

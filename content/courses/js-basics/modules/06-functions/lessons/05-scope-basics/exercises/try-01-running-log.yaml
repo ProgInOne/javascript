@@ -1,0 +1,87 @@
+id: js-basics.functions.scope-basics.try-running-log
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.scope.global, weight: 1 }
+  - { id: js.scope.function, weight: 0.5 }
+tags: [scope, global, function, write-code]
+estimatedSeconds: 240
+prompt: |
+  달리기 기록 앱을 만들어요. 함수 `run(km)`은 오늘 달린 거리를 받아 누적 거리에 더하고, 문장을 **돌려줘요**.
+
+  - 누적 거리는 호출과 호출 사이에 **기억**되어야 해요. 처음에는 0km예요.
+  - 돌려줄 문장 모양: `"오늘 3km, 누적 3km"`
+  - 예: `run(3)` → `"오늘 3km, 누적 3km"`, 이어서 `run(5)` → `"오늘 5km, 누적 8km"`
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1. 누적 거리를 기억할 변수를 어디에 만들어야 할지 생각해서 만드세요(처음 0).
+
+          function run(km) {
+            // 2. 누적 거리에 km를 더하세요.
+            // 3. "오늘 (km)km, 누적 (누적 거리)km" 문장을 돌려주세요.
+          }
+  entry: run
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 1. 누적 거리를 기억할 변수를 어디에 만들어야 할지 생각해서 만드세요(처음 0).
+          let totalKm = 0;
+
+          function run(km) {
+            // 2. 누적 거리에 km를 더하세요.
+            totalKm += km;
+            // 3. "오늘 (km)km, 누적 (누적 거리)km" 문장을 돌려주세요.
+            return "오늘 " + km + "km, 누적 " + totalKm + "km";
+          }
+  checks:
+    - kind: call
+      id: first
+      description: 처음 3km를 달리면 "오늘 3km, 누적 3km"를 돌려줘야 합니다.
+      requirement: 문장 돌려주기
+      args: [3]
+      expect: { equals: "오늘 3km, 누적 3km" }
+    - kind: call
+      id: second
+      description: 이어서 5km를 달리면 누적 거리가 8km로 쌓여야 합니다.
+      requirement: 누적 거리 기억하기
+      args: [5]
+      expect: { equals: "오늘 5km, 누적 8km" }
+      misconceptionIfFail: js.mc.function-var-persists
+    - kind: call
+      id: third
+      visible: false
+      description: 한 번 더 2km를 달리면 누적 거리가 10km가 되어야 합니다.
+      requirement: 누적 거리 기억하기
+      args: [2]
+      expect: { equals: "오늘 2km, 누적 10km" }
+      misconceptionIfFail: js.mc.function-var-persists
+misconceptions: [js.mc.function-var-persists]
+hints:
+  - 함수 안에서 만든 변수는 호출할 때마다 새로 만들어져요. 호출 사이에 기억할 값은 어디에 둬야 할까요?
+  - "`run` 함수 **위**(바깥)에 `let totalKm = 0;`을 만들고, 함수 안에서는 `totalKm += km;`로 더하기만 해요."
+  - "돌려줄 문장은 `\"오늘 \" + km + \"km, 누적 \" + totalKm + \"km\"`처럼 이어 붙여요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  let totalKm = 0;
+
+  function run(km) {
+    totalKm += km;
+    return "오늘 " + km + "km, 누적 " + totalKm + "km";
+  }
+  ```
+
+  - `totalKm`를 함수 **바깥**에 만들어서, 함수가 끝나도 값이 남아 다음 호출에서 이어서 쌓여요.
+  - `let totalKm = 0;`을 함수 **안**에 두면 부를 때마다 0부터 다시 시작해서 누적이 항상 오늘 거리와 같아져요.
+  - `km`는 그날 거리만 쓰는 매개변수라 함수 안에만 있으면 돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
