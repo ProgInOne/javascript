@@ -1,0 +1,45 @@
+id: js-basics.loops.for.check-accumulator-facts
+type: mcq_multi
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.loops.accumulator-pattern, weight: 1 }
+tags: [accumulator, init]
+estimatedSeconds: 80
+prompt: |
+  반복하며 값을 모으는 누적 패턴에 대한 설명으로 맞는 것을 모두 고르세요.
+spec:
+  options:
+    - id: a
+      text: 합계를 모을 변수는 `let sum = 0;`처럼 0으로 시작한다
+      missedMisconception: js.mc.accumulator-no-init
+    - id: b
+      text: 글자를 이어 붙일 변수는 `let line = "";`처럼 빈 문자열로 시작한다
+    - id: c
+      text: 누적 변수는 반복이 시작되기 전에, 반복 바깥에서 만든다
+      missedMisconception: js.mc.accumulator-reset-in-loop
+    - id: d
+      text: '`let sum;`처럼 시작값 없이 만들어도 처음 더할 때 0부터 계산된다'
+      misconception: js.mc.accumulator-no-init
+      rationale: 시작값 없이 만든 변수는 `undefined`예요. `undefined`에 숫자를 더하면 `NaN`이 돼요.
+    - id: e
+      text: 본문에서 `sum = n;`이라고 쓰면 `n`이 `sum`에 더해진다
+      misconception: js.mc.accumulator-overwrite
+      rationale: "`=`는 원래 값을 버리고 덮어써요. 더해서 쌓으려면 `sum += n;`을 써요."
+  correct: [a, b, c]
+misconceptions: [js.mc.accumulator-no-init, js.mc.accumulator-reset-in-loop, js.mc.accumulator-overwrite]
+hints:
+  - 누적 패턴의 세 단계(시작값 정하기, 반복 안에서 쌓기, 반복 뒤에 쓰기)를 떠올려 보세요.
+  - 시작값이 없는 변수에는 어떤 값이 들어 있었나요? 그 값에 숫자를 더하면 무엇이 될까요?
+  - "`=`와 `+=`의 차이를 생각해 보세요. 하나는 덮어쓰고, 하나는 이전 값에 더해요."
+explanation: |
+  정답은 세 가지예요. 합계는 0으로, 이어 붙일 글자는 빈 문자열로 시작한다는 설명과, 누적 변수는 반복 바깥에서 만든다는 설명이에요.
+
+  - 시작값 없이 `let sum;`이라고 쓰면 `sum`은 `undefined`라서, `undefined + 1`은 `NaN`이 되고 결과가 계속 `NaN`이에요.
+  - 반복 안에서 만들면 회차마다 처음 값으로 돌아가 쌓이지 않아요.
+  - `sum = n;`은 덮어쓰기라서 마지막 회차의 `n`만 남아요. `sum += n;`이라고 써야 쌓여요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,51 @@
+id: js-basics.loops.while.check-line-count
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.loops.while, weight: 1 }
+tags: [while, condition, trace]
+estimatedSeconds: 75
+prompt: |
+  다음 코드를 실행하면 콘솔에 무엇이 나오나요?
+code: |
+  let n = 4;
+  while (n > 1) {
+    n -= 2;
+    console.log("남은 수: " + n);
+  }
+spec:
+  options:
+    - id: a
+      text: '`남은 수: 2`, `남은 수: 0` 두 줄'
+    - id: b
+      text: '`남은 수: 2` 한 줄'
+      misconception: js.mc.while-checks-mid-body
+      rationale: 2회차에서 `n`이 0이 되어도 그 회차의 `console.log`는 실행돼요. 조건은 회차를 시작할 때만 검사해요.
+    - id: c
+      text: '`남은 수: 2`, `남은 수: 0`, `남은 수: -2` 세 줄'
+      rationale: 3회차를 시작하기 전에 `0 > 1`을 검사해요. 거짓이라 반복이 끝나요.
+    - id: d
+      text: 아무것도 나오지 않는다
+      rationale: 처음 검사할 때 `4 > 1`은 참이라 본문이 실행돼요.
+  correct: a
+misconceptions: [js.mc.while-checks-mid-body]
+hints:
+  - 회차마다 "검사할 때 `n`", "본문 끝난 뒤 `n`"을 표로 적어 보세요.
+  - 1회차는 `4 > 1`이 참이라 `n`이 2가 되고 출력해요. 2회차를 시작할 때 `2 > 1`은 어떤가요?
+  - 2회차 본문에서 `n`이 0이 되어도 바로 다음 줄은 실행돼요. 반복이 끝나는 것은 다음 회차를 시작하려고 검사할 때예요.
+explanation: |
+  정답은 **`남은 수: 2`, `남은 수: 0` 두 줄**이에요.
+
+  | 회차 | 검사할 때 `n` | 조건 | 출력 |
+  |---|---|---|---|
+  | 1 | 4 | `true` | `남은 수: 2` |
+  | 2 | 2 | `true` | `남은 수: 0` |
+  | — | 0 | `false` | (반복 끝) |
+
+  2회차의 3번 줄에서 `n`이 0이 되어 조건이 거짓이 됐지만, 조건은 회차를 시작할 때만 검사하므로 4번 줄은 실행돼요. 반복은 3회차를 시작하려고 `0 > 1`을 검사할 때 끝나요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,86 @@
+id: js-basics.loops.for.try-water-reminder
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.loops.for, weight: 1 }
+  - { id: js.loops.loop-variable, weight: 0.5 }
+tags: [for, loop-variable, step, write-code]
+estimatedSeconds: 240
+prompt: |
+  물 마시기 알림을 만들어 보세요. 9시부터 17시까지 **2시간마다** 알림을 한 줄씩 출력하고, 마지막에 `오늘 알림 끝`을 출력해요.
+
+  ```text
+  9시: 물 한 잔
+  11시: 물 한 잔
+  13시: 물 한 잔
+  15시: 물 한 잔
+  17시: 물 한 잔
+  오늘 알림 끝
+  ```
+
+  `console.log`를 다섯 번 따로 쓰지 말고, 반복 변수 `hour`를 쓰는 `for` 문 하나로 알림 줄을 만들어요.
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 1. for 문을 쓰세요. 반복 변수 hour는 9에서 시작해 17까지, 2씩 늘어나요.
+          //    (초기화; 조건; 갱신) 세 부분을 직접 정해 보세요.
+
+          //    본문에서는 hour를 써서 "9시: 물 한 잔" 모양의 줄을 출력하세요.
+
+          // 2. 반복이 끝난 뒤 "오늘 알림 끝"을 출력하세요.
+  solution:
+    files:
+      - path: main.js
+        content: |
+          for (let hour = 9; hour <= 17; hour += 2) {
+            console.log(hour + "시: 물 한 잔");
+          }
+          console.log("오늘 알림 끝");
+  checks:
+    - kind: console
+      id: first-alarm
+      description: "첫 알림 `9시: 물 한 잔`이 출력되어야 합니다. 시작값을 확인하세요."
+      requirement: 9시부터 시작
+      expect:
+        lines: ["9시: 물 한 잔"]
+        mode: contains
+    - kind: console
+      id: last-alarm
+      description: "마지막 알림 `17시: 물 한 잔`까지 출력되어야 합니다. 조건이 17을 포함하는지 확인하세요."
+      requirement: 17시까지 포함
+      expect:
+        lines: ["17시: 물 한 잔"]
+        mode: contains
+    - kind: console
+      id: all-lines
+      description: 2시간마다 다섯 번의 알림이 나온 뒤 `오늘 알림 끝`이 한 번 출력되어야 합니다.
+      requirement: 2시간마다 알림
+      expect:
+        lines: ["9시: 물 한 잔", "11시: 물 한 잔", "13시: 물 한 잔", "15시: 물 한 잔", "17시: 물 한 잔", "오늘 알림 끝"]
+misconceptions: [js.mc.for-off-by-one]
+hints:
+  - 반복 변수 `hour`가 거칠 값은 9, 11, 13, 15, 17이에요. 시작값과 마지막 값은 무엇인가요?
+  - 2씩 늘리는 갱신은 `hour += 2`예요. 17도 포함하려면 조건에 `<`와 `<=` 중 무엇을 써야 할까요?
+  - "`for (let hour = 9; hour <= 17; hour += 2)`로 반복하고, 본문에서 `hour + \"시: 물 한 잔\"`을 출력해요. `오늘 알림 끝`은 반복의 닫는 중괄호 다음 줄에 써요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  for (let hour = 9; hour <= 17; hour += 2) {
+    console.log(hour + "시: 물 한 잔");
+  }
+  console.log("오늘 알림 끝");
+  ```
+
+  - 초기화 `let hour = 9`로 첫 회차의 `hour`가 9예요.
+  - 조건 `hour <= 17`이라 17일 때도 본문을 실행해요. `hour < 17`이라고 쓰면 17시 알림이 빠져요.
+  - 갱신 `hour += 2`로 2씩 늘어 9, 11, 13, 15, 17을 거치고, 19가 되면 반복이 끝나요.
+  - `오늘 알림 끝`은 반복 바깥에 있어서 한 번만 나와요. 반복 안에 넣으면 알림마다 나와요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,58 @@
+id: js-basics.loops.for.check-keep-lap-count
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.loops.loop-variable, weight: 1 }
+  - { id: js.loops.accumulator-pattern, weight: 0.3 }
+tags: [loop-variable, scope]
+estimatedSeconds: 75
+prompt: |
+  운동장을 도는 프로그램이에요. 반복이 끝난 뒤 `총 3바퀴`처럼 몇 바퀴 돌았는지 출력하고 싶은데, 마지막 줄에서 오류가 나요. 어떻게 고치는 것이 알맞을까요?
+code: |
+  for (let lap = 1; lap <= 3; lap++) {
+    console.log(lap + "바퀴");
+  }
+  console.log("총 " + lap + "바퀴");
+spec:
+  options:
+    - id: a
+      text: 반복 앞에 `let laps = 0;`을 만들고, 본문에서 `laps++;`로 센 다음, 마지막 줄에서 `lap` 대신 `laps`를 출력한다
+    - id: b
+      text: 고칠 필요 없다. 다시 실행하면 마지막 줄에 반복 변수의 마지막 값이 출력된다
+      misconception: js.mc.loop-var-outside-for
+      rationale: "`for` 괄호에서 `let`으로 만든 `lap`은 반복 안에서만 있어요. 몇 번을 실행해도 `ReferenceError`가 나요."
+    - id: c
+      text: 첫 줄의 `let lap = 1`을 `const lap = 1`로 바꾼다
+      rationale: "`const`로 만들면 갱신 `lap++`가 상수를 바꾸려 해서 `TypeError`가 나요. 반복 밖에서 쓸 수 없는 것도 그대로예요."
+    - id: d
+      text: 반복 본문 안에 `let laps = 0;`을 만들고 `laps++;`로 센다
+      misconception: js.mc.accumulator-reset-in-loop
+      rationale: 본문 안에서 만들면 회차마다 0으로 돌아가고, 반복이 끝나면 그 변수도 쓸 수 없어요.
+  correct: a
+misconceptions: [js.mc.loop-var-outside-for, js.mc.accumulator-reset-in-loop]
+hints:
+  - "`for` 괄호에서 `let`으로 만든 반복 변수는 어디까지 쓸 수 있었나요?"
+  - 반복이 끝난 뒤에도 쓸 값은 반복의 안쪽이 아니라 바깥에 있는 변수에 담아야 해요.
+  - 반복 앞에서 만든 변수는 반복 안에서도, 반복 뒤에서도 쓸 수 있어요.
+explanation: |
+  정답은 **반복 앞에 `laps`를 만들고 본문에서 세는 방법**이에요.
+
+  ```js
+  let laps = 0;
+  for (let lap = 1; lap <= 3; lap++) {
+    console.log(lap + "바퀴");
+    laps++;
+  }
+  console.log("총 " + laps + "바퀴");
+  ```
+
+  `for` 괄호에서 `let`으로 만든 `lap`은 그 반복 안에서만 쓸 수 있어서, 반복 뒤에서 쓰면 `ReferenceError: lap is not defined`가 나요. 반복이 끝난 뒤에도 필요한 값은 반복 **바깥(앞)**에서 만든 변수에 담아요.
+
+  - 본문 안에서 `let laps = 0;`을 만들면 회차마다 0으로 돌아가고, 반복 뒤에서는 쓸 수도 없어요.
+  - `const`로 바꾸면 `lap++`에서 `TypeError`가 나요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
