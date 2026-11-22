@@ -1,0 +1,150 @@
+id: css.basics.intro.try-club-rules
+type: web_task
+difficulty: 2
+usage: try
+concepts:
+  - { id: css.intro.rule-structure, weight: 1 }
+tags: [rule, declaration, selector, web-task]
+estimatedSeconds: 240
+prompt: |
+  동아리 소개 페이지의 `style` 요소 안에 **규칙 두 개를 직접** 써 보세요.
+
+  1. 모든 소제목(`h2`): 글자 색 흰색(`white`), 배경색 청록색(`teal`)
+  1. 모든 목록 항목(`li`): 글자 크기 `20px`
+
+  선언마다 끝에 세미콜론을 붙이고, HTML(`body`)은 바꾸지 마세요.
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>사진 동아리</title>
+              <style>
+                /* 1. h2 규칙: 글자 색 white, 배경색 teal */
+
+                /* 2. li 규칙: 글자 크기 20px */
+              </style>
+            </head>
+            <body>
+              <h1>사진 동아리</h1>
+              <h2>모임 시간</h2>
+              <ul>
+                <li>매주 화요일 오후 4시</li>
+                <li>한 달에 한 번 출사</li>
+              </ul>
+              <h2>준비물</h2>
+              <ul>
+                <li>휴대폰 카메라도 괜찮아요</li>
+              </ul>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>사진 동아리</title>
+              <style>
+                h2 {
+                  color: white;
+                  background-color: teal;
+                }
+                li {
+                  font-size: 20px;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>사진 동아리</h1>
+              <h2>모임 시간</h2>
+              <ul>
+                <li>매주 화요일 오후 4시</li>
+                <li>한 달에 한 번 출사</li>
+              </ul>
+              <h2>준비물</h2>
+              <ul>
+                <li>휴대폰 카메라도 괜찮아요</li>
+              </ul>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: h2-color
+      description: 소제목(h2) 두 개의 글자 색이 모두 흰색이어야 합니다.
+      requirement: h2 규칙
+      visible: true
+      selector: h2
+      all: true
+      expect:
+        computed:
+          color: { color: "#ffffff" }
+      misconceptionIfFail: css.mc.semicolon-optional
+    - kind: css
+      id: h2-background
+      description: 소제목(h2) 두 개의 배경색이 모두 청록색(teal)이어야 합니다.
+      requirement: h2 규칙
+      visible: true
+      selector: h2
+      all: true
+      expect:
+        computed:
+          background-color: { color: "#008080" }
+      misconceptionIfFail: css.mc.semicolon-optional
+    - kind: css
+      id: li-size
+      description: 목록 항목(li) 세 개의 글자 크기가 모두 20px이어야 합니다.
+      requirement: li 규칙
+      visible: true
+      selector: li
+      all: true
+      expect:
+        computed:
+          font-size: { px: { value: 20 } }
+    - kind: css
+      id: h1-unchanged
+      description: 가장 큰 제목(h1)의 글자 색은 기본 검은색 그대로여야 합니다.
+      requirement: 다른 요소는 그대로
+      selector: h1
+      expect:
+        computed:
+          color: { color: "#000000" }
+    - kind: dom
+      id: no-inline-style
+      description: style 속성(인라인 스타일) 없이 style 요소의 규칙으로 꾸며야 합니다.
+      requirement: 다른 요소는 그대로
+      selector: "[style]"
+      expect:
+        count: 0
+misconceptions: [css.mc.semicolon-optional]
+hints:
+  - 규칙은 "어떤 요소에(선택자)" "어떤 모양을(선언)" 줄지 적어요. 두 규칙의 선택자는 각각 무엇일까요?
+  - "규칙은 `선택자 { 속성: 값; 속성: 값; }` 모양이에요. 배경색 속성은 `background-color`, 글자 크기 속성은 `font-size`예요."
+  - "첫 규칙은 `h2 {`로 시작해서 `color: white;`와 `background-color: teal;` 두 줄을 넣고 `}`로 닫아요. 둘째 규칙은 선택자가 `li`예요."
+explanation: |
+  예시 답안의 규칙은 이래요.
+
+  ```css
+  h2 {
+    color: white;
+    background-color: teal;
+  }
+  li {
+    font-size: 20px;
+  }
+  ```
+
+  - 선택자 `h2`가 문서의 소제목을 **모두** 골라서, 두 소제목이 함께 바뀌어요. `li`도 마찬가지예요.
+  - 한 규칙에 선언이 여러 개면 선언마다 끝에 `;`를 붙여요. `color: white` 뒤의 세미콜론이 빠지면 두 선언이 하나로 이어 읽혀 둘 다 무시돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

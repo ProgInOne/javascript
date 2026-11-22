@@ -1,0 +1,42 @@
+id: css.layout.responsive.check-applies-at-500
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: css.responsive.media-queries, weight: 1 }
+tags: [media-query, min-width, max-width]
+estimatedSeconds: 60
+prompt: |
+  화면 너비가 `500px`인 기기로 페이지를 열었어요. 다음 미디어 쿼리 중 이 화면에서 **안의 규칙이 적용되는** 것은 무엇인가요?
+spec:
+  options:
+    - id: a
+      text: "`@media (max-width: 600px)`"
+    - id: b
+      text: "`@media (min-width: 600px)`"
+      rationale: min-width 600px은 600px 이상이에요. 500px은 600px보다 좁아서 적용되지 않아요.
+    - id: c
+      text: "`@media (max-width: 400px)`"
+      misconception: css.mc.max-width-means-above
+      rationale: max-width 400px은 "최대 400px까지", 즉 400px 이하예요. 500px은 범위를 넘어요.
+    - id: d
+      text: "`@media (min-width: 768px)`"
+      rationale: 768px 이상인 화면에만 적용돼요. 500px은 그보다 좁아요.
+  correct: a
+misconceptions: [css.mc.max-width-means-above]
+hints:
+  - min-width는 "최소 ~부터", max-width는 "최대 ~까지"로 읽어요.
+  - min-width 값 이상, max-width 값 이하인 화면에서 적용돼요.
+  - 500px이 "600px 이하"인지, "600px 이상"인지, "400px 이하"인지 하나씩 따져 보세요.
+explanation: |
+  정답은 **`@media (max-width: 600px)`** 예요.
+
+  `max-width: 600px`은 "최대 600px까지", 즉 600px **이하**인 화면에 적용돼요. 500px은 그 범위 안이에요.
+
+  - `min-width: 600px`, `min-width: 768px`은 각각 600px·768px **이상**에서만 적용돼요.
+  - `max-width: 400px`은 400px **이하**라서 500px 화면은 해당하지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

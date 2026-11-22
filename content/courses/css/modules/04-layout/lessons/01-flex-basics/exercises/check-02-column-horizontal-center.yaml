@@ -1,0 +1,49 @@
+id: css.layout.flex-basics.check-column-horizontal-center
+type: mcq_single
+difficulty: 2
+usage: check
+concepts:
+  - { id: css.flex.justify-align, weight: 1 }
+  - { id: css.flex.axes, weight: 0.5 }
+tags: [flexbox, align-items, column]
+estimatedSeconds: 70
+prompt: |
+  아래 컨테이너의 아이템들은 위아래로 쌓인 채 왼쪽에 붙어 있어요. 쌓인 모양은 그대로 두고 아이템들을 **가로 가운데**로 옮기려면 `.menu`에 어떤 선언을 추가해야 하나요?
+code: |
+  .menu {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;  /* 이 줄을 바꿔도 돼요 */
+  }
+spec:
+  options:
+    - id: a
+      text: "`align-items: center;`"
+    - id: b
+      text: "`justify-content: center;`"
+      misconception: css.mc.justify-is-horizontal
+      rationale: column에서는 주축이 세로라서 justify-content는 세로 방향을 정렬해요.
+    - id: c
+      text: "`text-align: center;`"
+      misconception: css.mc.text-align-centers-box
+      rationale: text-align은 상자 안의 글자를 정렬할 뿐, 아이템 상자를 옮기지 않아요.
+    - id: d
+      text: "`flex-direction: row;`"
+      rationale: 주축이 가로로 바뀌어 아이템들이 가로로 나란히 놓여요. 쌓인 모양이 사라져요.
+  correct: a
+misconceptions: [css.mc.justify-is-horizontal, css.mc.text-align-centers-box]
+hints:
+  - "`flex-direction: column`일 때 주축과 교차축은 각각 어느 방향인가요?"
+  - column에서 주축은 세로, 교차축은 가로예요.
+  - 주축은 justify-content, 교차축은 align-items가 맡아요.
+explanation: |
+  정답은 **`align-items: center;`** 예요.
+
+  `flex-direction: column`이면 주축이 세로, 교차축이 가로예요. 가로 방향은 교차축이니 `align-items`가 맡아요. 이미 있는 `align-items: flex-start`를 `center`로 바꾸면 돼요.
+
+  `justify-content`를 "가로 정렬"로 외우면 틀리기 쉬워요. 주축이 세로로 바뀌면 `justify-content`도 세로를 맡아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,52 @@
+id: css.basics.cascade.check-type-count-wins
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: css.cascade.specificity, weight: 1 }
+  - { id: css.cascade.order, weight: 0.5 }
+tags: [cascade, specificity, order]
+estimatedSeconds: 70
+prompt: |
+  아래 CSS를 적용하면 `ul` 안의 목록 항목(`li`)은 무슨 색인가요?
+code: |
+  ul li {
+    color: green;
+  }
+  li {
+    color: orange;
+  }
+spec:
+  options:
+    - id: a
+      text: 초록색 (`ul li`의 명시도가 더 높아서)
+    - id: b
+      text: 주황색 (`li` 규칙이 나중에 있어서)
+      misconception: css.mc.last-rule-wins
+      rationale: 순서는 명시도가 같을 때만 따져요. ul li는 (0, 0, 2), li는 (0, 0, 1)이라 명시도가 달라요.
+    - id: c
+      text: 초록색 (먼저 쓴 규칙이 항상 이겨서)
+      rationale: 결과는 맞지만 이유가 틀렸어요. 명시도가 같다면 오히려 나중 규칙이 이겨요.
+    - id: d
+      text: 주황색 (`li`가 더 짧고 직접적인 선택자라서)
+      rationale: 명시도는 선택자의 길이가 아니라 ID·클래스·타입 개수로 정해요. 짧다고 이기지 않아요.
+  correct: a
+misconceptions: [css.mc.last-rule-wins]
+hints:
+  - 승부는 명시도가 먼저, 순서는 그다음이에요. 두 선택자의 명시도부터 세어 보세요.
+  - 두 선택자 모두 ID와 클래스는 없어요. 타입 선택자(C칸)는 각각 몇 개인가요?
+  - "`ul li`는 (0, 0, 2), `li`는 (0, 0, 1)이에요. 명시도가 다르면 순서는 보지 않아요."
+explanation: |
+  정답은 **초록색 (`ul li`의 명시도가 더 높아서)** 이에요.
+
+  | 선택자 | 명시도 (A, B, C) |
+  |---|---|
+  | `ul li` | (0, 0, 2) |
+  | `li` | (0, 0, 1) |
+
+  A칸, B칸이 같으니 C칸을 비교해요. `ul li`가 2로 앞서서 이겨요. `li` 규칙이 나중에 있어도, 순서는 명시도가 **같을 때만** 쓰이는 두 번째 기준이라 소용없어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,152 @@
+id: css.layout.flex-basics.try-column-card-ends
+type: web_task
+difficulty: 3
+usage: try
+concepts:
+  - { id: css.flex.axes, weight: 1 }
+  - { id: css.flex.justify-align, weight: 0.7 }
+tags: [flexbox, flex-direction, justify-content, column, web-task]
+estimatedSeconds: 270
+prompt: |
+  높이가 `240px`인 빵 카드(`.card`) 안에 이름(`.name`)과 "담기" 버튼(`.buy`)이 있어요. 지금은 버튼이 이름 바로 아래에 붙어 있어요.
+
+  `.card` 규칙에 선언을 **직접** 써서 아래처럼 만드세요. HTML과 다른 규칙은 바꾸지 마세요.
+
+  1. `.card`를 플렉스 컨테이너로 만들고, 아이템이 **위에서 아래로** 늘어서게 주축을 세로로 바꿔요.
+  1. 이름은 카드의 **맨 위**, 버튼은 카드의 **맨 아래**에 붙고, 남는 공간은 둘 사이에 몰리게 해요(`justify-content`로).
+spec:
+  focus: css
+  starter:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>빵 카드</title>
+              <style>
+                .card {
+                  width: 180px;
+                  height: 240px;
+                  padding: 16px;
+                  box-sizing: border-box;
+                  background: #fef3c7;
+                  /* 여기에 선언 세 개: 플렉스 컨테이너, 세로 주축, 양 끝 정렬 */
+                }
+                .name {
+                  margin: 0;
+                }
+                .buy {
+                  padding: 8px;
+                  background: #b45309;
+                  color: white;
+                  border: none;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <h3 class="name">우유 식빵</h3>
+                <button class="buy">담기</button>
+              </div>
+            </body>
+          </html>
+  solution:
+    files:
+      - path: index.html
+        content: |
+          <!doctype html>
+          <html lang="ko">
+            <head>
+              <meta charset="utf-8" />
+              <title>빵 카드</title>
+              <style>
+                .card {
+                  width: 180px;
+                  height: 240px;
+                  padding: 16px;
+                  box-sizing: border-box;
+                  background: #fef3c7;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                }
+                .name {
+                  margin: 0;
+                }
+                .buy {
+                  padding: 8px;
+                  background: #b45309;
+                  color: white;
+                  border: none;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="card">
+                <h3 class="name">우유 식빵</h3>
+                <button class="buy">담기</button>
+              </div>
+            </body>
+          </html>
+  checks:
+    - kind: css
+      id: column-flex
+      description: .card가 플렉스 컨테이너이고, 주축이 세로(flex-direction column)여야 합니다.
+      requirement: 세로 주축
+      visible: true
+      selector: .card
+      expect:
+        computed:
+          display: { equals: flex }
+          flex-direction: { equals: column }
+      misconceptionIfFail: css.mc.column-means-columns
+    - kind: layout
+      id: name-above-buy
+      description: 이름이 버튼보다 위에 있어야 합니다.
+      requirement: 세로 주축
+      a: .name
+      b: .buy
+      relation: above
+      tolerancePx: 1
+    - kind: css
+      id: space-between
+      description: 주축(세로) 방향으로 양 끝 정렬(justify-content space-between)이어야 합니다.
+      requirement: 이름은 맨 위, 버튼은 맨 아래
+      visible: true
+      selector: .card
+      expect:
+        computed:
+          justify-content: { equals: space-between }
+      misconceptionIfFail: css.mc.justify-is-horizontal
+    - kind: layout
+      id: far-apart
+      description: 이름과 버튼 사이가 세로로 120px 이상 떨어져 있어야 합니다(버튼이 카드 맨 아래에 붙어야 해요).
+      requirement: 이름은 맨 위, 버튼은 맨 아래
+      visible: true
+      a: .name
+      b: .buy
+      gap: { axis: y, min: 120 }
+misconceptions: [css.mc.column-means-columns, css.mc.justify-is-horizontal]
+hints:
+  - 먼저 `.card`를 플렉스 컨테이너로 만들고, 주축을 세로로 바꾸는 속성을 떠올려 보세요.
+  - "주축이 세로가 되면 `justify-content`가 세로 방향을 맡아요. 첫 아이템을 시작점, 마지막 아이템을 끝점에 붙이는 값이 있었어요."
+  - "`display: flex;`, `flex-direction: column;`, `justify-content: space-between;` 세 줄을 써요."
+explanation: |
+  예시 답안에서 `.card`에 더한 선언은 이래요.
+
+  ```css
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  ```
+
+  - `flex-direction: column`으로 주축이 세로가 돼요. 이름과 버튼이 위에서 아래로 늘어서요.
+  - 주축이 세로라서 `justify-content`도 **세로**를 맡아요. `space-between`은 첫 아이템(이름)을 맨 위, 마지막 아이템(버튼)을 맨 아래에 붙이고 남는 공간을 둘 사이에 몰아줘요.
+  - 버튼이 카드 너비만큼 늘어난 것은 교차축(가로) 정렬의 기본값 `stretch` 때문이에요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

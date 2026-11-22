@@ -1,0 +1,42 @@
+id: css.box.model.check-fatter-button
+type: mcq_single
+difficulty: 1
+usage: check
+concepts:
+  - { id: css.box.areas, weight: 1 }
+tags: [box-model, padding, margin]
+estimatedSeconds: 50
+prompt: |
+  파란 배경의 버튼이 글자에 딱 맞게 작아서 누르기 어려워요. 버튼의 **파란 부분 자체를** 글자 둘레로 넓혀 더 통통하게 만들려면 어떤 속성을 늘려야 하나요?
+spec:
+  options:
+    - id: a
+      text: "`padding`"
+    - id: b
+      text: "`margin`"
+      misconception: css.mc.background-under-margin
+      rationale: margin은 테두리 바깥의 투명한 간격이라 배경색이 칠해지지 않아요. 버튼 주변 빈 공간만 커져요.
+    - id: c
+      text: "`border`"
+      rationale: border는 테두리 선이에요. 굵게 하면 테두리 색 선이 두꺼워질 뿐, 배경이 칠해진 영역이 넓어지지는 않아요.
+    - id: d
+      text: "`font-size`"
+      rationale: 글자가 커지면 버튼도 커지지만, 글자 둘레의 여유 공간이 생기지는 않아요.
+  correct: a
+misconceptions: [css.mc.background-under-margin]
+hints:
+  - 배경색이 칠해지는 영역은 네 영역 중 어디까지였나요?
+  - 배경색은 content와 padding에 칠해지고, margin은 항상 투명해요.
+  - 글자와 테두리 사이의 안쪽 여백을 정하는 속성이 무엇이었는지 떠올려 보세요.
+explanation: |
+  정답은 **`padding`** 이에요.
+
+  배경색은 테두리 안쪽, 즉 content와 padding에 칠해져요. 그래서 padding을 늘리면 글자 둘레로 파란 영역이 넓어져 버튼이 통통해져요.
+
+  - `margin`은 테두리 바깥의 투명한 간격이라, 늘려도 파란 부분은 그대로이고 주변 빈 공간만 커져요.
+  - `border`는 테두리 선의 두께만 바꿔요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
