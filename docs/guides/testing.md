@@ -27,7 +27,7 @@ CI는 PR과 `develop`·`main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e`
 - 파일 위치: 대상 옆의 `*.test.ts(x)`.
 - 루트 `vitest.config.ts`의 프로젝트:
   - `node`: 서버, `shared`, 스크립트
-  - `ui`: `packages/ui` 컴포넌트(jsdom)
+  - `ui`: `packages/exercise-ui` 컴포넌트(jsdom, `packages/exercise-ui/src/test/jsdom-setup.ts`). 기본 컴포넌트(`@proginone/ui`)의 테스트와 토큰 대비 검사는 ProgInOne/core에서 돕니다
   - `web`: `apps/web`(jsdom, jest-dom 매처)
 - 하나만 실행: `pnpm vitest run --project web`, `pnpm vitest run apps/server/src/services/backup`.
 
@@ -142,7 +142,7 @@ SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chr
 - 1920: 과정, 단원 평가, 튜터 드로어, 오답 노트, 설정의 나머지 화면. 이 화면들은 최대 너비가 정해진 한 단 배치라 1440과 차이가 여백뿐입니다.
 - 1024: 튜터 드로어, 객관식·파슨스 문제, 단원 평가. 1024 배치는 `responsive.spec.ts`가 기능으로 확인합니다(가로 스크롤 없음, 드로어 겹침).
 - 상태: 화면별 오류·로딩(공통 컴포넌트 `QueryState`·`ErrorState`·`Skeleton`이라 대표 하나로 봄), 실습 모드의 예측·파슨스 유형(1280·1440).
-- 컴포넌트 단위 촬영: 설계의 컴포넌트 카탈로그 페이지(`/__catalog`)가 아직 없습니다. 컴포넌트 상태는 `packages/ui`의 Vitest 테스트가 확인합니다.
+- 컴포넌트 단위 촬영: 설계의 컴포넌트 카탈로그 페이지(`/__catalog`)가 아직 없습니다. 컴포넌트 상태는 ProgInOne/core `packages/ui`의 Vitest 테스트가 확인합니다.
 
 ## 관련 문서
 

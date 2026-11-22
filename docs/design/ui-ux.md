@@ -186,12 +186,12 @@ ProgInOne의 디자인 콘셉트는 **"밝은 교실, 정돈된 작업대"** 입
 
 라이트·다크 전환은 의미 토큰의 매핑만 바꿉니다. 기본 색은 시안과 값을 맞추기 쉽게 sRGB 16진수(`#rrggbb`)로 정의하고(D-076 전에는 OKLCH), 대비는 검증 스크립트가 OKLCH로 바꿔 측정해 문서의 목표를 만족하는지 CI에서 확인합니다.
 
-구현(`packages/ui`, M3) 메모:
+구현(`packages/ui`, M3) 메모. 이 패키지는 지금 `ProgInOne/core`에서 `@proginone/ui`로 배포합니다([D-090](/docs/decisions.md)):
 
 - 의미 색은 CSS `light-dark()`로 정의하고, 테마는 `<html data-theme="light|dark">`(없으면 `prefers-color-scheme`)가 `color-scheme`만 바꿉니다. 기본 테마는 라이트이고 "시스템"(운영체제 따름)은 설정 > 화면에서 고를 수 있습니다([D-078](/docs/decisions.md)). 첫 화면이 깜빡이지 않도록 고른 값(`light`·`dark`·`system`)을 `localStorage`(`proginone.theme`)에도 두고, `public/theme-init.js`가 앱보다 먼저 `dark`면 다크, `system`이면 속성 없음, 값이 없으면 라이트로 칠합니다. 다크 작업대는 `<html data-workbench="dark">`일 때 `.workbench` 범위에 `color-scheme: dark`를 걸어 같은 매핑을 재사용합니다. 라이트·다크 값을 한 곳에 두어 중복과 누락을 막기 위해서입니다.
 - 시각 방향 전환(A/B/C)은 프로토타입 전용이었으므로 구현에는 C만 기본값으로 둡니다.
-- 대비 검사: `pnpm check:contrast`([`packages/ui/scripts/check-contrast.ts`](/packages/ui/scripts/check-contrast.ts))가 라이트·다크·다크 작업대에서 의미 토큰 쌍을 검사합니다. 이 과정에서 라이트 코드 줄 번호(`--code-gutter-fg`)를 `neutral-500`(4.5:1 미만)에서 `neutral-550`(4.83:1)으로 올렸습니다.
-- `packages/ui` 기본 컴포넌트는 Tailwind 없이 의미 토큰만 쓰는 일반 CSS(`components.css`, `pi-` 접두사)로 스타일링합니다. 공용 컴포넌트가 앱의 CSS 도구에 묶이지 않게 하기 위해서입니다([D-025](/docs/decisions.md)).
+- 대비 검사: core의 `pnpm check:contrast`([`packages/ui/scripts/check-contrast.ts`](https://github.com/ProgInOne/core/blob/develop/packages/ui/scripts/check-contrast.ts))가 core CI에서 라이트·다크·다크 작업대에서 의미 토큰 쌍을 검사합니다. 이 과정에서 라이트 코드 줄 번호(`--code-gutter-fg`)를 `neutral-500`(4.5:1 미만)에서 `neutral-550`(4.83:1)으로 올렸습니다.
+- 기본 컴포넌트는 Tailwind 없이 의미 토큰만 쓰는 일반 CSS(`components.css`, `pi-` 접두사)로 스타일링합니다. 공용 컴포넌트가 앱의 CSS 도구에 묶이지 않게 하기 위해서입니다([D-025](/docs/decisions.md)).
 - `apps/web`의 화면 배치는 Tailwind v4 유틸리티로 씁니다(`apps/web/src/app/tailwind.css`).
   - 토큰을 유틸리티 이름으로 연결합니다(`bg-canvas`, `text-fg-secondary`, `border-line`, `shadow-1`, `type-h1` 등). Tailwind 기본 색 팔레트는 지워서 토큰 밖 색을 쓸 수 없게 했습니다.
   - CSS 계층 순서는 `theme < base(ui base.css) < components(ui components.css) < utilities`입니다. 유틸리티가 항상 컴포넌트 스타일을 덮을 수 있고, `tokens.css`는 계층 밖에 두어 Tailwind 테마 변수보다 우선합니다.
@@ -422,7 +422,7 @@ D-076에서 B 시안에 맞춰 sm·md·lg를 2px씩 키우고 xl을 더했습니
 
 ### 컴포넌트
 
-컴포넌트는 Radix 프리미티브를 기반으로 `packages/ui`(기본)와 `packages/exercise-ui`(문제 유형 렌더러)에 둡니다([시스템 아키텍처 모노레포 구조](/docs/design/system-architecture.md#모노레포-구조)).
+컴포넌트는 Radix 프리미티브를 기반으로 `@proginone/ui`(기본, ProgInOne/core)와 `packages/exercise-ui`(문제 유형 렌더러)에 둡니다([시스템 아키텍처 모노레포 구조](/docs/design/system-architecture.md#모노레포-구조)).
 모든 대화형 컴포넌트는 아래 공통 상태를 정의합니다: **기본, 호버, 포커스(키보드), 눌림, 선택, 비활성, 로딩, 오류**.
 포커스 상태는 2px `--color-focus-ring` + 2px 오프셋 링이며, `:focus-visible`일 때만 표시합니다.
 
@@ -878,7 +878,7 @@ ProgInOne
 - AI 생성 문제에는 문제 헤더에 violet `AI 생성` 배지를 붙이고, 아직 `trusted`가 아니면 툴팁으로 "자동 검증을 통과한 AI 생성 문제예요"를 표시합니다.
 - AI가 연결되지 않았으면 드로어 본문 대신 연결 안내 EmptyState를 보여줍니다. 한도 도달 시 "AI 사용량 한도에 도달했어요. 14:30에 다시 쓸 수 있어요. 그동안 힌트와 해설은 계속 볼 수 있어요."
 - **구현 메모 (v0.1)**:
-  - 드로어는 Radix 오버레이(`packages/ui` Drawer)가 아니라 학습 화면 레이아웃 안의 `<aside>`입니다. 1280px 이상에서는 본문을 밀어내고(sticky, 헤더 아래), 그 미만에서는 오른쪽에 고정된 오버레이가 됩니다. 폭은 360~560px(기본 400, 1920px 이상 480), 핸들은 `←`/`→` 10px·`Home`/`End`·더블클릭 기본값, `localStorage`에 기억합니다.
+  - 드로어는 Radix 오버레이(`@proginone/ui` Drawer)가 아니라 학습 화면 레이아웃 안의 `<aside>`입니다. 1280px 이상에서는 본문을 밀어내고(sticky, 헤더 아래), 그 미만에서는 오른쪽에 고정된 오버레이가 됩니다. 폭은 360~560px(기본 400, 1920px 이상 480), 핸들은 `←`/`→` 10px·`Home`/`End`·더블클릭 기본값, `localStorage`에 기억합니다.
   - 헤더 튜터 버튼(`⌘J`)은 AI 상태와 관계없이 열 수 있습니다. 대화 기록은 AI 없이도 볼 수 있고, 연결이 필요하면 드로어가 이유와 설정 링크를 보여 주며 입력란을 끕니다. "선택해서 질문하기" 팝오버와 AI 힌트처럼 AI를 바로 부르는 진입점은 비활성 + 이유 툴팁입니다.
   - 스레드는 실습 문항이 열려 있으면 그 문제(`exercise`), 아니면 단원(`lesson`)입니다. 복습 세트도 문항별 `exercise` 스레드를 씁니다. `⋯` 메뉴(이전 스레드·새 스레드)는 서버에 스레드 닫기 API가 없어 v0.2로 미룹니다.
   - ContextChip: "현재 문제"/"이 단원"(고정), "내 코드"·"실행 결과"(빼기 가능, 문항이 바뀌면 다시 켬), 선택 칩(`선택한 코드 3줄`/`선택한 텍스트 42자`, 질문과 함께 한 번 보냄). 학습자 코드·실행 결과는 보낼 때 읽고 요청 스키마 한도로 자릅니다.
@@ -1343,7 +1343,7 @@ macOS 기준이며, Windows·Linux는 `⌘` 대신 `Ctrl`입니다. 단축키는
 - 패널 크기는 화면·유형별로 `localStorage`에 저장합니다([시스템 아키텍처 상태 관리](/docs/design/system-architecture.md#웹-앱-내부-구조)).
 - 핸들은 8px 히트 영역(시각 2px 선), 호버 시 jade 강조, 더블클릭으로 기본값 복원.
 - 창 크기 변경 시 최소값을 위반하면 가장 덜 중요한 패널부터 접습니다: 레슨 보조 열 → 레일 → 튜터 드로어(오버레이 전환).
-- **구현 메모 (v1.0, [D-067](/docs/decisions.md))**: 핸들은 공통 `PanelSeparator`(`packages/ui`)입니다. 실습 모드 문제 패널 | 작업 패널은 1280px 이상에서 핸들 "문제 패널 폭"(값은 문제 패널 비율 %, 유형별 `proginone:panel:practice-split:<유형>`, `web_task`·프로젝트 기본 28%)으로 조절하고, 그보다 좁으면 위아래로 쌓여 핸들이 없습니다. 작업 패널은 페이지와 함께 스크롤되므로 에디터/결과 분할은 비율 대신 "에디터 높이"(240~900px, 처음에는 내용 높이) 핸들이고, 결과 영역 머리의 **결과 접기/펼치기**(`aria-expanded`)로 헤더만 남깁니다. 실행하거나 콘솔 오류 위치로 이동하면 다시 펼칩니다. 읽기 모드 보조 열은 맨 위의 **단원 정보 접기**로 접고(32px 열에 **펼치기** 버튼만 남음), 튜터 드로어 열림은 1280px 이상에서만 복원하며 그때는 포커스를 옮기지 않습니다. 모두 `localStorage`(`proginone:panel:*`)에 기억합니다. 커리큘럼 레일은 아직 없습니다(후속 과제).
+- **구현 메모 (v1.0, [D-067](/docs/decisions.md))**: 핸들은 공통 `PanelSeparator`(`@proginone/ui`)입니다. 실습 모드 문제 패널 | 작업 패널은 1280px 이상에서 핸들 "문제 패널 폭"(값은 문제 패널 비율 %, 유형별 `proginone:panel:practice-split:<유형>`, `web_task`·프로젝트 기본 28%)으로 조절하고, 그보다 좁으면 위아래로 쌓여 핸들이 없습니다. 작업 패널은 페이지와 함께 스크롤되므로 에디터/결과 분할은 비율 대신 "에디터 높이"(240~900px, 처음에는 내용 높이) 핸들이고, 결과 영역 머리의 **결과 접기/펼치기**(`aria-expanded`)로 헤더만 남깁니다. 실행하거나 콘솔 오류 위치로 이동하면 다시 펼칩니다. 읽기 모드 보조 열은 맨 위의 **단원 정보 접기**로 접고(32px 열에 **펼치기** 버튼만 남음), 튜터 드로어 열림은 1280px 이상에서만 복원하며 그때는 포커스를 옮기지 않습니다. 모두 `localStorage`(`proginone:panel:*`)에 기억합니다. 커리큘럼 레일은 아직 없습니다(후속 과제).
 
 ### UI 품질 검증
 
