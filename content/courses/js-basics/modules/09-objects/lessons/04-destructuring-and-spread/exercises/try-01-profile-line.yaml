@@ -1,0 +1,87 @@
+id: js-basics.objects.destructuring-and-spread.try-profile-line
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.obj.destructuring, weight: 1 }
+  - { id: js.fn.default-params, weight: 0.3 }
+tags: [destructuring, parameter, default, write-code]
+estimatedSeconds: 240
+prompt: |
+  SNS 프로필 객체를 받아 한 줄 소개를 돌려주는 함수 `profileLine`을 만드세요. 매개변수 자리에서 **구조 분해**로 `nickname`, `bio`, `followers`를 꺼내고, 없는 값에는 기본값을 주세요.
+
+  - 모양: `"(닉네임) · 팔로워 (팔로워 수)명 · (소개)"`
+  - `bio`가 없으면 `"소개가 없어요"`, `followers`가 없으면 `0`이에요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `profileLine({ nickname: "코코", bio: "고양이 집사", followers: 120 })` | `"코코 · 팔로워 120명 · 고양이 집사"` |
+  | `profileLine({ nickname: "보리" })` | `"보리 · 팔로워 0명 · 소개가 없어요"` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          // 괄호 안에 구조 분해로 nickname, bio, followers를 꺼내고 기본값을 주세요.
+          function profileLine() {
+            // 한 줄 소개를 돌려주세요.
+          }
+
+          console.log(profileLine({ nickname: "보리" }));
+  entry: profileLine
+  solution:
+    files:
+      - path: main.js
+        content: |
+          // 괄호 안에 구조 분해로 nickname, bio, followers를 꺼내고 기본값을 주세요.
+          function profileLine({ nickname, bio = "소개가 없어요", followers = 0 }) {
+            // 한 줄 소개를 돌려주세요.
+            return nickname + " · 팔로워 " + followers + "명 · " + bio;
+          }
+
+          console.log(profileLine({ nickname: "보리" }));
+  checks:
+    - { kind: call, id: full, args: [{ nickname: "코코", bio: "고양이 집사", followers: 120 }], expect: { equals: "코코 · 팔로워 120명 · 고양이 집사" }, requirement: 한 줄 소개 }
+    - { kind: call, id: defaults, args: [{ nickname: "보리" }], expect: { equals: "보리 · 팔로워 0명 · 소개가 없어요" }, requirement: 없는 값의 기본값 }
+    - kind: call
+      id: no-bio
+      visible: false
+      description: 팔로워 수만 있고 소개가 없으면 소개에만 기본값이 쓰여야 합니다.
+      requirement: 없는 값의 기본값
+      args: [{ nickname: "하린", followers: 5 }]
+      expect: { equals: "하린 · 팔로워 5명 · 소개가 없어요" }
+    - kind: call
+      id: zero-followers
+      visible: false
+      description: 팔로워 수 0이 들어 있으면 그대로 0명이어야 합니다.
+      requirement: 한 줄 소개
+      args: [{ nickname: "도윤", bio: "새내기", followers: 0 }]
+      expect: { equals: "도윤 · 팔로워 0명 · 새내기" }
+    - kind: call
+      id: keep-profile
+      visible: false
+      description: 받은 프로필 객체를 바꾸면 안 됩니다.
+      args: [{ nickname: "코코", bio: "고양이 집사", followers: 120 }]
+      expect: { argsUnchanged: true }
+misconceptions: [js.mc.destructuring-rename-direction]
+hints:
+  - "함수 괄호 안에 `{ nickname, bio, followers }`처럼 중괄호를 쓰면, 인수로 받은 객체의 속성이 바로 변수가 돼요."
+  - "기본값은 이름 뒤에 `= 값`을 붙여요. 예: `bio = \"소개가 없어요\"`."
+  - "`function profileLine({ nickname, bio = \"소개가 없어요\", followers = 0 })`로 받고, `nickname + \" · 팔로워 \" + followers + \"명 · \" + bio`를 돌려줘요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function profileLine({ nickname, bio = "소개가 없어요", followers = 0 }) {
+    return nickname + " · 팔로워 " + followers + "명 · " + bio;
+  }
+  ```
+
+  - 매개변수 자리의 `{ ... }`는 인수 객체를 바로 구조 분해해요. 함수 안에서 `profile.nickname`처럼 쓸 필요가 없어요.
+  - 기본값은 속성이 없거나 `undefined`일 때만 쓰여요. `followers: 0`처럼 값이 들어 있으면 그 값이 그대로 쓰여요.
+  - 템플릿 리터럴로 `` `${nickname} · 팔로워 ${followers}명 · ${bio}` ``처럼 써도 같아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

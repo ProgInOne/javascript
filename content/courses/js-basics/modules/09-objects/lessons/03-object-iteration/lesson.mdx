@@ -143,6 +143,10 @@ console.log("평균: " + total / count + "점");
 - `subject`에는 키(과목 이름)가 들어와요. 점수는 `scores[subject]`로 읽어요.
 - `scores.subject`라고 쓰면 이름이 `"subject"`인 속성을 찾아 매번 `undefined`가 나와요.
 - 과목 수 3은 `Object.keys(scores).length`로 셌어요. 246 ÷ 3 = 82예요.
+
+`for...in`으로 키를 돌며 값을 비교하는 함수를 직접 써 보세요.
+
+<TryIt ref="js-basics.objects.object-iteration.try-cheapest-menu" />
 </Section>
 
 <Section kind="examples">
@@ -288,17 +292,17 @@ console.log("결제: " + (total - discount) + "원");
 </Section>
 
 <Section kind="check">
-객체의 속성 개수를 구하는 방법을 확인해 보세요.
+`Object.entries`가 돌려주는 배열의 모양을 확인해 보세요.
 
-<InlineExercise ref="js-basics.objects.object-iteration.mcq-object-length" />
+<InlineExercise ref="js-basics.objects.object-iteration.check-entries-shape" />
 
 `for...in`의 변수에는 무엇이 들어올까요?
 
-<InlineExercise ref="js-basics.objects.object-iteration.mcq-for-in-key" />
+<InlineExercise ref="js-basics.objects.object-iteration.check-for-in-pets" />
 
-값이 `undefined`인 속성은 없는 속성일까요?
+없을 수 있는 속성을 오류 없이 읽어 보세요.
 
-<InlineExercise ref="js-basics.objects.object-iteration.tf-undefined-means-missing" />
+<InlineExercise ref="js-basics.objects.object-iteration.check-optional-coupon" />
 </Section>
 
 <Section kind="practice" />

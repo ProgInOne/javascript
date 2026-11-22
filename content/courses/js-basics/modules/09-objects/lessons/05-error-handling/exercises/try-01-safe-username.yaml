@@ -1,0 +1,108 @@
+id: js-basics.objects.error-handling.try-safe-username
+type: implement_function
+usage: try
+difficulty: 2
+concepts:
+  - { id: js.errors.try-catch, weight: 1 }
+  - { id: js.errors.throw, weight: 0.5 }
+tags: [throw, try-catch, write-code]
+estimatedSeconds: 270
+prompt: |
+  회원 가입 화면의 아이디를 만드는 함수 두 개를 직접 써 보세요.
+
+  1. `makeUsername(name)`: `name`이 **두 글자보다 짧으면** 메시지가 `이름은 두 글자 이상이어야 해요`인 `Error`를 던져요. 아니면 `"@" + name`을 돌려줘요.
+  2. `safeUsername(name)`: `try...catch`로 `makeUsername(name)`을 불러요. 성공하면 그 결과를, 오류가 나면 `"가입 실패: (오류 메시지)"`를 돌려줘요.
+
+  채점은 `safeUsername`을 불러서 해요.
+
+  | 호출 | 돌려줄 값 |
+  |---|---|
+  | `safeUsername("민지")` | `"@민지"` |
+  | `safeUsername("J")` | `"가입 실패: 이름은 두 글자 이상이어야 해요"` |
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          function makeUsername(name) {
+            // name이 두 글자보다 짧으면 오류를 던지고, 아니면 "@" + name을 돌려주세요.
+          }
+
+          function safeUsername(name) {
+            // try...catch로 makeUsername을 부르세요.
+          }
+
+          console.log(safeUsername("민지"));
+          console.log(safeUsername("J"));
+  entry: safeUsername
+  solution:
+    files:
+      - path: main.js
+        content: |
+          function makeUsername(name) {
+            if (name.length < 2) {
+              throw new Error("이름은 두 글자 이상이어야 해요");
+            }
+            return "@" + name;
+          }
+
+          function safeUsername(name) {
+            try {
+              return makeUsername(name);
+            } catch (err) {
+              return "가입 실패: " + err.message;
+            }
+          }
+
+          console.log(safeUsername("민지"));
+          console.log(safeUsername("J"));
+  checks:
+    - { kind: call, id: ok, args: ["민지"], expect: { equals: "@민지" }, requirement: 올바른 이름 }
+    - { kind: call, id: too-short, args: ["J"], expect: { equals: "가입 실패: 이름은 두 글자 이상이어야 해요" }, requirement: 짧은 이름은 실패 안내, misconceptionIfFail: js.mc.throw-just-logs }
+    - kind: call
+      id: empty
+      visible: false
+      description: 빈 문자열도 두 글자보다 짧으니 실패 안내를 돌려줘야 합니다.
+      requirement: 짧은 이름은 실패 안내
+      args: [""]
+      expect: { equals: "가입 실패: 이름은 두 글자 이상이어야 해요" }
+    - kind: call
+      id: two-letters
+      visible: false
+      description: 딱 두 글자인 이름은 올바른 이름입니다.
+      requirement: 올바른 이름
+      args: ["JS"]
+      expect: { equals: "@JS" }
+misconceptions: [js.mc.throw-just-logs]
+hints:
+  - "`makeUsername`에서는 `if (name.length < 2)`로 확인하고, 그때 `throw new Error(\"...\")`로 오류를 던져요. `console.log`로 출력하는 것과 달라요."
+  - "`safeUsername`에서는 `try { ... } catch (err) { ... }` 안에서 `makeUsername(name)`의 결과를 `return`해요."
+  - "`catch` 쪽에서는 `return \"가입 실패: \" + err.message;`처럼 오류 객체의 `message`를 읽어요."
+explanation: |
+  예시 답안이에요.
+
+  ```js
+  function makeUsername(name) {
+    if (name.length < 2) {
+      throw new Error("이름은 두 글자 이상이어야 해요");
+    }
+    return "@" + name;
+  }
+
+  function safeUsername(name) {
+    try {
+      return makeUsername(name);
+    } catch (err) {
+      return "가입 실패: " + err.message;
+    }
+  }
+  ```
+
+  - `throw`를 만나면 `makeUsername`은 그 자리에서 끝나고, 오류가 부른 쪽으로 전달돼요. 그래서 `"@" + name`까지 가지 않아요.
+  - `safeUsername`의 `catch`가 그 오류를 `err`로 받아요. 오류의 설명은 `err.message`에 있어요.
+  - 오류를 잡았기 때문에 짧은 이름이 들어와도 프로그램은 멈추지 않아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

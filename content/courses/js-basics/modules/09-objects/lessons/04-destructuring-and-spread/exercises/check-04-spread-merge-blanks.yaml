@@ -1,0 +1,45 @@
+id: js-basics.objects.destructuring-and-spread.check-spread-merge-blanks
+type: fill_blank
+usage: check
+difficulty: 2
+concepts:
+  - { id: js.obj.spread, weight: 1 }
+tags: [spread, merge, order]
+estimatedSeconds: 80
+prompt: |
+  두 객체를 전개해서 `c`를 만들었어요. 빈칸에 알맞은 값을 적어 보세요.
+
+  ```js
+  const a = { x: 1, y: 2 };
+  const b = { y: 9, z: 3 };
+  const c = { ...b, ...a };
+  ```
+spec:
+  mode: text
+  template: |
+    c.y의 값: {{blank:y}}
+    Object.keys(c).length의 값: {{blank:count}}
+  blanks:
+    - id: y
+      accept: ["2"]
+      width: 6
+      misconceptionMap:
+        "9": js.mc.spread-order-irrelevant
+    - id: count
+      accept: ["3"]
+      width: 6
+misconceptions: [js.mc.spread-order-irrelevant]
+hints:
+  - "`{ ...b, ...a }`는 `b`의 속성을 먼저 담고, 그다음 `a`의 속성을 담아요."
+  - 같은 키가 겹치면 나중에 담은 값이 앞의 값을 덮어써요. `y`는 두 객체에 모두 있어요.
+  - 키는 겹치는 것을 하나로 세요. `x`, `y`, `z` 중 몇 개가 남을까요?
+explanation: |
+  `c.y`는 `2`, 속성 개수는 `3`이에요.
+
+  - `c`는 `b`를 먼저 담아 `{ y: 9, z: 3 }`이 되고, 그 위에 `a`를 담아요. `a`의 `x: 1`이 더해지고, `y`는 나중에 담은 `a`의 `2`로 덮여요.
+  - 결과는 `{ y: 2, z: 3, x: 1 }`이라 키는 `y`, `z`, `x` 세 개예요. 같은 키는 하나만 남아요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,44 @@
+id: js-basics.objects.object-basics.check-count-properties
+type: mcq_single
+usage: check
+difficulty: 1
+concepts:
+  - { id: js.obj.literal, weight: 1 }
+tags: [object, literal, property]
+estimatedSeconds: 50
+prompt: |
+  아래 객체 리터럴로 만든 `poster`에는 속성이 몇 개 있나요? `poster`에 바로 들어 있는 속성만 세어 보세요.
+code: |
+  const poster = {
+    title: "여름 축제",
+    tags: ["음악", "음식", "불꽃놀이"],
+    size: { width: 60, height: 90 },
+  };
+spec:
+  options:
+    - id: a
+      text: 3개
+    - id: b
+      text: 4개
+      rationale: 키는 `title`, `tags`, `size` 세 개뿐이에요. 줄 수나 쉼표 수를 세면 생기는 실수예요.
+    - id: c
+      text: 6개
+      rationale: 배열의 요소와 안쪽 객체의 속성은 `poster`의 속성이 아니라 그 값 안에 든 것이에요.
+    - id: d
+      text: 7개
+      rationale: 배열 요소 3개와 안쪽 속성 2개까지 모두 세었어요. 그것들은 `tags`·`size`라는 값 하나하나의 내용이에요.
+  correct: a
+hints:
+  - "객체의 속성은 `키: 값` 한 쌍이에요. 쉼표로 나뉜 쌍을 세어 보세요."
+  - 값 자리에는 배열이나 다른 객체가 통째로 들어갈 수 있어요. 그 값은 하나로 셉니다.
+  - "`poster` 바로 안의 키 이름만 적어 보면 `title`, `tags`, ... 몇 개인가요?"
+explanation: |
+  정답은 **3개**예요. `poster`의 키는 `title`, `tags`, `size`예요.
+
+  - `tags`의 값은 배열 하나, `size`의 값은 객체 하나예요. 값 안에 무엇이 몇 개 들어 있든, 속성 하나의 값으로 셉니다.
+  - 안쪽 값은 `poster.tags[0]`, `poster.size.width`처럼 점과 대괄호를 이어서 읽어요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

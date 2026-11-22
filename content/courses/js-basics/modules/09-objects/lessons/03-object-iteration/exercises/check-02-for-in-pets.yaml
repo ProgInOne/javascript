@@ -1,0 +1,41 @@
+id: js-basics.objects.object-iteration.check-for-in-pets
+type: predict_output
+usage: check
+difficulty: 1
+concepts:
+  - { id: js.obj.for-in, weight: 1 }
+  - { id: js.obj.dot-bracket, weight: 0.3 }
+tags: [object, for-in, bracket]
+estimatedSeconds: 60
+prompt: |
+  보호소에 있는 동물 수를 출력하는 프로그램이에요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 차례로 적어 보세요.
+spec:
+  lang: js
+  code: |
+    const pets = { 강아지: 2, 고양이: 1 };
+    for (const kind in pets) {
+      console.log(kind + " " + pets[kind] + "마리");
+    }
+  answerKind: console
+  misconceptionByAnswer:
+    "2 2마리\n1 1마리": js.mc.for-in-gives-values
+misconceptions: [js.mc.for-in-gives-values]
+hints:
+  - "`for...in`의 변수 `kind`에는 키와 값 중 무엇이 들어오나요?"
+  - "`kind`에는 속성 이름이 들어와요. 값은 그 이름으로 다시 읽어야 해요."
+  - "첫 회차에서 `kind`는 `\"강아지\"`이고, `pets[kind]`는 `pets[\"강아지\"]`예요."
+explanation: |
+  출력은 다음과 같아요.
+
+  ```text
+  강아지 2마리
+  고양이 1마리
+  ```
+
+  - `for...in`은 키를 하나씩 `kind`에 넣어요. 첫 회차는 `"강아지"`, 두 번째는 `"고양이"`예요.
+  - 값은 `pets[kind]`로 읽어요. `kind`가 변수라서 대괄호 표기법을 써요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
