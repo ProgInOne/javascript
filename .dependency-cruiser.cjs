@@ -1,5 +1,6 @@
 /**
  * Dependency rules from docs/design/system-architecture.md#의존-방향-규칙.
+ * Rules about published @proginone/* packages (node_modules, excluded here) live in eslint.config.js.
  * @type {import('dependency-cruiser').IConfiguration}
  */
 module.exports = {
@@ -10,13 +11,6 @@ module.exports = {
       comment: '순환 의존은 금지합니다.',
       from: {},
       to: { circular: true },
-    },
-    {
-      name: 'web-not-to-engine',
-      severity: 'error',
-      comment: 'apps/web은 learning-engine에 의존하지 않습니다. 학습 판단은 서버가 합니다.',
-      from: { path: '^apps/web/' },
-      to: { path: '^packages/learning-engine/' },
     },
     {
       name: 'web-not-to-server',
@@ -57,8 +51,9 @@ module.exports = {
     {
       name: 'pure-packages-no-io',
       severity: 'error',
-      comment: 'learning-engine과 exercise-kit 채점기는 I/O 없는 순수 함수입니다.',
-      from: { path: '^packages/(learning-engine|exercise-kit)/' },
+      comment:
+        'exercise-kit 채점기는 I/O 없는 순수 함수입니다. learning-engine은 ProgInOne/core에서 같은 규칙을 지킵니다.',
+      from: { path: '^packages/exercise-kit/' },
       to: {
         dependencyTypes: ['core'],
         path: '^(fs|node:fs|net|node:net|http|node:http|child_process|node:child_process)',

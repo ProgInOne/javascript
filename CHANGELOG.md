@@ -7,6 +7,7 @@
 
 ### Changed
 
+- 학습 엔진을 공통 패키지 `@proginone/learning-engine`(ProgInOne/core, `0.1.0-next`)으로 받아 씀(D-090 1차). 이 저장소의 `packages/learning-engine`을 지움. 웹 앱이 엔진에 의존하지 않는다는 규칙은 ESLint `no-restricted-imports`로 검사
 - 공통 패키지를 받는 설정(D-094): 저장소 `.npmrc`에 GitHub Packages 주소, CI·시각 기준 이미지 워크플로에 `packages: read`와 토큰, Docker E2E에 호스트 `~/.npmrc` 전달, `minimumReleaseAgeExclude`에 `@proginone/*`. 개발하려면 `~/.npmrc`에 `read:packages` 토큰이 필요(시작하기 가이드)
 - 릴리스 묶음에 공통 패키지(`@proginone/*`)를 동봉(D-093): 학습자는 GitHub 토큰 없이 그대로 `pnpm install --prod --frozen-lockfile`로 설치. 묶기는 `tools/release-bundle.sh` 하나로 워크플로와 로컬 대체 절차가 함께 쓰고, 임시 폴더에서 조립해 GNU tar·bsdtar 분기를 없앰. 릴리스 워크플로는 `packages: read`로 GitHub Packages에서 받음
 

@@ -124,7 +124,6 @@ ProgInOne/
 │   ├── exercise-kit/        # 문제 유형 레지스트리: 스펙 스키마, 채점기, 템플릿 엔진
 │   ├── exercise-ui/         # 문제 유형별 React 렌더러
 │   ├── runner/              # 샌드박스 런타임(하네스)과 호스트 프로토콜
-│   ├── learning-engine/     # 숙련도, FSRS, 연습 세트 구성, 재학습 규칙 (순수 함수)
 │   └── ai/                  # 제공자 어댑터, AI 작업 정의, 컨텍스트 빌더 인터페이스
 ├── content/                 # 콘텐츠 원본 (과정/모듈/단원/문제)
 ├── tools/
@@ -133,6 +132,8 @@ ProgInOne/
 ├── docs/                    # 설계 문서, 가이드
 └── .github/workflows/       # CI, 릴리스
 ```
+
+공통 패키지는 `ProgInOne/core`에서 배포한 것을 받아 씁니다([언어 확장 구조](#언어-확장-구조)). 지금까지 옮긴 것: `learning-engine`(숙련도, FSRS, 연습 세트 구성, 재학습 규칙. 순수 함수).
 
 #### 의존 방향 규칙
 
@@ -159,10 +160,10 @@ flowchart BT
     cli --> ai
 ```
 
-- 화살표는 "의존한다"입니다. 순환 의존은 금지하며 CI에서 검사합니다.
+- 화살표는 "의존한다"입니다. 순환 의존은 금지하며 CI에서 검사합니다. `learning-engine`은 `ProgInOne/core`의 배포 패키지입니다.
 - `learning-engine`과 `exercise-kit`의 채점기는 **I/O 없는 순수 함수** 입니다. DB와 네트워크 접근은 `apps/server`의 서비스 계층이 담당합니다.
 - `apps/server`는 러너 셸 문서(`/sandbox/runner.html`)를 만들어 제공하려고 `runner`의 셸 빌드(`@proginone/runner/shell-build`)를 씁니다. 샌드박스 결과 검증은 `packages/shared`의 계약(`parseRunResult`)으로 합니다.
-- `apps/web`은 `learning-engine`에 의존하지 않습니다. 학습 판단은 서버가 합니다.
+- `apps/web`은 `learning-engine`에 의존하지 않습니다. 학습 판단은 서버가 합니다. `learning-engine`은 배포 패키지라 dependency-cruiser가 따라가지 않으므로, 이 규칙은 ESLint(`no-restricted-imports`)가 검사합니다.
 - `packages/ai`는 제공자 프로토콜과 작업 정의만 갖고, DB 조회는 `apps/server`가 구현하는 `ContextSource` 인터페이스로 주입받습니다.
 
 ### 서버 내부 구조
