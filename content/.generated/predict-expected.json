@@ -384,6 +384,26 @@
         ]
       }
     },
+    "js-basics.control.if-else.check-no-braces-hat": {
+      "inputHash": "bb621c192525be47dc52f1198b8c47b10646a52a7dad8f6d745be0ffe4002379",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "모자 챙기기",
+          "출발"
+        ]
+      }
+    },
+    "js-basics.control.if-else.check-rain-skip": {
+      "inputHash": "d5a427a3dfbbba9561bfdcdfad6277543614ef72b611eda6e65d112901dd163f",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "집을 나서요",
+          "버스를 타요"
+        ]
+      }
+    },
     "js-basics.control.if-else.predict-first-true-only": {
       "inputHash": "b62491746a0717fa11db9309309e595d2597c8f24da14845e8717f7bdc22d64e",
       "expected": {
@@ -768,6 +788,15 @@
         ]
       }
     },
+    "js-basics.loops.break-continue.check-break-count": {
+      "inputHash": "09f9df2d66d8b379f1c6e372378d798af67234bb4d69b15ec9fea6c55458ef00",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "센 수: 2"
+        ]
+      }
+    },
     "js-basics.loops.break-continue.predict-break-search": {
       "inputHash": "327abf206e97872ba87d300fc5722575e13b418f1baefddb3d436f021b45e229",
       "expected": {
@@ -892,6 +921,17 @@
           "2일째 남은 재고: 2",
           "3일째 남은 재고: -2",
           "판매 중단: 3일째"
+        ]
+      }
+    },
+    "js-basics.loops.nested-loops.check-round-restart": {
+      "inputHash": "0b981d71e9a195d5a4141181f8a8870d30286a1e976e9c15d7a4994db806ae23",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "1회: 1 2",
+          "2회: 1 2",
+          "3회: 1 2"
         ]
       }
     },
@@ -1247,6 +1287,27 @@
         ]
       }
     },
+    "js-basics.operators.arithmetic.check-compound-points": {
+      "inputHash": "7c377a1b69b7195394244a14e30c968e94ed8186346e64823df9954d627abee8",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "24",
+          "8"
+        ]
+      }
+    },
+    "js-basics.operators.arithmetic.check-lives-decrement": {
+      "inputHash": "5d1b6b471f743e541ed5bae259ab046bf524e7f967a1e69d10634de511088a61",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "3",
+          "2",
+          "1"
+        ]
+      }
+    },
     "js-basics.operators.arithmetic.predict-compound-chain": {
       "inputHash": "6aa67c462d0122270567bce8bb68fff01b579659224a176b30db54a490f08d7b",
       "expected": {
@@ -1286,6 +1347,16 @@
           "평균: 83.25",
           "90",
           "80"
+        ]
+      }
+    },
+    "js-basics.operators.comparison.check-member-id-type": {
+      "inputHash": "f670fbacf5647cbddbf2d898352eb3a05f32c48cd95d91646bc1435edb87f041",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "false",
+          "true"
         ]
       }
     },
@@ -1367,6 +1438,16 @@
         }
       }
     },
+    "js-basics.operators.implicit-coercion.check-label-and-count": {
+      "inputHash": "9ea4c0d8954445eab073e77d5db804e7c60c003926dbf9cf4145f9d9cc9b7763",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "합계: 23",
+          "5개"
+        ]
+      }
+    },
     "js-basics.operators.implicit-coercion.predict-chain-typeof": {
       "inputHash": "9cc46321b95893f0f2e2cadc84c49b8793b5bd69f6663dde2a9eb090f2afab10",
       "expected": {
@@ -1433,6 +1514,16 @@
           "false true",
           "true false",
           "true"
+        ]
+      }
+    },
+    "js-basics.operators.logical.check-or-picks-value": {
+      "inputHash": "424383b827233aeba158ed2e72bc26009d4932d7dd1005212c2f53dac7aff686",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "서울",
+          "부산"
         ]
       }
     },
@@ -1684,6 +1775,24 @@
         ]
       }
     },
+    "js-basics.values.data-types.check-copy-then-retype": {
+      "inputHash": "048317893fe208ea7f62363e90415d46c7b69a0fbfe7cae52fc274709663126c",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "number string"
+        ]
+      }
+    },
+    "js-basics.values.data-types.check-typeof-null-string": {
+      "inputHash": "fb97c8daa8bcc1677a2361fffd7b895fe5e4ce1ef99ac564151b84e853c16170",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "string object"
+        ]
+      }
+    },
     "js-basics.values.data-types.predict-boolean-reassign": {
       "inputHash": "cc44b2aaf0e241cf4f6d10b97989910e2c311a95a1007913e191f0de7af3a33c",
       "expected": {
@@ -1770,6 +1879,16 @@
         ]
       }
     },
+    "js-basics.values.var-and-tdz.check-typeof-before-var": {
+      "inputHash": "3cff5cef918b368382ff43165085ff05248ae18beae0b447bfe7b886250568f3",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "undefined",
+          "string"
+        ]
+      }
+    },
     "js-basics.values.var-and-tdz.predict-error-let-before": {
       "inputHash": "701cca06ded8c851b4dd6ac8691423b9c944e892e94d5814bfcb0dfc0c899848",
       "expected": {
@@ -1783,6 +1902,15 @@
       "expected": {
         "kind": "error",
         "thrown": false
+      }
+    },
+    "js-basics.values.variables.check-pet-name": {
+      "inputHash": "2b190c96418c7e962b086c81602db4d225fa93ff93f1b08e3e92043d6f735b9e",
+      "expected": {
+        "kind": "console",
+        "lines": [
+          "내 동물: 고양이"
+        ]
       }
     },
     "js-basics.values.variables.predict-copy-not-link": {
