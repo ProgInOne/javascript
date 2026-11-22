@@ -7,6 +7,7 @@
 
 ### Changed
 
+- 공통 패키지 `@proginone/*`를 사전 배포판(`0.1.0-next`)에서 정식 버전 `^0.1.0`(ProgInOne/core `v0.1.0`)으로 바꿈. 더 쓰지 않는 `@proginone/shared` 의존성을 `runner`·`exercise-kit`·`exercise-ui`·`content-cli`에서 지움
 - API 계약을 공통 패키지 `@proginone/shared`(ProgInOne/core, `0.1.0-next`)로 받아 씀(D-090 1차, D-092). `packages/shared`를 지우고, JS 러너와 채점기 사이의 계약(`run-protocol`, `console-format`)은 새 내부 패키지 `packages/run-contract`로 옮김. 개념 상세 API의 `mdnUrl`을 `docUrl`로 바꾸고, 과정 언어는 열린 slug로 받음(과정 목록은 모르는 언어를 이름 그대로 표시)
 - 콘텐츠 스키마를 공통 패키지 `@proginone/content-schema`(ProgInOne/core, `0.1.0-next`)로 받아 씀(D-090 1차, D-092). `packages/content-schema`를 지우고, 과정 언어(`html`·`css`·`javascript`)와 개념의 `mdn` 경로는 `tools/content-cli/src/schema.ts`가 공통 스키마를 확장해 검사. content.db 스키마 버전 6: `concepts.mdn_url` → `doc_url`, `courses.language`의 `CHECK` 제거. **개발 중인 저장소는 `pnpm content:build`로 content.db를 다시 만들어야 함**(서버가 버전이 다른 content.db를 열지 않음)
 - 디자인 시스템을 공통 패키지 `@proginone/ui`(ProgInOne/core, `0.1.0-next`)로 받아 씀(D-090 1차). `packages/ui`를 지우고, 컴포넌트 테스트의 jsdom 보완은 `packages/exercise-ui/src/test/jsdom-setup.ts`로, 앱 스타일시트의 코드 글꼴 검사는 `tools/code-font.test.ts`로 옮김. 토큰 대비 검사(`check:contrast`)는 core CI에서 돎
