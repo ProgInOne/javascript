@@ -586,7 +586,7 @@ export function projectExerciseOf(
  * project exercise — a `web_task` whose checks are grouped into `milestones`, marked
  * `usage: project` (or the unit's only milestone `web_task`). Other exercises of the unit are its
  * preparation practice (`usage: practice`, primary concept among the applied ones), served only in
- * the unit's own practice set. Units of other kinds may not hold project exercises.
+ * the unit's own practice set, and the body's own check items (`usage: check`, D-091). Units of other kinds may not hold project exercises.
  */
 function checkProjectUnit(lesson: LessonNodeSource, diag: Diagnostics): void {
   const { file, data } = lesson.meta;
@@ -627,7 +627,8 @@ function checkProjectUnit(lesson: LessonNodeSource, diag: Diagnostics): void {
   for (const { file: exFile, data: ex } of lesson.exercises) {
     if (ex.id === project?.exercise.id) continue;
     if (ex.usage === 'project') continue; // reported above (more than one)
-    if (ex.usage !== 'practice') {
+    // Besides preparation practice, the body may hold its own check items (D-091).
+    if (ex.usage !== 'practice' && ex.usage !== 'check') {
       diag.error(
         exFile,
         `프로젝트 단원의 준비 연습 문제는 usage: practice여야 합니다(지금: ${ex.usage})`,
