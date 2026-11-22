@@ -204,6 +204,31 @@ describe('GET /daily-plan', () => {
     expect(later.totalMinutes).toBeLessThanOrEqual(later.budgetMinutes);
   });
 
+  it('does not continue a lesson left open before other lessons were finished (D-089)', async () => {
+    const ctx = await practiceApp();
+    // Opened and left: the latest activity, so it is continued for now.
+    await ctx.call('POST', '/lessons/js-basics.start.reading-errors/progress', { readProgress: 0 });
+    expect((await plan(ctx)).blocks[0]).toMatchObject({
+      kind: 'continue',
+      lesson: { id: 'js-basics.start.reading-errors', status: 'reading' },
+    });
+    expect(
+      (await ctx.call('GET', '/dashboard')).json as { continueLesson: { id: string } | null },
+    ).toMatchObject({ continueLesson: { id: 'js-basics.start.reading-errors' } });
+
+    // Another lesson is read and passed afterwards: the plan moves on from there.
+    ctx.clock.now += MINUTE;
+    await ctx.call('POST', `/lessons/${LESSON}/progress`, { readProgress: 1 });
+    const done = await answerAll(ctx, await lessonSet(ctx));
+    expect(done.set.result?.pass?.passed).toBe(true);
+    const p = await plan(ctx);
+    expect(p.blocks.map((b) => b.kind)).not.toContain('continue');
+    expect(p.blocks.find((b) => b.kind === 'new_lesson')?.lesson?.id).toBe(PROJECT);
+    expect((await ctx.call('GET', '/dashboard')).json as { continueLesson: unknown }).toMatchObject(
+      { continueLesson: null },
+    );
+  });
+
   it('offers extra study once the goal is met', async () => {
     const ctx = await practiceApp();
     await ctx.call('PUT', '/goals', { dailyMinutes: 5, weeklyDays: 5 });
