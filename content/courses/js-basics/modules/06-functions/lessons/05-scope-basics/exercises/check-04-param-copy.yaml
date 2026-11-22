@@ -6,47 +6,49 @@ concepts:
   - { id: js.scope.shadowing, weight: 1 }
   - { id: js.fn.params-args, weight: 0.3 }
 tags: [scope, shadowing, parameter]
-estimatedSeconds: 70
+estimatedSeconds: 80
 prompt: |
-  게임 캐릭터의 체력을 회복시키는 코드예요.
+  점수에 보너스를 더하는 코드예요.
 
   ```js
-  let hp = 30;
+  let bonus = 100;
 
-  function heal(hp) {
-    hp = hp + 20;
-    return hp;
+  function addBonus(score, bonus) {
+    return score + bonus;
   }
 
-  const after = heal(hp);
+  const a = addBonus(50, 20);
+  const b = addBonus(50);
   ```
 
-  마지막 줄까지 실행한 뒤 두 변수에 들어 있는 값을 숫자로 쓰세요.
+  마지막 줄까지 실행한 뒤 두 변수에 들어 있는 값을 쓰세요.
 spec:
   mode: text
   template: |
-    after: {{blank:after}}
-    바깥 hp: {{blank:outer}}
+    a: {{blank:a}}
+    b: {{blank:b}}
   blanks:
-    - id: after
-      accept: ["50"]
-      width: 4
-    - id: outer
-      accept: ["30"]
-      width: 4
+    - id: a
+      accept: ["70"]
+      width: 6
+    - id: b
+      accept: ["NaN"]
+      width: 6
       misconceptionMap:
-        "50": js.mc.param-reassign-changes-outer
-misconceptions: [js.mc.param-reassign-changes-outer]
+        "오류": js.mc.missing-arg-error
+misconceptions: [js.mc.missing-arg-error]
 hints:
-  - "`heal` 안의 `hp`는 바깥의 `hp`와 같은 변수인가요, 매개변수인가요?"
-  - "`heal(hp)`를 부르면 바깥 `hp`의 **값** 30이 매개변수 `hp`에 들어가요."
-  - 4번 줄은 매개변수만 바꿔요. 바깥 `hp`에 새 값을 넣는 줄이 있나요?
+  - "`addBonus` 안의 `bonus`는 바깥의 `bonus`인가요, 매개변수인가요?"
+  - 매개변수 이름이 바깥 변수와 같으면, 함수 안에서는 그 이름이 언제나 매개변수를 가리켜요.
+  - "`addBonus(50)`은 인수를 하나만 넘겨요. 받지 못한 매개변수에는 어떤 값이 들어가나요? 그 값에 숫자를 더하면요?"
 explanation: |
-  정답은 `after`가 `50`, 바깥 `hp`가 `30`이에요.
+  정답은 `a`가 `70`, `b`가 `NaN`이에요.
 
-  - 매개변수 `hp`는 함수 안의 새 변수라서 바깥 `hp`를 가려요. `heal(hp)`를 부르면 값 30이 매개변수에 들어가요.
-  - 4번 줄은 매개변수만 50으로 바꾸고, 그 값을 돌려줘서 `after`에 50이 담겨요.
-  - 바깥 `hp`에 대입하는 줄은 없으니 30 그대로예요. 바깥 체력을 바꾸려면 `hp = heal(hp);`처럼 돌려받아 대입해요.
+  - 매개변수 `bonus`는 함수 안의 새 변수라서 바깥 `bonus`를 가려요. 함수 안에서 `bonus`는 언제나 매개변수예요.
+  - `addBonus(50, 20)`은 매개변수 `bonus`에 20이 들어가서 `50 + 20`, 곧 70이에요.
+  - `addBonus(50)`은 두 번째 인수가 없어서 매개변수 `bonus`가 `undefined`예요. 오류는 나지 않고 `50 + undefined`를 계산해서 `NaN`이 돼요.
+
+  `150`이라고 답했다면 매개변수가 비어 있으면 바깥 `bonus`(100)를 읽는다고 본 거예요. 이름이 같은 매개변수가 있는 한, 함수 안에서 바깥 `bonus`는 보이지 않아요.
 origin: authored
 review:
   status: approved

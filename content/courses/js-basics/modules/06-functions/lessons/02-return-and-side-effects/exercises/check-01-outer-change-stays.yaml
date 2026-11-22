@@ -1,40 +1,48 @@
 id: js-basics.functions.return-and-side-effects.check-outer-change-stays
 type: predict_output
 usage: check
-difficulty: 1
+difficulty: 2
 concepts:
   - { id: js.fn.side-effects, weight: 1 }
-tags: [function, side-effect, outer-variable]
-estimatedSeconds: 60
+  - { id: js.fn.return, weight: 0.3 }
+tags: [function, side-effect, outer-variable, return]
+estimatedSeconds: 70
 prompt: |
-  게임에서 캐릭터가 공격을 받을 때마다 목숨이 하나씩 줄어요. 실행하면 콘솔에 무엇이 출력될까요?
+  게임을 하면 휴대폰 배터리가 닳아요. 함수 `play`는 배터리를 줄이고 남은 양을 돌려줘요. 실행하면 콘솔에 무엇이 출력될까요? 줄마다 하나씩 쓰세요.
 spec:
   lang: js
   code: |
-    let lives = 3;
+    let battery = 80;
 
-    function hit() {
-      lives = lives - 1;
+    function play(minutes) {
+      battery = battery - minutes;
+      return battery;
     }
 
-    hit();
-    hit();
-    console.log(lives);
+    play(20);
+    console.log(play(10));
+    console.log(battery);
   answerKind: console
   misconceptionByAnswer:
-    "3": js.mc.function-cant-change-outer
+    "70\n80": js.mc.function-cant-change-outer
+    "70\n70": js.mc.function-cant-change-outer
 misconceptions: [js.mc.function-cant-change-outer]
 hints:
-  - "`hit` 안의 `lives`는 새로 만든 변수인가요, 바깥에서 만든 변수인가요?"
-  - 함수 안에서 바깥 변수에 대입한 값은 함수가 끝나도 그대로 남아요.
-  - "`hit()`을 두 번 불렀으니 `lives`가 몇 번 줄었는지 세어 보세요."
+  - "`play(20);`은 돌려받은 값을 아무 데도 쓰지 않아요. 그래도 함수 본문은 실행될까요?"
+  - "`play` 안의 `battery = battery - minutes;`는 바깥 변수 `battery`를 바꿔요. 이 변화는 함수가 끝나도 남아요."
+  - "`play(20)` 뒤의 `battery`는 60이에요. 거기서 `play(10)`을 부르면요?"
 explanation: |
-  출력은 `1`이에요.
+  출력은 다음과 같아요.
 
-  - `hit` 안에는 `let lives`가 없어서, `lives = lives - 1;`은 바깥 변수 `lives`를 바꿔요. 이런 변화가 **부수 효과**예요.
-  - 함수가 끝나도 바뀐 값은 남아요. 그래서 두 번 부르면 3 → 2 → 1이 돼요.
+  ```text
+  50
+  50
+  ```
 
-  `3`이라고 답했다면 함수 안에서 바꾼 값이 함수가 끝나면 원래대로 돌아간다고 본 거예요.
+  - `play(20);`은 돌려받은 값을 버리지만, 본문은 실행돼서 바깥 `battery`가 80 → 60으로 바뀌어요. 이런 변화가 **부수 효과**예요.
+  - `play(10)`은 60 → 50으로 바꾸고 50을 돌려줘요. 그 뒤 `battery`도 50이에요.
+
+  `70`으로 시작했다면 반환값을 쓰지 않은 호출 `play(20);`은 아무 일도 하지 않는다고 본 거예요. 반환값을 버려도 바깥 변수를 바꾼 부수 효과는 그대로 남아요. 마지막 줄을 `80`으로 썼다면 함수가 바깥 변수를 바꿀 수 없다고 본 거예요.
 origin: authored
 review:
   status: approved

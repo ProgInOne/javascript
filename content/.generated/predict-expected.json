@@ -627,12 +627,12 @@
       }
     },
     "js-basics.functions.expressions-and-arrows.check-braces-return": {
-      "inputHash": "20d5b12516bcb5dbca67f38b25db37d0e55f858a8ab1a59063c24da1102e4c0d",
+      "inputHash": "e70bfeed64e0b6e4a54e2026ca39d2047fc725efe127700eb92d9139d75eb65f",
       "expected": {
         "kind": "console",
         "lines": [
-          "80",
-          "undefined"
+          "불합격",
+          "불합격"
         ]
       }
     },
@@ -819,11 +819,12 @@
       }
     },
     "js-basics.functions.return-and-side-effects.check-outer-change-stays": {
-      "inputHash": "69f41b19ef0358d19d461b0394b608cb31eeedb516235775292fd759bad7b0cb",
+      "inputHash": "a75557476d9fd7754a7626335af4bef41540bca4ac9376a6a74a3501b2bf813a",
       "expected": {
         "kind": "console",
         "lines": [
-          "1"
+          "50",
+          "50"
         ]
       }
     },

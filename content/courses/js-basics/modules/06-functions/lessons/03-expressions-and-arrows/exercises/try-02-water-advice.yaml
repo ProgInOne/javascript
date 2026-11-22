@@ -51,7 +51,7 @@ spec:
       misconceptionIfFail: js.mc.arrow-braces-implicit-return
     - kind: call
       id: enough-edge
-      description: 딱 8잔도 "충분해요"예요(8잔 이상).
+      description: 딱 8잔도 "충분해요"여야 합니다(8잔 이상).
       requirement: 충분할 때
       args: [8]
       expect: { equals: "충분해요" }

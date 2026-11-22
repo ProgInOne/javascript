@@ -38,20 +38,20 @@ spec:
   checks:
     - kind: call
       id: freezing
-      description: 섭씨 0도는 화씨 32도예요.
+      description: 섭씨 0도는 화씨 32도여야 합니다.
       requirement: 화씨로 바꿔 돌려주기
       args: [0]
       expect: { equals: 32 }
       misconceptionIfFail: js.mc.arrow-braces-implicit-return
     - kind: call
       id: boiling
-      description: 섭씨 100도는 화씨 212도예요.
+      description: 섭씨 100도는 화씨 212도여야 합니다.
       requirement: 화씨로 바꿔 돌려주기
       args: [100]
       expect: { equals: 212 }
     - kind: call
       id: room
-      description: 섭씨 25도는 화씨 77도예요.
+      description: 섭씨 25도는 화씨 77도여야 합니다.
       requirement: 화씨로 바꿔 돌려주기
       args: [25]
       expect: { equals: 77 }
