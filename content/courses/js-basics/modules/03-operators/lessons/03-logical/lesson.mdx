@@ -174,6 +174,10 @@ false
 | 5번 | 괄호 먼저: `isVip \|\| hasCoupon` → `true`, 그다음 `true && isWeekend` → `false` | false |
 
 괄호가 없으면 `&&`가 먼저 묶여요. 4번 줄을 왼쪽부터 읽어 `false`라고 예측했다면 우선순위를 다시 확인해 보세요. 의도가 "VIP이거나 쿠폰이 있고, 주말이어야 한다"라면 5번 줄처럼 괄호가 꼭 필요해요.
+
+이제 규칙을 논리 연산자로 옮기는 코드를 직접 써 보세요.
+
+<TryIt ref="js-basics.operators.logical.try-library-rules" />
 </Section>
 
 <Section kind="examples">
@@ -261,6 +265,10 @@ light
 - 5번 줄: `savedTheme`가 `null`이라 `??`가 기본값 `"light"`를 골랐어요.
 
 0, 빈 문자열, `false`도 의미 있는 값이라면 `??`를 써요.
+
+이번에는 `||`와 `??`로 기본값을 정하는 식을 직접 써서 차이를 확인해 보세요.
+
+<TryIt ref="js-basics.operators.logical.try-or-vs-nullish" />
 </Section>
 
 <Section kind="pitfalls">
@@ -347,19 +355,19 @@ console.log(canSignUp, displayName, fontSize);
 <Section kind="check">
 `&&`의 뜻을 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.logical.mcq-and-meaning" />
+<InlineExercise ref="js-basics.operators.logical.check-and-needs-both" />
 
 `||`가 무엇을 돌려주는지 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.logical.mcq-or-returns-value" />
+<InlineExercise ref="js-basics.operators.logical.check-or-picks-value" />
 
 `||`로 기본값을 정할 때의 함정을 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.logical.mcq-count-or-default" />
+<InlineExercise ref="js-basics.operators.logical.check-or-default-replaces" />
 
 마지막으로 `??`를 확인해 보세요.
 
-<InlineExercise ref="js-basics.operators.logical.mcq-nullish-volume" />
+<InlineExercise ref="js-basics.operators.logical.check-nullish-results" />
 </Section>
 
 <Section kind="practice" />

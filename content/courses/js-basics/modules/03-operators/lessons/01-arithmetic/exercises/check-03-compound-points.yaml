@@ -1,0 +1,45 @@
+id: js-basics.operators.arithmetic.check-compound-points
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.ops.compound-assignment, weight: 1 }
+tags: [compound-assignment]
+estimatedSeconds: 75
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 쓰세요.
+spec:
+  lang: js
+  code: |
+    let points = 30;
+    points -= 10 - 4;
+    console.log(points);
+    points /= 2 + 1;
+    console.log(points);
+  answerKind: console
+  misconceptionByAnswer:
+    "16\n9": js.mc.compound-right-side-split
+misconceptions: [js.mc.compound-right-side-split]
+hints:
+  - "`points -= 10 - 4`를 `points = points - (...)` 모양으로 바꿔 써 보세요."
+  - 복합 대입은 오른쪽 전체를 먼저 계산해요. `10 - 4`와 `2 + 1`은 각각 얼마인가요?
+  - 첫 줄은 `30 - 6`, 둘째 줄은 그 결과를 `3`으로 나눠요.
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  24
+  8
+  ```
+
+  | 실행한 줄 | 같은 뜻 | `points` |
+  |---|---|---|
+  | `points -= 10 - 4;` | `points = points - (10 - 4)` | 30 - 6 = 24 |
+  | `points /= 2 + 1;` | `points = points / (2 + 1)` | 24 / 3 = 8 |
+
+  `16`과 `9`라고 답했다면 `points - 10 - 4`, `points / 2 + 1`처럼 오른쪽을 쪼개서 계산한 거예요. 복합 대입은 오른쪽 전체를 먼저 계산한 뒤 연산해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

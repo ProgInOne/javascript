@@ -1,0 +1,30 @@
+id: js-basics.operators.arithmetic.check-division-decimal
+type: true_false
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.ops.arithmetic, weight: 1 }
+tags: [division]
+estimatedSeconds: 40
+prompt: |
+  다음 설명이 맞는지 골라 주세요.
+spec:
+  statement: '`console.log(25 / 10);`을 실행하면 몫인 `2`가 출력된다.'
+  answer: false
+  misconceptionIfWrong: js.mc.division-truncates
+misconceptions: [js.mc.division-truncates]
+hints:
+  - JavaScript의 `/`는 나머지를 버릴까요?
+  - 25를 10으로 나누면 몫 2와 나머지 5가 남아요. `/`는 이 나머지를 어떻게 할까요?
+  - "`/`는 소수까지 계산해요. 25 ÷ 10을 소수로 쓰면 얼마인가요?"
+explanation: |
+  정답은 **거짓**이에요.
+
+  JavaScript의 `/`는 나머지를 버리지 않고 소수까지 계산해요. 그래서 `25 / 10`은 `2.5`예요.
+
+  몫만 필요하다면 레슨에서 본 것처럼 나머지를 먼저 빼고 나누면 돼요: `(25 - 25 % 10) / 10`은 `2`예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,43 @@
+id: js-basics.operators.implicit-coercion.check-label-and-count
+type: predict_output
+difficulty: 2
+usage: check
+concepts:
+  - { id: js.conv.plus-concat, weight: 1 }
+tags: [plus, concat, left-to-right]
+estimatedSeconds: 70
+prompt: |
+  다음 프로그램을 실행하면 콘솔에 무엇이 출력되나요? 한 줄에 하나씩 적어 주세요.
+spec:
+  lang: js
+  code: |
+    console.log("합계: " + 2 + 3);
+    console.log(2 + 3 + "개");
+  answerKind: console
+  misconceptionByAnswer:
+    "합계: 5\n5개": js.mc.plus-string-adds
+    "합계: 23\n23개": js.mc.concat-whole-expression
+misconceptions: [js.mc.plus-string-adds, js.mc.concat-whole-expression]
+hints:
+  - "`+`가 여러 개면 왼쪽부터 하나씩 계산해요. 단계마다 양쪽의 자료형을 적어 보세요."
+  - 첫 줄은 첫 단계부터 문자열이 있어요. 둘째 줄은 처음 두 값이 모두 숫자예요.
+  - "`\"합계: \" + 2`는 `\"합계: 2\"`, 그다음 `+ 3`도 이어 붙이기예요. `2 + 3`은 먼저 숫자끼리 더해져요."
+explanation: |
+  정답은 다음 두 줄이에요.
+
+  ```text
+  합계: 23
+  5개
+  ```
+
+  | 식 | 1단계 | 2단계 |
+  |---|---|---|
+  | `"합계: " + 2 + 3` | `"합계: " + 2` → `"합계: 2"` | `"합계: 2" + 3` → `"합계: 23"` |
+  | `2 + 3 + "개"` | `2 + 3` → 숫자 `5` | `5 + "개"` → `"5개"` |
+
+  첫 줄에서 `5`를 원했다면 `"합계: " + (2 + 3)`처럼 괄호로 덧셈을 먼저 해야 해요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

@@ -1,0 +1,88 @@
+id: js-basics.operators.arithmetic.try-fahrenheit-perimeter
+type: implement_function
+difficulty: 2
+usage: try
+concepts:
+  - { id: js.ops.precedence, weight: 1 }
+  - { id: js.ops.arithmetic, weight: 0.5 }
+tags: [precedence, parentheses, write-code]
+estimatedSeconds: 240
+prompt: |
+  계산식 두 개를 직접 써 보세요. 숫자를 직접 계산해 적지 말고, 시작 코드의 변수로 계산식을 만들어요.
+
+  1. 섭씨 온도 `celsius`를 화씨로 바꿔 `fahrenheit`에 넣으세요. 공식은 **섭씨 × 9 ÷ 5 + 32**예요.
+  1. 가로 `width`, 세로 `height`인 직사각형의 둘레를 `perimeter`에 넣으세요. 둘레는 **(가로 + 세로) × 2**예요.
+
+  실행하면 콘솔에 아래처럼 나와야 해요.
+
+  ```text
+  화씨: 77
+  둘레: 20
+  ```
+spec:
+  starter:
+    files:
+      - path: main.js
+        content: |
+          const celsius = 25;
+          const width = 7;
+          const height = 3;
+
+          // 1. celsius를 화씨로 바꾼 값을 fahrenheit에 넣으세요.
+
+          // 2. 직사각형의 둘레를 perimeter에 넣으세요. (계산 순서에 주의!)
+
+          console.log("화씨:", fahrenheit);
+          console.log("둘레:", perimeter);
+  solution:
+    files:
+      - path: main.js
+        content: |
+          const celsius = 25;
+          const width = 7;
+          const height = 3;
+
+          // 1. celsius를 화씨로 바꾼 값을 fahrenheit에 넣으세요.
+          const fahrenheit = celsius * 9 / 5 + 32;
+          // 2. 직사각형의 둘레를 perimeter에 넣으세요. (계산 순서에 주의!)
+          const perimeter = (width + height) * 2;
+          console.log("화씨:", fahrenheit);
+          console.log("둘레:", perimeter);
+  checks:
+    - kind: program
+      id: fahrenheit
+      description: fahrenheit에 25도를 화씨로 바꾼 값 77이 들어 있어야 합니다.
+      requirement: 화씨 계산
+      expect: { globals: { fahrenheit: { equals: 77 } }, noError: true }
+    - kind: program
+      id: perimeter
+      description: perimeter에 둘레 20이 들어 있어야 합니다. 괄호가 없으면 곱셈이 먼저 계산돼 13이 나와요.
+      requirement: 둘레 계산
+      misconceptionIfFail: js.mc.always-left-to-right
+      expect: { globals: { perimeter: { equals: 20 } }, noError: true }
+    - kind: console
+      id: output
+      description: 화씨와 둘레가 정해진 모양으로 두 줄 출력되어야 합니다.
+      requirement: 출력
+      expect:
+        lines: ["화씨: 77", "둘레: 20"]
+misconceptions: [js.mc.always-left-to-right]
+hints:
+  - 시작 코드의 주석 아래에 `const fahrenheit = ...;`와 `const perimeter = ...;` 두 줄을 써요. `×`는 `*`, `÷`는 `/`예요.
+  - 화씨 공식은 왼쪽부터 계산해도 공식 순서와 같아서 괄호가 필요 없어요. 둘레는 더하기를 먼저 해야 해요.
+  - "`(width + height) * 2`처럼 먼저 계산할 부분을 괄호로 감싸요. 괄호가 없으면 `width + height * 2`는 `7 + 6`이 돼요."
+explanation: |
+  예시 답안은 다음과 같아요.
+
+  ```js
+  const fahrenheit = celsius * 9 / 5 + 32;
+  const perimeter = (width + height) * 2;
+  ```
+
+  - 화씨: `*`와 `/`는 같은 순서라 왼쪽부터 `25 * 9 = 225`, `225 / 5 = 45`를 계산하고, 마지막에 `+ 32`를 해서 `77`이에요.
+  - 둘레: 괄호 안 `7 + 3 = 10`을 먼저 계산하고 `* 2`를 해서 `20`이에요. 괄호를 빼면 `*`가 먼저라 `7 + 6 = 13`이 돼요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer

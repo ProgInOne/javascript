@@ -1,0 +1,30 @@
+id: js-basics.operators.logical.check-and-needs-both
+type: true_false
+difficulty: 1
+usage: check
+concepts:
+  - { id: js.ops.logical-and-or-not, weight: 1 }
+tags: [logical-and]
+estimatedSeconds: 40
+prompt: |
+  금고를 여는 조건을 코드로 옮겼어요. 다음 설명이 맞는지 골라 주세요.
+code: |
+  const canOpen = hasKey && knowsPassword;
+spec:
+  statement: '`hasKey`와 `knowsPassword` 중 하나만 `true`여도 `canOpen`은 `true`가 된다.'
+  answer: false
+hints:
+  - "`&&`는 \"그리고\"라고 읽어요."
+  - 진리표에서 `true && false`의 결과는 무엇이었나요?
+  - "`&&`는 하나라도 거짓이면 거짓이에요."
+explanation: |
+  정답은 **거짓**이에요.
+
+  `&&`는 **둘 다** 참일 때만 참이에요. 열쇠가 있어도 비밀번호를 모르면(`true && false`) `canOpen`은 `false`예요.
+
+  하나만 참이어도 참이 되는 연산자는 `||`예요.
+origin: authored
+review:
+  status: approved
+  draftedBy: ai:claude
+  reviewedBy: ai:reviewer
