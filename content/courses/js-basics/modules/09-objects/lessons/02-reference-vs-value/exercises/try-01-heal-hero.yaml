@@ -59,6 +59,7 @@ spec:
       requirement: 체력 채우기
       expect:
         lines: ["70", "100"]
+        mode: ordered-subset
       misconceptionIfFail: js.mc.param-reassign-replaces-object
     - kind: program
       id: hero-after

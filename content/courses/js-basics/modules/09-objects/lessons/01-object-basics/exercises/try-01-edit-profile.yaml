@@ -54,6 +54,7 @@ spec:
       requirement: 고친 결과 출력
       expect:
         lines: ['{ name: "하린", age: 16, city: "대전" }']
+        mode: ordered-subset
     - kind: program
       id: profile-object
       description: profile에 name "하린", age 16, city "대전"만 남아 있어야 합니다(tempNick은 없어야 해요).
