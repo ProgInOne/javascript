@@ -378,7 +378,7 @@ Fetch 실습은 샌드박스의 네트워크가 차단되므로([샌드박스 �
 | 6 | 실행 결과 해설 (`walkthrough`) | 예제가 왜 그 결과를 내는지 줄 단위로 해설. 값의 변화를 표로 추적 | 예제당 1~2문단 |
 | 7 | 흔히 발생하는 실수 (`pitfalls`) | `misconceptions.yaml`의 오개념 각각에 대해 "잘못된 생각 → 실제 동작 → 올바른 이해" | 오개념당 1블록 |
 | 8 | 실전 사용 사례 (`in-practice`) | 실제 웹 개발에서 이 개념을 쓰는 장면 1~2개 | 1~2문단 + 코드 |
-| 9 | 이해도 확인 (`check`) | 본문 중간·끝의 인라인 확인 문제. 정답 후 바로 이어서 읽기 | 문제 2~4 |
+| 9 | 이해도 확인 (`check`) | 본문 중간·끝의 인라인 확인 문제. 정답 후 바로 이어서 읽기. 그 단원의 `usage: check` 문제만 써서 연습 세트와 겹치지 않음([D-091](/docs/decisions.md)) | 문제 2~4 |
 | 10 | 응용 실습 (`practice`) | 연습 세트로 넘어가는 진입점. 연습 세트 구성은 학습 엔진이 결정 | 자동 생성 |
 | 11 | 핵심 요약 (`summary`) | 3~7개 요점. 각 요점은 한 문장 | 3~7줄 |
 | 12 | 다음 학습 연결 (`next`) | 다음 단원과 이 단원의 관계, 이 개념을 다시 만나게 될 곳 | 1~3줄 |
@@ -414,7 +414,8 @@ MVP JavaScript 기초 118개 개념의 중요도 분포 목표는 `core` 약 30�
 |---|---|---|
 | `<Section>` | 표준 섹션 표시 | `kind`: 섹션 종류 (필수) |
 | `<RunnableExample>` | 실행 가능한 코드 예제 | `id` (필수, 단원 내 고유), `lang`: `js` / `html` / `css` / `web` (html+css+js 묶음), `predict`: 실행 전 결과 예측 입력을 요구할지 (`boolean`), `predictKind`: `console` / `value` / `choice`, `editable`: 학습자가 수정해 다시 실행할 수 있는지 (기본 `true`), `concepts`: 관련 개념 slug 목록, `highlight`: 강조할 줄 범위 (예: `"2-3"`) |
-| `<InlineExercise>` | 본문 중간의 확인 문제 | `ref`: 문제 ID (필수). 문제 본체는 `exercises/*.yaml`에 있고 MDX에는 참조만 둡니다 |
+| `<InlineExercise>` | 본문 중간의 확인 문제 | `ref`: 문제 ID (필수). 같은 단원의 `usage: check` 문제만 참조합니다. 문제 본체는 `exercises/*.yaml`에 있고 MDX에는 참조만 둡니다 |
+| `<TryIt>` | 직접 써 보기: 레슨 안에서 코드를 쓰고 실행하고 "확인"으로 테스트 결과를 받는 작은 과제([D-091](/docs/decisions.md)) | `ref`: 같은 단원의 `usage: try` 문제 ID (필수). 유형은 `web_task`·`implement_function`·`fix_bug`. 채점 결과는 기록하지 않습니다(숙련도에 반영 안 함). 개념을 소개하는 일반 단원에는 하나 이상 둡니다 |
 | `<Callout>` | 알림 상자 | `kind`: `note` / `tip` / `warning` / `danger` / `deep-dive`, `title` (선택) |
 | `<CompareTable>` | 두세 대상의 비교 표 | `columns`: 열 제목 목록, 행은 자식 `<Row label="...">`로 작성. 행 안의 칸은 `|`로 나눕니다(`<Row label="재할당">가능 | 불가</Row>`) |
 | `<ConceptLink>` | 다른 개념으로의 링크 | `to`: 개념 slug (필수), 자식: 링크 텍스트. 빌드 시 존재 여부 검증. 화면에는 숙련 단계 배지 표시 |
@@ -733,7 +734,7 @@ concepts:
   - { id: js.basics.console-log, weight: 0.3 } # 부 개념
 tags: [return, console]
 estimatedSeconds: 60
-usage: practice                   # practice | assessment | diagnostic | remedial | worked_example (기본 practice)
+usage: practice                   # practice | assessment | diagnostic | remedial | worked_example | project | check | try (기본 practice). check는 본문 이해도 확인(InlineExercise), try는 직접 써 보기(TryIt) 전용(D-091)
 workedExampleStage: null          # usage: worked_example일 때 0 완전한 풀이 / 1 일부 빈칸 / 2 직접 풀기
 variantGroup: null                # 선택. "사실상 같은 문제"끼리 같은 키. 같은 그룹은 한 세트에 1개만, 문제 수 집계도 1개. 템플릿 변형은 지정하지 않으면 템플릿 ID가 그룹 키
 prompt: |                         # 문제 본문 (Markdown, 원시 HTML 금지)
