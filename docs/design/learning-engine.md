@@ -1,11 +1,11 @@
 # 학습 엔진 설계
 
-`packages/learning-engine`의 설계입니다. 숙련도 계산, 개념 단위 간격 반복(FSRS), 연습 세트 구성, 재학습 규칙, 오개념 상태 전이, 오늘의 학습과 목표 페이스 계산을 정의합니다.
+`@proginone/learning-engine`의 설계입니다. 처음에는 이 저장소의 `packages/learning-engine`이었고, 지금은 `ProgInOne/core`에서 공통 패키지로 배포합니다([D-090](/docs/decisions.md)). 설계의 원천은 계속 이 문서입니다. 숙련도 계산, 개념 단위 간격 반복(FSRS), 연습 세트 구성, 재학습 규칙, 오개념 상태 전이, 오늘의 학습과 목표 페이스 계산을 정의합니다.
 모든 기능은 I/O가 없는 순수 함수이며, 모든 판단은 근거와 함께 기록되어 학습자에게 설명할 수 있어야 합니다.
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-15
+- 최종 수정: 2026-11-23 (구현 위치를 ProgInOne/core로 옮김: D-090)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -824,7 +824,7 @@ packages/learning-engine/src/
 
 ### 구현 메모 (v0.1)
 
-v0.1(M4)에서 구현하면서 위 스케치를 구체화하거나 바꾼 점입니다. 계수는 바꾸지 않았습니다. 공개 API 목록은 [패키지 README](/packages/learning-engine/README.md)에 있습니다.
+v0.1(M4)에서 구현하면서 위 스케치를 구체화하거나 바꾼 점입니다. 계수는 바꾸지 않았습니다. 공개 API 목록은 [패키지 README](https://github.com/ProgInOne/core/blob/develop/packages/learning-engine/README.md)에 있습니다.
 
 **범위**: 증거 가중치, 숙련도 갱신, 단계 게이트, FSRS 연동, 단원 연습 세트(통과 기준 포함), 복습 큐·복습 세트만 구현했습니다. 오개념 전이, 재학습 판정, 약점·평가·자유 연습 세트, 진행 중 적응(`nextAdaptiveStep`), 오늘의 학습, 페이스, 활동 시간, `replay`는 v0.2 이후입니다. 그래서 `AttemptEffects`에는 `misconceptions`, `remediation`이 아직 없습니다.
 

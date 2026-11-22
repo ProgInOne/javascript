@@ -18,7 +18,7 @@ import { attempts, conceptMastery, conceptMemory, masteryEvidence, reviewLogs } 
 
 // Learner model per concept: concept_mastery + mastery_evidence (mastery model) and
 // concept_memory + review_logs (FSRS). Reads assemble the engine's `ConceptState`
-// (packages/learning-engine/README.md has the column mapping); writes take engine outputs.
+// (the @proginone/learning-engine README in ProgInOne/core has the column mapping); writes take engine outputs.
 
 const ms = (d: Date | null) => (d === null ? null : d.getTime());
 

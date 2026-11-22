@@ -47,6 +47,24 @@ export default tseslint.config(
     },
   },
   {
+    // docs/design/system-architecture.md#의존-방향-규칙. The engine is a published package
+    // (ProgInOne/core), which dependency-cruiser does not follow, so the rule lives here.
+    files: ['apps/web/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@proginone/learning-engine',
+              message: 'apps/web은 learning-engine에 의존하지 않습니다. 학습 판단은 서버가 합니다.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: [
       'apps/web/src/**/*.{ts,tsx}',
       'packages/ui/src/**/*.tsx',
