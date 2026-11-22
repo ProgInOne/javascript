@@ -59,18 +59,31 @@ const plan = (purpose: string) => ({
 });
 
 /** A fake practice API with a mutable set. */
-function practiceApi(initial: PracticeSetView = practiceSet(), settings: Partial<Settings> = {}) {
+function practiceApi(
+  initial: PracticeSetView = practiceSet(),
+  settings: Partial<Settings> = {},
+  outcomeQueue: Record<string, ('correct' | 'incorrect')[]> = {},
+) {
   let set = initial;
   let hints = 0;
   const outcomes: Record<string, ('correct' | 'incorrect')[]> = {
     [MCQ]: ['incorrect', 'correct'],
     [FIX]: ['correct'],
+    ...outcomeQueue,
   };
   const handler = (method: string, path: string, body: unknown) => {
     if (path === '/settings') return { body: { ...SETTINGS_DEFAULTS, ...settings } };
     if (path === `/lessons/${encodeURIComponent(LESSON_ID)}`) return { body: lesson };
     if (method === 'POST' && path === '/practice-sets') return { body: set };
     if (path === `/practice-sets/${SET_ID}`) return { body: set };
+    if (method === 'POST' && path === `/practice-sets/${SET_ID}/finish`) {
+      const last = set.items.at(-1)?.id ?? '';
+      const correct = set.items.filter((i) => i.lastOutcome === 'correct').length;
+      const done = attemptResponse(set, last, 'correct', { completed: true }).set;
+      const result = done.result && { ...done.result, correct };
+      set = { ...set, status: 'completed', nextItemId: null, result };
+      return { body: { set: { ...done, result }, masteryChanges: [] } };
+    }
     if (path.startsWith(`/exercises/${encodeURIComponent(MCQ)}?`)) return { body: mcqView };
     if (path.startsWith(`/exercises/${encodeURIComponent(FIX)}?`)) return { body: fixView };
     if (path.endsWith('/run-plan')) {
@@ -302,6 +315,40 @@ describe('practice mode', () => {
     expect(screen.getByRole('link', { name: /다음 단원: 오류 읽기/ })).toHaveAttribute(
       'href',
       '/learn/js-basics.start.reading-errors',
+    );
+  });
+
+  it('offers another try after a wrong answer to the last item, then ends with 결과 보기', async () => {
+    const user = userEvent.setup();
+    const answered = practiceSet({
+      items: practiceSet().items.map((i, n) =>
+        n === 0 ? { ...i, status: 'answered', attempts: 1, lastOutcome: 'correct' } : i,
+      ),
+      progress: { total: 2, answered: 1, skipped: 0, pending: 1 },
+      nextItemId: practiceSet().items[1]?.id ?? null,
+    });
+    const { calls } = renderApp(
+      `/learn/${LESSON_ID}?mode=practice&set=${SET_ID}&i=2`,
+      practiceApi(answered, {}, { [FIX]: ['incorrect', 'incorrect'] }),
+    );
+    expect(await screen.findByRole('heading', { name: /문제 2/ })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: /확실해요/ }));
+    expect(await screen.findByRole('heading', { name: '정답이 아니에요.' })).toBeVisible();
+
+    // The set stays open: the last item can be tried again like any other.
+    await user.click(screen.getByRole('button', { name: '다시 풀기' }));
+    expect(screen.getByRole('note')).toHaveTextContent('모든 문제에 답했어요');
+    // Code exercises ask for confidence on the first submission only.
+    await user.click(screen.getByRole('button', { name: /^제출/ }));
+    expect(await screen.findByRole('heading', { name: '정답이 아니에요.' })).toBeVisible();
+    expect(screen.getByRole('button', { name: '다시 풀기' })).toBeVisible();
+    expect(calls.filter((c) => c.path === '/attempts')).toHaveLength(2);
+
+    await user.click(screen.getByRole('button', { name: '결과 보기' }));
+    expect(await screen.findByRole('heading', { name: /마쳤어요/ })).toBeVisible();
+    expect(screen.getByText('연습 2문제 · 정답 1')).toBeVisible();
+    expect(calls).toContainEqual(
+      expect.objectContaining({ method: 'POST', path: `/practice-sets/${SET_ID}/finish` }),
     );
   });
 

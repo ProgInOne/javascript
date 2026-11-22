@@ -455,7 +455,7 @@ targetDifficulty = clamp(maxDifficultyCorrect + adjust, 1, 5)
 
 | 필드 | 기본값 | 판정 |
 |---|---|---|
-| (항상) | | 모든 항목에 답했거나 건너뜀 |
+| (항상) | | 모든 항목에 답했거나 건너뜀. 남은 항목이 없어진 시도가 정답이 아니면 세트는 열린 채로 다시 풀기를 기다리고, 정답을 내거나 "결과 보기"(`POST /practice-sets/:id/finish`)를 누를 때 끝납니다([D-088](/docs/decisions.md)) |
 | `minCorrect` | 0.7 | 세트 신용 정답률(항목별 `o × W_hint × W_try`의 평균) 이상 |
 | `minConceptCredit` | 0.6 | 단원이 소개하는 개념마다, 이번 세트에서 그 개념이 주 개념(가중치 1)인 항목들의 신용 정답률(`o × W_hint × W_try` 평균, 건너뜀 0)이 이 값 이상이고 그중 1개 이상 맞힘(마지막 시도 `o ≥ 0.5`). 세트에 항목이 없는 개념은 판정에서 뺌 |
 | `minDistinctTypes` | 2 | 정답을 낸 서로 다른 문제 유형 수 이상 |

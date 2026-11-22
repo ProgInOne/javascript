@@ -411,6 +411,9 @@ function ItemWorkspace({
     else onNavigate(nextPending);
   };
   const setDone = !setOpen;
+  /** An open set with nothing pending: the last answer was wrong and the result not asked for. */
+  const allDone =
+    set.status === 'active' && !assessment && set.items.every((i) => i.status !== 'pending');
 
   const actions: ReactNode = result !== null && (
     <>
@@ -522,6 +525,14 @@ function ItemWorkspace({
 
   const response = (
     <div className="practice-response">
+      {!graded && allDone && (
+        <div className="practice-closed" role="note">
+          <p>모든 문제에 답했어요. 다시 풀어 보거나 결과를 볼 수 있어요.</p>
+          <Button variant="secondary" onClick={onShowSummary}>
+            결과 보기
+          </Button>
+        </div>
+      )}
       {!graded && set.status !== 'active' && (
         <div className="practice-closed">
           <p>이 연습 세트는 이미 끝났어요.</p>
