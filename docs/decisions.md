@@ -805,3 +805,15 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - 기존 연습 문제는 그대로 연습 풀에 남기고, 이해도 확인 156개와 직접 써 보기 과제를 새로 썼습니다(content.db 스키마 버전 5).
 - 고르지 않은 안: 기존 확인 문제를 `check`로 옮기기(연습 풀이 단원마다 2~4개 줄어 수량 기준 미달), 예제 따라 쓰기(생각할 거리가 적음), 채점 없는 자유 실습 에디터(무엇을 쓸지 막막함).
 
+
+## D-092. 공통 스키마의 언어 값은 열어 두고 언어 저장소가 좁힘, 공통 패키지는 공개 — `확정`
+- 2026-11-22, 사용자 결정(1차 분리 중 `content-schema`·`shared`에서 JavaScript 저장소의 언어 값이 박힌 곳을 발견).
+- 배경: 과정 언어 `'html' | 'css' | 'javascript'`가 원본 스키마(zod), content.db DDL의 `CHECK`, API 계약(`curriculum`, `learning`, `practice`, `review`)에 박혀 있고, 개념 참고 문서가 MDN 전용(`mdn` → `mdn_url` → `mdnUrl`)이라 그대로 옮기면 Go 콘텐츠가 통과하지 못합니다.
+- **공통 패키지는 언어 값을 열어 두고, 각 언어 저장소가 좁힙니다.**
+  - 과정 언어는 어떤 slug든 받습니다(`@proginone/content-schema`의 `languageId`). 언어 저장소는 `courseSchema.extend({ language: z.enum([...]) })`처럼 공통 스키마를 확장해 다루는 언어만 허용합니다. content.db의 `courses.language`에서 `CHECK`를 없앱니다.
+  - 개념 참고 문서는 일반 이름으로 바꿉니다: content.db `concepts.doc_url`, API `docUrl`. 원본 필드(JavaScript의 `mdn` 경로, Go의 패키지 경로 등)는 언어 저장소가 `conceptSchema.extend()`로 더하고, 빌드할 때 `doc_url`로 바꿉니다.
+  - content.db 스키마 버전을 하나 올립니다(D-091의 5 다음인 6. content.db는 매번 새로 만들므로 마이그레이션은 없음).
+  - 언어 저장소의 스키마는 반드시 공통 스키마를 확장해서 만들고 따로 정의하지 않습니다. 공통 스키마가 `strictObject`라 확장하지 않은 필드는 거부됩니다.
+- 검토한 대안: 언어 목록을 받는 스키마 팩토리(타입은 가장 정확하지만 DDL·API 계약까지 제네릭이 되어 복잡함), core의 enum에 언어를 계속 추가(단순하지만 언어마다 core를 고쳐 배포해야 함).
+- 이 저장소의 반영: 1차 분리 패키지로 전환하는 PR에서 `content-cli`·서버·웹이 확장 지점을 쓰고 `mdnUrl`을 `docUrl`로 바꿉니다.
+- **`@proginone/*` 패키지는 공개합니다.** 조직 패키지는 처음 배포하면 비공개로 만들어지므로, 패키지마다 GitHub 웹 화면(Package settings → Danger Zone → Change visibility)에서 공개로 바꿉니다. 공식 API가 없고 되돌릴 수 없습니다. 공개 패키지도 GitHub Packages에서 받으려면 토큰이 필요하다는 점(D-090)은 같습니다.
