@@ -3,7 +3,7 @@
 ProgInOne을 내 컴퓨터에서 실행하고 개발 환경을 준비하는 방법입니다.
 
 - 대상: 학습자(앱 사용), 기여자(개발)
-- 최종 수정: 2026-11-15
+- 최종 수정: 2026-11-23 (공통 패키지 토큰: D-094)
 
 ## 필요한 도구
 
@@ -15,6 +15,22 @@ ProgInOne을 내 컴퓨터에서 실행하고 개발 환경을 준비하는 방�
 | Docker | 시각 회귀 테스트를 돌릴 때만 | `docker info` |
 
 nvm을 쓴다면 저장소에서 `nvm use`를 실행합니다.
+
+### 공통 패키지 토큰
+
+저장소에서 개발하려면(`pnpm install`) GitHub 토큰이 필요합니다. 언어 저장소들이 함께 쓰는 공통 패키지(`@proginone/*`)가 GitHub Packages에 있고, GitHub Packages는 공개 패키지도 토큰이 있어야 내려받을 수 있기 때문입니다([D-090](/docs/decisions.md)).
+릴리스 묶음으로 설치하는 학습자는 토큰이 필요 없습니다([설치와 업그레이드](/docs/guides/install-and-upgrade.md)).
+
+```shell
+gh auth refresh -h github.com -s read:packages
+npm config set //npm.pkg.github.com/:_authToken "$(gh auth token)"
+```
+
+- 토큰은 사용자 설정(`~/.npmrc`)에만 둡니다. pnpm은 저장소의 `.npmrc`에 쓴 인증 설정을 무시합니다. 저장소의 `.npmrc`에는 레지스트리 주소만 있습니다.
+- GitHub CLI 대신 `read:packages` 권한만 준 classic 개인 토큰을 같은 자리에 넣어도 됩니다. 자세한 내용은 core의 [언어 저장소에서 쓰기][core-consuming]에 있습니다.
+- `pnpm install`이 `401`(`No authorization header`)로 실패하면 토큰이 없거나 권한이 부족한 것입니다.
+
+[core-consuming]: https://github.com/ProgInOne/core/blob/develop/docs/guides/consuming.md#레지스트리-설정
 
 ## 앱 실행
 

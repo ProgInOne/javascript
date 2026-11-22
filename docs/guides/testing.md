@@ -113,6 +113,7 @@ SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chr
 - 기준 이미지는 `e2e/tests/__screenshots__/`에 커밋합니다. 글꼴 렌더링이 OS마다 달라서 **반드시 Docker(`pnpm test:e2e:visual`)에서 만들고 비교**합니다. 로컬 `pnpm test:e2e`는 `@visual` 테스트를 건너뜁니다.
 - 매번 바뀌는 값(백업 시각·크기 등)은 고정 응답(`page.route`)으로 바꾸거나 `mask`로 가립니다.
 - 빈·오류·로딩 상태는 `tests/state-mocks.ts`의 고정 응답으로 만듭니다. 로딩은 학습 API 응답을 붙잡아 두어(`holdLearningApi`) 스켈레톤을 고정하고, `animations: 'disabled'`로 반짝임을 멈춥니다.
+- Docker 안에서도 `pnpm install`을 하므로 공통 패키지 토큰이 필요합니다. 스크립트가 호스트의 `~/.npmrc`를 컨테이너 사용자 설정으로 넣고, CI에서는 `NODE_AUTH_TOKEN`을 씁니다([시작하기 > 공통 패키지 토큰](/docs/guides/getting-started.md#공통-패키지-토큰)).
 - 화면을 의도적으로 바꿨다면 `pnpm test:e2e:visual --update`로 다시 만들고, PR에서 이미지 차이를 직접 확인한 뒤 커밋합니다.
 - 로컬 Docker를 쓸 수 없으면 GitHub Actions의 `visual-baselines` 워크플로로 같은 이미지에서 기준 이미지를 만듭니다: `gh workflow run visual-baselines.yml --ref <브랜치>`로 실행하고, 끝나면 `gh run download <실행 ID> -n visual-baselines -D e2e/tests/__screenshots__`로 받아 차이를 확인한 뒤 커밋합니다. 워크플로는 커밋하거나 푸시하지 않습니다.
 - CI가 실패하면 `playwright-report` 아티팩트의 차이 이미지를 확인합니다.
@@ -166,4 +167,5 @@ SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chr
 - 확인: `gh api repos/ProgInOne/javascript/rulesets`.
 - 릴리스 태그 `v*`: 한 번 만들면 지우거나 옮길 수 없습니다. 잘못 만든 태그는 새 버전으로 고칩니다.
 - Actions: 허용한 액션만 쓸 수 있습니다(GitHub 소유와 `pnpm/action-setup`). 새 외부 액션을 쓰려면 저장소 설정 → Actions → General의 허용 목록에 먼저 추가합니다. 외부 기여자의 PR은 소유자가 승인해야 CI가 돕니다.
+- 공통 패키지(`@proginone/*`): CI·릴리스·시각 기준 이미지 워크플로는 `packages: read` 권한의 `GITHUB_TOKEN`으로 GitHub Packages에서 받습니다(`setup-node`가 만드는 사용자 설정). 패키지는 공개이고, 조직 설정 → Packages → Package creation에서 Public을 허용해 두었습니다(새 패키지도 공개로 바꿀 수 있도록, [D-094](/docs/decisions.md)).
 - self-hosted runner를 이 저장소에 다시 등록하지 않습니다.
