@@ -20,7 +20,7 @@ ProgInOne의 테스트 종류, 실행 방법, 작성 규칙입니다.
 | `pnpm perf` | NFR-01~03 성능 측정(실제 콘텐츠, 목표 미달이면 실패) | 화면·러너 성능에 영향이 있을 때, 릴리스 전 |
 | `pnpm check:bundle` | 첫 화면 JS·CSS 번들 크기 예산(`pnpm build` 뒤) | 의존성을 추가했을 때. CI가 항상 실행 |
 
-CI는 PR과 `main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Playwright Docker 이미지)를 실행합니다. 둘 다 통과해야 병합합니다.
+CI는 PR과 `develop`·`main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e` 단계(Playwright Docker 이미지)를 실행합니다. 둘 다 통과해야 병합합니다.
 
 ## 단위·통합 테스트 (Vitest)
 
@@ -160,7 +160,10 @@ SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chr
 
 저장소는 공개입니다([D-085](/docs/decisions.md)). 설정을 바꿀 때는 이 목록과 결정 기록을 함께 고칩니다.
 
-- `main`: PR로만 바뀌고 스쿼시 병합만 허용합니다. 필수 검사(`lint · typecheck · test · build`, `e2e · visual · a11y`)가 통과해야 병합할 수 있고, 강제 푸시·삭제는 막혀 있습니다. 확인: `gh api repos/ProgInOne/javascript/rulesets`.
+- `develop`(기본 브랜치): PR로만 바뀌고 스쿼시 병합만 허용하며 선형 기록을 유지합니다. 필수 검사(`lint · typecheck · test · build`, `e2e · visual · a11y`)가 통과해야 병합할 수 있고, 강제 푸시·삭제는 막혀 있습니다.
+- `main`: `develop`에서 온 릴리스 PR만 받고 merge commit 병합만 허용합니다([D-090](/docs/decisions.md)). 필수 검사와 강제 푸시·삭제 금지는 `develop`과 같습니다. 다른 브랜치에서 온 PR은 `lint · typecheck · test · build`의 첫 단계가 실패시킵니다.
+- 병합한 작업 브랜치는 자동으로 지워집니다. 기본 브랜치인 `develop`과 삭제가 막힌 `main`은 지워지지 않습니다.
+- 확인: `gh api repos/ProgInOne/javascript/rulesets`.
 - 릴리스 태그 `v*`: 한 번 만들면 지우거나 옮길 수 없습니다. 잘못 만든 태그는 새 버전으로 고칩니다.
 - Actions: 허용한 액션만 쓸 수 있습니다(GitHub 소유와 `pnpm/action-setup`). 새 외부 액션을 쓰려면 저장소 설정 → Actions → General의 허용 목록에 먼저 추가합니다. 외부 기여자의 PR은 소유자가 승인해야 CI가 돕니다.
 - self-hosted runner를 이 저장소에 다시 등록하지 않습니다.
