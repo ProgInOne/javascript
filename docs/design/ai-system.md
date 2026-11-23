@@ -2,11 +2,11 @@
 
 ProgInOne이 AI를 어떻게 통합하고, 어떤 작업에 쓰고, 학습 기록을 어떻게 AI 맥락으로 바꾸는지 설계합니다.
 MVP의 유일한 AI 제공자는 ChatGPT 구독으로 인증하는 Codex App Server입니다([D-002](/docs/decisions.md)).
-구현인 `@proginone/ai`는 처음에 이 저장소의 `packages/ai`였고, 지금은 `ProgInOne/core`에서 공통 패키지로 배포합니다([D-090, D-095](/docs/decisions.md)). 설계의 원천은 계속 이 문서입니다.
+구현인 `@proginone/ai`는 처음에 이 저장소의 `packages/ai`였고, 지금은 `ProgInOne/core`에서 공통 패키지로 배포합니다([D-090, D-096](/docs/decisions.md)). 설계의 원천은 계속 이 문서입니다.
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-23 (구현 위치를 ProgInOne/core로 옮기고 언어별 문구를 `TutorProfile`로 주입: D-095)
+- 최종 수정: 2026-11-23 (구현 위치를 ProgInOne/core로 옮기고 언어별 문구를 `TutorProfile`로 주입: D-096)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [학습 엔진 설계](/docs/design/learning-engine.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -1184,7 +1184,7 @@ v0.2(M5)에서 바꾸거나 구체화한 점입니다.
 
 ### 구현 메모 (core 이전)
 
-`packages/ai`를 `ProgInOne/core`의 `@proginone/ai`로 옮기면서 정한 점입니다([D-095](/docs/decisions.md)).
+`packages/ai`를 `ProgInOne/core`의 `@proginone/ai`로 옮기면서 정한 점입니다([D-096](/docs/decisions.md)).
 
 - 이 저장소는 배포된 `@proginone/ai`를 받아 씁니다. 위의 구조와 경로(`packages/ai/src/...`)는 core 저장소 기준입니다.
 - 언어마다 다른 문구는 `TutorProfile`로 주입합니다: 튜터 역할(`tutorRole`), 배우는 대상(`subjects`), 경험 영역(`experience`), 튜터 답변의 학습 범위(`scope`), 용어 예시(`termExample`), 용어 표기 목록(`terms`). 나머지 페르소나·한국어 규칙·데이터 경계는 공통입니다.
