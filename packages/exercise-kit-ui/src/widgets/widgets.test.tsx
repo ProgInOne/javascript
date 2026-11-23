@@ -5,12 +5,15 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { axeViolations, renderUi } from '../test/helpers.tsx';
 import { CheckList } from './CheckList.tsx';
-import { ConfidencePicker } from './ConfidencePicker.tsx';
+import {
+  ConfidencePicker,
+  HintLadder,
+  matchExerciseShortcut,
+  useExerciseShortcuts,
+} from '@proginone/exercise-ui';
 import { ConsoleView, explainRunError, runStatusText } from './ConsoleView.tsx';
 import { checkSummary } from './describe-check.ts';
 import { FeedbackBanner } from './FeedbackBanner.tsx';
-import { HintLadder } from './HintLadder.tsx';
-import { matchExerciseShortcut, useExerciseShortcuts } from './shortcuts.ts';
 
 describe('ConfidencePicker', () => {
   it('submits the chosen confidence', async () => {

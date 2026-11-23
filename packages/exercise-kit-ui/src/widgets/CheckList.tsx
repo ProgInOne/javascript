@@ -2,7 +2,7 @@ import type { CheckFailReason, CheckResult, PublicCheck } from '@proginone/exerc
 import { Badge } from '@proginone/ui';
 import { Check, Circle, EyeOff, X } from 'lucide-react';
 import { useId } from 'react';
-import { InlineText } from '../text/InlineText.tsx';
+import { InlineText } from '@proginone/exercise-ui';
 import { checkSummary, checkTitle } from './describe-check.ts';
 
 export interface CheckListMilestone {

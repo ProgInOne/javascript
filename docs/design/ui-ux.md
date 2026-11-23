@@ -422,7 +422,7 @@ D-076에서 B 시안에 맞춰 sm·md·lg를 2px씩 키우고 xl을 더했습니
 
 ### 컴포넌트
 
-컴포넌트는 Radix 프리미티브를 기반으로 `@proginone/ui`(기본, ProgInOne/core)와 `packages/exercise-ui`(문제 유형 렌더러)에 둡니다([시스템 아키텍처 모노레포 구조](/docs/design/system-architecture.md#모노레포-구조)).
+컴포넌트는 Radix 프리미티브를 기반으로 `@proginone/ui`(기본, ProgInOne/core), `@proginone/exercise-ui`(공통 문제 위젯·선택형 렌더러·코드 에디터, ProgInOne/core), `packages/exercise-kit-ui`(JS 문제 유형 렌더러)에 둡니다([시스템 아키텍처 모노레포 구조](/docs/design/system-architecture.md#모노레포-구조)).
 모든 대화형 컴포넌트는 아래 공통 상태를 정의합니다: **기본, 호버, 포커스(키보드), 눌림, 선택, 비활성, 로딩, 오류**.
 포커스 상태는 2px `--color-focus-ring` + 2px 오프셋 링이며, `:focus-visible`일 때만 표시합니다.
 

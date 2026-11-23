@@ -1,4 +1,4 @@
-import { isApplePlatform } from '@proginone/exercise-ui';
+import { isApplePlatform } from '@proginone/exercise-kit-ui';
 import { Dialog } from '@proginone/ui';
 import { useEffect, useId, useState } from 'react';
 

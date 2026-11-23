@@ -14,7 +14,7 @@ import { describe, expect, it } from 'vitest';
 import { initialAnswer, isAnswerReady, notReadyReason, parsePublicSpec } from '../exercise.ts';
 import { axeViolations, renderUi } from '../test/helpers.tsx';
 import { FillBlank, parseBlankTemplate } from './FillBlank.tsx';
-import { McqSingle } from './McqSingle.tsx';
+import { McqSingle } from '@proginone/exercise-ui';
 import { PredictOutput } from './PredictOutput.tsx';
 
 const mcqSpec: McqSinglePublicSpec = {

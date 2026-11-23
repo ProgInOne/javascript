@@ -20,12 +20,16 @@ import {
   type CSSProperties,
   type ReactNode,
 } from 'react';
-import { EditorPane, type EditorPaneHandle } from '../editor/EditorPane.tsx';
-import type { RendererBaseProps } from '../types.ts';
+import {
+  ariaShortcut,
+  type EditorPaneHandle,
+  Kbd,
+  modKeyLabel,
+  type RendererBaseProps,
+} from '@proginone/exercise-ui';
+import { EditorPane } from '../editor/languages.tsx';
 import { CheckList, type CheckListMilestone } from '../widgets/CheckList.tsx';
 import { ConsoleView } from '../widgets/ConsoleView.tsx';
-import { Kbd } from '../widgets/Kbd.tsx';
-import { ariaShortcut, modKeyLabel } from '../widgets/shortcuts.ts';
 import { EDITOR_MAX_HEIGHT, EDITOR_MIN_HEIGHT, useWorkspacePanels } from './workspace-panels.ts';
 
 /** Run/feedback props shared by the code-writing renderers. Execution is packages/runner's job. */

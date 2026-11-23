@@ -19,7 +19,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { useId, type ComponentType } from 'react';
-import { modKeyLabel } from './shortcuts.ts';
+import { modKeyLabel } from '@proginone/exercise-ui';
 
 export interface ConsoleViewProps {
   /** Latest sandbox result (from packages/runner). `null` before the first run. */

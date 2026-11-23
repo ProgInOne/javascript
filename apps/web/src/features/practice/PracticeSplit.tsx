@@ -3,7 +3,7 @@ import {
   EDITOR_MIN_HEIGHT,
   WorkspacePanelsContext,
   type WorkspacePanels,
-} from '@proginone/exercise-ui';
+} from '@proginone/exercise-kit-ui';
 import { PanelSeparator } from '@proginone/ui';
 import {
   useId,

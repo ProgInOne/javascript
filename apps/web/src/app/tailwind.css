@@ -15,6 +15,7 @@
 @import '@proginone/ui/base.css' layer(base);
 @import '@proginone/ui/components.css' layer(components);
 @import '@proginone/exercise-ui/exercise-ui.css' layer(components);
+@import '@proginone/exercise-kit-ui/exercise-kit-ui.css' layer(components);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));

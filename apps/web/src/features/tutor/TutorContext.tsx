@@ -10,7 +10,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { isApplePlatform } from '@proginone/exercise-ui';
+import { isApplePlatform } from '@proginone/exercise-kit-ui';
 import { PANEL_KEYS, readPanel, WIDE_QUERY, writePanel } from '../../lib/panels.ts';
 import { readTutorSelection } from './selection.ts';
 

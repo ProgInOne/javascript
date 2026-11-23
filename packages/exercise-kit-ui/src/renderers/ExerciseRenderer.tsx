@@ -2,7 +2,6 @@ import type {
   CodeAnswer,
   FeedbackItem,
   FillBlankAnswer,
-  McqMultiAnswer,
   ParsonsAnswer,
 } from '@proginone/exercise-kit';
 import type { RunResult } from '@proginone/run-contract';
@@ -12,11 +11,9 @@ import { FixBug, ImplementFunction, WebTask } from './CodeRenderers.tsx';
 import type { CodeRunProps } from './CodeWorkspace.tsx';
 import { FillBlank } from './FillBlank.tsx';
 import { FindBugLine, type FindBugLineDraft } from './FindBugLine.tsx';
-import { McqMulti } from './McqMulti.tsx';
-import { McqSingle } from './McqSingle.tsx';
+import { ChoiceRenderer, type ChoiceAnswerByType, type ChoiceTypeId } from '@proginone/exercise-ui';
 import { Parsons } from './Parsons.tsx';
 import { PredictOutput } from './PredictOutput.tsx';
-import { TrueFalse, type TrueFalseDraft } from './TrueFalse.tsx';
 
 export interface ExerciseRendererProps extends CodeRunProps {
   exercise: RenderableExercise;
@@ -60,31 +57,15 @@ export function ExerciseRenderer(props: ExerciseRendererProps) {
 
   switch (exercise.typeId) {
     case 'mcq_single':
-      return (
-        <McqSingle
-          {...base}
-          spec={exercise.spec}
-          value={value as AnswerByType['mcq_single']}
-          onChange={onChange}
-          correctOptionId={correctOptionId ?? null}
-        />
-      );
     case 'mcq_multi':
-      return (
-        <McqMulti
-          {...base}
-          spec={exercise.spec}
-          value={value as McqMultiAnswer}
-          onChange={onChange}
-        />
-      );
     case 'true_false':
       return (
-        <TrueFalse
+        <ChoiceRenderer
           {...base}
-          spec={exercise.spec}
-          value={value as TrueFalseDraft}
+          exercise={exercise}
+          value={value as ChoiceAnswerByType[ChoiceTypeId]}
           onChange={onChange}
+          correctOptionId={correctOptionId ?? null}
         />
       );
     case 'fill_blank':

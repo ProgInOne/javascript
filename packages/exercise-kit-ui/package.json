@@ -1,12 +1,12 @@
 {
-  "name": "@proginone/exercise-ui",
+  "name": "@proginone/exercise-kit-ui",
   "version": "0.0.0",
   "private": true,
-  "description": "문제 유형별 React 렌더러, 확신도·힌트·피드백 위젯, 코드 에디터",
+  "description": "JS 문제 유형 렌더러와 체크 목록·콘솔·미리보기, 공통 문제 UI(@proginone/exercise-ui)를 이 저장소 언어로 묶음",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./exercise-ui.css": "./src/styles/exercise-ui.css"
+    "./exercise-kit-ui.css": "./src/styles/exercise-kit-ui.css"
   },
   "sideEffects": [
     "*.css"
@@ -25,8 +25,9 @@
     "@codemirror/view": "^6.43.15",
     "@lezer/highlight": "^1.2.5",
     "@proginone/exercise-kit": "workspace:*",
+    "@proginone/exercise-ui": "0.2.0-next.20261123095345",
     "@proginone/run-contract": "workspace:*",
-    "@proginone/ui": "0.2.0-next.20261123085311",
+    "@proginone/ui": "0.2.0-next.20261123095345",
     "lucide-react": "^1.73.0",
     "prettier": "^3.10.1",
     "zod": "^4.6.7"

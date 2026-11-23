@@ -6,7 +6,7 @@ import type {
 } from '@proginone/exercise-kit';
 import { Check, X } from 'lucide-react';
 import { useId, type ReactNode } from 'react';
-import type { RendererBaseProps } from '../types.ts';
+import type { RendererBaseProps } from '@proginone/exercise-ui';
 import { CheckList } from '../widgets/CheckList.tsx';
 
 export interface FillBlankProps extends RendererBaseProps<FillBlankPublicSpec, FillBlankAnswer> {

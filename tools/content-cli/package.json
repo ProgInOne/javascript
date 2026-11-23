@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@proginone/content-schema": "0.2.0-next.20261123085311",
+    "@proginone/content-schema": "0.2.0-next.20261123095345",
     "@proginone/exercise-kit": "workspace:*",
     "@proginone/run-contract": "workspace:*",
     "@proginone/runner": "workspace:*",

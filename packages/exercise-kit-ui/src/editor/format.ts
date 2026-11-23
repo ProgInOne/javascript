@@ -1,3 +1,5 @@
+import { FormatError } from '@proginone/exercise-ui';
+
 /** Languages the code editor supports (P0: one `index.html`, `.js`, `.css`). */
 export type EditorLanguage = 'js' | 'html' | 'css';
 
@@ -7,20 +9,6 @@ export function languageOfPath(path: string): EditorLanguage | null {
   if (/\.html?$/i.test(path)) return 'html';
   if (/\.css$/i.test(path)) return 'css';
   return null;
-}
-
-/** Formatting failed because the code does not parse. `line` is 1-based when known. */
-export class FormatError extends Error {
-  readonly line: number | undefined;
-  constructor(line: number | undefined) {
-    super(
-      line === undefined
-        ? '코드를 읽을 수 없어 정리하지 못했어요(문법 오류). 코드를 확인해 보세요.'
-        : `코드를 읽을 수 없어 정리하지 못했어요(문법 오류). ${line}번째 줄 근처를 확인해 보세요.`,
-    );
-    this.name = 'FormatError';
-    this.line = line;
-  }
 }
 
 /** Learner-facing Prettier options: the repo style, narrower for the editor pane. */

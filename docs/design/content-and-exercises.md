@@ -767,7 +767,7 @@ review:                           # 제작 이력 (빌드가 검사)
 ### 문제 유형 레지스트리
 
 문제 유형은 플러그인입니다([FR-EX-01](/docs/product/prd.md)).
-`packages/exercise-kit`이 유형의 데이터·채점·검증 정의를, `packages/exercise-ui`가 렌더러를 등록합니다.
+`packages/exercise-kit`이 유형의 데이터·채점·검증 정의를, `packages/exercise-kit-ui`가 렌더러를 등록합니다.
 서버, 웹, `content-cli`는 레지스트리만 거쳐 유형별 동작을 호출하므로, 새 유형 추가 시 다른 코드를 고치지 않습니다.
 
 유형 틀(`ExerciseTypeDef`), 레지스트리 팩토리, 파라메트릭 템플릿 엔진, 선택형 3종(`mcq_single`, `mcq_multi`, `true_false`)은 공통 패키지 [`@proginone/exercise-core`](https://github.com/ProgInOne/core/blob/develop/packages/exercise-core/README.md)에 있습니다([D-096](/docs/decisions.md)).
@@ -823,7 +823,7 @@ export interface GradeResult {
   graderVersion: string;           // '<유형 ID>@<version>', attempts.grading_json에 저장
 }
 
-// packages/exercise-ui
+// packages/exercise-kit-ui (설계 당시 packages/exercise-ui)
 registerRenderer('mcq_single', McqSingleRenderer); // props: { spec: PublicSpec, onSubmit, state }
 ```
 
