@@ -1,4 +1,4 @@
-import type { Observation, RunError, RunPlan, RunResult } from '@proginone/shared';
+import type { Observation, RunError, RunPlan, RunResult } from '@proginone/run-contract';
 import type { PlanRunner } from '../verify/cases.ts';
 
 /** What a fake program does when "run": console lines, errors, final status. */

@@ -1,4 +1,4 @@
-import type { CheckBundle, DomRead, ObservationStep } from '@proginone/shared';
+import type { CheckBundle, DomRead, ObservationStep } from '@proginone/run-contract';
 
 import { fromJson } from '../common/values.ts';
 import { isVisible, type Check, type CheckOf, type DomExpect, type EventStep } from './schema.ts';

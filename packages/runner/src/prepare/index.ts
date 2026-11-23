@@ -1,4 +1,4 @@
-import type { RunError, SourcePosition } from '@proginone/shared';
+import type { RunError, SourcePosition } from '@proginone/run-contract';
 import type { PreparedScript, RunPlan, RunRequest } from '../protocol/messages.ts';
 import { ArgsExprError, exposeScript } from './expose.ts';
 import { type CheckSource, prepareHtml, type SourceInfo } from './html.ts';

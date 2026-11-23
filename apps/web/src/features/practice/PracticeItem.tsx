@@ -12,7 +12,7 @@ import {
   type Confidence,
   type RenderableExercise,
   type RenderableTypeId,
-} from '@proginone/exercise-ui';
+} from '@proginone/exercise-kit-ui';
 import {
   SETTINGS_DEFAULTS,
   isWithheldAttempt,
@@ -24,10 +24,10 @@ import {
   type PracticeItemView,
   type PracticeSetView,
   type Remediation,
-  type RunResult,
   type SolutionResponse,
   type SubmitAttemptResponse,
 } from '@proginone/shared';
+import { type RunResult } from '@proginone/run-contract';
 import { Badge, Button, ErrorState, Skeleton } from '@proginone/ui';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, ArrowRight, Lock, PenLine, RotateCcw, SkipForward } from 'lucide-react';

@@ -50,7 +50,7 @@ const detail: ConceptDetail = {
     summary: '다시 대입할 수 없는 변수를 선언합니다.',
     importance: 'core',
     course: { id: 'js-basics', title: 'JavaScript 기초' },
-    mdnUrl: 'https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/const',
+    docUrl: 'https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/const',
   },
   mastery: {
     stage: 'practicing',

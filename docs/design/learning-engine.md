@@ -1,11 +1,11 @@
 # 학습 엔진 설계
 
-`packages/learning-engine`의 설계입니다. 숙련도 계산, 개념 단위 간격 반복(FSRS), 연습 세트 구성, 재학습 규칙, 오개념 상태 전이, 오늘의 학습과 목표 페이스 계산을 정의합니다.
+`@proginone/learning-engine`의 설계입니다. 처음에는 이 저장소의 `packages/learning-engine`이었고, 지금은 `ProgInOne/core`에서 공통 패키지로 배포합니다([D-090](/docs/decisions.md)). 설계의 원천은 계속 이 문서입니다. 숙련도 계산, 개념 단위 간격 반복(FSRS), 연습 세트 구성, 재학습 규칙, 오개념 상태 전이, 오늘의 학습과 목표 페이스 계산을 정의합니다.
 모든 기능은 I/O가 없는 순수 함수이며, 모든 판단은 근거와 함께 기록되어 학습자에게 설명할 수 있어야 합니다.
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-15
+- 최종 수정: 2026-11-23 (약점은 효과 숙련도 60 미만이거나 확정 오개념이 남은 개념: D-095)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -511,7 +511,7 @@ weakness = (100 − effective) × importanceFactor
          × (1 + 0.2 × min(consecutiveFailures, 3))
 ```
 
-- 대상: `introduced` 이상 개념 중 `weakness` 상위 3~5개.
+- 대상: `introduced` 이상이고 `effective < 60`이거나 확정된 오개념이 남은 개념 중 `weakness` 상위 3~5개. 복습으로 `effective`가 60 이상이 되고 확정 오개념이 없으면 약점이 아닙니다([D-095](/docs/decisions.md)).
 - 개념당 3~4문항. 첫 문항은 `maxDifficultyCorrect − 1`(최소 L1)로 시작해 정답이면 한 단계씩 올립니다.
 - 확정된 오개념이 있으면 그 오개념을 겨냥하는 문제를 첫 두 문항 안에 넣습니다.
 
@@ -781,7 +781,7 @@ export function replay(deps: EngineDeps, events: Iterable<EngineEvent>): ReplayR
 - 모든 함수는 입력을 변경하지 않고 새 객체를 반환합니다.
 - 시간은 `now` 인자로만 받습니다. `Date.now()`를 호출하지 않습니다(ESLint 규칙으로 금지).
 - 무작위는 `seed`로 만든 RNG만 씁니다(`Math.random` 금지).
-- 입력 타입은 `packages/shared`의 zod 스키마에서 파생합니다. 엔진은 입력을 다시 검증하지 않습니다(서버 경계에서 검증 완료).
+- 입력 타입은 `@proginone/shared`의 zod 스키마에서 파생합니다. 엔진은 입력을 다시 검증하지 않습니다(서버 경계에서 검증 완료).
 - 계수를 바꾸면 `ENGINE_VERSION`을 올리고 `CHANGELOG.md`에 기록합니다. 저장된 결과에는 계산한 엔진 버전이 남습니다.
 
 ### 패키지 구조
@@ -824,7 +824,7 @@ packages/learning-engine/src/
 
 ### 구현 메모 (v0.1)
 
-v0.1(M4)에서 구현하면서 위 스케치를 구체화하거나 바꾼 점입니다. 계수는 바꾸지 않았습니다. 공개 API 목록은 [패키지 README](/packages/learning-engine/README.md)에 있습니다.
+v0.1(M4)에서 구현하면서 위 스케치를 구체화하거나 바꾼 점입니다. 계수는 바꾸지 않았습니다. 공개 API 목록은 [패키지 README](https://github.com/ProgInOne/core/blob/develop/packages/learning-engine/README.md)에 있습니다.
 
 **범위**: 증거 가중치, 숙련도 갱신, 단계 게이트, FSRS 연동, 단원 연습 세트(통과 기준 포함), 복습 큐·복습 세트만 구현했습니다. 오개념 전이, 재학습 판정, 약점·평가·자유 연습 세트, 진행 중 적응(`nextAdaptiveStep`), 오늘의 학습, 페이스, 활동 시간, `replay`는 v0.2 이후입니다. 그래서 `AttemptEffects`에는 `misconceptions`, `remediation`이 아직 없습니다.
 
@@ -915,7 +915,7 @@ v0.2(M5)에서 [구현 메모 (v0.1)](#구현-메모-v01)의 "v0.2 이후" 항�
 | 오개념 겨냥 | 개념의 두 번째 문항까지 확정 오개념 겨냥 문제가 없으면 두 번째 문항을 겨냥 문제로 고릅니다(`misconception_target`) |
 | 배치 | 개념별 사다리 순서를 지키며 개념을 번갈아 냅니다 |
 | 후보 | 개념의 `practice`·`remedial` 문제. 통과 기준은 없습니다 |
-| 대상 개념 | `introduced` 이상이면서 **시도가 1건 이상** 있는 개념만 약점으로 봅니다. 레슨만 읽은 개념은 "아직 연습 전"이지 약점이 아닙니다 |
+| 대상 개념 | `introduced` 이상이면서 **시도가 1건 이상** 있는 개념만 약점으로 봅니다. 레슨만 읽은 개념은 "아직 연습 전"이지 약점이 아닙니다. 그중 `effective < dailyPlan.weaknessBelowEffective`(60)이거나 확정된 오개념이 남은 개념만 약점 목록·자동 대상에 들어갑니다(서버 `WeaknessService.rank`). 오늘의 학습의 약점 블록은 그중 60 미만만 담습니다. 학습자가 개념을 골라 시작한 세트는 기준과 상관없이 만듭니다([D-095](/docs/decisions.md)) |
 
 **오늘의 학습** (`planning/daily-plan.ts`, `buildDailyPlan`):
 

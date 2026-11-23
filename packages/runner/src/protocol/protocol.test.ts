@@ -1,4 +1,4 @@
-import { parseRunResult, type RunPlan } from '@proginone/shared';
+import { parseRunResult, type RunPlan } from '@proginone/run-contract';
 import { describe, expect, it } from 'vitest';
 import { resolveLimits } from './limits.ts';
 import {

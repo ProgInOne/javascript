@@ -5,7 +5,7 @@ ProgInOne의 커리큘럼 구조, 레슨 본문 형식, 문제 유형과 채점 
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-14
+- 최종 수정: 2026-11-23 (유형 틀·레지스트리·템플릿 엔진·선택형 유형을 공통 패키지 `@proginone/exercise-core`로 옮김: D-096)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [학습 엔진 설계](/docs/design/learning-engine.md), [코드 실행 샌드박스 설계](/docs/design/code-execution-sandbox.md), [AI 시스템 설계](/docs/design/ai-system.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -511,7 +511,7 @@ title: 웹 프론트엔드 기초
 courses: [html, css, js-basics]  # 빌드에 포함할 과정 (v1.x에서 js-advanced, browser-js 추가)
 ```
 
-구현 메모 (M4, `packages/content-schema`):
+구현 메모 (M4, `packages/content-schema`. 지금은 ProgInOne/core의 `@proginone/content-schema`이고, 언어별 값은 `tools/content-cli/src/schema.ts`가 확장: D-090, D-092):
 
 - `pack.yaml`은 `courses` 대신 `tracks: [{ id, title, summary, courses }]`를 씁니다. content.db의 `tracks` 테이블과 과정 목록 화면의 묶음이 여기서 나옵니다.
 - `course.yaml`에는 `language`(`html`/`css`/`javascript`), `level`(`intro`/`basic`/`advanced`), `depth`(`full`/`core`), `status`가 있습니다(content.db `courses` 컬럼과 일치). `lesson.yaml`에는 `summary`가 필수입니다.
@@ -767,8 +767,12 @@ review:                           # 제작 이력 (빌드가 검사)
 ### 문제 유형 레지스트리
 
 문제 유형은 플러그인입니다([FR-EX-01](/docs/product/prd.md)).
-`packages/exercise-kit`이 유형의 데이터·채점·검증 정의를, `packages/exercise-ui`가 렌더러를 등록합니다.
+`packages/exercise-kit`이 유형의 데이터·채점·검증 정의를, `packages/exercise-kit-ui`가 렌더러를 등록합니다.
 서버, 웹, `content-cli`는 레지스트리만 거쳐 유형별 동작을 호출하므로, 새 유형 추가 시 다른 코드를 고치지 않습니다.
+
+유형 틀(`ExerciseTypeDef`), 레지스트리 팩토리, 파라메트릭 템플릿 엔진, 선택형 3종(`mcq_single`, `mcq_multi`, `true_false`)은 공통 패키지 [`@proginone/exercise-core`](https://github.com/ProgInOne/core/blob/develop/packages/exercise-core/README.md)에 있습니다([D-096](/docs/decisions.md)).
+이 저장소의 `packages/exercise-kit`은 그 위에 JS 유형과 체크 언어를 얹고, `createExerciseRegistry({ types, parseRun: parseRunResult })`로 레지스트리를 만들어 기존 이름(`gradeSubmission`, `redactSpec` 등)으로 내보냅니다.
+아래 스케치는 설계 당시의 모양입니다. 공통 패키지에서는 유형 ID가 열린 문자열이고, 실행 결과·실행 계획이 제네릭 매개변수입니다.
 
 ```ts
 // packages/exercise-kit (I/O 없는 순수 정의)
@@ -819,14 +823,14 @@ export interface GradeResult {
   graderVersion: string;           // '<유형 ID>@<version>', attempts.grading_json에 저장
 }
 
-// packages/exercise-ui
+// packages/exercise-kit-ui (설계 당시 packages/exercise-ui)
 registerRenderer('mcq_single', McqSingleRenderer); // props: { spec: PublicSpec, onSubmit, state }
 ```
 
 공통 규칙:
 
 - 서버·웹·`content-cli`는 유형 정의를 직접 부르지 않고 경계 함수(`parseSpec`, `redactSpec`, `buildRunPlan`, `gradeSubmission`, `verifySpec`)를 씁니다. 경계 함수가 스펙·답안·`RunResult`를 스키마로 검증한 뒤 순수 구현을 호출하고, 잘못된 입력은 `ExerciseKitError`(`INVALID_SPEC`, `INVALID_ANSWER`, `INVALID_RUN_RESULT`, `RUN_REQUIRED` 등)로 던집니다. 오답은 오류가 아니라 정상적인 `GradeResult`입니다.
-- 샌드박스와 주고받는 계약(`SerializedValue`, 관측 단계 `ObservationStep`·`CheckBundle`, 관측값 `Observation`, `RunResult`, `RunPlan`)과 ProgInOne 콘솔 형식 함수는 `packages/shared`에 둡니다. `exercise-kit`과 `runner`가 모두 `shared`에만 의존할 수 있기 때문입니다([의존 방향 규칙](/docs/design/system-architecture.md#의존-방향-규칙)). 러너는 전송 전용 부분(`RunRequest`, `Limits`, `PreparedCode`, `RunEvent`)을 그 위에 정의합니다.
+- 샌드박스와 주고받는 계약(`SerializedValue`, 관측 단계 `ObservationStep`·`CheckBundle`, 관측값 `Observation`, `RunResult`, `RunPlan`)과 ProgInOne 콘솔 형식 함수는 이 저장소의 내부 패키지 `packages/run-contract`에 둡니다. `exercise-kit`과 `runner`가 모두 여기에 의존하고, 언어와 무관한 `@proginone/shared`(ProgInOne/core)에는 넣지 않습니다([의존 방향 규칙](/docs/design/system-architecture.md#의존-방향-규칙), [D-090](/docs/decisions.md)). 러너는 전송 전용 부분(`RunRequest`, `Limits`, `PreparedCode`, `RunEvent`)을 그 위에 정의합니다.
 - `outcome`은 `correct`이면 `correct`, 아니면 `score > 0`일 때 `partial`, 0이면 `incorrect`입니다. 실행이 `error`/`timeout`/`loop_limit`으로 끝나면 `error`이고, `crashed`/`aborted`면 `error`이면서 `engineApplicable: false`입니다([학습 엔진 설계](/docs/design/learning-engine.md#관측값)).
 - `correct`는 항상 이진 판정입니다. 부분 점수 `score`는 피드백과 통계에만 쓰고, 숙련도 반영 방식은 [학습 엔진 설계](/docs/design/learning-engine.md)가 정합니다.
 - 채점은 결정론적이어야 합니다. 같은 `spec`·`answer`·`run`이면 항상 같은 결과입니다.
@@ -1968,7 +1972,7 @@ slug는 바꾸지 않는 것이 원칙이지만, 커리큘럼 재구성(단원 �
 
 구현 메모 (M7, [D-057](/docs/decisions.md)):
 
-- `aliases.yaml` 형식은 위 예시와 같습니다(`packages/content-schema/src/aliases.ts`). `entity_kind`는 쓰지 않고 `to`가 현재 콘텐츠에서 무엇인지로 정합니다. `since`는 생략하면 빌드하는 팩 버전입니다. 검사는 `tools/content-cli/src/aliases.ts`이고, 빌드가 `content_id_aliases`에 행을 씁니다(split은 대상마다 한 행).
+- `aliases.yaml` 형식은 위 예시와 같습니다(`@proginone/content-schema`의 [`aliases.ts`](https://github.com/ProgInOne/core/blob/develop/packages/content-schema/src/aliases.ts)). `entity_kind`는 쓰지 않고 `to`가 현재 콘텐츠에서 무엇인지로 정합니다. `since`는 생략하면 빌드하는 팩 버전입니다. 검사는 `tools/content-cli/src/aliases.ts`이고, 빌드가 `content_id_aliases`에 행을 씁니다(split은 대상마다 한 행).
 - 사라진 slug는 **경고** 로 시작합니다(위 문장의 "오류" 대신). 목록 파일은 `<종류> <slug>` 줄의 정렬된 텍스트이고, `content-cli build`(초안 제외)만 갱신합니다. 의도한 삭제는 목록을 갱신해 커밋하면 경고가 사라지고, 그 diff가 검토 기록입니다. 목록 파일이 없으면 비교하지 않습니다.
 - 서버는 앱 시작과 백업 복원 뒤 user.db의 콘텐츠 참조 열을 한 번에 새 slug로 갱신합니다(`apps/server/src/db/user/content-aliases.ts`, 바꿀 행이 있을 때만 사전 백업, 적용한 별칭 집합의 지문을 `app_meta`에 기록). `merge`·`split`의 숙련도·기억 재계산과 시도 재배분은 아직 없습니다: 키가 겹치는 행(학습자·개념마다 한 행)은 옮기지 않고 고아로 남기며, 이력 행(시도·증거·복습 기록)은 모두 옮깁니다. `rename`의 "데이터 마이그레이션"은 이 갱신입니다.
 

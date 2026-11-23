@@ -3,9 +3,9 @@ import {
   exerciseViewSchema,
   hintResponseSchema,
   reportResponseSchema,
-  runPlanSchema,
   solutionResponseSchema,
 } from '@proginone/shared';
+import { runPlanSchema } from '@proginone/run-contract';
 import { describe, expect, it } from 'vitest';
 import {
   ANSWER_KEY_FIELDS,

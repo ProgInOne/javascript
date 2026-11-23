@@ -1,16 +1,12 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import {
-  conceptsFileSchema,
-  courseSchema,
   exerciseSourceSchema,
   lessonSchema,
   misconceptionsFileSchema,
   moduleSchema,
   packSchema,
   templateSourceSchema,
-  type ConceptSource,
-  type CourseSource,
   type ExerciseSource,
   type LessonSource,
   type MisconceptionSource,
@@ -21,6 +17,12 @@ import {
 import { parse as parseYaml } from 'yaml';
 import type { z } from 'zod';
 import type { Diagnostics } from './diagnostics.ts';
+import {
+  jsConceptsFileSchema,
+  jsCourseSchema,
+  type JsConceptSource as ConceptSource,
+  type JsCourseSource as CourseSource,
+} from './schema.ts';
 
 export interface Located<T> {
   file: string;
@@ -131,7 +133,7 @@ export function loadContent(root: string, diag: Diagnostics): ContentSource {
   const source: ContentSource = {
     root,
     pack: pack ? { file: packFile, data: pack } : null,
-    concepts: readList(join(root, 'concepts'), conceptsFileSchema, diag),
+    concepts: readList(join(root, 'concepts'), jsConceptsFileSchema, diag),
     misconceptions: readList(join(root, 'misconceptions'), misconceptionsFileSchema, diag),
     courses: [],
   };
@@ -141,7 +143,7 @@ export function loadContent(root: string, diag: Diagnostics): ContentSource {
   for (const courseSlug of packCourses) {
     const dir = join(root, 'courses', courseSlug);
     const file = join(dir, 'course.yaml');
-    const course = readYaml(file, courseSchema, diag);
+    const course = readYaml(file, jsCourseSchema, diag);
     if (!course) continue;
     if (course.id !== courseSlug)
       diag.error(file, `id(${course.id})가 디렉터리 이름(${courseSlug})과 다릅니다`);

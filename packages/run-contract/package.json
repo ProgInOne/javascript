@@ -1,0 +1,16 @@
+{
+  "name": "@proginone/run-contract",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JavaScript 러너와 채점기 사이의 계약(실행 결과·관측값·직렬화 값, 콘솔 형식)",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  }
+}

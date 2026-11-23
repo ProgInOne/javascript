@@ -1,4 +1,4 @@
-import type { Observation, RunResult, SerializedValue } from '@proginone/shared';
+import type { Observation, RunResult, SerializedValue } from '@proginone/run-contract';
 
 import { fromJson, type JsonValue } from '../common/values.ts';
 

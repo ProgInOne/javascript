@@ -36,19 +36,18 @@ import {
   type RemediationSuggestion,
 } from '@proginone/learning-engine';
 import {
-  parseRunResult,
   type AttemptRequest,
   type AttemptResponse,
   type SubmitAttemptResponse,
   type InlineAttemptRequest,
   type InlineAttemptResponse,
-  type RunResult,
   type TryAttemptRequest,
   type TryAttemptResponse,
   type SetAdaptation,
   type SkipItemResponse,
   type FinishSetResponse,
 } from '@proginone/shared';
+import { parseRunResult, type RunResult } from '@proginone/run-contract';
 import type { ContentExercise, ContentRepository } from '../../db/content/repository.ts';
 import {
   countAppliedItemAttempts,

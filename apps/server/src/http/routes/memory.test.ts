@@ -6,6 +6,7 @@ import {
   type SessionSummaryContent,
 } from '@proginone/shared';
 import { describe, expect, it } from 'vitest';
+import { TUTOR_PROFILE } from '../../ai/tutor-profile.ts';
 import { AiService } from '../../services/ai/ai-service.ts';
 import { MemoryService } from '../../services/tutor/memory-service.ts';
 import { TutorService } from '../../services/tutor/tutor-service.ts';
@@ -266,6 +267,7 @@ describe('tutor context · learning state and memory', () => {
     const ai = new AiService({ provider, log: silentLog });
     const runner = new TaskRunner({
       provider,
+      profile: TUTOR_PROFILE,
       now: () => ctx.clock.now,
       sleep: () => Promise.resolve(),
     });

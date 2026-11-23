@@ -5,7 +5,7 @@ ProgInOne의 두 SQLite 데이터베이스(`content.db`, `user.db`)의 테이블
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-15 (튜터 테이블 v0.1 구현 반영)
+- 최종 수정: 2026-11-23 (content.db 스키마를 공통 패키지로 옮기고 언어 값을 엶: D-090, D-092)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [학습 엔진 설계](/docs/design/learning-engine.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [AI 시스템 설계](/docs/design/ai-system.md)
 
 ## 배경과 범위
@@ -114,7 +114,7 @@ flowchart LR
 유형마다 구조가 다른 데이터에만 JSON 컬럼을 씁니다.
 
 - 컬럼명은 `_json` 접미사를 씁니다. SQLite 타입은 `TEXT`이며, Drizzle에서는 `text('spec_json', { mode: 'json' }).$type<T>()`로 선언합니다.
-- **쓰기 전에 반드시 zod로 검증** 합니다. 스키마는 `packages/shared`(또는 `exercise-kit`, `content-schema`)에 있고, 리포지토리 계층의 `insert`/`update` 래퍼가 검증을 강제합니다.
+- **쓰기 전에 반드시 zod로 검증** 합니다. 스키마는 `@proginone/shared`(또는 `exercise-kit`, `content-schema`)에 있고, 리포지토리 계층의 `insert`/`update` 래퍼가 검증을 강제합니다.
 - **읽을 때도 검증** 합니다(`safeParse`). 실패하면 행을 "손상됨"으로 로그에 남기고 해당 기능만 오류 상태로 표시합니다. 앱 전체를 멈추지 않습니다.
 - JSON 객체에는 `v`(스키마 버전 정수) 필드를 넣습니다. 구조가 바뀌면 읽기 시 업그레이드 함수(`upgradeSpecV1toV2` 등)를 적용합니다. 대량 변환이 필요하면 데이터 마이그레이션으로 처리합니다.
 - **조회 조건, 정렬, 조인에 쓰는 값은 JSON에 넣지 않고 일반 컬럼으로 둡니다.** 예외적으로 필요하면 생성 컬럼(`GENERATED ALWAYS AS (json_extract(...)) VIRTUAL`)과 인덱스를 추가합니다.
@@ -123,7 +123,7 @@ flowchart LR
 #### 불리언과 열거형
 
 - 불리언: `INTEGER` 0/1, `CHECK (col IN (0,1))`. Drizzle `integer(..., { mode: 'boolean' })`.
-- 열거형: `TEXT` + `CHECK (col IN (...))`. 값은 [용어집](/docs/glossary.md)의 코드 식별자를 씁니다. TypeScript 쪽은 `packages/shared`의 `as const` 배열에서 zod enum과 Drizzle `text({ enum })`을 함께 만듭니다.
+- 열거형: `TEXT` + `CHECK (col IN (...))`. 값은 [용어집](/docs/glossary.md)의 코드 식별자를 씁니다. TypeScript 쪽은 `@proginone/shared`의 `as const` 배열에서 zod enum과 Drizzle `text({ enum })`을 함께 만듭니다.
 
 #### 보관(soft delete) 정책
 
@@ -162,7 +162,7 @@ flowchart LR
 ### content.db 설계
 
 `content-cli build`가 매번 새로 만드는 파일입니다. 마이그레이션이 없습니다(전체 재생성).
-스키마는 `packages/content-schema/src/db/`에 DDL(`ddl.ts`)과 읽기용 Drizzle 테이블(`schema.ts`)로 정의하고, 빌드 도구와 서버가 공유합니다(두 정의가 같은지 테스트로 확인). 빌드 도구(`tools/`)가 앱(`apps/`)에 의존하지 않도록 서버 대신 패키지에 둡니다.
+스키마는 공통 패키지 `@proginone/content-schema/db`(ProgInOne/core의 [`packages/content-schema/src/db/`](https://github.com/ProgInOne/core/blob/develop/packages/content-schema/src/db))에 DDL(`ddl.ts`)과 읽기용 Drizzle 테이블(`schema.ts`)로 정의하고, 빌드 도구와 서버가 공유합니다(두 정의가 같은지 테스트로 확인). 빌드 도구(`tools/`)가 앱(`apps/`)에 의존하지 않도록 서버 대신 패키지에 둡니다. 스키마 버전 기록은 [패키지 README](https://github.com/ProgInOne/core/blob/develop/packages/content-schema/README.md#contentdb-스키마-버전)에 있습니다.
 
 M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons.read_minutes`·`objectives_json`, `exercises.prompt`·`code`·`misconception_ids_json`·`tags_json`, `misconceptions.diagnostic_hint`·`remedial_lesson_anchor`. `lessons.body_compiled`에는 검증된 MDX JSON 트리를 저장합니다([콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md#mdx-컴포넌트)). `projects`, `exercise_templates`는 해당 콘텐츠가 생길 때 추가합니다. M6에서 `assessments`를 추가했습니다(content.db 스키마 버전 2, 아래 [assessments, projects](#assessments-projects) 참고). 프로젝트는 테이블 대신 `exercises.usage = 'project'`로 표현합니다(스키마 버전 3). M7에서 `exercise_templates`와 시드 풀 `template_variants`를 추가했습니다(스키마 버전 4, 아래 [exercises, exercise_concepts, exercise_templates](#exercises-exercise_concepts-exercise_templates)의 구현 메모, [D-058](/docs/decisions.md)). `exercises.usage`에 본문 이해도 확인 `check`와 직접 써 보기 `try`를 더해 스키마 버전이 5가 되었습니다([D-091](/docs/decisions.md)). user.db는 바뀌지 않습니다: `check` 시도는 지금처럼 `practice_set_item_id`가 NULL인 `attempts`이고, `try` 채점은 기록하지 않습니다.
 
@@ -190,7 +190,7 @@ M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons
 | | `track_id` | TEXT | N | | FK → `tracks.id` |
 | | `title` | TEXT | N | | |
 | | `summary` | TEXT | N | | |
-| | `language` | TEXT | N | | `html` / `css` / `javascript`. 러너·에디터 기본 언어 결정 |
+| | `language` | TEXT | N | | 언어 slug. 이 저장소는 `html` / `css` / `javascript`. 러너·에디터 기본 언어 결정. 공통 스키마에는 `CHECK`가 없고 `content-cli`의 언어 키트가 검사(D-092) |
 | | `level` | TEXT | N | | `intro` / `basic` / `advanced` |
 | | `depth` | TEXT | N | `'full'` | `full` / `core` (D-003: JS는 full, HTML/CSS는 core) |
 | | `order_index` | INTEGER | N | | 트랙 내 권장 순서 |
@@ -231,7 +231,7 @@ M4 구현에서 아래 표에 더한 컬럼: `courses.objectives_json`, `lessons
 | | `summary` | TEXT | N | | 1~2문장 정의. AI 컨텍스트에 사용 |
 | | `importance` | TEXT | N | `'standard'` | `core` / `standard` / `minor`. 레슨 깊이, 문제 수 목표(FR-EX-09), 복습 우선순위 |
 | | `introduced_in_lesson_id` | TEXT | N | | FK → `lessons.id`. 처음 가르치는 단원 |
-| | `mdn_url` | TEXT | Y | | 참고 링크(FR-CUR-08) |
+| | `doc_url` | TEXT | Y | | 참고 문서 링크(FR-CUR-08). 이 저장소는 원본의 `mdn` 경로로 만든 MDN 주소(D-092, 스키마 버전 6 전에는 `mdn_url`) |
 | `concept_prerequisites` | `concept_id` | TEXT | N | | FK → `concepts.id` |
 | | `prerequisite_id` | TEXT | N | | FK → `concepts.id` |
 | | `strength` | TEXT | N | `'required'` | `required` / `helpful`. 재학습 탐색은 `required`만 따름 |
@@ -371,7 +371,7 @@ PRAGMA cache_size = -20000;       -- 약 20MB
 | | `created_at` | INTEGER | N | | |
 | `settings` | `learner_id` | TEXT | N | | PK 일부 |
 | | `key` | TEXT | N | | PK 일부. 예: `theme`, `editor.autocomplete`, `practice.askConfidence`, `tutor.proactiveSuggestions`, `hints.policy`, `ai.model`, `ai.reasoningEffort`. v0.3 구현 키: `theme`, `appearance.workbench`, `lesson.fontSize`, `lesson.predictFirst`, `editor.autocomplete`, `practice.askConfidence`, `tutor.proactiveSuggestions`, `hints.policy`([D-047](/docs/decisions.md)), v1.0 `ai.model`(모델 ID 또는 `null` = 제공자 기본 모델, `null`을 저장하면 행 삭제, [D-060](/docs/decisions.md)) |
-| | `value_json` | TEXT | N | | 값(zod 스키마는 키별로 `packages/shared/settings.ts`에 정의) |
+| | `value_json` | TEXT | N | | 값(zod 스키마는 키별로 `@proginone/shared`의 `settings.ts`에 정의) |
 | | `updated_at` | INTEGER | N | | |
 
 - Drizzle 마이그레이션 이력은 Drizzle 기본 테이블(`__drizzle_migrations`)에 남습니다.
@@ -827,7 +827,7 @@ AI가 생성한 문제는 학습자 고유 데이터이므로 `user.db`에 둡�
     - **롤링 요약**: 스레드의 새 요약은 이전 요약을 합쳐 대화 전체를 다루고, `tutor_threads.summary_id`가 가장 최근 요약을 가리킵니다. 이전 요약 행은 지우지 않지만, 장기 기억 조회(과거 요약, 재구성)는 `summary_id`가 가리키는 행만 읽습니다. 다음 요약은 `covered_until` 이후 메시지만 읽습니다.
     - `session_summary_concepts.summary_id`는 `ON DELETE CASCADE`입니다.
     - `scope_type = 'study_session'`은 열거형에만 두었습니다. `study_sessions`가 아직 없어 v0.2에서는 튜터 스레드만 요약합니다([D-035](/docs/decisions.md)).
-- `tutor_messages.meta_json`(TEXT, NULL 허용)을 추가했습니다. 튜터 답변의 `<meta>` 블록(`referencedConcepts`, `suggestedFollowUp`, `possibleMisconception` 등, 스키마는 `packages/shared`의 `tutorReplyMetaSchema`)을 담고, 이후 `misconception.propose`의 입력 신호로 씁니다. `attachments_json`에는 선택 영역(`{ type: 'selection', kind, text, sectionId? }`)을 담습니다.
+- `tutor_messages.meta_json`(TEXT, NULL 허용)을 추가했습니다. 튜터 답변의 `<meta>` 블록(`referencedConcepts`, `suggestedFollowUp`, `possibleMisconception` 등, 스키마는 `@proginone/shared`의 `tutorReplyMetaSchema`)을 담고, 이후 `misconception.propose`의 입력 신호로 씁니다. `attachments_json`에는 선택 영역(`{ type: 'selection', kind, text, sectionId? }`)을 담습니다.
 - 인덱스: `tutor_threads(learner_id, scope_type, scope_id, status)`, `tutor_threads(learner_id, last_message_at)`, `tutor_messages(thread_id, created_at)`.
 - 컨텍스트 빌더는 "현재 개념과 선수 개념에 연결된 최근 요약"을 `session_summary_concepts`로 조회합니다([AI 시스템 설계](/docs/design/ai-system.md)).
 

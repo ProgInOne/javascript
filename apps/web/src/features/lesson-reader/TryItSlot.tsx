@@ -7,16 +7,16 @@ import {
   type AnswerByType,
   type RenderableExercise,
   type RenderableTypeId,
-} from '@proginone/exercise-ui';
+} from '@proginone/exercise-kit-ui';
 import {
   SETTINGS_DEFAULTS,
   type CodeDraft,
   type ExerciseView,
   type OpenedHint,
-  type RunResult,
   type SolutionResponse,
   type TryAttemptResponse,
 } from '@proginone/shared';
+import { type RunResult } from '@proginone/run-contract';
 import { Button, Skeleton } from '@proginone/ui';
 import { useQuery } from '@tanstack/react-query';
 import { CircleCheck, PenLine } from 'lucide-react';

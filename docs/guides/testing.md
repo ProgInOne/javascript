@@ -26,8 +26,8 @@ CI는 PR과 `develop`·`main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e`
 
 - 파일 위치: 대상 옆의 `*.test.ts(x)`.
 - 루트 `vitest.config.ts`의 프로젝트:
-  - `node`: 서버, `shared`, 스크립트
-  - `ui`: `packages/ui` 컴포넌트(jsdom)
+  - `node`: 서버, `run-contract`·`runner`·`exercise-kit` 등 패키지, 스크립트
+  - `ui`: `packages/exercise-kit-ui` 컴포넌트(jsdom, `packages/exercise-kit-ui/src/test/jsdom-setup.ts`). 기본 컴포넌트(`@proginone/ui`)와 공통 문제 UI(`@proginone/exercise-ui`)의 테스트, 토큰 대비 검사는 ProgInOne/core에서 돕니다
   - `web`: `apps/web`(jsdom, jest-dom 매처)
 - 하나만 실행: `pnpm vitest run --project web`, `pnpm vitest run apps/server/src/services/backup`.
 
@@ -39,7 +39,7 @@ CI는 PR과 `develop`·`main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e`
 - **시간**: 날짜 경계나 보존 정책은 `now`를 주입해 테스트합니다. 실제 시계를 기다리지 않습니다.
 - 버그 수정에는 재현 테스트를 먼저 추가합니다.
 - **학습 시나리오(여러 날)**: 며칠에서 몇 주에 걸친 학습 규칙(복습 간격, 단계 게이트)은 `apps/server/src/test/practice-app.ts`의 `practiceApp()`(실제 임시 user.db, HTTP API, `clock.now`로 움직이는 가짜 시계, Asia/Seoul 학습자)으로 날마다 같은 시각(예: 19:00)에 세션을 돌려 테스트합니다. 예: `routes/simulation.test.ts`(30일), `routes/mastered-gate.test.ts`(3주 `mastered` 게이트). 성공 경로 하나를 두고, 조건 하나만 바꾼 변형마다 결과(단계, `nextStage.missing`)가 **그 조건 하나만** 빠졌음을 확인합니다. FSRS는 실제 ts-fsrs(퍼즈는 개념 ID로 시드)라 결정론적이므로 평가 날짜와 등급(`review_logs`)을 그대로 단언해 흐름이 바뀌면 바로 드러나게 합니다.
-- **AI**: 서비스 흐름은 `MockProvider`(시나리오 주입 `enqueue`, 요청 기록 `requests`)로 테스트합니다. Codex 어댑터는 실제 `codex app-server` 교환을 녹화해 재생하는 계약 테스트(`packages/ai/src/provider/codex/replay.test.ts`)와 가짜 `codex`(`fake-codex.mjs`)로 테스트하며, CI는 실제 Codex를 쓰지 않습니다. 다시 녹화하는 법은 [`@proginone/ai` README](/packages/ai/README.md#codex-프로토콜-계약-테스트)에 있습니다.
+- **AI**: 서비스 흐름은 `MockProvider`(시나리오 주입 `enqueue`, 요청 기록 `requests`)로 테스트합니다. Codex 어댑터의 계약 테스트(녹화 재생, 가짜 `codex`)는 `@proginone/ai`와 함께 core 저장소로 옮겼고, 다시 녹화하는 법은 core의 [`@proginone/ai` README](https://github.com/ProgInOne/core/blob/develop/packages/ai/README.md#codex-프로토콜-계약-테스트)에 있습니다. 이 저장소에는 튜터 Codex 설정이 PoC와 같은지 보는 테스트(`apps/server/src/ai/codex-config.test.ts`)가 남습니다. CI는 실제 Codex를 쓰지 않습니다.
 - **콘텐츠 실행 검증**: `tools/content-cli`의 판정 로직은 가짜 러너(`src/test/fake-runner.ts`)로 테스트합니다. 실제 러너를 쓰는 `src/verify/browser.test.ts`는 Chromium이 없으면 건너뜁니다. 실제 `content/` 전체는 CI e2e 작업의 `pnpm content:check:run --frozen`이 검증합니다([콘텐츠 작성 가이드](/docs/guides/content-authoring.md#contentcheckrun-실행-검증)).
 
 ## E2E (Playwright)
@@ -113,6 +113,7 @@ SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chr
 - 기준 이미지는 `e2e/tests/__screenshots__/`에 커밋합니다. 글꼴 렌더링이 OS마다 달라서 **반드시 Docker(`pnpm test:e2e:visual`)에서 만들고 비교**합니다. 로컬 `pnpm test:e2e`는 `@visual` 테스트를 건너뜁니다.
 - 매번 바뀌는 값(백업 시각·크기 등)은 고정 응답(`page.route`)으로 바꾸거나 `mask`로 가립니다.
 - 빈·오류·로딩 상태는 `tests/state-mocks.ts`의 고정 응답으로 만듭니다. 로딩은 학습 API 응답을 붙잡아 두어(`holdLearningApi`) 스켈레톤을 고정하고, `animations: 'disabled'`로 반짝임을 멈춥니다.
+- Docker 안에서도 `pnpm install`을 하므로 공통 패키지 토큰이 필요합니다. 스크립트가 호스트의 `~/.npmrc`를 컨테이너 사용자 설정으로 넣고, CI에서는 `NODE_AUTH_TOKEN`을 씁니다([시작하기 > 공통 패키지 토큰](/docs/guides/getting-started.md#공통-패키지-토큰)).
 - 화면을 의도적으로 바꿨다면 `pnpm test:e2e:visual --update`로 다시 만들고, PR에서 이미지 차이를 직접 확인한 뒤 커밋합니다.
 - 로컬 Docker를 쓸 수 없으면 GitHub Actions의 `visual-baselines` 워크플로로 같은 이미지에서 기준 이미지를 만듭니다: `gh workflow run visual-baselines.yml --ref <브랜치>`로 실행하고, 끝나면 `gh run download <실행 ID> -n visual-baselines -D e2e/tests/__screenshots__`로 받아 차이를 확인한 뒤 커밋합니다. 워크플로는 커밋하거나 푸시하지 않습니다.
 - CI가 실패하면 `playwright-report` 아티팩트의 차이 이미지를 확인합니다.
@@ -141,7 +142,7 @@ SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chr
 - 1920: 과정, 단원 평가, 튜터 드로어, 오답 노트, 설정의 나머지 화면. 이 화면들은 최대 너비가 정해진 한 단 배치라 1440과 차이가 여백뿐입니다.
 - 1024: 튜터 드로어, 객관식·파슨스 문제, 단원 평가. 1024 배치는 `responsive.spec.ts`가 기능으로 확인합니다(가로 스크롤 없음, 드로어 겹침).
 - 상태: 화면별 오류·로딩(공통 컴포넌트 `QueryState`·`ErrorState`·`Skeleton`이라 대표 하나로 봄), 실습 모드의 예측·파슨스 유형(1280·1440).
-- 컴포넌트 단위 촬영: 설계의 컴포넌트 카탈로그 페이지(`/__catalog`)가 아직 없습니다. 컴포넌트 상태는 `packages/ui`의 Vitest 테스트가 확인합니다.
+- 컴포넌트 단위 촬영: 설계의 컴포넌트 카탈로그 페이지(`/__catalog`)가 아직 없습니다. 컴포넌트 상태는 ProgInOne/core `packages/ui`의 Vitest 테스트가 확인합니다.
 
 ## 관련 문서
 
@@ -166,4 +167,5 @@ SMOKE_URL=http://127.0.0.1:4661 pnpm --filter @proginone/e2e smoke --project=chr
 - 확인: `gh api repos/ProgInOne/javascript/rulesets`.
 - 릴리스 태그 `v*`: 한 번 만들면 지우거나 옮길 수 없습니다. 잘못 만든 태그는 새 버전으로 고칩니다.
 - Actions: 허용한 액션만 쓸 수 있습니다(GitHub 소유와 `pnpm/action-setup`). 새 외부 액션을 쓰려면 저장소 설정 → Actions → General의 허용 목록에 먼저 추가합니다. 외부 기여자의 PR은 소유자가 승인해야 CI가 돕니다.
+- 공통 패키지(`@proginone/*`): CI·릴리스·시각 기준 이미지 워크플로는 `packages: read` 권한의 `GITHUB_TOKEN`으로 GitHub Packages에서 받습니다(`setup-node`가 만드는 사용자 설정). 패키지는 공개이고, 조직 설정 → Packages → Package creation에서 Public을 허용해 두었습니다(새 패키지도 공개로 바꿀 수 있도록, [D-094](/docs/decisions.md)).
 - self-hosted runner를 이 저장소에 다시 등록하지 않습니다.

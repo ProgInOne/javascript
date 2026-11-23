@@ -12,7 +12,8 @@ import {
   type TrueFalseSpec,
   type WebTaskSpec,
 } from '@proginone/exercise-kit';
-import { formatValue, type SolutionView } from '@proginone/shared';
+import { type SolutionView } from '@proginone/shared';
+import { formatValue } from '@proginone/run-contract';
 
 /**
  * What "정답 보기" reveals for a validated spec (D-010: only after the third hint). exercise-kit

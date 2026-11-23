@@ -3,7 +3,7 @@
 릴리스 번들로 ProgInOne을 설치하고, 새 버전으로 올리고, 문제가 생기면 되돌리는 방법입니다.
 
 - 대상: 학습자(앱 사용)
-- 최종 수정: 2026-11-16
+- 최종 수정: 2026-11-23 (공통 패키지 동봉: D-093)
 - 개발 환경(소스에서 실행, 개발 모드)은 [시작하기](/docs/guides/getting-started.md)를 봅니다.
 
 ## 요구 사항
@@ -54,6 +54,7 @@ pnpm install --prod --frozen-lockfile
 
 - `--prod`는 실행에 필요한 의존성만 설치합니다. 테스트 도구(Playwright 등)는 받지 않습니다.
 - `--frozen-lockfile`은 릴리스에 고정된 의존성 버전을 그대로 씁니다.
+- GitHub 계정이나 토큰은 필요 없습니다. 언어 저장소들이 함께 쓰는 공통 패키지(`@proginone/*`)는 묶음의 `vendor/` 폴더에 들어 있고, 나머지 의존성은 npm 공개 레지스트리에서 받습니다.
 - 의존성의 설치 스크립트는 허용 목록에 있는 것만 실행됩니다(`pnpm-workspace.yaml`의 `allowBuilds`). 그래서 "Agent skills awaiting approval" 같은 안내가 나와도 승인할 필요가 없습니다.
 
 ## 처음 시작하기

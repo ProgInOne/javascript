@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function, @typescript-eslint/no-extraneous-class --
    Function kinds are told apart from real (empty) functions and classes. */
 import { describe, expect, it } from 'vitest';
-import { formatConsoleArgs, serializedValueSchema } from '@proginone/shared';
+import { formatConsoleArgs, serializedValueSchema } from '@proginone/run-contract';
 import { createSerializer, deserialize, estimateSize } from './serialize.ts';
 
 const ser = createSerializer();

@@ -3,7 +3,7 @@
 ProgInOne 릴리스를 만들고 확인하는 방법입니다.
 
 - 대상: 유지 관리자
-- 최종 수정: 2026-11-22 (develop/main 운영: D-090)
+- 최종 수정: 2026-11-23 (공통 패키지 동봉: D-093)
 - 설치하는 쪽의 절차는 [설치와 업그레이드](/docs/guides/install-and-upgrade.md)에 있습니다.
 
 ## 버전 체계
@@ -13,7 +13,7 @@ ProgInOne 릴리스를 만들고 확인하는 방법입니다.
 | 앱 | SemVer `MAJOR.MINOR.PATCH` | 루트 `package.json`의 `version`, git 태그 `v<버전>` |
 | 콘텐츠 팩 | `YYYY.MM.DD.N` | `content/pack.yaml` |
 | user.db 스키마 | 마이그레이션 일련번호 | `apps/server/src/db/user/migrations/` |
-| content.db 스키마 | 정수 | `packages/content-schema/src/db/ddl.ts`의 `CONTENT_DB_SCHEMA_VERSION` |
+| content.db 스키마 | 정수 | `@proginone/content-schema/db`의 `CONTENT_DB_SCHEMA_VERSION`(ProgInOne/core) |
 
 - 1.0 이전(`0.x`)에는 MINOR가 호환성 깨짐을 포함할 수 있습니다. 단, user.db 마이그레이션은 항상 전진 호환입니다(새 앱이 예전 데이터를 엽니다).
 - 마일스톤 릴리스는 MINOR를 올립니다(M4 `0.1.0`, M5 `0.2.0`, M6 `0.3.0`, M7 `1.0.0`). 릴리스 뒤의 버그 수정만 담으면 PATCH를 올립니다.
@@ -80,16 +80,28 @@ git push origin v0.4.0
 | 단계 | 하는 일 |
 |---|---|
 | 체크아웃, pnpm·Node 준비 | `.nvmrc`의 Node, `packageManager`의 pnpm |
-| `pnpm install --frozen-lockfile` | 빌드에 필요한 개발 의존성 포함 설치 |
+| `pnpm install --frozen-lockfile` | 빌드에 필요한 개발 의존성 포함 설치. `@proginone/*`는 GitHub Packages에서 `GITHUB_TOKEN`(`packages: read`)으로 받음 |
 | Build app and content | `pnpm build`(웹 앱 `apps/web/dist`), `pnpm content:build`(승인된 문제만 담은 `content/dist/content.db`) |
-| Bundle | `git archive`로 태그 커밋의 추적 파일을 `proginone-<버전>/` 아래에 묶고, 빌드 결과물 두 가지를 추가해 `proginone-<버전>.tar.gz`와 `proginone-<버전>.tar.gz.sha256`을 만듦 |
+| Bundle | `tools/release-bundle.sh <버전>`: 태그 커밋의 추적 파일(`git archive`)을 임시 폴더의 `proginone-<버전>/`에 풀고 빌드 결과물 두 가지와 [공통 패키지](#공통-패키지-동봉)를 넣은 뒤 `proginone-<버전>.tar.gz`와 `.sha256`을 만듦 |
 | Release notes from CHANGELOG | `CHANGELOG.md`의 `## [<버전>]` 섹션을 `notes.md`로 추출. 비어 있으면 실패 |
 | Publish | `gh release create`로 GitHub Release `ProgInOne <버전>`을 만들고 두 파일을 올림 |
+
+### 공통 패키지 동봉
+
+학습자가 GitHub 토큰 없이 설치할 수 있도록, 레지스트리에서 받는 `@proginone/*` 패키지를 묶음 안에 넣습니다([D-093](/docs/decisions.md)).
+GitHub Packages는 공개 패키지도 토큰이 있어야 내려받을 수 있기 때문입니다.
+
+- `tools/vendor-proginone.mjs`가 설치된 체크아웃에서 `pnpm ls`로 정확한 버전을 읽고, 패키지마다 `npm pack`으로 받아 묶음의 `vendor/`에 둡니다.
+- 묶음의 `pnpm-workspace.yaml`에 `overrides`(`'@proginone/<이름>': file:vendor/<파일>.tgz`)를 더하고, `pnpm install --lockfile-only`로 묶음의 `pnpm-lock.yaml`을 다시 만듭니다. 그래서 **묶음의 두 파일은 태그 커밋과 다릅니다.**
+- 워크스페이스 안의 패키지(`link:`)는 건드리지 않습니다. 레지스트리에서 받는 `@proginone/*`가 없으면 아무것도 하지 않습니다.
+- 사전 배포판(`next`)에 의존한 채 릴리스하지 않습니다. `main`으로 가기 전에 정식 버전으로 바꿉니다(core의 [언어 저장소에서 쓰기 > 버전 고르기][core-versions]).
+
+[core-versions]: https://github.com/ProgInOne/core/blob/develop/docs/guides/consuming.md#버전-고르기
 
 ### 실행 환경 (GitHub 호스트 또는 self-hosted)
 
 - 기본은 GitHub 호스트 runner(`ubuntu-latest`)입니다.
-- 저장소 변수 `CI_RUNNER`가 `self-hosted`이면 릴리스 작업도 소유자 Mac의 self-hosted runner(라벨 `self-hosted`, `proginone`)에서 돕니다([D-055](/docs/decisions.md)). 묶기 단계는 GNU tar(`--transform`)와 macOS bsdtar(`-s`)를 모두 지원하고, 체크섬은 양쪽에 있는 `shasum -a 256`으로 만듭니다.
+- 저장소 변수 `CI_RUNNER`가 `self-hosted`이면 릴리스 작업도 소유자 Mac의 self-hosted runner(라벨 `self-hosted`, `proginone`)에서 돕니다([D-055](/docs/decisions.md)). 묶기 스크립트는 임시 폴더에서 묶음을 조립한 뒤 압축하므로 GNU tar와 macOS bsdtar의 차이에 영향받지 않고, 체크섬은 양쪽에 있는 `shasum -a 256`으로 만듭니다.
 - 현재 설정 확인: `gh variable list`. 실행 확인: `gh run list --workflow release.yml`, `gh run watch <id> --exit-status`.
 - 워크플로가 실패하면 원인을 고친 뒤 태그를 지우고(`git push --delete origin v<버전>`, `git tag -d v<버전>`) 고친 커밋에 다시 태그를 붙입니다. 이미 Release가 만들어졌다면 `gh release delete v<버전>`으로 먼저 지웁니다.
 
@@ -97,6 +109,9 @@ git push origin v0.4.0
 
 Actions를 쓸 수 없을 때(v0.3.0: GitHub Actions 사용량 소진) 워크플로와 같은 절차를 로컬에서 실행해 Release를 만듭니다.
 태그 커밋을 깨끗한 임시 작업 트리에서 빌드해, 작업 중인 변경이나 무시된 파일이 번들에 섞이지 않게 합니다.
+`@proginone/*`를 받고 동봉하려면 사용자 설정(`~/.npmrc`)에 `read:packages` 토큰이 있어야 합니다(core의 [개발 컴퓨터의 토큰][core-token]).
+
+[core-token]: https://github.com/ProgInOne/core/blob/develop/docs/guides/consuming.md#개발-컴퓨터의-토큰
 
 ```shell
 version=0.3.0
@@ -108,15 +123,7 @@ cd "$work/src"
 pnpm install --frozen-lockfile
 pnpm build
 pnpm content:build
-
-git archive --format=tar --prefix="${name}/" HEAD > "$work/${name}.tar"
-if tar --version | grep -q GNU; then
-  tar --append -f "$work/${name}.tar" --transform "s,^,${name}/," apps/web/dist content/dist/content.db
-else
-  tar -rf "$work/${name}.tar" -s ",^,${name}/," apps/web/dist content/dist/content.db
-fi
-gzip -9 "$work/${name}.tar"
-(cd "$work" && shasum -a 256 "${name}.tar.gz" > "${name}.tar.gz.sha256")
+tools/release-bundle.sh "$version" "$work"
 
 awk -v v="$version" '
   $0 ~ "^## \\[" v "\\]" { on = 1; next }
@@ -147,10 +154,10 @@ Release에 올라간 파일로 실제 설치를 해 봅니다. 임시 폴더와 
     shasum -a 256 -c proginone-0.3.0.tar.gz.sha256
     ```
 
-1.  번들 내용을 확인합니다. 빌드 결과물 두 가지가 있어야 합니다.
+1.  번들 내용을 확인합니다. 빌드 결과물 두 가지와, 레지스트리 `@proginone/*`에 의존한다면 `vendor/`의 패키지 파일이 있어야 합니다.
 
     ```shell
-    tar -tzf proginone-0.3.0.tar.gz | grep -E 'apps/web/dist/index.html|content/dist/content.db'
+    tar -tzf proginone-0.3.0.tar.gz | grep -E 'apps/web/dist/index.html|content/dist/content.db|/vendor/.+\.tgz'
     ```
 
 1.  설치하고 임시 데이터 위치로 시작합니다.

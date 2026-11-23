@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { runInNewContext } from 'node:vm';
 import { instantiateVariant, sampleSeeds } from '@proginone/exercise-kit';
-import type { RunPlan, RunResult } from '@proginone/shared';
+import type { RunPlan, RunResult } from '@proginone/run-contract';
 import Database from 'better-sqlite3';
 import { describe, expect, it } from 'vitest';
 import { buildContent } from './build.ts';

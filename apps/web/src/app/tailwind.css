@@ -1,9 +1,9 @@
 /*
  * Tailwind CSS v4 on top of the ProgInOne design tokens (D-006, D-025).
  *
- * - Tokens stay the source of truth (packages/ui/src/tokens/tokens.css). This file only exposes
+ * - Tokens stay the source of truth (@proginone/ui tokens.css, ProgInOne/core). This file only exposes
  *   them as utilities; no Tailwind default palette, so off-token colors cannot creep in.
- * - Preflight is skipped: packages/ui base.css is the reset (layer base).
+ * - Preflight is skipped: @proginone/ui base.css is the reset (layer base).
  * - Same-named variables (--radius-*, --font-*) resolve to the unlayered token values, which
  *   win over Tailwind's @layer theme declarations.
  */
@@ -15,6 +15,7 @@
 @import '@proginone/ui/base.css' layer(base);
 @import '@proginone/ui/components.css' layer(components);
 @import '@proginone/exercise-ui/exercise-ui.css' layer(components);
+@import '@proginone/exercise-kit-ui/exercise-kit-ui.css' layer(components);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));

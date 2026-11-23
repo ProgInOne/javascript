@@ -817,3 +817,44 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - 검토한 대안: 언어 목록을 받는 스키마 팩토리(타입은 가장 정확하지만 DDL·API 계약까지 제네릭이 되어 복잡함), core의 enum에 언어를 계속 추가(단순하지만 언어마다 core를 고쳐 배포해야 함).
 - 이 저장소의 반영: 1차 분리 패키지로 전환하는 PR에서 `content-cli`·서버·웹이 확장 지점을 쓰고 `mdnUrl`을 `docUrl`로 바꿉니다.
 - **`@proginone/*` 패키지는 공개합니다.** 조직 패키지는 처음 배포하면 비공개로 만들어지므로, 패키지마다 GitHub 웹 화면(Package settings → Danger Zone → Change visibility)에서 공개로 바꿉니다. 공식 API가 없고 되돌릴 수 없습니다. 공개 패키지도 GitHub Packages에서 받으려면 토큰이 필요하다는 점(D-090)은 같습니다.
+
+## D-093. 릴리스 묶음에 공통 패키지를 동봉(D-090의 설치 방법 변경) — `확정`
+- 2026-11-23, 사용자 결정(D-090의 "서버를 esbuild로 한 파일로 묶기"를 구현하려다 위험을 발견).
+- 배경: 서버는 실행 중에 소스 위치를 기준으로 파일을 찾습니다(`migrations` 폴더, 루트 `package.json`의 버전, `apps/web/dist`). 러너 셸(`/sandbox/runner.html`)은 처음 요청받을 때 `packages/runner`의 TS 원본을 esbuild로 묶습니다. 서버를 한 파일로 묶으면 이 경로들과 셸 빌드 방식을 모두 바꿔야 해, 학습자가 실제로 실행하는 경로가 크게 달라집니다.
+- **학습자가 토큰 없이 설치한다는 D-090의 목표는 그대로 두고, 방법을 동봉으로 바꿉니다.** 릴리스 묶기(`tools/release-bundle.sh`)가 레지스트리에서 받는 `@proginone/*`를 `npm pack`으로 받아 묶음의 `vendor/`에 넣습니다. 그리고 묶음의 `pnpm-workspace.yaml`에 `overrides`(`file:vendor/<파일>.tgz`)를 더하고 잠금 파일을 다시 만듭니다(`tools/vendor-proginone.mjs`). 서버 코드, 실행 방식, 설치 명령(`pnpm install --prod --frozen-lockfile`)은 그대로입니다.
+- 묶음의 `pnpm-workspace.yaml`과 `pnpm-lock.yaml`은 태그 커밋과 다릅니다([릴리스 절차 > 공통 패키지 동봉](/docs/guides/release.md#공통-패키지-동봉)).
+- 묶기는 `git archive`를 임시 폴더에 풀어 조립한 뒤 압축합니다. 예전처럼 tar에 덧붙이지 않으므로 GNU tar·bsdtar 분기가 없어졌고, 워크플로와 로컬 대체 절차가 같은 스크립트를 씁니다.
+- 확인: learning-engine을 `next` 사전 배포판으로 바꾼 임시 커밋으로 묶음을 만들었습니다. 토큰이 없는 깨끗한 폴더에서 설치하고 시작한 뒤, 릴리스 스모크 테스트(토큰 검사, 실제 콘텐츠의 핵심 흐름) 두 개가 모두 통과했습니다.
+
+## D-094. 공통 패키지를 받는 설정: 레지스트리는 저장소, 토큰은 사용자 설정 — `확정`
+- 2026-11-23, D-090·D-092를 적용하며 정한 운영 방식(조직 설정 변경은 사용자가 직접 함).
+- **저장소의 `.npmrc`에는 레지스트리 주소(`@proginone:registry=https://npm.pkg.github.com`)만 둡니다.** pnpm 12는 저장소가 관리하는 `.npmrc`의 인증 설정에서 환경 변수를 펼치지 않고 무시합니다("repository-controlled registry credentials"). 그래서 토큰은 사용자 설정에만 둡니다.
+  - 개발 컴퓨터: `~/.npmrc`에 `read:packages` 토큰([시작하기 > 공통 패키지 토큰](/docs/guides/getting-started.md#공통-패키지-토큰)).
+  - GitHub Actions: `setup-node`의 `registry-url`·`scope`가 만드는 사용자 설정과 `NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}`. 워크플로 권한에 `packages: read`를 더합니다.
+  - Docker E2E(`tools/e2e-docker.sh`): 호스트의 `~/.npmrc`를 컨테이너 사용자 설정으로 넣고, `NODE_AUTH_TOKEN`이 있으면 함께 씁니다.
+- **`minimumReleaseAgeExclude`에 `@proginone/*`를 더합니다.** pnpm 12는 기본으로 배포된 지 하루가 안 된 버전을 거부하는데, core의 `next` 사전 배포판은 배포 몇 분 뒤에 이 저장소가 씁니다. 우리가 만든 패키지라 공급망 지연 규칙에서 뺍니다.
+- **조직 설정 → Packages → Package creation에서 Public을 허용했습니다.** 이 설정이 꺼져 있으면 소유자도 패키지를 공개로 바꿀 수 없습니다(D-092의 공개 결정을 적용하다 발견). 새 패키지도 공개로 바꿔야 하므로 켜 둡니다. 조직 구성원은 소유자뿐이라 다른 사람이 공개 패키지를 만들 위험은 없습니다(D-086).
+
+## D-095. 약점은 효과 숙련도 60 미만이거나 확정 오개념이 남은 개념만: 복습으로 올라가면 목록에서 빠짐 — `확정`
+- 2026-11-23, 사용자 버그 보고("복습 완료했는데도 계속 약점으로 남아있는 거 같은데?")와 지시("복습을 통해 점수가 높아지면 더 이상 약점이 아니게 되는 거잖아").
+- 원인: 약점 점수 `(100 − effective) × …`는 숙련도가 100 미만이면 항상 0보다 큽니다. 약점 목록은 점수 0보다 큰 개념의 상위 10개를 보여 주므로, 약점 집중 세트를 다 맞혀 숙련도가 올라도 순위만 내려갈 뿐 목록에서 빠지지 않았습니다. 학습자 기록에서는 `html.doc.dom-tree`가 약점 세트를 두 번 모두 맞혀 49 → 58 → 62가 되었는데도 약점으로 남아 있었고, 연습한 28개 개념이 모두 약점 후보였습니다.
+- **약점(목록, 자동 추천 대상)은 효과 숙련도가 `dailyPlan.weaknessBelowEffective`(60) 미만이거나 확정된 오개념이 남은 개념만으로 합니다.** 60은 오늘의 학습의 약점 블록과 선행 개념 경고가 이미 쓰는 기준이라 새 수치를 만들지 않습니다. 오늘의 학습의 약점 블록은 지금처럼 60 미만만 담습니다. 연속 오답과 의심 단계 오개념은 순위를 올리는 데만 씁니다.
+- **확정된 오개념은 풀릴 때까지 약점으로 둡니다**(사용자 결정). 개념 지도의 약점 표시, 빈 약점 카드의 안내("숙련도가 낮거나 오개념이 보이는 개념")와 맞추기 위해서입니다. 오개념은 겨냥 문제를 서로 다른 날 두 번 맞히면 풀리므로, 복습한 당일에는 남고 다른 날 한 번 더 맞히면 빠집니다.
+- **학습자가 개념을 골라 약점 세트를 시작하면(`conceptIds`) 기준과 상관없이 만듭니다.** 같은 날 앞선 복습으로 숙련도가 60을 넘은 뒤 오늘의 학습의 "약점 집중 시작"을 누르거나, 선행 개념 경고에서 연습을 시작해도 막히지 않습니다.
+- 구현 위치: 이 저장소 서버의 `WeaknessService.rank`(`apps/server/src/services/practice/weakness.ts`). 엔진(`rankWeakConcepts`·`selectWeaknessTargets`)은 ProgInOne/core의 공통 패키지라 이번에는 바꾸지 않았습니다. 다른 언어 저장소도 같은 문제를 겪으므로, 다음 core 변경 때 엔진의 규칙으로 옮깁니다.
+- 검토한 대안: 숙련도만으로 판단(오개념이 남았는데 약점에서 빠져 개념 지도와 어긋남), 약점 세트를 모두 맞힌 개념을 다음 날까지 숨기기(규칙이 늘고, 숙련도가 여전히 낮으면 다음 날 다시 나타나 혼란스러움), 기준 50(50대 개념을 복습 큐에만 맡기게 되어 약점 연습 기회가 줄어듦).
+
+## D-096. 2차 분리의 경계: 문제 유형 레지스트리 팩토리, `exercise-core` 범위, 언어별 주입 지점 — `확정`
+- 2026-11-23, 사용자 결정(D-090의 2차 분리를 시작하며 경계를 정함).
+- **문제 유형 레지스트리는 core의 팩토리(`createExerciseRegistry(types)`)로 만듭니다.** 유형 ID는 문자열로 열어 두고, 각 언어 저장소가 자기 유형 목록으로 레지스트리를 만듭니다(D-092와 같은 방식). 실행 결과(`RunResult`)와 실행 계획(`RunPlan`) 타입은 유형 정의의 제네릭 매개변수로 바꿔 core가 JS 러너 계약을 모르게 합니다. 템플릿 엔진은 레지스트리를 인자로 받습니다. 고정 목록에 언어별 유형을 모두 넣는 방식은 core가 언어마다 커져서 고르지 않았습니다.
+- **`@proginone/exercise-core`에는 유형 틀, 공통 도구(오류, 식별자, 난수, 정규화), 파라메트릭 템플릿, 선택형 3종(`mcq_single`, `mcq_multi`, `true_false`)만 넣습니다.** 체크 언어(DOM·CSS·값 비교), 코드 유형(`implement_function`, `fix_bug`, `web_task`), 실행 결과를 쓰는 유형(`fill_blank`, `parsons`, `predict_output`, `find_bug_line`)은 이 저장소의 `packages/exercise-kit`에 남깁니다. 이 패키지는 core 위에 JS 유형을 얹습니다. `fill_blank` 텍스트 모드나 `parsons` 순서 채점처럼 겹칠 부분은 Go 코드 유형을 만든 뒤 실제로 겹치는지 보고 옮깁니다(D-090의 3차와 같은 원칙).
+- **`@proginone/exercise-ui`에는 위젯(확신도, 힌트, 피드백, 체크 목록, 단축키, 코드 블록, 인라인 텍스트), 선택형 렌더러 3종, `CodeEditor`를 넣습니다.** `CodeEditor`는 언어 확장(CodeMirror `Extension`)과 포맷 함수를 주입받고, `ExerciseRenderer`는 유형 ID → 렌더러 맵을 주입받습니다. 미리보기, 콘솔, 코드 작업 공간, 실행 기반 렌더러는 이 저장소에 남깁니다.
+- **`@proginone/ai`는 통째로 옮기고 언어별 문구는 `TutorProfile`로 주입합니다.** 프로필은 튜터 역할, 배우는 대상, 경험 영역, 학습 범위, 용어 예시, 용어 표기 목록을 담습니다. 프로필의 `id`와 `version`은 튜터 스레드의 지침 버전에 들어가므로, 프로필을 바꾸면 스레드를 다시 만듭니다. 이 저장소의 프로필은 옮기기 전과 같은 문구를 만듭니다.
+- **순서는 `ai` → `exercise-core` → `exercise-ui`입니다.** 1차와 같이 패키지마다 core PR(패키지 추가) → `next` 스냅샷 → 이 저장소의 전환 PR로 진행하고, 셋을 마치면 core `0.2.0`을 정식 배포합니다. `ai`는 JS 결합이 가장 적고 다른 둘과 의존 관계가 없어 먼저 합니다.
+
+## D-097. `exercise-ui` 경계 조정: 유형별 렌더러 고르기와 체크 목록은 언어 저장소에 (D-096 수정) — `확정`
+- 2026-11-23, 사용자 결정(D-096의 `exercise-ui` 분리를 구현하다 코드와 맞지 않는 두 곳을 확인함).
+- **`ExerciseRenderer`처럼 유형별로 렌더러를 고르는 부분은 언어 저장소에 둡니다.** D-096은 "유형 ID → 렌더러 맵 주입"이었지만, 그러려면 이 저장소의 유형별 타입(`RenderableExercise`, `AnswerByType`)과 JS 전용 props(실행, 미리보기, 실제 실행 결과)를 공통 패키지에서 `unknown`으로 지워야 해서 웹 앱의 타입이 약해집니다. 대신 `@proginone/exercise-ui`는 선택형 3종의 렌더러와 답안 모델(`ChoiceRenderer`, `parseChoicePublicSpec`, `choiceInitialAnswer`, `isChoiceAnswerReady`, `choiceNotReadyReason`)을 주고, 언어 저장소의 고르기 코드가 이 셋을 맡깁니다. Go 저장소는 작은 `switch`를 새로 씁니다.
+- **체크 목록(`CheckList`)과 체크 설명(`describe-check`)은 이 저장소에 남깁니다.** JS 체크 언어(`PublicCheck`, 체크 종류)에 묶여 있기 때문입니다. 공통 `FeedbackBanner`는 체크 종류·실패 이유 문구를 `checkLabels` 함수로 받고, 이 저장소는 `JS_CHECK_LABELS`를 넘기는 래퍼를 씁니다.
+- **에디터는 D-096대로 언어를 주입받습니다.** `EditorLanguageSupport`(CodeMirror 확장, 경로 판정, 들여쓰기 단위·탭 너비, 포맷 함수)를 받고, 포맷 함수가 없는 언어는 "포맷" 버튼을 숨깁니다. 이 저장소의 언어(JS·HTML·CSS 모드, Prettier)는 `packages/exercise-kit-ui/src/editor/languages.tsx`에 있습니다.
+- **이 저장소의 패키지 이름을 `@proginone/exercise-kit-ui`(`packages/exercise-kit-ui`)로 바꿉니다.** 공통 패키지가 `@proginone/exercise-ui`라 같은 이름을 쓸 수 없고, JS 유형 정의(`exercise-kit`)와 그 렌더러를 짝으로 보이게 하려는 것입니다. 이 패키지가 공통 UI를 다시 내보내므로 웹 앱은 import 이름만 바뀝니다. 스타일은 공통 부분(`@proginone/exercise-ui/exercise-ui.css`) 다음에 JS 부분(`exercise-kit-ui.css`)을 가져옵니다.

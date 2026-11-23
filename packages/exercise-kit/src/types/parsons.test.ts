@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ExerciseKitError } from '../core/errors.ts';
+import { ExerciseKitError } from '@proginone/exercise-core';
 import { buildRunPlan, gradeSubmission, verifySpec } from '../core/registry.ts';
 import { makeRun, returned } from '../testing/run.ts';
 import {

@@ -7,7 +7,7 @@ import {
   redactCheck,
 } from '../checks/schema.ts';
 import { editDistanceExceeds, tokenize } from '../common/edit-distance.ts';
-import { misconceptionIdSchema } from '../core/ids.ts';
+import { misconceptionIdSchema } from '@proginone/exercise-core';
 import type { ExerciseTypeDef, VerifyIssue } from '../core/types.ts';
 import {
   buildCheckRunPlan,

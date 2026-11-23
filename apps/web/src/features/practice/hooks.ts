@@ -1,5 +1,5 @@
 import type { RunnerHost } from '@proginone/runner';
-import type { RunPlan, RunResult } from '@proginone/shared';
+import type { RunPlan, RunResult } from '@proginone/run-contract';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { consoleRunner, previewRunner, warmRunner } from '../runner/runner.ts';
 

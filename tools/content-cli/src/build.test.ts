@@ -71,7 +71,7 @@ describe('buildContent', () => {
     );
     expect(meta).toMatchObject({
       pack_version: '2026.11.14.1',
-      schema_version: '5',
+      schema_version: '6',
       built_at: '2026-11-14T00:00:00.000Z',
     });
     expect(meta['content_hash']).toMatch(/^[0-9a-f]{64}$/);

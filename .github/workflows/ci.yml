@@ -11,6 +11,7 @@ concurrency:
 
 permissions:
   contents: read
+  packages: read # @proginone/* from GitHub Packages (D-090)
 
 jobs:
   # Runner choice: the repository variable CI_RUNNER=self-hosted sends jobs to the self-hosted
@@ -47,8 +48,12 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: '@proginone'
 
       - run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Lint
         run: pnpm lint
@@ -61,9 +66,6 @@ jobs:
 
       - name: Dependency rules
         run: pnpm check:deps
-
-      - name: Token contrast
-        run: pnpm check:contrast
 
       - name: Test
         run: pnpm test
@@ -107,8 +109,12 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: '@proginone'
 
       - run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: pnpm build
 
@@ -149,8 +155,12 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: '@proginone'
 
       - run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: pnpm exec playwright install chromium
 
@@ -161,6 +171,8 @@ jobs:
 
       - name: Playwright (Docker, same image as GitHub-hosted CI)
         run: bash tools/e2e-docker.sh
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - if: failure()
         uses: actions/upload-artifact@v7

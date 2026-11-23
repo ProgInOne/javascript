@@ -21,7 +21,7 @@ import {
   type PredictExpected,
   type PredictOutputSpec,
 } from '@proginone/exercise-kit';
-import { formatValue, type RunError, type RunPlan, type RunResult } from '@proginone/shared';
+import { formatValue, type RunError, type RunPlan, type RunResult } from '@proginone/run-contract';
 import { canonical } from '../hash.ts';
 import type { LessonNode } from '../mdx.ts';
 
@@ -112,7 +112,9 @@ const REASON_LABELS: Record<CheckFailReason, string> = {
 
 export function describeCheck(check: CheckResult): string {
   const name = check.description ? `"${check.id}" (${check.description})` : `"${check.id}"`;
-  const reason = check.reason ? REASON_LABELS[check.reason] : '실패';
+  // `reason` is an open string in @proginone/exercise-core; unknown codes show as is.
+  const labels: Readonly<Record<string, string | undefined>> = REASON_LABELS;
+  const reason = check.reason ? (labels[check.reason] ?? check.reason) : '실패';
   const parts = [`${name}: ${reason}`];
   if (check.detail?.expected !== undefined) parts.push(`기대 ${check.detail.expected}`);
   if (check.detail?.actual !== undefined) parts.push(`실제 ${check.detail.actual}`);

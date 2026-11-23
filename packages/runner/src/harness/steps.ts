@@ -9,7 +9,7 @@ import type {
   ObservationOp,
   ObservationStep,
   SerializedValue,
-} from '@proginone/shared';
+} from '@proginone/run-contract';
 import { apply, PromiseCtor, promiseThen, push, strSlice } from './intrinsics.ts';
 import { deserialize } from './serialize.ts';
 

@@ -56,7 +56,8 @@ export interface ConceptDetailRow {
   title: string;
   summary: string;
   importance: 'core' | 'standard' | 'minor';
-  mdnUrl: string | null;
+  /** Reference document (content.db `doc_url`; MDN for this repository's content). */
+  docUrl: string | null;
   course: { id: string; title: string };
   lessons: { id: string; title: string; role: 'introduces' | 'practices' | 'reviews' }[];
 }
@@ -758,16 +759,15 @@ export class ContentRepository {
   }
 
   /** Language of a lesson's course (`html`, `css`, `javascript`), or null. */
-  courseLanguageOfLesson(lessonId: string): (typeof t.courses.$inferSelect)['language'] | null {
-    return (
-      this.#db
-        .select({ language: t.courses.language })
-        .from(t.lessons)
-        .innerJoin(t.modules, eq(t.lessons.moduleId, t.modules.id))
-        .innerJoin(t.courses, eq(t.modules.courseId, t.courses.id))
-        .where(eq(t.lessons.id, lessonId))
-        .get()?.language ?? null
-    );
+  courseLanguageOfLesson(lessonId: string): string | null {
+    const language = this.#db
+      .select({ language: t.courses.language })
+      .from(t.lessons)
+      .innerJoin(t.modules, eq(t.lessons.moduleId, t.modules.id))
+      .innerJoin(t.courses, eq(t.modules.courseId, t.courses.id))
+      .where(eq(t.lessons.id, lessonId))
+      .get()?.language;
+    return language ?? null;
   }
 
   /** Published/preview courses in catalog order (the first one starts a new learner). */
@@ -839,7 +839,7 @@ export class ContentRepository {
       title: row.concept.title,
       summary: row.concept.summary,
       importance: row.concept.importance,
-      mdnUrl: row.concept.mdnUrl,
+      docUrl: row.concept.docUrl,
       course: { id: row.concept.courseId, title: row.courseTitle },
       lessons,
     };

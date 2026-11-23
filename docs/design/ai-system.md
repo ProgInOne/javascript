@@ -2,10 +2,11 @@
 
 ProgInOne이 AI를 어떻게 통합하고, 어떤 작업에 쓰고, 학습 기록을 어떻게 AI 맥락으로 바꾸는지 설계합니다.
 MVP의 유일한 AI 제공자는 ChatGPT 구독으로 인증하는 Codex App Server입니다([D-002](/docs/decisions.md)).
+구현인 `@proginone/ai`는 처음에 이 저장소의 `packages/ai`였고, 지금은 `ProgInOne/core`에서 공통 패키지로 배포합니다([D-090, D-096](/docs/decisions.md)). 설계의 원천은 계속 이 문서입니다.
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-15 (v0.2 구현 메모 추가)
+- 최종 수정: 2026-11-23 (구현 위치를 ProgInOne/core로 옮기고 언어별 문구를 `TutorProfile`로 주입: D-096)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [학습 엔진 설계](/docs/design/learning-engine.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -547,7 +548,7 @@ sequenceDiagram
 
 모든 작업의 공통 사항:
 
-- 입력·출력 스키마는 `packages/shared`가 아니라 각 작업 파일에 둡니다. 서버 API 응답 스키마는 별도입니다.
+- 입력·출력 스키마는 `@proginone/shared`가 아니라 각 작업 파일에 둡니다. 서버 API 응답 스키마는 별도입니다.
 - 토큰 예산은 초기값이며, 호출 기록의 실제 사용량을 보고 조정합니다.
 - 모든 작업은 `ai_calls`에 기록됩니다.
 
@@ -806,7 +807,7 @@ sequenceDiagram
 
 #### 공통 튜터 페르소나
 
-`baseInstructions`(또는 그 대안)에 들어가는 공통 지침의 골격입니다. 실제 문구는 `packages/ai/src/prompts/persona.ts`가 원천입니다.
+`baseInstructions`(또는 그 대안)에 들어가는 공통 지침의 골격입니다. 실제 문구는 core의 [`packages/ai/src/prompts/persona.ts`](https://github.com/ProgInOne/core/blob/develop/packages/ai/src/prompts/persona.ts)가 원천이고, 첫 두 줄의 튜터 역할과 배우는 대상은 언어 저장소의 `TutorProfile`(이 저장소는 `apps/server/src/ai/tutor-profile.ts`)에서 옵니다([구현 메모 (core 이전)](#구현-메모-core-이전)).
 
 ```text
 너는 ProgInOne의 웹 개발 튜터다. 학습자는 HTML, CSS, JavaScript를 배우는 한국어 사용자이며
@@ -909,6 +910,7 @@ sequenceDiagram
 
 - 작업 정의의 `version`은 지침, 출력 스키마, 컨텍스트 명세 중 하나라도 바뀌면 올립니다.
 - 공통 지침(`persona`, `language`, `safety`)에도 별도 버전 `BASE_INSTRUCTIONS_VERSION`을 둡니다. 바뀌면 기존 Codex 튜터 스레드를 다음 턴에 재구성합니다(스레드 시작 시 지침이 고정되기 때문).
+- 언어 저장소의 `TutorProfile`에도 `version`이 있습니다. 튜터 스레드의 지침 버전은 `{BASE_INSTRUCTIONS_VERSION}+{프로필 id}@{프로필 version}:{작업}@{작업 version}`이므로, 프로필 문구를 바꿔도 스레드를 재구성합니다.
 - 호출 기록, 튜터 메시지, 생성 문제에 `{taskName, taskVersion, baseVersion, model}`을 저장합니다.
 - 프롬프트 변경 PR은 골든 세트 평가 결과(아래 [평가](#평가))를 첨부해야 합니다.
 
@@ -1075,7 +1077,7 @@ data: {"messageId":"msg_01","code":"AI_RATE_LIMITED","message":"...","retryable"
 
 ### 구현 메모 (v0.1)
 
-v0.1(M4)에서 `packages/ai`와 서버 튜터 백엔드를 구현하면서 위 스케치를 구체화하거나 바꾼 점입니다. 패키지 구성과 사용법은 [패키지 README](/packages/ai/README.md)에 있습니다.
+v0.1(M4)에서 `packages/ai`와 서버 튜터 백엔드를 구현하면서 위 스케치를 구체화하거나 바꾼 점입니다. 패키지 구성과 사용법은 core의 [패키지 README](https://github.com/ProgInOne/core/blob/develop/packages/ai/README.md)에 있습니다.
 
 **범위**: `tutor.reply`, `tutor.hint`, Codex 어댑터, `MockProvider`, AI 상태·로그인·사용량·모델 API, 튜터 스레드·메시지 API, `ai_calls` 기록을 구현했습니다. 웹 UI(튜터 드로어, 선택해서 질문하기, AI 연결 화면)는 별도 작업입니다. `session_summaries`, `session.summarize`, `misconception.propose`, `evaluator.*`, `ai_jobs`, 컨텍스트의 오개념·과거 요약·학습자 선호 섹션, 모델 선택 설정(`settings.ai.model`), 디버그 프롬프트 기록, 기기 코드 로그인, 사전 재구성(토큰 70%)은 v0.2 이후입니다.
 
@@ -1117,7 +1119,7 @@ v0.1(M4)에서 `packages/ai`와 서버 튜터 백엔드를 구현하면서 위 �
 
 **SSE와 오류**
 
-- `POST /tutor/threads/:id/messages` 이벤트: `message.created` → `status`(`queued`/`running`) → `delta`… (`reset`) → `done`(`complete`/`withheld`/`cancelled`, 저장한 본문 포함) 또는 `error`(`failed`로 저장). 페이로드 스키마는 `packages/shared/src/tutor.ts`의 `tutorStreamEventSchemas`가 원천입니다.
+- `POST /tutor/threads/:id/messages` 이벤트: `message.created` → `status`(`queued`/`running`) → `delta`… (`reset`) → `done`(`complete`/`withheld`/`cancelled`, 저장한 본문 포함) 또는 `error`(`failed`로 저장). 페이로드 스키마는 `@proginone/shared`의 `tutor.ts`에 있는 `tutorStreamEventSchemas`가 원천입니다.
 - `GET /ai/events`: 연결 즉시 `status` 스냅샷(상태·사용량·진행 중 로그인), 이후 변경마다 `status`, 로그인 완료 시 `login`. 15초마다 `: keep-alive`.
 - 모든 `/api` 요청이 세션 토큰 헤더를 요구하므로 웹은 SSE를 `EventSource`가 아니라 `fetch` 스트림으로 읽어야 합니다.
 - 오류 코드: 설계 목록에 `AI_UNAVAILABLE`(미설치, 미지원 버전, 격리 검증 실패, 재시작 소진. `details.reason`)을 추가했습니다. 상태에는 `isolation_failed`를 추가했습니다. HTTP 상태는 `AI_NOT_CONNECTED`·`AI_UNAUTHORIZED`·`AI_CANCELLED` 409, `AI_RATE_LIMITED` 429, `AI_CONTEXT_TOO_LARGE` 413, `AI_TIMEOUT` 504, `AI_BAD_OUTPUT`·`AI_PROVIDER_ERROR` 502, `AI_OVERLOADED`·`AI_UNAVAILABLE` 503, `AI_LOCKED_IN_ASSESSMENT` 403입니다. 401은 세션 토큰 만료(`UNAUTHORIZED`) 전용이라 쓰지 않습니다.
@@ -1179,6 +1181,17 @@ v0.2(M5)에서 바꾸거나 구체화한 점입니다.
 - 추론 강도는 작업 기본값을 모델의 `supportedReasoningEfforts` 안으로 옮깁니다(가장 가까운 낮은 값, 없으면 높은 값). `ai.reasoningEffort` 설정과 화면의 추론 강도 선택은 아직 없습니다.
 - 튜터 스레드는 저장된 `providerModel`이 이번 모델과 다르면 다음 턴에 재구성합니다.
 - `MockProvider`는 두 모델(`mock-tutor` 기본, `mock-tutor-deep`: `medium`·`high`만 지원)을 돌려주고 `setModels`로 목록을 바꿀 수 있어, 선택·대체·추론 강도 조정을 단위·통합·E2E 테스트로 확인합니다.
+
+### 구현 메모 (core 이전)
+
+`packages/ai`를 `ProgInOne/core`의 `@proginone/ai`로 옮기면서 정한 점입니다([D-096](/docs/decisions.md)).
+
+- 이 저장소는 배포된 `@proginone/ai`를 받아 씁니다. 위의 구조와 경로(`packages/ai/src/...`)는 core 저장소 기준입니다.
+- 언어마다 다른 문구는 `TutorProfile`로 주입합니다: 튜터 역할(`tutorRole`), 배우는 대상(`subjects`), 경험 영역(`experience`), 튜터 답변의 학습 범위(`scope`), 용어 예시(`termExample`), 용어 표기 목록(`terms`). 나머지 페르소나·한국어 규칙·데이터 경계는 공통입니다.
+- 이 저장소의 프로필은 `apps/server/src/ai/tutor-profile.ts`이고, 옮기기 전과 같은 문구를 만듭니다(core 테스트가 확인). 서버는 `new TaskRunner({ provider, profile: TUTOR_PROFILE })`로 넘깁니다.
+- 프로필 문구는 한 줄이어야 하고 꺾쇠 괄호를 쓸 수 없습니다(`tutorProfileSchema`). 데이터 블록 태그와 헷갈리지 않게 하려는 것입니다.
+- 지침 버전 형식이 바뀌어(`{base}+{profile}:{task}`), 옮긴 뒤 처음 쓰는 기존 튜터 스레드는 한 번 재구성됩니다. 서버는 `runner.instructionsVersion(task)`로 비교합니다.
+- Codex 튜터 설정(`TUTOR_CONFIG_TOML`)이 PoC(`poc/codex-tutor/tutor-config.example.toml`)와 같은지 확인하는 테스트는 PoC가 있는 이 저장소(`apps/server/src/ai/codex-config.test.ts`)에 둡니다.
 
 ## 검토한 대안
 

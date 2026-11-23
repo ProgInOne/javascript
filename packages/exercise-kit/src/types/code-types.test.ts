@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { editDistanceExceeds, tokenize } from '../common/edit-distance.ts';
-import { ExerciseKitError } from '../core/errors.ts';
+import { ExerciseKitError } from '@proginone/exercise-core';
 import { buildRunPlan, gradeSubmission, isWritingExercise, verifySpec } from '../core/registry.ts';
 import { logEntries, makeRun, returned, sv } from '../testing/run.ts';
 import { codeAnswerSchema } from './code-common.ts';

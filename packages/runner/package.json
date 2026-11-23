@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@proginone/shared": "workspace:*",
+    "@proginone/run-contract": "workspace:*",
     "acorn": "8.19.0",
     "esbuild": "0.28.2",
     "parse5": "8.1.1",

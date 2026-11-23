@@ -6,11 +6,16 @@ import {
   publicCheckSchema,
   redactCheck,
 } from '../checks/schema.ts';
-import { leakSet, normalizeLeakText } from '../common/normalize.ts';
-import { createRng, seedFromString } from '../common/prng.ts';
-import { localIdSchema, uniqueIds } from '../common/schemas.ts';
-import { misconceptionIdSchema } from '../core/ids.ts';
-import { buildResult } from '../core/result.ts';
+import {
+  buildResult,
+  createRng,
+  leakSet,
+  localIdSchema,
+  misconceptionIdSchema,
+  normalizeLeakText,
+  seedFromString,
+  uniqueIds,
+} from '@proginone/exercise-core';
 import type { ExerciseTypeDef, FeedbackItem, VerifyIssue } from '../core/types.ts';
 import { buildCheckRunPlan, gradeWithChecks, verifyChecks } from './code-common.ts';
 

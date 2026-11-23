@@ -7,7 +7,7 @@ import {
   useExerciseShortcuts,
   type AnswerByType,
   type RenderableExercise,
-} from '@proginone/exercise-ui';
+} from '@proginone/exercise-kit-ui';
 import type {
   CodeDraft,
   ExerciseView,
@@ -15,9 +15,9 @@ import type {
   OpenedHint,
   ProjectAttemptResponse,
   ProjectView,
-  RunResult,
   SolutionResponse,
 } from '@proginone/shared';
+import type { RunResult } from '@proginone/run-contract';
 import { Badge, Button, EmptyState, ErrorState, Skeleton } from '@proginone/ui';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from '@tanstack/react-router';

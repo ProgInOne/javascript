@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-for-of --
    Index loops and captured built-ins on purpose: learner code may replace Array iterators and
    prototype methods (docs/design/code-execution-sandbox.md#하네스-무결성). */
-import type { FunctionKind, SerializedValue } from '@proginone/shared';
+import type { FunctionKind, SerializedValue } from '@proginone/run-contract';
 import {
   BigIntCtor,
   create,

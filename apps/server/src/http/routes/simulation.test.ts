@@ -5,7 +5,7 @@ import { LESSON, parsed, submit, type Ctx } from '../../test/practice-flow.ts';
 
 // 30 days through the HTTP API with a real temp SQLite user.db and a fake clock: each weekday
 // the learner opens today's plan and does its blocks (the 30-day engine simulation with many
-// concepts lives in packages/learning-engine/src/simulation.test.ts).
+// concepts lives in ProgInOne/core packages/learning-engine/src/simulation.test.ts).
 
 /** 19:00 in Seoul on day `n` (T0 is 10:00, Saturday 2026-11-14). */
 const evening = (n: number) => T0 + n * DAY + 9 * 3_600_000;
@@ -58,7 +58,12 @@ describe('30 days through the API', () => {
           const res = await ctx.call('POST', '/practice-sets', { kind: 'lesson', lessonId });
           await answerSet(ctx, practiceSetViewSchema.parse(res.json).id, day);
         } else {
-          const res = await ctx.call('POST', '/practice-sets', { kind: 'weakness' });
+          // Like the dashboard button: the block's concepts, which an earlier block today may
+          // already have lifted past the weakness bar (D-095).
+          const res = await ctx.call('POST', '/practice-sets', {
+            kind: 'weakness',
+            conceptIds: block.concepts.map((c) => c.id),
+          });
           expect(res.status, `weakness set on day ${day}`).toBe(200);
           await answerSet(ctx, practiceSetViewSchema.parse(res.json).id, day);
         }

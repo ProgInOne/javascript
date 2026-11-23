@@ -118,13 +118,10 @@ ProgInOne/
 │   ├── web/                 # React SPA (Vite)
 │   └── server/              # Node 로컬 서버 (Hono)
 ├── packages/
-│   ├── shared/              # 공용 타입, zod 스키마, API 계약, ID 유틸
-│   ├── ui/                  # 디자인 시스템: 토큰, 기본 컴포넌트
-│   ├── content-schema/      # 콘텐츠 원본(MDX/YAML)의 zod 스키마
-│   ├── exercise-kit/        # 문제 유형 레지스트리: 스펙 스키마, 채점기, 템플릿 엔진
-│   ├── exercise-ui/         # 문제 유형별 React 렌더러
+│   ├── run-contract/        # JS 러너와 채점기 사이의 계약, 콘솔 형식 (배포하지 않음)
+│   ├── exercise-kit/        # JS 문제 유형과 체크 언어, 이 저장소의 레지스트리(@proginone/exercise-core 위)
+│   ├── exercise-kit-ui/     # JS 문제 유형 렌더러, 체크 목록, 콘솔, 미리보기(@proginone/exercise-ui 위)
 │   ├── runner/              # 샌드박스 런타임(하네스)과 호스트 프로토콜
-│   ├── learning-engine/     # 숙련도, FSRS, 연습 세트 구성, 재학습 규칙 (순수 함수)
 │   └── ai/                  # 제공자 어댑터, AI 작업 정의, 컨텍스트 빌더 인터페이스
 ├── content/                 # 콘텐츠 원본 (과정/모듈/단원/문제)
 ├── tools/
@@ -134,19 +131,28 @@ ProgInOne/
 └── .github/workflows/       # CI, 릴리스
 ```
 
+공통 패키지는 `ProgInOne/core`에서 배포한 것을 받아 씁니다([언어 확장 구조](#언어-확장-구조)). 지금까지 옮긴 것: `learning-engine`(숙련도, FSRS, 연습 세트 구성, 재학습 규칙. 순수 함수), `ui`(디자인 시스템: 토큰, 기본 컴포넌트), `content-schema`(콘텐츠 원본과 content.db 스키마. 언어별 값은 `tools/content-cli/src/schema.ts`가 확장), `shared`(API 계약: 요청·응답 zod 스키마, 오류 코드. 과정 언어는 열려 있음), `ai`(AI 작업 실행과 Codex 어댑터. 언어별 튜터 문구는 `TutorProfile`로 주입), `exercise-core`(문제 유형 틀, 레지스트리 팩토리, 템플릿 엔진, 선택형 유형. 이 저장소의 `exercise-kit`이 JS 유형을 얹어 레지스트리를 만듦), `exercise-ui`(확신도·힌트·피드백 위젯, 선택형 렌더러, 언어를 주입받는 코드 에디터. 이 저장소의 `exercise-kit-ui`가 JS 렌더러와 에디터 언어를 얹음). 2차 분리를 마쳤습니다.
+
 #### 의존 방향 규칙
 
 ```mermaid
 flowchart BT
-    shared
-    ui --> shared
-    contentschema[content-schema] --> shared
-    exercisekit[exercise-kit] --> shared
-    exerciseui[exercise-ui] --> exercisekit
+    subgraph core["ProgInOne/core (배포 패키지 @proginone/*)"]
+        shared
+        ui
+        contentschema[content-schema]
+        engine[learning-engine]
+        ai
+        exercisecore[exercise-core]
+        exerciseui[exercise-ui]
+    end
+    runcontract[run-contract]
+    exercisekit[exercise-kit] --> exercisecore
+    exercisekit --> runcontract
+    exercisekitui[exercise-kit-ui] --> exercisekit
+    exercisekitui --> exerciseui
     exerciseui --> ui
-    runner --> shared
-    engine[learning-engine] --> shared
-    ai --> shared
+    runner --> runcontract
     web[apps/web] --> ui
     web --> exerciseui
     web --> runner
@@ -154,16 +160,19 @@ flowchart BT
     server --> engine
     server --> ai
     server --> exercisekit
+    server --> contentschema
     cli[tools/content-cli] --> contentschema
     cli --> exercisekit
     cli --> ai
 ```
 
-- 화살표는 "의존한다"입니다. 순환 의존은 금지하며 CI에서 검사합니다.
+- 화살표는 "의존한다"입니다. 그림은 주요 의존만 보입니다(대부분의 패키지가 `shared`를 씀). 순환 의존은 금지하며 CI에서 검사합니다.
+- core의 패키지는 배포된 것을 받아 쓰므로 dependency-cruiser가 따라가지 않습니다(`node_modules`). 배포 패키지에 대한 규칙은 ESLint가 검사합니다.
+- `run-contract`는 JS 러너에만 해당하는 계약이라 이 저장소에 남은 내부 패키지입니다. 다른 내부 패키지에 의존하지 않고, `runner`와 `exercise-kit`이 함께 씁니다.
 - `learning-engine`과 `exercise-kit`의 채점기는 **I/O 없는 순수 함수** 입니다. DB와 네트워크 접근은 `apps/server`의 서비스 계층이 담당합니다.
-- `apps/server`는 러너 셸 문서(`/sandbox/runner.html`)를 만들어 제공하려고 `runner`의 셸 빌드(`@proginone/runner/shell-build`)를 씁니다. 샌드박스 결과 검증은 `packages/shared`의 계약(`parseRunResult`)으로 합니다.
-- `apps/web`은 `learning-engine`에 의존하지 않습니다. 학습 판단은 서버가 합니다.
-- `packages/ai`는 제공자 프로토콜과 작업 정의만 갖고, DB 조회는 `apps/server`가 구현하는 `ContextSource` 인터페이스로 주입받습니다.
+- `apps/server`는 러너 셸 문서(`/sandbox/runner.html`)를 만들어 제공하려고 `runner`의 셸 빌드(`@proginone/runner/shell-build`)를 씁니다. 샌드박스 결과 검증은 `packages/run-contract`의 계약(`parseRunResult`)으로 합니다.
+- `apps/web`은 `learning-engine`에 의존하지 않습니다. 학습 판단은 서버가 합니다. `learning-engine`은 배포 패키지라 dependency-cruiser가 따라가지 않으므로, 이 규칙은 ESLint(`no-restricted-imports`)가 검사합니다.
+- `@proginone/ai`는 제공자 프로토콜과 작업 정의만 갖고, DB 조회는 `apps/server`가 구현하는 `ContextSource` 인터페이스로, 언어별 튜터 문구는 `TutorProfile`(`apps/server/src/ai/tutor-profile.ts`)로 주입받습니다.
 
 ### 서버 내부 구조
 
@@ -279,7 +288,7 @@ sequenceDiagram
 
 - 기본 경로: `/api/v1`. 모든 응답은 JSON이며, 스트리밍만 SSE(`text/event-stream`)를 씁니다.
 - 리소스 지향 경로를 쓰고, 상태를 바꾸는 동작은 `POST`/`PUT`/`PATCH`/`DELETE`를 씁니다.
-- 요청·응답 스키마는 `packages/shared`의 zod 스키마가 원천입니다. 웹은 같은 스키마로 **응답을 런타임 검증하는** 작은 fetch 클라이언트(`apps/web/src/api/client.ts`)를 씁니다. Hono RPC 클라이언트는 웹이 서버 소스의 타입(Node 타입 포함)을 끌어와야 하고 응답을 검증하지 않아서 쓰지 않습니다(M3 결정).
+- 요청·응답 스키마는 `@proginone/shared`의 zod 스키마가 원천입니다. 웹은 같은 스키마로 **응답을 런타임 검증하는** 작은 fetch 클라이언트(`apps/web/src/api/client.ts`)를 씁니다. Hono RPC 클라이언트는 웹이 서버 소스의 타입(Node 타입 포함)을 끌어와야 하고 응답을 검증하지 않아서 쓰지 않습니다(M3 결정).
 - 페이지네이션은 커서 기반(`?cursor=&limit=`)입니다.
 
 오류 응답 형식:
@@ -411,7 +420,7 @@ sequenceDiagram
 - **서버 로그**: `pino` 구조화 JSON 로그. 요청 ID를 모든 로그에 포함합니다. 개발 모드는 pretty 출력.
 - **AI 호출 기록**: 작업 이름, 제공자, 모델, 프롬프트 템플릿 버전, 입력·출력 토큰(제공되는 경우), 지연 시간, 결과 상태, 오류 코드를 `ai_calls` 테이블에 저장합니다. 프롬프트 원문은 DB에 저장하지 않고, 디버그 설정일 때만 `<dataDir>/logs/ai/`에 파일로 7일간 보관합니다.
 - **클라이언트 오류**: React 오류 경계와 `window.onerror`로 잡은 오류를 `/api/v1/client-errors`로 보내 서버 로그에 남깁니다.
-  - 구현 메모 (v0.3): 본문은 `{ source: 'boundary' | 'window' | 'unhandledrejection', name?, message, stack?, path }`(`packages/shared`의 `clientErrorReportSchema`, 길이 제한 이름 100·메시지 1,000·스택 4,000·경로 300자, 16KB 초과는 `413`)이고 서버는 `warn` 수준 `client error` 로그 한 줄로 남깁니다(DB에는 저장하지 않음). 경로는 쿼리 문자열 없이 화면 주소만 보내고, 학습자가 입력한 내용은 보내지 않습니다. 이미 서버가 기록한 API 오류(`ApiRequestError`)는 보내지 않고, 응답을 해석하지 못한 `BAD_RESPONSE`만 보냅니다. 렌더 반복이 로그를 채우지 않도록 웹은 같은 오류를 페이지당 한 번, 최대 20건만 보내고, 서버는 분당 30건까지 기록한 뒤 나머지는 세어 다음 기록에 `droppedBefore`로 붙입니다. 응답은 `204`입니다.
+  - 구현 메모 (v0.3): 본문은 `{ source: 'boundary' | 'window' | 'unhandledrejection', name?, message, stack?, path }`(`@proginone/shared`의 `clientErrorReportSchema`, 길이 제한 이름 100·메시지 1,000·스택 4,000·경로 300자, 16KB 초과는 `413`)이고 서버는 `warn` 수준 `client error` 로그 한 줄로 남깁니다(DB에는 저장하지 않음). 경로는 쿼리 문자열 없이 화면 주소만 보내고, 학습자가 입력한 내용은 보내지 않습니다. 이미 서버가 기록한 API 오류(`ApiRequestError`)는 보내지 않고, 응답을 해석하지 못한 `BAD_RESPONSE`만 보냅니다. 렌더 반복이 로그를 채우지 않도록 웹은 같은 오류를 페이지당 한 번, 최대 20건만 보내고, 서버는 분당 30건까지 기록한 뒤 나머지는 세어 다음 기록에 `droppedBefore`로 붙입니다. 응답은 `204`입니다.
 - **진단 화면**: 앱·콘텐츠·스키마 버전, 데이터 위치, 최근 오류, AI 연결 상태(설정 화면, P1).
 
 ### 빌드와 개발 환경
@@ -473,7 +482,7 @@ sequenceDiagram
 | 앱 | SemVer (`MAJOR.MINOR.PATCH`) | 루트 `package.json`, git 태그 `v*` |
 | 콘텐츠 팩 | `YYYY.MM.DD.N` | `content/pack.yaml` |
 | user.db 스키마 | 마이그레이션 일련번호 | Drizzle 마이그레이션 폴더 |
-| AI 프롬프트 템플릿 | 작업별 정수 버전 | `packages/ai/src/tasks/*` |
+| AI 프롬프트 템플릿 | 작업별 정수 버전, 튜터 프로필 버전 | `@proginone/ai`(core `packages/ai/src/tasks/*`), `apps/server/src/ai/tutor-profile.ts` |
 
 - 커밋 메시지는 [Conventional Commits][conventional-commits]를 따릅니다(`feat:`, `fix:`, `docs:`, `content:` 등).
 - 변경 이력은 [Keep a Changelog][keep-a-changelog] 형식의 `CHANGELOG.md`로 관리합니다.
@@ -513,12 +522,12 @@ sequenceDiagram
 | 구분 | 패키지·영역 | 언어를 추가할 때 |
 |---|---|---|
 | 공통 | `learning-engine`, `shared`, `ui` | 그대로 사용 |
-| 공통 + 확장 지점 | `content-schema`(문제 유형), `exercise-ui`(에디터 언어 모드 주입), `ai`(언어별 프롬프트 조각), 서버·웹 앱 뼈대 | 언어 쪽에서 확장 지점을 채움 |
+| 공통 + 확장 지점 | `content-schema`(문제 유형), `exercise-core`(문제 유형 레지스트리), `exercise-ui`(에디터 언어 지원 `EditorLanguageSupport`, 체크 문구 `checkLabels` 주입), `ai`(`TutorProfile`), 서버·웹 앱 뼈대 | 언어 쪽에서 확장 지점을 채움 |
 | 언어별 | 콘텐츠, `runner`(코드 실행 샌드박스), `exercise-kit`의 검사, `content-cli` 언어 키트 | 언어 저장소에서 새로 작성 |
 
 - 공통 패키지는 새 저장소 `ProgInOne/core`로 옮겨 GitHub Packages에 `@proginone/*`로 배포합니다. 세 번에 나눠 떼어 냅니다: 1차 `learning-engine`·`ui`·`content-schema`·`shared`, 2차 `exercise-kit`의 공통 부분(`exercise-core`)·`exercise-ui`·`ai`, 3차 서버·웹 뼈대([D-090](/docs/decisions.md)).
 - `shared`의 JS 러너 계약(`run-protocol`, `console-format`)과 `exercise-kit`의 JS·DOM 검사는 언어별 영역이므로 이 저장소에 남습니다. 옮기기 전까지 공통 후보는 언어별 영역에 의존하지 않게 유지합니다.
-- 배포하는 패키지는 빌드한 JS(`dist/`)입니다. 학습자가 토큰 없이 설치할 수 있도록 릴리스 묶음에 `@proginone/*`를 미리 넣습니다(서버를 한 파일로 묶음).
+- 배포하는 패키지는 빌드한 JS(`dist/`)입니다. 학습자가 토큰 없이 설치할 수 있도록 릴리스 묶음에 `@proginone/*` 패키지 파일을 동봉합니다([D-093](/docs/decisions.md)).
 - 각 언어 앱은 지금처럼 로컬 웹앱 하나(서버 + 웹)로 배포합니다. 학습자 데이터 폴더와 포트는 언어별로 나눌지, 한 앱이 여러 언어를 담을지를 두 번째 언어 설계 때 정합니다(미결 사항).
 
 ## 검토한 대안
@@ -594,9 +603,9 @@ sequenceDiagram
 ### 확장성
 
 - **새 과정**: `content/`에 원본 추가 → 콘텐츠 빌드. 코드 변경 없음.
-- **새 문제 유형**: `exercise-kit`에 스펙·채점기, `exercise-ui`에 렌더러를 등록.
+- **새 문제 유형**: `exercise-kit`에 스펙·채점기를 만들어 `core/registry.ts`의 레지스트리에, `exercise-kit-ui`에 렌더러를 등록. 언어와 무관한 유형이면 core의 `@proginone/exercise-core`에 둡니다.
 - **새 실행 환경**(예: TypeScript 트랜스파일): 러너의 "전처리기" 확장 지점에 추가. 서버 측 언어는 별도 설계가 필요합니다.
-- **새 AI 제공자**: `packages/ai`에 `ProviderAdapter` 구현 추가.
+- **새 AI 제공자**: core의 `@proginone/ai`에 `ProviderAdapter` 구현 추가.
 
 ## 미결 사항
 

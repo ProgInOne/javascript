@@ -16,13 +16,25 @@ if [[ "${1:-}" == "--update" ]]; then UPDATE="--update-snapshots"; shift; fi
 EXTRA=""
 for a in "$@"; do EXTRA+=" $(printf '%q' "$a")"; done
 
+# @proginone/* comes from GitHub Packages, which needs a read:packages token (D-090). pnpm reads
+# it only from user-level config, so the host's ~/.npmrc is mounted as the container user's, and
+# NODE_AUTH_TOKEN (CI) is written into one when set.
+AUTH=()
+if [[ -f "$HOME/.npmrc" ]]; then AUTH+=(-v "$HOME/.npmrc":/root/.npmrc.host:ro); fi
+if [[ -n "${NODE_AUTH_TOKEN:-}" ]]; then AUTH+=(-e NODE_AUTH_TOKEN); fi
+
 # The repository is mounted read-only and copied without node_modules: native bindings
 # installed on the host (macOS) cannot run in the Linux container.
 docker run --rm --ipc=host --init \
   -v "$ROOT":/src:ro \
   -v "$ROOT/e2e":/out \
   -e CI=1 -e PW_VISUAL=1 \
+  ${AUTH[@]+"${AUTH[@]}"} \
   "$IMAGE" bash -euo pipefail -c "
+    if [[ -f /root/.npmrc.host ]]; then cp /root/.npmrc.host /root/.npmrc; fi
+    if [[ -n \"\${NODE_AUTH_TOKEN:-}\" ]]; then
+      echo '//npm.pkg.github.com/:_authToken=\${NODE_AUTH_TOKEN}' >> /root/.npmrc
+    fi
     mkdir -p /work && cd /work
     tar -C /src --exclude=node_modules --exclude=.git --exclude=.data --exclude=.claude \
       --exclude='*/dist' --exclude=e2e/test-results --exclude=e2e/playwright-report -cf - . | tar -xf -

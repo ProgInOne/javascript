@@ -4,10 +4,10 @@ import type {
   LessonDetail,
   PracticeItemView,
   PracticeSetView,
-  RunResult,
 } from '@proginone/shared';
+import type { RunResult } from '@proginone/run-contract';
 
-// Fake API data for the practice flow tests (shapes follow packages/shared/src/practice.ts).
+// Fake API data for the practice flow tests (shapes follow @proginone/shared practice.ts).
 
 export const LESSON_ID = 'js-basics.start.first-program';
 export const SET_ID = '01JD3Z8Q6V2K9M4T7R1X5W0BNC';

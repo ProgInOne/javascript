@@ -5,6 +5,30 @@
 
 ## [Unreleased]
 
+## [1.0.0-rc.3] - 2026-11-23
+
+v1.0 MVP 세 번째 출시 후보. 실사용 중 발견한 약점 목록 버그를 고쳤습니다(D-095): 약점 집중으로 숙련도가 올라도 약점에서 빠지지 않던 문제입니다. 내부적으로는 학습 엔진·디자인 시스템·콘텐츠 스키마·API 계약·AI 작업·문제 유형 틀과 공통 문제 UI를 언어 저장소들이 함께 쓰는 공통 패키지 `@proginone/*`(ProgInOne/core `v0.2.0`)로 옮겼습니다(D-090·D-092·D-096·D-097). 학습 엔진, 디자인 시스템, AI 튜터에 보내는 지시문, 문제 채점은 rc.2와 같습니다. 튜터 지침 버전 형식이 바뀌어 기존 튜터 대화는 다음 질문 때 한 번 기록에서 다시 만들어집니다. 릴리스 묶음에 공통 패키지를 동봉해 학습자는 GitHub 토큰 없이 그대로 설치합니다(D-093). 묶음에는 새 형식(스키마 버전 6)의 content.db가 들어 있어 따로 다시 만들 필요가 없고, 학습 기록은 그대로입니다. 알려진 제약: 학습자 실제 사용 점검과 키보드·스크린 리더·다른 브라우저 수동 점검이 남아 있습니다.
+
+### Fixed
+
+- 약점 집중으로 숙련도가 올라도 약점 목록에서 빠지지 않던 문제(D-095). 이제 효과 숙련도가 60 미만이거나 확정된 오개념이 남은 개념만 약점으로 보여 주고 추천하며, 복습으로 60을 넘고 오개념이 풀리면 목록에서 빠짐. 학습자가 개념을 골라 시작하는 약점 세트는 그대로 만들 수 있음
+
+### Changed
+
+- 공통 패키지 `@proginone/*`를 사전 배포판(`0.2.0-next`)에서 정식 버전 `^0.2.0`(ProgInOne/core `v0.2.0`)으로 바꿈
+- 공통 문제 위젯(확신도, 힌트, 피드백), 선택형 3종 렌더러와 답안 모델, 코드 에디터를 공통 패키지 `@proginone/exercise-ui`(ProgInOne/core, `0.2.0-next`)로 받아 씀(D-090 2차, D-096, D-097). 이 저장소의 패키지는 `@proginone/exercise-kit-ui`(`packages/exercise-kit-ui`)로 이름을 바꾸고 JS 유형 렌더러·체크 목록·콘솔·미리보기를 담음. 에디터 언어(JS·HTML·CSS, Prettier)와 피드백 배너의 체크 문구는 이 패키지가 주입. 스타일시트를 공통 부분과 JS 부분으로 나눔
+- 문서: `exercise-ui` 경계 조정(D-097): 유형별 렌더러 고르기와 체크 목록은 언어 저장소에, 패키지 이름 `exercise-kit-ui`
+- 문제 유형 틀·레지스트리·템플릿 엔진·선택형 3종을 공통 패키지 `@proginone/exercise-core`(ProgInOne/core, `0.2.0-next`)로 받아 씀(D-090 2차, D-096). `packages/exercise-kit`은 그 위에 JS 유형과 체크 언어를 얹어 `createExerciseRegistry`로 레지스트리를 만들고, 경계 함수와 템플릿 함수를 기존 이름 그대로 내보냄. 체크 실패 이유(`CheckResult.reason`)는 공통 패키지에서 열린 문자열이라, 이유 문구는 모르는 코드를 그대로 표시
+- AI 작업 실행과 Codex 어댑터를 공통 패키지 `@proginone/ai`(ProgInOne/core, `0.2.0-next`)로 받아 씀(D-090 2차, D-096). `packages/ai`를 지우고, 튜터 지침의 언어별 문구는 `apps/server/src/ai/tutor-profile.ts`의 `TutorProfile`로 넘김(문구는 그대로). 지침 버전 형식이 바뀌어 기존 튜터 스레드는 다음 턴에 한 번 재구성됨. 다른 공통 패키지도 같은 사전 배포판으로 맞춤
+- 문서: 2차 분리의 경계(D-096): 문제 유형 레지스트리 팩토리, `exercise-core` 범위, `exercise-ui`·`ai`의 주입 지점
+- 공통 패키지 `@proginone/*`를 사전 배포판(`0.1.0-next`)에서 정식 버전 `^0.1.0`(ProgInOne/core `v0.1.0`)으로 바꿈. 더 쓰지 않는 `@proginone/shared` 의존성을 `runner`·`exercise-kit`·`exercise-ui`·`content-cli`에서 지움
+- API 계약을 공통 패키지 `@proginone/shared`(ProgInOne/core, `0.1.0-next`)로 받아 씀(D-090 1차, D-092). `packages/shared`를 지우고, JS 러너와 채점기 사이의 계약(`run-protocol`, `console-format`)은 새 내부 패키지 `packages/run-contract`로 옮김. 개념 상세 API의 `mdnUrl`을 `docUrl`로 바꾸고, 과정 언어는 열린 slug로 받음(과정 목록은 모르는 언어를 이름 그대로 표시)
+- 콘텐츠 스키마를 공통 패키지 `@proginone/content-schema`(ProgInOne/core, `0.1.0-next`)로 받아 씀(D-090 1차, D-092). `packages/content-schema`를 지우고, 과정 언어(`html`·`css`·`javascript`)와 개념의 `mdn` 경로는 `tools/content-cli/src/schema.ts`가 공통 스키마를 확장해 검사. content.db 스키마 버전 6: `concepts.mdn_url` → `doc_url`, `courses.language`의 `CHECK` 제거. **개발 중인 저장소는 `pnpm content:build`로 content.db를 다시 만들어야 함**(서버가 버전이 다른 content.db를 열지 않음)
+- 디자인 시스템을 공통 패키지 `@proginone/ui`(ProgInOne/core, `0.1.0-next`)로 받아 씀(D-090 1차). `packages/ui`를 지우고, 컴포넌트 테스트의 jsdom 보완은 `packages/exercise-ui/src/test/jsdom-setup.ts`로, 앱 스타일시트의 코드 글꼴 검사는 `tools/code-font.test.ts`로 옮김. 토큰 대비 검사(`check:contrast`)는 core CI에서 돎
+- 학습 엔진을 공통 패키지 `@proginone/learning-engine`(ProgInOne/core, `0.1.0-next`)으로 받아 씀(D-090 1차). 이 저장소의 `packages/learning-engine`을 지움. 웹 앱이 엔진에 의존하지 않는다는 규칙은 ESLint `no-restricted-imports`로 검사
+- 공통 패키지를 받는 설정(D-094): 저장소 `.npmrc`에 GitHub Packages 주소, CI·시각 기준 이미지 워크플로에 `packages: read`와 토큰, Docker E2E에 호스트 `~/.npmrc` 전달, `minimumReleaseAgeExclude`에 `@proginone/*`. 개발하려면 `~/.npmrc`에 `read:packages` 토큰이 필요(시작하기 가이드)
+- 릴리스 묶음에 공통 패키지(`@proginone/*`)를 동봉(D-093): 학습자는 GitHub 토큰 없이 그대로 `pnpm install --prod --frozen-lockfile`로 설치. 묶기는 `tools/release-bundle.sh` 하나로 워크플로와 로컬 대체 절차가 함께 쓰고, 임시 폴더에서 조립해 GNU tar·bsdtar 분기를 없앰. 릴리스 워크플로는 `packages: read`로 GitHub Packages에서 받음
+
 ## [1.0.0-rc.2] - 2026-11-22
 
 v1.0 MVP 두 번째 출시 후보. `1.0.0-rc.1` 뒤의 실사용 피드백을 반영했습니다. 레슨의 이해도 확인을 연습 문제와 분리하고(새 확인 문제 156개), 레슨 안에서 직접 코드를 쓰고 실행하고 확인하는 "직접 써 보기"(과제 70개)를 더했습니다(D-091, 새 콘텐츠는 AI 검토자 2차 검토 통과). 연습 세트의 마지막 문제를 틀려도 다시 풀 수 있고(D-088), 오늘의 학습이 최근 활동과 과정 순서를 따르며(D-089), 단계형 레슨 읽기와 새 색 체계·로고, 작성형 문제, 과정 진도 표시를 담았습니다. 저장소는 공개 조직 저장소 `ProgInOne/javascript`로 옮겼고 `develop`/`main` 두 브랜치로 운영합니다(D-085·D-086·D-090). 알려진 제약: 학습자 실제 사용 점검과 키보드·스크린 리더·다른 브라우저 수동 점검이 남아 있습니다. content.db 스키마 버전이 5로 바뀌어 업그레이드할 때 다시 빌드해야 합니다(학습 기록은 그대로).

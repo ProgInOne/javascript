@@ -5,6 +5,7 @@ import { TOKEN_HEADER } from '../http/security.ts';
 import { ContentAccess } from '../services/curriculum/content-access.ts';
 import { createEngine } from '../services/practice/engine.ts';
 import { createPracticeServices } from '../services/practice/index.ts';
+import { TUTOR_PROFILE } from '../ai/tutor-profile.ts';
 import { AiService } from '../services/ai/ai-service.ts';
 import { ModelSelection } from '../services/ai/model-selection.ts';
 import { SettingsService } from '../services/settings/service.ts';
@@ -55,6 +56,7 @@ export async function practiceApp(
   const aiService = new AiService({ provider, log: silentLog, userDb: ctx.userDb, models });
   const runner = new TaskRunner({
     provider,
+    profile: TUTOR_PROFILE,
     now,
     sleep: () => Promise.resolve(),
     resolveModel: () => models.resolve(),

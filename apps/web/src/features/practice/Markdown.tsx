@@ -1,4 +1,4 @@
-import { CodeBlock, InlineText } from '@proginone/exercise-ui';
+import { CodeBlock, InlineText } from '@proginone/exercise-kit-ui';
 import { Check, Copy, ExternalLink } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 

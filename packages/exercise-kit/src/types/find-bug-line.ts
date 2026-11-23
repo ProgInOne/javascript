@@ -3,15 +3,21 @@ import {
   type ObservationOf,
   type RunPlan,
   type RunResult,
-} from '@proginone/shared';
+} from '@proginone/run-contract';
 import { z } from 'zod';
 
 import { compareOutput } from '../common/output.ts';
-import { leakSet } from '../common/normalize.ts';
-import { createRng, seedFromString } from '../common/prng.ts';
-import { codeTextSchema, displayTextSchema, localIdSchema, uniqueIds } from '../common/schemas.ts';
-import { misconceptionIdSchema } from '../core/ids.ts';
-import { buildResult } from '../core/result.ts';
+import {
+  buildResult,
+  codeTextSchema,
+  createRng,
+  displayTextSchema,
+  leakSet,
+  localIdSchema,
+  misconceptionIdSchema,
+  seedFromString,
+  uniqueIds,
+} from '@proginone/exercise-core';
 import type { ExerciseTypeDef, FeedbackItem, VerifyIssue } from '../core/types.ts';
 
 /** docs/design/content-and-exercises.md#find_bug_line-오류-줄-찾기 */

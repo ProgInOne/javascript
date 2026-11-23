@@ -1,8 +1,20 @@
 # @proginone/exercise-kit
 
-문제 유형 레지스트리와 유형별 스펙·답안 스키마, 순수 채점기, 정답 키 제거를 제공합니다.
-I/O가 없는 순수 패키지이며 `@proginone/shared`에만 의존합니다.
+이 저장소의 문제 유형 레지스트리와 JS 유형별 스펙·답안 스키마, 순수 채점기, 체크 언어를 제공합니다.
+유형 틀, 레지스트리 팩토리, 템플릿 엔진, 선택형 3종은 공통 패키지 [`@proginone/exercise-core`](https://github.com/ProgInOne/core/blob/develop/packages/exercise-core/README.md)에 있고, 이 패키지는 그 위에 JS 유형을 얹습니다([D-096](/docs/decisions.md)).
+I/O가 없는 순수 패키지이며 내부 패키지 중 `run-contract`에만 의존합니다.
 설계 원천은 [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md)의 문제 유형 시스템입니다.
+
+## 레지스트리
+
+`src/core/registry.ts`가 `createExerciseRegistry`로 레지스트리를 만듭니다.
+공통 유형(`COMMON_EXERCISE_TYPES`)과 이 저장소의 유형을 등록하고, 실행 결과는 JS 러너 계약의 `parseRunResult`로 검증합니다.
+경계 함수는 레지스트리에서 구조 분해해 기존 이름으로 내보내므로, 서버·웹·`content-cli`는 `@proginone/exercise-kit`만 가져다 씁니다.
+템플릿 함수 `instantiateTemplate(raw, seed)`·`instantiateVariant(raw, variantId)`도 이 레지스트리에 묶어 내보냅니다.
+새 유형은 `src/types/`에 정의를 만들고 `registerExerciseType(정의)`로 레지스트리 목록에 더합니다.
+
+- `src/core/types.ts`: 이 저장소의 유형 ID 목록(`EXERCISE_TYPE_IDS`), 체크 실패 이유(`CheckFailReason`), JS 러너에 맞춘 `ExerciseTypeDef`, 러너 상태를 공통 `RunOutcome`으로 바꾸는 `runOutcomeOf`.
+- 공통 패키지에서 `CheckResult.reason`은 열린 문자열이라, 이유별 문구를 찾을 때는 모르는 코드를 그대로 보여 줍니다.
 
 ## 다른 패키지가 쓰는 API
 
@@ -30,7 +42,7 @@ I/O가 없는 순수 패키지이며 `@proginone/shared`에만 의존합니다.
 
 | 유형 | 범주 | 채점 입력 |
 |---|---|---|
-| `mcq_single` | recognition | 답안만 |
+| `mcq_single`, `mcq_multi`, `true_false` (`@proginone/exercise-core`) | recognition | 답안만 |
 | `fill_blank` (`text` 모드) | recall | 답안만 |
 | `predict_output` | recall | 답안 + `content-cli check --run`이 실행으로 계산하고 빌드가 채운 `expected` |
 | `fill_blank` (`code` 모드) | recall | 답안 + `RunResult` |
@@ -61,9 +73,9 @@ I/O가 없는 순수 패키지이며 `@proginone/shared`에만 의존합니다.
 
 ## 샌드박스 계약
 
-`SerializedValue`, 관측 단계(`ObservationStep`, `CheckBundle`), 관측값(`Observation`), `RunResult`, `RunPlan`, ProgInOne 콘솔 형식(`formatConsoleArgs`)은 `@proginone/shared`에 있습니다.
-러너도 `shared`에만 의존할 수 있기 때문입니다.
+`SerializedValue`, 관측 단계(`ObservationStep`, `CheckBundle`), 관측값(`Observation`), `RunResult`, `RunPlan`, ProgInOne 콘솔 형식(`formatConsoleArgs`)은 내부 패키지 `@proginone/run-contract`에 있습니다.
+러너도 이 계약에만 의존할 수 있기 때문입니다.
 
 ## 식별자
 
-`formatVariantId`, `parseVariantId`, `parseSeed`, `exerciseOriginOf`, `variantGroupKey`는 [데이터 모델 설계](/docs/design/data-model.md#식별자-전략)의 형식을 따릅니다.
+`formatVariantId`, `parseVariantId`, `parseSeed`, `exerciseOriginOf`, `variantGroupKey`는 `@proginone/exercise-core`에 있고(이 패키지가 다시 내보냄), [데이터 모델 설계](/docs/design/data-model.md#식별자-전략)의 형식을 따릅니다.

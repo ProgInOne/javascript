@@ -1,0 +1,212 @@
+import {
+  fillBlankPublicSpecSchema,
+  findBugLinePublicSpecSchema,
+  fixBugPublicSpecSchema,
+  implementFunctionPublicSpecSchema,
+  mcqMultiPublicSpecSchema,
+  mcqSinglePublicSpecSchema,
+  parsonsPublicSpecSchema,
+  predictOutputPublicSpecSchema,
+  trueFalsePublicSpecSchema,
+  webTaskPublicSpecSchema,
+  type CodeAnswer,
+  type FillBlankAnswer,
+  type FillBlankPublicSpec,
+  type FindBugLinePublicSpec,
+  type FixBugPublicSpec,
+  type ImplementFunctionPublicSpec,
+  type McqMultiAnswer,
+  type McqMultiPublicSpec,
+  type McqSingleAnswer,
+  type McqSinglePublicSpec,
+  type ParsonsAnswer,
+  type ParsonsPublicSpec,
+  type PredictOutputAnswer,
+  type PredictOutputPublicSpec,
+  type TrueFalsePublicSpec,
+  type WebTaskPublicSpec,
+} from '@proginone/exercise-kit';
+import type { z } from 'zod';
+import type { FindBugLineDraft } from './renderers/FindBugLine.tsx';
+import {
+  choiceInitialAnswer,
+  choiceNotReadyReason,
+  isChoiceAnswerReady,
+  type ChoiceAnswerByType,
+  type ChoiceTypeId,
+  type TrueFalseDraft,
+} from '@proginone/exercise-ui';
+
+/** Exercise types with a renderer (roadmap M4, M5). */
+export const RENDERABLE_TYPE_IDS = [
+  'mcq_single',
+  'mcq_multi',
+  'true_false',
+  'fill_blank',
+  'predict_output',
+  'parsons',
+  'find_bug_line',
+  'implement_function',
+  'fix_bug',
+  'web_task',
+] as const;
+export type RenderableTypeId = (typeof RENDERABLE_TYPE_IDS)[number];
+
+export interface PublicSpecByType {
+  mcq_single: McqSinglePublicSpec;
+  mcq_multi: McqMultiPublicSpec;
+  true_false: TrueFalsePublicSpec;
+  fill_blank: FillBlankPublicSpec;
+  predict_output: PredictOutputPublicSpec;
+  parsons: ParsonsPublicSpec;
+  find_bug_line: FindBugLinePublicSpec;
+  implement_function: ImplementFunctionPublicSpec;
+  fix_bug: FixBugPublicSpec;
+  web_task: WebTaskPublicSpec;
+}
+
+/**
+ * Answer value a renderer holds. `null` means "nothing chosen yet" for choice-like types;
+ * submit only when {@link isAnswerReady} is true.
+ */
+export interface AnswerByType {
+  mcq_single: McqSingleAnswer | null;
+  mcq_multi: McqMultiAnswer;
+  /** Submittable once `value` is set (and `reasonId` when reasons are asked for). */
+  true_false: TrueFalseDraft;
+  fill_blank: FillBlankAnswer;
+  predict_output: PredictOutputAnswer | null;
+  parsons: ParsonsAnswer;
+  /** Submittable once `line` is set (and `causeId` when causes are asked for). */
+  find_bug_line: FindBugLineDraft;
+  implement_function: CodeAnswer;
+  fix_bug: CodeAnswer;
+  web_task: CodeAnswer;
+}
+
+/** A renderable exercise: type ID plus its public spec (discriminated by `typeId`). */
+export type RenderableExercise = {
+  [T in RenderableTypeId]: { typeId: T; spec: PublicSpecByType[T] };
+}[RenderableTypeId];
+
+const PUBLIC_SPEC_SCHEMAS: { [T in RenderableTypeId]: z.ZodType<PublicSpecByType[T]> } = {
+  mcq_single: mcqSinglePublicSpecSchema,
+  mcq_multi: mcqMultiPublicSpecSchema,
+  true_false: trueFalsePublicSpecSchema,
+  fill_blank: fillBlankPublicSpecSchema,
+  predict_output: predictOutputPublicSpecSchema,
+  parsons: parsonsPublicSpecSchema,
+  find_bug_line: findBugLinePublicSpecSchema,
+  implement_function: implementFunctionPublicSpecSchema,
+  fix_bug: fixBugPublicSpecSchema,
+  web_task: webTaskPublicSpecSchema,
+};
+
+export function isRenderableType(typeId: string): typeId is RenderableTypeId {
+  return (RENDERABLE_TYPE_IDS as readonly string[]).includes(typeId);
+}
+
+/**
+ * Validates a public spec from the API with exercise-kit's public schema. Returns `null` for an
+ * unknown type or an invalid spec (show an error state instead of rendering a broken exercise).
+ */
+export function parsePublicSpec(typeId: string, raw: unknown): RenderableExercise | null {
+  if (!isRenderableType(typeId)) return null;
+  const parsed = PUBLIC_SPEC_SCHEMAS[typeId].safeParse(raw);
+  if (!parsed.success) return null;
+  return { typeId, spec: parsed.data } as RenderableExercise;
+}
+
+/** Initial (empty) answer: nothing chosen, empty blanks, or the starter / buggy files. */
+export function initialAnswer<E extends RenderableExercise>(
+  exercise: E,
+): AnswerByType[E['typeId']] {
+  return initialAnswerOf(exercise) as AnswerByType[E['typeId']];
+}
+
+function initialAnswerOf(exercise: RenderableExercise): AnswerByType[RenderableTypeId] {
+  switch (exercise.typeId) {
+    case 'mcq_single':
+    case 'mcq_multi':
+    case 'true_false':
+      return choiceInitialAnswer(exercise);
+    case 'predict_output':
+      return null;
+    case 'fill_blank':
+      return { blanks: {} };
+    case 'parsons':
+      return { order: [] };
+    case 'find_bug_line':
+      return {};
+    case 'implement_function':
+    case 'web_task':
+      return { files: exercise.spec.starter.files.map((f) => ({ ...f })) };
+    case 'fix_bug':
+      return { files: exercise.spec.buggy.files.map((f) => ({ ...f })) };
+  }
+}
+
+/**
+ * Whether the answer can be submitted: an option is chosen, every blank has text, the prediction
+ * is not empty. Code answers are always submittable (the checks decide).
+ */
+export function isAnswerReady(
+  exercise: RenderableExercise,
+  answer: AnswerByType[RenderableTypeId],
+): boolean {
+  if (answer === null) return false;
+  switch (exercise.typeId) {
+    case 'mcq_single':
+    case 'mcq_multi':
+    case 'true_false':
+      // The common choice types' rules live in @proginone/exercise-ui.
+      return isChoiceAnswerReady(exercise, answer as ChoiceAnswerByType[ChoiceTypeId]);
+    case 'fill_blank':
+      return (
+        'blanks' in answer &&
+        exercise.spec.blanks.every((b) => (answer.blanks[b.id] ?? '').trim() !== '')
+      );
+    case 'predict_output':
+      if ('console' in answer) return answer.console.trim() !== '';
+      if ('value' in answer) return typeof answer.value === 'string' && answer.value.trim() !== '';
+      if ('choiceId' in answer) return answer.choiceId !== '';
+      return 'error' in answer;
+    case 'parsons':
+      return 'order' in answer && answer.order.length > 0;
+    case 'find_bug_line':
+      return (
+        'line' in answer &&
+        typeof answer.line === 'number' &&
+        (exercise.spec.causeOptions === undefined ||
+          ('causeId' in answer && typeof answer.causeId === 'string'))
+      );
+    case 'implement_function':
+    case 'fix_bug':
+    case 'web_task':
+      return 'files' in answer;
+  }
+}
+
+/** Reason shown by the confidence picker while the answer is not ready. */
+export function notReadyReason(exercise: RenderableExercise): string {
+  switch (exercise.typeId) {
+    case 'mcq_single':
+    case 'mcq_multi':
+    case 'true_false':
+      return choiceNotReadyReason(exercise);
+    case 'fill_blank':
+      return '빈칸을 모두 채워 주세요.';
+    case 'predict_output':
+      return exercise.spec.answerKind === 'choice' || exercise.spec.answerKind === 'error'
+        ? '답을 먼저 골라 주세요.'
+        : '예측한 결과를 먼저 적어 주세요.';
+    case 'parsons':
+      return '코드 조각을 답안에 놓아 주세요.';
+    case 'find_bug_line':
+      return exercise.spec.causeOptions
+        ? '줄과 이유를 골라 주세요.'
+        : '원인이 되는 줄을 골라 주세요.';
+    default:
+      return '코드를 작성해 주세요.';
+  }
+}

@@ -11,10 +11,10 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@proginone/content-schema": "workspace:*",
+    "@proginone/content-schema": "^0.2.0",
     "@proginone/exercise-kit": "workspace:*",
+    "@proginone/run-contract": "workspace:*",
     "@proginone/runner": "workspace:*",
-    "@proginone/shared": "workspace:*",
     "better-sqlite3": "^13.2.0",
     "drizzle-orm": "^0.45.4",
     "esbuild": "0.28.2",

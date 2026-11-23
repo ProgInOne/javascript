@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { serve } from '@hono/node-server';
 import { TaskRunner } from '@proginone/ai';
 import { createProvider } from './ai/provider.ts';
+import { TUTOR_PROFILE } from './ai/tutor-profile.ts';
 import { ConfigError, loadConfig } from './config/load.ts';
 import { ENV_KEYS } from './config/schema.ts';
 import { UserDb } from './db/user/connection.ts';
@@ -169,6 +170,7 @@ const ai = new AiService({ provider, log, userDb, models });
 // One runner, so every AI task shares the turn limit (interactive before background).
 const runner = new TaskRunner({
   provider,
+  profile: TUTOR_PROFILE,
   now: systemClock,
   resolveModel: () => models.resolve(),
 });
