@@ -131,7 +131,7 @@ ProgInOne/
 └── .github/workflows/       # CI, 릴리스
 ```
 
-공통 패키지는 `ProgInOne/core`에서 배포한 것을 받아 씁니다([언어 확장 구조](#언어-확장-구조)). 지금까지 옮긴 것: `learning-engine`(숙련도, FSRS, 연습 세트 구성, 재학습 규칙. 순수 함수), `ui`(디자인 시스템: 토큰, 기본 컴포넌트), `content-schema`(콘텐츠 원본과 content.db 스키마. 언어별 값은 `tools/content-cli/src/schema.ts`가 확장), `shared`(API 계약: 요청·응답 zod 스키마, 오류 코드. 과정 언어는 열려 있음). 1차 분리가 끝났고, 2차(`exercise-kit`의 공통 부분, `exercise-ui`, `ai`)는 아직 이 저장소에 있습니다.
+공통 패키지는 `ProgInOne/core`에서 배포한 것을 받아 씁니다([언어 확장 구조](#언어-확장-구조)). 지금까지 옮긴 것: `learning-engine`(숙련도, FSRS, 연습 세트 구성, 재학습 규칙. 순수 함수), `ui`(디자인 시스템: 토큰, 기본 컴포넌트), `content-schema`(콘텐츠 원본과 content.db 스키마. 언어별 값은 `tools/content-cli/src/schema.ts`가 확장), `shared`(API 계약: 요청·응답 zod 스키마, 오류 코드. 과정 언어는 열려 있음), `ai`(AI 작업 실행과 Codex 어댑터. 언어별 튜터 문구는 `TutorProfile`로 주입). 2차 분리 중이며, `exercise-kit`의 공통 부분과 `exercise-ui`는 아직 이 저장소에 있습니다.
 
 #### 의존 방향 규칙
 
@@ -142,6 +142,7 @@ flowchart BT
         ui
         contentschema[content-schema]
         engine[learning-engine]
+        ai
     end
     runcontract[run-contract]
     exercisekit[exercise-kit] --> shared
@@ -149,7 +150,6 @@ flowchart BT
     exerciseui[exercise-ui] --> exercisekit
     exerciseui --> ui
     runner --> runcontract
-    ai --> shared
     web[apps/web] --> ui
     web --> exerciseui
     web --> runner
@@ -169,7 +169,7 @@ flowchart BT
 - `learning-engine`과 `exercise-kit`의 채점기는 **I/O 없는 순수 함수** 입니다. DB와 네트워크 접근은 `apps/server`의 서비스 계층이 담당합니다.
 - `apps/server`는 러너 셸 문서(`/sandbox/runner.html`)를 만들어 제공하려고 `runner`의 셸 빌드(`@proginone/runner/shell-build`)를 씁니다. 샌드박스 결과 검증은 `packages/run-contract`의 계약(`parseRunResult`)으로 합니다.
 - `apps/web`은 `learning-engine`에 의존하지 않습니다. 학습 판단은 서버가 합니다. `learning-engine`은 배포 패키지라 dependency-cruiser가 따라가지 않으므로, 이 규칙은 ESLint(`no-restricted-imports`)가 검사합니다.
-- `packages/ai`는 제공자 프로토콜과 작업 정의만 갖고, DB 조회는 `apps/server`가 구현하는 `ContextSource` 인터페이스로 주입받습니다.
+- `@proginone/ai`는 제공자 프로토콜과 작업 정의만 갖고, DB 조회는 `apps/server`가 구현하는 `ContextSource` 인터페이스로, 언어별 튜터 문구는 `TutorProfile`(`apps/server/src/ai/tutor-profile.ts`)로 주입받습니다.
 
 ### 서버 내부 구조
 
@@ -479,7 +479,7 @@ sequenceDiagram
 | 앱 | SemVer (`MAJOR.MINOR.PATCH`) | 루트 `package.json`, git 태그 `v*` |
 | 콘텐츠 팩 | `YYYY.MM.DD.N` | `content/pack.yaml` |
 | user.db 스키마 | 마이그레이션 일련번호 | Drizzle 마이그레이션 폴더 |
-| AI 프롬프트 템플릿 | 작업별 정수 버전 | `packages/ai/src/tasks/*` |
+| AI 프롬프트 템플릿 | 작업별 정수 버전, 튜터 프로필 버전 | `@proginone/ai`(core `packages/ai/src/tasks/*`), `apps/server/src/ai/tutor-profile.ts` |
 
 - 커밋 메시지는 [Conventional Commits][conventional-commits]를 따릅니다(`feat:`, `fix:`, `docs:`, `content:` 등).
 - 변경 이력은 [Keep a Changelog][keep-a-changelog] 형식의 `CHANGELOG.md`로 관리합니다.
@@ -519,12 +519,12 @@ sequenceDiagram
 | 구분 | 패키지·영역 | 언어를 추가할 때 |
 |---|---|---|
 | 공통 | `learning-engine`, `shared`, `ui` | 그대로 사용 |
-| 공통 + 확장 지점 | `content-schema`(문제 유형), `exercise-ui`(에디터 언어 모드 주입), `ai`(언어별 프롬프트 조각), 서버·웹 앱 뼈대 | 언어 쪽에서 확장 지점을 채움 |
+| 공통 + 확장 지점 | `content-schema`(문제 유형), `exercise-core`(문제 유형 레지스트리), `exercise-ui`(에디터 언어 모드 주입), `ai`(`TutorProfile`), 서버·웹 앱 뼈대 | 언어 쪽에서 확장 지점을 채움 |
 | 언어별 | 콘텐츠, `runner`(코드 실행 샌드박스), `exercise-kit`의 검사, `content-cli` 언어 키트 | 언어 저장소에서 새로 작성 |
 
 - 공통 패키지는 새 저장소 `ProgInOne/core`로 옮겨 GitHub Packages에 `@proginone/*`로 배포합니다. 세 번에 나눠 떼어 냅니다: 1차 `learning-engine`·`ui`·`content-schema`·`shared`, 2차 `exercise-kit`의 공통 부분(`exercise-core`)·`exercise-ui`·`ai`, 3차 서버·웹 뼈대([D-090](/docs/decisions.md)).
 - `shared`의 JS 러너 계약(`run-protocol`, `console-format`)과 `exercise-kit`의 JS·DOM 검사는 언어별 영역이므로 이 저장소에 남습니다. 옮기기 전까지 공통 후보는 언어별 영역에 의존하지 않게 유지합니다.
-- 배포하는 패키지는 빌드한 JS(`dist/`)입니다. 학습자가 토큰 없이 설치할 수 있도록 릴리스 묶음에 `@proginone/*`를 미리 넣습니다(서버를 한 파일로 묶음).
+- 배포하는 패키지는 빌드한 JS(`dist/`)입니다. 학습자가 토큰 없이 설치할 수 있도록 릴리스 묶음에 `@proginone/*` 패키지 파일을 동봉합니다([D-093](/docs/decisions.md)).
 - 각 언어 앱은 지금처럼 로컬 웹앱 하나(서버 + 웹)로 배포합니다. 학습자 데이터 폴더와 포트는 언어별로 나눌지, 한 앱이 여러 언어를 담을지를 두 번째 언어 설계 때 정합니다(미결 사항).
 
 ## 검토한 대안
@@ -602,7 +602,7 @@ sequenceDiagram
 - **새 과정**: `content/`에 원본 추가 → 콘텐츠 빌드. 코드 변경 없음.
 - **새 문제 유형**: `exercise-kit`에 스펙·채점기, `exercise-ui`에 렌더러를 등록.
 - **새 실행 환경**(예: TypeScript 트랜스파일): 러너의 "전처리기" 확장 지점에 추가. 서버 측 언어는 별도 설계가 필요합니다.
-- **새 AI 제공자**: `packages/ai`에 `ProviderAdapter` 구현 추가.
+- **새 AI 제공자**: core의 `@proginone/ai`에 `ProviderAdapter` 구현 추가.
 
 ## 미결 사항
 

@@ -1,8 +1,6 @@
 import {
   AIError,
-  BASE_INSTRUCTIONS_VERSION,
   errorForStatus,
-  instructionsVersion,
   isAIError,
   tutorHint,
   tutorReply,
@@ -419,7 +417,7 @@ export class TutorService {
             instructionsVersion: thread.providerInstructionsVersion,
           }
         : null;
-    const iv = instructionsVersion(tutorReply, BASE_INSTRUCTIONS_VERSION);
+    const iv = runner.instructionsVersion(tutorReply);
     const memory = this.#deps.memory;
     if (
       memory &&

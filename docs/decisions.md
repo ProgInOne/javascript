@@ -844,3 +844,10 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - 구현 위치: 이 저장소 서버의 `WeaknessService.rank`(`apps/server/src/services/practice/weakness.ts`). 엔진(`rankWeakConcepts`·`selectWeaknessTargets`)은 ProgInOne/core의 공통 패키지라 이번에는 바꾸지 않았습니다. 다른 언어 저장소도 같은 문제를 겪으므로, 다음 core 변경 때 엔진의 규칙으로 옮깁니다.
 - 검토한 대안: 숙련도만으로 판단(오개념이 남았는데 약점에서 빠져 개념 지도와 어긋남), 약점 세트를 모두 맞힌 개념을 다음 날까지 숨기기(규칙이 늘고, 숙련도가 여전히 낮으면 다음 날 다시 나타나 혼란스러움), 기준 50(50대 개념을 복습 큐에만 맡기게 되어 약점 연습 기회가 줄어듦).
 
+## D-096. 2차 분리의 경계: 문제 유형 레지스트리 팩토리, `exercise-core` 범위, 언어별 주입 지점 — `확정`
+- 2026-11-23, 사용자 결정(D-090의 2차 분리를 시작하며 경계를 정함).
+- **문제 유형 레지스트리는 core의 팩토리(`createExerciseRegistry(types)`)로 만듭니다.** 유형 ID는 문자열로 열어 두고, 각 언어 저장소가 자기 유형 목록으로 레지스트리를 만듭니다(D-092와 같은 방식). 실행 결과(`RunResult`)와 실행 계획(`RunPlan`) 타입은 유형 정의의 제네릭 매개변수로 바꿔 core가 JS 러너 계약을 모르게 합니다. 템플릿 엔진은 레지스트리를 인자로 받습니다. 고정 목록에 언어별 유형을 모두 넣는 방식은 core가 언어마다 커져서 고르지 않았습니다.
+- **`@proginone/exercise-core`에는 유형 틀, 공통 도구(오류, 식별자, 난수, 정규화), 파라메트릭 템플릿, 선택형 3종(`mcq_single`, `mcq_multi`, `true_false`)만 넣습니다.** 체크 언어(DOM·CSS·값 비교), 코드 유형(`implement_function`, `fix_bug`, `web_task`), 실행 결과를 쓰는 유형(`fill_blank`, `parsons`, `predict_output`, `find_bug_line`)은 이 저장소의 `packages/exercise-kit`에 남깁니다. 이 패키지는 core 위에 JS 유형을 얹습니다. `fill_blank` 텍스트 모드나 `parsons` 순서 채점처럼 겹칠 부분은 Go 코드 유형을 만든 뒤 실제로 겹치는지 보고 옮깁니다(D-090의 3차와 같은 원칙).
+- **`@proginone/exercise-ui`에는 위젯(확신도, 힌트, 피드백, 체크 목록, 단축키, 코드 블록, 인라인 텍스트), 선택형 렌더러 3종, `CodeEditor`를 넣습니다.** `CodeEditor`는 언어 확장(CodeMirror `Extension`)과 포맷 함수를 주입받고, `ExerciseRenderer`는 유형 ID → 렌더러 맵을 주입받습니다. 미리보기, 콘솔, 코드 작업 공간, 실행 기반 렌더러는 이 저장소에 남깁니다.
+- **`@proginone/ai`는 통째로 옮기고 언어별 문구는 `TutorProfile`로 주입합니다.** 프로필은 튜터 역할, 배우는 대상, 경험 영역, 학습 범위, 용어 예시, 용어 표기 목록을 담습니다. 프로필의 `id`와 `version`은 튜터 스레드의 지침 버전에 들어가므로, 프로필을 바꾸면 스레드를 다시 만듭니다. 이 저장소의 프로필은 옮기기 전과 같은 문구를 만듭니다.
+- **순서는 `ai` → `exercise-core` → `exercise-ui`입니다.** 1차와 같이 패키지마다 core PR(패키지 추가) → `next` 스냅샷 → 이 저장소의 전환 PR로 진행하고, 셋을 마치면 core `0.2.0`을 정식 배포합니다. `ai`는 JS 결합이 가장 적고 다른 둘과 의존 관계가 없어 먼저 합니다.
