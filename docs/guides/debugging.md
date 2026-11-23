@@ -93,7 +93,7 @@ CODEX_HOME="<데이터 위치>/codex-home" codex features list
 
 - 문제 목록은 `GET /api/v1/ai/status`의 `status.problems`와 서버 로그 `codex.isolation.failed`에 있습니다.
 - `config.toml`은 시작할 때마다 기대값으로 다시 쓰므로 손으로 고치지 않습니다.
-- Codex를 업데이트한 뒤 새 기능 때문에 실패하면, 그 기능이 도구인지 검토해 `packages/ai/src/provider/codex/features.ts`의 `REQUIRED_OFF`·`ALLOWED_ON`을 고칩니다([`@proginone/ai` README의 Codex 업그레이드](/packages/ai/README.md#codex-업그레이드)).
+- Codex를 업데이트한 뒤 새 기능 때문에 실패하면, 그 기능이 도구인지 검토해 core 저장소의 `packages/ai/src/provider/codex/features.ts`에서 `REQUIRED_OFF`·`ALLOWED_ON`을 고치고 새 버전을 배포합니다([`@proginone/ai` README의 Codex 업그레이드](https://github.com/ProgInOne/core/blob/develop/packages/ai/README.md#codex-업그레이드)).
 
 ### AI 호출 기록(`ai_calls`) 보기
 
@@ -138,7 +138,7 @@ sqlite3 -readonly "<데이터 위치>/user.db" \
 
 - 서버를 실제 Codex로 띄우되 학습 데이터를 건드리지 않으려면 임시 데이터 위치를 씁니다: `PROGINONE_DATA_DIR=$(mktemp -d) pnpm start`. 처음에는 설정 AI에서 로그인해야 합니다.
 - 모의 제공자(`PROGINONE_AI_PROVIDER=mock`)는 결정론적으로 답합니다. 질문에 `[mock:slow]`를 넣으면 천천히 보내다 중간에서 취소될 때까지(최대 30초) 멈추고, `[mock:error:<AI 오류 코드>]`(예: `[mock:error:AI_RATE_LIMITED]`)를 넣으면 그 오류로 실패합니다(E2E용).
-- 프로토콜이 바뀐 것 같으면 계약 테스트를 실행합니다: `pnpm vitest run packages/ai/src/provider/codex`. 녹화본을 다시 만드는 법은 [`@proginone/ai` README](/packages/ai/README.md#codex-프로토콜-계약-테스트)에 있습니다.
+- 프로토콜이 바뀐 것 같으면 core 저장소에서 계약 테스트를 실행합니다: `pnpm vitest run packages/ai/src/provider/codex`. 녹화본을 다시 만드는 법은 [`@proginone/ai` README](https://github.com/ProgInOne/core/blob/develop/packages/ai/README.md#codex-프로토콜-계약-테스트)에 있습니다.
 
 ## 샌드박스·러너 문제
 
@@ -210,4 +210,4 @@ API 오류는 `{ "error": { "code", "message", "retryable", "details" } }` 형�
 - [시작하기 문제 해결](/docs/guides/getting-started.md#문제-해결)
 - [테스트 가이드](/docs/guides/testing.md)
 - [AI 시스템 설계 구현 메모](/docs/design/ai-system.md#구현-메모-v02)
-- [`@proginone/ai` README](/packages/ai/README.md)
+- [`@proginone/ai` README](https://github.com/ProgInOne/core/blob/develop/packages/ai/README.md) (core 저장소)

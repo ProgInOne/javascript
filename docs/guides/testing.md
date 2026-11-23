@@ -39,7 +39,7 @@ CI는 PR과 `develop`·`main` 푸시마다 `check` 단계(lint ~ audit)와 `e2e`
 - **시간**: 날짜 경계나 보존 정책은 `now`를 주입해 테스트합니다. 실제 시계를 기다리지 않습니다.
 - 버그 수정에는 재현 테스트를 먼저 추가합니다.
 - **학습 시나리오(여러 날)**: 며칠에서 몇 주에 걸친 학습 규칙(복습 간격, 단계 게이트)은 `apps/server/src/test/practice-app.ts`의 `practiceApp()`(실제 임시 user.db, HTTP API, `clock.now`로 움직이는 가짜 시계, Asia/Seoul 학습자)으로 날마다 같은 시각(예: 19:00)에 세션을 돌려 테스트합니다. 예: `routes/simulation.test.ts`(30일), `routes/mastered-gate.test.ts`(3주 `mastered` 게이트). 성공 경로 하나를 두고, 조건 하나만 바꾼 변형마다 결과(단계, `nextStage.missing`)가 **그 조건 하나만** 빠졌음을 확인합니다. FSRS는 실제 ts-fsrs(퍼즈는 개념 ID로 시드)라 결정론적이므로 평가 날짜와 등급(`review_logs`)을 그대로 단언해 흐름이 바뀌면 바로 드러나게 합니다.
-- **AI**: 서비스 흐름은 `MockProvider`(시나리오 주입 `enqueue`, 요청 기록 `requests`)로 테스트합니다. Codex 어댑터는 실제 `codex app-server` 교환을 녹화해 재생하는 계약 테스트(`packages/ai/src/provider/codex/replay.test.ts`)와 가짜 `codex`(`fake-codex.mjs`)로 테스트하며, CI는 실제 Codex를 쓰지 않습니다. 다시 녹화하는 법은 [`@proginone/ai` README](/packages/ai/README.md#codex-프로토콜-계약-테스트)에 있습니다.
+- **AI**: 서비스 흐름은 `MockProvider`(시나리오 주입 `enqueue`, 요청 기록 `requests`)로 테스트합니다. Codex 어댑터의 계약 테스트(녹화 재생, 가짜 `codex`)는 `@proginone/ai`와 함께 core 저장소로 옮겼고, 다시 녹화하는 법은 core의 [`@proginone/ai` README](https://github.com/ProgInOne/core/blob/develop/packages/ai/README.md#codex-프로토콜-계약-테스트)에 있습니다. 이 저장소에는 튜터 Codex 설정이 PoC와 같은지 보는 테스트(`apps/server/src/ai/codex-config.test.ts`)가 남습니다. CI는 실제 Codex를 쓰지 않습니다.
 - **콘텐츠 실행 검증**: `tools/content-cli`의 판정 로직은 가짜 러너(`src/test/fake-runner.ts`)로 테스트합니다. 실제 러너를 쓰는 `src/verify/browser.test.ts`는 Chromium이 없으면 건너뜁니다. 실제 `content/` 전체는 CI e2e 작업의 `pnpm content:check:run --frozen`이 검증합니다([콘텐츠 작성 가이드](/docs/guides/content-authoring.md#contentcheckrun-실행-검증)).
 
 ## E2E (Playwright)

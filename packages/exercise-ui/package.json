@@ -26,7 +26,7 @@
     "@lezer/highlight": "^1.2.5",
     "@proginone/exercise-kit": "workspace:*",
     "@proginone/run-contract": "workspace:*",
-    "@proginone/ui": "^0.1.0",
+    "@proginone/ui": "0.2.0-next.20261123081708",
     "lucide-react": "^1.73.0",
     "prettier": "^3.10.1",
     "zod": "^4.6.7"
