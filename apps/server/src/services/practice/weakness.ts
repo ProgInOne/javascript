@@ -34,7 +34,13 @@ export class WeaknessService {
     this.#now = deps.now;
   }
 
-  /** `rankWeakConcepts` over every concept with records that the content pack still has. */
+  /**
+   * `rankWeakConcepts` over every concept with records that the content pack still has.
+   * `entries` keeps only weak concepts: below the weakness bar (`dailyPlan.weaknessBelowEffective`)
+   * or with a confirmed misconception. The weakness score is positive for anything under 100, so
+   * without the bar a concept stayed "weak" after practice raised it. `ranked` is every concept,
+   * for sets the learner asks for by name (D-095).
+   */
   rank(now = this.#now()) {
     const orm = this.#userDb.orm;
     const repo = this.#content.repo;
@@ -43,7 +49,7 @@ export class WeaknessService {
     const concepts = repo.getConcepts(ids);
     const states = loadConceptStates(orm, learnerId, ids, this.#engine.fsrs);
     const active = activeMisconceptionsByConcept(this.#engine, orm, learnerId, now);
-    const entries = rankWeakConcepts(this.#engine, {
+    const ranked = rankWeakConcepts(this.#engine, {
       concepts: ids.flatMap((id) => {
         const concept = concepts.get(id);
         const state = states.get(id);
@@ -59,7 +65,9 @@ export class WeaknessService {
       }),
       now,
     });
-    return { entries, states, active, concepts, learnerId, now };
+    const bar = this.#engine.config.dailyPlan.weaknessBelowEffective;
+    const entries = ranked.filter((e) => e.effective < bar || e.confirmedMisconceptions > 0);
+    return { entries, ranked, states, active, concepts, learnerId, now };
   }
 
   /** `GET /weak-concepts`. */
@@ -125,17 +133,17 @@ export class WeaknessService {
   }
 
   /**
-   * Plans a weakness set: the learner's `conceptIds` (in that order, if they have records), or
-   * the automatic targets. Null when there is nothing to practise.
+   * Plans a weakness set: the learner's `conceptIds` (in that order, if they have records, even
+   * above the weakness bar), or the automatic targets. Null when there is nothing to practise.
    */
   planSet(seed: string, conceptIds?: readonly string[]) {
     const orm = this.#userDb.orm;
     const repo = this.#content.repo;
-    const { entries, states, active, learnerId, now } = this.rank();
+    const { entries, ranked, states, active, learnerId, now } = this.rank();
     const targets =
       conceptIds === undefined
         ? selectWeaknessTargets(this.#engine, entries)
-        : conceptIds.flatMap((id) => entries.filter((e) => e.conceptId === id));
+        : conceptIds.flatMap((id) => ranked.filter((e) => e.conceptId === id));
     if (targets.length === 0) return null;
     const ids = targets.map((t) => t.conceptId);
     const excluded = excludedExerciseIds(orm, learnerId);
