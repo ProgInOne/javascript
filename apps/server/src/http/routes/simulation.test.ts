@@ -58,7 +58,12 @@ describe('30 days through the API', () => {
           const res = await ctx.call('POST', '/practice-sets', { kind: 'lesson', lessonId });
           await answerSet(ctx, practiceSetViewSchema.parse(res.json).id, day);
         } else {
-          const res = await ctx.call('POST', '/practice-sets', { kind: 'weakness' });
+          // Like the dashboard button: the block's concepts, which an earlier block today may
+          // already have lifted past the weakness bar (D-095).
+          const res = await ctx.call('POST', '/practice-sets', {
+            kind: 'weakness',
+            conceptIds: block.concepts.map((c) => c.id),
+          });
           expect(res.status, `weakness set on day ${day}`).toBe(200);
           await answerSet(ctx, practiceSetViewSchema.parse(res.json).id, day);
         }

@@ -5,7 +5,7 @@
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-23 (구현 위치를 ProgInOne/core로 옮김: D-090)
+- 최종 수정: 2026-11-23 (약점은 효과 숙련도 60 미만만: D-095)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [콘텐츠·문제 시스템 설계](/docs/design/content-and-exercises.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -511,7 +511,7 @@ weakness = (100 − effective) × importanceFactor
          × (1 + 0.2 × min(consecutiveFailures, 3))
 ```
 
-- 대상: `introduced` 이상 개념 중 `weakness` 상위 3~5개.
+- 대상: `introduced` 이상이고 `effective < 60`인 개념 중 `weakness` 상위 3~5개. 복습으로 `effective`가 60 이상이 되면 약점이 아닙니다([D-095](/docs/decisions.md)).
 - 개념당 3~4문항. 첫 문항은 `maxDifficultyCorrect − 1`(최소 L1)로 시작해 정답이면 한 단계씩 올립니다.
 - 확정된 오개념이 있으면 그 오개념을 겨냥하는 문제를 첫 두 문항 안에 넣습니다.
 
@@ -915,7 +915,7 @@ v0.2(M5)에서 [구현 메모 (v0.1)](#구현-메모-v01)의 "v0.2 이후" 항�
 | 오개념 겨냥 | 개념의 두 번째 문항까지 확정 오개념 겨냥 문제가 없으면 두 번째 문항을 겨냥 문제로 고릅니다(`misconception_target`) |
 | 배치 | 개념별 사다리 순서를 지키며 개념을 번갈아 냅니다 |
 | 후보 | 개념의 `practice`·`remedial` 문제. 통과 기준은 없습니다 |
-| 대상 개념 | `introduced` 이상이면서 **시도가 1건 이상** 있는 개념만 약점으로 봅니다. 레슨만 읽은 개념은 "아직 연습 전"이지 약점이 아닙니다 |
+| 대상 개념 | `introduced` 이상이면서 **시도가 1건 이상** 있는 개념만 약점으로 봅니다. 레슨만 읽은 개념은 "아직 연습 전"이지 약점이 아닙니다. 그중 `effective < dailyPlan.weaknessBelowEffective`(60)인 개념만 약점 목록·자동 대상·오늘의 학습에 들어갑니다(서버 `WeaknessService.rank`). 학습자가 개념을 골라 시작한 세트는 기준과 상관없이 만듭니다([D-095](/docs/decisions.md)) |
 
 **오늘의 학습** (`planning/daily-plan.ts`, `buildDailyPlan`):
 

@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- 약점 집중으로 숙련도가 올라도 약점 목록에서 빠지지 않던 문제(D-095). 이제 효과 숙련도가 60 미만인 개념만 약점으로 보여 주고 추천하며, 복습으로 60을 넘으면 목록에서 빠짐. 학습자가 개념을 골라 시작하는 약점 세트는 그대로 만들 수 있음
+
 ### Changed
 
 - 공통 패키지 `@proginone/*`를 사전 배포판(`0.1.0-next`)에서 정식 버전 `^0.1.0`(ProgInOne/core `v0.1.0`)으로 바꿈. 더 쓰지 않는 `@proginone/shared` 의존성을 `runner`·`exercise-kit`·`exercise-ui`·`content-cli`에서 지움

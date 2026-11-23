@@ -140,6 +140,26 @@ describe('weakness practice', () => {
     expect(list.suggested).toContain('js.basics.statement');
   });
 
+  it('drops a concept once its mastery is past the weakness bar, but still practises it by name', async () => {
+    const ctx = await practiceApp();
+    await weakLearner(ctx);
+    const before = weakConceptsSchema.parse((await ctx.call('GET', '/weak-concepts')).json);
+    expect(before.concepts.map((c) => c.concept.id)).toContain('js.basics.statement');
+
+    // Practice lifted the concept well past the bar (D-095): every weakness score is positive
+    // below 100, so the bar is what takes it off the list.
+    ctx.userDb.sqlite
+      .prepare("UPDATE concept_mastery SET score = 95 WHERE concept_id = 'js.basics.statement'")
+      .run();
+    const after = weakConceptsSchema.parse((await ctx.call('GET', '/weak-concepts')).json);
+    expect(after.concepts.map((c) => c.concept.id)).not.toContain('js.basics.statement');
+    expect(after.suggested).not.toContain('js.basics.statement');
+    expect(after.concepts.every((c) => c.effective < 60)).toBe(true);
+
+    const named = await createSet(ctx, { kind: 'weakness', conceptIds: ['js.basics.statement'] });
+    expect(named.items.every((i) => i.targetConcept?.id === 'js.basics.statement')).toBe(true);
+  });
+
   it('builds a weakness set, resumes it, and answers 409 when nothing is weak', async () => {
     const ctx = await practiceApp();
     const none = await ctx.call('POST', '/practice-sets', { kind: 'weakness' });
