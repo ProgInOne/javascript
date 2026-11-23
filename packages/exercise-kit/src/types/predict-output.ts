@@ -10,12 +10,17 @@ import { z } from 'zod';
 
 import { parseLiteral } from '../common/literal.ts';
 import { compareOutput, outputLineEquals, prepareLine } from '../common/output.ts';
-import { leakSet, normalizeOutputLines } from '../common/normalize.ts';
-import { codeTextSchema, localIdSchema, uniqueIds } from '../common/schemas.ts';
+import {
+  buildResult,
+  codeTextSchema,
+  ExerciseKitError,
+  leakSet,
+  localIdSchema,
+  misconceptionIdSchema,
+  normalizeOutputLines,
+  uniqueIds,
+} from '@proginone/exercise-core';
 import { valuesEqual } from '../common/values.ts';
-import { ExerciseKitError } from '../core/errors.ts';
-import { misconceptionIdSchema } from '../core/ids.ts';
-import { buildResult } from '../core/result.ts';
 import type { ExerciseTypeDef, FeedbackItem, VerifyIssue } from '../core/types.ts';
 
 /** docs/design/content-and-exercises.md#predict_output-실행-결과-예측 */

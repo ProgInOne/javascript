@@ -2,8 +2,12 @@ import { A11Y_IMPACTS } from '@proginone/run-contract';
 import { z } from 'zod';
 
 import { parseLiteral } from '../common/literal.ts';
-import { jsonValueSchema, localIdSchema, uniqueIds } from '../common/schemas.ts';
-import { misconceptionIdSchema } from '../core/ids.ts';
+import {
+  jsonValueSchema,
+  localIdSchema,
+  misconceptionIdSchema,
+  uniqueIds,
+} from '@proginone/exercise-core';
 
 /**
  * Check specification language (docs/design/content-and-exercises.md#체크-명세-언어).

@@ -1,5 +1,22 @@
-import type { RunPlan, RunResult } from '@proginone/run-contract';
-import type { z } from 'zod';
+import type { ExerciseTypeDef as CoreExerciseTypeDef, RunOutcome } from '@proginone/exercise-core';
+import type { RunPlan, RunResult, RunStatus } from '@proginone/run-contract';
+
+// The JavaScript side of the exercise type system. The language-neutral types live in
+// @proginone/exercise-core (D-096); this file narrows them to this repository's types and runner.
+
+export type {
+  CheckResult,
+  ExerciseCategory,
+  FeedbackItem,
+  GradeOutcome,
+  GradeResult,
+  MilestoneResult,
+  RedactOptions,
+  RunPlanOptions,
+  ServerFindings,
+  VerifyIssue,
+} from '@proginone/exercise-core';
+export { EXERCISE_CATEGORIES } from '@proginone/exercise-core';
 
 /** All type IDs from docs/design/content-and-exercises.md#유형-목록과-우선순위. */
 export const EXERCISE_TYPE_IDS = [
@@ -22,26 +39,10 @@ export const EXERCISE_TYPE_IDS = [
 ] as const;
 export type ExerciseTypeId = (typeof EXERCISE_TYPE_IDS)[number];
 
-/** Evidence category (glossary `ExerciseCategory`, learning-engine.md W_type). */
-export const EXERCISE_CATEGORIES = ['recognition', 'recall', 'production'] as const;
-export type ExerciseCategory = (typeof EXERCISE_CATEGORIES)[number];
-
-/** Attempt outcome stored in `attempts.outcome` (data-model.md). */
-export type GradeOutcome = 'correct' | 'partial' | 'incorrect' | 'error';
-
-export interface FeedbackItem {
-  level: 'success' | 'error' | 'warning' | 'info';
-  /** Stable machine code (e.g. `MCQ_WRONG_OPTION`). UIs may branch on it. */
-  code: string;
-  /** Korean display text. Never contains hidden expected values. */
-  message: string;
-  /** What the item refers to: blank ID, output line (1-based), check ID, milestone ID. */
-  target?: string;
-  /** Requirement name when the item comes from a check with `requirement`. */
-  requirement?: string;
-}
-
-/** Why a check failed (`CheckResult.reason`). */
+/**
+ * Why a check failed in this repository's check language. `CheckResult.reason` is a string in
+ * @proginone/exercise-core; the JS checks only produce these codes.
+ */
 export type CheckFailReason =
   | 'MISMATCH'
   | 'MISSING_IDENTIFIER'
@@ -60,111 +61,29 @@ export type CheckFailReason =
   | 'VIOLATION'
   | 'RUN_FAILED';
 
-export interface CheckResult {
-  id: string;
-  kind: string;
-  passed: boolean;
-  required: boolean;
-  weight: number;
-  visible: boolean;
-  description?: string;
-  requirement?: string;
-  reason?: CheckFailReason;
-  /** Expected/actual summary. Present only for visible checks (hidden expectations stay server-side). */
-  detail?: { path?: string; expected?: string; actual?: string };
-  misconceptionId?: string;
-}
-
-export interface MilestoneResult {
-  id: string;
-  title: string;
-  passed: boolean;
-}
+/** An exercise type of this repository: it runs in the JS runner (`RunResult`, `RunPlan`). */
+export type ExerciseTypeDef<Spec, PublicSpec, Answer> = CoreExerciseTypeDef<
+  Spec,
+  PublicSpec,
+  Answer,
+  RunResult,
+  RunPlan
+> & { id: ExerciseTypeId };
 
 /**
- * Grader output. Extends the doc's `GradeResult` with the fields the server stores in
- * `attempts` (`outcome`, `engineApplicable`, grader version) and the learning engine reads.
+ * The JS runner's status read as a language-neutral run outcome: the learner's code failing
+ * (`error`, `timeout`, `loop_limit`) is an answer; the sandbox failing (`crashed`, `aborted`) is not.
  */
-export interface GradeResult {
-  /** Binary verdict that counts as "correct" for mastery. */
-  correct: boolean;
-  outcome: GradeOutcome;
-  /** 0..1 partial score (feedback and statistics). */
-  score: number;
-  feedback: FeedbackItem[];
-  /** Misconceptions suggested by this answer, deduplicated, in discovery order. */
-  misconceptionIds: string[];
-  checkResults?: CheckResult[];
-  /** Requirement names with at least one failed check, in check order. */
-  failedRequirements?: string[];
-  milestones?: MilestoneResult[];
-  /** False when the sandbox itself failed (`crashed`/`aborted`): record, but do not feed the engine. */
-  engineApplicable: boolean;
-  /** `<typeId>@<version>`, stored in `attempts.grading_json`. */
-  graderVersion: string;
-}
-
-/** Findings the server computes outside the sandbox (acorn `static`, html-validate `html-valid`). */
-export type ServerFindings = Readonly<
-  Record<string, { passed: boolean; messages?: readonly string[] }>
->;
-
-export interface GradeInput<Spec, Answer> {
-  spec: Spec;
-  answer: Answer;
-  /** Sandbox result, already validated with `parseRunResult`. Required by run-based types. */
-  run?: RunResult;
-  serverFindings?: ServerFindings;
-}
-
-export interface RedactOptions {
-  /** Seed for deterministic option shuffling (the attempt or practice-set item ID). */
-  shuffleSeed?: string;
-}
-
-export interface RunPlanOptions {
-  /** `interactive` (실행 button) includes visible checks only. */
-  purpose: 'interactive' | 'grading' | 'verification';
-}
-
-export interface VerifyIssue {
-  severity: 'error' | 'warning';
-  code: string;
-  message: string;
-  path?: string;
-}
-
-/**
- * One exercise type plugin (docs/design/content-and-exercises.md#문제-유형-레지스트리).
- * Pure: no I/O, deterministic.
- */
-export interface ExerciseTypeDef<Spec, PublicSpec, Answer> {
-  id: ExerciseTypeId;
-  /** Spec schema version. */
-  version: number;
-  category: ExerciseCategory;
-  weightOverride?: number;
-  specSchema: z.ZodType<Spec>;
-  publicSpecSchema: z.ZodType<PublicSpec>;
-  answerSchema: z.ZodType<Answer>;
-  /** Whether grading this spec needs a sandbox `RunResult`. */
-  requiresRun(spec: Spec): boolean;
-  /**
-   * Whether the learner writes the code themselves (작성형, D-084): an `implement_function`, or a
-   * `web_task` whose starter leaves the focused part empty. Omitted = never.
-   */
-  writing?(spec: Spec): boolean;
-  /** Removes answer keys. The result is safe to send to the web app. */
-  redact(spec: Spec, options?: RedactOptions): PublicSpec;
-  /** Run plan for the sandbox (types that execute learner code). */
-  buildRunPlan?(spec: Spec, answer: Answer, options: RunPlanOptions): RunPlan;
-  grade(input: GradeInput<Spec, Answer>): GradeResult;
-  /** Static content checks (build and AI-generation validation). Execution checks live in content-cli. */
-  verify(spec: Spec): VerifyIssue[];
-  /**
-   * Answer-leak fingerprints (correct option text, accepted answers, expected output, key lines of
-   * the reference solution), normalized with `normalizeLeakText`. Server only; stored in
-   * `exercises.leak_fingerprints_json` for the AI hint post-check (ai-system.md).
-   */
-  leakFingerprints(spec: Spec): string[];
+export function runOutcomeOf(status: RunStatus): RunOutcome {
+  switch (status) {
+    case 'error':
+    case 'timeout':
+    case 'loop_limit':
+      return 'learner_failure';
+    case 'crashed':
+    case 'aborted':
+      return 'sandbox_failure';
+    case 'completed':
+      return 'ok';
+  }
 }

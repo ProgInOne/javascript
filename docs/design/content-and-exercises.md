@@ -5,7 +5,7 @@ ProgInOne의 커리큘럼 구조, 레슨 본문 형식, 문제 유형과 채점 
 
 - 상태: 승인됨 (2026-11-14)
 - 작성: ProgInOne 팀
-- 최종 수정: 2026-11-14
+- 최종 수정: 2026-11-23 (유형 틀·레지스트리·템플릿 엔진·선택형 유형을 공통 패키지 `@proginone/exercise-core`로 옮김: D-096)
 - 관련 문서: [PRD](/docs/product/prd.md), [결정 기록](/docs/decisions.md), [용어집](/docs/glossary.md), [시스템 아키텍처 설계](/docs/design/system-architecture.md), [데이터 모델 설계](/docs/design/data-model.md), [학습 엔진 설계](/docs/design/learning-engine.md), [코드 실행 샌드박스 설계](/docs/design/code-execution-sandbox.md), [AI 시스템 설계](/docs/design/ai-system.md), [UI/UX 설계](/docs/design/ui-ux.md)
 
 ## 배경과 범위
@@ -769,6 +769,10 @@ review:                           # 제작 이력 (빌드가 검사)
 문제 유형은 플러그인입니다([FR-EX-01](/docs/product/prd.md)).
 `packages/exercise-kit`이 유형의 데이터·채점·검증 정의를, `packages/exercise-ui`가 렌더러를 등록합니다.
 서버, 웹, `content-cli`는 레지스트리만 거쳐 유형별 동작을 호출하므로, 새 유형 추가 시 다른 코드를 고치지 않습니다.
+
+유형 틀(`ExerciseTypeDef`), 레지스트리 팩토리, 파라메트릭 템플릿 엔진, 선택형 3종(`mcq_single`, `mcq_multi`, `true_false`)은 공통 패키지 [`@proginone/exercise-core`](https://github.com/ProgInOne/core/blob/develop/packages/exercise-core/README.md)에 있습니다([D-096](/docs/decisions.md)).
+이 저장소의 `packages/exercise-kit`은 그 위에 JS 유형과 체크 언어를 얹고, `createExerciseRegistry({ types, parseRun: parseRunResult })`로 레지스트리를 만들어 기존 이름(`gradeSubmission`, `redactSpec` 등)으로 내보냅니다.
+아래 스케치는 설계 당시의 모양입니다. 공통 패키지에서는 유형 ID가 열린 문자열이고, 실행 결과·실행 계획이 제네릭 매개변수입니다.
 
 ```ts
 // packages/exercise-kit (I/O 없는 순수 정의)

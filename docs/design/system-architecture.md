@@ -119,7 +119,7 @@ ProgInOne/
 │   └── server/              # Node 로컬 서버 (Hono)
 ├── packages/
 │   ├── run-contract/        # JS 러너와 채점기 사이의 계약, 콘솔 형식 (배포하지 않음)
-│   ├── exercise-kit/        # 문제 유형 레지스트리: 스펙 스키마, 채점기, 템플릿 엔진
+│   ├── exercise-kit/        # JS 문제 유형과 체크 언어, 이 저장소의 레지스트리(@proginone/exercise-core 위)
 │   ├── exercise-ui/         # 문제 유형별 React 렌더러
 │   ├── runner/              # 샌드박스 런타임(하네스)과 호스트 프로토콜
 │   └── ai/                  # 제공자 어댑터, AI 작업 정의, 컨텍스트 빌더 인터페이스
@@ -131,7 +131,7 @@ ProgInOne/
 └── .github/workflows/       # CI, 릴리스
 ```
 
-공통 패키지는 `ProgInOne/core`에서 배포한 것을 받아 씁니다([언어 확장 구조](#언어-확장-구조)). 지금까지 옮긴 것: `learning-engine`(숙련도, FSRS, 연습 세트 구성, 재학습 규칙. 순수 함수), `ui`(디자인 시스템: 토큰, 기본 컴포넌트), `content-schema`(콘텐츠 원본과 content.db 스키마. 언어별 값은 `tools/content-cli/src/schema.ts`가 확장), `shared`(API 계약: 요청·응답 zod 스키마, 오류 코드. 과정 언어는 열려 있음), `ai`(AI 작업 실행과 Codex 어댑터. 언어별 튜터 문구는 `TutorProfile`로 주입). 2차 분리 중이며, `exercise-kit`의 공통 부분과 `exercise-ui`는 아직 이 저장소에 있습니다.
+공통 패키지는 `ProgInOne/core`에서 배포한 것을 받아 씁니다([언어 확장 구조](#언어-확장-구조)). 지금까지 옮긴 것: `learning-engine`(숙련도, FSRS, 연습 세트 구성, 재학습 규칙. 순수 함수), `ui`(디자인 시스템: 토큰, 기본 컴포넌트), `content-schema`(콘텐츠 원본과 content.db 스키마. 언어별 값은 `tools/content-cli/src/schema.ts`가 확장), `shared`(API 계약: 요청·응답 zod 스키마, 오류 코드. 과정 언어는 열려 있음), `ai`(AI 작업 실행과 Codex 어댑터. 언어별 튜터 문구는 `TutorProfile`로 주입), `exercise-core`(문제 유형 틀, 레지스트리 팩토리, 템플릿 엔진, 선택형 유형. 이 저장소의 `exercise-kit`이 JS 유형을 얹어 레지스트리를 만듦). 2차 분리 중이며, `exercise-ui`는 아직 이 저장소에 있습니다.
 
 #### 의존 방향 규칙
 
@@ -143,9 +143,10 @@ flowchart BT
         contentschema[content-schema]
         engine[learning-engine]
         ai
+        exercisecore[exercise-core]
     end
     runcontract[run-contract]
-    exercisekit[exercise-kit] --> shared
+    exercisekit[exercise-kit] --> exercisecore
     exercisekit --> runcontract
     exerciseui[exercise-ui] --> exercisekit
     exerciseui --> ui
@@ -600,7 +601,7 @@ sequenceDiagram
 ### 확장성
 
 - **새 과정**: `content/`에 원본 추가 → 콘텐츠 빌드. 코드 변경 없음.
-- **새 문제 유형**: `exercise-kit`에 스펙·채점기, `exercise-ui`에 렌더러를 등록.
+- **새 문제 유형**: `exercise-kit`에 스펙·채점기를 만들어 `core/registry.ts`의 레지스트리에, `exercise-ui`에 렌더러를 등록. 언어와 무관한 유형이면 core의 `@proginone/exercise-core`에 둡니다.
 - **새 실행 환경**(예: TypeScript 트랜스파일): 러너의 "전처리기" 확장 지점에 추가. 서버 측 언어는 별도 설계가 필요합니다.
 - **새 AI 제공자**: core의 `@proginone/ai`에 `ProviderAdapter` 구현 추가.
 
