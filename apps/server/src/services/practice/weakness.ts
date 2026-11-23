@@ -36,10 +36,10 @@ export class WeaknessService {
 
   /**
    * `rankWeakConcepts` over every concept with records that the content pack still has.
-   * `entries` keeps only concepts below the weakness bar (`dailyPlan.weaknessBelowEffective`): the
-   * weakness score is positive for anything under 100, so without the bar a concept stayed "weak"
-   * after practice raised it. `ranked` is every concept, for sets the learner asks for by name
-   * (D-095).
+   * `entries` keeps only weak concepts: below the weakness bar (`dailyPlan.weaknessBelowEffective`)
+   * or with a confirmed misconception. The weakness score is positive for anything under 100, so
+   * without the bar a concept stayed "weak" after practice raised it. `ranked` is every concept,
+   * for sets the learner asks for by name (D-095).
    */
   rank(now = this.#now()) {
     const orm = this.#userDb.orm;
@@ -66,7 +66,7 @@ export class WeaknessService {
       now,
     });
     const bar = this.#engine.config.dailyPlan.weaknessBelowEffective;
-    const entries = ranked.filter((e) => e.effective < bar);
+    const entries = ranked.filter((e) => e.effective < bar || e.confirmedMisconceptions > 0);
     return { entries, ranked, states, active, concepts, learnerId, now };
   }
 

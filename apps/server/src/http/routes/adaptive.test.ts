@@ -147,14 +147,28 @@ describe('weakness practice', () => {
     expect(before.concepts.map((c) => c.concept.id)).toContain('js.basics.statement');
 
     // Practice lifted the concept well past the bar (D-095): every weakness score is positive
-    // below 100, so the bar is what takes it off the list.
+    // below 100, so the bar is what takes it off the list. A confirmed misconception keeps it on
+    // until the misconception is resolved.
     ctx.userDb.sqlite
       .prepare("UPDATE concept_mastery SET score = 95 WHERE concept_id = 'js.basics.statement'")
+      .run();
+    const stillMisconceived = weakConceptsSchema.parse(
+      (await ctx.call('GET', '/weak-concepts')).json,
+    );
+    expect(stillMisconceived.concepts.map((c) => c.concept.id)).toContain('js.basics.statement');
+    ctx.userDb.sqlite
+      .prepare(
+        "UPDATE misconception_observations SET status = 'resolved', resolved_at = 1 WHERE concept_id = 'js.basics.statement'",
+      )
       .run();
     const after = weakConceptsSchema.parse((await ctx.call('GET', '/weak-concepts')).json);
     expect(after.concepts.map((c) => c.concept.id)).not.toContain('js.basics.statement');
     expect(after.suggested).not.toContain('js.basics.statement');
-    expect(after.concepts.every((c) => c.effective < 60)).toBe(true);
+    expect(
+      after.concepts.every(
+        (c) => c.effective < 60 || c.misconceptions.some((m) => m.status === 'confirmed'),
+      ),
+    ).toBe(true);
 
     const named = await createSet(ctx, { kind: 'weakness', conceptIds: ['js.basics.statement'] });
     expect(named.items.every((i) => i.targetConcept?.id === 'js.basics.statement')).toBe(true);
