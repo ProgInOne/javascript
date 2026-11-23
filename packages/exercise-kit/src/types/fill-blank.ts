@@ -1,15 +1,21 @@
 import { z } from 'zod';
 
-import { leakSet, normalizeBlankText, unquoteLiteral } from '../common/normalize.ts';
-import { codeTextSchema, localIdSchema, uniqueIds } from '../common/schemas.ts';
-import { misconceptionIdSchema } from '../core/ids.ts';
+import {
+  buildResult,
+  codeTextSchema,
+  leakSet,
+  localIdSchema,
+  misconceptionIdSchema,
+  normalizeBlankText,
+  uniqueIds,
+  unquoteLiteral,
+} from '@proginone/exercise-core';
 import {
   checkListSchema,
   identifierSchema,
   publicCheckSchema,
   redactCheck,
 } from '../checks/schema.ts';
-import { buildResult } from '../core/result.ts';
 import type { ExerciseTypeDef, FeedbackItem, VerifyIssue } from '../core/types.ts';
 import { buildCheckRunPlan, gradeWithChecks, verifyChecks } from './code-common.ts';
 

@@ -104,7 +104,8 @@ function checkMessage(result: CheckResult, entry: string | undefined): string {
   }
   if (result.reason === 'THREW') return '실행 중 오류가 발생했습니다.';
   const base = result.description ?? '체크를 통과하지 못했습니다.';
-  const hint = result.reason === undefined ? undefined : REASON_MESSAGES[result.reason];
+  const hint =
+    result.reason === undefined ? undefined : REASON_MESSAGES[result.reason as CheckFailReason];
   return hint && result.description !== undefined ? `${base} ${hint}` : (hint ?? base);
 }
 

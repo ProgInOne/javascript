@@ -1,27 +1,76 @@
-// Registry and boundary functions (validate untrusted input, then call pure graders).
+// This repository's registry (common types from @proginone/exercise-core plus the JS types, D-096)
+// and its boundary functions (validate untrusted input, then call pure graders).
 export {
   buildRunPlan,
   checkSpec,
   getExerciseType,
   gradeSubmission,
   implementedExerciseTypes,
+  instantiateTemplate,
+  instantiateVariant,
   isWritingExercise,
   leakFingerprints,
   parseAnswer,
   parseSpec,
   redactSpec,
+  registry,
   specMisconceptions,
   verifySpec,
-  type RegisteredExerciseType,
 } from './core/registry.ts';
 export * from './core/types.ts';
-export * from './core/errors.ts';
-export * from './core/ids.ts';
+
+// Language-neutral pieces from @proginone/exercise-core, re-exported so the apps keep one import.
+export {
+  EXERCISE_KIT_ERROR_CODES,
+  ExerciseKitError,
+  type ExerciseKitErrorCode,
+  type RegisteredExerciseType,
+  // Identifiers
+  SLUG_SEGMENT_PATTERN,
+  SLUG_PATTERN,
+  SLUG_MAX_LENGTH,
+  SEED_PATTERN,
+  slugSchema,
+  misconceptionIdSchema,
+  conceptIdSchema,
+  isSlug,
+  isTemplateId,
+  formatSeed,
+  parseSeed,
+  formatVariantId,
+  parseVariantId,
+  exerciseOriginOf,
+  variantGroupKey,
+  type ExerciseOrigin,
+  // Choice types
+  MCQ_MULTI_MAX_OPTIONS,
+  mcqMulti,
+  mcqMultiAnswerSchema,
+  mcqMultiPublicSpecSchema,
+  mcqMultiSpecSchema,
+  type McqMultiAnswer,
+  type McqMultiPublicSpec,
+  type McqMultiSpec,
+  BANNED_OPTION_TEXT,
+  mcqSingle,
+  mcqSingleAnswerSchema,
+  mcqSinglePublicSpecSchema,
+  mcqSingleSpecSchema,
+  type McqSingleAnswer,
+  type McqSinglePublicSpec,
+  type McqSingleSpec,
+  TRUE_FALSE_VERDICT_ONLY_SCORE,
+  TRUE_FALSE_WEIGHT,
+  trueFalse,
+  trueFalseAnswerSchema,
+  trueFalsePublicSpecSchema,
+  trueFalseSpecSchema,
+  type TrueFalseAnswer,
+  type TrueFalsePublicSpec,
+  type TrueFalseSpec,
+} from '@proginone/exercise-core';
 
 // Per-type definitions and schemas.
-export * from './types/mcq-single.ts';
-export * from './types/mcq-multi.ts';
-export * from './types/true-false.ts';
 export * from './types/fill-blank.ts';
 export * from './types/predict-output.ts';
 export * from './types/parsons.ts';
@@ -63,10 +112,8 @@ export {
 export { evaluateChecks } from './checks/evaluate.ts';
 export { gradeChecks, runFeedback, type CheckGrade, type Milestone } from './checks/aggregate.ts';
 
-// Parametric template engine.
+// Parametric template engine (instantiateTemplate / instantiateVariant above use this registry).
 export {
-  instantiateTemplate,
-  instantiateVariant,
   parseTemplate,
   renderString,
   renderValue,
@@ -74,22 +121,18 @@ export {
   sampleSeeds,
   templateSchema,
   MAX_CONSTRAINT_ATTEMPTS,
-  type ExerciseTemplate,
-  type TemplateInstance,
-} from './template/engine.ts';
-export {
-  evaluate as evaluateTemplateExpression,
+  evaluateTemplateExpression,
   toLiteral,
   TEMPLATE_FUNCTIONS,
-  type TemplateValue,
-} from './template/expr.ts';
-export {
   paramSchema,
   paramsSchema,
   paramSpaceSize,
   RESERVED_IDENTIFIERS,
+  type ExerciseTemplate,
+  type TemplateInstance,
+  type TemplateValue,
   type ParamDef,
-} from './template/params.ts';
+} from '@proginone/exercise-core';
 
 // Reusable comparison helpers (e.g. client-side quick feedback).
 export { parseLiteral } from './common/literal.ts';
@@ -101,5 +144,15 @@ export {
   type ValueDiff,
 } from './common/values.ts';
 export { compareOutput, outputLineEquals, type LineComparison } from './common/output.ts';
-export { normalizeBlankText, normalizeLeakText, normalizeOutputLines } from './common/normalize.ts';
-export { createRng, deriveSeed, seedFromString, splitmix64, type Rng } from './common/prng.ts';
+export {
+  normalizeBlankText,
+  normalizeLeakText,
+  normalizeOutputLines,
+} from '@proginone/exercise-core';
+export {
+  createRng,
+  deriveSeed,
+  seedFromString,
+  splitmix64,
+  type Rng,
+} from '@proginone/exercise-core';

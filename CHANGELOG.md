@@ -11,6 +11,7 @@
 
 ### Changed
 
+- 문제 유형 틀·레지스트리·템플릿 엔진·선택형 3종을 공통 패키지 `@proginone/exercise-core`(ProgInOne/core, `0.2.0-next`)로 받아 씀(D-090 2차, D-096). `packages/exercise-kit`은 그 위에 JS 유형과 체크 언어를 얹어 `createExerciseRegistry`로 레지스트리를 만들고, 경계 함수와 템플릿 함수를 기존 이름 그대로 내보냄. 체크 실패 이유(`CheckResult.reason`)는 공통 패키지에서 열린 문자열이라, 이유 문구는 모르는 코드를 그대로 표시
 - AI 작업 실행과 Codex 어댑터를 공통 패키지 `@proginone/ai`(ProgInOne/core, `0.2.0-next`)로 받아 씀(D-090 2차, D-096). `packages/ai`를 지우고, 튜터 지침의 언어별 문구는 `apps/server/src/ai/tutor-profile.ts`의 `TutorProfile`로 넘김(문구는 그대로). 지침 버전 형식이 바뀌어 기존 튜터 스레드는 다음 턴에 한 번 재구성됨. 다른 공통 패키지도 같은 사전 배포판으로 맞춤
 - 문서: 2차 분리의 경계(D-096): 문제 유형 레지스트리 팩토리, `exercise-core` 범위, `exercise-ui`·`ai`의 주입 지점
 - 공통 패키지 `@proginone/*`를 사전 배포판(`0.1.0-next`)에서 정식 버전 `^0.1.0`(ProgInOne/core `v0.1.0`)으로 바꿈. 더 쓰지 않는 `@proginone/shared` 의존성을 `runner`·`exercise-kit`·`exercise-ui`·`content-cli`에서 지움

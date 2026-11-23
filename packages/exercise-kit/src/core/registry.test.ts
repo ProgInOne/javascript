@@ -7,7 +7,7 @@ import {
   SENTINEL,
   collectKeys,
 } from '../testing/fixtures.ts';
-import { ExerciseKitError } from './errors.ts';
+import { ExerciseKitError } from '@proginone/exercise-core';
 import {
   checkSpec,
   getExerciseType,

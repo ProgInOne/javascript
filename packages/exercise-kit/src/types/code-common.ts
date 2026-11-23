@@ -1,18 +1,17 @@
 import { runFileSchema, type RunFile, type RunPlan, type RunResult } from '@proginone/run-contract';
 import { z } from 'zod';
 
-import { leakSet } from '../common/normalize.ts';
+import { buildResult, ExerciseKitError, leakSet } from '@proginone/exercise-core';
 import { gradeChecks, runFeedback, type Milestone } from '../checks/aggregate.ts';
 import { compileChecks } from '../checks/compile.ts';
 import { DOM_CHECK_KINDS, isRequired, type Check } from '../checks/schema.ts';
-import { ExerciseKitError } from '../core/errors.ts';
-import { buildResult } from '../core/result.ts';
-import type {
-  ExerciseTypeId,
-  GradeResult,
-  RunPlanOptions,
-  ServerFindings,
-  VerifyIssue,
+import {
+  runOutcomeOf,
+  type ExerciseTypeId,
+  type GradeResult,
+  type RunPlanOptions,
+  type ServerFindings,
+  type VerifyIssue,
 } from '../core/types.ts';
 
 /** Shared pieces of the code-writing types (implement_function, fix_bug, web_task, fill_blank code). */
@@ -169,7 +168,7 @@ export function gradeWithChecks(input: CheckGradeInput): GradeResult {
     ],
     checkResults: grade.checkResults,
     failedRequirements: grade.failedRequirements,
-    runStatus: input.run.status,
+    run: runOutcomeOf(input.run.status),
     ...(grade.milestones === undefined ? {} : { milestones: grade.milestones }),
   });
 }

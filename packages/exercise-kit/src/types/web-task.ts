@@ -1,8 +1,7 @@
 import { z } from 'zod';
 
 import { checkListSchema, publicCheckSchema, redactCheck } from '../checks/schema.ts';
-import { localIdSchema, uniqueIds } from '../common/schemas.ts';
-import { ExerciseKitError } from '../core/errors.ts';
+import { ExerciseKitError, localIdSchema, uniqueIds } from '@proginone/exercise-core';
 import type { ExerciseTypeDef, VerifyIssue } from '../core/types.ts';
 import {
   buildCheckRunPlan,

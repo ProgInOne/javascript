@@ -46,6 +46,12 @@ export const CHECK_FAIL_REASON_LABELS: Readonly<Record<CheckFailReason, string>>
   RUN_FAILED: '코드 실행이 실패해서 확인하지 못했어요.',
 };
 
+/** `reason` is an open string in @proginone/exercise-core; unknown codes show as is. */
+export function checkFailReasonLabel(reason: string): string {
+  const labels: Readonly<Record<string, string | undefined>> = CHECK_FAIL_REASON_LABELS;
+  return labels[reason] ?? reason;
+}
+
 type RowStatus = 'pending' | 'passed' | 'failed';
 
 /**
@@ -161,7 +167,7 @@ function CheckRow({
             <code>{summary}</code>
           </pre>
         )}
-        {reason && <p className="pi-ex-checks__reason">{CHECK_FAIL_REASON_LABELS[reason]}</p>}
+        {reason && <p className="pi-ex-checks__reason">{checkFailReasonLabel(reason)}</p>}
         {detail && (detail.expected !== undefined || detail.actual !== undefined) && (
           <details className="pi-ex-checks__detail">
             <summary>기대값과 실제값 보기</summary>

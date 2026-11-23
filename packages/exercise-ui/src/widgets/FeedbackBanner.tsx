@@ -2,7 +2,7 @@ import type { CheckResult, FeedbackItem, GradeResult } from '@proginone/exercise
 import { AlertTriangle, BookOpen, CheckCircle2, CircleDot, XCircle } from 'lucide-react';
 import { useId, type ReactNode } from 'react';
 import type { Confidence } from '../types.ts';
-import { CHECK_FAIL_REASON_LABELS } from './CheckList.tsx';
+import { checkFailReasonLabel } from './CheckList.tsx';
 import { CHECK_KIND_LABELS, isCheckKind } from './describe-check.ts';
 
 /** Misconception suggested by the answer, resolved to display text by the caller. */
@@ -207,7 +207,7 @@ function FailedChecks({ checks }: { checks: readonly CheckResult[] }) {
               {check.reason && (
                 <span className="pi-ex-feedback__reason">
                   {' '}
-                  — {CHECK_FAIL_REASON_LABELS[check.reason]}
+                  — {checkFailReasonLabel(check.reason)}
                 </span>
               )}
             </span>

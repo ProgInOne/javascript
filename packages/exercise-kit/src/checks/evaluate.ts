@@ -11,7 +11,7 @@ import {
 } from '@proginone/run-contract';
 
 import { parseLiteral } from '../common/literal.ts';
-import { normalizeOutputLines } from '../common/normalize.ts';
+import { normalizeOutputLines } from '@proginone/exercise-core';
 import { compareOutput, outputLineEquals } from '../common/output.ts';
 import { diffValues, fromJson, toNumber, valuesEqual } from '../common/values.ts';
 import type { CheckFailReason, CheckResult, ServerFindings } from '../core/types.ts';

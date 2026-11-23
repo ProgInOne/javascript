@@ -4,7 +4,7 @@ import {
   normalizeOutputLines,
   toHalfWidth,
   unifySmartQuotes,
-} from './normalize.ts';
+} from '@proginone/exercise-core';
 import { valuesEqual } from './values.ts';
 
 /**
