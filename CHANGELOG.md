@@ -11,6 +11,7 @@
 
 ### Changed
 
+- 공통 패키지 `@proginone/*`를 사전 배포판(`0.2.0-next`)에서 정식 버전 `^0.2.0`(ProgInOne/core `v0.2.0`)으로 바꿈
 - 공통 문제 위젯(확신도, 힌트, 피드백), 선택형 3종 렌더러와 답안 모델, 코드 에디터를 공통 패키지 `@proginone/exercise-ui`(ProgInOne/core, `0.2.0-next`)로 받아 씀(D-090 2차, D-096, D-097). 이 저장소의 패키지는 `@proginone/exercise-kit-ui`(`packages/exercise-kit-ui`)로 이름을 바꾸고 JS 유형 렌더러·체크 목록·콘솔·미리보기를 담음. 에디터 언어(JS·HTML·CSS, Prettier)와 피드백 배너의 체크 문구는 이 패키지가 주입. 스타일시트를 공통 부분과 JS 부분으로 나눔
 - 문서: `exercise-ui` 경계 조정(D-097): 유형별 렌더러 고르기와 체크 목록은 언어 저장소에, 패키지 이름 `exercise-kit-ui`
 - 문제 유형 틀·레지스트리·템플릿 엔진·선택형 3종을 공통 패키지 `@proginone/exercise-core`(ProgInOne/core, `0.2.0-next`)로 받아 씀(D-090 2차, D-096). `packages/exercise-kit`은 그 위에 JS 유형과 체크 언어를 얹어 `createExerciseRegistry`로 레지스트리를 만들고, 경계 함수와 템플릿 함수를 기존 이름 그대로 내보냄. 체크 실패 이유(`CheckResult.reason`)는 공통 패키지에서 열린 문자열이라, 이유 문구는 모르는 코드를 그대로 표시
