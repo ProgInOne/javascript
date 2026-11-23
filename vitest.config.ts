@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 
-const UI_TESTS = 'packages/exercise-ui/src/**/*.test.{ts,tsx}';
+const UI_TESTS = 'packages/exercise-kit-ui/src/**/*.test.{ts,tsx}';
 const WEB_TESTS = 'apps/web/src/**/*.test.{ts,tsx}';
 
 export default defineConfig({
@@ -24,7 +24,7 @@ export default defineConfig({
           name: 'ui',
           environment: 'jsdom',
           include: [UI_TESTS],
-          setupFiles: ['packages/exercise-ui/src/test/jsdom-setup.ts'],
+          setupFiles: ['packages/exercise-kit-ui/src/test/jsdom-setup.ts'],
         },
       },
       {
@@ -34,7 +34,7 @@ export default defineConfig({
           environment: 'jsdom',
           include: [WEB_TESTS],
           setupFiles: [
-            'packages/exercise-ui/src/test/jsdom-setup.ts',
+            'packages/exercise-kit-ui/src/test/jsdom-setup.ts',
             'apps/web/src/test/setup.ts',
           ],
         },

@@ -851,3 +851,10 @@ MVP 콘텐츠에 HTML/CSS 단원과 브라우저 JS 입문(DOM·이벤트)이 �
 - **`@proginone/exercise-ui`에는 위젯(확신도, 힌트, 피드백, 체크 목록, 단축키, 코드 블록, 인라인 텍스트), 선택형 렌더러 3종, `CodeEditor`를 넣습니다.** `CodeEditor`는 언어 확장(CodeMirror `Extension`)과 포맷 함수를 주입받고, `ExerciseRenderer`는 유형 ID → 렌더러 맵을 주입받습니다. 미리보기, 콘솔, 코드 작업 공간, 실행 기반 렌더러는 이 저장소에 남깁니다.
 - **`@proginone/ai`는 통째로 옮기고 언어별 문구는 `TutorProfile`로 주입합니다.** 프로필은 튜터 역할, 배우는 대상, 경험 영역, 학습 범위, 용어 예시, 용어 표기 목록을 담습니다. 프로필의 `id`와 `version`은 튜터 스레드의 지침 버전에 들어가므로, 프로필을 바꾸면 스레드를 다시 만듭니다. 이 저장소의 프로필은 옮기기 전과 같은 문구를 만듭니다.
 - **순서는 `ai` → `exercise-core` → `exercise-ui`입니다.** 1차와 같이 패키지마다 core PR(패키지 추가) → `next` 스냅샷 → 이 저장소의 전환 PR로 진행하고, 셋을 마치면 core `0.2.0`을 정식 배포합니다. `ai`는 JS 결합이 가장 적고 다른 둘과 의존 관계가 없어 먼저 합니다.
+
+## D-097. `exercise-ui` 경계 조정: 유형별 렌더러 고르기와 체크 목록은 언어 저장소에 (D-096 수정) — `확정`
+- 2026-11-23, 사용자 결정(D-096의 `exercise-ui` 분리를 구현하다 코드와 맞지 않는 두 곳을 확인함).
+- **`ExerciseRenderer`처럼 유형별로 렌더러를 고르는 부분은 언어 저장소에 둡니다.** D-096은 "유형 ID → 렌더러 맵 주입"이었지만, 그러려면 이 저장소의 유형별 타입(`RenderableExercise`, `AnswerByType`)과 JS 전용 props(실행, 미리보기, 실제 실행 결과)를 공통 패키지에서 `unknown`으로 지워야 해서 웹 앱의 타입이 약해집니다. 대신 `@proginone/exercise-ui`는 선택형 3종의 렌더러와 답안 모델(`ChoiceRenderer`, `parseChoicePublicSpec`, `choiceInitialAnswer`, `isChoiceAnswerReady`, `choiceNotReadyReason`)을 주고, 언어 저장소의 고르기 코드가 이 셋을 맡깁니다. Go 저장소는 작은 `switch`를 새로 씁니다.
+- **체크 목록(`CheckList`)과 체크 설명(`describe-check`)은 이 저장소에 남깁니다.** JS 체크 언어(`PublicCheck`, 체크 종류)에 묶여 있기 때문입니다. 공통 `FeedbackBanner`는 체크 종류·실패 이유 문구를 `checkLabels` 함수로 받고, 이 저장소는 `JS_CHECK_LABELS`를 넘기는 래퍼를 씁니다.
+- **에디터는 D-096대로 언어를 주입받습니다.** `EditorLanguageSupport`(CodeMirror 확장, 경로 판정, 들여쓰기 단위·탭 너비, 포맷 함수)를 받고, 포맷 함수가 없는 언어는 "포맷" 버튼을 숨깁니다. 이 저장소의 언어(JS·HTML·CSS 모드, Prettier)는 `packages/exercise-kit-ui/src/editor/languages.tsx`에 있습니다.
+- **이 저장소의 패키지 이름을 `@proginone/exercise-kit-ui`(`packages/exercise-kit-ui`)로 바꿉니다.** 공통 패키지가 `@proginone/exercise-ui`라 같은 이름을 쓸 수 없고, JS 유형 정의(`exercise-kit`)와 그 렌더러를 짝으로 보이게 하려는 것입니다. 이 패키지가 공통 UI를 다시 내보내므로 웹 앱은 import 이름만 바뀝니다. 스타일은 공통 부분(`@proginone/exercise-ui/exercise-ui.css`) 다음에 JS 부분(`exercise-kit-ui.css`)을 가져옵니다.

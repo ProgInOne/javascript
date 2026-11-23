@@ -1,4 +1,4 @@
-import { CONFIDENCE_LABELS } from '@proginone/exercise-ui';
+import { CONFIDENCE_LABELS } from '@proginone/exercise-kit-ui';
 import type { AttemptContext, MistakeAttempt, MistakeDetail } from '@proginone/shared';
 import { Badge } from '@proginone/ui';
 import { useQuery } from '@tanstack/react-query';

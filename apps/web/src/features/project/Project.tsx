@@ -7,7 +7,7 @@ import {
   useExerciseShortcuts,
   type AnswerByType,
   type RenderableExercise,
-} from '@proginone/exercise-ui';
+} from '@proginone/exercise-kit-ui';
 import type {
   CodeDraft,
   ExerciseView,

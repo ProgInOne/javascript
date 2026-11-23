@@ -1,4 +1,4 @@
-import { ariaShortcut, Kbd, modKeyLabel } from '@proginone/exercise-ui';
+import { ariaShortcut, Kbd, modKeyLabel } from '@proginone/exercise-kit-ui';
 import { Button, Tooltip } from '@proginone/ui';
 import { MessageCircle, Sparkles } from 'lucide-react';
 import { useCallback, useEffect, useState, type CSSProperties, type ReactNode } from 'react';

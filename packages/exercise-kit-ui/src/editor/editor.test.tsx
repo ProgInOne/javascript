@@ -4,12 +4,13 @@ import { act, screen, within } from '@testing-library/react';
 import { createRef, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { axeViolations, renderUi } from '../test/helpers.tsx';
-import { CodeEditor, isFormatShortcut, type CodeEditorHandle } from './CodeEditor.tsx';
-import { EditorPane } from './EditorPane.tsx';
-import { FormatError, formatCode, languageOfPath } from './format.ts';
+import { FormatError, type CodeEditorHandle } from '@proginone/exercise-ui';
+import { formatCode, languageOfPath } from './format.ts';
+import { CodeEditor, EditorPane } from './languages.tsx';
 
 // CodeMirror's layout code needs DOM geometry jsdom lacks; heavier editing behaviour is covered in
-// a real browser. These tests pin the wrapper's contract.
+// a real browser. These tests pin this repository's languages on the common editor
+// (@proginone/exercise-ui): JS/HTML/CSS modes and Prettier.
 function viewOf(container: HTMLElement): EditorView {
   const content = container.querySelector<HTMLElement>('.cm-content');
   if (!content) throw new Error('editor not mounted');
@@ -39,13 +40,6 @@ describe('formatCode', () => {
     expect(languageOfPath('index.html')).toBe('html');
     expect(languageOfPath('style.css')).toBe('css');
     expect(languageOfPath('data.json')).toBeNull();
-  });
-
-  it('matches ⇧⌥F by physical key', () => {
-    const base = { code: 'KeyF', shiftKey: true, altKey: true, ctrlKey: false, metaKey: false };
-    expect(isFormatShortcut(base)).toBe(true);
-    expect(isFormatShortcut({ ...base, metaKey: true })).toBe(false);
-    expect(isFormatShortcut({ ...base, code: 'KeyG' })).toBe(false);
   });
 });
 

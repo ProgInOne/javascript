@@ -11,17 +11,20 @@ import { describe, expect, it } from 'vitest';
 
 const root = join(import.meta.dirname, '..');
 const appCss = join(root, 'apps/web/src/app');
-// @proginone/ui is a published package (ProgInOne/core); read the sheets the web app installs.
+// @proginone/ui and @proginone/exercise-ui are published packages (ProgInOne/core); read the
+// sheets the web app installs.
 const fromWeb = createRequire(join(root, 'apps/web/package.json'));
-const uiSheets = ['@proginone/ui/components.css', '@proginone/ui/base.css'].map((specifier) =>
-  relative(root, fromWeb.resolve(specifier)),
-);
+const uiSheets = [
+  '@proginone/ui/components.css',
+  '@proginone/ui/base.css',
+  '@proginone/exercise-ui/exercise-ui.css',
+].map((specifier) => relative(root, fromWeb.resolve(specifier)));
 const sheets: Record<string, string> = Object.fromEntries(
   [
     ...readdirSync(appCss)
       .filter((f) => f.endsWith('.css'))
       .map((f) => join('apps/web/src/app', f)),
-    'packages/exercise-ui/src/styles/exercise-ui.css',
+    'packages/exercise-kit-ui/src/styles/exercise-kit-ui.css',
     ...uiSheets,
   ].map((file) => [file, readFileSync(join(root, file), 'utf8')]),
 );

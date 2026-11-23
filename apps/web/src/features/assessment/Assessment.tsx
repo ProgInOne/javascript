@@ -1,4 +1,4 @@
-import { ariaShortcut, isApplePlatform, Kbd, modKeyLabel } from '@proginone/exercise-ui';
+import { ariaShortcut, isApplePlatform, Kbd, modKeyLabel } from '@proginone/exercise-kit-ui';
 import type { AssessmentResult, LessonDetail, PracticeSetView } from '@proginone/shared';
 import { Badge, Button, EmptyState, ErrorState, Tooltip, useToast } from '@proginone/ui';
 import { useQueryClient } from '@tanstack/react-query';

@@ -1,6 +1,6 @@
 import type { CheckResult, FeedbackItem } from '@proginone/exercise-kit';
-import type { FeedbackResult } from '@proginone/exercise-ui';
-import { CodeBlock, InlineText } from '@proginone/exercise-ui';
+import type { FeedbackResult } from '@proginone/exercise-kit-ui';
+import { CodeBlock, InlineText } from '@proginone/exercise-kit-ui';
 import {
   REPORT_REASONS,
   type AttemptResponse,

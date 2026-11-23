@@ -28,7 +28,14 @@ import {
 } from '@proginone/exercise-kit';
 import type { z } from 'zod';
 import type { FindBugLineDraft } from './renderers/FindBugLine.tsx';
-import type { TrueFalseDraft } from './renderers/TrueFalse.tsx';
+import {
+  choiceInitialAnswer,
+  choiceNotReadyReason,
+  isChoiceAnswerReady,
+  type ChoiceAnswerByType,
+  type ChoiceTypeId,
+  type TrueFalseDraft,
+} from '@proginone/exercise-ui';
 
 /** Exercise types with a renderer (roadmap M4, M5). */
 export const RENDERABLE_TYPE_IDS = [
@@ -120,12 +127,11 @@ export function initialAnswer<E extends RenderableExercise>(
 function initialAnswerOf(exercise: RenderableExercise): AnswerByType[RenderableTypeId] {
   switch (exercise.typeId) {
     case 'mcq_single':
+    case 'mcq_multi':
+    case 'true_false':
+      return choiceInitialAnswer(exercise);
     case 'predict_output':
       return null;
-    case 'mcq_multi':
-      return { optionIds: [] };
-    case 'true_false':
-      return {};
     case 'fill_blank':
       return { blanks: {} };
     case 'parsons':
@@ -151,16 +157,10 @@ export function isAnswerReady(
   if (answer === null) return false;
   switch (exercise.typeId) {
     case 'mcq_single':
-      return 'optionId' in answer && answer.optionId !== '';
     case 'mcq_multi':
-      return 'optionIds' in answer && answer.optionIds.length >= exercise.spec.minSelect;
     case 'true_false':
-      return (
-        'value' in answer &&
-        typeof answer.value === 'boolean' &&
-        (exercise.spec.reasons === undefined ||
-          ('reasonId' in answer && typeof answer.reasonId === 'string'))
-      );
+      // The common choice types' rules live in @proginone/exercise-ui.
+      return isChoiceAnswerReady(exercise, answer as ChoiceAnswerByType[ChoiceTypeId]);
     case 'fill_blank':
       return (
         'blanks' in answer &&
@@ -191,13 +191,9 @@ export function isAnswerReady(
 export function notReadyReason(exercise: RenderableExercise): string {
   switch (exercise.typeId) {
     case 'mcq_single':
-      return '답을 먼저 골라 주세요.';
     case 'mcq_multi':
-      return exercise.spec.minSelect > 1
-        ? `답을 ${exercise.spec.minSelect}개 이상 골라 주세요.`
-        : '답을 먼저 골라 주세요.';
     case 'true_false':
-      return exercise.spec.reasons ? '참/거짓과 이유를 골라 주세요.' : '참/거짓을 골라 주세요.';
+      return choiceNotReadyReason(exercise);
     case 'fill_blank':
       return '빈칸을 모두 채워 주세요.';
     case 'predict_output':

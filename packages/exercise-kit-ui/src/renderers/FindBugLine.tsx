@@ -5,8 +5,7 @@ import type {
 } from '@proginone/exercise-kit';
 import { Bug, Check, X } from 'lucide-react';
 import { useId } from 'react';
-import { InlineText } from '../text/InlineText.tsx';
-import type { RendererBaseProps } from '../types.ts';
+import { InlineText, type RendererBaseProps } from '@proginone/exercise-ui';
 
 /** Answer while being edited: the line and the cause can be picked in any order. */
 export type FindBugLineDraft = Partial<FindBugLineAnswer>;

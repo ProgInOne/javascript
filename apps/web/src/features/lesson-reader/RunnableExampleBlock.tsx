@@ -5,7 +5,7 @@ import {
   matchExerciseShortcut,
   modKeyLabel,
   PreviewTabBar,
-} from '@proginone/exercise-ui';
+} from '@proginone/exercise-kit-ui';
 import { type CodeDraft } from '@proginone/shared';
 import { formatConsoleArgs, type RunResult } from '@proginone/run-contract';
 import { Button } from '@proginone/ui';

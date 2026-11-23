@@ -7,10 +7,8 @@ import { consoleEntriesToLines, type RunResult } from '@proginone/run-contract';
 import { Button } from '@proginone/ui';
 import { Check, Play, X } from 'lucide-react';
 import { useId } from 'react';
-import type { RendererBaseProps } from '../types.ts';
-import { CodeBlock } from '../widgets/CodeBlock.tsx';
+import { CodeBlock, McqSingle, type RendererBaseProps } from '@proginone/exercise-ui';
 import { ConsoleView } from '../widgets/ConsoleView.tsx';
-import { McqSingle } from './McqSingle.tsx';
 
 type PredictBaseProps = Omit<
   RendererBaseProps<PredictOutputPublicSpec, PredictOutputAnswer | null>,

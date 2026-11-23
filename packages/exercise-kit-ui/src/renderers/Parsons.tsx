@@ -24,7 +24,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from 'react';
-import type { RendererBaseProps } from '../types.ts';
+import type { RendererBaseProps } from '@proginone/exercise-ui';
 import { CheckList } from '../widgets/CheckList.tsx';
 
 export interface ParsonsProps extends RendererBaseProps<ParsonsPublicSpec, ParsonsAnswer> {

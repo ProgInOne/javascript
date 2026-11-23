@@ -1,10 +1,51 @@
-// Shared types and the exercise model (public spec + answer per type).
+// This repository's exercise UI: the common widgets, choice renderers and code editor from
+// @proginone/exercise-ui (D-096), plus the renderers, check list, console and preview of the
+// JavaScript exercise types. Apps import everything from here.
+
+// Common parts, re-exported unchanged.
 export {
   CONFIDENCE_LABELS,
   CONFIDENCE_LEVELS,
+  ConfidencePicker,
+  HintLadder,
+  HINT_STEP_LABELS,
+  MisconceptionNote,
+  CodeBlock,
+  LANGUAGE_LABELS,
+  Kbd,
+  ariaShortcut,
+  isApplePlatform,
+  matchExerciseShortcut,
+  modKeyLabel,
+  useExerciseShortcuts,
+  InlineText,
+  McqSingle,
+  McqMulti,
+  mcqMultiInstruction,
+  TrueFalse,
+  FormatError,
+  type CheckLabels,
+  type CodeBlockProps,
+  type CodeEditorHandle,
+  type CodeFile,
   type Confidence,
+  type ConfidencePickerProps,
+  type EditorPaneHandle,
+  type ExerciseShortcut,
+  type ExerciseShortcutHandlers,
+  type FeedbackBannerProps,
+  type FeedbackResult,
+  type HintLadderProps,
+  type McqMultiProps,
+  type McqSingleProps,
+  type MisconceptionInfo,
+  type MisconceptionNoteProps,
   type RendererBaseProps,
-} from './types.ts';
+  type TrueFalseDraft,
+  type TrueFalseProps,
+} from '@proginone/exercise-ui';
+
+// The exercise model of this repository's types (public spec + answer per type).
 export {
   RENDERABLE_TYPE_IDS,
   initialAnswer,
@@ -18,20 +59,12 @@ export {
   type RenderableTypeId,
 } from './exercise.ts';
 
-// Practice widgets.
-export { ConfidencePicker, type ConfidencePickerProps } from './widgets/ConfidencePicker.tsx';
-export { HintLadder, HINT_STEP_LABELS, type HintLadderProps } from './widgets/HintLadder.tsx';
-export {
-  FeedbackBanner,
-  MisconceptionNote,
-  type FeedbackBannerProps,
-  type FeedbackResult,
-  type MisconceptionInfo,
-  type MisconceptionNoteProps,
-} from './widgets/FeedbackBanner.tsx';
+// Widgets bound to this repository's check language and runner.
+export { FeedbackBanner, JS_CHECK_LABELS } from './widgets/FeedbackBanner.tsx';
 export {
   CheckList,
   CHECK_FAIL_REASON_LABELS,
+  checkFailReasonLabel,
   type CheckListMilestone,
   type CheckListProps,
 } from './widgets/CheckList.tsx';
@@ -47,23 +80,8 @@ export {
   runStatusText,
   type ConsoleViewProps,
 } from './widgets/ConsoleView.tsx';
-export { CodeBlock, LANGUAGE_LABELS, type CodeBlockProps } from './widgets/CodeBlock.tsx';
-export { Kbd } from './widgets/Kbd.tsx';
-export {
-  ariaShortcut,
-  isApplePlatform,
-  matchExerciseShortcut,
-  modKeyLabel,
-  useExerciseShortcuts,
-  type ExerciseShortcut,
-  type ExerciseShortcutHandlers,
-} from './widgets/shortcuts.ts';
-export { InlineText } from './text/InlineText.tsx';
 
-// Exercise type renderers.
-export { McqSingle, type McqSingleProps } from './renderers/McqSingle.tsx';
-export { McqMulti, mcqMultiInstruction, type McqMultiProps } from './renderers/McqMulti.tsx';
-export { TrueFalse, type TrueFalseDraft, type TrueFalseProps } from './renderers/TrueFalse.tsx';
+// Renderers of the JavaScript exercise types.
 export { FillBlank, parseBlankTemplate, type FillBlankProps } from './renderers/FillBlank.tsx';
 export {
   FindBugLine,
@@ -98,10 +116,15 @@ export {
 } from './renderers/workspace-panels.ts';
 export { ExerciseRenderer, type ExerciseRendererProps } from './renderers/ExerciseRenderer.tsx';
 
-// Code editor and preview container.
-export { CodeEditor, type CodeEditorHandle, type CodeEditorProps } from './editor/CodeEditor.tsx';
-export { EditorPane, type EditorPaneHandle, type EditorPaneProps } from './editor/EditorPane.tsx';
-export { FormatError, formatCode, languageOfPath, type EditorLanguage } from './editor/format.ts';
+// Code editor in this repository's languages, and the preview container.
+export {
+  CodeEditor,
+  EditorPane,
+  EDITOR_LANGUAGES,
+  type CodeEditorProps,
+  type EditorPaneProps,
+} from './editor/languages.tsx';
+export { formatCode, languageOfPath, type EditorLanguage } from './editor/format.ts';
 export {
   PreviewFrame,
   type PreviewFrameProps,

@@ -7,7 +7,7 @@ import {
   type AnswerByType,
   type RenderableExercise,
   type RenderableTypeId,
-} from '@proginone/exercise-ui';
+} from '@proginone/exercise-kit-ui';
 import {
   SETTINGS_DEFAULTS,
   type CodeDraft,
