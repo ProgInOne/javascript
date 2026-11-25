@@ -11,7 +11,7 @@
 
 ### Changed
 
-- 공통 패키지 `@proginone/*`를 사전 배포판 `0.3.0-next`(ProgInOne/core, 돌아보기 응답 형식 추가)로 바꿈. 다음 릴리스 전에 정식 버전으로 올려야 함
+- 공통 패키지 `@proginone/*`를 정식 버전 `^0.3.0`(ProgInOne/core `v0.3.0`, 돌아보기 응답 형식 `practiceSetReviewSchema` 추가)으로 바꿈
 
 ## [1.0.0-rc.3] - 2026-11-23
 
