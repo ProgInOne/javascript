@@ -7,6 +7,7 @@ import {
   inlineAttemptResponseSchema,
   lessonProgressSchema,
   practiceSetViewSchema,
+  practiceSetReviewSchema,
   projectAttemptResponseSchema,
   projectViewSchema,
   reportResponseSchema,
@@ -480,6 +481,18 @@ export const mistakeQuery = (exerciseId: string) =>
     queryFn: ({ signal }) =>
       api(`/mistakes/${encodeURIComponent(exerciseId)}`, { schema: mistakeDetailSchema, signal }),
     staleTime: 30_000,
+  });
+
+/** "푼 문제 돌아보기" of a finished set (D-098). Fixed once the set is finished. */
+export const practiceSetReviewQuery = (setId: string) =>
+  queryOptions({
+    queryKey: ['practice-sets', setId, 'review'],
+    queryFn: ({ signal }) =>
+      api(`/practice-sets/${encodeURIComponent(setId)}/review`, {
+        schema: practiceSetReviewSchema,
+        signal,
+      }),
+    staleTime: 60_000,
   });
 
 export const masteryChangesQuery = queryOptions({

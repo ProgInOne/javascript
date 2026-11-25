@@ -317,7 +317,8 @@ export function RetryButtons({
   describedBy,
   primary = false,
 }: {
-  note: MistakeNote;
+  /** A note, or any exercise with the same retry facts (a reviewed set item). */
+  note: Pick<MistakeNote, 'exerciseId' | 'concept' | 'retry'>;
   start: ReturnType<typeof useStartSet>;
   describedBy?: string;
   primary?: boolean;

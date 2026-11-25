@@ -108,7 +108,10 @@ export function createApp({
     .route('/client-errors', clientErrorRoutes(log))
     .route('/', curriculumRoutes(content))
     .route('/exercises', exerciseRoutes(practice.exercises, practice.attempts))
-    .route('/practice-sets', practiceSetRoutes(practice.sets, practice.attempts))
+    .route(
+      '/practice-sets',
+      practiceSetRoutes(practice.sets, practice.attempts, practice.setReview),
+    )
     .route('/attempts', attemptRoutes(practice.attempts))
     .route('/', projectRoutes(practice.projects))
     .route('/', draftRoutes(practice.drafts))
