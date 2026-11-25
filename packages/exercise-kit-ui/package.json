@@ -25,9 +25,9 @@
     "@codemirror/view": "^6.43.15",
     "@lezer/highlight": "^1.2.5",
     "@proginone/exercise-kit": "workspace:*",
-    "@proginone/exercise-ui": "0.3.0-next.20261125010159",
+    "@proginone/exercise-ui": "^0.3.0",
     "@proginone/run-contract": "workspace:*",
-    "@proginone/ui": "0.3.0-next.20261125010159",
+    "@proginone/ui": "^0.3.0",
     "lucide-react": "^1.73.0",
     "prettier": "^3.10.1",
     "zod": "^4.6.7"
