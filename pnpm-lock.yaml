@@ -206,17 +206,17 @@ importers:
         specifier: ^2.1.8
         version: 2.1.8(hono@4.13.19)
       '@proginone/ai':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: 0.3.0-next.20261125010159
+        version: 0.3.0-next.20261125010159
       '@proginone/content-schema':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)
+        specifier: 0.3.0-next.20261125010159
+        version: 0.3.0-next.20261125010159(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)
       '@proginone/exercise-kit':
         specifier: workspace:*
         version: link:../../packages/exercise-kit
       '@proginone/learning-engine':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: 0.3.0-next.20261125010159
+        version: 0.3.0-next.20261125010159
       '@proginone/run-contract':
         specifier: workspace:*
         version: link:../../packages/run-contract
@@ -224,8 +224,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/runner
       '@proginone/shared':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: 0.3.0-next.20261125010159
+        version: 0.3.0-next.20261125010159
       better-sqlite3:
         specifier: ^13.2.0
         version: 13.2.0
@@ -267,8 +267,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/exercise-kit-ui
       '@proginone/exercise-ui':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: 0.3.0-next.20261125010159
+        version: 0.3.0-next.20261125010159(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@proginone/run-contract':
         specifier: workspace:*
         version: link:../../packages/run-contract
@@ -276,11 +276,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/runner
       '@proginone/shared':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: 0.3.0-next.20261125010159
+        version: 0.3.0-next.20261125010159
       '@proginone/ui':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: 0.3.0-next.20261125010159
+        version: 0.3.0-next.20261125010159(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@tanstack/react-query':
         specifier: ^5.107.1
         version: 5.107.1(@types/react@19.3.0)(react@19.3.1)
@@ -355,8 +355,8 @@ importers:
   packages/exercise-kit:
     dependencies:
       '@proginone/exercise-core':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: 0.3.0-next.20261125010159
+        version: 0.3.0-next.20261125010159
       '@proginone/run-contract':
         specifier: workspace:*
         version: link:../run-contract
@@ -397,14 +397,14 @@ importers:
         specifier: workspace:*
         version: link:../exercise-kit
       '@proginone/exercise-ui':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: 0.3.0-next.20261125010159
+        version: 0.3.0-next.20261125010159(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@proginone/run-contract':
         specifier: workspace:*
         version: link:../run-contract
       '@proginone/ui':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: 0.3.0-next.20261125010159
+        version: 0.3.0-next.20261125010159(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       lucide-react:
         specifier: ^1.73.0
         version: 1.73.0(@types/react@19.3.0)(react@19.3.1)
@@ -470,8 +470,8 @@ importers:
   tools/content-cli:
     dependencies:
       '@proginone/content-schema':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)
+        specifier: 0.3.0-next.20261125010159
+        version: 0.3.0-next.20261125010159(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)
       '@proginone/exercise-kit':
         specifier: workspace:*
         version: link:../../packages/exercise-kit
@@ -1319,29 +1319,29 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
-  '@proginone/ai@0.2.0':
-    resolution: {integrity: sha512-MGDytzLyaQf5CJss2CGhjlhZxti+ABr6XDUBpx0lauDnA10AyHZpDXlSDInj1YHr/kKHNyvnlbgwLcJ8s7l1Yw==, tarball: https://npm.pkg.github.com/download/@proginone/ai/0.2.0/c4a963db0b82dbc426840ad77c214990f4243600}
+  '@proginone/ai@0.3.0-next.20261125010159':
+    resolution: {integrity: sha512-4/Y8DMNuoeHscP2BY/zB1bzvbGhEjVgyglrMrU6j76V6Dcl661xzkWsixs8CSTiyrRAR53TeDxrRcHXO5kAe/g==, tarball: https://npm.pkg.github.com/download/@proginone/ai/0.3.0-next.20261125010159/20c3650a302d6ec4ae7e76b51d5fb06838ac2891}
 
-  '@proginone/content-schema@0.2.0':
-    resolution: {integrity: sha512-8WCwTBpabAfEJ5EoO8NW+8fJFsJPLcx9zYZSR2Pj7/7cfKWIYyG0Xrxndj/uu+NOQuAlCxRn8ba0tTaIst/sZA==, tarball: https://npm.pkg.github.com/download/@proginone/content-schema/0.2.0/776b1101ea2c0f6642ecb091e7e314a9c5cb9346}
+  '@proginone/content-schema@0.3.0-next.20261125010159':
+    resolution: {integrity: sha512-CF27W4jTjcAEt5toOo/OdNp7tzaRdMuqNU4gckTyWPH9O7usop64Kk+Q/NKfI6ePkh82m9F1FCoxQkqqoCd81A==, tarball: https://npm.pkg.github.com/download/@proginone/content-schema/0.3.0-next.20261125010159/3a6754a63090e22b7d520a985e33819ed2975ca3}
 
-  '@proginone/exercise-core@0.2.0':
-    resolution: {integrity: sha512-Omz1i86zNScqhbJphQ620ryPuUqMV94xlkZkA5icDAT45sSeX7R/oqHLYC/+VqITxGtsMR48QShtI6aSvgCqQg==, tarball: https://npm.pkg.github.com/download/@proginone/exercise-core/0.2.0/19fb46340a4869711fd0c8e684b4603ae30ee33a}
+  '@proginone/exercise-core@0.3.0-next.20261125010159':
+    resolution: {integrity: sha512-/nzuzw50gHuQWJINpRCC4+2FVi+e82XPyh9IbwDFkgkJlteKyXxN1f747uqkGv2gShMlScSm4km02W2zzqC52Q==, tarball: https://npm.pkg.github.com/download/@proginone/exercise-core/0.3.0-next.20261125010159/6c99edd11b5b8c3e5464be42632f97662ac8b637}
 
-  '@proginone/exercise-ui@0.2.0':
-    resolution: {integrity: sha512-MSDnEeqsxNQkepE1W/arb6O+k8QuWI6yi12X6zcFG3l+FnFhImr4BBgMRa2BNpLfSNdoOKy74JxURkJqIfuMhg==, tarball: https://npm.pkg.github.com/download/@proginone/exercise-ui/0.2.0/0120cc34a4ea135d39b72c53119610671a575435}
+  '@proginone/exercise-ui@0.3.0-next.20261125010159':
+    resolution: {integrity: sha512-3+z+Yg3oE/f/rVacF5hy6Edu1nGQKdxulHojrE8lxlXaeuDnROP3MqwNMvLpmoITqAcDWDWmtXB/kSEPWROPmA==, tarball: https://npm.pkg.github.com/download/@proginone/exercise-ui/0.3.0-next.20261125010159/8495eeb23b830c92b60e552c77873db946209e6f}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
 
-  '@proginone/learning-engine@0.2.0':
-    resolution: {integrity: sha512-SwdA7TXUVDuslIfwDAEB2bDaETRKNxGMxDqs4sFB5Tc+EGXf+OawSjH1VlmHA3XSZBfZjJCU/GmFp98D/6Gzjg==, tarball: https://npm.pkg.github.com/download/@proginone/learning-engine/0.2.0/b902b288964d8d383ef99a29f335c18da148ada4}
+  '@proginone/learning-engine@0.3.0-next.20261125010159':
+    resolution: {integrity: sha512-urwhBF9nxtdUwJY2v2gWqlMCOASDR1s8+OSQxUUzUmKcHgpbQap/tYjyZDc47jbSZwM+9vPVCaWBvfkFJb7jdA==, tarball: https://npm.pkg.github.com/download/@proginone/learning-engine/0.3.0-next.20261125010159/2c723445b552f40f31f1b2efd3aaaf6373bcfe7c}
 
-  '@proginone/shared@0.2.0':
-    resolution: {integrity: sha512-pSh9WpDzoY/YrgcLkOIAXSPDw3EOGq9OIaWf8kJ/qMwHsI0brrmeySZSnemmh52EwSBxqelzPwV9+VJF5s5Rfw==, tarball: https://npm.pkg.github.com/download/@proginone/shared/0.2.0/2783087bb5b43e388b0c43b01222e99e9a765f4e}
+  '@proginone/shared@0.3.0-next.20261125010159':
+    resolution: {integrity: sha512-U96vOc4crQw89CPGQoJpDW56B+NJEEy55TKlB/esNIuFNak3gezBW4S2TY360aWs1LC/Wk5rCbuJ59p/+KVjFw==, tarball: https://npm.pkg.github.com/download/@proginone/shared/0.3.0-next.20261125010159/9251d2a196d95bad85bfb56a1acf5df2a67fff69}
 
-  '@proginone/ui@0.2.0':
-    resolution: {integrity: sha512-RtHhnApiHXhsVoRMdg/TJttL/F4EBUe917ODAgcF1E0rSvlg8Gm+W7ZxZQIsrxXuvap7HXdQwTot7zPOOPswJg==, tarball: https://npm.pkg.github.com/download/@proginone/ui/0.2.0/d1a9e0e77a0a39987e06c70297452d58062b2223}
+  '@proginone/ui@0.3.0-next.20261125010159':
+    resolution: {integrity: sha512-5jAQLn/jgKEOSsABqt0MCDTpAQqSs97Pz7GPSF9qOIkunAcdO63W6qJorbpmh+qzlc9rQsxcsCuqz6jCUy/o7Q==, tarball: https://npm.pkg.github.com/download/@proginone/ui/0.3.0-next.20261125010159/fce58ceadb599617d2b2cf5d61e2aa935a8db2bb}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -5197,12 +5197,12 @@ snapshots:
     dependencies:
       playwright: 1.65.1
 
-  '@proginone/ai@0.2.0':
+  '@proginone/ai@0.3.0-next.20261125010159':
     dependencies:
-      '@proginone/shared': 0.2.0
+      '@proginone/shared': 0.3.0-next.20261125010159
       zod: 4.6.7
 
-  '@proginone/content-schema@0.2.0(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)':
+  '@proginone/content-schema@0.3.0-next.20261125010159(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)':
     dependencies:
       drizzle-orm: 0.45.4(@types/better-sqlite3@9.6.0)(better-sqlite3@13.2.0)
       zod: 4.6.7
@@ -5238,11 +5238,11 @@ snapshots:
       - sql.js
       - sqlite3
 
-  '@proginone/exercise-core@0.2.0':
+  '@proginone/exercise-core@0.3.0-next.20261125010159':
     dependencies:
       zod: 4.6.7
 
-  '@proginone/exercise-ui@0.2.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@proginone/exercise-ui@0.3.0-next.20261125010159(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       '@codemirror/autocomplete': 6.20.4
       '@codemirror/commands': 6.11.1
@@ -5250,8 +5250,8 @@ snapshots:
       '@codemirror/state': 6.7.6
       '@codemirror/view': 6.43.15
       '@lezer/highlight': 1.2.5
-      '@proginone/exercise-core': 0.2.0
-      '@proginone/ui': 0.2.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@proginone/exercise-core': 0.3.0-next.20261125010159
+      '@proginone/ui': 0.3.0-next.20261125010159(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       lucide-react: 1.73.0(@types/react@19.3.0)(react@19.3.1)
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
@@ -5260,15 +5260,15 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@proginone/learning-engine@0.2.0':
+  '@proginone/learning-engine@0.3.0-next.20261125010159':
     dependencies:
       ts-fsrs: 6.0.0
 
-  '@proginone/shared@0.2.0':
+  '@proginone/shared@0.3.0-next.20261125010159':
     dependencies:
       zod: 4.6.7
 
-  '@proginone/ui@0.2.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@proginone/ui@0.3.0-next.20261125010159(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       '@fontsource-variable/jetbrains-mono': 5.3.0
       '@fontsource/outfit': 5.3.0

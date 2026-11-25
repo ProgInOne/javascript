@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, inArray, ne } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, inArray, ne } from 'drizzle-orm';
 import type { Orm } from './connection.ts';
 import { answerJson, gradingJson, stringListJson } from './json.ts';
 import { fromRow } from './json-io.ts';
@@ -153,4 +153,92 @@ export function listStageChanges(orm: Orm, learnerId: string, since: number) {
     .orderBy(desc(masteryEvidence.createdAt), desc(masteryEvidence.id))
     .all()
     .map((row) => ({ ...row, createdAt: row.createdAt.getTime() }));
+}
+
+/** The latest counted attempt of a set item, with how many were counted. */
+export interface LastItemAttemptRow {
+  id: string;
+  itemId: string;
+  outcome: 'correct' | 'partial' | 'incorrect' | 'error';
+  confidence: 'sure' | 'unsure' | 'guess' | null;
+  solutionViewed: boolean;
+  misconceptionIds: string[];
+  count: number;
+}
+
+/**
+ * The latest engine-applied attempt of each given item ("푼 문제 돌아보기"). Attempts the engine
+ * did not count (sandbox failures) are left out, as in the set view's attempt counts. The
+ * `attempts_item` index serves the lookup.
+ */
+export function lastItemAttempts(
+  orm: Orm,
+  itemIds: readonly string[],
+): Map<string, LastItemAttemptRow> {
+  const out = new Map<string, LastItemAttemptRow>();
+  if (itemIds.length === 0) return out;
+  const rows = orm
+    .select({
+      id: attempts.id,
+      itemId: attempts.practiceSetItemId,
+      outcome: attempts.outcome,
+      confidence: attempts.confidence,
+      solutionViewed: attempts.solutionViewed,
+      misconceptionIds: attempts.misconceptionIdsJson,
+    })
+    .from(attempts)
+    .where(and(inArray(attempts.practiceSetItemId, [...itemIds]), eq(attempts.engineApplied, true)))
+    .orderBy(asc(attempts.submittedAt), asc(attempts.id))
+    .all();
+  for (const row of rows) {
+    if (row.itemId === null) continue;
+    out.set(row.itemId, {
+      id: row.id,
+      itemId: row.itemId,
+      outcome: row.outcome,
+      confidence: row.confidence,
+      solutionViewed: row.solutionViewed,
+      misconceptionIds: fromRow(stringListJson, row.misconceptionIds, 'attempts', row.id),
+      count: (out.get(row.itemId)?.count ?? 0) + 1,
+    });
+  }
+  return out;
+}
+
+/**
+ * Exercises among `exerciseIds` whose reference answer the learner has seen: opened with "정답
+ * 보기" anywhere, or shown on the result screen of a finished assessment (D-044).
+ */
+export function seenSolutionExerciseIds(
+  orm: Orm,
+  learnerId: string,
+  exerciseIds: readonly string[],
+): Set<string> {
+  if (exerciseIds.length === 0) return new Set();
+  const ids = [...new Set(exerciseIds)];
+  const opened = orm
+    .selectDistinct({ exerciseId: hintEvents.exerciseId })
+    .from(hintEvents)
+    .where(
+      and(
+        eq(hintEvents.learnerId, learnerId),
+        eq(hintEvents.kind, 'solution'),
+        inArray(hintEvents.exerciseId, ids),
+      ),
+    )
+    .all();
+  const assessed = orm
+    .selectDistinct({ exerciseId: practiceSetItems.exerciseId })
+    .from(practiceSetItems)
+    .innerJoin(practiceSets, eq(practiceSetItems.practiceSetId, practiceSets.id))
+    .where(
+      and(
+        eq(practiceSetItems.learnerId, learnerId),
+        eq(practiceSets.kind, 'assessment'),
+        eq(practiceSets.status, 'completed'),
+        inArray(practiceSetItems.exerciseId, ids),
+      ),
+    )
+    .all();
+  return new Set([...opened, ...assessed].map((r) => r.exerciseId));
 }

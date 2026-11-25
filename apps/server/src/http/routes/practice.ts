@@ -2,11 +2,16 @@ import { attemptRequestSchema, createPracticeSetRequestSchema } from '@proginone
 import { Hono } from 'hono';
 import type { AttemptService } from '../../services/practice/attempt-service.ts';
 import type { PracticeSetService } from '../../services/practice/practice-set-service.ts';
+import type { PracticeReviewService } from '../../services/review/practice-review-service.ts';
 import type { AppEnv } from '../env.ts';
 import { jsonBody, limitBody, rowIdParam } from './input.ts';
 
 /** `/practice-sets` (docs/design/system-architecture.md#api-규약). */
-export function practiceSetRoutes(service: PracticeSetService, attempts: AttemptService) {
+export function practiceSetRoutes(
+  service: PracticeSetService,
+  attempts: AttemptService,
+  review: PracticeReviewService,
+) {
   return new Hono<AppEnv>()
     .use(limitBody(64 * 1024))
     .post('/', async (c) => {
@@ -14,6 +19,7 @@ export function practiceSetRoutes(service: PracticeSetService, attempts: Attempt
       return c.json(service.create(request));
     })
     .get('/:id', (c) => c.json(service.get(rowIdParam(c.req.param('id')))))
+    .get('/:id/review', (c) => c.json(review.get(rowIdParam(c.req.param('id')))))
     .post('/:id/items/:itemId/skip', (c) =>
       c.json(attempts.skip(rowIdParam(c.req.param('id')), rowIdParam(c.req.param('itemId')))),
     )

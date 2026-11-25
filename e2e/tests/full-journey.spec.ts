@@ -108,6 +108,9 @@ test('one learner: onboarding → lesson → practice → assessment → review 
     expect(total).toBe(12);
     const summary = page.getByRole('region', { name: '첫 프로그램 단원을 마쳤어요' });
     await expect(summary).toContainText('연습 12문제 · 정답 12');
+    // "푼 문제 돌아보기" (D-098): every item, loaded before the accessibility check.
+    const solved = summary.getByRole('list', { name: '푼 문제 돌아보기' });
+    await expect(solved.locator(':scope > li')).toHaveCount(12);
     await expectNoA11yViolations(page);
     await summary.getByRole('link', { name: '다음 단원: 시작하기 단원 평가' }).click();
   });

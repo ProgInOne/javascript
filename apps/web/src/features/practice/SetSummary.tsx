@@ -77,6 +77,7 @@ export function SetSummary({
   set,
   title,
   changes,
+  review,
   actions,
 }: {
   set: PracticeSetView;
@@ -84,6 +85,8 @@ export function SetSummary({
   title: string | null;
   /** Concept changes of this session (first before → last after). */
   changes: readonly MasteryChange[];
+  /** "푼 문제 돌아보기" (D-098), between the result and the next step. */
+  review?: ReactNode;
   actions: ReactNode;
 }) {
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -165,6 +168,8 @@ export function SetSummary({
           </ul>
         </div>
       )}
+
+      {review}
 
       <div className="set-summary__actions">{actions}</div>
     </section>
