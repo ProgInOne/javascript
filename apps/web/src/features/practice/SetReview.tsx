@@ -125,7 +125,7 @@ function ReviewItem({
               )}
               {last.confidence && (
                 <p className="m-0 text-fg-tertiary type-small">
-                  {CONFIDENCE_LABELS[last.confidence]}
+                  확신도: {CONFIDENCE_LABELS[last.confidence]}
                   {last.solutionViewed && ' · 정답을 본 뒤 제출'}
                 </p>
               )}
