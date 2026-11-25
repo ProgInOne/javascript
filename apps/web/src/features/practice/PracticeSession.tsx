@@ -15,6 +15,7 @@ import { finishSet, LEARNING_STATE_KEYS, practiceSetQuery, skipItem } from '../.
 import { applyAttemptToSet, mergeMasteryChanges, nextPendingIndex } from './model.ts';
 import { PracticeItem } from './PracticeItem.tsx';
 import { SetProgress } from './SetProgress.tsx';
+import { SetReview } from './SetReview.tsx';
 import { SetSummary } from './SetSummary.tsx';
 
 export interface PracticeSessionProps {
@@ -184,6 +185,7 @@ export function PracticeSession({
           set={set}
           title={lessonTitle}
           changes={mergeMasteryChanges(changes)}
+          review={<SetReview set={set} />}
           actions={summaryActions(set)}
         />
       ) : (

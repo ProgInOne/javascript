@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@proginone/exercise-core": "^0.2.0",
+    "@proginone/exercise-core": "^0.3.0",
     "@proginone/run-contract": "workspace:*",
     "zod": "^4.6.7"
   }

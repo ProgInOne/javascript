@@ -723,6 +723,22 @@
     color: var(--color-text-secondary);
   }
 
+  /* "푼 문제 돌아보기" (D-098): the assessment item list under a practice set's summary. */
+  .set-review__answer[data-outcome='correct'] {
+    border-left-color: var(--color-feedback-correct-border);
+  }
+  .set-review__error {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .set-review__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
   /* Project units (content-and-exercises.md#프로젝트-단원-kind-project, ui-ux.md 프로젝트 화면). */
   .project-title {
     display: flex;
