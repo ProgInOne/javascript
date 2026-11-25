@@ -28,7 +28,7 @@
     "@proginone/exercise-ui": "^0.3.0",
     "@proginone/run-contract": "workspace:*",
     "@proginone/ui": "^0.3.0",
-    "lucide-react": "^1.73.0",
+    "lucide-react": "^1.77.0",
     "prettier": "^3.10.1",
     "zod": "^4.6.7"
   },
