@@ -483,7 +483,10 @@ export const mistakeQuery = (exerciseId: string) =>
     staleTime: 30_000,
   });
 
-/** "푼 문제 돌아보기" of a finished set (D-098). Fixed once the set is finished. */
+/**
+ * "푼 문제 돌아보기" of a finished set (D-098). The answers are fixed, but whether the reference
+ * answer shows can change (opened later in a "다시 풀기" set), so it is fetched on every visit.
+ */
 export const practiceSetReviewQuery = (setId: string) =>
   queryOptions({
     queryKey: ['practice-sets', setId, 'review'],
@@ -492,7 +495,6 @@ export const practiceSetReviewQuery = (setId: string) =>
         schema: practiceSetReviewSchema,
         signal,
       }),
-    staleTime: 60_000,
   });
 
 export const masteryChangesQuery = queryOptions({

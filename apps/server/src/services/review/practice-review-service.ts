@@ -4,6 +4,7 @@ import type { UserDb } from '../../db/user/connection.ts';
 import { excludedExerciseIds } from '../../db/user/exercise-records.ts';
 import { getSet, listItems } from '../../db/user/practice-sets.ts';
 import {
+  activeAssessmentExerciseIds,
   lastItemAttempts,
   loadSubmissions,
   seenSolutionExerciseIds,
@@ -80,6 +81,9 @@ export class PracticeReviewService {
       items.map((i) => i.exerciseId),
     );
     const excluded = excludedExerciseIds(orm, learnerId);
+    // An exercise in an assessment in progress keeps its explanation and answer locked here too
+    // (D-042, D-044), whatever set it was practised in before.
+    const locked = activeAssessmentExerciseIds(orm, learnerId);
 
     const views = items.map((item): PracticeReviewItem => {
       const exercise = exercises.get(item.exerciseId);
@@ -105,7 +109,8 @@ export class PracticeReviewService {
         }
       }
       let solution: SolutionView | null = null;
-      if (exercise && spec !== null && seen.has(item.exerciseId)) {
+      const hidden = locked.has(item.exerciseId);
+      if (exercise && spec !== null && !hidden && seen.has(item.exerciseId)) {
         try {
           solution = solutionView(exercise.type, spec);
         } catch {
@@ -143,7 +148,7 @@ export class PracticeReviewService {
             }
           : null,
         // The explanation is shown after every graded attempt, so only then.
-        explanation: attempt && exercise ? exercise.explanation : null,
+        explanation: attempt && exercise && !hidden ? exercise.explanation : null,
         solution,
         archived: exercise === undefined,
         retry: retryOf(exercise, excluded),

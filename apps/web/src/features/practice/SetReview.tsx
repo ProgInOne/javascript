@@ -27,8 +27,16 @@ function outcomeOf(item: PracticeReviewItem): OutcomeKey {
 
 /** "2번째에 정답", "시도 3번" — how the item went, beside the badge. */
 function attemptsNote(item: PracticeReviewItem, outcome: OutcomeKey): string | null {
-  if (item.attempts <= 1) return item.status === 'skipped' && item.last ? '건너뜀' : null;
-  return outcome === 'correct' ? `${item.attempts}번째에 정답` : `시도 ${item.attempts}번`;
+  // Answered, then skipped: the badge shows the last answer, so say it was skipped after all.
+  const skippedAfter = item.status === 'skipped' && item.last !== null;
+  const count =
+    item.attempts <= 1
+      ? null
+      : outcome === 'correct'
+        ? `${item.attempts}번째에 정답`
+        : `시도 ${item.attempts}번`;
+  const parts = [count, skippedAfter ? '건너뜀' : null].filter((p) => p !== null);
+  return parts.length > 0 ? parts.join(' · ') : null;
 }
 
 /**

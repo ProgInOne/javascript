@@ -131,6 +131,33 @@ describe('GET /practice-sets/:id/review', () => {
     expect(JSON.stringify(implement?.solution)).toContain('SOLUTION-MARK');
   });
 
+  it('keeps the explanation and answer locked while the exercise is in an assessment in progress', async () => {
+    const ctx = await practiceApp();
+    const set = await lessonSet(ctx);
+    const item = itemOf(set, EX.implement);
+    parsed(await submit(ctx, item, { correct: false }));
+    for (let i = 0; i < 3; i++) {
+      await ctx.call('POST', `/exercises/${EX.implement}/hints`, { practiceSetItemId: item.id });
+    }
+    await ctx.call('POST', `/exercises/${EX.implement}/solution`, { practiceSetItemId: item.id });
+    await finish(ctx, set);
+
+    // Content today never puts a practice exercise in an assessment; a later content pack that
+    // changes an exercise's usage could. Simulate it on an assessment in progress.
+    const assessment = await createSet(ctx, { kind: 'assessment', lessonId: ASSESSMENT });
+    const target = assessment.items[0];
+    if (!target) throw new Error('empty assessment');
+    ctx.userDb.sqlite
+      .prepare('UPDATE practice_set_items SET exercise_id = ? WHERE id = ?')
+      .run(EX.implement, target.id);
+
+    const { review: r, text } = await review(ctx, set.id);
+    const implement = r.items.find((i) => i.itemId === item.id);
+    expect(implement).toMatchObject({ explanation: null, solution: null });
+    expect(implement?.last?.outcome).toBe('incorrect');
+    expect(text).not.toContain('SOLUTION-MARK');
+  });
+
   it('leaves assessments to their result screen', async () => {
     const ctx = await practiceApp();
     const set = await createSet(ctx, { kind: 'assessment', lessonId: ASSESSMENT });
