@@ -39,9 +39,12 @@ export interface CodeRunProps {
   /** Stops the current run. */
   onStop?: () => void;
   running?: boolean;
-  /** Latest run result, shown in the console tab and as editor error lines. */
+  /** Latest run result, shown in the console tab and as editor error lines. A new result opens the console tab. */
   run?: RunResult | null;
-  /** Per-check results (quick feedback from `gradeChecks` or `GradeResult.checkResults`). */
+  /**
+   * Per-check results (quick feedback from `gradeChecks` or `GradeResult.checkResults`). A new
+   * array opens the tests tab, so pass the same array while the results stay the same.
+   */
   checkResults?: readonly CheckResult[] | null;
   /** Auto-save status text, e.g. "저장됨 · 방금". */
   saveStatus?: ReactNode;
@@ -109,6 +112,19 @@ export function CodeWorkspace({
 }: WorkspaceProps) {
   const paneRef = useRef<EditorPaneHandle>(null);
   const [tab, setTab] = useState<string>(defaultResultTab);
+  // The results area follows what just arrived: a new run's output is in the console, new check
+  // results in the tests. A grading run sets both (run first, then checks), so the tests win.
+  // Adjusted during render (not in an effect) so the tab never paints a step behind.
+  const [seenRun, setSeenRun] = useState(run);
+  const [seenChecks, setSeenChecks] = useState(checkResults);
+  if (run !== seenRun) {
+    setSeenRun(run);
+    if (run) setTab('console');
+  }
+  if (checkResults !== seenChecks) {
+    setSeenChecks(checkResults);
+    if (checkResults) setTab('tests');
+  }
   const panels = useWorkspacePanels();
   const collapsed = panels.resultsCollapsed;
   const resultsId = useId();
