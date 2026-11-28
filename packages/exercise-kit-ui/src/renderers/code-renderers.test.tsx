@@ -1,5 +1,6 @@
 import { EditorView } from '@codemirror/view';
 import type {
+  CheckResult,
   CodeAnswer,
   FixBugPublicSpec,
   ImplementFunctionPublicSpec,
@@ -188,6 +189,43 @@ describe('ImplementFunction', () => {
     expect(screen.getByText('ReferenceError: totl is not defined')).toBeTruthy();
     await user.click(screen.getByRole('button', { name: 'main.js 2번째 줄로 이동' }));
     expect(container.querySelector('.cm-focused, .cm-content:focus')).toBeTruthy();
+  });
+
+  it('opens the console for a new run and the tests for new check results', async () => {
+    const results: CheckResult[] = [
+      { id: 'basic', kind: 'call', passed: true, required: true, weight: 1, visible: true },
+    ];
+    const graded: RunResult = { ...run, runId: 'g' };
+    const props = {
+      spec: implSpec,
+      value: initialAnswer({ typeId: 'implement_function', spec: implSpec }),
+      onChange: () => undefined,
+      labelledBy: 'p',
+      onRun: () => undefined,
+    };
+    const { user, rerender } = renderUi(<ImplementFunction {...props} run={null} />);
+    // rerender skips renderUi's provider; pass it again so the tree (and its state) stays.
+    const update = (extra: { run: RunResult; checkResults?: CheckResult[] }) => {
+      rerender(
+        <UiProvider>
+          <ImplementFunction {...props} {...extra} />
+        </UiProvider>,
+      );
+    };
+    const selected = () => screen.getByRole('tab', { selected: true }).textContent;
+    expect(selected()).toBe('테스트 결과');
+    // 실행 (button or ⌘'): the page passes the new run, and its output shows right away.
+    update({ run: run });
+    expect(selected()).toBe('콘솔');
+    expect(screen.getByText('ReferenceError: totl is not defined')).toBeTruthy();
+    // 확인: the grading run arrives, then its check results.
+    update({ run: graded });
+    update({ run: graded, checkResults: results });
+    expect(selected()).toBe('테스트 결과');
+    // Re-rendering with the same run and results keeps the tab the learner picked.
+    await user.click(screen.getByRole('tab', { name: '콘솔' }));
+    update({ run: graded, checkResults: results });
+    expect(selected()).toBe('콘솔');
   });
 
   it('resets to the starter code after confirmation', async () => {
