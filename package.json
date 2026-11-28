@@ -1,6 +1,6 @@
 {
   "name": "proginone",
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0-rc.5",
   "private": true,
   "description": "로컬에서 실행하는 AI 기반 개인 맞춤 웹 개발 학습 플랫폼",
   "type": "module",
