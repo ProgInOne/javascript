@@ -14,7 +14,7 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "@hono/node-server": "^2.1.8",
+    "@hono/node-server": "^2.1.11",
     "@proginone/ai": "^0.3.0",
     "@proginone/content-schema": "^0.3.0",
     "@proginone/exercise-kit": "workspace:*",
